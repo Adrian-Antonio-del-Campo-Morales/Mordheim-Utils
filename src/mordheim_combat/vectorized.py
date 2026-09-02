@@ -23,6 +23,16 @@ import numpy as np
 STANDING, KNOCKED_DOWN, STUNNED, PARALYZED, OUT = range(5)
 
 
+def _run_starts(values: np.ndarray) -> np.ndarray:
+    """First index of each run in an ascending-sorted array (O(n), no sort)."""
+    if values.size < 2:
+        return np.arange(values.size, dtype=np.intp)
+    changed = np.empty(values.size, dtype=bool)
+    changed[0] = True
+    np.not_equal(values[1:], values[:-1], out=changed[1:])
+    return np.flatnonzero(changed)
+
+
 @dataclass(slots=True)
 class CombatState:
     wounds: np.ndarray
@@ -179,9 +189,10 @@ def _claim_criticals(candidate: np.ndarray, rows: np.ndarray, state: CombatState
     eligible = positions[~state.critical_used[rows[positions]]]
     if eligible.size == 0:
         return accepted
-    claimed_rows, first = np.unique(rows[eligible], return_index=True)
+    eligible_values = rows[eligible]
+    first = _run_starts(eligible_values)
     accepted[eligible[first]] = True
-    state.critical_used[claimed_rows] = True
+    state.critical_used[eligible_values[first]] = True
     return accepted
 
 
@@ -618,7 +629,8 @@ def _parry_hits(defender: CompiledFighter, effect: EffectSet, hit_rows: np.ndarr
         # grouping here would introduce a Python loop per simulated duel.
         eligible &= np.isin(hit_rows, selected_rows)
     else:
-        eligible_rows = np.unique(hit_rows[eligible])
+        eligible_values = hit_rows[eligible]
+        eligible_rows = eligible_values[_run_starts(eligible_values)]
         # Keep the standalone operator correct for callers that pass several
         # hits for the same row without the pool-level preselection.
         if eligible_rows.size != np.count_nonzero(eligible):
@@ -764,7 +776,8 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
     else:
         rolls = np.full(active.size, 6, dtype=np.int8) if effect.automatic_hit else rng.integers(1, 7, active.size, dtype=np.int8)
         successful = rolls >= hit_target
-    helpless = np.isin(defender_state.condition[active], (KNOCKED_DOWN, PARALYZED))
+    helpless_cond = defender_state.condition[active]
+    helpless = (helpless_cond == KNOCKED_DOWN) | (helpless_cond == PARALYZED)
     successful |= helpless
     rolls[helpless] = 1
     reroll = np.full(active.size, effect.reroll_hits, dtype=bool)
@@ -859,7 +872,9 @@ def _apply_hit_defences(
         charm_rolls=rng.integers(1,7,hit_rows.size)
         defender_state.lucky_charm[hit_rows[eligible]]=False
         hit_rows=hit_rows[~(eligible&(charm_rolls>=4))]
-    return hit_rows
+    hit_positions = (np.searchsorted(active, hit_rows)
+                     if hit_rows.size else np.empty(0, dtype=np.int64))
+    return hit_rows, hit_positions
 
 
 def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon: EffectSet,
@@ -885,7 +900,7 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
     if not defences_resolved:
         parries_before = defender_state.parry_remaining.copy()
         charms_before = defender_state.lucky_charm.copy()
-        hit_rows=_apply_hit_defences(
+        hit_rows, hit_positions = _apply_hit_defences(
             attacker,defender,prepared,attacker_state,defender_state,rng,charging,parry_rows
         )
         if observation is not None and prepared.hit_rows.size and hit_rows.size == 0:
@@ -895,7 +910,8 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
                                      and not observation.parried)
     if hit_rows.size == 0:
         return
-    hit_positions = np.searchsorted(active, hit_rows)
+    if defences_resolved:
+        hit_positions = np.searchsorted(active, hit_rows)
     hit_values = rolls[hit_positions]
     if has(weapon,"weapon.kusara-kama"):
         penalized=hit_rows[hit_values>=5];np.add.at(defender_state.attack_penalty,penalized,1)
@@ -1020,7 +1036,8 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
         if defender_phase_condition is not None
         else defender_state.condition[wound_rows]
     )
-    helpless_wounds = np.isin(condition_for_helpless, (KNOCKED_DOWN, PARALYZED))
+    helpless_wounds = ((condition_for_helpless == KNOCKED_DOWN)
+                       | (condition_for_helpless == PARALYZED))
     defender_state.condition[wound_rows[helpless_wounds]] = OUT
     damage = max(1, effect.damage)
     if has(defender.global_effects,"flammable") and has(effect,"attack.fire"):
@@ -1028,7 +1045,7 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
     if observation is not None:
         observation.damage = damage
         observation.critical = bool(critical.any())
-    affected_rows = np.unique(wound_rows)
+    affected_rows = wound_rows[_run_starts(wound_rows)]
     wounds_before = defender_state.wounds[affected_rows].copy()
     damage_rows = np.repeat(wound_rows, damage)
     damage_critical = np.repeat(critical, damage)
@@ -1069,7 +1086,7 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
     if injury_rows.size == 0:
         return
     if defender.injury_profile == 4:
-        defender_state.condition[np.unique(injury_rows)] = OUT
+        defender_state.condition[injury_rows[_run_starts(injury_rows)]] = OUT
         return
     injury_criticals = damage_critical[injury_mask]
     injury_rolls = rng.integers(1, 7, injury_rows.size) + effect.injury_modifier + int(knife_fighting)
@@ -1109,7 +1126,7 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
         stunned = injury == STUNNED
         recovery = rng.integers(1, 7, injury_rows.size) >= defender.helmet_save
         injury[stunned & recovery] = KNOCKED_DOWN
-    injured = np.unique(injury_rows)
+    injured = injury_rows[_run_starts(injury_rows)]
     highest_by_row = np.full(defender_state.condition.size, STANDING, dtype=np.int8)
     np.maximum.at(highest_by_row, injury_rows, injury)
     highest = highest_by_row[injured]
@@ -1151,8 +1168,9 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
             ) if observations is not None else None
             parries_before=defender_state.parry_remaining.copy()
             hit_rows=prepared.hit_rows[defender_state.condition[prepared.hit_rows]!=OUT]
-            hit_values=prepared.rolls[np.searchsorted(prepared.active,hit_rows)]
-            hit_strength=prepared.strength[np.searchsorted(prepared.active,hit_rows)]
+            hit_positions=np.searchsorted(prepared.active,hit_rows)
+            hit_values=prepared.rolls[hit_positions]
+            hit_strength=prepared.strength[hit_positions]
             hit_rows,_=_parry_hits(defender,prepared.effect,hit_rows,hit_values,hit_strength,defender_state,rng)
             if observation is not None and prepared.hit_rows.size and hit_rows.size == 0:
                 row=int(prepared.hit_rows[0])
@@ -1248,7 +1266,7 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
         # hits, then replace exactly one pair with the opposed Strength test.
         defended=[]
         for prepared,parry_rows in zip(prepared_attacks,selected):
-            surviving=_apply_hit_defences(
+            surviving,_=_apply_hit_defences(
                 attacker,defender,prepared,attacker_state,defender_state,rng,charging,parry_rows
             )
             defended.append(replace(prepared,hit_rows=surviving))
