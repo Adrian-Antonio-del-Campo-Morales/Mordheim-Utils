@@ -1,6 +1,30 @@
-# Mordheim Combat Lab
+# Mordheim Utils
 
-Simulador de duelos cuerpo a cuerpo 1 contra 1 basado en una base de conocimiento versionada. La aplicación activa usa el motor vectorizado para los análisis y dispone de un motor modular escalar para reproducir y verificar reglas por fases.
+Monorepo con las utilidades de Mordheim: un **motor de duelos dirigido por base de
+conocimiento** y un **gestor de campaña**, sobre paquetes compartidos y una única KB
+canónica. Las dos aplicaciones se distribuyen por separado y comparten dominio,
+carga de reglas, construcción legal y capa de interfaz.
+
+## Aplicaciones
+
+| App | Paquete | Entry point | Descripción |
+| --- | --- | --- | --- |
+| Combat Lab | `mordheim_combat_lab` | `mordheim-combat-lab` | Simulador de duelos 1 contra 1 con motor modular (oráculo) y motor vectorizado (análisis), verificación semántica, paridad y benchmark. |
+| Campaign Manager | `mordheim_campaign` | `mordheim-campaign-manager` | Prototipo GUI *campaign-timeline-first*: estados inmutables de banda, batallas y secuencia post-batalla (datos demo; la integración real con la KB llega después). |
+
+## Paquetes compartidos
+
+```text
+mordheim_core          tipos puros, dados inyectables, composición de efectos
+mordheim_knowledge     carga y validación de la KB (sources/knowledge), rutas de recursos
+mordheim_construction  compilación de perfiles y legalidad de equipo/elecciones
+mordheim_combat        fases, motor modular (oráculo), motor vectorizado, kernel, backend nativo
+mordheim_ui            tema Tkinter compartido y widgets genéricos
+```
+
+La base de conocimiento vive una sola vez en `sources/knowledge/` (371 YAMLs:
+bandas, catálogos, mecánicas y registro). El corpus de verificación —contrato
+estructural y escenarios semánticos— es material de test y vive en `tests/specs/`.
 
 ## Empezar
 
@@ -8,53 +32,62 @@ Requiere Python 3.10 o posterior.
 
 ```powershell
 python -m pip install -e ".[dev]"
-python -m mordheim_combat_lab
 ```
 
+### Combat Lab
+
 ```powershell
-python -m mordheim_combat_lab ui
+python -m mordheim_combat_lab
 python -m mordheim_combat_lab validate
 python -m mordheim_combat_lab verify
 python -m mordheim_combat_lab parity --require-complete
-python -m mordheim_combat_lab parity --statistical --statistical-simulations 100000 --require-complete --output outputs/parity/report.json
 python -m mordheim_combat_lab test-report
 python -m mordheim_combat_lab audit
 python -m mordheim_combat_lab benchmark -n 100000
-python -m mordheim_combat_lab benchmark -n 100000 --backend numpy --save-baseline outputs/benchmarks/numpy-baseline.json
 python -m pytest -q
 ```
 
-`validate` comprueba estructura y conexiones. `verify` ejecuta evidencia semántica independiente; `verify --require-complete` es la puerta estricta. `audit` genera en `outputs/audit/` un CSV con scope, implementación y evidencia por regla. El informe ejecutable, no una cifra copiada aquí, es la fuente del estado actual.
+`validate` comprueba estructura y conexiones (incluido el contrato de
+`tests/tests/specs/structural/phase-verification.yaml`). `verify` ejecuta evidencia
+semántica independiente; `verify --require-complete` es la puerta estricta.
+`audit` genera el CSV de estado por regla en `outputs/audit/`. El informe
+ejecutable, no una cifra copiada aquí, es la fuente del estado actual.
 
-`parity` certifica separadamente el motor vectorizado contra el modular: inventaría campos,
-etiquetas y secuencias, ejecuta operadores exactos y, opcionalmente, cinco comparaciones
-estadísticas. `benchmark` mide por separado el motor modular, el vectorizado (NumPy) y el
-backend nativo, con calentamiento, repeticiones y mediana; acepta `--json`, `--scenario` y
-`--backend` para limitarlo a un motor. Si el backend nativo no está instalado o no admite un
-escenario, se informa como no disponible sin ocultar los resultados de los otros motores.
-Los informes pueden guardarse con `--output` o `--save-baseline`. Una ejecución posterior con
-`--baseline ... --require-improvement` exige por defecto una mejora mínima del 10 % en algún
-escenario y rechaza regresiones superiores al 5 % en cualquier escenario comparable.
-Una muestra estadística inferior a dos millones por motor se etiqueta como diagnóstico, no como
-certificación. El informe puede guardarse como JSON o Markdown mediante `--output`.
+`parity` certifica el motor vectorizado contra el modular. `benchmark` mide
+motores con líneas base y puertas de mejora/regresión. `test-report` escribe
+los CSV humanos de paridad y tests técnicos en `outputs/test-report/`.
 
-`test-report` es la salida humana recomendada. Ejecuta la paridad semántica y la suite
-técnica y escribe `semantic-parity.csv` y `technical-tests.csv` en
-`outputs/test-report/`. Ambos usan UTF-8 con BOM y separador `;` para Excel. Añada
-`--statistical` para incorporar los cinco escenarios agregados y `--require-complete`
-para tratar adaptadores o backends pendientes como error. Consulte
-[la guía de reportes](docs/tasks/generate-test-reports.md) para las columnas, estados,
-opciones y códigos de salida.
+### Campaign Manager
 
-## Mapa del proyecto
+```powershell
+mordheim-campaign-manager
+python -m mordheim_campaign
+```
 
-- `sources/knowledge/`: reglas y datos consumidos por el runtime.
-- `specs/`: contrato estructural, escenarios e interacciones de verificación.
-- `domain/`: tipos y composición pura; `knowledge/` y `construction/`: carga y compilación.
-- `combat/`: fases, motor modular y motor vectorizado.
-- `verification/`: auditorías fuera del runtime de la UI.
-- `application/`, `persistence/` y `ui/`: casos de uso, formatos y Tkinter.
-- `archive/`: código histórico no mantenido ni empaquetado.
+El prototipo es *interface-first*: consume view-models demo a través de
+`AppController` y no lee la KB todavía. Véase
+[la guía del manager](docs/campaign-manager.md) y
+[su dirección de arquitectura](docs/campaign-architecture.md).
+
+## Mapa del repositorio
+
+```text
+sources/knowledge/        KB única canónica consumida por el runtime
+src/
+  mordheim_core/          dominio compartido (sin YAML, sin UI, sin motores)
+  mordheim_knowledge/     loaders + validadores + rutas de la KB
+  mordheim_construction/  CompiledFighter y legalidad
+  mordheim_combat/        fases y motores (modular y vectorizado)
+  mordheim_ui/            tema y widgets Tk compartidos
+  mordheim_combat_lab/    app 1: cli, ui, application, persistence, verification
+  mordheim_campaign/      app 2: shell, views, moments, dialogs
+tests/
+  specs/                  contrato estructural + escenarios semánticos (corpus de verificación)
+  architecture/           límites entre paquetes, ejecutables
+docs/                     arquitectura y guías de tareas
+tools/windows/            builds PyInstaller (dos EXE independientes)
+archive/                  código histórico no mantenido ni empaquetado
+```
 
 Consulte [la arquitectura](docs/architecture.md) y [las guías de tareas](docs/README.md).
 
@@ -62,6 +95,8 @@ Consulte [la arquitectura](docs/architecture.md) y [las guías de tareas](docs/R
 
 ```powershell
 tools\windows\build_MordheimCombatLab_ONEFILE.bat
+tools\windows\build_MordheimCampaignManager.bat
 ```
 
-Incluye la aplicación activa y `sources/knowledge/`, pero no `specs/` ni `archive/`.
+Cada build genera un EXE independiente que incluye la aplicación y la KB
+compartida (`sources/knowledge/`), y ninguno incluye `tests/` ni `archive/`.

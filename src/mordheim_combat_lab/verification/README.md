@@ -1,6 +1,6 @@
 # Verification
 
-Ejecuta `specs/` contra el motor modular real y queda fuera de la UI. `audit_export.py` combina, sin modificar sus fuentes, el inventario editorial, el scope y la evidencia ejecutada para producir un CSV. Véase [Verificar reglas](../../../docs/tasks/verify-rules.md).
+Ejecuta `tests/specs/` contra el motor modular real y queda fuera de la UI. `audit_export.py` combina, sin modificar sus fuentes, el inventario editorial, el scope y la evidencia ejecutada para producir un CSV. Véase [Verificar reglas](../../../docs/tasks/verify-rules.md).
 
 `equipment_choices` permite probar equipo, `main_poison_id`, `off_poison_id` y
 `preparation_ids` mediante el compilador real. Los escenarios de prohibiciones por

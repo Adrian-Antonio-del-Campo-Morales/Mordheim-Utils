@@ -74,7 +74,7 @@ Para información de bandas y perfiles, usar los cargadores existentes. Nunca
 reconstruir rutas a mano desde la GUI:
 
 ```python
-from mordheim_combat_lab.knowledge.loader import load_bands
+from mordheim_knowledge.loader import load_bands
 
 packages = load_bands("mordheim")
 package = next(row for row in packages if row.band["id"] == "pit-fighters")

@@ -4,7 +4,7 @@
 
 El bloque `runtime` se valida contra `registry/runtime-schema.yaml`. `scope` indica si el efecto pertenece al duelo; `implemented` si tiene implementación; `grant` cómo se concede. Una ausencia de clasificación no significa fuera de alcance.
 
-La KB no contiene evidencia de corrección. El contrato estructural y los escenarios semánticos viven en `specs/`, para que el runtime no dependa de sus propias pruebas. Consulte [Modificar la KB](../../docs/tasks/modify-kb.md) y [Verificar reglas](../../docs/tasks/verify-rules.md).
+La KB no contiene evidencia de corrección. El contrato estructural y los escenarios semánticos viven en `tests/specs/`, para que el runtime no dependa de sus propias pruebas. Consulte [Modificar la KB](../../docs/tasks/modify-kb.md) y [Verificar reglas](../../docs/tasks/verify-rules.md).
 
 ```powershell
 python -m mordheim_combat_lab validate

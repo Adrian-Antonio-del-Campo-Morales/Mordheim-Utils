@@ -35,7 +35,7 @@ haya existido una pregunta o una decisión adicional. Las antiguas explicaciones
 exportadas como `ruling` se conservan ahora en `interpretation`.
 
 Estos datos se editan en la especificación YAML correspondiente dentro de
-`specs/semantic/`, **nunca manualmente en el CSV generado**. El estado se calcula;
+`tests/tests/specs/semantic/`, **nunca manualmente en el CSV generado**. El estado se calcula;
 no se escribe `review_status` en YAML. Ejemplo real resuelto:
 
 ```yaml
@@ -52,15 +52,15 @@ Cuando se resuelva, conserve `question`, añada `ruling` y retire o actualice
 que actualizar y ejecutar los escenarios, sus dependencias y mutaciones.
 Si la fuente cambia, la huella invalidará la evidencia anterior como hasta ahora.
 
-Véase `specs/semantic/grants/editorial-hochland-swordmaster.yaml` para una pregunta
-resuelta, y `specs/semantic/rules/contextual-bonuses-and-rulings.yaml` para preguntas
+Véase `tests/specs/semantic/grants/editorial-hochland-swordmaster.yaml` para una pregunta
+resuelta, y `tests/specs/semantic/rules/contextual-bonuses-and-rulings.yaml` para preguntas
 pendientes. No se reconstruye automáticamente un historial de decisiones que
 no se haya documentado; se incorpora al revisar cada especificación.
 
 ## Procedimiento
 
 1. Consulte `python -m mordheim_combat_lab verify --inventory`.
-2. Añada en `specs/semantic/` fuente, interpretación, categoría, casos, interacción y huellas revisadas.
+2. Añada en `tests/tests/specs/semantic/` fuente, interpretación, categoría, casos, interacción y huellas revisadas.
 3. Cubra activación, no activación, límites y consumo; use mini-secuencias solo para estado o flujo.
 4. Declare dados y decisiones exactos; use fracciones para distribuciones.
 5. Añada una mutación detectada por comportamiento, no solo por el mismo campo compilado.
@@ -70,7 +70,7 @@ Si falta un ruling, marque pendiente. Terminado cuando la obligación, dependenc
 
 Para restricciones de equipo, `equipment_choices` ejecuta el compilador real para cada construcción de
 `context.choices` y devuelve `result.accepted` y `result.rejected` (con el motivo exacto).
-No calcula por sí mismo la legalidad. Véase `specs/semantic/grants/editorial-savage-equipment.yaml`:
+No calcula por sí mismo la legalidad. Véase `tests/specs/semantic/grants/editorial-savage-equipment.yaml`:
 comprueba armas legales, armaduras prohibidas y el perfil vecino sin la restricción.
 Una prueba de prohibición no debe pasar simplemente porque el objeto no está en la lista del guerrero.
 La mutación aislada `suppress-bound-equipment-restrictions` desactiva solo ese control y lo restaura al salir.
@@ -79,15 +79,15 @@ Para elecciones de habilidades, reglas especiales, variantes y `energy_focus_att
 use `selection_choices`. Devuelve las listas de opciones aceptadas y los motivos exactos
 de rechazo tras llamar al compilador real; no decide la legalidad por su cuenta.
 El caso debe partir de una construcción válida y declarar las selecciones alternativas
-en `context.choices`. Véase `specs/semantic/grants/editorial-required-initial-choices.yaml`:
+en `context.choices`. Véase `tests/specs/semantic/grants/editorial-required-initial-choices.yaml`:
 prueba cero, una y dos elecciones y elimina temporalmente el requisito con
 `suppress-required-initial-choices` para demostrar que la prueba detecta su ausencia.
 
 Distinga una fuente ambigua de una limitación de implementación al escribir `pending`.
 Una regla que también prohíbe adquirir mejoras después del reclutamiento no queda
 verificada por comprobar solamente su cantidad inicial. Los ficheros
-`specs/semantic/grants/editorial-recruitment-and-magic-gaps.yaml` y
-`specs/semantic/rules/construction-verification-gaps.yaml` documentan esos pendientes;
+`tests/specs/semantic/grants/editorial-recruitment-and-magic-gaps.yaml` y
+`tests/specs/semantic/rules/construction-verification-gaps.yaml` documentan esos pendientes;
 no aportan evidencia aprobada ni requieren todos una decisión del usuario.
 
 ## Riesgo y prioridad de interacciones
@@ -100,7 +100,7 @@ La auditoría separa el riesgo técnico de la exigencia actual:
 | `verification_requirement` | `required`, `recommended`, `optional`, `not_applicable` |
 | `interaction_status` | `tested`, `covered_by_composition`, `independent`, `illegal`, `pending`, `needs_ruling` |
 
-La política está en `specs/interaction-policy.yaml`. Por defecto, `critical` y
+La política está en `tests/specs/interaction-policy.yaml`. Por defecto, `critical` y
 `high` son `required`, `medium` es `recommended` y `low` es `optional`. Solo las
 interacciones requeridas sin resolver bloquean `semantic_complete`; las demás
 siguen visibles para ampliar la cobertura más adelante.
