@@ -1,0 +1,65 @@
+schema_version: 1
+ruleset: mordheim
+catalog: campaign-serious-injuries
+status: draft
+# Define resultados posibles de la tabla. Lesiones sufridas y tiradas realizadas
+# pertenecen al estado persistente de una campaña, fuera de la KB.
+tables: []
+examples:
+- id: example.serious-injury.hero
+  applies_to: hero
+  roll: '11-15'
+  result: Example lasting scar
+  resolution:
+    type: direct
+  effects:
+  - type: warrior.characteristic_modifier
+    characteristic: leadership
+    modifier: -1
+  source_refs: []
+  note: Fictitious structure example; not a Mordheim injury result.
+- id: example.serious-injury.hero.secondary-roll
+  applies_to: hero
+  roll: '16'
+  result: Example secondary injury
+  resolution:
+    type: roll_table
+    dice:
+      count: 1
+      sides: 6
+    branches:
+    - id: campaign.serious-injury.example.secondary-roll.severe
+      when:
+        min: 1
+        max: 1
+      effects:
+      - type: warrior.equipment_limit
+        maximum_one_handed_weapons: 1
+    - id: campaign.serious-injury.example.secondary-roll.light
+      when:
+        min: 2
+        max: 6
+      effects:
+      - type: warrior.miss_games
+        games:
+          kind: fixed
+          value: 1
+  source_refs: []
+  note: Fictitious structure example; not a Mordheim injury result.
+# Cada resultado usa resolution y effects. resolution puede ser direct,
+# roll_table o repeat_table. roll_table declara dice y branches; cada rama tiene
+# id, when (min/max inclusivos) y effects. Así modela resultados secundarios y
+# repeticiones sin convertir una tirada concreta en dato de la KB. effects es una lista
+# ordenada de operaciones declarativas. Tipos inicialmente admitidos:
+# - warrior.characteristic_modifier, warrior.add_condition,
+#   warrior.miss_games, warrior.battle_start_check y warrior.equipment_limit
+# - roster.remove_warrior, equipment.disposition y prisoner.create
+# - relationship.add_hatred, encounter.trigger y reward.grant
+# Cada tipo declara únicamente sus parámetros pertinentes. No guardar aquí el
+# guerrero afectado, la tirada obtenida ni el resultado aplicado: eso es estado
+# de campaña externo. Las reglas de banda que cambien una tirada referenciarán
+# el effect_id publicado aquí.
+effect_ids:
+- campaign.serious-injury.roll
+- campaign.serious-injury.modify-roll
+- campaign.serious-injury.resolve-result

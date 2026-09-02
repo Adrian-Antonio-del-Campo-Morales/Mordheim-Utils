@@ -1,0 +1,40 @@
+schema_version: 1
+specifications:
+- id: streets-troll-slayer-combined-skill-options
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/trollheim/chaos-streets-pit-fighters/dwarf-troll-slayer--slayer-skill-options/compiler.slayer-skill-options, digest: cd9867284e50ba7cbd0f4d81d025555a4e9ecba86c3519293382f2c81765b2e0}
+  interpretation: El Dwarf Troll Slayer puede elegir habilidades especiales de Dwarf Treasure Hunters, Pit Fighters y Troll Slayers; las tres listas se unen sin sustituirse entre sí.
+  cases:
+  - id: exact-combined-access
+    roles: [grant, accepted]
+    operation: special_rule_access
+    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: dwarf-troll-slayer}
+    expect:
+      result.rules:
+      - band--dwarf-special-skills-master-of-blades
+      - band--dwarf-special-skills-thick-skull
+      - band--dwarf-special-skills-true-grit
+      - band--pit-fighter-skill-arms-master
+      - band--pit-fighter-skill-body-slam
+      - band--pit-fighter-skill-bulging-biceps
+      - band--pit-fighter-skill-force-of-will
+      - band--slayer-special-skills-berserker
+      - band--slayer-special-skills-ferocious-charge
+      - band--slayer-special-skills-monster-slayer
+      - band--troll-slayer-special-skills-berserker
+      - band--troll-slayer-special-skills-ferocious-charge
+      - band--troll-slayer-special-skills-monster-slayer
+  - id: dwarf-option-compiles
+    roles: [compiled]
+    operation: compile
+    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--dwarf-special-skills-thick-skull]}
+    expect: {attacker.global_effects.thick_skull: true}
+  - id: ordinary-pit-fighter-control
+    roles: [rejected]
+    operation: compile
+    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: pit-fighters, special_rule_ids: [band--dwarf-special-skills-thick-skull]}
+    reject: special rule is not available
+  mutations:
+  - {id: remove-combined-access, runtime_fault: suppress-special-rule-access, cases: [exact-combined-access]}

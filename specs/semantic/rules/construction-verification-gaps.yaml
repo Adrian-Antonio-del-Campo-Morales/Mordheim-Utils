@@ -1,0 +1,265 @@
+schema_version: 1
+specifications:
+- id: clarified-body-armours
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: mechanic/armour.plate-armour, digest: 0e182a042a055fc5b0b7ed4b7b6034d2b2bb03c564145e98bca2ea405fba755d}
+  - {target: mechanic/armour.wizard-s-robe, digest: 88c73290f4bfb092f9e004f69c573052316157f1ae3fd06bdc8eadee701c0f08}
+  - {target: mechanic/armour.ninja-robes, digest: 4d46f2794bcbe9727a2bbebabd1a4e95541fb4f2838c8edf4a40e93a3eed4200}
+  - {target: mechanic/armour.eshin-assassin-robes, digest: 67d8574442696fad90b23ed444b8412e6a10454685bc37728c99b4147369347d}
+  ruling: Plate Armour salva a 4+; Wizard's Robe y Eshin Assassin Robes salvan a 6+ y solo combinan con casco; Ninja Robes cuenta como Toughened Leathers.
+  interpretation: Las cuatro armaduras ocupan el slot corporal. Plate Armour puede combinar con escudo; su penalización de Movimiento queda fuera del duelo. Wizard's y Eshin no combinan con escudos. Ninja tampoco combina con escudo, igual que Toughened Leathers.
+  cases:
+  - id: plate-four-plus
+    roles: [grant, active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {armour_id: armour.plate-armour}
+    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/2, 'false': 1/2}}
+  - id: plate-and-shield
+    roles: [compiled, accepted]
+    operation: compile
+    defender: {armour_id: armour.plate-armour, off_hand_id: defence.shield}
+    expect: {defender.armour_save: 3}
+  - id: wizard-six-plus
+    roles: [active, consumer]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {armour_id: armour.wizard-s-robe}
+    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/6, 'false': 5/6}}
+  - id: wizard-helmet-allowed
+    roles: [compiled, accepted]
+    operation: compile
+    defender: {armour_id: armour.wizard-s-robe, defence_ids: [defence.helmet]}
+    expect: {defender.armour_save: 6, defender.helmet_save: 4}
+  - id: wizard-shield-rejected
+    roles: [rejected]
+    operation: compile
+    defender: {armour_id: armour.wizard-s-robe, off_hand_id: defence.shield}
+    reject: cannot be combined with other armour except a helmet
+  - id: ninja-six-plus
+    roles: [active, consumer]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {armour_id: armour.ninja-robes}
+    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/6, 'false': 5/6}}
+  - id: ninja-shield-rejected
+    roles: [rejected]
+    operation: compile
+    defender: {armour_id: armour.ninja-robes, off_hand_id: defence.shield}
+    reject: toughened leathers cannot be combined with a shield
+  - id: eshin-six-plus
+    roles: [active, consumer]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {armour_id: armour.eshin-assassin-robes}
+    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/6, 'false': 5/6}}
+  - id: eshin-shield-rejected
+    roles: [rejected]
+    operation: compile
+    defender: {armour_id: armour.eshin-assassin-robes, off_hand_id: defence.shield}
+    reject: cannot be combined with other armour except a helmet
+  - id: no-armour-control
+    roles: [inactive]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {}
+    expect: {result.eligible: false}
+  mutations:
+  - {id: remove-plate-save, path: defender.armour_save, value: 7, cases: [plate-four-plus]}
+  - {id: remove-wizard-save, path: defender.armour_save, value: 7, cases: [wizard-six-plus]}
+  - {id: remove-ninja-save, path: defender.armour_save, value: 7, cases: [ninja-six-plus]}
+  - {id: remove-eshin-save, path: defender.armour_save, value: 7, cases: [eshin-six-plus]}
+- id: quilted-silk-overlay-composition
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: mechanic/armour.cathayan-quilted-silk, digest: 51bd12df6db08a839173e02f3325fa8c36cf402a0006c33db5da1ab483ff6593}
+  interpretation: Cathayan Quilted Silk ocupa un overlay en defence_ids y mejora en un punto cualquier armadura corporal; no sustituye armour_id.
+  cases:
+  - id: no-body-armour
+    roles: [compiled]
+    operation: compile
+    attacker: {defence_ids: [armour.cathayan-quilted-silk]}
+    expect: {attacker.armour_save: 6}
+  - id: light-armour-combination
+    roles: [active, consumer, boundary, accepted, grant]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {armour_id: armour.light-armour, defence_ids: [armour.cathayan-quilted-silk]}
+    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/3, 'false': 2/3}}
+  - id: cannot-use-body-slot
+    roles: [rejected]
+    operation: compile
+    attacker: {armour_id: armour.cathayan-quilted-silk}
+    reject: Cathayan quilted silk is an armour overlay
+  mutations:
+  - {id: remove-silk-bonus, path: defender.armour_save, value: 7, cases: [light-armour-combination]}
+- id: sea-dragon-cloak-close-combat
+  question: "¿Cómo se calcula Sea Dragon Cloak y con qué protecciones puede combinarse?"
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: mechanic/defence.sea-dragon-cloak, digest: a098b201476d545c88a16e9509c8a3931100e9dd4cf7d3c5d9b19ce029c62a41}
+  ruling: Sea Dragon Cloak salva a 5+ en combate y a 4+ contra disparos, y no puede combinarse con otras armaduras.
+  interpretation: El runtime de duelo verifica el 5+ en combate y rechaza armadura corporal, escudos y cascos. La rama de disparo queda fuera del alcance actual.
+  cases:
+  - id: close-combat-five-plus
+    roles: [grant, compiled, active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {defence_ids: [defence.sea-dragon-cloak]}
+    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/3, 'false': 2/3}}
+  - id: body-armour-rejected
+    roles: [rejected]
+    operation: compile
+    defender: {armour_id: armour.light-armour, defence_ids: [defence.sea-dragon-cloak]}
+    reject: Sea Dragon cloak cannot be combined with other armour
+  - id: shield-rejected
+    roles: [rejected]
+    operation: compile
+    defender: {off_hand_id: defence.shield, defence_ids: [defence.sea-dragon-cloak]}
+    reject: Sea Dragon cloak cannot be combined with other armour
+  - id: helmet-rejected
+    roles: [rejected]
+    operation: compile
+    defender: {defence_ids: [defence.sea-dragon-cloak, defence.helmet]}
+    reject: Sea Dragon cloak cannot be combined with other armour
+  - id: no-cloak-control
+    roles: [inactive]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {}
+    expect: {result.eligible: false}
+  mutations:
+  - {id: remove-cloak-save, path: defender.armour_save, value: 7, cases: [close-combat-five-plus]}
+- id: kite-shield-mounted-context
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - {target: mechanic/defence.kite-shield, digest: fe300d6318729690f6d79dd26a0bbcc96b0ff8679d342ba85dd1f0a3a69ae2a9}
+  interpretation: Kite Shield mejora la salvación en dos puntos a pie y en uno si mounted es true; el compilador limita siempre la salvación final a 1+.
+  cases:
+  - id: compiled-on-foot
+    roles: [compiled]
+    operation: compile
+    defender: {off_hand_id: defence.kite-shield}
+    expect: {defender.armour_save: 5}
+  - id: on-foot
+    roles: [active, consumer]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {off_hand_id: defence.kite-shield}
+    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/3, 'false': 2/3}}
+  - id: mounted
+    roles: [context, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {off_hand_id: defence.kite-shield, mounted: true}
+    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/6, 'false': 5/6}}
+  - id: ordinary-shield-control
+    roles: [inactive]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {off_hand_id: defence.shield, mounted: true}
+    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/6, 'false': 5/6}}
+  mutations:
+  - {id: remove-kite-save, path: defender.armour_save, value: 7, cases: [on-foot, mounted]}
+- id: energy-focus-choice-convention-conflict
+  question: "¿Energy Focus conserva la elección de cuántos ataques sacrificar, o debe aplicarse la convención canónica de sacrificar todos menos uno?"
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - {target: mechanic/mechanic.energy-focus, digest: 25e2b717f02ca947169c3d82f597c2df384bfdd2be20ff1d1790932cc6130387}
+  - {target: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus, digest: 24d1098cd9a608f927a6b745776780a301d1ac6551da35f2a8f5a16c8d1eca9a}
+  ruling: Energy Focus permite seleccionar cualquier número de ataques, incluido cero o todos los ataques del perfil.
+  interpretation: >-
+    Battle Monks Special Skills / Energy Focus permite elegir cualquier cantidad
+    entre cero y los Ataques del perfil. Cada ataque sacrificado reduce A en uno
+    y concede +1 Fuerza mientras el monje lucha desarmado. La convención histórica
+    de conservar siempre un ataque era una simplificación y no forma parte del RAW.
+  cases:
+  - id: compiled-selection
+    roles: [compiled]
+    operation: compile
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      special_rule_ids: [band--battle-monks-special-skills-energy-focus]
+      energy_focus_attacks: 2
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 4, attacks: 4}
+    expect: {attacker.global_effects.energy_focus_attacks: 2}
+  - id: selectable-recipients
+    roles: [grant]
+    operation: selectable_grant
+    defender: {band_id: battle-monks-of-cathay, profile_id: dragon-monks}
+    context: {rule_id: band--battle-monks-special-skills-energy-focus}
+    expect: {result.recipients: [dragon-monks]}
+  - id: zero-attacks-sacrificed
+    roles: [inactive, boundary]
+    operation: attacks
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      special_rule_ids: [band--battle-monks-special-skills-energy-focus]
+      energy_focus_attacks: 0
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 4, attacks: 4}
+    expect: {result.attacks: 4}
+  - id: partial-sacrifice-attacks
+    roles: [active, consumer]
+    operation: attacks
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      special_rule_ids: [band--battle-monks-special-skills-energy-focus]
+      energy_focus_attacks: 2
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 4, attacks: 4}
+    expect: {result.attacks: 2}
+  - id: partial-sacrifice-strength
+    roles: [active, consumer]
+    operation: strength
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      special_rule_ids: [band--battle-monks-special-skills-energy-focus]
+      energy_focus_attacks: 2
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 4, attacks: 4}
+    expect: {result.wound: 5, result.armour: 5}
+  - id: sacrifice-all
+    roles: [active, boundary, consumer]
+    operation: attacks
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      special_rule_ids: [band--battle-monks-special-skills-energy-focus]
+      energy_focus_attacks: 4
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 4, attacks: 4}
+    expect: {result.attacks: 0}
+  - id: too-many-rejected
+    roles: [rejected, boundary]
+    operation: selection_choices
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      special_rule_ids: [band--battle-monks-special-skills-energy-focus]
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 4, attacks: 4}
+    context:
+      choices: {maximum: {energy_focus_attacks: 4}, excessive: {energy_focus_attacks: 5}}
+    expect:
+      result.accepted: [maximum]
+      result.rejected: {excessive: Energy Focus cannot sacrifice more Attacks than the profile has}
+  - id: armed-inactive
+    roles: [inactive]
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.energy-focus]
+      energy_focus_attacks: 2
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 4, attacks: 4}
+    expect: {result.wound: 3, result.armour: 3}
+  mutations:
+  - id: remove-selected-sacrifice
+    path: attacker.global_effects.energy_focus_attacks
+    value: 0
+    cases: [partial-sacrifice-attacks, partial-sacrifice-strength]

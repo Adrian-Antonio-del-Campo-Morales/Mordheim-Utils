@@ -1,0 +1,179 @@
+schema_version: 1
+specifications:
+- id: editorial-monster-slayer-dwarf-rangers
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/dwarf-rangers/band--slayer-special-skills-monster-slayer/skill.monster-slayer
+    digest: dbe423bf7a49fbb2f9f06dcb5471de9fbeac459eea939b7b4d3897f69043d940
+  depends_on: [mechanic/skill.monster-slayer]
+  interpretation: Only Slayers may choose this skill. It limits the wound threshold to 4+ without reducing naturally
+    easier thresholds. S3 against T6 therefore wounds on 4+, while S3 against T2 still wounds on 3+.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {band_id: dwarf-rangers, profile_id: dwarf-troll-slayers}
+    context: {rule_id: band--slayer-special-skills-monster-slayer}
+    expect: {result.recipients: [dwarf-troll-slayers]}
+  - id: tough-opponent-boundary
+    roles: [active, consumer, boundary]
+    operation: wound
+    attacker: {band_id: dwarf-rangers, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    defender:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 1, initiative: 3, attacks: 1}
+    rolls: [{key: wound, value: 4}]
+    expect: {result.target: 4, result.success: true}
+    expect_contains:
+      attacker.global_effects.tags: [skill.monster-slayer]
+  - id: tough-opponent-all-faces
+    roles: [boundary]
+    operation: wound
+    attacker: {band_id: dwarf-rangers, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    defender:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 1, initiative: 3, attacks: 1}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: easier-target-retained
+    roles: [inactive, boundary]
+    operation: wound
+    attacker: {band_id: dwarf-rangers, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    defender:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 3, attacks: 1}
+    rolls: [{key: wound, value: 3}]
+    expect: {result.target: 3, result.success: true}
+  - id: easier-target-all-faces
+    roles: [inactive, boundary]
+    operation: wound
+    attacker: {band_id: dwarf-rangers, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    defender:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 3, attacks: 1}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 2/3, 'false': 1/3}
+  mutations:
+  - id: remove-threshold-limit
+    path: attacker.global_effects.tags
+    value: []
+    cases: [tough-opponent-boundary, tough-opponent-all-faces]
+- id: editorial-monster-slayer-dwarf-treasure-hunters
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/dwarf-treasure-hunters/band--slayer-special-skills-monster-slayer/skill.monster-slayer
+    digest: b0a2b181d8bf4e435f83e441bcd14e16a7b1afc5a334ce2afafa59c08a8fb082
+  depends_on: [mechanic/skill.monster-slayer]
+  interpretation: Only Slayers may choose this skill. It limits the wound threshold to 4+ without reducing naturally
+    easier thresholds. S3 against T6 therefore wounds on 4+, while S3 against T2 still wounds on 3+.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {band_id: dwarf-treasure-hunters, profile_id: dwarf-troll-slayers}
+    context: {rule_id: band--slayer-special-skills-monster-slayer}
+    expect: {result.recipients: [dwarf-troll-slayers]}
+  - id: tough-opponent-boundary
+    roles: [active, consumer, boundary]
+    operation: wound
+    attacker: {band_id: dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    defender:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 1, initiative: 3, attacks: 1}
+    rolls: [{key: wound, value: 4}]
+    expect: {result.target: 4, result.success: true}
+    expect_contains:
+      attacker.global_effects.tags: [skill.monster-slayer]
+  - id: tough-opponent-all-faces
+    roles: [boundary]
+    operation: wound
+    attacker: {band_id: dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    defender:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 1, initiative: 3, attacks: 1}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: easier-target-retained
+    roles: [inactive, boundary]
+    operation: wound
+    attacker: {band_id: dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    defender:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 3, attacks: 1}
+    rolls: [{key: wound, value: 3}]
+    expect: {result.target: 3, result.success: true}
+  - id: easier-target-all-faces
+    roles: [inactive, boundary]
+    operation: wound
+    attacker: {band_id: dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    defender:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 3, attacks: 1}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 2/3, 'false': 1/3}
+  mutations:
+  - id: remove-threshold-limit
+    path: attacker.global_effects.tags
+    value: []
+    cases: [tough-opponent-boundary, tough-opponent-all-faces]
+- id: editorial-monster-slayer-pit-fighters
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/pit-fighters/band--troll-slayer-special-skills-monster-slayer/skill.monster-slayer
+    digest: e132bce99dfd71251b725eadc9079a138d4c170bbfddc7b696c5178c31fc5224
+  depends_on: [mechanic/skill.monster-slayer]
+  interpretation: Only Slayers may choose this skill. It limits the wound threshold to 4+ without reducing naturally
+    easier thresholds. S3 against T6 therefore wounds on 4+, while S3 against T2 still wounds on 3+.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {band_id: pit-fighters, profile_id: dwarf-troll-slayer}
+    context: {rule_id: band--troll-slayer-special-skills-monster-slayer}
+    expect: {result.recipients: [dwarf-troll-slayer]}
+  - id: tough-opponent-boundary
+    roles: [active, consumer, boundary]
+    operation: wound
+    attacker: {band_id: pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    defender:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 1, initiative: 3, attacks: 1}
+    rolls: [{key: wound, value: 4}]
+    expect: {result.target: 4, result.success: true}
+    expect_contains:
+      attacker.global_effects.tags: [skill.monster-slayer]
+  - id: tough-opponent-all-faces
+    roles: [boundary]
+    operation: wound
+    attacker: {band_id: pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    defender:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 1, initiative: 3, attacks: 1}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: easier-target-retained
+    roles: [inactive, boundary]
+    operation: wound
+    attacker: {band_id: pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    defender:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 3, attacks: 1}
+    rolls: [{key: wound, value: 3}]
+    expect: {result.target: 3, result.success: true}
+  - id: easier-target-all-faces
+    roles: [inactive, boundary]
+    operation: wound
+    attacker: {band_id: pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    defender:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 3, attacks: 1}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 2/3, 'false': 1/3}
+  mutations:
+  - id: remove-threshold-limit
+    path: attacker.global_effects.tags
+    value: []
+    cases: [tough-opponent-boundary, tough-opponent-all-faces]

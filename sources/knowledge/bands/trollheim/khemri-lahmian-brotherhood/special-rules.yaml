@@ -1,0 +1,958 @@
+schema_version: 2
+band_id: khemri-lahmian-brotherhood
+rules:
+- id: lahmian-vampire--leader
+  name: Leader
+  effect: Any warband model within 6" of the Lahmian Vampire may use her Leadership instead of its own.
+  source:
+    manual: khemri
+    printed_page: 86
+    section: Heroes / 1 Lahmian Vampire / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Lahmian Vampire may use her Leadership instead of its own.
+    es: null
+  applies_to:
+    profile_ids:
+    - lahmian-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.lahmian-vampire.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: lahmian-vampire--undead
+  name: Undead
+  effect: The Lahmian Vampire is Undead and is subject to the warband's Undead special rules, except where the source explicitly
+    exempts Vampires.
+  source:
+    manual: khemri
+    printed_page: 86
+    section: Heroes / 1 Lahmian Vampire / Undead
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: The Lahmian Vampire is Undead and is subject to the warband's Undead special rules, except where the source explicitly
+      exempts Vampires.
+    es: null
+  applies_to:
+    profile_ids:
+    - lahmian-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.lahmian-vampire.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: lahmian-vampire--local-knowledge
+  name: Local Knowledge
+  effect: Native warbands only, and only in a Khemri campaign. During Exploration, if the Lahmian Vampire was not taken Out
+    of Action, the warband may re-roll one Exploration die and must keep the second result.
+  source:
+    manual: khemri
+    printed_page: 86
+    section: Heroes / 1 Lahmian Vampire / Local Knowledge
+  name_i18n:
+    en: Local Knowledge
+    es: null
+  effect_i18n:
+    en: Native warbands only, and only in a Khemri campaign. During Exploration, if the Lahmian Vampire was not taken Out
+      of Action, the warband may re-roll one Exploration die and must keep the second result.
+    es: null
+  applies_to:
+    profile_ids:
+    - lahmian-vampire
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.lahmian-vampire.local-knowledge
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: necromancer--wizard
+  name: Wizard
+  effect: The Necromancer is a Wizard and begins with one Necromancy spell. The spell list and spell effects are intentionally
+    not modelled in this file.
+  source:
+    manual: khemri
+    printed_page: 86
+    section: Heroes / 0-1 Necromancer / Wizard
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Necromancer is a Wizard and begins with one Necromancy spell. The spell list and spell effects are intentionally
+      not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - necromancer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.necromancer.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: beloved--devoted-to-the-vampire
+  name: Devoted to the Vampire
+  effect: If the Lahmian Vampire is Knocked Down in close combat, the Beloved enters Frenzy until the Vampire stands up. He
+    must move toward her as quickly as possible and attacks anyone within 2" of the Vampire. If the Vampire is killed in close
+    combat, the Beloved enters Frenzy and is subject to Hatred against her killer until that model dies; after the killer
+    dies, the Beloved returns to normal.
+  source:
+    manual: khemri
+    printed_page: 86
+    section: Heroes / 0-1 Beloved / Devoted to the Vampire
+  name_i18n:
+    en: Devoted to the Vampire
+    es: null
+  effect_i18n:
+    en: If the Lahmian Vampire is Knocked Down in close combat, the Beloved enters Frenzy until the Vampire stands up. He
+      must move toward her as quickly as possible and attacks anyone within 2" of the Vampire. If the Vampire is killed in
+      close combat, the Beloved enters Frenzy and is subject to Hatred against her killer until that model dies; after the
+      killer dies, the Beloved returns to normal.
+    es: null
+  applies_to:
+    profile_ids:
+    - beloved
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.beloved.devoted-to-the-vampire
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: beloved--accustomed-to-fear
+  name: Accustomed to Fear
+  effect: The Beloved is immune to Fear caused by Vampires, Skeletons and Spirits.
+  source:
+    manual: khemri
+    printed_page: 86
+    section: Heroes / 0-1 Beloved / Accustomed to Fear
+  name_i18n:
+    en: Accustomed to Fear
+    es: null
+  effect_i18n:
+    en: The Beloved is immune to Fear caused by Vampires, Skeletons and Spirits.
+    es: null
+  applies_to:
+    profile_ids:
+    - beloved
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.beloved.accustomed-to-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: blood-sister--accustomed-to-fear
+  name: Accustomed to Fear
+  effect: The Blood Sister is immune to Fear caused by Vampires, Skeletons and Spirits.
+  source:
+    manual: khemri
+    printed_page: 87
+    section: Heroes / 0-1 Blood Sister / Accustomed to Fear
+  name_i18n:
+    en: Accustomed to Fear
+    es: null
+  effect_i18n:
+    en: The Blood Sister is immune to Fear caused by Vampires, Skeletons and Spirits.
+    es: null
+  applies_to:
+    profile_ids:
+    - blood-sister
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.blood-sister.accustomed-to-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: blood-sister--semi-vampire
+  name: Semi-Vampire
+  effect: If the Lahmian Vampire dies, on the Blood Sister's next advance roll D6 instead of rolling for a normal advance.
+    On 4+ she becomes a Vampire for all purposes while retaining all Experience and skills gained before the transformation.
+    This roll replaces that advance. If she transforms, the warband may recruit a new Blood Sister.
+  source:
+    manual: khemri
+    printed_page: 87
+    section: Heroes / 0-1 Blood Sister / Semi-Vampire
+  name_i18n:
+    en: Semi-Vampire
+    es: null
+  effect_i18n:
+    en: If the Lahmian Vampire dies, on the Blood Sister's next advance roll D6 instead of rolling for a normal advance. On
+      4+ she becomes a Vampire for all purposes while retaining all Experience and skills gained before the transformation.
+      This roll replaces that advance. If she transforms, the warband may recruit a new Blood Sister.
+    es: null
+  applies_to:
+    profile_ids:
+    - blood-sister
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.blood-sister.semi-vampire
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: lackeys--accustomed-to-fear
+  name: Accustomed to Fear
+  effect: Lackeys are immune to Fear caused by Vampires, Skeletons and Spirits.
+  source:
+    manual: khemri
+    printed_page: 87
+    section: Heroes / 0-2 Lackeys / Accustomed to Fear
+  name_i18n:
+    en: Accustomed to Fear
+    es: null
+  effect_i18n:
+    en: Lackeys are immune to Fear caused by Vampires, Skeletons and Spirits.
+    es: null
+  applies_to:
+    profile_ids:
+    - lackeys
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.lackeys.accustomed-to-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: lackeys--devoted-to-the-vampire
+  name: Devoted to the Vampire
+  effect: If the Lahmian Vampire is Knocked Down in close combat, the Lackey enters Frenzy until the Vampire stands up. He
+    must move toward her as quickly as possible and attacks anyone within 2" of the Vampire. If the Vampire is killed in close
+    combat, the Lackey enters Frenzy and is subject to Hatred against her killer until that model dies; after the killer dies,
+    the Lackey returns to normal.
+  source:
+    manual: khemri
+    printed_page: 87
+    section: Heroes / 0-2 Lackeys / Devoted to the Vampire
+  name_i18n:
+    en: Devoted to the Vampire
+    es: null
+  effect_i18n:
+    en: If the Lahmian Vampire is Knocked Down in close combat, the Lackey enters Frenzy until the Vampire stands up. He must
+      move toward her as quickly as possible and attacks anyone within 2" of the Vampire. If the Vampire is killed in close
+      combat, the Lackey enters Frenzy and is subject to Hatred against her killer until that model dies; after the killer
+      dies, the Lackey returns to normal.
+    es: null
+  applies_to:
+    profile_ids:
+    - lackeys
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.lackeys.devoted-to-the-vampire
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: lackeys--favoured
+  name: Favoured
+  effect: If the Beloved dies, the Lahmian Vampire may give the Blood Kiss to one Lackey. That warrior becomes a Beloved for
+    roster purposes, increases Leadership to 8, and the warband may recruit another Lackey. Granting the Blood Kiss counts
+    as one advance roll.
+  source:
+    manual: khemri
+    printed_page: 87
+    section: Heroes / 0-2 Lackeys / Favoured
+  name_i18n:
+    en: Favoured
+    es: null
+  effect_i18n:
+    en: If the Beloved dies, the Lahmian Vampire may give the Blood Kiss to one Lackey. That warrior becomes a Beloved for
+      roster purposes, increases Leadership to 8, and the warband may recruit another Lackey. Granting the Blood Kiss counts
+      as one advance roll.
+    es: null
+  applies_to:
+    profile_ids:
+    - lackeys
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.lackeys.favoured
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: skeleton-warriors--undead
+  name: Undead
+  effect: Skeleton Warriors are Undead and are subject to the warband's Undead special rules.
+  source:
+    manual: khemri
+    printed_page: 88
+    section: Henchmen / Skeleton Warriors / Undead
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: Skeleton Warriors are Undead and are subject to the warband's Undead special rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - skeleton-warriors
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.skeleton-warriors.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: blood-slaves--accustomed-to-fear
+  name: Accustomed to Fear
+  effect: Blood Slaves are immune to Fear caused by Vampires, Skeletons and Spirits.
+  source:
+    manual: khemri
+    printed_page: 88
+    section: Henchmen / 0-5 Blood Slaves / Accustomed to Fear
+  name_i18n:
+    en: Accustomed to Fear
+    es: null
+  effect_i18n:
+    en: Blood Slaves are immune to Fear caused by Vampires, Skeletons and Spirits.
+    es: null
+  applies_to:
+    profile_ids:
+    - blood-slaves
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.blood-slaves.accustomed-to-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: black-hounds--fear
+  name: Fear
+  effect: Black Hounds cause Fear.
+  source:
+    manual: khemri
+    printed_page: 88
+    section: Henchmen / 0-5 Black Hounds / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: Black Hounds cause Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - black-hounds
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.black-hounds.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: black-hounds--animal
+  name: Animal
+  effect: Black Hounds are animals and never gain Experience.
+  source:
+    manual: khemri
+    printed_page: 88
+    section: Henchmen / 0-5 Black Hounds / Animal
+  name_i18n:
+    en: Animal
+    es: null
+  effect_i18n:
+    en: Black Hounds are animals and never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - black-hounds
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.black-hounds.animal
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: spirits--undead
+  name: Undead
+  effect: Spirits are Undead and are subject to the warband's Undead special rules.
+  source:
+    manual: khemri
+    printed_page: 89
+    section: Henchmen / 0-5 Spirits / Undead
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: Spirits are Undead and are subject to the warband's Undead special rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - spirits
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.spirits.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: spirits--spiritual-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.spiritual-weapons
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.spiritual-weapons
+        parameters:
+          value: true
+  name: Spiritual Weapons
+  effect: All weapons carried by Spirits count as spiritual and score critical hits on a natural 5+.
+  source:
+    manual: khemri
+    printed_page: 89
+    section: Henchmen / 0-5 Spirits / Spiritual Weapons
+  name_i18n:
+    en: Spiritual Weapons
+    es: null
+  effect_i18n:
+    en: All weapons carried by Spirits count as spiritual and score critical hits on a natural 5+.
+    es: null
+  applies_to:
+    profile_ids:
+    - spirits
+- id: jackals--pack
+  name: Pack
+  effect: If two or more Jackals fight the same enemy model, each Jackal gains +1 Attack during that turn.
+  source:
+    manual: khemri
+    printed_page: 89
+    section: Henchmen / Jackals / Pack
+  name_i18n:
+    en: Pack
+    es: null
+  effect_i18n:
+    en: If two or more Jackals fight the same enemy model, each Jackal gains +1 Attack during that turn.
+    es: null
+  applies_to:
+    profile_ids:
+    - jackals
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.jackals.pack
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: jackals--animal
+  name: Animal
+  effect: Jackals are animals and never gain Experience.
+  source:
+    manual: khemri
+    printed_page: 89
+    section: Henchmen / Jackals / Animal
+  name_i18n:
+    en: Animal
+    es: null
+  effect_i18n:
+    en: Jackals are animals and never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - jackals
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.jackals.animal
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--background-selection
+  name: Foreign or Native Background
+  effect: Choose exactly one background when the warband is created. Foreign and Native backgrounds use different starting
+    Henchmen and equipment lists. After the first battle in a Khemri campaign, all new recruitment and equipment purchases
+    use the Native lists, even if the warband began as Foreign. When used in an Old World campaign, recruitment and resupply
+    use the Foreign lists.
+  source:
+    manual: khemri
+    printed_page: 83
+    section: Choice of Warriors / Foreign and Native Backgrounds
+  name_i18n:
+    en: Foreign or Native Background
+    es: null
+  effect_i18n:
+    en: Choose exactly one background when the warband is created. Foreign and Native backgrounds use different starting Henchmen
+      and equipment lists. After the first battle in a Khemri campaign, all new recruitment and equipment purchases use the
+      Native lists, even if the warband began as Foreign. When used in an Old World campaign, recruitment and resupply use
+      the Foreign lists.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.foreign-or-native-background
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.foreign-or-native-background
+- id: band--cause-fear
+  name: Cause Fear
+  effect: Warriors with the Undead special rule cause Fear.
+  source:
+    manual: khemri
+    printed_page: 85
+    section: Undead Special Rules / Cause Fear
+  name_i18n:
+    en: Cause Fear
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule cause Fear.
+    es: null
+  eligibility:
+  - lahmian-vampire
+  - skeleton-warriors
+  - spirits
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.band.cause-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--immune-to-psychology
+  name: Immune to Psychology
+  effect: Warriors with the Undead special rule are immune to Psychology and never leave combat because of Psychology.
+  source:
+    manual: khemri
+    printed_page: 85
+    section: Undead Special Rules / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule are immune to Psychology and never leave combat because of Psychology.
+    es: null
+  eligibility:
+  - lahmian-vampire
+  - skeleton-warriors
+  - spirits
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.band.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: Warriors with the Undead special rule treat a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: khemri
+    printed_page: 85
+    section: Undead Special Rules / No Pain
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule treat a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  eligibility:
+  - lahmian-vampire
+  - skeleton-warriors
+  - spirits
+  applies_to:
+    band: true
+- id: band--may-not-run
+  name: May Not Run
+  effect: Skeleton Warriors and Spirits may not run, but may charge normally. Lahmian Vampires are explicitly exempt and may
+    run normally.
+  source:
+    manual: khemri
+    printed_page: 85
+    section: Undead Special Rules / May Not Run
+  name_i18n:
+    en: May Not Run
+    es: null
+  effect_i18n:
+    en: Skeleton Warriors and Spirits may not run, but may charge normally. Lahmian Vampires are explicitly exempt and may
+      run normally.
+    es: null
+  eligibility:
+  - skeleton-warriors
+  - spirits
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.band.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Warriors with the Undead special rule are immune to poison.
+  source:
+    manual: khemri
+    printed_page: 85
+    section: Undead Special Rules / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule are immune to poison.
+    es: null
+  eligibility:
+  - lahmian-vampire
+  - skeleton-warriors
+  - spirits
+  applies_to:
+    band: true
+- id: band--brainless
+  name: Brainless
+  effect: Skeleton Warriors and Spirits never gain Experience. Lahmian Vampires are explicitly exempt and may gain Experience.
+  source:
+    manual: khemri
+    printed_page: 85
+    section: Undead Special Rules / Brainless
+  name_i18n:
+    en: Brainless
+    es: null
+  effect_i18n:
+    en: Skeleton Warriors and Spirits never gain Experience. Lahmian Vampires are explicitly exempt and may gain Experience.
+    es: null
+  eligibility:
+  - skeleton-warriors
+  - spirits
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.band.brainless
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--no-food-or-water
+  name: No Food or Water
+  effect: Warriors with the Undead special rule do not need food or water. Living animals accompanying the Vampire use the
+    normal water rules.
+  source:
+    manual: khemri
+    printed_page: 85
+    section: Undead Special Rules / No Food or Water
+  name_i18n:
+    en: No Food or Water
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule do not need food or water. Living animals accompanying the Vampire use the normal
+      water rules.
+    es: null
+  eligibility:
+  - lahmian-vampire
+  - skeleton-warriors
+  - spirits
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.band.no-food-or-water
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--death-of-the-vampire
+  name: Death of the Vampire
+  effect: If the Lahmian Vampire dies after a battle, the warband may not hire another Vampire while a Blood Sister remains
+    available; it must wait for the Blood Sister to transform. Until then, the Hero with the highest Leadership acts as leader.
+    If the warband has no Blood Sister, it may hire another Vampire. If both the Vampire and Necromancer are dead after a
+    battle and there is no Blood Sister already transformed into a Vampire, all Henchmen with the Undead special rule are
+    automatically destroyed.
+  source:
+    manual: khemri
+    printed_page: 85
+    section: Undead Special Rules / Death of the Vampire
+  name_i18n:
+    en: Death of the Vampire
+    es: null
+  effect_i18n:
+    en: If the Lahmian Vampire dies after a battle, the warband may not hire another Vampire while a Blood Sister remains
+      available; it must wait for the Blood Sister to transform. Until then, the Hero with the highest Leadership acts as
+      leader. If the warband has no Blood Sister, it may hire another Vampire. If both the Vampire and Necromancer are dead
+      after a battle and there is no Blood Sister already transformed into a Vampire, all Henchmen with the Undead special
+      rule are automatically destroyed.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.band.death-of-the-vampire
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--lahmian-special-skills-celerity
+  kind: warband_skill
+  name: Celerity
+  effect: The Vampire may run her full running distance, but for game purposes counts as if she had only moved normally. This
+    allows actions such as running and shooting, running and Hiding, or other actions normally permitted only if the model
+    did not run.
+  source:
+    manual: khemri
+    printed_page: 90
+    section: Lahmian Vampire Special Skills / Celerity
+  name_i18n:
+    en: Celerity
+    es: null
+  effect_i18n:
+    en: The Vampire may run her full running distance, but for game purposes counts as if she had only moved normally. This
+      allows actions such as running and shooting, running and Hiding, or other actions normally permitted only if the model
+      did not run.
+    es: null
+  eligibility:
+  - lahmian-vampire
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.band.lahmian-special-skills-celerity
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--lahmian-special-skills-hypnotize
+  kind: warband_skill
+  name: Hypnotize
+  effect: At the start of the Combat phase, choose one enemy model in base contact with the Vampire. That model must pass
+    a Leadership test or it may not attack that turn and all attacks directed against it gain +1 To Hit. Models immune to
+    Psychology are unaffected.
+  source:
+    manual: khemri
+    printed_page: 90
+    section: Lahmian Vampire Special Skills / Hypnotize
+  name_i18n:
+    en: Hypnotize
+    es: null
+  effect_i18n:
+    en: At the start of the Combat phase, choose one enemy model in base contact with the Vampire. That model must pass a
+      Leadership test or it may not attack that turn and all attacks directed against it gain +1 To Hit. Models immune to
+      Psychology are unaffected.
+    es: null
+  eligibility:
+  - lahmian-vampire
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.band.lahmian-special-skills-hypnotize
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--lahmian-special-skills-vampire-reflexes
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.vampire-reflexes
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.vampire-reflexes
+  name: Vampire Reflexes
+  effect: The Vampire has an unmodifiable 6+ save against any Wound. If an attack causes multiple Wounds, make this save before
+    multiplying the Wounds. This ability may be combined with Step Aside or Dodge to improve the save to 4+.
+  source:
+    manual: khemri
+    printed_page: 90
+    section: Lahmian Vampire Special Skills / Vampire Reflexes
+  name_i18n:
+    en: Vampire Reflexes
+    es: null
+  effect_i18n:
+    en: The Vampire has an unmodifiable 6+ save against any Wound. If an attack causes multiple Wounds, make this save before
+      multiplying the Wounds. This ability may be combined with Step Aside or Dodge to improve the save to 4+.
+    es: null
+  eligibility:
+  - lahmian-vampire
+  applies_to:
+    band: true
+- id: band--lahmian-special-skills-lost-innocence
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.always-strikes-first
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.always-strikes-first
+  name: Lost Innocence
+  effect: The Vampire always strikes first in close combat. If another model has a similar ability, resolve the order by Initiative;
+    if Initiative is tied, roll D6 to decide.
+  source:
+    manual: khemri
+    printed_page: 90
+    section: Lahmian Vampire Special Skills / Lost Innocence
+  name_i18n:
+    en: Lost Innocence
+    es: null
+  effect_i18n:
+    en: The Vampire always strikes first in close combat. If another model has a similar ability, resolve the order by Initiative;
+      if Initiative is tied, roll D6 to decide.
+    es: null
+  eligibility:
+  - lahmian-vampire
+  applies_to:
+    band: true
+- id: band--lahmian-special-skills-seduction
+  kind: warband_skill
+  name: Seduction
+  effect: At the start of the Combat phase, the Vampire first takes a Leadership test. If she passes, choose one enemy model
+    in base contact; that model must pass its own Leadership test or it becomes controlled by the Vampire's player. The original
+    owner may attempt to regain control during each Recovery phase by passing a Leadership test. If the Vampire attacks the
+    seduced warrior, control ends automatically. If the battle ends while the warrior is still controlled, that warrior counts
+    as Out of Action. Only one warrior may be controlled at a time, and models immune to Psychology are unaffected.
+  source:
+    manual: khemri
+    printed_page: 90
+    section: Lahmian Vampire Special Skills / Seduction
+  name_i18n:
+    en: Seduction
+    es: null
+  effect_i18n:
+    en: At the start of the Combat phase, the Vampire first takes a Leadership test. If she passes, choose one enemy model
+      in base contact; that model must pass its own Leadership test or it becomes controlled by the Vampire's player. The
+      original owner may attempt to regain control during each Recovery phase by passing a Leadership test. If the Vampire
+      attacks the seduced warrior, control ends automatically. If the battle ends while the warrior is still controlled, that
+      warrior counts as Out of Action. Only one warrior may be controlled at a time, and models immune to Psychology are unaffected.
+    es: null
+  eligibility:
+  - lahmian-vampire
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.band.lahmian-special-skills-seduction
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--lahmian-special-skills-creature-of-the-night
+  kind: warband_skill
+  name: Creature of the Night
+  effect: If the Vampire did not move during her Movement phase, any attempt to charge, shoot at, or cast a spell against
+    her must first roll 4+ on D6. On a failed roll, that action cannot be attempted against her.
+  source:
+    manual: khemri
+    printed_page: 90
+    section: Lahmian Vampire Special Skills / Creature of the Night
+  name_i18n:
+    en: Creature of the Night
+    es: null
+  effect_i18n:
+    en: If the Vampire did not move during her Movement phase, any attempt to charge, shoot at, or cast a spell against her
+      must first roll 4+ on D6. On a failed roll, that action cannot be attempted against her.
+    es: null
+  eligibility:
+  - lahmian-vampire
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-lahmian-brotherhood.band.lahmian-special-skills-creature-of-the-night
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'

@@ -1,0 +1,222 @@
+schema_version: 2
+band_id: khemri-necromancers
+profiles:
+- id: necromancer
+  name: Necromancer
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - necromancer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - academic
+  source:
+    manual: khemri
+    printed_page: 54
+    section: 1 Necromancer
+  source_path:
+  - heroes
+  - 1 Necromancer
+  name_i18n:
+    en: Necromancer
+    es: null
+  rule_ids:
+  - necromancer--leader
+  - necromancer--wizard
+  combat_traits: {}
+- id: apprentice
+  name: Apprentice
+  type: hero
+  cost: 30
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - necromancer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - academic
+  - speed
+  source:
+    manual: khemri
+    printed_page: 54
+    section: 0-1 Apprentice
+  source_path:
+  - heroes
+  - 0-1 Apprentice
+  name_i18n:
+    en: Apprentice
+    es: null
+  rule_ids:
+  - apprentice--student
+  combat_traits: {}
+- id: tomb-robbers
+  name: Tomb Robbers
+  type: hero
+  cost: 45
+  experience: 1
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - undead-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  source:
+    manual: khemri
+    printed_page: 54
+    section: 0-3 Tomb Robbers
+  source_path:
+  - heroes
+  - 0-3 Tomb Robbers
+  name_i18n:
+    en: Tomb Robbers
+    es: null
+  rule_ids:
+  - tomb-robbers--disable-traps
+  combat_traits: {}
+- id: skeleton-warriors
+  name: Skeleton Warriors
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - undead-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 55
+    section: Skeleton Warriors
+  source_path:
+  - henchmen
+  - Skeleton Warriors
+  name_i18n:
+    en: Skeleton Warriors
+    es: null
+  rule_ids:
+  - skeleton-warriors--undead
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: nehekharan-vultures
+  name: Nehekharan Vultures
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 8
+    WS: 2
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Nehekharan Vultures are animals and never use weapons or armour; their sharp beaks are natural attacks.
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 55
+    section: 0-5 Nehekharan Vultures
+  source_path:
+  - henchmen
+  - 0-5 Nehekharan Vultures
+  name_i18n:
+    en: Nehekharan Vultures
+    es: null
+  rule_ids:
+  - nehekharan-vultures--undead
+  - nehekharan-vultures--flight
+  - nehekharan-vultures--fragile
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: necromantic-abomination
+  name: Necromantic Abomination
+  type: henchman
+  cost: 200
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 0
+    S: 4
+    T: 4
+    W: 3
+    I: 2
+    A: 2
+    Ld: 6
+  equipment_lists:
+  - undead-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 55
+    section: 0-1 Necromantic Abomination
+  source_path:
+  - henchmen
+  - 0-1 Necromantic Abomination
+  name_i18n:
+    en: Necromantic Abomination
+    es: null
+  rule_ids:
+  - necromantic-abomination--undead
+  - necromantic-abomination--impossible-to-hide
+  - necromantic-abomination--large
+  - necromantic-abomination--upkeep
+  - necromantic-abomination--constant-evolution
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain

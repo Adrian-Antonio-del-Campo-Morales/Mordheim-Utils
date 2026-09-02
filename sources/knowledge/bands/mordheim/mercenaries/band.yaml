@@ -1,0 +1,59 @@
+schema_version: 2
+id: mercenaries
+canonical_family: mercenaries
+name: Mercenaries
+name_i18n:
+  en: Mercenaries
+  es: null
+original_locale: en
+ruleset: mordheim
+categories:
+- core
+grade: core
+setting: Mordheim
+publication: 'Mordheim Rulebook; Ostermark: Fanatic Online #19'
+status: source-normalized
+sources:
+- manual: mordheimer.net
+  printed_page: 0
+  section: Mercenaries
+  url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: mercenary-captain
+    minimum: 1
+    maximum: 1
+  - profile_id: champions
+    minimum: 0
+    maximum: 2
+  - profile_id: youngbloods
+    minimum: 0
+    maximum: 2
+  - profile_id: warriors
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: marksmen
+    minimum: 0
+    maximum: 7
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: swordsmen
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--reikland-command-radius
+- band--reikland-marksman-training
+- band--middenheim-physical-prowess
+- band--marienburg-traders
+- band--marienburg-wealth
+- band--ostermark-stubborn-resolve

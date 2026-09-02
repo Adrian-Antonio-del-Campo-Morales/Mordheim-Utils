@@ -1,0 +1,508 @@
+schema_version: 1
+specifications:
+- id: blade-contract-broadsword
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/weapon.broadsword
+    digest: 12fdd4a0c2adb20085dda253bae5da65ce0469432546fcb0d4f593af2993cfb2
+  interpretation: 'Close Combat / Broadsword: Fuerza del usuario +1. Difficult to Use impide segunda arma y rodela,
+    pero permite escudo y kite shield. No es por sí misma un arma que ataque última.'
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.broadsword
+    expect:
+      attacker.main_weapon.strength_bonus: 1
+      attacker.main_weapon.two_handed: false
+  - id: strength
+    roles:
+    - active
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.broadsword
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: control
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: wound-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.broadsword
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.target: 3
+      result.success: false
+  - id: wound-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.broadsword
+    rolls:
+    - key: wound
+      value: 2
+    expect:
+      result.target: 3
+      result.success: false
+  - id: wound-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.broadsword
+    rolls:
+    - key: wound
+      value: 3
+    expect:
+      result.target: 3
+      result.success: true
+  - id: wound-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.broadsword
+    rolls:
+    - key: wound
+      value: 4
+    expect:
+      result.target: 3
+      result.success: true
+  - id: wound-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.broadsword
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      result.target: 3
+      result.success: true
+  - id: wound-6
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.broadsword
+    rolls:
+    - key: wound
+      value: 6
+    expect:
+      result.target: 3
+      result.success: true
+  - id: hands
+    roles:
+    - boundary
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      main_weapon_id: weapon.broadsword
+    context:
+      choices:
+        alone: {}
+        shield:
+          off_hand_id: defence.shield
+        kite:
+          off_hand_id: defence.kite-shield
+        buckler:
+          off_hand_id: defence.buckler
+        dagger:
+          off_hand_id: weapon.dagger
+        sword:
+          off_hand_id: weapon.sword
+    expect:
+      result.accepted:
+      - alone
+      - kite
+      - shield
+      result.rejected:
+        buckler: weapon.broadsword cannot be combined with defence.buckler
+        dagger: weapon.broadsword cannot be combined with weapon.dagger
+        sword: weapon.broadsword cannot be combined with weapon.sword
+  - id: armour-penetration-from-strength
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.broadsword
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.saved: false
+  mutations:
+  - id: remove-strength
+    path: attacker.main_weapon.strength_bonus
+    value: 0
+    cases:
+    - strength
+    - wound-3
+- id: blade-contract-dragon-sword
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/weapon.dragon-sword
+    digest: f23373ebf231a3e39d86f085ec1714e51014ad83e0ac669692af65aba0dac2b5
+  interpretation: 'Close Combat / Dragon Sword: Fuerza del usuario +1; ocupa las dos manos y no permite escudo,
+    rodela ni segunda arma en cuerpo a cuerpo. La protección contra disparos queda fuera del duelo.'
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.dragon-sword
+    expect:
+      attacker.main_weapon.strength_bonus: 1
+      attacker.main_weapon.two_handed: true
+  - id: strength
+    roles:
+    - active
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.dragon-sword
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: control
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: wound-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.dragon-sword
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.target: 3
+      result.success: false
+  - id: wound-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.dragon-sword
+    rolls:
+    - key: wound
+      value: 2
+    expect:
+      result.target: 3
+      result.success: false
+  - id: wound-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.dragon-sword
+    rolls:
+    - key: wound
+      value: 3
+    expect:
+      result.target: 3
+      result.success: true
+  - id: wound-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.dragon-sword
+    rolls:
+    - key: wound
+      value: 4
+    expect:
+      result.target: 3
+      result.success: true
+  - id: wound-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.dragon-sword
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      result.target: 3
+      result.success: true
+  - id: wound-6
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.dragon-sword
+    rolls:
+    - key: wound
+      value: 6
+    expect:
+      result.target: 3
+      result.success: true
+  - id: hands
+    roles:
+    - boundary
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      main_weapon_id: weapon.dragon-sword
+    context:
+      choices:
+        alone: {}
+        shield:
+          off_hand_id: defence.shield
+        kite:
+          off_hand_id: defence.kite-shield
+        buckler:
+          off_hand_id: defence.buckler
+        dagger:
+          off_hand_id: weapon.dagger
+        sword:
+          off_hand_id: weapon.sword
+    expect:
+      result.accepted:
+      - alone
+      result.rejected:
+        shield: main weapon occupies both hands
+        kite: main weapon occupies both hands
+        buckler: main weapon occupies both hands
+        dagger: main weapon occupies both hands
+        sword: main weapon occupies both hands
+  - id: armour-penetration-from-strength
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.dragon-sword
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.saved: false
+  mutations:
+  - id: remove-strength
+    path: attacker.main_weapon.strength_bonus
+    value: 0
+    cases:
+    - strength
+    - wound-3
+- id: blade-contract-cathayan-longsword
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/weapon.cathayan-longsword
+    digest: 0df12ef3ae270b61e547521742086ffa3ea2391a972d0efc5c448c63ec326322
+  interpretation: 'Close Combat / Cathayan Longsword / Mastercrafted: +1 HA y +1 I al portador; no +1 Fuerza. HA3
+    pasa a HA4 y supera HA3 enemiga (3+). El bono de HA de la mano secundaria no se añade al ataque de la mano principal.'
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.cathayan-longsword
+    expect:
+      attacker.main_weapon.weapon_skill_bonus: 1
+      attacker.main_weapon.initiative_bonus: 1
+  - id: strength-unchanged
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.cathayan-longsword
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: initiative
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: priority
+    attacker:
+      main_weapon_id: weapon.cathayan-longsword
+    expect:
+      result.initiative: 4
+  - id: ordinary-initiative
+    roles:
+    - inactive
+    operation: priority
+    attacker:
+      main_weapon_id: weapon.mace
+    expect:
+      result.initiative: 3
+  - id: hit-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.cathayan-longsword
+    rolls:
+    - key: hit
+      value: 1
+    expect:
+      result.target: 3
+      result.success: false
+  - id: hit-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.cathayan-longsword
+    rolls:
+    - key: hit
+      value: 2
+    expect:
+      result.target: 3
+      result.success: false
+  - id: hit-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.cathayan-longsword
+    rolls:
+    - key: hit
+      value: 3
+    expect:
+      result.target: 3
+      result.success: true
+  - id: hit-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.cathayan-longsword
+    rolls:
+    - key: hit
+      value: 4
+    expect:
+      result.target: 3
+      result.success: true
+  - id: hit-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.cathayan-longsword
+    rolls:
+    - key: hit
+      value: 5
+    expect:
+      result.target: 3
+      result.success: true
+  - id: hit-6
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.cathayan-longsword
+    rolls:
+    - key: hit
+      value: 6
+    expect:
+      result.target: 3
+      result.success: true
+  - id: offhand-only-ws
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: pool
+    attacker:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.cathayan-longsword
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 3
+    - key: test.attack.1.hit
+      value: 3
+    - key: test.attack.1.wound
+      value: 1
+    expect:
+      result.attacks.0.hit: false
+      result.attacks.1.hit: true
+      result.defender.wounds: 3
+  mutations:
+  - id: remove-ws
+    path: attacker.main_weapon.weapon_skill_bonus
+    value: 0
+    cases:
+    - hit-3
+  - id: remove-initiative
+    path: attacker.main_weapon.initiative_bonus
+    value: 0
+    cases:
+    - initiative

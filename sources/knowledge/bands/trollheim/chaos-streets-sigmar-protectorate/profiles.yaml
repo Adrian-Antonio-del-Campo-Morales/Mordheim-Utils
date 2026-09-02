@@ -1,0 +1,251 @@
+schema_version: 2
+band_id: chaos-streets-sigmar-protectorate
+profiles:
+- id: warrior-priest
+  name: Warrior Priest
+  type: hero
+  cost: 80
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - protectorate-devout-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May wear armour and continue using the Prayers of Sigmar.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 153
+    section: 1 Warrior Priest
+  source_path:
+  - heroes
+  - 1 Warrior Priest
+  name_i18n:
+    en: Warrior Priest
+    es: null
+  rule_ids:
+  - warrior-priest--leader
+  - warrior-priest--prayers-of-sigmar
+  combat_traits: {}
+- id: ranger
+  name: Ranger
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - protectorate-shooter-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 154
+    section: 0-1 Ranger
+  source_path:
+  - heroes
+  - 0-1 Ranger
+  name_i18n:
+    en: Ranger
+    es: null
+  rule_ids:
+  - ranger--animal-tamer
+  combat_traits: {}
+- id: templar
+  name: Templars
+  type: hero
+  cost: 45
+  experience: 12
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - protectorate-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 154
+    section: 0-2 Templars
+  source_path:
+  - heroes
+  - 0-2 Templars
+  name_i18n:
+    en: Templars
+    es: null
+  rule_ids:
+  - templar--devout
+  combat_traits: {}
+- id: initiate
+  name: Initiates
+  type: hero
+  cost: 25
+  experience: 2
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - protectorate-devout-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 154
+    section: 0-2 Initiates
+  source_path:
+  - heroes
+  - 0-2 Initiates
+  name_i18n:
+    en: Initiates
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: protectorate-marksman
+  name: Marksmen
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - protectorate-shooter-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select Great Weapons or Long Bows from the Shooter Equipment List; those entries are Ranger only.
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 155
+    section: 0-5 Marksmen
+  source_path:
+  - henchmen
+  - 0-5 Marksmen
+  name_i18n:
+    en: Marksmen
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: crusader
+  name: Crusaders
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - protectorate-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 155
+    section: 0-5 Crusaders
+  source_path:
+  - henchmen
+  - 0-5 Crusaders
+  name_i18n:
+    en: Crusaders
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: protectorate-mastiff
+  name: Mastiffs
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Mastiffs fight with jaws and brute force and never use or need weapons or armour.
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 155
+    section: 0-5 Mastiffs
+  source_path:
+  - henchmen
+  - 0-5 Mastiffs
+  name_i18n:
+    en: Mastiffs
+    es: null
+  rule_ids:
+  - protectorate-mastiff--animal
+  combat_traits: {}

@@ -1,0 +1,40 @@
+schema_version: 1
+ruleset: mordheim
+catalog: campaign-recruitment-and-veterans
+status: draft
+# Define reglas de contratación y disponibilidad; reclutas contratados y grupos
+# existentes son estado de campaña, no conocimiento de reglas.
+recruitment_policy: []
+veteran_availability: []
+examples:
+  recruitment_policy:
+  - id: example.recruitment-free-dagger
+    applies_to: newly_hired_recruit
+    effect: grant_item
+    item_id: dagger
+    source_refs: []
+    note: The profile cost, starting experience and roster limits are read from
+      profiles.yaml and band.yaml; this expresses only the universal procedure.
+  veteran_availability:
+  - id: example.veteran-availability
+    roll:
+      dice:
+        count: 2
+        sides: 6
+    experience_pool:
+      source: roll_total
+      allocation: shared_across_hires
+    incremental_cost:
+      per_experience_point_gc: 2
+    source_refs: []
+# recruitment_policy: id, applies_to, effect, item_id, source_refs
+# veteran_availability: id, roll, experience_pool, incremental_cost, source_refs.
+# experience_pool.source: roll_total expresa una bolsa común determinada por
+# 2D6, no el valor almacenado de una campaña.
+# El perfil, coste, experiencia inicial, límites y acceso de una banda ya viven
+# en profiles.yaml y band.yaml. Los objetos comunes se compran por la política
+# global y su precio/disponibilidad pertenece al catálogo de items.
+effect_ids:
+- campaign.recruitment.hire
+- campaign.recruitment.hire-veteran
+- campaign.trading.buy-common-item

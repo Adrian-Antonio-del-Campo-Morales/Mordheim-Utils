@@ -1,0 +1,369 @@
+schema_version: 1
+ruleset: mordheim
+catalog: hirelings-dramatis-personae
+grade: 1c
+profiles:
+- id: hireling.dramatis.belandysh-condemned-champion-of-chen
+  kind: dramatis-personae
+  grade: 1c
+  publication: Border Town Burning Supplement
+  name: Belandysh, Condemned Champion Of Chen
+  name_i18n:
+    en: Belandysh, Condemned Champion Of Chen
+    es: null
+  normalization_status: out_of_scope
+  warband_rating:
+    kind: fixed
+    value: 130
+  equipment:
+    fixed_items:
+    - item_id: helmet
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.dramatis.belandysh-condemned-champion-of-chen.item.broadsword-of-damnation
+      name: Broadsword of Damnation
+    - id: hireling.dramatis.belandysh-condemned-champion-of-chen.item.chaos-armour
+      name: Chaos Armour
+  skill_access: []
+  starting_skill_ids:
+  - skill.fearsome
+  - skill.strongman
+  rules:
+  - id: hireling.dramatis.belandysh-condemned-champion-of-chen.rule.immune-to-psychology
+    name: Immune to Psychology
+    effect: Immune to psychology and automatically passes Leadership tests.
+  - id: hireling.dramatis.belandysh-condemned-champion-of-chen.rule.inconsistency
+    name: Inconsistency
+    effect: Variable characteristics are rerolled when required by source.
+  - id: hireling.dramatis.belandysh-condemned-champion-of-chen.rule.regeneration
+    name: Regeneration
+    effect: Regenerates wounds on source 4+ except fire/fire magic.
+  - id: hireling.dramatis.belandysh-condemned-champion-of-chen.rule.tol-agath
+    name: Tol'Agath
+    effect: Uses a mutated mount with source rules.
+  - id: hireling.dramatis.belandysh-condemned-champion-of-chen.rule.wrath-of-tchar
+    name: Wrath of Tchar
+    effect: Can be permanently lost from campaign under source condition.
+  unresolved_references:
+  - kind: random_profile
+    source_name: Belandysh M4 WS D6 BS0 S D6 T D6 W3 I D6 A D3 Ld10
+  - kind: mount_profile
+    source_name: Tol'Agath M8 WS3 BS0 S D6 T D6 W1 I3 A1 Ld5
+  - kind: skill
+    source_name: Ride Tol'Agath
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Belandysh, Condemned Champion Of Chen
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
+  out_of_scope_reason: Random-characteristic Dramatis plus a random-characteristic mount.
+- id: hireling.dramatis.grand-master-ippan-shu
+  kind: dramatis-personae
+  grade: 1c
+  publication: Border Town Burning Supplement
+  name: Grand Master Ippan Shu
+  name_i18n:
+    en: Grand Master Ippan Shu
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 7
+    BS: 7
+    S: 4
+    T: 4
+    W: 2
+    I: 6
+    A: 4
+    Ld: 10
+  warband_rating:
+    kind: fixed
+    value: 110
+  equipment:
+    unique_equipment:
+    - id: hireling.dramatis.grand-master-ippan-shu.item.iron-fan
+      name: Iron Fan
+  skill_access: []
+  starting_skill_ids: []
+  rules:
+  - id: hireling.dramatis.grand-master-ippan-shu.rule.bare-handed
+    name: Bare-handed
+    effect: Uses source unarmed martial-arts rules.
+  - id: hireling.dramatis.grand-master-ippan-shu.rule.iron-fan
+    name: Iron Fan
+    effect: Uses unique Iron Fan rules.
+  - id: hireling.dramatis.grand-master-ippan-shu.rule.parry-missiles
+    name: Parry Missiles
+    effect: Uses source missile-parry rule.
+  - id: hireling.dramatis.grand-master-ippan-shu.rule.immune-to-psychology
+    name: Immune to Psychology
+    effect: Immune to psychology.
+  - id: hireling.dramatis.grand-master-ippan-shu.rule.feather-movement
+    name: Feather Movement
+    effect: Uses source movement rule.
+  - id: hireling.dramatis.grand-master-ippan-shu.rule.fire-breath
+    name: Fire Breath
+    effect: Uses source fire-breath attack.
+  - id: hireling.dramatis.grand-master-ippan-shu.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Human or Elf composition
+    effect: Ippan Shu may only be hired when the current warband includes Humans or Elves. Dark Elves, Outlaws and Bandits are excluded statically in the campaign catalog.
+  unresolved_references:
+  - kind: skill
+    source_name: Art of Silent Death
+  - kind: skill_set
+    source_name: all Speed skills and Battle Monk special skills except Warmonger
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Grand Master Ippan Shu
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
+- id: hireling.dramatis.innominatus-the-tilean-gladiator
+  kind: dramatis-personae
+  grade: 1c
+  publication: Mordheim Facebook Group
+  name: Innominatus, the Tilean Gladiator
+  name_i18n:
+    en: Innominatus, the Tilean Gladiator
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 5
+    BS: 3
+    S: 4
+    T: 4
+    W: 2
+    I: 4
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 90
+  equipment:
+    fixed_items:
+    - item_id: javelins
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dwarf_axe
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: helmet
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: shield
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.dramatis.innominatus-the-tilean-gladiator.item.dark-elf-blade
+      name: Dark Elf Blade
+  skill_access: []
+  starting_skill_ids: []
+  rules:
+  - id: hireling.dramatis.innominatus-the-tilean-gladiator.rule.pit-master
+    name: Pit Master
+    effect: Uses source arena rule.
+  - id: hireling.dramatis.innominatus-the-tilean-gladiator.rule.who-is-the-hero
+    name: Who is the Hero?
+    effect: Uses source identity rule.
+  - id: hireling.dramatis.innominatus-the-tilean-gladiator.rule.thumbs-up-thumbs-down
+    name: Thumbs Up / Thumbs Down
+    effect: Uses source crowd/arena rule.
+  unresolved_references:
+  - kind: skill
+    source_name: Pit Fighter
+  - kind: skill
+    source_name: Grizzled Veteran
+  - kind: skill
+    source_name: Death without a face
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Innominatus, the Tilean Gladiator
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
+- id: hireling.dramatis.luthor-wolfenbaum
+  kind: dramatis-personae
+  grade: 1c
+  publication: Mordheim Facebook Group
+  name: Luthor Wolfenbaum
+  name_i18n:
+    en: Luthor Wolfenbaum
+    es: null
+  normalization_status: out_of_scope
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 4
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 35
+  skill_access: []
+  starting_skill_ids:
+  - skill.step-aside
+  - skill.dodge
+  - skill.expert-swordsman
+  - skill.sprint
+  - skill.quick-shot
+  rules:
+  - id: hireling.dramatis.luthor-wolfenbaum.rule.evil-eye
+    name: Evil Eye
+    effect: Uses source Evil Eye rule.
+  - id: hireling.dramatis.luthor-wolfenbaum.rule.i-am-everywhere
+    name: I Am Everywhere
+    effect: Uses source persona rule.
+  unresolved_references:
+  - kind: multi_loadout_persona
+    source_name: multiple selectable personas/equipment sets
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Luthor Wolfenbaum
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
+  out_of_scope_reason: Single Dramatis identity with multiple selectable personas/loadouts.
+- id: hireling.dramatis.luthor-the-looter
+  kind: dramatis-personae
+  grade: 1c
+  publication: Tuomas Pirinen; Mordheim Facebook Group; Mordheim 25th anniversary Celebrations
+  name: Luthor the Looter
+  name_i18n:
+    en: Luthor the Looter
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 4
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 35
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: heavy_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: pistol
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access: []
+  starting_skill_ids:
+  - skill.step-aside
+  - skill.dodge
+  - skill.expert-swordsman
+  - skill.sprint
+  - skill.pistolier
+  - skill.jump-up
+  rules:
+  - id: hireling.dramatis.luthor-the-looter.rule.i-ain-t-got-time
+    name: I Ain't Got Time
+    effect: Uses source rule.
+  - id: hireling.dramatis.luthor-the-looter.rule.looter
+    name: Looter
+    effect: Uses source post-battle loot rule.
+  - id: hireling.dramatis.luthor-the-looter.rule.mordheim-guide
+    name: Mordheim Guide
+    effect: Uses source exploration/guide rule.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Luthor the Looter
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
+- id: hireling.dramatis.maglah-khan-s-horde
+  kind: dramatis-personae
+  grade: 1c
+  publication: Border Town Burning Supplement
+  name: Maglah Khan's Horde
+  name_i18n:
+    en: Maglah Khan's Horde
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 5
+    BS: 5
+    S: 3
+    T: 3
+    W: 2
+    I: 4
+    A: 2
+    Ld: 7
+  warband_rating:
+    kind: fixed
+    value: 60
+  equipment:
+    fixed_items:
+    - item_id: spear
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: bow
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: shield
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: heavy_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: helmet
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access: []
+  starting_skill_ids:
+  - skill.quick-shot
+  - skill.eagle-eyes
+  - skill.trick-shooter
+  rules:
+  - id: hireling.dramatis.maglah-khan-s-horde.rule.ride-giant-wolf
+    name: Ride Giant Wolf
+    effect: Uses source mount rule.
+  - id: hireling.dramatis.maglah-khan-s-horde.rule.horse-archer
+    name: Horse Archer
+    effect: Uses source mounted-shooting rule.
+  - id: hireling.dramatis.maglah-khan-s-horde.rule.horde
+    name: Horde
+    effect: Must hire the source-defined number of Hobgoblin Scouts and uses leader rules.
+  unresolved_references:
+  - kind: mount_profile
+    source_name: Giant Wolf M9 WS3 BS0 S3 T3 W1 I4 A1 Ld4
+  - kind: dependent_hirelings
+    source_name: 2-5 Hobgoblin Scouts
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Maglah Khan's Horde
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c

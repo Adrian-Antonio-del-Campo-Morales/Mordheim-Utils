@@ -1,0 +1,228 @@
+schema_version: 2
+band_id: chaos-streets-pit-fighters
+profiles:
+- id: pit-king
+  name: Pit King
+  type: hero
+  cost: 80
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 4
+    A: 2
+    Ld: 8
+  equipment_lists:
+  - pit-fighter-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 122
+    section: 1 Pit King
+  source_path:
+  - heroes
+  - 1 Pit King
+  name_i18n:
+    en: Pit King
+    es: null
+  rule_ids:
+  - pit-king--leader
+  - pit-king--pit-fighter
+  combat_traits: {}
+- id: dwarf-troll-slayer
+  name: Dwarf Troll Slayer
+  type: hero
+  cost: 50
+  experience: 8
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - dwarf-troll-slayer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Dwarf Troll Slayer Equipment List.
+  - May never use missile weapons or any form of armour.
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 123
+    section: 0-1 Dwarf Troll Slayer
+  source_path:
+  - heroes
+  - 0-1 Dwarf Troll Slayer
+  name_i18n:
+    en: Dwarf Troll Slayer
+    es: null
+  rule_ids:
+  - dwarf-troll-slayer--pit-fighter
+  - dwarf-troll-slayer--hard-to-kill
+  - dwarf-troll-slayer--hate-orcs-and-goblins
+  - dwarf-troll-slayer--ancestral-grudge
+  - dwarf-troll-slayer--death-oath
+  - dwarf-troll-slayer--hard-head
+  - dwarf-troll-slayer--slayer-skill-options
+  combat_traits:
+    starting_skills:
+    - skill.hard-to-kill
+- id: pit-veterans
+  name: Pit Veterans
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pit-fighter-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 122
+    section: 0-2 Pit Veterans
+  source_path:
+  - heroes
+  - 0-2 Pit Veterans
+  name_i18n:
+    en: Pit Veterans
+    es: null
+  rule_ids:
+  - pit-veterans--pit-fighter
+  combat_traits: {}
+- id: pit-fighters
+  name: Pit Fighters
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pit-fighter-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 124
+    section: Pit Fighters
+  source_path:
+  - henchmen
+  - Pit Fighters
+  name_i18n:
+    en: Pit Fighters
+    es: null
+  rule_ids:
+  - pit-fighters--pit-fighter
+  combat_traits: {}
+- id: pursuers
+  name: Pursuers
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pursuer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 124
+    section: 0-7 Pursuers
+  source_path:
+  - henchmen
+  - 0-7 Pursuers
+  name_i18n:
+    en: Pursuers
+    es: null
+  rule_ids:
+  - pursuers--pit-fighter
+  - pursuers--evade
+  combat_traits: {}
+- id: ogre-pit-fighter
+  name: Ogre Pit Fighter
+  type: henchman
+  cost: 165
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 2
+    S: 4
+    T: 4
+    W: 3
+    I: 3
+    A: 2
+    Ld: 7
+  equipment_lists:
+  - ogre-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 125
+    section: 0-1 Ogre Pit Fighter
+  source_path:
+  - henchmen
+  - 0-1 Ogre Pit Fighter
+  name_i18n:
+    en: Ogre Pit Fighter
+    es: null
+  rule_ids:
+  - ogre-pit-fighter--pit-fighter
+  - ogre-pit-fighter--fear
+  - ogre-pit-fighter--large-target
+  - ogre-pit-fighter--skills
+  - ogre-pit-fighter--slow-witted
+  combat_traits: {}

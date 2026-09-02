@@ -1,0 +1,30 @@
+schema_version: 1
+specifications:
+- id: editorial-gigantic-spider-chitin-armour
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: rule/mordheim/forest-goblins/gigantic-spider--chitin-armour/trait.natural-armour-save, digest: ba892cdb565b14ac018bf7c14d99b21e888214c4ac1178f6ea032337b41bde88}
+  ruling: Spider Chitin Armour es una regla intrínseca de la Gigantic Spider que concede armadura natural de 4+, no equipo seleccionable.
+  interpretation: La concesión automática del perfil compila natural_armour_save=4 y el resolver de armadura consume esa salvación.
+  cases:
+  - id: profile-grant
+    roles: [grant, compiled]
+    operation: grant
+    defender: {band_id: forest-goblins, profile_id: gigantic-spider}
+    context: {rule_id: gigantic-spider--chitin-armour}
+    expect: {result.recipients: [gigantic-spider]}
+  - id: natural-four-plus
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {band_id: forest-goblins, profile_id: gigantic-spider}
+    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/2, 'false': 1/2}}
+  - id: ordinary-fighter-control
+    roles: [inactive]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {}
+    expect: {result.eligible: false}
+  mutations:
+  - {id: remove-chitin-save, path: defender.natural_armour_save, value: 7, cases: [natural-four-plus]}

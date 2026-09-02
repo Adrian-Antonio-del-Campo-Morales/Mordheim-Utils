@@ -1,0 +1,649 @@
+schema_version: 2
+band_id: dark-elves
+rules:
+- id: high-born--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elves.high-born.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Leader
+  effect: 'Any models in the warband within 6" of the High
+
+    Born may use his Leadership instead of their own.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 High Born / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any models in the warband within 6" of the High
+
+      Born may use his Leadership instead of their own.'
+    es: null
+  applies_to:
+    profile_ids:
+    - high-born
+- id: beastmaster--cold-one-beasthound
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elves.beastmaster.cold-one-beasthound
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Cold One Beasthound
+  effect: 'The Beastmaster may be
+
+    accompanied by up to two Cold One Beasthounds, these are
+
+    bought as henchmen and follow all rules listed for them.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Beastmaster / Special Rules / Cold One Beasthound
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Cold One Beasthound
+    es: null
+  effect_i18n:
+    en: 'The Beastmaster may be
+
+      accompanied by up to two Cold One Beasthounds, these are
+
+      bought as henchmen and follow all rules listed for them.'
+    es: null
+  applies_to:
+    profile_ids:
+    - beastmaster
+- id: fellblades--melee-specialists
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.no-missile-weapons
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.no-missile-weapons
+  name: Melee Specialists
+  effect: Fellblades live by a strict code of close quarter fighting. Fellblades may not use missile weapons of any sort.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 2 Fellblades / Special Rules / Melee Specialists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Melee Specialists
+    es: null
+  effect_i18n:
+    en: 'Fellblades live by a strict code of close
+
+      quarter fighting. Fellblades may not use missile weapons of
+
+      any sort.'
+    es: null
+  applies_to:
+    profile_ids:
+    - fellblades
+- id: dark-elf-sorceress--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elves.dark-elf-sorceress.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: magia.'
+  name: Wizard
+  effect: The Dark Elf Sorceress is a wizard and uses Dark Elf Magic.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Dark Elf Sorceress / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Dark Elf Sorceress is a wizard and uses Dark Elf Magic.
+    es: null
+  applies_to:
+    profile_ids:
+    - dark-elf-sorceress
+- id: shades--natural-stealth
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elves.shades.natural-stealth
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Natural Stealth
+  effect: The first thing that Dark Elf Scouts master is the art of moving without being seen or heard. If a Dark Elf is Hiding,
+    enemy models suffer -1 to their Initiative value for determining if they can detect him.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Shades / Special Rules / Natural Stealth
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Natural Stealth
+    es: null
+  effect_i18n:
+    en: 'The first thing that Dark Elf Scouts master
+
+      is the art of moving without being seen or heard. If a Dark Elf
+
+      is Hiding, enemy models suffer -1 to their Initiative value for
+
+      determining if they can detect him.'
+    es: null
+  applies_to:
+    profile_ids:
+    - shades
+- id: cold-one-beasthounds--animals
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elves.cold-one-beasthounds.animals
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Animals
+  effect: 'Cold One Beasthounds are animals and all animal
+
+    rules apply to them, they never gain experience.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Cold One Beasthounds / Special Rules / Animals
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Animals
+    es: null
+  effect_i18n:
+    en: 'Cold One Beasthounds are animals and all animal
+
+      rules apply to them, they never gain experience.'
+    es: null
+  applies_to:
+    profile_ids:
+    - cold-one-beasthounds
+- id: cold-one-beasthounds--beastmaster
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elves.cold-one-beasthounds.beastmaster
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Beastmaster
+  effect: 'Cold One Beasthounds are nasty viscous
+
+    brutes that are barely kept under control. If the Beastmaster
+
+    dies the beasts will immediately escape from the warband and
+
+    they are removed from the warband roster. If the Beastmaster
+
+    is unable to participate in a battle, then neither will the beasts.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Cold One Beasthounds / Special Rules / Beastmaster
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Beastmaster
+    es: null
+  effect_i18n:
+    en: 'Cold One Beasthounds are nasty viscous
+
+      brutes that are barely kept under control. If the Beastmaster
+
+      dies the beasts will immediately escape from the warband and
+
+      they are removed from the warband roster. If the Beastmaster
+
+      is unable to participate in a battle, then neither will the beasts.'
+    es: null
+  applies_to:
+    profile_ids:
+    - cold-one-beasthounds
+- id: cold-one-beasthounds--stupidity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elves.cold-one-beasthounds.stupidity
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Stupidity
+  effect: 'Cold One Beasthounds may use the basic
+
+    Leadership of the Beastmaster if they are within 6" of him.
+
+    They may never use the Leadership of the warband leader,
+
+    nor may they benefit from the Beastmaster’s increased
+
+    Leadership if he is within 6" of the leader.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Cold One Beasthounds / Special Rules / Stupidity
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Stupidity
+    es: null
+  effect_i18n:
+    en: 'Cold One Beasthounds may use the basic
+
+      Leadership of the Beastmaster if they are within 6" of him.
+
+      They may never use the Leadership of the warband leader,
+
+      nor may they benefit from the Beastmaster’s increased
+
+      Leadership if he is within 6" of the leader.'
+    es: null
+  applies_to:
+    profile_ids:
+    - cold-one-beasthounds
+- id: cold-one-beasthounds--scaly-skin
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 6
+    - id: trait.natural-armour-unmodified
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-unmodified
+        parameters:
+          value: true
+  name: Scaly Skin
+  effect: Cold One Beasthounds have tough scaly skin, and are considered to have a 6+ armour save. This save cannot be modified
+    beyond 6 due to strength modifiers but any result of ‘no save’ on the Critical Hit chart will negate the unmodified 6+
+    save.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Cold One Beasthounds / Special Rules / Scaly Skin
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Scaly Skin
+    es: null
+  effect_i18n:
+    en: Cold One Beasthounds have tough scaly skin, and are considered to have a 6+ armour save. This save cannot be modified
+      beyond 6 due to strength modifiers but any result of ‘no save’ on the Critical Hit chart will negate the unmodified
+      6+ save.
+    es: null
+  applies_to:
+    profile_ids:
+    - cold-one-beasthounds
+- id: cold-one-beasthounds--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elves.cold-one-beasthounds.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Fear
+  effect: Cold One Beasthounds cause Fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Cold One Beasthounds / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: Cold One Beasthounds cause Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - cold-one-beasthounds
+- id: band--kindred-hatred
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dark-elves.band.kindred-hatred
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Kindred Hatred
+  effect: Dark Elves Hate all High Elf warriors, including High Elf Hired Swords.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Kindred Hatred
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Kindred Hatred
+    es: null
+  effect_i18n:
+    en: Dark Elves Hate all High Elf warriors, including High Elf Hired Swords.
+    es: null
+  applies_to:
+    band: true
+- id: band--excellent-sight
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dark-elves.band.excellent-sight
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: movimiento.'
+  name: Excellent Sight
+  effect: 'All Elves in the warband can spot Hidden enemies from twice as far away as normal: twice their Initiative in inches.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Excellent Sight
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Excellent Sight
+    es: null
+  effect_i18n:
+    en: 'All Elves in the warband can spot Hidden enemies from twice as far away as normal: twice their Initiative in inches.'
+    es: null
+  applies_to:
+    band: true
+- id: band--black-powder-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.no-blackpowder-weapons
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.no-blackpowder-weapons
+  name: Black Powder Weapons
+  effect: Dark Elves may never use black powder weapons.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Black Powder Weapons
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Black Powder Weapons
+    es: null
+  effect_i18n:
+    en: Dark Elves may never use black powder weapons.
+    es: null
+  applies_to:
+    band: true
+- id: band--dark-elf-special-skills-fury-of-khaine
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.dark-elves.band.dark-elf-special-skills-fury-of-khaine
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Fury of Khaine
+  effect: The Dark Elf is infused with an intense raging thirst for blood and is a whirlwind in hand-to-hand combat, moving
+    from opponent to opponent. The Dark Elf may make a 4" follow up move if he takes all of his opponents Out Of Action. If
+    he comes into contact with another enemy this starts a new combat. This new combat takes place in the following turn and
+    the model counts as charging. May not follow up in the opponent’s turn.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dark Elf Special Skills / Fury of Khaine
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Fury of Khaine
+    es: null
+  effect_i18n:
+    en: 'The Dark Elf is infused with an intense raging
+
+      thirst for blood and is a whirlwind in hand-to-hand combat, moving
+
+      from opponent to opponent. The Dark Elf may make a 4" follow up
+
+      move if he takes all of his opponents Out Of Action. If he comes
+
+      into contact with another enemy this starts a new combat. This new
+
+      combat takes place in the following turn and the model counts as
+
+      charging. May not follow up in the opponent’s turn.'
+    es: null
+  applies_to:
+    band: true
+- id: band--dark-elf-special-skills-powerful-build
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: strength
+    - id: roster.maximum-two-powerful-build
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: warband-level roster limit.'
+  name: Powerful Build
+  effect: 'The warrior is strongly built for an Elf and is
+
+    capable of feats of strength. A warrior with this skill may choose
+
+    skills from the Strength table. The Sorceress may never take this
+
+    skill and no more than two warriors in the warband may take this
+
+    skill at any one time.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dark Elf Special Skills / Powerful Build
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Powerful Build
+    es: null
+  effect_i18n:
+    en: 'The warrior is strongly built for an Elf and is
+
+      capable of feats of strength. A warrior with this skill may choose
+
+      skills from the Strength table. The Sorceress may never take this
+
+      skill and no more than two warriors in the warband may take this
+
+      skill at any one time.'
+    es: null
+  applies_to:
+    band: true
+  eligibility:
+  - high-born
+  - beastmaster
+  - fellblades
+- id: band--dark-elf-special-skills-fey-quickness
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.dark-elves.band.dark-elf-special-skills-fey-quickness
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: ataques.'
+  name: Fey Quickness
+  effect: 'Few can ever hope to match an Elf’s inhuman
+
+    quickness and agility. An Elf with Fey Quickness can avoid melee
+
+    or missile attacks on a roll of 6. If the Elf also has Step Aside or
+
+    Dodge this will increase to a 4+ in the relevant area. For example,
+
+    an Elf with Fey Quickness and Step Aside avoids melee attacks on a
+
+    4+ and missile attacks on a 6.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dark Elf Special Skills / Fey Quickness
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Fey Quickness
+    es: null
+  effect_i18n:
+    en: 'Few can ever hope to match an Elf’s inhuman
+
+      quickness and agility. An Elf with Fey Quickness can avoid melee
+
+      or missile attacks on a roll of 6. If the Elf also has Step Aside or
+
+      Dodge this will increase to a 4+ in the relevant area. For example,
+
+      an Elf with Fey Quickness and Step Aside avoids melee attacks on a
+
+      4+ and missile attacks on a 6.'
+    es: null
+  applies_to:
+    band: true
+- id: band--dark-elf-special-skills-infiltration
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.dark-elves.band.dark-elf-special-skills-infiltration
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: movimiento.'
+  name: Infiltration
+  effect: 'The Dark Elf with this skill is always placed on the
+
+    battlefield after the opposing warband and can be placed anywhere
+
+    on the table as long as it is out of sight of the opposing warband and
+
+    more than 12" away from any enemy model. If both players have
+
+    models which infiltrate, roll a D6 for each, and the lowest roll sets
+
+    up first.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dark Elf Special Skills / Infiltration
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Infiltration
+    es: null
+  effect_i18n:
+    en: 'The Dark Elf with this skill is always placed on the
+
+      battlefield after the opposing warband and can be placed anywhere
+
+      on the table as long as it is out of sight of the opposing warband and
+
+      more than 12" away from any enemy model. If both players have
+
+      models which infiltrate, roll a D6 for each, and the lowest roll sets
+
+      up first.'
+    es: null
+  applies_to:
+    band: true
+- id: band--dark-elf-special-skills-master-of-poisons
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.dark-elves.band.dark-elf-special-skills-master-of-poisons
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: recursos intermedios.'
+  name: Master of Poisons
+  effect: 'The Dark Elf is proficient in concocting
+
+    different poisons. If the Hero doesn’t search for rare items, he may
+
+    make D3-1 doses of Dark Venom instead. There is a chance of
+
+    getting none, as the hero doesn’t have access to a stable workplace.
+
+    The poison must be used in the next battle and cannot be sold or
+
+    traded to other warbands as the Dark Elves guard their secrets very
+
+    carefully.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dark Elf Special Skills / Master of Poisons
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    en: Master of Poisons
+    es: null
+  effect_i18n:
+    en: 'The Dark Elf is proficient in concocting
+
+      different poisons. If the Hero doesn’t search for rare items, he may
+
+      make D3-1 doses of Dark Venom instead. There is a chance of
+
+      getting none, as the hero doesn’t have access to a stable workplace.
+
+      The poison must be used in the next battle and cannot be sold or
+
+      traded to other warbands as the Dark Elves guard their secrets very
+
+      carefully.'
+    es: null
+  applies_to:
+    band: true

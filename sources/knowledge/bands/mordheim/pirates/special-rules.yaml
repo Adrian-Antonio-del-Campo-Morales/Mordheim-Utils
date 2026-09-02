@@ -1,0 +1,822 @@
+schema_version: 2
+band_id: pirates
+rules:
+- id: pirate-captain--leader
+  name: Leader
+  effect: 'Any pirate within 6" of the Captain may
+
+    use his Leadership characteristic when taking
+
+    any Leadership tests.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Pirate Captain / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any pirate within 6" of the Captain may
+
+      use his Leadership characteristic when taking
+
+      any Leadership tests.'
+    es: null
+  applies_to:
+    profile_ids:
+    - pirate-captain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pirates.pirate-captain.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: gunners--swivel-gun-is-dangerous-matey
+  name: Swivel Guns Is Dangerous, Matey!
+  effect: A Gunner equipped with the warband's single Swivel Gun must always form a one-model Henchman group. If split from
+    an existing Gunner group to carry it, the Gunner retains the Experience and advances already earned by that group.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Gunners / Special Rules
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Swivel Guns Is Dangerous, Matey!
+    es: null
+  effect_i18n:
+    en: A Gunner equipped with the warband's single Swivel Gun must always form a one-model Henchman group. If split from
+      an existing Gunner group to carry it, the Gunner retains the Experience and advances already earned by that group.
+    es: null
+  applies_to:
+    profile_ids:
+    - gunners
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pirates.gunners.swivel-gun-is-dangerous-matey
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: boatswains--expert-riggers
+  name: Expert Riggers
+  effect: 'Boatswains are highly trained
+
+    in using their ropes, as they are the ones who
+
+    maintain the complex network of rigging
+
+    throughout the ship. They may re-roll failed
+
+    Initiative tests Leaping over Gaps, Jumping
+
+    Down, and performing a Diving Charge, as well
+
+    as the normal test for Climbing Up or Down that
+
+    a Rope allows.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Boatswains / Special Rules / Expert Riggers
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Expert Riggers
+    es: null
+  effect_i18n:
+    en: 'Boatswains are highly trained
+
+      in using their ropes, as they are the ones who
+
+      maintain the complex network of rigging
+
+      throughout the ship. They may re-roll failed
+
+      Initiative tests Leaping over Gaps, Jumping
+
+      Down, and performing a Diving Charge, as well
+
+      as the normal test for Climbing Up or Down that
+
+      a Rope allows.'
+    es: null
+  applies_to:
+    profile_ids:
+    - boatswains
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pirates.boatswains.expert-riggers
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: swabbies--not-hired
+  name: Not Hired
+  effect: Swabbies are never purchased normally; they join only through the Pirate warband's special recruitment rules.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Swabbies / Not Hired
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Not Hired
+    es: null
+  effect_i18n:
+    en: Swabbies are never purchased normally; they join only through the Pirate warband's special recruitment rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - swabbies
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pirates.swabbies.not-hired
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: swabbies--never-gain-experience
+  name: Never Gain Experience
+  effect: Swabbies never gain Experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Swabbies / Never Gain Experience
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Never Gain Experience
+    es: null
+  effect_i18n:
+    en: Swabbies never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - swabbies
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pirates.swabbies.never-gain-experience
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: swabbies--rabble
+  name: Rabble
+  effect: Swabbies in the same Henchman group do not need identical equipment. Each may use different items, but only from
+    the Swabbie Equipment List. Swabbies can never use magic or cast spells, regardless of their original background.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Swabbies / Rabble
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Rabble
+    es: null
+  effect_i18n:
+    en: Swabbies in the same Henchman group do not need identical equipment. Each may use different items, but only from the
+      Swabbie Equipment List. Swabbies can never use magic or cast spells, regardless of their original background.
+    es: null
+  applies_to:
+    profile_ids:
+    - swabbies
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.swabbie-rabble-loadout
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.swabbie-rabble-loadout
+- id: swabbies--escaped-swabbies
+  name: Blimey, They Got Away!
+  effect: If the Pirate warband Routs, any Swabbies that had already left the table in earlier turns escape permanently and
+    are removed from the roster.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Swabbies / Blimey, they got away!
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Blimey, They Got Away!
+    es: null
+  effect_i18n:
+    en: If the Pirate warband Routs, any Swabbies that had already left the table in earlier turns escape permanently and
+      are removed from the roster.
+    es: null
+  applies_to:
+    profile_ids:
+    - swabbies
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pirates.swabbies.escaped-swabbies
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: swabbies--not-true-pirates
+  name: They Ain't True Pirates!
+  effect: Swabbies who are fleeing or Out of Action do not count when determining whether the Pirate warband must take a Rout
+    test.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Swabbies / Don't mind them mates
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: They Ain't True Pirates!
+    es: null
+  effect_i18n:
+    en: Swabbies who are fleeing or Out of Action do not count when determining whether the Pirate warband must take a Rout
+      test.
+    es: null
+  applies_to:
+    profile_ids:
+    - swabbies
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pirates.swabbies.not-true-pirates
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--kidnapped
+  name: Kidnapped!
+  effect: A captured enemy Human Hero may be offered a chance to join instead of being ransomed or sold. Both players roll
+    2D6 and add the Leadership of the Pirate Captain or captive respectively; the winner of the battle adds +1. If the Pirate
+    total is higher, the captive becomes Crew, either creating a new Crew group or joining one of four or fewer models, and
+    adopts the Crew group's characteristics and advances. Otherwise the captive becomes a Swabbie, retaining its own characteristics
+    and skills but losing its old equipment and using only the Swabbie Equipment List. Enemy Human Henchmen permanently lost
+    after being taken Out of Action may be captured on a 4+ if the Pirates won, and then test in the same way. Hired Swords
+    and Special Characters can never be recruited by this rule.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Swabbies / Kidnapped!
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Kidnapped!
+    es: null
+  effect_i18n:
+    en: A captured enemy Human Hero may be offered a chance to join instead of being ransomed or sold. Both players roll 2D6
+      and add the Leadership of the Pirate Captain or captive respectively; the winner of the battle adds +1. If the Pirate
+      total is higher, the captive becomes Crew, either creating a new Crew group or joining one of four or fewer models,
+      and adopts the Crew group's characteristics and advances. Otherwise the captive becomes a Swabbie, retaining its own
+      characteristics and skills but losing its old equipment and using only the Swabbie Equipment List. Enemy Human Henchmen
+      permanently lost after being taken Out of Action may be captured on a 4+ if the Pirates won, and then test in the same
+      way. Hired Swords and Special Characters can never be recruited by this rule.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.pirates.band.kidnapped
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--stragglers-and-prisoners
+  name: Stragglers and Prisoners
+  effect: When exploration finds Stragglers, the Captain may pass a Leadership test to turn the Straggler into a Swabbie.
+    When Prisoners are found, roll D3 for their number and test the Captain's Leadership separately for each. A successful
+    test adds the Prisoner as Crew; a failed test adds the Prisoner as a Swabbie. A new Crewman starts at normal Crew characteristics
+    and 0 Experience unless joining an existing Crew group of four or fewer models, in which case it matches that group's
+    characteristics and advances. If the warband cannot pay to equip a successful Prisoner as Crew, it becomes a Swabbie instead.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Swabbies / Stragglers and Prisoners
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Stragglers and Prisoners
+    es: null
+  effect_i18n:
+    en: When exploration finds Stragglers, the Captain may pass a Leadership test to turn the Straggler into a Swabbie. When
+      Prisoners are found, roll D3 for their number and test the Captain's Leadership separately for each. A successful test
+      adds the Prisoner as Crew; a failed test adds the Prisoner as a Swabbie. A new Crewman starts at normal Crew characteristics
+      and 0 Experience unless joining an existing Crew group of four or fewer models, in which case it matches that group's
+      characteristics and advances. If the warband cannot pay to equip a successful Prisoner as Crew, it becomes a Swabbie
+      instead.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.pirates.band.stragglers-and-prisoners
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--hired-swords
+  name: Hired Swords
+  effect: Unless specifically stated otherwise, Pirates use the same Hired Sword access as a regular Human Mercenary warband.
+    If the Pirate warband contains both Dwarf and Elf Hired Swords at the same time, it pays an additional 20 gc total upkeep.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hired Swords
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Hired Swords
+    es: null
+  effect_i18n:
+    en: Unless specifically stated otherwise, Pirates use the same Hired Sword access as a regular Human Mercenary warband.
+      If the Pirate warband contains both Dwarf and Elf Hired Swords at the same time, it pays an additional 20 gc total upkeep.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.pirates.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--one-off-games
+  name: One-off Games
+  effect: In one-off games, a Pirate warband starts with two Swabbies for free.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / One-off games
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: One-off Games
+    es: null
+  effect_i18n:
+    en: In one-off games, a Pirate warband starts with two Swabbies for free.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.pirates.band.one-off-games
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--succession
+  name: Succession
+  effect: If the Pirate Captain is killed, one of the Ship's Mates becomes the new Captain in the same manner that a Champion
+    succeeds a Mercenary Captain.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Succession
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Succession
+    es: null
+  effect_i18n:
+    en: If the Pirate Captain is killed, one of the Ship's Mates becomes the new Captain in the same manner that a Champion
+      succeeds a Mercenary Captain.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.pirates.band.succession
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--swabbie-limit
+  name: Swabbie Limit
+  effect: The warband may never include more Swabbies than Crew.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Choice of Warriors / Swabbies
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Swabbie Limit
+    es: null
+  effect_i18n:
+    en: The warband may never include more Swabbies than Crew.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.pirates.band.swabbie-limit
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--pirate-special-skills-sea-shanty-singer
+  kind: warband_skill
+  name: Sea Shanty Singer
+  effect: 'The pirate is renowned throughout the seas as
+
+    one of the greatest singers aboard a ship, able to
+
+    raise the spirits of any crew with his stirring
+
+    renditions of ''The Sloop Johan Bee'', ''What do
+
+    you do with a Drunken Halfling?'', and other
+
+    famous pirate ditties. At the start of his Close
+
+    Combat phase he can suddenly burst out in
+
+    song, distracting one opponent in base contact
+
+    of his choosing. That enemy must pass a
+
+    Leadership test, or lose 1 Attack that turn. This
+
+    does not affect Undead or other non-living creatures, such as Possessed.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pirate Special Skills / Sea Shanty Singer
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Sea Shanty Singer
+    es: null
+  effect_i18n:
+    en: 'The pirate is renowned throughout the seas as
+
+      one of the greatest singers aboard a ship, able to
+
+      raise the spirits of any crew with his stirring
+
+      renditions of ''The Sloop Johan Bee'', ''What do
+
+      you do with a Drunken Halfling?'', and other
+
+      famous pirate ditties. At the start of his Close
+
+      Combat phase he can suddenly burst out in
+
+      song, distracting one opponent in base contact
+
+      of his choosing. That enemy must pass a
+
+      Leadership test, or lose 1 Attack that turn. This
+
+      does not affect Undead or other non-living creatures, such as Possessed.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.pirates.band.pirate-special-skills-sea-shanty-singer
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--pirate-special-skills-sea-legs
+  kind: warband_skill
+  name: Sea Legs
+  effect: 'Even in the strongest seas, the pirate has
+
+    learned to keep his footing and equilibrium. If
+
+    he Falls during a battle, he may ignore the
+
+    effects of the D3 hits on a roll of 4+ (make a
+
+    single roll to see if the any of the hits take effect
+
+    or not). In addition, if he is knocked down or
+
+    stunned within 1" of a precipice he may re-roll
+
+    his Initiative test to see if he falls down or not.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pirate Special Skills / Sea Legs
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Sea Legs
+    es: null
+  effect_i18n:
+    en: 'Even in the strongest seas, the pirate has
+
+      learned to keep his footing and equilibrium. If
+
+      he Falls during a battle, he may ignore the
+
+      effects of the D3 hits on a roll of 4+ (make a
+
+      single roll to see if the any of the hits take effect
+
+      or not). In addition, if he is knocked down or
+
+      stunned within 1" of a precipice he may re-roll
+
+      his Initiative test to see if he falls down or not.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.pirates.band.pirate-special-skills-sea-legs
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--pirate-special-skills-cutlass-master
+  kind: warband_skill
+  name: Cutlass Master
+  effect: 'These short, single bladed swords are the
+
+    mainstay weapon of any pirate crew, and in the
+
+    hands of a trained seaman they are superb
+
+    weapons for close quarters fighting. If the pirate
+
+    is equipped with a Sword, this skill will give him
+
+    the additional benefit of also being able to parry
+
+    successfully if the player rolls equal to number
+
+    rolled to hit, not just higher as normal. This
+
+    extra ability only apply if the Pirate is not in the
+
+    open; ie., only when in cover or in a building,
+
+    within 2" of a terrain feature like a wall or tree,
+
+    etc.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pirate Special Skills / Cutlass Master
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Cutlass Master
+    es: null
+  effect_i18n:
+    en: 'These short, single bladed swords are the
+
+      mainstay weapon of any pirate crew, and in the
+
+      hands of a trained seaman they are superb
+
+      weapons for close quarters fighting. If the pirate
+
+      is equipped with a Sword, this skill will give him
+
+      the additional benefit of also being able to parry
+
+      successfully if the player rolls equal to number
+
+      rolled to hit, not just higher as normal. This
+
+      extra ability only apply if the Pirate is not in the
+
+      open; ie., only when in cover or in a building,
+
+      within 2" of a terrain feature like a wall or tree,
+
+      etc.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.pirates.band.pirate-special-skills-cutlass-master
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--pirate-special-skills-booming-voice
+  kind: warband_skill
+  name: Booming Voice
+  effect: '(Captain only) The Captain has spent many a
+
+    battle bellowing orders to his crew, yelling
+
+    above the roar of the cannons and the screams
+
+    of the enemy. Once per turn, the captain may
+
+    shout encouraging words (or threats) at any one
+
+    pirate within 8" who just failed his test to see if
+
+    he runs away from combat, or to stop running
+
+    away if he was already fleeing. That pirate may
+
+    then re-roll the test. This can only be done if the
+
+    Captain is on his feet, but not if the Captain is in
+
+    close combat himself.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pirate Special Skills / Booming Voice
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Booming Voice
+    es: null
+  effect_i18n:
+    en: '(Captain only) The Captain has spent many a
+
+      battle bellowing orders to his crew, yelling
+
+      above the roar of the cannons and the screams
+
+      of the enemy. Once per turn, the captain may
+
+      shout encouraging words (or threats) at any one
+
+      pirate within 8" who just failed his test to see if
+
+      he runs away from combat, or to stop running
+
+      away if he was already fleeing. That pirate may
+
+      then re-roll the test. This can only be done if the
+
+      Captain is on his feet, but not if the Captain is in
+
+      close combat himself.'
+    es: null
+  eligibility:
+  - pirate-captain
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.pirates.band.pirate-special-skills-booming-voice
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--pirate-special-skills-hardy-constitution
+  kind: warband_skill
+  name: Hardy Constitution
+  effect: 'Many months at sea, and especially many
+
+    months eating hardtack, have hardened the
+
+    pirate''s body to effects that would cause a lesser
+
+    man to collapse. During the battle, the pirate
+
+    may ignore any Critical Hits on a roll of 5+ (the
+
+    wound is treated as normal if the roll is
+
+    successful). If the roll is failed, the Critical Hit is
+
+    worked out as normal.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pirate Special Skills / Hardy Constitution
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Hardy Constitution
+    es: null
+  effect_i18n:
+    en: 'Many months at sea, and especially many
+
+      months eating hardtack, have hardened the
+
+      pirate''s body to effects that would cause a lesser
+
+      man to collapse. During the battle, the pirate
+
+      may ignore any Critical Hits on a roll of 5+ (the
+
+      wound is treated as normal if the roll is
+
+      successful). If the roll is failed, the Critical Hit is
+
+      worked out as normal.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.hardy-constitution
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hardy-constitution
+- id: band--pirate-special-skills-swashbuckler
+  kind: warband_skill
+  name: Swashbuckler
+  effect: 'The pirate cuts a dashing figure in combat,
+
+    mixing dazzling swordplay and acrobatic feats
+
+    with charm and witty comments. Even the
+
+    basest villains in Mordheim respect (and curse)
+
+    his ability to always seem to effortlessly slip
+
+    from their grasp. The pirate may make a
+
+    Leadership Test at the end of any Hand-to-Hand
+
+    phase (pirate''s or enemy''s turn) if he is still in
+
+    base contact with any enemy models. If he
+
+    passes he may make a normal movement away
+
+    from the enemy (he may not run or charge),
+
+    without the enemy striking any blows on him. If
+
+    he fails the test he remains in combat and must
+
+    fight as normal in the following turn.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pirate Special Skills / Swashbuckler
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  name_i18n:
+    en: Swashbuckler
+    es: null
+  effect_i18n:
+    en: 'The pirate cuts a dashing figure in combat,
+
+      mixing dazzling swordplay and acrobatic feats
+
+      with charm and witty comments. Even the
+
+      basest villains in Mordheim respect (and curse)
+
+      his ability to always seem to effortlessly slip
+
+      from their grasp. The pirate may make a
+
+      Leadership Test at the end of any Hand-to-Hand
+
+      phase (pirate''s or enemy''s turn) if he is still in
+
+      base contact with any enemy models. If he
+
+      passes he may make a normal movement away
+
+      from the enemy (he may not run or charge),
+
+      without the enemy striking any blows on him. If
+
+      he fails the test he remains in combat and must
+
+      fight as normal in the following turn.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.pirates.band.pirate-special-skills-swashbuckler
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'

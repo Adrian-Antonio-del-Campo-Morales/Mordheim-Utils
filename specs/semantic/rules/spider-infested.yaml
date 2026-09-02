@@ -1,0 +1,68 @@
+schema_version: 1
+specifications:
+- id: mechanic-and-editorial-spider-infested
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/mechanic.spider-infested, digest: 883fee85016ce9ae5fc430ca3c1ec8774d25e37415bb0b93767c78ddc24280cb}
+  - {target: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-spider-infested/mechanic.spider-infested, digest: df2e471e6be23a5ce922f060cc7079fc9ec44893a4ba5e7a7b7988e279b41a59}
+  interpretation: >-
+    Cada fallo al impactar contra el héroe, y cada ataque que este pare, acumula
+    -1 Iniciativa al atacante mientras continúa el duelo. La penalización puede
+    alcanzar Iniciativa 0. Los impactos no parados no la generan.
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    attacker: {skill_ids: [mechanic.spider-infested]}
+    expect: {attacker.fighter_id: 'custom:custom'}
+    expect_contains: {attacker.global_effects.tags: [mechanic.spider-infested]}
+  - id: editorial-recipients
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: big-boss}
+    context: {rule_id: band--savage-goblin-special-skills-spider-infested}
+    expect: {result.recipients: [big-boss, red-teeth, trackers, witch-doctor]}
+  - id: three-misses-reach-zero
+    roles: [active, boundary, sequence, consumption]
+    operation: spider_priority
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 3}
+    defender: {skill_ids: [mechanic.spider-infested]}
+    context: {count: 3}
+    rolls:
+    - {key: test.attack.0.hit, value: 1}
+    - {key: test.attack.1.hit, value: 1}
+    - {key: test.attack.2.hit, value: 1}
+    expect:
+      result.attacker.initiative_penalty: 3
+      result.attacker.initiative_floor: 0
+      result.priority.initiative: 0
+  - id: successful-parry-penalizes
+    roles: [active, sequence, consumption]
+    operation: spider_priority
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {main_weapon_id: weapon.sword, skill_ids: [mechanic.spider-infested]}
+    context: {count: 1}
+    rolls:
+    - {key: test.attack.0.hit, value: 4}
+    - {key: test.attack.0.parry, value: 5}
+    expect:
+      result.attacker.initiative_penalty: 1
+      result.attacks.0.parried: true
+  - id: ordinary-defender-control
+    roles: [inactive]
+    operation: spider_priority
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {main_weapon_id: weapon.mace}
+    context: {count: 1}
+    rolls: [{key: test.attack.0.hit, value: 1}]
+    expect:
+      result.attacker.initiative_penalty: 0
+      result.priority.initiative: 3
+  mutations:
+  - id: remove-infestation
+    path: defender.global_effects.tags
+    value: []
+    cases: [three-misses-reach-zero, successful-parry-penalizes]

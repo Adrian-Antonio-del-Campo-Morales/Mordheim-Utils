@@ -1,0 +1,59 @@
+schema_version: 2
+id: gunnery-school-of-nuln
+canonical_family: gunnery-school-of-nuln
+name: Gunnery School of Nuln
+name_i18n:
+  en: Gunnery School of Nuln
+  es: null
+original_locale: en
+ruleset: mordheim
+categories:
+- 1b
+grade: 1b
+setting: Nemesis Crown
+publication: Nemesis Crown Supplement
+status: source-normalized
+sources:
+- manual: mordheimer.net
+  printed_page: 0
+  section: Gunnery School of Nuln
+  url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: senior-gunnery-officer
+    minimum: 1
+    maximum: 1
+  - profile_id: instructor
+    minimum: 0
+    maximum: 1
+  - profile_id: senior-student
+    minimum: 0
+    maximum: 1
+  - profile_id: underclassmen
+    minimum: 0
+    maximum: 2
+  - profile_id: sons-of-the-guns
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: marksmen
+    minimum: 0
+    maximum: 7
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: pistoliers
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--impeccable-care
+- band--properly-used
+- band--proud-to-a-fault

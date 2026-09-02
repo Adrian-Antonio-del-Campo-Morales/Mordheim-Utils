@@ -1,0 +1,64 @@
+schema_version: 2
+id: lustria-dark-elves
+canonical_family: dark-elves
+name: Dark Elves
+name_i18n:
+  en: Dark Elves
+  es: null
+original_locale: es
+categories:
+- trollheim
+grade: null
+setting: Lustria
+publication: Lustria
+status: source-normalized
+sources:
+- manual: lustria
+  printed_page: 58-65
+  section: Dark Elves
+roster:
+  minimum_models: 3
+  maximum_models: 12
+  starting_gold: 500
+  members:
+  - profile_id: dark-prince
+    minimum: 1
+    maximum: 1
+  - profile_id: darkblades
+    minimum: 0
+    maximum: 2
+  - profile_id: beastmaster
+    minimum: 0
+    maximum: 1
+  - profile_id: dark-elf-sorceress
+    minimum: 0
+    maximum: 1
+  - profile_id: corsairs
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: shadows
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: cold-ones
+    minimum: 0
+    maximum: 2
+    group_size:
+      minimum: 1
+      maximum: 2
+ruleset: mordheim
+rule_ids:
+- band--hatred-high-elves
+- band--excellent-sight
+- band--ancestral-customs
+- band--cold-one-requirement
+- band--dark-elf-special-skills-infiltration
+- band--dark-elf-special-skills-fury-of-khaine
+- band--dark-elf-special-skills-strong-constitution
+- band--dark-elf-special-skills-elven-agility
+- band--dark-elf-special-skills-poison-expert

@@ -1,0 +1,258 @@
+schema_version: 2
+band_id: pirates
+profiles:
+- id: pirate-captain
+  name: Pirate Captain
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Pirate Captain
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  source_path:
+  - heroes
+  - 1 Pirate Captain
+  name_i18n:
+    en: Pirate Captain
+    es: null
+  rule_ids:
+  - pirate-captain--leader
+  combat_traits: {}
+- id: ships-mates
+  name: Ship's Mates
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Ship's Mates
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  source_path:
+  - heroes
+  - 0 – 2 Ship’s Mates
+  name_i18n:
+    en: Ship's Mates
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: cabin-boys
+  name: Cabin Boys
+  type: hero
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Cabin Boys
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  source_path:
+  - heroes
+  - 0 – 2 Cabin Boys
+  name_i18n:
+    en: Cabin Boys
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: crew
+  name: Crew
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Crew
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  source_path:
+  - henchmen
+  - Crew
+  name_i18n:
+    en: Crew
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: gunners
+  name: Gunners
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - gunner-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 7 Gunners
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  source_path:
+  - henchmen
+  - 0 – 7 Gunners
+  name_i18n:
+    en: Gunners
+    es: null
+  rule_ids:
+  - gunners--swivel-gun-is-dangerous-matey
+  combat_traits: {}
+- id: boatswains
+  name: Boatswains
+  type: henchman
+  cost: 32
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Starts with a Rope & Hook and may never sell it or give it away.
+  - May additionally select weapons and armour from the Pirate Equipment List.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Boatswains
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  source_path:
+  - henchmen
+  - 0 – 5 Boatswains
+  name_i18n:
+    en: Boatswains
+    es: null
+  rule_ids:
+  - boatswains--expert-riggers
+  combat_traits: {}
+- id: swabbies
+  name: Swabbies
+  type: henchman
+  cost: 0
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - swabbie-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Swabbies
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  source_path:
+  - henchmen
+  - 0 – 5 Swabbies
+  name_i18n:
+    en: Swabbies
+    es: null
+  rule_ids:
+  - swabbies--not-hired
+  - swabbies--never-gain-experience
+  - swabbies--rabble
+  - swabbies--escaped-swabbies
+  - swabbies--not-true-pirates
+  combat_traits: {}

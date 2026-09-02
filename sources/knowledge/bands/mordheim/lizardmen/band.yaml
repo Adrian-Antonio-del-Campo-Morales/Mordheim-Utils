@@ -1,0 +1,65 @@
+schema_version: 2
+id: lizardmen
+canonical_family: lizardmen
+name: Lizardmen
+name_i18n:
+  en: Lizardmen
+  es: null
+original_locale: en
+ruleset: mordheim
+categories:
+- 1b
+grade: 1b
+setting: Lustria
+publication: 'Town Cryer #11'
+status: source-normalized
+sources:
+- manual: mordheimer.net
+  printed_page: 0
+  section: Lizardmen
+  url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+roster:
+  minimum_models: 3
+  maximum_models: 20
+  starting_gold: 500
+  members:
+  - profile_id: skink-priest
+    minimum: 1
+    maximum: 1
+  - profile_id: saurus-totem-warrior
+    minimum: 0
+    maximum: 1
+  - profile_id: skink-great-crests
+    minimum: 0
+    maximum: 2
+  - profile_id: skink-braves
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: saurus-braves
+    minimum: 0
+    maximum: 4
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: kroxigor
+    minimum: 0
+    maximum: 1
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--scaly-skin
+- band--armour
+- band--bite-attack
+- band--cold-blooded
+- band--aquatic
+- band--jungle-born
+- band--saurus-rarity
+- band--saurus-skill-prohibitions
+- band--lizardmen-special-skills-skinks-only-infiltration
+- band--lizardmen-special-skills-skinks-only-great-hunter
+- band--lizardmen-special-skills-saurus-only-bellowing-battle-roar
+- band--lizardmen-special-skills-saurus-only-toughened-hide

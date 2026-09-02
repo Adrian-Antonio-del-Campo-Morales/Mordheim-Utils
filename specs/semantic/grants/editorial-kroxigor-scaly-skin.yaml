@@ -1,0 +1,51 @@
+schema_version: 1
+specifications:
+- id: mordheim-kroxigor-scaly-skin
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: rule/mordheim/lizardmen/kroxigor--scaly-skin/trait.natural-armour-save, digest: 95f9f1e1fbe8bf83e7c07c32de3a4455ed29096a217cbfd584633ba60b2010ae}
+  interpretation: El Kroxigor posee salvacion natural 4+, modificada normalmente por Fuerza.
+    No se infiere acumulacion ni limite adicional porque esta fuente solo concede el valor natural.
+  cases:
+  - id: recipient
+    roles: [grant]
+    operation: grant
+    defender: {band_id: lizardmen, profile_id: kroxigor}
+    context: {rule_id: kroxigor--scaly-skin}
+    expect: {result.recipients: [kroxigor]}
+  - id: base-save
+    roles: [compiled, active, consumer]
+    operation: armour
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {band_id: lizardmen, profile_id: kroxigor}
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: strength-four
+    roles: [boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.sword, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
+    defender: {band_id: lizardmen, profile_id: kroxigor}
+    rolls: [{key: armour, value: 4}]
+    expect: {result.target: 5, result.saved: false}
+  - id: strength-five-modifies
+    roles: [active, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.sword, characteristics: {weapon_skill: 3, strength: 5, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
+    defender: {band_id: lizardmen, profile_id: kroxigor}
+    rolls: [{key: armour, value: 6}]
+    expect: {result.target: 6, result.saved: true}
+  - id: armour-denial
+    roles: [inactive, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.vomit-attack}
+    defender: {band_id: lizardmen, profile_id: kroxigor}
+    expect: {result.eligible: false, result.saved: false}
+  mutations:
+  - id: remove-natural-armour
+    changes:
+    - {path: defender.natural_armour_save, value: 7}
+    - {path: defender.armour_save, value: 7}
+    cases: [base-save]

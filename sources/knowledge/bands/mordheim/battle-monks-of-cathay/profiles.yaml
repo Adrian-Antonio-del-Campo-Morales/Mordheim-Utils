@@ -1,0 +1,237 @@
+schema_version: 2
+band_id: battle-monks-of-cathay
+profiles:
+- id: emissary
+  name: Emissary
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - soldier-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - academic
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Emissary
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  source_path:
+  - Heroes
+  - 1 Emissary
+  name_i18n:
+    en: Emissary
+    es: null
+  rule_ids:
+  - emissary--leader
+  - emissary--ride-horse
+  - emissary--decree
+  combat_traits: {}
+- id: officer
+  name: Officer
+  type: hero
+  cost: 40
+  experience: 12
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - soldier-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May only select weapons from the Soldier Equipment List.
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Officer
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  source_path:
+  - Heroes
+  - 0 – 1 Officer
+  name_i18n:
+    en: Officer
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: dragon-monks
+  name: Dragon Monks
+  type: hero
+  cost: 55
+  experience: 15
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - monk-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 3 Dragon Monks
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  source_path:
+  - Heroes
+  - 0 – 3 Dragon Monks
+  name_i18n:
+    en: Dragon Monks
+    es: null
+  rule_ids:
+  - dragon-monks--unarmed-fighting
+  - dragon-monks--art-of-silent-death
+  combat_traits:
+    starting_skills:
+    - skill.unarmed-critical-strikes
+- id: soldiers
+  name: Soldiers
+  type: henchman
+  cost: 25
+  experience: 0
+  group_size:
+    minimum: 1
+    maximum: 5
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - soldier-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Soldiers
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  source_path:
+  - henchmen
+  - Soldiers
+  name_i18n:
+    en: Soldiers
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: warrior-monks
+  name: Warrior Monks
+  type: henchman
+  cost: 35
+  experience: 0
+  group_size:
+    minimum: 1
+    maximum: 5
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - monk-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Warrior Monks
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  source_path:
+  - henchmen
+  - 0 – 5 Warrior Monks
+  name_i18n:
+    en: Warrior Monks
+    es: null
+  rule_ids:
+  - warrior-monks--unarmed-fighting
+  combat_traits: {}
+- id: raging-peasants
+  name: Raging Peasants
+  type: henchman
+  cost: 10
+  experience: 0
+  group_size:
+    minimum: 1
+    maximum: 5
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Raging Peasants
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  source_path:
+  - henchmen
+  - 0 – 5 Raging Peasants
+  name_i18n:
+    en: Raging Peasants
+    es: null
+  rule_ids:
+  - raging-peasants--unarmed
+  - raging-peasants--simple-folk
+  - raging-peasants--mob
+  - raging-peasants--ignored
+  - raging-peasants--downtrodden
+  combat_traits:
+    injury_profile: 2

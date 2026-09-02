@@ -1,0 +1,236 @@
+schema_version: 2
+band_id: pit-fighters
+profiles:
+- id: pit-king
+  name: Pit King
+  type: hero
+  cost: 80
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 4
+    A: 2
+    Ld: 8
+  equipment_lists:
+  - pit-fighter-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Pit King
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  source_path:
+  - heroes
+  - 1 Pit King
+  name_i18n:
+    en: Pit King
+    es: null
+  rule_ids:
+  - pit-king--leader
+  - pit-king--pit-fighter
+  combat_traits: {}
+- id: dwarf-troll-slayer
+  name: Dwarf Troll Slayer
+  type: hero
+  cost: 50
+  experience: 8
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - ogre-slayer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Ogre & Slayer Equipment List, but may never use missile weapons or any form of armour.
+  - Dwarf Axe and Gromril Weapon options are available only to the Dwarf Troll Slayer.
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Dwarf Troll Slayer
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  source_path:
+  - heroes
+  - 0 – 1 Dwarf Troll Slayer
+  name_i18n:
+    en: Dwarf Troll Slayer
+    es: null
+  rule_ids:
+  - dwarf-troll-slayer--pit-fighter
+  - dwarf-troll-slayer--hard-to-kill
+  - dwarf-troll-slayer--hard-head
+  - dwarf-troll-slayer--hate-orcs-and-goblins
+  - dwarf-troll-slayer--grudgebearers
+  - dwarf-troll-slayer--death-wish
+  combat_traits:
+    starting_skills:
+    - skill.hard-to-kill
+- id: pit-veterans
+  name: Pit Veterans
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pit-fighter-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Pit Veterans
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  source_path:
+  - heroes
+  - 0 – 2 Pit Veterans
+  name_i18n:
+    en: Pit Veterans
+    es: null
+  rule_ids:
+  - pit-veterans--pit-fighter
+  combat_traits: {}
+- id: pit-fighters
+  name: Pit Fighters
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pit-fighter-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pit Fighters
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  source_path:
+  - henchmen
+  - Pit Fighters
+  name_i18n:
+    en: Pit Fighters
+    es: null
+  rule_ids:
+  - pit-fighters--pit-fighter
+  combat_traits: {}
+- id: pursuers
+  name: Pursuers
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pursuer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 7 Pursuers
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  source_path:
+  - henchmen
+  - 0 – 7 Pursuers
+  name_i18n:
+    en: Pursuers
+    es: null
+  rule_ids:
+  - pursuers--pit-fighter
+  - pursuers--evade
+  combat_traits: {}
+- id: ogre-pit-fighter
+  name: Ogre Pit Fighter
+  type: henchman
+  cost: 165
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 2
+    S: 4
+    T: 4
+    W: 3
+    I: 3
+    A: 2
+    Ld: 7
+  equipment_lists:
+  - ogre-slayer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select from the Ogre & Slayer Equipment List.
+  - Light armour and helmet are available only to the Ogre Pit Fighter; Dwarf Axe and Gromril Weapon are not available to
+    it.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Ogre Pit Fighter
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  source_path:
+  - henchmen
+  - 0 – 1 Ogre Pit Fighter
+  name_i18n:
+    en: Ogre Pit Fighter
+    es: null
+  rule_ids:
+  - ogre-pit-fighter--pit-fighter
+  - ogre-pit-fighter--fear
+  - ogre-pit-fighter--large
+  - ogre-pit-fighter--skills
+  - ogre-pit-fighter--slow-witted
+  combat_traits: {}

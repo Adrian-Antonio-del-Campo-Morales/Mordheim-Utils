@@ -1,0 +1,156 @@
+schema_version: 1
+specifications:
+- id: editorial-weedy-night-goblins-mic
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/night-goblins-mic/snotling-mob-consists-of-5-snotlings--weedy/trait.injury-profile
+    digest: 1ce87990da2b281c8e3661a329acd40f77d7a3255a9faec60cc0d83b116b8397
+  interpretation: Henchmen / Weedy explicitly replaces the injury table with 1 Knocked Down, 2-3 Stunned,
+    4-6 Out. This verifies an individual injury resolution, not the number of members in the mob.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: mordheim, band_id: night-goblins-mic, profile_id: snotling-mob-consists-of-5-snotlings}
+    context: {rule_id: snotling-mob-consists-of-5-snotlings--weedy}
+    expect: {result.recipients: [snotling-mob-consists-of-5-snotlings]}
+  - id: face-1
+    roles: [active, consumer, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {collection: mordheim, band_id: night-goblins-mic, profile_id: snotling-mob-consists-of-5-snotlings}
+    rolls: [{key: test.injury, value: 1}]
+    expect: {defender.injury_profile: 1, result.condition: KNOCKED_DOWN}
+  - id: face-2
+    roles: [active, consumer, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {collection: mordheim, band_id: night-goblins-mic, profile_id: snotling-mob-consists-of-5-snotlings}
+    rolls: [{key: test.injury, value: 2}]
+    expect: {defender.injury_profile: 1, result.condition: STUNNED}
+  - id: face-3
+    roles: [active, consumer, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {collection: mordheim, band_id: night-goblins-mic, profile_id: snotling-mob-consists-of-5-snotlings}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {defender.injury_profile: 1, result.condition: STUNNED}
+  - id: face-4
+    roles: [active, consumer, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {collection: mordheim, band_id: night-goblins-mic, profile_id: snotling-mob-consists-of-5-snotlings}
+    rolls: [{key: test.injury, value: 4}]
+    expect: {defender.injury_profile: 1, result.condition: OUT}
+  - id: face-5
+    roles: [active, consumer, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {collection: mordheim, band_id: night-goblins-mic, profile_id: snotling-mob-consists-of-5-snotlings}
+    rolls: [{key: test.injury, value: 5}]
+    expect: {defender.injury_profile: 1, result.condition: OUT}
+  - id: face-6
+    roles: [active, consumer, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {collection: mordheim, band_id: night-goblins-mic, profile_id: snotling-mob-consists-of-5-snotlings}
+    rolls: [{key: test.injury, value: 6}]
+    expect: {defender.injury_profile: 1, result.condition: OUT}
+  - id: ordinary-opponent
+    roles: [inactive]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    rolls: [{key: test.injury, value: 4}]
+    expect: {result.condition: STUNNED}
+  - id: complete-table
+    roles: [boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {collection: mordheim, band_id: night-goblins-mic, profile_id: snotling-mob-consists-of-5-snotlings}
+    distribution:
+      observable: result.condition
+      max_rolls: 1
+      expected: {KNOCKED_DOWN: 1/6, STUNNED: 1/3, OUT: 1/2}
+  mutations:
+  - id: ordinary-injury-table
+    path: defender.injury_profile
+    value: 0
+    cases: [face-2, face-4, complete-table]
+- id: editorial-weedy-night-goblins-web
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/night-goblins-web/snotlings--weedy/trait.injury-profile
+    digest: f1d64b8b6de300c2f97588d6c6636df2ffd68d6faeb657eb04ae11531f1263f3
+  interpretation: Henchmen / Weedy explicitly replaces the injury table with 1 Knocked Down, 2-3 Stunned,
+    4-6 Out. This verifies an individual injury resolution, not the number of members in the mob.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    context: {rule_id: snotlings--weedy}
+    expect: {result.recipients: [snotlings]}
+  - id: face-1
+    roles: [active, consumer, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    rolls: [{key: test.injury, value: 1}]
+    expect: {defender.injury_profile: 1, result.condition: KNOCKED_DOWN}
+  - id: face-2
+    roles: [active, consumer, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    rolls: [{key: test.injury, value: 2}]
+    expect: {defender.injury_profile: 1, result.condition: STUNNED}
+  - id: face-3
+    roles: [active, consumer, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {defender.injury_profile: 1, result.condition: STUNNED}
+  - id: face-4
+    roles: [active, consumer, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    rolls: [{key: test.injury, value: 4}]
+    expect: {defender.injury_profile: 1, result.condition: OUT}
+  - id: face-5
+    roles: [active, consumer, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    rolls: [{key: test.injury, value: 5}]
+    expect: {defender.injury_profile: 1, result.condition: OUT}
+  - id: face-6
+    roles: [active, consumer, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    rolls: [{key: test.injury, value: 6}]
+    expect: {defender.injury_profile: 1, result.condition: OUT}
+  - id: ordinary-opponent
+    roles: [inactive]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    rolls: [{key: test.injury, value: 4}]
+    expect: {result.condition: STUNNED}
+  - id: complete-table
+    roles: [boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    distribution:
+      observable: result.condition
+      max_rolls: 1
+      expected: {KNOCKED_DOWN: 1/6, STUNNED: 1/3, OUT: 1/2}
+  mutations:
+  - id: ordinary-injury-table
+    path: defender.injury_profile
+    value: 0
+    cases: [face-2, face-4, complete-table]

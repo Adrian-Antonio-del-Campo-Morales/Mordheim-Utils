@@ -1,0 +1,188 @@
+schema_version: 1
+specifications:
+- id: editorial-pestilens-ignore-pain-mordheim
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain/skill.ignore-pain
+    digest: 2baab93dd973462468f39e46ae58e913db8678a1fd6fa5802c0557009711f52a
+  depends_on: [mechanic/skill.ignore-pain]
+  interpretation: Ignore Pain requires Resilient. Among the current unpromoted profiles only Plague Priest and
+    Plague Monks have the Strength access needed to select that prerequisite. Injury faces 1-4 become Knocked Down;
+    5-6 remain Out of Action. This is not immunity to all injuries.
+  cases:
+  - id: legal-recipients-with-prerequisite
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: mordheim, band_id: skaven-clan-pestilens, profile_id: plague-priest, skill_ids: [skill.resilient]}
+    context: {rule_id: band--clan-pestilens-special-skills-ignore-pain}
+    expect: {result.recipients: [plague-monks, plague-priest]}
+  - id: missing-resilient
+    roles: [rejected]
+    operation: compile
+    attacker: {collection: mordheim, band_id: skaven-clan-pestilens, profile_id: plague-priest, special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]}
+    reject: Ignore Pain requires Resilient
+  - id: injury-1
+    roles: [inactive, boundary]
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+      skill_ids: [skill.resilient]
+    rolls: [{key: test.injury, value: 1}]
+    expect: {result.condition: KNOCKED_DOWN}
+  - id: injury-2
+    roles: [inactive, boundary]
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+      skill_ids: [skill.resilient]
+    rolls: [{key: test.injury, value: 2}]
+    expect: {result.condition: KNOCKED_DOWN}
+  - id: injury-3
+    roles: [active, consumer, boundary]
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+      skill_ids: [skill.resilient]
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+  - id: injury-4
+    roles: [active, consumer, boundary]
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+      skill_ids: [skill.resilient]
+    rolls: [{key: test.injury, value: 4}]
+    expect: {result.condition: KNOCKED_DOWN}
+  - id: injury-5
+    roles: [inactive, boundary]
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+      skill_ids: [skill.resilient]
+    rolls: [{key: test.injury, value: 5}]
+    expect: {result.condition: OUT}
+  - id: injury-6
+    roles: [inactive, boundary]
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+      skill_ids: [skill.resilient]
+    rolls: [{key: test.injury, value: 6}]
+    expect: {result.condition: OUT}
+  mutations:
+  - id: remove-injury-replacement
+    path: defender.global_effects.tags
+    value: []
+    cases: [injury-3, injury-4]
+- id: editorial-pestilens-ignore-pain-trollheim
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain/skill.ignore-pain
+    digest: ad28db4dbb036d4dea82df9479762fe216673706b1a9c365db97d364255633f0
+  depends_on: [mechanic/skill.ignore-pain]
+  interpretation: Ignore Pain requires Resilient. Among the current unpromoted profiles only Plague Priest and
+    Plague Monks have the Strength access needed to select that prerequisite. Injury faces 1-4 become Knocked Down;
+    5-6 remain Out of Action. This is not immunity to all injuries.
+  cases:
+  - id: legal-recipients-with-prerequisite
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: lustria-clan-pestilens, profile_id: plague-priest, skill_ids: [skill.resilient]}
+    context: {rule_id: band--clan-pestilens-special-skills-ignore-pain}
+    expect: {result.recipients: [plague-monks, plague-priest]}
+  - id: missing-resilient
+    roles: [rejected]
+    operation: compile
+    attacker: {collection: trollheim, band_id: lustria-clan-pestilens, profile_id: plague-priest, special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]}
+    reject: Ignore Pain requires Resilient
+  - id: injury-1
+    roles: [inactive, boundary]
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+      skill_ids: [skill.resilient]
+    rolls: [{key: test.injury, value: 1}]
+    expect: {result.condition: KNOCKED_DOWN}
+  - id: injury-2
+    roles: [inactive, boundary]
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+      skill_ids: [skill.resilient]
+    rolls: [{key: test.injury, value: 2}]
+    expect: {result.condition: KNOCKED_DOWN}
+  - id: injury-3
+    roles: [active, consumer, boundary]
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+      skill_ids: [skill.resilient]
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+  - id: injury-4
+    roles: [active, consumer, boundary]
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+      skill_ids: [skill.resilient]
+    rolls: [{key: test.injury, value: 4}]
+    expect: {result.condition: KNOCKED_DOWN}
+  - id: injury-5
+    roles: [inactive, boundary]
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+      skill_ids: [skill.resilient]
+    rolls: [{key: test.injury, value: 5}]
+    expect: {result.condition: OUT}
+  - id: injury-6
+    roles: [inactive, boundary]
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids: [band--clan-pestilens-special-skills-ignore-pain]
+      skill_ids: [skill.resilient]
+    rolls: [{key: test.injury, value: 6}]
+    expect: {result.condition: OUT}
+  mutations:
+  - id: remove-injury-replacement
+    path: defender.global_effects.tags
+    value: []
+    cases: [injury-3, injury-4]

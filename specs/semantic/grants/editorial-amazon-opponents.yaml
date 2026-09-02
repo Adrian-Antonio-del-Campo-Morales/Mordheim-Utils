@@ -1,0 +1,821 @@
+schema_version: 1
+specifications:
+- id: skink-priority-first-round
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: priority
+  sources:
+  - target: mechanic/mechanic.strike-first-vs-skinks-first-round
+    digest: d8844baaebb2f58e75c6f0dcceb40839b662dc093dabe4679902626f4d5472a3
+  - target: rule/mordheim/amazons-lustria/band--amazon-special-skills-skink-hunter/mechanic.strike-first-vs-skinks-first-round
+    digest: 4ddbbdcb27ca125c8b6ef7f6492debac51772aba2327ce4bf0c1c319faf8df4b
+  interpretation: 'Amazon Special Skills / Skink Hunter: prioridad contra skinks solo en la primera ronda; no contra
+    otros enemigos. Se observa quién actúa, no un número interno de prioridad.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+      special_rule_ids:
+      - band--amazon-special-skills-skink-hunter
+    context:
+      rule_id: band--amazon-special-skills-skink-hunter
+    expect:
+      result.recipients:
+      - eagle-warriors
+      - piranha-warriors
+      - serpent-priestess
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - mechanic.strike-first-vs-skinks-first-round
+    expect:
+      attacker.characteristics.initiative: 3
+    expect_contains:
+      attacker.global_effects.tags:
+      - mechanic.strike-first-vs-skinks-first-round
+  - id: skink-false
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: acting_order
+    attacker:
+      collection: mordheim
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+      special_rule_ids:
+      - band--amazon-special-skills-skink-hunter
+    defender:
+      band_id: lizardmen
+      profile_id: skink-braves
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: false
+      charged: true
+    opponent_context:
+      first_round: false
+      charging: true
+    expect:
+      result.first_acts: false
+  - id: saurus-false
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: acting_order
+    attacker:
+      collection: mordheim
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+      special_rule_ids:
+      - band--amazon-special-skills-skink-hunter
+    defender:
+      band_id: lizardmen
+      profile_id: saurus-braves
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: false
+      charged: true
+    opponent_context:
+      first_round: false
+      charging: true
+    expect:
+      result.first_acts: false
+  - id: human-false
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: acting_order
+    attacker:
+      collection: mordheim
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+      special_rule_ids:
+      - band--amazon-special-skills-skink-hunter
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: false
+      charged: true
+    opponent_context:
+      first_round: false
+      charging: true
+    expect:
+      result.first_acts: false
+  - id: skink-true
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: acting_order
+    attacker:
+      collection: mordheim
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+      special_rule_ids:
+      - band--amazon-special-skills-skink-hunter
+    defender:
+      band_id: lizardmen
+      profile_id: skink-braves
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: true
+      charged: true
+    opponent_context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: true
+  - id: saurus-true
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: acting_order
+    attacker:
+      collection: mordheim
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+      special_rule_ids:
+      - band--amazon-special-skills-skink-hunter
+    defender:
+      band_id: lizardmen
+      profile_id: saurus-braves
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: true
+      charged: true
+    opponent_context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: false
+  - id: human-true
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: acting_order
+    attacker:
+      collection: mordheim
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+      special_rule_ids:
+      - band--amazon-special-skills-skink-hunter
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: true
+      charged: true
+    opponent_context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: false
+  - id: great-weapon
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: acting_order
+    attacker:
+      skill_ids:
+      - mechanic.strike-first-vs-skinks-first-round
+      main_weapon_id: weapon.double-handed-weapon
+    defender:
+      band_id: lizardmen
+      profile_id: skink-braves
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: true
+      charged: true
+    opponent_context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: true
+  - id: unselected
+    roles:
+    - inactive
+    operation: acting_order
+    attacker:
+      collection: mordheim
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+      special_rule_ids: []
+    defender:
+      band_id: lizardmen
+      profile_id: skink-braves
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: true
+      charged: true
+    opponent_context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: false
+  mutations:
+  - id: remove-skink-priority
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - skink-true
+- id: skink-priority-always
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: priority
+  sources:
+  - target: mechanic/mechanic.strike-first-vs-skinks-always
+    digest: bd96b40ed0e16cdc684be360c448e093594fcefd3e28100c214b04705a626764
+  - target: rule/trollheim/lustria-amazons/band--amazon-special-skills-lizard-hunter/mechanic.strike-first-vs-skinks-always
+    digest: 24e0b6dfd713252f929a546465f71f2ebfed858b36f5d5a51cfa1962db1fb4bf
+  interpretation: 'Lustria p.72 / Lizard Hunter: el héroe actúa antes que un skink incluso con arma a dos manos
+    y aunque el skink cargue. No se extiende a saurus ni a humanos.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-priestess
+      special_rule_ids:
+      - band--amazon-special-skills-lizard-hunter
+    context:
+      rule_id: band--amazon-special-skills-lizard-hunter
+    expect:
+      result.recipients:
+      - amazon-champions
+      - amazon-priestess
+      - amazon-totem-warriors
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - mechanic.strike-first-vs-skinks-always
+    expect:
+      attacker.characteristics.initiative: 3
+    expect_contains:
+      attacker.global_effects.tags:
+      - mechanic.strike-first-vs-skinks-always
+  - id: skink-false
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: acting_order
+    attacker:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-priestess
+      special_rule_ids:
+      - band--amazon-special-skills-lizard-hunter
+    defender:
+      band_id: lizardmen
+      profile_id: skink-braves
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: false
+      charged: true
+    opponent_context:
+      first_round: false
+      charging: true
+    expect:
+      result.first_acts: true
+  - id: saurus-false
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: acting_order
+    attacker:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-priestess
+      special_rule_ids:
+      - band--amazon-special-skills-lizard-hunter
+    defender:
+      band_id: lizardmen
+      profile_id: saurus-braves
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: false
+      charged: true
+    opponent_context:
+      first_round: false
+      charging: true
+    expect:
+      result.first_acts: false
+  - id: human-false
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: acting_order
+    attacker:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-priestess
+      special_rule_ids:
+      - band--amazon-special-skills-lizard-hunter
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: false
+      charged: true
+    opponent_context:
+      first_round: false
+      charging: true
+    expect:
+      result.first_acts: false
+  - id: skink-true
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: acting_order
+    attacker:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-priestess
+      special_rule_ids:
+      - band--amazon-special-skills-lizard-hunter
+    defender:
+      band_id: lizardmen
+      profile_id: skink-braves
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: true
+      charged: true
+    opponent_context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: true
+  - id: saurus-true
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: acting_order
+    attacker:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-priestess
+      special_rule_ids:
+      - band--amazon-special-skills-lizard-hunter
+    defender:
+      band_id: lizardmen
+      profile_id: saurus-braves
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: true
+      charged: true
+    opponent_context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: false
+  - id: human-true
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: acting_order
+    attacker:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-priestess
+      special_rule_ids:
+      - band--amazon-special-skills-lizard-hunter
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: true
+      charged: true
+    opponent_context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: false
+  - id: great-weapon
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: acting_order
+    attacker:
+      skill_ids:
+      - mechanic.strike-first-vs-skinks-always
+      main_weapon_id: weapon.double-handed-weapon
+    defender:
+      band_id: lizardmen
+      profile_id: skink-braves
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: true
+      charged: true
+    opponent_context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: true
+  - id: unselected
+    roles:
+    - inactive
+    operation: acting_order
+    attacker:
+      collection: trollheim
+      band_id: lustria-amazons
+      profile_id: amazon-priestess
+      special_rule_ids: []
+    defender:
+      band_id: lizardmen
+      profile_id: skink-braves
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: true
+      charged: true
+    opponent_context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: false
+  mutations:
+  - id: remove-skink-priority
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - skink-true
+- id: amazon-enemy-rerolls
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/mechanic.amazon-isolationists
+    digest: 8bbd54d0163d05899fcd1f5ed518c3ac1f213a2fad567ef9e2bbc30da71f8b40
+  - target: rule/mordheim/amazons-lustria/band--special-rules/mechanic.amazon-isolationists
+    digest: 74ed065962babdbf2d3433d70773d01364af1ba8e9adee6c25fc407451a259f0
+  interpretation: 'Amazons / Isolationists: repite fallos al impactar solo en primera ronda contra Lizardmen y Norse.
+    HA4 contra HA3: 2/3 sin repetición y 8/9 con ella. Los efectos de campaña de la misma entrada no son el efecto
+    de combate aquí trazado.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: grant
+    defender:
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+    context:
+      rule_id: band--special-rules
+    expect:
+      result.recipients:
+      - amazon-warriors
+      - eagle-warriors
+      - jaguar-warriors
+      - piranha-warriors
+      - serpent-priestess
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - mechanic.amazon-isolationists
+    expect:
+      attacker.global_effects.reroll_hits: false
+    expect_contains:
+      attacker.global_effects.tags:
+      - mechanic.amazon-isolationists
+  - id: lizardmen-false
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+    defender:
+      band_id: lizardmen
+      profile_id: skink-braves
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: false
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 2/3
+        'false': 1/3
+  - id: lizardmen-true
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+    defender:
+      band_id: lizardmen
+      profile_id: skink-braves
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: true
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 8/9
+        'false': 1/9
+  - id: norse-false
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+    defender:
+      band_id: norse-explorers-btb
+      profile_id: jarl
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: false
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 2/3
+        'false': 1/3
+  - id: norse-true
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+    defender:
+      band_id: norse-explorers-btb
+      profile_id: jarl
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: true
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 8/9
+        'false': 1/9
+  - id: norse-lustria-false
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+    defender:
+      band_id: norse-explorers-lustria
+      profile_id: jarl
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: false
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 2/3
+        'false': 1/3
+  - id: norse-lustria-true
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+    defender:
+      band_id: norse-explorers-lustria
+      profile_id: jarl
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: true
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 8/9
+        'false': 1/9
+  - id: human-false
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: false
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 2/3
+        'false': 1/3
+  - id: human-true
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 10
+        attacks: 1
+    context:
+      first_round: true
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 2/3
+        'false': 1/3
+  mutations:
+  - id: remove-enemy-reroll
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - lizardmen-true
+    - norse-true
+  - id: reroll-outside-condition
+    path: attacker.global_effects.reroll_hits
+    value: true
+    cases:
+    - human-true
+    - norse-false

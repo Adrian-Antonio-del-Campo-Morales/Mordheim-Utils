@@ -1,0 +1,580 @@
+schema_version: 1
+ruleset: mordheim
+catalog: hirelings-dramatis-personae
+grade: 1b
+profiles:
+- id: hireling.dramatis.abdul-alhazred-the-mad-sorcerer
+  kind: dramatis-personae
+  grade: 1b
+  publication: Town Cryer 21, Khemri
+  name: Abdul Alhazred, the Mad Sorcerer
+  name_i18n:
+    en: Abdul Alhazred, the Mad Sorcerer
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 2
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 30
+  equipment:
+    fixed_items:
+    - item_id: nomad_robes
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.dramatis.abdul-alhazred-the-mad-sorcerer.item.eye-pendant
+      name: The Eye Pendant
+  skill_access: []
+  starting_skill_ids:
+  - skill.sorcery
+  rules:
+  - id: hireling.dramatis.abdul-alhazred-the-mad-sorcerer.rule.eye-pendant
+    name: Eye Pendant
+    effect: Uses the source Undead Leadership restriction and 4+ Ward save.
+  - id: hireling.dramatis.abdul-alhazred-the-mad-sorcerer.rule.psychology
+    name: Psychology
+    effect: Immune to psychology.
+  - id: hireling.dramatis.abdul-alhazred-the-mad-sorcerer.rule.djinn-master
+    name: Djinn Master
+    effect: Modifies Lamp of the Djinn rolls according to source.
+  - id: hireling.dramatis.abdul-alhazred-the-mad-sorcerer.rule.master-wizard
+    name: Master Wizard
+    effect: Knows Elemental and Necromancy spell lists, but remembers spells randomly each phase.
+  unresolved_references:
+  - kind: spell_list
+    source_name: Elemental Magic
+  - kind: spell_list
+    source_name: Necromancy
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Abdul Alhazred, the Mad Sorcerer
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+- id: hireling.dramatis.crow-master-the
+  kind: dramatis-personae
+  grade: 1b
+  publication: Town Cryer 25
+  name: Crow Master, The
+  name_i18n:
+    en: Crow Master, The
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 4
+    W: 3
+    I: 5
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 85
+  equipment:
+    fixed_items:
+    - item_id: staff
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.dramatis.crow-master-the.item.mantle-of-crows
+      name: Mantle of Crows
+    - id: hireling.dramatis.crow-master-the.item.needle-and-thread
+      name: Needle and Thread
+  skill_access: []
+  starting_skill_ids:
+  - skill.sorcery
+  - skill.dodge
+  rules:
+  - id: hireling.dramatis.crow-master-the.rule.crow-master
+    name: Crow Master
+    effect: Uses the source necromantic/crow special rules.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Crow Master, The
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+- id: hireling.dramatis.dark-emissary
+  kind: dramatis-personae
+  grade: 1b
+  publication: Town Cryer 15, Albion
+  name: Dark Emissary
+  name_i18n:
+    en: Dark Emissary
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 2
+    I: 3
+    A: 1
+    Ld: 8
+  equipment:
+    unique_equipment:
+    - id: hireling.dramatis.dark-emissary.item.staff-of-darkness
+      name: Staff of Darkness
+    - id: hireling.dramatis.dark-emissary.item.spiral
+      name: Spiral
+      save: 5+ unmodifiable
+  skill_access: []
+  starting_skill_ids: []
+  rules:
+  - id: hireling.dramatis.dark-emissary.rule.wizard
+    name: Wizard
+    effect: Knows four spells from the Lore of Darkness.
+  - id: hireling.dramatis.dark-emissary.rule.evil-alignment
+    name: Evil Alignment
+    effect: Uses source alignment restrictions.
+  unresolved_references:
+  - kind: spell_list
+    source_name: Lore of Darkness
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Dark Emissary
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+- id: hireling.dramatis.dijin-katal-the-renegade-assassin
+  kind: dramatis-personae
+  grade: 1b
+  publication: Town Cryer 15, Lustria
+  name: Dijin Katal, The Renegade Assassin
+  name_i18n:
+    en: Dijin Katal, The Renegade Assassin
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 5
+    WS: 7
+    BS: 5
+    S: 4
+    T: 3
+    W: 2
+    I: 7
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 70
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dark_venom
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.dramatis.dijin-katal-the-renegade-assassin.item.druchii-assassins-cloak
+      name: Druchii Assassin's Cloak
+  skill_access: []
+  starting_skill_ids:
+  - skill.strike-to-injure
+  - skill.quick-shot
+  - skill.dodge
+  - skill.lightning-reflexes
+  - skill.trick-shooter
+  rules:
+  - id: hireling.dramatis.dijin-katal-the-renegade-assassin.rule.kindred-hatred
+    name: Kindred Hatred
+    effect: Uses source hatred rule.
+  - id: hireling.dramatis.dijin-katal-the-renegade-assassin.rule.excellent-sight
+    name: Excellent Sight
+    effect: Uses source sight rule.
+  - id: hireling.dramatis.dijin-katal-the-renegade-assassin.rule.shadows-embrace
+    name: Shadows Embrace
+    effect: Uses source concealment rule.
+  - id: hireling.dramatis.dijin-katal-the-renegade-assassin.rule.perfect-killer
+    name: Perfect Killer
+    effect: Uses source Perfect Killer rule.
+  - id: hireling.dramatis.dijin-katal-the-renegade-assassin.rule.renegade
+    name: Renegade
+    effect: Uses source hiring/retention rule.
+  - id: hireling.dramatis.dijin-katal-the-renegade-assassin.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Elven Hired Sword incompatibility
+    effect: Dijin Katal cannot be hired by a warband whose current roster contains any type of Elven Hired Sword.
+  unresolved_references:
+  - kind: equipment_mapping
+    source_name: Repeater Crossbow
+  source_notes:
+  - Mordheimer marks the Assassin's Cloak rule with an editorial/question indicator; retained as unresolved unique equipment.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Dijin Katal, The Renegade Assassin
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+- id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe
+  kind: dramatis-personae
+  grade: 1b
+  publication: Town Cryer 15, Lustria
+  name: Drenok Johansen, Wielder Of The Great Axe
+  name_i18n:
+    en: Drenok Johansen, Wielder Of The Great Axe
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 6
+    BS: 3
+    S: 4
+    T: 4
+    W: 2
+    I: 4
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 70
+  equipment:
+    unique_equipment:
+    - id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.item.axe-of-icefang
+      name: Axe of Icefang
+    - id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.item.sabertooth-hide
+      name: Sabertooth Tiger Hide
+  skill_access: []
+  starting_skill_ids:
+  - skill.fearsome
+  - skill.strongman
+  - skill.combat-master
+  - skill.step-aside
+  rules:
+  - id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.berserker
+    name: Berserker
+    effect: Uses source Berserker rule.
+  - id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.axe-of-icefang
+    name: Axe of Icefang
+    effect: Uses unique axe rules.
+  - id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe.rule.sabertooth-tiger-hide
+    name: Sabertooth Tiger Hide
+    effect: Uses unique hide rules.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Drenok Johansen, Wielder Of The Great Axe
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+- id: hireling.dramatis.heinrich-altdorf-schmidt
+  kind: dramatis-personae
+  grade: 1b
+  publication: Town Cryer 21
+  name: Heinrich 'Altdorf' Schmidt
+  name_i18n:
+    en: Heinrich 'Altdorf' Schmidt
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 2
+    I: 6
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 75
+  equipment:
+    fixed_items:
+    - item_id: whip
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: duelling_pistol
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: rope_hook
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access: []
+  starting_skill_ids:
+  - skill.lightning-reflexes
+  - skill.step-aside
+  - skill.streetwise
+  - skill.dodge
+  rules:
+  - id: hireling.dramatis.heinrich-altdorf-schmidt.rule.tomb-explorer
+    name: Tomb Explorer
+    effect: Uses source exploration rule.
+  - id: hireling.dramatis.heinrich-altdorf-schmidt.rule.whip-master
+    name: Whip Master
+    effect: Uses source whip rule.
+  - id: hireling.dramatis.heinrich-altdorf-schmidt.rule.luck
+    name: Luck
+    effect: Uses source luck rule.
+  - id: hireling.dramatis.heinrich-altdorf-schmidt.rule.snake-fear
+    name: Snake Fear
+    effect: Uses source snake-related fear rule.
+  - id: hireling.dramatis.heinrich-altdorf-schmidt.rule.whip-swing
+    name: Whip Swing
+    effect: Uses source movement rule.
+  - id: hireling.dramatis.heinrich-altdorf-schmidt.rule.no-time-for-you
+    name: No Time For You
+    effect: Uses source combat rule.
+  - id: hireling.dramatis.heinrich-altdorf-schmidt.rule.treasure-payment
+    name: Treasure Payment
+    effect: Takes source-defined treasures rather than gold.
+  unresolved_references:
+  - kind: equipment_mapping
+    source_name: Lantern
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Heinrich 'Altdorf' Schmidt
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+- id: hireling.dramatis.khar-mel-the-djinn
+  kind: dramatis-personae
+  grade: 1b
+  publication: Town Cryer 21
+  name: Khar-mel The Djinn
+  name_i18n:
+    en: Khar-mel The Djinn
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 3
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 45
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access: []
+  starting_skill_ids: []
+  rules:
+  - id: hireling.dramatis.khar-mel-the-djinn.rule.fear
+    name: Fear
+    effect: Causes fear.
+  - id: hireling.dramatis.khar-mel-the-djinn.rule.ethereal
+    name: Ethereal
+    effect: Has a 5+ unmodifiable save except against magical weapons.
+  - id: hireling.dramatis.khar-mel-the-djinn.rule.elemental-magic
+    name: Elemental Magic
+    effect: Knows D3 random Elemental spells.
+  - id: hireling.dramatis.khar-mel-the-djinn.rule.whirlwind
+    name: Whirlwind
+    effect: Uses source movement/power mode.
+  - id: hireling.dramatis.khar-mel-the-djinn.rule.djinn-s-curse
+    name: Djinn's Curse
+    effect: Applies source penalties nearby.
+  - id: hireling.dramatis.khar-mel-the-djinn.rule.djinn-s-luck
+    name: Djinn's Luck
+    effect: Uses source Ward save mode.
+  unresolved_references:
+  - kind: spell_list
+    source_name: Elemental Magic
+  - kind: summoning_procedure
+    source_name: requires wizard/priest Leadership summoning procedure
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Khar-mel The Djinn
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+- id: hireling.dramatis.maximilian-the-mad
+  kind: dramatis-personae
+  grade: 1b
+  publication: Nemesis Crown Supplement
+  name: Maximilian The Mad
+  name_i18n:
+    en: Maximilian The Mad
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 2
+    I: 3
+    A: 2
+    Ld: 10
+  warband_rating:
+    kind: fixed
+    value: 25
+  equipment:
+    unique_equipment:
+    - id: hireling.dramatis.maximilian-the-mad.item.double-handed-holy-weapon
+      name: Double-handed Holy Weapon
+  skill_access: []
+  starting_skill_ids: []
+  rules:
+  - id: hireling.dramatis.maximilian-the-mad.rule.fanatical
+    name: Fanatical
+    effect: Automatically passes source Leadership-based tests and hates source-listed warbands.
+  - id: hireling.dramatis.maximilian-the-mad.rule.religious-fervour
+    name: Religious Fervour
+    effect: Subject to Frenzy and source movement compulsion.
+  - id: hireling.dramatis.maximilian-the-mad.rule.fear
+    name: Fear
+    effect: Causes fear; nearby hiring-warband models gain source fear immunity.
+  - id: hireling.dramatis.maximilian-the-mad.rule.strongman
+    name: Strongman
+    effect: Uses Strongman-equivalent rule.
+  - id: hireling.dramatis.maximilian-the-mad.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Middenheim variant
+    effect: Maximilian may not be hired by Middenheimers. The application must evaluate the selected Mercenary variant.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Maximilian The Mad
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+- id: hireling.dramatis.penthesilea-mark-of-the-serpent
+  kind: dramatis-personae
+  grade: 1b
+  publication: Town Cryer 15, Lustria
+  name: Penthesilea, Mark Of The Serpent
+  name_i18n:
+    en: Penthesilea, Mark Of The Serpent
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 5
+    WS: 5
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 5
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 70
+  equipment:
+    fixed_items:
+    - item_id: starsword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: starblade
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: amulet_of_the_moon
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: enchanted_skins
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access: []
+  starting_skill_ids: []
+  rules:
+  - id: hireling.dramatis.penthesilea-mark-of-the-serpent.rule.amazon
+    name: Amazon
+    effect: Uses source Amazon rules.
+  - id: hireling.dramatis.penthesilea-mark-of-the-serpent.rule.mark-of-the-serpent
+    name: Mark of the Serpent
+    effect: Applies source +1 Movement/Initiative treatment.
+  - id: hireling.dramatis.penthesilea-mark-of-the-serpent.rule.man-hater
+    name: Man-Hater
+    effect: Uses source man-hater rule.
+  unresolved_references:
+  - kind: skill
+    source_name: Mesmerising Dance
+  - kind: skill
+    source_name: Savage Fury
+  - kind: skill
+    source_name: Elixir of Life
+  - kind: skill
+    source_name: Weapon Master
+  - kind: skill
+    source_name: Concealment
+  - kind: availability_procedure
+    source_name: Amazon-only rating-difference search table
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Penthesilea, Mark Of The Serpent
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+- id: hireling.dramatis.truthsayer
+  kind: dramatis-personae
+  grade: 1b
+  publication: Town Cryer 15, Albion
+  name: Truthsayer
+  name_i18n:
+    en: Truthsayer
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 2
+    I: 4
+    A: 2
+    Ld: 9
+  equipment:
+    unique_equipment:
+    - id: hireling.dramatis.truthsayer.item.staff-of-light
+      name: Staff of Light
+    - id: hireling.dramatis.truthsayer.item.triskele
+      name: Triskele
+      save: 4+ unmodifiable
+  skill_access: []
+  starting_skill_ids: []
+  rules:
+  - id: hireling.dramatis.truthsayer.rule.wizard
+    name: Wizard
+    effect: Knows three spells from the Lore of Light.
+  - id: hireling.dramatis.truthsayer.rule.good-alignment
+    name: Good Alignment
+    effect: Uses source alignment restrictions.
+  unresolved_references:
+  - kind: spell_list
+    source_name: Lore of Light
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Truthsayer
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b

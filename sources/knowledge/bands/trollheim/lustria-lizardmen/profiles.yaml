@@ -1,0 +1,236 @@
+schema_version: 2
+band_id: lustria-lizardmen
+profiles:
+- id: skink-priest
+  name: Skink Priest
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - skinks-equipment-list
+  - lizardmen-poison-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - academic
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 54
+    section: 1 Skink Priest
+  source_path:
+  - heroes
+  - 1 Skink Priest
+  name_i18n:
+    en: Skink Priest
+    es: null
+  rule_ids:
+  - skink-priest--leader
+  - skink-priest--spellcaster
+  - skink-priest--scaly-skin-6plus
+  - skink-priest--amphibious
+  - skink-priest--jungle-native
+  combat_traits: {}
+- id: saurus-totem-warrior
+  name: Saurus Totem Warrior
+  type: hero
+  cost: 60
+  experience: 11
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 0
+    S: 4
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - saurus-equipment-list
+  - lizardmen-poison-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never use missile weapons.
+  - May never gain Academic skills.
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: lustria
+    printed_page: 54
+    section: 0-1 Saurus Totem Warrior
+  source_path:
+  - heroes
+  - 0-1 Saurus Totem Warrior
+  name_i18n:
+    en: Saurus Totem Warrior
+    es: null
+  rule_ids:
+  - saurus-totem-warrior--scaly-skin-5plus
+  - saurus-totem-warrior--bite-attack
+  combat_traits: {}
+- id: skink-great-crests
+  name: Great Crested Skinks
+  type: hero
+  cost: 30
+  experience: 8
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 3
+    S: 3
+    T: 2
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - skinks-equipment-list
+  - lizardmen-poison-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select a Helmet; that entry is Skink Priest only.
+  skill_access:
+  - shooting
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 55
+    section: 0-2 Great Crested Skinks
+  source_path:
+  - heroes
+  - 0-2 Great Crested Skinks
+  name_i18n:
+    en: Great Crested Skinks
+    es: null
+  rule_ids:
+  - skink-great-crests--scaly-skin-6plus
+  - skink-great-crests--amphibious
+  - skink-great-crests--jungle-native
+  combat_traits: {}
+- id: skink-braves
+  name: Skink Braves
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 2
+    BS: 3
+    S: 3
+    T: 2
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - skinks-equipment-list
+  - lizardmen-poison-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select a Sword; that entry is Heroes only.
+  - May not select a Helmet; that entry is Skink Priest only.
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 55
+    section: Skink Braves
+  source_path:
+  - henchmen
+  - Skink Braves
+  name_i18n:
+    en: Skink Braves
+    es: null
+  rule_ids:
+  - skink-braves--scaly-skin-6plus
+  - skink-braves--amphibious
+  - skink-braves--jungle-native
+  combat_traits: {}
+- id: saurus-braves
+  name: Saurus Braves
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 0
+    S: 4
+    T: 4
+    W: 1
+    I: 1
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - saurus-equipment-list
+  - lizardmen-poison-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never use missile weapons.
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 56
+    section: 0-4 Saurus Braves
+  source_path:
+  - henchmen
+  - 0-4 Saurus Braves
+  name_i18n:
+    en: Saurus Braves
+    es: null
+  rule_ids:
+  - saurus-braves--scaly-skin-5plus
+  - saurus-braves--bite-attack
+  combat_traits: {}
+- id: kroxigor
+  name: Kroxigor
+  type: henchman
+  cost: 200
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 0
+    S: 5
+    T: 4
+    W: 3
+    I: 1
+    A: 3
+    Ld: 8
+  equipment_lists:
+  - kroxigor-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select either a Halberd or a Great Weapon; no other weapons or armour are permitted.
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 56
+    section: 0-1 Kroxigor
+  source_path:
+  - henchmen
+  - 0-1 Kroxigor
+  name_i18n:
+    en: Kroxigor
+    es: null
+  rule_ids:
+  - kroxigor--scaly-skin-4plus
+  - kroxigor--aquatic
+  - kroxigor--fear
+  - kroxigor--large-target
+  - kroxigor--animal
+  combat_traits: {}

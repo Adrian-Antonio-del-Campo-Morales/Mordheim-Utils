@@ -1,0 +1,191 @@
+schema_version: 1
+specifications:
+- id: editorial-expert-swordsman-companions
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: rule/mordheim/cursed-cavalcade/companions--expert-swordsman/skill.expert-swordsman
+    digest: 469c37b5e870f948a83d0e981645664fbf7d1d3483ec5c2ff47d73a49d584007
+  depends_on: [mechanic/skill.expert-swordsman]
+  interpretation: companions receives Expert Swordsman automatically. With a normal sword it rerolls failed charge
+    hits once, but not with a double-handed weapon or without charging. Against equal WS the 4+ hit probability
+    becomes 3/4 with the reroll. A failed reroll is final.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: mordheim, band_id: cursed-cavalcade, profile_id: companions}
+    context: {rule_id: companions--expert-swordsman}
+    expect: {result.recipients: [companions]}
+  - id: charge-consumer
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {collection: mordheim, band_id: cursed-cavalcade, profile_id: companions, main_weapon_id: weapon.sword}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 1}, {key: hit.reroll, value: 6}]
+    expect: {result.success: true, result.rerolled: true, result.roll: 6}
+    expect_contains:
+      attacker.global_effects.tags: [skill.expert-swordsman]
+  - id: all-charge-branches
+    roles: [boundary]
+    operation: hit
+    attacker: {collection: mordheim, band_id: cursed-cavalcade, profile_id: companions, main_weapon_id: weapon.sword}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected: {'true': 3/4, 'false': 1/4}
+  - id: no-charge
+    roles: [inactive]
+    operation: hit
+    attacker: {collection: mordheim, band_id: cursed-cavalcade, profile_id: companions, main_weapon_id: weapon.sword}
+    context: {first_round: true, charging: false}
+    rolls: [{key: hit, value: 1}]
+    expect: {result.success: false, result.rerolled: false}
+  - id: wrong-weapon
+    roles: [inactive]
+    operation: hit
+    attacker: {collection: mordheim, band_id: cursed-cavalcade, profile_id: companions, main_weapon_id: weapon.double-handed-weapon}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 1}]
+    expect: {result.success: false, result.rerolled: false}
+  - id: failed-reroll-final
+    roles: [boundary]
+    operation: hit
+    attacker: {collection: mordheim, band_id: cursed-cavalcade, profile_id: companions, main_weapon_id: weapon.sword}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 1}, {key: hit.reroll, value: 1}]
+    expect: {result.success: false, result.rerolled: true, result.roll: 1}
+  mutations:
+  - id: remove-inherent-skill
+    path: attacker.global_effects.tags
+    value: []
+    cases: [charge-consumer, all-charge-branches]
+- id: editorial-expert-swordsman-mordheim-swordsmen
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: rule/mordheim/mercenaries/swordsmen--expert-swordsmen/skill.expert-swordsman
+    digest: 8241096a7c79db884212254d965638860fec61daa784549b22dfbff857815b75
+  depends_on: [mechanic/skill.expert-swordsman]
+  interpretation: swordsmen receives Expert Swordsman automatically. With a normal sword it rerolls failed charge
+    hits once, but not with a double-handed weapon or without charging. Against equal WS the 4+ hit probability
+    becomes 3/4 with the reroll. A failed reroll is final.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: mordheim, band_id: mercenaries, profile_id: swordsmen}
+    context: {rule_id: swordsmen--expert-swordsmen}
+    expect: {result.recipients: [swordsmen]}
+  - id: charge-consumer
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {collection: mordheim, band_id: mercenaries, profile_id: swordsmen, main_weapon_id: weapon.sword}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 1}, {key: hit.reroll, value: 6}]
+    expect: {result.success: true, result.rerolled: true, result.roll: 6}
+    expect_contains:
+      attacker.global_effects.tags: [skill.expert-swordsman]
+  - id: all-charge-branches
+    roles: [boundary]
+    operation: hit
+    attacker: {collection: mordheim, band_id: mercenaries, profile_id: swordsmen, main_weapon_id: weapon.sword}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected: {'true': 3/4, 'false': 1/4}
+  - id: no-charge
+    roles: [inactive]
+    operation: hit
+    attacker: {collection: mordheim, band_id: mercenaries, profile_id: swordsmen, main_weapon_id: weapon.sword}
+    context: {first_round: true, charging: false}
+    rolls: [{key: hit, value: 1}]
+    expect: {result.success: false, result.rerolled: false}
+  - id: wrong-weapon
+    roles: [inactive]
+    operation: hit
+    attacker: {collection: mordheim, band_id: mercenaries, profile_id: swordsmen, main_weapon_id: weapon.double-handed-weapon}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 1}]
+    expect: {result.success: false, result.rerolled: false}
+  - id: failed-reroll-final
+    roles: [boundary]
+    operation: hit
+    attacker: {collection: mordheim, band_id: mercenaries, profile_id: swordsmen, main_weapon_id: weapon.sword}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 1}, {key: hit.reroll, value: 1}]
+    expect: {result.success: false, result.rerolled: true, result.roll: 1}
+  mutations:
+  - id: remove-inherent-skill
+    path: attacker.global_effects.tags
+    value: []
+    cases: [charge-consumer, all-charge-branches]
+- id: editorial-expert-swordsman-trollheim-swordsmen
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: rule/trollheim/trollheim-mercenaries/swordsmen--expert-swordsmen/skill.expert-swordsman
+    digest: 424b11fe20f15ef39a843ed35c51f5dff88a9b4a320ffc75f5f99b244818db9d
+  depends_on: [mechanic/skill.expert-swordsman]
+  interpretation: swordsmen receives Expert Swordsman automatically. With a normal sword it rerolls failed charge
+    hits once, but not with a double-handed weapon or without charging. Against equal WS the 4+ hit probability
+    becomes 3/4 with the reroll. A failed reroll is final.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: trollheim, band_id: trollheim-mercenaries, profile_id: swordsmen}
+    context: {rule_id: swordsmen--expert-swordsmen}
+    expect: {result.recipients: [swordsmen]}
+  - id: charge-consumer
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {collection: trollheim, band_id: trollheim-mercenaries, profile_id: swordsmen, main_weapon_id: weapon.sword}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 1}, {key: hit.reroll, value: 6}]
+    expect: {result.success: true, result.rerolled: true, result.roll: 6}
+    expect_contains:
+      attacker.global_effects.tags: [skill.expert-swordsman]
+  - id: all-charge-branches
+    roles: [boundary]
+    operation: hit
+    attacker: {collection: trollheim, band_id: trollheim-mercenaries, profile_id: swordsmen, main_weapon_id: weapon.sword}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected: {'true': 3/4, 'false': 1/4}
+  - id: no-charge
+    roles: [inactive]
+    operation: hit
+    attacker: {collection: trollheim, band_id: trollheim-mercenaries, profile_id: swordsmen, main_weapon_id: weapon.sword}
+    context: {first_round: true, charging: false}
+    rolls: [{key: hit, value: 1}]
+    expect: {result.success: false, result.rerolled: false}
+  - id: wrong-weapon
+    roles: [inactive]
+    operation: hit
+    attacker: {collection: trollheim, band_id: trollheim-mercenaries, profile_id: swordsmen, main_weapon_id: weapon.double-handed-weapon}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 1}]
+    expect: {result.success: false, result.rerolled: false}
+  - id: failed-reroll-final
+    roles: [boundary]
+    operation: hit
+    attacker: {collection: trollheim, band_id: trollheim-mercenaries, profile_id: swordsmen, main_weapon_id: weapon.sword}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 1}, {key: hit.reroll, value: 1}]
+    expect: {result.success: false, result.rerolled: true, result.roll: 1}
+  mutations:
+  - id: remove-inherent-skill
+    path: attacker.global_effects.tags
+    value: []
+    cases: [charge-consumer, all-charge-branches]

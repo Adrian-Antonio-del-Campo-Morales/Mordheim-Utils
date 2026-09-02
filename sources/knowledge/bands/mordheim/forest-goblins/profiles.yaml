@@ -1,0 +1,262 @@
+schema_version: 2
+band_id: forest-goblins
+profiles:
+- id: chieftain
+  name: Chieftain
+  type: hero
+  cost: 50
+  experience: 17
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Chieftain
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  source_path:
+  - heroes
+  - 1 Chieftain
+  name_i18n:
+    en: Chieftain
+    es: null
+  rule_ids:
+  - chieftain--leader
+  - chieftain--ride-spiders
+  combat_traits: {}
+- id: braves
+  name: Braves
+  type: hero
+  cost: 20
+  experience: 6
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 4 Braves
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  source_path:
+  - heroes
+  - 0 – 4 Braves
+  name_i18n:
+    en: Braves
+    es: null
+  rule_ids:
+  - braves--animosity
+  - braves--remove-animosity
+  combat_traits: {}
+- id: shaman
+  name: Shaman
+  type: hero
+  cost: 20
+  experience: 6
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - academic
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Shaman
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  source_path:
+  - heroes
+  - 0 – 1 Shaman
+  name_i18n:
+    en: Shaman
+    es: null
+  rule_ids:
+  - shaman--wizard
+  combat_traits: {}
+- id: forest-goblins
+  name: Forest Goblins
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - henchmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Henchmen Equipment List; the profile entry does not allow armour.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Forest Goblins
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  source_path:
+  - henchmen
+  - Forest Goblins
+  name_i18n:
+    en: Forest Goblins
+    es: null
+  rule_ids:
+  - forest-goblins--animosity
+  combat_traits: {}
+- id: red-toof-goblins
+  name: Red Toof Goblins
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - henchmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Henchmen Equipment List; the profile entry does not allow armour.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Red Toof Goblins
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  source_path:
+  - henchmen
+  - 0 – 5 Red Toof Goblins
+  name_i18n:
+    en: Red Toof Goblins
+    es: null
+  rule_ids:
+  - red-toof-goblins--animosity
+  - red-toof-goblins--berserkers
+- id: sluggas
+  name: Sluggas
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - henchmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Henchmen Equipment List; the profile entry does not allow armour.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Sluggas
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  source_path:
+  - henchmen
+  - 0 – 5 Sluggas
+  name_i18n:
+    en: Sluggas
+    es: null
+  rule_ids:
+  - sluggas--animosity
+  - sluggas--sluggas
+  combat_traits: {}
+- id: gigantic-spider
+  name: Gigantic Spider
+  type: henchman
+  cost: 200
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 0
+    S: 5
+    T: 5
+    W: 3
+    I: 4
+    A: 2
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Gigantic Spider never needs or uses weapons or armour.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Gigantic Spider
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  source_path:
+  - henchmen
+  - 0 – 1 Gigantic Spider
+  name_i18n:
+    en: Gigantic Spider
+    es: null
+  rule_ids:
+  - gigantic-spider--fear
+  - gigantic-spider--large-monster
+  - gigantic-spider--poisonous
+  - gigantic-spider--native
+  - gigantic-spider--non-sentient
+  - gigantic-spider--may-ride
+  - gigantic-spider--chitin-armour

@@ -1,0 +1,1142 @@
+schema_version: 1
+ruleset: mordheim
+catalog: hirelings-hired-swords
+grade: 2a
+profiles:
+- id: hireling.hired-sword.beggar
+  kind: hired-sword
+  grade: 2a
+  publication: Fanatic Online 94
+  name: Beggar
+  name_i18n:
+    en: Beggar
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 1
+    BS: 1
+    S: 2
+    T: 2
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  warband_rating:
+    kind: base_plus_experience
+    base: 8
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: club
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.beggar.rule.scrounge
+    name: Scrounge
+    effect: Adds an exploration die when eligible.
+  - id: hireling.hired-sword.beggar.rule.not-a-threat
+    name: Not a Threat
+    effect: May be ignored for source target/charge restrictions.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Beggar
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.chaos-fury
+  kind: hired-sword
+  grade: 2a
+  publication: Mordheim Facebook Group
+  name: Chaos Fury
+  name_i18n:
+    en: Chaos Fury
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 2
+    Ld: 10
+  warband_rating:
+    kind: fixed
+    value: 25
+  skill_access: []
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.chaos-fury.rule.fear
+    name: Fear
+    effect: Causes fear.
+  - id: hireling.hired-sword.chaos-fury.rule.daemonic-flesh
+    name: Daemonic Flesh
+    effect: Has a 5+ unmodifiable save with source magic/blessed exceptions.
+  - id: hireling.hired-sword.chaos-fury.rule.daemonic-mind
+    name: Daemonic Mind
+    effect: Does not gain Experience and is immune to psychology.
+  - id: hireling.hired-sword.chaos-fury.rule.instability
+    name: Instability
+    effect: Uses the source banishment rule.
+  - id: hireling.hired-sword.chaos-fury.rule.fly
+    name: Fly
+    effect: May fly according to source.
+  - id: hireling.hired-sword.chaos-fury.rule.malicious
+    name: Malicious
+    effect: Uses source malicious behaviour rule.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Chaos Fury
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.cursed-hillman
+  kind: hired-sword
+  grade: 2a
+  publication: Fanatic Online 49
+  name: Cursed Hillman
+  name_i18n:
+    en: Cursed Hillman
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 20
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: axe
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: long_bow
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.cursed-hillman.item.fur-cloak
+      name: Fur Cloak
+  skill_access:
+  - shooting
+  - speed
+  - special
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.cursed-hillman.rule.hunter
+    name: Hunter
+    effect: Uses source hunter rule.
+  - id: hireling.hired-sword.cursed-hillman.rule.thin-flesh
+    name: Thin Flesh
+    effect: Uses source vulnerability rule.
+  - id: hireling.hired-sword.cursed-hillman.rule.lycanthrope
+    name: Lycanthrope
+    effect: Transforms between Man and Wolf forms.
+  unresolved_references:
+  - kind: alternate_profile
+    source_name: Wolf form M7 WS4 BS0 S4 T4 W2 I5 A2(3) Ld6
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Cursed Hillman
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.dark-mage
+  kind: hired-sword
+  grade: 2a
+  publication: Letters of the Damned 6
+  name: Dark Mage
+  name_i18n:
+    en: Dark Mage
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 18
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: staff
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - academic
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.dark-mage.rule.wizard
+    name: Wizard
+    effect: Uses the Dark Magic spell list.
+  - id: hireling.hired-sword.dark-mage.rule.despise-despoilers
+    name: Despise Despoilers
+    effect: Uses source hatred/attitude rule.
+  - id: hireling.hired-sword.dark-mage.rule.self-assured
+    name: Self Assured
+    effect: Uses source psychology rule.
+  unresolved_references:
+  - kind: spell_list
+    source_name: Dark Magic
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dark Mage
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.dwarf-slayer-pirate
+  kind: hired-sword
+  grade: 2a
+  publication: Fanatic Online 45
+  name: Dwarf Slayer Pirate
+  name_i18n:
+    en: Dwarf Slayer Pirate
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  warband_rating:
+    kind: base_plus_experience
+    base: 14
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: superior_blackpowder
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - shooting
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.dwarf-slayer-pirate.rule.slayer-pirate
+    name: Slayer Pirate
+    effect: Uses the source Slayer/Pirate special rules.
+  unresolved_references:
+  - kind: equipment_loadout
+    source_name: multiple Pistols as defined by source
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Slayer Pirate
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.emissary-of-chaos
+  kind: hired-sword
+  grade: 2a
+  publication: Fanatic Online 94
+  name: Emissary of Chaos
+  name_i18n:
+    en: Emissary of Chaos
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 5
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 4
+    A: 1
+    Ld: 9
+  warband_rating:
+    kind: base_plus_experience
+    base: 25
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: helmet
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: shield
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.emissary-of-chaos.item.chaos-armour
+      name: Chaos Armour
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.emissary-of-chaos.rule.patron
+    name: Patron
+    effect: Receives source-defined effects for Khorne, Tzeentch, Nurgle or Slaanesh.
+  unresolved_references:
+  - kind: patron_branch
+    source_name: Khorne/Tzeentch/Nurgle/Slaanesh; Tzeentch changes skill access
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Emissary of Chaos
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.estalian-diestro
+  kind: hired-sword
+  grade: 2a
+  publication: Letters of the Damned 2
+  name: Estalian Diestro
+  name_i18n:
+    en: Estalian Diestro
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 18
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: rapier
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: main_gauche
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.estalian-diestro.rule.rapier
+    name: Rapier
+    effect: Uses source Rapier rules.
+  - id: hireling.hired-sword.estalian-diestro.rule.main-gauche
+    name: Main Gauche
+    effect: Uses source Main Gauche rules.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Estalian Diestro
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.the-fallen-sister
+  kind: hired-sword
+  grade: 2a
+  publication: Fanatic Online 25
+  name: The Fallen Sister
+  name_i18n:
+    en: The Fallen Sister
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 22
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: steel_whip
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sigmarite_hammer
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - strength
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.the-fallen-sister.rule.wizard
+    name: Wizard
+    effect: May use Lesser Magic according to source.
+  - id: hireling.hired-sword.the-fallen-sister.rule.warrior-wizard
+    name: Warrior Wizard
+    effect: Uses source warrior-wizard rule.
+  - id: hireling.hired-sword.the-fallen-sister.rule.ashamed-and-afraid
+    name: Ashamed and Afraid
+    effect: Uses source psychology rule.
+  unresolved_references:
+  - kind: spell_list
+    source_name: Lesser Magic
+  - kind: equipment_mapping
+    source_name: Sling
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / The Fallen Sister
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.goblin-lantern-bearer
+  kind: hired-sword
+  grade: 2a
+  publication: Fanatic Online 89
+  name: Goblin Lantern Bearer
+  name_i18n:
+    en: Goblin Lantern Bearer
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  warband_rating:
+    kind: base_plus_experience
+    base: 5
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.goblin-lantern-bearer.rule.smart
+    name: Smart
+    effect: Uses source Smart rule.
+  - id: hireling.hired-sword.goblin-lantern-bearer.rule.very-lucky
+    name: Very Lucky
+    effect: Uses special post-battle injury table 1 Lost, 2-6 Survives.
+  - id: hireling.hired-sword.goblin-lantern-bearer.rule.small-size
+    name: Small Size
+    effect: Adds +3 to exploration total according to source.
+  unresolved_references:
+  - kind: equipment_mapping
+    source_name: Lantern
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Goblin Lantern Bearer
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.gravesman
+  kind: hired-sword
+  grade: 2a
+  publication: Letters of the Damned 5
+  name: Gravesman
+  name_i18n:
+    en: Gravesman
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 15
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.gravesman.item.shovel
+      name: Shovel
+      counts_as: halberd
+    - id: hireling.hired-sword.gravesman.item.pry-bar
+      name: Pry Bar
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.gravesman.rule.gravesman
+    name: Gravesman
+    effect: May retain a dead Hero's equipment on the source 4+ result.
+  source_notes:
+  - Mordheimer's profile row is labelled 'Diestro'; retained data values but not the apparent label typo.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Gravesman
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.halfling-knight
+  kind: hired-sword
+  grade: 2a
+  publication: Fanatic Online 94
+  name: Halfling Knight
+  name_i18n:
+    en: Halfling Knight
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 2
+    T: 2
+    W: 1
+    I: 4
+    A: 1
+    Ld: 9
+  warband_rating:
+    kind: base_plus_experience
+    base: 12
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: heavy_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: helmet
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: shield
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: barding
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.halfling-knight.item.cavalry-spear
+      name: Cavalry Spear
+  skill_access:
+  - combat
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.halfling-knight.rule.slay-large-creature
+    name: Slay Large Creature
+    effect: Uses source large-creature combat rule.
+  unresolved_references:
+  - kind: companion_profile
+    source_name: Hound M5* WS4 BS0 S4 T3 W1 I4 A1 Ld5
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Halfling Knight
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.imperial-tactician
+  kind: hired-sword
+  grade: 2a
+  publication: Fanatic Online 94
+  name: Imperial Tactician
+  name_i18n:
+    en: Imperial Tactician
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 9
+  warband_rating:
+    kind: base_plus_experience
+    base: 16
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: helmet
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.imperial-tactician.item.two-handed-sword
+      name: Two-handed Sword
+    - id: hireling.hired-sword.imperial-tactician.item.plate-armour
+      name: Plate Armour
+      save: 4+
+      movement_modifier: -1
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.imperial-tactician.rule.expert-tactician
+    name: Expert Tactician
+    effect: Uses source tactical rule.
+  - id: hireling.hired-sword.imperial-tactician.rule.read-the-battle
+    name: Read the Battle
+    effect: Uses source tactical rule.
+  - id: hireling.hired-sword.imperial-tactician.rule.organized-search-party
+    name: Organized Search Party
+    effect: Uses post-battle search rule.
+  - id: hireling.hired-sword.imperial-tactician.rule.send-false-signals
+    name: Send False Signals
+    effect: Uses source scenario/tactical rule.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Imperial Tactician
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.knight-of-the-white-wolf
+  kind: hired-sword
+  grade: 2a
+  publication: Mordheim Facebook Group
+  name: Knight of the White Wolf
+  name_i18n:
+    en: Knight of the White Wolf
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 4
+    A: 1
+    Ld: 9
+  warband_rating:
+    kind: base_plus_experience
+    base: 18
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: heavy_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: wolfcloak
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.knight-of-the-white-wolf.item.huge-hammer
+      name: Huge Two-handed Hammer
+  skill_access:
+  - combat
+  - strength
+  - cavalry
+  starting_skill_ids:
+  - skill.unstoppable-charge
+  rules:
+  - id: hireling.hired-sword.knight-of-the-white-wolf.rule.pride
+    name: Pride
+    effect: Uses source pride rule.
+  - id: hireling.hired-sword.knight-of-the-white-wolf.rule.cavalryman
+    name: Cavalryman
+    effect: Uses source cavalry rule.
+  - id: hireling.hired-sword.knight-of-the-white-wolf.rule.among-wolves
+    name: Among Wolves
+    effect: Uses source wolf-related rule.
+  - id: hireling.hired-sword.knight-of-the-white-wolf.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Warrior Priest incompatibility
+    effect: The Knight of the White Wolf will not join or remain with a warband whose current roster contains a Warrior Priest.
+  unresolved_references:
+  - kind: skill
+    source_name: Ride Warhorse
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Knight of the White Wolf
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.ninja-gnoblar
+  kind: hired-sword
+  grade: 2a
+  publication: Mordheimer Information Centre
+  name: Ninja Gnoblar
+  name_i18n:
+    en: Ninja Gnoblar
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  warband_rating:
+    kind: base_plus_experience
+    base: 8
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: throwing_stars
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.ninja-gnoblar.item.ninja-robe
+      name: Ninja Robe
+      counts_as:
+        item_id: toughened_leathers
+        context: rules
+    - id: hireling.hired-sword.ninja-gnoblar.item.bo
+      name: Bo
+  skill_access:
+  - shooting
+  - speed
+  - special
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.ninja-gnoblar.rule.stealthy
+    name: Stealthy
+    effect: Uses source stealth rule.
+  - id: hireling.hired-sword.ninja-gnoblar.rule.rooftop-to-rooftop
+    name: Rooftop to Rooftop
+    effect: Uses source rooftop movement rule.
+  - id: hireling.hired-sword.ninja-gnoblar.rule.expert-rooftop-jumper
+    name: Expert Rooftop Jumper
+    effect: Special skill option.
+  - id: hireling.hired-sword.ninja-gnoblar.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Fear-causing roster
+    effect: The Ninja Gnoblar may only be hired if the current warband contains no fear-causing creatures.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Ninja Gnoblar
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.ogre-slave-master
+  kind: hired-sword
+  grade: 2a
+  publication: Fanatic Online 89
+  name: Ogre Slave Master
+  name_i18n:
+    en: Ogre Slave Master
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 2
+    S: 4
+    T: 4
+    W: 3
+    I: 4
+    A: 2
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 40
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: axe
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: club
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.ogre-slave-master.rule.slave-master
+    name: Slave Master
+    effect: Uses source slave-master campaign rule.
+  - id: hireling.hired-sword.ogre-slave-master.rule.fear
+    name: Fear
+    effect: Causes fear.
+  - id: hireling.hired-sword.ogre-slave-master.rule.large-target
+    name: Large Target
+    effect: Counts as a large target.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Ogre Slave Master
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.slaver
+  kind: hired-sword
+  grade: 2a
+  publication: Fanatic Online 94
+  name: Slaver
+  name_i18n:
+    en: Slaver
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 12
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: spear
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: net
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: helmet
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.slaver.rule.slaver
+    name: Slaver
+    effect: Uses the source automatic-capture and slave-sale rules.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Slaver
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.swashbuckler
+  kind: hired-sword
+  grade: 2a
+  publication: Fanatic Online 94
+  name: Swashbuckler
+  name_i18n:
+    en: Swashbuckler
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 16
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: rapier
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: duelling_pistol
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - speed
+  - shooting
+  - combat
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.swashbuckler.rule.acrobatic
+    name: Acrobatic
+    effect: Uses source acrobatic rule.
+  - id: hireling.hired-sword.swashbuckler.rule.nimble
+    name: Nimble
+    effect: Uses source nimble rule.
+  - id: hireling.hired-sword.swashbuckler.rule.charismatic
+    name: Charismatic
+    effect: Uses source charismatic rule.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Swashbuckler
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.ungor-trapper
+  kind: hired-sword
+  grade: 2a
+  publication: Mordheim Facebook Group
+  name: Ungor Trapper
+  name_i18n:
+    en: Ungor Trapper
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  warband_rating:
+    kind: base_plus_experience
+    base: 12
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: bow
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: club
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: rope_hook
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - speed
+  - shooting
+  - special
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.ungor-trapper.rule.set-traps
+    name: Set Traps
+    effect: Uses source trap rule.
+  - id: hireling.hired-sword.ungor-trapper.rule.hunter-s-eye
+    name: Hunter's Eye
+    effect: Uses source hunter rule.
+  - id: hireling.hired-sword.ungor-trapper.rule.excellent-sight
+    name: Excellent Sight
+    effect: Uses source sight rule.
+  - id: hireling.hired-sword.ungor-trapper.rule.just-a-twit
+    name: Just a Twit
+    effect: Uses source limitation rule.
+  unresolved_references:
+  - kind: special_skill_options
+    source_name: Mutant/Fearless/Manhater
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Ungor Trapper
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.weaponsmith
+  kind: hired-sword
+  grade: 2a
+  publication: Emanuele Intrieri
+  name: Weaponsmith
+  name_i18n:
+    en: Weaponsmith
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 16
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: hammer
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: crossbow
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: buckler
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: helmet
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - strength
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.weaponsmith.rule.maintenance
+    name: Maintenance
+    effect: After battle uses the source D6 equipment-maintenance improvement table.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Weaponsmith
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+- id: hireling.hired-sword.wood-elf-hunter
+  kind: hired-sword
+  grade: 2a
+  publication: Letters of the Damned 2
+  name: Wood Elf Hunter
+  name_i18n:
+    en: Wood Elf Hunter
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 5
+    S: 3
+    T: 3
+    W: 1
+    I: 6
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 22
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: elf_bow
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - speed
+  - shooting
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.wood-elf-hunter.rule.stalk
+    name: Stalk
+    effect: Uses source stalking rule.
+  - id: hireling.hired-sword.wood-elf-hunter.rule.hunted
+    name: Hunted
+    effect: Uses source hunted/retention rule.
+  - id: hireling.hired-sword.wood-elf-hunter.rule.keen-eyed
+    name: Keen Eyed
+    effect: Uses source spotting rule.
+  unresolved_references:
+  - kind: equipment_mapping
+    source_name: Hunting Arrows
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Wood Elf Hunter
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a

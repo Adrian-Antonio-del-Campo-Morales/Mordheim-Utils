@@ -1,0 +1,266 @@
+schema_version: 2
+band_id: marauders-of-chaos
+profiles:
+- id: marauder-chieftain
+  name: Marauder Chieftain
+  type: hero
+  cost: 95
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 5
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 5
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Marauder Chieftain
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  source_path:
+  - heroes
+  - 1 Marauder Chieftain
+  name_i18n:
+    en: Marauder Chieftain
+    es: null
+  rule_ids:
+  - marauder-chieftain--leader
+  combat_traits: {}
+- id: seer
+  name: Seer
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Hero Equipment List; the profile entry does not allow armour.
+  skill_access:
+  - combat
+  - academic
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Seer
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  source_path:
+  - heroes
+  - 0 – 1 Seer
+  name_i18n:
+    en: Seer
+    es: null
+  rule_ids:
+  - seer--wizard
+  - seer--mark-of-chaos
+  combat_traits: {}
+- id: champions
+  name: Champions
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Champions
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  source_path:
+  - heroes
+  - 0 – 2 Champions
+  name_i18n:
+    en: Champions
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: chaos-marauders
+  name: Chaos Marauders
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - henchmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Marauders
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  source_path:
+  - henchmen
+  - Chaos Marauders
+  name_i18n:
+    en: Chaos Marauders
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: warhounds-of-chaos
+  name: Warhounds of Chaos
+  type: animal
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 7
+    WS: 4
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Warhounds do not use weapons or armour and fight without the normal unarmed penalties.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Warhounds of Chaos
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  source_path:
+  - henchmen
+  - 0 – 5 Warhounds of Chaos
+  name_i18n:
+    en: Warhounds of Chaos
+    es: null
+  rule_ids:
+  - warhounds-of-chaos--natural-weapons
+  - warhounds-of-chaos--animals
+  combat_traits: {}
+- id: condemned
+  name: Condemned
+  type: hero
+  cost: 55
+  experience: 8
+  characteristics:
+    M: 4
+    WS: D6
+    BS: 3
+    S: D6
+    T: D6
+    W: 1
+    I: 4
+    A: D3
+    Ld: 7
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Uses no equipment while any of WS, S, T or A remains variable, but fights unarmed without penalties.
+  - Once all variable characteristics have been permanently fixed, may use weapons, armour and miscellaneous equipment as
+    normal.
+  skill_access:
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Condemned
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  source_path:
+  - heroes
+  - 0 – 1 Condemned
+  name_i18n:
+    en: Condemned
+    es: null
+  rule_ids:
+  - condemned--inconsistency
+  - condemned--fear
+  - condemned--variable-experience
+  - condemned--fate
+  combat_traits: {}
+- id: spawn-of-chaos
+  name: Spawn of Chaos
+  type: henchman
+  cost: 180
+  experience: 0
+  characteristics:
+    M: 2D6
+    WS: 3
+    BS: 0
+    S: 4
+    T: 5
+    W: 3
+    I: 2
+    A: D6+1
+    Ld: 10
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Spawn of Chaos uses only its claws, tentacles and other extremities and cannot use normal equipment.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Spawn of Chaos
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  source_path:
+  - henchmen
+  - 0 – 1 Spawn of Chaos
+  name_i18n:
+    en: Spawn of Chaos
+    es: null
+  rule_ids:
+  - spawn-of-chaos--special-attacks
+  - spawn-of-chaos--fear
+  - spawn-of-chaos--special-movement
+  - spawn-of-chaos--psychology
+  - spawn-of-chaos--no-brain
+  - spawn-of-chaos--large
+  combat_traits: {}

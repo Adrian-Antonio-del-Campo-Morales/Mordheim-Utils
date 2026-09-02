@@ -1,0 +1,898 @@
+schema_version: 1
+specifications:
+- id: weapon.mace
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/weapon.mace
+    digest: 8bd3ca5bc3d4418757c689510280b1a6f351b3c4565f11497f181c94fa3fc2ee
+  interpretation: Concussion changes injury face 2 from Knocked Down to Stunned; faces 3-4 remain Stunned, and 5-6
+    Out.
+  interaction_contract:
+    reads:
+    - injury.total
+    writes:
+    - injury.condition
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.mace
+    expect:
+      attacker.main_weapon.concussion: true
+      attacker.main_weapon.strength_bonus: 0
+  - id: face-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-2
+    roles:
+    - active
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: face-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: face-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: face-5
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  - id: face-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-concussion
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - face-2
+- id: weapon.stone-axe
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/weapon.stone-axe
+    digest: 7daa278411e8b8a29584d7de1f261673ab11dc0eeda71c990529d76b648c499d
+  interpretation: Concussion changes injury face 2 from Knocked Down to Stunned; faces 3-4 remain Stunned, and 5-6
+    Out.
+  interaction_contract:
+    reads:
+    - injury.total
+    writes:
+    - injury.condition
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.stone-axe
+    expect:
+      attacker.main_weapon.concussion: true
+      attacker.main_weapon.strength_bonus: 0
+  - id: face-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.stone-axe
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-2
+    roles:
+    - active
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.stone-axe
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: face-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.stone-axe
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: face-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.stone-axe
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: face-5
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.stone-axe
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  - id: face-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.stone-axe
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-concussion
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - face-2
+- id: weapon.axe
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/weapon.axe
+    digest: 331fe535d241616ebe9c23e0b6084bf29105b5799abb42da5217032862efec81
+  interpretation: One additional armour-save penalty worsens a 4+ save to 5+ at Strength 3. It does not increase
+    attacking Strength.
+  interaction_contract:
+    reads:
+    - armour.target
+    writes:
+    - attack.penetration
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.axe
+    expect:
+      attacker.main_weapon.armour_penetration: 1
+  - id: all-armour-faces
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.axe
+    defender:
+      armour_id: armour.gromril-armour
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
+  - id: not-a-strength-bonus
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.axe
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: save-worse-than-six
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.axe
+    defender:
+      armour_id: armour.light-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+  mutations:
+  - id: remove-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - all-armour-faces
+    - save-worse-than-six
+- id: material.gromril
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/material.gromril
+    digest: e7dd5d61e2f8e547890471309390d16ddbb8346753e64efc6241fcaba00aa5c4
+  interpretation: One additional armour-save penalty worsens a 4+ save to 5+ at Strength 3. It does not increase
+    attacking Strength.
+  interaction_contract:
+    reads:
+    - armour.target
+    writes:
+    - attack.penetration
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.gromril
+    expect:
+      attacker.main_weapon.armour_penetration: 1
+  - id: all-armour-faces
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.gromril
+    defender:
+      armour_id: armour.gromril-armour
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
+  - id: not-a-strength-bonus
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.gromril
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: save-worse-than-six
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.gromril
+    defender:
+      armour_id: armour.light-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+  mutations:
+  - id: remove-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - all-armour-faces
+    - save-worse-than-six
+- id: weapon.katar
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/weapon.katar
+    digest: f29fd952be27eff95e8595a27bd1e17d814b7684bb3c6382443d183543dbfdb9
+  interpretation: One additional armour-save penalty worsens a 4+ save to 5+ at Strength 3. It does not increase
+    attacking Strength.
+  interaction_contract:
+    reads:
+    - armour.target
+    writes:
+    - attack.penetration
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.katar
+    expect:
+      attacker.main_weapon.armour_penetration: 1
+  - id: all-armour-faces
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.katar
+    defender:
+      armour_id: armour.gromril-armour
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
+  - id: not-a-strength-bonus
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.katar
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: save-worse-than-six
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.katar
+    defender:
+      armour_id: armour.light-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+  mutations:
+  - id: remove-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - all-armour-faces
+    - save-worse-than-six
+- id: weapon.dagger
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/weapon.dagger
+    digest: da875a2d1f4c5cfe74dc4c74a0191eff6b4af9a8f88194088a47ce7be79b5046
+  interpretation: The target receives +1 to its armour save, including a 6+ save if normally unarmoured. Attacking
+    Strength is unchanged.
+  interaction_contract:
+    reads:
+    - armour.target
+    writes:
+    - armour.target
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.dagger
+    expect:
+      attacker.main_weapon.target_armour_bonus: 1
+      attacker.main_weapon.strength_bonus: 0
+  - id: otherwise-unarmoured
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.dagger
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 1/6
+        'false': 5/6
+  - id: improves-existing-save
+    roles:
+    - consumer
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.dagger
+    defender:
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 3
+      result.saved: true
+  - id: strength-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.dagger
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-target-bonus
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - otherwise-unarmoured
+    - improves-existing-save
+- id: weapon.yambiya
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/weapon.yambiya
+    digest: 3ea6ae8dd67f08bb811eef6ba0e2506ef14c5df892c7069078d219999606418d
+  interpretation: The target receives +1 to its armour save, including a 6+ save if normally unarmoured. Attacking
+    Strength is unchanged.
+  interaction_contract:
+    reads:
+    - armour.target
+    writes:
+    - armour.target
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.yambiya
+    expect:
+      attacker.main_weapon.target_armour_bonus: 1
+      attacker.main_weapon.strength_bonus: 0
+  - id: otherwise-unarmoured
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.yambiya
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 1/6
+        'false': 5/6
+  - id: improves-existing-save
+    roles:
+    - consumer
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.yambiya
+    defender:
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 3
+      result.saved: true
+  - id: strength-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.yambiya
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-target-bonus
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - otherwise-unarmoured
+    - improves-existing-save
+- id: weapon.halberd
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/weapon.halberd
+    digest: 7cae0d6b4c940cb65505831f5ad6b9e8974a8d8a22c1af4532ccebe5db8c1543
+  interpretation: 'Two-handed: no simultaneous off-hand equipment. +1 Strength on every attack.'
+  interaction_contract:
+    reads:
+    - fighter.strength
+    - round.first
+    writes:
+    - attack.strength
+    - armour.strength
+    - build.offhand
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.halberd
+    expect:
+      attacker.main_weapon.strength_bonus: 1
+      attacker.main_weapon.two_handed: true
+  - id: first-round-strength
+    roles:
+    - active
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.halberd
+    context:
+      first_round: true
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: later-round-strength
+    roles:
+    - inactive
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.halberd
+    context:
+      first_round: false
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: reject-offhand
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.halberd
+      off_hand_id: weapon.dagger
+    reject: main weapon occupies both hands
+  - id: reject-shield
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.halberd
+      off_hand_id: defence.shield
+    reject: main weapon occupies both hands
+  mutations:
+  - id: remove-strength
+    path: attacker.main_weapon.strength_bonus
+    value: 0
+    cases:
+    - first-round-strength
+- id: weapon.flail
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/weapon.flail
+    digest: 29048acd50dfc0325940a2789714643811bbf762588889795b315ba2c927378b
+  interpretation: 'Two-handed: no simultaneous off-hand equipment. +2 Strength in the first combat round only.'
+  interaction_contract:
+    reads:
+    - fighter.strength
+    - round.first
+    writes:
+    - attack.strength
+    - armour.strength
+    - build.offhand
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.flail
+    expect:
+      attacker.main_weapon.first_round_strength_bonus: 2
+      attacker.main_weapon.two_handed: true
+  - id: first-round-strength
+    roles:
+    - active
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.flail
+    context:
+      first_round: true
+    expect:
+      result.wound: 5
+      result.armour: 5
+  - id: later-round-strength
+    roles:
+    - inactive
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.flail
+    context:
+      first_round: false
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: reject-offhand
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.flail
+      off_hand_id: weapon.dagger
+    reject: main weapon occupies both hands
+  - id: reject-shield
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.flail
+      off_hand_id: defence.shield
+    reject: main weapon occupies both hands
+  mutations:
+  - id: remove-strength
+    path: attacker.main_weapon.first_round_strength_bonus
+    value: 0
+    cases:
+    - first-round-strength
+- id: weapon.double-handed-weapon
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/weapon.double-handed-weapon
+    digest: 8e54d9ce13baf2f879cf316a31fd36830786ba558db7c5a122fa6c574863789f
+  interpretation: +2 Strength; occupies both hands; strikes last regardless of Initiative unless Strongman removes
+    that penalty.
+  interaction_contract:
+    reads:
+    - fighter.strength
+    - fighter.initiative
+    - skill.strongman
+    writes:
+    - attack.strength
+    - armour.strength
+    - priority.tier
+    - build.offhand
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.double-handed-weapon
+    expect:
+      attacker.main_weapon.strength_bonus: 2
+      attacker.main_weapon.two_handed: true
+  - id: strength
+    roles:
+    - consumer
+    - active
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.double-handed-weapon
+    expect:
+      result.wound: 5
+      result.armour: 5
+  - id: last-despite-initiative
+    roles:
+    - active
+    - boundary
+    operation: acting_order
+    attacker:
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    expect:
+      result.first_acts: false
+  - id: strongman-cancels-last
+    roles:
+    - inactive
+    - boundary
+    operation: acting_order
+    attacker:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.strongman
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    expect:
+      result.first_acts: true
+  - id: reject-offhand
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.double-handed-weapon
+      off_hand_id: weapon.dagger
+    reject: main weapon occupies both hands
+  mutations:
+  - id: remove-strength
+    path: attacker.main_weapon.strength_bonus
+    value: 0
+    cases:
+    - strength
+  - id: remove-last
+    path: attacker.main_weapon.priority
+    value: 0
+    cases:
+    - last-despite-initiative
+- id: weapon.sword
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/weapon.sword
+    digest: b0269721d63c45f8e54c648b250807896035778ea2cbc482cbc3f54bc6e46c18
+  interpretation: The sword grants one eligible parry, governed by the independently tested core parry operator.
+  interaction_contract:
+    reads:
+    - hit.roll
+    writes:
+    - state.parries
+    - hit.success
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      main_weapon_id: weapon.sword
+    expect:
+      defender.main_weapon.parry: true
+  - id: all-faces
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: parry
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 4
+    distribution:
+      observable: result.blocked
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
+  - id: natural-six
+    roles:
+    - inactive
+    operation: parry
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
+  - id: one-per-phase
+    roles:
+    - boundary
+    operation: initialize
+    defender:
+      main_weapon_id: weapon.sword
+    expect:
+      result.defender.parries_remaining: 1
+  mutations:
+  - id: remove-sword-parry
+    path: defender.main_weapon.parry
+    value: false
+    cases:
+    - all-faces
+- id: armour.no-armour
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/armour.no-armour
+    digest: ec03523647acce576db9b07c4f7e92942ce4d77a0755e931647d3a386b6350ea
+  interpretation: No body armour grants no armour roll. An independent special save remains available.
+  interaction_contract:
+    reads:
+    - armour.allowed
+    writes:
+    - armour.target
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      armour_id: armour.no-armour
+    expect:
+      defender.armour_save: 7
+  - id: no-roll
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+    expect:
+      result.eligible: false
+      result.saved: false
+  - id: ward-independent
+    roles:
+    - boundary
+    operation: special_save
+    defender:
+      armour_id: armour.no-armour
+      defence_ids:
+      - defence.enchanted-skins
+    rolls:
+    - key: special.ward
+      value: 6
+    expect:
+      result.saved: true
+      result.source: ward
+  mutations:
+  - id: invent-armour
+    path: defender.armour_save
+    value: 6
+    cases:
+    - no-roll

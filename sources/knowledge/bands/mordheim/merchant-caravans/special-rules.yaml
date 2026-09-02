@@ -1,0 +1,569 @@
+schema_version: 2
+band_id: merchant-caravans
+rules:
+- id: merchant--merchant
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.merchant-caravans.merchant.merchant
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Merchant
+  effect: The Merchant is always the warband's leader. Leadership succession and Merchant-specific effects are defined by
+    the warband's Merchant rule.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 1 Merchant / Special Rules / Merchant
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Merchant
+    es: null
+  effect_i18n:
+    en: The Merchant is always the warband's leader. Leadership succession and Merchant-specific effects are defined by the
+      warband's Merchant rule.
+    es: null
+  applies_to:
+    profile_ids:
+    - merchant
+- id: knights-vanguard--lightning-reflexes
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: skill.lightning-reflexes
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.lightning-reflexes
+  name: Lightning Reflexes
+  effect: If the Knights Vanguard is charged, he will 'strike first' against those that charged that turn. As the charger(s)
+    will also normally 'strike first' (for charging), the order of attack between the charger(s) and the Knights Vanguard
+    will be determined by comparing Initiative values.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 2 Knights Vanguard / Special Rules / Lightning Reflexes
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Lightning Reflexes
+    es: null
+  effect_i18n:
+    en: If the Knights Vanguard is charged, he will 'strike first' against those that charged that turn. As the charger(s)
+      will also normally 'strike first' (for charging), the order of attack between the charger(s) and the Knights Vanguard
+      will be determined by comparing Initiative values.
+    es: null
+  applies_to:
+    profile_ids:
+    - knights-vanguard
+- id: knights-vanguard--ride-warhorse
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.merchant-caravans.knights-vanguard.ride-warhorse
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: monturas."
+  name: Ride Warhorse
+  effect: The Knights Vanguard is trained in riding Warhorses.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 2 Knights Vanguard / Special Rules / Ride Warhorse
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Ride Warhorse
+    es: null
+  effect_i18n:
+    en: The Knights Vanguard is trained in riding Warhorses.
+    es: null
+  applies_to:
+    profile_ids:
+    - knights-vanguard
+- id: knights-vanguard--hirelings
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.merchant-caravans.knights-vanguard.hirelings
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Hirelings
+  effect: The Knights Vanguard is a hireling, paid by the Merchant and therefore can never become the warband's leader.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 2 Knights Vanguard / Special Rules / Hirelings
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Hirelings
+    es: null
+  effect_i18n:
+    en: The Knights Vanguard is a hireling, paid by the Merchant and therefore can never become the warband's leader.
+    es: null
+  applies_to:
+    profile_ids:
+    - knights-vanguard
+- id: magician--wizard
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.merchant-caravans.magician.wizard
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: magia."
+  name: Wizard
+  effect: A Magician is a wizard and uses Lesser Magic. See the Magic section in the Mordheim rulebook for details.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 1 Magician / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: A Magician is a wizard and uses Lesser Magic. See the Magic section in the Mordheim rulebook for details.
+    es: null
+  applies_to:
+    profile_ids:
+    - magician
+- id: magician--hireling
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.merchant-caravans.magician.hireling
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Hireling
+  effect: The Magician is a hireling, paid by the Merchant. He can never become the warband's leader.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 1 Magician / Special Rules / Hireling
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Hireling
+    es: null
+  effect_i18n:
+    en: The Magician is a hireling, paid by the Merchant. He can never become the warband's leader.
+    es: null
+  applies_to:
+    profile_ids:
+    - magician
+- id: blackguards--strongman
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: skill.strongman
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.strongman
+  name: Strongman
+  effect: Blackguards are capable of great feats of strength. They may use a double-handed weapon without the usual penalty
+    of always striking last. Work out the order of battle as you would with other weapons.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 3 Blackguards / Special Rules / Strongman
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Strongman
+    es: null
+  effect_i18n:
+    en: Blackguards are capable of great feats of strength. They may use a double-handed weapon without the usual penalty
+      of always striking last. Work out the order of battle as you would with other weapons.
+    es: null
+  applies_to:
+    profile_ids:
+    - blackguards
+- id: blackguards--unreliable-hirelings
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.merchant-caravans.blackguards.unreliable-hirelings
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Unreliable Hirelings
+  effect: Blackguards are only hired by the Merchant to serve him by protecting his cargo. They are not much trusted or granted
+    with any responsibilities. Therefore they may never become Heroes. Re-roll all results of 'The lad's got talent' for them.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 3 Blackguards / Special Rules / Unreliable Hirelings
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Unreliable Hirelings
+    es: null
+  effect_i18n:
+    en: Blackguards are only hired by the Merchant to serve him by protecting his cargo. They are not much trusted or granted
+      with any responsibilities. Therefore they may never become Heroes. Re-roll all results of 'The lad's got talent' for
+      them.
+    es: null
+  applies_to:
+    profile_ids:
+    - blackguards
+- id: band--merchant-leadership
+  runtime:
+    scope: 'LATER'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.merchant-caravans.band.merchant-leadership
+      scope: 'LATER'
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+  name: Merchant
+  effect: The Merchant is the warband leader and warriors within 6" may use his Leadership for Leadership tests. If the Merchant
+    permanently leaves the warband, determine a new leader normally. The new leader gains the Merchant special rule, counts
+    as a Merchant for all purposes, and may choose Merchant Special Skills. If no current model may become leader, an Apprentice
+    must be bought as soon as possible to become the leader.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Merchant
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Merchant
+    es: null
+  effect_i18n:
+    en: The Merchant is the warband leader and warriors within 6" may use his Leadership for Leadership tests. If the Merchant
+      permanently leaves the warband, determine a new leader normally. The new leader gains the Merchant special rule, counts
+      as a Merchant for all purposes, and may choose Merchant Special Skills. If no current model may become leader, an Apprentice
+      must be bought as soon as possible to become the leader.
+    es: null
+  applies_to:
+    band: true
+- id: band--trade
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.merchant-caravans.band.trade
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Trade
+  effect: 'Instead of searching for a rare item, the Merchant may try to sell one rare item that was stored in the Trade Wagon
+    during the preceding battle, before Heroes search for rare items. Roll D6: 1-2 = half the item''s basic price; 3-4 = the
+    item''s full basic price; 5-6 = the full basic price plus half again. The Merchant may decline the offered price and try
+    again after a later battle. Wholesale can increase the number of items sold this way.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Trade
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Trade
+    es: null
+  effect_i18n:
+    en: 'Instead of searching for a rare item, the Merchant may try to sell one rare item that was stored in the Trade Wagon
+      during the preceding battle, before Heroes search for rare items. Roll D6: 1-2 = half the item''s basic price; 3-4 =
+      the item''s full basic price; 5-6 = the full basic price plus half again. The Merchant may decline the offered price
+      and try again after a later battle. Wholesale can increase the number of items sold this way.'
+    es: null
+  applies_to:
+    band: true
+- id: band--open-for-business
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.merchant-caravans.band.open-for-business
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Open for Business
+  effect: Other players may send a Hero to the Merchant instead of searching for rare items. That Hero may buy one stored
+    item from the Merchant Caravan or sell one item to it if both players agree on the price or exchange. If no agreement
+    is reached, the visit is wasted.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Open for Business
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Open for Business
+    es: null
+  effect_i18n:
+    en: Other players may send a Hero to the Merchant instead of searching for rare items. That Hero may buy one stored item
+      from the Merchant Caravan or sell one item to it if both players agree on the price or exchange. If no agreement is
+      reached, the visit is wasted.
+    es: null
+  applies_to:
+    band: true
+- id: band--rarity
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.merchant-caravans.band.rarity
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Rarity
+  effect: Any rare item whose Rarity is reduced to 2 or less by the Trade Wagon's Reputation rule, Streetwise, or similar
+    effects may be bought as a Common item.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Rarity
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Rarity
+    es: null
+  effect_i18n:
+    en: Any rare item whose Rarity is reduced to 2 or less by the Trade Wagon's Reputation rule, Streetwise, or similar effects
+      may be bought as a Common item.
+    es: null
+  applies_to:
+    band: true
+- id: band--hired-swords
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.merchant-caravans.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Hired Swords
+  effect: Merchant Caravans may hire every Hired Sword available to Mercenary warbands.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Hired Swords
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Hired Swords
+    es: null
+  effect_i18n:
+    en: Merchant Caravans may hire every Hired Sword available to Mercenary warbands.
+    es: null
+  applies_to:
+    band: true
+- id: band--trade-wagon-required
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.merchant-caravans.band.trade-wagon-required
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Trade Wagon Required
+  effect: A starting Merchant Caravan must include one Trade Wagon. The Trade Wagon remains equipment rather than a warrior
+    profile in this data model.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Choice of Warriors / Henchmen / Trade Wagon
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Trade Wagon Required
+    es: null
+  effect_i18n:
+    en: A starting Merchant Caravan must include one Trade Wagon. The Trade Wagon remains equipment rather than a warrior
+      profile in this data model.
+    es: null
+  applies_to:
+    band: true
+- id: band--human-characteristic-maximum
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.merchant-caravans.band.human-characteristic-maximum
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Human Characteristic Maximum
+  effect: Merchants and their retinue are humans and use the Human maximum characteristic profile.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Characteristic Increase
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Human Characteristic Maximum
+    es: null
+  effect_i18n:
+    en: Merchants and their retinue are humans and use the Human maximum characteristic profile.
+    es: null
+  applies_to:
+    band: true
+- id: band--merchant-special-skills-bribery
+  kind: warband_skill
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.merchant-caravans.band.merchant-special-skills-bribery
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Bribery
+  effect: Whenever the warband has to take a Rout test, the Merchant may talk his hirelings into staying a little longer and
+    face the danger. He may immediately pay 5 gc per non-Hero warband member (including Hired Swords!) still in the game.
+    If he does, one member taken out of action already does not count for Rout tests. If after that, a Rout test is still
+    required, test as normal. This skill may be used as many times as required so long as the coffers aren't empty!
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Merchant Special Skills / Bribery
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Bribery
+    es: null
+  effect_i18n:
+    en: Whenever the warband has to take a Rout test, the Merchant may talk his hirelings into staying a little longer and
+      face the danger. He may immediately pay 5 gc per non-Hero warband member (including Hired Swords!) still in the game.
+      If he does, one member taken out of action already does not count for Rout tests. If after that, a Rout test is still
+      required, test as normal. This skill may be used as many times as required so long as the coffers aren't empty!
+    es: null
+  applies_to:
+    band: true
+- id: band--merchant-special-skills-dubious-income
+  kind: warband_skill
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.merchant-caravans.band.merchant-special-skills-dubious-income
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Dubious Income
+  effect: The Merchant has set up an underground business that proves to be quite profitable. After every battle in which
+    the Merchant was not taken out of action, he may choose to use this skill before the trading phase (i.e. before any gold
+    is spent). If he does, he must pass a Ld test. If the test is successful, the warband receives one gold coin per Experience
+    point the Merchant has. If the test is failed, the warband loses up to the same amount of gold coins.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Merchant Special Skills / Dubious Income
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Dubious Income
+    es: null
+  effect_i18n:
+    en: The Merchant has set up an underground business that proves to be quite profitable. After every battle in which the
+      Merchant was not taken out of action, he may choose to use this skill before the trading phase (i.e. before any gold
+      is spent). If he does, he must pass a Ld test. If the test is successful, the warband receives one gold coin per Experience
+      point the Merchant has. If the test is failed, the warband loses up to the same amount of gold coins.
+    es: null
+  applies_to:
+    band: true
+- id: band--merchant-special-skills-wholesale
+  kind: warband_skill
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.merchant-caravans.band.merchant-special-skills-wholesale
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Wholesale
+  effect: The Merchant is known for buying items in greater numbers and so is especially welcome at the other merchants. He
+    may search for D3+1 rare items after each battle instead of one item only (if he was not taken out of action, of course!).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Merchant Special Skills / Wholesale
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Wholesale
+    es: null
+  effect_i18n:
+    en: The Merchant is known for buying items in greater numbers and so is especially welcome at the other merchants. He
+      may search for D3+1 rare items after each battle instead of one item only (if he was not taken out of action, of course!).
+    es: null
+  applies_to:
+    band: true
+- id: band--merchant-special-skills-deal-breaker
+  kind: warband_skill
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.merchant-caravans.band.merchant-special-skills-deal-breaker
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Deal Breaker
+  effect: When trying to sell items through the Trade special rule, the Merchant gets a +1 bonus on the roll to see what the
+    item would fetch.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Merchant Special Skills / Deal Breaker
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Deal Breaker
+    es: null
+  effect_i18n:
+    en: When trying to sell items through the Trade special rule, the Merchant gets a +1 bonus on the roll to see what the
+      item would fetch.
+    es: null
+  applies_to:
+    band: true
+- id: band--merchant-special-skills-connected
+  kind: warband_skill
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.merchant-caravans.band.merchant-special-skills-connected
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Connected
+  effect: Instead of searching for rare items normally, the Merchant may search the special black-market table using the normal
+    rarity rules. Items bought through this table may never be sold back through that table. The individual black-market item
+    definitions are not modelled in this file.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Merchant Special Skills / Connected
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  name_i18n:
+    en: Connected
+    es: null
+  effect_i18n:
+    en: Instead of searching for rare items normally, the Merchant may search the special black-market table using the normal
+      rarity rules. Items bought through this table may never be sold back through that table. The individual black-market
+      item definitions are not modelled in this file.
+    es: null
+  applies_to:
+    band: true

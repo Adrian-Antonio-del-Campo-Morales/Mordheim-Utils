@@ -1,0 +1,442 @@
+schema_version: 1
+status: executable
+note: Shared canonical families with executable compiler, trait, or combat-engine contracts.
+summary:
+  families: 66
+  rules: 101
+  kinds:
+    compiler: 41
+    mechanic: 20
+    trait: 5
+families:
+- id: compiler.no-blackpowder-weapons
+  kind: compiler
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - lustria-dark-elves/band--ancestral-customs
+  - lustria-high-elves/band--ancestral-customs
+  - dark-elves/band--black-powder-weapons
+  - chaos-streets-deathbringers/band--no-noise
+- id: compiler.ignore-difficult-to-use-restrictions
+  kind: compiler
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - chaos-streets-pit-fighters/band--pit-fighter-skill-arms-master
+  - pit-fighters/band--pit-fighter-skill-arms-master
+- id: mechanic.black-hunger
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - lustria-clan-pestilens/band--clan-pestilens-special-skills-black-hunger
+  - skaven-clan-eshin/band--skaven-special-skills-black-hunger
+  - skaven-clan-pestilens/band--clan-pestilens-special-skills-black-hunger
+  - trollheim-skaven-clan-eshin/band--skaven-special-skills-black-hunger
+- id: mechanic.body-slam
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - chaos-streets-pit-fighters/band--pit-fighter-skill-body-slam
+  - pit-fighters/band--pit-fighter-skill-body-slam
+- id: mechanic.bull-charge
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - maneaters/band--ogres-special-skills-bull-charge
+  - maneaters/bulls--bull-charge
+  - ostlanders/band--ostlander-special-skills-bull-rush
+- id: compiler.censer-bearer-loadout
+  kind: compiler
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - lustria-clan-pestilens/band--clan-pestilens-special-skills-censer-bearer
+  - skaven-clan-pestilens/band--clan-pestilens-special-skills-censer-bearer
+- id: compiler.forbid-item-categories
+  kind: compiler
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - battle-monks-of-cathay/band--distaste-for-poison
+  - shadow-warriors/band--distaste-for-poison
+  - chaos-streets-sons-of-nagarythe/band--honourable
+  - lustria-high-elves/band--honourable
+- id: mechanic.force-of-will
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - chaos-streets-pit-fighters/band--pit-fighter-skill-force-of-will
+  - pit-fighters/band--pit-fighter-skill-force-of-will
+- id: compiler.mutant-requires-mutation-at-recruitment
+  kind: compiler
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - cult-of-the-possessed/mutants--mutations
+  - trollheim-cult-of-the-possessed/mutants--mutations
+- id: trait.pit-fighter
+  kind: trait
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - pit-fighters/dwarf-troll-slayer--pit-fighter
+  - pit-fighters/ogre-pit-fighter--pit-fighter
+  - pit-fighters/pit-fighters--pit-fighter
+  - pit-fighters/pit-king--pit-fighter
+  - pit-fighters/pit-veterans--pit-fighter
+  - pit-fighters/pursuers--pit-fighter
+- id: compiler.swabbie-rabble-loadout
+  kind: compiler
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - lustria-pirates/swabbies--rabble
+  - pirates/swabbies--rabble
+- id: compiler.promoted-hero-skill-access
+  kind: compiler
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - chaos-streets-pit-fighters/ogre-pit-fighter--skills
+  - pit-fighters/ogre-pit-fighter--skills
+  - ostlanders/ogre--skills
+- id: mechanic.unpredictable-attack
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - khemri-hobgoblin-raiders/band--hobgoblin-special-skills-unpredictable
+  - khemri-hobgoblin-raiders/sneaky--unpredictable
+  - lustria-savage-goblins/band--savage-goblin-special-skills-unpredictable
+- id: mechanic.strike-first-vs-skinks-first-round
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - amazons-lustria/band--amazon-special-skills-skink-hunter
+- id: mechanic.strike-first-vs-skinks-always
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-amazons/band--amazon-special-skills-lizard-hunter
+- id: compiler.no-missile-weapons
+  kind: compiler
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - lustria-dark-elves/darkblades--close-combat-specialists
+  - dark-elves/fellblades--melee-specialists
+- id: compiler.promoted-hero-no-strength-access
+  kind: compiler
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - night-goblins-web/band--promoted-henchmen-no-strength
+  - averlanders/halflings-scouts--promotion
+- id: trait.animal-friendship
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - horned-hunters/band--horned-hunter-special-skills-animal-friendship
+- id: mechanic.anvil-head
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - khemri-necromancers/band--necromantic-modification-anvil-head
+- id: compiler.blessings-of-nurgle
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - carnival-of-chaos/band--blessings-of-nurgle
+- id: compiler.bow-discipline
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - outlaws-of-stirwood-forest/band--bow-discipline
+- id: compiler.chaos-engineer
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - black-dwarfs/band--chaos-dwarf-special-skills-chaos-engineer
+- id: compiler.chivalry
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - bretonnian-chapel-guard/band--chivalry
+- id: trait.contagious
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious
+- id: mechanic.death-blow
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - chaos-streets-deathbringers/band--deathbringer-special-skills-death-blow
+- id: mechanic.disability
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - chaos-streets-mordheim-inhabitants/cripples--disability
+- id: compiler.disciple-of-sigmar
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - outlaws-of-stirwood-forest/cleric--disciple-of-sigmar
+- id: mechanic.energy-focus
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus
+- id: compiler.foreign-or-native-background
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - khemri-lahmian-brotherhood/band--background-selection
+- id: trait.guardian-unarmed
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - carnival-of-chaos/plague-cart--guardian-unarmed
+- id: compiler.haughty
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-high-elves/band--haughty
+- id: compiler.pirate-human-mercenary-equipment-access
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-pirates/band--hired-swords
+- id: compiler.knighthood
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - bretonnian-chapel-guard/squires--knighthood
+- id: trait.mark-of-onogal-the-crow
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - marauders-of-chaos/band--mark-of-onogal
+- id: mechanic.mark-of-the-old-ones
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-lizardmen/band--sacred-mark-of-the-old-ones
+- id: compiler.master-of-arms
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - maneaters/band--ogres-special-skills-master-of-arms
+- id: compiler.master-of-throwing-weapons
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons
+- id: compiler.mutation-purchase-at-recruitment
+  kind: compiler
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - trollheim-cult-of-the-possessed/band--mutation-purchase
+  - cult-of-the-possessed/band--mutations
+- id: compiler.possessed-optional-mutations-at-recruitment
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - cult-of-the-possessed/the-possessed--mutations
+- id: compiler.possessed-optional-zero-to-two-mutations-at-recruitment
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - trollheim-cult-of-the-possessed/the-possessed--mutations
+- id: mechanic.netter
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - night-goblins-mic/band--night-goblin-special-skills-netter
+- id: compiler.no-arcane-lore
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - dwarf-rangers/band--no-arcane-lore
+- id: compiler.nurgle-s-blessings
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - carnival-of-chaos/tainted-ones--nurgles-blessings
+- id: compiler.powder-s-expensive
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - hochland-bandits/band--powders-expensive
+- id: compiler.proud-to-a-fault
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - gunnery-school-of-nuln/band--proud-to-a-fault
+- id: compiler.proven-warrior
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - black-orcs/band--black-orc-special-skills-proven-warrior
+- id: compiler.quick-reload
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - gunnery-school-of-nuln/marksmen--quick-reload
+- id: compiler.renowned-virtue
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - bretonnian-chapel-guard/band--renowned-virtue
+- id: compiler.sacred-marks
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-lizardmen/band--sacred-marks
+- id: compiler.saurus-skill-prohibitions
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lizardmen/band--saurus-skill-prohibitions
+- id: compiler.lizardmen-scaly-skin
+  kind: compiler
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - lizardmen/band--scaly-skin
+  - lustria-lizardmen/band--scaly-skin
+- id: compiler.bite-attack
+  kind: compiler
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - lizardmen/band--bite-attack
+  - lustria-lizardmen/saurus-totem-warrior--bite-attack
+  - lustria-lizardmen/saurus-braves--bite-attack
+- id: compiler.slayer-skill-options
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - chaos-streets-pit-fighters/dwarf-troll-slayer--slayer-skill-options
+- id: mechanic.spawn-special-attacks
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - marauders-of-chaos/spawn-of-chaos--special-attacks
+- id: mechanic.amazon-isolationists
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - amazons-lustria/band--special-rules
+- id: mechanic.spider-infested
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-savage-goblins/band--savage-goblin-special-skills-spider-infested
+- id: compiler.strictures
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - battle-monks-of-cathay/band--strictures
+- id: compiler.tracker-gear
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-savage-goblins/trackers--tracker-gear
+- id: mechanic.untiring
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - bretonnian-chapel-guard/band--untiring
+- id: compiler.vampiric-powers
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - chaos-streets-undead-bloodlines/band--vampiric-powers
+- id: compiler.warrior-wizard
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - restless-dead/liche--warrior-wizard
+- id: compiler.warrior-s-code
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - chaos-streets-undead-bloodlines/blood-dragon-vampire--warriors-code
+- id: compiler.weapon-knowledge
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - hochland-bandits/duelist--weapon-knowledge
+- id: skill.unarmed-fighting
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - battle-monks-of-cathay/dragon-monks--unarmed-fighting
+  - battle-monks-of-cathay/warrior-monks--unarmed-fighting
+- id: skill.unarmed-critical-strikes
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - battle-monks-of-cathay/dragon-monks--art-of-silent-death
+- id: skill.art-of-silent-death
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death
+  - trollheim-skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death
+  - chaos-streets-deathbringers/band--deathbringer-special-skills-art-of-unarmed-combat

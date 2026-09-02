@@ -1,0 +1,73 @@
+schema_version: 1
+specifications:
+- id: averlander-halfling-promotion-lists
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access, digest: 6964505259300e192a85b7d5fb54552e8ecda23f3b43476746c173337d0309ed}
+  interpretation: El Halfling promovido puede elegir hasta dos listas generales, excepto Strength.
+  cases:
+  - id: combat-speed
+    roles: [grant, accepted]
+    operation: general_skill_access
+    attacker: {band_id: averlanders, profile_id: halflings-scouts, variant_ids: [skill-list.combat, skill-list.speed]}
+    expect: {result.skills: [skill.expert-swordsman, skill.jump-up, skill.lightning-reflexes, skill.step-aside, skill.strike-to-injure, skill.web-of-steel]}
+  - id: strength-rejected
+    roles: [rejected]
+    operation: compile
+    attacker: {band_id: averlanders, profile_id: halflings-scouts, variant_ids: [skill-list.strength]}
+    reject: Strength skill list is forbidden
+  - id: contract
+    operation: construction_tag_presence
+    attacker: {band_id: averlanders, profile_id: halflings-scouts}
+    context: {tag: compiler.promoted-hero-no-strength-access}
+    expect: {result.present: true}
+  mutations:
+  - {id: remove-promotion-contract, path: attacker.construction_tags, value: [], cases: [contract]}
+
+- id: dwarf-rangers-no-arcane-lore
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/mordheim/dwarf-rangers/band--no-arcane-lore/compiler.no-arcane-lore, digest: df4697065327717a303025eb7f6b9debfe277761546096f1aab624e5709555b6}
+  interpretation: Ningún Dwarf Ranger puede adquirir Arcane Lore ni Sorcery; el control sin esas elecciones sigue siendo legal.
+  cases:
+  - id: ordinary
+    roles: [grant, accepted, rejected]
+    operation: selection_choices
+    attacker: {band_id: dwarf-rangers, profile_id: runesmith}
+    context: {choices: {ordinary: {}, arcane: {skill_ids: [skill.arcane-lore]}}}
+    expect: {result.accepted: [ordinary], result.rejected: {arcane: "Arcane Lore is forbidden for dwarf-rangers/runesmith: ['skill.arcane-lore']"}}
+  - id: sorcery-rejected
+    roles: []
+    operation: compile
+    attacker: {band_id: dwarf-rangers, profile_id: apprentice-runesmith, skill_ids: [skill.sorcery]}
+    reject: Arcane Lore is forbidden
+  - id: contract
+    operation: construction_tag_presence
+    attacker: {band_id: dwarf-rangers, profile_id: runesmith}
+    context: {tag: compiler.no-arcane-lore}
+    expect: {result.present: true}
+  mutations:
+  - {id: remove-no-arcane-contract, path: attacker.construction_tags, value: [], cases: [contract]}
+
+- id: blood-dragon-warriors-code
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/trollheim/chaos-streets-undead-bloodlines/blood-dragon-vampire--warriors-code/compiler.warrior-s-code, digest: 67c3f04cccbc25d09f2504b023cdc56c906e6ac683e110f1b57a00cb49b6f94d}
+  interpretation: El Blood Dragon Vampire no puede adquirir habilidades mágicas; una construcción sin ellas permanece legal.
+  cases:
+  - id: ordinary
+    roles: [grant, accepted, rejected]
+    operation: selection_choices
+    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: blood-dragon-vampire}
+    context: {choices: {ordinary: {}, arcane: {skill_ids: [skill.arcane-lore]}}}
+    expect: {result.accepted: [ordinary], result.rejected: {arcane: "magic is forbidden by the Warrior's Code: ['skill.arcane-lore']"}}
+  - id: contract
+    operation: construction_tag_presence
+    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: blood-dragon-vampire}
+    context: {tag: compiler.warrior-s-code}
+    expect: {result.present: true}
+  mutations:
+  - {id: remove-warrior-code, path: attacker.construction_tags, value: [], cases: [contract]}

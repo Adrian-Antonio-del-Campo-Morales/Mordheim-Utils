@@ -1,0 +1,535 @@
+schema_version: 2
+band_id: forest-goblins
+rules:
+- id: chieftain--leader
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins.chieftain.leader
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Leader
+  effect: 'Any warrior within 6" of the Chieftain may use his
+
+    Leadership characteristic when taking Leadership tests.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Chieftain / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any warrior within 6" of the Chieftain may use his
+
+      Leadership characteristic when taking Leadership tests.'
+    es: null
+  applies_to:
+    profile_ids:
+    - chieftain
+- id: chieftain--ride-spiders
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins.chieftain.ride-spiders
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: monturas."
+  name: Ride Spiders
+  effect: The Chieftain can ride Giant Spiders and the Gigantic Spider as detailed in the ‘Blazing Saddles’ article .
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Chieftain / Special Rules / Ride Spiders
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Ride Spiders
+    es: null
+  effect_i18n:
+    en: The Chieftain can ride Giant Spiders and the Gigantic Spider as detailed in the ‘Blazing Saddles’ article .
+    es: null
+  applies_to:
+    profile_ids:
+    - chieftain
+- id: braves--animosity
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins.braves.animosity
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Animosity
+  effect: Braves are subject to the rules for Animosity .
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 4 Braves / Special Rules / Animosity
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Animosity
+    es: null
+  effect_i18n:
+    en: Braves are subject to the rules for Animosity .
+    es: null
+  applies_to:
+    profile_ids:
+    - braves
+- id: braves--remove-animosity
+  runtime:
+    scope: 'LATER'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins.braves.remove-animosity
+      scope: 'LATER'
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+  name: Remove Animosity
+  effect: When a Brave earns a skill advance, he may choose to remove his Animosity rule instead of choosing a skill.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Forest Goblin Skill Table / Note
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Remove Animosity
+    es: null
+  effect_i18n:
+    en: When a Brave earns a skill advance, he may choose to remove his Animosity rule instead of choosing a skill.
+    es: null
+  applies_to:
+    profile_ids:
+    - braves
+- id: shaman--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins.shaman.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Wizard
+  effect: A Shaman begins with one spell randomly chosen from the Forest Goblin Spell list .
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Shaman / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: A Shaman begins with one spell randomly chosen from the Forest Goblin Spell list .
+    es: null
+  applies_to:
+    profile_ids:
+    - shaman
+- id: forest-goblins--animosity
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins.forest-goblins.animosity
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Animosity
+  effect: Forest Goblins are subject to the rules for Animosity .
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Forest Goblins / Special Rules / Animosity
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Animosity
+    es: null
+  effect_i18n:
+    en: Forest Goblins are subject to the rules for Animosity .
+    es: null
+  applies_to:
+    profile_ids:
+    - forest-goblins
+- id: red-toof-goblins--animosity
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins.red-toof-goblins.animosity
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Animosity
+  effect: Red Toof Boyz are subject to the rules for Animosity .
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Red Toof Goblins / Special Rules / Animosity
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Animosity
+    es: null
+  effect_i18n:
+    en: Red Toof Boyz are subject to the rules for Animosity .
+    es: null
+  applies_to:
+    profile_ids:
+    - red-toof-goblins
+- id: red-toof-goblins--berserkers
+  runtime:
+    scope: "LATER"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: trait.frenzy
+      scope: "LATER"
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
+  name: Berserkers
+  effect: Forest Goblins of the Red Toof tribe allow themselves to be bitten by all sorts of poisonous wildlife before entering
+    battle. The mingling venom drives them into frothing convulsions, making them extremely ferocious. Red Toof Boyz are affected
+    by the rules for Frenzy as described in the Mordheim rulebook. In addition, if they begin their turn within charge range
+    of an enemy, they are immune to animosity for that turn.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Red Toof Goblins / Special Rules / Berserkers
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Berserkers
+    es: null
+  effect_i18n:
+    en: Forest Goblins of the Red Toof tribe allow themselves to be bitten by all sorts of poisonous wildlife before entering
+      battle. The mingling venom drives them into frothing convulsions, making them extremely ferocious. Red Toof Boyz are
+      affected by the rules for Frenzy as described in the Mordheim rulebook. In addition, if they begin their turn within
+      charge range of an enemy, they are immune to animosity for that turn.
+    es: null
+  applies_to:
+    profile_ids:
+    - red-toof-goblins
+- id: sluggas--animosity
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins.sluggas.animosity
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Animosity
+  effect: Sluggas are subject to the rules for Animosity .
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Sluggas / Special Rules / Animosity
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Animosity
+    es: null
+  effect_i18n:
+    en: Sluggas are subject to the rules for Animosity .
+    es: null
+  applies_to:
+    profile_ids:
+    - sluggas
+- id: sluggas--sluggas
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins.sluggas.sluggas
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: disparo."
+  name: Sluggas
+  effect: In the shooting phase, the Sluggas may throw thrown weapons up to three times. This may not be combined with Quick
+    Shot if they should be promoted to hero status.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Sluggas / Special Rules / Sluggas
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Sluggas
+    es: null
+  effect_i18n:
+    en: In the shooting phase, the Sluggas may throw thrown weapons up to three times. This may not be combined with Quick
+      Shot if they should be promoted to hero status.
+    es: null
+  applies_to:
+    profile_ids:
+    - sluggas
+- id: gigantic-spider--fear
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins.gigantic-spider.fear
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Fear
+  effect: Gigantic Spiders cause fear as described in the Mordheim Rulebook.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Gigantic Spider / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: Gigantic Spiders cause fear as described in the Mordheim Rulebook.
+    es: null
+  applies_to:
+    profile_ids:
+    - gigantic-spider
+- id: gigantic-spider--large-monster
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins.gigantic-spider.large-monster
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: disparo."
+  name: Large Monster
+  effect: Gigantic Spiders are large targets, and may always be shot at.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Gigantic Spider / Special Rules / Large Monster
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Large Monster
+    es: null
+  effect_i18n:
+    en: Gigantic Spiders are large targets, and may always be shot at.
+    es: null
+  applies_to:
+    profile_ids:
+    - gigantic-spider
+- id: gigantic-spider--poisonous
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: trait.poisonous-injury
+      scope: "YES"
+      binding:
+        kind: trait
+        id: trait.poisonous-injury
+        parameters:
+          value: true
+  name: Poisonous
+  effect: 'The Gigantic Spider''s maw drips with vile poisons. When it wounds an enemy and a roll is made on the injury table,
+    1: knocked down, 2-4: stunned, and 5-6: Out of Action.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Gigantic Spider / Special Rules / Poisonous
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Poisonous
+    es: null
+  effect_i18n:
+    en: 'The Gigantic Spider''s maw drips with vile poisons. When it wounds an enemy and a roll is made on the injury table,
+      1: knocked down, 2-4: stunned, and 5-6: Out of Action.'
+    es: null
+  applies_to:
+    profile_ids:
+    - gigantic-spider
+- id: gigantic-spider--native
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins.gigantic-spider.native
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Native
+  effect: Negotiating woodlands is no trouble for spiders. They move through any wooded terrain without penalty.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Gigantic Spider / Special Rules / Native
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Native
+    es: null
+  effect_i18n:
+    en: Negotiating woodlands is no trouble for spiders. They move through any wooded terrain without penalty.
+    es: null
+  applies_to:
+    profile_ids:
+    - gigantic-spider
+- id: gigantic-spider--non-sentient
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins.gigantic-spider.non-sentient
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Non-sentient
+  effect: Spiders are affected by the stupidity rules in the Mordheim rulebook. In addition, they never gain experience, as
+    they are animals. Note however that they may climb as normal.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Gigantic Spider / Special Rules / Non-sentient
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Non-sentient
+    es: null
+  effect_i18n:
+    en: Spiders are affected by the stupidity rules in the Mordheim rulebook. In addition, they never gain experience, as
+      they are animals. Note however that they may climb as normal.
+    es: null
+  applies_to:
+    profile_ids:
+    - gigantic-spider
+- id: gigantic-spider--may-ride
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins.gigantic-spider.may-ride
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: monturas."
+  name: May Ride
+  effect: 'The Forest Goblin Chieftain, may ride the Gigantic Spider. He gains +1 armour save, and shall
+
+    move at the Gigantic Spider''s rate of 6. Shooting attacks hit the Chieftain on a die roll of 1-2, and the
+
+    Gigantic Spider on a 3-6. In close combat, the opponent may choose which to hit. The Gigantic Spider no longer has to
+    check for stupidity if it is being ridden, as the Chieftain is directing its actions.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Gigantic Spider / Special Rules / May Ride
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: May Ride
+    es: null
+  effect_i18n:
+    en: 'The Forest Goblin Chieftain, may ride the Gigantic Spider. He gains +1 armour save, and shall
+
+      move at the Gigantic Spider''s rate of 6. Shooting attacks hit the Chieftain on a die roll of 1-2, and the
+
+      Gigantic Spider on a 3-6. In close combat, the opponent may choose which to hit. The Gigantic Spider no longer has to
+      check for stupidity if it is being ridden, as the Chieftain is directing its actions.'
+    es: null
+  applies_to:
+    profile_ids:
+    - gigantic-spider
+- id: gigantic-spider--chitin-armour
+  name: Chitin Armour
+  effect: The Gigantic Spider has an intrinsic 4+ natural armour save. This is part of the creature, not selectable equipment.
+  source:
+    manual: user-ruling
+    printed_page: 0
+    section: Gigantic Spider / Chitin Armour
+  applies_to:
+    profile_ids: [gigantic-spider]
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters: {value: 4}
+- id: band--natives
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.forest-goblins.band.natives
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Natives
+  effect: Forest Goblins suffer no movement penalties for moving through wooded terrain.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Natives
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Natives
+    es: null
+  effect_i18n:
+    en: Forest Goblins suffer no movement penalties for moving through wooded terrain.
+    es: null
+  applies_to:
+    band: true
+- id: band--animosity
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.forest-goblins.band.animosity
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Animosity
+  effect: 'At the start of the Orc player''s turn, roll a D6 for each Orc or Goblin Henchman not engaged in hand-to-hand combat.
+    On a 1, roll another D6: 1 = the warrior attacks the nearest eligible friendly Orc/Goblin Henchman or Hired Sword if possible
+    (charge and fight one round; if no such charge is possible and the warrior has a missile weapon, shoot the nearest eligible
+    friendly model). If no valid target exists, or the nearest friendly model is an Orc Hero, treat the result as 2-5. 2-5
+    = the warrior may do nothing else that turn, but may defend itself if attacked. 6 = immediately move as quickly as possible
+    toward the nearest visible enemy, charging if possible; if no enemy is visible, make a normal move. This is an extra move
+    in addition to normal movement. If it brings an enemy into charge range, the warrior must charge during its normal Movement
+    phase.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Animosity
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  name_i18n:
+    en: Animosity
+    es: null
+  effect_i18n:
+    en: 'At the start of the Orc player''s turn, roll a D6 for each Orc or Goblin Henchman not engaged in hand-to-hand combat.
+      On a 1, roll another D6: 1 = the warrior attacks the nearest eligible friendly Orc/Goblin Henchman or Hired Sword if
+      possible (charge and fight one round; if no such charge is possible and the warrior has a missile weapon, shoot the
+      nearest eligible friendly model). If no valid target exists, or the nearest friendly model is an Orc Hero, treat the
+      result as 2-5. 2-5 = the warrior may do nothing else that turn, but may defend itself if attacked. 6 = immediately move
+      as quickly as possible toward the nearest visible enemy, charging if possible; if no enemy is visible, make a normal
+      move. This is an extra move in addition to normal movement. If it brings an enemy into charge range, the warrior must
+      charge during its normal Movement phase.'
+    es: null
+  applies_to:
+    band: true

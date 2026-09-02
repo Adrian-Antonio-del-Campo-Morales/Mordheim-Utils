@@ -1,0 +1,441 @@
+schema_version: 1
+ruleset: mordheim
+catalog: hirelings-dramatis-personae
+grade: 2a
+profiles:
+- id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne
+  kind: dramatis-personae
+  grade: 2a
+  publication: Mordheim Facebook Group
+  name: Aksho'akhash the Vile Dreadwing, Lord of the Carrion Throne
+  name_i18n:
+    en: Aksho'akhash the Vile Dreadwing, Lord of the Carrion Throne
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 5
+    BS: 3
+    S: 4
+    T: 3
+    W: 3
+    I: 5
+    A: 2
+    Ld: 10
+  warband_rating:
+    kind: fixed
+    value: 35
+  skill_access: []
+  starting_skill_ids: []
+  rules:
+  - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.fear
+    name: Fear
+    effect: Causes fear.
+  - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-flesh
+    name: Daemonic Flesh
+    effect: Has source 5+ daemonic save and magical attacks.
+  - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-instability
+    name: Daemonic Instability
+    effect: Can be banished when OOA or if summoner is lost.
+  - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.coward-king
+    name: Coward King
+    effect: Not immune to psychology/fear despite causing fear.
+  - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.fly
+    name: Fly
+    effect: Uses source flying movement.
+  - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.aethereal-hoarder
+    name: Aethereal Hoarder
+    effect: After eligible games may reroll exploration, search rare item at +1, or find 2D6 gc.
+  unresolved_references:
+  - kind: summoning_procedure
+    source_name: Chaos spell-caster + Macabre Tome + Leadership test
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Aksho'akhash the Vile Dreadwing, Lord of the Carrion Throne
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+- id: hireling.dramatis.busty-gwen
+  kind: dramatis-personae
+  grade: 2a
+  publication: Fanatic Online 89
+  name: “Busty” Gwen
+  name_i18n:
+    en: “Busty” Gwen
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 1
+    S: 4
+    T: 4
+    W: 2
+    I: 3
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 40
+    per_experience_point: 1
+  equipment:
+    unique_equipment:
+    - id: hireling.dramatis.busty-gwen.item.knives
+      name: Knives
+    - id: hireling.dramatis.busty-gwen.item.rolling-pin
+      name: Rolling Pin
+      counts_as:
+        item_id: club
+        context: rules
+      strength_bonus: 1
+  skill_access: []
+  starting_skill_ids:
+  - skill.step-aside
+  - skill.mighty-blow
+  - skill.strike-to-injure
+  rules:
+  - id: hireling.dramatis.busty-gwen.rule.massively-built
+    name: Massively Built
+    effect: Uses source leadership-distraction rule against eligible targets.
+  - id: hireling.dramatis.busty-gwen.rule.not-hired-muscle
+    name: Not Hired Muscle
+    effect: Is found automatically, then requires the source special scenario and outcome/payment procedure.
+  source_notes:
+  - The standard campaign rating is +40 plus experience according to Mordheimer; the one-off game rule instead uses 85 gc and +65 rating.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / “Busty” Gwen
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+- id: hireling.dramatis.the-dark-jester-in-mordheim
+  kind: dramatis-personae
+  grade: 2a
+  publication: Fanatic Online 17
+  name: The Dark Jester in Mordheim
+  name_i18n:
+    en: The Dark Jester in Mordheim
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 2
+    I: 6
+    A: 2
+    Ld: 7
+  warband_rating:
+    kind: fixed
+    value: 55
+  equipment:
+    fixed_items:
+    - item_id: club
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: morning_star
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access: []
+  starting_skill_ids:
+  - skill.leap
+  - skill.acrobat
+  - skill.lightning-reflexes
+  - skill.jump-up
+  - skill.dodge
+  rules:
+  - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.loner
+    name: Loner
+    effect: Does not test All Alone.
+  - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.confound-and-confuse
+    name: Confound and Confuse
+    effect: Chooses a source combat trick each combat turn.
+  - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.sidestepper
+    name: Sidestepper
+    effect: May use the source 4+ special dodge.
+  - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.babbling-banter
+    name: Babbling Banter
+    effect: Applies source to-hit modifiers.
+  - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.trip
+    name: Trip
+    effect: May replace a wound attempt with a source 2+ trip.
+  source_notes:
+  - Source equipment is a skeleton hobby horse counting as club and a sack of spikes counting as morning star.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / The Dark Jester in Mordheim
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+- id: hireling.dramatis.the-headless-horseman
+  kind: dramatis-personae
+  grade: 2a
+  publication: Sylvania Supplement
+  name: The Headless Horseman
+  name_i18n:
+    en: The Headless Horseman
+    es: null
+  normalization_status: out_of_scope
+  warband_rating:
+    kind: fixed
+    value: 80
+  equipment:
+    fixed_items:
+    - item_id: duelling_pistol
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: duelling_pistol
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: superior_blackpowder
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.dramatis.the-headless-horseman.item.double-handed-axe
+      name: Double Handed Axe
+  skill_access: []
+  starting_skill_ids:
+  - skill.pistolier
+  - skill.eagle-eyes
+  - skill.trick-shooter
+  - skill.strongman
+  rules:
+  - id: hireling.dramatis.the-headless-horseman.rule.causes-fear
+    name: Causes Fear
+    effect: Causes fear.
+  - id: hireling.dramatis.the-headless-horseman.rule.immune-to-psychology
+    name: Immune to Psychology
+    effect: Horseman and steed are immune to psychology.
+  - id: hireling.dramatis.the-headless-horseman.rule.immune-to-poison
+    name: Immune to Poison
+    effect: Horseman and steed are immune to poison.
+  - id: hireling.dramatis.the-headless-horseman.rule.faithful-steed
+    name: Faithful Steed
+    effect: May never dismount.
+  - id: hireling.dramatis.the-headless-horseman.rule.undead
+    name: Undead
+    effect: Horseman and steed count as Undead.
+  - id: hireling.dramatis.the-headless-horseman.rule.expert-rider
+    name: Expert Rider
+    effect: Counts as stationary for shooting after moving.
+  - id: hireling.dramatis.the-headless-horseman.rule.rapid-reload
+    name: Rapid Reload
+    effect: Can fire both duelling pistols each shooting phase.
+  - id: hireling.dramatis.the-headless-horseman.rule.head-hewer
+    name: Head Hewer
+    effect: Source charge attacks with unique axe modify injury/critical results.
+  - id: hireling.dramatis.the-headless-horseman.rule.wanderer
+    name: Wanderer
+    effect: Only stays one battle and cannot be rehired immediately.
+  unresolved_references:
+  - kind: multi_profile_entity
+    source_name: Horseman M- WS4 BS5 S4 T4 W2 I6 A2 Ld8; Steed M8 WS2 BS0 S3 T4 W2 I2 A1 Ld5
+  - kind: skill
+    source_name: Horse Archer
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / The Headless Horseman
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+  out_of_scope_reason: Composite rider-and-mount entity with separate profiles.
+- id: hireling.dramatis.the-foole
+  kind: dramatis-personae
+  grade: 2a
+  publication: Fanatic Online 89
+  name: The Foole
+  name_i18n:
+    en: The Foole
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: fixed
+    value: 30
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.dramatis.the-foole.item.poison-ring
+      name: Poison Ring
+  skill_access: []
+  starting_skill_ids:
+  - skill.acrobat
+  - skill.lightning-reflexes
+  rules:
+  - id: hireling.dramatis.the-foole.rule.unhinged
+    name: Unhinged
+    effect: Immune to psychology and All Alone.
+  - id: hireling.dramatis.the-foole.rule.bored-now
+    name: Bored Now
+    effect: Cannot work for the same warband consecutively.
+  - id: hireling.dramatis.the-foole.rule.poison-ring
+    name: Poison Ring
+    effect: Once per battle may use source Giggle Juice attack.
+  - id: hireling.dramatis.the-foole.rule.sadist
+    name: Sadist
+    effect: Uses source captured-warrior rule.
+  - id: hireling.dramatis.the-foole.rule.master-craftsman
+    name: Master Craftsman
+    effect: May attempt a source random weapon improvement after battle.
+  unresolved_references:
+  - kind: item_instance_modifier
+    source_name: Master Craftsman weapon modifications
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / The Foole
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+- id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh
+  kind: dramatis-personae
+  grade: 2a
+  publication: Sylvania Supplement
+  name: Sigmund Spindle, the Harvester of Flesh
+  name_i18n:
+    en: Sigmund Spindle, the Harvester of Flesh
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 6
+    WS: 5
+    BS: 2
+    S: 5
+    T: 4
+    W: 2
+    I: 7
+    A: 3
+    Ld: 7
+  warband_rating:
+    kind: fixed
+    value: 65
+  equipment:
+    fixed_items:
+    - item_id: scythe
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access: []
+  starting_skill_ids:
+  - skill.sprint
+  - skill.scale-sheer-surfaces
+  - skill.dodge
+  - skill.lightning-reflexes
+  - skill.step-aside
+  - skill.unstoppable-charge
+  rules:
+  - id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.maddened
+    name: Maddened
+    effect: Subject to Frenzy.
+  - id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.causes-fear
+    name: Causes Fear
+    effect: Causes fear.
+  - id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.immune-to-poison
+    name: Immune to Poison
+    effect: Immune to poison.
+  - id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.no-pain
+    name: No Pain
+    effect: Ignores Knocked Down and Stunned until last Wound is lost.
+  unresolved_references:
+  - kind: alternate_hire_payment
+    source_name: one Hero body part / Severe Arm Wound
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Sigmund Spindle, the Harvester of Flesh
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+- id: hireling.dramatis.william-schakestange-master-bard
+  kind: dramatis-personae
+  grade: 2a
+  publication: Letters of the Damned 4
+  name: William Schäkestange, Master Bard
+  name_i18n:
+    en: William Schäkestange, Master Bard
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 5
+    BS: 3
+    S: 4
+    T: 3
+    W: 2
+    I: 5
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 60
+  equipment:
+    fixed_items:
+    - item_id: rapier
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.dramatis.william-schakestange-master-bard.item.lucky-rabbits-foot
+      name: Lucky Rabbit's Foot
+  skill_access: []
+  starting_skill_ids:
+  - skill.jump-up
+  - skill.dodge
+  - skill.lightning-reflexes
+  rules:
+  - id: hireling.dramatis.william-schakestange-master-bard.rule.songster
+    name: Songster
+    effect: Nearby friendly models may reroll failed Leadership tests with source +1 modifier, including rout tests.
+  - id: hireling.dramatis.william-schakestange-master-bard.rule.pantomime-horse
+    name: Pantomime Horse
+    effect: Optional mount treated as Warhorse except it never bolts.
+  - id: hireling.dramatis.william-schakestange-master-bard.rule.pages-of-couragio
+    name: Pages of Couragio
+    effect: When not highest-rated warband, records source heroic acts and awards extra post-battle Experience.
+  - id: hireling.dramatis.william-schakestange-master-bard.rule.campaign-eligibility
+    name: Conditional acceptance — good-aligned employers
+    effect: Mercenaries, Sisters of Sigmar and Witch Hunters may hire William automatically. Any other good-aligned warband may hire him only on a D6 roll of 4+.
+  unresolved_references:
+  - kind: skill
+    source_name: Ride Pantomime Horse
+  - kind: skill
+    source_name: Swashbuckler (Pirate Warband skill)
+  - kind: mount_profile
+    source_name: Pantomime Horse M8 WS3 BS0 S3 T3 W1 I3 A1 Ld5; adds +6 rating when fielded
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / William Schäkestange, Master Bard
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a

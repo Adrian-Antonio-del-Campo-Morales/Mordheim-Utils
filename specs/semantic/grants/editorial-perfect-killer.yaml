@@ -1,0 +1,202 @@
+schema_version: 1
+specifications:
+- id: perfect-killer-eshin-mordheim
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - {target: rule/mordheim/skaven-clan-eshin/assassin-adept--perfect-killer/trait.perfect-killer, digest: f56d0f1b221be781c42194af7ffdbbb73b6aa2bf34bd04f77c1748672622964c}
+  interpretation: Cada herida impone -1 adicional a la salvacion; se compone con Fuerza y no cambia To Wound.
+  cases:
+  - id: recipient
+    roles: [grant]
+    operation: grant
+    defender: {collection: mordheim, band_id: skaven-clan-eshin, profile_id: assassin-adept}
+    context: {rule_id: assassin-adept--perfect-killer}
+    expect: {result.recipients: [assassin-adept]}
+  - id: gromril-target
+    roles: [compiled, active, consumer]
+    operation: armour
+    attacker: {collection: mordheim, band_id: skaven-clan-eshin, profile_id: assassin-adept, main_weapon_id: weapon.sword}
+    defender: {armour_id: armour.gromril-armour}
+    rolls: [{key: armour, value: 5}]
+    expect: {attacker.global_effects.armour_penetration: 1, result.target: 6, result.saved: false}
+  - id: heavy-armour-denied
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {collection: mordheim, band_id: skaven-clan-eshin, profile_id: assassin-adept, main_weapon_id: weapon.sword}
+    defender: {armour_id: armour.heavy-armour}
+    expect: {result.target: 7, result.eligible: false, result.roll: null}
+  - id: combines-with-strength
+    roles: [active, boundary]
+    operation: armour
+    attacker: {collection: mordheim, band_id: skaven-clan-eshin, profile_id: assassin-adept, main_weapon_id: weapon.sword, characteristics: {weapon_skill: 4, strength: 5, toughness: 3, wounds: 1, initiative: 4, attacks: 1}}
+    defender: {armour_id: armour.gromril-armour}
+    expect: {result.target: 7, result.eligible: false, result.roll: null}
+  - id: wound-target-unchanged
+    roles: [boundary]
+    operation: wound
+    attacker: {collection: mordheim, band_id: skaven-clan-eshin, profile_id: assassin-adept, main_weapon_id: weapon.sword}
+    rolls: [{key: wound, value: 4}]
+    expect: {result.target: 3, result.success: true}
+  - id: ordinary-strength-four-control
+    roles: [inactive]
+    operation: armour
+    attacker: {main_weapon_id: weapon.sword, characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1}}
+    defender: {armour_id: armour.gromril-armour}
+    rolls: [{key: armour, value: 5}]
+    expect: {result.target: 5, result.saved: true}
+  mutations:
+  - id: remove-extra-penetration
+    path: attacker.global_effects.armour_penetration
+    value: 0
+    cases: [gromril-target]
+- id: perfect-killer-deathbringer
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - {target: rule/trollheim/chaos-streets-deathbringers/shadow-blade--consummate-fighter/trait.perfect-killer, digest: 48e8cf2cd3f7b61cb619079dfd552739d32c1ec7e14115e74bfc84cd50ca0f52}
+  interpretation: Cada herida impone -1 adicional a la salvacion; se compone con Fuerza y no cambia To Wound.
+  cases:
+  - id: recipient
+    roles: [grant]
+    operation: grant
+    defender: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: shadow-blade}
+    context: {rule_id: shadow-blade--consummate-fighter}
+    expect: {result.recipients: [shadow-blade]}
+  - id: gromril-target
+    roles: [compiled, active, consumer]
+    operation: armour
+    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: shadow-blade, main_weapon_id: weapon.sword}
+    defender: {armour_id: armour.gromril-armour}
+    rolls: [{key: armour, value: 5}]
+    expect: {attacker.global_effects.armour_penetration: 1, result.target: 6, result.saved: false}
+  - id: heavy-armour-denied
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: shadow-blade, main_weapon_id: weapon.sword}
+    defender: {armour_id: armour.heavy-armour}
+    expect: {result.target: 7, result.eligible: false, result.roll: null}
+  - id: combines-with-strength
+    roles: [active, boundary]
+    operation: armour
+    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: shadow-blade, main_weapon_id: weapon.sword, characteristics: {weapon_skill: 4, strength: 5, toughness: 3, wounds: 1, initiative: 4, attacks: 1}}
+    defender: {armour_id: armour.gromril-armour}
+    expect: {result.target: 7, result.eligible: false, result.roll: null}
+  - id: wound-target-unchanged
+    roles: [boundary]
+    operation: wound
+    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: shadow-blade, main_weapon_id: weapon.sword}
+    rolls: [{key: wound, value: 4}]
+    expect: {result.target: 3, result.success: true}
+  - id: ordinary-strength-four-control
+    roles: [inactive]
+    operation: armour
+    attacker: {main_weapon_id: weapon.sword, characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1}}
+    defender: {armour_id: armour.gromril-armour}
+    rolls: [{key: armour, value: 5}]
+    expect: {result.target: 5, result.saved: true}
+  mutations:
+  - id: remove-extra-penetration
+    path: attacker.global_effects.armour_penetration
+    value: 0
+    cases: [gromril-target]
+- id: perfect-killer-hashashiyyin
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - {target: rule/trollheim/khemri-thieves-guild/guild-hashashiyyin--consummate-fighter/trait.perfect-killer, digest: cf7dc375cfd7751c4da06c4c2f2e12b9c67fb17f28be719e9acb5064a32c8530}
+  interpretation: Cada herida impone -1 adicional a la salvacion; se compone con Fuerza y no cambia To Wound.
+  cases:
+  - id: recipient
+    roles: [grant]
+    operation: grant
+    defender: {collection: trollheim, band_id: khemri-thieves-guild, profile_id: guild-hashashiyyin}
+    context: {rule_id: guild-hashashiyyin--consummate-fighter}
+    expect: {result.recipients: [guild-hashashiyyin]}
+  - id: gromril-target
+    roles: [compiled, active, consumer]
+    operation: armour
+    attacker: {collection: trollheim, band_id: khemri-thieves-guild, profile_id: guild-hashashiyyin, main_weapon_id: weapon.sword}
+    defender: {armour_id: armour.gromril-armour}
+    rolls: [{key: armour, value: 5}]
+    expect: {attacker.global_effects.armour_penetration: 1, result.target: 6, result.saved: false}
+  - id: heavy-armour-denied
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {collection: trollheim, band_id: khemri-thieves-guild, profile_id: guild-hashashiyyin, main_weapon_id: weapon.sword}
+    defender: {armour_id: armour.heavy-armour}
+    expect: {result.target: 7, result.eligible: false, result.roll: null}
+  - id: combines-with-strength
+    roles: [active, boundary]
+    operation: armour
+    attacker: {collection: trollheim, band_id: khemri-thieves-guild, profile_id: guild-hashashiyyin, main_weapon_id: weapon.sword, characteristics: {weapon_skill: 4, strength: 5, toughness: 3, wounds: 1, initiative: 4, attacks: 1}}
+    defender: {armour_id: armour.gromril-armour}
+    expect: {result.target: 7, result.eligible: false, result.roll: null}
+  - id: wound-target-unchanged
+    roles: [boundary]
+    operation: wound
+    attacker: {collection: trollheim, band_id: khemri-thieves-guild, profile_id: guild-hashashiyyin, main_weapon_id: weapon.sword}
+    rolls: [{key: wound, value: 4}]
+    expect: {result.target: 3, result.success: true}
+  - id: ordinary-strength-four-control
+    roles: [inactive]
+    operation: armour
+    attacker: {main_weapon_id: weapon.sword, characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1}}
+    defender: {armour_id: armour.gromril-armour}
+    rolls: [{key: armour, value: 5}]
+    expect: {result.target: 5, result.saved: true}
+  mutations:
+  - id: remove-extra-penetration
+    path: attacker.global_effects.armour_penetration
+    value: 0
+    cases: [gromril-target]
+- id: perfect-killer-eshin-trollheim
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - {target: rule/trollheim/trollheim-skaven-clan-eshin/assassin-adept--consummate-fighter/trait.perfect-killer, digest: 37f91fa38015822b8f6929bb2f59bee4aca195ad08e565c18963fc01bacc0f04}
+  interpretation: Cada herida impone -1 adicional a la salvacion; se compone con Fuerza y no cambia To Wound.
+  cases:
+  - id: recipient
+    roles: [grant]
+    operation: grant
+    defender: {collection: trollheim, band_id: trollheim-skaven-clan-eshin, profile_id: assassin-adept}
+    context: {rule_id: assassin-adept--consummate-fighter}
+    expect: {result.recipients: [assassin-adept]}
+  - id: gromril-target
+    roles: [compiled, active, consumer]
+    operation: armour
+    attacker: {collection: trollheim, band_id: trollheim-skaven-clan-eshin, profile_id: assassin-adept, main_weapon_id: weapon.sword}
+    defender: {armour_id: armour.gromril-armour}
+    rolls: [{key: armour, value: 5}]
+    expect: {attacker.global_effects.armour_penetration: 1, result.target: 6, result.saved: false}
+  - id: heavy-armour-denied
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {collection: trollheim, band_id: trollheim-skaven-clan-eshin, profile_id: assassin-adept, main_weapon_id: weapon.sword}
+    defender: {armour_id: armour.heavy-armour}
+    expect: {result.target: 7, result.eligible: false, result.roll: null}
+  - id: combines-with-strength
+    roles: [active, boundary]
+    operation: armour
+    attacker: {collection: trollheim, band_id: trollheim-skaven-clan-eshin, profile_id: assassin-adept, main_weapon_id: weapon.sword, characteristics: {weapon_skill: 4, strength: 5, toughness: 3, wounds: 1, initiative: 4, attacks: 1}}
+    defender: {armour_id: armour.gromril-armour}
+    expect: {result.target: 7, result.eligible: false, result.roll: null}
+  - id: wound-target-unchanged
+    roles: [boundary]
+    operation: wound
+    attacker: {collection: trollheim, band_id: trollheim-skaven-clan-eshin, profile_id: assassin-adept, main_weapon_id: weapon.sword}
+    rolls: [{key: wound, value: 4}]
+    expect: {result.target: 3, result.success: true}
+  - id: ordinary-strength-four-control
+    roles: [inactive]
+    operation: armour
+    attacker: {main_weapon_id: weapon.sword, characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 4, attacks: 1}}
+    defender: {armour_id: armour.gromril-armour}
+    rolls: [{key: armour, value: 5}]
+    expect: {result.target: 5, result.saved: true}
+  mutations:
+  - id: remove-extra-penetration
+    path: attacker.global_effects.armour_penetration
+    value: 0
+    cases: [gromril-target]

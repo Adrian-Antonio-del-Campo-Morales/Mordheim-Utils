@@ -1,0 +1,1756 @@
+schema_version: 2
+ruleset: mordheim
+scope: close-combat-only
+mechanics:
+- id: weapon.sword
+  handler: effect-set
+  parameters:
+    parry: true
+    tags:
+    - weapon.sword
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.mace
+  handler: effect-set
+  parameters:
+    concussion: true
+    tags:
+    - weapon.mace
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.dagger
+  handler: effect-set
+  parameters:
+    target_armour_bonus: 1
+    tags:
+    - weapon.dagger
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.axe
+  handler: effect-set
+  parameters:
+    armour_penetration: 1
+    tags:
+    - weapon.axe
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.flail
+  handler: effect-set
+  parameters:
+    first_round_strength_bonus: 2
+    two_handed: true
+    tags:
+    - weapon.flail
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.morning-star
+  handler: effect-set
+  parameters:
+    first_round_strength_bonus: 1
+    tags:
+    - weapon.morning-star
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.halberd
+  handler: effect-set
+  parameters:
+    strength_bonus: 1
+    two_handed: true
+    tags:
+    - weapon.halberd
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.spear
+  handler: effect-set
+  parameters:
+    priority: 1
+    tags:
+    - weapon.spear
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.double-handed-weapon
+  handler: effect-set
+  parameters:
+    strength_bonus: 2
+    two_handed: true
+    priority: -1
+    tags:
+    - weapon.double-handed-weapon
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.stone-axe
+  handler: effect-set
+  parameters:
+    concussion: true
+    tags:
+    - weapon.stone-axe
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.rapier
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.rapier
+    parry: true
+    strength_bonus: -1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.pike
+  handler: effect-set
+  parameters:
+    priority: 1
+    two_handed: true
+    tags:
+    - weapon.pike
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.elven-greatsword
+  handler: effect-set
+  parameters:
+    strength_bonus: 2
+    two_handed: true
+    priority: -1
+    parry: true
+    tags:
+    - weapon.elven-greatsword
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.ankus
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.ankus
+    concussion: true
+    priority: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.yambiya
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.yambiya
+    target_armour_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.katar
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.katar
+    armour_penetration: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.scythe
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.scythe
+    two_handed: true
+    armour_penetration: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.cutlass
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.cutlass
+    parry: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.scimitar
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.scimitar
+    parry: true
+    armour_penetration: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.great-scimitar
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.great-scimitar
+    two_handed: true
+    armour_penetration: 1
+    strength_bonus: 2
+    priority: -1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.bagh-nakh
+  handler: effect-set
+  parameters:
+    paired: true
+    tags:
+    - weapon.bagh-nakh
+    armour_penetration: 1
+    strength_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.sword-breaker
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.sword-breaker
+    parry: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.pistol
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.pistol
+    fixed_strength: 4
+    first_round_attacks_bonus: 0
+    armour_penetration: 2
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.duelling-pistol
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.duelling-pistol
+    fixed_strength: 4
+    armour_penetration: 2
+    hit_modifier: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.natural-attacks
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.natural-attacks
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.fist
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.fist
+    strength_bonus: -1
+    target_armour_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.brazier-iron
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.brazier-iron
+    - attack.fire
+    ignition_threshold: 5
+    two_handed: true
+    strength_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.brass-knuckles
+  handler: effect-set
+  parameters:
+    paired: true
+    tags:
+    - weapon.brass-knuckles
+    strength_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.war-maul
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.war-maul
+    two_handed: true
+    cannot_be_parried: true
+    armour_penetration: 1
+    strength_bonus: 2
+    priority: -1
+    initiative_bonus: -1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.double-bladed-sword
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.double-bladed-sword
+    two_handed: true
+    attacks_bonus: 1
+    parry: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.dwarf-axe
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.dwarf-axe
+    parry: true
+    armour_penetration: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.trident
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.trident
+    parry: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.spiked-gauntlet
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.spiked-gauntlet
+    parry: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.sigmarite-hammer
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.sigmarite-hammer
+    concussion: true
+    strength_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.steel-whip
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.steel-whip
+    cannot_be_parried: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.choppa
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.choppa
+    armour_penetration: 1
+    first_round_strength_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.fighting-claws
+  handler: effect-set
+  parameters:
+    paired: true
+    parry: true
+    tags:
+    - weapon.fighting-claws
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.weeping-blades
+  handler: effect-set
+  parameters:
+    paired: true
+    parry: true
+    tags:
+    - weapon.weeping-blades
+    - poison.black-lotus
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.serpent-staff
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.serpent-staff
+    two_handed: true
+    parry: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.chained-squig
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.chained-squig
+    cannot_be_parried: true
+    fixed_strength: 3
+    priority: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.squig-prodder
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.squig-prodder
+    priority: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.kusara-kama
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.kusara-kama
+    two_handed: true
+    armour_penetration: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.witch-sword
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.witch-sword
+    parry: true
+    first_round_strength_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.long-boat-hook
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.long-boat-hook
+    two_handed: true
+    strength_bonus: -1
+    priority: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.pirate-scourge
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.pirate-scourge
+    cannot_be_parried: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.bo
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.bo
+    two_handed: true
+    parry: true
+    attacks_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.poisoned-daggers
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.poisoned-daggers
+    - poison.black-lotus
+    paired: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.serpent-whip
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.serpent-whip
+    - poison.black-lotus
+    cannot_be_parried: true
+    priority: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.beastlash
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.beastlash
+    strength_bonus: -1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.sun-gauntlet
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.sun-gauntlet
+    ignore_armour: true
+    fixed_strength: 4
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.unholy-sword
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.unholy-sword
+    parry: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.stiletto
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.stiletto
+    attacks_bonus: 1
+    strength_bonus: -1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.claw-of-the-old-ones
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.claw-of-the-old-ones
+    ignore_armour: true
+    strength_bonus: 1
+    parry: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.draich
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.draich
+    two_handed: true
+    parry: true
+    concussion: true
+    strength_bonus: 2
+    priority: -1
+    critical_injury_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.yari-one-handed
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.yari-one-handed
+    parry: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.yari-two-handed
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.yari-two-handed
+    two_handed: true
+    parry: true
+    priority: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.death-knife
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.death-knife
+    ignore_armour: true
+    strength_bonus: -1
+    injury_modifier: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.disease-dagger
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.disease-dagger
+    target_armour_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.censer
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.censer
+    two_handed: true
+    first_round_strength_bonus: 2
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.ball-and-chain
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.ball-and-chain
+    two_handed: true
+    ignore_armour: true
+    strength_bonus: 2
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.lance
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.lance
+    charge_strength_bonus: 2
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.misericordia
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.misericordia
+    target_armour_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.starblade
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.starblade
+    parry: true
+    target_armour_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.starsword
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.starsword
+    parry: true
+    ignore_armour: true
+    strength_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.broadsword
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.broadsword
+    strength_bonus: 1
+    priority: -1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.dragon-sword
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.dragon-sword
+    two_handed: true
+    parry: true
+    strength_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.cathayan-longsword
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.cathayan-longsword
+    parry: true
+    armour_penetration: 1
+    initiative_bonus: 1
+    weapon_skill_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.chain-sticks
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.chain-sticks
+    two_handed: true
+    first_round_attacks_bonus: 2
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.man-catcher
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.man-catcher
+    two_handed: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.quarter-staff
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.quarter-staff
+    two_handed: true
+    parry: true
+    initiative_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.vomit-attack
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.vomit-attack
+    cannot_be_parried: true
+    ignore_armour: true
+    fixed_strength: 5
+    automatic_hit: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.boar-spear
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.boar-spear
+    priority: 1
+    charge_strength_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: armour.no-armour
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.no-armour
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: armour.light-armour
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.light-armour
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: armour.heavy-armour
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.heavy-armour
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: armour.gromril-armour
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.gromril-armour
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: armour.ithilmar-armour
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.ithilmar-armour
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: armour.toughened-leathers
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.toughened-leathers
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: armour.plate-armour
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.plate-armour
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: armour.wizard-s-robe
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.wizard-s-robe
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: armour.ninja-robes
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.ninja-robes
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: armour.eshin-assassin-robes
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.eshin-assassin-robes
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: armour.spider-chitin-armour
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.spider-chitin-armour
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: armour.cathayan-quilted-silk
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.cathayan-quilted-silk
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: defence.shield
+  handler: effect-set
+  parameters:
+    armour_save_bonus: 1
+    tags:
+    - defence.shield
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: defence.buckler
+  handler: effect-set
+  parameters:
+    parry: true
+    tags:
+    - defence.buckler
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: defence.helmet
+  handler: effect-set
+  parameters:
+    tags:
+    - defence.helmet
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: defence.lucky-charm
+  handler: effect-set
+  parameters:
+    tags:
+    - defence.lucky-charm
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: defence.sea-dragon-cloak
+  handler: effect-set
+  parameters:
+    tags:
+    - defence.sea-dragon-cloak
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: defence.cooking-pot-helmet
+  handler: effect-set
+  parameters:
+    tags:
+    - defence.cooking-pot-helmet
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: defence.enchanted-skins
+  handler: effect-set
+  parameters:
+    tags:
+    - defence.enchanted-skins
+    ward_save: 6
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: defence.kite-shield
+  handler: effect-set
+  parameters:
+    armour_save_bonus: 2
+    tags:
+    - defence.kite-shield
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: material.normal
+  handler: effect-set
+  parameters:
+    tags:
+    - material.normal
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: material.gromril
+  handler: effect-set
+  parameters:
+    tags:
+    - material.gromril
+    armour_penetration: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: material.ithilmar
+  handler: effect-set
+  parameters:
+    tags:
+    - material.ithilmar
+    initiative_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: material.obsidian
+  handler: effect-set
+  parameters:
+    tags:
+    - material.obsidian
+    strength_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: material.dark-steel
+  handler: effect-set
+  parameters:
+    tags:
+    - material.dark-steel
+    reroll_wounds: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: material.dark-elf-blade
+  handler: effect-set
+  parameters:
+    tags:
+    - material.dark-elf-blade
+    injury_modifier: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: preparation.crimson-shade
+  handler: effect-set
+  parameters:
+    tags:
+    - preparation.crimson-shade
+    strength_bonus: 1
+  trigger: duel_start
+  application: fighter
+  stacking: stack
+- id: preparation.mandrake-root
+  handler: effect-set
+  parameters:
+    tags:
+    - preparation.mandrake-root
+    toughness_bonus: 1
+  trigger: duel_start
+  application: fighter
+  stacking: stack
+- id: preparation.tears-of-shallaya
+  handler: effect-set
+  parameters:
+    tags:
+    - preparation.tears-of-shallaya
+    poison_immunity: true
+  trigger: duel_start
+  application: fighter
+  stacking: stack
+- id: preparation.mad-cap-mushrooms
+  handler: effect-set
+  parameters:
+    tags:
+    - preparation.mad-cap-mushrooms
+    frenzy: true
+  trigger: duel_start
+  application: fighter
+  stacking: stack
+- id: preparation.head-splitter-mushrooms
+  handler: effect-set
+  parameters:
+    tags:
+    - preparation.head-splitter-mushrooms
+    frenzy: true
+  trigger: duel_start
+  application: fighter
+  stacking: stack
+- id: poison.black-lotus
+  handler: effect-set
+  parameters:
+    tags:
+    - poison.black-lotus
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: poison.black-venom
+  handler: effect-set
+  parameters:
+    tags:
+    - poison.black-venom
+    strength_bonus: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: poison.reptile-venom
+  handler: effect-set
+  parameters:
+    tags:
+    - poison.reptile-venom
+    strength_bonus: 1
+    armour_strength_modifier: -1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: poison.manbane
+  handler: effect-set
+  parameters:
+    tags:
+    - poison.manbane
+    wound_modifier: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: poison.wolfsbane
+  handler: effect-set
+  parameters:
+    tags:
+    - poison.wolfsbane
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: poison.nightshade
+  handler: effect-set
+  parameters:
+    tags:
+    - poison.nightshade
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: poison.bloodroot
+  handler: effect-set
+  parameters:
+    tags:
+    - poison.bloodroot
+    damage: 2
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: poison.devil-s-toxin
+  handler: effect-set
+  parameters:
+    tags:
+    - poison.devil-s-toxin
+    reroll_wounds: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: poison.spider-spittle
+  handler: effect-set
+  parameters:
+    tags:
+    - poison.spider-spittle
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: skill.always-strikes-first
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.always-strikes-first
+    priority: 1
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.unarmed-fighting
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.unarmed-fighting
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.axe-expert
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.axe-expert
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.axe-master
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.axe-master
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.bellowing-battle-roar
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.bellowing-battle-roar
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.berserker
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.berserker
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.crushing-blow
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.crushing-blow
+    cannot_be_parried: true
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.defensive-stance
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.defensive-stance
+    parry: true
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.elven-agility
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.elven-agility
+    ward_save: 6
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.expert-fighter
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.expert-fighter
+    wound_modifier: 1
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.expert-swordsman
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.expert-swordsman
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.ferocious-charge
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.ferocious-charge
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.hard-to-kill
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.hard-to-kill
+    out_of_action_threshold: 6
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.hardy-constitution
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.hardy-constitution
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.head-crusher
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.head-crusher
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.ignore-pain
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.ignore-pain
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.infallible
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.infallible
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.infinite-hatred
+  handler: effect-set
+  parameters:
+    reroll_hits: true
+    tags:
+    - skill.infinite-hatred
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.inspiring-sermon
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.inspiring-sermon
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.iron-sinews
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.iron-sinews
+    strength_bonus: 1
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.jump-up
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.jump-up
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.knife-fighting
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.knife-fighting
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.lightning-reflexes
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.lightning-reflexes
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.luck
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.luck
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.mighty-biceps
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.mighty-biceps
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.mighty-blow
+  handler: effect-set
+  parameters:
+    strength_bonus: 1
+    tags:
+    - skill.mighty-blow
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.miniath
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.miniath
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.monster-slayer
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.monster-slayer
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.monster-slayer-effective-strength-armour
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.monster-slayer-effective-strength-armour
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: skill.monstrous
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.monstrous
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.red-fury
+  handler: effect-set
+  parameters:
+    attacks_bonus: 1
+    tags:
+    - skill.red-fury
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.regeneration
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.regeneration
+    regeneration_save: 4
+    regeneration_blocked_by_fire: true
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.regeneration-5-plus
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.regeneration-5-plus
+    regeneration_save: 5
+    regeneration_blocked_by_fire: true
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.regeneration-blocked-by-blessed
+  handler: effect-set
+  parameters:
+    regeneration_blocked_by_blessed: true
+    tags:
+    - skill.regeneration-blocked-by-blessed
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: skill.resilient
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.resilient
+    incoming_strength_modifier: -1
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.shield-mastery
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.shield-mastery
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.shield-strike
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.shield-strike
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.sigmar-s-sign
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.sigmar-s-sign
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.step-aside
+  handler: effect-set
+  parameters:
+    step_aside: true
+    tags:
+    - skill.step-aside
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.strength-of-steel
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.strength-of-steel
+    charge_strength_bonus: 1
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.strike-to-injure
+  handler: effect-set
+  parameters:
+    injury_modifier: 1
+    tags:
+    - skill.strike-to-injure
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.strongman
+  handler: effect-set
+  parameters:
+    strongman: true
+    tags:
+    - skill.strongman
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.sure-strike
+  handler: effect-set
+  parameters:
+    reroll_wounds: true
+    tags:
+    - skill.sure-strike
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.sweep
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.sweep
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.sword-master
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.sword-master
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.thick-skull
+  handler: effect-set
+  parameters:
+    thick_skull: true
+    tags:
+    - skill.thick-skull
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.tireless
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.tireless
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.tough-as-steel
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.tough-as-steel
+    out_of_action_threshold: 6
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.unbeatable-warrior
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.unbeatable-warrior
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.unstoppable-charge
+  handler: effect-set
+  parameters:
+    charge_ws_bonus: 1
+    tags:
+    - skill.unstoppable-charge
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.vampire-reflexes
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.vampire-reflexes
+    ward_save: 6
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.virtue-of-valour
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.virtue-of-valour
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.weapons-of-the-north
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.weapons-of-the-north
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.web-of-steel
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.web-of-steel
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.art-of-silent-death
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.art-of-silent-death
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.unarmed-critical-strikes
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.unarmed-critical-strikes
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.blessed-sight
+  handler: effect-set
+  parameters:
+    reroll_hits: true
+    tags:
+    - skill.blessed-sight
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.crack-shot
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.crack-shot
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.duellist
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.duellist
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.extra-attack
+  handler: effect-set
+  parameters:
+    attacks_bonus: 1
+    tags:
+    - skill.extra-attack
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.hatred
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.hatred
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: skill.swordmaster
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.swordmaster
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: mechanic.black-hunger
+  handler: effect-set
+  parameters:
+    attacks_bonus: 1
+    tags:
+    - mechanic.black-hunger
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.body-slam
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.body-slam
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.bull-charge
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.bull-charge
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.force-of-will
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.force-of-will
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.unpredictable-attack
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.unpredictable-attack
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.strike-first-vs-skinks-first-round
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.strike-first-vs-skinks-first-round
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.strike-first-vs-skinks-always
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.strike-first-vs-skinks-always
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.anvil-head
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.anvil-head
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.death-blow
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.death-blow
+    hit_modifier: 1
+    wound_modifier: 1
+    injury_modifier: 1
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.disability
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.disability
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.energy-focus
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.energy-focus
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.mark-of-the-old-ones
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.mark-of-the-old-ones
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.netter
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.netter
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.spawn-special-attacks
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.spawn-special-attacks
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.amazon-isolationists
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.amazon-isolationists
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.spider-infested
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.spider-infested
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.untiring
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.untiring
+    armour_save_floor: 5
+    armour_cannot_be_ignored: true
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.armour-save-bonus
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.armour-save-bonus
+    armour_save_bonus: 1
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.retain-flail-morning-star-strength-bonus
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.retain-flail-morning-star-strength-bonus
+  trigger: passive
+  application: fighter
+  stacking: once

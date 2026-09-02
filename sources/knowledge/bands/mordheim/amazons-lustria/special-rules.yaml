@@ -1,0 +1,324 @@
+schema_version: 2
+band_id: amazons-lustria
+rules:
+- id: serpent-priestess--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.amazons-lustria.serpent-priestess.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Leader
+  effect: 'Any models in the warband within 6"
+
+    of the Priestess may use her Leadership
+
+    instead of their own.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroines / 1 Serpent Priestess / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any models in the warband within 6"
+
+      of the Priestess may use her Leadership
+
+      instead of their own.'
+    es: null
+  applies_to:
+    profile_ids:
+    - serpent-priestess
+- id: serpent-priestess--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.amazons-lustria.serpent-priestess.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: magia.'
+  name: Wizard
+  effect: 'The Priestess is a Wizard and may
+
+    use Amazon Rituals . She starts with one ritual
+
+    chosen at random from the list.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroines / 1 Serpent Priestess / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: 'The Priestess is a Wizard and may
+
+      use Amazon Rituals . She starts with one ritual
+
+      chosen at random from the list.'
+    es: null
+  applies_to:
+    profile_ids:
+    - serpent-priestess
+- id: jaguar-warriors--one-with-the-jungle
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.amazons-lustria.jaguar-warriors.one-with-the-jungle
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: movimiento.'
+  name: One with the Jungle
+  effect: 'A Jaguar has lived her life in the deepest parts and can move
+
+    through jungle terrain without penalty.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchwomen / 0 – 3 Jaguar Warriors / Special Rules / One with the Jungle
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  name_i18n:
+    en: One with the Jungle
+    es: null
+  effect_i18n:
+    en: 'A Jaguar has lived her life in the deepest parts and can move
+
+      through jungle terrain without penalty.'
+    es: null
+  applies_to:
+    profile_ids:
+    - jaguar-warriors
+- id: band--special-rules
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: mechanic.amazon-isolationists
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.amazon-isolationists
+  name: Special Rules
+  effect: 'Isolationists: The Amazons are constantly battling against the predations of the Lizardmen and greedy treasure-seeking
+    Norse. Amazon culture reflects their dislike and distrust of outsiders and in battle they are particularly savage. Amazons
+    get to re-roll any attack rolls that miss in the first round of combat against Lizardmen and Norse. Sacrifice: The Amazons
+    are quick to sacrifice any captive to their gods. The Amazons follow the rules for Possessed in the Rulebook when it comes
+    to captives. If an Amazon Warband captures a Lizardman, they may sacrifice him as normal, plus get a free Skins and Charms.
+    Norse Enmity: When facing a Norse Warband an Amazon Warband will fight to the death. The Amazons can re-roll their first
+    failed Rout against the Norse. Remember you can''t re-roll a failed re-roll. In addition, Amazons can never choose to
+    voluntarily rout when facing a Norse warband unless their Warband Leader has been taken Out of Action. Not one of us:
+    Due to the Amazons'' isolationism and suspicions about other races they never side with anyone else. For this reason,
+    the Amazons may not have any Hired Swords or Dramatis Personae unless they are Amazons themselves.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  name_i18n:
+    en: Special Rules
+    es: null
+  effect_i18n:
+    en: 'Isolationists: The Amazons are constantly battling against the predations of the Lizardmen and greedy treasure-seeking
+      Norse. Amazon culture reflects their dislike and distrust of outsiders and in battle they are particularly savage. Amazons
+      get to re-roll any attack rolls that miss in the first round of combat against Lizardmen and Norse.
+
+      Sacrifice: The Amazons are quick to sacrifice any captive to their gods. The Amazons follow the rules for Possessed
+      in the Rulebook when it comes to captives. If an Amazon Warband captures a Lizardman, they may sacrifice him as normal,
+      plus get a free Skins and Charms.
+
+      Norse Enmity: When facing a Norse Warband an Amazon Warband will fight to the death. The Amazons can re-roll their first
+      failed Rout against the Norse. Remember you can''t re-roll a failed re-roll. In addition, Amazons can never choose to
+      voluntarily rout when facing a Norse warband unless their Warband Leader has been taken Out of Action.
+
+      Not one of us: Due to the Amazons'' isolationism and suspicions about other races they never side with anyone else.
+      For this reason, the Amazons may not have any Hired Swords or Dramatis Personae unless they are Amazons themselves.'
+    es: null
+  applies_to:
+    band: true
+- id: band--amazon-special-skills
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+  name: Amazon special skills
+  effect: Amazon Heroines may use the following skill table instead of any of the standard skill tables available to them.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Amazon special skills
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  name_i18n:
+    en: Amazon special skills
+    es: null
+  effect_i18n:
+    en: Amazon Heroines may use the following skill table instead of any of the standard skill tables available to them.
+    es: null
+  applies_to:
+    band: true
+- id: band--amazon-special-skills-skink-hunter
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: mechanic.strike-first-vs-skinks-first-round
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.strike-first-vs-skinks-first-round
+  name: skink hunter
+  effect: Through her exploits the Amazon has proven herself a master when it comes to hunting Lizardmen, particularly Skinks.
+    An Amazon with this skill will always strike first in the first round of combat against Skink models no matter who charged.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Amazon special skills / skink hunter
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  name_i18n:
+    en: skink hunter
+    es: null
+  effect_i18n:
+    en: Through her exploits the Amazon has proven herself a master when it comes to hunting Lizardmen, particularly Skinks.
+      An Amazon with this skill will always strike first in the first round of combat against Skink models no matter who charged.
+    es: null
+  applies_to:
+    band: true
+- id: band--amazon-special-skills-elixir-of-life
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.amazons-lustria.band.amazon-special-skills-elixir-of-life
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: elixir of life
+  effect: After years of service among her tribe an Amazon is granted access to the waters that make the Elixir of Life. The
+    Elixir is said to heal wounds and make the Amazons immortal. Any Amazon with this Elixir can re-roll a Serious Injury
+    roll once after the battle accepting the result of the second roll.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Amazon special skills / elixir of life
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  name_i18n:
+    en: elixir of life
+    es: null
+  effect_i18n:
+    en: After years of service among her tribe an Amazon is granted access to the waters that make the Elixir of Life. The
+      Elixir is said to heal wounds and make the Amazons immortal. Any Amazon with this Elixir can re-roll a Serious Injury
+      roll once after the battle accepting the result of the second roll.
+    es: null
+  applies_to:
+    band: true
+- id: band--amazon-special-skills-mesmerising-dance
+  kind: warband_skill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.amazons-lustria.band.amazon-special-skills-mesmerising-dance
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: mesmerising dance
+  effect: Some Amazon women develop their fighting motions into a graceful dance that can transfix their foes. Any model fighting
+    in base contact with the Amazon must take a Leadership test at the start of each turn. If they fail they cannot attack
+    that turn but may defend themselves. The dance however is useless against Lizardmen and undead who are immune to their
+    charms.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Amazon special skills / mesmerising dance
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  name_i18n:
+    en: mesmerising dance
+    es: null
+  effect_i18n:
+    en: Some Amazon women develop their fighting motions into a graceful dance that can transfix their foes. Any model fighting
+      in base contact with the Amazon must take a Leadership test at the start of each turn. If they fail they cannot attack
+      that turn but may defend themselves. The dance however is useless against Lizardmen and undead who are immune to their
+      charms.
+    es: null
+  applies_to:
+    band: true
+- id: band--amazon-special-skills-savage-fury
+  kind: warband_skill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.amazons-lustria.band.amazon-special-skills-savage-fury
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: savage fury
+  effect: The Amazon has learned to channel her anger and aggression making her a veritable animal while attacking her foes.
+    Any Amazon model with this skill receives + 1 A when charging and is immune to charm effects and fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Amazon special skills / savage fury
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  name_i18n:
+    en: savage fury
+    es: null
+  effect_i18n:
+    en: The Amazon has learned to channel her anger and aggression making her a veritable animal while attacking her foes.
+      Any Amazon model with this skill receives + 1 A when charging and is immune to charm effects and fear.
+    es: null
+  applies_to:
+    band: true
+- id: band--amazon-special-skills-concealment
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.amazons-lustria.band.amazon-special-skills-concealment
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: movimiento.'
+  name: concealment
+  effect: The Amazon is adept at blending in with her surroundings. When hiding in jungle terrain all enemy models must halve
+    the range at which they can spot them.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Amazon special skills / concealment
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  name_i18n:
+    en: concealment
+    es: null
+  effect_i18n:
+    en: The Amazon is adept at blending in with her surroundings. When hiding in jungle terrain all enemy models must halve
+      the range at which they can spot them.
+    es: null
+  applies_to:
+    band: true

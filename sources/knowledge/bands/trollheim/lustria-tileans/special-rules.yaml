@@ -1,0 +1,220 @@
+schema_version: 2
+band_id: lustria-tileans
+rules:
+- id: mercenary-captain--leader
+  name: Leader
+  effect: Any warband model within 6" of the Mercenary Captain may use his Leadership when taking Leadership tests.
+  source:
+    manual: lustria
+    printed_page: 49
+    section: Heroes / 1 Mercenary Captain / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Mercenary Captain may use his Leadership when taking Leadership tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - mercenary-captain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-tileans.mercenary-captain.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: duelists--cloak-and-dagger
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.counts-as-shield
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.counts-as-shield
+        parameters:
+          value: true
+  name: Cloak and Dagger
+  effect: A Duelist counts as using a shield in close combat because of the defensive use of the cloak.
+  source:
+    manual: lustria
+    printed_page: 50
+    section: Henchmen / 0-5 Duelists / Cloak and Dagger
+  name_i18n:
+    en: Cloak and Dagger
+    es: null
+  effect_i18n:
+    en: A Duelist counts as using a shield in close combat because of the defensive use of the cloak.
+    es: null
+  applies_to:
+    profile_ids:
+    - duelists
+- id: band--miragliano-crossbow-mastery
+  name: Miragliano — Crossbow Mastery
+  effect: Heroes in a Miragliano warband gain +1 To Hit when shooting with a Crossbow.
+  source:
+    manual: lustria
+    printed_page: 46
+    section: Miragliano / Special Rules
+  name_i18n:
+    en: Miragliano — Crossbow Mastery
+    es: null
+  effect_i18n:
+    en: Heroes in a Miragliano warband gain +1 To Hit when shooting with a Crossbow.
+    es: null
+  eligibility:
+  - mercenary-captain
+  - champions
+  - recruits
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lustria-tileans.band.miragliano-crossbow-mastery
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--miragliano-marksman-accuracy
+  name: Miragliano — Marksman Accuracy
+  effect: Marksmen in a Miragliano warband gain +1 To Hit with any missile weapon they use. The source says this bonus is
+    already included in their characteristic profile, although the universal Marksman profile printed on page 50 shows BS
+    3; the normalized model therefore keeps the printed BS 3 and represents the bonus explicitly as this rule.
+  source:
+    manual: lustria
+    printed_page: 46
+    section: Miragliano / Special Rules
+  name_i18n:
+    en: Miragliano — Marksman Accuracy
+    es: null
+  effect_i18n:
+    en: Marksmen in a Miragliano warband gain +1 To Hit with any missile weapon they use. The source says this bonus is already
+      included in their characteristic profile, although the universal Marksman profile printed on page 50 shows BS 3; the
+      normalized model therefore keeps the printed BS 3 and represents the bonus explicitly as this rule.
+    es: null
+  eligibility:
+  - marksmen
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lustria-tileans.band.miragliano-marksman-accuracy
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--miragliano-hatred-skaven
+  name: Miragliano — Hatred of Skaven
+  effect: When fighting a Skaven warband, all Miragliano warband members are subject to Hatred against Skaven. Hired Swords
+    do not gain this Hatred.
+  source:
+    manual: lustria
+    printed_page: 46
+    section: Miragliano / Special Rules
+  name_i18n:
+    en: Miragliano — Hatred of Skaven
+    es: null
+  effect_i18n:
+    en: When fighting a Skaven warband, all Miragliano warband members are subject to Hatred against Skaven. Hired Swords
+      do not gain this Hatred.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lustria-tileans.band.miragliano-hatred-skaven
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--remas-dark-elf-rout
+  name: Remas — Defiance Against Dark Elves
+  effect: When fighting a Dark Elf warband, a Remas warband may re-roll one Rout test. The second result must be accepted.
+  source:
+    manual: lustria
+    printed_page: 47
+    section: Remas / Special Rules
+  name_i18n:
+    en: Remas — Defiance Against Dark Elves
+    es: null
+  effect_i18n:
+    en: When fighting a Dark Elf warband, a Remas warband may re-roll one Rout test. The second result must be accepted.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lustria-tileans.band.remas-dark-elf-rout
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--remas-officer-leadership
+  name: Remas — Veteran Officers
+  effect: The Mercenary Captain, Champions and Recruits in a Remas warband have +1 Leadership at all times, regardless of
+    the opposing warband.
+  source:
+    manual: lustria
+    printed_page: 47
+    section: Remas / Special Rules
+  name_i18n:
+    en: Remas — Veteran Officers
+    es: null
+  effect_i18n:
+    en: The Mercenary Captain, Champions and Recruits in a Remas warband have +1 Leadership at all times, regardless of the
+      opposing warband.
+    es: null
+  eligibility:
+  - mercenary-captain
+  - champions
+  - recruits
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lustria-tileans.band.remas-officer-leadership
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--trantio-wealth
+  name: Trantio — Wealth
+  effect: A Trantio warband starts with an additional 100 gc. If the campaign is played in Lustria, increase that already-modified
+    amount by a further 20%; from the normal 500 gc this produces 720 gc.
+  source:
+    manual: lustria
+    printed_page: 47
+    section: Trantio / Special Rules
+  name_i18n:
+    en: Trantio — Wealth
+    es: null
+  effect_i18n:
+    en: A Trantio warband starts with an additional 100 gc. If the campaign is played in Lustria, increase that already-modified
+      amount by a further 20%; from the normal 500 gc this produces 720 gc.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lustria-tileans.band.trantio-wealth
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'

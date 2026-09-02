@@ -1,0 +1,1211 @@
+schema_version: 1
+specifications:
+- id: thick-skull-replaces-helmet
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.thick-skull
+    digest: 4819600fd8bc2849d0a915b323b8729882c37119a23174442c005e3978ff635f
+  - target: mechanic/defence.helmet
+    digest: e38f4f8e7da5e91fa8400e0f91b8b4389b266c73cbde0c7896f22388719c4926
+  bindings:
+  - '{"id": "skill.thick-skull", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "defence.helmet", "kind": "mechanic", "parameters": {}}'
+  interpretation: The Thick Skull text explicitly replaces the Helmet special rule. The combined threshold is 2+;
+    it does not perform a 3+ Thick Skull attempt followed by a separate 4+ Helmet attempt.
+  cases:
+  - id: combined-threshold
+    roles: [composition]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+      defence_ids: [defence.helmet]
+    rolls: [{key: test.thick-skull, value: 2}]
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.threshold: 2
+      result.roll: 2
+  - id: failure-consumes-no-helmet-roll
+    roles: [boundary]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+      defence_ids: [defence.helmet]
+    rolls: [{key: test.thick-skull, value: 1}]
+    expect:
+      result.condition: STUNNED
+      result.threshold: 2
+      result.roll: 1
+  mutations:
+  - id: remove-replacement
+    path: defender.global_effects.thick_skull
+    value: false
+    cases: [combined-threshold]
+- id: mighty-and-resilient
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.mighty-blow
+    digest: 90e3a20d279e166a42a5d9332852f105bb8c0b05f0e6234dfcc95bc40f0de20d
+  - target: mechanic/skill.resilient
+    digest: c1d7210e8e6a2400a99605bbfc369806e39dbad2c810fe515eaf0a01ac10167a
+  bindings:
+  - '{"id": "skill.mighty-blow", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.resilient", "kind": "mechanic", "parameters": {}}'
+  interpretation: Apply the independently specified Strength contributions before wounding. Resilient reduces only
+    wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
+  cases:
+  - id: first-round
+    roles:
+    - composition
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.mighty-blow
+    defender:
+      skill_ids:
+      - skill.resilient
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.wound: 3
+      result.armour: 4
+  - id: later-round
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.mighty-blow
+    defender:
+      skill_ids:
+      - skill.resilient
+    expect:
+      result.wound: 3
+      result.armour: 4
+  mutations:
+  - id: remove-contribution
+    path: attacker.global_effects.strength_bonus
+    value: 0
+    cases:
+    - first-round
+- id: mighty-and-black-venom
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.mighty-blow
+    digest: 90e3a20d279e166a42a5d9332852f105bb8c0b05f0e6234dfcc95bc40f0de20d
+  - target: mechanic/poison.black-venom
+    digest: b7e264f4e5af9e2da9889fd91855e0b820afb43f38ac34b7482ba124db8dc204
+  bindings:
+  - '{"id": "skill.mighty-blow", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "poison.black-venom", "kind": "mechanic", "parameters": {}}'
+  interpretation: Apply the independently specified Strength contributions before wounding. Resilient reduces only
+    wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
+  cases:
+  - id: first-round
+    roles:
+    - composition
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.mighty-blow
+      main_poison_id: poison.black-venom
+    defender: {}
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.wound: 5
+      result.armour: 5
+  - id: later-round
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.mighty-blow
+      main_poison_id: poison.black-venom
+    defender: {}
+    expect:
+      result.wound: 5
+      result.armour: 5
+  mutations:
+  - id: remove-contribution
+    path: attacker.global_effects.strength_bonus
+    value: 0
+    cases:
+    - first-round
+- id: mighty-and-halberd
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.mighty-blow
+    digest: 90e3a20d279e166a42a5d9332852f105bb8c0b05f0e6234dfcc95bc40f0de20d
+  - target: mechanic/weapon.halberd
+    digest: 7cae0d6b4c940cb65505831f5ad6b9e8974a8d8a22c1af4532ccebe5db8c1543
+  bindings:
+  - '{"id": "skill.mighty-blow", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.halberd", "kind": "mechanic", "parameters": {}}'
+  interpretation: Apply the independently specified Strength contributions before wounding. Resilient reduces only
+    wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
+  cases:
+  - id: first-round
+    roles:
+    - composition
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.halberd
+      skill_ids:
+      - skill.mighty-blow
+    defender: {}
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.wound: 5
+      result.armour: 5
+  - id: later-round
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.halberd
+      skill_ids:
+      - skill.mighty-blow
+    defender: {}
+    expect:
+      result.wound: 5
+      result.armour: 5
+  mutations:
+  - id: remove-contribution
+    path: attacker.global_effects.strength_bonus
+    value: 0
+    cases:
+    - first-round
+- id: mighty-and-flail
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.mighty-blow
+    digest: 90e3a20d279e166a42a5d9332852f105bb8c0b05f0e6234dfcc95bc40f0de20d
+  - target: mechanic/weapon.flail
+    digest: 29048acd50dfc0325940a2789714643811bbf762588889795b315ba2c927378b
+  bindings:
+  - '{"id": "skill.mighty-blow", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.flail", "kind": "mechanic", "parameters": {}}'
+  interpretation: Apply the independently specified Strength contributions before wounding. Resilient reduces only
+    wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
+  cases:
+  - id: first-round
+    roles:
+    - composition
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.flail
+      skill_ids:
+      - skill.mighty-blow
+    defender: {}
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.wound: 6
+      result.armour: 6
+  - id: later-round
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.flail
+      skill_ids:
+      - skill.mighty-blow
+    defender: {}
+    expect:
+      result.wound: 4
+      result.armour: 4
+  mutations:
+  - id: remove-contribution
+    path: attacker.global_effects.strength_bonus
+    value: 0
+    cases:
+    - first-round
+- id: resilient-and-halberd
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.resilient
+    digest: c1d7210e8e6a2400a99605bbfc369806e39dbad2c810fe515eaf0a01ac10167a
+  - target: mechanic/weapon.halberd
+    digest: 7cae0d6b4c940cb65505831f5ad6b9e8974a8d8a22c1af4532ccebe5db8c1543
+  bindings:
+  - '{"id": "skill.resilient", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.halberd", "kind": "mechanic", "parameters": {}}'
+  interpretation: Apply the independently specified Strength contributions before wounding. Resilient reduces only
+    wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
+  cases:
+  - id: first-round
+    roles:
+    - composition
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.halberd
+    defender:
+      skill_ids:
+      - skill.resilient
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.wound: 3
+      result.armour: 4
+  - id: later-round
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.halberd
+    defender:
+      skill_ids:
+      - skill.resilient
+    expect:
+      result.wound: 3
+      result.armour: 4
+  mutations:
+  - id: remove-contribution
+    path: defender.global_effects.incoming_strength_modifier
+    value: 0
+    cases:
+    - first-round
+- id: mighty-and-strength-of-steel
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.mighty-blow
+    digest: 90e3a20d279e166a42a5d9332852f105bb8c0b05f0e6234dfcc95bc40f0de20d
+  - target: mechanic/skill.strength-of-steel
+    digest: 7bece24b96e881b55a0eeb73d1880e8d986ac923f012b79ff9e5f112bb5b88f7
+  bindings:
+  - '{"id": "skill.mighty-blow", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.strength-of-steel", "kind": "mechanic", "parameters": {}}'
+  interpretation: Apply the independently specified Strength contributions before wounding. Resilient reduces only
+    wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
+  cases:
+  - id: first-round
+    roles:
+    - composition
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.mighty-blow
+      - skill.strength-of-steel
+    defender: {}
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.wound: 5
+      result.armour: 5
+  - id: later-round
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.mighty-blow
+      - skill.strength-of-steel
+    defender: {}
+    expect:
+      result.wound: 4
+      result.armour: 4
+  mutations:
+  - id: remove-contribution
+    path: attacker.global_effects.strength_bonus
+    value: 0
+    cases:
+    - first-round
+- id: iron-sinews-and-strength-of-steel
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.iron-sinews
+    digest: 335e5c79c86a19609693d1fdf74bf830bfb91870cee8809db4171177620ff3af
+  - target: mechanic/skill.strength-of-steel
+    digest: 7bece24b96e881b55a0eeb73d1880e8d986ac923f012b79ff9e5f112bb5b88f7
+  bindings:
+  - '{"id": "skill.iron-sinews", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.strength-of-steel", "kind": "mechanic", "parameters": {}}'
+  interpretation: Apply the independently specified Strength contributions before wounding. Resilient reduces only
+    wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
+  cases:
+  - id: first-round
+    roles:
+    - composition
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.iron-sinews
+      - skill.strength-of-steel
+    defender: {}
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.wound: 5
+      result.armour: 5
+  - id: later-round
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.iron-sinews
+      - skill.strength-of-steel
+    defender: {}
+    expect:
+      result.wound: 4
+      result.armour: 4
+  mutations:
+  - id: remove-contribution
+    path: attacker.global_effects.strength_bonus
+    value: 0
+    cases:
+    - first-round
+- id: hatred-and-infinite-hatred
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.hatred
+    digest: 55903f96c0da47a95bba838dc0d85778de25d638c945f5d81c4fca0e83cbe923
+  - target: mechanic/skill.infinite-hatred
+    digest: 04e5fb5a6e2b7e4f0aa920b8ac8d0af91b41595a3259db12e42c469c65f47710
+  bindings:
+  - '{"id": "skill.hatred", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.infinite-hatred", "kind": "mechanic", "parameters": {}}'
+  interpretation: Two independent permissions to reroll a failed roll do not allow rerolling a reroll. On a 4+ threshold
+    success is exactly 3/4, not 7/8.
+  cases:
+  - id: all-branches
+    roles:
+    - composition
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.hatred
+      - skill.infinite-hatred
+    context:
+      first_round: true
+      charging: true
+    distribution:
+      observable: result.success
+      max_rolls: 3
+      expected:
+        'true': 3/4
+        'false': 1/4
+  - id: failed-reroll-is-final
+    roles:
+    - boundary
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.hatred
+      - skill.infinite-hatred
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: hit
+      value: 1
+    - key: hit.reroll
+      value: 1
+    expect:
+      result.success: false
+      result.rerolled: true
+  mutations:
+  - id: remove-reroll-permissions
+    changes:
+    - path: attacker.global_effects.tags
+      value: []
+    - path: attacker.global_effects.reroll_hits
+      value: false
+    - path: attacker.global_effects.reroll_wounds
+      value: false
+    - path: attacker.main_weapon.reroll_wounds
+      value: false
+    cases:
+    - all-branches
+- id: hatred-and-expert-swordsman
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.hatred
+    digest: 55903f96c0da47a95bba838dc0d85778de25d638c945f5d81c4fca0e83cbe923
+  - target: mechanic/skill.expert-swordsman
+    digest: 417d4a1cc3519510be69e893d00de9bcfa6c662769bdca0945b4d46a284157dd
+  bindings:
+  - '{"id": "skill.hatred", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.expert-swordsman", "kind": "mechanic", "parameters": {}}'
+  interpretation: Two independent permissions to reroll a failed roll do not allow rerolling a reroll. On a 4+ threshold
+    success is exactly 3/4, not 7/8.
+  cases:
+  - id: all-branches
+    roles:
+    - composition
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.hatred
+      - skill.expert-swordsman
+    context:
+      first_round: true
+      charging: true
+    distribution:
+      observable: result.success
+      max_rolls: 3
+      expected:
+        'true': 3/4
+        'false': 1/4
+  - id: failed-reroll-is-final
+    roles:
+    - boundary
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.hatred
+      - skill.expert-swordsman
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: hit
+      value: 1
+    - key: hit.reroll
+      value: 1
+    expect:
+      result.success: false
+      result.rerolled: true
+  mutations:
+  - id: remove-reroll-permissions
+    changes:
+    - path: attacker.global_effects.tags
+      value: []
+    - path: attacker.global_effects.reroll_hits
+      value: false
+    - path: attacker.global_effects.reroll_wounds
+      value: false
+    - path: attacker.main_weapon.reroll_wounds
+      value: false
+    cases:
+    - all-branches
+- id: sure-strike-and-dark-steel
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.sure-strike
+    digest: ca1bb0a4961fa059e1c59165d4113d473e86420c9c975d899fa02b0870a8c509
+  - target: mechanic/material.dark-steel
+    digest: 8d728f140afba7fe68d83eafebfe5b51c1688d5252cee6f3c50969272b668133
+  bindings:
+  - '{"id": "skill.sure-strike", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "material.dark-steel", "kind": "mechanic", "parameters": {}}'
+  interpretation: Two independent permissions to reroll a failed roll do not allow rerolling a reroll. On a 4+ threshold
+    success is exactly 3/4, not 7/8.
+  cases:
+  - id: all-branches
+    roles:
+    - composition
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.sure-strike
+      main_material_id: material.dark-steel
+    context:
+      first_round: true
+      charging: true
+    distribution:
+      observable: result.success
+      max_rolls: 3
+      expected:
+        'true': 3/4
+        'false': 1/4
+  - id: failed-reroll-is-final
+    roles:
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.sure-strike
+      main_material_id: material.dark-steel
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: wound
+      value: 1
+    - key: wound.reroll
+      value: 1
+    expect:
+      result.success: false
+      result.rerolled: true
+  mutations:
+  - id: remove-reroll-permissions
+    changes:
+    - path: attacker.global_effects.tags
+      value: []
+    - path: attacker.global_effects.reroll_hits
+      value: false
+    - path: attacker.global_effects.reroll_wounds
+      value: false
+    - path: attacker.main_weapon.reroll_wounds
+      value: false
+    cases:
+    - all-branches
+- id: jump-up-and-no-pain
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.jump-up
+    digest: 0ddeeeffb0d9b1435c8b575dca91af2981daedcbc841bd875c240ecb9ccf7ccd
+  - target: mechanic/skill.ignore-pain
+    digest: 38aff21454539c3b866e4b04592950668da23cf87004c9def80eaf2f8f5b75ae
+  bindings:
+  - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
+  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit exceptions.
+    Every original D6 face has an independent expected final state.
+  cases:
+  - id: face-1
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STANDING
+  - id: face-2
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STANDING
+  - id: face-3
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-4
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-5
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  - id: face-6
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-one-operator
+    path: defender.global_effects.tags
+    value:
+    - skill.ignore-pain
+    cases:
+    - face-1
+    - face-2
+    - face-3
+    - face-4
+    - face-5
+    - face-6
+- id: jump-up-and-hard-to-kill
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.jump-up
+    digest: 0ddeeeffb0d9b1435c8b575dca91af2981daedcbc841bd875c240ecb9ccf7ccd
+  - target: mechanic/skill.hard-to-kill
+    digest: b66c185a5a58b1f030ef4dc30f29ae0054d249281805410af7521c982cc88cd4
+  bindings:
+  - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit exceptions.
+    Every original D6 face has an independent expected final state.
+  cases:
+  - id: face-1
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STANDING
+  - id: face-2
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STANDING
+  - id: face-3
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: face-4
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: face-5
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: face-6
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-one-operator
+    path: defender.global_effects.tags
+    value:
+    - skill.hard-to-kill
+    cases:
+    - face-1
+    - face-2
+    - face-3
+    - face-4
+    - face-5
+    - face-6
+- id: concussion-and-no-pain
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/weapon.mace
+    digest: 8bd3ca5bc3d4418757c689510280b1a6f351b3c4565f11497f181c94fa3fc2ee
+  - target: mechanic/skill.ignore-pain
+    digest: 38aff21454539c3b866e4b04592950668da23cf87004c9def80eaf2f8f5b75ae
+  bindings:
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
+  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit exceptions.
+    Every original D6 face has an independent expected final state.
+  cases:
+  - id: face-1
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-2
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-3
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-4
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-5
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  - id: face-6
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-one-operator
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - face-1
+    - face-2
+    - face-3
+    - face-4
+    - face-5
+    - face-6
+- id: concussion-and-hard-to-kill
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/weapon.mace
+    digest: 8bd3ca5bc3d4418757c689510280b1a6f351b3c4565f11497f181c94fa3fc2ee
+  - target: mechanic/skill.hard-to-kill
+    digest: b66c185a5a58b1f030ef4dc30f29ae0054d249281805410af7521c982cc88cd4
+  bindings:
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit exceptions.
+    Every original D6 face has an independent expected final state.
+  cases:
+  - id: face-1
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-2
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: face-3
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: face-4
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: face-5
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: face-6
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-one-operator
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - face-1
+    - face-2
+    - face-3
+    - face-4
+    - face-5
+    - face-6
+- id: concussion-and-jump-up
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/weapon.mace
+    digest: 8bd3ca5bc3d4418757c689510280b1a6f351b3c4565f11497f181c94fa3fc2ee
+  - target: mechanic/skill.jump-up
+    digest: 0ddeeeffb0d9b1435c8b575dca91af2981daedcbc841bd875c240ecb9ccf7ccd
+  bindings:
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
+  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit exceptions.
+    Every original D6 face has an independent expected final state.
+  cases:
+  - id: face-1
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STANDING
+  - id: face-2
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: face-3
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: face-4
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: face-5
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  - id: face-6
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-one-operator
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - face-1
+    - face-2
+    - face-3
+    - face-4
+    - face-5
+    - face-6
+- id: gromril-axe-penetration
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/weapon.axe
+    digest: 331fe535d241616ebe9c23e0b6084bf29105b5799abb42da5217032862efec81
+  - target: mechanic/material.gromril
+    digest: e7dd5d61e2f8e547890471309390d16ddbb8346753e64efc6241fcaba00aa5c4
+  bindings:
+  - '{"id": "weapon.axe", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "material.gromril", "kind": "mechanic", "parameters": {}}'
+  interpretation: The axe and Gromril material each worsen the opponent's armour save by one. A 4+ save becomes
+    6+ before any Strength penalty.
+  cases:
+  - id: all-dice
+    roles:
+    - composition
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.axe
+      main_material_id: material.gromril
+    defender:
+      armour_id: armour.gromril-armour
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 1/6
+        'false': 5/6
+  - id: unarmoured
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.axe
+      main_material_id: material.gromril
+    expect:
+      result.eligible: false
+  mutations:
+  - id: drop-material-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 1
+    cases:
+    - all-dice

@@ -1,0 +1,119 @@
+schema_version: 1
+specifications:
+- id: possessed-optional-initial-mutations-ruling
+  question: "¿Possessed puede reclutarse sin mutaciones, como sugiere may, o debe adquirir al menos una? Confirmar para Mordheim y Trollheim."
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/mordheim/cult-of-the-possessed/the-possessed--mutations/compiler.possessed-optional-mutations-at-recruitment, digest: 6b5221569ef267afdcdf8d510bef50f32c5d0ce31c46a3c73affef2907e6ae17}
+  - {target: rule/trollheim/trollheim-cult-of-the-possessed/the-possessed--mutations/compiler.possessed-optional-zero-to-two-mutations-at-recruitment, digest: df96adf96fdce48c2c0e8a79e529c12f40e86a777efd281ca2250065ff019a9e}
+  ruling: Los Possessed de Mordheim y Trollheim pueden comenzar con cero mutaciones; se respeta el may del texto.
+  interpretation: >-
+    Ambos perfiles Possessed dicen may, frente al must de Mutants. El compilador
+    permite cero o más mutaciones en Mordheim y cero, una o dos en Trollheim.
+    El límite superior de Trollheim se verifica separadamente; los costes y el
+    historial posterior pertenecen a obligaciones independientes.
+  cases:
+  - id: mordheim-recipients
+    roles: [grant]
+    operation: grant
+    defender: {band_id: cult-of-the-possessed, profile_id: the-possessed}
+    context: {rule_id: the-possessed--mutations}
+    expect: {result.recipients: [the-possessed]}
+  - id: mordheim-zero-and-many
+    roles: [accepted, boundary]
+    operation: selection_choices
+    attacker: {band_id: cult-of-the-possessed, profile_id: the-possessed}
+    context:
+      choices:
+        zero: {special_rule_ids: []}
+        one: {special_rule_ids: [band--mutations-tentacle]}
+        three: {special_rule_ids: [band--mutations-tentacle, band--mutations-great-claw, band--mutations-extra-arm]}
+    expect: {result.accepted: [one, three, zero], result.rejected: {}}
+  - id: trollheim-zero-to-two
+    roles: [accepted, rejected, boundary]
+    operation: selection_choices
+    attacker: {collection: trollheim, band_id: trollheim-cult-of-the-possessed, profile_id: the-possessed}
+    context:
+      choices:
+        zero: {special_rule_ids: []}
+        one: {special_rule_ids: [band--mutations-tentacle]}
+        two: {special_rule_ids: [band--mutations-tentacle, band--mutations-great-claw]}
+        three: {special_rule_ids: [band--mutations-tentacle, band--mutations-great-claw, band--mutations-extra-arm]}
+    expect:
+      result.accepted: [one, two, zero]
+      result.rejected: {three: at most two mutations are allowed for trollheim-cult-of-the-possessed/the-possessed}
+  mutations:
+  - id: ignore-trollheim-upper-limit
+    runtime_fault: suppress-possessed-mutation-limit
+    cases: [trollheim-zero-to-two]
+- id: mutation-selection-recipients
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/mordheim/cult-of-the-possessed/band--mutations/compiler.mutation-purchase-at-recruitment, digest: 9f8f71b8e780b9ba450614e6a0da463cc4e8026007a4ca18e044cf2a07bc9b52}
+  - {target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutation-purchase/compiler.mutation-purchase-at-recruitment, digest: bc38e97861444d7b091201fa0b43afb5a20a335c2596227042e7eb4c05d788ad}
+  interpretation: La construcción aislada permite seleccionar mutaciones únicamente a Mutants y Possessed. Costes, momento posterior e historial son efectos de campaña separados fuera de scope.
+  cases:
+  - id: mordheim-selection
+    roles: [accepted, rejected]
+    operation: selection_choices
+    attacker: {band_id: cult-of-the-possessed, profile_id: the-possessed}
+    context: {choices: {one: {special_rule_ids: [band--mutations-tentacle]}, two: {special_rule_ids: [band--mutations-tentacle, band--mutations-great-claw]}, invalid: {special_rule_ids: [band--mutations-tentacle], skill_ids: [skill.arcane-lore]}}}
+    expect: {result.accepted: [one, two], result.rejected: {invalid: "skills are not available to cult-of-the-possessed/the-possessed: ['skill.arcane-lore']"}}
+  - id: trollheim-control
+    roles: [rejected, boundary]
+    operation: selection_choices
+    attacker: {collection: trollheim, band_id: trollheim-cult-of-the-possessed, profile_id: the-possessed}
+    context: {choices: {one: {special_rule_ids: [band--mutations-tentacle]}, three: {special_rule_ids: [band--mutations-tentacle, band--mutations-great-claw, band--mutations-extra-arm]}}}
+    expect: {result.accepted: [one], result.rejected: {three: at most two mutations are allowed for trollheim-cult-of-the-possessed/the-possessed}}
+  - id: contract
+    roles: [grant]
+    operation: construction_tag_presence
+    attacker: {band_id: cult-of-the-possessed, profile_id: the-possessed}
+    context: {tag: compiler.mutation-purchase-at-recruitment}
+    expect: {result.present: true}
+  mutations:
+  - {id: remove-mutation-contract, path: attacker.construction_tags, value: [], cases: [contract]}
+
+- id: trollheim-mutant-initial-minimum
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/trollheim/trollheim-cult-of-the-possessed/mutants--mutations/compiler.mutant-requires-mutation-at-recruitment, digest: eb291da616c87acf1a5730366b322d971e49de5988bcfe1c4e69b2ad2e85f5da}
+  interpretation: El FighterBuild inicial de un Mutant exige al menos una mutación. Costes y cambios posteriores son campaña y están fuera de scope.
+  cases:
+  - id: zero-versus-one
+    roles: [grant, accepted, rejected, boundary]
+    operation: selection_choices
+    attacker: {collection: trollheim, band_id: trollheim-cult-of-the-possessed, profile_id: mutants, special_rule_ids: [band--mutations-tentacle]}
+    context: {choices: {one: {special_rule_ids: [band--mutations-tentacle]}, zero: {special_rule_ids: []}}}
+    expect: {result.accepted: [one], result.rejected: {zero: at least one mutation is required for trollheim-cult-of-the-possessed/mutants}}
+  - id: contract
+    operation: construction_tag_presence
+    attacker: {collection: trollheim, band_id: trollheim-cult-of-the-possessed, profile_id: mutants, special_rule_ids: [band--mutations-tentacle]}
+    context: {tag: compiler.mutant-requires-mutation-at-recruitment}
+    expect: {result.present: true}
+  mutations:
+  - {id: remove-minimum-contract, path: attacker.construction_tags, value: [], cases: [contract]}
+
+- id: sacred-mark-selection-limit
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/trollheim/lustria-lizardmen/band--sacred-marks/compiler.sacred-marks, digest: d9b162c6f20e332c3f29ea460f6043330021f321a4cc3b30d6994dbe1caa9715}
+  interpretation: Un Lizardman Hero puede llevar como máximo una Sacred Mark en su construcción. El momento de compra posterior es campaña y está fuera de scope.
+  cases:
+  - id: zero-one-two
+    roles: [grant, accepted, rejected, boundary]
+    operation: selection_choices
+    attacker: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-totem-warrior}
+    context: {choices: {zero: {special_rule_ids: []}, one: {special_rule_ids: [band--sacred-mark-huge-jaws]}, two: {special_rule_ids: [band--sacred-mark-huge-jaws, band--sacred-mark-of-the-old-ones]}}}
+    expect: {result.accepted: [one, zero], result.rejected: {two: a Lizardman Hero may have at most one Sacred Mark}}
+  - id: contract
+    operation: construction_tag_presence
+    attacker: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-totem-warrior}
+    context: {tag: compiler.sacred-marks}
+    expect: {result.present: true}
+  mutations:
+  - {id: remove-sacred-limit, path: attacker.construction_tags, value: [], cases: [contract]}

@@ -1,0 +1,54 @@
+schema_version: 1
+specifications:
+- id: strigoi-curse-of-the-reborn
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - {target: mechanic/skill.regeneration-blocked-by-blessed, digest: d30823b4ab601b89311a96c09ad5d7dfc5db40c091a457e2d5c04314e007ba74}
+  - {target: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-curse-of-the-reborn/skill.regeneration, digest: 109cad4b4f13e3a1a8a19b5049a6210d1e42dade53129413b69f6d0b7b74e46c}
+  - {target: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-curse-of-the-reborn/skill.regeneration-blocked-by-blessed, digest: 109cad4b4f13e3a1a8a19b5049a6210d1e42dade53129413b69f6d0b7b74e46c}
+  depends_on: [mechanic/skill.regeneration]
+  interpretation: Curse of the Reborn regenera cada herida no salvada a 4+. Fuego y ataques bendecidos
+    omiten completamente la tirada. Solo el Strigoi puede seleccionar el poder.
+  cases:
+  - id: recipient
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: strigoi-vampire}
+    context: {rule_id: band--strigoi-power-curse-of-the-reborn}
+    expect: {result.recipients: [strigoi-vampire]}
+  - id: ordinary-distribution
+    roles: [active, consumer, boundary]
+    operation: special_save
+    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: strigoi-vampire, special_rule_ids: [band--strigoi-power-curse-of-the-reborn]}
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: fire-blocks-without-roll
+    roles: [inactive, boundary]
+    operation: special_save
+    attacker: {main_weapon_id: weapon.brazier-iron}
+    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: strigoi-vampire, special_rule_ids: [band--strigoi-power-curse-of-the-reborn]}
+    expect: {context.regeneration_blocked: true, result.regeneration_roll: null, result.saved: false}
+  - id: blessed-blocks-without-roll
+    roles: [inactive, consumer, boundary]
+    operation: special_save
+    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: strigoi-vampire, special_rule_ids: [band--strigoi-power-curse-of-the-reborn]}
+    context: {incoming_tags: [attack.blessed]}
+    expect: {context.regeneration_blocked: true, result.regeneration_roll: null, result.saved: false}
+  - id: ordinary-three-fails
+    roles: [boundary]
+    operation: special_save
+    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: strigoi-vampire, special_rule_ids: [band--strigoi-power-curse-of-the-reborn]}
+    rolls: [{key: special.regeneration, value: 3}]
+    expect: {result.saved: false, result.regeneration_roll: 3}
+  mutations:
+  - id: remove-regeneration
+    path: defender.global_effects.regeneration_save
+    value: 7
+    cases: [ordinary-distribution]
+  - id: allow-blessed-regeneration
+    path: defender.global_effects.regeneration_blocked_by_blessed
+    value: false
+    cases: [blessed-blocks-without-roll]

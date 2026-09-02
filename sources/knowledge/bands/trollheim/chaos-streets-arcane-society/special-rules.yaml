@@ -1,0 +1,240 @@
+schema_version: 2
+band_id: chaos-streets-arcane-society
+rules:
+- id: grand-wizard--leader
+  name: Leader
+  effect: Any warband model within 6" of the Grand Wizard may use his Leadership when taking Leadership tests.
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Grand Wizard may use his Leadership when taking Leadership tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - grand-wizard
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 170
+    section: Heroes / 1 Grand Wizard / Leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-arcane-society.grand-wizard.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: grand-wizard--spellcaster
+  name: Spellcaster
+  effect: At recruitment, choose an Elemental Art (Fire, Air, Water or Earth) or Lesser Magic, then generate two random spells
+    from that school.
+  name_i18n:
+    en: Spellcaster
+    es: null
+  effect_i18n:
+    en: At recruitment, choose an Elemental Art (Fire, Air, Water or Earth) or Lesser Magic, then generate two random spells
+      from that school.
+    es: null
+  applies_to:
+    profile_ids:
+    - grand-wizard
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 170
+    section: Heroes / 1 Grand Wizard / Spellcaster
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-arcane-society.grand-wizard.spellcaster
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: arcane-mage--spellcaster
+  name: Spellcaster
+  effect: At recruitment, choose an Elemental Art (Fire, Air, Water or Earth) or Lesser Magic, then generate one random spell
+    from that school.
+  name_i18n:
+    en: Spellcaster
+    es: null
+  effect_i18n:
+    en: At recruitment, choose an Elemental Art (Fire, Air, Water or Earth) or Lesser Magic, then generate one random spell
+      from that school.
+    es: null
+  applies_to:
+    profile_ids:
+    - arcane-mage
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 170
+    section: Heroes / 0-2 Arcane Mages / Spellcaster
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-arcane-society.arcane-mage.spellcaster
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: arcane-mage--respect-for-the-arcane-society
+  name: Respect for the Arcane Society
+  effect: An Arcane Mage may never know more spells than the warband leader.
+  name_i18n:
+    en: Respect for the Arcane Society
+    es: null
+  effect_i18n:
+    en: An Arcane Mage may never know more spells than the warband leader.
+    es: null
+  applies_to:
+    profile_ids:
+    - arcane-mage
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 170
+    section: Heroes / 0-2 Arcane Mages / Respect for the Arcane Society
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-arcane-society.arcane-mage.respect-for-the-arcane-society
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: arcane-bodyguard--not-leader
+  name: Not a Leader
+  effect: An Arcane Bodyguard may never become the warband leader, and no other model may use the Bodyguard's Leadership.
+  name_i18n:
+    en: Not a Leader
+    es: null
+  effect_i18n:
+    en: An Arcane Bodyguard may never become the warband leader
+    and no other model may use the Bodyguard's Leadership.: null
+    es: null
+  applies_to:
+    profile_ids:
+    - arcane-bodyguard
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 170
+    section: Heroes / 0-2 Arcane Bodyguards / Not a Leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-arcane-society.arcane-bodyguard.not-leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: arcane-bodyguard--bodyguard
+  name: Bodyguard
+  effect: While within 2" of an Arcane Society spellcaster and not engaged in close combat, the Bodyguard may intercept shooting
+    attacks and charges directed at that spellcaster, moving as required.
+  name_i18n:
+    en: Bodyguard
+    es: null
+  effect_i18n:
+    en: While within 2" of an Arcane Society spellcaster and not engaged in close combat, the Bodyguard may intercept shooting
+      attacks and charges directed at that spellcaster, moving as required.
+    es: null
+  applies_to:
+    profile_ids:
+    - arcane-bodyguard
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 170
+    section: Heroes / 0-2 Arcane Bodyguards / Bodyguard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-arcane-society.arcane-bodyguard.bodyguard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: arcane-aspirant--aspirant
+  name: Aspirant
+  effect: If an Aspirant gains The Lad's Got Talent and becomes a Hero, it gains Spellcaster and replaces that first advance
+    with one random spell from a chosen Elemental Art or Lesser Magic.
+  name_i18n:
+    en: Aspirant
+    es: null
+  effect_i18n:
+    en: If an Aspirant gains The Lad's Got Talent and becomes a Hero, it gains Spellcaster and replaces that first advance
+      with one random spell from a chosen Elemental Art or Lesser Magic.
+    es: null
+  applies_to:
+    profile_ids:
+    - arcane-aspirant
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 171
+    section: Henchmen / 0-5 Arcane Aspirants / Aspirant
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-arcane-society.arcane-aspirant.aspirant
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: arcane-assistant--prove-your-talent
+  name: Prove Your Talent!
+  effect: The first time an Assistant rolls The Lad's Got Talent, it may remain a Henchman and gain Aspirant; it may later
+    roll that result a second time and become a spellcaster Hero through Aspirant.
+  name_i18n:
+    en: Prove Your Talent!
+    es: null
+  effect_i18n:
+    en: The first time an Assistant rolls The Lad's Got Talent, it may remain a Henchman and gain Aspirant; it may later roll
+      that result a second time and become a spellcaster Hero through Aspirant.
+    es: null
+  applies_to:
+    profile_ids:
+    - arcane-assistant
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 171
+    section: Henchmen / Arcane Assistants / Prove Your Talent!
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-arcane-society.arcane-assistant.prove-your-talent
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--secret-society
+  name: Secret Society
+  effect: The warband may not hire a Hired Sword or Dramatis Personae with Spellcaster except the Elf Mage and Nicodemus;
+    it may hire any other one available to Human Mercenary warbands.
+  name_i18n:
+    en: Secret Society
+    es: null
+  effect_i18n:
+    en: The warband may not hire a Hired Sword or Dramatis Personae with Spellcaster except the Elf Mage and Nicodemus; it
+      may hire any other one available to Human Mercenary warbands.
+    es: null
+  applies_to:
+    band: true
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 167
+    section: Special Rules / Secret Society
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.chaos-streets-arcane-society.band.secret-society
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'

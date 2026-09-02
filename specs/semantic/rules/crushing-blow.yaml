@@ -1,0 +1,54 @@
+schema_version: 1
+specifications:
+- id: skill.crushing-blow
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.crushing-blow
+    digest: cdc966ebf1c8e9a3454ed299153112fcdee60f3114f24375e9b6a27a3140df8b
+  interpretation: Every close-combat attack made by a fighter with Crushing Blow is ineligible for a parry. This
+    removes the parry attempt itself, irrespective of the defender's sword or buckler and without consuming a die.
+  interaction_contract:
+    reads:
+    - hit.roll
+    - state.parries
+    - weapon.kind
+    writes:
+    - state.parries
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    attacker: {skill_ids: [skill.crushing-blow], main_weapon_id: weapon.mace}
+    expect: {attacker.global_effects.cannot_be_parried: true}
+    expect_contains:
+      attacker.global_effects.tags: [skill.crushing-blow]
+  - id: prevents-sword-parry
+    roles: [active, boundary, consumer]
+    operation: parry
+    attacker: {skill_ids: [skill.crushing-blow], main_weapon_id: weapon.mace}
+    defender: {main_weapon_id: weapon.sword}
+    context: {hit_roll: 4}
+    expect: {result.attempted: false, result.blocked: false}
+  - id: prevents-buckler-parry
+    roles: [active, boundary]
+    operation: parry
+    attacker: {skill_ids: [skill.crushing-blow], main_weapon_id: weapon.mace}
+    defender: {off_hand_id: defence.buckler}
+    context: {hit_roll: 4}
+    expect: {result.attempted: false, result.blocked: false}
+  - id: ordinary-attack-remains-parryable
+    roles: [inactive, boundary]
+    operation: parry
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {main_weapon_id: weapon.sword}
+    context: {hit_roll: 4}
+    distribution:
+      observable: result.blocked
+      max_rolls: 1
+      expected: {'true': 1/3, 'false': 2/3}
+  mutations:
+  - id: allow-parry
+    path: attacker.global_effects.cannot_be_parried
+    value: false
+    cases: [prevents-sword-parry, prevents-buckler-parry]

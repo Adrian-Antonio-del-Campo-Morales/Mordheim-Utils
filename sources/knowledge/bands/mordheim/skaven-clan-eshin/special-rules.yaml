@@ -1,0 +1,438 @@
+schema_version: 2
+band_id: skaven-clan-eshin
+rules:
+- id: assassin-adept--leader
+  name: Leader
+  effect: Any warrior within 6" of the Assassin Adept may use his Leadership instead of his own.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Assassin adept / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warrior within 6" of the Assassin Adept may use his Leadership instead of his own.
+    es: null
+  applies_to:
+    profile_ids:
+    - assassin-adept
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-eshin.assassin-adept.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: assassin-adept--perfect-killer
+  name: Perfect Killer
+  effect: Wounds inflicted by the Assassin Adept, whether in shooting or close combat, impose an additional -1 modifier to
+    the enemy's armour save.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Assassin adept / Special Rules / Perfect Killer
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  name_i18n:
+    en: Perfect Killer
+    es: null
+  effect_i18n:
+    en: Wounds inflicted by the Assassin Adept, whether in shooting or close combat, impose an additional -1 modifier to the
+      enemy's armour save.
+    es: null
+  applies_to:
+    profile_ids:
+    - assassin-adept
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.perfect-killer
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.perfect-killer
+        parameters:
+          value: true
+- id: eshin-sorcerer--magic-user
+  name: Magic User
+  effect: The Eshin Sorcerer is a magic user and begins with one randomly generated spell from Magic of the Horned Rat. When
+    gaining a new skill, the Sorcerer may instead learn a new spell. The spell list itself is not modelled here.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Eshin sorcerer / Special Rules / Magic User
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  name_i18n:
+    en: Magic User
+    es: null
+  effect_i18n:
+    en: The Eshin Sorcerer is a magic user and begins with one randomly generated spell from Magic of the Horned Rat. When
+      gaining a new skill, the Sorcerer may instead learn a new spell. The spell list itself is not modelled here.
+    es: null
+  applies_to:
+    profile_ids:
+    - eshin-sorcerer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-eshin.eshin-sorcerer.magic-user
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: giant-rats--pack-size
+  name: Pack Size
+  effect: The warband may recruit any number of Giant Rats, subject only to the overall warband maximum.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Giant Rats / Pack Size
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  name_i18n:
+    en: Pack Size
+    es: null
+  effect_i18n:
+    en: The warband may recruit any number of Giant Rats, subject only to the overall warband maximum.
+    es: null
+  applies_to:
+    profile_ids:
+    - giant-rats
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-eshin.giant-rats.pack-size
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: giant-rats--animal
+  name: Animal
+  effect: Giant Rats are animals and never gain Experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Giant Rats / Experience
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  name_i18n:
+    en: Animal
+    es: null
+  effect_i18n:
+    en: Giant Rats are animals and never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - giant-rats
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-eshin.giant-rats.animal
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: rat-ogre--fear
+  name: Fear
+  effect: The Rat Ogre causes Fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Rat ogre / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Rat Ogre causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - rat-ogre
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-eshin.rat-ogre.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: rat-ogre--stupidity
+  name: Stupidity
+  effect: The Rat Ogre is subject to Stupidity unless a Skaven Hero is within 6".
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Rat ogre / Special Rules / Stupidity
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  name_i18n:
+    en: Stupidity
+    es: null
+  effect_i18n:
+    en: The Rat Ogre is subject to Stupidity unless a Skaven Hero is within 6".
+    es: null
+  applies_to:
+    profile_ids:
+    - rat-ogre
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-eshin.rat-ogre.stupidity
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: rat-ogre--experience
+  name: Experience
+  effect: The Rat Ogre never gains Experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Rat ogre / Special Rules / Experience
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  name_i18n:
+    en: Experience
+    es: null
+  effect_i18n:
+    en: The Rat Ogre never gains Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - rat-ogre
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-eshin.rat-ogre.experience
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: rat-ogre--large-target
+  name: Large Target
+  effect: The Rat Ogre is a Large Target.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Rat ogre / Special Rules / Large Target
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  name_i18n:
+    en: Large Target
+    es: null
+  effect_i18n:
+    en: The Rat Ogre is a Large Target.
+    es: null
+  applies_to:
+    profile_ids:
+    - rat-ogre
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-eshin.rat-ogre.large-target
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--skaven-maximum-characteristics
+  name: Skaven Maximum Characteristics
+  effect: 'Clan Eshin Skaven use the Skaven racial maximum profile: M6, WS6, BS6, S4, T4, W3, I7, A4, Ld7.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Racial Maximum Characteristics / Skaven
+    url: https://mordheimer.net/docs/campaigns/experience
+  name_i18n:
+    en: Skaven Maximum Characteristics
+    es: null
+  effect_i18n:
+    en: 'Clan Eshin Skaven use the Skaven racial maximum profile: M6, WS6, BS6, S4, T4, W3, I7, A4, Ld7.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-clan-eshin.band.skaven-maximum-characteristics
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--skaven-special-skills-black-hunger
+  kind: warband_skill
+  name: Black Hunger
+  effect: At the start of his turn, the Skaven Hero may invoke Black Hunger. For that turn he gains +1 Attack and +D3 inches
+    to his total Movement, then suffers D3 Strength 3 hits with no armour save at the end of the turn.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Skaven Special Skills / black hunger
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  name_i18n:
+    en: Black Hunger
+    es: null
+  effect_i18n:
+    en: At the start of his turn, the Skaven Hero may invoke Black Hunger. For that turn he gains +1 Attack and +D3 inches
+      to his total Movement, then suffers D3 Strength 3 hits with no armour save at the end of the turn.
+    es: null
+  eligibility:
+  - assassin-adept
+  - black-skaven
+  - eshin-sorcerer
+  - night-runners
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: mechanic.black-hunger
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.black-hunger
+- id: band--skaven-special-skills-tail-fighting
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: special-rule.band--skaven-special-skills-tail-fighting
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: special-rule.band--skaven-special-skills-tail-fighting
+  runtime_selectable: true
+  name: Tail Fighting
+  effect: The Skaven may wield a shield, knife or sword with his tail. A weapon grants one additional attack with that weapon;
+    a shield grants +1 to the model's armour save.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Skaven Special Skills / tail fighting
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  name_i18n:
+    en: Tail Fighting
+    es: null
+  effect_i18n:
+    en: The Skaven may wield a shield, knife or sword with his tail. A weapon grants one additional attack with that weapon;
+      a shield grants +1 to the model's armour save.
+    es: null
+  eligibility:
+  - assassin-adept
+  - black-skaven
+  - eshin-sorcerer
+  - night-runners
+  applies_to:
+    band: true
+- id: band--skaven-special-skills-wall-runner
+  kind: warband_skill
+  name: Wall Runner
+  effect: The Skaven automatically passes Initiative tests required to climb walls and other sheer surfaces.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Skaven Special Skills / wall runner
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  name_i18n:
+    en: Wall Runner
+    es: null
+  effect_i18n:
+    en: The Skaven automatically passes Initiative tests required to climb walls and other sheer surfaces.
+    es: null
+  eligibility:
+  - assassin-adept
+  - black-skaven
+  - eshin-sorcerer
+  - night-runners
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.skaven-clan-eshin.band.skaven-special-skills-wall-runner
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--skaven-special-skills-infiltration
+  kind: warband_skill
+  name: Infiltration
+  effect: The Skaven deploys after the opposing warband and may be placed anywhere out of enemy sight and more than 12" from
+    every enemy model. If both players have infiltrators, roll a D6 for each; the lowest roll deploys first.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Skaven Special Skills / infiltration
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  name_i18n:
+    en: Infiltration
+    es: null
+  effect_i18n:
+    en: The Skaven deploys after the opposing warband and may be placed anywhere out of enemy sight and more than 12" from
+      every enemy model. If both players have infiltrators, roll a D6 for each; the lowest roll deploys first.
+    es: null
+  eligibility:
+  - assassin-adept
+  - black-skaven
+  - eshin-sorcerer
+  - night-runners
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.skaven-clan-eshin.band.skaven-special-skills-infiltration
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--skaven-special-skills-art-of-silent-death
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.art-of-silent-death
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.art-of-silent-death
+  name: Art of Silent Death
+  effect: The Skaven may fight unarmed without penalties and counts as using two weapons, gaining +1 Attack. He scores a critical
+    hit on a To Wound roll of 5-6 instead of only 6. When used with Eshin Fighting Claws, this grants +2 Attacks instead of
+    +1.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Skaven Special Skills / art of silent death
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  name_i18n:
+    en: Art of Silent Death
+    es: null
+  effect_i18n:
+    en: The Skaven may fight unarmed without penalties and counts as using two weapons, gaining +1 Attack. He scores a critical
+      hit on a To Wound roll of 5-6 instead of only 6. When used with Eshin Fighting Claws, this grants +2 Attacks instead
+      of +1.
+    es: null
+  eligibility:
+  - assassin-adept
+  - black-skaven
+  - eshin-sorcerer
+  - night-runners
+  applies_to:
+    band: true

@@ -1,0 +1,72 @@
+schema_version: 2
+id: night-goblins-mic
+canonical_family: night-goblins-mic
+name: Night Goblins
+name_i18n:
+  en: Night Goblins
+  es: null
+original_locale: en
+ruleset: mordheim
+categories:
+- 1c
+grade: 1c
+setting: Mordheim
+publication: Mordheimer's Information Centre
+status: source-normalized
+sources:
+- manual: mordheimer.net
+  printed_page: 0
+  section: Night Goblins
+  url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+roster:
+  minimum_models: 3
+  maximum_models: 20
+  starting_gold: 500
+  members:
+  - profile_id: big-boss
+    minimum: 1
+    maximum: 1
+  - profile_id: shaman
+    minimum: 0
+    maximum: 1
+  - profile_id: bosses
+    minimum: 0
+    maximum: 4
+  - profile_id: night-goblins
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: fanatics
+    minimum: 0
+    maximum: 2
+    group_size:
+      minimum: 1
+      maximum: 2
+  - profile_id: cave-squigs
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: troll
+    minimum: 0
+    maximum: 1
+    group_size:
+      minimum: 1
+      maximum: 1
+  - profile_id: snotling-mob-consists-of-5-snotlings
+    minimum: 0
+    maximum: 1
+    group_size:
+      minimum: 1
+      maximum: 1
+rule_ids:
+- band--animosity
+- band--hate-stunties
+- band--squig-minder-ratio
+- band--night-goblin-special-skills-ded-shooty
+- band--night-goblin-special-skills-sneaky-git
+- band--night-goblin-special-skills-infiltrate
+- band--night-goblin-special-skills-netter

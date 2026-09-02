@@ -1,0 +1,46 @@
+schema_version: 1
+specifications:
+- id: editorial-spirits-spiritual-weapons
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: rule/trollheim/khemri-lahmian-brotherhood/spirits--spiritual-weapons/trait.spiritual-weapons, digest: 074749be42538367f857ee7c9e9848d9d886f474fa64d419a949e75cd1b51b4e}
+  interpretation: Todas las armas del Spirit usan umbral natural 5+ para críticos. La regla no convierte un resultado insuficiente para herir en una herida.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: spirits}
+    context: {rule_id: spirits--spiritual-weapons}
+    expect: {result.recipients: [spirits]}
+  - id: natural-five-is-critical
+    roles: [active, consumer, boundary]
+    operation: wound
+    attacker: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: spirits}
+    rolls: [{key: wound, value: 5}]
+    expect: {context.critical_threshold: 5, result.success: true, result.critical: true}
+    expect_contains: {attacker.global_effects.tags: [spiritual_weapons]}
+  - id: natural-four-is-not-critical
+    roles: [boundary]
+    operation: wound
+    attacker: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: spirits}
+    rolls: [{key: wound, value: 4}]
+    expect: {result.success: true, result.critical: false}
+  - id: five-cannot-overcome-six-required
+    roles: [boundary]
+    operation: wound
+    attacker: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: spirits}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 3, attacks: 1}}
+    rolls: [{key: wound, value: 5}]
+    expect: {result.success: false, result.critical: false}
+  - id: ordinary-fighter-five-is-not-critical
+    roles: [inactive]
+    operation: wound
+    attacker: {main_weapon_id: weapon.sword}
+    rolls: [{key: wound, value: 5}]
+    expect: {context.critical_threshold: 6, result.success: true, result.critical: false}
+  mutations:
+  - id: remove-spiritual-weapons
+    path: attacker.global_effects.tags
+    value: []
+    cases: [natural-five-is-critical]

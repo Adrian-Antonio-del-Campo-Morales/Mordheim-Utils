@@ -1,0 +1,1845 @@
+schema_version: 2
+band_id: night-goblins-web
+rules:
+- id: boss--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.boss.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Leader
+  effect: 'Any warrior within 6" of the Boss may use their
+
+    Leadership value when taking Leadership tests.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 1 Boss / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any warrior within 6" of the Boss may use their
+
+      Leadership value when taking Leadership tests.'
+    es: null
+  applies_to:
+    profile_ids:
+    - boss
+- id: boss--da-biggest-boss
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: strength
+    - id: campaign.leader-inheritance
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: leader succession after death.'
+  name: Da Biggest Boss
+  effect: 'The Boss is so big, compared to other
+
+    Night Goblins that is, that they may choose Strength skills.
+
+    If the Boss dies, the promoted leader will gain this rule. No
+
+    other member of the warband except the current leader
+
+    may ever use Strength skills.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 1 Boss / Special Rules / Da Biggest Boss
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Da Biggest Boss
+    es: null
+  effect_i18n:
+    en: 'The Boss is so big, compared to other
+
+      Night Goblins that is, that they may choose Strength skills.
+
+      If the Boss dies, the promoted leader will gain this rule. No
+
+      other member of the warband except the current leader
+
+      may ever use Strength skills.'
+    es: null
+  applies_to:
+    profile_ids:
+    - boss
+- id: squig-herder--handle-animal-squig
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.squig-herder.handle-animal-squig
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Handle Animal - Squig
+  effect: Any Cave Squig within 6" (12" with a Squig Prodder) of the herder can use their Leadership value when taking Leadership
+    tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 1 Squig Herder / Special Rules / Handle Animal - Squig
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Handle Animal - Squig
+    es: null
+  effect_i18n:
+    en: Any Cave Squig within 6" (12" with a Squig Prodder) of the herder can use their Leadership value when taking Leadership
+      tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - squig-herder
+- id: squig-herder--master-herder
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.squig-herder.master-herder
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Master Herder
+  effect: 'During the recovery phase, any out of control Cave Squigs or Great Squigs in the herder''s control
+
+    range (6", or 12" with a Squig Prodder) will stop running
+
+    amok, and may be controlled normally, if the Herder can
+
+    pass a Leadership test.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 1 Squig Herder / Special Rules / Master Herder
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Master Herder
+    es: null
+  effect_i18n:
+    en: 'During the recovery phase, any out of control Cave Squigs or Great Squigs in the herder''s control
+
+      range (6", or 12" with a Squig Prodder) will stop running
+
+      amok, and may be controlled normally, if the Herder can
+
+      pass a Leadership test.'
+    es: null
+  applies_to:
+    profile_ids:
+    - squig-herder
+- id: squig-herder--squig-herder-skill-gassy-squigs
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.squig-herder.squig-herder-skill-gassy-squigs
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Gassy Squigs
+  effect: When an untrained Cave Squig goes Out of Action, roll immediately instead of making its normal post-battle recovery
+    roll. On 1-2 it explodes, is dead, and every model within D6 inches suffers a Strength 3 hit.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / Squig Herder / Squig Herder Skills / Gassy Squigs
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Gassy Squigs
+    es: null
+  effect_i18n:
+    en: When an untrained Cave Squig goes Out of Action, roll immediately instead of making its normal post-battle recovery
+      roll. On 1-2 it explodes, is dead, and every model within D6 inches suffers a Strength 3 hit.
+    es: null
+  applies_to:
+    profile_ids:
+    - squig-herder
+- id: squig-herder--squig-herder-skill-threaten
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.squig-herder.squig-herder-skill-threaten
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: movimiento.'
+  name: Threaten
+  effect: During the Movement phase, all Cave Squigs and Great Squigs within 6" of the Squig Herder (12" if the Herder has
+    a Squig Prodder) may re-roll their movement dice.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / Squig Herder / Squig Herder Skills / Threaten
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Threaten
+    es: null
+  effect_i18n:
+    en: During the Movement phase, all Cave Squigs and Great Squigs within 6" of the Squig Herder (12" if the Herder has a
+      Squig Prodder) may re-roll their movement dice.
+    es: null
+  applies_to:
+    profile_ids:
+    - squig-herder
+- id: squig-herder--squig-herder-skill-trainin
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.squig-herder.squig-herder-skill-trainin
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: lesiones.'
+  name: Trainin'
+  effect: The next Cave Squig bought may become the warband's single Trained Squig. It gains Experience normally and rolls
+    on the Henchman Advance table, re-rolling Lad's Got Talent. It still counts against the Cave Squig maximum. If the Herder
+    dies, the Trained Squig is removed; if the Squig dies, another may later be trained. A Trained Squig dies after going
+    Out of Action only on a roll of 1. If the Herder goes Out of Action while the Trained Squig has not gone wild, remove
+    the Squig from the table and treat Sold to the Pits, Captured and Robbed results for the Herder as Full Recovery.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / Squig Herder / Squig Herder Skills / Trainin'
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Trainin'
+    es: null
+  effect_i18n:
+    en: The next Cave Squig bought may become the warband's single Trained Squig. It gains Experience normally and rolls on
+      the Henchman Advance table, re-rolling Lad's Got Talent. It still counts against the Cave Squig maximum. If the Herder
+      dies, the Trained Squig is removed; if the Squig dies, another may later be trained. A Trained Squig dies after going
+      Out of Action only on a roll of 1. If the Herder goes Out of Action while the Trained Squig has not gone wild, remove
+      the Squig from the table and treat Sold to the Pits, Captured and Robbed results for the Herder as Full Recovery.
+    es: null
+  applies_to:
+    profile_ids:
+    - squig-herder
+- id: shaman--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.shaman.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: magia.'
+  name: Wizard
+  effect: The Shaman is a Wizard and begins with one randomly chosen Goblin Magic spell.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 1 Shaman / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Shaman is a Wizard and begins with one randomly chosen Goblin Magic spell.
+    es: null
+  applies_to:
+    profile_ids:
+    - shaman
+- id: shaman--fungus-brew
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.shaman.fungus-brew
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Fungus Brew
+  effect: 'Before a battle, the Shaman may brew Fungus Brew using 1 to 3 Mad Cap Mushrooms. The brew affects one Night Goblin
+    Warrior henchman group until the end of the battle. Roll once per mushroom; if any dice duplicate a result, the batch
+    is ruined and has no effect. Results: 1 Rowdy = affected by Animosity on 1 or 2; 2 Dizzy = -1 Initiative; 3 Fearless =
+    immune to Fear and All Alone tests; 4 Numbed = +1 armour save, which may not be reduced below 6+; 5 Belligerent = Hatred
+    against the opposing warband(s); 6 Loony = Frenzy, followed by Stupidity if Frenzy is lost because the Goblin is Knocked
+    Down or Stunned.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 1 Shaman / Special Rules / Fungus Brew
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Fungus Brew
+    es: null
+  effect_i18n:
+    en: 'Before a battle, the Shaman may brew Fungus Brew using 1 to 3 Mad Cap Mushrooms. The brew affects one Night Goblin
+      Warrior henchman group until the end of the battle. Roll once per mushroom; if any dice duplicate a result, the batch
+      is ruined and has no effect. Results: 1 Rowdy = affected by Animosity on 1 or 2; 2 Dizzy = -1 Initiative; 3 Fearless
+      = immune to Fear and All Alone tests; 4 Numbed = +1 armour save, which may not be reduced below 6+; 5 Belligerent =
+      Hatred against the opposing warband(s); 6 Loony = Frenzy, followed by Stupidity if Frenzy is lost because the Goblin
+      is Knocked Down or Stunned.'
+    es: null
+  applies_to:
+    profile_ids:
+    - shaman
+- id: night-goblin-warriors--animosity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.night-goblin-warriors.animosity
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Animosity
+  effect: Night Goblins are subject to the rules for Animosity.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Night Goblin Warriors / Special Rules / Animosity
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Animosity
+    es: null
+  effect_i18n:
+    en: Night Goblins are subject to the rules for Animosity.
+    es: null
+  applies_to:
+    profile_ids:
+    - night-goblin-warriors
+- id: night-goblin-fanatics--addict
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.night-goblin-fanatics.addict
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Addict
+  effect: 'Fanatics are dependent on a regular supply of Mad Cap Mushrooms which must be bought each game. If a fanatic can''t
+    get any before a battle they will stay in their cave foaming at the mouth and not take part. If available they will eat
+    their mushrooms
+
+    before the battle.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 3 Night Goblin Fanatics / Special Rules / Addict
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Addict
+    es: null
+  effect_i18n:
+    en: 'Fanatics are dependent on a regular supply of Mad Cap Mushrooms which must be bought each game. If a fanatic can''t
+      get any before a battle they will stay in their cave foaming at the mouth and not take part. If available they will
+      eat their mushrooms
+
+      before the battle.'
+    es: null
+  applies_to:
+    profile_ids:
+    - night-goblin-fanatics
+- id: night-goblin-fanatics--loony
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.night-goblin-fanatics.loony
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Loony
+  effect: Fanatics are so far gone from reality that they are not subject to the rules for Animosity. Fanatics must re-roll
+    results of “Lad's Got Talent.”
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 3 Night Goblin Fanatics / Special Rules / Loony
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Loony
+    es: null
+  effect_i18n:
+    en: Fanatics are so far gone from reality that they are not subject to the rules for Animosity. Fanatics must re-roll
+      results of “Lad's Got Talent.”
+    es: null
+  applies_to:
+    profile_ids:
+    - night-goblin-fanatics
+- id: cave-squigs--movement
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.cave-squigs.movement
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: movimiento.'
+  name: Movement
+  effect: 'Cave Squigs do not have a set Movement characteristic but move with an ungainly
+
+    bouncing stride. When moving Squigs, declare a
+
+    direction of movement and roll 2D6 for the distance
+
+    they move. Squigs never run and never declare
+
+    charges. Instead, they are allowed to contact enemy
+
+    models with their normal 2D6" movement, stopping
+
+    short if they do. If this happens, they count as
+
+    charging for the following round of hand-to-hand
+
+    combat, just as if they had declared a charge.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 5 Cave Squigs / Special Rules / Movement
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Movement
+    es: null
+  effect_i18n:
+    en: 'Cave Squigs do not have a set Movement characteristic but move with an ungainly
+
+      bouncing stride. When moving Squigs, declare a
+
+      direction of movement and roll 2D6 for the distance
+
+      they move. Squigs never run and never declare
+
+      charges. Instead, they are allowed to contact enemy
+
+      models with their normal 2D6" movement, stopping
+
+      short if they do. If this happens, they count as
+
+      charging for the following round of hand-to-hand
+
+      combat, just as if they had declared a charge.'
+    es: null
+  applies_to:
+    profile_ids:
+    - cave-squigs
+- id: cave-squigs--minderz
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.cave-squigs.minderz
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: movimiento.'
+  name: Minderz
+  effect: 'Each Cave Squig must always remain
+
+    within 6" of a Goblin, who keeps the creature in line.
+
+    If a Cave Squig finds itself without a Goblin within 6"
+
+    at the start of its Movement phase, it will go wild.
+
+    From that point on, move the Squig 2D6" in a random
+
+    direction during each of its Movement phases. If its
+
+    movement takes it into contact with another model
+
+    (friend or foe), it will engage the model in hand-tohand combat as normal. The Cave Squig is out of the
+
+    Night Goblin player''s control until the end of the
+
+    game.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 5 Cave Squigs / Special Rules / Minderz
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Minderz
+    es: null
+  effect_i18n:
+    en: 'Each Cave Squig must always remain
+
+      within 6" of a Goblin, who keeps the creature in line.
+
+      If a Cave Squig finds itself without a Goblin within 6"
+
+      at the start of its Movement phase, it will go wild.
+
+      From that point on, move the Squig 2D6" in a random
+
+      direction during each of its Movement phases. If its
+
+      movement takes it into contact with another model
+
+      (friend or foe), it will engage the model in hand-tohand combat as normal. The Cave Squig is out of the
+
+      Night Goblin player''s control until the end of the
+
+      game.'
+    es: null
+  applies_to:
+    profile_ids:
+    - cave-squigs
+- id: cave-squigs--just-squigs
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.cave-squigs.just-squigs
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Just Squigs
+  effect: 'Night Goblins don''t care much whether
+
+    Squigs die because there will always be more
+
+    mysteriously popping up where ever the Goblins go.
+
+    Squigs only count as a half a model for Rout test
+
+    purposes.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 5 Cave Squigs / Special Rules / Just Squigs
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Just Squigs
+    es: null
+  effect_i18n:
+    en: 'Night Goblins don''t care much whether
+
+      Squigs die because there will always be more
+
+      mysteriously popping up where ever the Goblins go.
+
+      Squigs only count as a half a model for Rout test
+
+      purposes.'
+    es: null
+  applies_to:
+    profile_ids:
+    - cave-squigs
+- id: cave-squigs--animals
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.cave-squigs.animals
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: movimiento.'
+  name: Animals
+  effect: 'Cave Squigs are animals of a sort and so
+
+    do not gain experience, or climb ladders. They can
+
+    move to higher levels or over obstacles using the
+
+    normal climb rules, just imagine it as a particularly
+
+    high bounce.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 5 Cave Squigs / Special Rules / Animals
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Animals
+    es: null
+  effect_i18n:
+    en: 'Cave Squigs are animals of a sort and so
+
+      do not gain experience, or climb ladders. They can
+
+      move to higher levels or over obstacles using the
+
+      normal climb rules, just imagine it as a particularly
+
+      high bounce.'
+    es: null
+  applies_to:
+    profile_ids:
+    - cave-squigs
+- id: snotlings--mob
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.snotlings.mob
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Mob
+  effect: 'All Snotlings in a warband count as one model
+
+    for warband size.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 5 Snotlings / Special Rules / Mob
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Mob
+    es: null
+  effect_i18n:
+    en: 'All Snotlings in a warband count as one model
+
+      for warband size.'
+    es: null
+  applies_to:
+    profile_ids:
+    - snotlings
+- id: snotlings--weedy
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.injury-profile
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.injury-profile
+        parameters:
+          value: 1
+  name: Weedy
+  effect: 'Snotlings are not the most robust of
+
+    creatures. If wounded they will be knocked down on a
+
+    1, stunned on a 2-3 and go out of action on a 4-6.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 5 Snotlings / Special Rules / Weedy
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Weedy
+    es: null
+  effect_i18n:
+    en: 'Snotlings are not the most robust of
+
+      creatures. If wounded they will be knocked down on a
+
+      1, stunned on a 2-3 and go out of action on a 4-6.'
+    es: null
+  applies_to:
+    profile_ids:
+    - snotlings
+- id: snotlings--dodgy
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.cloud-of-flies
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.cloud-of-flies
+        parameters:
+          value: true
+    - id: shooting.incoming-hit-modifier
+      scope: 'NO'
+      binding: null
+      reason: Shooting is outside the duel runtime.
+  name: Dodgy
+  effect: 'The little creatures are constantly ducking
+
+    and diving in the most infuriating way. All hits from
+
+    shooting or hand-to-hand suffer -1 to hit against
+
+    Snotlings.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 5 Snotlings / Special Rules / Dodgy
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Dodgy
+    es: null
+  effect_i18n:
+    en: 'The little creatures are constantly ducking
+
+      and diving in the most infuriating way. All hits from
+
+      shooting or hand-to-hand suffer -1 to hit against
+
+      Snotlings.'
+    es: null
+  applies_to:
+    profile_ids:
+    - snotlings
+- id: snotlings--insignificant
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.snotlings.insignificant
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Insignificant
+  effect: 'Nobody cares about the Snotlings. All
+
+    Snotlings in the warband count as 1 model for rout
+
+    tests purposes and warband maintenance costs. Each
+
+    Snotling is worth half an experience point, rounded
+
+    down at the end of the battle. Snotlings may be
+
+    ignored for shooting priority purposes. Snotlings
+
+    never gain experience, they usually don''t last long
+
+    enough, and if they do they''re too stupid to learn
+
+    anything of value!'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 5 Snotlings / Special Rules / Insignificant
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Insignificant
+    es: null
+  effect_i18n:
+    en: 'Nobody cares about the Snotlings. All
+
+      Snotlings in the warband count as 1 model for rout
+
+      tests purposes and warband maintenance costs. Each
+
+      Snotling is worth half an experience point, rounded
+
+      down at the end of the battle. Snotlings may be
+
+      ignored for shooting priority purposes. Snotlings
+
+      never gain experience, they usually don''t last long
+
+      enough, and if they do they''re too stupid to learn
+
+      anything of value!'
+    es: null
+  applies_to:
+    profile_ids:
+    - snotlings
+- id: great-squig--movement
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.great-squig.movement
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: movimiento.'
+  name: Movement
+  effect: 'A Great Squig will move just like Cave
+
+    Squigs, except it rolls 3D6 for the distance.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 1 Great Squig / Special Rules / Movement
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Movement
+    es: null
+  effect_i18n:
+    en: 'A Great Squig will move just like Cave
+
+      Squigs, except it rolls 3D6 for the distance.'
+    es: null
+  applies_to:
+    profile_ids:
+    - great-squig
+- id: great-squig--wild
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.great-squig.wild
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: movimiento.'
+  name: Wild
+  effect: 'A Great Squig will need a Goblin to keep it in
+
+    line, just like a Cave Squig. In addition, due to the
+
+    ferocity of these beasts, if the scatter die results in a
+
+    “hit” for a wild Great Squig it moves towards the
+
+    closest model (friend or foe) it can see. If this
+
+    movement takes it into contact with another model it
+
+    will engage it in close combat and count as charging,
+
+    even with a member of the Night Goblin warband.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 1 Great Squig / Special Rules / Wild
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Wild
+    es: null
+  effect_i18n:
+    en: 'A Great Squig will need a Goblin to keep it in
+
+      line, just like a Cave Squig. In addition, due to the
+
+      ferocity of these beasts, if the scatter die results in a
+
+      “hit” for a wild Great Squig it moves towards the
+
+      closest model (friend or foe) it can see. If this
+
+      movement takes it into contact with another model it
+
+      will engage it in close combat and count as charging,
+
+      even with a member of the Night Goblin warband.'
+    es: null
+  applies_to:
+    profile_ids:
+    - great-squig
+- id: great-squig--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.great-squig.cause-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Cause Fear
+  effect: 'Great Squigs are massive balls of flesh
+
+    and teeth, they cause fear.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 1 Great Squig / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Cause Fear
+    es: null
+  effect_i18n:
+    en: 'Great Squigs are massive balls of flesh
+
+      and teeth, they cause fear.'
+    es: null
+  applies_to:
+    profile_ids:
+    - great-squig
+- id: great-squig--large-target
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.great-squig.large-target
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: disparo.'
+  name: Large Target
+  effect: 'Great Squigs are large targets as
+
+    defined in the shooting rules.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 1 Great Squig / Special Rules / Large Target
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Large Target
+    es: null
+  effect_i18n:
+    en: 'Great Squigs are large targets as
+
+      defined in the shooting rules.'
+    es: null
+  applies_to:
+    profile_ids:
+    - great-squig
+- id: great-squig--animal
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.great-squig.animal
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: movimiento.'
+  name: Animal
+  effect: 'Great Squigs are animals of a sort and so do
+
+    not gain experience, or climb ladders. They can move
+
+    up to higher levels or over obstacles using the normal
+
+    climb rules, just imagine it as a particularly high
+
+    bounce.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 1 Great Squig / Special Rules / Animal
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Animal
+    es: null
+  effect_i18n:
+    en: 'Great Squigs are animals of a sort and so do
+
+      not gain experience, or climb ladders. They can move
+
+      up to higher levels or over obstacles using the normal
+
+      climb rules, just imagine it as a particularly high
+
+      bounce.'
+    es: null
+  applies_to:
+    profile_ids:
+    - great-squig
+- id: troll--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.troll.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Fear
+  effect: Trolls are frightening monsters which cause fear .
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 1 Troll / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: Trolls are frightening monsters which cause fear .
+    es: null
+  applies_to:
+    profile_ids:
+    - troll
+- id: troll--stupidity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.troll.stupidity
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Stupidity
+  effect: A Troll is subject to the rules for stupidity .
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 1 Troll / Special Rules / Stupidity
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Stupidity
+    es: null
+  effect_i18n:
+    en: A Troll is subject to the rules for stupidity .
+    es: null
+  applies_to:
+    profile_ids:
+    - troll
+- id: troll--regeneration
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.regeneration
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.regeneration
+    - id: campaign.post-battle-injury
+      scope: 'NO'
+      binding: null
+      reason: Post-battle injury is a campaign state.
+  name: Regeneration
+  effect: 'Trolls have a unique physiology that allow
+
+    them to regenerate wounds. Whenever an enemy successfully
+
+    inflicts a wound on a Troll roll a D6, on a result of 4 or more
+
+    the wound is ignored and the Troll is unhurt. Trolls may not
+
+    regenerate wounds caused by fire or fire-based magic. Trolls
+
+    never roll for Injury after a battle.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 1 Troll / Special Rules / Regeneration
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Regeneration
+    es: null
+  effect_i18n:
+    en: 'Trolls have a unique physiology that allow
+
+      them to regenerate wounds. Whenever an enemy successfully
+
+      inflicts a wound on a Troll roll a D6, on a result of 4 or more
+
+      the wound is ignored and the Troll is unhurt. Trolls may not
+
+      regenerate wounds caused by fire or fire-based magic. Trolls
+
+      never roll for Injury after a battle.'
+    es: null
+  applies_to:
+    profile_ids:
+    - troll
+- id: troll--dumb-monster
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.troll.dumb-monster
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: psicología.'
+  name: Dumb Monster
+  effect: 'A Troll is far too stupid to ever learn any
+
+    new skills. Trolls do not gain experience.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 1 Troll / Special Rules / Dumb Monster
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Dumb Monster
+    es: null
+  effect_i18n:
+    en: 'A Troll is far too stupid to ever learn any
+
+      new skills. Trolls do not gain experience.'
+    es: null
+  applies_to:
+    profile_ids:
+    - troll
+- id: troll--always-hungry
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.troll.always-hungry
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Always Hungry
+  effect: 'A Troll requires an upkeep cost. This
+
+    upkeep represents the copious amounts of food that must be
+
+    fed to the Troll in order to keep him loyal to the warband.
+
+    The warband must pay 15 gold crowns after every game in
+
+    order to keep the Troll. If the warband lacks the gold to pay
+
+    the upkeep, the Boss has the option of sacrificing two Goblin
+
+    Warriors or Cave Squigs to the Troll in lieu of buying food
+
+    (Trolls eat nearly anything). If this fee is not paid (either in
+
+    gold or in warband members) the Troll gets hungry and
+
+    wanders off in search of food.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 1 Troll / Special Rules / Always Hungry
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Always Hungry
+    es: null
+  effect_i18n:
+    en: 'A Troll requires an upkeep cost. This
+
+      upkeep represents the copious amounts of food that must be
+
+      fed to the Troll in order to keep him loyal to the warband.
+
+      The warband must pay 15 gold crowns after every game in
+
+      order to keep the Troll. If the warband lacks the gold to pay
+
+      the upkeep, the Boss has the option of sacrificing two Goblin
+
+      Warriors or Cave Squigs to the Troll in lieu of buying food
+
+      (Trolls eat nearly anything). If this fee is not paid (either in
+
+      gold or in warband members) the Troll gets hungry and
+
+      wanders off in search of food.'
+    es: null
+  applies_to:
+    profile_ids:
+    - troll
+- id: troll--vomit-attack
+  kind: profile_ability
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: weapon.vomit-attack
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: weapon.vomit-attack
+  name: Vomit Attack
+  effect: 'Instead of his normal attacks, a Troll can
+
+    regurgitate its highly corrosive digestive juices on an
+
+    unfortunate hand-to-hand combat opponent. This is a single
+
+    attack that automatically hits with a Strength of 5 and ignores
+
+    armour saves.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 1 Troll / Special Rules / Vomit Attack
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Vomit Attack
+    es: null
+  effect_i18n:
+    en: 'Instead of his normal attacks, a Troll can
+
+      regurgitate its highly corrosive digestive juices on an
+
+      unfortunate hand-to-hand combat opponent. This is a single
+
+      attack that automatically hits with a Strength of 5 and ignores
+
+      armour saves.'
+    es: null
+  applies_to:
+    profile_ids:
+    - troll
+- id: troll--large-target
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-web.troll.large-target
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: disparo.'
+  name: Large Target
+  effect: Trolls are Large Targets as defined in the shooting rules.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 1 Troll / Special Rules / Large Target
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Large Target
+    es: null
+  effect_i18n:
+    en: Trolls are Large Targets as defined in the shooting rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - troll
+- id: band--animosity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-web.band.animosity
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Animosity
+  effect: 'At the start of the Night Goblin player''s turn, roll a D6 for each Night Goblin Warrior Henchman not engaged in
+    hand-to-hand combat. On a 1, roll another D6: 1 = attack the nearest eligible friendly Orc/Goblin Henchman or Hired Sword
+    if possible; charge and fight one round, or shoot the nearest eligible friendly model if no charge is possible and the
+    warrior has a missile weapon. If no valid target exists, or the nearest friendly model is an Orc Hero, treat as 2-5. 2-5
+    = the warrior may do nothing else that turn, but may defend itself if attacked. 6 = immediately move as quickly as possible
+    toward the nearest visible enemy, charging if possible; if none is visible, make a normal move. This is an extra move.
+    If it brings an enemy into charge range, the warrior must charge during its normal Movement phase.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Animosity
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Animosity
+    es: null
+  effect_i18n:
+    en: 'At the start of the Night Goblin player''s turn, roll a D6 for each Night Goblin Warrior Henchman not engaged in
+      hand-to-hand combat. On a 1, roll another D6: 1 = attack the nearest eligible friendly Orc/Goblin Henchman or Hired
+      Sword if possible; charge and fight one round, or shoot the nearest eligible friendly model if no charge is possible
+      and the warrior has a missile weapon. If no valid target exists, or the nearest friendly model is an Orc Hero, treat
+      as 2-5. 2-5 = the warrior may do nothing else that turn, but may defend itself if attacked. 6 = immediately move as
+      quickly as possible toward the nearest visible enemy, charging if possible; if none is visible, make a normal move.
+      This is an extra move. If it brings an enemy into charge range, the warrior must charge during its normal Movement phase.'
+    es: null
+  applies_to:
+    band: true
+- id: band--hate-stunties
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-web.band.hate-stunties
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Hate Stunties
+  effect: Night Goblins are subject to Hatred against Dwarfs. This affects Night Goblins only, not other models in the warband.
+    Fanatics are exempt.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hate Stunties
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Hate Stunties
+    es: null
+  effect_i18n:
+    en: Night Goblins are subject to Hatred against Dwarfs. This affects Night Goblins only, not other models in the warband.
+      Fanatics are exempt.
+    es: null
+  applies_to:
+    band: true
+- id: band--fear-elves
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-web.band.fear-elves
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Fear Elves
+  effect: Night Goblins are subject to Fear of Elves. This affects Night Goblins only, not other models in the warband. Fanatics
+    are exempt.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Fear Elves
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Fear Elves
+    es: null
+  effect_i18n:
+    en: Night Goblins are subject to Fear of Elves. This affects Night Goblins only, not other models in the warband. Fanatics
+      are exempt.
+    es: null
+  applies_to:
+    band: true
+- id: band--distasteful-company
+  name: Distasteful Company
+  effect: Night Goblins may only hire Pit Fighters, Ogre Bodyguards, Warlocks, Witches, and Hired Swords that specifically
+    state they work with Orcs or Goblins.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Distasteful Company
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Distasteful Company
+    es: null
+  effect_i18n:
+    en: Night Goblins may only hire Pit Fighters, Ogre Bodyguards, Warlocks, Witches, and Hired Swords that specifically state
+      they work with Orcs or Goblins.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-web.band.distasteful-company
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--mad-cap-masters
+  name: Mad Cap Masters
+  effect: A Night Goblin suffering Stupidity from Mad Cap Mushroom overuse may ignore that Stupidity while currently under
+    the effects of more Mad Caps. If the model loses Frenzy because it is Knocked Down or Stunned, the Stupidity applies normally
+    again.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Mad Cap Masters
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Mad Cap Masters
+    es: null
+  effect_i18n:
+    en: A Night Goblin suffering Stupidity from Mad Cap Mushroom overuse may ignore that Stupidity while currently under the
+      effects of more Mad Caps. If the model loses Frenzy because it is Knocked Down or Stunned, the Stupidity applies normally
+      again.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-web.band.mad-cap-masters
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--great-squig-or-troll
+  name: Great Squig or Troll
+  effect: The warband may include either one Great Squig or one Troll, but never both at the same time.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Choice of Warriors / Great Squig/Troll
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Great Squig or Troll
+    es: null
+  effect_i18n:
+    en: The warband may include either one Great Squig or one Troll, but never both at the same time.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-web.band.great-squig-or-troll
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--night-goblin-maximum-characteristics
+  name: Night Goblin Maximum Characteristics
+  effect: 'Night Goblins use the following maximum profile when gaining advances: M4, WS5, BS6, S4, T4, W3, I6, A4, Ld7.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Maximum characteristics
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Night Goblin Maximum Characteristics
+    es: null
+  effect_i18n:
+    en: 'Night Goblins use the following maximum profile when gaining advances: M4, WS5, BS6, S4, T4, W3, I6, A4, Ld7.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-web.band.night-goblin-maximum-characteristics
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--promoted-henchmen-no-strength
+  name: Promoted Henchmen Cannot Choose Strength
+  effect: A Henchman promoted to Hero may never choose Strength as one of its skill sets. The current warband leader may gain
+    Strength access through Da Biggest Boss.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblin Skill Table / Note
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Promoted Henchmen Cannot Choose Strength
+    es: null
+  effect_i18n:
+    en: A Henchman promoted to Hero may never choose Strength as one of its skill sets. The current warband leader may gain
+      Strength access through Da Biggest Boss.
+    es: null
+  applies_to:
+    band: true
+  eligibility:
+  - night-goblin-warriors
+  - night-goblin-fanatics
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.promoted-hero-no-strength-access
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.promoted-hero-no-strength-access
+- id: band--night-goblin-special-skills-fungus-farmer
+  kind: warband_skill
+  name: Fungus Farmer
+  effect: 'The industrious little git has a mushroom crop back at
+
+    the cave. If the Hero doesn''t search for rare items, it
+
+    may pick D3-1 Mad Cap Mushrooms instead. There is
+
+    a chance of getting none, as there is no guarantee they
+
+    will be ready for harvest. Each Mad Cap Mushroom
+
+    must be used in the next battle, and they cannot be
+
+    sold or traded to other warbands These are a special
+
+    high yield/low shelf life crop.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblin Special Skills / Fungus Farmer
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Fungus Farmer
+    es: null
+  effect_i18n:
+    en: 'The industrious little git has a mushroom crop back at
+
+      the cave. If the Hero doesn''t search for rare items, it
+
+      may pick D3-1 Mad Cap Mushrooms instead. There is
+
+      a chance of getting none, as there is no guarantee they
+
+      will be ready for harvest. Each Mad Cap Mushroom
+
+      must be used in the next battle, and they cannot be
+
+      sold or traded to other warbands These are a special
+
+      high yield/low shelf life crop.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.night-goblins-web.band.night-goblin-special-skills-fungus-farmer
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--night-goblin-special-skills-hide-in-shadows
+  kind: warband_skill
+  name: Hide in Shadows
+  effect: 'The sneaky Goblin has become an expert at
+
+    concealing themselves from enemies (and potential
+
+    victims!). An enemy warrior attempting to detect this
+
+    warrior when it is Hidden must halve their Initiative
+
+    (round up) before measuring the distance.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblin Special Skills / Hide in Shadows
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Hide in Shadows
+    es: null
+  effect_i18n:
+    en: 'The sneaky Goblin has become an expert at
+
+      concealing themselves from enemies (and potential
+
+      victims!). An enemy warrior attempting to detect this
+
+      warrior when it is Hidden must halve their Initiative
+
+      (round up) before measuring the distance.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.night-goblins-web.band.night-goblin-special-skills-hide-in-shadows
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--night-goblin-special-skills-infiltrate
+  kind: warband_skill
+  name: Infiltrate
+  effect: 'A Night Goblin with this skill is always placed on the
+
+    battlefield after the opposing warband and can be
+
+    placed anywhere on the table as long as it is out of
+
+    sight of the opposing warband, and more than 12"
+
+    away from any enemy model. If both players have
+
+    models which infiltrate, roll a D6 for each, and the
+
+    lowest roll sets up first.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblin Special Skills / Infiltrate
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Infiltrate
+    es: null
+  effect_i18n:
+    en: 'A Night Goblin with this skill is always placed on the
+
+      battlefield after the opposing warband and can be
+
+      placed anywhere on the table as long as it is out of
+
+      sight of the opposing warband, and more than 12"
+
+      away from any enemy model. If both players have
+
+      models which infiltrate, roll a D6 for each, and the
+
+      lowest roll sets up first.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.night-goblins-web.band.night-goblin-special-skills-infiltrate
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--night-goblin-special-skills-netter
+  kind: warband_skill
+  name: Netter
+  effect: 'The Goblin applies techniques learned hunting wild
+
+    Cave Squigs in the depths of the mountains to disable
+
+    charging enemies. Instead of their normal use, the
+
+    Goblin may throw a Net they are equipped with at an
+
+    enemy who is charging them. This will reduce the
+
+    charge range of the attacker by D6 inches as the
+
+    charger either slows down to avoid the net, or gets
+
+    tangled up in it. If this means that the attacker cannot
+
+    reach the Goblin then it is a failed charge. Regardless
+
+    of the outcome the Net is lost when this skill is used.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblin Special Skills / Netter
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Netter
+    es: null
+  effect_i18n:
+    en: 'The Goblin applies techniques learned hunting wild
+
+      Cave Squigs in the depths of the mountains to disable
+
+      charging enemies. Instead of their normal use, the
+
+      Goblin may throw a Net they are equipped with at an
+
+      enemy who is charging them. This will reduce the
+
+      charge range of the attacker by D6 inches as the
+
+      charger either slows down to avoid the net, or gets
+
+      tangled up in it. If this means that the attacker cannot
+
+      reach the Goblin then it is a failed charge. Regardless
+
+      of the outcome the Net is lost when this skill is used.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.night-goblins-web.band.night-goblin-special-skills-netter
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--night-goblin-special-skills-ride-squig
+  kind: warband_skill
+  name: Ride Squig
+  effect: 'This Goblin can ride one of the warband''s Cave
+
+    Squigs, or even a Great Squig! The pair deploy as a
+
+    single model. Standard mount rules are not used,
+
+    although the rider counts as being mounted for the
+
+    Cavelry Bonus rule (see spears and lances). While the
+
+    Squig is being ridden, it and the rider move as a single
+
+    model using the Squig''s movement rules, but attack
+
+    separately in Close Combat. In this skill''s text, the use
+
+    of “Squig” refers to both Cave Squigs and Great
+
+    Squigs.
+
+    Any shooting or close combat attacks will hit the rider
+
+    on a D6 roll of 1-2, and the Squig on a 3-6.
+
+    If the Squig is stunned or taken out of action, the
+
+    rider takes a Strength 2 hit with no Armour save as
+
+    they crash to the ground. If the Rider is stunned or
+
+    taken out of action, the Squig reverts to normal Squig
+
+    behavior. In either case the rider is now dismounted
+
+    for the rest of the battle.
+
+    Squigs don''t like being ridden. If the movement roll
+
+    results in a double or triple, the rider must roll a D6
+
+    before the Squig moves. If the result is over the rider''s
+
+    Strength, they are thrown off before the Squig moves
+
+    away, and take a Strength 2 hit with no Armour save as
+
+    they crash to the ground. The rider is now
+
+    dismounted for the rest of the battle. If the roll is
+
+    equal to or below their Strength, the rider keeps their
+
+    grip and remains atop the Squig.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblin Special Skills / Ride Squig
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Ride Squig
+    es: null
+  effect_i18n:
+    en: 'This Goblin can ride one of the warband''s Cave
+
+      Squigs, or even a Great Squig! The pair deploy as a
+
+      single model. Standard mount rules are not used,
+
+      although the rider counts as being mounted for the
+
+      Cavelry Bonus rule (see spears and lances). While the
+
+      Squig is being ridden, it and the rider move as a single
+
+      model using the Squig''s movement rules, but attack
+
+      separately in Close Combat. In this skill''s text, the use
+
+      of “Squig” refers to both Cave Squigs and Great
+
+      Squigs.
+
+      Any shooting or close combat attacks will hit the rider
+
+      on a D6 roll of 1-2, and the Squig on a 3-6.
+
+      If the Squig is stunned or taken out of action, the
+
+      rider takes a Strength 2 hit with no Armour save as
+
+      they crash to the ground. If the Rider is stunned or
+
+      taken out of action, the Squig reverts to normal Squig
+
+      behavior. In either case the rider is now dismounted
+
+      for the rest of the battle.
+
+      Squigs don''t like being ridden. If the movement roll
+
+      results in a double or triple, the rider must roll a D6
+
+      before the Squig moves. If the result is over the rider''s
+
+      Strength, they are thrown off before the Squig moves
+
+      away, and take a Strength 2 hit with no Armour save as
+
+      they crash to the ground. The rider is now
+
+      dismounted for the rest of the battle. If the roll is
+
+      equal to or below their Strength, the rider keeps their
+
+      grip and remains atop the Squig.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.night-goblins-web.band.night-goblin-special-skills-ride-squig
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--night-goblin-special-skills-sneaky-git
+  kind: warband_skill
+  name: Sneaky Git
+  effect: 'The Goblin specializes in attacking their targets from
+
+    the shadows. They may charge an opponent from
+
+    hiding, even if they cannot see the target. There is no
+
+    need for an initiative test, and the target may be over
+
+    the normal 4” limit for charging unseen targets. If the
+
+    charge is successful, the Goblin surprises their
+
+    opponent who will attack at half Weapon Skill and
+
+    half Initiative, rounded up. This penalty lasts for the
+
+    first round of combat only, as the opponent will
+
+    swiftly recover their wits if the initial assault is
+
+    survived.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblin Special Skills / Sneaky Git
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  name_i18n:
+    en: Sneaky Git
+    es: null
+  effect_i18n:
+    en: 'The Goblin specializes in attacking their targets from
+
+      the shadows. They may charge an opponent from
+
+      hiding, even if they cannot see the target. There is no
+
+      need for an initiative test, and the target may be over
+
+      the normal 4” limit for charging unseen targets. If the
+
+      charge is successful, the Goblin surprises their
+
+      opponent who will attack at half Weapon Skill and
+
+      half Initiative, rounded up. This penalty lasts for the
+
+      first round of combat only, as the opponent will
+
+      swiftly recover their wits if the initial assault is
+
+      survived.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.night-goblins-web.band.night-goblin-special-skills-sneaky-git
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'

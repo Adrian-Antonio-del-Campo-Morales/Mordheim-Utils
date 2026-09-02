@@ -1,0 +1,26 @@
+schema_version: 1
+specifications:
+- id: pit-fighter-profile-grants
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/mordheim/pit-fighters/pit-king--pit-fighter/trait.pit-fighter, digest: a8e5d2a543bc86cac43b91170b0c19dacfd95cb61ea5163e1ae3465d05a96d73}
+  - {target: rule/mordheim/pit-fighters/dwarf-troll-slayer--pit-fighter/trait.pit-fighter, digest: 2d46fd10530d151875c94719cc1eb368951d07b4e409f7c2f8e15b35639884ab}
+  - {target: rule/mordheim/pit-fighters/pit-veterans--pit-fighter/trait.pit-fighter, digest: 219839558703047d6941216de88ae0deb8bd0fc867f50989e8e8a7fc7f02dec3}
+  - {target: rule/mordheim/pit-fighters/pit-fighters--pit-fighter/trait.pit-fighter, digest: c9dcf3bc66fce1afafad4b7f8ce4c6822e1cf122d2c328155a4666f1deb145d0}
+  - {target: rule/mordheim/pit-fighters/pursuers--pit-fighter/trait.pit-fighter, digest: 611d5210e07a63256c111c02138fd2abf5ddaf14df928f0734e5bcd5e99d0988}
+  - {target: rule/mordheim/pit-fighters/ogre-pit-fighter--pit-fighter/trait.pit-fighter, digest: a25fbc53b776d072678b3f6dfcb35184382ef96ebccb781c8a85f2c0026d178b}
+  interpretation: >-
+    Cada una de las seis reglas de perfil concede el rasgo Pit Fighter al perfil
+    nombrado. Esta obligación verifica la concesión editorial; los efectos del
+    rasgo en contextos de terreno no se inventan dentro del duelo aislado.
+  cases:
+  - {id: pit-king, roles: [grant, accepted], operation: trait_presence, attacker: {band_id: pit-fighters, profile_id: pit-king}, context: {tag: pit_fighter}, expect: {result.present: true}}
+  - {id: slayer, roles: [grant, accepted], operation: trait_presence, attacker: {band_id: pit-fighters, profile_id: dwarf-troll-slayer}, context: {tag: pit_fighter}, expect: {result.present: true}}
+  - {id: veterans, roles: [grant, accepted], operation: trait_presence, attacker: {band_id: pit-fighters, profile_id: pit-veterans}, context: {tag: pit_fighter}, expect: {result.present: true}}
+  - {id: fighters, roles: [grant, accepted], operation: trait_presence, attacker: {band_id: pit-fighters, profile_id: pit-fighters}, context: {tag: pit_fighter}, expect: {result.present: true}}
+  - {id: pursuers, roles: [grant, accepted], operation: trait_presence, attacker: {band_id: pit-fighters, profile_id: pursuers}, context: {tag: pit_fighter}, expect: {result.present: true}}
+  - {id: ogre, roles: [grant, accepted], operation: trait_presence, attacker: {band_id: pit-fighters, profile_id: ogre-pit-fighter}, context: {tag: pit_fighter}, expect: {result.present: true}}
+  - {id: ordinary-control, roles: [rejected], operation: trait_presence, attacker: {}, context: {tag: pit_fighter}, expect: {result.present: false}}
+  mutations:
+  - {id: remove-profile-trait, path: attacker.global_effects.tags, value: [], cases: [pit-king]}

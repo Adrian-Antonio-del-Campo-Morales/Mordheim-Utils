@@ -1,0 +1,52 @@
+schema_version: 2
+id: khemri-thieves-guild
+canonical_family: thieves-guild
+name: Thieves' Guild
+name_i18n:
+  en: Thieves' Guild
+  es: null
+original_locale: es
+categories:
+- trollheim
+grade: null
+setting: Khemri
+publication: Khemri
+status: source-normalized
+sources:
+- manual: khemri
+  printed_page: 70-75
+  section: The Guild
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: guild-chief
+    minimum: 1
+    maximum: 1
+  - profile_id: guild-master-thief
+    minimum: 0
+    maximum: 1
+  - profile_id: guild-ruffian
+    minimum: 0
+    maximum: 2
+  - profile_id: guild-hashashiyyin
+    minimum: 0
+    maximum: 1
+  - profile_id: guild-thief
+    minimum: 0
+    maximum: 5
+  - profile_id: guild-enforcer
+    minimum: 0
+    maximum: 3
+  - profile_id: guild-beggar
+    minimum: 0
+    maximum: null
+ruleset: mordheim
+rule_ids:
+- band--guild-special-skills-pickpocket
+- band--guild-special-skills-knife-fighting
+- band--guild-special-skills-hide-in-shadows
+- band--guild-special-skills-poisoner
+- band--guild-special-skills-fast-legs
+- band--guild-special-skills-infiltration

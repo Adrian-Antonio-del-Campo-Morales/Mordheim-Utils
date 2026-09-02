@@ -1,0 +1,157 @@
+schema_version: 2
+band_id: trollheim-witch-hunters
+rules:
+- id: witch-hunter-captain--leader
+  name: Leader
+  effect: Any warrior within 6" of the Witch Hunter Captain may use his Leadership when taking Leadership tests.
+  source:
+    manual: trollheim
+    printed_page: 80
+    section: Heroes / 1 Witch Hunter Captain / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warrior within 6" of the Witch Hunter Captain may use his Leadership when taking Leadership tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - witch-hunter-captain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-witch-hunters.witch-hunter-captain.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: witch-hunter-captain--burn-the-witch
+  name: Burn the Witch!
+  effect: The Witch Hunter Captain is subject to Hatred against all models that can cast spells.
+  source:
+    manual: trollheim
+    printed_page: 80
+    section: Heroes / 1 Witch Hunter Captain / Burn the Witch!
+  name_i18n:
+    en: Burn the Witch!
+    es: null
+  effect_i18n:
+    en: The Witch Hunter Captain is subject to Hatred against all models that can cast spells.
+    es: null
+  applies_to:
+    profile_ids:
+    - witch-hunter-captain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-witch-hunters.witch-hunter-captain.burn-the-witch
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: witch-hunters--burn-the-witch
+  name: Burn the Witch!
+  effect: Witch Hunters are subject to Hatred against all models that can cast spells.
+  source:
+    manual: trollheim
+    printed_page: 80
+    section: Heroes / 0-3 Witch Hunters / Burn the Witch!
+  name_i18n:
+    en: Burn the Witch!
+    es: null
+  effect_i18n:
+    en: Witch Hunters are subject to Hatred against all models that can cast spells.
+    es: null
+  applies_to:
+    profile_ids:
+    - witch-hunters
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-witch-hunters.witch-hunters.burn-the-witch
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: warrior-priest--prayers
+  name: Prayers
+  effect: The Warrior-Priest is a servant of Sigmar and may use the Prayers of Sigmar. The prayer list and prayer effects
+    are intentionally not modelled in this file.
+  source:
+    manual: trollheim
+    printed_page: 80
+    section: Heroes / 0-1 Warrior-Priest / Prayers
+  name_i18n:
+    en: Prayers
+    es: null
+  effect_i18n:
+    en: The Warrior-Priest is a servant of Sigmar and may use the Prayers of Sigmar. The prayer list and prayer effects are
+      intentionally not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - warrior-priest
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-witch-hunters.warrior-priest.prayers
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: flagellants--fanatical
+  name: Fanatical
+  effect: Flagellants automatically pass every test based on their Leadership characteristic and may never become the warband
+    leader.
+  source:
+    manual: trollheim
+    printed_page: 81
+    section: Henchmen / 0-5 Flagellants / Fanatical
+  name_i18n:
+    en: Fanatical
+    es: null
+  effect_i18n:
+    en: Flagellants automatically pass every test based on their Leadership characteristic and may never become the warband
+      leader.
+    es: null
+  applies_to:
+    profile_ids:
+    - flagellants
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-witch-hunters.flagellants.fanatical
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: war-hounds--animals
+  name: Animals
+  effect: War Hounds are animals and never gain Experience.
+  source:
+    manual: trollheim
+    printed_page: 81
+    section: Henchmen / 0-5 War Hounds / Animals
+  name_i18n:
+    en: Animals
+    es: null
+  effect_i18n:
+    en: War Hounds are animals and never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - war-hounds
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-witch-hunters.war-hounds.animals
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'

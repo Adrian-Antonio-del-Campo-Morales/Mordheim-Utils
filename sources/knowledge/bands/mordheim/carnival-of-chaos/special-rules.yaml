@@ -1,0 +1,1299 @@
+schema_version: 2
+band_id: carnival-of-chaos
+rules:
+- id: carnival-master--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.carnival-of-chaos.carnival-master.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Leader
+  effect: 'Any models in the warband within 6" of
+
+    the Master may use his Leadership instead of their
+
+    own.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Carnival Master / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any models in the warband within 6" of
+
+      the Master may use his Leadership instead of their
+
+      own.'
+    es: null
+  applies_to:
+    profile_ids:
+    - carnival-master
+- id: carnival-master--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.carnival-of-chaos.carnival-master.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: magia.'
+  name: Wizard
+  effect: The Master is a wizard and uses Nurgle Rituals.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Carnival Master / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Master is a wizard and uses Nurgle Rituals.
+    es: null
+  applies_to:
+    profile_ids:
+    - carnival-master
+- id: brutes--unnatural-strength
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.strongman
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.strongman
+  name: Unnatural Strength
+  effect: 'Brutes start the game with
+
+    the Strongman skill from the Strength skill list in
+
+    the Mordheim rulebook.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 2 Brutes / Special Rules / Unnatural Strength
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Unnatural Strength
+    es: null
+  effect_i18n:
+    en: 'Brutes start the game with
+
+      the Strongman skill from the Strength skill list in
+
+      the Mordheim rulebook.'
+    es: null
+  applies_to:
+    profile_ids:
+    - brutes
+- id: tainted-ones--nurgles-blessings
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.nurgle-s-blessings
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.nurgle-s-blessings
+  name: Nurgle’s Blessings
+  effect: Tainted Ones must start the game with one or more Blessings of Nurgle. See the Blessings of Nurgle that follow.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 2 Tainted Ones / Special Rules / Nurgle’s Blessings
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Nurgle’s Blessings
+    es: null
+  effect_i18n:
+    en: 'Tainted Ones must start the
+
+      game with one or more Blessings of Nurgle. See
+
+      the Blessings of Nurgle that follow.'
+    es: null
+  applies_to:
+    profile_ids:
+    - tainted-ones
+- id: plague-bearers--cloud-of-flies
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.cloud-of-flies
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.cloud-of-flies
+        parameters:
+          value: true
+  name: Cloud of Flies
+  effect: 'Plague Bearers are surrounded
+
+    by a cloud of flies, which buzz around them and
+
+    their combat opponent. They do not affect the Plague Bearer but distract foes by buzzing into
+
+    eyes, nostrils and mouths. A Plague Bearer’s close
+
+    combat opponent suffers a -1 to hit modifier on all
+
+    attacks.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Plague Bearers / Special Rules / Cloud of Flies
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Cloud of Flies
+    es: null
+  effect_i18n:
+    en: 'Plague Bearers are surrounded
+
+      by a cloud of flies, which buzz around them and
+
+      their combat opponent. They do not affect the Plague Bearer but distract foes by buzzing into
+
+      eyes, nostrils and mouths. A Plague Bearer’s close
+
+      combat opponent suffers a -1 to hit modifier on all
+
+      attacks.'
+    es: null
+  applies_to:
+    profile_ids:
+    - plague-bearers
+- id: plague-bearers--stream-of-corruption
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.carnival-of-chaos.plague-bearers.stream-of-corruption
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: disparo.'
+  name: Stream of Corruption
+  effect: 'Plague Bearers can
+
+    spew forth a grotesque stream of maggots, entrails
+
+    and filth. This is counted as a shooting attack with
+
+    a range of 6" and is resolved at Strength 3 with no
+
+    saves for armour.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Plague Bearers / Special Rules / Stream of Corruption
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Stream of Corruption
+    es: null
+  effect_i18n:
+    en: 'Plague Bearers can
+
+      spew forth a grotesque stream of maggots, entrails
+
+      and filth. This is counted as a shooting attack with
+
+      a range of 6" and is resolved at Strength 3 with no
+
+      saves for armour.'
+    es: null
+  applies_to:
+    profile_ids:
+    - plague-bearers
+- id: plague-bearers--demonic
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.carnival-of-chaos.plague-bearers.demonic
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Demonic
+  effect: 'Plague Bearers are Daemons of the
+
+    lord of disease, Nurgle, and are not made of living
+
+    flesh but the eternal and unchanging forces of
+
+    Chaos. Therefore they never gain Experience.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Plague Bearers / Special Rules / Demonic
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Demonic
+    es: null
+  effect_i18n:
+    en: 'Plague Bearers are Daemons of the
+
+      lord of disease, Nurgle, and are not made of living
+
+      flesh but the eternal and unchanging forces of
+
+      Chaos. Therefore they never gain Experience.'
+    es: null
+  applies_to:
+    profile_ids:
+    - plague-bearers
+- id: plague-bearers--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: 'Plague Bearers are the
+
+    Daemonic embodiment of disease and pestilence.
+
+    They are totally immune to all poisons and
+
+    diseases.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Plague Bearers / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: 'Plague Bearers are the
+
+      Daemonic embodiment of disease and pestilence.
+
+      They are totally immune to all poisons and
+
+      diseases.'
+    es: null
+  applies_to:
+    profile_ids:
+    - plague-bearers
+- id: plague-bearers--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.carnival-of-chaos.plague-bearers.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Immune to Psychology
+  effect: 'Plague Bearers are
+
+    Daemons and do not know the concept of fear.
+
+    They automatically pass any Leadership-based test
+
+    they are required to take.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Plague Bearers / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: 'Plague Bearers are
+
+      Daemons and do not know the concept of fear.
+
+      They automatically pass any Leadership-based test
+
+      they are required to take.'
+    es: null
+  applies_to:
+    profile_ids:
+    - plague-bearers
+- id: plague-bearers--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.carnival-of-chaos.plague-bearers.cause-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Cause Fear
+  effect: 'Plague Bearers are horrifying
+
+    supernatural creatures and therefore cause fear.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Plague Bearers / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Cause Fear
+    es: null
+  effect_i18n:
+    en: 'Plague Bearers are horrifying
+
+      supernatural creatures and therefore cause fear.'
+    es: null
+  applies_to:
+    profile_ids:
+    - plague-bearers
+- id: plague-bearers--daemonic-aura
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 5
+    - id: trait.natural-armour-negated-by-magic
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-negated-by-magic
+        parameters:
+          value: true
+    - id: trait.magical-attacks
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.magical-attacks
+        parameters:
+          value: true
+  name: Daemonic Aura
+  effect: 'Due to the magical, intangible
+
+    nature of Daemons they have a special Armour
+
+    save of 5+. This is modified by the Strength of the
+
+    attack as normal and is completely negated by
+
+    magic weapons and spells. Plague Bearers’ attacks
+
+    are considered as magical also.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Plague Bearers / Special Rules / Daemonic Aura
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Daemonic Aura
+    es: null
+  effect_i18n:
+    en: 'Due to the magical, intangible
+
+      nature of Daemons they have a special Armour
+
+      save of 5+. This is modified by the Strength of the
+
+      attack as normal and is completely negated by
+
+      magic weapons and spells. Plague Bearers’ attacks
+
+      are considered as magical also.'
+    es: null
+  applies_to:
+    profile_ids:
+    - plague-bearers
+- id: plague-bearers--daemonic-instability
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.carnival-of-chaos.plague-bearers.daemonic-instability
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Daemonic Instability
+  effect: 'Plague Bearers are
+
+    bound to the world by Dark Sorcery that is
+
+    highly volatile and unstable. If taken out of
+
+    action a Plague Bearer is banished and
+
+    effectively destroyed on a D6 roll of 1-3 (do not
+
+    roll for injury). In addition, if the warband routs
+
+    then every Plague Bearer in the warband must
+
+    take an immediate Leadership test. If this test is
+
+    failed, then the Plague Bearer counts as
+
+    destroyed.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Plague Bearers / Special Rules / Daemonic Instability
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Daemonic Instability
+    es: null
+  effect_i18n:
+    en: 'Plague Bearers are
+
+      bound to the world by Dark Sorcery that is
+
+      highly volatile and unstable. If taken out of
+
+      action a Plague Bearer is banished and
+
+      effectively destroyed on a D6 roll of 1-3 (do not
+
+      roll for injury). In addition, if the warband routs
+
+      then every Plague Bearer in the warband must
+
+      take an immediate Leadership test. If this test is
+
+      failed, then the Plague Bearer counts as
+
+      destroyed.'
+    es: null
+  applies_to:
+    profile_ids:
+    - plague-bearers
+- id: nurglings--cloud-of-flies
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.cloud-of-flies
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.cloud-of-flies
+        parameters:
+          value: true
+  name: Cloud of Flies
+  effect: 'Nurglings are surrounded by a
+
+    cloud of flies, which buzz around them and their
+
+    combat opponent. They do not affect the
+
+    Nurglings but distract foes by buzzing into eyes,
+
+    nostrils and mouths. A Nurgling’s close combat
+
+    opponent suffers a -1 to hit modifier on all
+
+    attacks.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Nurglings / Special Rules / Cloud of Flies
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Cloud of Flies
+    es: null
+  effect_i18n:
+    en: 'Nurglings are surrounded by a
+
+      cloud of flies, which buzz around them and their
+
+      combat opponent. They do not affect the
+
+      Nurglings but distract foes by buzzing into eyes,
+
+      nostrils and mouths. A Nurgling’s close combat
+
+      opponent suffers a -1 to hit modifier on all
+
+      attacks.'
+    es: null
+  applies_to:
+    profile_ids:
+    - nurglings
+- id: nurglings--swarm
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.carnival-of-chaos.nurglings.swarm
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Swarm
+  effect: 'You may summon as many Nurglings as
+
+    you wish (ie. you may have more than five
+
+    Nurglings in a Henchman group).'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Nurglings / Special Rules / Swarm
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Swarm
+    es: null
+  effect_i18n:
+    en: 'You may summon as many Nurglings as
+
+      you wish (ie. you may have more than five
+
+      Nurglings in a Henchman group).'
+    es: null
+  applies_to:
+    profile_ids:
+    - nurglings
+- id: nurglings--daemonic
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.carnival-of-chaos.nurglings.daemonic
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Daemonic
+  effect: 'Nurglings are Daemons of the
+
+    diseased Lord Nurgle and are not made of living
+
+    flesh but the eternal and unchanging forces of
+
+    Chaos. Therefore they never gain Experience.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Nurglings / Special Rules / Daemonic
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Daemonic
+    es: null
+  effect_i18n:
+    en: 'Nurglings are Daemons of the
+
+      diseased Lord Nurgle and are not made of living
+
+      flesh but the eternal and unchanging forces of
+
+      Chaos. Therefore they never gain Experience.'
+    es: null
+  applies_to:
+    profile_ids:
+    - nurglings
+- id: nurglings--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: 'Nurglings are the
+
+    Daemonic embodiment of disease and
+
+    pestilence. They are totally immune to all poisons
+
+    and diseases.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Nurglings / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: 'Nurglings are the
+
+      Daemonic embodiment of disease and
+
+      pestilence. They are totally immune to all poisons
+
+      and diseases.'
+    es: null
+  applies_to:
+    profile_ids:
+    - nurglings
+- id: nurglings--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.carnival-of-chaos.nurglings.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Immune to Psychology
+  effect: 'Nurglings are
+
+    Daemons and do not know the concept of fear.
+
+    They automatically pass any Leadership-based
+
+    test they are required to take.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Nurglings / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: 'Nurglings are
+
+      Daemons and do not know the concept of fear.
+
+      They automatically pass any Leadership-based
+
+      test they are required to take.'
+    es: null
+  applies_to:
+    profile_ids:
+    - nurglings
+- id: nurglings--daemonic-aura
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 5
+    - id: trait.natural-armour-negated-by-magic
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-negated-by-magic
+        parameters:
+          value: true
+    - id: trait.magical-attacks
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.magical-attacks
+        parameters:
+          value: true
+  name: Daemonic Aura
+  effect: 'Due to the magical, intangible
+
+    nature of Daemons they have a special Armour
+
+    save of 5+. This is modified by the Strength of the
+
+    attack as normal and is completely negated by
+
+    magic weapons and spells. Nurglings’ attacks are
+
+    also considered as magical.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Nurglings / Special Rules / Daemonic Aura
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Daemonic Aura
+    es: null
+  effect_i18n:
+    en: 'Due to the magical, intangible
+
+      nature of Daemons they have a special Armour
+
+      save of 5+. This is modified by the Strength of the
+
+      attack as normal and is completely negated by
+
+      magic weapons and spells. Nurglings’ attacks are
+
+      also considered as magical.'
+    es: null
+  applies_to:
+    profile_ids:
+    - nurglings
+- id: nurglings--daemonic-instability
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.carnival-of-chaos.nurglings.daemonic-instability
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Daemonic Instability
+  effect: 'Nurglings are bound to
+
+    the world by Dark Sorcery that is highly volatile
+
+    and unstable. If taken out of action a Nurgling is
+
+    banished and effectively destroyed on a D6 roll
+
+    of 1-3 (do not roll for injury). In addition, if the
+
+    warband routs then every Nurgling in the
+
+    warband must take an immediate Leadership
+
+    test. If this test is failed, then Nurgling counts as
+
+    destroyed.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Nurglings / Special Rules / Daemonic Instability
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Daemonic Instability
+    es: null
+  effect_i18n:
+    en: 'Nurglings are bound to
+
+      the world by Dark Sorcery that is highly volatile
+
+      and unstable. If taken out of action a Nurgling is
+
+      banished and effectively destroyed on a D6 roll
+
+      of 1-3 (do not roll for injury). In addition, if the
+
+      warband routs then every Nurgling in the
+
+      warband must take an immediate Leadership
+
+      test. If this test is failed, then Nurgling counts as
+
+      destroyed.'
+    es: null
+  applies_to:
+    profile_ids:
+    - nurglings
+- id: plague-cart--plague-cart
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.carnival-of-chaos.plague-cart.plague-cart
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Plague Cart
+  effect: While the Plague Cart is in the warband, the maximum number of warriors is increased by 2. Plague Bearers and Nurglings
+    may re-roll Leadership tests for Daemonic Instability and add +1 to their Injury tests if taken out of action.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Plague Cart / Special Rules / Plague Cart
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Plague Cart
+    es: null
+  effect_i18n:
+    en: While the Plague Cart is in the warband, the maximum number of warriors is increased by 2. Plague Bearers and Nurglings
+      may re-roll Leadership tests for Daemonic Instability and add +1 to their Injury tests if taken out of action.
+    es: null
+  applies_to:
+    profile_ids:
+    - plague-cart
+- id: plague-cart--guardian
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.carnival-of-chaos.plague-cart.guardian
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: ataques.'
+  name: Guardian
+  effect: The Guardian is permanently part of the Cart and can never dismount. It cannot be injured separately; if the Cart
+    is destroyed, the Guardian is destroyed as well. The Guardian is Daemonic, never gains Experience, and its attacks cause
+    Nurgle’s Rot.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Plague Cart / Special Rules / Guardian
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Guardian
+    es: null
+  effect_i18n:
+    en: The Guardian is permanently part of the Cart and can never dismount. It cannot be injured separately; if the Cart
+      is destroyed, the Guardian is destroyed as well. The Guardian is Daemonic, never gains Experience, and its attacks cause
+      Nurgle’s Rot.
+    es: null
+  applies_to:
+    profile_ids:
+    - plague-cart
+- id: plague-cart--guardian-unarmed
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: mechanic.guardian-unarmed
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.guardian-unarmed
+        parameters:
+          value: true
+  name: Guardian Unarmed
+  effect: The Guardian suffers no penalties for fighting unarmed.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Plague Cart / Weapons/Armour
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Guardian Unarmed
+    es: null
+  effect_i18n:
+    en: The Guardian suffers no penalties for fighting unarmed.
+    es: null
+  applies_to:
+    profile_ids:
+    - plague-cart
+- id: plague-cart--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.carnival-of-chaos.plague-cart.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Immune to Psychology
+  effect: The Plague Cart and Guardian are Daemonic. The Plague Cart automatically passes any Leadership-based test it is
+    required to take.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Plague Cart / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: The Plague Cart and Guardian are Daemonic. The Plague Cart automatically passes any Leadership-based test it is required
+      to take.
+    es: null
+  applies_to:
+    profile_ids:
+    - plague-cart
+- id: band--dangerous-to-know
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.carnival-of-chaos.band.dangerous-to-know
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Dangerous to Know
+  effect: A Carnival of Chaos may never hire any type of Hired Sword.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Dangerous to Know
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Dangerous to Know
+    es: null
+  effect_i18n:
+    en: A Carnival of Chaos may never hire any type of Hired Sword.
+    es: null
+  applies_to:
+    band: true
+- id: band--tainted
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.carnival-of-chaos.band.tainted
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Tainted
+  effect: The Carnival counts as a Possessed warband for purposes of exploration and serious injuries.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Tainted
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Tainted
+    es: null
+  effect_i18n:
+    en: The Carnival counts as a Possessed warband for purposes of exploration and serious injuries.
+    es: null
+  applies_to:
+    band: true
+- id: band--blessings-of-nurgle
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: mechanic.blessings-of-nurgle
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.blessings-of-nurgle
+    - id: campaign.blessings-of-nurgle-purchase-history-and-costs
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: recruitment timing, later purchases and escalating campaign costs require roster history and an economy model.'
+  name: Blessings of Nurgle
+  effect: Those that worship at the fetid altar of the Lord of Decay suffer from terrible diseases and decay, which are known
+    as Blessings of Nurgle. Blessings of Nurgle may be bought for Tainted Ones only when they are recruited; you may not buy
+    new Blessings for a model after recruitment. Any Tainted may have one or more Blessings. The first Blessing is bought
+    at the price indicated, but second and subsequent Blessings cost double.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Blessings of Nurgle
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Blessings of Nurgle
+    es: null
+  effect_i18n:
+    en: 'Those that worship at the fetid altar of the Lord of Decay suffer from terrible diseases
+
+      and decay, which are known as Blessings of Nurgle.
+
+      Blessings of Nurgle may be bought for Tainted Ones only when they are recruited; you
+
+      may not buy new Blessings for a model after recruitment. Any Tainted may have one or
+
+      more Blessings. The first Blessing is bought at the price indicated, but second and
+
+      subsequent Blessings cost double.'
+    es: null
+  applies_to:
+    band: true
+- id: band--blessings-of-nurgle-stream-of-corruption
+  kind: blessing
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-blessings-of-nurgle-stream-of-corruption
+      scope: 'NO'
+      binding: null
+      reason: is a shooting attack
+  name: Stream of Corruption
+  effect: 'Cost: 25 Gold Crowns
+
+    The Tainted One can spew forth a grotesque stream of maggots, entrails and filth. This
+
+    is counted as a shooting attack with a range of 6" and is resolved at Strength 3 with no
+
+    saves for armour.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Blessings of Nurgle / Stream of Corruption
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Stream of Corruption
+    es: null
+  effect_i18n:
+    en: 'Cost: 25 Gold Crowns
+
+      The Tainted One can spew forth a grotesque stream of maggots, entrails and filth. This
+
+      is counted as a shooting attack with a range of 6" and is resolved at Strength 3 with no
+
+      saves for armour.'
+    es: null
+  applies_to:
+    band: true
+- id: band--blessings-of-nurgle-nurgles-rot
+  kind: blessing
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+    - id: campaign.nurgles-rot-contagion
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: contagion, roster persistence, pre-battle Toughness tests and permanent characteristic loss are campaign effects.'
+  name: Nurgle’s Rot
+  effect: 'Cost: 50 Gold Crowns
+
+    The Tainted One is infected with the deadly pestilence of its lord – Nurgle’s Rot. In
+
+    addition, the Tainted One is immune to all poisons. Nurgle’s Rot is a deadly contagion
+
+    for which there is no known cure. This virulent disease can be passed on in hand-to-hand combat. If the Tainted One makes
+    a successful to wound roll of 6 this will result in
+
+    the target model contracting the Rot (note: Nurgle’s Rot only affects the living, so
+
+    Undead, Daemons and the Possessed are immune). Once a warrior has contracted
+
+    the Rot, mark this on the warband roster. Rather than killing the victim immediately,
+
+    the Rot can take some time to set in. From now on, before the start of each battle, the
+
+    warrior must pass a Toughness test. If successful, his constitution has managed to stave
+
+    off the Rot’s effects. If unsuccessful, the warrior loses one point of Toughness
+
+    permanently (if he reaches zero, he has succumbed to the Rot and died, remove him
+
+    from the roster). In addition, if a 6 is rolled for the Toughness test then he has
+
+    unwittingly passed the Rot on to another member of the warband (randomly allocate a
+
+    warband member and mark this on the roster).'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Blessings of Nurgle / Nurgle’s Rot
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Nurgle’s Rot
+    es: null
+  effect_i18n:
+    en: 'Cost: 50 Gold Crowns
+
+      The Tainted One is infected with the deadly pestilence of its lord – Nurgle’s Rot. In
+
+      addition, the Tainted One is immune to all poisons. Nurgle’s Rot is a deadly contagion
+
+      for which there is no known cure. This virulent disease can be passed on in hand-to-hand combat. If the Tainted One
+      makes a successful to wound roll of 6 this will result in
+
+      the target model contracting the Rot (note: Nurgle’s Rot only affects the living, so
+
+      Undead, Daemons and the Possessed are immune). Once a warrior has contracted
+
+      the Rot, mark this on the warband roster. Rather than killing the victim immediately,
+
+      the Rot can take some time to set in. From now on, before the start of each battle, the
+
+      warrior must pass a Toughness test. If successful, his constitution has managed to stave
+
+      off the Rot’s effects. If unsuccessful, the warrior loses one point of Toughness
+
+      permanently (if he reaches zero, he has succumbed to the Rot and died, remove him
+
+      from the roster). In addition, if a 6 is rolled for the Toughness test then he has
+
+      unwittingly passed the Rot on to another member of the warband (randomly allocate a
+
+      warband member and mark this on the roster).'
+    es: null
+  applies_to:
+    band: true
+- id: band--blessings-of-nurgle-cloud-of-flies
+  kind: blessing
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: trait.cloud-of-flies
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.cloud-of-flies
+        parameters:
+          value: true
+  name: Cloud of Flies
+  effect: 'Cost: 25 Gold Crowns
+
+    The Tainted One is surrounded by a cloud of flies, which buzz around him and his
+
+    combat opponent. They do not affect the Tainted One but distract foes by buzzing into
+
+    eyes, nostrils and mouths. The Tainted One’s close combat opponent suffers a
+
+    -1 to hit modifier on all attacks.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Blessings of Nurgle / Cloud of Flies
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Cloud of Flies
+    es: null
+  effect_i18n:
+    en: 'Cost: 25 Gold Crowns
+
+      The Tainted One is surrounded by a cloud of flies, which buzz around him and his
+
+      combat opponent. They do not affect the Tainted One but distract foes by buzzing into
+
+      eyes, nostrils and mouths. The Tainted One’s close combat opponent suffers a
+
+      -1 to hit modifier on all attacks.'
+    es: null
+  applies_to:
+    band: true
+- id: band--blessings-of-nurgle-bloated-foulness
+  kind: blessing
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: special-rule.band--blessings-of-nurgle-bloated-foulness
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: special-rule.band--blessings-of-nurgle-bloated-foulness
+  name: Bloated Foulness
+  effect: 'Cost: 40 Gold Crowns
+
+    The Tainted One is a huge, disgusting mass of diseased, flabby folds. It gains +1
+
+    Wound and +1 Toughness but has its Movement reduced by -1.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Blessings of Nurgle / Bloated Foulness
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Bloated Foulness
+    es: null
+  effect_i18n:
+    en: 'Cost: 40 Gold Crowns
+
+      The Tainted One is a huge, disgusting mass of diseased, flabby folds. It gains +1
+
+      Wound and +1 Toughness but has its Movement reduced by -1.'
+    es: null
+  applies_to:
+    band: true
+- id: band--blessings-of-nurgle-mark-of-nurgle
+  kind: blessing
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: special-rule.band--blessings-of-nurgle-mark-of-nurgle
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: special-rule.band--blessings-of-nurgle-mark-of-nurgle
+  name: Mark of Nurgle
+  effect: 'Cost: 35 Gold Crowns
+
+    The Tainted One is burned with the great mark of Nurgle, the three spheres, that weep
+
+    foul pus constantly. It gains +1 Wound and is immune to all poisons.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Blessings of Nurgle / Mark of Nurgle
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Mark of Nurgle
+    es: null
+  effect_i18n:
+    en: 'Cost: 35 Gold Crowns
+
+      The Tainted One is burned with the great mark of Nurgle, the three spheres, that weep
+
+      foul pus constantly. It gains +1 Wound and is immune to all poisons.'
+    es: null
+  applies_to:
+    band: true
+- id: band--blessings-of-nurgle-hideous
+  kind: blessing
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-blessings-of-nurgle-hideous
+      scope: LATER
+      binding: null
+      reason: fear/psychology is outside the duel runtime
+  name: Hideous
+  effect: 'Cost: 40 Gold Crowns
+
+    The Tainted One is so disgusting that its flesh hangs in tatters from its body and its
+
+    entrails are rotten and exposed. It causes Fear.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Blessings of Nurgle / Hideous
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    en: Hideous
+    es: null
+  effect_i18n:
+    en: 'Cost: 40 Gold Crowns
+
+      The Tainted One is so disgusting that its flesh hangs in tatters from its body and its
+
+      entrails are rotten and exposed. It causes Fear.'
+    es: null
+  applies_to:
+    band: true

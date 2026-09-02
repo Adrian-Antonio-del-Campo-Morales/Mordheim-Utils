@@ -1,0 +1,251 @@
+schema_version: 2
+band_id: khemri-nomads-of-araby
+rules:
+- id: sheikh--leader
+  name: Leader
+  effect: Any warband model within 6" of the Sheikh may use his Leadership instead of its own.
+  source:
+    manual: khemri
+    printed_page: 50
+    section: Heroes / 1 Sheikh / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Sheikh may use his Leadership instead of its own.
+    es: null
+  applies_to:
+    profile_ids:
+    - sheikh
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-nomads-of-araby.sheikh.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: mystic--wizard
+  name: Wizard
+  effect: The Desert Mystic is a Wizard and begins with one randomly generated spell from the Art of the Djinn. The spell
+    list and spell effects are intentionally not modelled in this file.
+  source:
+    manual: khemri
+    printed_page: 50
+    section: Heroes / 0-1 Desert Mystic / Wizard
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Desert Mystic is a Wizard and begins with one randomly generated spell from the Art of the Djinn. The spell list
+      and spell effects are intentionally not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - mystic
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-nomads-of-araby.mystic.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: bedouin--desert-trader
+  name: Desert Trader
+  effect: Add +1 to the Resupply Table after a battle. This bonus is capped at +1 even if the warband includes two Bedouins.
+  source:
+    manual: khemri
+    printed_page: 51
+    section: Henchmen / 0-2 Bedouins / Desert Trader
+  name_i18n:
+    en: Desert Trader
+    es: null
+  effect_i18n:
+    en: Add +1 to the Resupply Table after a battle. This bonus is capped at +1 even if the warband includes two Bedouins.
+    es: null
+  applies_to:
+    profile_ids:
+    - bedouin
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-nomads-of-araby.bedouin.desert-trader
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: slaves--life-of-slavery
+  name: Life of Slavery
+  effect: Slaves gain Experience normally. If a Slave Henchman group rolls The Lad's Got Talent, one model from that group
+    is sold and removed from the roster, the warband receives 15 gc, and the rest of the group may roll again to determine
+    its advance.
+  source:
+    manual: khemri
+    printed_page: 51
+    section: Henchmen / 0-5 Slaves / Life of Slavery
+  name_i18n:
+    en: Life of Slavery
+    es: null
+  effect_i18n:
+    en: Slaves gain Experience normally. If a Slave Henchman group rolls The Lad's Got Talent, one model from that group is
+      sold and removed from the roster, the warband receives 15 gc, and the rest of the group may roll again to determine
+      its advance.
+    es: null
+  applies_to:
+    profile_ids:
+    - slaves
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-nomads-of-araby.slaves.life-of-slavery
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--hate-undead
+  name: Hate Undead
+  effect: The entire warband is subject to Hatred against Undead.
+  source:
+    manual: khemri
+    printed_page: 48
+    section: Special Rules / Hate Undead
+  name_i18n:
+    en: Hate Undead
+    es: null
+  effect_i18n:
+    en: The entire warband is subject to Hatred against Undead.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-nomads-of-araby.band.hate-undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--nomad-special-skills-sand-worm
+  kind: warband_skill
+  name: Sand Worm
+  effect: The Hero may Hide in open desert ground without needing terrain or scenery to conceal the model. This skill cannot
+    be used inside buildings.
+  source:
+    manual: khemri
+    printed_page: 49
+    section: Nomad Special Skills / Sand Worm
+  name_i18n:
+    en: Sand Worm
+    es: null
+  effect_i18n:
+    en: The Hero may Hide in open desert ground without needing terrain or scenery to conceal the model. This skill cannot
+      be used inside buildings.
+    es: null
+  eligibility:
+  - sheikh
+  - champions
+  - mystic
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-nomads-of-araby.band.nomad-special-skills-sand-worm
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--nomad-special-skills-run-and-shoot
+  kind: warband_skill
+  name: Run and Shoot
+  effect: The Hero may run and shoot in the same turn, suffering -2 To Hit instead of the normal -1 modifier for moving.
+  source:
+    manual: khemri
+    printed_page: 49
+    section: Nomad Special Skills / Run and Shoot
+  name_i18n:
+    en: Run and Shoot
+    es: null
+  effect_i18n:
+    en: The Hero may run and shoot in the same turn, suffering -2 To Hit instead of the normal -1 modifier for moving.
+    es: null
+  eligibility:
+  - sheikh
+  - champions
+  - mystic
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-nomads-of-araby.band.nomad-special-skills-run-and-shoot
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--nomad-special-skills-climate-adapted
+  kind: warband_skill
+  name: Climate Adapted
+  effect: The Hero ignores Heat and Infernal Heat results from the weather table.
+  source:
+    manual: khemri
+    printed_page: 49
+    section: Nomad Special Skills / Climate Adapted
+  name_i18n:
+    en: Climate Adapted
+    es: null
+  effect_i18n:
+    en: The Hero ignores Heat and Infernal Heat results from the weather table.
+    es: null
+  eligibility:
+  - sheikh
+  - champions
+  - mystic
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-nomads-of-araby.band.nomad-special-skills-climate-adapted
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--nomad-special-skills-contacts
+  kind: warband_skill
+  name: Contacts
+  effect: When searching for rare items among merchants in an oasis, the Hero gains +1 on the roll to find those items.
+  source:
+    manual: khemri
+    printed_page: 49
+    section: Nomad Special Skills / Contacts
+  name_i18n:
+    en: Contacts
+    es: null
+  effect_i18n:
+    en: When searching for rare items among merchants in an oasis, the Hero gains +1 on the roll to find those items.
+    es: null
+  eligibility:
+  - sheikh
+  - champions
+  - mystic
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-nomads-of-araby.band.nomad-special-skills-contacts
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'

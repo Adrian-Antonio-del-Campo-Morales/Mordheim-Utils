@@ -1,0 +1,482 @@
+schema_version: 2
+band_id: trollheim-cult-of-the-possessed
+rules:
+- id: magister--leader
+  name: Leader
+  effect: Any warband model within 6" of the Magister may use his Leadership when taking Leadership tests.
+  source:
+    manual: trollheim
+    printed_page: 74
+    section: Heroes / 1 Magister / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Magister may use his Leadership when taking Leadership tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - magister
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-cult-of-the-possessed.magister.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: magister--spellcaster
+  name: Spellcaster
+  effect: The Magister is a spellcaster and may use Chaos Rituals. The ritual list and ritual effects are intentionally not
+    modelled in this file.
+  source:
+    manual: trollheim
+    printed_page: 74
+    section: Heroes / 1 Magister / Spellcaster
+  name_i18n:
+    en: Spellcaster
+    es: null
+  effect_i18n:
+    en: The Magister is a spellcaster and may use Chaos Rituals. The ritual list and ritual effects are intentionally not
+      modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - magister
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-cult-of-the-possessed.magister.spellcaster
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: the-possessed--fear
+  name: Fear
+  effect: The Possessed cause Fear.
+  source:
+    manual: trollheim
+    printed_page: 74
+    section: Heroes / 0-2 The Possessed / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Possessed cause Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - the-possessed
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-cult-of-the-possessed.the-possessed.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: the-possessed--mutations
+  name: Mutations
+  effect: When recruited, each Possessed may begin with one or two Mutations, with their costs added to recruitment. Mutations
+    may not be added to that model later.
+  source:
+    manual: trollheim
+    printed_page: 74
+    section: Heroes / 0-2 The Possessed / Mutations
+  name_i18n:
+    en: Mutations
+    es: null
+  effect_i18n:
+    en: When recruited, each Possessed may begin with one or two Mutations, with their costs added to recruitment. Mutations
+      may not be added to that model later.
+    es: null
+  applies_to:
+    profile_ids:
+    - the-possessed
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.possessed-optional-zero-to-two-mutations-at-recruitment
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.possessed-optional-zero-to-two-mutations-at-recruitment
+- id: mutants--mutations
+  name: Mutations
+  effect: Each Mutant must begin with one or more Mutations when recruited, with their costs added to recruitment. Mutations
+    may not be added to that model later.
+  source:
+    manual: trollheim
+    printed_page: 74
+    section: Heroes / 0-2 Mutants / Mutations
+  name_i18n:
+    en: Mutations
+    es: null
+  effect_i18n:
+    en: Each Mutant must begin with one or more Mutations when recruited, with their costs added to recruitment. Mutations
+      may not be added to that model later.
+    es: null
+  applies_to:
+    profile_ids:
+    - mutants
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.mutant-requires-mutation-at-recruitment
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.mutant-requires-mutation-at-recruitment
+    - id: campaign.mutant-mutation-history-and-costs
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: recruitment costs and the prohibition on adding mutations later require campaign history.'
+- id: darksouls--crazed
+  name: Crazed
+  effect: Darksouls know no fear and automatically pass every Leadership test they are required to take.
+  source:
+    manual: trollheim
+    printed_page: 75
+    section: Henchmen / 0-5 Darksouls / Crazed
+  name_i18n:
+    en: Crazed
+    es: null
+  effect_i18n:
+    en: Darksouls know no fear and automatically pass every Leadership test they are required to take.
+    es: null
+  applies_to:
+    profile_ids:
+    - darksouls
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-cult-of-the-possessed.darksouls.crazed
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--mutation-purchase
+  name: Mutation Purchase
+  effect: Mutations may be purchased for a Mutant or The Possessed only when that model is recruited. No new Mutations may
+    be bought for the model later. The first Mutation costs the listed amount; the second and each subsequent Mutation bought
+    for the same model cost twice the listed amount. The general Mutations section says a Mutant or Possessed may have one
+    or more Mutations, while the specific Possessed profile says one or two; this file preserves the profile-specific one-or-two
+    limit for initial Possessed recruitment.
+  source:
+    manual: trollheim
+    printed_page: 76
+    section: Mutations / Purchase
+  name_i18n:
+    en: Mutation Purchase
+    es: null
+  effect_i18n:
+    en: Mutations may be purchased for a Mutant or The Possessed only when that model is recruited. No new Mutations may be
+      bought for the model later. The first Mutation costs the listed amount; the second and each subsequent Mutation bought
+      for the same model cost twice the listed amount. The general Mutations section says a Mutant or Possessed may have one
+      or more Mutations, while the specific Possessed profile says one or two; this file preserves the profile-specific one-or-two
+      limit for initial Possessed recruitment.
+    es: null
+  eligibility:
+  - the-possessed
+  - mutants
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.mutation-purchase-at-recruitment
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.mutation-purchase-at-recruitment
+    - id: campaign.mutation-purchase-history-and-costs
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: recruitment timing, later campaign purchases and escalating gold costs require campaign history.'
+- id: band--mutations-daemon-soul
+  kind: mutation
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-mutations-daemon-soul
+      scope: 'NO'
+      binding: null
+      reason: only affects spells and prayers
+  name: Daemon Soul
+  effect: 'The model has a 4+ special save against the effects of spells or prayers. Cost: 20 gc.'
+  source:
+    manual: trollheim
+    printed_page: 76
+    section: Mutations / Daemon Soul
+  name_i18n:
+    en: Daemon Soul
+    es: null
+  effect_i18n:
+    en: 'The model has a 4+ special save against the effects of spells or prayers. Cost: 20 gc.'
+    es: null
+  eligibility:
+  - the-possessed
+  - mutants
+  applies_to:
+    band: true
+- id: band--mutations-great-claw
+  kind: mutation
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: special-rule.band--mutations-great-claw
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: special-rule.band--mutations-great-claw
+  name: Great Claw
+  effect: 'One arm ends in a great claw and may not carry a weapon. The model gains one additional close-combat Attack with
+    +1 Strength. Cost: 50 gc.'
+  source:
+    manual: trollheim
+    printed_page: 76
+    section: Mutations / Great Claw
+  name_i18n:
+    en: Great Claw
+    es: null
+  effect_i18n:
+    en: 'One arm ends in a great claw and may not carry a weapon. The model gains one additional close-combat Attack with
+      +1 Strength. Cost: 50 gc.'
+    es: null
+  eligibility:
+  - the-possessed
+  - mutants
+  applies_to:
+    band: true
+- id: band--mutations-cloven-hooves
+  kind: mutation
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-mutations-cloven-hooves
+      scope: 'NO'
+      binding: null
+      reason: movement is outside the close-combat duel
+  name: Cloven Hooves
+  effect: 'The model gains +1" Movement. Cost: 40 gc.'
+  source:
+    manual: trollheim
+    printed_page: 76
+    section: Mutations / Cloven Hooves
+  name_i18n:
+    en: Cloven Hooves
+    es: null
+  effect_i18n:
+    en: 'The model gains +1" Movement. Cost: 40 gc.'
+    es: null
+  eligibility:
+  - the-possessed
+  - mutants
+  applies_to:
+    band: true
+- id: band--mutations-tentacle
+  kind: mutation
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: special-rule.band--mutations-tentacle
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: special-rule.band--mutations-tentacle
+  name: Tentacle
+  effect: 'In close combat, the model may reduce one opponent''s Attacks by 1, to a minimum of 1, and may choose which attack
+    is lost. Cost: 35 gc.'
+  source:
+    manual: trollheim
+    printed_page: 76
+    section: Mutations / Tentacle
+  name_i18n:
+    en: Tentacle
+    es: null
+  effect_i18n:
+    en: 'In close combat, the model may reduce one opponent''s Attacks by 1, to a minimum of 1, and may choose which attack
+      is lost. Cost: 35 gc.'
+    es: null
+  eligibility:
+  - the-possessed
+  - mutants
+  applies_to:
+    band: true
+- id: band--mutations-acid-blood
+  kind: mutation
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: trait.acid-blood
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.acid-blood
+        parameters:
+          value: true
+  name: Acid Blood
+  effect: 'Whenever the model loses a Wound in close combat, every model in base contact suffers one Strength 3 hit. These
+    hits never cause critical hits. Cost: 30 gc.'
+  source:
+    manual: trollheim
+    printed_page: 76
+    section: Mutations / Acid Blood
+  name_i18n:
+    en: Acid Blood
+    es: null
+  effect_i18n:
+    en: 'Whenever the model loses a Wound in close combat, every model in base contact suffers one Strength 3 hit. These hits
+      never cause critical hits. Cost: 30 gc.'
+    es: null
+  eligibility:
+  - the-possessed
+  - mutants
+  applies_to:
+    band: true
+- id: band--mutations-spines
+  kind: mutation
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: trait.spines
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.spines
+        parameters:
+          value: true
+  name: Spines
+  effect: 'At the start of each close-combat phase, every model in base contact with the bearer suffers one automatic Strength
+    1 hit. These hits never cause critical hits. Cost: 35 gc.'
+  source:
+    manual: trollheim
+    printed_page: 76
+    section: Mutations / Spines
+  name_i18n:
+    en: Spines
+    es: null
+  effect_i18n:
+    en: 'At the start of each close-combat phase, every model in base contact with the bearer suffers one automatic Strength
+      1 hit. These hits never cause critical hits. Cost: 35 gc.'
+    es: null
+  eligibility:
+  - the-possessed
+  - mutants
+  applies_to:
+    band: true
+- id: band--mutations-scorpion-tail
+  kind: mutation
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: trait.scorpion-tail
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.scorpion-tail
+        parameters:
+          value: true
+  name: Scorpion Tail
+  effect: 'The model gains one additional Strength 5 attack in each close-combat phase. Against a model immune to poison,
+    this attack is Strength 2 instead. Cost: 40 gc.'
+  source:
+    manual: trollheim
+    printed_page: 76
+    section: Mutations / Scorpion Tail
+  name_i18n:
+    en: Scorpion Tail
+    es: null
+  effect_i18n:
+    en: 'The model gains one additional Strength 5 attack in each close-combat phase. Against a model immune to poison, this
+      attack is Strength 2 instead. Cost: 40 gc.'
+    es: null
+  eligibility:
+  - the-possessed
+  - mutants
+  applies_to:
+    band: true
+- id: band--mutations-extra-arm
+  kind: mutation
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: special-rule.band--mutations-extra-arm
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: special-rule.band--mutations-extra-arm
+  runtime_selectable: true
+  name: Extra Arm
+  effect: 'A Mutant may use a one-handed weapon in the extra arm and gains +1 Attack in close combat, or may carry a Shield
+    or Buckler in that arm. The Possessed gains the extra Attack but still may not carry a weapon. Cost: 40 gc.'
+  source:
+    manual: trollheim
+    printed_page: 76
+    section: Mutations / Extra Arm
+  name_i18n:
+    en: Extra Arm
+    es: null
+  effect_i18n:
+    en: 'A Mutant may use a one-handed weapon in the extra arm and gains +1 Attack in close combat, or may carry a Shield
+      or Buckler in that arm. The Possessed gains the extra Attack but still may not carry a weapon. Cost: 40 gc.'
+    es: null
+  eligibility:
+  - the-possessed
+  - mutants
+  applies_to:
+    band: true
+- id: band--mutations-hideous
+  kind: mutation
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-mutations-hideous
+      scope: LATER
+      binding: null
+      reason: fear/psychology is outside the duel runtime
+  name: Hideous
+  effect: 'The model causes Fear. Cost: 40 gc.'
+  source:
+    manual: trollheim
+    printed_page: 76
+    section: Mutations / Hideous
+  name_i18n:
+    en: Hideous
+    es: null
+  effect_i18n:
+    en: 'The model causes Fear. Cost: 40 gc.'
+    es: null
+  eligibility:
+  - the-possessed
+  - mutants
+  applies_to:
+    band: true

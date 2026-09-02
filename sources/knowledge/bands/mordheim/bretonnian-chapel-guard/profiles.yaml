@@ -1,0 +1,246 @@
+schema_version: 2
+band_id: bretonnian-chapel-guard
+profiles:
+- id: questing-knight
+  name: Questing Knight
+  type: hero
+  cost: 75
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - knights-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not take a Lance (Vow of Poverty).
+  - As a Knight, may not use missile weapons except Holy Water, drugs or poisons, and may not learn spells (prayers are allowed).
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Questing Knight
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  source_path:
+  - heroes
+  - 1 Questing Knight
+  name_i18n:
+    en: Questing Knight
+    es: null
+  rule_ids:
+  - questing-knight--leader
+  - questing-knight--knight
+  - questing-knight--ride
+  - questing-knight--vow-of-poverty
+  combat_traits: {}
+- id: damsel
+  name: Damsel
+  type: hero
+  cost: 35
+  experience: 12
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - bowmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May only use non-missile, non-armour items from the Bowmen Equipment List.
+  skill_access:
+  - academic
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Damsel
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  source_path:
+  - heroes
+  - 0 – 1 Damsel
+  name_i18n:
+    en: Damsel
+    es: null
+  rule_ids:
+  - damsel--prayercaster
+  combat_traits: {}
+- id: knights-errant
+  name: Knights Errant
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - knights-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear a Helmet (Vain).
+  - As Knights, may not use missile weapons except Holy Water, drugs or poisons, and may not learn spells (prayers are allowed).
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 3 Knights Errant
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  source_path:
+  - heroes
+  - 0 – 3 Knights Errant
+  name_i18n:
+    en: Knights Errant
+    es: null
+  rule_ids:
+  - knights-errant--knight
+  - knights-errant--vain
+  - knights-errant--impetuous
+  combat_traits: {}
+- id: squires
+  name: Squires
+  type: henchman
+  cost: 25
+  experience: 0
+  group_size:
+    minimum: 1
+    maximum: 5
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pilgrims-equipment-list
+  - bowmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May use weapons and armour from the Pilgrims and Bowmen Equipment Lists.
+  - May not take the Holy Relic entry, which is Pilgrim only.
+  - May not ride a horse unless the Questing Knight and every Knight Errant in the warband are riding warhorses.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Squires
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  source_path:
+  - henchmen
+  - 0 – 5 Squires
+  name_i18n:
+    en: Squires
+    es: null
+  rule_ids:
+  - squires--knighthood
+  combat_traits: {}
+- id: battle-pilgrims
+  name: Battle pilgrims
+  type: henchman
+  cost: 30
+  experience: 0
+  group_size:
+    minimum: 1
+    maximum: 5
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pilgrims-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Battle pilgrims
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  source_path:
+  - henchmen
+  - 0 – 5 Battle pilgrims
+  name_i18n:
+    en: Battle pilgrims
+    es: null
+  rule_ids:
+  - battle-pilgrims--low-caste
+  - battle-pilgrims--hatred
+  - battle-pilgrims--stubborn
+  - battle-pilgrims--holy-relics
+  combat_traits:
+    starting_skills:
+    - skill.hatred
+- id: bowmen
+  name: Bowmen
+  type: henchman
+  cost: 15
+  experience: 0
+  group_size:
+    minimum: 1
+    maximum: 5
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 4
+  equipment_lists:
+  - bowmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 7 Bowmen
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  source_path:
+  - henchmen
+  - 0 – 7 Bowmen
+  name_i18n:
+    en: Bowmen
+    es: null
+  rule_ids:
+  - bowmen--low-caste
+  combat_traits: {}

@@ -1,0 +1,65 @@
+schema_version: 2
+id: ostlanders
+canonical_family: ostlanders
+name: Ostlanders
+name_i18n:
+  en: Ostlanders
+  es: null
+original_locale: en
+ruleset: mordheim
+categories:
+- 1a
+grade: 1a
+setting: Mordheim
+publication: 'Town Cryer #11; revised Mordheim Annual 2002'
+status: source-normalized
+sources:
+- manual: mordheimer.net
+  printed_page: 0
+  section: Ostlander Mercenaries
+  url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: elder
+    minimum: 1
+    maximum: 1
+  - profile_id: blood-brothers
+    minimum: 0
+    maximum: 2
+  - profile_id: priest-of-taal
+    minimum: 0
+    maximum: 1
+  - profile_id: kin
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: jaeger
+    minimum: 0
+    maximum: 7
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: ruffians
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: ogre
+    minimum: 0
+    maximum: 1
+    group_size:
+      minimum: 1
+      maximum: 1
+rule_ids:
+- band--self-sufficient
+- band--ostlander-special-skills-bull-rush
+- band--ostlander-special-skills-foul-odour
+- band--ostlander-special-skills-taunt
+- band--ostlander-special-skills-animal-friendship
+- band--ostlander-special-skills-blood-oath

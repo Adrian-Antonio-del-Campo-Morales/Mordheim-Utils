@@ -1,0 +1,193 @@
+schema_version: 1
+specifications:
+- id: editorial-natural-armour-estalian-warhound
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/lustrian-reavers/estalian-warhound--armoured/trait.natural-armour-save
+    digest: 93a224c9f23979d16939b4fc6cbc52dc3867d8ac146368ddd120bb83d55dbd0c
+  interpretation: Estalian Warhound / 5+ Armour Save grants ordinary 5+ protection from padded armour and an iron collar.
+    Apply normal armour modifiers, not an independent ward save. No roll is requested once the target exceeds 6.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
+    context: {rule_id: estalian-warhound--armoured}
+    expect: {result.recipients: [estalian-warhound]}
+  - id: face-1
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
+    rolls: [{key: armour, value: 1}]
+    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+  - id: face-2
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
+    rolls: [{key: armour, value: 2}]
+    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+  - id: face-3
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
+    rolls: [{key: armour, value: 3}]
+    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+  - id: face-4
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
+    rolls: [{key: armour, value: 4}]
+    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+  - id: face-5
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
+    rolls: [{key: armour, value: 5}]
+    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: true}
+  - id: face-6
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
+    rolls: [{key: armour, value: 6}]
+    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: true}
+  - id: strength-4
+    roles: [boundary, active]
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    defender: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
+    rolls: [{key: armour, value: 6}]
+    expect: {result.target: 6, result.eligible: true, result.saved: true}
+  - id: strength-5
+    roles: [boundary, inactive]
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    defender: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
+    expect: {result.target: 7, result.eligible: false, result.saved: false}
+  - id: strength-6
+    roles: [boundary, inactive]
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    defender: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
+    expect: {result.target: 7, result.eligible: false, result.saved: false}
+  - id: no-independent-ward
+    roles: [inactive]
+    operation: special_save
+    defender: {collection: mordheim, band_id: lustrian-reavers, profile_id: estalian-warhound}
+    expect: {result.saved: false, result.ward_roll: null}
+  mutations:
+  - id: remove-armour
+    path: defender.natural_armour_save
+    value: 7
+    cases: [face-6]
+  - id: ignore-strength
+    path: defender.natural_armour_unmodified
+    value: true
+    cases: [strength-4]
+- id: editorial-natural-armour-wulfen
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/lustria-norse/wulfen--hardened-hide/trait.natural-armour-save
+    digest: 3e94157ad924c56a95c953c513fe1276da4b002fa4d28191f71bed29a0769bba
+  interpretation: Lustria p.109 / Hardened Hide grants 6+ armour explicitly modified by Strength.
+    Apply normal armour modifiers, not an independent ward save. No roll is requested once the target exceeds 6.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: trollheim, band_id: lustria-norse, profile_id: wulfen}
+    context: {rule_id: wulfen--hardened-hide}
+    expect: {result.recipients: [wulfen]}
+  - id: face-1
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: lustria-norse, profile_id: wulfen}
+    rolls: [{key: armour, value: 1}]
+    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+  - id: face-2
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: lustria-norse, profile_id: wulfen}
+    rolls: [{key: armour, value: 2}]
+    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+  - id: face-3
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: lustria-norse, profile_id: wulfen}
+    rolls: [{key: armour, value: 3}]
+    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+  - id: face-4
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: lustria-norse, profile_id: wulfen}
+    rolls: [{key: armour, value: 4}]
+    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+  - id: face-5
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: lustria-norse, profile_id: wulfen}
+    rolls: [{key: armour, value: 5}]
+    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+  - id: face-6
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: lustria-norse, profile_id: wulfen}
+    rolls: [{key: armour, value: 6}]
+    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: true}
+  - id: strength-4
+    roles: [boundary, inactive]
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    defender: {collection: trollheim, band_id: lustria-norse, profile_id: wulfen}
+    expect: {result.target: 7, result.eligible: false, result.saved: false}
+  - id: strength-5
+    roles: [boundary, inactive]
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    defender: {collection: trollheim, band_id: lustria-norse, profile_id: wulfen}
+    expect: {result.target: 7, result.eligible: false, result.saved: false}
+  - id: strength-6
+    roles: [boundary, inactive]
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    defender: {collection: trollheim, band_id: lustria-norse, profile_id: wulfen}
+    expect: {result.target: 7, result.eligible: false, result.saved: false}
+  - id: no-independent-ward
+    roles: [inactive]
+    operation: special_save
+    defender: {collection: trollheim, band_id: lustria-norse, profile_id: wulfen}
+    expect: {result.saved: false, result.ward_roll: null}
+  mutations:
+  - id: remove-armour
+    path: defender.natural_armour_save
+    value: 7
+    cases: [face-6]
+  - id: ignore-strength
+    path: defender.natural_armour_unmodified
+    value: true
+    cases: [strength-4]

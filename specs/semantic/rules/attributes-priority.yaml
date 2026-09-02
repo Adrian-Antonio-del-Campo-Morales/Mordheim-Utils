@@ -1,0 +1,939 @@
+schema_version: 1
+specifications:
+- id: skill.red-fury
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/skill.red-fury
+    digest: d4b1b8b2ca2be4cf877d9356bfe88f2ad47533521760dc347185fd43c7270aba
+  interpretation: The rule adds one Attack to the profile, not a multiplier.
+  interaction_contract:
+    reads:
+    - fighter.attacks
+    writes:
+    - attack.count
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - skill.red-fury
+      main_weapon_id: weapon.mace
+    expect:
+      attacker.global_effects.attacks_bonus: 1
+  - id: one-base
+    roles:
+    - consumer
+    - boundary
+    operation: attacks
+    attacker:
+      skill_ids:
+      - skill.red-fury
+      main_weapon_id: weapon.mace
+    expect:
+      result.attacks: 2
+  - id: two-base
+    roles:
+    - boundary
+    operation: attacks
+    attacker:
+      skill_ids:
+      - skill.red-fury
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 2
+    expect:
+      result.attacks: 3
+  mutations:
+  - id: remove-extra-attack
+    path: attacker.global_effects.attacks_bonus
+    value: 0
+    cases:
+    - one-base
+    - two-base
+- id: skill.extra-attack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/skill.extra-attack
+    digest: 82f5c464d737753aff836db387a8150b196246c320cb13b4e388269bb6f6567f
+  interpretation: The rule adds one Attack to the profile, not a multiplier.
+  interaction_contract:
+    reads:
+    - fighter.attacks
+    writes:
+    - attack.count
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - skill.extra-attack
+      main_weapon_id: weapon.mace
+    expect:
+      attacker.global_effects.attacks_bonus: 1
+  - id: one-base
+    roles:
+    - consumer
+    - boundary
+    operation: attacks
+    attacker:
+      skill_ids:
+      - skill.extra-attack
+      main_weapon_id: weapon.mace
+    expect:
+      result.attacks: 2
+  - id: two-base
+    roles:
+    - boundary
+    operation: attacks
+    attacker:
+      skill_ids:
+      - skill.extra-attack
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 2
+    expect:
+      result.attacks: 3
+  mutations:
+  - id: remove-extra-attack
+    path: attacker.global_effects.attacks_bonus
+    value: 0
+    cases:
+    - one-base
+    - two-base
+- id: skill.monstrous
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/skill.monstrous
+    digest: 25e380f85bbfa6ebde7ab6cae9254f02c97870c694d7e41eb726d3e77b123bbc
+  interpretation: Add one Wound to the fighter's initial wounds for the duel.
+  interaction_contract:
+    reads:
+    - fighter.wounds
+    writes:
+    - state.wounds
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - skill.monstrous
+      main_weapon_id: weapon.mace
+    expect:
+      attacker.characteristics.wounds: 3
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.monstrous
+  - id: three-to-four
+    roles:
+    - consumer
+    operation: initialize
+    attacker:
+      skill_ids:
+      - skill.monstrous
+      main_weapon_id: weapon.mace
+    expect:
+      result.attacker.wounds: 4
+  - id: one-to-two
+    roles:
+    - boundary
+    operation: initialize
+    attacker:
+      skill_ids:
+      - skill.monstrous
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    expect:
+      result.attacker.wounds: 2
+  mutations:
+  - id: remove-wound
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - three-to-four
+    - one-to-two
+- id: skill.strength-of-steel
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/skill.strength-of-steel
+    digest: 7bece24b96e881b55a0eeb73d1880e8d986ac923f012b79ff9e5f112bb5b88f7
+  interpretation: Charging grants +1 Strength. Outside the charge the ordinary Strength is unchanged.
+  interaction_contract:
+    reads:
+    - round.charging
+    - fighter.strength
+    writes:
+    - attack.strength
+    - armour.strength
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - skill.strength-of-steel
+      main_weapon_id: weapon.mace
+    expect:
+      attacker.global_effects.charge_strength_bonus: 1
+  - id: charge
+    roles:
+    - active
+    - consumer
+    operation: strength
+    attacker:
+      skill_ids:
+      - skill.strength-of-steel
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: not-charging
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      skill_ids:
+      - skill.strength-of-steel
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: base-one
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      skill_ids:
+      - skill.strength-of-steel
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 1
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.wound: 2
+      result.armour: 2
+  mutations:
+  - id: remove-charge-bonus
+    path: attacker.global_effects.charge_strength_bonus
+    value: 0
+    cases:
+    - charge
+- id: skill.resilient
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/skill.resilient
+    digest: c1d7210e8e6a2400a99605bbfc369806e39dbad2c810fe515eaf0a01ac10167a
+  interpretation: Incoming hits lose one Strength for wounding, minimum one. Armour modifiers use the unmodified
+    attacking Strength.
+  interaction_contract:
+    reads:
+    - attack.strength
+    writes:
+    - wound.target
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      skill_ids:
+      - skill.resilient
+      main_weapon_id: weapon.mace
+    expect:
+      defender.global_effects.incoming_strength_modifier: -1
+  - id: strength-split
+    roles:
+    - active
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      skill_ids:
+      - skill.resilient
+      main_weapon_id: weapon.mace
+    expect:
+      result.wound: 3
+      result.armour: 4
+  - id: minimum-one
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 1
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      skill_ids:
+      - skill.resilient
+      main_weapon_id: weapon.mace
+    expect:
+      result.wound: 1
+      result.armour: 1
+  - id: no-resilience
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect:
+      result.wound: 4
+      result.armour: 4
+  mutations:
+  - id: remove-incoming-penalty
+    path: defender.global_effects.incoming_strength_modifier
+    value: 0
+    cases:
+    - strength-split
+- id: skill.berserker
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/skill.berserker
+    digest: d8f02b72be724a5e60c2cd12efe0104148a34ceeeb9164b2d459b8c5c0906f68
+  interpretation: The charging bonus is +1 to hit, not +1 Weapon Skill. It changes an ordinary 4+ to 3+ only while
+    charging.
+  interaction_contract:
+    reads:
+    - round.charging
+    - hit.target
+    writes:
+    - hit.target
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - skill.berserker
+      main_weapon_id: weapon.mace
+    expect:
+      attacker.characteristics.weapon_skill: 3
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.berserker
+  - id: active-all-faces
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: hit
+    attacker:
+      skill_ids:
+      - skill.berserker
+      main_weapon_id: weapon.mace
+    context:
+      charging: true
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 2/3
+        'false': 1/3
+  - id: inactive-all-faces
+    roles:
+    - inactive
+    operation: hit
+    attacker:
+      skill_ids:
+      - skill.berserker
+      main_weapon_id: weapon.mace
+    context:
+      charging: false
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 1/2
+        'false': 1/2
+  mutations:
+  - id: remove-contextual-effect
+    changes:
+    - path: attacker.global_effects.tags
+      value: []
+    - path: attacker.global_effects.charge_reroll_hits
+      value: false
+    cases:
+    - active-all-faces
+- id: skill.hatred
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/skill.hatred
+    digest: 55903f96c0da47a95bba838dc0d85778de25d638c945f5d81c4fca0e83cbe923
+  interpretation: Re-roll failed hit rolls only when first_round is true. A base 4+ succeeds with probability 3/4
+    when active, otherwise 1/2.
+  interaction_contract:
+    reads:
+    - round.first_round
+    - hit.target
+    writes:
+    - hit.success
+    - hit.rolls
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - skill.hatred
+      main_weapon_id: weapon.mace
+    expect:
+      attacker.characteristics.weapon_skill: 3
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.hatred
+  - id: active-all-faces
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: hit
+    attacker:
+      skill_ids:
+      - skill.hatred
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 3/4
+        'false': 1/4
+  - id: inactive-all-faces
+    roles:
+    - inactive
+    operation: hit
+    attacker:
+      skill_ids:
+      - skill.hatred
+      main_weapon_id: weapon.mace
+    context:
+      first_round: false
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 1/2
+        'false': 1/2
+  mutations:
+  - id: remove-contextual-effect
+    changes:
+    - path: attacker.global_effects.tags
+      value: []
+    - path: attacker.global_effects.charge_reroll_hits
+      value: false
+    cases:
+    - active-all-faces
+- id: skill.infallible
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/skill.infallible
+    digest: 2a9abcf44f4629001ad86c1387bcf4041762c99193b62b1f83bbebba5d929c3a
+  interpretation: Re-roll failed hit rolls only when charging is true. A base 4+ succeeds with probability 3/4 when
+    active, otherwise 1/2.
+  interaction_contract:
+    reads:
+    - round.charging
+    - hit.target
+    writes:
+    - hit.success
+    - hit.rolls
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - skill.infallible
+      main_weapon_id: weapon.mace
+    expect:
+      attacker.characteristics.weapon_skill: 3
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.infallible
+  - id: active-all-faces
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: hit
+    attacker:
+      skill_ids:
+      - skill.infallible
+      main_weapon_id: weapon.mace
+    context:
+      charging: true
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 3/4
+        'false': 1/4
+  - id: inactive-all-faces
+    roles:
+    - inactive
+    operation: hit
+    attacker:
+      skill_ids:
+      - skill.infallible
+      main_weapon_id: weapon.mace
+    context:
+      charging: false
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 1/2
+        'false': 1/2
+  mutations:
+  - id: remove-contextual-effect
+    changes:
+    - path: attacker.global_effects.tags
+      value: []
+    - path: attacker.global_effects.charge_reroll_hits
+      value: false
+    cases:
+    - active-all-faces
+- id: skill.unstoppable-charge
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/skill.unstoppable-charge
+    digest: 0c9cb21c34b5dda1f1b6ac27594ece3e61defe3d4e5ac963f44e7223aeabcdb9
+  interpretation: A charge grants +1 Weapon Skill, changing WS3 versus WS3 from a 4+ hit to 3+. Without charging
+    WS is unchanged.
+  interaction_contract:
+    reads:
+    - round.charging
+    - fighter.weapon_skill
+    - defender.weapon_skill
+    writes:
+    - hit.target
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - skill.unstoppable-charge
+      main_weapon_id: weapon.mace
+    expect:
+      attacker.global_effects.charge_ws_bonus: 1
+  - id: charge
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      skill_ids:
+      - skill.unstoppable-charge
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: hit
+      value: 3
+    expect:
+      context.attacker_ws: 4
+      result.target: 3
+      result.success: true
+  - id: not-charging
+    roles:
+    - inactive
+    operation: hit
+    attacker:
+      skill_ids:
+      - skill.unstoppable-charge
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+    rolls:
+    - key: hit
+      value: 3
+    expect:
+      context.attacker_ws: 3
+      result.target: 4
+      result.success: false
+  mutations:
+  - id: remove-charge-ws
+    path: attacker.global_effects.charge_ws_bonus
+    value: 0
+    cases:
+    - charge
+- id: skill.monster-slayer
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.monster-slayer
+    digest: c551d671c5939a98b93af5bab7a61b89b70a244598c7dd566fe7d62a2ff79c47
+  interpretation: The wound target is no worse than 4+, while naturally easier targets are retained.
+  interaction_contract:
+    reads:
+    - attack.strength
+    - defender.toughness
+    writes:
+    - wound.target
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - skill.monster-slayer
+      main_weapon_id: weapon.mace
+    expect:
+      attacker.characteristics.strength: 3
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.monster-slayer
+  - id: otherwise-impossible
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      skill_ids:
+      - skill.monster-slayer
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 1
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 6
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 1/2
+        'false': 1/2
+  - id: easier-target-unchanged
+    roles:
+    - inactive
+    - boundary
+    operation: wound
+    attacker:
+      skill_ids:
+      - skill.monster-slayer
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 5
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 5/6
+        'false': 1/6
+  mutations:
+  - id: remove-cap
+    changes:
+    - path: attacker.global_effects.tags
+      value: []
+    - path: attacker.global_effects.maximum_wound_target
+      value: 7
+    cases:
+    - otherwise-impossible
+- id: skill.always-strikes-first
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: priority
+  sources:
+  - target: mechanic/skill.always-strikes-first
+    digest: 3c5bc14ee8ba7c3552b52d5bf42e6c2f8e7162597829cc42517aa162a2659b6d
+  interpretation: Strike-first acts before ordinary attacks regardless of the ordinary attacker's higher Initiative.
+  interaction_contract:
+    reads:
+    - round.charged
+    - fighter.initiative
+    writes:
+    - priority.tier
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - skill.always-strikes-first
+      main_weapon_id: weapon.mace
+    expect:
+      attacker.characteristics.initiative: 3
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.always-strikes-first
+  - id: active
+    roles:
+    - active
+    - consumer
+    operation: acting_order
+    attacker:
+      skill_ids:
+      - skill.always-strikes-first
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    context: {}
+    opponent_context: {}
+    expect:
+      result.first_acts: true
+  - id: ordinary-without-skill
+    roles:
+    - inactive
+    operation: acting_order
+    attacker:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    expect:
+      result.first_acts: false
+  - id: tie-all-dice
+    roles:
+    - boundary
+    operation: acting_order
+    attacker:
+      skill_ids:
+      - skill.always-strikes-first
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.always-strikes-first
+      main_weapon_id: weapon.mace
+    context: {}
+    opponent_context: {}
+    distribution:
+      observable: result.first_acts
+      max_rolls: 1
+      expected:
+        'true': 1/2
+        'false': 1/2
+  mutations:
+  - id: remove-priority
+    changes:
+    - path: attacker.global_effects.tags
+      value: []
+    - path: attacker.global_effects.priority
+      value: 0
+    cases:
+    - active
+- id: skill.lightning-reflexes
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: priority
+  sources:
+  - target: mechanic/skill.lightning-reflexes
+    digest: a14b1677ce99a62c6eb607f2f83bc8a0b4f7066a827d0e56bda8e7cc08ef40be
+  interpretation: When charged the warrior strikes first too; if both have strike first, higher Initiative decides.
+    Without a charge the rule grants no advantage.
+  interaction_contract:
+    reads:
+    - round.charged
+    - fighter.initiative
+    writes:
+    - priority.tier
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      skill_ids:
+      - skill.lightning-reflexes
+      main_weapon_id: weapon.mace
+    expect:
+      attacker.characteristics.initiative: 3
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.lightning-reflexes
+  - id: active
+    roles:
+    - active
+    - consumer
+    operation: acting_order
+    attacker:
+      skill_ids:
+      - skill.lightning-reflexes
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 4
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      first_round: true
+      charged: true
+    opponent_context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: true
+  - id: ordinary-without-skill
+    roles:
+    - inactive
+    operation: acting_order
+    attacker:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    expect:
+      result.first_acts: false
+  - id: tie-all-dice
+    roles:
+    - boundary
+    operation: acting_order
+    attacker:
+      skill_ids:
+      - skill.lightning-reflexes
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.lightning-reflexes
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+      charged: true
+    opponent_context:
+      first_round: true
+      charged: true
+    distribution:
+      observable: result.first_acts
+      max_rolls: 1
+      expected:
+        'true': 1/2
+        'false': 1/2
+  mutations:
+  - id: remove-priority
+    changes:
+    - path: attacker.global_effects.tags
+      value: []
+    - path: attacker.global_effects.priority
+      value: 0
+    cases:
+    - active

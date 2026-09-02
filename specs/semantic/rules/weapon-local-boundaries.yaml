@@ -1,0 +1,176 @@
+schema_version: 1
+specifications:
+- id: weapon.misericordia
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: mechanic/weapon.misericordia, digest: 988a6bc4974e96918e95db1585e1d083274cb18a0e32e907e299b5481526eaf4}
+  interpretation: Misericordia, Enemy armour save. Fuerza de usuario y salvación enemiga mejorada en uno; sin armadura obtiene 6+. Distribuciones derivadas contando caras del D6.
+  cases:
+  - id: compiled-strength
+    roles: [compiled, active, consumer]
+    operation: strength
+    attacker: {main_weapon_id: weapon.misericordia}
+    expect: {attacker.main_weapon.target_armour_bonus: 1, result.wound: 3, result.armour: 3}
+  - id: naked-save
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.misericordia}
+    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/6, 'false': 5/6}}
+  - id: existing-save
+    roles: [active, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.misericordia}
+    defender: {armour_id: armour.gromril-armour}
+    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 2/3, 'false': 1/3}}
+  - id: ordinary-weapon-no-save
+    roles: [inactive]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    expect: {result.eligible: false}
+  mutations:
+  - {id: remove-save-bonus, path: attacker.main_weapon.target_armour_bonus, value: 0, cases: [naked-save, existing-save]}
+
+- id: weapon.starsword
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: mechanic/weapon.starsword, digest: 87f5de47dc6258d0f4de75d2123b162f845fe1842c89258838ba512b0ec46eb8}
+  interpretation: Starsword, Parry e Ignores Armour. Fuerza +1, parada ordinaria y ausencia de salvación por armadura; las salvaciones especiales no se cancelan.
+  cases:
+  - id: strength
+    roles: [compiled, active, consumer]
+    operation: strength
+    attacker: {main_weapon_id: weapon.starsword}
+    expect: {attacker.main_weapon.ignore_armour: true, attacker.main_weapon.parry: true, result.wound: 4, result.armour: 4}
+  - id: parry-faces
+    roles: [active, consumer, boundary]
+    operation: parry
+    defender: {main_weapon_id: weapon.starsword}
+    context: {hit_roll: 4}
+    distribution: {observable: result.blocked, max_rolls: 1, expected: {'true': 1/3, 'false': 2/3}}
+  - id: unparable-six
+    roles: [inactive, boundary]
+    operation: parry
+    defender: {main_weapon_id: weapon.starsword}
+    context: {hit_roll: 6}
+    expect: {result.attempted: false}
+  - id: no-armour-roll
+    roles: [active, consumer]
+    operation: armour
+    attacker: {main_weapon_id: weapon.starsword}
+    defender: {armour_id: armour.gromril-armour}
+    expect: {result.eligible: false, result.saved: false}
+  - id: ward-survives-attack
+    roles: [inactive, boundary]
+    operation: attack
+    attacker: {main_weapon_id: weapon.starsword}
+    defender: {armour_id: armour.gromril-armour, defence_ids: [defence.enchanted-skins]}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 3}, {key: test.special.ward, value: 6}]
+    expect: {result.wounded: true, result.saved: true, result.defender.wounds: 3}
+  mutations:
+  - {id: remove-strength, path: attacker.main_weapon.strength_bonus, value: 0, cases: [strength]}
+  - {id: remove-parry, path: defender.main_weapon.parry, value: false, cases: [parry-faces]}
+  - {id: restore-armour, path: attacker.main_weapon.ignore_armour, value: false, cases: [no-armour-roll, ward-survives-attack]}
+
+- id: weapon.chain-sticks
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - {target: mechanic/weapon.chain-sticks, digest: 68086a62967b678d64a61db13cec5bdc7fbe1f3b48f01796a0aa2f620b5d4d05}
+  interpretation: Chain Sticks, Flurry. Añade dos ataques al perfil durante la primera ronda, independientemente de quién cargue. No sustituye el número base.
+  cases:
+  - id: first-round
+    roles: [compiled, active, consumer]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.chain-sticks}
+    context: {first_round: true, charging: false}
+    expect: {attacker.main_weapon.first_round_attacks_bonus: 2, result.attacks: 3}
+  - id: charging-first-round
+    roles: [active, boundary]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.chain-sticks}
+    context: {first_round: true, charging: true, base_attacks: 3}
+    expect: {result.attacks: 5}
+  - id: later-round
+    roles: [inactive, boundary]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.chain-sticks}
+    context: {first_round: false, base_attacks: 3}
+    expect: {result.attacks: 3}
+  mutations:
+  - {id: remove-flurry, path: attacker.main_weapon.first_round_attacks_bonus, value: 0, cases: [first-round, charging-first-round]}
+  - {id: make-flurry-permanent, changes: [{path: attacker.main_weapon.first_round_attacks_bonus, value: 0}, {path: attacker.main_weapon.attacks_bonus, value: 2}], cases: [later-round]}
+
+- id: weapon.quarter-staff
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: mechanic/weapon.quarter-staff, digest: 1b1a0cc28b3091e5fe510f50af91b8f59f0b325a61c367a070db9475c96442a4}
+  interpretation: Quarter Staff, Balanced. +1 Initiative en combate modifica el desempate dentro del estrato de prioridad, no concede atacar primero ni aumenta Fuerza.
+  cases:
+  - id: initiative
+    roles: [compiled, active, consumer]
+    operation: priority
+    attacker: {main_weapon_id: weapon.quarter-staff}
+    expect: {attacker.main_weapon.initiative_bonus: 1, result.initiative: 4, result.priority: 0}
+  - id: breaks-equal-base-initiative
+    roles: [active, boundary]
+    operation: acting_order
+    attacker: {main_weapon_id: weapon.quarter-staff}
+    expect: {result.first_acts: true}
+  - id: cannot-beat-charge-tier
+    roles: [inactive, boundary]
+    operation: acting_order
+    attacker: {main_weapon_id: weapon.quarter-staff}
+    opponent_context: {first_round: true, charging: true}
+    expect: {result.first_acts: false}
+  - id: strength-unchanged
+    roles: [inactive]
+    operation: strength
+    attacker: {main_weapon_id: weapon.quarter-staff}
+    expect: {result.wound: 3, result.armour: 3}
+  mutations:
+  - {id: remove-balanced, path: attacker.main_weapon.initiative_bonus, value: 0, cases: [initiative, breaks-equal-base-initiative]}
+
+- id: armour.toughened-leathers
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: mechanic/armour.toughened-leathers, digest: 8f57455151e0d3531c8345ff37552ab55ad66d912d1ca4f72ca5439b4398c140}
+  interpretation: Toughened Leathers, Save y Compatibility. Salvación 6+ modificable por Fuerza; admite casco y rodela pero no escudo. Sellback pertenece a campaña y no a este escenario de duelo.
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    defender: {armour_id: armour.toughened-leathers}
+    expect: {defender.armour_save: 6}
+  - id: all-save-faces
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {armour_id: armour.toughened-leathers}
+    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/6, 'false': 5/6}}
+  - id: strength-four-cancels-save
+    roles: [inactive, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.halberd}
+    defender: {armour_id: armour.toughened-leathers}
+    expect: {result.target: 7, result.eligible: false}
+  - id: helmet-and-buckler-allowed
+    roles: [compiled]
+    operation: compile
+    defender: {armour_id: armour.toughened-leathers, off_hand_id: defence.buckler, defence_ids: [defence.helmet]}
+    expect: {defender.armour_save: 6, defender.global_effects.parry: true, defender.helmet_save: 4}
+  - id: shield-rejected
+    roles: [rejected]
+    operation: compile
+    attacker: {armour_id: armour.toughened-leathers, off_hand_id: defence.shield}
+    reject: toughened leathers cannot be combined with a shield
+  - id: kite-shield-rejected
+    roles: [rejected]
+    operation: compile
+    attacker: {armour_id: armour.toughened-leathers, off_hand_id: defence.kite-shield}
+    reject: toughened leathers cannot be combined with a shield
+  mutations:
+  - {id: improve-leathers, path: defender.armour_save, value: 5, cases: [all-save-faces, strength-four-cancels-save]}

@@ -1,0 +1,47 @@
+schema_version: 2
+id: chaos-streets-arcane-society
+canonical_family: arcane-society
+name: Arcane Society
+name_i18n:
+  en: Arcane Society
+  es: null
+original_locale: es
+ruleset: mordheim
+categories:
+- trollheim
+grade: null
+setting: Mordheim
+publication: Chaos in the Streets
+status: source-normalized
+sources:
+- manual: chaos-in-the-streets
+  printed_page: 166-171
+  section: Arcane Society
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: grand-wizard
+    minimum: 1
+    maximum: 1
+  - profile_id: arcane-mage
+    minimum: 0
+    maximum: 2
+  - profile_id: arcane-bodyguard
+    minimum: 0
+    maximum: 2
+  - profile_id: arcane-aspirant
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: arcane-assistant
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--secret-society

@@ -1,0 +1,96 @@
+schema_version: 2
+band_id: chaos-streets-arcane-society
+profiles:
+- id: grand-wizard
+  name: Grand Wizard
+  name_i18n: {en: Grand Wizard, es: null}
+  type: hero
+  cost: 75
+  experience: 20
+  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 8}
+  equipment_lists: [arcane-society-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [academic, speed]
+  rule_ids: [grand-wizard--leader, grand-wizard--spellcaster]
+  combat_traits: {}
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 170
+    section: 1 Grand Wizard
+  source_path: [heroes, 1 Grand Wizard]
+- id: arcane-mage
+  name: Arcane Mages
+  name_i18n: {en: Arcane Mages, es: null}
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics: {M: 4, WS: 2, BS: 2, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [arcane-society-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [academic, speed]
+  rule_ids: [arcane-mage--spellcaster, arcane-mage--respect-for-the-arcane-society]
+  combat_traits: {}
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 170
+    section: 0-2 Arcane Mages
+  source_path: [heroes, 0-2 Arcane Mages]
+- id: arcane-bodyguard
+  name: Arcane Bodyguards
+  name_i18n: {en: Arcane Bodyguards, es: null}
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics: {M: 4, WS: 4, BS: 4, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 8}
+  equipment_lists: [arcane-society-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select the Travel Staff or Arcane Familiar; those entries are spellcasters only.
+  skill_access: [combat, shooting, strength]
+  rule_ids: [arcane-bodyguard--not-leader, arcane-bodyguard--bodyguard]
+  combat_traits: {}
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 170
+    section: 0-2 Arcane Bodyguards
+  source_path: [heroes, 0-2 Arcane Bodyguards]
+- id: arcane-aspirant
+  name: Arcane Aspirants
+  name_i18n: {en: Arcane Aspirants, es: null}
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 2, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [arcane-society-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select the Travel Staff or Arcane Familiar unless the model becomes a spellcaster.
+  skill_access: []
+  rule_ids: [arcane-aspirant--aspirant]
+  combat_traits: {}
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 171
+    section: 0-5 Arcane Aspirants
+  source_path: [henchmen, 0-5 Arcane Aspirants]
+- id: arcane-assistant
+  name: Arcane Assistants
+  name_i18n: {en: Arcane Assistants, es: null}
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [arcane-society-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select the Travel Staff or Arcane Familiar unless the model becomes a spellcaster.
+  skill_access: []
+  rule_ids: [arcane-assistant--prove-your-talent]
+  combat_traits: {}
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 171
+    section: Arcane Assistants
+  source_path: [henchmen, Arcane Assistants]

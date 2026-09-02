@@ -1,0 +1,484 @@
+schema_version: 1
+specifications:
+- id: access-mordheim-dark-elves
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/mordheim/dark-elves/band--dark-elf-special-skills-powerful-build/profile.skill-access
+    digest: ff6376a2c75e0d657b077f23aa94a164d6073becd763e85fda0acdeb0f77bea0
+  interpretation: Strength-list access is added to the eligible Heroes' existing lists. The band's caster cannot
+    choose this skill. General in-scope skills are listed explicitly from the Combat, Speed and Strength tables;
+    special warband skills are a separate selection path. The roster maximum is outside the scoped effect.
+  interaction_contract:
+    reads:
+    - construction.skill-lists
+    writes:
+    - construction.skill-access
+  cases:
+  - id: recipients
+    operation: selectable_grant
+    roles:
+    - grant
+    defender:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: high-born
+    context:
+      rule_id: band--dark-elf-special-skills-powerful-build
+    expect:
+      result.recipients:
+      - beastmaster
+      - fellblades
+      - high-born
+  - id: forbidden-caster
+    operation: compile
+    roles:
+    - rejected
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: dark-elf-sorceress
+      special_rule_ids:
+      - band--dark-elf-special-skills-powerful-build
+    reject: special rule is not available
+  - id: ungranted-strength-rejected
+    operation: compile
+    roles:
+    - rejected
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: high-born
+      skill_ids:
+      - skill.mighty-blow
+    reject: skills are not available
+  - id: without-high-born
+    operation: general_skill_access
+    roles:
+    - rejected
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: high-born
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.web-of-steel
+  - id: granted-high-born
+    operation: general_skill_access
+    roles:
+    - accepted
+    - grant
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: high-born
+      special_rule_ids:
+      - band--dark-elf-special-skills-powerful-build
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.mighty-blow
+      - skill.resilient
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.strongman
+      - skill.unstoppable-charge
+      - skill.web-of-steel
+  - id: without-beastmaster
+    operation: general_skill_access
+    roles:
+    - rejected
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: beastmaster
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.web-of-steel
+  - id: granted-beastmaster
+    operation: general_skill_access
+    roles:
+    - accepted
+    - grant
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: beastmaster
+      special_rule_ids:
+      - band--dark-elf-special-skills-powerful-build
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.mighty-blow
+      - skill.resilient
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.strongman
+      - skill.unstoppable-charge
+      - skill.web-of-steel
+  - id: without-fellblades
+    operation: general_skill_access
+    roles:
+    - rejected
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: fellblades
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.web-of-steel
+  - id: granted-fellblades
+    operation: general_skill_access
+    roles:
+    - accepted
+    - grant
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: fellblades
+      special_rule_ids:
+      - band--dark-elf-special-skills-powerful-build
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.mighty-blow
+      - skill.resilient
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.strongman
+      - skill.unstoppable-charge
+      - skill.web-of-steel
+  mutations:
+  - id: remove-strength-access
+    runtime_fault: suppress-skill-access-grant
+    cases:
+    - granted-high-born
+- id: access-mordheim-shadow-warriors
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/mordheim/shadow-warriors/band--shadow-warrior-special-skills-powerful-build/profile.skill-access
+    digest: 9b57f171538c867d26b3dd20f683501038e59ba6bb0a82e5369e322c25c35cfd
+  interpretation: Strength-list access is added to the eligible Heroes' existing lists. The band's caster cannot
+    choose this skill. General in-scope skills are listed explicitly from the Combat, Speed and Strength tables;
+    special warband skills are a separate selection path. The roster maximum is outside the scoped effect.
+  interaction_contract:
+    reads:
+    - construction.skill-lists
+    writes:
+    - construction.skill-access
+  cases:
+  - id: recipients
+    operation: selectable_grant
+    roles:
+    - grant
+    defender:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-master
+    context:
+      rule_id: band--shadow-warrior-special-skills-powerful-build
+    expect:
+      result.recipients:
+      - shadow-master
+      - shadow-walker
+  - id: forbidden-caster
+    operation: compile
+    roles:
+    - rejected
+    attacker:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-weaver
+      special_rule_ids:
+      - band--shadow-warrior-special-skills-powerful-build
+    reject: special rule is not available
+  - id: ungranted-strength-rejected
+    operation: compile
+    roles:
+    - rejected
+    attacker:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-master
+      skill_ids:
+      - skill.mighty-blow
+    reject: skills are not available
+  - id: without-shadow-master
+    operation: general_skill_access
+    roles:
+    - rejected
+    attacker:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-master
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.web-of-steel
+  - id: granted-shadow-master
+    operation: general_skill_access
+    roles:
+    - accepted
+    - grant
+    attacker:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-master
+      special_rule_ids:
+      - band--shadow-warrior-special-skills-powerful-build
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.mighty-blow
+      - skill.resilient
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.strongman
+      - skill.unstoppable-charge
+      - skill.web-of-steel
+  - id: without-shadow-walker
+    operation: general_skill_access
+    roles:
+    - rejected
+    attacker:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-walker
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.web-of-steel
+  - id: granted-shadow-walker
+    operation: general_skill_access
+    roles:
+    - accepted
+    - grant
+    attacker:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-walker
+      special_rule_ids:
+      - band--shadow-warrior-special-skills-powerful-build
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.mighty-blow
+      - skill.resilient
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.strongman
+      - skill.unstoppable-charge
+      - skill.web-of-steel
+  mutations:
+  - id: remove-strength-access
+    runtime_fault: suppress-skill-access-grant
+    cases:
+    - granted-shadow-master
+- id: access-trollheim-lustria-dark-elves
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/trollheim/lustria-dark-elves/band--dark-elf-special-skills-strong-constitution/profile.skill-access
+    digest: d2bf2251e09bae4acb2d8116a67023599d6a0b30816013cad3ada7324684d790
+  interpretation: Strength-list access is added to the eligible Heroes' existing lists. The band's caster cannot
+    choose this skill. General in-scope skills are listed explicitly from the Combat, Speed and Strength tables;
+    special warband skills are a separate selection path. The roster maximum is outside the scoped effect.
+  interaction_contract:
+    reads:
+    - construction.skill-lists
+    writes:
+    - construction.skill-access
+  cases:
+  - id: recipients
+    operation: selectable_grant
+    roles:
+    - grant
+    defender:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-prince
+    context:
+      rule_id: band--dark-elf-special-skills-strong-constitution
+    expect:
+      result.recipients:
+      - beastmaster
+      - dark-prince
+      - darkblades
+  - id: forbidden-caster
+    operation: compile
+    roles:
+    - rejected
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-elf-sorceress
+      special_rule_ids:
+      - band--dark-elf-special-skills-strong-constitution
+    reject: special rule is not available
+  - id: ungranted-strength-rejected
+    operation: compile
+    roles:
+    - rejected
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-prince
+      skill_ids:
+      - skill.mighty-blow
+    reject: skills are not available
+  - id: without-dark-prince
+    operation: general_skill_access
+    roles:
+    - rejected
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-prince
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.web-of-steel
+  - id: granted-dark-prince
+    operation: general_skill_access
+    roles:
+    - accepted
+    - grant
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-prince
+      special_rule_ids:
+      - band--dark-elf-special-skills-strong-constitution
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.mighty-blow
+      - skill.resilient
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.strongman
+      - skill.unstoppable-charge
+      - skill.web-of-steel
+  - id: without-darkblades
+    operation: general_skill_access
+    roles:
+    - rejected
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: darkblades
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.web-of-steel
+  - id: granted-darkblades
+    operation: general_skill_access
+    roles:
+    - accepted
+    - grant
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: darkblades
+      special_rule_ids:
+      - band--dark-elf-special-skills-strong-constitution
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.mighty-blow
+      - skill.resilient
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.strongman
+      - skill.unstoppable-charge
+      - skill.web-of-steel
+  - id: without-beastmaster
+    operation: general_skill_access
+    roles:
+    - rejected
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: beastmaster
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.web-of-steel
+  - id: granted-beastmaster
+    operation: general_skill_access
+    roles:
+    - accepted
+    - grant
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: beastmaster
+      special_rule_ids:
+      - band--dark-elf-special-skills-strong-constitution
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.mighty-blow
+      - skill.resilient
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.strongman
+      - skill.unstoppable-charge
+      - skill.web-of-steel
+  mutations:
+  - id: remove-strength-access
+    runtime_fault: suppress-skill-access-grant
+    cases:
+    - granted-dark-prince

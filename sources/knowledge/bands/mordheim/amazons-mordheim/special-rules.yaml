@@ -1,0 +1,195 @@
+schema_version: 2
+band_id: amazons-mordheim
+rules:
+- id: priestess--leader
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.amazons-mordheim.priestess.leader
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Leader
+  effect: Any models in the warband within 6" of the Priestess may use her Leadership instead of their own.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroines / 1 Priestess / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any models in the warband within 6" of the Priestess may use her Leadership instead of their own.
+    es: null
+  applies_to:
+    profile_ids:
+    - priestess
+- id: priestess--wizard
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.amazons-mordheim.priestess.wizard
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: magia."
+  name: Wizard
+  effect: The Priestess is a Wizard and may use Amazon Rituals. She starts with one ritual chosen at random from the list.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroines / 1 Priestess / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Priestess is a Wizard and may use Amazon Rituals. She starts with one ritual chosen at random from the list.
+    es: null
+  applies_to:
+    profile_ids:
+    - priestess
+- id: totem-warriors--frenzy
+  runtime:
+    scope: "LATER"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: trait.frenzy
+      scope: "LATER"
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
+  name: Frenzy
+  effect: Totem Warriors are utterly fanatical, blood-crazed individuals. They are also totally out of their heads on dangerous,
+    psychedelic, herbal concoctions prepared by their sisters. Totem Warriors are mad berserkers who care little about danger
+    or the prospect of death. They are subject to the rules for Frenzy.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroines / 0 – 2 Totem Warriors / Special Rules / Frenzy
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  name_i18n:
+    en: Frenzy
+    es: null
+  effect_i18n:
+    en: Totem Warriors are utterly fanatical, blood-crazed individuals. They are also totally out of their heads on dangerous,
+      psychedelic, herbal concoctions prepared by their sisters. Totem Warriors are mad berserkers who care little about danger
+      or the prospect of death. They are subject to the rules for Frenzy.
+    es: null
+  applies_to:
+    profile_ids:
+    - totem-warriors
+- id: scouts--stealthy
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.amazons-mordheim.scouts.stealthy
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Stealthy
+  effect: A Scout may deploy twice the distance onto the battlefield than other warriors and may start the battle Hiding.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchwomen / 0 – 3 Scouts / Special Rules / Stealthy
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  name_i18n:
+    en: Stealthy
+    es: null
+  effect_i18n:
+    en: A Scout may deploy twice the distance onto the battlefield than other warriors and may start the battle Hiding.
+    es: null
+  applies_to:
+    profile_ids:
+    - scouts
+- id: band--sacrifice
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.amazons-mordheim.band.sacrifice
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Sacrifice
+  effect: The Amazons are quick to sacrifice any captive to their gods. The Amazons follow the rules for Possessed in the
+    Rulebook when it comes to captives.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Sacrifice
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  name_i18n:
+    en: Sacrifice
+    es: null
+  effect_i18n:
+    en: The Amazons are quick to sacrifice any captive to their gods. The Amazons follow the rules for Possessed in the Rulebook
+      when it comes to captives.
+    es: null
+  applies_to:
+    band: true
+- id: band--not-one-of-us
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.amazons-mordheim.band.not-one-of-us
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Not one of us
+  effect: Due to the Amazons’ isolationism and suspicions about other races they never side with anyone else. For this reason,
+    the Amazons may not have any Hired Swords or Dramatis Personae unless they are actually Amazons themselves.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Not one of us
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  name_i18n:
+    en: Not one of us
+    es: null
+  effect_i18n:
+    en: Due to the Amazons’ isolationism and suspicions about other races they never side with anyone else. For this reason,
+      the Amazons may not have any Hired Swords or Dramatis Personae unless they are actually Amazons themselves.
+    es: null
+  applies_to:
+    band: true
+- id: band--human-maximum-characteristics
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.amazons-mordheim.band.human-maximum-characteristics
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Human maximum characteristics
+  effect: Although outsiders consider the Amazons to be immortal, the maximum characteristics for each type will be the same
+    as any other human warband.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Choice of warriors
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  name_i18n:
+    en: Human maximum characteristics
+    es: null
+  effect_i18n:
+    en: Although outsiders consider the Amazons to be immortal, the maximum characteristics for each type will be the same
+      as any other human warband.
+    es: null
+  applies_to:
+    band: true

@@ -1,0 +1,50 @@
+schema_version: 2
+id: amazons-mordheim
+canonical_family: amazons-mordheim
+name: Amazons (Mordheim)
+name_i18n:
+  en: Amazons (Mordheim)
+  es: null
+original_locale: en
+ruleset: mordheim
+categories:
+- 1b
+grade: 1b
+setting: Mordheim
+publication: 'Town Cryer #23'
+status: source-normalized
+sources:
+- manual: mordheimer.net
+  printed_page: 0
+  section: Amazons (Mordheim)
+  url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: priestess
+    minimum: 1
+    maximum: 1
+  - profile_id: champions
+    minimum: 0
+    maximum: 2
+  - profile_id: totem-warriors
+    minimum: 0
+    maximum: 2
+  - profile_id: amazon-warriors
+    minimum: 1
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: scouts
+    minimum: 0
+    maximum: 3
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--sacrifice
+- band--not-one-of-us
+- band--human-maximum-characteristics

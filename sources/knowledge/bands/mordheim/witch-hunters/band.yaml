@@ -1,0 +1,54 @@
+schema_version: 2
+id: witch-hunters
+canonical_family: witch-hunters
+name: Witch Hunters
+name_i18n:
+  en: Witch Hunters
+  es: null
+original_locale: en
+ruleset: mordheim
+categories:
+- core
+grade: core
+setting: Mordheim
+publication: Mordheim Rulebook
+status: source-normalized
+sources:
+- manual: mordheimer.net
+  printed_page: 0
+  section: Witch Hunters
+  url: https://mordheimer.net/docs/warbands/grade-1a-warbands/witch-hunters
+roster:
+  minimum_models: 3
+  maximum_models: 12
+  starting_gold: 500
+  members:
+  - profile_id: witch-hunter-captain
+    minimum: 1
+    maximum: 1
+  - profile_id: witch-hunters
+    minimum: 0
+    maximum: 3
+  - profile_id: warrior-priest
+    minimum: 0
+    maximum: 1
+  - profile_id: flagellants
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: zealots
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: war-hounds
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--human-maximum-characteristics

@@ -1,0 +1,2386 @@
+schema_version: 2
+ruleset: mordheim
+catalog: campaign-hired-swords-and-dramatis
+status: draft
+availability_procedures:
+- id: campaign.hireling.availability.dramatis-search
+  type: characteristic_test
+  actor: eligible_hero
+  characteristic: initiative
+  dice:
+    count: 1
+    sides: 6
+  success_when: roll_less_than_characteristic
+hired_swords:
+- id: campaign.hireling.hired-sword.arabian-merchant
+  profile_id: hireling.hired-sword.arabian-merchant
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 20
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 10
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Arabian Merchant
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  eligibility:
+    allow_groups:
+    - warband-group.good-aligned
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.bard
+  profile_id: hireling.hired-sword.bard
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 20
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 10
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Bard
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids:
+    - mercenaries
+    - sisters-of-sigmar
+    - trollheim-mercenaries
+    - trollheim-witch-hunters
+    - witch-hunters
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.beast-hunter
+  profile_id: hireling.hired-sword.beast-hunter
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 35
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Beast Hunter
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.beastmen
+    - warband-group.undead
+    - warband-group.orcs-and-goblins
+    allow_band_ids: []
+    forbid_band_ids:
+    - carnival-of-chaos
+    - cult-of-the-possessed
+    - trollheim-cult-of-the-possessed
+- id: campaign.hireling.hired-sword.beggar
+  profile_id: hireling.hired-sword.beggar
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 10
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 5
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Beggar
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.big-game-hunter
+  profile_id: hireling.hired-sword.big-game-hunter
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 40
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 18
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Big Game Hunter
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.black-orc-overseer
+  profile_id: hireling.hired-sword.black-orc-overseer
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 60
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 40
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Black Orc Overseer
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.orcs-and-goblins
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.bone-goliath
+  profile_id: hireling.hired-sword.bone-goliath
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 225
+  upkeep: null
+  availability:
+    kind: construction
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Bone Goliath
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids:
+    - restless-dead
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.bounty-hunter
+  profile_id: hireling.hired-sword.bounty-hunter
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 40
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Bounty Hunter
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.undead
+    - warband-group.skaven
+    - warband-group.orc
+    allow_band_ids: []
+    forbid_band_ids:
+    - cult-of-the-possessed
+    - trollheim-cult-of-the-possessed
+- id: campaign.hireling.hired-sword.cathayan-merchant
+  profile_id: hireling.hired-sword.cathayan-merchant
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 20
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 10
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Cathayan Merchant
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+- id: campaign.hireling.hired-sword.chameleon-skink
+  profile_id: hireling.hired-sword.chameleon-skink
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 70
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 12
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Chameleon Skink
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.lizardmen
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.chaos-centaur
+  profile_id: hireling.hired-sword.chaos-centaur
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 65
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 25
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Chaos Centaur
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+  eligibility:
+    allow_groups:
+    - warband-group.beastmen
+    - warband-group.ogre
+    - warband-group.norse
+    forbid_groups: []
+    allow_band_ids:
+    - marauders-of-chaos
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.chaos-fury
+  profile_id: hireling.hired-sword.chaos-fury
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 20
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Chaos Fury
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups:
+    - warband-group.chaotic
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.clan-skryre-rat-ogre
+  profile_id: hireling.hired-sword.clan-skryre-rat-ogre
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 100
+  upkeep:
+    resources:
+      wyrdstone_fragments:
+        cost: 1
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Clan Skryre Rat Ogre
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.skaven
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.coachman
+  profile_id: hireling.hired-sword.coachman
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 20
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 10
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Coachman
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.beastmen
+    - warband-group.orcs-and-goblins
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.cursed-hillman
+  profile_id: hireling.hired-sword.cursed-hillman
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 60
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 25
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Cursed Hillman
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups:
+    - warband-group.undead
+    - warband-group.beastmen
+    forbid_groups: []
+    allow_band_ids:
+    - cult-of-the-possessed
+    - trollheim-cult-of-the-possessed
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.dark-elf-assassin
+  profile_id: hireling.hired-sword.dark-elf-assassin
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 70
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 25
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dark Elf Assassin
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.evil
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.dark-mage
+  profile_id: hireling.hired-sword.dark-mage
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 35
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dark Mage
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups:
+    - warband-group.good-aligned
+    forbid_groups:
+    - warband-group.undead
+    allow_band_ids:
+    - mercenaries
+    - trollheim-mercenaries
+    forbid_band_ids:
+    - sisters-of-sigmar
+    - trollheim-witch-hunters
+    - witch-hunters
+- id: campaign.hireling.hired-sword.duellist
+  profile_id: hireling.hired-sword.duellist
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 35
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Duellist
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.undead
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.dwarf-pathfinder
+  profile_id: hireling.hired-sword.dwarf-pathfinder
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 35
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Pathfinder
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.dwarf
+    - warband-group.human
+    forbid_groups:
+    - warband-group.chaotic
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.dwarf-slayer-pirate
+  profile_id: hireling.hired-sword.dwarf-slayer-pirate
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Slayer Pirate
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids:
+    - averlanders
+    - chaos-streets-dwarf-treasure-hunters
+    - dwarf-treasure-hunters
+    - hochland-bandits
+    - kislevites
+    - lustria-pirates
+    - lustria-tileans
+    - mercenaries
+    - ostlanders
+    - pirates
+    - tileans
+    - trollheim-mercenaries
+    - trollheim-witch-hunters
+    - witch-hunters
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.dwarf-treasure-hunter
+  profile_id: hireling.hired-sword.dwarf-treasure-hunter
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 55
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Treasure Hunter
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: campaign.hireling.hired-sword.dwarf-troll-slayer
+  profile_id: hireling.hired-sword.dwarf-troll-slayer
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 25
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 10
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Troll Slayer
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: campaign.hireling.hired-sword.elf-mage
+  profile_id: hireling.hired-sword.elf-mage
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 45
+  upkeep: null
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Elf Mage
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids:
+    - mercenaries
+    - trollheim-mercenaries
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.elf-ranger
+  profile_id: hireling.hired-sword.elf-ranger
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 40
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 20
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Elf Ranger
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: campaign.hireling.hired-sword.emissary-of-chaos
+  profile_id: hireling.hired-sword.emissary-of-chaos
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 50
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 20
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Emissary of Chaos
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups:
+    - warband-group.dark-elf
+    - warband-group.norse
+    - warband-group.beastmen
+    forbid_groups: []
+    allow_band_ids:
+    - carnival-of-chaos
+    - cult-of-the-possessed
+    - trollheim-cult-of-the-possessed
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.estalian-diestro
+  profile_id: hireling.hired-sword.estalian-diestro
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 35
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Estalian Diestro
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.chaotic
+    - warband-group.undead
+    allow_band_ids: []
+    forbid_band_ids:
+    - lustria-tileans
+    - ostlanders
+    - tileans
+- id: campaign.hireling.hired-sword.freelancer
+  profile_id: hireling.hired-sword.freelancer
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 50
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 20
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Freelancer
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids:
+    - mercenaries
+    - trollheim-mercenaries
+    - trollheim-witch-hunters
+    - witch-hunters
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.gaoler
+  profile_id: hireling.hired-sword.gaoler
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Gaoler
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids:
+    - trollheim-witch-hunters
+    - witch-hunters
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.goblin-lantern-bearer
+  profile_id: hireling.hired-sword.goblin-lantern-bearer
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 15
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 5
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Goblin Lantern Bearer
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.grave-robber
+  profile_id: hireling.hired-sword.grave-robber
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 45
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 18
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Grave Robber
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+- id: campaign.hireling.hired-sword.gravesman
+  profile_id: hireling.hired-sword.gravesman
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 25
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Gravesman
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.undead
+    allow_band_ids: []
+    forbid_band_ids:
+    - carnival-of-chaos
+- id: campaign.hireling.hired-sword.halfling-knight
+  profile_id: hireling.hired-sword.halfling-knight
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 20
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 10
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Halfling Knight
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups:
+    - warband-group.good-aligned
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.halfling-scout
+  profile_id: hireling.hired-sword.halfling-scout
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 15
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 5
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Halfling Scout
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.undead
+    allow_band_ids: []
+    forbid_band_ids:
+    - cult-of-the-possessed
+    - trollheim-cult-of-the-possessed
+- id: campaign.hireling.hired-sword.halfling-thief
+  profile_id: hireling.hired-sword.halfling-thief
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 25
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Halfling Thief
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.human-mercenary
+    - warband-group.dwarf
+    - warband-group.elf
+    forbid_groups: []
+    allow_band_ids:
+    - kislevites
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.highwayman
+  profile_id: hireling.hired-sword.highwayman
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 35
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 20
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Highwayman
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  eligibility:
+    expression:
+      not:
+        any_of:
+        - band_id: sisters-of-sigmar
+        - band_id: trollheim-witch-hunters
+        - band_id: witch-hunters
+        - all_of:
+          - group_id: warband-group.good-aligned
+          - group_id: warband-group.elf
+- id: campaign.hireling.hired-sword.hobgoblin-scout
+  profile_id: hireling.hired-sword.hobgoblin-scout
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 45
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 20
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Hobgoblin Scout
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+  eligibility:
+    allow_groups:
+    - warband-group.chaos-dwarf
+    - warband-group.ogre
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.human-scout
+  profile_id: hireling.hired-sword.human-scout
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 10
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 5
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Human Scout
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.orcs-and-goblins
+    - warband-group.beastmen
+    allow_band_ids: []
+    forbid_band_ids:
+    - cult-of-the-possessed
+    - trollheim-cult-of-the-possessed
+- id: campaign.hireling.hired-sword.imperial-assassin
+  profile_id: hireling.hired-sword.imperial-assassin
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 40
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 20
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Imperial Assassin
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.orcs-and-goblins
+    - warband-group.skaven
+    allow_band_ids: []
+    forbid_band_ids:
+    - sisters-of-sigmar
+    - trollheim-witch-hunters
+    - witch-hunters
+- id: campaign.hireling.hired-sword.imperial-tactician
+  profile_id: hireling.hired-sword.imperial-tactician
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 40
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 20
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Imperial Tactician
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.kislev-ranger
+  profile_id: hireling.hired-sword.kislev-ranger
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Kislev Ranger
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.dwarf
+    forbid_groups: []
+    allow_band_ids:
+    - mercenaries
+    - trollheim-mercenaries
+    - trollheim-witch-hunters
+    - witch-hunters
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.knight-of-the-white-wolf
+  profile_id: hireling.hired-sword.knight-of-the-white-wolf
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 55
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 20
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Knight of the White Wolf
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups:
+    - warband-group.human-mercenary
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.mule-skinner
+  profile_id: hireling.hired-sword.mule-skinner
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 35
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Mule Skinner
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.undead
+    allow_band_ids: []
+    forbid_band_ids:
+    - cult-of-the-possessed
+    - trollheim-cult-of-the-possessed
+- id: campaign.hireling.hired-sword.ninja
+  profile_id: hireling.hired-sword.ninja
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 70+3D6
+  upkeep: null
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Ninja
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.orcs-and-goblins
+    - warband-group.beastmen
+    - warband-group.norse
+    - warband-group.chaos-dwarf
+    allow_band_ids: []
+    forbid_band_ids:
+    - marauders-of-chaos
+- id: campaign.hireling.hired-sword.ninja-gnoblar
+  profile_id: hireling.hired-sword.ninja-gnoblar
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 35
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 10
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Ninja Gnoblar
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.ogre
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.nomad-scout
+  profile_id: hireling.hired-sword.nomad-scout
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Nomad Scout
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.norse-shaman
+  profile_id: hireling.hired-sword.norse-shaman
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 45
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 25
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Norse Shaman
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    - warband-group.norse
+    forbid_groups: []
+    allow_band_ids:
+    - marauders-of-chaos
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.ogre-bodyguard
+  profile_id: hireling.hired-sword.ogre-bodyguard
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 80
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Ogre Bodyguard
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.ogre-slave-master
+  profile_id: hireling.hired-sword.ogre-slave-master
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 90
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 35
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Ogre Slave Master
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups:
+    - warband-group.beastmen
+    forbid_groups: []
+    allow_band_ids:
+    - carnival-of-chaos
+    - cult-of-the-possessed
+    - trollheim-cult-of-the-possessed
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.old-prospector
+  profile_id: hireling.hired-sword.old-prospector
+  hiring_fee:
+    resources:
+      treasures:
+        cost: 2
+  upkeep:
+    resources:
+      treasures:
+        cost: 1
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Old Prospector
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.dwarf
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.pathfinder
+  profile_id: hireling.hired-sword.pathfinder
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 60
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Pathfinder
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.pit-fighter
+  profile_id: hireling.hired-sword.pit-fighter
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Pit Fighter
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.undead
+    - warband-group.skaven
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.priest-of-morr
+  profile_id: hireling.hired-sword.priest-of-morr
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 35
+  upkeep: null
+  availability:
+    kind: hero_replacement
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Priest Of Morr
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids:
+    - mercenaries
+    - trollheim-mercenaries
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.pyromaniac
+  profile_id: hireling.hired-sword.pyromaniac
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 25
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 10
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Pyromaniac
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids:
+    - battle-monks-of-cathay
+    - mercenaries
+    - merchant-caravans
+    - trollheim-mercenaries
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.roadwarden
+  profile_id: hireling.hired-sword.roadwarden
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 40
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 20
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Roadwarden
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  eligibility:
+    allow_groups:
+    - warband-group.good-aligned
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.runesmith-journeyman
+  profile_id: hireling.hired-sword.runesmith-journeyman
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Runesmith Journeyman
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: campaign.hireling.hired-sword.shadow-warrior
+  profile_id: hireling.hired-sword.shadow-warrior
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 35
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Shadow Warrior
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.high-elf
+    - warband-group.human
+    forbid_groups:
+    - warband-group.evil
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.slaver
+  profile_id: hireling.hired-sword.slaver
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 20
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 10
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Slaver
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups:
+    - warband-group.evil
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.snake-charmer
+  profile_id: hireling.hired-sword.snake-charmer
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 40
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 10
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Snake Charmer
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.good-aligned
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.swashbuckler
+  profile_id: hireling.hired-sword.swashbuckler
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Swashbuckler
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.evil
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.swordsmith
+  profile_id: hireling.hired-sword.swordsmith
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 60
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Swordsmith
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids:
+    - battle-monks-of-cathay
+    - mercenaries
+    - merchant-caravans
+    - sisters-of-sigmar
+    - trollheim-mercenaries
+    - trollheim-witch-hunters
+    - witch-hunters
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.the-fallen-sister
+  profile_id: hireling.hired-sword.the-fallen-sister
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 55
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / The Fallen Sister
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.undead
+    allow_band_ids: []
+    forbid_band_ids:
+    - sisters-of-sigmar
+    - trollheim-witch-hunters
+    - witch-hunters
+- id: campaign.hireling.hired-sword.thief
+  profile_id: hireling.hired-sword.thief
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Thief
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.undead
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.tilean-marksman
+  profile_id: hireling.hired-sword.tilean-marksman
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Tilean Marksman
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.orc
+    - warband-group.undead
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.tomb-robber
+  profile_id: hireling.hired-sword.tomb-robber
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Tomb Robber
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.good-aligned
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.ungor-trapper
+  profile_id: hireling.hired-sword.ungor-trapper
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 20
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 10
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Ungor Trapper
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups:
+    - warband-group.beastmen
+    - warband-group.norse
+    forbid_groups: []
+    allow_band_ids:
+    - cult-of-the-possessed
+    - marauders-of-chaos
+    - trollheim-cult-of-the-possessed
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.warlock
+  profile_id: hireling.hired-sword.warlock
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Warlock
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids:
+    - sisters-of-sigmar
+    - trollheim-witch-hunters
+    - witch-hunters
+- id: campaign.hireling.hired-sword.warrior-priest-of-sigmar
+  profile_id: hireling.hired-sword.warrior-priest-of-sigmar
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 40
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 20
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Warrior Priest Of Sigmar
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.evil
+    - warband-group.orcs-and-goblins
+    - warband-group.skaven
+    allow_band_ids: []
+    forbid_band_ids:
+    - cult-of-the-possessed
+    - trollheim-cult-of-the-possessed
+    - trollheim-witch-hunters
+    - witch-hunters
+- id: campaign.hireling.hired-sword.weaponsmith
+  profile_id: hireling.hired-sword.weaponsmith
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Weaponsmith
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.undead
+    - warband-group.skaven
+    - warband-group.orcs-and-goblins
+    - warband-group.beastmen
+    - warband-group.evil
+    allow_band_ids: []
+    forbid_band_ids:
+    - carnival-of-chaos
+    - cult-of-the-possessed
+    - trollheim-cult-of-the-possessed
+- id: campaign.hireling.hired-sword.witch
+  profile_id: hireling.hired-sword.witch
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Witch
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids:
+    - sisters-of-sigmar
+    - trollheim-witch-hunters
+    - witch-hunters
+- id: campaign.hireling.hired-sword.witch-hunter
+  profile_id: hireling.hired-sword.witch-hunter
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Witch Hunter
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    forbid_groups:
+    - warband-group.chaotic
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.wolf-priest-of-ulric
+  profile_id: hireling.hired-sword.wolf-priest-of-ulric
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 60
+  upkeep: null
+  availability:
+    kind: hero_replacement
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Wolf Priest of Ulric
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.human-mercenary
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.hired-sword.wood-elf-hunter
+  profile_id: hireling.hired-sword.wood-elf-hunter
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 50
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 20
+  availability:
+    kind: common
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Wood Elf Hunter
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  eligibility:
+    allow_groups:
+    - warband-group.good-aligned
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+dramatis_personae:
+- id: campaign.hireling.dramatis.abdul-alhazred-the-mad-sorcerer
+  profile_id: hireling.dramatis.abdul-alhazred-the-mad-sorcerer
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 70
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Abdul Alhazred, the Mad Sorcerer
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids:
+    - sisters-of-sigmar
+    - trollheim-witch-hunters
+    - witch-hunters
+- id: campaign.hireling.dramatis.aenur
+  profile_id: hireling.dramatis.aenur
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 150
+  upkeep: null
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Aenur, the Sword of Twilight
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.undead
+    allow_band_ids: []
+    forbid_band_ids:
+    - cult-of-the-possessed
+    - trollheim-cult-of-the-possessed
+- id: campaign.hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne
+  profile_id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30
+  availability:
+    kind: summoning
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Aksho'akhash the Vile Dreadwing, Lord of the Carrion Throne
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+  eligibility:
+    allow_groups:
+    - warband-group.chaotic
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.bertha-bestraufrung
+  profile_id: hireling.dramatis.bertha-bestraufrung
+  hiring_fee: null
+  upkeep: null
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Bertha Bestraufrung, High Matriarch of the Sisterhood
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids:
+    - sisters-of-sigmar
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.busty-gwen
+  profile_id: hireling.dramatis.busty-gwen
+  hiring_fee: null
+  upkeep: null
+  availability:
+    kind: special_scenario
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / “Busty” Gwen
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.countess-marianna-chevaux-vampire-assassin
+  profile_id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 150
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 75
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Countess Marianna Chevaux, Vampire Assassin
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.sigmar-devoted
+    - warband-group.undead
+    - warband-group.elf
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.crow-master-the
+  profile_id: hireling.dramatis.crow-master-the
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 65
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Crow Master, The
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.dwarf
+    - warband-group.elf
+    allow_band_ids: []
+    forbid_band_ids:
+    - sisters-of-sigmar
+    - trollheim-witch-hunters
+    - witch-hunters
+- id: campaign.hireling.dramatis.dark-emissary
+  profile_id: hireling.dramatis.dark-emissary
+  hiring_fee: null
+  upkeep: null
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Dark Emissary
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.evil
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.dijin-katal-the-renegade-assassin
+  profile_id: hireling.dramatis.dijin-katal-the-renegade-assassin
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 85
+  upkeep: null
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Dijin Katal, The Renegade Assassin
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids:
+    - amazons-lustria
+    - amazons-mordheim
+    - chaos-streets-sons-of-nagarythe
+    - dark-elves
+    - lustria-amazons
+    - lustria-dark-elves
+    - shadow-warriors
+- id: campaign.hireling.dramatis.drenok-johansen-wielder-of-the-great-axe
+  profile_id: hireling.dramatis.drenok-johansen-wielder-of-the-great-axe
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 70
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Drenok Johansen, Wielder Of The Great Axe
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.norse
+    - warband-group.human
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.grand-master-ippan-shu
+  profile_id: hireling.dramatis.grand-master-ippan-shu
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 75
+      campaign_points:
+        cost: 3
+  upkeep:
+    resources:
+      campaign_points:
+        cost: 2
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Grand Master Ippan Shu
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids:
+    - dark-elves
+    - hochland-bandits
+    - lustria-dark-elves
+    - outlaws-of-stirwood-forest
+- id: campaign.hireling.dramatis.heinrich-altdorf-schmidt
+  profile_id: hireling.dramatis.heinrich-altdorf-schmidt
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 75
+  upkeep:
+    resources:
+      treasures:
+        cost: 1
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Heinrich 'Altdorf' Schmidt
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.innominatus-the-tilean-gladiator
+  profile_id: hireling.dramatis.innominatus-the-tilean-gladiator
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 120
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 40
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Innominatus, the Tilean Gladiator
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.dark-elf
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.johann-the-knife
+  profile_id: hireling.dramatis.johann-the-knife
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 70
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Johann the Knife
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.undead
+    allow_band_ids: []
+    forbid_band_ids:
+    - cult-of-the-possessed
+    - trollheim-cult-of-the-possessed
+- id: campaign.hireling.dramatis.khar-mel-the-djinn
+  profile_id: hireling.dramatis.khar-mel-the-djinn
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 80
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30
+  availability:
+    kind: summoning
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Khar-mel The Djinn
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.luthor-the-looter
+  profile_id: hireling.dramatis.luthor-the-looter
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 60
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 25
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Luthor the Looter
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.maglah-khan-s-horde
+  profile_id: hireling.dramatis.maglah-khan-s-horde
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 80
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 25
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Maglah Khan's Horde
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
+  eligibility:
+    allow_groups:
+    - warband-group.orcs-and-goblins
+    - warband-group.ogre
+    - warband-group.chaos-dwarf
+    - warband-group.norse
+    - warband-group.beastmen
+    forbid_groups: []
+    allow_band_ids:
+    - cult-of-the-possessed
+    - marauders-of-chaos
+    - mercenaries
+    - trollheim-cult-of-the-possessed
+    - trollheim-mercenaries
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.maximilian-the-mad
+  profile_id: hireling.dramatis.maximilian-the-mad
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 80
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Maximilian The Mad
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.dwarf
+    - warband-group.human
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids:
+    - carnival-of-chaos
+    - cult-of-the-possessed
+    - horned-hunters
+    - sisters-of-sigmar
+    - trollheim-cult-of-the-possessed
+- id: campaign.hireling.dramatis.nicodemus-the-cursed-pilgrim
+  profile_id: hireling.dramatis.nicodemus-the-cursed-pilgrim
+  hiring_fee:
+    resources:
+      wyrdstone_fragments:
+        cost: 1
+  upkeep:
+    resources:
+      wyrdstone_fragments:
+        cost: 1
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Nicodemus, the cursed pilgrim
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.undead
+    allow_band_ids: []
+    forbid_band_ids:
+    - cult-of-the-possessed
+    - trollheim-cult-of-the-possessed
+    - trollheim-witch-hunters
+    - witch-hunters
+- id: campaign.hireling.dramatis.penthesilea-mark-of-the-serpent
+  profile_id: hireling.dramatis.penthesilea-mark-of-the-serpent
+  hiring_fee: null
+  upkeep: null
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Penthesilea, Mark Of The Serpent
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids:
+    - amazons-lustria
+    - amazons-mordheim
+    - lustria-amazons
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.sigmund-spindle-the-harvester-of-flesh
+  profile_id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 70
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 35
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Sigmund Spindle, the Harvester of Flesh
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+  eligibility:
+    allow_groups:
+    - warband-group.evil
+    - warband-group.chaotic
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.the-dark-jester-in-mordheim
+  profile_id: hireling.dramatis.the-dark-jester-in-mordheim
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 75
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / The Dark Jester in Mordheim
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids:
+    - carnival-of-chaos
+    - cult-of-the-possessed
+    - trollheim-cult-of-the-possessed
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.the-foole
+  profile_id: hireling.dramatis.the-foole
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 40
+  upkeep: null
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / The Foole
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+  eligibility:
+    expression:
+      any_of:
+      - group_id: warband-group.human-mercenary
+      - not:
+          group_id: warband-group.good-aligned
+- id: campaign.hireling.dramatis.truthsayer
+  profile_id: hireling.dramatis.truthsayer
+  hiring_fee: null
+  upkeep: null
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Truthsayer
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+  eligibility:
+    allow_groups:
+    - warband-group.good-aligned
+    forbid_groups: []
+    allow_band_ids:
+    - mercenaries
+    - sisters-of-sigmar
+    - trollheim-mercenaries
+    - trollheim-witch-hunters
+    - witch-hunters
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.veskit
+  profile_id: hireling.dramatis.veskit
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 80
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 35
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Veskit, High Executioner of Clan Eshin
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  eligibility:
+    allow_groups:
+    - warband-group.skaven
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+- id: campaign.hireling.dramatis.william-schakestange-master-bard
+  profile_id: hireling.dramatis.william-schakestange-master-bard
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 70
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / William Schäkestange, Master Bard
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+  eligibility:
+    expression:
+      any_of:
+      - group_id: warband-group.human-mercenary
+      - band_id: sisters-of-sigmar
+      - band_id: trollheim-witch-hunters
+      - band_id: witch-hunters
+      - group_id: warband-group.good-aligned
+effect_ids:
+- campaign.hireling.availability
+- campaign.hireling.hire
+- campaign.hireling.upkeep
+eligibility_semantics:
+  simple_lists:
+    allow: If both allow lists are empty, there is no positive static band filter. Otherwise the band must match at least one allow_group or allow_band_id.
+    forbid: A match in any forbid_group or forbid_band_id rejects the hire.
+    precedence: forbid
+  expression:
+    purpose: Complete static eligibility predicate for cases that require boolean composition.
+    leaf_fields:
+    - group_id
+    - band_id
+    operators:
+    - all_of
+    - any_of
+    - not
+    mutual_exclusion: When expression is present, allow/forbid lists are not used for that entry.
+  dynamic_checks: Current-roster composition, current Hired Swords and selected warband variants are profile rules. The application that builds/manages the campaign roster evaluates those rules.

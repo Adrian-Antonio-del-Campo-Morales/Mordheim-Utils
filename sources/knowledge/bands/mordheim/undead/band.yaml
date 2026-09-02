@@ -1,0 +1,54 @@
+schema_version: 2
+id: undead
+canonical_family: undead
+name: The Undead
+name_i18n:
+  en: The Undead
+  es: null
+original_locale: en
+ruleset: mordheim
+categories:
+- core
+grade: core
+setting: Mordheim
+publication: Mordheim Rulebook
+status: source-normalized
+sources:
+- manual: mordheimer.net
+  printed_page: 0
+  section: The Undead
+  url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: vampire
+    minimum: 1
+    maximum: 1
+  - profile_id: necromancer
+    minimum: 0
+    maximum: 1
+  - profile_id: dregs
+    minimum: 0
+    maximum: 3
+  - profile_id: ghouls
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: dire-wolves
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: zombies
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--undead-maximum-characteristics

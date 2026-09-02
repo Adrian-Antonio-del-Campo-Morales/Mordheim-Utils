@@ -1,0 +1,28 @@
+schema_version: 2
+ruleset: mordheim
+rules:
+- id: combat-order
+  name: Combat order
+  effect: Charge and other strike-first effects resolve before normal Initiative order; a warrior who stood up in the Recovery
+    phase strikes last.
+  source_url: https://mordheimer.net/docs/rules/close-combat
+- id: combat-two-weapons
+  name: Fighting with two weapons
+  effect: Two one-handed weapons grant one additional Attack after other modifiers. When weapons differ, choose one for a
+    single attack and use the other for all remaining attacks.
+  source_url: https://mordheimer.net/docs/rules/close-combat
+- id: combat-parry
+  name: Parry
+  effect: A sword or buckler can parry one hit by beating the attacker's hit roll; a natural 6 cannot be parried. Sword plus
+    buckler rerolls a failed parry, but two swords do not grant two attempts.
+  source_url: https://mordheimer.net/docs/rules/close-combat
+- id: combat-critical-hits
+  name: Critical hits
+  effect: A natural 6 to wound is critical unless a 6 was required. A warrior causes at most one critical hit per close-combat
+    phase.
+  source_url: https://mordheimer.net/docs/rules/close-combat
+- id: combat-injury-states
+  name: Injury states
+  effect: 'At zero Wounds, resolve each injury and apply the highest result: 1-2 knocked down, 3-4 stunned, 5-6 out of action.
+    A knocked-down warrior that stands up strikes last that turn.'
+  source_url: https://mordheimer.net/docs/rules/wounds-and-injuries

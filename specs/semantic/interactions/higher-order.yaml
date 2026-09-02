@@ -1,0 +1,249 @@
+schema_version: 1
+specifications:
+- id: concussion-no-pain-jump-up
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/weapon.mace
+    digest: 8bd3ca5bc3d4418757c689510280b1a6f351b3c4565f11497f181c94fa3fc2ee
+  - target: mechanic/skill.ignore-pain
+    digest: 38aff21454539c3b866e4b04592950668da23cf87004c9def80eaf2f8f5b75ae
+  - target: mechanic/skill.jump-up
+    digest: 0ddeeeffb0d9b1435c8b575dca91af2981daedcbc841bd875c240ecb9ccf7ccd
+  bindings:
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'Track why Knocked Down was produced: No Pain conversions must not be cancelled by Jump Up after
+    the table or Concussion has selected Stunned.'
+  cases:
+  - id: face-1
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STANDING
+  - id: face-2
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-3
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-4
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-5
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  - id: face-6
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-no-pain-conversion
+    path: defender.global_effects.tags
+    value:
+    - skill.jump-up
+    cases:
+    - face-3
+- id: hard-to-kill-no-pain-jump-up
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.hard-to-kill
+    digest: b66c185a5a58b1f030ef4dc30f29ae0054d249281805410af7521c982cc88cd4
+  - target: mechanic/skill.ignore-pain
+    digest: 38aff21454539c3b866e4b04592950668da23cf87004c9def80eaf2f8f5b75ae
+  - target: mechanic/skill.jump-up
+    digest: 0ddeeeffb0d9b1435c8b575dca91af2981daedcbc841bd875c240ecb9ccf7ccd
+  bindings:
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'Track why Knocked Down was produced: No Pain conversions must not be cancelled by Jump Up after
+    the table or Concussion has selected Stunned.'
+  cases:
+  - id: face-1
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+      - skill.jump-up
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STANDING
+  - id: face-2
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+      - skill.jump-up
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STANDING
+  - id: face-3
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+      - skill.jump-up
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-4
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+      - skill.jump-up
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-5
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+      - skill.jump-up
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-6
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.ignore-pain
+      - skill.jump-up
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-no-pain-conversion
+    path: defender.global_effects.tags
+    value:
+    - skill.jump-up
+    - skill.hard-to-kill
+    cases:
+    - face-3

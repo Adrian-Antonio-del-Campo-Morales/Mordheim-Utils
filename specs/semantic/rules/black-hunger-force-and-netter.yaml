@@ -1,0 +1,214 @@
+schema_version: 1
+specifications:
+- id: mechanic-black-hunger
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/mechanic.black-hunger, digest: 2322961242e3ac4dc563c46834b5c753176b5ca2cbb290fe3e35eb5ed9e9bb30}
+  interpretation: Black Hunger añade un ataque mientras está activo y, al final, causa D3 impactos automáticos de Fuerza 3 que ignoran armadura.
+  cases:
+  - id: attack-bonus
+    roles: [compiled, active, consumer, boundary]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.black-hunger]}
+    expect: {attacker.global_effects.attacks_bonus: 1, result.attacks: 2}
+    expect_contains: {attacker.global_effects.tags: [mechanic.black-hunger]}
+  - id: one-backlash-hit
+    roles: [active, sequence, consumption, boundary]
+    operation: black_hunger
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.black-hunger]}
+    rolls: [{key: test.black-hunger.hits, sides: 3, value: 1}, {key: test.black-hunger.hit.0.wound, value: 4}]
+    expect: {result.attacker.wounds: 2, result.attacks.0.wounded: true}
+  - id: three-failed-wounds
+    roles: [boundary, sequence, consumption]
+    operation: black_hunger
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.black-hunger]}
+    rolls:
+    - {key: test.black-hunger.hits, sides: 3, value: 3}
+    - {key: test.black-hunger.hit.0.wound, value: 1}
+    - {key: test.black-hunger.hit.1.wound, value: 1}
+    - {key: test.black-hunger.hit.2.wound, value: 1}
+    expect: {result.attacker.wounds: 3, result.attacks.0.wounded: false, result.attacks.1.wounded: false, result.attacks.2.wounded: false}
+  - id: inactive-fighter
+    roles: [inactive]
+    operation: black_hunger
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.black-hunger]}
+    attacker_state: {condition: OUT}
+    expect: {result.attacker.wounds: 3, result.attacks: []}
+  mutations:
+  - {id: remove-black-hunger, path: attacker.global_effects.tags, value: [], cases: [one-backlash-hit]}
+
+- id: mechanic-force-of-will
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/mechanic.force-of-will, digest: a4d3209047c07c7fcd3601e5228809632291e7a1953f27be1d1d77781ce13bee}
+  interpretation: Force of Will intenta rescatar una sola vez el primer Out of Action con Resistencia y exige después chequeos acumulativos con -1 adicional por ronda.
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.force-of-will]}
+    expect: {attacker.global_effects.strength_bonus: 0}
+    expect_contains: {attacker.global_effects.tags: [mechanic.force-of-will]}
+  - id: rescue-success
+    roles: [active, sequence, consumption, boundary]
+    operation: force_of_will
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.force-of-will]}
+    attacker_state: {condition: OUT, wounds: 0}
+    rolls: [{key: test.force.rescue, value: 3}]
+    expect: {result.condition: STANDING, result.wounds: 1, result.force_of_will_active: true, result.resources_spent: [force-of-will]}
+  - id: rescue-failure
+    roles: [boundary, consumption]
+    operation: force_of_will
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.force-of-will]}
+    attacker_state: {condition: OUT, wounds: 0}
+    rolls: [{key: test.force.rescue, value: 4}]
+    expect: {result.condition: OUT, result.force_of_will_active: false, result.resources_spent: [force-of-will]}
+  - id: sustain-success
+    roles: [active, sequence, boundary]
+    operation: force_of_will
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.force-of-will]}
+    attacker_state: {force_of_will_active: true, force_of_will_penalty: 0, resources_spent: [force-of-will]}
+    context: {sustain: true}
+    rolls: [{key: test.force.sustain, value: 2}]
+    expect: {result.condition: STANDING, result.force_of_will_active: true, result.force_of_will_penalty: 1}
+  - id: ordinary-inactive
+    roles: [inactive]
+    operation: force_of_will
+    attacker: {main_weapon_id: weapon.mace}
+    attacker_state: {condition: OUT, wounds: 0}
+    expect: {result.condition: OUT, result.resources_spent: []}
+  mutations:
+  - {id: remove-force, path: attacker.global_effects.tags, value: [], cases: [rescue-success, rescue-failure]}
+
+- id: mechanic-netter
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/mechanic.netter, digest: cb9427cb4a627f5f18ffa5a1c7bf2c436a6013a317e2f7e04d1f0e7f0fb434dc}
+  interpretation: Netter tira para impactar con BS antes del combate y derriba al objetivo solamente si el impacto acierta y este falla su chequeo de Fuerza para escapar.
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    attacker: {band_id: night-goblins-mic, profile_id: big-boss, special_rule_ids: [band--night-goblin-special-skills-netter]}
+    expect: {attacker.ballistic_skill: 3}
+    expect_contains: {attacker.global_effects.tags: [mechanic.netter]}
+  - id: caught
+    roles: [active, sequence, consumption, boundary]
+    operation: netter
+    attacker: {band_id: night-goblins-mic, profile_id: big-boss, special_rule_ids: [band--night-goblin-special-skills-netter]}
+    rolls: [{key: test.netter.hit, value: 4}, {key: test.netter.escape, value: 4}]
+    expect: {result.condition: KNOCKED_DOWN}
+  - id: net-misses
+    roles: [inactive, boundary]
+    operation: netter
+    attacker: {band_id: night-goblins-mic, profile_id: big-boss, special_rule_ids: [band--night-goblin-special-skills-netter]}
+    rolls: [{key: test.netter.hit, value: 3}]
+    expect: {result.condition: STANDING}
+  - id: target-escapes
+    roles: [inactive, boundary]
+    operation: netter
+    attacker: {band_id: night-goblins-mic, profile_id: big-boss, special_rule_ids: [band--night-goblin-special-skills-netter]}
+    rolls: [{key: test.netter.hit, value: 4}, {key: test.netter.escape, value: 3}]
+    expect: {result.condition: STANDING}
+  mutations:
+  - {id: remove-netter, path: attacker.global_effects.tags, value: [], cases: [caught]}
+
+- id: editorial-black-hunger-variants
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/mordheim/skaven-clan-eshin/band--skaven-special-skills-black-hunger/mechanic.black-hunger, digest: dd57f3035255f41906171338aac2a1d24e15e8cf8168c55db6f164621939aa0a}
+  - {target: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger, digest: 405431f1a320b41573ff5094af57c760e9acf072787855176717ba3f83a4c681}
+  - {target: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger, digest: 80c0c6a2b9fda34ed3805f3b1c1c1c9ab4f386d56e5d7e3ac4e385dbaebda338}
+  - {target: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-black-hunger/mechanic.black-hunger, digest: f0f109a4d74b35f15e95f9706d9a33e93956efbb9c3745fd12d11471b388fab9}
+  depends_on: [mechanic/mechanic.black-hunger]
+  interpretation: Las cuatro reglas conceden Black Hunger a sus listas exactas de Héroes; las diferencias editoriales de Movimiento quedan fuera del duelo y comparten el mismo efecto de combate.
+  cases:
+  - id: eshin-mordheim
+    roles: [grant, accepted, rejected]
+    operation: selectable_grant
+    defender: {band_id: skaven-clan-eshin, profile_id: assassin-adept}
+    context: {rule_id: band--skaven-special-skills-black-hunger}
+    expect: {result.recipients: [assassin-adept, black-skaven, eshin-sorcerer, night-runners]}
+  - id: pestilens-mordheim
+    roles: [grant, accepted, rejected]
+    operation: selectable_grant
+    defender: {band_id: skaven-clan-pestilens, profile_id: plague-priest}
+    context: {rule_id: band--clan-pestilens-special-skills-black-hunger}
+    expect: {result.recipients: [monk-initiates, pestilens-sorcerer, plague-monks, plague-priest]}
+  - id: pestilens-lustria
+    roles: [grant, accepted, rejected]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: lustria-clan-pestilens, profile_id: plague-priest}
+    context: {rule_id: band--clan-pestilens-special-skills-black-hunger}
+    expect: {result.recipients: [monk-initiates, pestilens-sorcerer, plague-monks, plague-priest]}
+  - id: eshin-trollheim
+    roles: [grant, accepted, rejected]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: trollheim-skaven-clan-eshin, profile_id: assassin-adept}
+    context: {rule_id: band--skaven-special-skills-black-hunger}
+    expect: {result.recipients: [assassin-adept, black-skaven, eshin-sorcerer, night-runners]}
+  - id: selected-effect
+    roles: [accepted]
+    operation: attacks
+    attacker: {band_id: skaven-clan-eshin, profile_id: assassin-adept, special_rule_ids: [band--skaven-special-skills-black-hunger]}
+    expect: {attacker.global_effects.attacks_bonus: 1, result.attacks: 2}
+  mutations:
+  - {id: omit-black-hunger, path: attacker.global_effects.attacks_bonus, value: 0, cases: [selected-effect]}
+
+- id: editorial-force-of-will-variants
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/mordheim/pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will, digest: 7dc92f8c015737a1dea6fed33d96f911f7b6d0a422cf6bff80fb9ea4a36d17aa}
+  - {target: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will, digest: 09ef760ee98d7ded7659143be4af787211c214fe8639ad3c24a69370038f59b1}
+  depends_on: [mechanic/mechanic.force-of-will]
+  interpretation: Ambas ediciones conceden Force of Will exclusivamente a Dwarf Troll Slayer, Pit King y Pit Veterans y consumen el mismo rescate canónico.
+  cases:
+  - id: mordheim-recipients
+    roles: [grant, accepted, rejected]
+    operation: selectable_grant
+    defender: {band_id: pit-fighters, profile_id: pit-king}
+    context: {rule_id: band--pit-fighter-skill-force-of-will}
+    expect: {result.recipients: [dwarf-troll-slayer, pit-king, pit-veterans]}
+  - id: trollheim-recipients
+    roles: [grant, accepted, rejected]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: pit-king}
+    context: {rule_id: band--pit-fighter-skill-force-of-will}
+    expect: {result.recipients: [dwarf-troll-slayer, pit-king, pit-veterans]}
+  - id: selected-rescue
+    roles: [accepted]
+    operation: force_of_will
+    attacker: {band_id: pit-fighters, profile_id: pit-king, special_rule_ids: [band--pit-fighter-skill-force-of-will]}
+    attacker_state: {condition: OUT, wounds: 0}
+    rolls: [{key: test.force.rescue, value: 3}]
+    expect: {result.condition: STANDING, result.resources_spent: [force-of-will]}
+  mutations:
+  - {id: omit-force, path: attacker.global_effects.tags, value: [], cases: [selected-rescue]}
+
+- id: editorial-netter
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/mordheim/night-goblins-mic/band--night-goblin-special-skills-netter/mechanic.netter, digest: a7d8a2871be4f52a0c4ad10bb4fb40a6bcba2ebcc59acb360e47b105e14bd427}
+  depends_on: [mechanic/mechanic.netter]
+  interpretation: Netter solo puede seleccionarse para Big Boss y Bosses y proyecta el mecanismo de lanzamiento previo al combate.
+  cases:
+  - id: recipients
+    roles: [grant, accepted, rejected]
+    operation: selectable_grant
+    defender: {band_id: night-goblins-mic, profile_id: big-boss}
+    context: {rule_id: band--night-goblin-special-skills-netter}
+    expect: {result.recipients: [big-boss, bosses]}
+  - id: selected
+    roles: [accepted]
+    operation: netter
+    attacker: {band_id: night-goblins-mic, profile_id: big-boss, special_rule_ids: [band--night-goblin-special-skills-netter]}
+    rolls: [{key: test.netter.hit, value: 4}, {key: test.netter.escape, value: 4}]
+    expect: {result.condition: KNOCKED_DOWN}
+  mutations:
+  - {id: omit-netter, path: attacker.global_effects.tags, value: [], cases: [selected]}

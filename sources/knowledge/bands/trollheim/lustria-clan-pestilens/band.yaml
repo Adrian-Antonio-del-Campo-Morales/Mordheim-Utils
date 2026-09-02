@@ -1,0 +1,61 @@
+schema_version: 2
+id: lustria-clan-pestilens
+canonical_family: skaven-clan-pestilens
+name: Clan Pestilens
+name_i18n:
+  en: Clan Pestilens
+  es: null
+original_locale: es
+categories:
+- trollheim
+grade: null
+setting: Lustria
+publication: Lustria
+status: source-normalized
+sources:
+- manual: lustria
+  printed_page: 74-80
+  section: Clan Pestilens
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: plague-priest
+    minimum: 1
+    maximum: 1
+  - profile_id: pestilens-sorcerer
+    minimum: 0
+    maximum: 1
+  - profile_id: plague-monks
+    minimum: 0
+    maximum: 2
+  - profile_id: monk-initiates
+    minimum: 0
+    maximum: 2
+  - profile_id: plague-novices
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: giant-rats
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: rat-ogre
+    minimum: 0
+    maximum: 1
+    group_size:
+      minimum: 1
+      maximum: 1
+ruleset: mordheim
+rule_ids:
+- band--clan-pestilens-special-skills-black-hunger
+- band--clan-pestilens-special-skills-censer-bearer
+- band--clan-pestilens-special-skills-rotten-body
+- band--clan-pestilens-special-skills-contagious
+- band--clan-pestilens-special-skills-ignore-pain
+- band--clan-pestilens-special-skills-natural-climber

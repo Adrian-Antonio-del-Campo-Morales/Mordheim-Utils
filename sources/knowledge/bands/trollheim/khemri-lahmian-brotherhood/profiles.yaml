@@ -1,0 +1,375 @@
+schema_version: 2
+band_id: khemri-lahmian-brotherhood
+profiles:
+- id: lahmian-vampire
+  name: Lahmian Vampire
+  type: hero
+  cost: 110
+  experience: 20
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 5
+    A: 2
+    Ld: 8
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Use only the Undead Equipment List assigned by the selected Foreign or Native background.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: khemri
+    printed_page: 86
+    section: 1 Lahmian Vampire
+  source_path:
+  - heroes
+  - 1 Lahmian Vampire
+  name_i18n:
+    en: Lahmian Vampire
+    es: null
+  rule_ids:
+  - lahmian-vampire--leader
+  - lahmian-vampire--undead
+  - lahmian-vampire--local-knowledge
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: necromancer
+  name: Necromancer
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Use only the Undead Equipment List assigned by the selected Foreign or Native background.
+  - May not select the Snake Whip; it is restricted to the Lahmian Vampire and Blood Sister.
+  skill_access:
+  - academic
+  - speed
+  source:
+    manual: khemri
+    printed_page: 86
+    section: 0-1 Necromancer
+  source_path:
+  - heroes
+  - 0-1 Necromancer
+  name_i18n:
+    en: Necromancer
+    es: null
+  rule_ids:
+  - necromancer--wizard
+  combat_traits: {}
+- id: beloved
+  name: Beloved
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Use only the Beloved Equipment List assigned by the selected Foreign or Native background.
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  source:
+    manual: khemri
+    printed_page: 86
+    section: 0-1 Beloved
+  source_path:
+  - heroes
+  - 0-1 Beloved
+  name_i18n:
+    en: Beloved
+    es: null
+  rule_ids:
+  - beloved--devoted-to-the-vampire
+  - beloved--accustomed-to-fear
+  combat_traits: {}
+- id: blood-sister
+  name: Blood Sister
+  type: hero
+  cost: 55
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Use only the Undead Equipment List assigned by the selected Foreign or Native background.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  source:
+    manual: khemri
+    printed_page: 87
+    section: 0-1 Blood Sister
+  source_path:
+  - heroes
+  - 0-1 Blood Sister
+  name_i18n:
+    en: Blood Sister
+    es: null
+  rule_ids:
+  - blood-sister--accustomed-to-fear
+  - blood-sister--semi-vampire
+  combat_traits: {}
+- id: lackeys
+  name: Lackeys
+  type: hero
+  cost: 30
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Use only the Undead Equipment List assigned by the selected Foreign or Native background.
+  - May not select the Snake Whip; it is restricted to the Lahmian Vampire and Blood Sister.
+  skill_access:
+  - combat
+  - strength
+  - speed
+  source:
+    manual: khemri
+    printed_page: 87
+    section: 0-2 Lackeys
+  source_path:
+  - heroes
+  - 0-2 Lackeys
+  name_i18n:
+    en: Lackeys
+    es: null
+  rule_ids:
+  - lackeys--accustomed-to-fear
+  - lackeys--devoted-to-the-vampire
+  - lackeys--favoured
+  combat_traits: {}
+- id: skeleton-warriors
+  name: Skeleton Warriors
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Use only the Undead Equipment List assigned by the selected Foreign or Native background.
+  - May not select the Snake Whip; it is restricted to the Lahmian Vampire and Blood Sister.
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 88
+    section: Skeleton Warriors
+  source_path:
+  - henchmen
+  - Skeleton Warriors
+  name_i18n:
+    en: Skeleton Warriors
+    es: null
+  rule_ids:
+  - skeleton-warriors--undead
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: blood-slaves
+  name: Blood Slaves
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Foreign background only.
+  - Use the Foreign Warband Undead Equipment List.
+  - May not select the Snake Whip; it is restricted to the Lahmian Vampire and Blood Sister.
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 88
+    section: 0-5 Blood Slaves
+  source_path:
+  - henchmen
+  - 0-5 Blood Slaves
+  name_i18n:
+    en: Blood Slaves
+    es: null
+  rule_ids:
+  - blood-slaves--accustomed-to-fear
+  combat_traits: {}
+- id: black-hounds
+  name: Black Hounds
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 7
+    WS: 3
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Foreign background only.
+  - Black Hounds never use weapons or armour and suffer no penalty for fighting without equipment.
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 88
+    section: 0-5 Black Hounds
+  source_path:
+  - henchmen
+  - 0-5 Black Hounds
+  name_i18n:
+    en: Black Hounds
+    es: null
+  rule_ids:
+  - black-hounds--fear
+  - black-hounds--animal
+  combat_traits: {}
+- id: spirits
+  name: Spirits
+  type: henchman
+  cost: 45
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 0
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Native background only.
+  - Use the Native Warband Undead Equipment List.
+  - May not select the Snake Whip; it is restricted to the Lahmian Vampire and Blood Sister.
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 89
+    section: 0-5 Spirits
+  source_path:
+  - henchmen
+  - 0-5 Spirits
+  name_i18n:
+    en: Spirits
+    es: null
+  rule_ids:
+  - spirits--undead
+  - spirits--spiritual-weapons
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: jackals
+  name: Jackals
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Native background only.
+  - Jackals never use weapons or armour and suffer no penalty for fighting without equipment.
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 89
+    section: Jackals
+  source_path:
+  - henchmen
+  - Jackals
+  name_i18n:
+    en: Jackals
+    es: null
+  rule_ids:
+  - jackals--pack
+  - jackals--animal
+  combat_traits: {}

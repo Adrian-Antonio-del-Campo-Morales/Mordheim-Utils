@@ -1,0 +1,2158 @@
+schema_version: 1
+specifications:
+- id: poison-grant-mordheim-carnival-of-chaos-plague-bearers
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/mordheim/carnival-of-chaos/plague-bearers--immune-to-poison/trait.poison-immune
+    digest: 167d455ca9e54ae6f1f7a5f8064d5dfc13ea65f513853f7b308d83e5d425dd11
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to plague-bearers, not the other profiles.
+    This fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer
+    matrix is independently exercised by the Tears of Shallaya specification; this dependency does not imply the
+    profile owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    context:
+      rule_id: plague-bearers--immune-to-poison
+    expect:
+      result.recipients:
+      - plague-bearers
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-mordheim-carnival-of-chaos-nurglings
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/mordheim/carnival-of-chaos/nurglings--immune-to-poison/trait.poison-immune
+    digest: 65d553b31d6bf6d80878994e4e7ce2d17158ba0fef07c4ba4ae3def6f0b3fade
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to nurglings, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    context:
+      rule_id: nurglings--immune-to-poison
+    expect:
+      result.recipients:
+      - nurglings
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-mordheim-restless-dead-liche
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/mordheim/restless-dead/liche--immune-to-poison/trait.poison-immune
+    digest: 6dd3646021ce2b0a8340f681d45a216b29174b83866c0eee6bf5b7befccc8ea4
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to liche, not the other profiles. This fixture
+    checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix is
+    independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile owns
+    that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: liche
+    context:
+      rule_id: liche--immune-to-poison
+    expect:
+      result.recipients:
+      - liche
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: liche
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: liche
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: liche
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-mordheim-restless-dead-grave-guards
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/mordheim/restless-dead/grave-guards--immune-to-poison/trait.poison-immune
+    digest: e0961d6d48a4919d727cdeadffd4c0127bc0286ba6dd238d500367a3f5921683
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to grave-guards, not the other profiles.
+    This fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer
+    matrix is independently exercised by the Tears of Shallaya specification; this dependency does not imply the
+    profile owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: grave-guards
+    context:
+      rule_id: grave-guards--immune-to-poison
+    expect:
+      result.recipients:
+      - grave-guards
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: grave-guards
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: grave-guards
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: grave-guards
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-mordheim-restless-dead-zombies
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/mordheim/restless-dead/zombies--immune-to-poison/trait.poison-immune
+    digest: 7a8866386c375fe5bddc1f70346711a0ce1cd6a2613f9170e9c3a8d0942702e7
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to zombies, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: zombies
+    context:
+      rule_id: zombies--immune-to-poison
+    expect:
+      result.recipients:
+      - zombies
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: zombies
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: zombies
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: zombies
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-mordheim-restless-dead-skeletons
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/mordheim/restless-dead/skeletons--immune-to-poison/trait.poison-immune
+    digest: d9b7e8272d6c5167ec92ed1e87d346bd0b325af7663347d2e3a2cf1df56293ff
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to skeletons, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: skeletons
+    context:
+      rule_id: skeletons--immune-to-poison
+    expect:
+      result.recipients:
+      - skeletons
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: skeletons
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: skeletons
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: skeletons
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-mordheim-restless-dead-wights
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/mordheim/restless-dead/wights--immune-to-poison/trait.poison-immune
+    digest: e3d17fb9f1af7f13a484dea6aa47e34ec8a1970cea69ff366691a0eca9e2ca0d
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to wights, not the other profiles. This fixture
+    checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix is
+    independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile owns
+    that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: wights
+    context:
+      rule_id: wights--immune-to-poison
+    expect:
+      result.recipients:
+      - wights
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: wights
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: wights
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: wights
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-mordheim-restless-dead-scarecrows
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/mordheim/restless-dead/scarecrows--immune-to-poison/trait.poison-immune
+    digest: 0eb8faa6e9b7bdb817290b8c3fb8786cca41302b082581dd7d9195d76a7251ef
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to scarecrows, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: scarecrows
+    context:
+      rule_id: scarecrows--immune-to-poison
+    expect:
+      result.recipients:
+      - scarecrows
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: scarecrows
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: scarecrows
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: scarecrows
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-mordheim-undead-vampire
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/mordheim/undead/vampire--immune-to-poison/trait.poison-immune
+    digest: bb2d2582bdef57ade2bdf5c38f7256851daf514df837c57a248577a94088f82a
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to vampire, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: undead
+      profile_id: vampire
+    context:
+      rule_id: vampire--immune-to-poison
+    expect:
+      result.recipients:
+      - vampire
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: mordheim
+      band_id: undead
+      profile_id: vampire
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: undead
+      profile_id: vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: undead
+      profile_id: vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-mordheim-undead-dire-wolves
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/mordheim/undead/dire-wolves--immune-to-poison/trait.poison-immune
+    digest: 971c1d91b66e1044f5aec790931a9d4dd4a820f4a8eb92de8e411df0f2f8f229
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to dire-wolves, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: undead
+      profile_id: dire-wolves
+    context:
+      rule_id: dire-wolves--immune-to-poison
+    expect:
+      result.recipients:
+      - dire-wolves
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: mordheim
+      band_id: undead
+      profile_id: dire-wolves
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: undead
+      profile_id: dire-wolves
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: undead
+      profile_id: dire-wolves
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-mordheim-undead-zombies
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/mordheim/undead/zombies--immune-to-poison/trait.poison-immune
+    digest: 52464883d7ef24fbf52babd13cf078fc521a7f0e6b72b29685ce2d5ca6c82c81
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to zombies, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: undead
+      profile_id: zombies
+    context:
+      rule_id: zombies--immune-to-poison
+    expect:
+      result.recipients:
+      - zombies
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: mordheim
+      band_id: undead
+      profile_id: zombies
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: undead
+      profile_id: zombies
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: undead
+      profile_id: zombies
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-chaos-streets-undead-bloodlines-von-carstein-vampire
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/chaos-streets-undead-bloodlines/von-carstein-vampire--immune-to-poison/trait.poison-immune
+    digest: 958a1340da7a6c79831b7e86940635de265811eb5b3f15c8268be25532a88f46
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to von-carstein-vampire, not the other profiles.
+    This fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer
+    matrix is independently exercised by the Tears of Shallaya specification; this dependency does not imply the
+    profile owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: von-carstein-vampire
+    context:
+      rule_id: von-carstein-vampire--immune-to-poison
+    expect:
+      result.recipients:
+      - von-carstein-vampire
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: von-carstein-vampire
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: von-carstein-vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: von-carstein-vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-chaos-streets-undead-bloodlines-lahmia-vampire
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/chaos-streets-undead-bloodlines/lahmia-vampire--immune-to-poison/trait.poison-immune
+    digest: 78ddf668cd6fd1cbdd5027565e168a5e2bd1a387c3b639d0a0ed4920b3f40d64
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to lahmia-vampire, not the other profiles.
+    This fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer
+    matrix is independently exercised by the Tears of Shallaya specification; this dependency does not imply the
+    profile owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+    context:
+      rule_id: lahmia-vampire--immune-to-poison
+    expect:
+      result.recipients:
+      - lahmia-vampire
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-chaos-streets-undead-bloodlines-blood-dragon-vampire
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/chaos-streets-undead-bloodlines/blood-dragon-vampire--immune-to-poison/trait.poison-immune
+    digest: 0ae0707036a985b845e683a22978e1eb10c6584a714cd696db79b34c67e15013
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to blood-dragon-vampire, not the other profiles.
+    This fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer
+    matrix is independently exercised by the Tears of Shallaya specification; this dependency does not imply the
+    profile owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+    context:
+      rule_id: blood-dragon-vampire--immune-to-poison
+    expect:
+      result.recipients:
+      - blood-dragon-vampire
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-chaos-streets-undead-bloodlines-necrarch-vampire
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/chaos-streets-undead-bloodlines/necrarch-vampire--immune-to-poison/trait.poison-immune
+    digest: 39aa41f75348d7a6573e6f9ff208d2ec9a5d224dcf18ea38c842375aa0b63f5b
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to necrarch-vampire, not the other profiles.
+    This fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer
+    matrix is independently exercised by the Tears of Shallaya specification; this dependency does not imply the
+    profile owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: necrarch-vampire
+    context:
+      rule_id: necrarch-vampire--immune-to-poison
+    expect:
+      result.recipients:
+      - necrarch-vampire
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: necrarch-vampire
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: necrarch-vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: necrarch-vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-chaos-streets-undead-bloodlines-strigoi-vampire
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/chaos-streets-undead-bloodlines/strigoi-vampire--immune-to-poison/trait.poison-immune
+    digest: b86dc19fd9c47b8d3ac9cf7b8803e4a76edeffb4c1c5d88c17ce07adb5ad3088
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to strigoi-vampire, not the other profiles.
+    This fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer
+    matrix is independently exercised by the Tears of Shallaya specification; this dependency does not imply the
+    profile owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
+    context:
+      rule_id: strigoi-vampire--immune-to-poison
+    expect:
+      result.recipients:
+      - strigoi-vampire
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-chaos-streets-undead-bloodlines-zombie
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/chaos-streets-undead-bloodlines/zombie--immune-to-poison/trait.poison-immune
+    digest: 87092c57088b1de5353f95b0a511fcc200abc4dbbff0681887e6605ac5326345
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to zombie, not the other profiles. This fixture
+    checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix is
+    independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile owns
+    that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: zombie
+    context:
+      rule_id: zombie--immune-to-poison
+    expect:
+      result.recipients:
+      - zombie
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: zombie
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: zombie
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: zombie
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-chaos-streets-undead-bloodlines-dire-wolf
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/chaos-streets-undead-bloodlines/dire-wolf--immune-to-poison/trait.poison-immune
+    digest: 892e82ce442c2b114b5f321a2e9cccdebcb2dfdd67a81f72f6de01aa4b893cd8
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to dire-wolf, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dire-wolf
+    context:
+      rule_id: dire-wolf--immune-to-poison
+    expect:
+      result.recipients:
+      - dire-wolf
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dire-wolf
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dire-wolf
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dire-wolf
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-chaos-streets-undead-bloodlines-vampire-bat
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/chaos-streets-undead-bloodlines/vampire-bat--immune-to-poison/trait.poison-immune
+    digest: 4ca82c3ea3ba317a0647fdc02135a1f63ead000c997c731c78263fae6c1ba48b
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to vampire-bat, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: vampire-bat
+    context:
+      rule_id: vampire-bat--immune-to-poison
+    expect:
+      result.recipients:
+      - vampire-bat
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: vampire-bat
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: vampire-bat
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: vampire-bat
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-khemri-cursed-of-karak-zorn-shadowed
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/khemri-cursed-of-karak-zorn/shadowed--immune-to-poison/trait.poison-immune
+    digest: eb3987724d4233287a4d69a2040bf4d47bb3f547299e66a5d57ab95c4882374f
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to shadowed, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: shadowed
+    context:
+      rule_id: shadowed--immune-to-poison
+    expect:
+      result.recipients:
+      - shadowed
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: shadowed
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: shadowed
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: shadowed
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-khemri-mages-mechanical-beast
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/khemri-mages/mechanical-beast--immune-to-poison/trait.poison-immune
+    digest: 38ca83bfdea530699524ab3125ddcb3b222176772e6a71d9d6be8237d92ddd8e
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to mechanical-beast, not the other profiles.
+    This fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer
+    matrix is independently exercised by the Tears of Shallaya specification; this dependency does not imply the
+    profile owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: khemri-mages
+      profile_id: mechanical-beast
+    context:
+      rule_id: mechanical-beast--immune-to-poison
+    expect:
+      result.recipients:
+      - mechanical-beast
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: khemri-mages
+      profile_id: mechanical-beast
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-mages
+      profile_id: mechanical-beast
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: khemri-mages
+      profile_id: mechanical-beast
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-khemri-tomb-guardians-stone-golem
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/khemri-tomb-guardians/stone-golem--immune-to-poison/trait.poison-immune
+    digest: 6bbc7a86c01f4735d4a049be39d988d2b352ff3d583b92515d4e74a7f5ad98e8
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to stone-golem, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: stone-golem
+    context:
+      rule_id: stone-golem--immune-to-poison
+    expect:
+      result.recipients:
+      - stone-golem
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: stone-golem
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: stone-golem
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: stone-golem
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-lustria-pygmies-cannibals
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/lustria-pygmies/cannibals--immune-to-poison/trait.poison-immune
+    digest: 8ee76b7db140d34c4dc9828a40725f7d6fb1ba89fca191905ececc34bab3821d
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to cannibals, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: lustria-pygmies
+      profile_id: cannibals
+    context:
+      rule_id: cannibals--immune-to-poison
+    expect:
+      result.recipients:
+      - cannibals
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: lustria-pygmies
+      profile_id: cannibals
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: lustria-pygmies
+      profile_id: cannibals
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-pygmies
+      profile_id: cannibals
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-lustria-savage-goblins-zomblins
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/lustria-savage-goblins/zomblins--immune-to-poison/trait.poison-immune
+    digest: dd94326a6e3b84822c09f13afbb06c5a06900cc65e93b60c984e0ddc38a097ef
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to zomblins, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblins
+    context:
+      rule_id: zomblins--immune-to-poison
+    expect:
+      result.recipients:
+      - zomblins
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblins
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblins
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblins
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-lustria-savage-goblins-zomblintua
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/lustria-savage-goblins/zomblintua--immune-to-poison/trait.poison-immune
+    digest: 535e1cf1e6b2a6ccc4fd2d63ab8dfb5eac9ca6d8f6141c564c18d66d76eb0acc
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to zomblintua, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+    context:
+      rule_id: zomblintua--immune-to-poison
+    expect:
+      result.recipients:
+      - zomblintua
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-trollheim-undead-vampire
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/trollheim-undead/vampire--immune-to-poison/trait.poison-immune
+    digest: b958259e2a9c1ee550eec814d11a08fa34558f36530908ed0691d8c3dcdb3a41
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to vampire, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: vampire
+    context:
+      rule_id: vampire--immune-to-poison
+    expect:
+      result.recipients:
+      - vampire
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: vampire
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-trollheim-undead-zombies
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/trollheim-undead/zombies--immune-to-poison/trait.poison-immune
+    digest: 8aac73768d59d7f7ae2829ca568b2976a2af3a4299dde883554098bb77369438
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to zombies, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: zombies
+    context:
+      rule_id: zombies--immune-to-poison
+    expect:
+      result.recipients:
+      - zombies
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: zombies
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: zombies
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: zombies
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled
+- id: poison-grant-trollheim-trollheim-undead-dire-wolves
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/trollheim-undead/dire-wolves--immune-to-poison/trait.poison-immune
+    digest: a5ea14b89f2eff3ee7f33ec2cb28b7638da712f389828f9a383d1f768619746d
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: The source section explicitly grants poison immunity to dire-wolves, not the other profiles. This
+    fixture checks that editorial grant and the actual shared immunity consumer. The full nine-poison consumer matrix
+    is independently exercised by the Tears of Shallaya specification; this dependency does not imply the profile
+    owns that preparation.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    writes:
+    - defender.poison_immunity
+  cases:
+  - id: exact-recipient
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: dire-wolves
+    context:
+      rule_id: dire-wolves--immune-to-poison
+    expect:
+      result.recipients:
+      - dire-wolves
+  - id: compiled-immunity
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: dire-wolves
+    expect:
+      defender.global_effects.poison_immunity: true
+  - id: poison-cancelled
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: dire-wolves
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: no-poison-unchanged
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: dire-wolves
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: remove-granted-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-cancelled

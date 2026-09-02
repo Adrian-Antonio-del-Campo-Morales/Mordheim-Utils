@@ -1,0 +1,50 @@
+schema_version: 2
+entity: special-rule
+description: Canonical runtime metadata for KB rules. Source rule IDs remain unique; shared bindings identify common engine implementations.
+runtime:
+  required_fields:
+  - scope
+  - implemented
+  - grant
+  - effects
+  scope_values:
+  - "YES"
+  - "NO"
+  - "LATER"
+  implemented_values:
+  - "YES"
+  - "NO"
+  grant_values:
+  - profile
+  - band
+  - selectable
+  - none
+selectable_rule:
+  required_field: kind
+  kind_values:
+  - warband_skill
+  - mutation
+  - blessing
+  - virtue
+  - mark
+  - modification
+  - profile_ability
+  - warband_variant
+  binding_kinds:
+  - mechanic
+  - trait
+  - profile
+  - compiler
+  effect_required_fields:
+  - id
+  - scope
+invariants:
+- A rule keeps its own KB id; equivalent rules share binding.kind, binding.id and binding.parameters.
+- Every rule with grant selectable declares what type of choice it is in kind.
+- Equivalence is always explicit and is never inferred from rule names or prose.
+- Every YES effect must have a binding when runtime.implemented is YES.
+- A rule is implemented YES only when every YES effect has an executable binding.
+- An unbound effect must explain why in reason, regardless of scope.
+- Rules without a runtime block are not classified yet and must not be treated as implemented.
+- compiler bindings are transitional and should be replaced by shared mechanic or trait bindings when possible.
+- profile bindings identify executable construction data already normalized in profiles.yaml (characteristics, skill access, equipment restrictions, natural attacks or random characteristics).

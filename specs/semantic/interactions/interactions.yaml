@@ -1,0 +1,244 @@
+schema_version: 1
+specifications:
+- id: two-strength-skills-stack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.mighty-blow
+    digest: 90e3a20d279e166a42a5d9332852f105bb8c0b05f0e6234dfcc95bc40f0de20d
+  - target: mechanic/skill.iron-sinews
+    digest: 335e5c79c86a19609693d1fdf74bf830bfb91870cee8809db4171177620ff3af
+  bindings:
+  - '{"id": "skill.mighty-blow", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.iron-sinews", "kind": "mechanic", "parameters": {}}'
+  interpretation: Two independent +1 Strength bonuses add to +2; swapping the declaration order does not change
+    the result.
+  cases:
+  - id: forward
+    roles:
+    - composition
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.mighty-blow
+      - skill.iron-sinews
+    expect:
+      result.wound: 5
+      result.armour: 5
+  - id: reverse
+    roles:
+    - composition
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.iron-sinews
+      - skill.mighty-blow
+    expect:
+      result.wound: 5
+      result.armour: 5
+  mutations:
+  - id: drop-one-contribution
+    path: attacker.global_effects.strength_bonus
+    value: 1
+    cases:
+    - forward
+    - reverse
+- id: step-aside-then-regeneration
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.step-aside
+    digest: 7d543001fc0b5b9a9361518b4ddeaf5a0f31d89b9ef071e6f5f7732590893d36
+  - target: mechanic/skill.regeneration-5-plus
+    digest: 696041a7c52dce76d761c74874d2dd412453066e8bd914ac8ec2101690039e98
+  bindings:
+  - '{"id": "skill.step-aside", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.regeneration-5-plus", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'Apply the approved phase order: special save then regeneration if unsaved. Two independent 5+
+    saves ignore 5/9 wounds. Fire blocks regeneration only, leaving Step Aside.'
+  cases:
+  - id: all-branches
+    roles:
+    - composition
+    operation: special_save
+    defender:
+      skill_ids:
+      - skill.step-aside
+      - skill.regeneration-5-plus
+    distribution:
+      observable: result.saved
+      max_rolls: 2
+      expected:
+        'true': 5/9
+        'false': 4/9
+  - id: fire-only-blocks-regeneration
+    roles:
+    - composition
+    - boundary
+    operation: special_save
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+    defender:
+      skill_ids:
+      - skill.step-aside
+      - skill.regeneration-5-plus
+    distribution:
+      observable: result.saved
+      max_rolls: 2
+      expected:
+        'true': 1/3
+        'false': 2/3
+  - id: early-save-skips-regen
+    roles:
+    - boundary
+    operation: special_save
+    defender:
+      skill_ids:
+      - skill.step-aside
+      - skill.regeneration-5-plus
+    rolls:
+    - key: special.ward
+      value: 5
+    expect:
+      result.saved: true
+      result.source: ward
+      result.regeneration_roll: null
+  - id: fire-failed-ward-no-regeneration-roll
+    roles:
+    - boundary
+    operation: special_save
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+    defender:
+      skill_ids:
+      - skill.step-aside
+      - skill.regeneration-5-plus
+    rolls:
+    - key: special.ward
+      value: 4
+    expect:
+      result.saved: false
+      result.regeneration_roll: null
+  mutations:
+  - id: remove-first-save
+    path: defender.global_effects.step_aside
+    value: false
+    cases:
+    - all-branches
+  - id: remove-fire-blocker
+    path: defender.global_effects.regeneration_blocked_by_fire
+    value: false
+    cases:
+    - fire-only-blocks-regeneration
+- id: hard-to-kill-plus-no-pain
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.hard-to-kill
+    digest: b66c185a5a58b1f030ef4dc30f29ae0054d249281805410af7521c982cc88cd4
+  - target: mechanic/skill.ignore-pain
+    digest: 38aff21454539c3b866e4b04592950668da23cf87004c9def80eaf2f8f5b75ae
+  bindings:
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
+  interpretation: Hard to Kill changes the injury table to 1-2 Knocked Down, 3-5 Stunned, 6 Out. No Pain converts
+    those Stunned results to Knocked Down, therefore 1-5 Knocked Down and 6 Out.
+  cases:
+  - id: face-1
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    defender:
+      skill_ids:
+      - skill.hard-to-kill
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-2
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    defender:
+      skill_ids:
+      - skill.hard-to-kill
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-3
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    defender:
+      skill_ids:
+      - skill.hard-to-kill
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-4
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    defender:
+      skill_ids:
+      - skill.hard-to-kill
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-5
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    defender:
+      skill_ids:
+      - skill.hard-to-kill
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-6
+    roles:
+    - composition
+    - boundary
+    operation: injury
+    defender:
+      skill_ids:
+      - skill.hard-to-kill
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: drop-no-pain
+    path: defender.global_effects.tags
+    value:
+    - skill.hard-to-kill
+    - armour.no-armour
+    cases:
+    - face-3
+    - face-4
+    - face-5

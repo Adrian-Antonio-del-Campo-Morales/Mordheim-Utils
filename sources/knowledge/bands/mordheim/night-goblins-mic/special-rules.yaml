@@ -1,0 +1,933 @@
+schema_version: 2
+band_id: night-goblins-mic
+rules:
+- id: big-boss--leader
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.big-boss.leader
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Leader
+  effect: Any warrior within 6" of the Big Boss may use his Leadership characteristic when taking Leadership tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Big Boss / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warrior within 6" of the Big Boss may use his Leadership characteristic when taking Leadership tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - big-boss
+- id: shaman--wizard
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.shaman.wizard
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: magia."
+  name: Wizard
+  effect: A Shaman is a wizard and uses Waaagh! Magic.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Shaman / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: A Shaman is a wizard and uses Waaagh! Magic.
+    es: null
+  applies_to:
+    profile_ids:
+    - shaman
+- id: fanatics--addict
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.fanatics.addict
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Addict
+  effect: The Fanatic is dependent on a regular supply of Madcap Mushrooms which must be bought each game. If he can't get
+    any before a battle he will stay in his cave foaming at the mouth and not take part. If available he will eat his mushrooms
+    before the battle.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Fanatics / Special Rules / Addict
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Addict
+    es: null
+  effect_i18n:
+    en: The Fanatic is dependent on a regular supply of Madcap Mushrooms which must be bought each game. If he can't get any
+      before a battle he will stay in his cave foaming at the mouth and not take part. If available he will eat his mushrooms
+      before the battle.
+    es: null
+  applies_to:
+    profile_ids:
+    - fanatics
+- id: fanatics--mushroom-brain
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.fanatics.mushroom-brain
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Mushroom Brain
+  effect: Due to the effect of prolonged use of Madcap Mushrooms the Fanatic's brain is about useless. He cannot gain experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Fanatics / Special Rules / Mushroom Brain
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Mushroom Brain
+    es: null
+  effect_i18n:
+    en: Due to the effect of prolonged use of Madcap Mushrooms the Fanatic's brain is about useless. He cannot gain experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - fanatics
+- id: fanatics--looney
+  runtime:
+    scope: "LATER"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: trait.frenzy
+      scope: "LATER"
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
+  name: Looney
+  effect: Due to the effect of the Mushrooms he is subject to frenzy. He must also test for permanent damage after the battle
+    as described in the rulebook.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Fanatics / Special Rules / Looney
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Looney
+    es: null
+  effect_i18n:
+    en: Due to the effect of the Mushrooms he is subject to frenzy. He must also test for permanent damage after the battle
+      as described in the rulebook.
+    es: null
+  applies_to:
+    profile_ids:
+    - fanatics
+- id: fanatics--frantic
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: profile-rule.fanatics--frantic
+      scope: "YES"
+      binding:
+        kind: compiler
+        id: profile-rule.fanatics--frantic
+  name: Frantic
+  effect: The Fanatic is hyperactive and will strike first in combat ignoring penalties or bonuses for weapons or initiative
+    order.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Fanatics / Special Rules / Frantic
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Frantic
+    es: null
+  effect_i18n:
+    en: The Fanatic is hyperactive and will strike first in combat ignoring penalties or bonuses for weapons or initiative
+      order.
+    es: null
+  applies_to:
+    profile_ids:
+    - fanatics
+- id: cave-squigs--movement
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.cave-squigs.movement
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Movement
+  effect: 'Cave Squigs do not have a set Movement
+
+    characteristic but move with an ungainly bouncing stride. To
+
+    represent this, when moving Squigs, roll 2D6 for the distance
+
+    they move. Squigs never run and never declare charges.
+
+    Instead, they are allowed to contact enemy models with their
+
+    normal 2D6" movement. If this happens, they count as
+
+    charging for the following round of close combat, just as if
+
+    they had declared a charge.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Cave Squigs / Special Rules / Movement
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Movement
+    es: null
+  effect_i18n:
+    en: 'Cave Squigs do not have a set Movement
+
+      characteristic but move with an ungainly bouncing stride. To
+
+      represent this, when moving Squigs, roll 2D6 for the distance
+
+      they move. Squigs never run and never declare charges.
+
+      Instead, they are allowed to contact enemy models with their
+
+      normal 2D6" movement. If this happens, they count as
+
+      charging for the following round of close combat, just as if
+
+      they had declared a charge.'
+    es: null
+  applies_to:
+    profile_ids:
+    - cave-squigs
+- id: cave-squigs--minderz
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.cave-squigs.minderz
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Minderz
+  effect: 'Each Cave Squig must always remain within 6" of a
+
+    Goblin Warrior, who keeps the creature in line. If a Cave
+
+    Squig finds itself without a Goblin within 6" at the start of its
+
+    Movement phase, it will go wild. From that point on, move
+
+    the Squig 2D6" in a random direction during each of its
+
+    Movement phases. If its movement takes it into contact with
+
+    another model (friend or foe), it will engage the model in
+
+    hand-to-hand combat as normal. The Cave Squig is out of the
+
+    Orc & Goblin player''s control until the end of the game.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Cave Squigs / Special Rules / Minderz
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Minderz
+    es: null
+  effect_i18n:
+    en: 'Each Cave Squig must always remain within 6" of a
+
+      Goblin Warrior, who keeps the creature in line. If a Cave
+
+      Squig finds itself without a Goblin within 6" at the start of its
+
+      Movement phase, it will go wild. From that point on, move
+
+      the Squig 2D6" in a random direction during each of its
+
+      Movement phases. If its movement takes it into contact with
+
+      another model (friend or foe), it will engage the model in
+
+      hand-to-hand combat as normal. The Cave Squig is out of the
+
+      Orc & Goblin player''s control until the end of the game.'
+    es: null
+  applies_to:
+    profile_ids:
+    - cave-squigs
+- id: cave-squigs--animals
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.cave-squigs.animals
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Animals
+  effect: 'Cave Squigs are animals of a sort and so do not gain
+
+    experience.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Cave Squigs / Special Rules / Animals
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Animals
+    es: null
+  effect_i18n:
+    en: 'Cave Squigs are animals of a sort and so do not gain
+
+      experience.'
+    es: null
+  applies_to:
+    profile_ids:
+    - cave-squigs
+- id: troll--fear
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.troll.fear
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Fear
+  effect: Trolls are frightening monsters which cause fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Troll / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: Trolls are frightening monsters which cause fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - troll
+- id: troll--stupidity
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.troll.stupidity
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Stupidity
+  effect: A Troll is subject to the rules for stupidity.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Troll / Special Rules / Stupidity
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Stupidity
+    es: null
+  effect_i18n:
+    en: A Troll is subject to the rules for stupidity.
+    es: null
+  applies_to:
+    profile_ids:
+    - troll
+- id: troll--regeneration
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: skill.regeneration
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.regeneration
+    - id: campaign.post-battle-injury
+      scope: "NO"
+      binding: null
+      reason: "Post-battle injury is a campaign state."
+  name: Regeneration
+  effect: 'Trolls have a unique physiology that allow
+
+    them to regenerate wounds. Whenever an enemy successfully
+
+    inflicts a wound on a Troll roll a D6, on a result of 4 or more
+
+    the wound is ignored and the Troll is unhurt. Trolls may not
+
+    regenerate wounds caused by fire or fire-based magic. Trolls
+
+    never roll for Injury after a battle.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Troll / Special Rules / Regeneration
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Regeneration
+    es: null
+  effect_i18n:
+    en: 'Trolls have a unique physiology that allow
+
+      them to regenerate wounds. Whenever an enemy successfully
+
+      inflicts a wound on a Troll roll a D6, on a result of 4 or more
+
+      the wound is ignored and the Troll is unhurt. Trolls may not
+
+      regenerate wounds caused by fire or fire-based magic. Trolls
+
+      never roll for Injury after a battle.'
+    es: null
+  applies_to:
+    profile_ids:
+    - troll
+- id: troll--dumb-monster
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.troll.dumb-monster
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: psicología."
+  name: Dumb Monster
+  effect: 'A Troll is far too stupid to ever learn any
+
+    new skills. Trolls do not gain experience.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Troll / Special Rules / Dumb Monster
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Dumb Monster
+    es: null
+  effect_i18n:
+    en: 'A Troll is far too stupid to ever learn any
+
+      new skills. Trolls do not gain experience.'
+    es: null
+  applies_to:
+    profile_ids:
+    - troll
+- id: troll--always-hungry
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.troll.always-hungry
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Always Hungry
+  effect: 'A Troll requires an upkeep cost. This
+
+    upkeep represents the copious amounts of food that must be
+
+    fed to the Troll in order to keep him loyal to the warband.
+
+    The warband must pay 15 gold crowns after every game in
+
+    order to keep the Troll. If the warband lacks the gold to pay
+
+    the upkeep, the Boss has the option of sacrificing two Goblin
+
+    Warriors or Cave Squigs to the Troll in lieu of buying food
+
+    (Trolls eat nearly anything). If this fee is not paid (either in
+
+    gold or in warband members) the Troll gets hungry and
+
+    wanders off in search of food.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Troll / Special Rules / Always Hungry
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Always Hungry
+    es: null
+  effect_i18n:
+    en: 'A Troll requires an upkeep cost. This
+
+      upkeep represents the copious amounts of food that must be
+
+      fed to the Troll in order to keep him loyal to the warband.
+
+      The warband must pay 15 gold crowns after every game in
+
+      order to keep the Troll. If the warband lacks the gold to pay
+
+      the upkeep, the Boss has the option of sacrificing two Goblin
+
+      Warriors or Cave Squigs to the Troll in lieu of buying food
+
+      (Trolls eat nearly anything). If this fee is not paid (either in
+
+      gold or in warband members) the Troll gets hungry and
+
+      wanders off in search of food.'
+    es: null
+  applies_to:
+    profile_ids:
+    - troll
+- id: troll--vomit-attack
+  kind: profile_ability
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: selectable
+    effects:
+    - id: weapon.vomit-attack
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: weapon.vomit-attack
+  name: Vomit Attack
+  effect: 'Instead of his normal attacks, a Troll can
+
+    regurgitate its highly corrosive digestive juices on an
+
+    unfortunate hand-to-hand combat opponent. This is a single
+
+    attack that automatically hits with a Strength of 5 and ignores
+
+    armour saves.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Troll / Special Rules / Vomit Attack
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Vomit Attack
+    es: null
+  effect_i18n:
+    en: 'Instead of his normal attacks, a Troll can
+
+      regurgitate its highly corrosive digestive juices on an
+
+      unfortunate hand-to-hand combat opponent. This is a single
+
+      attack that automatically hits with a Strength of 5 and ignores
+
+      armour saves.'
+    es: null
+  applies_to:
+    profile_ids:
+    - troll
+- id: troll--large-target
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.troll.large-target
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: disparo."
+  name: Large Target
+  effect: Trolls are Large Targets as defined in the shooting rules.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Troll / Special Rules / Large Target
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Large Target
+    es: null
+  effect_i18n:
+    en: Trolls are Large Targets as defined in the shooting rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - troll
+- id: snotling-mob-consists-of-5-snotlings--mob
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.snotling-mob-consists-of-5-snotlings.mob
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Mob
+  effect: Snotlings are naturally gregarious creatures. They are initially bought in a mob of 5. You may replace mob members
+    up to the maximum of 5. They will always move and fight as a mob. All members must stay within 1" and all will join in the
+    same combat if possible.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Snotling Mob (consists of 5 Snotlings) / Special Rules / Mob
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Mob
+    es: null
+  effect_i18n:
+    en: 'Snotlings are naturally gregarious creatures. They are initially bought in a mob of 5. You
+
+      may replace mob members up to the maximum of 5. They will always move and fight as a
+
+      mob. All members must stay within 1" and all will join in the same combat if
+
+      possible.'
+    es: null
+  applies_to:
+    profile_ids:
+    - snotling-mob-consists-of-5-snotlings
+- id: snotling-mob-consists-of-5-snotlings--weedy
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: trait.injury-profile
+      scope: "YES"
+      binding:
+        kind: trait
+        id: trait.injury-profile
+        parameters:
+          value: 1
+  name: Weedy
+  effect: 'Snotlings are not the most robust of creatures. If wounded they will be knocked down
+
+    on a 1, stunned on a 2-3 and go out of action on a 4-6.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Snotling Mob (consists of 5 Snotlings) / Special Rules / Weedy
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Weedy
+    es: null
+  effect_i18n:
+    en: 'Snotlings are not the most robust of creatures. If wounded they will be knocked down
+
+      on a 1, stunned on a 2-3 and go out of action on a 4-6.'
+    es: null
+  applies_to:
+    profile_ids:
+    - snotling-mob-consists-of-5-snotlings
+- id: snotling-mob-consists-of-5-snotlings--dodgy
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.snotling-mob-consists-of-5-snotlings.dodgy
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Dodgy
+  effect: The little creatures are constantly ducking and diving in the most infuriating way. They get a 6+ dodge save against
+    shooting.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Snotling Mob (consists of 5 Snotlings) / Special Rules / Dodgy
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Dodgy
+    es: null
+  effect_i18n:
+    en: 'The little creatures are constantly ducking and diving in the most infuriating way.
+
+      They get a 6+ dodge save against shooting.'
+    es: null
+  applies_to:
+    profile_ids:
+    - snotling-mob-consists-of-5-snotlings
+- id: snotling-mob-consists-of-5-snotlings--insignificant
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-mic.snotling-mob-consists-of-5-snotlings.insignificant
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Insignificant
+  effect: 'Nobody cares about the Snotlings. The whole mob counts as a single model
+
+    for the purposes of rout tests, maximum warband size and calculating income. An enemy
+
+    hero will only gain experience for taking the last Snotling Out of Action.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Snotling Mob (consists of 5 Snotlings) / Special Rules / Insignificant
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Insignificant
+    es: null
+  effect_i18n:
+    en: 'Nobody cares about the Snotlings. The whole mob counts as a single model
+
+      for the purposes of rout tests, maximum warband size and calculating income. An enemy
+
+      hero will only gain experience for taking the last Snotling Out of Action.'
+    es: null
+  applies_to:
+    profile_ids:
+    - snotling-mob-consists-of-5-snotlings
+- id: band--animosity
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-mic.band.animosity
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Animosity
+  effect: At the beginning of each Night Goblin turn roll a D6. On a 1, the Night Goblins squabble and do nothing else for
+    the rest of that turn. Trolls, Cave Squigs, Snotlings and other non-Goblins are unaffected.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Animosity
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Animosity
+    es: null
+  effect_i18n:
+    en: At the beginning of each Night Goblin turn roll a D6. On a 1, the Night Goblins squabble and do nothing else for the
+      rest of that turn. Trolls, Cave Squigs, Snotlings and other non-Goblins are unaffected.
+    es: null
+  applies_to:
+    band: true
+- id: band--hate-stunties
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-mic.band.hate-stunties
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Hate Stunties
+  effect: Night Goblins are subject to Hatred against Dwarfs. This does not affect other greenskins in the warband, and Fanatics
+    are specifically exempt.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hate Stunties
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Hate Stunties
+    es: null
+  effect_i18n:
+    en: Night Goblins are subject to Hatred against Dwarfs. This does not affect other greenskins in the warband, and Fanatics
+      are specifically exempt.
+    es: null
+  applies_to:
+    band: true
+- id: band--squig-minder-ratio
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-mic.band.squig-minder-ratio
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Cave Squig Limit
+  effect: The warband may never include more Cave Squigs than Night Goblins.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Choice of warriors / Cave Squig
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Cave Squig Limit
+    es: null
+  effect_i18n:
+    en: The warband may never include more Cave Squigs than Night Goblins.
+    es: null
+  applies_to:
+    band: true
+- id: band--night-goblin-special-skills-ded-shooty
+  kind: warband_skill
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.night-goblins-mic.band.night-goblin-special-skills-ded-shooty
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: disparo."
+  name: Ded Shooty
+  effect: 'The clever little git adds +6" to the range of any missile weapons he
+
+    uses (not including nets)'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblin Special Skills / Ded Shooty
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Ded Shooty
+    es: null
+  effect_i18n:
+    en: 'The clever little git adds +6" to the range of any missile weapons he
+
+      uses (not including nets)'
+    es: null
+  applies_to:
+    band: true
+- id: band--night-goblin-special-skills-sneaky-git
+  kind: warband_skill
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.night-goblins-mic.band.night-goblin-special-skills-sneaky-git
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Sneaky Git
+  effect: 'The greenskin is so sneaky that he can move D3 of his warband
+
+    members after all other deployment is complete. Night Goblin Big Boss only.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblin Special Skills / Sneaky Git
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Sneaky Git
+    es: null
+  effect_i18n:
+    en: 'The greenskin is so sneaky that he can move D3 of his warband
+
+      members after all other deployment is complete. Night Goblin Big Boss only.'
+    es: null
+  applies_to:
+    band: true
+- id: band--night-goblin-special-skills-infiltrate
+  kind: warband_skill
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.night-goblins-mic.band.night-goblin-special-skills-infiltrate
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Infiltrate
+  effect: A Night Goblin with this skill is always placed on the battlefield after the opposing warband and can be placed
+    anywhere on the table as long as it is out of sight of the opposing warband and more than 12" away from any enemy model.
+    If both players have models which infiltrate, roll a D6 for each, and the lowest roll sets up first.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblin Special Skills / Infiltrate
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Infiltrate
+    es: null
+  effect_i18n:
+    en: A Night Goblin with this skill is always placed on the battlefield after the opposing warband and can be placed anywhere
+      on the table as long as it is out of sight of the opposing warband and more than 12" away from any enemy model. If both
+      players have models which infiltrate, roll a D6 for each, and the lowest roll sets up first.
+    es: null
+  applies_to:
+    band: true
+- id: band--night-goblin-special-skills-netter
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: mechanic.netter
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.netter
+  name: Netter
+  effect: The goblin is adept at using a net to disable his enemies. They learn their skill hunting wild cave squigs in the
+    depths of the mountains. The technique he has mastered is 'chuck and charge'. The goblin may declare that he is making a
+    net charge. He throws the net at a target in the same way as described in the Mordheim rulebook. If he hits and the target
+    fails to escape the net then target counts as knocked down and the goblin completes his charge. If he misses or the target
+    escapes then the goblin makes a failed charge. If the failed charge would take him into base contact then stop him 1" away.
+    A warrior who is caught in a net will be automatically hit in combat. The goblin must still roll to wound just as with a
+    knocked down enemy. In the warrior's next recovery phase, unless he is stunned or out of action he will cut himself out
+    of the net but cannot do anything else and will go last in combat just as if he had stood up from being knocked down.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblin Special Skills / Netter
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    en: Netter
+    es: null
+  effect_i18n:
+    en: 'The goblin is adept at using a net to disable his enemies. They learn their
+
+      skill hunting wild cave squigs in the depths of the mountains. The technique he has
+
+      mastered is ''chuck and charge''. The goblin may declare that he is making a net
+
+      charge. He throws the net at a target in the same way as described in the Mordheim
+
+      rulebook. If he hits and the target fails to escape the net then target counts as
+
+      knocked down and the goblin completes his charge. If he misses or the target
+
+      escapes then the goblin makes a failed charge. If the failed charge would take him
+
+      into base contact then stop him 1" away. A warrior who is caught in a net will be
+
+      automatically hit in combat. The goblin must still roll to wound just as with a knocked
+
+      down enemy. In the warrior''s next recovery phase, unless he is stunned or out of
+
+      action he will cut himself out of the net but cannot do anything else and will go last in
+
+      combat just as if he had stood up from being knocked down.'
+    es: null
+  applies_to:
+    band: true

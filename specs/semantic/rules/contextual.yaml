@@ -1,0 +1,155 @@
+schema_version: 1
+specifications:
+- id: knife-fighting
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/skill.knife-fighting
+    digest: 60308d94edbededdb6b6375947e281e9bdc7c1a48b337f4d2697037f792aa5fc
+  interpretation: 'Khemri Thieves'' Special Skills / Knife Fighting: +1 Weapon Skill (not +1 to the hit roll) and
+    +1 Injury with a dagger or yambiya. The opponent retains the dagger''s +1 armour-save benefit.'
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.knife-fighting
+    expect:
+      attacker.main_weapon.target_armour_bonus: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.knife-fighting
+  - id: ws-boundary
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.knife-fighting
+    defender:
+      characteristics:
+        weapon_skill: 6
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: hit
+      value: 3
+    expect:
+      context.attacker_ws: 4
+      context.modifier: 0
+      result.target: 4
+      result.success: false
+  - id: all-faces
+    roles:
+    - consumer
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.knife-fighting
+    defender:
+      characteristics:
+        weapon_skill: 6
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 1/2
+        'false': 1/2
+  - id: yambiya
+    roles:
+    - active
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.yambiya
+      skill_ids:
+      - skill.knife-fighting
+    defender:
+      characteristics:
+        weapon_skill: 6
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: hit
+      value: 4
+    expect:
+      context.attacker_ws: 4
+      result.target: 4
+      result.success: true
+  - id: other-weapon
+    roles:
+    - inactive
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.knife-fighting
+    rolls:
+    - key: hit
+      value: 3
+    expect:
+      context.attacker_ws: 3
+      result.target: 4
+      result.success: false
+  - id: injury-bonus
+    roles:
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.knife-fighting
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.total: 3
+      result.condition: STUNNED
+  - id: dagger-armour-benefit-remains
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.knife-fighting
+    defender:
+      armour_id: armour.light-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.saved: true
+  mutations:
+  - id: remove-weapon-conditional-skill
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - ws-boundary
+    - injury-bonus
+  interaction_contract:
+    reads:
+    - weapon.kind
+    - fighter.weapon_skill
+    - defender.weapon_skill
+    writes:
+    - hit.target
+    - injury.total

@@ -1,0 +1,192 @@
+schema_version: 1
+specifications:
+- id: thick-skull-after-core-injury
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - {target: core/combat-injury-states, digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed}
+  - {target: mechanic/skill.thick-skull, digest: 4819600fd8bc2849d0a915b323b8729882c37119a23174442c005e3978ff635f}
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.thick-skull", "kind": "mechanic", "parameters": {}}'
+  interpretation: Resolve the ordinary Injury table first; Thick Skull reacts only when its resulting condition is Stunned.
+  cases:
+  - id: stunned-reacts
+    roles: [composition]
+    operation: injury_reaction
+    defender: {skill_ids: [skill.thick-skull]}
+    rolls: [{key: test.injury, value: 3}, {key: test.thick-skull, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN, result.reaction.attempted: true}
+  - id: knocked-down-does-not-react
+    roles: [boundary]
+    operation: injury_reaction
+    defender: {skill_ids: [skill.thick-skull]}
+    rolls: [{key: test.injury, value: 2}]
+    expect: {result.condition: KNOCKED_DOWN, result.reaction.attempted: false}
+  mutations:
+  - {id: remove-reaction, path: defender.global_effects.thick_skull, value: false, cases: [stunned-reacts]}
+
+- id: thick-skull-and-hard-to-kill
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - {target: mechanic/skill.hard-to-kill, digest: b66c185a5a58b1f030ef4dc30f29ae0054d249281805410af7521c982cc88cd4}
+  - {target: mechanic/skill.thick-skull, digest: 4819600fd8bc2849d0a915b323b8729882c37119a23174442c005e3978ff635f}
+  bindings:
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.thick-skull", "kind": "mechanic", "parameters": {}}'
+  interpretation: Hard to Kill makes face 5 Stunned; Thick Skull then gets its normal 3+ reaction. Face 6 remains Out.
+  cases:
+  - id: face-five-reacts
+    roles: [composition]
+    operation: injury_reaction
+    defender: {skill_ids: [skill.hard-to-kill, skill.thick-skull]}
+    rolls: [{key: test.injury, value: 5}, {key: test.thick-skull, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+  - id: face-six-does-not-react
+    roles: [boundary]
+    operation: injury_reaction
+    defender: {skill_ids: [skill.hard-to-kill, skill.thick-skull]}
+    rolls: [{key: test.injury, value: 6}]
+    expect: {result.condition: OUT, result.reaction.attempted: false}
+  mutations:
+  - {id: remove-reaction, path: defender.global_effects.thick_skull, value: false, cases: [face-five-reacts]}
+
+- id: thick-skull-and-head-crusher
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - {target: mechanic/skill.head-crusher, digest: 1cd6a6960dc58bd81cda4ad81081d49240052ad3ba0597687056d72474da1e83}
+  - {target: mechanic/skill.thick-skull, digest: 4819600fd8bc2849d0a915b323b8729882c37119a23174442c005e3978ff635f}
+  bindings:
+  - '{"id": "skill.head-crusher", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.thick-skull", "kind": "mechanic", "parameters": {}}'
+  interpretation: Head Crusher promotes the attacker's Knocked Down result to Stunned before the defender's Thick Skull reaction.
+  cases:
+  - id: promoted-result-reacts
+    roles: [composition]
+    operation: injury_reaction
+    attacker: {main_weapon_id: weapon.sword, skill_ids: [skill.head-crusher]}
+    defender: {skill_ids: [skill.thick-skull]}
+    rolls: [{key: test.injury, value: 1}, {key: test.thick-skull, value: 3}]
+    expect: {result.injury.condition: STUNNED, result.condition: KNOCKED_DOWN}
+  - id: failed-reaction-retains-stunned
+    roles: [boundary]
+    operation: injury_reaction
+    attacker: {main_weapon_id: weapon.sword, skill_ids: [skill.head-crusher]}
+    defender: {skill_ids: [skill.thick-skull]}
+    rolls: [{key: test.injury, value: 1}, {key: test.thick-skull, value: 2}]
+    expect: {result.condition: STUNNED}
+  mutations:
+  - {id: remove-reaction, path: defender.global_effects.thick_skull, value: false, cases: [promoted-result-reacts]}
+
+- id: thick-skull-and-ignore-pain
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - {target: mechanic/skill.ignore-pain, digest: 38aff21454539c3b866e4b04592950668da23cf87004c9def80eaf2f8f5b75ae}
+  - {target: mechanic/skill.thick-skull, digest: 4819600fd8bc2849d0a915b323b8729882c37119a23174442c005e3978ff635f}
+  bindings:
+  - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.thick-skull", "kind": "mechanic", "parameters": {}}'
+  interpretation: Ignore Pain already converts Stunned to Knocked Down, so Thick Skull requests no redundant die.
+  cases:
+  - id: no-redundant-reaction
+    roles: [composition]
+    operation: injury_reaction
+    defender: {skill_ids: [skill.ignore-pain, skill.thick-skull]}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN, result.reaction.attempted: false}
+  - id: out-remains-out
+    roles: [boundary]
+    operation: injury_reaction
+    defender: {skill_ids: [skill.ignore-pain, skill.thick-skull]}
+    rolls: [{key: test.injury, value: 5}]
+    expect: {result.condition: OUT, result.reaction.attempted: false}
+  mutations:
+  - id: remove-ignore-pain
+    path: defender.global_effects.tags
+    value: [skill.thick-skull, armour.no-armour]
+    cases: [no-redundant-reaction]
+
+- id: thick-skull-and-jump-up
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - {target: mechanic/skill.jump-up, digest: 0ddeeeffb0d9b1435c8b575dca91af2981daedcbc841bd875c240ecb9ccf7ccd}
+  - {target: mechanic/skill.thick-skull, digest: 4819600fd8bc2849d0a915b323b8729882c37119a23174442c005e3978ff635f}
+  bindings:
+  - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.thick-skull", "kind": "mechanic", "parameters": {}}'
+  interpretation: Jump Up handles ordinary Knocked Down results first; Thick Skull still handles an actual Stunned result afterward.
+  cases:
+  - id: stunned-reacts
+    roles: [composition]
+    operation: injury_reaction
+    defender: {skill_ids: [skill.jump-up, skill.thick-skull]}
+    rolls: [{key: test.injury, value: 3}, {key: test.thick-skull, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+  - id: ordinary-knockdown-jumps-up
+    roles: [boundary]
+    operation: injury_reaction
+    defender: {skill_ids: [skill.jump-up, skill.thick-skull]}
+    rolls: [{key: test.injury, value: 1}]
+    expect: {result.condition: STANDING, result.reaction.attempted: false}
+  mutations:
+  - {id: remove-reaction, path: defender.global_effects.thick_skull, value: false, cases: [stunned-reacts]}
+
+- id: thick-skull-and-mace
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - {target: mechanic/weapon.mace, digest: 8bd3ca5bc3d4418757c689510280b1a6f351b3c4565f11497f181c94fa3fc2ee}
+  - {target: mechanic/skill.thick-skull, digest: 4819600fd8bc2849d0a915b323b8729882c37119a23174442c005e3978ff635f}
+  bindings:
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.thick-skull", "kind": "mechanic", "parameters": {}}'
+  interpretation: Mace Concussion turns face 2 into Stunned; Thick Skull may then convert that result on 3+.
+  cases:
+  - id: concussion-reacts
+    roles: [composition]
+    operation: injury_reaction
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.thick-skull]}
+    rolls: [{key: test.injury, value: 2}, {key: test.thick-skull, value: 3}]
+    expect: {result.injury.condition: STUNNED, result.condition: KNOCKED_DOWN}
+  - id: failed-reaction
+    roles: [boundary]
+    operation: injury_reaction
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.thick-skull]}
+    rolls: [{key: test.injury, value: 2}, {key: test.thick-skull, value: 2}]
+    expect: {result.condition: STUNNED}
+  mutations:
+  - {id: remove-reaction, path: defender.global_effects.thick_skull, value: false, cases: [concussion-reacts]}
+
+- id: thick-skull-and-stone-axe
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - {target: mechanic/weapon.stone-axe, digest: 7daa278411e8b8a29584d7de1f261673ab11dc0eeda71c990529d76b648c499d}
+  - {target: mechanic/skill.thick-skull, digest: 4819600fd8bc2849d0a915b323b8729882c37119a23174442c005e3978ff635f}
+  bindings:
+  - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.thick-skull", "kind": "mechanic", "parameters": {}}'
+  interpretation: Stone Axe uses the same Concussion table as a club; face 2 becomes Stunned before Thick Skull reacts.
+  cases:
+  - id: concussion-reacts
+    roles: [composition]
+    operation: injury_reaction
+    attacker: {main_weapon_id: weapon.stone-axe}
+    defender: {skill_ids: [skill.thick-skull]}
+    rolls: [{key: test.injury, value: 2}, {key: test.thick-skull, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+  - id: out-does-not-react
+    roles: [boundary]
+    operation: injury_reaction
+    attacker: {main_weapon_id: weapon.stone-axe}
+    defender: {skill_ids: [skill.thick-skull]}
+    rolls: [{key: test.injury, value: 5}]
+    expect: {result.condition: OUT, result.reaction.attempted: false}
+  mutations:
+  - {id: remove-reaction, path: defender.global_effects.thick_skull, value: false, cases: [concussion-reacts]}

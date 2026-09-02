@@ -1,0 +1,236 @@
+schema_version: 2
+band_id: undead
+profiles:
+- id: vampire
+  name: Vampire
+  type: hero
+  cost: 110
+  experience: 20
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 5
+    A: 2
+    Ld: 8
+  equipment_lists:
+  - undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Vampire
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
+  source_path:
+  - heroes
+  - 1 Vampire
+  name_i18n:
+    en: Vampire
+    es: null
+  rule_ids:
+  - vampire--leader
+  - vampire--cause-fear
+  - vampire--immune-to-psychology
+  - vampire--immune-to-poison
+  - vampire--no-pain
+  combat_traits:
+    poison_immune: true
+- id: necromancer
+  name: Necromancer
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons and armour from the Undead Equipment List.
+  - May not cast spells while wearing armour or carrying a shield or buckler unless the Necromancer has a rule such as Warrior
+    Wizard that explicitly allows it.
+  skill_access:
+  - academic
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Necromancer
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
+  source_path:
+  - heroes
+  - 0 – 1 Necromancer
+  name_i18n:
+    en: Necromancer
+    es: null
+  rule_ids:
+  - necromancer--wizard
+  combat_traits: {}
+- id: dregs
+  name: Dregs
+  type: hero
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 3 Dregs
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
+  source_path:
+  - heroes
+  - 0 – 3 Dregs
+  name_i18n:
+    en: Dregs
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: ghouls
+  name: Ghouls
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 2
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Ghouls never carry equipment. Their primitive bones, teeth and claws are treated as intrinsic attacks rather than purchased
+    equipment.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ghouls
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
+  source_path:
+  - henchmen
+  - Ghouls
+  name_i18n:
+    en: Ghouls
+    es: null
+  rule_ids:
+  - ghouls--cause-fear
+  combat_traits: {}
+- id: dire-wolves
+  name: Dire wolves
+  type: henchman
+  cost: 50
+  experience: 0
+  characteristics:
+    M: 9
+    WS: 3
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Dire Wolves never use weapons or armour.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Dire wolves
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
+  source_path:
+  - henchmen
+  - 0 – 5 Dire wolves
+  name_i18n:
+    en: Dire wolves
+    es: null
+  rule_ids:
+  - dire-wolves--charge
+  - dire-wolves--may-not-run
+  - dire-wolves--cause-fear
+  - dire-wolves--immune-to-psychology
+  - dire-wolves--immune-to-poison
+  - dire-wolves--unliving
+  - dire-wolves--no-pain
+  combat_traits:
+    poison_immune: true
+- id: zombies
+  name: Zombies
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 1
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Zombies may not carry weapons or wear armour and suffer no penalty for fighting without equipment.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Zombies
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
+  source_path:
+  - henchmen
+  - Zombies
+  name_i18n:
+    en: Zombies
+    es: null
+  rule_ids:
+  - zombies--cause-fear
+  - zombies--may-not-run
+  - zombies--immune-to-psychology
+  - zombies--immune-to-poison
+  - zombies--no-pain
+  - zombies--no-brain
+  combat_traits:
+    poison_immune: true

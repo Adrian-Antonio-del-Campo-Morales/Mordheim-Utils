@@ -1,0 +1,488 @@
+schema_version: 1
+ruleset: mordheim
+catalog: hirelings-hired-swords
+grade: core
+profiles:
+- id: hireling.hired-sword.dwarf-troll-slayer
+  kind: hired-sword
+  grade: core
+  publication: Mordheim Rulebook
+  name: Dwarf Troll Slayer
+  name_i18n:
+    en: Dwarf Troll Slayer
+    es: null
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  warband_rating:
+    kind: base_plus_experience
+    base: 12
+    per_experience_point: 1
+  equipment:
+    choices:
+    - choose: 1
+      options:
+      - items:
+        - item_id: axe
+          quantity:
+            kind: fixed
+            value: 2
+      - unresolved_source_equipment: Double-Handed Axe
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids: []
+  rule_ids:
+  - hireling.hired-sword.dwarf-troll-slayer.rule.deathwish
+  - hireling.hired-sword.dwarf-troll-slayer.rule.hard-to-kill
+  - hireling.hired-sword.dwarf-troll-slayer.rule.hard-head
+  - hireling.hired-sword.dwarf-troll-slayer.rule.campaign-eligibility
+  special_skill_rule_ids:
+  - hireling.hired-sword.dwarf-troll-slayer.skill.ferocious-charge
+  - hireling.hired-sword.dwarf-troll-slayer.skill.monster-slayer
+  - hireling.hired-sword.dwarf-troll-slayer.skill.berserker
+  unresolved_references:
+  - kind: equipment_mapping
+    source_name: Double-Handed Axe
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Troll Slayer
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  normalization_status: normalized
+- id: hireling.hired-sword.elf-ranger
+  kind: hired-sword
+  grade: core
+  publication: Mordheim Rulebook
+  name: Elf Ranger
+  name_i18n:
+    en: Elf Ranger
+    es: null
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 5
+    S: 3
+    T: 3
+    W: 1
+    I: 6
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 12
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: elf_bow
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: elven_cloak
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - shooting
+  - speed
+  starting_skill_ids: []
+  rule_ids:
+  - hireling.hired-sword.elf-ranger.rule.seeker
+  - hireling.hired-sword.elf-ranger.rule.excellent-sight
+  - hireling.hired-sword.elf-ranger.rule.campaign-eligibility
+  special_skill_rule_ids:
+  - hireling.hired-sword.elf-ranger.skill.fey
+  - hireling.hired-sword.elf-ranger.skill.luck
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Elf Ranger
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  normalization_status: normalized
+- id: hireling.hired-sword.freelancer
+  kind: hired-sword
+  grade: core
+  publication: Mordheim Rulebook
+  name: Freelancer
+  name_i18n:
+    en: Freelancer
+    es: null
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 21
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: heavy_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: shield
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: lance
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    optional_items:
+    - item_id: warhorse
+      quantity:
+        kind: fixed
+        value: 1
+      when: optional_mounted_rules
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids: []
+  rule_ids: []
+  special_skill_rule_ids: []
+  unresolved_references: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Freelancer
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  normalization_status: normalized
+- id: hireling.hired-sword.halfling-scout
+  kind: hired-sword
+  grade: core
+  publication: Mordheim Rulebook
+  name: Halfling Scout
+  name_i18n:
+    en: Halfling Scout
+    es: null
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 4
+    S: 2
+    T: 2
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 5
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: bow
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.halfling-scout.item.cooking-pot
+      name: Cooking Pot
+      counts_as:
+        item_id: helmet
+        context: rules
+  skill_access:
+  - speed
+  - shooting
+  starting_skill_ids: []
+  rule_ids:
+  - hireling.hired-sword.halfling-scout.rule.cook
+  special_skill_rule_ids: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Halfling Scout
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  normalization_status: normalized
+- id: hireling.hired-sword.ogre-bodyguard
+  kind: hired-sword
+  grade: core
+  publication: Mordheim Rulebook
+  name: Ogre Bodyguard
+  name_i18n:
+    en: Ogre Bodyguard
+    es: null
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 2
+    S: 4
+    T: 4
+    W: 3
+    I: 3
+    A: 2
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 25
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+    choices:
+    - choose: 1
+      options:
+      - choose_items: 2
+        from_item_ids:
+        - sword
+        - axe
+        - club
+        repetition_allowed: true
+      - unresolved_source_equipment: Double-Handed Weapon
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids: []
+  rule_ids:
+  - hireling.hired-sword.ogre-bodyguard.rule.fear
+  - hireling.hired-sword.ogre-bodyguard.rule.large-target
+  special_skill_rule_ids: []
+  unresolved_references:
+  - kind: equipment_mapping
+    source_name: Double-Handed Weapon
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Ogre Bodyguard
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  normalization_status: normalized
+- id: hireling.hired-sword.pit-fighter
+  kind: hired-sword
+  grade: core
+  publication: Mordheim Rulebook
+  name: Pit Fighter
+  name_i18n:
+    en: Pit Fighter
+    es: null
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 4
+    A: 2
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 22
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: morning_star
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: spiked_gauntlet
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: helmet
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - speed
+  - strength
+  starting_skill_ids: []
+  rule_ids: []
+  special_skill_rule_ids: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Pit Fighter
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  normalization_status: normalized
+- id: hireling.hired-sword.warlock
+  kind: hired-sword
+  grade: core
+  publication: Mordheim Rulebook
+  name: Warlock
+  name_i18n:
+    en: Warlock
+    es: null
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 16
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: staff
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - academic
+  starting_skill_ids: []
+  rule_ids:
+  - hireling.hired-sword.warlock.rule.wizard
+  special_skill_rule_ids: []
+  unresolved_references:
+  - kind: spell_list
+    source_name: Lesser Magic
+    note: No canonical spell catalogue exists in the supplied KB.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Warlock
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  normalization_status: normalized
+rules:
+- id: hireling.hired-sword.dwarf-troll-slayer.rule.deathwish
+  name: Deathwish
+  effect: The Troll Slayer is immune to psychology and does not test for fighting alone.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Troll Slayer / Special Rules / Deathwish
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.dwarf-troll-slayer.rule.hard-to-kill
+  name: Hard to Kill
+  effect: On the Injury chart the Troll Slayer is taken Out of Action only on a 6; a 5 is Stunned.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Troll Slayer / Special Rules / Hard to Kill
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.dwarf-troll-slayer.rule.hard-head
+  name: Hard Head
+  effect: The Troll Slayer ignores the special concussion-style rules of maces and clubs.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Troll Slayer / Special Rules / Hard Head
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.dwarf-troll-slayer.skill.ferocious-charge
+  name: Ferocious Charge
+  kind: special-skill-option
+  effect: On a charge the Slayer may double his Attacks and suffers -1 To Hit that turn.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Troll Slayer / Troll Slayer Skills / Ferocious Charge
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.dwarf-troll-slayer.skill.monster-slayer
+  name: Monster Slayer
+  kind: special-skill-option
+  effect: The Slayer wounds on 4+ regardless of Toughness unless his modified Strength would require a lower roll.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Troll Slayer / Troll Slayer Skills / Monster Slayer
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.dwarf-troll-slayer.skill.berserker
+  name: Berserker
+  kind: special-skill-option
+  effect: The Slayer gains +1 To Hit during the turn he charges.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Troll Slayer / Troll Slayer Skills / Berserker
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.elf-ranger.rule.seeker
+  name: Seeker
+  effect: During Exploration the Elf Ranger allows one exploration die to be modified by +1 or -1.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Elf Ranger / Special Rules / Seeker
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.elf-ranger.rule.excellent-sight
+  name: Excellent Sight
+  effect: The Elf Ranger detects Hidden enemies at twice the normal Initiative-based distance.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Elf Ranger / Special Rules / Excellent Sight
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.elf-ranger.skill.fey
+  name: Fey
+  kind: special-skill-option
+  effect: Hostile spells fail to affect the Elf on a 4+ D6 roll.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Elf Ranger / Elven Skills / Fey
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.elf-ranger.skill.luck
+  name: Luck
+  kind: special-skill-option
+  effect: Once per game the Elf Ranger may reroll one of his own dice rolls.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Elf Ranger / Elven Skills / Luck
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.halfling-scout.rule.cook
+  name: Cook
+  effect: While the Halfling Scout is employed, the warband's maximum size increases by 1 without increasing its Hero limit.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Halfling Scout / Special Rules / Cook
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.ogre-bodyguard.rule.fear
+  name: Fear
+  effect: The Ogre Bodyguard causes fear.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Ogre Bodyguard / Special Rules / Fear
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.ogre-bodyguard.rule.large-target
+  name: Large Target
+  effect: The Ogre Bodyguard counts as a Large Target.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Ogre Bodyguard / Special Rules / Large Target
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.warlock.rule.wizard
+  name: Wizard
+  effect: The Warlock begins with two randomly generated Lesser Magic spells.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Warlock / Special Rules / Wizard
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a

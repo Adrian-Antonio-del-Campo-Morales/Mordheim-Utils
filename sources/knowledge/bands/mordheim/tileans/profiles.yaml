@@ -1,0 +1,210 @@
+schema_version: 2
+band_id: tileans
+profiles:
+- id: captain
+  name: Captain
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 2
+    Ld: 8
+  equipment_lists:
+  - equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Captain
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  source_path:
+  - heroes
+  - 1 Captain
+  name_i18n:
+    en: Captain
+    es: null
+  rule_ids:
+  - captain--leader
+  combat_traits: {}
+- id: champions
+  name: Champions
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Champions
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  source_path:
+  - heroes
+  - 0 – 2 Champions
+  name_i18n:
+    en: Champions
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: youngbloods
+  name: Youngbloods
+  type: hero
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Youngbloods
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  source_path:
+  - heroes
+  - 0 – 2 Youngbloods
+  name_i18n:
+    en: Youngbloods
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: warriors
+  name: Warriors
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Warriors
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  source_path:
+  - henchmen
+  - Warriors
+  name_i18n:
+    en: Warriors
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: marksmen
+  name: Marksmen
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - marksman-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 7 Marksmen
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  source_path:
+  - henchmen
+  - 0 – 7 Marksmen
+  name_i18n:
+    en: Marksmen
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: duelists
+  name: Duelists
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Duelists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  source_path:
+  - henchmen
+  - 0 – 5 Duelists
+  name_i18n:
+    en: Duelists
+    es: null
+  rule_ids:
+  - duelists--cloak-dagger
+  combat_traits:
+    counts_as_buckler: true

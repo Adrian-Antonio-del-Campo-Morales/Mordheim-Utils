@@ -1,0 +1,46 @@
+schema_version: 2
+id: trollheim-undead
+canonical_family: undead
+name: Undead
+name_i18n:
+  en: Undead
+  es: null
+original_locale: es
+categories:
+- trollheim
+grade: null
+setting: Mordheim
+publication: Trollheim
+status: source-normalized
+sources:
+- manual: trollheim
+  printed_page: 86-89
+  section: Undead
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: vampire
+    minimum: 1
+    maximum: 1
+  - profile_id: necromancer
+    minimum: 0
+    maximum: 1
+  - profile_id: dregs
+    minimum: 0
+    maximum: 3
+  - profile_id: zombies
+    minimum: 0
+    maximum: null
+  - profile_id: ghouls
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: dire-wolves
+    minimum: 0
+    maximum: 5
+ruleset: mordheim
+rule_ids: []

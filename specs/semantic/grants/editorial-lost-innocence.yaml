@@ -1,0 +1,120 @@
+schema_version: 1
+specifications:
+- id: editorial-lost-innocence-khemri-lahmian-brotherhood
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: priority
+  sources:
+  - target: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-lost-innocence/skill.always-strikes-first
+    digest: 28ac6d4a80756c67a7b37735f0dafc2daae78ea6a19b404d064aaa2f38709450
+  depends_on: [mechanic/skill.always-strikes-first]
+  interpretation: Khemri p.90 / Lost Innocence gives the Vampire strike first; equal abilities compare Initiative then a D6 tie.
+    Only this bloodline's Vampire can select the rule. No ordinary Initiative advantage defeats strike first.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lahmian-vampire, main_weapon_id: weapon.dagger}
+    context: {rule_id: band--lahmian-special-skills-lost-innocence}
+    expect: {result.recipients: [lahmian-vampire]}
+  - id: beats-high-initiative
+    roles: [active, consumer]
+    operation: acting_order
+    attacker: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lahmian-vampire, special_rule_ids: [band--lahmian-special-skills-lost-innocence], main_weapon_id: weapon.dagger}
+    defender: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 10, attacks: 1}}
+    expect: {result.first_acts: true}
+    expect_contains:
+      attacker.global_effects.tags: [skill.always-strikes-first]
+  - id: unselected
+    roles: [inactive]
+    operation: acting_order
+    attacker: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lahmian-vampire, main_weapon_id: weapon.dagger}
+    defender: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 10, attacks: 1}}
+    expect: {result.first_acts: false}
+  - id: equal-ability-initiative-4
+    roles: [boundary, consumer]
+    operation: acting_order
+    attacker: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lahmian-vampire, special_rule_ids: [band--lahmian-special-skills-lost-innocence], main_weapon_id: weapon.dagger}
+    defender: {main_weapon_id: weapon.mace, skill_ids: [skill.always-strikes-first], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 4, attacks: 1}}
+    expect: {result.first_acts: true}
+  - id: equal-ability-initiative-6
+    roles: [boundary, consumer]
+    operation: acting_order
+    attacker: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lahmian-vampire, special_rule_ids: [band--lahmian-special-skills-lost-innocence], main_weapon_id: weapon.dagger}
+    defender: {main_weapon_id: weapon.mace, skill_ids: [skill.always-strikes-first], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 6, attacks: 1}}
+    expect: {result.first_acts: false}
+  - id: equal-ability-tie
+    roles: [boundary]
+    operation: acting_order
+    attacker: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lahmian-vampire, special_rule_ids: [band--lahmian-special-skills-lost-innocence], main_weapon_id: weapon.dagger}
+    defender: {main_weapon_id: weapon.mace, skill_ids: [skill.always-strikes-first], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}}
+    distribution:
+      observable: result.first_acts
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  mutations:
+  - id: remove-priority
+    changes:
+    - {path: attacker.global_effects.tags, value: []}
+    - {path: attacker.global_effects.priority, value: 0}
+    cases: [beats-high-initiative]
+- id: editorial-lost-innocence-chaos-streets-undead-bloodlines
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: priority
+  sources:
+  - target: rule/trollheim/chaos-streets-undead-bloodlines/band--lahmia-power-lost-innocence/skill.always-strikes-first
+    digest: 191ffbd75e011aef6ea871403a267e0401e041bfa657cb8e19e3b985ca37a326
+  depends_on: [mechanic/skill.always-strikes-first]
+  interpretation: Chaos in the Streets p.183 / Lost Innocence explicitly preserves strike first when standing up and against spears.
+    Only this bloodline's Vampire can select the rule. No ordinary Initiative advantage defeats strike first.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: lahmia-vampire, main_weapon_id: weapon.dagger}
+    context: {rule_id: band--lahmia-power-lost-innocence}
+    expect: {result.recipients: [lahmia-vampire]}
+  - id: beats-high-initiative
+    roles: [active, consumer]
+    operation: acting_order
+    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: lahmia-vampire, special_rule_ids: [band--lahmia-power-lost-innocence], main_weapon_id: weapon.dagger}
+    defender: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 10, attacks: 1}}
+    expect: {result.first_acts: true}
+    expect_contains:
+      attacker.global_effects.tags: [skill.always-strikes-first]
+  - id: unselected
+    roles: [inactive]
+    operation: acting_order
+    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: lahmia-vampire, main_weapon_id: weapon.dagger}
+    defender: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 10, attacks: 1}}
+    expect: {result.first_acts: false}
+  - id: standing-up
+    roles: [boundary, consumer]
+    operation: acting_order
+    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: lahmia-vampire, special_rule_ids: [band--lahmia-power-lost-innocence], main_weapon_id: weapon.dagger}
+    defender: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 10, attacks: 1}}
+    context: {stood_up: true}
+    expect: {result.first_acts: true}
+  - id: standing-up-against-spear
+    roles: [boundary, consumer]
+    operation: acting_order
+    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: lahmia-vampire, special_rule_ids: [band--lahmia-power-lost-innocence], main_weapon_id: weapon.dagger}
+    defender: {main_weapon_id: weapon.spear, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
+    context: {stood_up: true, first_round: true, charging: true}
+    opponent_context: {first_round: true, charged: true}
+    expect: {result.first_acts: true}
+  - id: unselected-standing-up
+    roles: [inactive]
+    operation: acting_order
+    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: lahmia-vampire, main_weapon_id: weapon.dagger}
+    context: {stood_up: true}
+    expect: {result.first_acts: false}
+  mutations:
+  - id: lose-standing-up-exception
+    path: attacker.global_effects.tags
+    value: []
+    cases: [standing-up, standing-up-against-spear]
+  - id: remove-priority
+    changes:
+    - {path: attacker.global_effects.tags, value: []}
+    - {path: attacker.global_effects.priority, value: 0}
+    cases: [beats-high-initiative]

@@ -1,0 +1,65 @@
+schema_version: 2
+id: chaos-streets-pit-fighters
+canonical_family: pit-fighters
+name: Pit Fighters
+name_i18n:
+  en: Pit Fighters
+  es: null
+original_locale: es
+categories:
+- trollheim
+grade: null
+setting: Mordheim
+publication: Chaos in the Streets
+status: source-normalized
+sources:
+- manual: chaos-in-the-streets
+  printed_page: 117-125
+  section: Pit Fighters
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: pit-king
+    minimum: 1
+    maximum: 1
+  - profile_id: dwarf-troll-slayer
+    minimum: 0
+    maximum: 1
+  - profile_id: pit-veterans
+    minimum: 0
+    maximum: 2
+  - profile_id: pit-fighters
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: pursuers
+    minimum: 0
+    maximum: 7
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: ogre-pit-fighter
+    minimum: 0
+    maximum: 1
+    group_size:
+      minimum: 1
+      maximum: 1
+ruleset: mordheim
+rule_ids:
+- band--pit-fighter-skill
+- band--fighting-styles
+- band--hired-swords
+- band--free-the-slaves
+- band--in-the-pit
+- band--pit-fighter-skill-bulging-biceps
+- band--pit-fighter-skill-force-of-will
+- band--pit-fighter-skill-arms-master
+- band--pit-fighter-skill-body-slam
+- band--pit-fighter-skill-grizzled-veteran
+- band--troll-slayer-special-skills-monster-slayer
+- band--troll-slayer-special-skills-ferocious-charge
+- band--troll-slayer-special-skills-berserker

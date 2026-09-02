@@ -1,0 +1,62 @@
+schema_version: 1
+specifications:
+- id: skaven-tail-fighting-mordheim-and-trollheim
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: rule/mordheim/skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting, digest: fc04d74067f29b893e8c8f449707bab15fcfe65b25a446f1a67186afc332b4aa}
+  - {target: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting, digest: 61821866abb013251f2ea21d275421932e6005b5b83ff74b40e38544f8082092}
+  interpretation: >-
+    Tail Fighting es una habilidad seleccionable por los cuatro perfiles héroe.
+    Una daga o espada en la cola crea un ataque separado con esa arma; un escudo
+    no crea ataque y mejora en uno la salvación. No admite otros objetos.
+  cases:
+  - id: mordheim-recipients
+    roles: [grant]
+    operation: selectable_grant
+    defender: {band_id: skaven-clan-eshin, profile_id: assassin-adept}
+    context: {rule_id: band--skaven-special-skills-tail-fighting}
+    expect: {result.recipients: [assassin-adept, black-skaven, eshin-sorcerer, night-runners]}
+  - id: trollheim-recipients
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: trollheim-skaven-clan-eshin, profile_id: assassin-adept}
+    context: {rule_id: band--skaven-special-skills-tail-fighting}
+    expect: {result.recipients: [assassin-adept, black-skaven, eshin-sorcerer, night-runners]}
+  - id: sword-tail-attack
+    roles: [compiled, active, consumer, boundary]
+    operation: extra_attack
+    attacker:
+      band_id: skaven-clan-eshin
+      profile_id: assassin-adept
+      special_rule_ids: [band--skaven-special-skills-tail-fighting]
+      extra_hand_id: weapon.sword
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}]
+    expect: {result.wounded: true, result.defender.wounds: 1}
+    expect_contains: {attacker.extra_attacks.0.tags: [weapon.sword]}
+  - id: shield-tail-save
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender:
+      band_id: skaven-clan-eshin
+      profile_id: assassin-adept
+      special_rule_ids: [band--skaven-special-skills-tail-fighting]
+      extra_hand_id: defence.shield
+    rolls: [{key: armour, value: 5}]
+    expect: {defender.extra_attacks: [], result.target: 5, result.saved: true}
+  - id: ordinary-profile-control
+    roles: [inactive]
+    operation: attacks
+    attacker: {band_id: skaven-clan-eshin, profile_id: assassin-adept}
+    expect: {result.attacks: 1}
+  mutations:
+  - id: weaken-tail-weapon
+    path: attacker.extra_attacks.0.fixed_strength
+    value: 1
+    cases: [sword-tail-attack]
+  - id: remove-tail-shield
+    path: defender.armour_save
+    value: 7
+    cases: [shield-tail-save]

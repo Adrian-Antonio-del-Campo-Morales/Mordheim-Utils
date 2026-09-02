@@ -1,0 +1,259 @@
+schema_version: 2
+band_id: lustria-pirates
+profiles:
+- id: pirate-captain
+  name: Pirate Captain
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 92
+    section: 1 Pirate Captain
+  source_path:
+  - heroes
+  - 1 Pirate Captain
+  name_i18n:
+    en: Pirate Captain
+    es: null
+  rule_ids:
+  - pirate-captain--leader
+  combat_traits: {}
+- id: ships-mates
+  name: Ship's Mates
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select a Parrot; it is restricted to the Pirate Captain and Boatswains.
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - special
+  source:
+    manual: lustria
+    printed_page: 92
+    section: 0-2 Ship's Mates
+  source_path:
+  - heroes
+  - 0-2 Ship's Mates
+  name_i18n:
+    en: Ship's Mates
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: cabin-boys
+  name: Cabin Boys
+  type: hero
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select a Parrot; it is restricted to the Pirate Captain and Boatswains.
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 92
+    section: 0-2 Cabin Boys
+  source_path:
+  - heroes
+  - 0-2 Cabin Boys
+  name_i18n:
+    en: Cabin Boys
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: crew
+  name: Crew
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select the Scourge; it is Heroes only.
+  - May not select a Parrot; it is restricted to the Pirate Captain and Boatswains.
+  - May not carry the Pirate Flag; the detailed entry restricts it to Pirate Heroes.
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 94
+    section: Crew
+  source_path:
+  - henchmen
+  - Crew
+  name_i18n:
+    en: Crew
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: gunners
+  name: Gunners
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - gunner-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 93
+    section: Gunners
+  source_path:
+  - henchmen
+  - Gunners
+  name_i18n:
+    en: Gunners
+    es: null
+  rule_ids:
+  - gunners--carronades-are-dangerous
+  combat_traits: {}
+- id: boatswains
+  name: Boatswains
+  type: henchman
+  cost: 32
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment:
+  - rope_hook
+  equipment_restrictions:
+  - The starting Rope and Hook may never be sold or discarded.
+  - May not select the Scourge; it is Heroes only.
+  - May not carry the Pirate Flag; the detailed entry restricts it to Pirate Heroes.
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 93
+    section: 0-5 Boatswains
+  source_path:
+  - henchmen
+  - 0-5 Boatswains
+  name_i18n:
+    en: Boatswains
+    es: null
+  rule_ids:
+  - boatswains--expert-rigger
+  combat_traits: {}
+- id: swabbies
+  name: Swabbies
+  type: henchman
+  cost: 0
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - swabbie-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Swabbies may never use magic or cast spells, regardless of any former profession or skills.
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 94
+    section: 0-5 Swabbies
+  source_path:
+  - henchmen
+  - 0-5 Swabbies
+  name_i18n:
+    en: Swabbies
+    es: null
+  rule_ids:
+  - swabbies--special-recruitment
+  - swabbies--never-gain-experience
+  - swabbies--rabble
+  - swabbies--curse-they-have-escaped
+  - swabbies--do-not-worry-about-them
+  combat_traits: {}

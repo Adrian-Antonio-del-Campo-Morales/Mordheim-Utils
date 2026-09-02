@@ -1,0 +1,105 @@
+schema_version: 1
+specifications:
+- id: tilean-cloak-and-dagger
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: rule/trollheim/lustria-tileans/duelists--cloak-and-dagger/trait.counts-as-shield, digest: 7991380d9d2de166d39f57c62607a9466d5c5fcab35f5a044ebdd277cc459254}
+  interpretation: Lustria p.50 / Duelists / Cloak and Dagger. La capa cuenta como escudo en cuerpo a cuerpo;
+    concede 6+ sin armadura y mejora en un punto la armadura vestida. No concede una parada de rodela
+    ni una salvacion especial. Fuerza y negacion de armaduras se aplican normalmente.
+  cases:
+  - id: recipients
+    roles: [grant]
+    operation: grant
+    defender: {collection: trollheim, band_id: lustria-tileans, profile_id: duelists}
+    context: {rule_id: duelists--cloak-and-dagger}
+    expect: {result.recipients: [duelists]}
+  - id: face-1
+    roles: [compiled, active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: lustria-tileans, profile_id: duelists}
+    rolls: [{key: armour, value: 1}]
+    expect: {defender.armour_save: 6, result.target: 6, result.saved: false}
+  - id: face-2
+    roles: [compiled, active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: lustria-tileans, profile_id: duelists}
+    rolls: [{key: armour, value: 2}]
+    expect: {defender.armour_save: 6, result.target: 6, result.saved: false}
+  - id: face-3
+    roles: [compiled, active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: lustria-tileans, profile_id: duelists}
+    rolls: [{key: armour, value: 3}]
+    expect: {defender.armour_save: 6, result.target: 6, result.saved: false}
+  - id: face-4
+    roles: [compiled, active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: lustria-tileans, profile_id: duelists}
+    rolls: [{key: armour, value: 4}]
+    expect: {defender.armour_save: 6, result.target: 6, result.saved: false}
+  - id: face-5
+    roles: [compiled, active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: lustria-tileans, profile_id: duelists}
+    rolls: [{key: armour, value: 5}]
+    expect: {defender.armour_save: 6, result.target: 6, result.saved: false}
+  - id: face-6
+    roles: [compiled, active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: lustria-tileans, profile_id: duelists}
+    rolls: [{key: armour, value: 6}]
+    expect: {defender.armour_save: 6, result.target: 6, result.saved: true}
+  - id: cloak-with-light-armour
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: lustria-tileans, profile_id: duelists, armour_id: armour.light-armour}
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected: {'true': 1/3, 'false': 2/3}
+  - id: strength-four-negates-cloak
+    roles: [inactive, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
+    defender: {collection: trollheim, band_id: lustria-tileans, profile_id: duelists}
+    expect: {result.eligible: false, result.saved: false, result.roll: null}
+  - id: armour-denial
+    roles: [inactive, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.vomit-attack}
+    defender: {collection: trollheim, band_id: lustria-tileans, profile_id: duelists}
+    expect: {result.eligible: false, result.saved: false, result.roll: null}
+  - id: cloak-is-not-a-buckler
+    roles: [inactive]
+    operation: parry
+    defender: {collection: trollheim, band_id: lustria-tileans, profile_id: duelists, main_weapon_id: weapon.dagger}
+    expect: {result.attempted: false, result.blocked: false}
+  - id: cloak-is-not-a-ward
+    roles: [inactive]
+    operation: special_save
+    defender: {collection: trollheim, band_id: lustria-tileans, profile_id: duelists}
+    expect: {result.saved: false, result.ward_roll: null}
+  - id: warrior-does-not-inherit-cloak
+    roles: [inactive]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: lustria-tileans, profile_id: warriors}
+    expect: {result.eligible: false, result.saved: false}
+  mutations:
+  - id: remove-cloak-armour
+    path: defender.armour_save
+    value: 7
+    cases: [face-6]
+  - id: omit-cloak-stacking
+    path: defender.armour_save
+    value: 6
+    cases: [cloak-with-light-armour]

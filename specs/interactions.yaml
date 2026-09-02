@@ -1,0 +1,16 @@
+schema_version: 1
+higher_order:
+- id: concussion-no-pain-jump-up
+  bindings:
+  - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
+  reason: 'Track why Knocked Down was produced: No Pain conversions must not be cancelled by Jump Up after the table
+    or Concussion has selected Stunned.'
+- id: hard-to-kill-no-pain-jump-up
+  bindings:
+  - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
+  reason: 'Track why Knocked Down was produced: No Pain conversions must not be cancelled by Jump Up after the table
+    or Concussion has selected Stunned.'

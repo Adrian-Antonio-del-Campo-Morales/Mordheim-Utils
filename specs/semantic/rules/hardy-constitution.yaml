@@ -1,0 +1,139 @@
+schema_version: 1
+specifications:
+- id: hardy-constitution-and-pirate-grants
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/skill.hardy-constitution, digest: 0edac1834110929ba8635130ee81bf4681e4f9768c8509954e69405705145f50}
+  - {target: rule/mordheim/pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution, digest: 2648e37f958750c2512f310448ebae7c00fa7f8bc75cfbf42a09e2695ba7e4ce}
+  - {target: rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution, digest: dcc11db1ce87c85251b5d0a5098d72b0cf448da5902aa42c79189cb4c0033f3e}
+  interpretation: Pirate Special Skills / Hardy Constitution (Mordheimer y Lustria p.91).
+    Un 5 o 6 cancela el efecto critico, no la herida. Un 1-4 deja el critico disponible para su resolucion.
+    Se comprueba la clasificacion de la herida sin usar como oraculo la tabla historica de criticos.
+    La prueba no requiere tirar si la herida es normal, si no hay herida o si el critico ya no esta disponible.
+  cases:
+  - id: full-hit-wound-cancellation-distribution
+    roles: [active, consumer, sequence, boundary]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.hardy-constitution]}
+    distribution:
+      observable: result.critical
+      max_rolls: 3
+      expected: {'true': 1/18, 'false': 17/18}
+  - id: critical-cancellation-face-1
+    roles: [compiled, active, boundary, consumer, sequence, consumption]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.hardy-constitution]}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 6}, {key: test.hardy-constitution, value: 1}]
+    expect: {result.critical: true, result.damage: 1, result.defender.wounds: 2}
+    expect_contains: {defender.global_effects.tags: [skill.hardy-constitution]}
+  - id: critical-cancellation-face-2
+    roles: [compiled, active, boundary, consumer, sequence, consumption]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.hardy-constitution]}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 6}, {key: test.hardy-constitution, value: 2}]
+    expect: {result.critical: true, result.damage: 1, result.defender.wounds: 2}
+    expect_contains: {defender.global_effects.tags: [skill.hardy-constitution]}
+  - id: critical-cancellation-face-3
+    roles: [compiled, active, boundary, consumer, sequence, consumption]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.hardy-constitution]}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 6}, {key: test.hardy-constitution, value: 3}]
+    expect: {result.critical: true, result.damage: 1, result.defender.wounds: 2}
+    expect_contains: {defender.global_effects.tags: [skill.hardy-constitution]}
+  - id: critical-cancellation-face-4
+    roles: [compiled, active, boundary, consumer, sequence, consumption]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.hardy-constitution]}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 6}, {key: test.hardy-constitution, value: 4}]
+    expect: {result.critical: true, result.damage: 1, result.defender.wounds: 2}
+    expect_contains: {defender.global_effects.tags: [skill.hardy-constitution]}
+  - id: critical-cancellation-face-5
+    roles: [compiled, active, boundary, consumer, sequence, consumption]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.hardy-constitution]}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 6}, {key: test.hardy-constitution, value: 5}]
+    expect: {result.critical: false, result.damage: 1, result.defender.wounds: 2}
+    expect_contains: {defender.global_effects.tags: [skill.hardy-constitution]}
+  - id: critical-cancellation-face-6
+    roles: [compiled, active, boundary, consumer, sequence, consumption]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.hardy-constitution]}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 6}, {key: test.hardy-constitution, value: 6}]
+    expect: {result.critical: false, result.damage: 1, result.defender.wounds: 2}
+    expect_contains: {defender.global_effects.tags: [skill.hardy-constitution]}
+  - id: ordinary-wound
+    roles: [inactive, boundary, sequence]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.hardy-constitution]}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}]
+    expect: {result.critical: false, result.damage: 1, result.defender.wounds: 2}
+  - id: without-skill
+    roles: [inactive, boundary, sequence]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 6}]
+    expect: {result.critical: true, result.damage: 1, result.defender.wounds: 2}
+  - id: spent-critical
+    roles: [inactive, boundary, sequence]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.hardy-constitution]}
+    attacker_state: {critical_available: false}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 6}]
+    expect: {result.critical: false, result.damage: 1, result.defender.wounds: 2}
+  - id: failed-wound
+    roles: [inactive, boundary, sequence]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.hardy-constitution]}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 1}]
+    expect: {result.critical: false, result.damage: 0, result.defender.wounds: 3}
+  - id: cancelled-critical-uses-normal-injury
+    roles: [sequence, consumer]
+    operation: attack
+    attacker: {main_weapon_id: weapon.axe}
+    defender: {skill_ids: [skill.hardy-constitution]}
+    defender_state: {wounds: 1}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 6}, {key: test.hardy-constitution, value: 5}, {key: test.injury.0, value: 3}]
+    expect: {result.critical: false, result.damage: 1, result.defender.condition: STUNNED}
+  - id: mordheim-recipients
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: mordheim, band_id: pirates, profile_id: pirate-captain}
+    context: {rule_id: band--pirate-special-skills-hardy-constitution}
+    expect: {result.recipients: [cabin-boys, pirate-captain, ships-mates]}
+  - id: mordheim-captain-cancels-but-is-wounded
+    roles: [active, consumer, sequence]
+    operation: attack
+    attacker: {main_weapon_id: weapon.axe}
+    defender: {collection: mordheim, band_id: pirates, profile_id: pirate-captain, special_rule_ids: [band--pirate-special-skills-hardy-constitution]}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 6}, {key: test.hardy-constitution, value: 6}, {key: test.injury.0, value: 3}]
+    expect: {result.critical: false, result.damage: 1, result.defender.condition: STUNNED}
+  - id: trollheim-recipients
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: lustria-pirates, profile_id: pirate-captain}
+    context: {rule_id: band--pirate-special-skills-hardy-constitution}
+    expect: {result.recipients: [cabin-boys, pirate-captain, ships-mates]}
+  - id: trollheim-captain-cancels-but-is-wounded
+    roles: [active, consumer, sequence]
+    operation: attack
+    attacker: {main_weapon_id: weapon.axe}
+    defender: {collection: trollheim, band_id: lustria-pirates, profile_id: pirate-captain, special_rule_ids: [band--pirate-special-skills-hardy-constitution]}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 6}, {key: test.hardy-constitution, value: 6}, {key: test.injury.0, value: 3}]
+    expect: {result.critical: false, result.damage: 1, result.defender.condition: STUNNED}
+  mutations:
+  - id: remove-critical-protection
+    path: defender.global_effects.tags
+    value: []
+    cases: [critical-cancellation-face-5, mordheim-captain-cancels-but-is-wounded, trollheim-captain-cancels-but-is-wounded]

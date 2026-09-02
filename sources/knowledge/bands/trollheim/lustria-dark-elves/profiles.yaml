@@ -1,0 +1,267 @@
+schema_version: 2
+band_id: lustria-dark-elves
+profiles:
+- id: dark-prince
+  name: Dark Prince
+  type: hero
+  cost: 70
+  experience: 20
+  characteristics:
+    M: 5
+    WS: 5
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 6
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - dark-elf-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never use blackpowder weapons.
+  - May not select the Beastmaster's Whip; it is Beastmaster only.
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 61
+    section: 1 Dark Prince
+  source_path:
+  - heroes
+  - 1 Dark Prince
+  name_i18n:
+    en: Dark Prince
+    es: null
+  rule_ids:
+  - dark-prince--leader
+  combat_traits: {}
+- id: darkblades
+  name: Darkblades
+  type: hero
+  cost: 40
+  experience: 12
+  characteristics:
+    M: 5
+    WS: 5
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 6
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - dark-elf-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never use blackpowder weapons.
+  - May never use missile weapons of any kind.
+  - May not select the Beastmaster's Whip; it is Beastmaster only.
+  skill_access:
+  - combat
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 61
+    section: 0-2 Darkblades
+  source_path:
+  - heroes
+  - 0-2 Darkblades
+  name_i18n:
+    en: Darkblades
+    es: null
+  rule_ids:
+  - darkblades--close-combat-specialists
+  combat_traits: {}
+- id: beastmaster
+  name: Beastmaster
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 6
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - dark-elf-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never use blackpowder weapons.
+  skill_access:
+  - combat
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 62
+    section: 0-1 Beastmaster
+  source_path:
+  - heroes
+  - 0-1 Beastmaster
+  name_i18n:
+    en: Beastmaster
+    es: null
+  rule_ids:
+  - beastmaster--cold-one-handler
+  combat_traits: {}
+- id: dark-elf-sorceress
+  name: Dark Elf Sorceress
+  type: hero
+  cost: 55
+  experience: 12
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 6
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - dark-elf-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never use blackpowder weapons.
+  - May not select the Beastmaster's Whip; it is Beastmaster only.
+  - May not cast spells while wearing armour.
+  skill_access:
+  - academic
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 62
+    section: 0-1 Dark Elf Sorceress
+  source_path:
+  - heroes
+  - 0-1 Dark Elf Sorceress
+  name_i18n:
+    en: Dark Elf Sorceress
+    es: null
+  rule_ids:
+  - dark-elf-sorceress--spellcaster
+  combat_traits: {}
+- id: corsairs
+  name: Corsairs
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 6
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - dark-elf-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never use blackpowder weapons.
+  - May select the Sea Dragon Cloak even though Corsairs are not Heroes.
+  - May not select Black Venom or Draich; those entries are Heroes only.
+  - May not select the Beastmaster's Whip; it is Beastmaster only.
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 63
+    section: Corsairs
+  source_path:
+  - henchmen
+  - Corsairs
+  name_i18n:
+    en: Corsairs
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: shadows
+  name: Shadows
+  type: henchman
+  cost: 30
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - dark-elf-shadow-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never use blackpowder weapons.
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 63
+    section: 0-5 Shadows
+  source_path:
+  - henchmen
+  - 0-5 Shadows
+  name_i18n:
+    en: Shadows
+    es: null
+  rule_ids:
+  - shadows--natural-stealth
+  combat_traits: {}
+- id: cold-ones
+  name: Cold Ones
+  type: animal
+  cost: 30
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 0
+    S: 4
+    T: 4
+    W: 1
+    I: 1
+    A: 1
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Cold Ones are animals and never use weapons or armour; their claws and jaws are natural attacks.
+  - The warband may include Cold Ones only while it includes a Beastmaster.
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 64
+    section: 0-2 Cold Ones
+  source_path:
+  - henchmen
+  - 0-2 Cold Ones
+  name_i18n:
+    en: Cold Ones
+    es: null
+  rule_ids:
+  - cold-ones--animal
+  - cold-ones--beastmaster-dependency
+  - cold-ones--stupidity
+  - cold-ones--scaly-skin
+  - cold-ones--fear
+  combat_traits:
+    natural_armour_save: 6

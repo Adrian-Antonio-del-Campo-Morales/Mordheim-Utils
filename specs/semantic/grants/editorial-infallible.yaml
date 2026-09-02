@@ -1,0 +1,39 @@
+schema_version: 1
+specifications:
+- id: editorial-infallible-grant
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - {target: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-infallible/skill.infallible, digest: 2b2428406db80350f41ca8f3444f2cc11f86816d56c7f93fa958ffd3716b43d3}
+  depends_on: [mechanic/skill.infallible]
+  interpretation: Infallible is a selectable Blood Dragon power available only to the Blood Dragon Vampire profile.
+    Selection compiles the canonical charge-only failed-hit reroll; no other Vampire bloodline receives it.
+  cases:
+  - id: only-blood-dragon-vampire
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+    context: {rule_id: band--blood-dragon-power-infallible}
+    expect: {result.recipients: [blood-dragon-vampire]}
+  - id: granted-consumer
+    roles: [active, boundary, consumer]
+    operation: hit
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+      special_rule_ids: [band--blood-dragon-power-infallible]
+    context: {charging: true}
+    rolls:
+    - {key: hit, value: 1}
+    - {key: hit.reroll, value: 6}
+    expect: {result.success: true, result.rerolled: true, result.roll: 6}
+  mutations:
+  - id: remove-granted-infallible
+    changes:
+    - {path: attacker.global_effects.tags, value: []}
+    - {path: attacker.global_effects.charge_reroll_hits, value: false}
+    cases: [granted-consumer]

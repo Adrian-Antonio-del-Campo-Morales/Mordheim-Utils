@@ -1,0 +1,308 @@
+schema_version: 2
+band_id: khemri-tomb-guardians
+profiles:
+- id: tomb-lord
+  name: Tomb Lord
+  type: hero
+  cost: 90
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 2
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - tomb-undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  source:
+    manual: khemri
+    printed_page: 44
+    section: 1 Tomb Lord
+  source_path:
+  - heroes
+  - 1 Tomb Lord
+  name_i18n:
+    en: Tomb Lord
+    es: null
+  rule_ids:
+  - tomb-lord--leader
+  - tomb-lord--undead
+  - tomb-lord--flammable
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: mortuary-priest
+  name: Mortuary Priest
+  type: hero
+  cost: 50
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - mortuary-priest-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Mortuary Priest Equipment List, but may never wear armour because it interferes with the Priest's
+    powers.
+  skill_access:
+  - academic
+  source:
+    manual: khemri
+    printed_page: 44
+    section: 0-1 Mortuary Priest
+  source_path:
+  - heroes
+  - 0-1 Mortuary Priest
+  name_i18n:
+    en: Mortuary Priest
+    es: null
+  rule_ids:
+  - mortuary-priest--wizard
+  - mortuary-priest--undead
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: necrotect
+  name: Necrotect
+  type: hero
+  cost: 70
+  experience: 12
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - tomb-undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - strength
+  source:
+    manual: khemri
+    printed_page: 45
+    section: 0-1 Necrotect
+  source_path:
+  - heroes
+  - 0-1 Necrotect
+  name_i18n:
+    en: Necrotect
+    es: null
+  rule_ids:
+  - necrotect--undead
+  - necrotect--hatred
+  - necrotect--stone-forger
+  combat_traits:
+    starting_skills:
+    - skill.hatred
+    - skill.ignore-pain
+- id: mortuary-acolytes
+  name: Mortuary Acolytes
+  type: hero
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - mortuary-priest-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour; the Mortuary Priest Equipment List contains no armour options.
+  skill_access:
+  - combat
+  - academic
+  source:
+    manual: khemri
+    printed_page: 45
+    section: 0-3 Mortuary Acolytes
+  source_path:
+  - heroes
+  - 0-3 Mortuary Acolytes
+  name_i18n:
+    en: Mortuary Acolytes
+    es: null
+  rule_ids:
+  - mortuary-acolytes--undead
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: skeleton-warriors
+  name: Skeleton Warriors
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - tomb-undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 46
+    section: Skeleton Warriors
+  source_path:
+  - henchmen
+  - Skeleton Warriors
+  name_i18n:
+    en: Skeleton Warriors
+    es: null
+  rule_ids:
+  - skeleton-warriors--undead
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: tomb-guardians
+  name: Tomb Guardians
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 4
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - tomb-undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 46
+    section: Tomb Guardians
+  source_path:
+  - henchmen
+  - Tomb Guardians
+  name_i18n:
+    en: Tomb Guardians
+    es: null
+  rule_ids:
+  - tomb-guardians--undead
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: tomb-scorpions
+  name: Tomb Scorpions
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 2
+    BS: 0
+    S: 2
+    T: 2
+    W: 1
+    I: 4
+    A: 1
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Tomb Scorpions do not use weapons or armour.
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 46
+    section: 0-3 Tomb Scorpions
+  source_path:
+  - henchmen
+  - 0-3 Tomb Scorpions
+  name_i18n:
+    en: Tomb Scorpions
+    es: null
+  rule_ids:
+  - tomb-scorpions--living
+  - tomb-scorpions--animal
+  - tomb-scorpions--scorpion-sting
+  combat_traits: {}
+- id: stone-golem
+  name: Stone Golem
+  type: henchman
+  cost: 150
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 3
+    BS: 0
+    S: 5
+    T: 4
+    W: 3
+    I: 1
+    A: 2
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Stone Golems never use weapons or armour and suffer no penalty for fighting without weapons.
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 47
+    section: 0-1 Stone Golem
+  source_path:
+  - henchmen
+  - 0-1 Stone Golem
+  name_i18n:
+    en: Stone Golem
+    es: null
+  rule_ids:
+  - stone-golem--stone-body
+  - stone-golem--fear
+  - stone-golem--immune-to-psychology
+  - stone-golem--immune-to-poison
+  - stone-golem--brainless
+  - stone-golem--impossible-to-hide
+  - stone-golem--large-target
+  - stone-golem--no-water
+  - stone-golem--animated
+  combat_traits:
+    natural_armour_save: 4

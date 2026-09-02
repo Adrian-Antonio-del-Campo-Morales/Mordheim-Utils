@@ -1,0 +1,383 @@
+schema_version: 2
+band_id: lustria-clan-pestilens
+rules:
+- id: plague-priest--leader
+  name: Leader
+  effect: Any warband model within 6" of the Plague Priest may use his Leadership when taking Leadership tests.
+  source:
+    manual: lustria
+    printed_page: 78
+    section: Heroes / 1 Plague Priest / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Plague Priest may use his Leadership when taking Leadership tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - plague-priest
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-clan-pestilens.plague-priest.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: pestilens-sorcerer--spellcaster
+  name: Spellcaster
+  effect: The Pestilens Sorcerer is a spellcaster and begins with one randomly generated spell from Magic of the Horned Rat.
+    The spell list and spell effects are intentionally not modelled in this file.
+  source:
+    manual: lustria
+    printed_page: 78
+    section: Heroes / 0-1 Pestilens Sorcerer / Spellcaster
+  name_i18n:
+    en: Spellcaster
+    es: null
+  effect_i18n:
+    en: The Pestilens Sorcerer is a spellcaster and begins with one randomly generated spell from Magic of the Horned Rat.
+      The spell list and spell effects are intentionally not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - pestilens-sorcerer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-clan-pestilens.pestilens-sorcerer.spellcaster
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: giant-rats--animal
+  name: Animal
+  effect: Giant Rats are animals and never gain Experience.
+  source:
+    manual: lustria
+    printed_page: 79
+    section: Henchmen / Giant Rats / Animal
+  name_i18n:
+    en: Animal
+    es: null
+  effect_i18n:
+    en: Giant Rats are animals and never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - giant-rats
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-clan-pestilens.giant-rats.animal
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: rat-ogre--fear
+  name: Fear
+  effect: The Rat Ogre causes Fear.
+  source:
+    manual: lustria
+    printed_page: 79
+    section: Henchmen / 0-1 Rat Ogre / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Rat Ogre causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - rat-ogre
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-clan-pestilens.rat-ogre.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: rat-ogre--stupidity
+  name: Stupidity
+  effect: The Rat Ogre is subject to Stupidity unless a Skaven Hero is within 6".
+  source:
+    manual: lustria
+    printed_page: 79
+    section: Henchmen / 0-1 Rat Ogre / Stupidity
+  name_i18n:
+    en: Stupidity
+    es: null
+  effect_i18n:
+    en: The Rat Ogre is subject to Stupidity unless a Skaven Hero is within 6".
+    es: null
+  applies_to:
+    profile_ids:
+    - rat-ogre
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-clan-pestilens.rat-ogre.stupidity
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: rat-ogre--experience
+  name: Experience
+  effect: The Rat Ogre never gains Experience.
+  source:
+    manual: lustria
+    printed_page: 79
+    section: Henchmen / 0-1 Rat Ogre / Experience
+  name_i18n:
+    en: Experience
+    es: null
+  effect_i18n:
+    en: The Rat Ogre never gains Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - rat-ogre
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-clan-pestilens.rat-ogre.experience
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: rat-ogre--large-target
+  name: Large Target
+  effect: The Rat Ogre may be selected as a shooting target even when it is not the closest eligible target, and missile attacks
+    against it gain +1 To Hit.
+  source:
+    manual: lustria
+    printed_page: 79
+    section: Henchmen / 0-1 Rat Ogre / Large Target
+  name_i18n:
+    en: Large Target
+    es: null
+  effect_i18n:
+    en: The Rat Ogre may be selected as a shooting target even when it is not the closest eligible target, and missile attacks
+      against it gain +1 To Hit.
+    es: null
+  applies_to:
+    profile_ids:
+    - rat-ogre
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-clan-pestilens.rat-ogre.large-target
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--clan-pestilens-special-skills-black-hunger
+  kind: warband_skill
+  name: Black Hunger
+  effect: At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack and adds the result
+    of 1D6 x 0.4" + 1" to his Movement. At the end of the turn he suffers 1D3 Strength 3 hits with no armour save.
+  source:
+    manual: lustria
+    printed_page: 80
+    section: Clan Pestilens Special Skills / Black Hunger
+  name_i18n:
+    en: Black Hunger
+    es: null
+  effect_i18n:
+    en: At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack and adds the result
+      of 1D6 x 0.4" + 1" to his Movement. At the end of the turn he suffers 1D3 Strength 3 hits with no armour save.
+    es: null
+  eligibility:
+  - plague-priest
+  - pestilens-sorcerer
+  - plague-monks
+  - monk-initiates
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: mechanic.black-hunger
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.black-hunger
+- id: band--clan-pestilens-special-skills-censer-bearer
+  kind: warband_skill
+  name: Censer Bearer
+  effect: Requires Black Hunger. The Hero gains Frenzy and may use only a Censer as a close-combat weapon.
+  source:
+    manual: lustria
+    printed_page: 80
+    section: Clan Pestilens Special Skills / Censer Bearer
+  name_i18n:
+    en: Censer Bearer
+    es: null
+  effect_i18n:
+    en: Requires Black Hunger. The Hero gains Frenzy and may use only a Censer as a close-combat weapon.
+    es: null
+  eligibility:
+  - plague-priest
+  - pestilens-sorcerer
+  - plague-monks
+  - monk-initiates
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: compiler.censer-bearer-loadout
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.censer-bearer-loadout
+- id: band--clan-pestilens-special-skills-rotten-body
+  kind: warband_skill
+  name: Rotten Body
+  effect: The Hero is immune to poisons and diseases. If taken Out of Action because of a failed test while using a Censer,
+    the Hero does not roll on the Serious Injury table after the battle and recovers automatically.
+  source:
+    manual: lustria
+    printed_page: 80
+    section: Clan Pestilens Special Skills / Rotten Body
+  name_i18n:
+    en: Rotten Body
+    es: null
+  effect_i18n:
+    en: The Hero is immune to poisons and diseases. If taken Out of Action because of a failed test while using a Censer,
+      the Hero does not roll on the Serious Injury table after the battle and recovers automatically.
+    es: null
+  eligibility:
+  - plague-priest
+  - pestilens-sorcerer
+  - plague-monks
+  - monk-initiates
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+    - id: campaign.censer-recovery
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: post-battle recovery and Serious Injury.'
+- id: band--clan-pestilens-special-skills-contagious
+  kind: warband_skill
+  name: Contagious
+  effect: Requires Rotten Body. A model that takes this Hero Out of Action in close combat must take a Toughness test. Roll
+    D6; if the result is higher than that model's Toughness, it suffers one automatic Wound. A natural 6 always inflicts a
+    Wound. Undead and Possessed are immune to this test.
+  source:
+    manual: lustria
+    printed_page: 80
+    section: Clan Pestilens Special Skills / Contagious
+  name_i18n:
+    en: Contagious
+    es: null
+  effect_i18n:
+    en: Requires Rotten Body. A model that takes this Hero Out of Action in close combat must take a Toughness test. Roll
+      D6; if the result is higher than that model's Toughness, it suffers one automatic Wound. A natural 6 always inflicts
+      a Wound. Undead and Possessed are immune to this test.
+    es: null
+  eligibility:
+  - plague-priest
+  - pestilens-sorcerer
+  - plague-monks
+  - monk-initiates
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: trait.contagious
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.contagious
+        parameters:
+          value: true
+- id: band--clan-pestilens-special-skills-ignore-pain
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: Ignore Pain
+  effect: Requires the Resilient Strength skill. The Hero treats a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: lustria
+    printed_page: 80
+    section: Clan Pestilens Special Skills / Ignore Pain
+  name_i18n:
+    en: Ignore Pain
+    es: null
+  effect_i18n:
+    en: Requires the Resilient Strength skill. The Hero treats a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  eligibility:
+  - plague-priest
+  - pestilens-sorcerer
+  - plague-monks
+  - monk-initiates
+  applies_to:
+    band: true
+- id: band--clan-pestilens-special-skills-natural-climber
+  kind: warband_skill
+  name: Natural Climber
+  effect: The Hero does not need to take Initiative tests when climbing walls or other vertical surfaces.
+  source:
+    manual: lustria
+    printed_page: 80
+    section: Clan Pestilens Special Skills / Natural Climber
+  name_i18n:
+    en: Natural Climber
+    es: null
+  effect_i18n:
+    en: The Hero does not need to take Initiative tests when climbing walls or other vertical surfaces.
+    es: null
+  eligibility:
+  - plague-priest
+  - pestilens-sorcerer
+  - plague-monks
+  - monk-initiates
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.lustria-clan-pestilens.band.clan-pestilens-special-skills-natural-climber
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'

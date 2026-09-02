@@ -1,0 +1,494 @@
+schema_version: 2
+band_id: sons-of-hashut
+rules:
+- id: apprentice-sorcerer--leader
+  name: Leader
+  effect: Any warrior within 6" of the Apprentice Sorcerer may use his Leadership when taking Leadership tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 1 Apprentice Sorcerer / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warrior within 6" of the Apprentice Sorcerer may use his Leadership when taking Leadership tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - apprentice-sorcerer
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sons-of-hashut.apprentice-sorcerer.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: apprentice-sorcerer--rituals-of-chaos
+  name: Rituals of Chaos
+  effect: The Apprentice Sorcerer is a wizard and may learn a random spell from the Chaos Dwarf spell list. The spell list
+    itself is intentionally not modelled in this file.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 1 Apprentice Sorcerer / Special Rules / Rituals of Chaos
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Rituals of Chaos
+    es: null
+  effect_i18n:
+    en: The Apprentice Sorcerer is a wizard and may learn a random spell from the Chaos Dwarf spell list. The spell list itself
+      is intentionally not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - apprentice-sorcerer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sons-of-hashut.apprentice-sorcerer.rituals-of-chaos
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: bull-centaur--large-target
+  name: Large Target
+  effect: 'The Bull Centaur is a Large Target: shooting attacks against it gain +1 to hit and it may be selected even if it
+    is not the closest target. It adds +20 to the warband rating instead of the normal +5.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 1 Bull Centaur / Special Rules / Large Target
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Large Target
+    es: null
+  effect_i18n:
+    en: 'The Bull Centaur is a Large Target: shooting attacks against it gain +1 to hit and it may be selected even if it
+      is not the closest target. It adds +20 to the warband rating instead of the normal +5.'
+    es: null
+  applies_to:
+    profile_ids:
+    - bull-centaur
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sons-of-hashut.bull-centaur.large-target
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: hobgoblins--skinny
+  name: Skinny
+  effect: When making post-battle Serious Injury rolls for a Hobgoblin, a result of 1-3 means it abandons the warband.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 4+ Hobgoblins / Special Rules / Skinny
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Skinny
+    es: null
+  effect_i18n:
+    en: When making post-battle Serious Injury rolls for a Hobgoblin, a result of 1-3 means it abandons the warband.
+    es: null
+  applies_to:
+    profile_ids:
+    - hobgoblins
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sons-of-hashut.hobgoblins.skinny
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: hobgoblins--nobody-cares-about-them
+  name: Nobody cares about them
+  effect: Hobgoblins count as half a model each when calculating casualties for Rout tests. They can never become Heroes;
+    re-roll any The Lad's Got Talent result.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 4+ Hobgoblins / Special Rules / Nobody cares about them
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Nobody cares about them
+    es: null
+  effect_i18n:
+    en: Hobgoblins count as half a model each when calculating casualties for Rout tests. They can never become Heroes; re-roll
+      any The Lad's Got Talent result.
+    es: null
+  applies_to:
+    profile_ids:
+    - hobgoblins
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sons-of-hashut.hobgoblins.nobody-cares-about-them
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--hard-head
+  name: Hard Head
+  effect: Chaos Dwarfs and Bull Centaurs ignore the special rules of clubs, maces and similar weapons that would make them
+    easier to Stun.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Hard Head
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Hard Head
+    es: null
+  effect_i18n:
+    en: Chaos Dwarfs and Bull Centaurs ignore the special rules of clubs, maces and similar weapons that would make them easier
+      to Stun.
+    es: null
+  applies_to:
+    profile_ids: &id001
+    - apprentice-sorcerer
+    - bull-centaur
+    - chaos-dwarf-champions
+    - chaos-dwarf-warriors
+    - blunderbuss-chaos-dwarfs
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.concussion-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.concussion-immune
+        parameters:
+          value: true
+- id: band--armour
+  name: Armour
+  effect: Chaos Dwarfs and Bull Centaurs never suffer Movement penalties for wearing armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Armour
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Armour
+    es: null
+  effect_i18n:
+    en: Chaos Dwarfs and Bull Centaurs never suffer Movement penalties for wearing armour.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.sons-of-hashut.band.armour
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--hard-to-kill
+  name: Hard to Kill
+  effect: Chaos Dwarfs and Bull Centaurs are taken Out of Action only on a 6 on the Injury chart; 1-2 is Knocked Down and
+    3-5 is Stunned.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Hard to Kill
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Hard to Kill
+    es: null
+  effect_i18n:
+    en: Chaos Dwarfs and Bull Centaurs are taken Out of Action only on a 6 on the Injury chart; 1-2 is Knocked Down and 3-5
+      is Stunned.
+    es: null
+  applies_to:
+    profile_ids: *id001
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.hard-to-kill
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
+- id: band--slavers
+  name: Slavers
+  effect: 'The warband never frees a captive. For each captive, choose either Sacrifice or Put to Work. Sacrifice gives the
+    Apprentice Sorcerer +1 Experience. Put to Work grants +1 wyrdstone at the end of the next game for that slave, then roll
+    D6: on 2-6 the captive dies and the Chaos Dwarfs keep its equipment; on 1 it escapes with its equipment intact and gains
+    D3 Experience (or +1 Experience if it is a Henchman).'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Slavers
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Slavers
+    es: null
+  effect_i18n:
+    en: 'The warband never frees a captive. For each captive, choose either Sacrifice or Put to Work. Sacrifice gives the
+      Apprentice Sorcerer +1 Experience. Put to Work grants +1 wyrdstone at the end of the next game for that slave, then
+      roll D6: on 2-6 the captive dies and the Chaos Dwarfs keep its equipment; on 1 it escapes with its equipment intact
+      and gains D3 Experience (or +1 Experience if it is a Henchman).'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.sons-of-hashut.band.slavers
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--uncommon
+  name: Uncommon
+  effect: When recruiting new Chaos Dwarf Henchmen into experienced groups, the veterancy Experience requirement is multiplied
+    by 1.5, rounding up. This rule does not apply to Hobgoblins.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Uncommon
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Uncommon
+    es: null
+  effect_i18n:
+    en: When recruiting new Chaos Dwarf Henchmen into experienced groups, the veterancy Experience requirement is multiplied
+      by 1.5, rounding up. This rule does not apply to Hobgoblins.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.sons-of-hashut.band.uncommon
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--indentured-servants
+  name: Indentured Servants
+  effect: The warband must begin with at least four Hobgoblins. If it later falls below four Hobgoblins, no other type of
+    new warrior may be recruited until the warband has at least four Hobgoblins again.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Indentured Servants
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Indentured Servants
+    es: null
+  effect_i18n:
+    en: The warband must begin with at least four Hobgoblins. If it later falls below four Hobgoblins, no other type of new
+      warrior may be recruited until the warband has at least four Hobgoblins again.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.sons-of-hashut.band.indentured-servants
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--hired-swords
+  name: Hired Swords
+  effect: The warband may hire an Ogre Bodyguard, Pit Fighter, Warlock, Imperial Assassin, Hobgoblin Scout, any Hired Sword
+    described as available to all, and Hired Swords allowed to Orc or Chaos warbands. It may never hire Elves.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Hired Swords
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Hired Swords
+    es: null
+  effect_i18n:
+    en: The warband may hire an Ogre Bodyguard, Pit Fighter, Warlock, Imperial Assassin, Hobgoblin Scout, any Hired Sword
+      described as available to all, and Hired Swords allowed to Orc or Chaos warbands. It may never hire Elves.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.sons-of-hashut.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--sons-of-hashut-maximum-characteristics
+  name: Sons of Hashut Maximum Characteristics
+  effect: 'Chaos Dwarfs use the Dwarf racial maximum profile: M3, WS7, BS6, S4, T5, W3, I5, A4, Ld10. Bull Centaurs in the
+    Sons of Hashut use M7, WS7, BS3, S5, T5, W4, I4, A5, Ld9. Hobgoblins in the Sons of Hashut use M4, WS5, BS5, S4, T4, W3,
+    I5, A3, Ld8.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Racial Maximum Characteristics / Dwarf; Bull Centaur (The Sons of Hashut); Hobgoblin (The Sons of Hashut)
+    url: https://mordheimer.net/docs/campaigns/experience
+  name_i18n:
+    en: Sons of Hashut Maximum Characteristics
+    es: null
+  effect_i18n:
+    en: 'Chaos Dwarfs use the Dwarf racial maximum profile: M3, WS7, BS6, S4, T5, W3, I5, A4, Ld10. Bull Centaurs in the Sons
+      of Hashut use M7, WS7, BS3, S5, T5, W4, I4, A5, Ld9. Hobgoblins in the Sons of Hashut use M4, WS5, BS5, S4, T4, W3,
+      I5, A3, Ld8.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.sons-of-hashut.band.sons-of-hashut-maximum-characteristics
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--chaos-dwarfs-special-skills-true-grit
+  kind: warband_skill
+  name: True Grit
+  effect: When rolling on the Injury table for this Hero, 1-3 is Knocked Down, 4-5 is Stunned, and 6 is Out of Action.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Dwarfs Special Skills / True grit
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: True Grit
+    es: null
+  effect_i18n:
+    en: When rolling on the Injury table for this Hero, 1-3 is Knocked Down, 4-5 is Stunned, and 6 is Out of Action.
+    es: null
+  eligibility:
+  - apprentice-sorcerer
+  - bull-centaur
+  - chaos-dwarf-champions
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.tough-as-steel
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.tough-as-steel
+- id: band--chaos-dwarfs-special-skills-extra-tough
+  kind: warband_skill
+  name: Extra Tough
+  effect: After a game in which this Hero was taken Out of Action, the Hero may re-roll the Serious Injury roll once. The
+    second result must be accepted.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Dwarfs Special Skills / Extra tough
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Extra Tough
+    es: null
+  effect_i18n:
+    en: After a game in which this Hero was taken Out of Action, the Hero may re-roll the Serious Injury roll once. The second
+      result must be accepted.
+    es: null
+  eligibility:
+  - apprentice-sorcerer
+  - bull-centaur
+  - chaos-dwarf-champions
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.sons-of-hashut.band.chaos-dwarfs-special-skills-extra-tough
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--chaos-dwarfs-special-skills-unlimited-hatred
+  kind: warband_skill
+  name: Unlimited Hatred
+  effect: The Hero is subject to Hatred against everyone.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Dwarfs Special Skills / Unlimited hatred
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Unlimited Hatred
+    es: null
+  effect_i18n:
+    en: The Hero is subject to Hatred against everyone.
+    es: null
+  eligibility:
+  - apprentice-sorcerer
+  - bull-centaur
+  - chaos-dwarf-champions
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.sons-of-hashut.band.chaos-dwarfs-special-skills-unlimited-hatred
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--chaos-dwarfs-special-skills-thick-skull
+  kind: warband_skill
+  name: Thick Skull
+  effect: The Hero has a 3+ save to turn a Stunned result into Knocked Down. If wearing a Helmet this becomes 2+ and replaces
+    the Helmet's normal rule.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Dwarfs Special Skills / Thick skull
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    en: Thick Skull
+    es: null
+  effect_i18n:
+    en: The Hero has a 3+ save to turn a Stunned result into Knocked Down. If wearing a Helmet this becomes 2+ and replaces
+      the Helmet's normal rule.
+    es: null
+  eligibility:
+  - apprentice-sorcerer
+  - bull-centaur
+  - chaos-dwarf-champions
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.thick-skull
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.thick-skull

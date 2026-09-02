@@ -1,0 +1,81 @@
+schema_version: 2
+band_id: lustria-dark-elves
+equipment_lists:
+- id: dark-elf-equipment-list
+  name: Dark Elf Equipment List
+  items:
+  - item_id: dagger
+    cost: 2
+    notes: First dagger is free.
+  - item_id: axe
+    cost: 5
+  - item_id: sword
+    cost: 10
+  - item_id: spear
+    cost: 10
+  - item_id: halberd
+    cost: 10
+  - item_id: beastmaster_whip
+    cost: 10
+    notes: Beastmaster only; Common. Internal weapon mechanics are intentionally not modelled here.
+  - item_id: great_weapon
+    cost: 15
+  - item_id: dark_steel_weapon
+    cost: null
+    notes: Costs three times the price of the corresponding base weapon on the starting equipment list. It retains the base
+      weapon's normal rules; additional item mechanics are intentionally not modelled here.
+  - item_id: crossbow_pistol
+    cost: 35
+  - item_id: repeater_crossbow
+    cost: 35
+    notes: 'Source label: repeating crossbow.'
+  - item_id: shield
+    cost: 5
+  - item_id: buckler
+    cost: 5
+  - item_id: helmet
+    cost: 10
+  - item_id: light_armour
+    cost: 50
+    notes: Source-specific starting price.
+  - item_id: dark_venom
+    cost: 15
+    notes: 'Heroes only; internal poison mechanics are not modelled here. Source label: black venom.'
+  - item_id: sea_dragon_cloak
+    cost: 50
+    notes: Heroes and Corsairs only. Starting-list price is 50 gc; the detailed entry is 50+2D6 gc, Rare 10. Internal armour
+      mechanics are intentionally not modelled here.
+  - item_id: draich
+    cost: 45
+    notes: Heroes only; Rare 11. Internal weapon mechanics are not modelled here.
+  source:
+    manual: lustria
+    printed_page: 59
+    section: Dark Elf Equipment List
+  name_i18n:
+    en: Dark Elf Equipment List
+    es: null
+- id: dark-elf-shadow-equipment-list
+  name: Shadow Equipment List
+  items:
+  - item_id: dagger
+    cost: 2
+    notes: First dagger is free.
+  - item_id: axe
+    cost: 5
+  - item_id: sword
+    cost: 10
+  - item_id: repeater_crossbow
+    cost: 35
+    notes: 'Source label: repeating crossbow.'
+  - item_id: helmet
+    cost: 10
+  - item_id: light_armour
+    cost: 20
+  source:
+    manual: lustria
+    printed_page: 59
+    section: Shadow Equipment List
+  name_i18n:
+    en: Shadow Equipment List
+    es: null

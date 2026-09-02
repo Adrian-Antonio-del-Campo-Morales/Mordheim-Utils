@@ -1,0 +1,68 @@
+schema_version: 2
+id: merchant-caravans
+canonical_family: merchant-caravans
+name: Merchant Caravans
+name_i18n:
+  en: Merchant Caravans
+  es: null
+original_locale: en
+ruleset: mordheim
+categories:
+- 1c
+grade: 1c
+setting: Cathay Borderlands
+publication: Border Town Burning
+status: source-normalized
+sources:
+- manual: mordheimer.net
+  printed_page: 0
+  section: Merchant Caravans
+  url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+roster:
+  minimum_models: 3
+  maximum_models: 12
+  starting_gold: 600
+  members:
+  - profile_id: merchant
+    minimum: 1
+    maximum: 1
+  - profile_id: apprentice
+    minimum: 0
+    maximum: 1
+  - profile_id: knights-vanguard
+    minimum: 0
+    maximum: 2
+  - profile_id: magician
+    minimum: 0
+    maximum: 1
+  - profile_id: sell-swords
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: marksmen
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: blackguards
+    minimum: 0
+    maximum: 3
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--merchant-leadership
+- band--trade
+- band--open-for-business
+- band--rarity
+- band--hired-swords
+- band--trade-wagon-required
+- band--human-characteristic-maximum
+- band--merchant-special-skills-bribery
+- band--merchant-special-skills-dubious-income
+- band--merchant-special-skills-wholesale
+- band--merchant-special-skills-deal-breaker
+- band--merchant-special-skills-connected

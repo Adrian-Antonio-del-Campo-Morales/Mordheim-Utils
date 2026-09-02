@@ -1,0 +1,197 @@
+schema_version: 2
+band_id: lustria-high-elves
+profiles:
+- id: loremaster
+  name: Loremaster
+  type: hero
+  cost: 80
+  experience: 20
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 6
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - high-elf-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never use blackpowder weapons.
+  - May never use drugs or poisons.
+  - May never use Dwarf-made equipment, including Gromril and Obsidian equipment.
+  skill_access:
+  - academic
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 116
+    section: 1 Loremaster
+  source_path:
+  - heroes
+  - 1 Loremaster
+  name_i18n:
+    en: Loremaster
+    es: null
+  rule_ids:
+  - loremaster--leader
+  - loremaster--spellcaster
+  combat_traits: {}
+- id: sword-guardians
+  name: Sword Guardians
+  type: hero
+  cost: 50
+  experience: 11
+  characteristics:
+    M: 5
+    WS: 5
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 6
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - high-elf-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never use blackpowder weapons.
+  - May never use drugs or poisons.
+  - May never use Dwarf-made equipment, including Gromril and Obsidian equipment.
+  - May never use missile weapons.
+  - May not select the Mage Staff or Elven Runestones; those entries are Loremaster only.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 117
+    section: 0-2 Sword Guardians
+  source_path:
+  - heroes
+  - 0-2 Sword Guardians
+  name_i18n:
+    en: Sword Guardians
+    es: null
+  rule_ids:
+  - sword-guardians--swordmaster-protection
+  combat_traits: {}
+- id: explorers
+  name: Explorers
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 6
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - high-elf-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never use blackpowder weapons.
+  - May never use drugs or poisons.
+  - May never use Dwarf-made equipment, including Gromril and Obsidian equipment.
+  - May not select the Mage Staff or Elven Runestones; those entries are Loremaster only.
+  skill_access:
+  - shooting
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 116
+    section: 0-2 Explorers
+  source_path:
+  - heroes
+  - 0-2 Explorers
+  name_i18n:
+    en: Explorers
+    es: null
+  rule_ids:
+  - explorers--searcher
+  combat_traits: {}
+- id: sea-guard
+  name: Sea Guard
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 6
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - high-elf-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never use blackpowder weapons.
+  - May never use drugs or poisons.
+  - May never use Dwarf-made equipment, including Gromril and Obsidian equipment.
+  - May not select the Mage Staff or Elven Runestones; those entries are Loremaster only.
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 118
+    section: Sea Guard
+  source_path:
+  - henchmen
+  - Sea Guard
+  name_i18n:
+    en: Sea Guard
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: cadets
+  name: Cadets
+  type: henchman
+  cost: 30
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - cadet-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never use blackpowder weapons.
+  - May never use drugs or poisons.
+  - May never use Dwarf-made equipment, including Gromril and Obsidian equipment.
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 118
+    section: 0-5 Cadets
+  source_path:
+  - henchmen
+  - 0-5 Cadets
+  name_i18n:
+    en: Cadets
+    es: null
+  rule_ids: []
+  combat_traits: {}

@@ -1,0 +1,171 @@
+schema_version: 1
+specifications:
+- id: skill.thick-skull
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.thick-skull
+    digest: 4819600fd8bc2849d0a915b323b8729882c37119a23174442c005e3978ff635f
+  interpretation: Thick Skull replaces a Stunned result with Knocked Down on 3+. With a Helmet the replacement
+    succeeds on 2+ and is used instead of the Helmet's ordinary 4+ reaction. Results other than Stunned request no
+    reaction die. These thresholds are transcribed from the three cited skill texts in the canonical catalogue.
+  interaction_contract:
+    reads:
+    - injury.condition
+    writes:
+    - injury.condition
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    defender:
+      skill_ids: [skill.thick-skull]
+    expect:
+      defender.global_effects.thick_skull: true
+  - id: knocked-down-omits-reaction
+    roles: [inactive, boundary, consumer]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+    context:
+      condition: KNOCKED_DOWN
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.attempted: false
+  - id: without-skill-omits-reaction
+    roles: [inactive, boundary]
+    operation: stun_reaction
+    expect:
+      result.condition: STUNNED
+      result.attempted: false
+  - id: no-helmet-face-1
+    roles: [active, boundary, consumer]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+    rolls: [{key: test.thick-skull, value: 1}]
+    expect:
+      result.condition: STUNNED
+      result.threshold: 3
+  - id: no-helmet-face-2
+    roles: [active, boundary, consumer]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+    rolls: [{key: test.thick-skull, value: 2}]
+    expect:
+      result.condition: STUNNED
+      result.threshold: 3
+  - id: no-helmet-face-3
+    roles: [active, boundary, consumer]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+    rolls: [{key: test.thick-skull, value: 3}]
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.threshold: 3
+  - id: no-helmet-face-4
+    roles: [active, boundary, consumer]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+    rolls: [{key: test.thick-skull, value: 4}]
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.threshold: 3
+  - id: no-helmet-face-5
+    roles: [active, boundary, consumer]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+    rolls: [{key: test.thick-skull, value: 5}]
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.threshold: 3
+  - id: no-helmet-face-6
+    roles: [active, boundary, consumer]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+    rolls: [{key: test.thick-skull, value: 6}]
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.threshold: 3
+  - id: helmet-face-1
+    roles: [active, boundary, consumer]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+      defence_ids: [defence.helmet]
+    rolls: [{key: test.thick-skull, value: 1}]
+    expect:
+      result.condition: STUNNED
+      result.threshold: 2
+  - id: helmet-face-2
+    roles: [active, boundary, consumer]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+      defence_ids: [defence.helmet]
+    rolls: [{key: test.thick-skull, value: 2}]
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.threshold: 2
+  - id: helmet-face-3
+    roles: [active, boundary, consumer]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+      defence_ids: [defence.helmet]
+    rolls: [{key: test.thick-skull, value: 3}]
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.threshold: 2
+  - id: helmet-face-4
+    roles: [active, boundary, consumer]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+      defence_ids: [defence.helmet]
+    rolls: [{key: test.thick-skull, value: 4}]
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.threshold: 2
+  - id: helmet-face-5
+    roles: [active, boundary, consumer]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+      defence_ids: [defence.helmet]
+    rolls: [{key: test.thick-skull, value: 5}]
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.threshold: 2
+  - id: helmet-face-6
+    roles: [active, boundary, consumer]
+    operation: stun_reaction
+    defender:
+      skill_ids: [skill.thick-skull]
+      defence_ids: [defence.helmet]
+    rolls: [{key: test.thick-skull, value: 6}]
+    expect:
+      result.condition: KNOCKED_DOWN
+      result.threshold: 2
+  mutations:
+  - id: remove-thick-skull
+    path: defender.global_effects.thick_skull
+    value: false
+    cases:
+    - no-helmet-face-1
+    - no-helmet-face-2
+    - no-helmet-face-3
+    - no-helmet-face-4
+    - no-helmet-face-5
+    - no-helmet-face-6
+    - helmet-face-1
+    - helmet-face-2
+    - helmet-face-3
+    - helmet-face-4
+    - helmet-face-5
+    - helmet-face-6

@@ -1,0 +1,306 @@
+schema_version: 2
+band_id: beastmen-raiders
+profiles:
+- id: beastmen-chieftain
+  name: Beastmen Chieftain
+  type: hero
+  cost: 65
+  experience: 20
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - beastmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Beastmen Chieftain
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  source_path:
+  - heroes
+  - 1 Beastmen Chieftain
+  name_i18n:
+    en: Beastmen Chieftain
+    es: null
+  rule_ids:
+  - beastmen-chieftain--leader
+  combat_traits: {}
+- id: beastmen-shaman
+  name: Beastmen Shaman
+  type: hero
+  cost: 45
+  experience: 11
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - beastmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Beastmen Equipment List, but may never wear armour.
+  skill_access:
+  - combat
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Beastmen Shaman
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  source_path:
+  - heroes
+  - 0 – 1 Beastmen Shaman
+  name_i18n:
+    en: Beastmen Shaman
+    es: null
+  rule_ids:
+  - beastmen-shaman--wizard
+  combat_traits: {}
+- id: bestigors
+  name: Bestigors
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - beastmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Beastmen Equipment List; armour is not allowed.
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Bestigors
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  source_path:
+  - heroes
+  - 0 – 2 Bestigors
+  name_i18n:
+    en: Bestigors
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: centigors
+  name: Centigors
+  type: hero
+  cost: 80
+  experience: 8
+  characteristics:
+    M: 8
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - beastmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Centigors
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  source_path:
+  - heroes
+  - 0 – 1 Centigors
+  name_i18n:
+    en: Centigors
+    es: null
+  rule_ids:
+  - centigors--drunken
+  - centigors--woodland-dwelling
+  - centigors--trample
+  combat_traits:
+    extra_natural_attacks: 1
+- id: ungor
+  name: Ungor
+  type: henchman
+  cost: 25
+  experience: 0
+  group_size:
+    minimum: 1
+    maximum: 5
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - ungor-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ungor
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  source_path:
+  - henchmen
+  - Ungor
+  name_i18n:
+    en: Ungor
+    es: null
+  rule_ids:
+  - ungor--lowest-of-the-low
+  combat_traits: {}
+- id: gor
+  name: Gor
+  type: henchman
+  cost: 35
+  experience: 0
+  group_size:
+    minimum: 1
+    maximum: 5
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - beastmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Gor
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  source_path:
+  - henchmen
+  - 0 – 5 Gor
+  name_i18n:
+    en: Gor
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: warhounds-of-chaos
+  name: Warhounds of Chaos
+  type: animal
+  cost: 15
+  experience: 0
+  group_size:
+    minimum: 1
+    maximum: 5
+  characteristics:
+    M: 7
+    WS: 4
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Warhounds of Chaos
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  source_path:
+  - henchmen
+  - 0 – 5 Warhounds of Chaos
+  name_i18n:
+    en: Warhounds of Chaos
+    es: null
+  rule_ids:
+  - warhounds-of-chaos--natural-weapons
+  - warhounds-of-chaos--animals
+  combat_traits: {}
+- id: minotaur
+  name: Minotaur
+  type: henchman
+  cost: 200
+  experience: 0
+  group_size:
+    minimum: 1
+    maximum: 5
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 3
+    I: 4
+    A: 3
+    Ld: 8
+  equipment_lists:
+  - beastmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Minotaur
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  source_path:
+  - henchmen
+  - 0 – 1 Minotaur
+  name_i18n:
+    en: Minotaur
+    es: null
+  rule_ids:
+  - minotaur--fear
+  - minotaur--bloodgreed
+  - minotaur--animal
+  - minotaur--large-target
+  combat_traits: {}

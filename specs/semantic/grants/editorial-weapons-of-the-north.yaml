@@ -1,0 +1,35 @@
+schema_version: 1
+specifications:
+- id: editorial-weapons-of-the-north-grant
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - {target: rule/trollheim/lustria-norse/band--norse-special-skills-northern-weapons/skill.weapons-of-the-north, digest: 430ed6ea5f26937dedaa7055ee945119624543eb1055983a6545e33054cc57a7}
+  depends_on: [mechanic/skill.weapons-of-the-north]
+  interpretation: Northern Weapons is selectable by the four Norse hero profiles. Its wording says Axe or two-handed
+    axe; the runtime binding maps those choices to the canonical axe and double-handed-weapon mechanisms.
+  cases:
+  - id: only-norse-heroes
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: lustria-norse, profile_id: jarl}
+    context: {rule_id: band--norse-special-skills-northern-weapons}
+    expect: {result.recipients: [berserkers, bondsmen, jarl, wulfen]}
+  - id: granted-consumer
+    roles: [active, boundary, consumer]
+    operation: hit
+    attacker:
+      collection: trollheim
+      band_id: lustria-norse
+      profile_id: jarl
+      special_rule_ids: [band--norse-special-skills-northern-weapons]
+      main_weapon_id: weapon.axe
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected: {'true': 8/9, 'false': 1/9}
+  mutations:
+  - id: remove-granted-training
+    path: attacker.global_effects.tags
+    value: []
+    cases: [granted-consumer]

@@ -1,0 +1,32 @@
+schema_version: 1
+specifications:
+- id: vampiric-powers-bloodline-access
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/trollheim/chaos-streets-undead-bloodlines/band--vampiric-powers/compiler.vampiric-powers, digest: 412898e8607b8e818c6f0c094f173909c5c38454624e468b8c99a20ba5ecb5ed}
+  interpretation: Cada Vampire accede únicamente a los poderes de su propia bloodline; elegir uno no altera el acceso de las demás bloodlines.
+  cases:
+  - id: lahmia-list
+    roles: [grant, accepted]
+    operation: special_rule_access
+    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: lahmia-vampire}
+    expect: {result.rules: [band--lahmia-power-deceive, band--lahmia-power-lost-innocence, band--lahmia-power-seduction, band--vampire-power-hypnotic-gaze]}
+  - id: blood-dragon-list
+    roles: [boundary]
+    operation: special_rule_access
+    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: blood-dragon-vampire}
+    expect: {result.rules: [band--blood-dragon-power-infallible, band--blood-dragon-power-red-fury, band--blood-dragon-power-strength-of-steel, band--blood-dragon-power-sword-master]}
+  - id: foreign-power-rejected
+    roles: [rejected]
+    operation: selection_choices
+    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: lahmia-vampire}
+    context: {choices: {own: {special_rule_ids: [band--lahmia-power-lost-innocence]}, foreign: {special_rule_ids: [band--blood-dragon-power-red-fury]}}}
+    expect: {result.accepted: [own], result.rejected: {foreign: "special rule is not available to chaos-streets-undead-bloodlines/lahmia-vampire: band--blood-dragon-power-red-fury"}}
+  - id: contract
+    operation: construction_tag_presence
+    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: lahmia-vampire}
+    context: {tag: compiler.vampiric-powers}
+    expect: {result.present: true}
+  mutations:
+  - {id: remove-vampiric-contract, path: attacker.construction_tags, value: [], cases: [contract]}

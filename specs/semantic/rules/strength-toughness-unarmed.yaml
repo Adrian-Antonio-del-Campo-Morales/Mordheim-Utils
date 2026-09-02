@@ -1,0 +1,169 @@
+schema_version: 1
+specifications:
+- id: skill.tireless
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - {target: mechanic/skill.tireless, digest: 175a77fb21a3cd08a4f9b05f275dbd12b4bfd043ae581ec6ec688205f2392d92}
+  interpretation: Tireless conserva el bono Heavy en rondas posteriores. No duplica el bono inicial ni concede Fuerza a armas sin Heavy; tampoco elimina atacar último.
+  cases:
+  - id: later-flail
+    roles: [compiled, active, consumer, boundary]
+    operation: strength
+    attacker: {main_weapon_id: weapon.flail, skill_ids: [skill.tireless]}
+    context: {first_round: false}
+    expect: {result.wound: 5, result.armour: 5}
+    expect_contains: {attacker.global_effects.tags: [skill.tireless]}
+  - id: first-flail-not-doubled
+    roles: [active, boundary]
+    operation: strength
+    attacker: {main_weapon_id: weapon.flail, skill_ids: [skill.tireless]}
+    context: {first_round: true}
+    expect: {result.wound: 5}
+  - id: later-morning-star
+    roles: [active, consumer]
+    operation: strength
+    attacker: {main_weapon_id: weapon.morning-star, skill_ids: [skill.tireless]}
+    expect: {result.wound: 4, result.armour: 4}
+  - id: later-censer
+    roles: [active, consumer]
+    operation: strength
+    attacker: {main_weapon_id: weapon.censer, skill_ids: [skill.tireless]}
+    expect: {result.wound: 5}
+  - id: without-skill
+    roles: [inactive]
+    operation: strength
+    attacker: {main_weapon_id: weapon.flail}
+    expect: {result.wound: 3}
+  - id: ordinary-weapon
+    roles: [inactive, boundary]
+    operation: strength
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [skill.tireless]}
+    expect: {result.wound: 3}
+  - id: not-strongman
+    roles: [inactive]
+    operation: priority
+    attacker: {main_weapon_id: weapon.double-handed-weapon, skill_ids: [skill.tireless]}
+    expect: {result.priority: -1}
+  mutations:
+  - {id: remove-tireless, path: attacker.global_effects.tags, value: [], cases: [later-flail, later-morning-star, later-censer]}
+
+- id: preparation.mandrake-root
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: mechanic/preparation.mandrake-root, digest: 638063a0cf297f76cc383e54570769a79798aa936a747fdfa78d13a5d0f9be79}
+  interpretation: Mandrake Root suma uno a Toughness y convierte Stunned en Knocked Down. No protege frente a Out of Action. La tabla ordinaria queda 1-4 KD y 5-6 OUT.
+  cases:
+  - id: toughness-consumed-by-wound
+    roles: [compiled, active, consumer, boundary]
+    operation: wound
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {preparation_ids: [preparation.mandrake-root]}
+    rolls: [{key: wound, value: 4}]
+    expect: {defender.global_effects.toughness_bonus: 1, context.toughness: 4, result.target: 5, result.success: false}
+  - id: no-drug-four-wounds
+    roles: [inactive]
+    operation: wound
+    attacker: {main_weapon_id: weapon.mace}
+    rolls: [{key: wound, value: 4}]
+    expect: {result.success: true}
+  - id: exact-injury-table
+    roles: [active, consumer, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {preparation_ids: [preparation.mandrake-root]}
+    distribution: {observable: result.condition, max_rolls: 1, expected: {KNOCKED_DOWN: 2/3, OUT: 1/3}}
+  - id: untreated-injury-table
+    roles: [inactive, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.sword}
+    distribution: {observable: result.condition, max_rolls: 1, expected: {KNOCKED_DOWN: 1/3, STUNNED: 1/3, OUT: 1/3}}
+  - id: concussion-still-converted
+    roles: [active, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {preparation_ids: [preparation.mandrake-root]}
+    rolls: [{key: test.injury, value: 2}]
+    expect: {result.condition: KNOCKED_DOWN}
+  mutations:
+  - {id: remove-toughness, path: defender.global_effects.toughness_bonus, value: 0, cases: [toughness-consumed-by-wound]}
+  - {id: remove-conversion, path: defender.global_effects.tags, value: [], cases: [exact-injury-table, concussion-still-converted]}
+
+- id: skill.unarmed-critical-strikes
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: mechanic/skill.unarmed-critical-strikes, digest: c89770449f97636283efda52504ecb02febff98b146bd02f3918a42751e06151}
+  interpretation: To Wound natural 5-6 causa crítico únicamente con Fist y si quedan críticos disponibles. El veto general cuando hace falta 6 para herir sigue aplicándose.
+  cases:
+  - id: compiled-critical-five
+    roles: [compiled, active, consumer, boundary]
+    operation: wound
+    attacker: {main_weapon_id: weapon.fist, skill_ids: [skill.unarmed-critical-strikes]}
+    rolls: [{key: wound, value: 5}]
+    expect: {context.critical_threshold: 5, result.success: true, result.critical: true}
+    expect_contains: {attacker.global_effects.tags: [skill.unarmed-critical-strikes]}
+  - id: all-unarmed-faces
+    roles: [active, consumer, boundary]
+    operation: wound
+    attacker: {main_weapon_id: weapon.fist, skill_ids: [skill.unarmed-critical-strikes]}
+    distribution: {observable: result.critical, max_rolls: 1, expected: {'true': 1/3, 'false': 2/3}}
+  - id: no-skill-five-not-critical
+    roles: [inactive]
+    operation: wound
+    attacker: {main_weapon_id: weapon.fist}
+    rolls: [{key: wound, value: 5}]
+    expect: {result.success: true, result.critical: false}
+  - id: armed-five-not-critical
+    roles: [inactive, boundary]
+    operation: wound
+    attacker: {main_weapon_id: weapon.quarter-staff, skill_ids: [skill.unarmed-critical-strikes]}
+    rolls: [{key: wound, value: 5}]
+    expect: {result.success: true, result.critical: false}
+  - id: allowance-consumed
+    roles: [inactive, boundary]
+    operation: wound
+    attacker: {main_weapon_id: weapon.fist, skill_ids: [skill.unarmed-critical-strikes]}
+    attacker_state: {critical_available: false}
+    rolls: [{key: wound, value: 6}]
+    expect: {result.success: true, result.critical: false}
+  - id: six-required-veto
+    roles: [inactive, boundary]
+    operation: wound
+    attacker: {main_weapon_id: weapon.fist, skill_ids: [skill.unarmed-critical-strikes]}
+    defender_state: {toughness: 4}
+    rolls: [{key: wound, value: 6}]
+    expect: {result.target: 6, result.success: true, result.critical: false}
+  mutations:
+  - {id: remove-critical-extension, path: attacker.global_effects.tags, value: [], cases: [compiled-critical-five, all-unarmed-faces]}
+
+- id: dragon-monks-unarmed-critical-grant
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: rule/mordheim/battle-monks-of-cathay/dragon-monks--art-of-silent-death/skill.unarmed-critical-strikes, digest: df1ec263aeabac0fae0c89725cc7d4c6610eb48cf15e7df9458e46c7fb36fbc3}
+  depends_on: [mechanic/skill.unarmed-critical-strikes]
+  interpretation: Battle Monks of Cathay / Dragon Monks / Art of Silent Death. Solo los ataques desarmados del Dragon Monk reciben crítico 5+; los del Quarter Staff mantienen 6.
+  cases:
+  - id: recipients
+    roles: [grant]
+    operation: grant
+    defender: {band_id: battle-monks-of-cathay, profile_id: dragon-monks}
+    context: {rule_id: dragon-monks--art-of-silent-death}
+    expect: {result.recipients: [dragon-monks]}
+  - id: unarmed-five
+    roles: [compiled, active, consumer, boundary]
+    operation: wound
+    attacker: {band_id: battle-monks-of-cathay, profile_id: dragon-monks, main_weapon_id: weapon.fist}
+    rolls: [{key: wound, value: 5}]
+    expect: {result.success: true, result.critical: true}
+    expect_contains: {attacker.global_effects.tags: [skill.unarmed-critical-strikes]}
+  - id: staff-five
+    roles: [inactive, boundary]
+    operation: wound
+    attacker: {band_id: battle-monks-of-cathay, profile_id: dragon-monks, main_weapon_id: weapon.quarter-staff}
+    rolls: [{key: wound, value: 5}]
+    expect: {result.success: true, result.critical: false}
+  mutations:
+  - {id: remove-granted-critical, path: attacker.global_effects.tags, value: [], cases: [unarmed-five]}

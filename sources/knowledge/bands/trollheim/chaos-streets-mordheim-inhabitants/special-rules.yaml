@@ -1,0 +1,380 @@
+schema_version: 2
+band_id: chaos-streets-mordheim-inhabitants
+rules:
+- id: prophet--leader
+  name: Leader
+  effect: Any warband model within 6" of the Prophet may use his Leadership when taking Leadership tests.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 147
+    section: Heroes / 1 Prophet / Special Rules / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Prophet may use his Leadership when taking Leadership tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - prophet
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-mordheim-inhabitants.prophet.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: prophet--fanatic
+  name: Fanatic
+  effect: The Prophet automatically passes every test based on Leadership.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 147
+    section: Heroes / 1 Prophet / Special Rules / Fanatic
+  name_i18n:
+    en: Fanatic
+    es: null
+  effect_i18n:
+    en: The Prophet automatically passes every test based on Leadership.
+    es: null
+  applies_to:
+    profile_ids:
+    - prophet
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-mordheim-inhabitants.prophet.fanatic
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: prophet--orator
+  name: Orator
+  effect: The Prophet begins with one randomly generated Revival Sermon. The individual sermon list and sermon effects are
+    intentionally not modelled in this file.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 147
+    section: Heroes / 1 Prophet / Special Rules / Orator
+  name_i18n:
+    en: Orator
+    es: null
+  effect_i18n:
+    en: The Prophet begins with one randomly generated Revival Sermon. The individual sermon list and sermon effects are intentionally
+      not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - prophet
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-mordheim-inhabitants.prophet.orator
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: desolate-soul--fanatic
+  name: Fanatic
+  effect: The Desolate Soul automatically passes every test based on Leadership.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 148
+    section: Heroes / 0-1 Desolate Soul / Special Rules / Fanatic
+  name_i18n:
+    en: Fanatic
+    es: null
+  effect_i18n:
+    en: The Desolate Soul automatically passes every test based on Leadership.
+    es: null
+  applies_to:
+    profile_ids:
+    - desolate-soul
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-mordheim-inhabitants.desolate-soul.fanatic
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: desolate-soul--death-wish
+  name: Death Wish
+  effect: The Desolate Soul must always move toward the nearest visible enemy model. It does not have to run or charge, but
+    it must move at least 1" during its Movement phase.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 148
+    section: Heroes / 0-1 Desolate Soul / Special Rules / Death Wish
+  name_i18n:
+    en: Death Wish
+    es: null
+  effect_i18n:
+    en: The Desolate Soul must always move toward the nearest visible enemy model. It does not have to run or charge, but
+      it must move at least 1" during its Movement phase.
+    es: null
+  applies_to:
+    profile_ids:
+    - desolate-soul
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-mordheim-inhabitants.desolate-soul.death-wish
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: desolate-soul--profound-hatred
+  name: Profound Hatred
+  effect: The Desolate Soul is subject to Hatred against warriors from every opposing warband except the Sisters of Sigmar.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 148
+    section: Heroes / 0-1 Desolate Soul / Special Rules / Profound Hatred
+  name_i18n:
+    en: Profound Hatred
+    es: null
+  effect_i18n:
+    en: The Desolate Soul is subject to Hatred against warriors from every opposing warband except the Sisters of Sigmar.
+    es: null
+  applies_to:
+    profile_ids:
+    - desolate-soul
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-mordheim-inhabitants.desolate-soul.profound-hatred
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: lunatics--frenzy
+  runtime:
+    scope: LATER
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.frenzy
+      scope: LATER
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
+  name: Frenzy
+  effect: Lunatics are subject to Frenzy.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 147
+    section: Heroes / 0-2 Lunatics / Special Rules / Frenzy
+  name_i18n:
+    en: Frenzy
+    es: null
+  effect_i18n:
+    en: Lunatics are subject to Frenzy.
+    es: null
+  applies_to:
+    profile_ids:
+    - lunatics
+- id: cripples--disability
+  name: Disability
+  effect: 'When a Cripple Henchman group is created, roll D6 once and apply that result permanently to the entire group: 1
+    Lame and Arthritic — reduce Movement and Initiative by 1; 2 Parkinson''s — reduce Weapon Skill by 1 and the models may
+    not use two weapons or a weapon and shield; 3 Poor Eyesight — reduce Ballistic Skill by 1; 4 Sickly — reduce Toughness
+    by 1; 5 Weakness — reduce Strength by 1; 6 Head Injury — the group is subject to Stupidity unless within 6" of a Hero.'
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / Cripples / Special Rules / Disability
+  name_i18n:
+    en: Disability
+    es: null
+  effect_i18n:
+    en: 'When a Cripple Henchman group is created, roll D6 once and apply that result permanently to the entire group: 1 Lame
+      and Arthritic — reduce Movement and Initiative by 1; 2 Parkinson''s — reduce Weapon Skill by 1 and the models may not
+      use two weapons or a weapon and shield; 3 Poor Eyesight — reduce Ballistic Skill by 1; 4 Sickly — reduce Toughness by
+      1; 5 Weakness — reduce Strength by 1; 6 Head Injury — the group is subject to Stupidity unless within 6" of a Hero.'
+    es: null
+  applies_to:
+    profile_ids:
+    - cripples
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.disability
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.disability
+- id: street-dogs--animal
+  name: Animal
+  effect: Street Dogs are animals and never gain Experience.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 149
+    section: Henchmen / 0-5 Street Dogs / Special Rules / Animals
+  name_i18n:
+    en: Animal
+    es: null
+  effect_i18n:
+    en: Street Dogs are animals and never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - street-dogs
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-mordheim-inhabitants.street-dogs.animal
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--mordheim-natives
+  name: Mordheim Natives
+  effect: During a campaign set in Mordheim, the warband may modify one die by +1 or -1 on every Exploration roll.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 145
+    section: Special Rules / Mordheim Natives
+  name_i18n:
+    en: Mordheim Natives
+    es: null
+  effect_i18n:
+    en: During a campaign set in Mordheim, the warband may modify one die by +1 or -1 on every Exploration roll.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.chaos-streets-mordheim-inhabitants.band.mordheim-natives
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--wanderers
+  name: Wanderers
+  effect: While the Prophet remains alive, during a campaign set in Mordheim the warband may re-roll one die during each Exploration
+    phase.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 145
+    section: Special Rules / Wanderers
+  name_i18n:
+    en: Wanderers
+    es: null
+  effect_i18n:
+    en: While the Prophet remains alive, during a campaign set in Mordheim the warband may re-roll one die during each Exploration
+      phase.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.chaos-streets-mordheim-inhabitants.band.wanderers
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--look-after-their-own
+  name: Look After Their Own
+  effect: If the warband rolls a double 4 during Exploration, it gains one new Henchman for any existing Henchman group.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 145
+    section: Special Rules / Look After Their Own
+  name_i18n:
+    en: Look After Their Own
+    es: null
+  effect_i18n:
+    en: If the warband rolls a double 4 during Exploration, it gains one new Henchman for any existing Henchman group.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.chaos-streets-mordheim-inhabitants.band.look-after-their-own
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--hired-swords
+  name: Hired Swords
+  effect: The warband may hire Hired Swords available to Mercenary warbands and any Hired Sword explicitly willing to work
+    for any warband.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 145
+    section: Special Rules / Hired Swords
+  name_i18n:
+    en: Hired Swords
+    es: null
+  effect_i18n:
+    en: The warband may hire Hired Swords available to Mercenary warbands and any Hired Sword explicitly willing to work for
+      any warband.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.chaos-streets-mordheim-inhabitants.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--revival-sermons
+  name: Revival Sermons
+  effect: Revival Sermons are not magical and affect only members of the Mordheim Inhabitants warband; they never affect enemy
+    or allied warbands, and Hired Swords in the Prophet's employ do not benefit from them. When the Prophet gains a new skill,
+    he may instead learn a random new Revival Sermon or reduce the Difficulty of one sermon he already knows by 1. Psychological
+    effects created by sermons affect the warband even when a model is normally immune to external Psychology. A sermon's
+    range equals the Prophet's Leader range, initially 6", and increases if that range increases. A sermon remains active
+    until the Prophet suffers a Wound or ends it. Only one sermon may be active at a time. Unless a sermon states otherwise,
+    it is delivered using the same casting procedure as spells. The Prophet may wear armour while delivering sermons. The
+    individual sermon list and sermon effects are intentionally not modelled in this file.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 145
+    section: Special Rules / Revival Sermons
+  name_i18n:
+    en: Revival Sermons
+    es: null
+  effect_i18n:
+    en: Revival Sermons are not magical and affect only members of the Mordheim Inhabitants warband; they never affect enemy
+      or allied warbands, and Hired Swords in the Prophet's employ do not benefit from them. When the Prophet gains a new
+      skill, he may instead learn a random new Revival Sermon or reduce the Difficulty of one sermon he already knows by 1.
+      Psychological effects created by sermons affect the warband even when a model is normally immune to external Psychology.
+      A sermon's range equals the Prophet's Leader range, initially 6", and increases if that range increases. A sermon remains
+      active until the Prophet suffers a Wound or ends it. Only one sermon may be active at a time. Unless a sermon states
+      otherwise, it is delivered using the same casting procedure as spells. The Prophet may wear armour while delivering
+      sermons. The individual sermon list and sermon effects are intentionally not modelled in this file.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.chaos-streets-mordheim-inhabitants.band.revival-sermons
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'

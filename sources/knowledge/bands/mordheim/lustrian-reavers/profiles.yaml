@@ -1,0 +1,299 @@
+schema_version: 2
+band_id: lustrian-reavers
+profiles:
+- id: conqueror
+  name: Conqueror
+  type: hero
+  cost: 150
+  experience: 24
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 2
+    I: 3
+    A: 2
+    Ld: 7
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Conqueror
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  source_path:
+  - Heroes
+  - 0 – 1 Conqueror
+  name_i18n:
+    en: Conqueror
+    es: null
+  rule_ids:
+  - conqueror--survivor
+- id: saurus-slayer
+  name: Saurus Slayer
+  type: hero
+  cost: 135
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 2
+    Ld: 8
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Saurus Slayer
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  source_path:
+  - Heroes
+  - 0 – 1 Saurus Slayer
+  name_i18n:
+    en: Saurus Slayer
+    es: null
+  rule_ids:
+  - saurus-slayer--duellist
+  combat_traits:
+    starting_skills:
+    - skill.duellist
+- id: reaver-beastmaster
+  name: Reaver Beastmaster
+  type: hero
+  cost: 90
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - strength
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Reaver Beastmaster
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  source_path:
+  - Heroes
+  - 0 – 1 Reaver Beastmaster
+  name_i18n:
+    en: Reaver Beastmaster
+    es: null
+  rule_ids:
+  - reaver-beastmaster--war-beasts
+  combat_traits: {}
+- id: estalian-warhound
+  name: Estalian Warhound
+  type: animal
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - This model is an Animal and does not select weapons or armour from the warband equipment lists.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Estalian Warhound
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  source_path:
+  - Heroes
+  - 0 – 1 Reaver Beastmaster
+  - 0 – 2 Estalian Warhound
+  name_i18n:
+    en: Estalian Warhound
+    es: null
+  rule_ids:
+  - estalian-warhound--armoured
+  - estalian-warhound--animal
+  - estalian-warhound--beastmaster-leadership
+  combat_traits: {}
+- id: barbary-monkey
+  name: Barbary Monkey
+  type: animal
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 2
+    Ld: 6
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - This model is an Animal and does not select weapons or armour from the warband equipment lists.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Barbary Monkey
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  source_path:
+  - Heroes
+  - 0 – 1 Reaver Beastmaster
+  - 0 – 1 Barbary Monkey
+  name_i18n:
+    en: Barbary Monkey
+    es: null
+  rule_ids:
+  - barbary-monkey--nimble
+  - barbary-monkey--animal
+  - barbary-monkey--beastmaster-leadership
+  combat_traits: {}
+- id: jungle-shadow
+  name: Jungle Shadow
+  type: hero
+  cost: 90
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - academic
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Jungle Shadow
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  source_path:
+  - Heroes
+  - 0 – 1 Jungle Shadow
+  name_i18n:
+    en: Jungle Shadow
+    es: null
+  rule_ids:
+  - jungle-shadow--silent-hunter
+  - jungle-shadow--surprise-attack
+  - jungle-shadow--canopy-walker
+  combat_traits: {}
+- id: trapmaster
+  name: Trapmaster
+  type: hero
+  cost: 140
+  experience: 17
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Trapmaster
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  source_path:
+  - Heroes
+  - 0 – 1 Trapmaster
+  name_i18n:
+    en: Trapmaster
+    es: null
+  rule_ids:
+  - trapmaster--deadeye
+  - trapmaster--traps
+  combat_traits: {}
+- id: prospects
+  name: Prospects
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - prospect-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Prospects
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  source_path:
+  - Henchmen
+  - 0 – 5 Prospects
+  name_i18n:
+    en: Prospects
+    es: null
+  rule_ids:
+  - prospects--promotion-only
+  combat_traits: {}

@@ -1,0 +1,345 @@
+schema_version: 1
+specifications:
+- id: editorial-berserker-dwarf-rangers
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: rule/mordheim/dwarf-rangers/band--slayer-special-skills-berserker/skill.berserker
+    digest: f873671f5e4b12e7177d358cab0f3cd1d16889c902605733404394804f393fc3
+  depends_on: [mechanic/skill.berserker]
+  interpretation: Only the Slayer profile may select this Slayer skill. During a charge it adds one to hit rolls,
+    not to Weapon Skill. Against WS4, the Slayer's WS4 needs 3+ with this bonus and 4+ without charging.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {band_id: dwarf-rangers, profile_id: dwarf-troll-slayers}
+    context: {rule_id: band--slayer-special-skills-berserker}
+    expect: {result.recipients: [dwarf-troll-slayers]}
+  - id: charge-boundary
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {band_id: dwarf-rangers, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.attacker_ws: 4, context.modifier: 1, result.target: 3, result.success: true}
+  - id: charge-all-faces
+    roles: [boundary]
+    operation: hit
+    attacker: {band_id: dwarf-rangers, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 2/3, 'false': 1/3}
+  - id: no-charge
+    roles: [inactive]
+    operation: hit
+    attacker: {band_id: dwarf-rangers, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: false}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.attacker_ws: 4, context.modifier: 0, result.target: 4, result.success: false}
+  mutations:
+  - id: remove-bonus
+    path: attacker.global_effects.tags
+    value: []
+    cases: [charge-boundary, charge-all-faces]
+- id: editorial-berserker-dwarf-treasure-hunters
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: rule/mordheim/dwarf-treasure-hunters/band--slayer-special-skills-berserker/skill.berserker
+    digest: f6c0b47e3071b25c4642911e367f0b13c1321063f64697f207a0fd339c2ab845
+  depends_on: [mechanic/skill.berserker]
+  interpretation: Only the Slayer profile may select this Slayer skill. During a charge it adds one to hit rolls,
+    not to Weapon Skill. Against WS4, the Slayer's WS4 needs 3+ with this bonus and 4+ without charging.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {band_id: dwarf-treasure-hunters, profile_id: dwarf-troll-slayers}
+    context: {rule_id: band--slayer-special-skills-berserker}
+    expect: {result.recipients: [dwarf-troll-slayers]}
+  - id: charge-boundary
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {band_id: dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.attacker_ws: 4, context.modifier: 1, result.target: 3, result.success: true}
+  - id: charge-all-faces
+    roles: [boundary]
+    operation: hit
+    attacker: {band_id: dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 2/3, 'false': 1/3}
+  - id: no-charge
+    roles: [inactive]
+    operation: hit
+    attacker: {band_id: dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: false}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.attacker_ws: 4, context.modifier: 0, result.target: 4, result.success: false}
+  mutations:
+  - id: remove-bonus
+    path: attacker.global_effects.tags
+    value: []
+    cases: [charge-boundary, charge-all-faces]
+- id: editorial-berserker-pit-fighters
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: rule/mordheim/pit-fighters/band--troll-slayer-special-skills-berserker/skill.berserker
+    digest: b1632490e15c943e1777e012058e7fe8955278be7c55617c76b80e6e086bb76c
+  - target: rule/mordheim/pit-fighters/band--troll-slayer-special-skills-berserker/compiler.berserker-incompatible-with-ferocious-charge
+    digest: b1632490e15c943e1777e012058e7fe8955278be7c55617c76b80e6e086bb76c
+  depends_on: [mechanic/skill.berserker]
+  interpretation: Only the Slayer profile may select this Slayer skill. During a charge it adds one to hit rolls,
+    not to Weapon Skill. Against WS4, the Slayer's WS4 needs 3+ with this bonus and 4+ without charging.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {band_id: pit-fighters, profile_id: dwarf-troll-slayer}
+    context: {rule_id: band--troll-slayer-special-skills-berserker}
+    expect: {result.recipients: [dwarf-troll-slayer]}
+  - id: charge-boundary
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {band_id: pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.attacker_ws: 4, context.modifier: 1, result.target: 3, result.success: true}
+  - id: charge-all-faces
+    roles: [boundary]
+    operation: hit
+    attacker: {band_id: pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 2/3, 'false': 1/3}
+  - id: no-charge
+    roles: [inactive]
+    operation: hit
+    attacker: {band_id: pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: false}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.attacker_ws: 4, context.modifier: 0, result.target: 4, result.success: false}
+  - id: incompatible-ferocious-charge
+    roles: [rejected]
+    operation: compile
+    attacker:
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids: [band--troll-slayer-special-skills-berserker, band--troll-slayer-special-skills-ferocious-charge]
+    reject: Berserker may not be combined with Ferocious Charge
+  mutations:
+  - id: remove-bonus
+    path: attacker.global_effects.tags
+    value: []
+    cases: [charge-boundary, charge-all-faces]
+- id: editorial-berserker-chaos-streets-dwarf-treasure-hunters
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--slayer-special-skills-berserker/skill.berserker
+    digest: 28ecf8ea2180048d174e3f5510c8a39cba23d4dd3ae9d25b0d17ef00f27264bb
+  depends_on: [mechanic/skill.berserker]
+  interpretation: This publication grants the Slayer +1 To Hit during a charge, not +1 WS. At equal WS4,
+    the threshold is 3+ charging and 4+ otherwise. The grant is restricted to the named Slayer profile.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-troll-slayers}
+    context: {rule_id: band--slayer-special-skills-berserker}
+    expect: {result.recipients: [dwarf-troll-slayers]}
+  - id: charge-boundary
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.attacker_ws: 4, context.modifier: 1, result.target: 3, result.success: true}
+  - id: charge-all-faces
+    roles: [boundary]
+    operation: hit
+    attacker: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 2/3, 'false': 1/3}
+  - id: no-charge
+    roles: [inactive]
+    operation: hit
+    attacker: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: false}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.attacker_ws: 4, context.modifier: 0, result.target: 4, result.success: false}
+  - id: no-charge-all-faces
+    roles: [inactive, boundary]
+    operation: hit
+    attacker: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: false}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  mutations:
+  - id: remove-bonus
+    path: attacker.global_effects.tags
+    value: []
+    cases: [charge-boundary, charge-all-faces]
+- id: editorial-berserker-chaos-streets-pit-fighters
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: rule/trollheim/chaos-streets-pit-fighters/band--troll-slayer-special-skills-berserker/skill.berserker
+    digest: 5ec264add2660164810b80f34dde6c686e2195a6483f64186a0ece4e6b6a5978
+  depends_on: [mechanic/skill.berserker]
+  interpretation: This publication grants the Slayer +1 To Hit during a charge, not +1 WS. At equal WS4,
+    the threshold is 3+ charging and 4+ otherwise. The grant is restricted to the named Slayer profile.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: dwarf-troll-slayer}
+    context: {rule_id: band--troll-slayer-special-skills-berserker}
+    expect: {result.recipients: [dwarf-troll-slayer]}
+  - id: charge-boundary
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.attacker_ws: 4, context.modifier: 1, result.target: 3, result.success: true}
+  - id: charge-all-faces
+    roles: [boundary]
+    operation: hit
+    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 2/3, 'false': 1/3}
+  - id: no-charge
+    roles: [inactive]
+    operation: hit
+    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: false}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.attacker_ws: 4, context.modifier: 0, result.target: 4, result.success: false}
+  - id: no-charge-all-faces
+    roles: [inactive, boundary]
+    operation: hit
+    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: false}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  mutations:
+  - id: remove-bonus
+    path: attacker.global_effects.tags
+    value: []
+    cases: [charge-boundary, charge-all-faces]
+- id: editorial-berserker-khemri-cursed-of-karak-zorn
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-berserker/skill.berserker
+    digest: cc346e57f4a1593e5361cfd17ebdcf9a2bec49ef064e9dbfb4bc0756139ec637
+  depends_on: [mechanic/skill.berserker]
+  interpretation: This publication grants the Slayer +1 To Hit during a charge, not +1 WS. At equal WS4,
+    the threshold is 3+ charging and 4+ otherwise. The grant is restricted to the named Slayer profile.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: troll-slayer}
+    context: {rule_id: band--troll-slayer-special-skills-berserker}
+    expect: {result.recipients: [troll-slayer]}
+  - id: charge-boundary
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.attacker_ws: 4, context.modifier: 1, result.target: 3, result.success: true}
+  - id: charge-all-faces
+    roles: [boundary]
+    operation: hit
+    attacker: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 2/3, 'false': 1/3}
+  - id: no-charge
+    roles: [inactive]
+    operation: hit
+    attacker: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: false}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.attacker_ws: 4, context.modifier: 0, result.target: 4, result.success: false}
+  - id: no-charge-all-faces
+    roles: [inactive, boundary]
+    operation: hit
+    attacker: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-berserker]}
+    defender:
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    context: {first_round: true, charging: false}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  mutations:
+  - id: remove-bonus
+    path: attacker.global_effects.tags
+    value: []
+    cases: [charge-boundary, charge-all-faces]

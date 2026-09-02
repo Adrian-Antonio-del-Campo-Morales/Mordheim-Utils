@@ -1,0 +1,181 @@
+schema_version: 1
+specifications:
+- id: editorial-construct-armour-mechanical-beast
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/khemri-mages/mechanical-beast--mechanical-armour/trait.natural-armour-save
+    digest: 0063a9218b0ad8e5df16d0e565d56ff22ba5cf6aad7f3506ba1d2f3bfdb67348
+  interpretation: Khemri / mechanical-beast / Weapons and Armour grants 5+ armour, not a ward or immunity to Strength modifiers.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: trollheim, band_id: khemri-mages, profile_id: mechanical-beast}
+    context: {rule_id: mechanical-beast--mechanical-armour}
+    expect: {result.recipients: [mechanical-beast]}
+  - id: face-1
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: khemri-mages, profile_id: mechanical-beast}
+    rolls: [{key: armour, value: 1}]
+    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+  - id: face-2
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: khemri-mages, profile_id: mechanical-beast}
+    rolls: [{key: armour, value: 2}]
+    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+  - id: face-3
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: khemri-mages, profile_id: mechanical-beast}
+    rolls: [{key: armour, value: 3}]
+    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+  - id: face-4
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: khemri-mages, profile_id: mechanical-beast}
+    rolls: [{key: armour, value: 4}]
+    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+  - id: face-5
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: khemri-mages, profile_id: mechanical-beast}
+    rolls: [{key: armour, value: 5}]
+    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: true}
+  - id: face-6
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: khemri-mages, profile_id: mechanical-beast}
+    rolls: [{key: armour, value: 6}]
+    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: true}
+  - id: strength-4
+    roles: [boundary, consumer]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
+    defender: {collection: trollheim, band_id: khemri-mages, profile_id: mechanical-beast}
+    rolls: [{key: armour, value: 6}]
+    expect: {result.target: 6, result.eligible: true, result.saved: true}
+  - id: strength-5
+    roles: [boundary, consumer]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 5, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
+    defender: {collection: trollheim, band_id: khemri-mages, profile_id: mechanical-beast}
+    expect: {result.target: 7, result.eligible: false, result.saved: false}
+  - id: strength-6
+    roles: [boundary, consumer]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
+    defender: {collection: trollheim, band_id: khemri-mages, profile_id: mechanical-beast}
+    expect: {result.target: 7, result.eligible: false, result.saved: false}
+  - id: no-ward
+    roles: [inactive]
+    operation: special_save
+    defender: {collection: trollheim, band_id: khemri-mages, profile_id: mechanical-beast}
+    expect: {result.saved: false, result.ward_roll: null}
+  mutations:
+  - id: remove-armour
+    path: defender.natural_armour_save
+    value: 7
+    cases: [face-6]
+  - id: ignore-strength
+    path: defender.natural_armour_unmodified
+    value: true
+    cases: [strength-4]
+- id: editorial-construct-armour-stone-golem
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/khemri-tomb-guardians/stone-golem--stone-body/trait.natural-armour-save
+    digest: d6e6e03635f513182f1168b9ac72b53d63fd0e6feb9af183a34c02ec0e4acc83
+  interpretation: Khemri / stone-golem / Weapons and Armour grants 4+ armour, not a ward or immunity to Strength modifiers.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: stone-golem}
+    context: {rule_id: stone-golem--stone-body}
+    expect: {result.recipients: [stone-golem]}
+  - id: face-1
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: stone-golem}
+    rolls: [{key: armour, value: 1}]
+    expect: {defender.natural_armour_save: 4, result.target: 4, result.saved: false}
+  - id: face-2
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: stone-golem}
+    rolls: [{key: armour, value: 2}]
+    expect: {defender.natural_armour_save: 4, result.target: 4, result.saved: false}
+  - id: face-3
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: stone-golem}
+    rolls: [{key: armour, value: 3}]
+    expect: {defender.natural_armour_save: 4, result.target: 4, result.saved: false}
+  - id: face-4
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: stone-golem}
+    rolls: [{key: armour, value: 4}]
+    expect: {defender.natural_armour_save: 4, result.target: 4, result.saved: true}
+  - id: face-5
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: stone-golem}
+    rolls: [{key: armour, value: 5}]
+    expect: {defender.natural_armour_save: 4, result.target: 4, result.saved: true}
+  - id: face-6
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: stone-golem}
+    rolls: [{key: armour, value: 6}]
+    expect: {defender.natural_armour_save: 4, result.target: 4, result.saved: true}
+  - id: strength-4
+    roles: [boundary, consumer]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: stone-golem}
+    rolls: [{key: armour, value: 6}]
+    expect: {result.target: 5, result.eligible: true, result.saved: true}
+  - id: strength-5
+    roles: [boundary, consumer]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 5, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: stone-golem}
+    rolls: [{key: armour, value: 6}]
+    expect: {result.target: 6, result.eligible: true, result.saved: true}
+  - id: strength-6
+    roles: [boundary, consumer]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: stone-golem}
+    expect: {result.target: 7, result.eligible: false, result.saved: false}
+  - id: no-ward
+    roles: [inactive]
+    operation: special_save
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: stone-golem}
+    expect: {result.saved: false, result.ward_roll: null}
+  mutations:
+  - id: remove-armour
+    path: defender.natural_armour_save
+    value: 7
+    cases: [face-6]
+  - id: ignore-strength
+    path: defender.natural_armour_unmodified
+    value: true
+    cases: [strength-4]

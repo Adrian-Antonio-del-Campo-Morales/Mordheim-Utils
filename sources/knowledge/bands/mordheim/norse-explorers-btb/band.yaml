@@ -1,0 +1,62 @@
+schema_version: 2
+id: norse-explorers-btb
+canonical_family: norse-explorers-btb
+name: Norse Explorers
+name_i18n:
+  en: Norse Explorers
+  es: null
+original_locale: en
+ruleset: mordheim
+categories:
+- 1c
+grade: 1c
+setting: Lustria
+publication: Border Town Burning
+status: source-normalized
+sources:
+- manual: mordheimer.net
+  printed_page: 0
+  section: Norse Explorers
+  url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: jarl
+    minimum: 1
+    maximum: 1
+  - profile_id: beserkers
+    minimum: 0
+    maximum: 2
+  - profile_id: wulfen
+    minimum: 0
+    maximum: 1
+  - profile_id: bondsmen
+    minimum: 0
+    maximum: 2
+  - profile_id: marauders
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: hunters
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: wolves
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--seafaring
+- band--norse-special-skills-barbarian-courage
+- band--norse-special-skills-battle-tongue
+- band--norse-special-skills-berserk-charge
+- band--norse-special-skills-crushing-blow
+- band--norse-special-skills-shield-master
