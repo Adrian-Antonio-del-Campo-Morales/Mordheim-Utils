@@ -11,7 +11,7 @@ def specifications_root(root: Path | None = None) -> Path:
     if root is not None:
         return Path(root)
     override = os.environ.get("MORDHEIM_COMBAT_LAB_SPECS_PATH")
-    return Path(override) if override else project_root() / "specs"
+    return Path(override) if override else project_root() / "tests" / "specs"
 
 
 def load_phase_verification(ruleset: str = "mordheim", root: Path | None = None) -> dict:
