@@ -12,7 +12,7 @@ from mordheim_combat_lab.ui.editors import FighterEditor
 from mordheim_combat_lab.ui.tabs.equipment import EquipmentAnalysisTab
 from mordheim_combat_lab.ui.tabs.improvements import ImprovementAnalysisTab
 from mordheim_combat_lab.ui.tabs.weapons import WeaponAnalysisTab
-from mordheim_combat_lab.ui.theme import apply_theme
+from mordheim_ui.lab_theme import apply_theme
 from mordheim_combat_lab.ui.widgets.feedback import destroy_tooltips
 import os as os
 import time as time

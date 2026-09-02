@@ -1,7 +1,7 @@
 """ui.widgets.feedback: responsabilidad extraída sin alterar las reglas."""
 from __future__ import annotations
 
-from mordheim_combat_lab.ui.theme import COLORS
+from mordheim_ui.lab_theme import COLORS
 import tkinter as tk
 
 
