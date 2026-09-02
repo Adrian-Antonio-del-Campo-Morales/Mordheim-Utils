@@ -742,7 +742,8 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
         mounted_only = any(has(weapon, tag) for tag in ("weapon.lance", "weapon.boar-spear"))
         if not mounted_only or attacker.mounted:
             strength += charge_rows.astype(np.int16) * effect.charge_strength_bonus
-    armour_strength = strength + effect.armour_strength_modifier
+    armour_strength = (strength + effect.armour_strength_modifier
+                       if effect.armour_strength_modifier else strength)
     if defender.global_effects.incoming_strength_modifier:
         strength = np.maximum(1, strength + defender.global_effects.incoming_strength_modifier)
     attacker_ws = attacker_state.weapon_skill[active] + weapon.weapon_skill_bonus
@@ -755,21 +756,20 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
     else:
         attacker_ws_values = attacker_ws
     hit_target = hit_targets(attacker_ws_values, defender_state.weapon_skill[active])
-    modifier = np.full(active.size, effect.hit_modifier, dtype=np.int8)
-    modifier += defender.global_effects.incoming_hit_modifier
+    modifier = effect.hit_modifier + defender.global_effects.incoming_hit_modifier
     if has(defender.global_effects, "rule.putrid-stench") and has(
         attacker.global_effects, "undead_or_possessed"
     ):
         modifier += 1
-    if has(effect, "skill.berserker"):
-        modifier += charge_rows.astype(np.int8)
-    if first_round and has(attacker.global_effects, "skill.ferocious-charge"):
-        modifier[charge_rows] -= 1
     if first_round and has(defender.global_effects, "skill.bellowing-battle-roar"):
         modifier -= 1
     if has(defender.global_effects,"cloud_of_flies"):
         modifier -= 1
     hit_target = np.clip(hit_target - modifier, 2, 6)
+    if has(effect, "skill.berserker"):
+        hit_target[charge_rows] = np.clip(hit_target[charge_rows] - 1, 2, 6)
+    if first_round and has(attacker.global_effects, "skill.ferocious-charge"):
+        hit_target[charge_rows] = np.clip(hit_target[charge_rows] + 1, 2, 6)
     if has(effect,"skill.sweep") and weapon.two_handed:
         failed_tests = ~_characteristic_test(defender, defender_state.initiative[active], rng)
         rolls=np.where(failed_tests,6,1).astype(np.int8);successful=failed_tests
@@ -781,31 +781,45 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
     successful |= helpless
     rolls[helpless] = 1
     reroll = np.full(active.size, effect.reroll_hits, dtype=bool)
-    reroll |= charge_rows & effect.charge_reroll_hits
-    reroll |= charge_rows & has(effect, "rule.berserk-charge") & any(
+    if effect.charge_reroll_hits:
+        reroll |= charge_rows
+    if has(effect, "rule.berserk-charge") and any(
         has(weapon, tag) for tag in (
             "weapon.axe", "weapon.dwarf-axe", "weapon.double-handed-weapon",
         )
-    )
-    reroll |= first_round and has(effect, "skill.hatred")
+    ):
+        reroll |= charge_rows
+    if first_round and has(effect, "skill.hatred"):
+        reroll |= True
     amazon_enemy=any(
         tag.startswith("band.lizardmen") or "lustria-lizardmen" in tag or "norse" in tag
         for tag in defender.global_effects.tags
     )
-    reroll |= first_round and has(attacker.global_effects,"mechanic.amazon-isolationists") and amazon_enemy
-    reroll |= charge_rows & has(effect, "skill.infallible")
-    reroll |= charge_rows & first_round & has(effect,"skill.axe-expert") & (has(weapon,"weapon.axe") or has(weapon,"weapon.dwarf-axe"))
-    reroll |= charge_rows & first_round & has(effect,"skill.expert-swordsman") & any(has(weapon,x) for x in ("weapon.sword","weapon.scimitar","weapon.weeping-blades"))
-    reroll |= first_round & has(effect,"skill.crack-shot") & any(has(weapon,x) for x in ("weapon.pistol","weapon.duelling-pistol"))
-    reroll |= charge_rows & has(attacker.global_effects,"dagger_master") & (has(weapon,"weapon.dagger") or has(weapon,"weapon.yambiya"))
-    reroll |= has(effect,"skill.weapons-of-the-north") and any(
+    if first_round and has(attacker.global_effects,"mechanic.amazon-isolationists") and amazon_enemy:
+        reroll |= True
+    if has(effect, "skill.infallible"):
+        reroll |= charge_rows
+    if first_round and has(effect,"skill.axe-expert") and (has(weapon,"weapon.axe") or has(weapon,"weapon.dwarf-axe")):
+        reroll |= charge_rows
+    if first_round and has(effect,"skill.expert-swordsman") and any(has(weapon,x) for x in ("weapon.sword","weapon.scimitar","weapon.weeping-blades")):
+        reroll |= charge_rows
+    if first_round and has(effect,"skill.crack-shot") and any(has(weapon,x) for x in ("weapon.pistol","weapon.duelling-pistol")):
+        reroll |= True
+    if has(attacker.global_effects,"dagger_master") and (has(weapon,"weapon.dagger") or has(weapon,"weapon.yambiya")):
+        reroll |= charge_rows
+    if has(effect,"skill.weapons-of-the-north") and any(
         has(weapon, tag) for tag in (
             "weapon.axe", "weapon.dwarf-axe", "weapon.double-handed-weapon",
         )
-    )
-    reroll |= first_round and has(effect,"skill.duellist")
-    luck = has(effect,"skill.luck") & ~attacker_state.luck_used[active] & ~reroll
-    reroll |= luck
+    ):
+        reroll |= True
+    if first_round and has(effect,"skill.duellist"):
+        reroll |= True
+    if has(effect,"skill.luck"):
+        luck = ~attacker_state.luck_used[active] & ~reroll
+        reroll |= luck
+    else:
+        luck = None
     if has(effect, "skill.virtue-of-valour"):
         reroll |= defender_state.strength[active]>attacker_state.strength[active]
     rerolled = np.zeros(active.size, dtype=bool)
@@ -815,8 +829,9 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
         rerolls = rng.integers(1, 7, failed.size)
         successful[failed] = rerolls >= hit_target[failed]
         rolls[failed] = rerolls
-        luck_failed = failed[luck[failed]]
-        attacker_state.luck_used[active[luck_failed]] = True
+        if luck is not None:
+            luck_failed = failed[luck[failed]]
+            attacker_state.luck_used[active[luck_failed]] = True
     if has(attacker.global_effects,"mechanic.mark-of-the-old-ones"):
         available=(~successful)&(~attacker_state.mark_of_old_ones_used[active])
         chosen=np.flatnonzero(available)
@@ -975,7 +990,6 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
         observation.wounded = bool(wound_rows.size)
     if wound_rows.size == 0:
         return
-    wound_positions = np.searchsorted(hit_rows, wound_rows)
     wound_strength = armour_strength_hits[wounded].copy()
     if has(effect,"skill.monster-slayer-effective-strength-armour"):
         boosted = raw_targets[wounded] > 4
