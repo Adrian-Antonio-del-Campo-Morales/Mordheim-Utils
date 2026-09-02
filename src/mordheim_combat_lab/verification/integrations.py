@@ -2,11 +2,11 @@
 from __future__ import annotations
 
 from contextlib import ExitStack
-import mordheim_combat_lab.combat.modular.duel as duel
-import mordheim_combat_lab.combat.modular.rounds as rounds
-import mordheim_combat_lab.combat.modular.state as combat_state
-import mordheim_combat_lab.combat.phases as phases
-from mordheim_combat_lab.domain.models import SimulationCancelled
+import mordheim_combat.modular.duel as duel
+import mordheim_combat.modular.rounds as rounds
+import mordheim_combat.modular.state as combat_state
+import mordheim_combat.phases as phases
+from mordheim_core.models import SimulationCancelled
 from mordheim_combat_lab.verification.dice import StrictDecisions
 from mordheim_combat_lab.verification.dice import StrictDice
 from mordheim_combat_lab.verification.reports import EvidenceMismatch

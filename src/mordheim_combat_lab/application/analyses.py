@@ -3,9 +3,9 @@ from dataclasses import dataclass, replace
 from threading import Event
 from typing import Callable, Iterable
 
-from mordheim_combat_lab.combat.vectorized import simulate_duel
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import FighterBuild, SimulationCancelled
+from mordheim_combat.vectorized import simulate_duel
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import FighterBuild, SimulationCancelled
 from .settings import DuelExecutionSettings
 
 

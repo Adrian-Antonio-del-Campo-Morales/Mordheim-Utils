@@ -2,10 +2,10 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import EffectSet
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import Characteristics
+from mordheim_core.models import EffectSet
+from mordheim_core.models import FighterBuild
 import numpy as np
 import pytest as pytest
 
@@ -32,8 +32,8 @@ def build(*, attacks=1, strength=3, toughness=3, wounds=1, **changes):
 
 
 def test_audited_weapon_contracts_expose_their_missing_numeric_effects():
-    from mordheim_combat_lab.combat.vectorized import attack_count
-    from mordheim_combat_lab.combat.vectorized import priority
+    from mordheim_combat.vectorized import attack_count
+    from mordheim_combat.vectorized import priority
 
     bagh = build(main_weapon_id="weapon.bagh-nakh")
     stiletto = build(main_weapon_id="weapon.stiletto")
@@ -77,7 +77,7 @@ def test_restricted_weapons_and_toughened_leathers_keep_legal_combinations():
 
 
 def test_frenzy_persists_and_pistols_only_fire_in_the_first_round():
-    from mordheim_combat_lab.combat.vectorized import attack_count
+    from mordheim_combat.vectorized import attack_count
 
     flags = np.zeros(1, dtype=bool)
     frenzy = build(preparation_ids=("preparation.mad-cap-mushrooms",))
@@ -95,7 +95,7 @@ def test_frenzy_persists_and_pistols_only_fire_in_the_first_round():
 
 
 def test_pistol_and_sword_allocate_attacks_to_the_correct_weapon(monkeypatch):
-    import mordheim_combat_lab.combat.vectorized as engine
+    import mordheim_combat.vectorized as engine
 
     attacker = build(main_weapon_id="weapon.pistol", off_hand_id="weapon.sword")
     defender = build()
@@ -123,8 +123,8 @@ def test_pistol_and_sword_allocate_attacks_to_the_correct_weapon(monkeypatch):
 
 
 def test_resilient_and_reptile_venom_do_not_change_armour_strength():
-    from mordheim_combat_lab.combat.vectorized import _new_state
-    from mordheim_combat_lab.combat.vectorized import _prepare_weapon_attack
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _prepare_weapon_attack
 
     active = np.array([0])
     flags = np.zeros(1, dtype=bool)
@@ -150,8 +150,8 @@ def test_resilient_and_reptile_venom_do_not_change_armour_strength():
 
 
 def test_automatic_wounds_cannot_claim_a_synthetic_critical():
-    from mordheim_combat_lab.combat.vectorized import _new_state
-    from mordheim_combat_lab.combat.vectorized import _resolve_weapon
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _resolve_weapon
 
     attacker = build(main_poison_id="poison.black-lotus")
     defender = build(wounds=2)
@@ -166,8 +166,8 @@ def test_automatic_wounds_cannot_claim_a_synthetic_critical():
 
 
 def test_duplicate_wounds_can_claim_only_one_critical_per_row():
-    from mordheim_combat_lab.combat.vectorized import _claim_criticals
-    from mordheim_combat_lab.combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _claim_criticals
+    from mordheim_combat.vectorized import _new_state
 
     state = _new_state(build(), 1, np.random.default_rng(1))
     claimed = _claim_criticals(np.array([True, True]), np.array([0, 0]), state)
@@ -175,9 +175,9 @@ def test_duplicate_wounds_can_claim_only_one_critical_per_row():
 
 
 def test_simultaneous_injuries_keep_the_highest_roll_instead_of_auto_finishing():
-    from mordheim_combat_lab.combat.vectorized import KNOCKED_DOWN
-    from mordheim_combat_lab.combat.vectorized import _new_state
-    from mordheim_combat_lab.combat.vectorized import resolve_attacks
+    from mordheim_combat.vectorized import KNOCKED_DOWN
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import resolve_attacks
 
     attacker = replace(build(attacks=2), main_weapon=EffectSet(automatic_hit=True))
     defender = build()
@@ -191,8 +191,8 @@ def test_simultaneous_injuries_keep_the_highest_roll_instead_of_auto_finishing()
 
 
 def test_sword_and_buckler_rerolls_a_failed_parry():
-    from mordheim_combat_lab.combat.vectorized import _new_state
-    from mordheim_combat_lab.combat.vectorized import _parry_hits
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _parry_hits
 
     defender = build(main_weapon_id="weapon.sword", off_hand_id="defence.buckler")
     state = _new_state(defender, 1, np.random.default_rng(1))
@@ -205,8 +205,8 @@ def test_sword_and_buckler_rerolls_a_failed_parry():
 
 
 def test_offhand_axe_master_and_starblade_use_their_special_parries():
-    from mordheim_combat_lab.combat.vectorized import _new_state
-    from mordheim_combat_lab.combat.vectorized import _parry_hits
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _parry_hits
 
     axe_master = build(
         main_weapon_id="weapon.mace", off_hand_id="weapon.axe",
@@ -226,9 +226,9 @@ def test_offhand_axe_master_and_starblade_use_their_special_parries():
 
 
 def test_thick_skull_with_a_helmet_replaces_instead_of_stacking_with_helmet_save():
-    from mordheim_combat_lab.combat.vectorized import STUNNED
-    from mordheim_combat_lab.combat.vectorized import _new_state
-    from mordheim_combat_lab.combat.vectorized import _resolve_weapon
+    from mordheim_combat.vectorized import STUNNED
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _resolve_weapon
 
     attacker = replace(build(), main_weapon=EffectSet(automatic_hit=True, fixed_strength=10))
     defender = build(defence_ids=("defence.helmet",), skill_ids=("skill.thick-skull",))
@@ -242,8 +242,8 @@ def test_thick_skull_with_a_helmet_replaces_instead_of_stacking_with_helmet_save
 
 
 def test_luck_is_consumed_after_its_first_failed_hit_reroll():
-    from mordheim_combat_lab.combat.vectorized import _new_state
-    from mordheim_combat_lab.combat.vectorized import _prepare_weapon_attack
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _prepare_weapon_attack
 
     attacker = build(skill_ids=("skill.luck",))
     defender = build()
@@ -266,9 +266,9 @@ def test_luck_is_consumed_after_its_first_failed_hit_reroll():
 
 
 def test_death_blow_bonuses_require_a_profile_with_at_least_two_attacks():
-    from mordheim_combat_lab.combat.vectorized import _new_state
-    from mordheim_combat_lab.combat.vectorized import _prepare_weapon_attack
-    from mordheim_combat_lab.combat.vectorized import attack_count
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _prepare_weapon_attack
+    from mordheim_combat.vectorized import attack_count
 
     one_attack = build(skill_ids=("mechanic.death-blow",))
     two_attacks = build(attacks=2, skill_ids=("mechanic.death-blow",))
@@ -292,7 +292,7 @@ def test_death_blow_bonuses_require_a_profile_with_at_least_two_attacks():
 
 
 def test_strongman_only_cancels_strike_last_for_two_handed_weapons():
-    from mordheim_combat_lab.combat.vectorized import priority
+    from mordheim_combat.vectorized import priority
 
     flags = np.zeros(1, dtype=bool)
     broadsword = build(main_weapon_id="weapon.broadsword", skill_ids=("skill.strongman",))
@@ -315,8 +315,8 @@ def test_shield_strike_is_an_independent_user_strength_attack():
 
 
 def test_sigmarite_hammer_gets_its_conditional_wound_bonus():
-    from mordheim_combat_lab.combat.vectorized import _new_state
-    from mordheim_combat_lab.combat.vectorized import _resolve_weapon
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _resolve_weapon
 
     attacker = build(main_weapon_id="weapon.sigmarite-hammer")
     attacker = replace(attacker, main_weapon=replace(attacker.main_weapon, automatic_hit=True))
@@ -345,7 +345,7 @@ def test_bear_hug_is_granted_automatically_by_the_trained_bear_profile():
 
 
 def test_mandrake_toughness_bonus_is_present_in_runtime_characteristic_tests():
-    from mordheim_combat_lab.combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _new_state
 
     prepared = build(preparation_ids=("preparation.mandrake-root",))
     state = _new_state(prepared, 2, np.random.default_rng(1))
@@ -353,8 +353,8 @@ def test_mandrake_toughness_bonus_is_present_in_runtime_characteristic_tests():
 
 
 def test_off_hand_material_contributes_to_effective_initiative():
-    from mordheim_combat_lab.combat.vectorized import _new_state
-    from mordheim_combat_lab.combat.vectorized import effective_initiative
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import effective_initiative
 
     ordinary = build(main_weapon_id="weapon.dagger", off_hand_id="weapon.sword")
     ithilmar = build(
@@ -370,10 +370,10 @@ def test_off_hand_material_contributes_to_effective_initiative():
 
 
 def test_poisonous_injury_belongs_to_attacker_and_respects_immunity():
-    from mordheim_combat_lab.combat.vectorized import KNOCKED_DOWN
-    from mordheim_combat_lab.combat.vectorized import STUNNED
-    from mordheim_combat_lab.combat.vectorized import _new_state
-    from mordheim_combat_lab.combat.vectorized import _resolve_weapon
+    from mordheim_combat.vectorized import KNOCKED_DOWN
+    from mordheim_combat.vectorized import STUNNED
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _resolve_weapon
 
     poisonous = replace(
         build(),
@@ -402,8 +402,8 @@ def test_poisonous_injury_belongs_to_attacker_and_respects_immunity():
 
 
 def test_amazon_isolationists_recognise_trollheim_lustria_lizardmen():
-    from mordheim_combat_lab.combat.vectorized import _new_state
-    from mordheim_combat_lab.combat.vectorized import _prepare_weapon_attack
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _prepare_weapon_attack
 
     amazon = replace(build(), global_effects=EffectSet(tags=("mechanic.amazon-isolationists",)))
     lizard = replace(build(), global_effects=EffectSet(tags=("band.lustria-lizardmen",)))
@@ -416,7 +416,7 @@ def test_amazon_isolationists_recognise_trollheim_lustria_lizardmen():
 
 
 def test_optional_phase_plan_only_enables_reachable_stateful_phases():
-    from mordheim_combat_lab.combat.vectorized import _optional_phase_plan
+    from mordheim_combat.vectorized import _optional_phase_plan
 
     ordinary = build()
     inert = _optional_phase_plan(ordinary, ordinary)

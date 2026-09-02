@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from dataclasses import fields
-from mordheim_combat_lab.domain.models import EffectSet
+from mordheim_core.models import EffectSet
 
 
 @dataclass(frozen=True, slots=True)

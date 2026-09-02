@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from copy import deepcopy
 from fractions import Fraction
-from mordheim_combat_lab.domain.dice import RollRequest
-from mordheim_combat_lab.knowledge.loader import knowledge_root
+from mordheim_core.dice import RollRequest
+from mordheim_knowledge.loader import knowledge_root
 from mordheim_combat_lab.verification.audit import verify_semantics
 from mordheim_combat_lab.verification.dice import StrictDecisions
 from mordheim_combat_lab.verification.dice import StrictDice
@@ -305,9 +305,9 @@ def test_rapier_failed_extra_hit_omits_extra_wound_roll():
 
 def test_integration_checks_execute_real_phase_calls(monkeypatch):
     from dataclasses import replace
-    import mordheim_combat_lab.combat.modular.rounds as reference
-    from mordheim_combat_lab.combat.modular.state import CombatRoundResult
-    import mordheim_combat_lab.combat.phases as phases
+    import mordheim_combat.modular.rounds as reference
+    from mordheim_combat.modular.state import CombatRoundResult
+    import mordheim_combat.phases as phases
     from mordheim_combat_lab.verification.integrations import verify_integrations
     def forged_round(first, second, state, dice, decisions=None):
         return CombatRoundResult(replace(
@@ -319,7 +319,7 @@ def test_integration_checks_execute_real_phase_calls(monkeypatch):
 
 
 def test_generic_operator_witnesses_detect_an_incorrect_composition(monkeypatch):
-    import mordheim_combat_lab.domain.effects as effects
+    import mordheim_core.effects as effects
     from mordheim_combat_lab.verification.operators import verify_operators
     from mordheim_combat_lab.verification.operators import OPERATOR_CHECKS
     assert verify_operators() == (OPERATOR_CHECKS, ())

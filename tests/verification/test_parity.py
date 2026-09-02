@@ -3,9 +3,9 @@ from mordheim_combat_lab.verification.parity import compare_statistical_parity
 from mordheim_combat_lab.verification.parity import parity_report_markdown
 from mordheim_combat_lab.verification.parity import parity_report_payload
 from mordheim_combat_lab.verification.parity import verify_specification_parity
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import Characteristics
+from mordheim_core.models import FighterBuild
 
 
 def test_vectorized_parity_inventory_is_complete_and_exact_checks_pass():

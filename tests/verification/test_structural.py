@@ -3,10 +3,10 @@ from __future__ import annotations
 
 from dataclasses import fields
 from itertools import combinations
-from mordheim_combat_lab.construction.contracts import effect_index
-from mordheim_combat_lab.domain.effects import merge_best_effects
-from mordheim_combat_lab.domain.effects import merge_effects
-from mordheim_combat_lab.domain.models import EffectSet
+from mordheim_construction.contracts import effect_index
+from mordheim_core.effects import merge_best_effects
+from mordheim_core.effects import merge_effects
+from mordheim_core.models import EffectSet
 from mordheim_combat_lab.verification.specifications import load_phase_verification
 from mordheim_combat_lab.verification.structural import audit_phase_verification
 

@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from dataclasses import field
-from mordheim_combat_lab.domain.dice import AlwaysAccept
-from mordheim_combat_lab.domain.dice import DecisionPolicy
+from mordheim_core.dice import AlwaysAccept
+from mordheim_core.dice import DecisionPolicy
 from threading import Event
 from typing import Mapping
 

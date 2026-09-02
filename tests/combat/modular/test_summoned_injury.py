@@ -1,9 +1,9 @@
 """La criatura invocada conserva sus heridas antes de desaparecer."""
-from mordheim_combat_lab.combat.modular.attacks import resolve_reference_attack
-from mordheim_combat_lab.combat.modular.state import initialize_fighter
-from mordheim_combat_lab.combat.phases import Condition
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import Characteristics, FighterBuild
+from mordheim_combat.modular.attacks import resolve_reference_attack
+from mordheim_combat.modular.state import initialize_fighter
+from mordheim_combat.phases import Condition
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import Characteristics, FighterBuild
 from mordheim_combat_lab.verification.dice import StrictDice
 
 

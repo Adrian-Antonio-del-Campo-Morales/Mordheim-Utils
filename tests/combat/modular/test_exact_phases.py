@@ -2,17 +2,17 @@
 from __future__ import annotations
 
 from fractions import Fraction
-from mordheim_combat_lab.combat.phases import ArmourContext
-from mordheim_combat_lab.combat.phases import Condition
-from mordheim_combat_lab.combat.phases import InjuryContext
-from mordheim_combat_lab.combat.phases import ParryContext
-from mordheim_combat_lab.combat.phases import SpecialSaveContext
-from mordheim_combat_lab.combat.phases import resolve_armour
-from mordheim_combat_lab.combat.phases import resolve_injury
-from mordheim_combat_lab.combat.phases import resolve_parry
-from mordheim_combat_lab.combat.phases import resolve_special_save
-from mordheim_combat_lab.domain.dice import ScriptedDice
-from mordheim_combat_lab.domain.dice import exact_distribution
+from mordheim_combat.phases import ArmourContext
+from mordheim_combat.phases import Condition
+from mordheim_combat.phases import InjuryContext
+from mordheim_combat.phases import ParryContext
+from mordheim_combat.phases import SpecialSaveContext
+from mordheim_combat.phases import resolve_armour
+from mordheim_combat.phases import resolve_injury
+from mordheim_combat.phases import resolve_parry
+from mordheim_combat.phases import resolve_special_save
+from mordheim_core.dice import ScriptedDice
+from mordheim_core.dice import exact_distribution
 import pytest as pytest
 
 

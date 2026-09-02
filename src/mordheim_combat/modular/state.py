@@ -1,16 +1,16 @@
 """combat.modular.state: responsabilidad extraída sin alterar las reglas."""
 from __future__ import annotations
-from mordheim_combat_lab.combat import phases
+from mordheim_combat import phases
 
 from dataclasses import dataclass
 from dataclasses import replace
-from mordheim_combat_lab.combat.phases import Condition
-from mordheim_combat_lab.combat.phases import Phase
-from mordheim_combat_lab.combat.phases import has_tag
-from mordheim_combat_lab.domain.dice import DiceSource
-from mordheim_combat_lab.domain.dice import RollRequest
-from mordheim_combat_lab.domain.models import CompiledFighter
-from mordheim_combat_lab.domain.models import EffectSet
+from mordheim_combat.phases import Condition
+from mordheim_combat.phases import Phase
+from mordheim_combat.phases import has_tag
+from mordheim_core.dice import DiceSource
+from mordheim_core.dice import RollRequest
+from mordheim_core.models import CompiledFighter
+from mordheim_core.models import EffectSet
 
 
 @dataclass(frozen=True, slots=True)

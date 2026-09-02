@@ -4,8 +4,8 @@ from __future__ import annotations
 from dataclasses import replace
 from mordheim_combat_lab.application.catalogue import CombatCatalogue
 from mordheim_combat_lab.application.catalogue import ProfileChoice
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_core.models import Characteristics
+from mordheim_core.models import FighterBuild
 from mordheim_combat_lab.ui.widgets.skills import SkillChecklist
 import re as re
 import tkinter as tk

@@ -5,8 +5,8 @@ from csv import DictWriter
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from mordheim_combat_lab.knowledge.loader import knowledge_root, read_yaml
-from mordheim_combat_lab.paths import project_root
+from mordheim_knowledge.loader import knowledge_root, read_yaml
+from mordheim_knowledge.paths import project_root
 from mordheim_combat_lab.verification.audit import verify_semantics
 from mordheim_combat_lab.verification.inventory import binding_key
 from mordheim_combat_lab.verification.interactions import REQUIREMENT_ORDER, RISK_ORDER

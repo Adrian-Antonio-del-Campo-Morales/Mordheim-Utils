@@ -1,15 +1,15 @@
 """Regresiones vectorizadas de familias canónicas A."""
 from __future__ import annotations
 
-from mordheim_combat_lab.combat.vectorized import _new_state
-from mordheim_combat_lab.combat.vectorized import _prepare_weapon_attack
-from mordheim_combat_lab.combat.vectorized import attack_count
-from mordheim_combat_lab.combat.vectorized import resolve_attacks
-from mordheim_combat_lab.combat.vectorized import simulate_duel
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import DuelRequest
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_combat.vectorized import _new_state
+from mordheim_combat.vectorized import _prepare_weapon_attack
+from mordheim_combat.vectorized import attack_count
+from mordheim_combat.vectorized import resolve_attacks
+from mordheim_combat.vectorized import simulate_duel
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import Characteristics
+from mordheim_core.models import DuelRequest
+from mordheim_core.models import FighterBuild
 import numpy as np
 from pathlib import Path
 import pytest as pytest

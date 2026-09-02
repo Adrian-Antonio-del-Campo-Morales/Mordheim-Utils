@@ -2,11 +2,11 @@
 from __future__ import annotations
 
 from mordheim_combat_lab.application.settings import DuelExecutionSettings
-from mordheim_combat_lab.combat.vectorized import simulate_duel
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import FighterBuild
-from mordheim_combat_lab.domain.models import SimulationCancelled
+from mordheim_combat.vectorized import simulate_duel
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import Characteristics
+from mordheim_core.models import FighterBuild
+from mordheim_core.models import SimulationCancelled
 import pytest as pytest
 from threading import Event
 

@@ -1,21 +1,21 @@
 """Familias canónicas compartidas del runtime vectorizado."""
 from __future__ import annotations
 
-from mordheim_combat_lab.combat.vectorized import OUT
-from mordheim_combat_lab.combat.vectorized import STANDING
-from mordheim_combat_lab.combat.vectorized import _critical_wound_threshold
-from mordheim_combat_lab.combat.vectorized import _new_state
-from mordheim_combat_lab.combat.vectorized import _rescue_force_of_will
-from mordheim_combat_lab.combat.vectorized import _sustain_force_of_will
-from mordheim_combat_lab.combat.vectorized import attack_count
-from mordheim_combat_lab.combat.vectorized import priority
-from mordheim_combat_lab.combat.vectorized import resolve_attacks
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import EffectSet
-from mordheim_combat_lab.domain.models import FighterBuild
-from mordheim_combat_lab.knowledge.loader import load_bands
-from mordheim_combat_lab.knowledge.loader import runtime_bindings
+from mordheim_combat.vectorized import OUT
+from mordheim_combat.vectorized import STANDING
+from mordheim_combat.vectorized import _critical_wound_threshold
+from mordheim_combat.vectorized import _new_state
+from mordheim_combat.vectorized import _rescue_force_of_will
+from mordheim_combat.vectorized import _sustain_force_of_will
+from mordheim_combat.vectorized import attack_count
+from mordheim_combat.vectorized import priority
+from mordheim_combat.vectorized import resolve_attacks
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import Characteristics
+from mordheim_core.models import EffectSet
+from mordheim_core.models import FighterBuild
+from mordheim_knowledge.loader import load_bands
+from mordheim_knowledge.loader import runtime_bindings
 import numpy as np
 from pathlib import Path
 import pytest as pytest
@@ -143,7 +143,7 @@ def test_body_slam_and_bull_charge_replace_charge_attacks(monkeypatch):
     defender = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1)), ROOT)
     state1, state2 = _new_state(body, 1, FixedRng()), _new_state(defender, 1, FixedRng())
     captured = []
-    import mordheim_combat_lab.combat.vectorized as engine
+    import mordheim_combat.vectorized as engine
     original = engine._prepare_weapon_attack
 
     def record(*args, **kwargs):
@@ -187,7 +187,7 @@ def test_unpredictable_marks_one_attack_unparryable(monkeypatch):
     defender = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1)), ROOT)
     state1, state2 = _new_state(attacker, 1, FixedRng()), _new_state(defender, 1, FixedRng())
     captured = []
-    import mordheim_combat_lab.combat.vectorized as engine
+    import mordheim_combat.vectorized as engine
     original = engine._prepare_weapon_attack
 
     def record(*args, **kwargs):

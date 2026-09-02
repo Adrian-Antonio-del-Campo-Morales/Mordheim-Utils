@@ -2,9 +2,9 @@
 from __future__ import annotations
 
 from mordheim_combat_lab.application.settings import DuelExecutionSettings
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import DuelResult
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_core.models import Characteristics
+from mordheim_core.models import DuelResult
+from mordheim_core.models import FighterBuild
 from mordheim_combat_lab.persistence.workbooks import CombatLabWorkbookError
 from mordheim_combat_lab.persistence.workbooks import load_ui_workbook
 from mordheim_combat_lab.persistence.workbooks import save_workbook

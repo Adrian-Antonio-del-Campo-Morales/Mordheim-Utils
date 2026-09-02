@@ -1,11 +1,11 @@
 from dataclasses import fields
 
-from mordheim_combat_lab.combat.kernel import EFFECT_VALUE_FIELDS
-from mordheim_combat_lab.combat.kernel import compile_duel_plan
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import EffectSet
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_combat.kernel import EFFECT_VALUE_FIELDS
+from mordheim_combat.kernel import compile_duel_plan
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import Characteristics
+from mordheim_core.models import EffectSet
+from mordheim_core.models import FighterBuild
 
 
 def fighter(**changes):

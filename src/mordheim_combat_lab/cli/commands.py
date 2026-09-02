@@ -22,10 +22,10 @@ def _percentage(value: str) -> float:
 
 
 def validate_command(args) -> int:
-    from mordheim_combat_lab.construction.compiler import compile_fighter
-    from mordheim_combat_lab.construction.contracts import validate_execution_contract
-    from mordheim_combat_lab.domain.models import FighterBuild
-    from mordheim_combat_lab.knowledge.loader import load_bands
+    from mordheim_construction.compiler import compile_fighter
+    from mordheim_construction.contracts import validate_execution_contract
+    from mordheim_core.models import FighterBuild
+    from mordheim_knowledge.loader import load_bands
     from mordheim_combat_lab.verification.structural import audit_phase_verification
 
     knowledge = Path(args.knowledge).resolve() if args.knowledge else None
@@ -64,7 +64,7 @@ def validate_command(args) -> int:
 
 
 def verify_command(args) -> int:
-    from mordheim_combat_lab.knowledge.loader import knowledge_root
+    from mordheim_knowledge.loader import knowledge_root
     from mordheim_combat_lab.verification.audit import verify_semantics
     from mordheim_combat_lab.verification.inventory import inventory
     from mordheim_combat_lab.verification.structural import audit_phase_verification
@@ -108,7 +108,7 @@ def benchmark_command(args) -> int:
     from mordheim_combat_lab.cli.benchmarking import load_benchmark_payload
     from mordheim_combat_lab.cli.benchmarking import run_benchmark
     from mordheim_combat_lab.cli.benchmarking import write_benchmark_payload
-    from mordheim_combat_lab.combat.vectorized import available_backends
+    from mordheim_combat.vectorized import available_backends
 
     if args.require_improvement and not args.baseline:
         print("Benchmark baseline error: --require-improvement requires --baseline", file=sys.stderr)
@@ -283,7 +283,7 @@ def _print_benchmark_comparison(gate, args) -> None:
 
 def parity_command(args) -> int:
     from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
-    from mordheim_combat_lab.construction.compiler import compile_fighter
+    from mordheim_construction.compiler import compile_fighter
     from mordheim_combat_lab.verification.parity import compare_statistical_parity
     from mordheim_combat_lab.verification.parity import parity_report_markdown
     from mordheim_combat_lab.verification.parity import parity_report_payload

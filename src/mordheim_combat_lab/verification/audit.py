@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from dataclasses import replace
 from itertools import combinations
-from mordheim_combat_lab.knowledge.loader import knowledge_root
-from mordheim_combat_lab.knowledge.loader import read_yaml
+from mordheim_knowledge.loader import knowledge_root
+from mordheim_knowledge.loader import read_yaml
 from mordheim_combat_lab.verification.integrations import verify_integrations
 from mordheim_combat_lab.verification.interactions import assess_interaction, normalize_interaction_contract
 from mordheim_combat_lab.verification.inventory import fingerprint

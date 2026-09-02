@@ -1,39 +1,39 @@
 """combat.modular.attacks: responsabilidad extraída sin alterar las reglas."""
 from __future__ import annotations
-from mordheim_combat_lab.combat import phases
+from mordheim_combat import phases
 
 from dataclasses import replace
-from mordheim_combat_lab.combat.phases import _characteristic_test
-from mordheim_combat_lab.combat.modular.aftermath import _react_to_wound
-from mordheim_combat_lab.combat.modular.contexts import _attack_strength
-from mordheim_combat_lab.combat.modular.contexts import _combined_effect
-from mordheim_combat_lab.combat.modular.contexts import _hit_reroll
-from mordheim_combat_lab.combat.modular.contexts import _injury_context
-from mordheim_combat_lab.combat.modular.contexts import _parry_context
-from mordheim_combat_lab.combat.modular.contexts import prepare_armour_context
-from mordheim_combat_lab.combat.modular.contexts import prepare_hit_context
-from mordheim_combat_lab.combat.modular.contexts import prepare_special_save_context
-from mordheim_combat_lab.combat.modular.contexts import prepare_wound_context
-from mordheim_combat_lab.combat.modular.contexts import weapon_against_opponent
-from mordheim_combat_lab.combat.modular.state import AttackOutcome
-from mordheim_combat_lab.combat.modular.state import FighterState
-from mordheim_combat_lab.combat.phases import BearHugContext
-from mordheim_combat_lab.combat.phases import Condition
-from mordheim_combat_lab.combat.phases import Phase
-from mordheim_combat_lab.combat.phases import has_tag
-from mordheim_combat_lab.combat.phases import resolve_armour
-from mordheim_combat_lab.combat.phases import resolve_bear_hug
-from mordheim_combat_lab.combat.phases import resolve_hit
-from mordheim_combat_lab.combat.phases import resolve_injury
-from mordheim_combat_lab.combat.phases import resolve_parry
-from mordheim_combat_lab.combat.phases import resolve_special_save
-from mordheim_combat_lab.combat.phases import resolve_wound
-from mordheim_combat_lab.domain.dice import DecisionPolicy
-from mordheim_combat_lab.domain.dice import DiceSource
-from mordheim_combat_lab.domain.dice import RollRequest
-from mordheim_combat_lab.domain.effects import merge_effects
-from mordheim_combat_lab.domain.models import CompiledFighter
-from mordheim_combat_lab.domain.models import EffectSet
+from mordheim_combat.phases import _characteristic_test
+from mordheim_combat.modular.aftermath import _react_to_wound
+from mordheim_combat.modular.contexts import _attack_strength
+from mordheim_combat.modular.contexts import _combined_effect
+from mordheim_combat.modular.contexts import _hit_reroll
+from mordheim_combat.modular.contexts import _injury_context
+from mordheim_combat.modular.contexts import _parry_context
+from mordheim_combat.modular.contexts import prepare_armour_context
+from mordheim_combat.modular.contexts import prepare_hit_context
+from mordheim_combat.modular.contexts import prepare_special_save_context
+from mordheim_combat.modular.contexts import prepare_wound_context
+from mordheim_combat.modular.contexts import weapon_against_opponent
+from mordheim_combat.modular.state import AttackOutcome
+from mordheim_combat.modular.state import FighterState
+from mordheim_combat.phases import BearHugContext
+from mordheim_combat.phases import Condition
+from mordheim_combat.phases import Phase
+from mordheim_combat.phases import has_tag
+from mordheim_combat.phases import resolve_armour
+from mordheim_combat.phases import resolve_bear_hug
+from mordheim_combat.phases import resolve_hit
+from mordheim_combat.phases import resolve_injury
+from mordheim_combat.phases import resolve_parry
+from mordheim_combat.phases import resolve_special_save
+from mordheim_combat.phases import resolve_wound
+from mordheim_core.dice import DecisionPolicy
+from mordheim_core.dice import DiceSource
+from mordheim_core.dice import RollRequest
+from mordheim_core.effects import merge_effects
+from mordheim_core.models import CompiledFighter
+from mordheim_core.models import EffectSet
 
 
 from .attacks import resolve_reference_attack
@@ -66,7 +66,7 @@ def allocate_attack_weapons(
 
 
 def _prepared_hit(prepared: AttackOutcome):
-    from mordheim_combat_lab.combat.phases import HitResult
+    from mordheim_combat.phases import HitResult
 
     return HitResult(prepared.hit_target or 0, prepared.hit_roll or 1, prepared.hit)
 

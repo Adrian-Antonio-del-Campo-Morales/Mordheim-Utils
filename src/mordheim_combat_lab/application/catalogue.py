@@ -2,13 +2,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from mordheim_combat_lab.knowledge.loader import BandPackage
-from mordheim_combat_lab.knowledge.loader import load_bands
-from mordheim_combat_lab.knowledge.loader import load_collections
-from mordheim_combat_lab.knowledge.loader import load_mechanics
-from mordheim_combat_lab.knowledge.loader import load_runtime_scope
-from mordheim_combat_lab.knowledge.loader import load_simulation_mappings
-from mordheim_combat_lab.knowledge.loader import load_skills
+from mordheim_knowledge.loader import BandPackage
+from mordheim_knowledge.loader import load_bands
+from mordheim_knowledge.loader import load_collections
+from mordheim_knowledge.loader import load_mechanics
+from mordheim_knowledge.loader import load_runtime_scope
+from mordheim_knowledge.loader import load_simulation_mappings
+from mordheim_knowledge.loader import load_skills
 
 
 @dataclass(frozen=True, slots=True)

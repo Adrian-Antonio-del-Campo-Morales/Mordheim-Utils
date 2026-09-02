@@ -1,8 +1,8 @@
 """Restricciones de Savage: toda armadura, pero no las armas cuerpo a cuerpo."""
 import pytest
 
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import FighterBuild
 
 
 def build(profile="orc-nuttaz", **equipment):

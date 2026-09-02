@@ -1,11 +1,11 @@
 """construction.selection: responsabilidad extraída sin alterar las reglas."""
 from __future__ import annotations
 
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.knowledge.loader import load_bands
-from mordheim_combat_lab.knowledge.loader import load_runtime_scope
-from mordheim_combat_lab.knowledge.loader import load_simulation_mappings
-from mordheim_combat_lab.knowledge.loader import runtime_bindings
+from mordheim_core.models import Characteristics
+from mordheim_knowledge.loader import load_bands
+from mordheim_knowledge.loader import load_runtime_scope
+from mordheim_knowledge.loader import load_simulation_mappings
+from mordheim_knowledge.loader import runtime_bindings
 import re as re
 
 

@@ -6,9 +6,9 @@ from datetime import datetime
 from datetime import timezone
 import json as json
 from mordheim_combat_lab.application.settings import DuelExecutionSettings
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import DuelResult
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_core.models import Characteristics
+from mordheim_core.models import DuelResult
+from mordheim_core.models import FighterBuild
 from openpyxl import Workbook
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment

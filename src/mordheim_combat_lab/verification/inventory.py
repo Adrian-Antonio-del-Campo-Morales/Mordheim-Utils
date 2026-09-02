@@ -4,8 +4,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from hashlib import sha256
 import json as json
-from mordheim_combat_lab.knowledge.loader import knowledge_root
-from mordheim_combat_lab.knowledge.loader import read_yaml
+from mordheim_knowledge.loader import knowledge_root
+from mordheim_knowledge.loader import read_yaml
 from pathlib import Path
 
 

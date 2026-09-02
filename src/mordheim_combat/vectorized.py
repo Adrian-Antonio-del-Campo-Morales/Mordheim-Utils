@@ -4,19 +4,19 @@ from __future__ import annotations
 from dataclasses import dataclass
 from dataclasses import replace
 from functools import lru_cache
-from mordheim_combat_lab.combat.phases import InjuryContext
-from mordheim_combat_lab.combat.phases import bear_hug_wins
-from mordheim_combat_lab.combat.phases import ignores_unarmed_penalties
-from mordheim_combat_lab.combat.phases import to_hit_target
-from mordheim_combat_lab.combat.phases import wound_target
-from mordheim_combat_lab.domain.dice import AlwaysAccept
-from mordheim_combat_lab.domain.dice import DecisionPolicy
-from mordheim_combat_lab.domain.effects import merge_effects
-from mordheim_combat_lab.domain.models import CompiledFighter
-from mordheim_combat_lab.domain.models import DuelRequest
-from mordheim_combat_lab.domain.models import DuelResult
-from mordheim_combat_lab.domain.models import EffectSet
-from mordheim_combat_lab.domain.models import SimulationCancelled
+from mordheim_combat.phases import InjuryContext
+from mordheim_combat.phases import bear_hug_wins
+from mordheim_combat.phases import ignores_unarmed_penalties
+from mordheim_combat.phases import to_hit_target
+from mordheim_combat.phases import wound_target
+from mordheim_core.dice import AlwaysAccept
+from mordheim_core.dice import DecisionPolicy
+from mordheim_core.effects import merge_effects
+from mordheim_core.models import CompiledFighter
+from mordheim_core.models import DuelRequest
+from mordheim_core.models import DuelResult
+from mordheim_core.models import EffectSet
+from mordheim_core.models import SimulationCancelled
 import numpy as np
 
 
@@ -1628,7 +1628,7 @@ def simulate_batch_observed(first: CompiledFighter, second: CompiledFighter, cou
 def available_backends() -> tuple[str, ...]:
     """Return executable production backends in selection order."""
     try:
-        from mordheim_combat_lab import _combat_native
+        from mordheim_combat import _combat_native
     except ImportError:
         return ("numpy",)
     return ("native", "numpy") if hasattr(_combat_native, "simulate_duel") else ("numpy",)
@@ -1656,12 +1656,12 @@ def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
     if selected == "numpy":
         return _simulate_duel_numpy(request)
     try:
-        from mordheim_combat_lab import _combat_native
+        from mordheim_combat import _combat_native
     except ImportError as error:
         raise RuntimeError("native combat backend is not available") from error
     if not hasattr(_combat_native, "simulate_duel"):
         raise RuntimeError("native combat backend is not available")
-    from mordheim_combat_lab.combat.kernel import compile_duel_plan
+    from mordheim_combat.kernel import compile_duel_plan
 
     plan = compile_duel_plan(request.first, request.second)
     if not plan.optimization_eligible:

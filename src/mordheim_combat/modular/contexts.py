@@ -1,18 +1,18 @@
 """combat.modular.contexts: responsabilidad extraída sin alterar las reglas."""
 from __future__ import annotations
-from mordheim_combat_lab.combat import phases
+from mordheim_combat import phases
 
-from mordheim_combat_lab.combat.modular.state import FighterState
-from mordheim_combat_lab.combat.phases import ArmourContext
-from mordheim_combat_lab.combat.phases import HitContext
-from mordheim_combat_lab.combat.phases import InjuryContext
-from mordheim_combat_lab.combat.phases import ParryContext
-from mordheim_combat_lab.combat.phases import SpecialSaveContext
-from mordheim_combat_lab.combat.phases import WoundContext
-from mordheim_combat_lab.combat.phases import has_tag
-from mordheim_combat_lab.domain.effects import merge_effects
-from mordheim_combat_lab.domain.models import CompiledFighter
-from mordheim_combat_lab.domain.models import EffectSet
+from mordheim_combat.modular.state import FighterState
+from mordheim_combat.phases import ArmourContext
+from mordheim_combat.phases import HitContext
+from mordheim_combat.phases import InjuryContext
+from mordheim_combat.phases import ParryContext
+from mordheim_combat.phases import SpecialSaveContext
+from mordheim_combat.phases import WoundContext
+from mordheim_combat.phases import has_tag
+from mordheim_core.effects import merge_effects
+from mordheim_core.models import CompiledFighter
+from mordheim_core.models import EffectSet
 
 
 def _combined_effect(fighter: CompiledFighter, weapon: EffectSet) -> EffectSet:

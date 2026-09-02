@@ -11,14 +11,14 @@ from typing import Iterable
 
 
 from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
-from mordheim_combat_lab.combat.vectorized import available_backends
-from mordheim_combat_lab.construction.compiler import compile_fighter
+from mordheim_combat.vectorized import available_backends
+from mordheim_construction.compiler import compile_fighter
 from mordheim_combat_lab.verification.parity import CONSTRUCTION_SPEC_OPERATIONS
 from mordheim_combat_lab.verification.parity import compare_statistical_parity
 from mordheim_combat_lab.verification.parity import verify_specification_parity
 from mordheim_combat_lab.verification.scenarios import check_case
 from mordheim_combat_lab.verification.specifications import load_fixtures
-from mordheim_combat_lab.knowledge.loader import knowledge_root
+from mordheim_knowledge.loader import knowledge_root
 
 
 SEMANTIC_COLUMNS = (

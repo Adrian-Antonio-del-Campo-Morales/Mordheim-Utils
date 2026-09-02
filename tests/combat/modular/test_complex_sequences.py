@@ -1,16 +1,16 @@
 """Secuencias mínimas de reglas complejas."""
 from __future__ import annotations
 
-from mordheim_combat_lab.combat.vectorized import KNOCKED_DOWN
-from mordheim_combat_lab.combat.vectorized import OUT
-from mordheim_combat_lab.combat.vectorized import STANDING
-from mordheim_combat_lab.combat.vectorized import _black_hunger_backlash
-from mordheim_combat_lab.combat.vectorized import _new_state
-from mordheim_combat_lab.combat.vectorized import _resolve_fire
-from mordheim_combat_lab.combat.vectorized import _resolve_netter_charge
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_combat.vectorized import KNOCKED_DOWN
+from mordheim_combat.vectorized import OUT
+from mordheim_combat.vectorized import STANDING
+from mordheim_combat.vectorized import _black_hunger_backlash
+from mordheim_combat.vectorized import _new_state
+from mordheim_combat.vectorized import _resolve_fire
+from mordheim_combat.vectorized import _resolve_netter_charge
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import Characteristics
+from mordheim_core.models import FighterBuild
 import numpy as np
 
 

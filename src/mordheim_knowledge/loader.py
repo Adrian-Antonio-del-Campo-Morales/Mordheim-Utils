@@ -1,6 +1,6 @@
 """knowledge.loader: responsabilidad extraída sin alterar las reglas."""
 from __future__ import annotations
-from mordheim_combat_lab.paths import project_root
+from mordheim_knowledge.paths import project_root
 
 from dataclasses import dataclass
 from functools import lru_cache

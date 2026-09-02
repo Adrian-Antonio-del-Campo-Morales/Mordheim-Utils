@@ -5,8 +5,8 @@ from dataclasses import dataclass
 from dataclasses import fields
 from typing import Collection
 
-from mordheim_combat_lab.domain.models import CompiledFighter
-from mordheim_combat_lab.domain.models import EffectSet
+from mordheim_core.models import CompiledFighter
+from mordheim_core.models import EffectSet
 
 
 EFFECT_VALUE_FIELDS = tuple(field.name for field in fields(EffectSet) if field.name != "tags")

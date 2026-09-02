@@ -2,15 +2,15 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from mordheim_combat_lab.combat.modular.rounds import resolve_round
-from mordheim_combat_lab.combat.modular.state import initialize_duel
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.dice import KeyedDice
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import FighterBuild
-from mordheim_combat_lab.knowledge.loader import load_bands
-from mordheim_combat_lab.knowledge.loader import load_mechanics
-from mordheim_combat_lab.knowledge.loader import load_runtime_scope
+from mordheim_combat.modular.rounds import resolve_round
+from mordheim_combat.modular.state import initialize_duel
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.dice import KeyedDice
+from mordheim_core.models import Characteristics
+from mordheim_core.models import FighterBuild
+from mordheim_knowledge.loader import load_bands
+from mordheim_knowledge.loader import load_mechanics
+from mordheim_knowledge.loader import load_runtime_scope
 import pytest
 
 
