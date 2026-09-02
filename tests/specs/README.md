@@ -20,4 +20,4 @@ python -m mordheim_combat_lab verify --json
 python -m mordheim_combat_lab verify --require-complete
 ```
 
-El último comando falla mientras quede cualquier obligación o interacción pendiente. Consulte [la guía completa](../docs/tasks/verify-rules.md).
+El último comando falla mientras quede cualquier obligación o interacción pendiente. Consulte [la guía completa](../../docs/tasks/verify-rules.md).

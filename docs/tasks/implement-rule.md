@@ -1,7 +1,7 @@
 # Implementar comportamiento de combate
 
 1. Clasifique el efecto como construcción, modificador, resolución local o flujo con estado.
-2. Use `construction`, `domain.effects`, `combat.phases` o `combat/modular` respectivamente.
+2. Use `mordheim_construction`, `mordheim_core.effects`, `mordheim_combat.phases` o `mordheim_combat/modular` respectivamente.
 3. Comparta el preparador de contexto entre orquestador y verificador.
 4. Inyecte `DiceSource` y `DecisionPolicy`; no consulte azar global ni la UI.
 5. Añada tests de fase o la mini-secuencia mínima.
