@@ -1,0 +1,168 @@
+schema_version: 1
+specifications:
+- id: preparation-mad-cap-mushrooms
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/preparation.mad-cap-mushrooms, digest: b74e037db5442adb65438a7cfe3c01ed5dc74a92cd9a1b60c9c2029d6e805786}
+  interpretation: Mad Cap Mushrooms activa Frenzy, duplica los ataques del perfil y la pierde al quedar Knocked Down o Stunned.
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    attacker: {main_weapon_id: weapon.mace, preparation_ids: [preparation.mad-cap-mushrooms]}
+    expect: {attacker.global_effects.frenzy: true}
+  - id: doubles-profile-attacks
+    roles: [active, sequence, consumption, boundary]
+    operation: attacks
+    attacker:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.mad-cap-mushrooms]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 2}
+    expect: {result.attacks: 4}
+  - id: knocked-down-loses-frenzy
+    roles: [active, sequence, consumption, boundary]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.mad-cap-mushrooms]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}, {key: test.injury.0, value: 1}]
+    expect: {result.defender.condition: KNOCKED_DOWN, result.defender.frenzy: false}
+  - id: absent
+    roles: [inactive]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 2}}
+    expect: {result.attacks: 2}
+  mutations:
+  - {id: remove-frenzy, path: attacker.global_effects.frenzy, value: false, cases: [doubles-profile-attacks]}
+
+- id: skill-luck
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/skill.luck, digest: 170730f89fa9d030dd0ab2b0f443684537e523de42c79a717991841c24de7776}
+  interpretation: Luck repite el primer impacto fallido propio y consume el recurso durante el resto del duelo.
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [skill.luck]}
+    expect_contains: {attacker.global_effects.tags: [skill.luck]}
+    expect: {attacker.global_effects.strength_bonus: 0}
+  - id: failed-hit-rerolled
+    roles: [active, sequence, consumption, boundary]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [skill.luck]}
+    context: {hit_only: true}
+    rolls: [{key: test.hit, value: 1}, {key: test.hit.reroll, value: 4}]
+    expect: {result.hit: true, result.attacker.resources_spent: [luck]}
+  - id: already-consumed
+    roles: [inactive, boundary]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [skill.luck]}
+    attacker_state: {resources_spent: [luck]}
+    context: {hit_only: true}
+    rolls: [{key: test.hit, value: 1}]
+    expect: {result.hit: false, result.attacker.resources_spent: [luck]}
+  mutations:
+  - {id: remove-luck, path: attacker.global_effects.tags, value: [], cases: [failed-hit-rerolled]}
+
+- id: skill-sweep
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - {target: mechanic/skill.sweep, digest: ce206c6287524ae7e4d5834babd8ad541803f27a9502f3d3c3e06f63698ee903}
+  interpretation: Sweep con arma a dos manos sustituye el conjunto de ataques por uno y produce impacto automático únicamente cuando el rival falla Iniciativa.
+  cases:
+  - id: one-attack
+    roles: [compiled, active, consumer, boundary]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.double-handed-weapon, skill_ids: [skill.sweep], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 4}}
+    expect: {result.attacks: 1}
+    expect_contains: {attacker.global_effects.tags: [skill.sweep]}
+  - id: failed-initiative-auto-hit
+    roles: [active, consumer, boundary]
+    operation: attack
+    attacker: {main_weapon_id: weapon.double-handed-weapon, skill_ids: [skill.sweep]}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
+    context: {hit_only: true}
+    rolls: [{key: test.sweep, value: 4}]
+    expect: {result.hit: true}
+  - id: passed-initiative-no-hit
+    roles: [inactive, boundary]
+    operation: attack
+    attacker: {main_weapon_id: weapon.double-handed-weapon, skill_ids: [skill.sweep]}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
+    context: {hit_only: true}
+    rolls: [{key: test.sweep, value: 3}]
+    expect: {result.hit: false}
+  - id: one-handed-inactive
+    roles: [inactive]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [skill.sweep], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 4}}
+    expect: {result.attacks: 4}
+  mutations:
+  - {id: remove-sweep, path: attacker.global_effects.tags, value: [], cases: [one-attack, failed-initiative-auto-hit]}
+
+- id: skill-art-of-silent-death
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - {target: mechanic/skill.art-of-silent-death, digest: 12f2fe6a74b2c3206bfa2d2143f8486db180c94a81eb4538b8190ca136438965}
+  interpretation: Art of Silent Death elimina la limitación del puño, añade un ataque con puño o Fighting Claws y convierte heridas naturales de 5-6 en críticas.
+  cases:
+  - id: unarmed-extra-attack
+    roles: [compiled, active, consumer, boundary]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.fist, skill_ids: [skill.art-of-silent-death], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 2}}
+    expect: {result.attacks: 3}
+    expect_contains: {attacker.global_effects.tags: [skill.art-of-silent-death]}
+  - id: fighting-claws-extra-attack
+    roles: [active, consumer]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.fighting-claws, skill_ids: [skill.art-of-silent-death], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
+    expect: {result.attacks: 3}
+  - id: wound-five-critical
+    roles: [active, boundary]
+    operation: wound
+    attacker: {main_weapon_id: weapon.fist, skill_ids: [skill.art-of-silent-death]}
+    rolls: [{key: wound, value: 5}]
+    expect: {context.critical_threshold: 5, result.success: true, result.critical: true}
+  - id: ordinary-unarmed
+    roles: [inactive, boundary]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.fist, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 2}}
+    expect: {result.attacks: 1}
+  mutations:
+  - {id: remove-art, path: attacker.global_effects.tags, value: [], cases: [unarmed-extra-attack, wound-five-critical]}
+
+- id: mechanic-untiring
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: mechanic/mechanic.untiring, digest: 0dea8073a2ae6bde0bf8036d0b52452ae7d91699cd0bb50d5dc9e40792056d14}
+  interpretation: Untiring garantiza una salvación mínima de 5+ frente a modificadores y frente a ataques no mágicos que normalmente ignoran armadura.
+  cases:
+  - id: strength-floor
+    roles: [compiled, active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
+    defender: {skill_ids: [mechanic.untiring]}
+    rolls: [{key: armour, value: 5}]
+    expect: {defender.global_effects.armour_save_floor: 5, defender.global_effects.armour_cannot_be_ignored: true, result.target: 5, result.saved: true}
+  - id: nonmagical-denial-floor
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.vomit-attack}
+    defender: {skill_ids: [mechanic.untiring]}
+    rolls: [{key: armour, value: 5}]
+    expect: {result.eligible: true, result.target: 5, result.saved: true}
+  - id: ordinary-no-armour
+    roles: [inactive, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.vomit-attack}
+    expect: {result.eligible: false}
+  mutations:
+  - {id: remove-floor, changes: [{path: defender.global_effects.armour_save_floor, value: 7}, {path: defender.global_effects.armour_cannot_be_ignored, value: false}], cases: [strength-floor, nonmagical-denial-floor]}

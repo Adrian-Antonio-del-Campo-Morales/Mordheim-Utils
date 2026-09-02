@@ -1,0 +1,377 @@
+schema_version: 2
+band_id: norse-explorers-btb
+rules:
+- id: jarl--leader
+  name: Leader
+  effect: Any warrior within 6" of the Jarl may use his Leadership instead of his own when taking Ld tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Jarl / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warrior within 6" of the Jarl may use his Leadership instead of his own when taking Ld tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - jarl
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.norse-explorers-btb.jarl.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: beserkers--berserkers
+  name: Berserkers
+  effect: Berserkers are subject to frenzy as detailed in the Psychology section of the Mordheim rulebook.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 2 Beserkers / Special Rules / Berserkers
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    en: Berserkers
+    es: null
+  effect_i18n:
+    en: Berserkers are subject to frenzy as detailed in the Psychology section of the Mordheim rulebook.
+    es: null
+  applies_to:
+    profile_ids:
+    - beserkers
+  runtime:
+    scope: LATER
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.frenzy
+      scope: LATER
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
+- id: wulfen--natural-weapons
+  name: Natural Weapons
+  effect: The Wulfen fights with teeth and claws, may never use weapons or armour, and suffers no penalty for fighting unarmed.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Wulfen / Weapons/Armour
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    en: Natural Weapons
+    es: null
+  effect_i18n:
+    en: The Wulfen fights with teeth and claws, may never use weapons or armour, and suffers no penalty for fighting unarmed.
+    es: null
+  applies_to:
+    profile_ids:
+    - wulfen
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.natural-attacks
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+- id: wulfen--fear
+  name: Fear
+  effect: Wulfen are terrifying creatures to behold and cause fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Wulfen / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: Wulfen are terrifying creatures to behold and cause fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - wulfen
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.norse-explorers-btb.wulfen.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: wulfen--bestial
+  name: Bestial
+  effect: 'Wulfen are ravenous beasts and therefore immune to psychology. Also despite being greatly revered by their barbarian
+    kinsmen, Wulfen are
+
+    too feral and uncontrolled to become the leader of the warband.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Wulfen / Special Rules / Bestial
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    en: Bestial
+    es: null
+  effect_i18n:
+    en: 'Wulfen are ravenous beasts and therefore immune to psychology. Also despite being greatly revered by their barbarian
+      kinsmen, Wulfen are
+
+      too feral and uncontrolled to become the leader of the warband.'
+    es: null
+  applies_to:
+    profile_ids:
+    - wulfen
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.norse-explorers-btb.wulfen.bestial
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: wolves--animals
+  name: Animals
+  effect: 'Wolves are animals and thus do not gain
+
+    experience.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Wolves / Special Rules / Animals
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    en: Animals
+    es: null
+  effect_i18n:
+    en: 'Wolves are animals and thus do not gain
+
+      experience.'
+    es: null
+  applies_to:
+    profile_ids:
+    - wolves
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.norse-explorers-btb.wolves.animals
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: wolves--pack-leader
+  name: Pack Leader
+  effect: Wolves may only be included in the warband if it includes a Wulfen. If the Wulfen is dead or unavailable because
+    of injury, the Wolves cannot be used until a Wulfen is available again.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Wolves / Special Rules / Pack Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    en: Pack Leader
+    es: null
+  effect_i18n:
+    en: Wolves may only be included in the warband if it includes a Wulfen. If the Wulfen is dead or unavailable because of
+      injury, the Wolves cannot be used until a Wulfen is available again.
+    es: null
+  applies_to:
+    profile_ids:
+    - wolves
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.norse-explorers-btb.wolves.pack-leader
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--seafaring
+  name: Seafaring
+  effect: All Norse warriors receive +2 Strength when rowing a boat.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Seafaring
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    en: Seafaring
+    es: null
+  effect_i18n:
+    en: All Norse warriors receive +2 Strength when rowing a boat.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.norse-explorers-btb.band.seafaring
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--norse-special-skills-barbarian-courage
+  kind: warband_skill
+  name: Barbarian Courage
+  effect: As Norse warriors strive to die bravely in battle, they learn to fear nothing and embrace hardship. This hero never
+    needs to take all alone tests and may re-roll failed fear tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Norse special skills / barbarian courage
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    en: Barbarian Courage
+    es: null
+  effect_i18n:
+    en: As Norse warriors strive to die bravely in battle, they learn to fear nothing and embrace hardship. This hero never
+      needs to take all alone tests and may re-roll failed fear tests.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.norse-explorers-btb.band.norse-special-skills-barbarian-courage
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--norse-special-skills-battle-tongue
+  kind: warband_skill
+  name: Battle Tongue
+  effect: Only a hero with the leader skill may gain this skill. It allows models within 12" of him to use his leadership,
+    rather than the normal 6".
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Norse special skills / battle tongue
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    en: Battle Tongue
+    es: null
+  effect_i18n:
+    en: Only a hero with the leader skill may gain this skill. It allows models within 12" of him to use his leadership, rather
+      than the normal 6".
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.norse-explorers-btb.band.norse-special-skills-battle-tongue
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--norse-special-skills-berserk-charge
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: special-rule.band--norse-special-skills-berserk-charge
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: special-rule.band--norse-special-skills-berserk-charge
+  name: Berserk Charge
+  effect: 'The Norse are very skilled with weapons that many other races see as primitive and savage. When this hero is armed
+    with an axe or double handed weapon,
+
+    he may re-roll all failed to hit rolls when he charges.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Norse special skills / berserk charge
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    en: Berserk Charge
+    es: null
+  effect_i18n:
+    en: 'The Norse are very skilled with weapons that many other races see as primitive and savage. When this hero is armed
+      with an axe or double handed weapon,
+
+      he may re-roll all failed to hit rolls when he charges.'
+    es: null
+  applies_to:
+    band: true
+- id: band--norse-special-skills-crushing-blow
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.crushing-blow
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.crushing-blow
+  name: Crushing Blow
+  effect: Norse warriors train in almost all of their spare time. They are expert fighters and learn to put all of their strength
+    into very powerful attacks. No enemy may parry an attack made by this hero because it strikes with such great power that
+    it pushes right through a buckler or sword.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Norse special skills / crushing blow
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    en: Crushing Blow
+    es: null
+  effect_i18n:
+    en: Norse warriors train in almost all of their spare time. They are expert fighters and learn to put all of their strength
+      into very powerful attacks. No enemy may parry an attack made by this hero because it strikes with such great power
+      that it pushes right through a buckler or sword.
+    es: null
+  applies_to:
+    band: true
+- id: band--norse-special-skills-shield-master
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.shield-mastery
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.shield-mastery
+  name: Shield Master
+  effect: Norse warriors begin training with shields when they are still children. Some warriors become so skilled with these
+    weapons they can block almost any blow against them. When this hero is armed with a shield he may parry with it in addition
+    to getting a 6+ save.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Norse special skills / shield master
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    en: Shield Master
+    es: null
+  effect_i18n:
+    en: Norse warriors begin training with shields when they are still children. Some warriors become so skilled with these
+      weapons they can block almost any blow against them. When this hero is armed with a shield he may parry with it in addition
+      to getting a 6+ save.
+    es: null
+  applies_to:
+    band: true

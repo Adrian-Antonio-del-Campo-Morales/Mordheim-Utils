@@ -1,0 +1,4489 @@
+schema_version: 1
+specifications:
+- id: dwarf-grant-mordheim-black-dwarfs
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/black-dwarfs/band--hard-to-kill/skill.hard-to-kill
+    digest: c218902eaced9d1d13ce5bde8f7e660e6349dd9a9fb733fd9a622d7bfe0b47fd
+  interpretation: The written table is 1-2 Knocked Down, 3-5 Stunned, 6 Out. The listed dwarf recipients are checked
+    exactly, excluding Informers/Hobgoblins where specified. Shadowed also have No Pain, converting 3-5 Stunned
+    to Knocked Down.
+  cases:
+  - id: sorcerer-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - bull-centaur
+      - chaos-dwarfs
+      - gaolers
+      - sorcerer
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: sorcerer-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: sorcerer-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: sorcerer-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: sorcerer-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: sorcerer-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: sorcerer-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: bull-centaur-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: bull-centaur
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - bull-centaur
+      - chaos-dwarfs
+      - gaolers
+      - sorcerer
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: bull-centaur-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: bull-centaur-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: bull-centaur-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: bull-centaur-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: bull-centaur-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: bull-centaur-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: gaolers-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: gaolers
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - bull-centaur
+      - chaos-dwarfs
+      - gaolers
+      - sorcerer
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: gaolers-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: gaolers
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: gaolers-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: gaolers
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: gaolers-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: gaolers
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: gaolers-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: gaolers
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: gaolers-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: gaolers
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: gaolers-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: gaolers
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: chaos-dwarfs-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: chaos-dwarfs
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - bull-centaur
+      - chaos-dwarfs
+      - gaolers
+      - sorcerer
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: chaos-dwarfs-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: chaos-dwarfs
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: chaos-dwarfs-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: chaos-dwarfs
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: chaos-dwarfs-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: chaos-dwarfs
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: chaos-dwarfs-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: chaos-dwarfs
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: chaos-dwarfs-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: chaos-dwarfs
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: chaos-dwarfs-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: chaos-dwarfs
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-dwarf-injury-rule
+    changes:
+    - path: defender.global_effects.tags
+      value: []
+    - path: defender.global_effects.out_of_action_threshold
+      value: 5
+    cases:
+    - sorcerer-injury-5
+    - bull-centaur-injury-5
+    - gaolers-injury-5
+    - chaos-dwarfs-injury-5
+- id: dwarf-grant-mordheim-dwarf-rangers
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/dwarf-rangers/band--hard-to-kill/skill.hard-to-kill
+    digest: 8e033265666e69bc85051a51ed0fa65d525ff2169eb4dba906839837dd9add73
+  interpretation: The written table is 1-2 Knocked Down, 3-5 Stunned, 6 Out. The listed dwarf recipients are checked
+    exactly, excluding Informers/Hobgoblins where specified. Shadowed also have No Pain, converting 3-5 Stunned
+    to Knocked Down.
+  cases:
+  - id: runesmith-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - apprentice-runesmith
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-crossbowmen
+      - dwarf-longbeards
+      - dwarf-troll-slayers
+      - runesmith
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: runesmith-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: runesmith-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: runesmith-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: runesmith-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: runesmith-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: runesmith-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: apprentice-runesmith-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: apprentice-runesmith
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - apprentice-runesmith
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-crossbowmen
+      - dwarf-longbeards
+      - dwarf-troll-slayers
+      - runesmith
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: apprentice-runesmith-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: apprentice-runesmith
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: apprentice-runesmith-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: apprentice-runesmith
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: apprentice-runesmith-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: apprentice-runesmith
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: apprentice-runesmith-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: apprentice-runesmith
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: apprentice-runesmith-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: apprentice-runesmith
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: apprentice-runesmith-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: apprentice-runesmith
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: dwarf-troll-slayers-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-troll-slayers
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - apprentice-runesmith
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-crossbowmen
+      - dwarf-longbeards
+      - dwarf-troll-slayers
+      - runesmith
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-troll-slayers-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-troll-slayers-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-troll-slayers-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayers-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayers-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayers-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: dwarf-longbeards-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-longbeards
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - apprentice-runesmith
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-crossbowmen
+      - dwarf-longbeards
+      - dwarf-troll-slayers
+      - runesmith
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-longbeards-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-longbeards
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-longbeards-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-longbeards
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-longbeards-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-longbeards
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-longbeards-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-longbeards
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-longbeards-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-longbeards
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-longbeards-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-longbeards
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: dwarf-clansmen-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-clansmen
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - apprentice-runesmith
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-crossbowmen
+      - dwarf-longbeards
+      - dwarf-troll-slayers
+      - runesmith
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-clansmen-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-clansmen-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-clansmen-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-clansmen-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-clansmen-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-clansmen-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: dwarf-crossbowmen-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-crossbowmen
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - apprentice-runesmith
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-crossbowmen
+      - dwarf-longbeards
+      - dwarf-troll-slayers
+      - runesmith
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-crossbowmen-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-crossbowmen
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-crossbowmen-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-crossbowmen
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-crossbowmen-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-crossbowmen
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-crossbowmen-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-crossbowmen
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-crossbowmen-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-crossbowmen
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-crossbowmen-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-crossbowmen
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: beardlings-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - apprentice-runesmith
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-crossbowmen
+      - dwarf-longbeards
+      - dwarf-troll-slayers
+      - runesmith
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: beardlings-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: beardlings-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: beardlings-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: beardlings-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: beardlings-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: beardlings-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-dwarf-injury-rule
+    changes:
+    - path: defender.global_effects.tags
+      value: []
+    - path: defender.global_effects.out_of_action_threshold
+      value: 5
+    cases:
+    - runesmith-injury-5
+    - apprentice-runesmith-injury-5
+    - dwarf-troll-slayers-injury-5
+    - dwarf-longbeards-injury-5
+    - dwarf-clansmen-injury-5
+    - dwarf-crossbowmen-injury-5
+    - beardlings-injury-5
+- id: dwarf-grant-mordheim-dwarf-treasure-hunters
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/dwarf-treasure-hunters/band--hard-to-kill/skill.hard-to-kill
+    digest: 183a860cbdca907c6d2dba337f49c9b4e55a8791da665978624267b21f1a49a0
+  interpretation: The written table is 1-2 Knocked Down, 3-5 Stunned, 6 Out. The listed dwarf recipients are checked
+    exactly, excluding Informers/Hobgoblins where specified. Shadowed also have No Pain, converting 3-5 Stunned
+    to Knocked Down.
+  cases:
+  - id: dwarf-noble-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-thunderers
+      - dwarf-troll-slayers
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-noble-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-noble-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-noble-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-noble-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-noble-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-noble-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: dwarf-engineer-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-thunderers
+      - dwarf-troll-slayers
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-engineer-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-engineer-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-engineer-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-engineer-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-engineer-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-engineer-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: dwarf-troll-slayers-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-thunderers
+      - dwarf-troll-slayers
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-troll-slayers-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-troll-slayers-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-troll-slayers-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayers-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayers-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayers-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: dwarf-clansmen-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-thunderers
+      - dwarf-troll-slayers
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-clansmen-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-clansmen-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-clansmen-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-clansmen-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-clansmen-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-clansmen-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: dwarf-thunderers-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-thunderers
+      - dwarf-troll-slayers
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-thunderers-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-thunderers-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-thunderers-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-thunderers-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-thunderers-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-thunderers-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: beardlings-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-thunderers
+      - dwarf-troll-slayers
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: beardlings-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: beardlings-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: beardlings-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: beardlings-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: beardlings-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: beardlings-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-dwarf-injury-rule
+    changes:
+    - path: defender.global_effects.tags
+      value: []
+    - path: defender.global_effects.out_of_action_threshold
+      value: 5
+    cases:
+    - dwarf-noble-injury-5
+    - dwarf-engineer-injury-5
+    - dwarf-troll-slayers-injury-5
+    - dwarf-clansmen-injury-5
+    - dwarf-thunderers-injury-5
+    - beardlings-injury-5
+- id: dwarf-grant-mordheim-sons-of-hashut
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/sons-of-hashut/band--hard-to-kill/skill.hard-to-kill
+    digest: 2eec67fc8b072ffda8a4c1cd53f2b7807d4cea53cb9186d51c34c3748588655e
+  interpretation: The written table is 1-2 Knocked Down, 3-5 Stunned, 6 Out. The listed dwarf recipients are checked
+    exactly, excluding Informers/Hobgoblins where specified. Shadowed also have No Pain, converting 3-5 Stunned
+    to Knocked Down.
+  cases:
+  - id: apprentice-sorcerer-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: apprentice-sorcerer
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - apprentice-sorcerer
+      - blunderbuss-chaos-dwarfs
+      - bull-centaur
+      - chaos-dwarf-champions
+      - chaos-dwarf-warriors
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: apprentice-sorcerer-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: apprentice-sorcerer
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: apprentice-sorcerer-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: apprentice-sorcerer
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: apprentice-sorcerer-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: apprentice-sorcerer
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: apprentice-sorcerer-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: apprentice-sorcerer
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: apprentice-sorcerer-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: apprentice-sorcerer
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: apprentice-sorcerer-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: apprentice-sorcerer
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: bull-centaur-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - apprentice-sorcerer
+      - blunderbuss-chaos-dwarfs
+      - bull-centaur
+      - chaos-dwarf-champions
+      - chaos-dwarf-warriors
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: bull-centaur-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: bull-centaur-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: bull-centaur-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: bull-centaur-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: bull-centaur-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: bull-centaur-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: chaos-dwarf-champions-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-champions
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - apprentice-sorcerer
+      - blunderbuss-chaos-dwarfs
+      - bull-centaur
+      - chaos-dwarf-champions
+      - chaos-dwarf-warriors
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: chaos-dwarf-champions-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-champions
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: chaos-dwarf-champions-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-champions
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: chaos-dwarf-champions-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-champions
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: chaos-dwarf-champions-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-champions
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: chaos-dwarf-champions-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-champions
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: chaos-dwarf-champions-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-champions
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: chaos-dwarf-warriors-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-warriors
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - apprentice-sorcerer
+      - blunderbuss-chaos-dwarfs
+      - bull-centaur
+      - chaos-dwarf-champions
+      - chaos-dwarf-warriors
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: chaos-dwarf-warriors-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-warriors
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: chaos-dwarf-warriors-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-warriors
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: chaos-dwarf-warriors-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-warriors
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: chaos-dwarf-warriors-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-warriors
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: chaos-dwarf-warriors-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-warriors
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: chaos-dwarf-warriors-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-warriors
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: blunderbuss-chaos-dwarfs-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: blunderbuss-chaos-dwarfs
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - apprentice-sorcerer
+      - blunderbuss-chaos-dwarfs
+      - bull-centaur
+      - chaos-dwarf-champions
+      - chaos-dwarf-warriors
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: blunderbuss-chaos-dwarfs-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: blunderbuss-chaos-dwarfs
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: blunderbuss-chaos-dwarfs-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: blunderbuss-chaos-dwarfs
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: blunderbuss-chaos-dwarfs-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: blunderbuss-chaos-dwarfs
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: blunderbuss-chaos-dwarfs-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: blunderbuss-chaos-dwarfs
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: blunderbuss-chaos-dwarfs-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: blunderbuss-chaos-dwarfs
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: blunderbuss-chaos-dwarfs-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: blunderbuss-chaos-dwarfs
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-dwarf-injury-rule
+    changes:
+    - path: defender.global_effects.tags
+      value: []
+    - path: defender.global_effects.out_of_action_threshold
+      value: 5
+    cases:
+    - apprentice-sorcerer-injury-5
+    - bull-centaur-injury-5
+    - chaos-dwarf-champions-injury-5
+    - chaos-dwarf-warriors-injury-5
+    - blunderbuss-chaos-dwarfs-injury-5
+- id: dwarf-grant-mordheim-pit-fighters
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/pit-fighters/dwarf-troll-slayer--hard-to-kill/skill.hard-to-kill
+    digest: c373016015fc41efed4baa9a24fda52347609a5e5c00717f3aa95c49f11e540c
+  interpretation: The written table is 1-2 Knocked Down, 3-5 Stunned, 6 Out. The listed dwarf recipients are checked
+    exactly, excluding Informers/Hobgoblins where specified. Shadowed also have No Pain, converting 3-5 Stunned
+    to Knocked Down.
+  cases:
+  - id: dwarf-troll-slayer-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+    context:
+      rule_id: dwarf-troll-slayer--hard-to-kill
+    expect:
+      result.recipients:
+      - dwarf-troll-slayer
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-troll-slayer-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-troll-slayer-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-troll-slayer-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayer-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayer-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayer-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-dwarf-injury-rule
+    changes:
+    - path: defender.global_effects.tags
+      value: []
+    - path: defender.global_effects.out_of_action_threshold
+      value: 5
+    cases:
+    - dwarf-troll-slayer-injury-5
+- id: dwarf-grant-trollheim-chaos-streets-dwarf-treasure-hunters
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--hard-to-kill/skill.hard-to-kill
+    digest: d555fc4e5728ab244720847d3351f823ea56f815511dee07a304bda8efa1b307
+  interpretation: The written table is 1-2 Knocked Down, 3-5 Stunned, 6 Out. The listed dwarf recipients are checked
+    exactly, excluding Informers/Hobgoblins where specified. Shadowed also have No Pain, converting 3-5 Stunned
+    to Knocked Down.
+  cases:
+  - id: dwarf-noble-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-thunderers
+      - dwarf-troll-slayers
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-noble-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-noble-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-noble-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-noble-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-noble-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-noble-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: dwarf-engineer-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-thunderers
+      - dwarf-troll-slayers
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-engineer-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-engineer-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-engineer-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-engineer-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-engineer-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-engineer-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: dwarf-troll-slayers-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-thunderers
+      - dwarf-troll-slayers
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-troll-slayers-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-troll-slayers-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-troll-slayers-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayers-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayers-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayers-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: dwarf-clansmen-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-thunderers
+      - dwarf-troll-slayers
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-clansmen-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-clansmen-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-clansmen-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-clansmen-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-clansmen-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-clansmen-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: dwarf-thunderers-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-thunderers
+      - dwarf-troll-slayers
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-thunderers-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-thunderers-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-thunderers-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-thunderers-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-thunderers-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-thunderers-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: beardlings-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-thunderers
+      - dwarf-troll-slayers
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: beardlings-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: beardlings-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: beardlings-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: beardlings-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: beardlings-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: beardlings-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-dwarf-injury-rule
+    changes:
+    - path: defender.global_effects.tags
+      value: []
+    - path: defender.global_effects.out_of_action_threshold
+      value: 5
+    cases:
+    - dwarf-noble-injury-5
+    - dwarf-engineer-injury-5
+    - dwarf-troll-slayers-injury-5
+    - dwarf-clansmen-injury-5
+    - dwarf-thunderers-injury-5
+    - beardlings-injury-5
+- id: dwarf-grant-trollheim-chaos-streets-pit-fighters
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/chaos-streets-pit-fighters/dwarf-troll-slayer--hard-to-kill/skill.hard-to-kill
+    digest: 0e3de29922d3266a5debd28b7d42a6bfdbf55079a178d3352a35c2135f124d81
+  interpretation: The written table is 1-2 Knocked Down, 3-5 Stunned, 6 Out. The listed dwarf recipients are checked
+    exactly, excluding Informers/Hobgoblins where specified. Shadowed also have No Pain, converting 3-5 Stunned
+    to Knocked Down.
+  cases:
+  - id: dwarf-troll-slayer-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    context:
+      rule_id: dwarf-troll-slayer--hard-to-kill
+    expect:
+      result.recipients:
+      - dwarf-troll-slayer
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: dwarf-troll-slayer-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-troll-slayer-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: dwarf-troll-slayer-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayer-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayer-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: dwarf-troll-slayer-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-dwarf-injury-rule
+    changes:
+    - path: defender.global_effects.tags
+      value: []
+    - path: defender.global_effects.out_of_action_threshold
+      value: 5
+    cases:
+    - dwarf-troll-slayer-injury-5
+- id: dwarf-grant-trollheim-khemri-cursed-of-karak-zorn
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/khemri-cursed-of-karak-zorn/band--hard-to-kill/skill.hard-to-kill
+    digest: 63017a774d0e98aa32b779b0cb632842e22e8b6d8e33720f69083b73a3956dd2
+  interpretation: The written table is 1-2 Knocked Down, 3-5 Stunned, 6 Out. The listed dwarf recipients are checked
+    exactly, excluding Informers/Hobgoblins where specified. Shadowed also have No Pain, converting 3-5 Stunned
+    to Knocked Down.
+  cases:
+  - id: karak-zorn-noble-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: karak-zorn-noble
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - cannibal-dwarfs
+      - clan-warriors
+      - karak-zorn-noble
+      - longbeard
+      - priest-of-grungni
+      - shadowed
+      - troll-slayer
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: karak-zorn-noble-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: karak-zorn-noble
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: karak-zorn-noble-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: karak-zorn-noble
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: karak-zorn-noble-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: karak-zorn-noble
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: karak-zorn-noble-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: karak-zorn-noble
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: karak-zorn-noble-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: karak-zorn-noble
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: karak-zorn-noble-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: karak-zorn-noble
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: priest-of-grungni-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: priest-of-grungni
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - cannibal-dwarfs
+      - clan-warriors
+      - karak-zorn-noble
+      - longbeard
+      - priest-of-grungni
+      - shadowed
+      - troll-slayer
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: priest-of-grungni-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: priest-of-grungni
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: priest-of-grungni-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: priest-of-grungni
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: priest-of-grungni-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: priest-of-grungni
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: priest-of-grungni-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: priest-of-grungni
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: priest-of-grungni-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: priest-of-grungni
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: priest-of-grungni-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: priest-of-grungni
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: longbeard-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: longbeard
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - cannibal-dwarfs
+      - clan-warriors
+      - karak-zorn-noble
+      - longbeard
+      - priest-of-grungni
+      - shadowed
+      - troll-slayer
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: longbeard-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: longbeard
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: longbeard-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: longbeard
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: longbeard-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: longbeard
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: longbeard-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: longbeard
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: longbeard-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: longbeard
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: longbeard-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: longbeard
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: troll-slayer-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - cannibal-dwarfs
+      - clan-warriors
+      - karak-zorn-noble
+      - longbeard
+      - priest-of-grungni
+      - shadowed
+      - troll-slayer
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: troll-slayer-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: troll-slayer-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: troll-slayer-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: troll-slayer-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: troll-slayer-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: troll-slayer-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: clan-warriors-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: clan-warriors
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - cannibal-dwarfs
+      - clan-warriors
+      - karak-zorn-noble
+      - longbeard
+      - priest-of-grungni
+      - shadowed
+      - troll-slayer
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: clan-warriors-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: clan-warriors
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: clan-warriors-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: clan-warriors
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: clan-warriors-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: clan-warriors
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: clan-warriors-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: clan-warriors
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: clan-warriors-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: clan-warriors
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: clan-warriors-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: clan-warriors
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: cannibal-dwarfs-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: cannibal-dwarfs
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - cannibal-dwarfs
+      - clan-warriors
+      - karak-zorn-noble
+      - longbeard
+      - priest-of-grungni
+      - shadowed
+      - troll-slayer
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: cannibal-dwarfs-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: cannibal-dwarfs
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: cannibal-dwarfs-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: cannibal-dwarfs
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: cannibal-dwarfs-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: cannibal-dwarfs
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: cannibal-dwarfs-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: cannibal-dwarfs
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: cannibal-dwarfs-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: cannibal-dwarfs
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: cannibal-dwarfs-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: cannibal-dwarfs
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: shadowed-grant
+    roles:
+    - compiled
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: shadowed
+    context:
+      rule_id: band--hard-to-kill
+    expect:
+      result.recipients:
+      - cannibal-dwarfs
+      - clan-warriors
+      - karak-zorn-noble
+      - longbeard
+      - priest-of-grungni
+      - shadowed
+      - troll-slayer
+      defender.global_effects.out_of_action_threshold: 6
+    expect_contains:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+  - id: shadowed-injury-1
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: shadowed
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: shadowed-injury-2
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: shadowed
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: shadowed-injury-3
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: shadowed
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: shadowed-injury-4
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: shadowed
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: shadowed-injury-5
+    roles:
+    - active
+    - consumer
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: shadowed
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: shadowed-injury-6
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: shadowed
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-dwarf-injury-rule
+    changes:
+    - path: defender.global_effects.tags
+      value: []
+    - path: defender.global_effects.out_of_action_threshold
+      value: 5
+    cases:
+    - karak-zorn-noble-injury-5
+    - priest-of-grungni-injury-5
+    - longbeard-injury-5
+    - troll-slayer-injury-5
+    - clan-warriors-injury-5
+    - cannibal-dwarfs-injury-5
+    - shadowed-injury-5
+- id: middenheim-mordheim
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: rule/mordheim/mercenaries/band--middenheim-physical-prowess/profile.characteristics
+    digest: 9a9d3a67fb6eb762ff7f2b81f950f06c016e85fc5e263a61ba1d1909bc60bd68
+  interpretation: Only a selected Middenheim Captain and Champions start with Strength 4 instead of 3. Other profiles
+    and an unselected Captain retain Strength 3. The per-fighter API rejects selecting this bonus for ineligible
+    profiles; their ordinary builds remain Strength 3.
+  interaction_contract:
+    reads:
+    - build.profile
+    - build.variant
+    writes:
+    - fighter.strength
+  cases:
+  - id: mercenary-captain-compiled
+    roles:
+    - compiled
+    - grant
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: mercenary-captain
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    expect:
+      attacker.characteristics.strength: 4
+  - id: mercenary-captain-consumer
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: strength
+    attacker:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: mercenary-captain
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: champions-compiled
+    roles:
+    - compiled
+    - grant
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: champions
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    expect:
+      attacker.characteristics.strength: 4
+  - id: champions-consumer
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: strength
+    attacker:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: champions
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: youngbloods-compiled
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: youngbloods
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    reject: special rule is not available
+  - id: youngbloods-consumer
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: youngbloods
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: warriors-compiled
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: warriors
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    reject: special rule is not available
+  - id: warriors-consumer
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: warriors
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: marksmen-compiled
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: marksmen
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    reject: special rule is not available
+  - id: marksmen-consumer
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: marksmen
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: swordsmen-compiled
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: swordsmen
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    reject: special rule is not available
+  - id: swordsmen-consumer
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: swordsmen
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: ordinary-captain
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: mercenary-captain
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: omit-profile-bonus
+    path: attacker.characteristics.strength
+    value: 3
+    cases:
+    - mercenary-captain-consumer
+    - champions-consumer
+- id: middenheim-trollheim
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: rule/trollheim/trollheim-mercenaries/band--middenheim-physical-prowess/profile.characteristics
+    digest: b28818e54fa27b0aba92d9af94ad8ca252b1d00d5b0a94739ce0dd82eefa63e5
+  interpretation: Only a selected Middenheim Captain and Champions start with Strength 4 instead of 3. Other profiles
+    and an unselected Captain retain Strength 3. The per-fighter API rejects selecting this bonus for ineligible
+    profiles; their ordinary builds remain Strength 3.
+  interaction_contract:
+    reads:
+    - build.profile
+    - build.variant
+    writes:
+    - fighter.strength
+  cases:
+  - id: mercenary-captain-compiled
+    roles:
+    - compiled
+    - grant
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: mercenary-captain
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    expect:
+      attacker.characteristics.strength: 4
+  - id: mercenary-captain-consumer
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: strength
+    attacker:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: mercenary-captain
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: champions-compiled
+    roles:
+    - compiled
+    - grant
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: champions
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    expect:
+      attacker.characteristics.strength: 4
+  - id: champions-consumer
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: strength
+    attacker:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: champions
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: youngbloods-compiled
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: youngbloods
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    reject: special rule is not available
+  - id: youngbloods-consumer
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: youngbloods
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: warriors-compiled
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: warriors
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    reject: special rule is not available
+  - id: warriors-consumer
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: warriors
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: marksmen-compiled
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: marksmen
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    reject: special rule is not available
+  - id: marksmen-consumer
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: marksmen
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: swordsmen-compiled
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: swordsmen
+      special_rule_ids:
+      - band--middenheim-physical-prowess
+    reject: special rule is not available
+  - id: swordsmen-consumer
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: swordsmen
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: ordinary-captain
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      collection: trollheim
+      band_id: trollheim-mercenaries
+      profile_id: mercenary-captain
+    expect:
+      result.wound: 3
+      result.armour: 3
+  mutations:
+  - id: omit-profile-bonus
+    path: attacker.characteristics.strength
+    value: 3
+    cases:
+    - mercenary-captain-consumer
+    - champions-consumer

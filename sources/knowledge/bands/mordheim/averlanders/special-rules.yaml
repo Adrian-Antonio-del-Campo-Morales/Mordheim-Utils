@@ -1,0 +1,104 @@
+schema_version: 2
+band_id: averlanders
+rules:
+- id: captain--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.averlanders.captain.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Leader
+  effect: 'Any warrior within 6" of the
+
+    Captain may use his Leadership characteristic when
+
+    taking Leadership tests.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Captain / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any warrior within 6" of the
+
+      Captain may use his Leadership characteristic when
+
+      taking Leadership tests.'
+    es: null
+  applies_to:
+    profile_ids:
+    - captain
+- id: bergjaeger--set-traps
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.averlanders.bergjaeger.set-traps
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Set Traps
+  effect: Bergjaeger are expert trappers and hunters and these skills can be put to great use in the ruins of Mordheim. A
+    Bergjaeger may set a trap if he spends a turn doing nothing else (he may not set traps if he’s just recovered from being
+    Knocked Down). Place a marker in base contact with the Bergjager. When a model, friend or foe, moves within 2" of the
+    marker he risks setting off the trap – roll a D6. On a score of 3+ he has triggered the trap and suffers a S4 hit (note
+    that the Bergjager won’t trigger his own traps). If the trap did not wound the model or it didn’t trigger, the ‘victim’
+    may finish his move otherwise he is placed knocked Down or Stunned 2" from the marker. Regardless whether the trap was
+    triggered or not, the marker is removed.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 2 Bergjaeger / Special Rules / Set Traps
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+  name_i18n:
+    en: Set Traps
+    es: null
+  effect_i18n:
+    en: Bergjaeger are expert trappers and hunters and these skills can be put to great use in the ruins of Mordheim. A Bergjaeger
+      may set a trap if he spends a turn doing nothing else (he may not set traps if he’s just recovered from being Knocked
+      Down). Place a marker in base contact with the Bergjager. When a model, friend or foe, moves within 2" of the marker
+      he risks setting off the trap – roll a D6. On a score of 3+ he has triggered the trap and suffers a S4 hit (note that
+      the Bergjager won’t trigger his own traps). If the trap did not wound the model or it didn’t trigger, the ‘victim’ may
+      finish his move otherwise he is placed knocked Down or Stunned 2" from the marker. Regardless whether the trap was triggered
+      or not, the marker is removed.
+    es: null
+  applies_to:
+    profile_ids:
+    - bergjaeger
+- id: halflings-scouts--promotion
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.promoted-hero-no-strength-access
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.promoted-hero-no-strength-access
+  name: Promotion
+  effect: A Halfling that is promoted to hero through the “The lad’s got talent” advance may not choose Strength skills as
+    one of his two skill lists. Halflings are not known for their great strength!
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 3 Halflings Scouts / Special Rules / Promotion
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+  name_i18n:
+    en: Promotion
+    es: null
+  effect_i18n:
+    en: A Halfling that is promoted to hero through the “The lad’s got talent” advance may not choose Strength skills as one
+      of his two skill lists. Halflings are not known for their great strength!
+    es: null
+  applies_to:
+    profile_ids:
+    - halflings-scouts

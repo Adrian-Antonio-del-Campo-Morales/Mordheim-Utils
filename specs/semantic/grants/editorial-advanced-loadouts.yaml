@@ -1,0 +1,72 @@
+schema_version: 1
+specifications:
+- id: advanced-loadout-construction-contracts
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/mordheim/black-orcs/band--black-orc-special-skills-proven-warrior/compiler.proven-warrior, digest: 29c215ba22f4ca8bb57f73ec003f99a3173fb67eaa14d96140d84c48b662b3dd}
+  - {target: rule/mordheim/maneaters/band--ogres-special-skills-master-of-arms/mechanic.master-of-arms, digest: f9e7c4537bef88d13b63d0ea6150b5fb3663d472ccb626c34b5bed43b82fe320}
+  - {target: rule/mordheim/pit-fighters/band--pit-fighter-skill-arms-master/compiler.ignore-difficult-to-use-restrictions, digest: fc578f1271bb3522463f38760e42b8743c8179901e6d8fcf5d2ea8c14d273614}
+  - {target: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-arms-master/compiler.ignore-difficult-to-use-restrictions, digest: 2c8ba4780080ac5341eb829cc5ce3b420a3c6ab7e9548e19b911c10bd8e5ceaa}
+  - {target: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-censer-bearer/compiler.censer-bearer-loadout, digest: ef8da8928241e2766f82ed513f4f42fcc24efb4fb7492a6794287367cb1fca02}
+  - {target: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-censer-bearer/compiler.censer-bearer-loadout, digest: eae5f1329d33277595bbff0e29c181e5db644a6e61c7c8bac4a8c3f8a0025ada}
+  interpretation: >-
+    Proven Warrior concede al Young'un el equipo y acceso de Black Orc; Master
+    of Arms y Arms Master permiten combinaciones normalmente difíciles; Censer
+    Bearer exige Black Hunger, concede Frenzy y limita el arma al Censer. Cada
+    contrato queda presente solo en la construcción que cumple sus requisitos.
+  cases:
+  - id: proven-youngun
+    roles: [grant, accepted]
+    operation: construction_tag_presence
+    attacker: {band_id: black-orcs, profile_id: younguns, main_weapon_id: weapon.double-handed-weapon, special_rule_ids: [band--black-orc-special-skills-proven-warrior]}
+    context: {tag: compiler.proven-warrior}
+    expect: {result.present: true}
+  - id: proven-boss-rejected
+    roles: [rejected]
+    operation: selection_choices
+    attacker: {band_id: black-orcs, profile_id: black-orc-boss}
+    context: {choices: {ordinary: {}, illegal: {special_rule_ids: [band--black-orc-special-skills-proven-warrior]}}}
+    expect:
+      result.accepted: [ordinary]
+      result.rejected: {illegal: "Proven Warrior may only be selected by a Young'un"}
+  - id: maneater-master
+    roles: [grant, accepted]
+    operation: construction_tag_presence
+    attacker: {band_id: maneaters, profile_id: captain, main_weapon_id: weapon.double-handed-weapon, off_hand_id: weapon.sword, special_rule_ids: [band--ogres-special-skills-master-of-arms]}
+    context: {tag: compiler.master-of-arms}
+    expect: {result.present: true}
+  - id: pit-arms-master
+    roles: [grant, accepted]
+    operation: construction_tag_presence
+    attacker: {band_id: pit-fighters, profile_id: pit-king, main_weapon_id: weapon.flail, off_hand_id: weapon.dagger, special_rule_ids: [band--pit-fighter-skill-arms-master]}
+    context: {tag: compiler.ignore-difficult-to-use-restrictions}
+    expect: {result.present: true}
+  - id: streets-arms-master
+    roles: [grant, accepted]
+    operation: construction_tag_presence
+    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: pit-king, main_weapon_id: weapon.flail, off_hand_id: weapon.dagger, special_rule_ids: [band--pit-fighter-skill-arms-master]}
+    context: {tag: compiler.ignore-difficult-to-use-restrictions}
+    expect: {result.present: true}
+  - id: pestilens-censer
+    roles: [grant, accepted]
+    operation: construction_tag_presence
+    attacker: {band_id: skaven-clan-pestilens, profile_id: plague-priest, main_weapon_id: weapon.censer, special_rule_ids: [band--clan-pestilens-special-skills-black-hunger, band--clan-pestilens-special-skills-censer-bearer]}
+    context: {tag: compiler.censer-bearer-loadout}
+    expect: {result.present: true}
+  - id: lustria-censer
+    roles: [grant, accepted]
+    operation: construction_tag_presence
+    attacker: {collection: trollheim, band_id: lustria-clan-pestilens, profile_id: plague-priest, main_weapon_id: weapon.censer, special_rule_ids: [band--clan-pestilens-special-skills-black-hunger, band--clan-pestilens-special-skills-censer-bearer]}
+    context: {tag: compiler.censer-bearer-loadout}
+    expect: {result.present: true}
+  - id: missing-black-hunger
+    roles: [rejected]
+    operation: selection_choices
+    attacker: {band_id: skaven-clan-pestilens, profile_id: plague-priest}
+    context: {choices: {ordinary: {}, bearer: {special_rule_ids: [band--clan-pestilens-special-skills-censer-bearer]}}}
+    expect:
+      result.accepted: [ordinary]
+      result.rejected: {bearer: Censer Bearer requires Black Hunger}
+  mutations:
+  - {id: remove-proven-contract, path: attacker.construction_tags, value: [], cases: [proven-youngun]}

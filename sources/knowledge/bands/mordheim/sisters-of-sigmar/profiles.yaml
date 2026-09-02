@@ -1,0 +1,187 @@
+schema_version: 2
+band_id: sisters-of-sigmar
+profiles:
+- id: sigmarite-matriarch
+  name: Sigmarite matriarch
+  type: hero
+  cost: 70
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - sisters-of-sigmar-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Sigmarite matriarch
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
+  source_path:
+  - heroines
+  - 1 Sigmarite matriarch
+  name_i18n:
+    en: Sigmarite matriarch
+    es: null
+  rule_ids:
+  - sigmarite-matriarch--leader
+  - sigmarite-matriarch--prayers-of-sigmar
+  combat_traits: {}
+- id: augur
+  name: Augur
+  type: hero
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - sisters-of-sigmar-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Sisters of Sigmar Equipment List, but may never wear armour.
+  skill_access:
+  - academic
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Augur
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
+  source_path:
+  - heroines
+  - 0 – 1 Augur
+  name_i18n:
+    en: Augur
+    es: null
+  rule_ids:
+  - augur--blessed-sight
+  combat_traits:
+    starting_skills:
+    - skill.blessed-sight
+- id: sister-superior
+  name: Sister superior
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - sisters-of-sigmar-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 3 Sister superior
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
+  source_path:
+  - heroines
+  - 0 – 3 Sister superior
+  name_i18n:
+    en: Sister superior
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: sigmarite-sister
+  name: Sigmarite Sister
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - sisters-of-sigmar-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Sigmarite Sister
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
+  source_path:
+  - henchwomen
+  - Sigmarite Sister
+  name_i18n:
+    en: Sigmarite Sister
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: novices
+  name: Novices
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - sisters-of-sigmar-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 10 Novices
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
+  source_path:
+  - henchwomen
+  - 0 – 10 Novices
+  name_i18n:
+    en: Novices
+    es: null
+  rule_ids: []
+  combat_traits: {}

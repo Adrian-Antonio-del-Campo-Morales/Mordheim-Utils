@@ -1,0 +1,28 @@
+schema_version: 1
+specifications:
+- id: elven-agility-with-step-aside
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - {target: mechanic/skill.elven-agility, digest: d93679b3fcae0b85de834c52422156e6f94458432e2818a13b79ea45d0e55f84}
+  - {target: mechanic/skill.step-aside, digest: 7d543001fc0b5b9a9361518b4ddeaf5a0f31d89b9ef071e6f5f7732590893d36}
+  bindings:
+  - '{"id": "skill.elven-agility", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.step-aside", "kind": "mechanic", "parameters": {}}'
+  interpretation: For close combat, Step Aside's 5+ and Elven Agility's 6+ do not produce sequential saves. Their
+    explicit combination is a single 4+ save, so exactly one D6 is consumed.
+  cases:
+  - id: exact-combined-save
+    roles: [composition, boundary]
+    operation: special_save
+    defender: {skill_ids: [skill.elven-agility, skill.step-aside]}
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  mutations:
+  - id: drop-elven-improvement
+    changes:
+    - {path: defender.global_effects.ward_save, value: 7}
+    - {path: defender.global_effects.tags, value: []}
+    cases: [exact-combined-save]

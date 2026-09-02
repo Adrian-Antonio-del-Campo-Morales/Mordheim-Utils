@@ -1,0 +1,641 @@
+schema_version: 2
+band_id: dwarf-treasure-hunters
+rules:
+- id: dwarf-noble--leader
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-treasure-hunters.dwarf-noble.leader
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Leader
+  effect: 'Any models in the warband within 6" of the Dwarf
+
+    Noble may use his Leadership instead of their own.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Dwarf Noble / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any models in the warband within 6" of the Dwarf
+
+      Noble may use his Leadership instead of their own.'
+    es: null
+  applies_to:
+    profile_ids:
+    - dwarf-noble
+- id: dwarf-engineer--expert-weaponsmith
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-treasure-hunters.dwarf-engineer.expert-weaponsmith
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: disparo."
+  name: Expert Weaponsmith
+  effect: A Dwarf Engineer is a master of mechanical devices. By using stronger construction materials and time-tested secrets
+    of Dwarf engineering, a Dwarf Engineer can increase the distance the warband's missile weapons can shoot. Missile weapons
+    bought from the warband's basic equipment lists have their range increased by 3" for pistols and 6" for crossbows and
+    handguns. Range increases only apply in battles in which the Engineer takes part (though they do apply even if he is yet
+    to enter the battlefield or has already been taken out of action in this battle). He has no effect on the equipment of
+    Hired Swords.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Dwarf Engineer / Special Rules / Expert Weaponsmith
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Expert Weaponsmith
+    es: null
+  effect_i18n:
+    en: A Dwarf Engineer is a master of mechanical devices. By using stronger construction materials and time-tested secrets
+      of Dwarf engineering, a Dwarf Engineer can increase the distance the warband's missile weapons can shoot. Missile weapons
+      bought from the warband's basic equipment lists have their range increased by 3" for pistols and 6" for crossbows and
+      handguns. Range increases only apply in battles in which the Engineer takes part (though they do apply even if he is
+      yet to enter the battlefield or has already been taken out of action in this battle). He has no effect on the equipment
+      of Hired Swords.
+    es: null
+  applies_to:
+    profile_ids:
+    - dwarf-engineer
+- id: dwarf-troll-slayers--deathwish
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-treasure-hunters.dwarf-troll-slayers.deathwish
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Deathwish
+  effect: 'Troll Slayers seek an honourable death in
+
+    combat. They are completely immune to all psychology and
+
+    never need to test if fighting alone.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 2 Dwarf Troll Slayers / Special Rules / Deathwish
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Deathwish
+    es: null
+  effect_i18n:
+    en: 'Troll Slayers seek an honourable death in
+
+      combat. They are completely immune to all psychology and
+
+      never need to test if fighting alone.'
+    es: null
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayers
+- id: dwarf-troll-slayers--slayer-skills
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: profile.skill-access
+      scope: "YES"
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+  name: Slayer Skills
+  effect: 'Troll Slayers may choose a skill from the Troll
+
+    Slayer Skill table instead of the normal Skill tables when they
+
+    gain a new skill.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 2 Dwarf Troll Slayers / Special Rules / Slayer Skills
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Slayer Skills
+    es: null
+  effect_i18n:
+    en: 'Troll Slayers may choose a skill from the Troll
+
+      Slayer Skill table instead of the normal Skill tables when they
+
+      gain a new skill.'
+    es: null
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayers
+- id: band--hard-to-kill
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: band
+    effects:
+    - id: skill.hard-to-kill
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
+  name: Hard to Kill
+  effect: Dwarfs are taken out of action only on a 6 on the Injury chart; 1-2 is Knocked Down and 3-5 is Stunned.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hard to Kill
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Hard to Kill
+    es: null
+  effect_i18n:
+    en: Dwarfs are taken out of action only on a 6 on the Injury chart; 1-2 is Knocked Down and 3-5 is Stunned.
+    es: null
+  applies_to:
+    band: true
+- id: band--hard-head
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: band
+    effects:
+    - id: trait.concussion-immune
+      scope: "YES"
+      binding:
+        kind: trait
+        id: trait.concussion-immune
+        parameters:
+          value: true
+  name: Hard Head
+  effect: Dwarfs ignore the special rules for maces, clubs and similar weapons.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hard Head
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Hard Head
+    es: null
+  effect_i18n:
+    en: Dwarfs ignore the special rules for maces, clubs and similar weapons.
+    es: null
+  applies_to:
+    band: true
+- id: band--armour
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-treasure-hunters.band.armour
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Armour
+  effect: Dwarfs never suffer movement penalties for wearing armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Armour
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Armour
+    es: null
+  effect_i18n:
+    en: Dwarfs never suffer movement penalties for wearing armour.
+    es: null
+  applies_to:
+    band: true
+- id: band--hate-orcs-and-goblins
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-treasure-hunters.band.hate-orcs-and-goblins
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Hate Orcs and Goblins
+  effect: All Dwarfs hate Orcs and Goblins.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hate Orcs and Goblins
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Hate Orcs and Goblins
+    es: null
+  effect_i18n:
+    en: All Dwarfs hate Orcs and Goblins.
+    es: null
+  applies_to:
+    band: true
+- id: band--grudgebearers
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-treasure-hunters.band.grudgebearers
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Grudgebearers
+  effect: A Dwarf warband may never include any kind of Elven Hired Sword or Dramatis Personae.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Grudgebearers
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Grudgebearers
+    es: null
+  effect_i18n:
+    en: A Dwarf warband may never include any kind of Elven Hired Sword or Dramatis Personae.
+    es: null
+  applies_to:
+    band: true
+- id: band--incomparable-miners
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-treasure-hunters.band.incomparable-miners
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Incomparable Miners
+  effect: When checking for wyrdstone at the end of a game, add +1 to the number of pieces found by the Dwarf warband.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Incomparable Miners
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Incomparable Miners
+    es: null
+  effect_i18n:
+    en: When checking for wyrdstone at the end of a game, add +1 to the number of pieces found by the Dwarf warband.
+    es: null
+  applies_to:
+    band: true
+- id: band--dwarf-special-skills-master-of-blades
+  kind: warband_skill
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: selectable
+    effects:
+    - id: skill.unbeatable-warrior
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.unbeatable-warrior
+    - id: skill.sword-master
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.sword-master
+  name: Master of Blades
+  effect: 'This Dwarf’s martial skills surpass those of a normal warrior; he
+
+    has fought unscathed against hordes of Orcs and Goblins. When
+
+    using a weapon that has a Parry special rule, this hero parries
+
+    successfully if he beats or matches his opponents highest ‘to hit’
+
+    roll, not just if he beats the roll. In addition, if this warrior is
+
+    using two weapons that have the Parry
+
+    special rule, he is allowed to parry
+
+    two attacks (if his two dice
+
+    match or beat the two
+
+    highest Attack dice
+
+    against him) instead
+
+    of the normal
+
+    maximum of one.
+
+    Note that if this
+
+    Dwarf has two Dwarf
+
+    axes (as detailed
+
+    above) he can reroll any failed
+
+    parries.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Special Skills / Master of Blades
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Master of Blades
+    es: null
+  effect_i18n:
+    en: 'This Dwarf’s martial skills surpass those of a normal warrior; he
+
+      has fought unscathed against hordes of Orcs and Goblins. When
+
+      using a weapon that has a Parry special rule, this hero parries
+
+      successfully if he beats or matches his opponents highest ‘to hit’
+
+      roll, not just if he beats the roll. In addition, if this warrior is
+
+      using two weapons that have the Parry
+
+      special rule, he is allowed to parry
+
+      two attacks (if his two dice
+
+      match or beat the two
+
+      highest Attack dice
+
+      against him) instead
+
+      of the normal
+
+      maximum of one.
+
+      Note that if this
+
+      Dwarf has two Dwarf
+
+      axes (as detailed
+
+      above) he can reroll any failed
+
+      parries.'
+    es: null
+  applies_to:
+    band: true
+- id: band--dwarf-special-skills-extra-tough
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.dwarf-treasure-hunters.band.dwarf-special-skills-extra-tough
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Extra Tough
+  effect: This Dwarf is notorious for walking away from wounds that would kill a lesser being. When rolling on the Heroes Serious
+    Injury chart for this Hero after a game in which he has been taken out of action, the dice may be re-rolled once. The result
+    of this second dice roll must be accepted, even if it is a worse result.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Special Skills / Extra Tough
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Extra Tough
+    es: null
+  effect_i18n:
+    en: 'This Dwarf is notorious for walking away from wounds that
+
+      would kill a lesser being. When rolling on the Heroes Serious
+
+      Injury chart for this Hero after a game in which he has been
+
+      taken out of action, the dice may be re-rolled once. The result
+
+      of this second dice roll must be accepted, even if it is a worse
+
+      result.'
+    es: null
+  applies_to:
+    band: true
+- id: band--dwarf-special-skills-resource-hunter
+  kind: warband_skill
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.dwarf-treasure-hunters.band.dwarf-special-skills-resource-hunter
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Resource Hunter
+  effect: 'This Dwarf is especially good at locating valuable resources.
+
+    When rolling on the Exploration chart at the end of a game,
+
+    the Hero may modify one dice roll by +1/-1.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Special Skills / Resource Hunter.
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Resource Hunter
+    es: null
+  effect_i18n:
+    en: 'This Dwarf is especially good at locating valuable resources.
+
+      When rolling on the Exploration chart at the end of a game,
+
+      the Hero may modify one dice roll by +1/-1.'
+    es: null
+  applies_to:
+    band: true
+- id: band--dwarf-special-skills-true-grit
+  kind: warband_skill
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: selectable
+    effects:
+    - id: skill.tough-as-steel
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.tough-as-steel
+  name: True Grit
+  effect: 'Dwarfs are hardy individuals and this Hero is hardy even for
+
+    a Dwarf! When rolling on the Injury table for this Hero, a roll
+
+    of 1-3 is treated as knocked down, 4-5 as stunned, and 6 as
+
+    out of action.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Special Skills / True Grit
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: True Grit
+    es: null
+  effect_i18n:
+    en: 'Dwarfs are hardy individuals and this Hero is hardy even for
+
+      a Dwarf! When rolling on the Injury table for this Hero, a roll
+
+      of 1-3 is treated as knocked down, 4-5 as stunned, and 6 as
+
+      out of action.'
+    es: null
+  applies_to:
+    band: true
+- id: band--dwarf-special-skills-thick-skull
+  kind: warband_skill
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: selectable
+    effects:
+    - id: skill.thick-skull
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.thick-skull
+  name: Thick Skull
+  effect: 'The Hero has a thick skull, even for a Dwarf. He
+
+    has a 3+ save on a D6 to avoid being stunned. If
+
+    the save is made, treat a stunned result as knocked
+
+    down instead. If the Dwarf also wears a helmet,
+
+    this save is 2+ instead of 3+ (this takes the
+
+    place of the normal Helmet special rule).'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Special Skills / Thick Skull
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Thick Skull
+    es: null
+  effect_i18n:
+    en: 'The Hero has a thick skull, even for a Dwarf. He
+
+      has a 3+ save on a D6 to avoid being stunned. If
+
+      the save is made, treat a stunned result as knocked
+
+      down instead. If the Dwarf also wears a helmet,
+
+      this save is 2+ instead of 3+ (this takes the
+
+      place of the normal Helmet special rule).'
+    es: null
+  applies_to:
+    band: true
+- id: band--slayer-special-skills-ferocious-charge
+  kind: warband_skill
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: selectable
+    effects:
+    - id: skill.ferocious-charge
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.ferocious-charge
+  name: Ferocious Charge
+  effect: The Slayer may double his attacks on the turn in which he charges, but suffers a -1 to hit penalty that turn.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: TROLL SLAYER SKILLS / Ferocious Charge
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Ferocious Charge
+    es: null
+  effect_i18n:
+    en: The Slayer may double his attacks on the turn in which he charges, but suffers a -1 to hit penalty that turn.
+    es: null
+  eligibility:
+  - dwarf-troll-slayers
+  applies_to:
+    band: true
+- id: band--slayer-special-skills-monster-slayer
+  eligibility:
+  - dwarf-troll-slayers
+  kind: warband_skill
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: selectable
+    effects:
+    - id: skill.monster-slayer
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.monster-slayer
+  name: Monster Slayer
+  effect: The Slayer always wounds on a 4+ regardless of the opponent's Toughness, unless his modified Strength would require
+    a lower roll.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: TROLL SLAYER SKILLS / Monster Slayer
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Monster Slayer
+    es: null
+  effect_i18n:
+    en: The Slayer always wounds on a 4+ regardless of the opponent's Toughness, unless his modified Strength would require
+      a lower roll.
+    es: null
+  applies_to:
+    band: true
+- id: band--slayer-special-skills-berserker
+  eligibility:
+  - dwarf-troll-slayers
+  kind: warband_skill
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: selectable
+    effects:
+    - id: skill.berserker
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.berserker
+  name: Berserker
+  effect: The Slayer adds +1 to his close combat to-hit rolls during the turn in which he charges.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: TROLL SLAYER SKILLS / Berserker
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    en: Berserker
+    es: null
+  effect_i18n:
+    en: The Slayer adds +1 to his close combat to-hit rolls during the turn in which he charges.
+    es: null
+  applies_to:
+    band: true

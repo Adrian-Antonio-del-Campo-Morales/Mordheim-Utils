@@ -1,0 +1,233 @@
+schema_version: 2
+band_id: horned-hunters
+profiles:
+- id: horned-hunter
+  name: Horned Hunter
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - horned-hunter-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Horned Hunter
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
+  source_path:
+  - heroes
+  - 1 Horned Hunter
+  name_i18n:
+    en: Horned Hunter
+    es: null
+  rule_ids:
+  - horned-hunter--leader
+  - horned-hunter--hang-the-bandit
+  combat_traits: {}
+- id: priest-of-taal
+  name: Priest of Taal
+  type: hero
+  cost: 45
+  experience: 12
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - horned-hunter-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Horned Hunter Equipment List.
+  - May never wear heavy armour (Strictures).
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Priest of Taal
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
+  source_path:
+  - heroes
+  - 0 – 1 Priest of Taal
+  name_i18n:
+    en: Priest of Taal
+    es: null
+  rule_ids:
+  - priest-of-taal--prayers
+  - priest-of-taal--strictures
+  combat_traits: {}
+- id: initiates
+  name: Initiates
+  type: hero
+  cost: 40
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - horned-hunter-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Horned Hunter Equipment List.
+  - May never wear armour (Strictures).
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 3 Initiates
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
+  source_path:
+  - heroes
+  - 0 – 3 Initiates
+  name_i18n:
+    en: Initiates
+    es: null
+  rule_ids:
+  - initiates--infiltrator
+  - initiates--hang-the-bandit
+  - initiates--strictures
+  combat_traits: {}
+- id: drunken-gang
+  name: Drunken Gang
+  type: henchman
+  cost: 30
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - henchmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Henchmen Equipment List; the profile entry does not allow armour.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Drunken Gang
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
+  source_path:
+  - henchmen
+  - 0 – 5 Drunken Gang
+  name_i18n:
+    en: Drunken Gang
+    es: null
+  rule_ids:
+  - drunken-gang--drunk
+  combat_traits: {}
+- id: zealots
+  name: Zealots
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - henchmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Henchmen Equipment List.
+  - May never wear armour (Strictures).
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Zealots
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
+  source_path:
+  - henchmen
+  - Zealots
+  name_i18n:
+    en: Zealots
+    es: null
+  rule_ids:
+  - zealots--strictures
+  combat_traits: {}
+- id: warhounds
+  name: Warhounds
+  type: animal
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Warhounds never use or need weapons or armour.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Warhounds
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
+  source_path:
+  - henchmen
+  - 0 – 5 Warhounds
+  name_i18n:
+    en: Warhounds
+    es: null
+  rule_ids:
+  - warhounds--animals
+  combat_traits: {}

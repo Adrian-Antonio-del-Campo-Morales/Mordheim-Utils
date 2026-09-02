@@ -1,0 +1,333 @@
+schema_version: 2
+band_id: cursed-cavalcade
+profiles:
+- id: aristocrat
+  name: Aristocrat
+  type: hero
+  cost: 70
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - heroes-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Aristocrat
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  source_path:
+  - Heroes
+  - 1 Aristocrat
+  name_i18n:
+    en: Aristocrat
+    es: null
+  rule_ids:
+  - aristocrat--leader
+  - aristocrat--expert-horseman
+  combat_traits: {}
+- id: companions
+  name: Companions
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - heroes-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Companions
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  source_path:
+  - Heroes
+  - 0 – 2 Companions
+  name_i18n:
+    en: Companions
+    es: null
+  rule_ids:
+  - companions--expert-swordsman
+  combat_traits: {}
+- id: twisted-scholar
+  name: Twisted Scholar
+  type: hero
+  cost: 25
+  experience: 4
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - heroes-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - academic
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Twisted Scholar
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  source_path:
+  - Heroes
+  - 0 – 1 Twisted Scholar
+  name_i18n:
+    en: Twisted Scholar
+    es: null
+  rule_ids:
+  - twisted-scholar--magical-adept
+  - twisted-scholar--story-teller
+  combat_traits: {}
+- id: cursed-piper
+  name: Cursed Piper
+  type: hero
+  cost: 40
+  experience: 6
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - heroes-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Must use one hand to play a flute or other instrument.
+  - May not use an off-hand weapon, a double-handed weapon, a brace of pistols of any kind, Bows, or Crossbows.
+  skill_access:
+  - academic
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Cursed Piper
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  source_path:
+  - Heroes
+  - 0 – 1 Cursed Piper
+  name_i18n:
+    en: Cursed Piper
+    es: null
+  rule_ids:
+  - cursed-piper--danse-macabre
+  combat_traits: {}
+- id: thrall
+  name: Thrall
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - thralls-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Thrall
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  source_path:
+  - Henchmen
+  - Thrall
+  name_i18n:
+    en: Thrall
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: captured-thrall
+  name: Captured Thrall
+  type: henchman
+  cost: 0
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - thralls-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Captured Thrall
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  source_path:
+  - Henchmen
+  - 0 – 5 Captured Thrall
+  name_i18n:
+    en: Captured Thrall
+    es: null
+  rule_ids:
+  - captured-thrall--extra-servitors-worthless-but-still-precious
+  - captured-thrall--not-really-clever
+  combat_traits: {}
+- id: great-bear
+  name: Great Bear
+  type: henchman
+  cost: 140
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 0
+    S: 5
+    T: 5
+    W: 2
+    I: 3
+    A: 2
+    Ld: 6
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Great Bears never use weapons or armour and do not need them to fight effectively.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Great Bear
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  source_path:
+  - Henchmen
+  - 0 – 1 Great Bear
+  name_i18n:
+    en: Great Bear
+    es: null
+  rule_ids:
+  - great-bear--maddened-with-pain
+  - great-bear--large-target
+  - great-bear--animal
+  combat_traits:
+    maddened_with_pain: true
+- id: wild-beasts
+  name: Wild Beasts
+  type: henchman
+  cost: 45
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 0
+    S: 4
+    T: 4
+    W: 1
+    I: 5
+    A: 2
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Wild Beasts never use weapons or armour and do not need them to fight effectively.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Wild Beasts
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  source_path:
+  - Henchmen
+  - 0 – 2 Wild Beasts
+  name_i18n:
+    en: Wild Beasts
+    es: null
+  rule_ids:
+  - wild-beasts--charge
+  - wild-beasts--animal
+  combat_traits: {}
+- id: fighting-ape
+  name: Fighting Ape
+  type: henchman
+  cost: 95
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 0
+    S: 4
+    T: 4
+    W: 1
+    I: 5
+    A: 2
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Fighting Ape never uses weapons or armour and does not need them to fight effectively.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Fighting Ape
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  source_path:
+  - Henchmen
+  - 0 – 1 Fighting Ape
+  name_i18n:
+    en: Fighting Ape
+    es: null
+  rule_ids:
+  - fighting-ape--cymbals
+  - fighting-ape--agile
+  - fighting-ape--animal
+  combat_traits: {}

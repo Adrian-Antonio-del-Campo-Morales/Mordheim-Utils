@@ -1,0 +1,249 @@
+schema_version: 1
+specifications:
+- id: weapon.attack-bonus-family
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: mechanic/weapon.bo, digest: c5eff9f594781aaa3c9321d48dd3087cc9298b91ea7e8d58ca91210e61a997e3}
+  - {target: mechanic/weapon.stiletto, digest: 264fd98ec58111cd89fb0575d2f7def11926bcb91347e83b474bcfdeb535b65e}
+  interpretation: Bo ocupa dos manos, suma un ataque y permite parar. Stiletto suma un ataque pero todos sus ataques se resuelven con Fuerza -1.
+  cases:
+  - id: bo-extra-attack
+    roles: [compiled, active, consumer, boundary]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.bo}
+    expect: {attacker.main_weapon.two_handed: true, attacker.main_weapon.attacks_bonus: 1, attacker.main_weapon.parry: true, result.attacks: 2}
+  - id: bo-parry
+    roles: [active, consumer]
+    operation: parry
+    defender: {main_weapon_id: weapon.bo}
+    context: {hit_roll: 4}
+    rolls: [{key: test.parry, value: 5}]
+    expect: {result.blocked: true}
+  - id: stiletto-extra-attack
+    roles: [compiled, active, consumer]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.stiletto}
+    expect: {attacker.main_weapon.attacks_bonus: 1, attacker.main_weapon.strength_bonus: -1, result.attacks: 2}
+  - id: stiletto-strength-penalty
+    roles: [active, consumer, boundary]
+    operation: strength
+    attacker: {main_weapon_id: weapon.stiletto}
+    expect: {result.wound: 2, result.armour: 2}
+  - id: ordinary-weapon-no-extra-attack
+    roles: [inactive, boundary]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.mace}
+    expect: {result.attacks: 1}
+  mutations:
+  - {id: remove-bo-attack, path: attacker.main_weapon.attacks_bonus, value: 0, cases: [bo-extra-attack]}
+  - {id: remove-bo-parry, path: defender.main_weapon.parry, value: false, cases: [bo-parry]}
+  - {id: remove-stiletto-attack, path: attacker.main_weapon.attacks_bonus, value: 0, cases: [stiletto-extra-attack]}
+  - {id: remove-stiletto-penalty, path: attacker.main_weapon.strength_bonus, value: 0, cases: [stiletto-strength-penalty]}
+
+- id: weapon.poisoned-daggers
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: mechanic/weapon.poisoned-daggers, digest: 658e944a1a21aef1a32fa05f1b2bbc2214859639007ff9fcada7affa8a485100}
+  depends_on: [mechanic/poison.black-lotus]
+  interpretation: Poisoned Daggers se usan como par emparejado y aplican el mecanismo Black Lotus. La inmunidad al veneno elimina la herida automática pero no el ataque adicional.
+  cases:
+  - id: paired
+    roles: [compiled, active, consumer]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.poisoned-daggers}
+    expect: {attacker.main_weapon.paired: true, result.attacks: 2}
+    expect_contains: {attacker.main_weapon.tags: [poison.black-lotus]}
+  - id: hit-six-auto-wounds
+    roles: [active, consumer, boundary]
+    operation: wound
+    attacker: {main_weapon_id: weapon.poisoned-daggers}
+    context: {hit_roll: 6}
+    expect: {context.automatic: true, result.success: true, result.critical: false}
+  - id: ordinary-hit-still-rolls
+    roles: [inactive, boundary]
+    operation: wound
+    attacker: {main_weapon_id: weapon.poisoned-daggers}
+    context: {hit_roll: 5}
+    rolls: [{key: wound, value: 1}]
+    expect: {context.automatic: false, result.success: false}
+  - id: immunity-cancels-poison
+    roles: [inactive, boundary]
+    operation: wound
+    attacker: {main_weapon_id: weapon.poisoned-daggers}
+    defender: {preparation_ids: [preparation.tears-of-shallaya]}
+    context: {hit_roll: 6}
+    rolls: [{key: wound, value: 1}]
+    expect: {context.automatic: false, result.success: false}
+  mutations:
+  - {id: remove-pair, path: attacker.main_weapon.paired, value: false, cases: [paired]}
+  - {id: remove-poison, path: attacker.main_weapon.tags, value: [weapon.poisoned-daggers], cases: [hit-six-auto-wounds]}
+
+- id: weapon.yari-and-unholy-parry-family
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: mechanic/weapon.unholy-sword, digest: 0811d785cb14a9b71b381f1b92042780eea7a2be30824255f54e0ab2d1b3de5b}
+  - {target: mechanic/weapon.yari-one-handed, digest: 6edefb0eb0a1d83e2ba334e9fa5af036686dd4c5f3ddff0c1f18f0ab49a8ae8a}
+  - {target: mechanic/weapon.yari-two-handed, digest: 75bd5178e9495859f2cbdad181e86730d7891750e4f9c844dd14b82abc8ebc8b}
+  interpretation: Las tres armas permiten una parada. Unholy Sword y Yari de una mano no alteran Fuerza ni prioridad; Yari de dos manos ocupa ambas manos y ataca primero.
+  cases:
+  - id: unholy-sword-parry
+    roles: [compiled, active, consumer, boundary]
+    operation: parry
+    defender: {main_weapon_id: weapon.unholy-sword}
+    context: {hit_roll: 4}
+    rolls: [{key: test.parry, value: 5}]
+    expect: {defender.main_weapon.parry: true, defender.main_weapon.strength_bonus: 0, result.blocked: true}
+  - id: yari-one-parry
+    roles: [compiled, active, consumer]
+    operation: parry
+    defender: {main_weapon_id: weapon.yari-one-handed}
+    context: {hit_roll: 4}
+    rolls: [{key: test.parry, value: 5}]
+    expect: {defender.main_weapon.parry: true, defender.main_weapon.two_handed: false, result.blocked: true}
+  - id: yari-two-first
+    roles: [compiled, active, consumer, boundary]
+    operation: acting_order
+    attacker: {main_weapon_id: weapon.yari-two-handed, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
+    expect: {attacker.main_weapon.two_handed: true, attacker.main_weapon.parry: true, attacker.main_weapon.priority: 1, result.first_acts: true}
+  - id: ordinary-yari-one-uses-initiative
+    roles: [inactive, boundary]
+    operation: acting_order
+    attacker: {main_weapon_id: weapon.yari-one-handed, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
+    expect: {result.first_acts: false}
+  mutations:
+  - {id: remove-unholy-parry, path: defender.main_weapon.parry, value: false, cases: [unholy-sword-parry]}
+  - {id: remove-yari-one-parry, path: defender.main_weapon.parry, value: false, cases: [yari-one-parry]}
+  - {id: remove-yari-two-priority, path: attacker.main_weapon.priority, value: 0, cases: [yari-two-first]}
+
+- id: weapon.elite-blade-family
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/weapon.claw-of-the-old-ones, digest: 6002c005721339a5027ad475e42224b5fbe03da125597156c5a97c39365b89df}
+  - {target: mechanic/weapon.draich, digest: 16076561aa34ab62fee8d11f698a16326a874e1e3afecd595075b05ec5efff7c}
+  interpretation: Claw suma uno a Fuerza, ignora armadura y permite parar. Draich reúne dos manos, Fuerza +2, atacar último, parada, Concussion y +1 adicional a Injury cuando produce crítico.
+  cases:
+  - id: claw-strength
+    roles: [compiled, active, consumer]
+    operation: strength
+    attacker: {main_weapon_id: weapon.claw-of-the-old-ones}
+    expect: {attacker.main_weapon.strength_bonus: 1, attacker.main_weapon.ignore_armour: true, attacker.main_weapon.parry: true, result.wound: 4}
+  - id: claw-ignores-armour
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.claw-of-the-old-ones}
+    defender: {armour_id: armour.gromril-armour}
+    expect: {result.eligible: false, result.saved: false}
+  - id: claw-parry
+    roles: [active, consumer]
+    operation: parry
+    defender: {main_weapon_id: weapon.claw-of-the-old-ones}
+    context: {hit_roll: 4}
+    rolls: [{key: test.parry, value: 5}]
+    expect: {result.blocked: true}
+  - id: draich-compiled-strength
+    roles: [compiled, active, consumer]
+    operation: strength
+    attacker: {main_weapon_id: weapon.draich}
+    expect: {attacker.main_weapon.two_handed: true, attacker.main_weapon.strength_bonus: 2, attacker.main_weapon.priority: -1, attacker.main_weapon.parry: true, attacker.main_weapon.concussion: true, attacker.main_weapon.critical_injury_bonus: 1, result.wound: 5}
+  - id: draich-critical-injury
+    roles: [active, consumer, sequence, consumption, boundary]
+    operation: attack
+    attacker: {main_weapon_id: weapon.draich}
+    defender_state: {wounds: 1}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 6}, {key: test.injury.0, value: 2}]
+    expect: {result.critical: true, result.defender.condition: OUT}
+  - id: ordinary-noncritical-draich-concussion
+    roles: [inactive, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.draich}
+    rolls: [{key: test.injury, value: 2}]
+    expect: {result.condition: STUNNED}
+  mutations:
+  - {id: remove-claw-armour-ignore, path: attacker.main_weapon.ignore_armour, value: false, cases: [claw-ignores-armour]}
+  - {id: remove-claw-parry, path: defender.main_weapon.parry, value: false, cases: [claw-parry]}
+  - {id: remove-draich-strength, path: attacker.main_weapon.strength_bonus, value: 0, cases: [draich-compiled-strength]}
+  - {id: remove-draich-critical-bonus, path: attacker.main_weapon.critical_injury_bonus, value: 0, cases: [draich-critical-injury]}
+
+- id: weapon.injury-and-armour-family
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - {target: mechanic/weapon.beastlash, digest: a4b71970aec70325adb433def6b6ddd197d9ab0a5e691d1c6d830cf88b6099c6}
+  - {target: mechanic/weapon.death-knife, digest: 52d5ef244241412f84f4c1341cc64d6d864a9003856cfafa1c1784a499249743}
+  - {target: mechanic/weapon.disease-dagger, digest: da4563973633dc5fb42c5cab20cf2d23943c998bc7a500e28fc0a088e6ee0544}
+  - {target: mechanic/weapon.censer, digest: 93b69e8ae25634c1931d6ed8f888727f6884510242e26da5cf91d998198ef7b6}
+  - {target: mechanic/weapon.ball-and-chain, digest: b8f5f2d6d326a220bb908561da470c62f68ab84ffca00e329207860395040bee}
+  interpretation: Beastlash usa Fuerza -1. Death Knife añade +1 Injury e ignora armadura con Fuerza -1. Disease Dagger mejora la salvación enemiga. Censer gana Fuerza +2 solo la primera ronda. Ball and Chain mantiene Fuerza +2 e ignora armadura.
+  cases:
+  - id: beastlash-strength
+    roles: [compiled, active, consumer, boundary]
+    operation: strength
+    attacker: {main_weapon_id: weapon.beastlash}
+    expect: {attacker.main_weapon.strength_bonus: -1, result.wound: 2, result.armour: 2}
+  - id: death-knife-strength
+    roles: [compiled, active, consumer]
+    operation: strength
+    attacker: {main_weapon_id: weapon.death-knife}
+    expect: {attacker.main_weapon.strength_bonus: -1, attacker.main_weapon.ignore_armour: true, attacker.main_weapon.injury_modifier: 1, result.wound: 2}
+  - id: death-knife-injury
+    roles: [active, consumer, boundary]
+    operation: injury
+    attacker: {main_weapon_id: weapon.death-knife}
+    rolls: [{key: test.injury, value: 4}]
+    expect: {result.total: 5, result.condition: OUT}
+  - id: death-knife-no-armour
+    roles: [active, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.death-knife}
+    defender: {armour_id: armour.gromril-armour}
+    expect: {result.eligible: false}
+  - id: disease-dagger-six-plus
+    roles: [compiled, active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.disease-dagger}
+    rolls: [{key: armour, value: 6}]
+    expect: {attacker.main_weapon.target_armour_bonus: 1, result.target: 6, result.saved: true}
+  - id: censer-first-round
+    roles: [compiled, active, consumer, boundary]
+    operation: strength
+    attacker: {main_weapon_id: weapon.censer}
+    context: {first_round: true}
+    expect: {attacker.main_weapon.two_handed: true, attacker.main_weapon.first_round_strength_bonus: 2, result.wound: 5, result.armour: 5}
+  - id: censer-later-round
+    roles: [inactive, boundary]
+    operation: strength
+    attacker: {main_weapon_id: weapon.censer}
+    context: {first_round: false}
+    expect: {result.wound: 3, result.armour: 3}
+  - id: ball-chain-strength
+    roles: [compiled, active, consumer]
+    operation: strength
+    attacker: {main_weapon_id: weapon.ball-and-chain}
+    expect: {attacker.main_weapon.two_handed: true, attacker.main_weapon.strength_bonus: 2, attacker.main_weapon.ignore_armour: true, result.wound: 5}
+  - id: ball-chain-no-armour
+    roles: [active, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.ball-and-chain}
+    defender: {armour_id: armour.gromril-armour}
+    expect: {result.eligible: false}
+  - id: ordinary-weapon-allows-armour
+    roles: [inactive, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {armour_id: armour.gromril-armour}
+    rolls: [{key: armour, value: 4}]
+    expect: {result.eligible: true, result.saved: true}
+  mutations:
+  - {id: remove-beastlash-penalty, path: attacker.main_weapon.strength_bonus, value: 0, cases: [beastlash-strength]}
+  - {id: remove-death-injury, path: attacker.main_weapon.injury_modifier, value: 0, cases: [death-knife-injury]}
+  - {id: restore-death-armour, path: attacker.main_weapon.ignore_armour, value: false, cases: [death-knife-no-armour]}
+  - {id: remove-disease-armour-bonus, path: attacker.main_weapon.target_armour_bonus, value: 0, cases: [disease-dagger-six-plus]}
+  - {id: remove-censer-first-strength, path: attacker.main_weapon.first_round_strength_bonus, value: 0, cases: [censer-first-round]}
+  - {id: remove-ball-chain-strength, path: attacker.main_weapon.strength_bonus, value: 0, cases: [ball-chain-strength]}
+  - {id: restore-ball-chain-armour, path: attacker.main_weapon.ignore_armour, value: false, cases: [ball-chain-no-armour]}

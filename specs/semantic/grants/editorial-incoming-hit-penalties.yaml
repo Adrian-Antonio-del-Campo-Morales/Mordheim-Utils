@@ -1,0 +1,383 @@
+schema_version: 1
+specifications:
+- id: editorial-incoming-hit-plague-bearers
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/carnival-of-chaos/plague-bearers--cloud-of-flies/trait.cloud-of-flies
+    digest: d49dc5852cd6e09ee5192fc0ab2724dce920e1c70eb5acb874640578ce142f87
+  interpretation: Henchmen / plague-bearers / Cloud of Flies imposes -1 on every close combat attack of the opponent, not on the bearer's own attacks.
+    Neither charging nor the first round is a prerequisite. Against an attacker of WS3,
+    the printed defender WS4 gives a base target 4+ and a modified target 5+.
+  cases:
+  - id: exact-recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
+    context: {rule_id: plague-bearers--cloud-of-flies}
+    expect: {result.recipients: [plague-bearers]}
+  - id: face-1
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
+    rolls: [{key: hit, value: 1}]
+    expect: {context.modifier: -1, result.target: 5, result.success: false}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-2
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
+    rolls: [{key: hit, value: 2}]
+    expect: {context.modifier: -1, result.target: 5, result.success: false}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-3
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.modifier: -1, result.target: 5, result.success: false}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-4
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
+    rolls: [{key: hit, value: 4}]
+    expect: {context.modifier: -1, result.target: 5, result.success: false}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-5
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
+    rolls: [{key: hit, value: 5}]
+    expect: {context.modifier: -1, result.target: 5, result.success: true}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-6
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
+    rolls: [{key: hit, value: 6}]
+    expect: {context.modifier: -1, result.target: 5, result.success: true}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: round-false-charge-false
+    roles: [active, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
+    context: {first_round: false, charging: false}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/3, 'false': 2/3}
+  - id: round-false-charge-true
+    roles: [active, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
+    context: {first_round: false, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/3, 'false': 2/3}
+  - id: round-true-charge-false
+    roles: [active, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
+    context: {first_round: true, charging: false}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/3, 'false': 2/3}
+  - id: round-true-charge-true
+    roles: [active, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
+    context: {first_round: true, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/3, 'false': 2/3}
+  - id: outgoing-attacks-unaffected
+    roles: [inactive]
+    operation: hit
+    attacker: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
+    rolls: [{key: hit, value: 4}]
+    expect: {context.modifier: 0, result.target: 3, result.success: true}
+  - id: unprotected-opponent
+    roles: [inactive]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    rolls: [{key: hit, value: 4}]
+    expect: {context.modifier: 0, result.target: 4, result.success: true}
+  mutations:
+  - id: remove-incoming-penalty
+    path: defender.global_effects.tags
+    value: []
+    cases: [face-4, round-false-charge-false]
+- id: editorial-incoming-hit-nurglings
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/carnival-of-chaos/nurglings--cloud-of-flies/trait.cloud-of-flies
+    digest: cf7ff101e398caad5bbc4e1c7b279184c48d78c5069704af84d0e3ea42d40e3e
+  interpretation: Henchmen / nurglings / Cloud of Flies imposes -1 on every close combat attack of the opponent, not on the bearer's own attacks.
+    Neither charging nor the first round is a prerequisite. Against an attacker of WS3,
+    the printed defender WS3 gives a base target 4+ and a modified target 5+.
+  cases:
+  - id: exact-recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+    context: {rule_id: nurglings--cloud-of-flies}
+    expect: {result.recipients: [nurglings]}
+  - id: face-1
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+    rolls: [{key: hit, value: 1}]
+    expect: {context.modifier: -1, result.target: 5, result.success: false}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-2
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+    rolls: [{key: hit, value: 2}]
+    expect: {context.modifier: -1, result.target: 5, result.success: false}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-3
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.modifier: -1, result.target: 5, result.success: false}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-4
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+    rolls: [{key: hit, value: 4}]
+    expect: {context.modifier: -1, result.target: 5, result.success: false}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-5
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+    rolls: [{key: hit, value: 5}]
+    expect: {context.modifier: -1, result.target: 5, result.success: true}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-6
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+    rolls: [{key: hit, value: 6}]
+    expect: {context.modifier: -1, result.target: 5, result.success: true}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: round-false-charge-false
+    roles: [active, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+    context: {first_round: false, charging: false}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/3, 'false': 2/3}
+  - id: round-false-charge-true
+    roles: [active, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+    context: {first_round: false, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/3, 'false': 2/3}
+  - id: round-true-charge-false
+    roles: [active, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+    context: {first_round: true, charging: false}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/3, 'false': 2/3}
+  - id: round-true-charge-true
+    roles: [active, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+    context: {first_round: true, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/3, 'false': 2/3}
+  - id: outgoing-attacks-unaffected
+    roles: [inactive]
+    operation: hit
+    attacker: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+    rolls: [{key: hit, value: 4}]
+    expect: {context.modifier: 0, result.target: 4, result.success: true}
+  - id: unprotected-opponent
+    roles: [inactive]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    rolls: [{key: hit, value: 4}]
+    expect: {context.modifier: 0, result.target: 4, result.success: true}
+  mutations:
+  - id: remove-incoming-penalty
+    path: defender.global_effects.tags
+    value: []
+    cases: [face-4, round-false-charge-false]
+- id: editorial-incoming-hit-snotlings
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/night-goblins-web/snotlings--dodgy/trait.cloud-of-flies
+    digest: e1132b0851c5aed595a1bc971c4c8f1b75a432303bfb6f18217f9fca123728de
+  interpretation: Henchmen / Snotlings / Dodgy imposes -1 to hit the Snotlings in hand-to-hand combat. Its shooting effect is out of scope.
+    Neither charging nor the first round is a prerequisite. Against an attacker of WS3,
+    the printed defender WS2 gives a base target 3+ and a modified target 4+.
+  cases:
+  - id: exact-recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    context: {rule_id: snotlings--dodgy}
+    expect: {result.recipients: [snotlings]}
+  - id: face-1
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    rolls: [{key: hit, value: 1}]
+    expect: {context.modifier: -1, result.target: 4, result.success: false}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-2
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    rolls: [{key: hit, value: 2}]
+    expect: {context.modifier: -1, result.target: 4, result.success: false}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-3
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.modifier: -1, result.target: 4, result.success: false}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-4
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    rolls: [{key: hit, value: 4}]
+    expect: {context.modifier: -1, result.target: 4, result.success: true}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-5
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    rolls: [{key: hit, value: 5}]
+    expect: {context.modifier: -1, result.target: 4, result.success: true}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: face-6
+    roles: [active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    rolls: [{key: hit, value: 6}]
+    expect: {context.modifier: -1, result.target: 4, result.success: true}
+    expect_contains:
+      defender.global_effects.tags: [cloud_of_flies]
+  - id: round-false-charge-false
+    roles: [active, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    context: {first_round: false, charging: false}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: round-false-charge-true
+    roles: [active, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    context: {first_round: false, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: round-true-charge-false
+    roles: [active, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    context: {first_round: true, charging: false}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: round-true-charge-true
+    roles: [active, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    context: {first_round: true, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: outgoing-attacks-unaffected
+    roles: [inactive]
+    operation: hit
+    attacker: {collection: mordheim, band_id: night-goblins-web, profile_id: snotlings}
+    rolls: [{key: hit, value: 4}]
+    expect: {context.modifier: 0, result.target: 4, result.success: true}
+  - id: unprotected-opponent
+    roles: [inactive]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    rolls: [{key: hit, value: 4}]
+    expect: {context.modifier: 0, result.target: 4, result.success: true}
+  mutations:
+  - id: remove-incoming-penalty
+    path: defender.global_effects.tags
+    value: []
+    cases: [face-3, round-false-charge-false]

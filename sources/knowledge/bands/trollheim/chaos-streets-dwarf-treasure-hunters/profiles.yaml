@@ -1,0 +1,213 @@
+schema_version: 2
+band_id: chaos-streets-dwarf-treasure-hunters
+profiles:
+- id: dwarf-noble
+  name: Dwarf Noble
+  type: hero
+  cost: 85
+  experience: 20
+  characteristics:
+    M: 3
+    WS: 5
+    BS: 4
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - dwarf-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 114
+    section: 1 Dwarf Noble
+  source_path:
+  - heroes
+  - 1 Dwarf Noble
+  name_i18n:
+    en: Dwarf Noble
+    es: null
+  rule_ids:
+  - dwarf-noble--leader
+  combat_traits: &dwarf_traits
+    starting_skills:
+    - skill.hard-to-kill
+- id: dwarf-engineer
+  name: Dwarf Engineer
+  type: hero
+  cost: 50
+  experience: 10
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - thunderer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 114
+    section: 0-1 Dwarf Engineer
+  source_path:
+  - heroes
+  - 0-1 Dwarf Engineer
+  name_i18n:
+    en: Dwarf Engineer
+    es: null
+  rule_ids:
+  - dwarf-engineer--expert-armourer
+  combat_traits: *dwarf_traits
+- id: dwarf-troll-slayers
+  name: Dwarf Troll Slayers
+  type: hero
+  cost: 50
+  experience: 8
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - dwarf-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Dwarf Warrior Equipment List.
+  - May never use missile weapons or any form of armour.
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 114
+    section: 0-2 Dwarf Troll Slayers
+  source_path:
+  - heroes
+  - 0-2 Dwarf Troll Slayers
+  name_i18n:
+    en: Dwarf Troll Slayers
+    es: null
+  rule_ids:
+  - dwarf-troll-slayers--death-oath
+  - dwarf-troll-slayers--slayer-skills
+  combat_traits: *dwarf_traits
+- id: dwarf-clansmen
+  name: Dwarf Clansmen
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - dwarf-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 115
+    section: Dwarf Clansmen
+  source_path:
+  - henchmen
+  - Dwarf Clansmen
+  name_i18n:
+    en: Dwarf Clansmen
+    es: null
+  rule_ids: []
+  combat_traits: *dwarf_traits
+- id: dwarf-thunderers
+  name: Dwarf Thunderers
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - thunderer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 115
+    section: 0-5 Dwarf Thunderers
+  source_path:
+  - henchmen
+  - 0-5 Dwarf Thunderers
+  name_i18n:
+    en: Dwarf Thunderers
+    es: null
+  rule_ids: []
+  combat_traits: *dwarf_traits
+- id: beardlings
+  name: Beardlings
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 3
+    BS: 2
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - dwarf-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 115
+    section: Beardlings
+  source_path:
+  - henchmen
+  - Beardlings
+  name_i18n:
+    en: Beardlings
+    es: null
+  rule_ids: []
+  combat_traits: *dwarf_traits

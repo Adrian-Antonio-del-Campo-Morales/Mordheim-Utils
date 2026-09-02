@@ -1,0 +1,183 @@
+schema_version: 2
+band_id: lustria-pygmies
+profiles:
+- id: great-headhunter
+  name: Great Headhunter
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 2
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - pygmy-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - speed
+  source:
+    manual: lustria
+    printed_page: 123
+    section: 1 Great Headhunter
+  source_path:
+  - heroes
+  - 1 Great Headhunter
+  name_i18n:
+    en: Great Headhunter
+    es: null
+  rule_ids:
+  - great-headhunter--leader
+  - great-headhunter--fear
+  combat_traits: {}
+- id: silent-walker
+  name: Silent Walker
+  type: hero
+  cost: 35
+  experience: 10
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 2
+    T: 2
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pygmy-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - academic
+  - speed
+  source:
+    manual: lustria
+    printed_page: 123
+    section: 0-1 Silent Walker
+  source_path:
+  - heroes
+  - 0-1 Silent Walker
+  name_i18n:
+    en: Silent Walker
+    es: null
+  rule_ids:
+  - silent-walker--spirit-form
+  - silent-walker--ethereal
+  - silent-walker--immune-to-psychology
+  - silent-walker--fear
+  combat_traits: {}
+- id: cannibals
+  name: Cannibals
+  type: hero
+  cost: 25
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 2
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pygmy-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  source:
+    manual: lustria
+    printed_page: 124
+    section: 0-3 Cannibals
+  source_path:
+  - heroes
+  - 0-3 Cannibals
+  name_i18n:
+    en: Cannibals
+    es: null
+  rule_ids:
+  - cannibals--fear
+  - cannibals--immune-to-poison
+  combat_traits: {}
+- id: pygmies
+  name: Pygmies
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 2
+    T: 2
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pygmy-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 124
+    section: Pygmies
+  source_path:
+  - henchmen
+  - Pygmies
+  name_i18n:
+    en: Pygmies
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: wild-lunatics
+  name: Wild Lunatics
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 2
+    T: 2
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pygmy-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 124
+    section: 0-5 Wild Lunatics
+  source_path:
+  - henchmen
+  - 0-5 Wild Lunatics
+  name_i18n:
+    en: Wild Lunatics
+    es: null
+  rule_ids:
+  - wild-lunatics--immune-to-psychology
+  - wild-lunatics--lunatics
+  combat_traits: {}

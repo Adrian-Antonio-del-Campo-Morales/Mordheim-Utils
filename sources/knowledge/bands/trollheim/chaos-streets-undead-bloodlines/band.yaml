@@ -1,0 +1,89 @@
+schema_version: 2
+id: chaos-streets-undead-bloodlines
+canonical_family: undead-bloodlines
+name: Undead Bloodlines
+name_i18n:
+  en: Undead Bloodlines
+  es: null
+original_locale: es
+categories:
+- trollheim
+grade: null
+setting: Mordheim
+publication: Chaos in the Streets
+status: source-normalized
+sources:
+- manual: chaos-in-the-streets
+  printed_page: 172-183
+  section: The Undead and the Aristocracy of the Night
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  requires_variant_selection: true
+  members:
+  - profile_id: von-carstein-vampire
+    minimum: 0
+    maximum: 0
+  - profile_id: lahmia-vampire
+    minimum: 0
+    maximum: 0
+  - profile_id: blood-dragon-vampire
+    minimum: 0
+    maximum: 0
+  - profile_id: necrarch-vampire
+    minimum: 0
+    maximum: 0
+  - profile_id: strigoi-vampire
+    minimum: 0
+    maximum: 0
+  - profile_id: necromancer
+    minimum: 0
+    maximum: 1
+  - profile_id: dreg
+    minimum: 0
+    maximum: 3
+  - profile_id: carrion-ghoul
+    minimum: 0
+    maximum: 0
+  - profile_id: zombie
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: ghoul
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: dire-wolf
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+ruleset: mordheim
+rule_ids:
+- band--choose-bloodline
+- band--vampiric-powers
+- band--vampire-power-hypnotic-gaze
+- band--von-carstein-power-dark-majesty
+- band--von-carstein-power-call-the-bats
+- band--von-carstein-power-summon-storm
+- band--blood-dragon-power-red-fury
+- band--blood-dragon-power-sword-master
+- band--blood-dragon-power-infallible
+- band--blood-dragon-power-strength-of-steel
+- band--necrarch-power-unholy-focus
+- band--necrarch-power-master-of-the-black-arts
+- band--necrarch-power-awakening
+- band--necrarch-power-noble-blood-of-nehekhara
+- band--lahmia-power-deceive
+- band--lahmia-power-seduction
+- band--lahmia-power-lost-innocence
+- band--strigoi-power-curse-of-the-reborn
+- band--strigoi-power-monstrosity
+- band--strigoi-power-iron-sinews
+- band--strigoi-power-infinite-hatred

@@ -1,0 +1,60 @@
+schema_version: 2
+id: chaos-streets-mordheim-inhabitants
+canonical_family: mordheim-inhabitants
+name: Mordheim Inhabitants
+name_i18n:
+  en: Mordheim Inhabitants
+  es: null
+original_locale: es
+categories:
+- trollheim
+grade: null
+setting: Mordheim
+publication: Chaos in the Streets
+status: source-normalized
+sources:
+- manual: chaos-in-the-streets
+  printed_page: 144-149
+  section: Mordheim Inhabitants
+roster:
+  minimum_models: 3
+  maximum_models: 20
+  starting_gold: 500
+  members:
+  - profile_id: prophet
+    minimum: 1
+    maximum: 1
+  - profile_id: desolate-soul
+    minimum: 0
+    maximum: 1
+  - profile_id: lunatics
+    minimum: 0
+    maximum: 2
+  - profile_id: orphans
+    minimum: 0
+    maximum: 2
+  - profile_id: citizens
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: cripples
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: street-dogs
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+ruleset: mordheim
+rule_ids:
+- band--mordheim-natives
+- band--wanderers
+- band--look-after-their-own
+- band--hired-swords
+- band--revival-sermons

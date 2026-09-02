@@ -1,0 +1,385 @@
+schema_version: 2
+band_id: khemri-hobgoblin-raiders
+rules:
+- id: khann--leader
+  name: Leader
+  effect: Any warband model within 6" of the Khann may use his Leadership instead of its own.
+  source:
+    manual: khemri
+    printed_page: 80
+    section: Heroes / 1 Khann / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Khann may use his Leadership instead of its own.
+    es: null
+  applies_to:
+    profile_ids:
+    - khann
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-hobgoblin-raiders.khann.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: hobgoblin-shaman--wizard
+  name: Wizard
+  effect: The Hobgoblin Shaman is a Wizard and begins with one spell from Waaagh! Shamanic Magic. The spell list and spell
+    effects are intentionally not modelled in this file.
+  source:
+    manual: khemri
+    printed_page: 80
+    section: Heroes / 0-1 Hobgoblin Shaman / Wizard
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Hobgoblin Shaman is a Wizard and begins with one spell from Waaagh! Shamanic Magic. The spell list and spell effects
+      are intentionally not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - hobgoblin-shaman
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-hobgoblin-raiders.hobgoblin-shaman.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: sneaky--unpredictable
+  name: Unpredictable
+  effect: The Sneaky may declare one of its attacks Unpredictable; that attack cannot be parried by the opponent.
+  source:
+    manual: khemri
+    printed_page: 80
+    section: Heroes / 0-1 Sneaky / Unpredictable
+  name_i18n:
+    en: Unpredictable
+    es: null
+  effect_i18n:
+    en: The Sneaky may declare one of its attacks Unpredictable; that attack cannot be parried by the opponent.
+    es: null
+  applies_to:
+    profile_ids:
+    - sneaky
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: mechanic.unpredictable-attack
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.unpredictable-attack
+- id: archers--moving-shot
+  name: Moving Shot
+  effect: An Archer ignores the normal shooting penalty for moving. This rule may also be used while the Archer is mounted
+    on a Giant Wolf.
+  source:
+    manual: khemri
+    printed_page: 81
+    section: Henchmen / 0-5 Archers / Moving Shot
+  name_i18n:
+    en: Moving Shot
+    es: null
+  effect_i18n:
+    en: An Archer ignores the normal shooting penalty for moving. This rule may also be used while the Archer is mounted on
+      a Giant Wolf.
+    es: null
+  applies_to:
+    profile_ids:
+    - archers
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-hobgoblin-raiders.archers.moving-shot
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: giant-wolves--animal
+  name: Animal
+  effect: Giant Wolves are animals and never gain Experience.
+  source:
+    manual: khemri
+    printed_page: 81
+    section: Henchmen / 0-5 Giant Wolves / Animal
+  name_i18n:
+    en: Animal
+    es: null
+  effect_i18n:
+    en: Giant Wolves are animals and never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - giant-wolves
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-hobgoblin-raiders.giant-wolves.animal
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: giant-wolves--mount
+  name: Mount
+  effect: Every Giant Wolf that participates in a battle must normally be ridden by a member of the warband. The rider may
+    not voluntarily dismount. If the rider is taken Out of Action, the Giant Wolf must pass a Leadership test; if it fails,
+    the wolf immediately leaves the table and counts as Out of Action. The Wolf Tamer special skill provides the stated exceptions
+    to these restrictions.
+  source:
+    manual: khemri
+    printed_page: 81
+    section: Henchmen / 0-5 Giant Wolves / Mounts
+  name_i18n:
+    en: Mount
+    es: null
+  effect_i18n:
+    en: Every Giant Wolf that participates in a battle must normally be ridden by a member of the warband. The rider may not
+      voluntarily dismount. If the rider is taken Out of Action, the Giant Wolf must pass a Leadership test; if it fails,
+      the wolf immediately leaves the table and counts as Out of Action. The Wolf Tamer special skill provides the stated
+      exceptions to these restrictions.
+    es: null
+  applies_to:
+    profile_ids:
+    - giant-wolves
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-hobgoblin-raiders.giant-wolves.mount
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--traitors
+  name: Traitors
+  effect: 'Each turn, roll D6 for every Hobgoblin Henchman that is not engaged in close combat. Only a roll of 1 fails the
+    betrayal test. If the test fails, roll another D6 and apply the following result: 1 = Traitor: the opponent immediately
+    takes control of the model; in a multiplayer game it joins the opposing warband with the highest rating. The model must
+    continue to take betrayal tests normally on subsequent turns. 2-5 = I Prefer Not to Die!: the model may not charge or
+    shoot that turn, but may perform other actions. 6 = Blood for Morko!!!: the model no longer takes betrayal tests for the
+    rest of the battle.'
+  source:
+    manual: khemri
+    printed_page: 78
+    section: Hobgoblin Raiders Special Rules / Traitors
+  name_i18n:
+    en: Traitors
+    es: null
+  effect_i18n:
+    en: 'Each turn, roll D6 for every Hobgoblin Henchman that is not engaged in close combat. Only a roll of 1 fails the betrayal
+      test. If the test fails, roll another D6 and apply the following result: 1 = Traitor: the opponent immediately takes
+      control of the model; in a multiplayer game it joins the opposing warband with the highest rating. The model must continue
+      to take betrayal tests normally on subsequent turns. 2-5 = I Prefer Not to Die!: the model may not charge or shoot that
+      turn, but may perform other actions. 6 = Blood for Morko!!!: the model no longer takes betrayal tests for the rest of
+      the battle.'
+    es: null
+  eligibility:
+  - hobgoblin-warriors
+  - archers
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-hobgoblin-raiders.band.traitors
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--wolf-riders
+  name: Wolf Riders
+  effect: Every Hobgoblin member of the warband has the ability to ride a Giant Wolf.
+  source:
+    manual: khemri
+    printed_page: 78
+    section: Hobgoblin Raiders Special Rules / Wolf Riders
+  name_i18n:
+    en: Wolf Riders
+    es: null
+  effect_i18n:
+    en: Every Hobgoblin member of the warband has the ability to ride a Giant Wolf.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-hobgoblin-raiders.band.wolf-riders
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--hobgoblin-special-skills-moving-shot
+  kind: warband_skill
+  name: Moving Shot
+  effect: The Hero ignores the normal shooting penalty for moving. This skill may also be used while the Hero is mounted on
+    a Giant Wolf.
+  source:
+    manual: khemri
+    printed_page: 79
+    section: Hobgoblin Special Skills / Moving Shot
+  name_i18n:
+    en: Moving Shot
+    es: null
+  effect_i18n:
+    en: The Hero ignores the normal shooting penalty for moving. This skill may also be used while the Hero is mounted on
+      a Giant Wolf.
+    es: null
+  eligibility:
+  - khann
+  - hobgoblin-shaman
+  - scouts
+  - sneaky
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-hobgoblin-raiders.band.hobgoblin-special-skills-moving-shot
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--hobgoblin-special-skills-disguised
+  kind: warband_skill
+  name: Disguised
+  effect: The Hero deploys after the opposing warband and may be placed anywhere outside the opposing warband's line of sight
+    and more than 12" from every enemy model.
+  source:
+    manual: khemri
+    printed_page: 79
+    section: Hobgoblin Special Skills / Disguised
+  name_i18n:
+    en: Disguised
+    es: null
+  effect_i18n:
+    en: The Hero deploys after the opposing warband and may be placed anywhere outside the opposing warband's line of sight
+      and more than 12" from every enemy model.
+    es: null
+  eligibility:
+  - khann
+  - hobgoblin-shaman
+  - scouts
+  - sneaky
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-hobgoblin-raiders.band.hobgoblin-special-skills-disguised
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--hobgoblin-special-skills-unpredictable
+  kind: warband_skill
+  name: Unpredictable
+  effect: The Hero may declare one of its attacks Unpredictable; that attack cannot be parried by the opponent.
+  source:
+    manual: khemri
+    printed_page: 79
+    section: Hobgoblin Special Skills / Unpredictable
+  name_i18n:
+    en: Unpredictable
+    es: null
+  effect_i18n:
+    en: The Hero may declare one of its attacks Unpredictable; that attack cannot be parried by the opponent.
+    es: null
+  eligibility:
+  - khann
+  - hobgoblin-shaman
+  - scouts
+  - sneaky
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: mechanic.unpredictable-attack
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.unpredictable-attack
+- id: band--hobgoblin-special-skills-wolf-tamer
+  kind: warband_skill
+  name: Wolf Tamer
+  effect: The Hero may direct one purchased Giant Wolf in battle without riding it; that wolf still counts toward the warband's
+    normal 0-5 Giant Wolf limit. If the Hero rides a Giant Wolf, it may re-roll failed Riding tests but must accept the second
+    result. The Hero may also voluntarily dismount whenever desired without requiring the wolf to take the normal Leadership
+    test for being left without a rider.
+  source:
+    manual: khemri
+    printed_page: 79
+    section: Hobgoblin Special Skills / Wolf Tamer
+  name_i18n:
+    en: Wolf Tamer
+    es: null
+  effect_i18n:
+    en: The Hero may direct one purchased Giant Wolf in battle without riding it; that wolf still counts toward the warband's
+      normal 0-5 Giant Wolf limit. If the Hero rides a Giant Wolf, it may re-roll failed Riding tests but must accept the
+      second result. The Hero may also voluntarily dismount whenever desired without requiring the wolf to take the normal
+      Leadership test for being left without a rider.
+    es: null
+  eligibility:
+  - khann
+  - hobgoblin-shaman
+  - scouts
+  - sneaky
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-hobgoblin-raiders.band.hobgoblin-special-skills-wolf-tamer
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--hobgoblin-special-skills-ambush
+  kind: warband_skill
+  name: Ambush
+  effect: Khann only. After both warbands have deployed and before the first turn begins, 1D3 members of the warband may each
+    make one free Movement turn.
+  source:
+    manual: khemri
+    printed_page: 79
+    section: Hobgoblin Special Skills / Ambush
+  name_i18n:
+    en: Ambush
+    es: null
+  effect_i18n:
+    en: Khann only. After both warbands have deployed and before the first turn begins, 1D3 members of the warband may each
+      make one free Movement turn.
+    es: null
+  eligibility:
+  - khann
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-hobgoblin-raiders.band.hobgoblin-special-skills-ambush
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'

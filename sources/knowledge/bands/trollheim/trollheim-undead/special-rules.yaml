@@ -1,0 +1,520 @@
+schema_version: 2
+band_id: trollheim-undead
+rules:
+- id: vampire--leader
+  name: Leader
+  effect: Any warband model within 6" of the Vampire may use its Leadership instead of its own.
+  source:
+    manual: trollheim
+    printed_page: 88
+    section: Heroes / 1 Vampire / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Vampire may use its Leadership instead of its own.
+    es: null
+  applies_to:
+    profile_ids:
+    - vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-undead.vampire.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: vampire--fear
+  name: Fear
+  effect: The Vampire causes Fear.
+  source:
+    manual: trollheim
+    printed_page: 88
+    section: Heroes / 1 Vampire / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Vampire causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-undead.vampire.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: vampire--immune-to-psychology
+  name: Immune to Psychology
+  effect: The Vampire is immune to Psychology and never leaves close combat because of Psychology.
+  source:
+    manual: trollheim
+    printed_page: 88
+    section: Heroes / 1 Vampire / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: The Vampire is immune to Psychology and never leaves close combat because of Psychology.
+    es: null
+  applies_to:
+    profile_ids:
+    - vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-undead.vampire.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: vampire--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: The Vampire is immune to poison.
+  source:
+    manual: trollheim
+    printed_page: 88
+    section: Heroes / 1 Vampire / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: The Vampire is immune to poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - vampire
+- id: vampire--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: trollheim
+    printed_page: 88
+    section: Heroes / 1 Vampire / No Pain
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  applies_to:
+    profile_ids:
+    - vampire
+- id: necromancer--spellcaster
+  name: Spellcaster
+  effect: The Necromancer is a spellcaster and may use Necromantic Magic. The spell list and spell effects are intentionally
+    not modelled in this file.
+  source:
+    manual: trollheim
+    printed_page: 88
+    section: Heroes / 0-1 Necromancer / Spellcaster
+  name_i18n:
+    en: Spellcaster
+    es: null
+  effect_i18n:
+    en: The Necromancer is a spellcaster and may use Necromantic Magic. The spell list and spell effects are intentionally
+      not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - necromancer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-undead.necromancer.spellcaster
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: zombies--may-not-run
+  name: May Not Run
+  effect: Zombies may not run, but may charge normally.
+  source:
+    manual: trollheim
+    printed_page: 89
+    section: Henchmen / Zombies / May Not Run
+  name_i18n:
+    en: May Not Run
+    es: null
+  effect_i18n:
+    en: Zombies may not run, but may charge normally.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombies
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-undead.zombies.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: zombies--fear
+  name: Fear
+  effect: Zombies cause Fear.
+  source:
+    manual: trollheim
+    printed_page: 89
+    section: Henchmen / Zombies / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: Zombies cause Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombies
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-undead.zombies.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: zombies--immune-to-psychology
+  name: Immune to Psychology
+  effect: Zombies are immune to Psychology and never leave close combat because of Psychology.
+  source:
+    manual: trollheim
+    printed_page: 89
+    section: Henchmen / Zombies / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: Zombies are immune to Psychology and never leave close combat because of Psychology.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombies
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-undead.zombies.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: zombies--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Zombies are immune to poison.
+  source:
+    manual: trollheim
+    printed_page: 89
+    section: Henchmen / Zombies / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: Zombies are immune to poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombies
+- id: zombies--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: Zombies treat a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: trollheim
+    printed_page: 89
+    section: Henchmen / Zombies / No Pain
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: Zombies treat a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombies
+- id: zombies--brainless
+  name: Brainless
+  effect: Zombies never gain Experience.
+  source:
+    manual: trollheim
+    printed_page: 89
+    section: Henchmen / Zombies / Brainless
+  name_i18n:
+    en: Brainless
+    es: null
+  effect_i18n:
+    en: Zombies never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombies
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-undead.zombies.brainless
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: ghouls--fear
+  name: Fear
+  effect: Ghouls cause Fear.
+  source:
+    manual: trollheim
+    printed_page: 89
+    section: Henchmen / Ghouls / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: Ghouls cause Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - ghouls
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-undead.ghouls.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: dire-wolves--charge
+  name: Charge
+  effect: A Dire Wolf has 2 Attacks instead of 1 during a turn in which it charges.
+  source:
+    manual: trollheim
+    printed_page: 89
+    section: Henchmen / 0-5 Dire Wolves / Charge
+  name_i18n:
+    en: Charge
+    es: null
+  effect_i18n:
+    en: A Dire Wolf has 2 Attacks instead of 1 during a turn in which it charges.
+    es: null
+  applies_to:
+    profile_ids:
+    - dire-wolves
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.charge-attack-bonus
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.charge-attack-bonus
+        parameters:
+          value: true
+- id: dire-wolves--may-not-run
+  name: May Not Run
+  effect: Dire Wolves may not run, but may charge normally.
+  source:
+    manual: trollheim
+    printed_page: 89
+    section: Henchmen / 0-5 Dire Wolves / May Not Run
+  name_i18n:
+    en: May Not Run
+    es: null
+  effect_i18n:
+    en: Dire Wolves may not run, but may charge normally.
+    es: null
+  applies_to:
+    profile_ids:
+    - dire-wolves
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-undead.dire-wolves.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: dire-wolves--fear
+  name: Fear
+  effect: Dire Wolves cause Fear.
+  source:
+    manual: trollheim
+    printed_page: 89
+    section: Henchmen / 0-5 Dire Wolves / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: Dire Wolves cause Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - dire-wolves
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-undead.dire-wolves.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: dire-wolves--immune-to-psychology
+  name: Immune to Psychology
+  effect: Dire Wolves are immune to Psychology and never leave close combat because of Psychology.
+  source:
+    manual: trollheim
+    printed_page: 89
+    section: Henchmen / 0-5 Dire Wolves / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: Dire Wolves are immune to Psychology and never leave close combat because of Psychology.
+    es: null
+  applies_to:
+    profile_ids:
+    - dire-wolves
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-undead.dire-wolves.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: dire-wolves--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Dire Wolves are immune to poison.
+  source:
+    manual: trollheim
+    printed_page: 89
+    section: Henchmen / 0-5 Dire Wolves / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: Dire Wolves are immune to poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - dire-wolves
+- id: dire-wolves--dead
+  name: Dead
+  effect: Dire Wolves never gain Experience.
+  source:
+    manual: trollheim
+    printed_page: 89
+    section: Henchmen / 0-5 Dire Wolves / Dead
+  name_i18n:
+    en: Dead
+    es: null
+  effect_i18n:
+    en: Dire Wolves never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - dire-wolves
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-undead.dire-wolves.dead
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: dire-wolves--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: Dire Wolves treat a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: trollheim
+    printed_page: 89
+    section: Henchmen / 0-5 Dire Wolves / No Pain
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: Dire Wolves treat a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  applies_to:
+    profile_ids:
+    - dire-wolves

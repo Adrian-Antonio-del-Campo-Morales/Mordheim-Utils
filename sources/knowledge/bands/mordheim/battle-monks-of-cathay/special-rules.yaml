@@ -1,0 +1,610 @@
+schema_version: 2
+band_id: battle-monks-of-cathay
+rules:
+- id: emissary--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.battle-monks-of-cathay.emissary.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Leader
+  effect: Any warrior within 6“ of the Emissary may use his Leadership when taking Ld tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 1 Emissary / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warrior within 6“ of the Emissary may use his Leadership when taking Ld tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - emissary
+- id: emissary--ride-horse
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.battle-monks-of-cathay.emissary.ride-horse
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: monturas.'
+  name: Ride Horse
+  effect: The Emissary is trained in riding Horses.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 1 Emissary / Special Rules / Ride Horse
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Ride Horse
+    es: null
+  effect_i18n:
+    en: The Emissary is trained in riding Horses.
+    es: null
+  applies_to:
+    profile_ids:
+    - emissary
+- id: emissary--decree
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.battle-monks-of-cathay.emissary.decree
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Decree
+  effect: When the Emissary dies, a new one must be hired as soon as possible. Until you have done so, no other warriors and/or
+    equipment may be bought. The new Emissary will then reclaim Leadership of the warband.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 1 Emissary / Special Rules / Decree
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Decree
+    es: null
+  effect_i18n:
+    en: When the Emissary dies, a new one must be hired as soon as possible. Until you have done so, no other warriors and/or
+      equipment may be bought. The new Emissary will then reclaim Leadership of the warband.
+    es: null
+  applies_to:
+    profile_ids:
+    - emissary
+- id: dragon-monks--unarmed-fighting
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.unarmed-fighting
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.unarmed-fighting
+  name: Unarmed Fighting
+  effect: Monks suffer no penalties whatsoever for fighting unarmed and receive +1 Attack when doing so.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 3 Dragon Monks / Weapons/Armour
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Unarmed Fighting
+    es: null
+  effect_i18n:
+    en: Monks suffer no penalties whatsoever for fighting unarmed and receive +1 Attack when doing so.
+    es: null
+  applies_to:
+    profile_ids:
+    - dragon-monks
+- id: dragon-monks--art-of-silent-death
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.unarmed-critical-strikes
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.unarmed-critical-strikes
+  name: Art of Silent Death
+  effect: Dragon Monks have become masters of the Cathayan art of open-hand fighting. In hand-to-hand combat, if fighting
+    unarmed, they will cause a critical hit on a roll 'to wound' of 5-6 instead of a 6. If the Dragon Monk wields a quarter
+    staff, only the unarmed attacks will cause a critical hit on 5+.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 3 Dragon Monks / Special Rules / Art of Silent Death
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Art of Silent Death
+    es: null
+  effect_i18n:
+    en: Dragon Monks have become masters of the Cathayan art of open-hand fighting. In hand-to-hand combat, if fighting unarmed,
+      they will cause a critical hit on a roll 'to wound' of 5-6 instead of a 6. If the Dragon Monk wields a quarter staff,
+      only the unarmed attacks will cause a critical hit on 5+.
+    es: null
+  applies_to:
+    profile_ids:
+    - dragon-monks
+- id: warrior-monks--unarmed-fighting
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.unarmed-fighting
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.unarmed-fighting
+  name: Unarmed Fighting
+  effect: Monks suffer no penalties whatsoever for fighting unarmed and receive +1 Attack when doing so.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Warrior Monks / Weapons/Armour
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Unarmed Fighting
+    es: null
+  effect_i18n:
+    en: Monks suffer no penalties whatsoever for fighting unarmed and receive +1 Attack when doing so.
+    es: null
+  applies_to:
+    profile_ids:
+    - warrior-monks
+- id: raging-peasants--unarmed
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.fist
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.fist
+        parameters:
+          ignore_penalties: true
+  name: Unarmed
+  effect: Raging Peasants are treated as fighting unarmed, but without any penalties.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Raging Peasants / Weapons/Armour
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Unarmed
+    es: null
+  effect_i18n:
+    en: Raging Peasants are treated as fighting unarmed, but without any penalties.
+    es: null
+  applies_to:
+    profile_ids:
+    - raging-peasants
+- id: raging-peasants--simple-folk
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.battle-monks-of-cathay.raging-peasants.simple-folk
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Simple folk
+  effect: Peasants never gain Experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Raging Peasants / Special Rules / Simple folk
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Simple folk
+    es: null
+  effect_i18n:
+    en: Peasants never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - raging-peasants
+- id: raging-peasants--mob
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.battle-monks-of-cathay.raging-peasants.mob
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Mob
+  effect: Peasants become threatening in large numbers. A Peasant gets +1 Ld for each other allied Peasant model within 3".
+    Due to their rage, they do not benefit from the leader rule.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Raging Peasants / Special Rules / Mob
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Mob
+    es: null
+  effect_i18n:
+    en: Peasants become threatening in large numbers. A Peasant gets +1 Ld for each other allied Peasant model within 3".
+      Due to their rage, they do not benefit from the leader rule.
+    es: null
+  applies_to:
+    profile_ids:
+    - raging-peasants
+- id: raging-peasants--ignored
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.battle-monks-of-cathay.raging-peasants.ignored
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Ignored
+  effect: Peasants that are out of action do not count toward the number of out-of-action models for the purpose of Rout tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Raging Peasants / Special Rules / Ignored
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Ignored
+    es: null
+  effect_i18n:
+    en: Peasants that are out of action do not count toward the number of out-of-action models for the purpose of Rout tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - raging-peasants
+- id: raging-peasants--downtrodden
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.injury-profile
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.injury-profile
+        parameters:
+          value: 2
+  name: Downtrodden
+  effect: When a Peasant is wounded, do not roll for injury. The model is immediately taken out of action.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Raging Peasants / Special Rules / Downtrodden
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Downtrodden
+    es: null
+  effect_i18n:
+    en: When a Peasant is wounded, do not roll for injury. The model is immediately taken out of action.
+    es: null
+  applies_to:
+    profile_ids:
+    - raging-peasants
+- id: band--strictures
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.strictures
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.strictures
+  name: Strictures
+  effect: Dragon Monks and Warrior Monks never wear any kind of armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Strictures
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Strictures
+    es: null
+  effect_i18n:
+    en: Dragon Monks and Warrior Monks never wear any kind of armour.
+    es: null
+  applies_to:
+    band: true
+- id: band--distaste-for-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.forbid-item-categories
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.forbid-item-categories
+        parameters:
+          categories:
+          - poison
+  name: Distaste for Poison
+  effect: Dragon Monks and Warrior Monks may never use any kind of poison or venom.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Distaste for Poison
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Distaste for Poison
+    es: null
+  effect_i18n:
+    en: Dragon Monks and Warrior Monks may never use any kind of poison or venom.
+    es: null
+  applies_to:
+    profile_ids:
+    - dragon-monks
+    - warrior-monks
+  eligibility:
+  - dragon-monks
+  - warrior-monks
+- id: band--outsiders
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.battle-monks-of-cathay.band.outsiders
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Outsiders
+  effect: The Battle Monks warband may never hire any Hired Sword or Dramatis Personae unless that entry specifically states
+    that it may be hired by them.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Outsiders
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Outsiders
+    es: null
+  effect_i18n:
+    en: The Battle Monks warband may never hire any Hired Sword or Dramatis Personae unless that entry specifically states
+      that it may be hired by them.
+    es: null
+  applies_to:
+    band: true
+- id: band--human-characteristic-maximum
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.battle-monks-of-cathay.band.human-characteristic-maximum
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Human Characteristic Maximum
+  effect: Cathayans are humans and therefore use the maximum characteristic profile for humans.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Characteristic Increase
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Human Characteristic Maximum
+    es: null
+  effect_i18n:
+    en: Cathayans are humans and therefore use the maximum characteristic profile for humans.
+    es: null
+  applies_to:
+    band: true
+- id: band--battle-monks-special-skills
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+  name: Battle Monks Special Skills
+  effect: 'Battle Monks of Cathay may choose to use the following skill list instead of the standard skill lists.
+
+    Note that the Emissary may only pick the Warmonger skill.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Battle Monks Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Battle Monks Special Skills
+    es: null
+  effect_i18n:
+    en: 'Battle Monks of Cathay may choose to use the following skill list instead of the standard skill lists.
+
+      Note that the Emissary may only pick the Warmonger skill.'
+    es: null
+  applies_to:
+    band: true
+- id: band--battle-monks-special-skills-energy-focus
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: compiler.energy-focus
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.energy-focus
+  name: Energy Focus
+  effect: If fighting unarmed, the Hero may choose to reduce his Attacks by –1 and thus gain +1 Strength in close combat.
+    The monk may sacrifice any number of attacks this way.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Battle Monks Special Skills / Energy Focus
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Energy Focus
+    es: null
+  effect_i18n:
+    en: If fighting unarmed, the Hero may choose to reduce his Attacks by –1 and thus gain +1 Strength in close combat. The
+      monk may sacrifice any number of attacks this way.
+    es: null
+  applies_to:
+    band: true
+  eligibility:
+  - dragon-monks
+- id: band--battle-monks-special-skills-lightning-speed
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.battle-monks-of-cathay.band.battle-monks-special-skills-lightning-speed
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: movimiento.'
+  name: Lightning Speed
+  effect: The monk may triple his Movement whilst running or charging and may run even when there are enemy models within
+    8”.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Battle Monks Special Skills / Lightning Speed
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Lightning Speed
+    es: null
+  effect_i18n:
+    en: The monk may triple his Movement whilst running or charging and may run even when there are enemy models within 8”.
+    es: null
+  applies_to:
+    band: true
+  eligibility:
+  - dragon-monks
+- id: band--battle-monks-special-skills-leap-of-faith
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.battle-monks-of-cathay.band.battle-monks-special-skills-leap-of-faith
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Leap of Faith
+  effect: The Hero cannot be intercepted whilst charging. He may escape from combat (as described on p. 161 in the Mordheim
+    rulebook) by leaping away without having to pass an Ld test and may declare a leaping charge at the same time in the same
+    turn.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Battle Monks Special Skills / Leap of Faith
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Leap of Faith
+    es: null
+  effect_i18n:
+    en: The Hero cannot be intercepted whilst charging. He may escape from combat (as described on p. 161 in the Mordheim
+      rulebook) by leaping away without having to pass an Ld test and may declare a leaping charge at the same time in the
+      same turn.
+    es: null
+  applies_to:
+    band: true
+  eligibility:
+  - dragon-monks
+- id: band--battle-monks-special-skills-human-shield
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.battle-monks-of-cathay.band.battle-monks-special-skills-human-shield
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: combate múltiple.'
+  name: Human Shield
+  effect: If two or more models are engaged in close combat with the monk, he may choose to grab one to use it as a shield
+    instead of his normal attacks. To do this, he must pass an Initiative test after the first model has attacked, but before
+    the second model attacks. On a successful roll, the monk grabs the first model – the second model directs its full attacks
+    on the friendly model. After the combat phase, the model breaks free and the battle goes on as usual. On a failed roll,
+    the monk and the second model use their normal attacks.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Battle Monks Special Skills / Human Shield
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Human Shield
+    es: null
+  effect_i18n:
+    en: If two or more models are engaged in close combat with the monk, he may choose to grab one to use it as a shield instead
+      of his normal attacks. To do this, he must pass an Initiative test after the first model has attacked, but before the
+      second model attacks. On a successful roll, the monk grabs the first model – the second model directs its full attacks
+      on the friendly model. After the combat phase, the model breaks free and the battle goes on as usual. On a failed roll,
+      the monk and the second model use their normal attacks.
+    es: null
+  applies_to:
+    band: true
+  eligibility:
+  - dragon-monks
+- id: band--battle-monks-special-skills-warmonger
+  kind: warband_skill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.battle-monks-of-cathay.band.battle-monks-special-skills-warmonger
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Warmonger
+  effect: The Emissary may make an Ld test before the battle. If the test is successful, D3+1 Raging Peasants join the warband
+    for the next game (this may exceed the maximum number of warriors). Each Raging Peasant in the warband is subject to Hatred
+    for the duration of the battle.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Battle Monks Special Skills / Warmonger
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  name_i18n:
+    en: Warmonger
+    es: null
+  effect_i18n:
+    en: The Emissary may make an Ld test before the battle. If the test is successful, D3+1 Raging Peasants join the warband
+      for the next game (this may exceed the maximum number of warriors). Each Raging Peasant in the warband is subject to
+      Hatred for the duration of the battle.
+    es: null
+  applies_to:
+    band: true
+  eligibility:
+  - emissary

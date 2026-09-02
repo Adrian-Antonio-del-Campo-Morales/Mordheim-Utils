@@ -1,0 +1,1244 @@
+schema_version: 1
+specifications:
+- id: defence.helmet
+  category: local
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  sources:
+  - target: mechanic/defence.helmet
+    digest: e38f4f8e7da5e91fa8400e0f91b8b4389b266c73cbde0c7896f22388719c4926
+  interpretation: The helmet converts only a Stunned injury to Knocked Down on 4+. Other injury results request
+    no helmet die.
+  interaction_contract:
+    reads:
+    - injury.condition
+    writes:
+    - injury.condition
+  cases:
+  - id: compiled
+    operation: compile
+    roles:
+    - compiled
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    expect:
+      defender.helmet_save: 4
+  - id: injury-1-save-omitted
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: injury-2-save-omitted
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 2
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: injury-3-save-1
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 1
+    expect:
+      result.defender.condition: STUNNED
+  - id: injury-3-save-2
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 2
+    expect:
+      result.defender.condition: STUNNED
+  - id: injury-3-save-3
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 3
+    expect:
+      result.defender.condition: STUNNED
+  - id: injury-3-save-4
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 4
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: injury-3-save-5
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 5
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: injury-3-save-6
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 6
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: injury-4-save-1
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.helmet
+      value: 1
+    expect:
+      result.defender.condition: STUNNED
+  - id: injury-4-save-2
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.helmet
+      value: 2
+    expect:
+      result.defender.condition: STUNNED
+  - id: injury-4-save-3
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.helmet
+      value: 3
+    expect:
+      result.defender.condition: STUNNED
+  - id: injury-4-save-4
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.helmet
+      value: 4
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: injury-4-save-5
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.helmet
+      value: 5
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: injury-4-save-6
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.helmet
+      value: 6
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: injury-5-save-omitted
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 5
+    expect:
+      result.defender.condition: OUT
+  - id: injury-6-save-omitted
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 6
+    expect:
+      result.defender.condition: OUT
+  mutations:
+  - id: remove-save
+    path: defender.helmet_save
+    value: 7
+    cases:
+    - injury-3-save-6
+  - id: wrong-threshold
+    path: defender.helmet_save
+    value: 5
+    cases:
+    - injury-3-save-4
+- id: defence.cooking-pot-helmet
+  category: local
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  sources:
+  - target: mechanic/defence.cooking-pot-helmet
+    digest: 5626269bfa31ca0b5e8da7cca3b15a8d1bdfe926e3716f1ed517e9ce55f34d04
+  interpretation: The helmet converts only a Stunned injury to Knocked Down on 5+. Other injury results request
+    no helmet die.
+  interaction_contract:
+    reads:
+    - injury.condition
+    writes:
+    - injury.condition
+  cases:
+  - id: compiled
+    operation: compile
+    roles:
+    - compiled
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    expect:
+      defender.helmet_save: 5
+  - id: injury-1-save-omitted
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: injury-2-save-omitted
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 2
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: injury-3-save-1
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 1
+    expect:
+      result.defender.condition: STUNNED
+  - id: injury-3-save-2
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 2
+    expect:
+      result.defender.condition: STUNNED
+  - id: injury-3-save-3
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 3
+    expect:
+      result.defender.condition: STUNNED
+  - id: injury-3-save-4
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 4
+    expect:
+      result.defender.condition: STUNNED
+  - id: injury-3-save-5
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 5
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: injury-3-save-6
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 6
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: injury-4-save-1
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.helmet
+      value: 1
+    expect:
+      result.defender.condition: STUNNED
+  - id: injury-4-save-2
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.helmet
+      value: 2
+    expect:
+      result.defender.condition: STUNNED
+  - id: injury-4-save-3
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.helmet
+      value: 3
+    expect:
+      result.defender.condition: STUNNED
+  - id: injury-4-save-4
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.helmet
+      value: 4
+    expect:
+      result.defender.condition: STUNNED
+  - id: injury-4-save-5
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.helmet
+      value: 5
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: injury-4-save-6
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.helmet
+      value: 6
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: injury-5-save-omitted
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 5
+    expect:
+      result.defender.condition: OUT
+  - id: injury-6-save-omitted
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      defence_ids:
+      - defence.cooking-pot-helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 6
+    expect:
+      result.defender.condition: OUT
+  mutations:
+  - id: remove-save
+    path: defender.helmet_save
+    value: 7
+    cases:
+    - injury-3-save-6
+  - id: wrong-threshold
+    path: defender.helmet_save
+    value: 6
+    cases:
+    - injury-3-save-5
+- id: defence.lucky-charm
+  category: stateful
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  sources:
+  - target: mechanic/defence.lucky-charm
+    digest: f2b78f8f57ab832b02e21358e279961709e3ca5d9a71d329eca90a8cc9a6e91b
+  interpretation: The first successful hit offers a single 4+ charm save. The attempt consumes the charm on failure
+    as well as success, and recovery does not replenish it. Misses do not consume it.
+  interaction_contract:
+    reads:
+    - hit.success
+    - state.lucky_charm
+    writes:
+    - hit.success
+    - state.lucky_charm
+  cases:
+  - id: compiled-resource
+    operation: initialize
+    roles:
+    - compiled
+    defender:
+      defence_ids:
+      - defence.lucky-charm
+    expect:
+      result.defender.lucky_charm: true
+  - id: first-hit-1
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
+    operation: pool_recovery
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      defence_ids:
+      - defence.lucky-charm
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 1
+    - key: test.attack.0.lucky-charm
+      value: 1
+    - key: test.attack.0.wound
+      value: 4
+    expect:
+      result.defender.wounds: 2
+      result.defender.lucky_charm: false
+      result.after_recovery.defender.lucky_charm: false
+  - id: first-hit-2
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
+    operation: pool_recovery
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      defence_ids:
+      - defence.lucky-charm
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 1
+    - key: test.attack.0.lucky-charm
+      value: 2
+    - key: test.attack.0.wound
+      value: 4
+    expect:
+      result.defender.wounds: 2
+      result.defender.lucky_charm: false
+      result.after_recovery.defender.lucky_charm: false
+  - id: first-hit-3
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
+    operation: pool_recovery
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      defence_ids:
+      - defence.lucky-charm
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 1
+    - key: test.attack.0.lucky-charm
+      value: 3
+    - key: test.attack.0.wound
+      value: 4
+    expect:
+      result.defender.wounds: 2
+      result.defender.lucky_charm: false
+      result.after_recovery.defender.lucky_charm: false
+  - id: first-hit-4
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
+    operation: pool_recovery
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      defence_ids:
+      - defence.lucky-charm
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 1
+    - key: test.attack.0.lucky-charm
+      value: 4
+    expect:
+      result.defender.wounds: 3
+      result.defender.lucky_charm: false
+      result.after_recovery.defender.lucky_charm: false
+  - id: first-hit-5
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
+    operation: pool_recovery
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      defence_ids:
+      - defence.lucky-charm
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 1
+    - key: test.attack.0.lucky-charm
+      value: 5
+    expect:
+      result.defender.wounds: 3
+      result.defender.lucky_charm: false
+      result.after_recovery.defender.lucky_charm: false
+  - id: first-hit-6
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
+    operation: pool_recovery
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      defence_ids:
+      - defence.lucky-charm
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 1
+    - key: test.attack.0.lucky-charm
+      value: 6
+    expect:
+      result.defender.wounds: 3
+      result.defender.lucky_charm: false
+      result.after_recovery.defender.lucky_charm: false
+  - id: second-hit-has-no-charm
+    roles:
+    - consumption
+    - sequence
+    operation: pool
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      defence_ids:
+      - defence.lucky-charm
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.0.lucky-charm
+      value: 4
+    - key: test.attack.1.wound
+      value: 4
+    expect:
+      result.defender.lucky_charm: false
+      result.defender.wounds: 2
+  - id: misses-preserve-charm
+    roles:
+    - inactive
+    - sequence
+    operation: pool_recovery
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      defence_ids:
+      - defence.lucky-charm
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    - key: test.attack.1.hit
+      value: 1
+    expect:
+      result.defender.lucky_charm: true
+      result.after_recovery.defender.lucky_charm: true
+      result.defender.wounds: 3
+  - id: without-charm
+    roles:
+    - inactive
+    operation: pool
+    attacker:
+      main_weapon_id: weapon.mace
+    context:
+      count: 1
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.0.wound
+      value: 4
+    expect:
+      result.defender.wounds: 2
+  mutations:
+  - id: retain-consumed-charm
+    runtime_fault: retain-lucky-charm
+    cases:
+    - second-hit-has-no-charm
+    - first-hit-1
+    - first-hit-4

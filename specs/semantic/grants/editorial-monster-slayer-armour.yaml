@@ -1,0 +1,50 @@
+schema_version: 1
+specifications:
+- id: karak-zorn-monster-slayer-effective-armour
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - {target: mechanic/skill.monster-slayer-effective-strength-armour, digest: de7c7e0ffbc828085c66756fdde7d858910c1814a7f57497a0ed9d3180d3e944}
+  - {target: rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-monster-slayer/skill.monster-slayer-effective-strength-armour, digest: a6a6d09dd7745aafdd87a6f0c9558b9b249f285fec83bb171b8b5725011b38f9}
+  depends_on: [mechanic/skill.monster-slayer]
+  interpretation: Si Monster Slayer mejora la herida a 4+, la salvacion usa la Fuerza efectiva
+    que produciria ese 4+. Contra R6, un Slayer F3 hiere a 4+ y calcula el modificador como F6.
+    Si la Fuerza real ya es mejor, no se reduce.
+  cases:
+  - id: recipient
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: troll-slayer}
+    context: {rule_id: band--troll-slayer-special-skills-monster-slayer}
+    expect: {result.recipients: [troll-slayer]}
+  - id: wound-toughness-six
+    roles: [active, consumer]
+    operation: wound
+    attacker: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.mace}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 3, attacks: 1}}
+    rolls: [{key: wound, value: 4}]
+    expect: {result.target: 4, result.success: true}
+  - id: armour-uses-effective-six
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.mace}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 3, attacks: 1}, armour_id: armour.gromril-armour}
+    expect: {result.target: 7, result.eligible: false, result.roll: null}
+  - id: strength-seven-not-reduced
+    roles: [boundary]
+    operation: armour
+    attacker: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.mace, characteristics: {weapon_skill: 4, strength: 7, toughness: 4, wounds: 1, initiative: 3, attacks: 1}}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 3, attacks: 1}, armour_id: armour.gromril-armour}
+    expect: {result.target: 7, result.eligible: false}
+  - id: without-skill-armour-uses-real-strength
+    roles: [inactive, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.sword}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 3, attacks: 1}, armour_id: armour.gromril-armour}
+    rolls: [{key: armour, value: 4}]
+    expect: {result.target: 4, result.saved: true}
+  mutations:
+  - id: omit-effective-armour-strength
+    path: attacker.global_effects.tags
+    value: [skill.monster-slayer]
+    cases: [armour-uses-effective-six]

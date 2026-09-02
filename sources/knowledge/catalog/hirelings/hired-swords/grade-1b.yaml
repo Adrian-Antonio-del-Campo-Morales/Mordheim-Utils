@@ -1,0 +1,1773 @@
+schema_version: 1
+ruleset: mordheim
+catalog: hirelings-hired-swords
+grade: 1b
+profiles:
+- id: hireling.hired-sword.bard
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 13
+  name: Bard
+  name_i18n:
+    en: Bard
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 8
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - academic
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.bard.rule.songster
+    name: Songster
+    effect: Friendly warriors within the source-defined range benefit from the Bard's leadership song.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Bard
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.big-game-hunter
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 13 (Lustria)
+  name: Big Game Hunter
+  name_i18n:
+    en: Big Game Hunter
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 16
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: net
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: hunting_rifle
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - shooting
+  - academic
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.big-game-hunter.rule.set-traps
+    name: Set Traps
+    effect: May set traps according to the source procedure.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Big Game Hunter
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.black-orc-overseer
+  kind: hired-sword
+  grade: 1b
+  publication: Nemesis Crown Supplement
+  name: Black Orc Overseer
+  name_i18n:
+    en: Black Orc Overseer
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 15
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: heavy_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: helmet
+      quantity:
+        kind: fixed
+        value: 1
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.black-orc-overseer.rule.overseer
+    name: Overseer
+    effect: Uses the source Black Orc Overseer special rules.
+  unresolved_references:
+  - kind: equipment_choice
+    source_name: two Axes or Double-handed Weapon
+  source_notes:
+  - The original publication does not provide advancement skill lists; Mordheimer gives an editorial recommendation. It has not been normalized as canonical skill_access.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Black Orc Overseer
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.bounty-hunter
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 13
+  name: Bounty Hunter
+  name_i18n:
+    en: Bounty Hunter
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 20
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: pistol
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: crossbow
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: heavy_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: helmet
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: rope_hook
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.bounty-hunter.rule.capture
+    name: Capture
+    effect: Has a source-defined post-battle capture rule.
+  unresolved_references:
+  - kind: equipment_mapping
+    source_name: Lantern
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Bounty Hunter
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.chameleon-skink
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 12 (Lustria)
+  name: Chameleon Skink
+  name_i18n:
+    en: Chameleon Skink
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 4
+    S: 4
+    T: 2
+    W: 1
+    I: 5
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 16
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: blowpipe
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: buckler
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - shooting
+  - speed
+  - special
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.chameleon-skink.rule.chameleon-skin
+    name: Chameleon Skin
+    effect: Uses the source chameleon-skin concealment rule.
+  - id: hireling.hired-sword.chameleon-skink.rule.infiltrator
+    name: Infiltrator
+    effect: May infiltrate according to the source rule.
+  - id: hireling.hired-sword.chameleon-skink.rule.aquatic
+    name: Aquatic
+    effect: Uses the source aquatic rule.
+  - id: hireling.hired-sword.chameleon-skink.rule.cold-blooded
+    name: Cold Blooded
+    effect: Uses the source cold-blooded rule.
+  unresolved_references:
+  - kind: equipment_modifier
+    source_name: poison darts
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Chameleon Skink
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.clan-skryre-rat-ogre
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 25
+  name: Clan Skryre Rat Ogre
+  name_i18n:
+    en: Clan Skryre Rat Ogre
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 5
+    T: 5
+    W: 3
+    I: 1
+    A: 3
+    Ld: 10
+  warband_rating:
+    kind: fixed
+    value: 25
+  equipment:
+    unique_equipment:
+    - id: hireling.hired-sword.clan-skryre-rat-ogre.item.warpfire-thrower
+      name: Integrated Warpfire Thrower
+    - id: hireling.hired-sword.clan-skryre-rat-ogre.item.bio-armour
+      name: Bio-mechanical Armour
+      save: 4+
+  skill_access: []
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.large
+    name: Large
+    effect: Counts as a large target.
+  - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.fear
+    name: Fear
+    effect: Causes fear.
+  - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-machinery
+    name: Bio Machinery
+    effect: Uses the source bio-machinery rule.
+  - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.wyrdstone-powered
+    name: Wyrdstone Powered
+    effect: Requires source-defined wyrdstone upkeep/power.
+  - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.may-not-run
+    name: May Not Run
+    effect: May not run according to the source rule.
+  - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.immune-to-poison
+    name: Immune to Poison
+    effect: Immune to poison.
+  - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.warpfire-thrower
+    name: Warpfire Thrower
+    effect: Has an integrated warpfire thrower and malfunction rule.
+  - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.no-experience
+    name: No Experience
+    effect: Does not gain Experience.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Clan Skryre Rat Ogre
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.dark-elf-assassin
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 12 (Lustria)
+  name: Dark Elf Assassin
+  name_i18n:
+    en: Dark Elf Assassin
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 5
+    WS: 5
+    BS: 5
+    S: 4
+    T: 4
+    W: 1
+    I: 7
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 25
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dark_venom
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.dark-elf-assassin.item.dark-elf-blade
+      name: Dark Elf Blade
+    - id: hireling.hired-sword.dark-elf-assassin.item.dark-cloak
+      name: Dark Cloak
+      counts_as:
+        item_id: elven_cloak
+        context: rules
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.dark-elf-assassin.rule.perfect-killer
+    name: Perfect Killer
+    effect: Uses the source Perfect Killer rule.
+  - id: hireling.hired-sword.dark-elf-assassin.rule.kindred-hatred
+    name: Kindred Hatred
+    effect: Uses the source Dark Elf hatred rule.
+  unresolved_references:
+  - kind: equipment_mapping
+    source_name: Repeater Crossbow
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dark Elf Assassin
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.duellist
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 13
+  name: Duellist
+  name_i18n:
+    en: Duellist
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 2
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 18
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: duelling_pistol
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.duellist.item.cloak
+      name: Duelist's Cloak
+      counts_as:
+        item_id: buckler
+        context: rules
+  skill_access:
+  - combat
+  - shooting
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.duellist.rule.darting-steel
+    name: Darting Steel
+    effect: Uses the source Darting Steel rule.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Duellist
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.dwarf-pathfinder
+  kind: hired-sword
+  grade: 1b
+  publication: Nemesis Crown Supplement
+  name: Dwarf Pathfinder
+  name_i18n:
+    en: Dwarf Pathfinder
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  warband_rating:
+    kind: base_plus_experience
+    base: 12
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: axe
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: crossbow
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - shooting
+  - special
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.dwarf-pathfinder.rule.explorer
+    name: Explorer
+    effect: Uses the source exploration rule.
+  - id: hireling.hired-sword.dwarf-pathfinder.rule.hard-to-kill
+    name: Hard to Kill
+    effect: Uses the source Dwarf injury rule.
+  - id: hireling.hired-sword.dwarf-pathfinder.rule.hard-head
+    name: Hard Head
+    effect: Uses the source Dwarf concussion rule.
+  - id: hireling.hired-sword.dwarf-pathfinder.rule.hate-orcs-and-goblins
+    name: Hate Orcs and Goblins
+    effect: Hates Orcs and Goblins.
+  - id: hireling.hired-sword.dwarf-pathfinder.rule.elf-grudge
+    name: Elf Grudge
+    effect: Uses the source Elf-grudge restriction.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Pathfinder
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.dwarf-treasure-hunter
+  kind: hired-sword
+  grade: 1b
+  publication: Fanatic Magazine 8
+  name: Dwarf Treasure Hunter
+  name_i18n:
+    en: Dwarf Treasure Hunter
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 3
+    WS: 5
+    BS: 4
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  warband_rating:
+    kind: base_plus_experience
+    base: 24
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: gromril_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: helmet
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: hammer
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: treasure_map
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.dwarf-treasure-hunter.item.mining-pick
+      name: Mining Pick
+    - id: hireling.hired-sword.dwarf-treasure-hunter.item.lantern-rig
+      name: Lantern Rig
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.dwarf-treasure-hunter.rule.hard-to-kill
+    name: Hard to Kill
+    effect: Uses the Dwarf injury rule.
+  - id: hireling.hired-sword.dwarf-treasure-hunter.rule.hard-head
+    name: Hard Head
+    effect: Uses the Dwarf concussion rule.
+  - id: hireling.hired-sword.dwarf-treasure-hunter.rule.hate-orcs-and-goblins
+    name: Hate Orcs and Goblins
+    effect: Hates Orcs and Goblins.
+  - id: hireling.hired-sword.dwarf-treasure-hunter.rule.treasure-hunter
+    name: Treasure Hunter
+    effect: Uses the source treasure-hunting subtable.
+  - id: hireling.hired-sword.dwarf-treasure-hunter.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Elven employers
+    effect: Mercenaries and Witch Hunters may hire the Dwarf Treasure Hunter. A warband whose current roster includes Elves may also hire him.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Treasure Hunter
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.elf-mage
+  kind: hired-sword
+  grade: 1b
+  publication: Fanatic Magazine 5
+  name: Elf Mage
+  name_i18n:
+    en: Elf Mage
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 2
+    I: 6
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 23
+  equipment:
+    fixed_items:
+    - item_id: staff
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: elven_cloak
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access: []
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.elf-mage.rule.fey
+    name: Fey
+    effect: Uses the source Fey rule.
+  - id: hireling.hired-sword.elf-mage.rule.sorcery
+    name: Sorcery
+    effect: Uses the source sorcery rule.
+  - id: hireling.hired-sword.elf-mage.rule.wanderer
+    name: Wanderer
+    effect: Does not advance and uses the source one-battle/wanderer condition.
+  - id: hireling.hired-sword.elf-mage.rule.wizard
+    name: Wizard
+    effect: Begins with three randomly generated Djed'hi spells.
+  unresolved_references:
+  - kind: spell_list
+    source_name: Djed'hi
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Elf Mage
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.gaoler
+  kind: hired-sword
+  grade: 1b
+  publication: Mordheim Facebook Group
+  name: Gaoler
+  name_i18n:
+    en: Gaoler
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 4
+    T: 4
+    W: 2
+    I: 3
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 18
+    per_experience_point: 1
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.gaoler.rule.torturer-s-grapple
+    name: Torturer's Grapple
+    effect: May replace normal attacks with the source-defined grapple.
+  - id: hireling.hired-sword.gaoler.rule.devout
+    name: Devout
+    effect: May remain unpaid under the source Sigmarite-priest condition but does not fight until paid.
+  - id: hireling.hired-sword.gaoler.rule.inured-to-pain
+    name: Inured to Pain
+    effect: Injury rolls against the Gaoler suffer the source modifier.
+  - id: hireling.hired-sword.gaoler.rule.hatred
+    name: Hatred
+    effect: Hates the source-listed Chaos/Undead enemy categories.
+  unresolved_references:
+  - kind: equipment_choice
+    source_name: heavy chain (counts as flail) or two Hammers/Clubs
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Gaoler
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.halfling-thief
+  kind: hired-sword
+  grade: 1b
+  publication: Fanatic Magazine 7
+  name: Halfling Thief
+  name_i18n:
+    en: Halfling Thief
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 4
+    S: 2
+    T: 2
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 14
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: throwing_knives
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: rope_hook
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - speed
+  - shooting
+  - special
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.halfling-thief.rule.wily-thief
+    name: Wily Thief
+    effect: Adds extra Treasure when its source conditions are met.
+  - id: hireling.hired-sword.halfling-thief.rule.stealthy
+    name: Stealthy
+    effect: May hide/run according to the source rule.
+  - id: hireling.hired-sword.halfling-thief.rule.infiltrator
+    name: Infiltrator
+    effect: Uses the source infiltration rule.
+  - id: hireling.hired-sword.halfling-thief.rule.pick-locks
+    name: Pick Locks
+    effect: Uses Initiative to open locked doors.
+  - id: hireling.hired-sword.halfling-thief.rule.cutpurse
+    name: Cutpurse
+    effect: Adds one Treasure when eligible.
+  - id: hireling.hired-sword.halfling-thief.rule.uneasy-ally
+    name: Uneasy Ally
+    effect: Has a source-defined post-battle upkeep/retention table.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Halfling Thief
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.human-scout
+  kind: hired-sword
+  grade: 1b
+  publication: Nemesis Crown Supplement
+  name: Human Scout
+  name_i18n:
+    en: Human Scout
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  warband_rating:
+    kind: base_plus_experience
+    base: 9
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: bow
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - speed
+  starting_skill_ids:
+  - skill.quick-shot
+  - skill.eagle-eyes
+  - skill.trick-shooter
+  rules:
+  - id: hireling.hired-sword.human-scout.rule.not-a-fighter
+    name: Not a Fighter
+    effect: Uses a special injury/retention rule.
+  - id: hireling.hired-sword.human-scout.rule.expert-hunter
+    name: Expert Hunter
+    effect: Uses the source hunting rule.
+  - id: hireling.hired-sword.human-scout.rule.sit-in-wait
+    name: Sit in Wait
+    effect: Uses the source ambush rule.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Human Scout
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.kislev-ranger
+  kind: hired-sword
+  grade: 1b
+  publication: Fanatic Magazine 6
+  name: Kislev Ranger
+  name_i18n:
+    en: Kislev Ranger
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 15
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: bow
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.kislev-ranger.item.hunters-cloak
+      name: Hunter's Cloak
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  - special
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.kislev-ranger.rule.heart-strike
+    name: Heart Strike
+    effect: Uses the source Heart Strike rule.
+  - id: hireling.hired-sword.kislev-ranger.rule.hunter-s-cloak
+    name: Hunter's Cloak
+    effect: Uses a unique cloak rule.
+  - id: hireling.hired-sword.kislev-ranger.rule.loner
+    name: Loner
+    effect: Uses the source loner rule.
+  - id: hireling.hired-sword.kislev-ranger.rule.seeker
+    name: Seeker
+    effect: Modifies exploration according to the source.
+  - id: hireling.hired-sword.kislev-ranger.rule.animal-call
+    name: Animal Call
+    effect: Special skill option.
+  - id: hireling.hired-sword.kislev-ranger.rule.herb-lore
+    name: Herb Lore
+    effect: Special skill option.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Kislev Ranger
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.mule-skinner
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 14
+  name: Mule Skinner
+  name_i18n:
+    en: Mule Skinner
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 20
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: whip
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids:
+  - skill.streetwise
+  - skill.haggle
+  rules:
+  - id: hireling.hired-sword.mule-skinner.rule.animal-handler
+    name: Animal Handler
+    effect: Uses the source animal-handler rule.
+  - id: hireling.hired-sword.mule-skinner.rule.whip-master
+    name: Whip Master
+    effect: Uses the source whip-master rule.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Mule Skinner
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.nomad-scout
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 19 (Khemri)
+  name: Nomad Scout
+  name_i18n:
+    en: Nomad Scout
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 12
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: bow
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - shooting
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.nomad-scout.rule.son-of-the-desert
+    name: Son of the Desert
+    effect: Uses the source desert-specialist rule.
+  source_notes:
+  - The source weapon is a Scimitar; this entry records it by the existing canonical Sword item only because the rule states its sword-equivalent use.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Nomad Scout
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.norse-shaman
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 12 (Lustria); Border Town Burning Supplement
+  name: Norse Shaman
+  name_i18n:
+    en: Norse Shaman
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 25
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: staff
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - academic
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.norse-shaman.rule.runecaster
+    name: Runecaster
+    effect: Begins with two Norse Runes and may learn further runes according to the source.
+  unresolved_references:
+  - kind: equipment_choice
+    source_name: Sword or Axe
+  - kind: spell_list
+    source_name: Norse Runes
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Norse Shaman
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.old-prospector
+  kind: hired-sword
+  grade: 1b
+  publication: Nemesis Crown Supplement
+  name: Old Prospector
+  name_i18n:
+    en: Old Prospector
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 9
+  warband_rating:
+    kind: base_plus_experience
+    base: 15
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: blunderbuss
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.old-prospector.item.pick
+      name: Prospector's Pick
+      counts_as: two-handed-weapon
+  skill_access:
+  - strength
+  - speed
+  starting_skill_ids:
+  - skill.wyrdstone-hunter
+  - skill.resilient
+  rules:
+  - id: hireling.hired-sword.old-prospector.rule.hardened
+    name: Hardened
+    effect: Immune to Fear.
+  - id: hireling.hired-sword.old-prospector.rule.finders-keepers
+    name: Finders Keepers
+    effect: Keeps source-defined Treasure/Wyrdstone finds.
+  - id: hireling.hired-sword.old-prospector.rule.old-coot
+    name: Old Coot
+    effect: May leave after a battle on the source D6 result.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Old Prospector
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.pathfinder
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 12 (Lustria)
+  name: Pathfinder
+  name_i18n:
+    en: Pathfinder
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 25
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: long_bow
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: rope_hook
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: healing_herbs
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.pathfinder.rule.lay-of-the-land
+    name: Lay of the Land
+    effect: Ignores terrain modifiers per source.
+  - id: hireling.hired-sword.pathfinder.rule.knowledge-of-myths-and-legends
+    name: Knowledge of Myths and Legends
+    effect: May reroll one exploration die when eligible.
+  - id: hireling.hired-sword.pathfinder.rule.lookout
+    name: Lookout
+    effect: Special skill option to cancel a trap/hazard.
+  - id: hireling.hired-sword.pathfinder.rule.this-way
+    name: This Way
+    effect: Special skill option allowing nearby models to traverse impassable terrain.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Pathfinder
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.priest-of-morr
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 12
+  name: Priest Of Morr
+  name_i18n:
+    en: Priest Of Morr
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 9
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: scythe
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - academic
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.priest-of-morr.rule.loner
+    name: Loner
+    effect: Does not suffer All Alone.
+  - id: hireling.hired-sword.priest-of-morr.rule.funerary-rites
+    name: Funerary Rites
+    effect: May learn and perform Funerary Rites according to Magic rules.
+  unresolved_references:
+  - kind: entity_semantics
+    source_name: Mercenary Hero replacement rather than normal Hired Sword
+  - kind: spell_list
+    source_name: Funerary Rites
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Priest Of Morr
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.runesmith-journeyman
+  kind: hired-sword
+  grade: 1b
+  publication: Nemesis Crown Supplement
+  name: Runesmith Journeyman
+  name_i18n:
+    en: Runesmith Journeyman
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  warband_rating:
+    kind: base_plus_experience
+    base: 15
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: heavy_armour
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.runesmith-journeyman.item.gromril-hammer
+      name: Gromril Hammer
+  skill_access:
+  - combat
+  - strength
+  - special
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.runesmith-journeyman.rule.runesmith
+    name: Runesmith
+    effect: May inscribe runes according to source.
+  - id: hireling.hired-sword.runesmith-journeyman.rule.armourer
+    name: Armourer
+    effect: May buy one eligible item at a 2D6 gc discount if eligible.
+  - id: hireling.hired-sword.runesmith-journeyman.rule.armour
+    name: Armour
+    effect: Does not suffer Dwarf movement penalty from armour.
+  - id: hireling.hired-sword.runesmith-journeyman.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Elven employers
+    effect: Mercenaries and Witch Hunters may hire the Runesmith Journeyman. A warband whose current roster includes Elves may also hire him; the source's higher upkeep for such a warband is resolved separately.
+  unresolved_references:
+  - kind: rune_system
+    source_name: Rune use
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Runesmith Journeyman
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.shadow-warrior
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 13 (Lustria)
+  name: Shadow Warrior
+  name_i18n:
+    en: Shadow Warrior
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 6
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 12
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: long_bow
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: shield
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - shooting
+  - special
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.shadow-warrior.rule.hate-dark-elves
+    name: Hate Dark Elves
+    effect: Hates Dark Elves.
+  - id: hireling.hired-sword.shadow-warrior.rule.excellent-sight
+    name: Excellent Sight
+    effect: Uses the source improved spotting rule.
+  - id: hireling.hired-sword.shadow-warrior.rule.bitter-enemies
+    name: Bitter Enemies
+    effect: Uses the source rivalry/restriction rule.
+  - id: hireling.hired-sword.shadow-warrior.rule.infiltration
+    name: Infiltration
+    effect: Uses source infiltration.
+  - id: hireling.hired-sword.shadow-warrior.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Evil Hired Sword incompatibility
+    effect: The Shadow Warrior cannot be hired by or remain with a warband whose current roster contains an evil Hired Sword.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Shadow Warrior
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.snake-charmer
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 19 (Khemri)
+  name: Snake Charmer
+  name_i18n:
+    en: Snake Charmer
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 5
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - academic
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.snake-charmer.rule.snake-charmer
+    name: Snake Charmer
+    effect: Controls up to the source-defined number of snakes.
+  - id: hireling.hired-sword.snake-charmer.rule.immune-to-poison
+    name: Immune to Poison
+    effect: Immune to poison.
+  - id: hireling.hired-sword.snake-charmer.rule.venomous
+    name: Venomous
+    effect: Snake attacks use the source venom rule.
+  - id: hireling.hired-sword.snake-charmer.rule.animals
+    name: Animals
+    effect: Snakes use animal/no-XP rules.
+  - id: hireling.hired-sword.snake-charmer.rule.snake-hunter
+    name: Snake Hunter
+    effect: Uses the source snake-hunting rule.
+  unresolved_references:
+  - kind: companion_profiles
+    source_name: three snakes with separate profile
+  - kind: rating_formula
+    source_name: +5 per snake in addition to charmer rating
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Snake Charmer
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.thief
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 19 (Khemri)
+  name: Thief
+  name_i18n:
+    en: Thief
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 22
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.thief.item.thiefs-cloak
+      name: Thief's Cloak
+  skill_access:
+  - combat
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.thief.rule.thief
+    name: Thief
+    effect: Uses the source stealing/exploration rules.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Thief
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.tomb-robber
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 19 (Khemri)
+  name: Tomb Robber
+  name_i18n:
+    en: Tomb Robber
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 20
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: crossbow_pistol
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: rope_hook
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.tomb-robber.rule.explorer
+    name: Explorer
+    effect: Uses the source exploration rule.
+  - id: hireling.hired-sword.tomb-robber.rule.trap-expert
+    name: Trap Expert
+    effect: Uses source trap rule.
+  - id: hireling.hired-sword.tomb-robber.rule.excellent-reflexes
+    name: Excellent Reflexes
+    effect: Uses source reflex rule.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Tomb Robber
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.warrior-priest-of-sigmar
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 28
+  name: Warrior Priest Of Sigmar
+  name_i18n:
+    en: Warrior Priest Of Sigmar
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 16
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: shield
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.warrior-priest-of-sigmar.item.hammer-of-sigmar
+      name: Hammer of Sigmar
+  skill_access:
+  - academic
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.warrior-priest-of-sigmar.rule.prayers
+    name: Prayers
+    effect: May learn/use Prayers of Sigmar.
+  - id: hireling.hired-sword.warrior-priest-of-sigmar.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Middenheim variant
+    effect: Middenheim Mercenaries may not hire the Warrior Priest of Sigmar. The application must evaluate the selected Mercenary variant.
+  unresolved_references:
+  - kind: spell_list
+    source_name: Prayers of Sigmar
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Warrior Priest Of Sigmar
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.witch
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 13
+  name: Witch
+  name_i18n:
+    en: Witch
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 2
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 14
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: staff
+      quantity:
+        kind: fixed
+        value: 1
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.witch.rule.wizard
+    name: Wizard
+    effect: Begins with two random Charms & Hexes spells.
+  - id: hireling.hired-sword.witch.rule.recluse
+    name: Recluse
+    effect: Requires a source D6 hiring check.
+  - id: hireling.hired-sword.witch.rule.potions
+    name: Potions
+    effect: May give one Hero a source-defined random potion before battle.
+  - id: hireling.hired-sword.witch.rule.reluctant
+    name: Reluctant
+    effect: Uses source movement/charge restrictions.
+  unresolved_references:
+  - kind: spell_list
+    source_name: Charms & Hexes
+  source_notes:
+  - The original publication does not state advancement skill lists. Mordheimer recommends Academic/Charms & Hexes; this recommendation is not normalized into skill_access.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Witch
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.witch-hunter
+  kind: hired-sword
+  grade: 1b
+  publication: Nemesis Crown Supplement
+  name: Witch Hunter
+  name_i18n:
+    en: Witch Hunter
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 15
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: blessed_water
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - speed
+  - shooting
+  - academic
+  - strength
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.witch-hunter.rule.burn-the-witch
+    name: Burn the Witch
+    effect: Hates enemy spellcasters and has source hiring restrictions regarding friendly spellcasters.
+  - id: hireling.hired-sword.witch-hunter.rule.in-sigmar-s-name
+    name: In Sigmar's Name
+    effect: May reroll failed Fear tests.
+  - id: hireling.hired-sword.witch-hunter.rule.sigmar-s-reward
+    name: Sigmar's Reward
+    effect: Can reduce upkeep when source victory conditions are met.
+  - id: hireling.hired-sword.witch-hunter.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Spellcaster restriction
+    effect: The Witch Hunter will not work for a warband whose current roster contains a spellcaster, except a Priest of Sigmar, Ulric, Taal or Morr.
+  unresolved_references:
+  - kind: equipment_choice
+    source_name: Duelling Pistol or Crossbow Pistol
+  - kind: equipment_mapping
+    source_name: Garlic
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Witch Hunter
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: hireling.hired-sword.wolf-priest-of-ulric
+  kind: hired-sword
+  grade: 1b
+  publication: Town Cryer 8
+  name: Wolf Priest of Ulric
+  name_i18n:
+    en: Wolf Priest of Ulric
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: wolfcloak
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.wolf-priest-of-ulric.rule.prayers
+    name: Prayers
+    effect: May use Prayers of Ulric.
+  - id: hireling.hired-sword.wolf-priest-of-ulric.rule.hatred
+    name: Hatred
+    effect: Hates the source-listed Sigmarite models.
+  - id: hireling.hired-sword.wolf-priest-of-ulric.rule.wolf-companion
+    name: Wolf Companion
+    effect: May be accompanied by the source Wolf Companion.
+  - id: hireling.hired-sword.wolf-priest-of-ulric.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Middenheim variant
+    effect: The Wolf Priest of Ulric is a Hero replacement available only to Middenheim Mercenaries. The application must evaluate the selected Mercenary variant.
+  unresolved_references:
+  - kind: entity_semantics
+    source_name: Middenheim Hero replacement rather than normal Hired Sword
+  - kind: equipment_restriction
+    source_name: blunt weapons only except dagger; no armour except white wolf cloak
+  - kind: spell_list
+    source_name: Prayers of Ulric
+  - kind: companion_profile
+    source_name: Wolf Companion
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Wolf Priest of Ulric
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1b

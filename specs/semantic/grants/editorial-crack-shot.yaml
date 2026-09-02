@@ -1,0 +1,37 @@
+schema_version: 1
+specifications:
+- id: editorial-crack-shot-grant
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - {target: rule/mordheim/gunnery-school-of-nuln/pistoliers--crack-shot/skill.crack-shot, digest: bfcc82534f7863dafaa1281396f3f1c7a8c6e8fc0fbcd9d2b5ba455f8f35470e}
+  depends_on: [mechanic/skill.crack-shot]
+  interpretation: Crack Shot is an automatic profile rule belonging only to Pistoliers. Equipping that profile with
+    a legal pistol exposes the canonical first-round close-combat reroll.
+  cases:
+  - id: only-pistoliers-receive-rule
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: mordheim, band_id: gunnery-school-of-nuln, profile_id: pistoliers}
+    context: {rule_id: pistoliers--crack-shot}
+    expect: {result.recipients: [pistoliers]}
+    expect_contains:
+      defender.global_effects.tags: [skill.crack-shot]
+  - id: granted-consumer
+    roles: [active, boundary, consumer]
+    operation: hit
+    attacker:
+      collection: mordheim
+      band_id: gunnery-school-of-nuln
+      profile_id: pistoliers
+      main_weapon_id: weapon.pistol
+    context: {first_round: true}
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected: {'true': 8/9, 'false': 1/9}
+  mutations:
+  - id: remove-profile-crack-shot
+    path: attacker.global_effects.tags
+    value: []
+    cases: [granted-consumer]

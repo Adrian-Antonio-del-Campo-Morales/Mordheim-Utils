@@ -1,0 +1,212 @@
+schema_version: 2
+band_id: khemri-nomads-of-araby
+profiles:
+- id: sheikh
+  name: Sheikh
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: khemri
+    printed_page: 50
+    section: 1 Sheikh
+  name_i18n:
+    en: Sheikh
+    es: null
+  source_path:
+  - heroes
+  - 1 Sheikh
+  rule_ids:
+  - sheikh--leader
+  combat_traits: {}
+- id: champions
+  name: Arena Champions
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: khemri
+    printed_page: 50
+    section: 0-2 Arena Champions
+  name_i18n:
+    en: Arena Champions
+    es: null
+  source_path:
+  - heroes
+  - 0-2 Arena Champions
+  rule_ids: []
+  combat_traits: {}
+- id: mystic
+  name: Desert Mystic
+  type: hero
+  cost: 30
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - academic
+  - speed
+  - special
+  source:
+    manual: khemri
+    printed_page: 50
+    section: 0-1 Desert Mystic
+  name_i18n:
+    en: Desert Mystic
+    es: null
+  source_path:
+  - heroes
+  - 0-1 Desert Mystic
+  rule_ids:
+  - mystic--wizard
+  combat_traits: {}
+- id: bedouin
+  name: Bedouins
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 51
+    section: 0-2 Bedouins
+  name_i18n:
+    en: Bedouins
+    es: null
+  source_path:
+  - henchmen
+  - 0-2 Bedouins
+  rule_ids:
+  - bedouin--desert-trader
+  combat_traits: {}
+- id: nomad-warriors
+  name: Nomad Warriors
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 51
+    section: Nomad Warriors
+  name_i18n:
+    en: Nomad Warriors
+    es: null
+  source_path:
+  - henchmen
+  - Nomad Warriors
+  rule_ids: []
+  combat_traits: {}
+- id: slaves
+  name: Slaves
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - slave-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 51
+    section: 0-5 Slaves
+  name_i18n:
+    en: Slaves
+    es: null
+  source_path:
+  - henchmen
+  - 0-5 Slaves
+  rule_ids:
+  - slaves--life-of-slavery
+  combat_traits: {}

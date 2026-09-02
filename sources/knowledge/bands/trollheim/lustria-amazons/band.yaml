@@ -1,0 +1,62 @@
+schema_version: 2
+id: lustria-amazons
+canonical_family: amazons
+name: Amazons
+name_i18n:
+  en: Amazons
+  es: null
+original_locale: es
+categories:
+- trollheim
+grade: null
+setting: Lustria
+publication: Lustria
+status: source-normalized
+sources:
+- manual: lustria
+  printed_page: 66-72
+  section: Amazons
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: amazon-priestess
+    minimum: 1
+    maximum: 1
+  - profile_id: amazon-champions
+    minimum: 0
+    maximum: 2
+  - profile_id: amazon-totem-warriors
+    minimum: 0
+    maximum: 2
+  - profile_id: amazon-warriors
+    minimum: 1
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: amazon-scouts
+    minimum: 0
+    maximum: 3
+    group_size:
+      minimum: 1
+      maximum: 3
+  - profile_id: great-cats
+    minimum: 0
+    maximum: 3
+    group_size:
+      minimum: 1
+      maximum: 3
+ruleset: mordheim
+rule_ids:
+- band--sacrifice
+- band--not-one-of-us
+- band--isolationists
+- band--norse-enmity
+- band--great-cat-limit
+- band--amazon-special-skills-lizard-hunter
+- band--amazon-special-skills-concealment
+- band--amazon-special-skills-hypnotic-dance
+- band--amazon-special-skills-animal-fury
+- band--amazon-special-skills-elixir-of-life

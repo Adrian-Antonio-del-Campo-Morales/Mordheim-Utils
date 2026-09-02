@@ -1,0 +1,67 @@
+schema_version: 1
+ruleset: mordheim
+catalog: campaign-exploration-and-income
+status: draft
+# Define tablas y recompensas posibles. Dados tirados, hallazgos, coronas y
+# wyrdstone obtenidos se guardan en el estado de campaña, no aquí.
+exploration:
+  dice_allocation: []
+  results: []
+income:
+  wyrdstone_sale: []
+examples:
+  dice_allocation:
+  - id: example.exploration-surviving-hero
+    eligible_warrior: hero
+    dice: 1
+    condition: survived_battle
+    source_refs: []
+  results:
+  - id: example.exploration-double-one
+    dice_pattern: '1,1'
+    outcome: Example hidden cache
+    rewards:
+      gold_crowns: 10
+      wyrdstone_fragments: 1
+    follow_up: null
+    source_refs: []
+  - id: example.exploration-item-reward
+    dice_pattern: '2,2'
+    outcome: Example discovered cache
+    rewards:
+      item_ids:
+      - dagger
+    follow_up: null
+    source_refs: []
+    note: Fictitious example of an item reference; dagger is not a claimed reward here.
+  wyrdstone_sale:
+    id: example.wyrdstone-sale-table
+    inputs:
+    - id: fragments_sold
+      kind: integer
+    - id: warband_size
+      kind: integer
+    cells:
+    - when:
+        fragments_sold:
+          min: 1
+          max: 1
+        warband_size:
+          min: 1
+          max: 3
+      profit_gc: 12
+    restrictions:
+    - once_per_post_battle_sequence
+    source_refs: []
+    note: Fictitious value; real rows must be transcribed from the income table.
+# dice_allocation: id, eligible_warrior, dice, condition, source_refs
+# results: id, dice_pattern, outcome, rewards, follow_up, source_refs. Objetos
+# dentro de rewards se refieren solo por item_ids canónicos.
+# wyrdstone_sale: id, inputs, cells, restrictions, source_refs. cells es una
+# tabla de decisión: cada when define rangos inclusivos para fragmentos vendidos
+# y tamaño de banda, y produce profit_gc. No usar cadenas como '1-3'.
+effect_ids:
+- campaign.exploration.dice
+- campaign.exploration.reroll
+- campaign.exploration.result
+- campaign.income.sell-wyrdstone

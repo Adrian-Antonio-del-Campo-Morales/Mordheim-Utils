@@ -1,0 +1,383 @@
+schema_version: 2
+ruleset: mordheim
+scope: close-combat-only
+skills:
+- id: skill.always-strikes-first
+  name: Always Strikes First
+  category: special
+  summary: Strikes first in close combat.
+  kind: warband
+  engine_option: Always Strikes First
+  source_refs: []
+- id: skill.unarmed-fighting
+  name: Unarmed Fighting
+  category: special
+  summary: Fights unarmed without penalties and gains +1 Attack while unarmed.
+  kind: warband
+  engine_option: Unarmed Fighting
+  source_refs: []
+- id: skill.axe-expert
+  name: Axe Expert
+  category: special
+  summary: Re-rolls missed axe attacks when charging.
+  kind: warband
+  engine_option: Axe Expert
+  source_refs: []
+- id: skill.axe-master
+  name: Axe Master
+  category: special
+  summary: May parry with normal axes.
+  kind: warband
+  engine_option: Axe Master
+  source_refs: []
+- id: skill.bellowing-battle-roar
+  name: Bellowing Battle Roar
+  category: special
+  summary: Enemies suffer -1 to hit in the first round.
+  kind: warband
+  engine_option: Bellowing Battle Roar
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Lizardmen special skills / Saurus Only / Bellowing Battle Roar
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+- id: skill.berserker
+  name: Berserker
+  category: special
+  summary: +1 to hit while charging.
+  kind: warband
+  engine_option: Berserker
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Slayer Special Skills / Berserker
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - manual: mordheimer.net
+    printed_page: 0
+    section: TROLL SLAYER SKILLS / Berserker
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Troll Slayer Special Skills / Berserker
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+- id: skill.crushing-blow
+  name: Crushing Blow
+  category: special
+  summary: Attacks cannot be parried.
+  kind: warband
+  engine_option: Crushing Blow
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Norse special skills / crushing blow
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+- id: skill.defensive-stance
+  name: Defensive Stance
+  category: special
+  summary: May parry with any weapon; Parry weapons match the roll.
+  kind: warband
+  engine_option: Defensive Stance
+  source_refs: []
+- id: skill.elven-agility
+  name: Elven Agility
+  category: special
+  summary: 6+ special save in close combat; improves to 4+ with Step Aside.
+  kind: warband
+  engine_option: Elven Agility
+  source_refs: []
+- id: skill.expert-fighter
+  name: Expert Fighter
+  category: special
+  summary: +1 to wound rolls.
+  kind: warband
+  engine_option: Expert Fighter
+  source_refs: []
+- id: skill.ferocious-charge
+  name: Ferocious Charge
+  category: special
+  summary: Doubles Attacks while charging, with -1 to hit that turn.
+  kind: warband
+  engine_option: Ferocious Charge
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Slayer Special Skills / Ferocious Charge
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - manual: mordheimer.net
+    printed_page: 0
+    section: TROLL SLAYER SKILLS / Ferocious Charge
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Troll Slayer Special Skills / Ferocious Charge
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+- id: skill.hard-to-kill
+  name: Hard to Kill
+  category: special
+  summary: Injury rolls of 1-3 cause Knocked Down, 4-5 cause Stunned, and 6 causes Out of Action.
+  kind: warband
+  engine_option: Hard to Kill
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hard to Kill
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hard to Kill
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hard to Kill
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+- id: skill.hardy-constitution
+  name: Hardy Constitution
+  category: special
+  summary: Ignores a critical hit on 5+.
+  kind: warband
+  engine_option: Hardy Constitution
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Pirate Special Skills / Hardy Constitution
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+- id: skill.head-crusher
+  name: Head Crusher
+  category: special
+  summary: Knocked Down results caused by the warrior become Stunned.
+  kind: warband
+  engine_option: Head Crusher
+  source_refs: []
+- id: skill.ignore-pain
+  name: Ignore Pain
+  category: special
+  summary: Stunned results become Knocked Down.
+  kind: warband
+  engine_option: Ignore Pain
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Clan Pestilens Special Skills / ignore pain
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+- id: skill.infallible
+  name: Infallible
+  category: special
+  summary: Re-rolls failed hit rolls while charging.
+  kind: warband
+  engine_option: Infallible
+  source_refs: []
+- id: skill.infinite-hatred
+  name: Infinite Hatred
+  category: special
+  summary: Re-rolls failed hit rolls.
+  kind: warband
+  engine_option: Infinite Hatred
+  source_refs: []
+- id: skill.inspiring-sermon
+  name: Inspiring Sermon
+  category: special
+  summary: +1 Attack for the turn.
+  kind: warband
+  engine_option: Inspiring Sermon
+  source_refs: []
+- id: skill.iron-sinews
+  name: Iron Sinews
+  category: special
+  summary: +1 Strength.
+  kind: warband
+  engine_option: Iron Sinews
+  source_refs: []
+- id: skill.knife-fighting
+  name: Knife Fighting
+  category: special
+  summary: +1 WS and +1 on the Injury table with a dagger or yambiya.
+  kind: warband
+  engine_option: Knife Fighting
+  source_refs: []
+- id: skill.luck
+  name: Luck
+  category: special
+  summary: Re-roll one of your own rolls once per battle.
+  kind: warband
+  engine_option: Luck
+  source_refs: []
+- id: skill.mighty-biceps
+  name: Mighty Biceps
+  category: special
+  summary: Retains the Strength bonus of heavy weapons.
+  kind: warband
+  engine_option: Mighty Biceps
+  source_refs: []
+- id: skill.miniath
+  name: Miniath
+  category: special
+  summary: May parry with any weapon and re-rolls one failed parry.
+  kind: warband
+  engine_option: Miniath
+  source_refs: []
+- id: skill.monster-slayer
+  name: Monster Slayer
+  category: special
+  summary: Always wounds on at least 4+.
+  kind: warband
+  engine_option: Monster Slayer
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Slayer Special Skills / Monster Slayer
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - manual: mordheimer.net
+    printed_page: 0
+    section: TROLL SLAYER SKILLS / Monster Slayer
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Troll Slayer Special Skills / Monster Slayer
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+- id: skill.monstrous
+  name: Monstrous
+  category: special
+  summary: +1 Wound.
+  kind: warband
+  engine_option: Monstrous
+  source_refs: []
+- id: skill.red-fury
+  name: Red Fury
+  category: special
+  summary: +1 Attack.
+  kind: warband
+  engine_option: Red Fury
+  source_refs: []
+- id: skill.regeneration
+  name: Regeneration
+  category: special
+  summary: Regenerates unsaved wounds on 4+.
+  kind: warband
+  engine_option: Regeneration
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Troll / Special Rules / Regeneration
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
+  - manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Troll / Special Rules / Regeneration
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 1 Troll / Special Rules / Regeneration
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+- id: skill.shield-mastery
+  name: Shield Mastery
+  category: special
+  summary: A shield can parry and retains its armour save.
+  kind: warband
+  engine_option: Shield Mastery
+  source_refs: []
+- id: skill.shield-strike
+  name: Shield Strike
+  category: special
+  summary: Gains an additional attack at the user’s Strength with poor armour penetration.
+  kind: warband
+  engine_option: Shield Strike
+  source_refs: []
+- id: skill.sigmar-s-sign
+  name: Sigmar's Sign
+  category: special
+  summary: Undead and Possessed enemies lose one attack in the first round.
+  kind: warband
+  engine_option: Sigmar's Sign
+  source_refs: []
+- id: skill.strength-of-steel
+  name: Strength of Steel
+  category: special
+  summary: +1 Strength while charging.
+  kind: warband
+  engine_option: Strength of Steel
+  source_refs: []
+- id: skill.sure-strike
+  name: Sure Strike
+  category: special
+  summary: Re-rolls failed wound rolls.
+  kind: warband
+  engine_option: Sure Strike
+  source_refs: []
+- id: skill.sweep
+  name: Sweep
+  category: special
+  summary: With a double-handed weapon, replaces all attacks with one automatic hit if the opponent fails an Initiative test.
+  kind: warband
+  engine_option: Sweep
+  source_refs: []
+- id: skill.sword-master
+  name: Sword Master
+  category: special
+  summary: Parries matching rolls and re-rolls one failed parry.
+  kind: warband
+  engine_option: Sword Master
+  source_refs: []
+- id: skill.thick-skull
+  name: Thick Skull
+  category: special
+  summary: Turns Stunned into Knocked Down on 3+, or 2+ with a Helmet.
+  kind: warband
+  engine_option: Thick Skull
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Dwarf special skills / thick skull
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Special Skills / Thick Skull
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Special Skills / Thick Skull
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+- id: skill.tireless
+  name: Tireless
+  category: special
+  summary: Retains the Strength bonus of heavy weapons in later rounds.
+  kind: warband
+  engine_option: Tireless
+  source_refs: []
+- id: skill.tough-as-steel
+  name: Tough as Steel
+  category: special
+  summary: Only goes Out of Action on a 6 on the Injury table.
+  kind: warband
+  engine_option: Tough as Steel
+  source_refs: []
+- id: skill.unbeatable-warrior
+  name: Unbeatable Warrior
+  category: special
+  summary: Improves parries and allows two parries with two Parry weapons.
+  kind: warband
+  engine_option: Unbeatable Warrior
+  source_refs: []
+- id: skill.vampire-reflexes
+  name: Vampire Reflexes
+  category: special
+  summary: Unmodifiable 6+ save against wounds, rolled before multiplying Wounds; combines with Step Aside to 4+.
+  kind: warband
+  engine_option: Vampire Reflexes
+  source_refs: []
+- id: skill.virtue-of-valour
+  name: Virtue of Valour
+  category: special
+  summary: Re-rolls hit rolls against enemies with higher Strength.
+  kind: warband
+  engine_option: Virtue of Valour
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Bretonnian Knight Virtues
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+- id: skill.weapons-of-the-north
+  name: Weapons of the North
+  category: special
+  summary: Re-rolls failed hit rolls with an axe or double-handed weapon.
+  kind: warband
+  engine_option: Weapons of the North
+  source_refs: []

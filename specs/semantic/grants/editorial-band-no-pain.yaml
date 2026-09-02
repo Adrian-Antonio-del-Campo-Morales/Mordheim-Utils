@@ -1,0 +1,237 @@
+schema_version: 1
+specifications:
+- id: editorial-band-no-pain-tomb-guardians
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/tomb-guardians/band--no-pain/skill.ignore-pain
+    digest: e49640771c6b2a7e81915a5527b42a8abc9403711f38ebacfc84e9b1df263cf6
+  depends_on: [mechanic/skill.ignore-pain]
+  interpretation: Only profiles explicitly described as Undead receive this band rule. Stunned becomes Knocked Down;
+    Knocked Down and Out of Action are unchanged. Merely being in the band or magically animated is not sufficient.
+  cases:
+  - id: exact-recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: skeleton-warriors}
+    context: {rule_id: band--no-pain}
+    expect: {result.recipients: [acolytes, liche-priest, skeleton-warriors, tomb-guardians, tomb-lord]}
+  - id: granted-acolytes
+    roles: [active, consumer]
+    operation: injury
+    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: acolytes}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+    expect_contains:
+      defender.global_effects.tags: [skill.ignore-pain]
+  - id: granted-liche-priest
+    roles: [active, consumer]
+    operation: injury
+    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: liche-priest}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+    expect_contains:
+      defender.global_effects.tags: [skill.ignore-pain]
+  - id: granted-skeleton-warriors
+    roles: [active, consumer]
+    operation: injury
+    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: skeleton-warriors}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+    expect_contains:
+      defender.global_effects.tags: [skill.ignore-pain]
+  - id: granted-tomb-guardians
+    roles: [active, consumer]
+    operation: injury
+    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-guardians}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+    expect_contains:
+      defender.global_effects.tags: [skill.ignore-pain]
+  - id: granted-tomb-lord
+    roles: [active, consumer]
+    operation: injury
+    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-lord}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+    expect_contains:
+      defender.global_effects.tags: [skill.ignore-pain]
+  - id: excluded-tomb-scorpions
+    roles: [inactive]
+    operation: injury
+    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-scorpions}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: STUNNED}
+  - id: complete-table
+    roles: [boundary]
+    operation: injury
+    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: skeleton-warriors}
+    distribution:
+      observable: result.condition
+      max_rolls: 1
+      expected: {KNOCKED_DOWN: 2/3, OUT: 1/3}
+  mutations:
+  - id: remove-no-pain
+    path: defender.global_effects.tags
+    value: []
+    cases: [granted-skeleton-warriors, complete-table]
+- id: editorial-band-no-pain-khemri-tomb-guardians
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/khemri-tomb-guardians/band--no-pain/skill.ignore-pain
+    digest: 6fa8fbe6e3ee43337cf921a418a0c5013ee74d2ae54699de43da23ca59c6f58d
+  depends_on: [mechanic/skill.ignore-pain]
+  interpretation: Only profiles explicitly described as Undead receive this band rule. Stunned becomes Knocked Down;
+    Knocked Down and Out of Action are unchanged. Merely being in the band or magically animated is not sufficient.
+  cases:
+  - id: exact-recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: skeleton-warriors}
+    context: {rule_id: band--no-pain}
+    expect: {result.recipients: [mortuary-acolytes, mortuary-priest, necrotect, skeleton-warriors, tomb-guardians, tomb-lord]}
+  - id: granted-mortuary-acolytes
+    roles: [active, consumer]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: mortuary-acolytes}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+    expect_contains:
+      defender.global_effects.tags: [skill.ignore-pain]
+  - id: granted-mortuary-priest
+    roles: [active, consumer]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: mortuary-priest}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+    expect_contains:
+      defender.global_effects.tags: [skill.ignore-pain]
+  - id: granted-necrotect
+    roles: [active, consumer]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: necrotect}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+    expect_contains:
+      defender.global_effects.tags: [skill.ignore-pain]
+  - id: granted-skeleton-warriors
+    roles: [active, consumer]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: skeleton-warriors}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+    expect_contains:
+      defender.global_effects.tags: [skill.ignore-pain]
+  - id: granted-tomb-guardians
+    roles: [active, consumer]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-guardians}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+    expect_contains:
+      defender.global_effects.tags: [skill.ignore-pain]
+  - id: granted-tomb-lord
+    roles: [active, consumer]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-lord}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+    expect_contains:
+      defender.global_effects.tags: [skill.ignore-pain]
+  - id: excluded-tomb-scorpions
+    roles: [inactive]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-scorpions}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: STUNNED}
+  - id: excluded-stone-golem
+    roles: [inactive]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: stone-golem}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: STUNNED}
+  - id: complete-table
+    roles: [boundary]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: skeleton-warriors}
+    distribution:
+      observable: result.condition
+      max_rolls: 1
+      expected: {KNOCKED_DOWN: 2/3, OUT: 1/3}
+  mutations:
+  - id: remove-no-pain
+    path: defender.global_effects.tags
+    value: []
+    cases: [granted-skeleton-warriors, complete-table]
+- id: editorial-band-no-pain-khemri-necromancers
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/khemri-necromancers/band--no-pain/skill.ignore-pain
+    digest: 04c74a5840e901cc4cfc23d3077b15f892554c02f51f6ae776717024da66e97f
+  depends_on: [mechanic/skill.ignore-pain]
+  interpretation: Only profiles explicitly described as Undead receive this band rule. Stunned becomes Knocked Down;
+    Knocked Down and Out of Action are unchanged. Merely being in the band or magically animated is not sufficient.
+  cases:
+  - id: exact-recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: skeleton-warriors}
+    context: {rule_id: band--no-pain}
+    expect: {result.recipients: [necromantic-abomination, nehekharan-vultures, skeleton-warriors]}
+  - id: granted-necromantic-abomination
+    roles: [active, consumer]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: necromantic-abomination}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+    expect_contains:
+      defender.global_effects.tags: [skill.ignore-pain]
+  - id: granted-nehekharan-vultures
+    roles: [active, consumer]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: nehekharan-vultures}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+    expect_contains:
+      defender.global_effects.tags: [skill.ignore-pain]
+  - id: granted-skeleton-warriors
+    roles: [active, consumer]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: skeleton-warriors}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+    expect_contains:
+      defender.global_effects.tags: [skill.ignore-pain]
+  - id: excluded-necromancer
+    roles: [inactive]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: necromancer}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: STUNNED}
+  - id: excluded-apprentice
+    roles: [inactive]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: apprentice}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: STUNNED}
+  - id: excluded-tomb-robbers
+    roles: [inactive]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: tomb-robbers}
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: STUNNED}
+  - id: complete-table
+    roles: [boundary]
+    operation: injury
+    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: skeleton-warriors}
+    distribution:
+      observable: result.condition
+      max_rolls: 1
+      expected: {KNOCKED_DOWN: 2/3, OUT: 1/3}
+  mutations:
+  - id: remove-no-pain
+    path: defender.global_effects.tags
+    value: []
+    cases: [granted-skeleton-warriors, complete-table]

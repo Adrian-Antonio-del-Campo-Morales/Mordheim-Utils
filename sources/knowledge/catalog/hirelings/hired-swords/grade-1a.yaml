@@ -1,0 +1,369 @@
+schema_version: 1
+ruleset: mordheim
+catalog: hirelings-hired-swords
+grade: 1a
+profiles:
+- id: hireling.hired-sword.arabian-merchant
+  kind: hired-sword
+  grade: 1a
+  publication: Town Cryer 22
+  name: Arabian Merchant
+  name_i18n:
+    en: Arabian Merchant
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 10
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - academic
+  starting_skill_ids:
+  - skill.haggle
+  rules:
+  - id: hireling.hired-sword.arabian-merchant.rule.pawnbroker
+    name: Pawnbroker
+    effect: Improves proceeds when the warband sells items, subject to the source conditions.
+  - id: hireling.hired-sword.arabian-merchant.rule.marketeer
+    name: Marketeer
+    effect: May search one of the special merchant markets after a battle if eligible.
+  source_notes:
+  - The source calls the weapon a Scimitar and explicitly states that it counts as a Sword.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Arabian Merchant
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.beast-hunter
+  kind: hired-sword
+  grade: 1a
+  publication: Town Cryer 28
+  name: Beast Hunter
+  name_i18n:
+    en: Beast Hunter
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 4
+    W: 1
+    I: 4
+    A: 2
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 18
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: axe
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: axe
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: throwing_axe
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.beast-hunter.rule.beastmen-vengeance
+    name: Beastmen Vengeance
+    effect: Has a source-defined hatred/vengeance interaction against Beastmen.
+  - id: hireling.hired-sword.beast-hunter.rule.skull-rack
+    name: Skull Rack
+    effect: Uses trophies from slain beasts according to the source rule.
+  - id: hireling.hired-sword.beast-hunter.rule.predator
+    name: Predator
+    effect: Has the source-defined hunting/predator ability.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Beast Hunter
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.highwayman
+  kind: hired-sword
+  grade: 1a
+  publication: Town Cryer 26
+  name: Highwayman
+  name_i18n:
+    en: Highwayman
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 20
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: pistol
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: pistol
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: rapier
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.highwayman.item.cloak
+      name: Highwayman's Cloak
+      counts_as:
+        item_id: buckler
+        context: rules
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - cavalry
+  starting_skill_ids:
+  - skill.pistolier
+  rules:
+  - id: hireling.hired-sword.highwayman.rule.expert-rider
+    name: Expert Rider
+    effect: Uses the source mounted expert-rider rule.
+  - id: hireling.hired-sword.highwayman.rule.unscrupulous
+    name: Unscrupulous
+    effect: Uses the source post-battle/behaviour rule.
+  - id: hireling.hired-sword.highwayman.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Roadwarden incompatibility
+    effect: The Highwayman cannot be hired by, or remain with, a warband whose current roster contains a Roadwarden, according to the source incompatibility rule.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Highwayman
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.imperial-assassin
+  kind: hired-sword
+  grade: 1a
+  publication: Mordheim Annual 2002
+  name: Imperial Assassin
+  name_i18n:
+    en: Imperial Assassin
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 22
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: throwing_knives
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: crossbow_pistol
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  starting_skill_ids:
+  - skill.unstoppable-charge
+  rules:
+  - id: hireling.hired-sword.imperial-assassin.rule.poisoner
+    name: Poisoner
+    effect: Uses poisons according to the source rule.
+  - id: hireling.hired-sword.imperial-assassin.rule.weapons-master
+    name: Weapons Master
+    effect: Uses the source weapon-mastery rule.
+  - id: hireling.hired-sword.imperial-assassin.rule.backstabber
+    name: Backstabber
+    effect: Uses the source backstab rule.
+  - id: hireling.hired-sword.imperial-assassin.rule.hide-in-shadows
+    name: Hide in Shadows
+    effect: Uses the source concealment rule.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Imperial Assassin
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.roadwarden
+  kind: hired-sword
+  grade: 1a
+  publication: Town Cryer 26
+  name: Roadwarden
+  name_i18n:
+    en: Roadwarden
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 22
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: crossbow
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: heavy_armour
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.roadwarden.item.horsemans-hammer
+      name: Horseman's Hammer
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - cavalry
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.roadwarden.rule.expert-rider
+    name: Expert Rider
+    effect: Uses the source mounted expert-rider rule.
+  - id: hireling.hired-sword.roadwarden.rule.lethal-marksman
+    name: Lethal Marksman
+    effect: Uses the source lethal marksman rule.
+  - id: hireling.hired-sword.roadwarden.rule.stern
+    name: Stern
+    effect: Uses the source stern/leadership rule.
+  - id: hireling.hired-sword.roadwarden.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Highwayman incompatibility
+    effect: The Roadwarden cannot be hired by a warband whose current roster contains a Highwayman.
+  unresolved_references:
+  - kind: equipment_mapping
+    source_name: three Torches
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Roadwarden
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.tilean-marksman
+  kind: hired-sword
+  grade: 1a
+  publication: Mordheim Annual 2002
+  name: Tilean Marksman
+  name_i18n:
+    en: Tilean Marksman
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 16
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: crossbow
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - shooting
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.tilean-marksman.rule.steady-hands
+    name: Steady Hands
+    effect: Uses the source steady-hands rule.
+  - id: hireling.hired-sword.tilean-marksman.rule.dead-eye-shot
+    name: Dead Eye Shot
+    effect: Uses the source dead-eye-shot rule.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Tilean Marksman
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a

@@ -1,0 +1,107 @@
+schema_version: 2
+ruleset: mordheim
+scope: close-combat-only
+profile_exclusions: []
+mechanic_exclusions:
+- id: weapon.lance
+  reason: A lance can only be used while mounted; mounted combat is outside the current one-against-one runtime scope.
+- id: armour.spider-chitin-armour
+  reason: The ruling represents chitin as the Gigantic Spider's intrinsic natural armour, not as selectable equipment.
+- id: weapon.man-catcher
+  reason: Capturing an out-of-action model, using an Engine of Chaos and replacing Serious Injuries are post-battle roster and campaign effects.
+- id: skill.acrobat
+  reason: Movement, falling and diving-charge rules are outside the current one-against-one combat scope.
+- id: skill.arcane-lore
+  reason: Magic progression rules are outside the current one-against-one combat scope.
+- id: skill.battle-tongue
+  reason: Warband leadership-range rules are outside the current one-against-one combat scope.
+- id: skill.combat-master
+  reason: Its effect requires two or more opponents; the runtime simulates one-against-one duels.
+- id: skill.dodge
+  reason: Missile attacks are outside the current close-combat-only scope.
+- id: skill.eagle-eyes
+  reason: Missile-weapon range rules are outside the current close-combat-only scope.
+- id: skill.fearsome
+  reason: Psychology rules are outside the current one-against-one combat scope.
+- id: skill.haggle
+  reason: Post-battle trading rules are outside the current combat scope.
+- id: skill.hunter
+  reason: Shooting and reload rules are outside the current close-combat-only scope.
+- id: skill.knife-fighter
+  reason: Shooting attacks and target selection are outside the current combat scope.
+- id: skill.leap
+  reason: Movement and terrain traversal are outside the current one-against-one combat scope.
+- id: skill.nimble
+  reason: Shooting movement restrictions are outside the current close-combat-only scope.
+- id: skill.pistolier
+  reason: Shooting and reload rules are outside the current close-combat-only scope.
+- id: skill.pit-fighter
+  reason: Terrain and building state are outside the current one-against-one combat scope.
+- id: skill.quick-shot
+  reason: Shooting attacks are outside the current close-combat-only scope.
+- id: skill.scale-sheer-surfaces
+  reason: Climbing and terrain traversal are outside the current combat scope.
+- id: skill.sorcery
+  reason: Spellcasting rules are outside the current one-against-one combat scope.
+- id: skill.sprint
+  reason: Movement and charge-distance rules are outside the current combat scope.
+- id: skill.streetwise
+  reason: Trading and rare-item availability are outside the current combat scope.
+- id: skill.trick-shooter
+  reason: Shooting and cover rules are outside the current close-combat-only scope.
+- id: skill.warrior-wizard
+  reason: Spellcasting rules are outside the current one-against-one combat scope.
+- id: skill.weapons-expert
+  reason: Missile-equipment access is outside the current close-combat-only scope.
+- id: skill.weapons-training
+  reason: Dynamic equipment-access changes are outside the current combat scope.
+- id: skill.wyrdstone-hunter
+  reason: Exploration rules are outside the current combat scope.
+special_rule_policy:
+  default: editorial_out_of_scope
+  executable_binding: profile.combat_traits
+  note: Only normalized combat_traits participate in one-against-one runtime combat. Other rule_ids remain available to the UI as editorial rules but cannot silently affect a duel.
+supported_combat_traits:
+- starting_skills
+- poison_immune
+- undead_or_possessed
+- natural_armour_save
+- natural_armour_worst_save
+- ward_save
+- regeneration_save
+- ward_save_mundane_only
+- natural_armour_negated_by_magic
+- magical_attacks
+- regeneration_blocked_by_fire
+- regeneration_blocked_by_blessed
+- caught_fire_threshold
+- frenzy
+- injury_profile
+- cloud_of_flies
+- natural_armour_stacks
+- charge_attack_bonus
+- extra_natural_attacks
+- maddened_with_pain
+- natural_armour_unmodified
+- poisonous_injury
+- survivor
+- concussion_immune
+- wight_blades
+- perfect_killer
+- counts_as_buckler
+- counts_as_shield
+- fragile_halflings
+- flammable
+- injury_reroll_out
+- dagger_master
+- spiritual_weapons
+- acid_blood
+- animal_friendship
+- bear_hug
+- contagious
+- guardian_unarmed
+- huge_jaws
+- mark_of_onogal_the_crow
+- pit_fighter
+- scorpion_tail
+- spines

@@ -1,0 +1,610 @@
+schema_version: 2
+ruleset: mordheim
+items:
+- id: bone_helmet
+  kind: shield-or-defence
+  name: Bone Helmet
+  name_i18n:
+    en: Bone Helmet
+    es: null
+  source_refs:
+  - &id047
+    manual: mordheimer.net
+    printed_page: 0
+    section: Saurus equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  combat_status: implemented
+  mechanic_id: defence.helmet
+- id: bone_helmet_skink_priest_only
+  kind: shield-or-defence
+  name: Bone Helmet Skink Priest Only
+  name_i18n:
+    en: Bone Helmet Skink Priest Only
+    es: null
+  source_refs:
+  - &id001
+    manual: mordheimer.net
+    printed_page: 0
+    section: Skinks equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  combat_status: implemented
+  mechanic_id: defence.helmet
+- id: buckler
+  kind: shield-or-defence
+  name: Buckler
+  name_i18n:
+    en: Buckler
+    es: null
+  source_refs:
+  - &id002
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroines Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  - &id003
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchwomen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  - &id004
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroines Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  - &id005
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchwomen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  - &id006
+    manual: mordheimer.net
+    printed_page: 0
+    section: Scout Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  - &id007
+    manual: mordheimer.net
+    printed_page: 0
+    section: Warrior equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  - &id008
+    manual: mordheimer.net
+    printed_page: 0
+    section: Scout Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+  - &id009
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marksman equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+  - &id010
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mountainguard Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+  - &id011
+    manual: mordheimer.net
+    printed_page: 0
+    section: Orc equipment lists / Black Orc List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
+  - &id012
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pilgrims’ equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  - &id013
+    manual: mordheimer.net
+    printed_page: 0
+    section: Squires Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  - &id014
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  - &id015
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dark Elf Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  - &id016
+    manual: mordheimer.net
+    printed_page: 0
+    section: Gunnery School equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+  - &id045
+    manual: mordheimer.net
+    printed_page: 0
+    section: Duelist equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  - &id017
+    manual: mordheimer.net
+    printed_page: 0
+    section: Imperial Outriders equipment lists / Hand-to-hand Combat Weapons and Armour
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/imperial-outriders
+  - &id018
+    manual: mordheimer.net
+    printed_page: 0
+    section: Kislev Warrior equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  - *id001
+  - &id019
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  - &id020
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mercenary equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+  - &id021
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pirate Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Swabbie Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  - &id022
+    manual: mordheimer.net
+    printed_page: 0
+    section: Restless Dead equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  - &id023
+    manual: mordheimer.net
+    printed_page: 0
+    section: Sisters of Sigmar equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
+  - &id024
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  - &id025
+    manual: mordheimer.net
+    printed_page: 0
+    section: Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  - &id026
+    manual: mordheimer.net
+    printed_page: 0
+    section: Witch Hunter equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/witch-hunters
+  combat_status: implemented
+  mechanic_id: defence.buckler
+- id: cooking_pot_helmet
+  kind: shield-or-defence
+  name: Cooking Pot Helmet
+  name_i18n:
+    en: Cooking Pot Helmet
+    es: null
+  source_refs:
+  - &id055
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mootlander Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/mootlanders
+  combat_status: implemented
+  mechanic_id: defence.cooking-pot-helmet
+- id: helmet
+  kind: shield-or-defence
+  name: Helmet
+  name_i18n:
+    en: Helmet
+    es: null
+  source_refs:
+  - *id002
+  - *id003
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Jaguar Warrior Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - &id028
+    manual: mordheimer.net
+    printed_page: 0
+    section: Soldier Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  - &id029
+    manual: mordheimer.net
+    printed_page: 0
+    section: Beastmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  - &id030
+    manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Dwarf Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
+  - &id031
+    manual: mordheimer.net
+    printed_page: 0
+    section: Informer Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
+  - *id011
+  - &id032
+    manual: mordheimer.net
+    printed_page: 0
+    section: Orc equipment lists / Henchmen List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
+  - &id027
+    manual: mordheimer.net
+    printed_page: 0
+    section: Knights Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  - *id012
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Bowmen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  - &id033
+    manual: mordheimer.net
+    printed_page: 0
+    section: Knights Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  - *id013
+  - &id034
+    manual: mordheimer.net
+    printed_page: 0
+    section: Men-at-Arms Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Bowmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  - &id035
+    manual: mordheimer.net
+    printed_page: 0
+    section: Carnival equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  - &id036
+    manual: mordheimer.net
+    printed_page: 0
+    section: Possessed equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
+  - &id037
+    manual: mordheimer.net
+    printed_page: 0
+    section: Darksouls equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
+  - *id014
+  - &id038
+    manual: mordheimer.net
+    printed_page: 0
+    section: Thralls Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  - *id015
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Shades Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  - &id039
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Warrior Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - &id040
+    manual: mordheimer.net
+    printed_page: 0
+    section: Crossbowmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - &id041
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Warrior Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  - &id042
+    manual: mordheimer.net
+    printed_page: 0
+    section: Thunderer Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  - *id016
+  - &id043
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marksman equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+  - &id044
+    manual: mordheimer.net
+    printed_page: 0
+    section: Bandit equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Poacher equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  - *id017
+  - *id018
+  - &id046
+    manual: mordheimer.net
+    printed_page: 0
+    section: Streltsi equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  - *id019
+  - &id048
+    manual: mordheimer.net
+    printed_page: 0
+    section: PROSPECT EQUIPMENT LIST
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Ogre Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Mountain Guide Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
+  - &id049
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  - &id050
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  - *id020
+  - &id051
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marksman equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+  - &id052
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  - &id053
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchman Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  - &id054
+    manual: mordheimer.net
+    printed_page: 0
+    section: Cathayan Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  - &id056
+    manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblin Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  - &id057
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  - &id058
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  - &id059
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  - &id060
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hunters equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  - &id061
+    manual: mordheimer.net
+    printed_page: 0
+    section: Orc Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
+  - &id062
+    manual: mordheimer.net
+    printed_page: 0
+    section: Goblin Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
+  - &id063
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ostlander Equipment Lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  - &id064
+    manual: mordheimer.net
+    printed_page: 0
+    section: Jaeger Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  - &id065
+    manual: mordheimer.net
+    printed_page: 0
+    section: Outlaws equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/outlaws-of-stirwood-forest
+  - *id021
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Gunner Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Pit fighter equipment lists / Ogre & Slayer equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  - *id022
+  - &id066
+    manual: mordheimer.net
+    printed_page: 0
+    section: Shadow Warrior equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
+  - *id023
+  - *id024
+  - &id067
+    manual: mordheimer.net
+    printed_page: 0
+    section: Skaven equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  - &id068
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  - &id069
+    manual: mordheimer.net
+    printed_page: 0
+    section: Skaven equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  - &id070
+    manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Dwarf equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Blunderbusser equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  - *id025
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Marksman equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  - &id071
+    manual: mordheimer.net
+    printed_page: 0
+    section: Undead equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
+  - *id026
+  - &id072
+    manual: mordheimer.net
+    printed_page: 0
+    section: Zealot equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/witch-hunters
+  combat_status: implemented
+  mechanic_id: defence.helmet
+- id: kite_shield
+  kind: shield-or-defence
+  name: Kite Shield
+  name_i18n:
+    en: Kite Shield
+    es: null
+  source_refs:
+  - *id027
+  combat_status: implemented
+  mechanic_id: defence.kite-shield
+- id: sea_dragon_cloak
+  kind: shield-or-defence
+  name: Sea Dragon Cloak
+  name_i18n:
+    en: Sea Dragon Cloak
+    es: null
+  source_refs:
+  - *id015
+  combat_status: implemented
+  mechanic_id: defence.sea-dragon-cloak
+- id: shield
+  kind: shield-or-defence
+  name: Shield
+  name_i18n:
+    en: Shield
+    es: null
+  source_refs:
+  - *id007
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Slave equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  - *id010
+  - *id028
+  - *id029
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Ungor Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  - *id030
+  - *id031
+  - *id011
+  - *id032
+  - *id027
+  - *id012
+  - *id033
+  - *id013
+  - *id034
+  - *id035
+  - *id036
+  - *id037
+  - *id014
+  - *id038
+  - *id015
+  - *id039
+  - *id040
+  - *id041
+  - *id042
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  - *id016
+  - *id043
+  - *id044
+  - *id045
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Horned Hunter equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
+  - *id017
+  - *id018
+  - *id046
+  - *id047
+  - *id001
+  - *id019
+  - *id048
+  - *id049
+  - *id050
+  - *id020
+  - *id051
+  - *id052
+  - *id053
+  - *id054
+  - *id055
+  - *id056
+  - *id057
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  - *id058
+  - *id059
+  - *id060
+  - *id061
+  - *id062
+  - *id063
+  - *id064
+  - *id065
+  - *id022
+  - *id066
+  - *id023
+  - *id067
+  - *id068
+  - *id069
+  - *id070
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hobgoblins equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  - *id025
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Undead equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  - *id071
+  - *id026
+  - *id072
+  combat_status: implemented
+  mechanic_id: defence.shield

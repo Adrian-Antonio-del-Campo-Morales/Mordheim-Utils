@@ -1,0 +1,2532 @@
+schema_version: 1
+specifications:
+- id: mutation-sequences-mordheim-spines
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - target: rule/mordheim/cult-of-the-possessed/band--mutations-spines/trait.spines
+    digest: aba82cead82fb040d7bc8acfd5b6ef992ffcde466c2048b8f467d9604ad6851d
+  interpretation: 'Mutations / Spines: impacto automático F1 al comienzo de la fase, sin críticos. Se invoca el
+    mismo handler que usa el inicio de ronda; no solicita impacto ni parada.'
+  cases:
+  - id: grant-mutants
+    roles:
+    - grant
+    - compiled
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - spines
+    expect:
+      attacker.characteristics.wounds: 3
+  - id: grant-the-possessed
+    roles:
+    - grant
+    - compiled
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: the-possessed
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - spines
+    expect:
+      attacker.characteristics.wounds: 3
+  - id: not-for-magister
+    roles:
+    - rejected
+    - grant
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: magister
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    reject: mutations are available only
+  - id: face-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: spines
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.spines.wound
+      value: 1
+    expect:
+      result.defender.wounds: 3
+      result.attacks.0.critical: false
+  - id: face-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: spines
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.spines.wound
+      value: 2
+    expect:
+      result.defender.wounds: 3
+      result.attacks.0.critical: false
+  - id: face-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: spines
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.spines.wound
+      value: 3
+    expect:
+      result.defender.wounds: 3
+      result.attacks.0.critical: false
+  - id: face-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: spines
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.spines.wound
+      value: 4
+    expect:
+      result.defender.wounds: 3
+      result.attacks.0.critical: false
+  - id: face-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: spines
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.spines.wound
+      value: 5
+    expect:
+      result.defender.wounds: 3
+      result.attacks.0.critical: false
+  - id: face-6
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: spines
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.spines.wound
+      value: 6
+    expect:
+      result.defender.wounds: 2
+      result.attacks.0.critical: false
+  - id: no-critical-on-easy-wound
+    roles:
+    - boundary
+    - consumer
+    operation: spines
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 1
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.spines.wound
+      value: 6
+    expect:
+      result.defender.wounds: 2
+      result.attacks.0.critical: false
+      result.attacker.critical_available: true
+  - id: unselected
+    roles:
+    - inactive
+    operation: spines
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect:
+      result.defender.wounds: 3
+      result.attacks: []
+  - id: exact-recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      rule_id: band--mutations-spines
+    expect:
+      result.recipients:
+      - mutants
+      - the-possessed
+  mutations:
+  - id: remove-spines
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - face-6
+- id: mutation-sequences-mordheim-scorpion-tail
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - target: rule/mordheim/cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+    digest: 8434ebfa46b2957be2e5eec9e20e9a2290187bacd0d232bab668349f692a4fdc
+  interpretation: 'Mutations / scorpion-tail: se prueba la concesión a Mutant y Possessed, ausencia sin seleccionar
+    y resolución local con dados estrictos. Un ataque adicional F5, reducido a F2 contra inmunes al veneno, sin
+    usar la Fuerza del arma principal.'
+  cases:
+  - id: grant-mutants
+    roles:
+    - grant
+    - compiled
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - scorpion_tail
+    expect:
+      attacker.characteristics.wounds: 3
+  - id: grant-the-possessed
+    roles:
+    - grant
+    - compiled
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: the-possessed
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - scorpion_tail
+    expect:
+      attacker.characteristics.wounds: 3
+  - id: not-for-magister
+    roles:
+    - rejected
+    - grant
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: magister
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    reject: mutations are available only
+  - id: immune-false-face-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: false
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 1
+    expect:
+      result.damage: 0
+  - id: immune-false-face-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: false
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 2
+    expect:
+      result.damage: 1
+  - id: immune-false-face-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: false
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 3
+    expect:
+      result.damage: 1
+  - id: immune-false-face-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: false
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.damage: 1
+  - id: immune-false-face-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: false
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 5
+    expect:
+      result.damage: 1
+  - id: immune-true-face-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: true
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 1
+    expect:
+      result.damage: 0
+  - id: immune-true-face-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: true
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 2
+    expect:
+      result.damage: 0
+  - id: immune-true-face-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: true
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 3
+    expect:
+      result.damage: 0
+  - id: immune-true-face-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: true
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.damage: 0
+  - id: immune-true-face-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: true
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 5
+    expect:
+      result.damage: 1
+  - id: allocation
+    roles:
+    - active
+    - consumer
+    - sequence
+    - consumption
+    operation: pool
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect:
+      result.defender.wounds: 2
+      result.attacks.1.damage: 1
+    context:
+      count: 1
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.1.wound
+      value: 2
+  - id: unselected
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect:
+      attacker.extra_attacks: []
+  - id: ordinary-allocation
+    roles:
+    - inactive
+    operation: allocate
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect:
+      result.weapons.0.fixed_strength: 0
+  - id: immune-false-face-6
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: extra_attack
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    attacker_state:
+      critical_available: false
+    defender:
+      trait_overrides:
+        poison_immune: false
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    expect:
+      result.damage: 1
+  - id: immune-true-face-6
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: extra_attack
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    attacker_state:
+      critical_available: false
+    defender:
+      trait_overrides:
+        poison_immune: true
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    expect:
+      result.damage: 1
+  - id: exact-recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      rule_id: band--mutations-scorpion-tail
+    expect:
+      result.recipients:
+      - mutants
+      - the-possessed
+  mutations:
+  - id: remove-tail-strength
+    path: attacker.extra_attacks
+    value: []
+    cases:
+    - allocation
+- id: mutation-sequences-mordheim-acid-blood
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - target: rule/mordheim/cult-of-the-possessed/band--mutations-blackblood/trait.acid-blood
+    digest: fd50666aba28eb01c5ad3fbe2135e78ad1e91dd4ee3a8012f79aebf0d4939c6a
+  interpretation: 'Mutations / acid-blood: se prueba la concesión a Mutant y Possessed, ausencia sin seleccionar
+    y resolución local con dados estrictos. Cada herida perdida provoca un impacto automático F3, sin críticos,
+    incluso si el portador queda fuera de combate.'
+  cases:
+  - id: grant-mutants
+    roles:
+    - grant
+    - compiled
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-blackblood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - acid_blood
+    expect:
+      attacker.characteristics.wounds: 3
+  - id: grant-the-possessed
+    roles:
+    - grant
+    - compiled
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: the-possessed
+      special_rule_ids:
+      - band--mutations-blackblood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - acid_blood
+    expect:
+      attacker.characteristics.wounds: 3
+  - id: not-for-magister
+    roles:
+    - rejected
+    - grant
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: magister
+      special_rule_ids:
+      - band--mutations-blackblood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    reject: mutations are available only
+  - id: reaction-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-blackblood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.acid-blood.0.wound
+      value: 1
+    expect:
+      result.defender.wounds: 2
+      result.attacker.wounds: 3
+      result.attacker.critical_available: true
+  - id: reaction-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-blackblood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.acid-blood.0.wound
+      value: 2
+    expect:
+      result.defender.wounds: 2
+      result.attacker.wounds: 3
+      result.attacker.critical_available: true
+  - id: reaction-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-blackblood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.acid-blood.0.wound
+      value: 3
+    expect:
+      result.defender.wounds: 2
+      result.attacker.wounds: 3
+      result.attacker.critical_available: true
+  - id: reaction-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-blackblood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.acid-blood.0.wound
+      value: 4
+    expect:
+      result.defender.wounds: 2
+      result.attacker.wounds: 2
+      result.attacker.critical_available: true
+  - id: reaction-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-blackblood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.acid-blood.0.wound
+      value: 5
+    expect:
+      result.defender.wounds: 2
+      result.attacker.wounds: 2
+      result.attacker.critical_available: true
+  - id: reaction-6
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-blackblood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.acid-blood.0.wound
+      value: 6
+    expect:
+      result.defender.wounds: 2
+      result.attacker.wounds: 2
+      result.attacker.critical_available: true
+  - id: unselected
+    roles:
+    - inactive
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.attacker.wounds: 3
+      result.defender.wounds: 2
+  - id: no-wound-no-reaction
+    roles:
+    - inactive
+    - boundary
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-blackblood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 1
+    expect:
+      result.attacker.wounds: 3
+      result.defender.wounds: 3
+  - id: exact-recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-blackblood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      rule_id: band--mutations-blackblood
+    expect:
+      result.recipients:
+      - mutants
+      - the-possessed
+  - id: lethal-wound-still-reacts
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-blackblood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender_state:
+      wounds: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 6
+    - key: test.acid-blood.0.wound
+      value: 4
+    expect:
+      result.defender.condition: OUT
+      result.attacker.wounds: 2
+  mutations:
+  - id: remove-acid
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - reaction-4
+- id: mutation-sequences-trollheim-spines
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-spines/trait.spines
+    digest: 4159f17e159b295867cd6400a9dca04a48ce714b62d01786513b4ed1d042cb2a
+  interpretation: 'Mutations / Spines: impacto automático F1 al comienzo de la fase, sin críticos. Se invoca el
+    mismo handler que usa el inicio de ronda; no solicita impacto ni parada.'
+  cases:
+  - id: grant-mutants
+    roles:
+    - grant
+    - compiled
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - spines
+    expect:
+      attacker.characteristics.wounds: 3
+  - id: grant-the-possessed
+    roles:
+    - grant
+    - compiled
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: the-possessed
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - spines
+    expect:
+      attacker.characteristics.wounds: 3
+  - id: not-for-magister
+    roles:
+    - rejected
+    - grant
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: magister
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    reject: special rule is not available
+  - id: face-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: spines
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.spines.wound
+      value: 1
+    expect:
+      result.defender.wounds: 3
+      result.attacks.0.critical: false
+  - id: face-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: spines
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.spines.wound
+      value: 2
+    expect:
+      result.defender.wounds: 3
+      result.attacks.0.critical: false
+  - id: face-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: spines
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.spines.wound
+      value: 3
+    expect:
+      result.defender.wounds: 3
+      result.attacks.0.critical: false
+  - id: face-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: spines
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.spines.wound
+      value: 4
+    expect:
+      result.defender.wounds: 3
+      result.attacks.0.critical: false
+  - id: face-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: spines
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.spines.wound
+      value: 5
+    expect:
+      result.defender.wounds: 3
+      result.attacks.0.critical: false
+  - id: face-6
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: spines
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.spines.wound
+      value: 6
+    expect:
+      result.defender.wounds: 2
+      result.attacks.0.critical: false
+  - id: no-critical-on-easy-wound
+    roles:
+    - boundary
+    - consumer
+    operation: spines
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 1
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.spines.wound
+      value: 6
+    expect:
+      result.defender.wounds: 2
+      result.attacks.0.critical: false
+      result.attacker.critical_available: true
+  - id: unselected
+    roles:
+    - inactive
+    operation: spines
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect:
+      result.defender.wounds: 3
+      result.attacks: []
+  - id: exact-recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      rule_id: band--mutations-spines
+    expect:
+      result.recipients:
+      - mutants
+      - the-possessed
+  mutations:
+  - id: remove-spines
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - face-6
+- id: mutation-sequences-trollheim-scorpion-tail
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+    digest: c28215a716a22385cdaed430d8a46e032d281ea579692112663b03d62bfe6789
+  interpretation: 'Mutations / scorpion-tail: se prueba la concesión a Mutant y Possessed, ausencia sin seleccionar
+    y resolución local con dados estrictos. Un ataque adicional F5, reducido a F2 contra inmunes al veneno, sin
+    usar la Fuerza del arma principal.'
+  cases:
+  - id: grant-mutants
+    roles:
+    - grant
+    - compiled
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - scorpion_tail
+    expect:
+      attacker.characteristics.wounds: 3
+  - id: grant-the-possessed
+    roles:
+    - grant
+    - compiled
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: the-possessed
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - scorpion_tail
+    expect:
+      attacker.characteristics.wounds: 3
+  - id: not-for-magister
+    roles:
+    - rejected
+    - grant
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: magister
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    reject: special rule is not available
+  - id: immune-false-face-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: false
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 1
+    expect:
+      result.damage: 0
+  - id: immune-false-face-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: false
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 2
+    expect:
+      result.damage: 1
+  - id: immune-false-face-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: false
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 3
+    expect:
+      result.damage: 1
+  - id: immune-false-face-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: false
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.damage: 1
+  - id: immune-false-face-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: false
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 5
+    expect:
+      result.damage: 1
+  - id: immune-true-face-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: true
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 1
+    expect:
+      result.damage: 0
+  - id: immune-true-face-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: true
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 2
+    expect:
+      result.damage: 0
+  - id: immune-true-face-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: true
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 3
+    expect:
+      result.damage: 0
+  - id: immune-true-face-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: true
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.damage: 0
+  - id: immune-true-face-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: extra_attack
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      trait_overrides:
+        poison_immune: true
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 5
+    expect:
+      result.damage: 1
+  - id: allocation
+    roles:
+    - active
+    - consumer
+    - sequence
+    - consumption
+    operation: pool
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect:
+      result.defender.wounds: 2
+      result.attacks.1.damage: 1
+    context:
+      count: 1
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.1.wound
+      value: 2
+  - id: unselected
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect:
+      attacker.extra_attacks: []
+  - id: ordinary-allocation
+    roles:
+    - inactive
+    operation: allocate
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect:
+      result.weapons.0.fixed_strength: 0
+  - id: immune-false-face-6
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: extra_attack
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    attacker_state:
+      critical_available: false
+    defender:
+      trait_overrides:
+        poison_immune: false
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    expect:
+      result.damage: 1
+  - id: immune-true-face-6
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: extra_attack
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    attacker_state:
+      critical_available: false
+    defender:
+      trait_overrides:
+        poison_immune: true
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    expect:
+      result.damage: 1
+  - id: exact-recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-scorpion-tail
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      rule_id: band--mutations-scorpion-tail
+    expect:
+      result.recipients:
+      - mutants
+      - the-possessed
+  mutations:
+  - id: remove-tail-strength
+    path: attacker.extra_attacks
+    value: []
+    cases:
+    - allocation
+- id: mutation-sequences-trollheim-acid-blood
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-acid-blood/trait.acid-blood
+    digest: 5a7f8334c91d84cfa2fe8024455a5e12888c31ac2cfb7d8370e4711a473a9de0
+  interpretation: 'Mutations / acid-blood: se prueba la concesión a Mutant y Possessed, ausencia sin seleccionar
+    y resolución local con dados estrictos. Cada herida perdida provoca un impacto automático F3, sin críticos,
+    incluso si el portador queda fuera de combate.'
+  cases:
+  - id: grant-mutants
+    roles:
+    - grant
+    - compiled
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-acid-blood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - acid_blood
+    expect:
+      attacker.characteristics.wounds: 3
+  - id: grant-the-possessed
+    roles:
+    - grant
+    - compiled
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: the-possessed
+      special_rule_ids:
+      - band--mutations-acid-blood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect_contains:
+      attacker.global_effects.tags:
+      - acid_blood
+    expect:
+      attacker.characteristics.wounds: 3
+  - id: not-for-magister
+    roles:
+    - rejected
+    - grant
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: magister
+      special_rule_ids:
+      - band--mutations-acid-blood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    reject: special rule is not available
+  - id: reaction-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-acid-blood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.acid-blood.0.wound
+      value: 1
+    expect:
+      result.defender.wounds: 2
+      result.attacker.wounds: 3
+      result.attacker.critical_available: true
+  - id: reaction-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-acid-blood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.acid-blood.0.wound
+      value: 2
+    expect:
+      result.defender.wounds: 2
+      result.attacker.wounds: 3
+      result.attacker.critical_available: true
+  - id: reaction-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-acid-blood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.acid-blood.0.wound
+      value: 3
+    expect:
+      result.defender.wounds: 2
+      result.attacker.wounds: 3
+      result.attacker.critical_available: true
+  - id: reaction-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-acid-blood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.acid-blood.0.wound
+      value: 4
+    expect:
+      result.defender.wounds: 2
+      result.attacker.wounds: 2
+      result.attacker.critical_available: true
+  - id: reaction-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-acid-blood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.acid-blood.0.wound
+      value: 5
+    expect:
+      result.defender.wounds: 2
+      result.attacker.wounds: 2
+      result.attacker.critical_available: true
+  - id: reaction-6
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-acid-blood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.acid-blood.0.wound
+      value: 6
+    expect:
+      result.defender.wounds: 2
+      result.attacker.wounds: 2
+      result.attacker.critical_available: true
+  - id: unselected
+    roles:
+    - inactive
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.attacker.wounds: 3
+      result.defender.wounds: 2
+  - id: no-wound-no-reaction
+    roles:
+    - inactive
+    - boundary
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-acid-blood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 1
+    expect:
+      result.attacker.wounds: 3
+      result.defender.wounds: 3
+  - id: exact-recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-acid-blood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      rule_id: band--mutations-acid-blood
+    expect:
+      result.recipients:
+      - mutants
+      - the-possessed
+  - id: lethal-wound-still-reacts
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-acid-blood
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender_state:
+      wounds: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 6
+    - key: test.acid-blood.0.wound
+      value: 4
+    expect:
+      result.defender.condition: OUT
+      result.attacker.wounds: 2
+  mutations:
+  - id: remove-acid
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - reaction-4

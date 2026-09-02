@@ -1,0 +1,1671 @@
+schema_version: 2
+band_id: restless-dead
+rules:
+- id: liche--wizard
+  name: Wizard
+  effect: The Liche is a Wizard and starts with two randomly generated Necromantic spells. The spell list itself is not modelled
+    here.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Liche / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Liche is a Wizard and starts with two randomly generated Necromantic spells. The spell list itself is not modelled
+      here.
+    es: null
+  applies_to:
+    profile_ids:
+    - liche
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.liche.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: liche--cause-fear
+  name: Cause Fear
+  effect: A Liche is a horrible abomination and causes fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Liche / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Cause Fear
+    es: null
+  effect_i18n:
+    en: A Liche is a horrible abomination and causes fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - liche
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.liche.cause-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: liche--immune-to-psychology
+  name: Immune to Psychology
+  effect: A Liche is not affected by psychology and never leaves combat.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Liche / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: A Liche is not affected by psychology and never leaves combat.
+    es: null
+  applies_to:
+    profile_ids:
+    - liche
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.liche.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: liche--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: A Liche treats a stunned result on the injury chart as knocked down.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Liche / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: A Liche treats a stunned result on the injury chart as knocked down.
+    es: null
+  applies_to:
+    profile_ids:
+    - liche
+- id: liche--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: A Liche is not affected by poison.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Liche / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: A Liche is not affected by poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - liche
+- id: liche--eternal
+  name: Eternal
+  effect: 'A Liche can choose to ignore any result on the Hero''s Serious Injury chart except Killed by taking a permanent
+    -1 on their starting Wound profile. Obviously, a Liche with 1 Wound remaining on their
+
+    starting profile does not have this option. A Liche that
+
+    gets a Killed result instead takes a permanent -D3 Wounds on their starting profile. If this takes their
+
+    starting Wound total to 0 or less, the Liche is Killed as normal.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Liche / Special Rules / Eternal
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Eternal
+    es: null
+  effect_i18n:
+    en: 'A Liche can choose to ignore any result on the Hero''s Serious Injury chart except Killed by taking a permanent -1
+      on their starting Wound profile. Obviously, a Liche with 1 Wound remaining on their
+
+      starting profile does not have this option. A Liche that
+
+      gets a Killed result instead takes a permanent -D3 Wounds on their starting profile. If this takes their
+
+      starting Wound total to 0 or less, the Liche is Killed as normal.'
+    es: null
+  applies_to:
+    profile_ids:
+    - liche
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.liche.eternal
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: liche--feed-upon-magic
+  name: Feed Upon Magic
+  effect: 'A Liche can perform spells that, with the consumption of D3 Treasures, can give the
+
+    Liche a permanent +1 Wound on their starting profile.
+
+    This can only be used in between battles and cannot
+
+    be used if the Liche searches for rare items or was put out of action in the previous battle. If the warband does not
+    have enough Treasures to complete the spell, then the Treasures are consumed anyway and the Liche does not gain the Wound.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Liche / Special Rules / Feed Upon Magic
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Feed Upon Magic
+    es: null
+  effect_i18n:
+    en: 'A Liche can perform spells that, with the consumption of D3 Treasures, can give the
+
+      Liche a permanent +1 Wound on their starting profile.
+
+      This can only be used in between battles and cannot
+
+      be used if the Liche searches for rare items or was put out of action in the previous battle. If the warband does not
+      have enough Treasures to complete the spell, then the Treasures are consumed anyway and the Liche does not gain the
+      Wound.'
+    es: null
+  applies_to:
+    profile_ids:
+    - liche
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.liche.feed-upon-magic
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: liche--warrior-wizard
+  name: Warrior Wizard
+  effect: 'The Liche may wear armour and cast spells. Indeed, it is often the clothing and armour
+
+    alone that gives the Liche substance and form!'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Liche / Special Rules / Warrior Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Warrior Wizard
+    es: null
+  effect_i18n:
+    en: 'The Liche may wear armour and cast spells. Indeed, it is often the clothing and armour
+
+      alone that gives the Liche substance and form!'
+    es: null
+  applies_to:
+    profile_ids:
+    - liche
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.warrior-wizard
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.warrior-wizard
+- id: liche--advancement
+  name: Advancement
+  effect: 'If a Liche gets an advance roll of +1 Wound, they may instead pick a new skill from their
+
+    available lists.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Liche / Special Rules / Advancement
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Advancement
+    es: null
+  effect_i18n:
+    en: 'If a Liche gets an advance roll of +1 Wound, they may instead pick a new skill from their
+
+      available lists.'
+    es: null
+  applies_to:
+    profile_ids:
+    - liche
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.liche.advancement
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: necromancer--wizard
+  name: Wizard
+  effect: The Necromancer is a Wizard and starts knowing one of the Liche's two Necromantic spells. The spell list itself
+    is not modelled here.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 - 1 Necromancer / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Necromancer is a Wizard and starts knowing one of the Liche's two Necromantic spells. The spell list itself is
+      not modelled here.
+    es: null
+  applies_to:
+    profile_ids:
+    - necromancer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.necromancer.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: necromancer--apprentices
+  name: Apprentices
+  effect: 'Necromancers may only ever know spells known by their Liche masters. Even if they did know
+
+    spells the Liche didn''t, they wouldn''t dare use them
+
+    for fear of their master''s response for their arrogance!
+
+    If the Liche is ever killed, the Necromancer can continue to learn magic spells as a normal wizard,
+
+    ignoring the Apprentice rule.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 - 1 Necromancer / Special Rules / Apprentices
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Apprentices
+    es: null
+  effect_i18n:
+    en: 'Necromancers may only ever know spells known by their Liche masters. Even if they did know
+
+      spells the Liche didn''t, they wouldn''t dare use them
+
+      for fear of their master''s response for their arrogance!
+
+      If the Liche is ever killed, the Necromancer can continue to learn magic spells as a normal wizard,
+
+      ignoring the Apprentice rule.'
+    es: null
+  applies_to:
+    profile_ids:
+    - necromancer
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.necromancer.apprentices
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: necromancer--gofer
+  name: Gofer
+  effect: 'as an Apprentice, the Necromancer spends much of their time running errands for their Liche
+
+    masters and over the years get exceptionally good at it.
+
+    When a Necromancer searches for rare items, they roll 3D6 and pick the two highest.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 - 1 Necromancer / Special Rules / Gofer
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Gofer
+    es: null
+  effect_i18n:
+    en: 'as an Apprentice, the Necromancer spends much of their time running errands for their Liche
+
+      masters and over the years get exceptionally good at it.
+
+      When a Necromancer searches for rare items, they roll 3D6 and pick the two highest.'
+    es: null
+  applies_to:
+    profile_ids:
+    - necromancer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.necromancer.gofer
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: grave-guards--wight-blades
+  name: Wight Blades
+  effect: Grave Guards carry weapons laden with evil magic. All close combat 'to hit' rolls of a 6 will automatically wound.
+    You may roll 'to wound' as normal to determine if it is a 'critical hit', but even a failed 'to wound' roll will still
+    cause a wound if a 6 was rolled first 'to hit'.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 - 3 Grave Guards / Special Rules / Wight Blades
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Wight Blades
+    es: null
+  effect_i18n:
+    en: Grave Guards carry weapons laden with evil magic. All close combat 'to hit' rolls of a 6 will automatically wound.
+      You may roll 'to wound' as normal to determine if it is a 'critical hit', but even a failed 'to wound' roll will still
+      cause a wound if a 6 was rolled first 'to hit'.
+    es: null
+  applies_to:
+    profile_ids:
+    - grave-guards
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.wight-blades
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.wight-blades
+        parameters:
+          value: true
+- id: grave-guards--cause-fear
+  name: Cause Fear
+  effect: Grave Guards are terrifying undead creatures and so cause fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 - 3 Grave Guards / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Cause Fear
+    es: null
+  effect_i18n:
+    en: Grave Guards are terrifying undead creatures and so cause fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - grave-guards
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.grave-guards.cause-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: grave-guards--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Grave Guards are not affected by poison.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 - 3 Grave Guards / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: Grave Guards are not affected by poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - grave-guards
+- id: grave-guards--immune-to-psychology
+  name: Immune to Psychology
+  effect: Grave Guards are not affected by psychology and never leave combat.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 - 3 Grave Guards / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: Grave Guards are not affected by psychology and never leave combat.
+    es: null
+  applies_to:
+    profile_ids:
+    - grave-guards
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.grave-guards.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: grave-guards--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: Grave Guards treat a stunned result on the injury chart as knocked down.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 - 3 Grave Guards / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: Grave Guards treat a stunned result on the injury chart as knocked down.
+    es: null
+  applies_to:
+    profile_ids:
+    - grave-guards
+- id: grave-guards--may-not-run
+  name: May not Run
+  effect: Grave Guards are slow undead creatures and may not run (but can charge normally).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 - 3 Grave Guards / Special Rules / May not Run
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: May not Run
+    es: null
+  effect_i18n:
+    en: Grave Guards are slow undead creatures and may not run (but can charge normally).
+    es: null
+  applies_to:
+    profile_ids:
+    - grave-guards
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.grave-guards.may-not-run
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: grave-guards--no-deal
+  name: No deal
+  effect: Grave Guards may not search for rare items.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 - 3 Grave Guards / Special Rules / No deal
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: No deal
+    es: null
+  effect_i18n:
+    en: Grave Guards may not search for rare items.
+    es: null
+  applies_to:
+    profile_ids:
+    - grave-guards
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.grave-guards.no-deal
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: zombies--cause-fear
+  name: Cause Fear
+  effect: Zombies are horrible abominations and so cause fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Zombies / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Cause Fear
+    es: null
+  effect_i18n:
+    en: Zombies are horrible abominations and so cause fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombies
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.zombies.cause-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: zombies--may-not-run
+  name: May not run
+  effect: Zombies are slow undead creatures and may not run (but may charge normally).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Zombies / Special Rules / May not run
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: May not run
+    es: null
+  effect_i18n:
+    en: Zombies are slow undead creatures and may not run (but may charge normally).
+    es: null
+  applies_to:
+    profile_ids:
+    - zombies
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.zombies.may-not-run
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: zombies--immune-to-psychology
+  name: Immune to Psychology
+  effect: A Zombie is not affected by psychology and never leaves combat.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Zombies / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: A Zombie is not affected by psychology and never leaves combat.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombies
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.zombies.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: zombies--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: A Zombie is not affected by poison.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Zombies / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: A Zombie is not affected by poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombies
+- id: zombies--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: Zombies treat stunned results on the injury chart as knocked down.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Zombies / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: Zombies treat stunned results on the injury chart as knocked down.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombies
+- id: zombies--no-brain
+  name: No Brain
+  effect: Zombies never gain experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Zombies / Special Rules / No Brain
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: No Brain
+    es: null
+  effect_i18n:
+    en: Zombies never gain experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombies
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.zombies.no-brain
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: skeletons--cause-fear
+  name: Cause Fear
+  effect: Skeletons are horrible abominations and so cause fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 8 Skeletons / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Cause Fear
+    es: null
+  effect_i18n:
+    en: Skeletons are horrible abominations and so cause fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - skeletons
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.skeletons.cause-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: skeletons--may-not-run
+  name: May not run
+  effect: Skeletons are slow undead creatures and may not run (but may charge normally).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 8 Skeletons / Special Rules / May not run
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: May not run
+    es: null
+  effect_i18n:
+    en: Skeletons are slow undead creatures and may not run (but may charge normally).
+    es: null
+  applies_to:
+    profile_ids:
+    - skeletons
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.skeletons.may-not-run
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: skeletons--immune-to-psychology
+  name: Immune to Psychology
+  effect: Skeletons are not affected by psychology and never leaves combat.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 8 Skeletons / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: Skeletons are not affected by psychology and never leaves combat.
+    es: null
+  applies_to:
+    profile_ids:
+    - skeletons
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.skeletons.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: skeletons--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Skeletons are not affected by poison.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 8 Skeletons / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: Skeletons are not affected by poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - skeletons
+- id: skeletons--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: Skeletons treat stunned results on the injury chart as knocked down.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 8 Skeletons / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: Skeletons treat stunned results on the injury chart as knocked down.
+    es: null
+  applies_to:
+    profile_ids:
+    - skeletons
+- id: skeletons--no-brain
+  name: No Brain
+  effect: Skeletons never gain experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 8 Skeletons / Special Rules / No Brain
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: No Brain
+    es: null
+  effect_i18n:
+    en: Skeletons never gain experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - skeletons
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.skeletons.no-brain
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: wights--cause-fear
+  name: Cause Fear
+  effect: Wights are horrible abominations and so cause fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 3 Wights / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Cause Fear
+    es: null
+  effect_i18n:
+    en: Wights are horrible abominations and so cause fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - wights
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.wights.cause-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: wights--may-not-run
+  name: May not run
+  effect: Wights are slow undead creatures and may not run (but may charge normally).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 3 Wights / Special Rules / May not run
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: May not run
+    es: null
+  effect_i18n:
+    en: Wights are slow undead creatures and may not run (but may charge normally).
+    es: null
+  applies_to:
+    profile_ids:
+    - wights
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.wights.may-not-run
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: wights--immune-to-psychology
+  name: Immune to Psychology
+  effect: Wights are not affected by psychology and never leaves combat.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 3 Wights / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: Wights are not affected by psychology and never leaves combat.
+    es: null
+  applies_to:
+    profile_ids:
+    - wights
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.wights.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: wights--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Wights are not affected by poison.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 3 Wights / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: Wights are not affected by poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - wights
+- id: wights--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: Wights treat stunned results on the injury chart as knocked down.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 3 Wights / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: Wights treat stunned results on the injury chart as knocked down.
+    es: null
+  applies_to:
+    profile_ids:
+    - wights
+- id: wights--experience
+  name: Experience
+  effect: Wights gain Experience. If a Wight becomes a Hero through The Lad's Got Talent, it may not search for rare items,
+    must choose Combat and Strength as its two skill lists, and gains the Wight Blades special rule.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 3 Wights / Special Rules / Experience
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Experience
+    es: null
+  effect_i18n:
+    en: Wights gain Experience. If a Wight becomes a Hero through The Lad's Got Talent, it may not search for rare items,
+      must choose Combat and Strength as its two skill lists, and gains the Wight Blades special rule.
+    es: null
+  applies_to:
+    profile_ids:
+    - wights
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.wights.experience
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: scarecrows--cause-fear
+  name: Cause Fear
+  effect: 'The sight of a tall, lanky and silent scarecrow moving is highly unnatural and so causes
+
+    fear.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 2 Scarecrows / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Cause Fear
+    es: null
+  effect_i18n:
+    en: 'The sight of a tall, lanky and silent scarecrow moving is highly unnatural and so causes
+
+      fear.'
+    es: null
+  applies_to:
+    profile_ids:
+    - scarecrows
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.scarecrows.cause-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: scarecrows--immune-to-psychology
+  name: Immune to Psychology
+  effect: The scarecrow is immune to all psychology and will never leave combat.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 2 Scarecrows / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: The scarecrow is immune to all psychology and will never leave combat.
+    es: null
+  applies_to:
+    profile_ids:
+    - scarecrows
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.scarecrows.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: scarecrows--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: The scarecrow is immune to all poisons.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 2 Scarecrows / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: The scarecrow is immune to all poisons.
+    es: null
+  applies_to:
+    profile_ids:
+    - scarecrows
+- id: scarecrows--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: The scarecrow treats all stunned results on the injury chart as knocked down.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 2 Scarecrows / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: The scarecrow treats all stunned results on the injury chart as knocked down.
+    es: null
+  applies_to:
+    profile_ids:
+    - scarecrows
+- id: scarecrows--no-brain
+  name: No Brain
+  effect: The scarecrow never gain experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 2 Scarecrows / Special Rules / No Brain
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: No Brain
+    es: null
+  effect_i18n:
+    en: The scarecrow never gain experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - scarecrows
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.scarecrows.no-brain
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: scarecrows--no-substance
+  name: No Substance
+  effect: The scarecrow is incredibly difficult to take down with shooting as there are few vital parts to hit. The scarecrow
+    counts as having a T6 against all shooting and magical missiles, likewise, a scarecrow is immune to critical hits caused
+    by shooting. The exception to this rule is missile weapons or spells that are fire based which deal damage as normal.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 2 Scarecrows / Special Rules / No Substance
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: No Substance
+    es: null
+  effect_i18n:
+    en: The scarecrow is incredibly difficult to take down with shooting as there are few vital parts to hit. The scarecrow
+      counts as having a T6 against all shooting and magical missiles, likewise, a scarecrow is immune to critical hits caused
+      by shooting. The exception to this rule is missile weapons or spells that are fire based which deal damage as normal.
+    es: null
+  applies_to:
+    profile_ids:
+    - scarecrows
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.scarecrows.no-substance
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: scarecrows--flammable
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.flammable
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.flammable
+        parameters:
+          value: true
+    - id: trait.caught-fire-threshold
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.caught-fire-threshold
+        parameters:
+          value: 3
+  name: Flammable
+  effect: 'The scarecrow is primarily ratty cloth, straw and preserved body parts so as a result they
+
+    burn very easily. Scarecrows count as being flammable. In addition, a scarecrow will be ''caught fire'' on the roll of
+    a 3+ as opposed to the normal 4+.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 2 Scarecrows / Special Rules / Flammable
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Flammable
+    es: null
+  effect_i18n:
+    en: 'The scarecrow is primarily ratty cloth, straw and preserved body parts so as a result they
+
+      burn very easily. Scarecrows count as being flammable. In addition, a scarecrow will be ''caught fire'' on the roll
+      of a 3+ as opposed to the normal 4+.'
+    es: null
+  applies_to:
+    profile_ids:
+    - scarecrows
+- id: scarecrows--construct
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.injury-reroll-out
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.injury-reroll-out
+        parameters:
+          value: true
+  name: Construct
+  effect: The scarecrow is an undead construct and may re-roll any rolls on the injury table except for wounds caused by fire.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 2 Scarecrows / Special Rules / Construct
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Construct
+    es: null
+  effect_i18n:
+    en: The scarecrow is an undead construct and may re-roll any rolls on the injury table except for wounds caused by fire.
+    es: null
+  applies_to:
+    profile_ids:
+    - scarecrows
+- id: scarecrows--animated-construct
+  name: Animated Construct
+  effect: Each Scarecrow must be assigned to either the Liche or the Necromancer as its controller, and each controller may
+    control only one Scarecrow. Therefore two Scarecrows may only be fielded if both a Liche and a Necromancer are present.
+    If a controller cannot participate in a battle, its Scarecrow cannot participate either. Whenever the controller loses
+    a Wound, it must pass an unmodified Leadership test or the magical bond is broken and the Scarecrow is immediately taken
+    Out of Action.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 - 2 Scarecrows / Special Rules / Animated Construct
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Animated Construct
+    es: null
+  effect_i18n:
+    en: Each Scarecrow must be assigned to either the Liche or the Necromancer as its controller, and each controller may
+      control only one Scarecrow. Therefore two Scarecrows may only be fielded if both a Liche and a Necromancer are present.
+      If a controller cannot participate in a battle, its Scarecrow cannot participate either. Whenever the controller loses
+      a Wound, it must pass an unmodified Leadership test or the magical bond is broken and the Scarecrow is immediately taken
+      Out of Action.
+    es: null
+  applies_to:
+    profile_ids:
+    - scarecrows
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.restless-dead.scarecrows.animated-construct
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--bone-goliath-access
+  name: Bone Goliath
+  effect: Only the Restless Dead may build the unique Bone Goliath Hired Sword, including during warband creation. Its separate
+    Hired Sword profile and construction rules are not embedded in this warband file.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Choice of warriors / Bone Goliath
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Bone Goliath
+    es: null
+  effect_i18n:
+    en: Only the Restless Dead may build the unique Bone Goliath Hired Sword, including during warband creation. Its separate
+      Hired Sword profile and construction rules are not embedded in this warband file.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.restless-dead.band.bone-goliath-access
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--scarecrow-controller-limit
+  name: Scarecrow Controllers
+  effect: 'Each Scarecrow requires a controller: either the Liche or the Necromancer. Each controller may control at most
+    one Scarecrow, so two Scarecrows require both Heroes to be present.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Scarecrows / Animated Construct
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Scarecrow Controllers
+    es: null
+  effect_i18n:
+    en: 'Each Scarecrow requires a controller: either the Liche or the Necromancer. Each controller may control at most one
+      Scarecrow, so two Scarecrows require both Heroes to be present.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.restless-dead.band.scarecrow-controller-limit
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--restless-dead-maximum-characteristics
+  name: Restless Dead Maximum Characteristics
+  effect: 'Maximum characteristics: Liche M5 WS4 BS4 S4 T4 W8 I6 A3 Ld10; Grave Guard M5 WS5 BS5 S4 T4 W4 I5 A4 Ld10. Wights
+    use the Grave Guard maximum profile and the Necromancer uses the Human maximum profile.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Characteristic increase
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Restless Dead Maximum Characteristics
+    es: null
+  effect_i18n:
+    en: 'Maximum characteristics: Liche M5 WS4 BS4 S4 T4 W8 I6 A3 Ld10; Grave Guard M5 WS5 BS5 S4 T4 W4 I5 A4 Ld10. Wights
+      use the Grave Guard maximum profile and the Necromancer uses the Human maximum profile.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.restless-dead.band.restless-dead-maximum-characteristics
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--restless-dead-special-skills-corpse-bomb
+  kind: warband_skill
+  name: Corpse Bomb
+  effect: 'Special magics and rituals can cause a Zombie to
+
+    explode when they are near the enemy. Secretly
+
+    nominate one Zombie at the beginning of the battle to
+
+    be a Corpse Bomb. If the enemy charges or is charged
+
+    by the Zombie, it immediately detonates. All models
+
+    within D6 inches take D3 Strength 4 hits. The
+
+    detonated Zombie may never be used again as it is
+
+    splattered in a million pieces! Corpse bombs killed by
+
+    shooting do not detonate. Only one Zombie at a time
+
+    can be a corpse bomb although the skill can be taken
+
+    by both the Necromancer and the Liche.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Restless Dead special skills / corpse bomb
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Corpse Bomb
+    es: null
+  effect_i18n:
+    en: 'Special magics and rituals can cause a Zombie to
+
+      explode when they are near the enemy. Secretly
+
+      nominate one Zombie at the beginning of the battle to
+
+      be a Corpse Bomb. If the enemy charges or is charged
+
+      by the Zombie, it immediately detonates. All models
+
+      within D6 inches take D3 Strength 4 hits. The
+
+      detonated Zombie may never be used again as it is
+
+      splattered in a million pieces! Corpse bombs killed by
+
+      shooting do not detonate. Only one Zombie at a time
+
+      can be a corpse bomb although the skill can be taken
+
+      by both the Necromancer and the Liche.'
+    es: null
+  eligibility:
+  - liche
+  - necromancer
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.restless-dead.band.restless-dead-special-skills-corpse-bomb
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--restless-dead-special-skills-deathspeaker
+  kind: warband_skill
+  name: Deathspeaker
+  effect: 'At the start of the battle, the undead player may
+
+    deploy D3 Zombies for free. These zombies do not
+
+    count towards the maximum number of models in the
+
+    warband, but increase the warband''s rating as normal.
+
+    Zombies created in this way may not be used as
+
+    Corpse Bombs. These Zombies only last for the
+
+    duration of the battle.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Restless Dead special skills / deathspeaker
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Deathspeaker
+    es: null
+  effect_i18n:
+    en: 'At the start of the battle, the undead player may
+
+      deploy D3 Zombies for free. These zombies do not
+
+      count towards the maximum number of models in the
+
+      warband, but increase the warband''s rating as normal.
+
+      Zombies created in this way may not be used as
+
+      Corpse Bombs. These Zombies only last for the
+
+      duration of the battle.'
+    es: null
+  eligibility:
+  - liche
+  - necromancer
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.restless-dead.band.restless-dead-special-skills-deathspeaker
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--restless-dead-special-skills-wraith-touch
+  kind: warband_skill
+  name: Wraith Touch
+  effect: 'The hero may make a Wraith Touch attack instead of their normal attacks in close combat. The hero making
+
+    a Wraith Touch makes a single unarmed attack, if it
+
+    hits, it wounds automatically, all rules that apply to
+
+    unarmed attacks apply to the Wraith Touch. If a Liche
+
+    uses this skill and wounds, then he may regain one
+
+    lost wound. This may not take the hero beyond his
+
+    starting total. Necromancers do not regain wounds
+
+    with this skill. This skill has no effect on the Possessed
+
+    or Undead.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Restless Dead special skills / wraith touch
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Wraith Touch
+    es: null
+  effect_i18n:
+    en: 'The hero may make a Wraith Touch attack instead of their normal attacks in close combat. The hero making
+
+      a Wraith Touch makes a single unarmed attack, if it
+
+      hits, it wounds automatically, all rules that apply to
+
+      unarmed attacks apply to the Wraith Touch. If a Liche
+
+      uses this skill and wounds, then he may regain one
+
+      lost wound. This may not take the hero beyond his
+
+      starting total. Necromancers do not regain wounds
+
+      with this skill. This skill has no effect on the Possessed
+
+      or Undead.'
+    es: null
+  eligibility:
+  - liche
+  - necromancer
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.restless-dead.band.restless-dead-special-skills-wraith-touch
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--restless-dead-special-skills-forbidden-rite
+  kind: warband_skill
+  name: Forbidden Rite
+  effect: 'If the hero with this skill did not search for rare items
+
+    during their last exploration phase, then they start the
+
+    next battle with a pool of D3+1 (+1) modifiers they
+
+    can use to increase their casting rolls. They may use as
+
+    many of these modifiers at a time as they desire.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Restless Dead special skills / forbidden rite
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Forbidden Rite
+    es: null
+  effect_i18n:
+    en: 'If the hero with this skill did not search for rare items
+
+      during their last exploration phase, then they start the
+
+      next battle with a pool of D3+1 (+1) modifiers they
+
+      can use to increase their casting rolls. They may use as
+
+      many of these modifiers at a time as they desire.'
+    es: null
+  eligibility:
+  - liche
+  - necromancer
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.restless-dead.band.restless-dead-special-skills-forbidden-rite
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--restless-dead-special-skills-summoner
+  kind: warband_skill
+  name: Summoner
+  effect: The maximum warband size is increased by 1.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Restless Dead special skills / summoner
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  name_i18n:
+    en: Summoner
+    es: null
+  effect_i18n:
+    en: The maximum warband size is increased by 1.
+    es: null
+  eligibility:
+  - liche
+  - necromancer
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.restless-dead.band.restless-dead-special-skills-summoner
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'

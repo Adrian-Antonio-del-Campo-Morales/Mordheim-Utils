@@ -1,0 +1,459 @@
+schema_version: 2
+band_id: lustria-high-elves
+rules:
+- id: loremaster--leader
+  name: Leader
+  effect: Any warband model within 6" of the Loremaster may use his Leadership when taking Leadership tests.
+  source:
+    manual: lustria
+    printed_page: 116
+    section: Heroes / 1 Loremaster / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Loremaster may use his Leadership when taking Leadership tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - loremaster
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-high-elves.loremaster.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: loremaster--spellcaster
+  name: Spellcaster
+  effect: The Loremaster is a spellcaster and begins with one randomly generated High Elf Magic spell. Whenever he gains a
+    new spell, it may be chosen from High Elf Magic or Lesser Magic. Spell lists and spell effects are intentionally not modelled
+    in this file.
+  source:
+    manual: lustria
+    printed_page: 116
+    section: Heroes / 1 Loremaster / Spellcaster
+  name_i18n:
+    en: Spellcaster
+    es: null
+  effect_i18n:
+    en: The Loremaster is a spellcaster and begins with one randomly generated High Elf Magic spell. Whenever he gains a new
+      spell, it may be chosen from High Elf Magic or Lesser Magic. Spell lists and spell effects are intentionally not modelled
+      in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - loremaster
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-high-elves.loremaster.spellcaster
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: sword-guardians--swordmaster-protection
+  name: Swordmaster Protection
+  effect: While armed with a Sword or Elven Greatsword, shooting attacks against the Sword Guardian suffer -1 To Hit. An ordinary
+    Great Weapon does not satisfy this requirement. This protection does not affect blackpowder weapons.
+  source:
+    manual: lustria
+    printed_page: 117
+    section: Heroes / 0-2 Sword Guardians / Swordmaster Protection
+  name_i18n:
+    en: Swordmaster Protection
+    es: null
+  effect_i18n:
+    en: While armed with a Sword or Elven Greatsword, shooting attacks against the Sword Guardian suffer -1 To Hit. An ordinary
+      Great Weapon does not satisfy this requirement. This protection does not affect blackpowder weapons.
+    es: null
+  applies_to:
+    profile_ids:
+    - sword-guardians
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-high-elves.sword-guardians.swordmaster-protection
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: explorers--searcher
+  name: Searcher
+  effect: If the Explorer was not taken Out of Action, when the warband rolls on the Exploration table the Explorer may modify
+    one Exploration die by +1 or -1.
+  source:
+    manual: lustria
+    printed_page: 116
+    section: Heroes / 0-2 Explorers / Searcher
+  name_i18n:
+    en: Searcher
+    es: null
+  effect_i18n:
+    en: If the Explorer was not taken Out of Action, when the warband rolls on the Exploration table the Explorer may modify
+      one Exploration die by +1 or -1.
+    es: null
+  applies_to:
+    profile_ids:
+    - explorers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-high-elves.explorers.searcher
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--excellent-sight
+  name: Excellent Sight
+  effect: High Elves detect Hidden enemies at twice the normal detection distance. The Spanish source parenthetically expresses
+    this as twice the warrior's Initiative characteristic in centimetres.
+  source:
+    manual: lustria
+    printed_page: 114
+    section: High Elf Special Rules / Excellent Sight
+  name_i18n:
+    en: Excellent Sight
+    es: null
+  effect_i18n:
+    en: High Elves detect Hidden enemies at twice the normal detection distance. The Spanish source parenthetically expresses
+      this as twice the warrior's Initiative characteristic in centimetres.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lustria-high-elves.band.excellent-sight
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--haughty
+  name: Haughty
+  effect: The warband may never hire a Hired Sword who is not of High Elf blood, and may never use Dwarf-made equipment, including
+    Gromril and Obsidian equipment.
+  source:
+    manual: lustria
+    printed_page: 114
+    section: High Elf Special Rules / Haughty
+  name_i18n:
+    en: Haughty
+    es: null
+  effect_i18n:
+    en: The warband may never hire a Hired Sword who is not of High Elf blood, and may never use Dwarf-made equipment, including
+      Gromril and Obsidian equipment.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.haughty
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.haughty
+- id: band--honourable
+  name: Honourable
+  effect: High Elves may never use drugs or poisons of any kind under any circumstances.
+  source:
+    manual: lustria
+    printed_page: 114
+    section: High Elf Special Rules / Honourable
+  name_i18n:
+    en: Honourable
+    es: null
+  effect_i18n:
+    en: High Elves may never use drugs or poisons of any kind under any circumstances.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.forbid-item-categories
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.forbid-item-categories
+        parameters:
+          categories:
+          - poison
+          - drug
+- id: band--ancestral-customs
+  name: Ancestral Customs
+  effect: High Elves may never use blackpowder weapons.
+  source:
+    manual: lustria
+    printed_page: 114
+    section: High Elf Special Rules / Ancestral Customs
+  name_i18n:
+    en: Ancestral Customs
+    es: null
+  effect_i18n:
+    en: High Elves may never use blackpowder weapons.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.no-blackpowder-weapons
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.no-blackpowder-weapons
+- id: band--determination
+  name: Determination
+  effect: When fighting a Dark Elf warband, High Elves count as Leadership 10 when taking Rout tests and may never voluntarily
+    Rout.
+  source:
+    manual: lustria
+    printed_page: 114
+    section: High Elf Special Rules / Determination
+  name_i18n:
+    en: Determination
+    es: null
+  effect_i18n:
+    en: When fighting a Dark Elf warband, High Elves count as Leadership 10 when taking Rout tests and may never voluntarily
+      Rout.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lustria-high-elves.band.determination
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--high-elf-special-skills-elven-agility
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.elven-agility
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.elven-agility
+  name: Elven Agility
+  effect: The Hero has a 6+ special save against close-combat and missile attacks. If the Hero also has Dodge or Step Aside,
+    the relevant save improves to 4+ and Elven Agility no longer applies to that attack type.
+  source:
+    manual: lustria
+    printed_page: 119
+    section: High Elf Special Skills / Elven Agility
+  name_i18n:
+    en: Elven Agility
+    es: null
+  effect_i18n:
+    en: The Hero has a 6+ special save against close-combat and missile attacks. If the Hero also has Dodge or Step Aside,
+      the relevant save improves to 4+ and Elven Agility no longer applies to that attack type.
+    es: null
+  eligibility:
+  - loremaster
+  - sword-guardians
+  - explorers
+  applies_to:
+    band: true
+- id: band--high-elf-special-skills-rune-master
+  kind: warband_skill
+  name: Rune Master
+  effect: Loremaster only. When using Elven Runestones, the Loremaster gains +1 on the attempt to dispel a spell. In addition,
+    once per battle he may inscribe a rune on one friendly warrior's weapon or armour; that warrior may re-roll one failed
+    armour save or one failed parry. The rune loses its power after the battle.
+  source:
+    manual: lustria
+    printed_page: 119
+    section: High Elf Special Skills / Rune Master
+  name_i18n:
+    en: Rune Master
+    es: null
+  effect_i18n:
+    en: Loremaster only. When using Elven Runestones, the Loremaster gains +1 on the attempt to dispel a spell. In addition,
+      once per battle he may inscribe a rune on one friendly warrior's weapon or armour; that warrior may re-roll one failed
+      armour save or one failed parry. The rune loses its power after the battle.
+    es: null
+  eligibility:
+  - loremaster
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.lustria-high-elves.band.high-elf-special-skills-rune-master
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--high-elf-special-skills-miniath
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.miniath
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.miniath
+  name: Miniath
+  effect: The Hero may parry with any weapon. If using a weapon that normally allows parrying, the Hero may re-roll a failed
+    parry attempt.
+  source:
+    manual: lustria
+    printed_page: 119
+    section: High Elf Special Skills / Miniath
+  name_i18n:
+    en: Miniath
+    es: null
+  effect_i18n:
+    en: The Hero may parry with any weapon. If using a weapon that normally allows parrying, the Hero may re-roll a failed
+      parry attempt.
+    es: null
+  eligibility:
+  - loremaster
+  - sword-guardians
+  - explorers
+  applies_to:
+    band: true
+- id: band--high-elf-special-skills-infallible-strike
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.sure-strike
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.sure-strike
+  name: Infallible Strike
+  effect: The Hero may re-roll any failed To Wound roll.
+  source:
+    manual: lustria
+    printed_page: 119
+    section: High Elf Special Skills / Infallible Strike
+  name_i18n:
+    en: Infallible Strike
+    es: null
+  effect_i18n:
+    en: The Hero may re-roll any failed To Wound roll.
+    es: null
+  eligibility:
+  - loremaster
+  - sword-guardians
+  - explorers
+  applies_to:
+    band: true
+- id: band--high-elf-special-skills-stand-and-shoot
+  kind: warband_skill
+  name: Stand and Shoot
+  effect: When an enemy declares a charge against the Hero, the Hero may take a Leadership test. If passed, the Hero may shoot
+    at the charging model before contact, suffering -1 To Hit. If the attacker is Knocked Down or Stunned by that shot, place
+    it halfway along its charge distance.
+  source:
+    manual: lustria
+    printed_page: 119
+    section: High Elf Special Skills / Stand and Shoot
+  name_i18n:
+    en: Stand and Shoot
+    es: null
+  effect_i18n:
+    en: When an enemy declares a charge against the Hero, the Hero may take a Leadership test. If passed, the Hero may shoot
+      at the charging model before contact, suffering -1 To Hit. If the attacker is Knocked Down or Stunned by that shot,
+      place it halfway along its charge distance.
+    es: null
+  eligibility:
+  - loremaster
+  - sword-guardians
+  - explorers
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.lustria-high-elves.band.high-elf-special-skills-stand-and-shoot
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--high-elf-special-skills-faerie
+  kind: warband_skill
+  name: Faerie
+  effect: Explorers only. Enemy spells do not affect the Explorer on a D6 roll of 4+.
+  source:
+    manual: lustria
+    printed_page: 119
+    section: High Elf Special Skills / Faerie
+  name_i18n:
+    en: Faerie
+    es: null
+  effect_i18n:
+    en: Explorers only. Enemy spells do not affect the Explorer on a D6 roll of 4+.
+    es: null
+  eligibility:
+  - explorers
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.lustria-high-elves.band.high-elf-special-skills-faerie
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--high-elf-special-skills-luck
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.luck
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.luck
+  name: Luck
+  effect: Explorers only. Once per battle, the Explorer may re-roll any roll made by that Explorer, but may not re-roll a
+    roll made by another warband member.
+  source:
+    manual: lustria
+    printed_page: 119
+    section: High Elf Special Skills / Luck
+  name_i18n:
+    en: Luck
+    es: null
+  effect_i18n:
+    en: Explorers only. Once per battle, the Explorer may re-roll any roll made by that Explorer, but may not re-roll a roll
+      made by another warband member.
+    es: null
+  eligibility:
+  - explorers
+  applies_to:
+    band: true

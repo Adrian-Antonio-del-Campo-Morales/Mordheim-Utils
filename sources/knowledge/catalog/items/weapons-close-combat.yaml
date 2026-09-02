@@ -1,0 +1,1652 @@
+schema_version: 2
+ruleset: mordheim
+items:
+- id: axe
+  kind: close-combat-weapon
+  name: Axe
+  name_i18n:
+    en: Axe
+    es: null
+  source_refs:
+  - &id020
+    manual: mordheimer.net
+    printed_page: 0
+    section: Scout Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+  - &id021
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marksman equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+  - &id022
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mountainguard Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+  - &id005
+    manual: mordheimer.net
+    printed_page: 0
+    section: Monk Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  - &id026
+    manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Dwarf Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
+  - &id027
+    manual: mordheimer.net
+    printed_page: 0
+    section: Informer Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
+  - &id006
+    manual: mordheimer.net
+    printed_page: 0
+    section: Orc equipment lists / Black Orc List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
+  - &id007
+    manual: mordheimer.net
+    printed_page: 0
+    section: Orc equipment lists / Henchmen List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
+  - &id029
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pilgrims’ equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  - &id030
+    manual: mordheimer.net
+    printed_page: 0
+    section: Bowmen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  - &id031
+    manual: mordheimer.net
+    printed_page: 0
+    section: Knights Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  - &id032
+    manual: mordheimer.net
+    printed_page: 0
+    section: Squires Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  - &id033
+    manual: mordheimer.net
+    printed_page: 0
+    section: Men-at-Arms Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  - &id034
+    manual: mordheimer.net
+    printed_page: 0
+    section: Bowmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  - &id035
+    manual: mordheimer.net
+    printed_page: 0
+    section: Carnival equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  - &id036
+    manual: mordheimer.net
+    printed_page: 0
+    section: Possessed equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
+  - &id037
+    manual: mordheimer.net
+    printed_page: 0
+    section: Darksouls equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
+  - &id039
+    manual: mordheimer.net
+    printed_page: 0
+    section: Thralls Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  - &id002
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dark Elf Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  - &id040
+    manual: mordheimer.net
+    printed_page: 0
+    section: Shades Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  - &id041
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Warrior Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - &id042
+    manual: mordheimer.net
+    printed_page: 0
+    section: Crossbowmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - &id043
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Warrior Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  - &id044
+    manual: mordheimer.net
+    printed_page: 0
+    section: Thunderer Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  - &id045
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  - &id046
+    manual: mordheimer.net
+    printed_page: 0
+    section: Gunnery School equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+  - &id047
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marksman equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+  - &id048
+    manual: mordheimer.net
+    printed_page: 0
+    section: Bandit equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  - &id049
+    manual: mordheimer.net
+    printed_page: 0
+    section: Horned Hunter equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
+  - &id050
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
+  - &id051
+    manual: mordheimer.net
+    printed_page: 0
+    section: Imperial Outriders equipment lists / Hand-to-hand Combat Weapons and Armour
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/imperial-outriders
+  - &id052
+    manual: mordheimer.net
+    printed_page: 0
+    section: Kislev Warrior equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  - &id053
+    manual: mordheimer.net
+    printed_page: 0
+    section: Streltsi equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  - &id054
+    manual: mordheimer.net
+    printed_page: 0
+    section: Saurus equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  - &id055
+    manual: mordheimer.net
+    printed_page: 0
+    section: Skinks equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  - &id001
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  - &id056
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  - &id057
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mercenary equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+  - &id058
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marksman equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+  - &id059
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchman Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  - &id064
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  - &id065
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  - &id066
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hunters equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  - &id067
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ostlander Equipment Lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  - &id068
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ruffian equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  - &id069
+    manual: mordheimer.net
+    printed_page: 0
+    section: Jaeger Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  - &id012
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ogre Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  - &id070
+    manual: mordheimer.net
+    printed_page: 0
+    section: Outlaws equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/outlaws-of-stirwood-forest
+  - &id003
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pirate Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  - &id004
+    manual: mordheimer.net
+    printed_page: 0
+    section: Swabbie Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  - &id014
+    manual: mordheimer.net
+    printed_page: 0
+    section: Gunner Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  - &id071
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pit fighter equipment lists / Ogre & Slayer equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  - &id072
+    manual: mordheimer.net
+    printed_page: 0
+    section: Restless Dead equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  - &id075
+    manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Dwarf equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  - &id076
+    manual: mordheimer.net
+    printed_page: 0
+    section: Blunderbusser equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  - &id077
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hobgoblins equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  - &id078
+    manual: mordheimer.net
+    printed_page: 0
+    section: Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  - &id079
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marksman equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  - &id080
+    manual: mordheimer.net
+    printed_page: 0
+    section: Undead equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  - &id081
+    manual: mordheimer.net
+    printed_page: 0
+    section: Liche Priest Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  - &id082
+    manual: mordheimer.net
+    printed_page: 0
+    section: Undead equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
+  - &id083
+    manual: mordheimer.net
+    printed_page: 0
+    section: Witch Hunter equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/witch-hunters
+  - &id084
+    manual: mordheimer.net
+    printed_page: 0
+    section: Zealot equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/witch-hunters
+  combat_status: implemented
+  mechanic_id: weapon.axe
+- id: ball_chain
+  kind: close-combat-weapon
+  name: Ball Chain
+  name_i18n:
+    en: Ball Chain
+    es: null
+  source_refs:
+  - &id092
+    manual: mordheimer.net
+    printed_page: 0
+    section: Fanatic Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  - &id093
+    manual: mordheimer.net
+    printed_page: 0
+    section: Fanatic Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  - &id011
+    manual: mordheimer.net
+    printed_page: 0
+    section: Goblin Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
+  combat_status: implemented
+  mechanic_id: weapon.ball-and-chain
+- id: barbed_whip
+  kind: close-combat-weapon
+  name: Barbed Whip
+  name_i18n:
+    en: Barbed Whip
+    es: null
+  source_refs:
+  - *id001
+  combat_status: implemented
+  mechanic_id: weapon.beastlash
+- id: battle_axe
+  kind: close-combat-weapon
+  name: Battle Axe
+  name_i18n:
+    en: Battle Axe
+    es: null
+  source_refs:
+  - &id024
+    manual: mordheimer.net
+    printed_page: 0
+    section: Beastmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  - &id025
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ungor Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  - &id010
+    manual: mordheimer.net
+    printed_page: 0
+    section: Orc Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
+  combat_status: implemented
+  mechanic_id: weapon.axe
+- id: beastlash
+  kind: close-combat-weapon
+  name: Beastlash
+  name_i18n:
+    en: Beastlash
+    es: null
+  source_refs:
+  - *id002
+  combat_status: implemented
+  mechanic_id: weapon.beastlash
+- id: belaying_pin
+  kind: close-combat-weapon
+  name: Belaying Pin
+  name_i18n:
+    en: Belaying Pin
+    es: null
+  source_refs:
+  - *id003
+  - *id004
+  combat_status: implemented
+  mechanic_id: weapon.mace
+- id: boar_spear_aristocrat_only
+  kind: close-combat-weapon
+  name: Boar Spear Aristocrat Only
+  name_i18n:
+    en: Boar Spear Aristocrat Only
+    es: null
+  source_refs:
+  - &id038
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  combat_status: implemented
+  mechanic_id: weapon.boar-spear
+- id: boat_hook
+  kind: close-combat-weapon
+  name: Boat Hook
+  name_i18n:
+    en: Boat Hook
+    es: null
+  source_refs:
+  - *id003
+  - *id004
+  combat_status: implemented
+  mechanic_id: weapon.long-boat-hook
+- id: broadsword
+  kind: close-combat-weapon
+  name: Broadsword
+  name_i18n:
+    en: Broadsword
+    es: null
+  source_refs:
+  - &id028
+    manual: mordheimer.net
+    printed_page: 0
+    section: Knights Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  combat_status: implemented
+  mechanic_id: weapon.broadsword
+- id: cat_o_nine_tails
+  kind: close-combat-weapon
+  name: Cat O Nine Tails
+  name_i18n:
+    en: Cat O Nine Tails
+    es: null
+  source_refs:
+  - *id003
+  combat_status: implemented
+  mechanic_id: weapon.pirate-scourge
+- id: cathayan_longsword
+  kind: close-combat-weapon
+  name: Cathayan Longsword
+  name_i18n:
+    en: Cathayan Longsword
+    es: null
+  source_refs:
+  - &id023
+    manual: mordheimer.net
+    printed_page: 0
+    section: Soldier Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  - &id008
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ogre Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
+  combat_status: implemented
+  mechanic_id: weapon.cathayan-longsword
+- id: censer
+  kind: close-combat-weapon
+  name: Censer
+  name_i18n:
+    en: Censer
+    es: null
+  source_refs:
+  - &id013
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  combat_status: implemented
+  mechanic_id: weapon.censer
+- id: chain_sticks
+  kind: close-combat-weapon
+  name: Chain Sticks
+  name_i18n:
+    en: Chain Sticks
+    es: null
+  source_refs:
+  - *id005
+  combat_status: implemented
+  mechanic_id: weapon.chain-sticks
+- id: choppa_counts_as_a_morning_star
+  kind: close-combat-weapon
+  name: Choppa Counts As A Morning Star
+  name_i18n:
+    en: Choppa Counts As A Morning Star
+    es: null
+  source_refs:
+  - *id006
+  - *id007
+  combat_status: implemented
+  mechanic_id: weapon.choppa
+- id: claw_of_the_old_ones
+  kind: close-combat-weapon
+  name: Claw Of The Old Ones
+  name_i18n:
+    en: Claw Of The Old Ones
+    es: null
+  source_refs:
+  - &id009
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroines Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  combat_status: implemented
+  mechanic_id: weapon.claw-of-the-old-ones
+- id: cleaver
+  kind: close-combat-weapon
+  name: Cleaver
+  name_i18n:
+    en: Cleaver
+    es: null
+  source_refs:
+  - &id098
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mootlander Equipment List / Master Chef List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/mootlanders
+  combat_status: implemented
+  mechanic_id: weapon.axe
+- id: cleaver_counts_as_axe
+  kind: close-combat-weapon
+  name: Cleaver Counts As Axe
+  name_i18n:
+    en: Cleaver Counts As Axe
+    es: null
+  source_refs:
+  - *id008
+  - &id091
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mountain Guide Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
+  combat_status: implemented
+  mechanic_id: weapon.axe
+- id: club
+  kind: close-combat-weapon
+  name: Club
+  name_i18n:
+    en: Club
+    es: null
+  source_refs:
+  - &id015
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroines Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  - &id016
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchwomen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  - &id017
+    manual: mordheimer.net
+    printed_page: 0
+    section: Jaguar Warrior Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  - *id009
+  - &id018
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchwomen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  - &id019
+    manual: mordheimer.net
+    printed_page: 0
+    section: Scout Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  - &id085
+    manual: mordheimer.net
+    printed_page: 0
+    section: Slave equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  - &id060
+    manual: mordheimer.net
+    printed_page: 0
+    section: Cathayan Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  - &id061
+    manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblin Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  - &id062
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  - &id063
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  - *id010
+  - *id011
+  - *id012
+  - &id073
+    manual: mordheimer.net
+    printed_page: 0
+    section: Skaven equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  - *id013
+  - &id074
+    manual: mordheimer.net
+    printed_page: 0
+    section: Skaven equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  combat_status: implemented
+  mechanic_id: weapon.mace
+- id: cutlass_sword
+  kind: close-combat-weapon
+  name: Cutlass Sword
+  name_i18n:
+    en: Cutlass Sword
+    es: null
+  source_refs:
+  - *id003
+  - *id004
+  - *id014
+  combat_status: implemented
+  mechanic_id: weapon.cutlass
+- id: dagger
+  kind: close-combat-weapon
+  name: Dagger
+  name_i18n:
+    en: Dagger
+    es: null
+  source_refs:
+  - *id015
+  - *id016
+  - *id017
+  - *id009
+  - *id018
+  - *id019
+  - *id020
+  - *id021
+  - *id022
+  - *id023
+  - *id024
+  - *id025
+  - *id026
+  - *id027
+  - *id006
+  - *id007
+  - *id028
+  - *id029
+  - *id030
+  - *id031
+  - *id032
+  - *id033
+  - *id034
+  - *id035
+  - *id036
+  - *id037
+  - *id038
+  - *id039
+  - *id002
+  - *id040
+  - *id041
+  - *id042
+  - *id043
+  - *id044
+  - *id045
+  - &id101
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  - *id046
+  - *id047
+  - *id048
+  - &id100
+    manual: mordheimer.net
+    printed_page: 0
+    section: Duelist equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  - &id102
+    manual: mordheimer.net
+    printed_page: 0
+    section: Coward equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  - &id103
+    manual: mordheimer.net
+    printed_page: 0
+    section: Poacher equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  - *id049
+  - *id050
+  - *id051
+  - *id052
+  - *id053
+  - *id054
+  - *id055
+  - &id090
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  - &id096
+    manual: mordheimer.net
+    printed_page: 0
+    section: PROSPECT EQUIPMENT LIST
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  - *id001
+  - *id056
+  - *id057
+  - *id058
+  - &id097
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  - *id059
+  - *id060
+  - &id099
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mootlander Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/mootlanders
+  - *id061
+  - *id062
+  - *id063
+  - *id064
+  - *id065
+  - *id066
+  - *id010
+  - *id011
+  - *id067
+  - *id068
+  - *id069
+  - *id070
+  - *id003
+  - *id004
+  - *id014
+  - *id071
+  - *id072
+  - &id094
+    manual: mordheimer.net
+    printed_page: 0
+    section: Shadow Warrior equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
+  - &id088
+    manual: mordheimer.net
+    printed_page: 0
+    section: Sisters of Sigmar equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
+  - &id086
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  - *id073
+  - *id013
+  - *id074
+  - *id075
+  - *id076
+  - *id077
+  - *id078
+  - *id079
+  - *id080
+  - *id081
+  - *id082
+  - *id083
+  - *id084
+  combat_status: implemented
+  mechanic_id: weapon.dagger
+- id: dagger_jambiya
+  kind: close-combat-weapon
+  name: Dagger Jambiya
+  name_i18n:
+    en: Dagger Jambiya
+    es: null
+  source_refs:
+  - &id087
+    manual: mordheimer.net
+    printed_page: 0
+    section: Warrior equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  - *id085
+  combat_status: implemented
+  mechanic_id: weapon.dagger
+- id: disease_dagger
+  kind: close-combat-weapon
+  name: Disease Dagger
+  name_i18n:
+    en: Disease Dagger
+    es: null
+  source_refs:
+  - *id013
+  combat_status: implemented
+  mechanic_id: weapon.disease-dagger
+- id: dragon_sword
+  kind: close-combat-weapon
+  name: Dragon Sword
+  name_i18n:
+    en: Dragon Sword
+    es: null
+  source_refs:
+  - *id023
+  - *id005
+  - *id060
+  combat_status: implemented
+  mechanic_id: weapon.dragon-sword
+- id: dwarf_axe
+  kind: close-combat-weapon
+  name: Dwarf Axe
+  name_i18n:
+    en: Dwarf Axe
+    es: null
+  source_refs:
+  - *id041
+  - *id043
+  - *id071
+  combat_status: implemented
+  mechanic_id: weapon.dwarf-axe
+- id: enchanted_skins
+  kind: close-combat-weapon
+  name: Enchanted Skins
+  name_i18n:
+    en: Enchanted Skins
+    es: null
+  source_refs:
+  - *id015
+  - *id016
+  - *id017
+  combat_status: implemented
+  mechanic_id: defence.enchanted-skins
+- id: fighting_claws
+  kind: close-combat-weapon
+  name: Fighting Claws
+  name_i18n:
+    en: Fighting Claws
+    es: null
+  source_refs:
+  - *id086
+  combat_status: implemented
+  mechanic_id: weapon.fighting-claws
+- id: flail
+  kind: close-combat-weapon
+  name: Flail
+  name_i18n:
+    en: Flail
+    es: null
+  source_refs:
+  - *id087
+  - *id028
+  - &id089
+    manual: mordheimer.net
+    printed_page: 0
+    section: Brute equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  - *id037
+  - *id001
+  - *id056
+  - *id064
+  - *id071
+  - *id088
+  - *id086
+  - *id013
+  - *id080
+  - &id095
+    manual: mordheimer.net
+    printed_page: 0
+    section: Flagellant equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/witch-hunters
+  combat_status: implemented
+  mechanic_id: weapon.flail
+- id: great_axe
+  kind: close-combat-weapon
+  name: Great Axe
+  name_i18n:
+    en: Great Axe
+    es: null
+  source_refs:
+  - *id001
+  combat_status: implemented
+  mechanic_id: weapon.double-handed-weapon
+- id: great_weapon
+  kind: close-combat-weapon
+  name: Great Weapon
+  name_i18n:
+    en: Great Weapon
+    es: null
+  source_refs:
+  - *id015
+  - *id087
+  - *id022
+  - *id024
+  - *id026
+  - *id006
+  - *id007
+  - *id028
+  - *id029
+  - *id031
+  - *id033
+  - *id035
+  - *id089
+  - *id036
+  - *id037
+  - *id038
+  - *id039
+  - *id002
+  - *id041
+  - *id043
+  - *id046
+  - *id048
+  - *id049
+  - *id052
+  - *id053
+  - *id054
+  - *id090
+  - *id008
+  - *id091
+  - *id001
+  - *id057
+  - *id060
+  - *id092
+  - *id093
+  - *id064
+  - *id065
+  - *id066
+  - *id010
+  - *id067
+  - *id068
+  - *id012
+  - *id070
+  - *id003
+  - *id004
+  - *id072
+  - *id094
+  - *id088
+  - *id075
+  - *id078
+  - *id080
+  - *id082
+  - *id083
+  - *id095
+  - *id084
+  combat_status: implemented
+  mechanic_id: weapon.double-handed-weapon
+- id: halberd
+  kind: close-combat-weapon
+  name: Halberd
+  name_i18n:
+    en: Halberd
+    es: null
+  source_refs:
+  - *id022
+  - *id024
+  - *id029
+  - *id033
+  - *id035
+  - *id002
+  - *id041
+  - *id043
+  - *id045
+  - *id046
+  - *id052
+  - *id053
+  - *id054
+  - *id001
+  - *id057
+  - *id059
+  - *id062
+  - *id010
+  - *id072
+  - *id086
+  - *id013
+  - *id078
+  - *id080
+  - *id082
+  combat_status: implemented
+  mechanic_id: weapon.halberd
+- id: hammer
+  kind: close-combat-weapon
+  name: Hammer
+  name_i18n:
+    en: Hammer
+    es: null
+  source_refs:
+  - *id020
+  - *id021
+  - *id022
+  - *id024
+  - *id025
+  - *id026
+  - *id030
+  - *id032
+  - *id033
+  - *id035
+  - *id036
+  - *id037
+  - *id038
+  - *id039
+  - *id041
+  - *id042
+  - *id043
+  - *id044
+  - *id048
+  - *id051
+  - *id052
+  - *id053
+  - *id096
+  - *id001
+  - *id056
+  - *id057
+  - *id058
+  - *id097
+  - *id059
+  - *id064
+  - *id065
+  - *id066
+  - *id067
+  - *id068
+  - *id003
+  - *id004
+  - *id014
+  - *id071
+  - *id072
+  - *id088
+  - *id075
+  - *id076
+  - *id078
+  - *id079
+  - *id082
+  - *id083
+  - *id084
+  combat_status: implemented
+  mechanic_id: weapon.mace
+- id: iron_fist
+  kind: close-combat-weapon
+  name: Iron Fist
+  name_i18n:
+    en: Iron Fist
+    es: null
+  source_refs:
+  - *id008
+  combat_status: implemented
+  mechanic_id: weapon.spiked-gauntlet
+- id: katar
+  kind: close-combat-weapon
+  name: Katar
+  name_i18n:
+    en: Katar
+    es: null
+  source_refs:
+  - *id085
+  combat_status: implemented
+  mechanic_id: weapon.katar
+- id: kitchen_knife
+  kind: close-combat-weapon
+  name: Kitchen Knife
+  name_i18n:
+    en: Kitchen Knife
+    es: null
+  source_refs:
+  - *id098
+  combat_status: implemented
+  mechanic_id: weapon.dagger
+- id: ladle
+  kind: close-combat-weapon
+  name: Ladle
+  name_i18n:
+    en: Ladle
+    es: null
+  source_refs:
+  - *id098
+  combat_status: implemented
+  mechanic_id: weapon.mace
+- id: lance
+  kind: close-combat-weapon
+  name: Lance
+  name_i18n:
+    en: Lance
+    es: null
+  source_refs:
+  - *id031
+  - *id038
+  - *id051
+  - *id090
+  combat_status: implemented
+  mechanic_id: weapon.lance
+- id: lance_not_questing_knight
+  kind: close-combat-weapon
+  name: Lance Not Questing Knight
+  name_i18n:
+    en: Lance Not Questing Knight
+    es: null
+  source_refs:
+  - *id028
+  combat_status: implemented
+  mechanic_id: weapon.lance
+- id: mace
+  kind: close-combat-weapon
+  name: Mace
+  name_i18n:
+    en: Mace
+    es: null
+  source_refs:
+  - *id087
+  - *id020
+  - *id021
+  - *id022
+  - *id024
+  - *id025
+  - *id026
+  - *id027
+  - *id028
+  - *id029
+  - *id031
+  - *id035
+  - *id036
+  - *id037
+  - *id039
+  - *id041
+  - *id042
+  - *id043
+  - *id044
+  - *id052
+  - *id053
+  - *id090
+  - *id057
+  - *id058
+  - *id099
+  - *id067
+  - *id068
+  - *id003
+  - *id004
+  - *id014
+  - *id071
+  - *id072
+  - *id088
+  - *id075
+  - *id078
+  - *id079
+  - *id080
+  - *id081
+  - *id082
+  - *id083
+  - *id084
+  combat_status: implemented
+  mechanic_id: weapon.mace
+- id: mace_hammer
+  kind: close-combat-weapon
+  name: Mace Hammer
+  name_i18n:
+    en: Mace Hammer
+    es: null
+  source_refs:
+  - *id046
+  - *id047
+  - *id049
+  - *id050
+  combat_status: implemented
+  mechanic_id: weapon.mace
+- id: main_gauche
+  kind: close-combat-weapon
+  name: Main Gauche
+  name_i18n:
+    en: Main Gauche
+    es: null
+  source_refs:
+  - *id100
+  combat_status: implemented
+  mechanic_id: weapon.sword-breaker
+- id: man_catcher
+  kind: close-combat-weapon
+  name: Man Catcher
+  name_i18n:
+    en: Man Catcher
+    es: null
+  source_refs:
+  - *id026
+  combat_status: implemented
+  mechanic_id: weapon.man-catcher
+- id: misericordia
+  kind: close-combat-weapon
+  name: Misericordia
+  name_i18n:
+    en: Misericordia
+    es: null
+  source_refs:
+  - *id038
+  - *id090
+  combat_status: implemented
+  mechanic_id: weapon.misericordia
+- id: morning_star
+  kind: close-combat-weapon
+  name: Morning Star
+  name_i18n:
+    en: Morning Star
+    es: null
+  source_refs:
+  - *id022
+  - *id028
+  - *id031
+  - *id035
+  - *id046
+  - *id051
+  - *id052
+  - *id053
+  - *id008
+  - *id001
+  - *id056
+  - *id057
+  - *id010
+  - *id078
+  - *id080
+  - *id081
+  - *id095
+  combat_status: implemented
+  mechanic_id: weapon.morning-star
+- id: ogre_club
+  kind: close-combat-weapon
+  name: Ogre Club
+  name_i18n:
+    en: Ogre Club
+    es: null
+  source_refs:
+  - *id008
+  - *id091
+  combat_status: implemented
+  mechanic_id: weapon.mace
+- id: pike
+  kind: close-combat-weapon
+  name: Pike
+  name_i18n:
+    en: Pike
+    es: null
+  source_refs:
+  - *id059
+  - *id078
+  combat_status: implemented
+  mechanic_id: weapon.pike
+- id: quarter_staff
+  kind: close-combat-weapon
+  name: Quarter Staff
+  name_i18n:
+    en: Quarter Staff
+    es: null
+  source_refs:
+  - *id005
+  combat_status: implemented
+  mechanic_id: weapon.quarter-staff
+- id: rapier
+  kind: close-combat-weapon
+  name: Rapier
+  name_i18n:
+    en: Rapier
+    es: null
+  source_refs:
+  - *id100
+  - *id097
+  - *id078
+  combat_status: implemented
+  mechanic_id: weapon.rapier
+- id: serpent_staff
+  kind: close-combat-weapon
+  name: Serpent Staff
+  name_i18n:
+    en: Serpent Staff
+    es: null
+  source_refs:
+  - *id081
+  combat_status: implemented
+  mechanic_id: weapon.serpent-staff
+- id: shortsword
+  kind: close-combat-weapon
+  name: Shortsword
+  name_i18n:
+    en: Shortsword
+    es: null
+  source_refs:
+  - *id029
+  - *id030
+  combat_status: implemented
+  mechanic_id: weapon.sword
+- id: sigmarite_hammer
+  kind: close-combat-weapon
+  name: Sigmarite Hammer
+  name_i18n:
+    en: Sigmarite Hammer
+    es: null
+  source_refs:
+  - *id088
+  combat_status: implemented
+  mechanic_id: weapon.sigmarite-hammer
+- id: spear
+  kind: close-combat-weapon
+  name: Spear
+  name_i18n:
+    en: Spear
+    es: null
+  source_refs:
+  - *id015
+  - *id016
+  - *id017
+  - *id009
+  - *id018
+  - *id019
+  - *id087
+  - *id085
+  - *id022
+  - *id023
+  - *id005
+  - *id025
+  - *id027
+  - *id006
+  - *id007
+  - *id028
+  - *id029
+  - *id030
+  - *id032
+  - *id033
+  - *id035
+  - *id036
+  - *id039
+  - *id002
+  - *id041
+  - *id043
+  - *id045
+  - *id101
+  - *id046
+  - *id048
+  - *id100
+  - *id102
+  - *id103
+  - *id049
+  - *id050
+  - *id051
+  - *id052
+  - *id053
+  - *id054
+  - *id055
+  - *id096
+  - *id008
+  - *id091
+  - *id056
+  - *id057
+  - *id099
+  - *id061
+  - *id062
+  - *id063
+  - *id065
+  - *id066
+  - *id010
+  - *id011
+  - *id067
+  - *id069
+  - *id070
+  - *id072
+  - *id094
+  - *id086
+  - *id073
+  - *id013
+  - *id074
+  - *id078
+  - *id080
+  - *id082
+  - *id084
+  combat_status: implemented
+  mechanic_id: weapon.spear
+- id: spiked_gauntlet
+  kind: close-combat-weapon
+  name: Spiked Gauntlet
+  name_i18n:
+    en: Spiked Gauntlet
+    es: null
+  source_refs:
+  - *id071
+  combat_status: implemented
+  mechanic_id: weapon.spiked-gauntlet
+- id: squig_prodder
+  kind: close-combat-weapon
+  name: Squig Prodder
+  name_i18n:
+    en: Squig Prodder
+    es: null
+  source_refs:
+  - *id062
+  - *id063
+  - *id011
+  combat_status: implemented
+  mechanic_id: weapon.squig-prodder
+- id: staff
+  kind: close-combat-weapon
+  name: Staff
+  name_i18n:
+    en: Staff
+    es: null
+  source_refs:
+  - *id081
+  combat_status: implemented
+  mechanic_id: weapon.quarter-staff
+- id: staff_club_mace
+  kind: close-combat-weapon
+  name: Staff Club Mace
+  name_i18n:
+    en: Staff Club Mace
+    es: null
+  source_refs:
+  - *id070
+  combat_status: implemented
+  mechanic_id: weapon.mace
+- id: starblade
+  kind: close-combat-weapon
+  name: Starblade
+  name_i18n:
+    en: Starblade
+    es: null
+  source_refs:
+  - *id015
+  combat_status: implemented
+  mechanic_id: weapon.starblade
+- id: starsword
+  kind: close-combat-weapon
+  name: Starsword
+  name_i18n:
+    en: Starsword
+    es: null
+  source_refs:
+  - *id015
+  combat_status: implemented
+  mechanic_id: weapon.starsword
+- id: steel_whip
+  kind: close-combat-weapon
+  name: Steel Whip
+  name_i18n:
+    en: Steel Whip
+    es: null
+  source_refs:
+  - *id026
+  - *id088
+  combat_status: implemented
+  mechanic_id: weapon.steel-whip
+- id: stone_axe_counts_as_a_club
+  kind: close-combat-weapon
+  name: Stone Axe Counts As A Club
+  name_i18n:
+    en: Stone Axe Counts As A Club
+    es: null
+  source_refs:
+  - *id054
+  - *id055
+  combat_status: implemented
+  mechanic_id: weapon.stone-axe
+- id: sun_gauntlet
+  kind: close-combat-weapon
+  name: Sun Gauntlet
+  name_i18n:
+    en: Sun Gauntlet
+    es: null
+  source_refs:
+  - *id009
+  combat_status: implemented
+  mechanic_id: weapon.sun-gauntlet
+- id: sunstaff
+  kind: close-combat-weapon
+  name: Sunstaff
+  name_i18n:
+    en: Sunstaff
+    es: null
+  source_refs:
+  - *id009
+  combat_status: implemented
+  mechanic_id: weapon.brazier-iron
+- id: sunstaff_lustria
+  kind: close-combat-weapon
+  name: Sunstaff Lustria
+  name_i18n:
+    en: Sunstaff Lustria
+    es: null
+  source_refs:
+  - *id015
+  - *id016
+  - *id017
+  combat_status: implemented
+  mechanic_id: weapon.brazier-iron
+- id: sword
+  kind: close-combat-weapon
+  name: Sword
+  name_i18n:
+    en: Sword
+    es: null
+  source_refs:
+  - *id015
+  - *id016
+  - *id017
+  - *id009
+  - *id018
+  - *id019
+  - *id020
+  - *id021
+  - *id022
+  - *id023
+  - *id005
+  - *id024
+  - *id026
+  - *id006
+  - *id007
+  - *id028
+  - *id029
+  - *id031
+  - *id032
+  - *id033
+  - *id034
+  - *id035
+  - *id036
+  - *id037
+  - *id038
+  - *id039
+  - *id002
+  - *id040
+  - *id041
+  - *id042
+  - *id043
+  - *id044
+  - *id045
+  - *id101
+  - *id046
+  - *id047
+  - *id048
+  - *id100
+  - *id049
+  - *id050
+  - *id051
+  - *id052
+  - *id053
+  - *id054
+  - *id090
+  - *id096
+  - *id008
+  - *id091
+  - *id001
+  - *id056
+  - *id057
+  - *id058
+  - *id097
+  - *id059
+  - *id060
+  - *id099
+  - *id061
+  - *id062
+  - *id063
+  - *id064
+  - *id065
+  - *id066
+  - *id010
+  - *id011
+  - *id067
+  - *id068
+  - *id069
+  - *id012
+  - *id070
+  - *id071
+  - *id072
+  - *id094
+  - *id086
+  - *id073
+  - *id013
+  - *id074
+  - *id075
+  - *id076
+  - *id077
+  - *id078
+  - *id079
+  - *id080
+  - *id081
+  - *id082
+  - *id083
+  - *id084
+  combat_status: implemented
+  mechanic_id: weapon.sword
+- id: sword_gnoblar
+  kind: close-combat-weapon
+  name: Sword Gnoblar
+  name_i18n:
+    en: Sword Gnoblar
+    es: null
+  source_refs:
+  - *id008
+  combat_status: implemented
+  mechanic_id: weapon.sword
+- id: sword_heroes_only
+  kind: close-combat-weapon
+  name: Sword Heroes Only
+  name_i18n:
+    en: Sword Heroes Only
+    es: null
+  source_refs:
+  - *id055
+  combat_status: implemented
+  mechanic_id: weapon.sword
+- id: sword_scimitar
+  kind: close-combat-weapon
+  name: Sword Scimitar
+  name_i18n:
+    en: Sword Scimitar
+    es: null
+  source_refs:
+  - *id087
+  - *id085
+  combat_status: implemented
+  mechanic_id: weapon.sword
+- id: tenderiser
+  kind: close-combat-weapon
+  name: Tenderiser
+  name_i18n:
+    en: Tenderiser
+    es: null
+  source_refs:
+  - *id098
+  combat_status: implemented
+  mechanic_id: weapon.mace
+- id: two_handed_weapon
+  kind: close-combat-weapon
+  name: Two Handed Weapon
+  name_i18n:
+    en: Two Handed Weapon
+    es: null
+  source_refs:
+  - *id045
+  - *id062
+  combat_status: implemented
+  mechanic_id: weapon.double-handed-weapon
+- id: weeping_blades
+  kind: close-combat-weapon
+  name: Weeping Blades
+  name_i18n:
+    en: Weeping Blades
+    es: null
+  source_refs:
+  - *id086
+  combat_status: implemented
+  mechanic_id: weapon.weeping-blades

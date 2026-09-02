@@ -1,0 +1,333 @@
+schema_version: 1
+ruleset: mordheim
+catalog: hirelings-dramatis-personae
+grade: core
+profiles:
+- id: hireling.dramatis.aenur
+  kind: dramatis-personae
+  grade: core
+  publication: Mordheim Rulebook
+  name: Aenur, the Sword of Twilight
+  name_i18n:
+    en: Aenur, the Sword of Twilight
+    es: null
+  characteristics:
+    M: 5
+    WS: 8
+    BS: 4
+    S: 4
+    T: 3
+    W: 2
+    I: 7
+    A: 3
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 100
+  equipment:
+    fixed_items:
+    - item_id: ithilmar_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: elven_cloak
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.dramatis.aenur.item.ienh-khain
+      name: Ienh-Khain
+      rules:
+      - hireling.dramatis.aenur.item.ienh-khain.rule.parry
+      - hireling.dramatis.aenur.item.ienh-khain.rule.strength
+      - hireling.dramatis.aenur.item.ienh-khain.rule.critical
+  starting_skill_ids:
+  - skill.strike-to-injure
+  - skill.expert-swordsman
+  - skill.step-aside
+  - skill.sprint
+  - skill.lightning-reflexes
+  - skill.dodge
+  - skill.mighty-blow
+  rule_ids:
+  - hireling.dramatis.aenur.rule.invincible-swordsman
+  - hireling.dramatis.aenur.rule.wanderer
+  unresolved_references: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Aenur, the Sword of Twilight
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  normalization_status: normalized
+- id: hireling.dramatis.bertha-bestraufrung
+  kind: dramatis-personae
+  grade: core
+  publication: Mordheim Rulebook
+  name: Bertha Bestraufrung, High Matriarch of the Sisterhood
+  name_i18n:
+    en: Bertha Bestraufrung, High Matriarch of the Sisterhood
+    es: null
+  characteristics:
+    M: 4
+    WS: 5
+    BS: 3
+    S: 4
+    T: 4
+    W: 2
+    I: 4
+    A: 3
+    Ld: 10
+  warband_rating:
+    kind: fixed
+    value: 105
+  equipment:
+    fixed_items:
+    - item_id: sigmarite_hammer
+      quantity:
+        kind: fixed
+        value: 2
+    - item_id: gromril_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: blessed_water
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: holy_relic
+      quantity:
+        kind: fixed
+        value: 1
+  starting_skill_ids:
+  - skill.mighty-blow
+  - skill.unstoppable-charge
+  rule_ids:
+  - hireling.dramatis.bertha-bestraufrung.rule.high-matriarch
+  - hireling.dramatis.bertha-bestraufrung.rule.sigmars-handmaiden
+  unresolved_references:
+  - kind: skill
+    source_name: Righteous Fury
+    note: Only a band-scoped rule exists in the supplied KB; no global canonical skill ID.
+  - kind: prayer_list
+    source_name: Prayers of Sigmar
+    note: No canonical prayer/spell catalogue exists in the supplied KB.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Bertha Bestraufrung, High Matriarch of the Sisterhood
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  normalization_status: normalized
+- id: hireling.dramatis.johann-the-knife
+  kind: dramatis-personae
+  grade: core
+  publication: Mordheim Rulebook
+  name: Johann the Knife
+  name_i18n:
+    en: Johann the Knife
+    es: null
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 6
+    S: 4
+    T: 3
+    W: 2
+    I: 6
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: fixed
+    value: 60
+  equipment:
+    fixed_items:
+    - item_id: throwing_knives
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.dramatis.johann-the-knife.item.long-daggers
+      name: Long Daggers
+      counts_as:
+        item_id: sword
+        quantity:
+          kind: fixed
+          value: 2
+        context: close_combat
+  starting_skill_ids:
+  - skill.dodge
+  - skill.scale-sheer-surfaces
+  - skill.quick-shot
+  - skill.eagle-eyes
+  - skill.knife-fighter
+  rule_ids:
+  - hireling.dramatis.johann-the-knife.rule.poisoned-weapons
+  - hireling.dramatis.johann-the-knife.rule.crimson-shade
+  - hireling.dramatis.johann-the-knife.rule.knife-fighter-extraordinaire
+  unresolved_references: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Johann the Knife
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  normalization_status: normalized
+- id: hireling.dramatis.veskit
+  kind: dramatis-personae
+  grade: core
+  publication: Mordheim Rulebook
+  name: Veskit, High Executioner of Clan Eshin
+  name_i18n:
+    en: Veskit, High Executioner of Clan Eshin
+    es: null
+  characteristics:
+    M: 5
+    WS: 5
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 5
+    A: 4
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 70
+  equipment:
+    fixed_items:
+    - item_id: fighting_claws
+      quantity:
+        kind: fixed
+        value: 1
+  starting_skill_ids: []
+  rule_ids:
+  - hireling.dramatis.veskit.rule.integrated-warplock-pistols
+  - hireling.dramatis.veskit.rule.unfeeling
+  - hireling.dramatis.veskit.rule.no-pain
+  - hireling.dramatis.veskit.rule.unblinking-eye
+  - hireling.dramatis.veskit.rule.metallic-body
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Veskit, High Executioner of Clan Eshin
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  normalization_status: normalized
+rules:
+- id: hireling.dramatis.aenur.rule.invincible-swordsman
+  name: Invincible Swordsman
+  effect: Aenur hits opponents on 2+ in hand-to-hand combat.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Aenur / Special Rules / Invincible Swordsman
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.aenur.rule.wanderer
+  name: Wanderer
+  effect: Aenur stays for one battle only; a warband must fight at least one battle without him before it may search for him again.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Aenur / Special Rules / Wanderer
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.aenur.item.ienh-khain.rule.parry
+  name: 'Ienh-Khain: Parry'
+  effect: Ienh-Khain can parry.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Aenur / Ienh-Khain
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.aenur.item.ienh-khain.rule.strength
+  name: 'Ienh-Khain: Strength'
+  effect: Ienh-Khain adds +1 Strength.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Aenur / Ienh-Khain
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.aenur.item.ienh-khain.rule.critical
+  name: 'Ienh-Khain: Critical'
+  effect: Ienh-Khain causes a critical hit on a wound roll of 5-6.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Aenur / Ienh-Khain
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.bertha-bestraufrung.rule.high-matriarch
+  name: High Matriarch
+  effect: Bertha automatically becomes the leader of a warband she joins.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Bertha Bestraufrung / Special Rules / High Matriarch
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.bertha-bestraufrung.rule.sigmars-handmaiden
+  name: Sigmar's Handmaiden
+  effect: Bertha receives +2 on rolls to determine whether her Prayers of Sigmar are granted.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Bertha Bestraufrung / Special Rules / Sigmar's Handmaiden
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.johann-the-knife.rule.poisoned-weapons
+  name: Poisoned Weapons
+  effect: Johann's weapons are always coated with Black Lotus.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Johann the Knife / Weapons and Armour
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.johann-the-knife.rule.crimson-shade
+  name: Crimson Shade
+  effect: Johann may take Crimson Shade before a battle.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Johann the Knife / Weapons and Armour
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.johann-the-knife.rule.knife-fighter-extraordinaire
+  name: Knife Fighter Extraordinaire
+  effect: Johann may combine Knife-Fighter and Quick Shot when using throwing knives.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Johann the Knife / Special Rules / Knife Fighter Extraordinaire
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.veskit.rule.integrated-warplock-pistols
+  name: Integrated Warplock Pistols
+  effect: Veskit's fighting claws incorporate Warplock Pistols; his listed extra Attack is already included in the profile and his claw attacks use the special Strength/save-modifier rules from his entry.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Veskit / Weapons and Armour
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.veskit.rule.unfeeling
+  name: Unfeeling
+  effect: Veskit is immune to psychology.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Veskit / Special Rules / Unfeeling
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.veskit.rule.no-pain
+  name: No Pain
+  effect: Veskit ignores Knocked Down and Stunned injury results and remains until his last Wound is lost.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Veskit / Special Rules / No Pain
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.veskit.rule.unblinking-eye
+  name: Unblinking Eye
+  effect: Veskit detects Hidden enemies within twice his Initiative value in inches.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Veskit / Special Rules / Unblinking Eye
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.veskit.rule.metallic-body
+  name: Metallic Body
+  effect: Veskit has a 3+ armour save from his mechanical body.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Veskit / Special Rules / Metallic Body
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a

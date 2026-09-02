@@ -1,0 +1,536 @@
+schema_version: 2
+band_id: lizardmen
+rules:
+- id: skink-priest--leader
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.lizardmen.skink-priest.leader
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Leader
+  effect: 'The Skink Priest is the leader of the Warband and any Lizardmen within 6" may use his Leadership characteristic
+    for any Leadership tests.
+
+    If the Skink Priest is killed you may recruit a new Skink Priest but you must play at least one game without the leader
+    to give him time to join up.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Skink Priest / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'The Skink Priest is the leader of the Warband and any Lizardmen within 6" may use his Leadership characteristic for
+      any Leadership tests.
+
+      If the Skink Priest is killed you may recruit a new Skink Priest but you must play at least one game without the leader
+      to give him time to join up.'
+    es: null
+  applies_to:
+    profile_ids:
+    - skink-priest
+- id: skink-priest--wizard
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.lizardmen.skink-priest.wizard
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: magia."
+  name: Wizard
+  effect: The Skink Priest is a Wizard and may use Lizardmen magic.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Skink Priest / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Skink Priest is a Wizard and may use Lizardmen magic.
+    es: null
+  applies_to:
+    profile_ids:
+    - skink-priest
+- id: kroxigor--scaly-skin
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: "YES"
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 4
+  name: Scaly skin
+  effect: Kroxigor has a natural save of 4+.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Kroxigor / Special Rules / Scaly skin
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Scaly skin
+    es: null
+  effect_i18n:
+    en: Kroxigor has a natural save of 4+.
+    es: null
+  applies_to:
+    profile_ids:
+    - kroxigor
+- id: kroxigor--aquatic
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.lizardmen.kroxigor.aquatic
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Aquatic
+  effect: Kroxigor may move through water with no penalty, and count as being in cover whilst in water.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Kroxigor / Special Rules / Aquatic
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Aquatic
+    es: null
+  effect_i18n:
+    en: Kroxigor may move through water with no penalty, and count as being in cover whilst in water.
+    es: null
+  applies_to:
+    profile_ids:
+    - kroxigor
+- id: kroxigor--cause-fear
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.lizardmen.kroxigor.cause-fear
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Cause Fear
+  effect: Kroxigor are large and frightening monsters that cause Fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Kroxigor / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Cause Fear
+    es: null
+  effect_i18n:
+    en: Kroxigor are large and frightening monsters that cause Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - kroxigor
+- id: kroxigor--large
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.lizardmen.kroxigor.large
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: disparo."
+  name: Large
+  effect: Kroxigor stand out amongst the rest of the Warband and may be picked out by an archer even if he is not the closest
+    model.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Kroxigor / Special Rules / Large
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Large
+    es: null
+  effect_i18n:
+    en: Kroxigor stand out amongst the rest of the Warband and may be picked out by an archer even if he is not the closest
+      model.
+    es: null
+  applies_to:
+    profile_ids:
+    - kroxigor
+- id: kroxigor--animal
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.lizardmen.kroxigor.animal
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Animal
+  effect: Kroxigor are slow-witted creatures that never learn from their mistakes. The Kroxigor doesn't gain experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Kroxigor / Special Rules / Animal
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Animal
+    es: null
+  effect_i18n:
+    en: Kroxigor are slow-witted creatures that never learn from their mistakes. The Kroxigor doesn't gain experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - kroxigor
+- id: band--scaly-skin
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.lizardmen-scaly-skin
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.lizardmen-scaly-skin
+  name: Scaly Skin
+  effect: Skinks have a natural 6+ armour save and Saurus have a natural 5+ armour save. The Kroxigor uses its own 4+ Scaly
+    Skin rule instead. Strength modifiers cannot reduce the Skink/Saurus natural save below 6+, but effects that allow no save
+    negate it. Light armour adds +1 to the save, as does a shield.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Scaly Skin
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Scaly Skin
+    es: null
+  effect_i18n:
+    en: Skinks have a natural 6+ armour save and Saurus have a natural 5+ armour save. The Kroxigor uses its own 4+ Scaly
+      Skin rule instead. Strength modifiers cannot reduce the Skink/Saurus natural save below 6+, but effects that allow no
+      save negate it. Light armour adds +1 to the save, as does a shield.
+    es: null
+  applies_to:
+    band: true
+- id: band--armour
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lizardmen.band.armour
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Armour
+  effect: Light armour always costs 50 gc for Lizardmen, including when bought from the Equipment chart.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Armour
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Armour
+    es: null
+  effect_i18n:
+    en: Light armour always costs 50 gc for Lizardmen, including when bought from the Equipment chart.
+    es: null
+  applies_to:
+    band: true
+- id: band--bite-attack
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: compiler.bite-attack
+      scope: "YES"
+      binding:
+        kind: compiler
+        id: compiler.bite-attack
+  name: Bite Attack
+  effect: Each Saurus makes one additional bite attack using its own Strength and with no unarmed penalty. The bite always
+    strikes last, after all other attacks, including attacks made with double-handed weapons.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Bite Attack
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Bite Attack
+    es: null
+  effect_i18n:
+    en: Each Saurus makes one additional bite attack using its own Strength and with no unarmed penalty. The bite always strikes
+      last, after all other attacks, including attacks made with double-handed weapons.
+    es: null
+  applies_to:
+    profile_ids:
+    - saurus-totem-warrior
+    - saurus-braves
+- id: band--cold-blooded
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.lizardmen.band.cold-blooded
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Cold Blooded
+  effect: When taking a Psychology test or Rout test, Lizardmen roll 3D6 and use the lowest two dice. A Lizardmen warband
+    may never use the Leadership of a Saurus or Kroxigor for a Rout test.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Cold Blooded
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Cold Blooded
+    es: null
+  effect_i18n:
+    en: When taking a Psychology test or Rout test, Lizardmen roll 3D6 and use the lowest two dice. A Lizardmen warband may
+      never use the Leadership of a Saurus or Kroxigor for a Rout test.
+    es: null
+  applies_to:
+    band: true
+- id: band--aquatic
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.lizardmen.band.aquatic
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Aquatic
+  effect: Skinks move through water terrain without penalty and count as being in cover while in water.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Aquatic
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Aquatic
+    es: null
+  effect_i18n:
+    en: Skinks move through water terrain without penalty and count as being in cover while in water.
+    es: null
+  applies_to:
+    band: true
+- id: band--jungle-born
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.lizardmen.band.jungle-born
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Jungle Born
+  effect: All Skinks move through jungle terrain without penalty.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Jungle born
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Jungle Born
+    es: null
+  effect_i18n:
+    en: All Skinks move through jungle terrain without penalty.
+    es: null
+  applies_to:
+    band: true
+- id: band--saurus-rarity
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.lizardmen.band.saurus-rarity
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Saurus Rarity
+  effect: The warband may never include more Saurus Braves than Skink Braves.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Saurus Rarity
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Saurus Rarity
+    es: null
+  effect_i18n:
+    en: The warband may never include more Saurus Braves than Skink Braves.
+    es: null
+  applies_to:
+    band: true
+- id: band--saurus-skill-prohibitions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.saurus-skill-prohibitions
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.saurus-skill-prohibitions
+  name: Saurus Skill Prohibitions
+  effect: Saurus can never receive Academic skills and can never use missile weapons.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Lizardmen Skill Table / Skills list prohibitions
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Saurus Skill Prohibitions
+    es: null
+  effect_i18n:
+    en: Saurus can never receive Academic skills and can never use missile weapons.
+    es: null
+  applies_to:
+    band: true
+- id: band--lizardmen-special-skills-skinks-only-infiltration
+  kind: warband_skill
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.lizardmen.band.lizardmen-special-skills-skinks-only-infiltration
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Infiltration
+  effect: 'The Skink is a great hunter and is an expert at sneaking upon his prey unnoticed.
+
+    The Hero may set up anywhere on the table but no closer than 12" to an enemy and he must start the game in hiding.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Lizardmen special skills / Skinks Only / Infiltration
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Infiltration
+    es: null
+  effect_i18n:
+    en: 'The Skink is a great hunter and is an expert at sneaking upon his prey unnoticed.
+
+      The Hero may set up anywhere on the table but no closer than 12" to an enemy and he must start the game in hiding.'
+    es: null
+  eligibility:
+  - skink-priest
+  - skink-great-crests
+  applies_to:
+    band: true
+- id: band--lizardmen-special-skills-skinks-only-great-hunter
+  kind: warband_skill
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.lizardmen.band.lizardmen-special-skills-skinks-only-great-hunter
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: disparo."
+  name: Great Hunter
+  effect: The Skink Great Crest is adept at making the most of the cover available and imposes an additional -1 to hit the
+    Skink if he is in cover, i.e. a -2 to hit penalty.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Lizardmen special skills / Skinks Only / Great Hunter
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Great Hunter
+    es: null
+  effect_i18n:
+    en: The Skink Great Crest is adept at making the most of the cover available and imposes an additional -1 to hit the Skink
+      if he is in cover, i.e. a -2 to hit penalty.
+    es: null
+  eligibility:
+  - skink-priest
+  - skink-great-crests
+  applies_to:
+    band: true
+- id: band--lizardmen-special-skills-saurus-only-bellowing-battle-roar
+  kind: warband_skill
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: selectable
+    effects:
+    - id: skill.bellowing-battle-roar
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.bellowing-battle-roar
+  name: Bellowing Battle Roar
+  effect: The Saurus' roar is so deafening that enemy models in base contact suffer -1 to hit in the first round of combat
+    against them.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Lizardmen special skills / Saurus Only / Bellowing Battle Roar
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Bellowing Battle Roar
+    es: null
+  effect_i18n:
+    en: The Saurus' roar is so deafening that enemy models in base contact suffer -1 to hit in the first round of combat against
+      them.
+    es: null
+  eligibility:
+  - saurus-totem-warrior
+  applies_to:
+    band: true
+- id: band--lizardmen-special-skills-saurus-only-toughened-hide
+  kind: warband_skill
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.lizardmen.band.lizardmen-special-skills-saurus-only-toughened-hide
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: lesiones."
+  name: Toughened Hide
+  effect: Through years of battle the Saurus' hide has become hardened and the Saurus will only be taken out of action on
+    a 6+.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Lizardmen special skills / Saurus Only / Toughened Hide
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  name_i18n:
+    en: Toughened Hide
+    es: null
+  effect_i18n:
+    en: Through years of battle the Saurus' hide has become hardened and the Saurus will only be taken out of action on a
+      6+.
+    es: null
+  eligibility:
+  - saurus-totem-warrior
+  applies_to:
+    band: true

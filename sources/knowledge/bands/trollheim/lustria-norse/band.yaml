@@ -1,0 +1,61 @@
+schema_version: 2
+id: lustria-norse
+canonical_family: norse-explorers-lustria
+name: Norse
+name_i18n:
+  en: Norse
+  es: null
+original_locale: es
+categories:
+- trollheim
+grade: null
+setting: Lustria
+publication: Lustria
+status: source-normalized
+sources:
+- manual: lustria
+  printed_page: 106-111
+  section: Norse
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: jarl
+    minimum: 1
+    maximum: 1
+  - profile_id: wulfen
+    minimum: 0
+    maximum: 1
+  - profile_id: berserkers
+    minimum: 0
+    maximum: 2
+  - profile_id: bondsmen
+    minimum: 0
+    maximum: 2
+  - profile_id: marauders
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: hunters
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: wolves
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+ruleset: mordheim
+rule_ids:
+- band--seafarers
+- band--norse-special-skills-shield-mastery
+- band--norse-special-skills-northern-weapons
+- band--norse-special-skills-battle-tongue
+- band--norse-special-skills-barbarian-courage
+- band--norse-special-skills-crushing-blow

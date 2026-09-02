@@ -1,0 +1,254 @@
+schema_version: 1
+specifications:
+- id: equipment-vows-bretonnian-chapel-guard-questing-knight
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/mordheim/bretonnian-chapel-guard/questing-knight--vow-of-poverty/profile.equipment-restrictions
+    digest: 69be99b5623f640ee5925cee23a2f2103b0032aa4b215a81b5c2bbe41d48cc88
+  interpretation: >
+    questing-knight / vow-of-poverty: prohibición explícita de lance.
+    La construcción ordinaria sigue siendo legal. La categoría de armadura pesada
+    incluye sus variantes gromril, ithilmar y plate; la prohibición de casco
+    incluye el casco improvisado. Se exige el motivo de rechazo específico.
+  cases:
+  - id: recipients
+    roles: [grant]
+    operation: grant
+    defender: {band_id: bretonnian-chapel-guard, profile_id: questing-knight}
+    context: {rule_id: questing-knight--vow-of-poverty}
+    expect: {result.recipients: [questing-knight]}
+  - id: equipment-boundaries
+    roles: [accepted, rejected]
+    operation: equipment_choices
+    attacker: {band_id: bretonnian-chapel-guard, profile_id: questing-knight}
+    context:
+      choices:
+        ordinary: {}
+        lance: {"main_weapon_id":"weapon.lance"}
+    expect:
+      result.accepted: [ordinary]
+      result.rejected:
+        lance: lance is forbidden for bretonnian-chapel-guard/questing-knight
+  mutations:
+  - id: remove-explicit-prohibition
+    runtime_fault: suppress-bound-equipment-restrictions
+    cases: [equipment-boundaries]
+- id: equipment-vows-bretonnian-chapel-guard-knights-errant
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/mordheim/bretonnian-chapel-guard/knights-errant--vain/profile.equipment-restrictions
+    digest: a4442f15604ae7ecd86478bea4a068348682d166637db63e0b2e197c4b433de2
+  interpretation: >
+    knights-errant / vain: prohibición explícita de helmet.
+    La construcción ordinaria sigue siendo legal. La categoría de armadura pesada
+    incluye sus variantes gromril, ithilmar y plate; la prohibición de casco
+    incluye el casco improvisado. Se exige el motivo de rechazo específico.
+  cases:
+  - id: recipients
+    roles: [grant]
+    operation: grant
+    defender: {band_id: bretonnian-chapel-guard, profile_id: knights-errant}
+    context: {rule_id: knights-errant--vain}
+    expect: {result.recipients: [knights-errant]}
+  - id: equipment-boundaries
+    roles: [accepted, rejected]
+    operation: equipment_choices
+    attacker: {band_id: bretonnian-chapel-guard, profile_id: knights-errant}
+    context:
+      choices:
+        ordinary: {}
+        helmet: {"defence_ids":["defence.helmet"]}
+        cooking-pot: {"defence_ids":["defence.cooking-pot-helmet"]}
+    expect:
+      result.accepted: [ordinary]
+      result.rejected:
+        helmet: helmet is forbidden for bretonnian-chapel-guard/knights-errant
+        cooking-pot: helmet is forbidden for bretonnian-chapel-guard/knights-errant
+  mutations:
+  - id: remove-explicit-prohibition
+    runtime_fault: suppress-bound-equipment-restrictions
+    cases: [equipment-boundaries]
+- id: equipment-vows-horned-hunters-priest-of-taal
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/mordheim/horned-hunters/priest-of-taal--strictures/profile.equipment-restrictions
+    digest: 5b5ccafef33813921e8e02ae817c5160ca6b5a5a2665bf789bfdd9e5cbc61dcf
+  interpretation: >
+    priest-of-taal / strictures: prohibición explícita de heavy armour.
+    La construcción ordinaria sigue siendo legal. La categoría de armadura pesada
+    incluye sus variantes gromril, ithilmar y plate; la prohibición de casco
+    incluye el casco improvisado. Se exige el motivo de rechazo específico.
+  cases:
+  - id: recipients
+    roles: [grant]
+    operation: grant
+    defender: {band_id: horned-hunters, profile_id: priest-of-taal}
+    context: {rule_id: priest-of-taal--strictures}
+    expect: {result.recipients: [priest-of-taal]}
+  - id: equipment-boundaries
+    roles: [accepted, rejected]
+    operation: equipment_choices
+    attacker: {band_id: horned-hunters, profile_id: priest-of-taal}
+    context:
+      choices:
+        ordinary: {}
+        heavy: {"armour_id":"armour.heavy-armour"}
+        gromril: {"armour_id":"armour.gromril-armour"}
+        ithilmar: {"armour_id":"armour.ithilmar-armour"}
+        plate: {"armour_id":"armour.plate-armour"}
+    expect:
+      result.accepted: [ordinary]
+      result.rejected:
+        heavy: heavy armour is forbidden for horned-hunters/priest-of-taal
+        gromril: heavy armour is forbidden for horned-hunters/priest-of-taal
+        ithilmar: heavy armour is forbidden for horned-hunters/priest-of-taal
+        plate: heavy armour is forbidden for horned-hunters/priest-of-taal
+  - id: light-armour-remains-legal
+    roles: [accepted]
+    operation: equipment_choices
+    attacker: {band_id: horned-hunters, profile_id: priest-of-taal}
+    context:
+      choices:
+        light: {armour_id: armour.light-armour}
+        shield: {off_hand_id: defence.shield}
+    expect:
+      result.accepted: [light, shield]
+      result.rejected: {}
+  mutations:
+  - id: remove-explicit-prohibition
+    runtime_fault: suppress-bound-equipment-restrictions
+    cases: [equipment-boundaries]
+- id: equipment-vows-ostlanders-priest-of-taal
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/mordheim/ostlanders/priest-of-taal--strictures/profile.equipment-restrictions
+    digest: 1576108eec5a773fac182d7ee15a6e1bad250e6648c129d564ff165738b47d0f
+  interpretation: >
+    priest-of-taal / strictures: prohibición explícita de heavy armour.
+    La construcción ordinaria sigue siendo legal. La categoría de armadura pesada
+    incluye sus variantes gromril, ithilmar y plate; la prohibición de casco
+    incluye el casco improvisado. Se exige el motivo de rechazo específico.
+  cases:
+  - id: recipients
+    roles: [grant]
+    operation: grant
+    defender: {band_id: ostlanders, profile_id: priest-of-taal}
+    context: {rule_id: priest-of-taal--strictures}
+    expect: {result.recipients: [priest-of-taal]}
+  - id: equipment-boundaries
+    roles: [accepted, rejected]
+    operation: equipment_choices
+    attacker: {band_id: ostlanders, profile_id: priest-of-taal}
+    context:
+      choices:
+        ordinary: {}
+        heavy: {"armour_id":"armour.heavy-armour"}
+        gromril: {"armour_id":"armour.gromril-armour"}
+        ithilmar: {"armour_id":"armour.ithilmar-armour"}
+        plate: {"armour_id":"armour.plate-armour"}
+    expect:
+      result.accepted: [ordinary]
+      result.rejected:
+        heavy: heavy armour is forbidden for ostlanders/priest-of-taal
+        gromril: heavy armour is forbidden for ostlanders/priest-of-taal
+        ithilmar: heavy armour is forbidden for ostlanders/priest-of-taal
+        plate: heavy armour is forbidden for ostlanders/priest-of-taal
+  - id: light-armour-remains-legal
+    roles: [accepted]
+    operation: equipment_choices
+    attacker: {band_id: ostlanders, profile_id: priest-of-taal}
+    context:
+      choices:
+        light: {armour_id: armour.light-armour}
+        shield: {off_hand_id: defence.shield}
+    expect:
+      result.accepted: [light, shield]
+      result.rejected: {}
+  mutations:
+  - id: remove-explicit-prohibition
+    runtime_fault: suppress-bound-equipment-restrictions
+    cases: [equipment-boundaries]
+- id: equipment-vows-horned-hunters-initiates
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/mordheim/horned-hunters/initiates--strictures/profile.equipment-restrictions
+    digest: 1de6e897a8a41b93359b1ced908f6cd6f58d0011de7e0d4bd41742d6e441e504
+  interpretation: >
+    initiates / strictures: prohibición explícita de armour.
+    La construcción ordinaria sigue siendo legal. La categoría de armadura pesada
+    incluye sus variantes gromril, ithilmar y plate; la prohibición de casco
+    incluye el casco improvisado. Se exige el motivo de rechazo específico.
+  cases:
+  - id: recipients
+    roles: [grant]
+    operation: grant
+    defender: {band_id: horned-hunters, profile_id: initiates}
+    context: {rule_id: initiates--strictures}
+    expect: {result.recipients: [initiates]}
+  - id: equipment-boundaries
+    roles: [accepted, rejected]
+    operation: equipment_choices
+    attacker: {band_id: horned-hunters, profile_id: initiates}
+    context:
+      choices:
+        ordinary: {}
+        light: {"armour_id":"armour.light-armour"}
+        heavy: {"armour_id":"armour.heavy-armour"}
+        shield: {"off_hand_id":"defence.shield"}
+        helmet: {"defence_ids":["defence.helmet"]}
+    expect:
+      result.accepted: [ordinary]
+      result.rejected:
+        light: armour is forbidden for horned-hunters/initiates
+        heavy: armour is forbidden for horned-hunters/initiates
+        shield: armour is forbidden for horned-hunters/initiates
+        helmet: armour is forbidden for horned-hunters/initiates
+  mutations:
+  - id: remove-explicit-prohibition
+    runtime_fault: suppress-bound-equipment-restrictions
+    cases: [equipment-boundaries]
+- id: equipment-vows-horned-hunters-zealots
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/mordheim/horned-hunters/zealots--strictures/profile.equipment-restrictions
+    digest: 0347f6012a935851cf5be0e510f9561f037d930aebaa80c94f5f626a68f436ff
+  interpretation: >
+    zealots / strictures: prohibición explícita de armour.
+    La construcción ordinaria sigue siendo legal. La categoría de armadura pesada
+    incluye sus variantes gromril, ithilmar y plate; la prohibición de casco
+    incluye el casco improvisado. Se exige el motivo de rechazo específico.
+  cases:
+  - id: recipients
+    roles: [grant]
+    operation: grant
+    defender: {band_id: horned-hunters, profile_id: zealots}
+    context: {rule_id: zealots--strictures}
+    expect: {result.recipients: [zealots]}
+  - id: equipment-boundaries
+    roles: [accepted, rejected]
+    operation: equipment_choices
+    attacker: {band_id: horned-hunters, profile_id: zealots}
+    context:
+      choices:
+        ordinary: {}
+        light: {"armour_id":"armour.light-armour"}
+        heavy: {"armour_id":"armour.heavy-armour"}
+        shield: {"off_hand_id":"defence.shield"}
+        helmet: {"defence_ids":["defence.helmet"]}
+    expect:
+      result.accepted: [ordinary]
+      result.rejected:
+        light: armour is forbidden for horned-hunters/zealots
+        heavy: armour is forbidden for horned-hunters/zealots
+        shield: armour is forbidden for horned-hunters/zealots
+        helmet: armour is forbidden for horned-hunters/zealots
+  mutations:
+  - id: remove-explicit-prohibition
+    runtime_fault: suppress-bound-equipment-restrictions
+    cases: [equipment-boundaries]

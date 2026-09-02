@@ -1,0 +1,49 @@
+schema_version: 1
+specifications:
+- id: editorial-elven-agility-grants
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - {target: rule/trollheim/chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-elven-agility/skill.elven-agility, digest: e65603109e9095363388bfcee40415945d3665ddcd033f349f86517988721830}
+  - {target: rule/trollheim/lustria-dark-elves/band--dark-elf-special-skills-elven-agility/skill.elven-agility, digest: c32b28be8006eb352f49a68966eec3faccbb09bd78f607b7e0a55bf0c994fee1}
+  - {target: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-elven-agility/skill.elven-agility, digest: 1c25430563605cab9626481386e62cd73acfe22b4ce54384a1ad8edff68c5d51}
+  depends_on: [mechanic/skill.elven-agility]
+  interpretation: Each publication restricts this selectable skill to its listed Elf heroes. The three editorial
+    variants compile the same canonical 6+ close-combat save; shooting and Dodge remain outside the duel scope.
+  cases:
+  - id: sons-of-nagarythe-heroes
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: chaos-streets-sons-of-nagarythe, profile_id: shadow-master}
+    context: {rule_id: band--shadow-warrior-special-skills-elven-agility}
+    expect: {result.recipients: [shadow-master, shadow-walker, shadow-weaver]}
+  - id: dark-elf-heroes
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: lustria-dark-elves, profile_id: dark-prince}
+    context: {rule_id: band--dark-elf-special-skills-elven-agility}
+    expect: {result.recipients: [beastmaster, dark-elf-sorceress, dark-prince, darkblades]}
+  - id: high-elf-heroes
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: lustria-high-elves, profile_id: loremaster}
+    context: {rule_id: band--high-elf-special-skills-elven-agility}
+    expect: {result.recipients: [explorers, loremaster, sword-guardians]}
+  - id: granted-consumer
+    roles: [active, boundary, consumer]
+    operation: special_save
+    defender:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+      special_rule_ids: [band--high-elf-special-skills-elven-agility]
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected: {'true': 1/6, 'false': 5/6}
+  mutations:
+  - id: remove-granted-agility
+    changes:
+    - {path: defender.global_effects.ward_save, value: 7}
+    - {path: defender.global_effects.tags, value: []}
+    cases: [granted-consumer]

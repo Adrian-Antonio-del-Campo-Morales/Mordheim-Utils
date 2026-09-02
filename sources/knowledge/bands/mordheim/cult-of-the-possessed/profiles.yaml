@@ -1,0 +1,215 @@
+schema_version: 2
+band_id: cult-of-the-possessed
+profiles:
+- id: magister
+  name: Magister
+  type: hero
+  cost: 70
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - possessed-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Magister
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
+  source_path:
+  - heroes
+  - 1 Magister
+  name_i18n:
+    en: Magister
+    es: null
+  rule_ids:
+  - magister--leader
+  - magister--magic-user
+  combat_traits: {}
+- id: the-possessed
+  name: The Possessed
+  type: hero
+  cost: 90
+  experience: 8
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 0
+    S: 4
+    T: 4
+    W: 2
+    I: 4
+    A: 2
+    Ld: 7
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - The Possessed never use weapons or armour.
+  skill_access:
+  - combat
+  - strength
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 The Possessed
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
+  source_path:
+  - heroes
+  - 0 – 2 The Possessed
+  name_i18n:
+    en: The Possessed
+    es: null
+  rule_ids:
+  - the-possessed--fear
+  - the-possessed--mutations
+  combat_traits: {}
+- id: mutants
+  name: Mutants
+  type: hero
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - possessed-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Mutants
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
+  source_path:
+  - heroes
+  - 0 – 2 Mutants
+  name_i18n:
+    en: Mutants
+    es: null
+  rule_ids:
+  - mutants--mutations
+  combat_traits: {}
+- id: darksouls
+  name: Darksouls
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 4
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - darksouls-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Darksouls
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
+  source_path:
+  - henchmen
+  - 0 – 5 Darksouls
+  name_i18n:
+    en: Darksouls
+    es: null
+  rule_ids:
+  - darksouls--crazed
+  combat_traits: {}
+- id: beastmen
+  name: Beastmen
+  type: henchman
+  cost: 45
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 2
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - darksouls-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 3 Beastmen
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
+  source_path:
+  - henchmen
+  - 0 – 3 Beastmen
+  name_i18n:
+    en: Beastmen
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: brethren
+  name: Brethren
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - possessed-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Brethren
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
+  source_path:
+  - henchmen
+  - Brethren
+  name_i18n:
+    en: Brethren
+    es: null
+  rule_ids: []
+  combat_traits: {}

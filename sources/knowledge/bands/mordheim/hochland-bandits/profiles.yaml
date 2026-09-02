@@ -1,0 +1,328 @@
+schema_version: 2
+band_id: hochland-bandits
+profiles:
+- id: bandit-prince
+  name: Bandit Prince
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - bandit-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Bandit Prince
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  source_path:
+  - heroes
+  - 1 Bandit Prince
+  name_i18n:
+    en: Bandit Prince
+    es: null
+  rule_ids:
+  - bandit-prince--leader
+  combat_traits: {}
+- id: footpads
+  name: Footpads
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - bandit-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Footpads
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  source_path:
+  - heroes
+  - 0 – 2 Footpads
+  name_i18n:
+    en: Footpads
+    es: null
+  rule_ids:
+  - footpads--concealment
+  combat_traits: {}
+- id: duelist
+  name: Duelist
+  type: hero
+  cost: 45
+  experience: 12
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - duelist-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Duelist
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  source_path:
+  - heroes
+  - 0 – 1 Duelist
+  name_i18n:
+    en: Duelist
+    es: null
+  rule_ids:
+  - duelist--swordmaster
+  - duelist--weapon-knowledge
+  combat_traits:
+    starting_skills:
+    - skill.swordmaster
+- id: huckster
+  name: Huckster
+  type: hero
+  cost: 40
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 2
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - coward-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Huckster
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  source_path:
+  - heroes
+  - 0 – 1 Huckster
+  name_i18n:
+    en: Huckster
+    es: null
+  rule_ids:
+  - huckster--convincing-manner
+  - huckster--slick-operator
+  combat_traits: {}
+- id: thugs
+  name: Thugs
+  type: henchman
+  cost: 30
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - bandit-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Thugs
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  source_path:
+  - henchmen
+  - Thugs
+  name_i18n:
+    en: Thugs
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: looters
+  name: Looters
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - coward-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 4 Looters
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  source_path:
+  - henchmen
+  - 0 – 4 Looters
+  name_i18n:
+    en: Looters
+    es: null
+  rule_ids:
+  - looters--looting-the-dead
+  combat_traits: {}
+- id: blackhearts
+  name: Blackhearts
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - bandit-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Blackhearts
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  source_path:
+  - henchmen
+  - 0 – 2 Blackhearts
+  name_i18n:
+    en: Blackhearts
+    es: null
+  rule_ids:
+  - blackhearts--hardened
+  combat_traits: {}
+- id: poachers
+  name: Poachers
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - poacher-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Poachers
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  source_path:
+  - henchmen
+  - 0 – 2 Poachers
+  name_i18n:
+    en: Poachers
+    es: null
+  rule_ids:
+  - poachers--trailblazers
+  combat_traits: {}
+- id: gutterscum
+  name: Gutterscum
+  type: henchman
+  cost: 10
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - coward-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Gutterscum
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  source_path:
+  - henchmen
+  - Gutterscum
+  name_i18n:
+    en: Gutterscum
+    es: null
+  rule_ids:
+  - gutterscum--utterly-inept
+  combat_traits: {}

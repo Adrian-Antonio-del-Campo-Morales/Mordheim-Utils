@@ -1,0 +1,249 @@
+schema_version: 2
+band_id: chaos-streets-mordheim-inhabitants
+profiles:
+- id: prophet
+  name: Prophet
+  type: hero
+  cost: 70
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - inhabitants-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May wear armour and continue delivering Revival Sermons.
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 147
+    section: 1 Prophet
+  source_path:
+  - heroes
+  - 1 Prophet
+  name_i18n:
+    en: Prophet
+    es: null
+  rule_ids:
+  - prophet--leader
+  - prophet--fanatic
+  - prophet--orator
+  combat_traits: {}
+- id: desolate-soul
+  name: Desolate Soul
+  type: hero
+  cost: 55
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - inhabitants-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 148
+    section: 0-1 Desolate Soul
+  source_path:
+  - heroes
+  - 0-1 Desolate Soul
+  name_i18n:
+    en: Desolate Soul
+    es: null
+  rule_ids:
+  - desolate-soul--fanatic
+  - desolate-soul--death-wish
+  - desolate-soul--profound-hatred
+  combat_traits: {}
+- id: lunatics
+  name: Lunatics
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - outcasts-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 147
+    section: 0-2 Lunatics
+  source_path:
+  - heroes
+  - 0-2 Lunatics
+  name_i18n:
+    en: Lunatics
+    es: null
+  rule_ids:
+  - lunatics--frenzy
+  combat_traits: {}
+- id: orphans
+  name: Orphans
+  type: hero
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - inhabitants-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - speed
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 148
+    section: 0-2 Orphans
+  source_path:
+  - heroes
+  - 0-2 Orphans
+  name_i18n:
+    en: Orphans
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: citizens
+  name: Citizens
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - inhabitants-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 149
+    section: Citizens
+  source_path:
+  - henchmen
+  - Citizens
+  name_i18n:
+    en: Citizens
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: cripples
+  name: Cripples
+  type: henchman
+  cost: 10
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - outcasts-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 149
+    section: Cripples
+  source_path:
+  - henchmen
+  - Cripples
+  name_i18n:
+    en: Cripples
+    es: null
+  rule_ids:
+  - cripples--disability
+  combat_traits: {}
+- id: street-dogs
+  name: Street Dogs
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Street Dogs fight with their jaws and ferocity and never use or need weapons or armour.
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 149
+    section: 0-5 Street Dogs
+  source_path:
+  - henchmen
+  - 0-5 Street Dogs
+  name_i18n:
+    en: Street Dogs
+    es: null
+  rule_ids:
+  - street-dogs--animal
+  combat_traits: {}

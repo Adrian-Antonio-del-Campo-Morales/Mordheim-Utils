@@ -1,0 +1,620 @@
+schema_version: 1
+specifications:
+- id: core-two-weapons
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: core/combat-two-weapons
+    digest: e290594d3c6ecf49bf33cc116ac8663f5f8e293bfb69699379c899634097c87b
+  interpretation: One off-hand attack is added AFTER other attack modifiers, including frenzy. With distinct melee
+    weapons the decision selects the weapon for all but one attack.
+  interaction_contract:
+    reads:
+    - fighter.attacks
+    - state.frenzy
+    - weapon.kind
+    writes:
+    - attack.count
+    - attack.assignment
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.dagger
+    expect:
+      attacker.off_hand_attacks: true
+  - id: ordinary-two-weapons
+    roles:
+    - active
+    - consumer
+    operation: attacks
+    attacker:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.dagger
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 2
+    expect:
+      result.attacks: 3
+  - id: frenzy-before-offhand
+    roles:
+    - boundary
+    - consumer
+    operation: attacks
+    attacker:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.dagger
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 2
+      preparation_ids:
+      - preparation.mad-cap-mushrooms
+    expect:
+      result.attacks: 5
+  - id: single-weapon
+    roles:
+    - inactive
+    operation: attacks
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 2
+      preparation_ids:
+      - preparation.mad-cap-mushrooms
+    expect:
+      result.attacks: 4
+  - id: main-majority
+    roles:
+    - active
+    - boundary
+    operation: allocate
+    attacker:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.dagger
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 2
+    decisions:
+    - key: test.main-weapon-majority
+      value: true
+    expect:
+      result.count: 3
+      result.weapons.0.concussion: true
+      result.weapons.1.concussion: true
+      result.weapons.2.concussion: false
+  - id: offhand-majority
+    roles:
+    - active
+    - boundary
+    operation: allocate
+    attacker:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.dagger
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 2
+    decisions:
+    - key: test.main-weapon-majority
+      value: false
+    expect:
+      result.count: 3
+      result.weapons.0.concussion: false
+      result.weapons.1.concussion: false
+      result.weapons.2.concussion: true
+  mutations:
+  - id: drop-offhand-attack
+    path: attacker.off_hand_attacks
+    value: false
+    cases:
+    - ordinary-two-weapons
+    - frenzy-before-offhand
+- id: core-critical-hits
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - target: core/combat-critical-hits
+    digest: 8a9bed002edfdc8ec9a74dc676d919cedaf2e50bb6c96d600c72d78e9dca2e69
+  interpretation: A natural 6 to wound is critical unless it was required. The attacker spends the sole critical
+    allowance on the first critical wound in the combat phase.
+  interaction_contract:
+    reads:
+    - wound.roll
+    - wound.target
+    - state.critical_available
+    writes:
+    - state.critical_available
+    - injury.total
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.mace
+    expect:
+      attacker.main_weapon.damage: 1
+  - id: two-natural-sixes-one-critical
+    roles:
+    - active
+    - sequence
+    - consumption
+    operation: pool
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 2
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.0.wound
+      value: 6
+    - key: test.attack.1.wound
+      value: 6
+    expect:
+      result.attacks.0.critical: true
+      result.attacks.1.critical: false
+      result.attacker.critical_available: false
+      result.defender.wounds: 1
+  - id: six-required-no-critical
+    roles:
+    - inactive
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 6
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    distribution:
+      observable: result.critical
+      max_rolls: 1
+      expected:
+        'false': '1'
+  - id: ordinary-critical-probability
+    roles:
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+    distribution:
+      observable: result.critical
+      max_rolls: 1
+      expected:
+        'true': 1/6
+        'false': 5/6
+  - id: next-round-restores-critical
+    roles:
+    - sequence
+    - consumption
+    operation: recovery
+    attacker_state:
+      critical_available: false
+    expect:
+      result.rounds.0.state.critical_available: true
+  mutations:
+  - id: suppress-criticals
+    path: attacker.main_weapon.tags
+    value:
+    - weapon.mace
+    - effect.no-critical
+    cases:
+    - two-natural-sixes-one-critical
+    - ordinary-critical-probability
+  - id: reuse-critical-in-same-phase
+    runtime_fault: retain-critical-allowance
+    cases:
+    - two-natural-sixes-one-critical
+- id: core-parry
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - target: core/combat-parry
+    digest: 68a462cce29f54af24fc6165eae8f85d39c185965a399bb295d1f4ed95e586c9
+  interpretation: Beat the hit roll; a natural 6 is not parryable. One attempt per phase, not one per sword. Sword
+    plus buckler permits one re-roll. Eligible impacts are considered in descending hit-roll order.
+  interaction_contract:
+    reads:
+    - hit.roll
+    - attack.strength
+    - state.parries
+    writes:
+    - hit.success
+    - state.parries
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      main_weapon_id: weapon.sword
+    expect:
+      defender.main_weapon.parry: true
+  - id: all-faces
+    roles:
+    - active
+    - boundary
+    operation: parry
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 4
+    distribution:
+      observable: result.blocked
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
+  - id: natural-six
+    roles:
+    - inactive
+    operation: parry
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
+  - id: two-swords-one-attempt
+    roles:
+    - boundary
+    operation: initialize
+    defender:
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+    expect:
+      result.defender.parries_remaining: 1
+  - id: sword-buckler-retry
+    roles:
+    - boundary
+    operation: parry
+    defender:
+      main_weapon_id: weapon.sword
+      off_hand_id: defence.buckler
+    context:
+      hit_roll: 4
+    distribution:
+      observable: result.blocked
+      max_rolls: 2
+      expected:
+        'true': 5/9
+        'false': 4/9
+  - id: highest-hit-consumes-parry
+    roles:
+    - sequence
+    - consumption
+    operation: pool
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 4
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 2
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 3
+    - key: test.attack.1.hit
+      value: 5
+    - key: test.attack.1.parry
+      value: 4
+    - key: test.attack.0.wound
+      value: 1
+    - key: test.attack.1.wound
+      value: 1
+    expect:
+      result.attacks.0.parried: false
+      result.attacks.1.parried: false
+      result.defender.parries_remaining: 0
+  mutations:
+  - id: remove-parry
+    path: defender.main_weapon.parry
+    value: false
+    cases:
+    - all-faces
+    - highest-hit-consumes-parry
+  - id: reuse-spent-parry
+    runtime_fault: retain-parry-capacity
+    cases:
+    - highest-hit-consumes-parry
+- id: core-combat-order
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: priority
+  sources:
+  - target: core/combat-order
+    digest: 0d22d9fffb278f0dbee553ccac5afd7cca3b8018f1f652af103da3b28bfbdc22
+  interpretation: Charge precedes normal Initiative. A warrior who stood up strikes last even if otherwise fast.
+    Within equal priority the higher Initiative acts first, with unbiased resolution of exact ties.
+  interaction_contract:
+    reads:
+    - round.charging
+    - state.stood_up
+    - fighter.initiative
+    writes:
+    - priority.order
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    expect:
+      attacker.characteristics.initiative: 1
+  - id: charge-before-fast
+    roles:
+    - active
+    - consumer
+    operation: acting_order
+    attacker:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: true
+  - id: normal-initiative
+    roles:
+    - inactive
+    operation: acting_order
+    attacker:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    expect:
+      result.first_acts: false
+  - id: stood-up-last
+    roles:
+    - boundary
+    operation: acting_order
+    attacker:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    context:
+      stood_up: true
+    expect:
+      result.first_acts: false
+  - id: all-tie-dice
+    roles:
+    - boundary
+    operation: acting_order
+    distribution:
+      observable: result.first_acts
+      max_rolls: 1
+      expected:
+        'true': 1/2
+        'false': 1/2
+  mutations:
+  - id: give-opponent-priority
+    path: defender.global_effects.priority
+    value: 10
+    cases:
+    - charge-before-fast
+- id: core-injury-states
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - target: core/combat-injury-states
+    digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
+  interpretation: 'At zero wounds the highest rolled injury applies: 1-2 Knocked Down, 3-4 Stunned, 5-6 Out. Recovery
+    advances Stunned to Knocked Down, then standing; standing up is recorded for priority.'
+  interaction_contract:
+    reads:
+    - damage.unsaved
+    - state.wounds
+    - injury.total
+    writes:
+    - injury.condition
+    - state.stood_up
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.bloodroot
+    expect:
+      attacker.main_weapon.damage: 2
+  - id: face-1
+    roles:
+    - active
+    - inactive
+    - boundary
+    operation: injury
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-2
+    roles:
+    - active
+    - inactive
+    - boundary
+    operation: injury
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-3
+    roles:
+    - active
+    - inactive
+    - boundary
+    operation: injury
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: face-4
+    roles:
+    - active
+    - inactive
+    - boundary
+    operation: injury
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: face-5
+    roles:
+    - active
+    - inactive
+    - boundary
+    operation: injury
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  - id: face-6
+    roles:
+    - active
+    - inactive
+    - boundary
+    operation: injury
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: highest-of-two-injuries
+    roles:
+    - sequence
+    - consumption
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 5
+    expect:
+      result.damage: 2
+      result.defender.condition: OUT
+  - id: two-recovery-rounds
+    roles:
+    - sequence
+    operation: recovery
+    attacker_state:
+      condition: STUNNED
+    context:
+      rounds: 2
+    expect:
+      result.rounds.0.state.condition: KNOCKED_DOWN
+      result.rounds.0.stood_up: false
+      result.rounds.1.state.condition: STANDING
+      result.rounds.1.stood_up: true
+  mutations:
+  - id: drop-second-injury
+    path: attacker.main_weapon.damage
+    value: 1
+    cases:
+    - highest-of-two-injuries

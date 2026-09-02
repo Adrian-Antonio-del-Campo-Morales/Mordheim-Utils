@@ -1,0 +1,59 @@
+schema_version: 1
+specifications:
+- id: skill.bellowing-battle-roar
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/skill.bellowing-battle-roar
+    digest: 0d9d367035507f32c3026c9f1ab4e3a164ebc14b121c78f0ba57ad6e963465d7
+  interpretation: An enemy fighting the Saurus suffers -1 on every To Hit roll during the first round of that close
+    combat. The modifier belongs to the defender and therefore affects its opponent; it expires after the first round.
+  interaction_contract:
+    reads:
+    - round.first
+    - hit.target
+    writes:
+    - hit.target
+  cases:
+  - id: compiled-on-defender
+    roles: [compiled]
+    operation: compile
+    defender: {skill_ids: [skill.bellowing-battle-roar], main_weapon_id: weapon.mace}
+    expect: {defender.characteristics.attacks: 1}
+    expect_contains:
+      defender.global_effects.tags: [skill.bellowing-battle-roar]
+  - id: penalizes-enemy-first-round
+    roles: [active, boundary, consumer]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.bellowing-battle-roar], main_weapon_id: weapon.mace}
+    context: {first_round: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/3, 'false': 2/3}
+  - id: expires-after-first-round
+    roles: [inactive, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.bellowing-battle-roar], main_weapon_id: weapon.mace}
+    context: {first_round: false}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: ordinary-defender-does-not-penalize
+    roles: [inactive]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {main_weapon_id: weapon.mace}
+    context: {first_round: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  mutations:
+  - id: remove-roar
+    path: defender.global_effects.tags
+    value: []
+    cases: [penalizes-enemy-first-round]

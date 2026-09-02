@@ -1,0 +1,143 @@
+schema_version: 1
+specifications:
+- id: optional-bull-charge-family
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/mechanic.bull-charge, digest: 031946918b407681c05e32e1f8001cce88727603839867d04a0101432052f42a}
+  - {target: rule/mordheim/maneaters/bulls--bull-charge/mechanic.bull-charge, digest: f90736bcf82147b5abfe5f75c6f8394c8491853f32ffdf24b40a12f55bf83365}
+  - {target: rule/mordheim/maneaters/band--ogres-special-skills-bull-charge/mechanic.bull-charge, digest: 513ab4a303af24d7a5550cdfee1cb8e0551e1f464c2f8186fbae46d775a47bf6}
+  - {target: rule/mordheim/ostlanders/band--ostlander-special-skills-bull-rush/mechanic.bull-charge, digest: dd1706a549adc8face68feea120e248577209def1e62763d88a161fc56512807}
+  interpretation: >-
+    Bull Charge y Bull Rush permiten elegir durante una carga sustituir todos
+    los ataques por un único intento a +1 To Hit. Si impacta, derriba sin tirar
+    para herir. Rechazar la elección conserva el pool normal. Fuera de una carga
+    no se solicita decisión ni se sustituye el número de ataques. Bulls recibe
+    la regla automáticamente; las habilidades tienen destinatarios propios.
+  cases:
+  - id: canonical-compiled
+    roles: [compiled]
+    operation: compile
+    attacker: {skill_ids: [mechanic.bull-charge]}
+    expect_contains: {attacker.global_effects.tags: [mechanic.bull-charge]}
+    expect: {attacker.fighter_id: 'custom:custom'}
+  - id: bulls-recipients
+    roles: [grant]
+    operation: grant
+    defender: {band_id: maneaters, profile_id: bulls}
+    context: {rule_id: bulls--bull-charge}
+    expect: {result.recipients: [bulls]}
+  - id: ogre-skill-recipients
+    roles: [grant]
+    operation: selectable_grant
+    defender: {band_id: maneaters, profile_id: captain}
+    context: {rule_id: band--ogres-special-skills-bull-charge}
+    expect: {result.recipients: [captain, mountain-guide, youngbloods]}
+  - id: ostlander-recipients
+    roles: [grant]
+    operation: selectable_grant
+    defender: {band_id: ostlanders, profile_id: elder}
+    context: {rule_id: band--ostlander-special-skills-bull-rush}
+    expect: {result.recipients: [blood-brothers, elder, priest-of-taal]}
+  - id: accepted-hit-knocks-down
+    roles: [active, consumer, sequence, consumption, boundary]
+    operation: pool
+    attacker: {skill_ids: [mechanic.bull-charge], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 3}}
+    defender: {main_weapon_id: weapon.mace}
+    context: {count: 3, first_round: true, charging: true}
+    decisions: [{key: test.bull-charge, value: true}]
+    rolls: [{key: test.bull-charge.hit, value: 3}]
+    expect:
+      result.attacks.0.hit_target: 3
+      result.attacks.0.hit: true
+      result.attacks.0.wounded: false
+      result.defender.condition: KNOCKED_DOWN
+  - id: accepted-miss-does-not-wound
+    roles: [active, boundary]
+    operation: pool
+    attacker: {skill_ids: [mechanic.bull-charge], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 3}}
+    context: {count: 3, first_round: true, charging: true}
+    decisions: [{key: test.bull-charge, value: true}]
+    rolls: [{key: test.bull-charge.hit, value: 2}]
+    expect: {result.attacks.0.hit: false, result.defender.condition: STANDING}
+  - id: declined-keeps-normal-pool
+    roles: [inactive, sequence, boundary]
+    operation: pool
+    attacker: {skill_ids: [mechanic.bull-charge], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 2}}
+    context: {count: 2, first_round: true, charging: true}
+    decisions: [{key: test.bull-charge, value: false}]
+    rolls: [{key: test.attack.0.hit, value: 1}, {key: test.attack.1.hit, value: 1}]
+    expect: {result.attacks.0.hit: false, result.attacks.1.hit: false, result.defender.condition: STANDING}
+  - id: not-charging-no-choice
+    roles: [inactive, boundary]
+    operation: attacks
+    attacker: {skill_ids: [mechanic.bull-charge], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 3}}
+    context: {first_round: true, charging: false}
+    expect: {result.attacks: 3}
+  mutations:
+  - {id: remove-bull-charge, path: attacker.global_effects.tags, value: [], cases: [accepted-hit-knocks-down, accepted-miss-does-not-wound]}
+- id: optional-body-slam-family
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/mechanic.body-slam, digest: ce18331986651588431064c92294f309a90203dc6f3962bd60d18e67c1b49e45}
+  - {target: rule/mordheim/pit-fighters/band--pit-fighter-skill-body-slam/mechanic.body-slam, digest: a729d2a5ba323af3990bc9d179e8070b4bf693337527eb36342b1ee9c7ae671f}
+  - {target: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-body-slam/mechanic.body-slam, digest: bd9e9d6d2ca67f8cdca8cb7a4fccc5e33a7cc06d1fb009a2cfa4c5baf185dd94}
+  interpretation: >-
+    Body Slam permite elegir durante una carga un único ataque a +1 Fuerza y
+    +1 To Hit que obtiene crítico con 5+. No usa los bonos del arma ni otras
+    habilidades. Rechazarlo conserva el pool ordinario. Las dos ediciones lo
+    conceden exactamente a Pit King, Pit Veterans y Dwarf Troll Slayer.
+  cases:
+  - id: canonical-compiled
+    roles: [compiled]
+    operation: compile
+    attacker: {skill_ids: [mechanic.body-slam]}
+    expect_contains: {attacker.global_effects.tags: [mechanic.body-slam]}
+    expect: {attacker.fighter_id: 'custom:custom'}
+  - id: mordheim-recipients
+    roles: [grant]
+    operation: selectable_grant
+    defender: {band_id: pit-fighters, profile_id: pit-king}
+    context: {rule_id: band--pit-fighter-skill-body-slam}
+    expect: {result.recipients: [dwarf-troll-slayer, pit-king, pit-veterans]}
+  - id: trollheim-recipients
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: pit-king}
+    context: {rule_id: band--pit-fighter-skill-body-slam}
+    expect: {result.recipients: [dwarf-troll-slayer, pit-king, pit-veterans]}
+  - id: accepted-ignores-weapon-strength
+    roles: [active, consumer, sequence, consumption, boundary]
+    operation: pool
+    attacker: {skill_ids: [mechanic.body-slam], main_weapon_id: weapon.double-handed-weapon, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 3}}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 3, initiative: 3, attacks: 1}}
+    context: {count: 3, first_round: true, charging: true}
+    decisions: [{key: test.body-slam, value: true}]
+    rolls: [{key: test.attack.0.hit, value: 3}, {key: test.attack.0.wound, value: 3}]
+    expect: {result.attacks.0.hit_target: 3, result.attacks.0.hit: true, result.attacks.0.wounded: false}
+  - id: critical-on-five
+    roles: [active, boundary]
+    operation: pool
+    attacker: {skill_ids: [mechanic.body-slam], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 3}}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 3, initiative: 3, attacks: 1}}
+    context: {count: 3, first_round: true, charging: true}
+    decisions: [{key: test.body-slam, value: true}]
+    rolls: [{key: test.attack.0.hit, value: 3}, {key: test.attack.0.wound, value: 5}]
+    expect: {result.attacks.0.critical: true, result.attacks.0.wounded: true}
+  - id: declined-keeps-normal-pool
+    roles: [inactive, sequence, boundary]
+    operation: pool
+    attacker: {skill_ids: [mechanic.body-slam], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 2}}
+    context: {count: 2, first_round: true, charging: true}
+    decisions: [{key: test.body-slam, value: false}]
+    rolls: [{key: test.attack.0.hit, value: 1}, {key: test.attack.1.hit, value: 1}]
+    expect: {result.attacks.0.hit: false, result.attacks.1.hit: false}
+  - id: not-charging-no-replacement
+    roles: [inactive, boundary]
+    operation: attacks
+    attacker: {skill_ids: [mechanic.body-slam], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 3}}
+    context: {first_round: true, charging: false}
+    expect: {result.attacks: 3}
+  mutations:
+  - {id: remove-body-slam, path: attacker.global_effects.tags, value: [], cases: [accepted-ignores-weapon-strength, critical-on-five]}

@@ -1,0 +1,2081 @@
+schema_version: 2
+band_id: chaos-streets-undead-bloodlines
+rules:
+- id: von-carstein-vampire--leader
+  name: Leader
+  effect: Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 174
+    section: 1 Von Carstein Vampire / Special Rules / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
+    es: null
+  applies_to:
+    profile_ids:
+    - von-carstein-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.von-carstein-vampire.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: von-carstein-vampire--fear
+  name: Fear
+  effect: The Vampire causes Fear.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 174
+    section: 1 Von Carstein Vampire / Special Rules / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Vampire causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - von-carstein-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.von-carstein-vampire.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: von-carstein-vampire--immune-to-psychology
+  name: Immune to Psychology
+  effect: The Vampire is immune to Psychology and never leaves combat because of Psychology.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 174
+    section: 1 Von Carstein Vampire / Special Rules / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: The Vampire is immune to Psychology and never leaves combat because of Psychology.
+    es: null
+  applies_to:
+    profile_ids:
+    - von-carstein-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.von-carstein-vampire.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: von-carstein-vampire--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: The Vampire is immune to poison.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 174
+    section: 1 Von Carstein Vampire / Special Rules / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: The Vampire is immune to poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - von-carstein-vampire
+- id: von-carstein-vampire--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 174
+    section: 1 Von Carstein Vampire / Special Rules / No Pain
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  applies_to:
+    profile_ids:
+    - von-carstein-vampire
+- id: lahmia-vampire--leader
+  name: Leader
+  effect: Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 175
+    section: 1 Lahmia Vampire / Special Rules / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
+    es: null
+  applies_to:
+    profile_ids:
+    - lahmia-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.lahmia-vampire.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: lahmia-vampire--fear
+  name: Fear
+  effect: The Vampire causes Fear.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 175
+    section: 1 Lahmia Vampire / Special Rules / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Vampire causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - lahmia-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.lahmia-vampire.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: lahmia-vampire--immune-to-psychology
+  name: Immune to Psychology
+  effect: The Vampire is immune to Psychology and never leaves combat because of Psychology.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 175
+    section: 1 Lahmia Vampire / Special Rules / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: The Vampire is immune to Psychology and never leaves combat because of Psychology.
+    es: null
+  applies_to:
+    profile_ids:
+    - lahmia-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.lahmia-vampire.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: lahmia-vampire--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: The Vampire is immune to poison.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 175
+    section: 1 Lahmia Vampire / Special Rules / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: The Vampire is immune to poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - lahmia-vampire
+- id: lahmia-vampire--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 175
+    section: 1 Lahmia Vampire / Special Rules / No Pain
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  applies_to:
+    profile_ids:
+    - lahmia-vampire
+- id: lahmia-vampire--enchanting-beauty
+  name: Enchanting Beauty
+  effect: Any living enemy in base contact with the Lahmia Vampire suffers -1 Leadership. This has no effect on Undead or
+    Daemons.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 175
+    section: 1 Lahmia Vampire / Enchanting Beauty
+  name_i18n:
+    en: Enchanting Beauty
+    es: null
+  effect_i18n:
+    en: Any living enemy in base contact with the Lahmia Vampire suffers -1 Leadership. This has no effect on Undead or Daemons.
+    es: null
+  applies_to:
+    profile_ids:
+    - lahmia-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.lahmia-vampire.enchanting-beauty
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: blood-dragon-vampire--leader
+  name: Leader
+  effect: Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 176
+    section: 1 Blood Dragon Vampire / Special Rules / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
+    es: null
+  applies_to:
+    profile_ids:
+    - blood-dragon-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.blood-dragon-vampire.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: blood-dragon-vampire--fear
+  name: Fear
+  effect: The Vampire causes Fear.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 176
+    section: 1 Blood Dragon Vampire / Special Rules / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Vampire causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - blood-dragon-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.blood-dragon-vampire.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: blood-dragon-vampire--immune-to-psychology
+  name: Immune to Psychology
+  effect: The Vampire is immune to Psychology and never leaves combat because of Psychology.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 176
+    section: 1 Blood Dragon Vampire / Special Rules / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: The Vampire is immune to Psychology and never leaves combat because of Psychology.
+    es: null
+  applies_to:
+    profile_ids:
+    - blood-dragon-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.blood-dragon-vampire.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: blood-dragon-vampire--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: The Vampire is immune to poison.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 176
+    section: 1 Blood Dragon Vampire / Special Rules / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: The Vampire is immune to poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - blood-dragon-vampire
+- id: blood-dragon-vampire--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 176
+    section: 1 Blood Dragon Vampire / Special Rules / No Pain
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  applies_to:
+    profile_ids:
+    - blood-dragon-vampire
+- id: blood-dragon-vampire--brave
+  name: Brave
+  effect: The warband may re-roll its first failed Rout test while the Blood Dragon Vampire is available.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 176
+    section: 1 Blood Dragon Vampire / Brave
+  name_i18n:
+    en: Brave
+    es: null
+  effect_i18n:
+    en: The warband may re-roll its first failed Rout test while the Blood Dragon Vampire is available.
+    es: null
+  applies_to:
+    profile_ids:
+    - blood-dragon-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.blood-dragon-vampire.brave
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: blood-dragon-vampire--honour
+  name: Honour
+  effect: The Blood Dragon Vampire may not attempt to escape from close combat, and the warband may not voluntarily rout while
+    the Vampire remains in play.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 176
+    section: 1 Blood Dragon Vampire / Honour
+  name_i18n:
+    en: Honour
+    es: null
+  effect_i18n:
+    en: The Blood Dragon Vampire may not attempt to escape from close combat, and the warband may not voluntarily rout while
+      the Vampire remains in play.
+    es: null
+  applies_to:
+    profile_ids:
+    - blood-dragon-vampire
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.blood-dragon-vampire.honour
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: blood-dragon-vampire--warriors-code
+  name: Warrior's Code
+  effect: The Blood Dragon Vampire may never use magic in any way, including through items or skills that would otherwise
+    permit it.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 176
+    section: 1 Blood Dragon Vampire / Warrior's Code
+  name_i18n:
+    en: Warrior's Code
+    es: null
+  effect_i18n:
+    en: The Blood Dragon Vampire may never use magic in any way, including through items or skills that would otherwise permit
+      it.
+    es: null
+  applies_to:
+    profile_ids:
+    - blood-dragon-vampire
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.warrior-s-code
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.warrior-s-code
+- id: necrarch-vampire--leader
+  name: Leader
+  effect: Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 177
+    section: 1 Necrarch Vampire / Special Rules / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
+    es: null
+  applies_to:
+    profile_ids:
+    - necrarch-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.necrarch-vampire.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: necrarch-vampire--fear
+  name: Fear
+  effect: The Vampire causes Fear.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 177
+    section: 1 Necrarch Vampire / Special Rules / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Vampire causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - necrarch-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.necrarch-vampire.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: necrarch-vampire--immune-to-psychology
+  name: Immune to Psychology
+  effect: The Vampire is immune to Psychology and never leaves combat because of Psychology.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 177
+    section: 1 Necrarch Vampire / Special Rules / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: The Vampire is immune to Psychology and never leaves combat because of Psychology.
+    es: null
+  applies_to:
+    profile_ids:
+    - necrarch-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.necrarch-vampire.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: necrarch-vampire--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: The Vampire is immune to poison.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 177
+    section: 1 Necrarch Vampire / Special Rules / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: The Vampire is immune to poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - necrarch-vampire
+- id: necrarch-vampire--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 177
+    section: 1 Necrarch Vampire / Special Rules / No Pain
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  applies_to:
+    profile_ids:
+    - necrarch-vampire
+- id: necrarch-vampire--wizard
+  name: Wizard
+  effect: The Necrarch Vampire is a Wizard and may use Necromantic Magic. The spell list itself is intentionally not modelled
+    in this file.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 177
+    section: 1 Necrarch Vampire / Wizard
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Necrarch Vampire is a Wizard and may use Necromantic Magic. The spell list itself is intentionally not modelled
+      in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - necrarch-vampire
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.necrarch-vampire.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: necrarch-vampire--hates-the-living
+  name: Hates the Living
+  effect: The Necrarch Vampire may hire only Undead Hired Swords or Dramatis Personae.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 177
+    section: 1 Necrarch Vampire / Hates the Living
+  name_i18n:
+    en: Hates the Living
+    es: null
+  effect_i18n:
+    en: The Necrarch Vampire may hire only Undead Hired Swords or Dramatis Personae.
+    es: null
+  applies_to:
+    profile_ids:
+    - necrarch-vampire
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.necrarch-vampire.hates-the-living
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: strigoi-vampire--leader
+  name: Leader
+  effect: Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 178
+    section: 1 Strigoi Vampire / Special Rules / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Vampire may use the Vampire's Leadership instead of its own.
+    es: null
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.strigoi-vampire.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: strigoi-vampire--fear
+  name: Fear
+  effect: The Vampire causes Fear.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 178
+    section: 1 Strigoi Vampire / Special Rules / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Vampire causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.strigoi-vampire.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: strigoi-vampire--immune-to-psychology
+  name: Immune to Psychology
+  effect: The Vampire is immune to Psychology and never leaves combat because of Psychology.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 178
+    section: 1 Strigoi Vampire / Special Rules / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: The Vampire is immune to Psychology and never leaves combat because of Psychology.
+    es: null
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.strigoi-vampire.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: strigoi-vampire--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: The Vampire is immune to poison.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 178
+    section: 1 Strigoi Vampire / Special Rules / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: The Vampire is immune to poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+- id: strigoi-vampire--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 178
+    section: 1 Strigoi Vampire / Special Rules / No Pain
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+- id: strigoi-vampire--hatred-everyone
+  kind: profile_ability
+  runtime:
+    scope: LATER
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.hatred
+      scope: LATER
+      binding:
+        kind: mechanic
+        id: skill.hatred
+  name: Hatred
+  effect: The Strigoi Vampire is subject to Hatred against everyone.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 178
+    section: 1 Strigoi Vampire / Hatred
+  name_i18n:
+    en: Hatred
+    es: null
+  effect_i18n:
+    en: The Strigoi Vampire is subject to Hatred against everyone.
+    es: null
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+- id: strigoi-vampire--hates-the-living
+  name: Hates the Living
+  effect: The Strigoi Vampire may hire only Undead Hired Swords or Dramatis Personae.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 178
+    section: 1 Strigoi Vampire / Hates the Living
+  name_i18n:
+    en: Hates the Living
+    es: null
+  effect_i18n:
+    en: The Strigoi Vampire may hire only Undead Hired Swords or Dramatis Personae.
+    es: null
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.strigoi-vampire.hates-the-living
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: necromancer--wizard
+  name: Wizard
+  effect: The Necromancer is a Wizard and may use Necromantic Magic. The spell list itself is intentionally not modelled in
+    this file.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 179
+    section: 0-1 Necromancer / Wizard
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Necromancer is a Wizard and may use Necromantic Magic. The spell list itself is intentionally not modelled in
+      this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - necromancer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.necromancer.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: carrion-ghoul--fear
+  name: Fear
+  effect: The Carrion Ghoul causes Fear.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 179
+    section: 0-1 Carrion Ghoul / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Carrion Ghoul causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - carrion-ghoul
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.carrion-ghoul.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: zombie--may-not-run
+  name: May Not Run
+  effect: Zombies may not run, but may charge normally.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: Zombies / May Not Run
+  name_i18n:
+    en: May Not Run
+    es: null
+  effect_i18n:
+    en: Zombies may not run, but may charge normally.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombie
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.zombie.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: zombie--fear
+  name: Fear
+  effect: Zombies cause Fear.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: Zombies / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: Zombies cause Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombie
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.zombie.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: zombie--immune-to-psychology
+  name: Immune to Psychology
+  effect: Zombies are immune to Psychology and never leave combat because of Psychology.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: Zombies / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: Zombies are immune to Psychology and never leave combat because of Psychology.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombie
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.zombie.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: zombie--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Zombies are immune to poison.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: Zombies / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: Zombies are immune to poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombie
+- id: zombie--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: Zombies treat a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: Zombies / No Pain
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: Zombies treat a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombie
+- id: zombie--brainless
+  name: Brainless
+  effect: Zombies never gain Experience.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: Zombies / Brainless
+  name_i18n:
+    en: Brainless
+    es: null
+  effect_i18n:
+    en: Zombies never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - zombie
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.zombie.brainless
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: ghoul--fear
+  name: Fear
+  effect: Ghouls cause Fear.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: Ghouls / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: Ghouls cause Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - ghoul
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.ghoul.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: dire-wolf--charge
+  name: Charge
+  effect: A Dire Wolf has 2 Attacks instead of 1 during the turn in which it charges.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: 0-5 Dire Wolves / Charge
+  name_i18n:
+    en: Charge
+    es: null
+  effect_i18n:
+    en: A Dire Wolf has 2 Attacks instead of 1 during the turn in which it charges.
+    es: null
+  applies_to:
+    profile_ids:
+    - dire-wolf
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.charge-attack-bonus
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.charge-attack-bonus
+        parameters:
+          value: true
+- id: dire-wolf--may-not-run
+  name: May Not Run
+  effect: Dire Wolves may not run, but may charge normally.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: 0-5 Dire Wolves / May Not Run
+  name_i18n:
+    en: May Not Run
+    es: null
+  effect_i18n:
+    en: Dire Wolves may not run, but may charge normally.
+    es: null
+  applies_to:
+    profile_ids:
+    - dire-wolf
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.dire-wolf.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: dire-wolf--fear
+  name: Fear
+  effect: Dire Wolves cause Fear.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: 0-5 Dire Wolves / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: Dire Wolves cause Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - dire-wolf
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.dire-wolf.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: dire-wolf--immune-to-psychology
+  name: Immune to Psychology
+  effect: Dire Wolves are immune to Psychology and never leave combat because of Psychology.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: 0-5 Dire Wolves / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: Dire Wolves are immune to Psychology and never leave combat because of Psychology.
+    es: null
+  applies_to:
+    profile_ids:
+    - dire-wolf
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.dire-wolf.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: dire-wolf--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Dire Wolves are immune to poison.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: 0-5 Dire Wolves / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: Dire Wolves are immune to poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - dire-wolf
+- id: dire-wolf--undead-animal
+  name: Undead Animal
+  effect: Dire Wolves never gain Experience.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: 0-5 Dire Wolves / Undead
+  name_i18n:
+    en: Undead Animal
+    es: null
+  effect_i18n:
+    en: Dire Wolves never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - dire-wolf
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.dire-wolf.undead-animal
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: dire-wolf--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: Dire Wolves treat a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: 0-5 Dire Wolves / No Pain
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: Dire Wolves treat a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  applies_to:
+    profile_ids:
+    - dire-wolf
+- id: vampire-bat--may-not-run
+  name: May Not Run
+  effect: Vampire Bats may not run, but may charge normally.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 181
+    section: Call the Bats / May Not Run
+  name_i18n:
+    en: May Not Run
+    es: null
+  effect_i18n:
+    en: Vampire Bats may not run, but may charge normally.
+    es: null
+  applies_to:
+    profile_ids:
+    - vampire-bat
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.vampire-bat.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: vampire-bat--fear
+  name: Fear
+  effect: Vampire Bats cause Fear.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 181
+    section: Call the Bats / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: Vampire Bats cause Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - vampire-bat
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.vampire-bat.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: vampire-bat--immune-to-psychology
+  name: Immune to Psychology
+  effect: Vampire Bats are immune to Psychology and never leave combat because of Psychology.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 181
+    section: Call the Bats / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: Vampire Bats are immune to Psychology and never leave combat because of Psychology.
+    es: null
+  applies_to:
+    profile_ids:
+    - vampire-bat
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.vampire-bat.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: vampire-bat--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Vampire Bats are immune to poison.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 181
+    section: Call the Bats / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: Vampire Bats are immune to poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - vampire-bat
+- id: vampire-bat--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: Vampire Bats treat a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 181
+    section: Call the Bats / No Pain
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: Vampire Bats treat a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  applies_to:
+    profile_ids:
+    - vampire-bat
+- id: vampire-bat--fly
+  name: Fly
+  effect: Vampire Bats may fly up to 20" in any direction, ignoring terrain, and may not march while flying. They may charge
+    only models they can see and never take Initiative tests to climb.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 181
+    section: Call the Bats / Fly
+  name_i18n:
+    en: Fly
+    es: null
+  effect_i18n:
+    en: Vampire Bats may fly up to 20" in any direction, ignoring terrain, and may not march while flying. They may charge
+      only models they can see and never take Initiative tests to climb.
+    es: null
+  applies_to:
+    profile_ids:
+    - vampire-bat
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-undead-bloodlines.vampire-bat.fly
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: vampire-bat--summoned-creature
+  name: Summoned Creature
+  effect: If a Vampire Bat loses its last Wound it is immediately taken Out of Action without rolling on the Injury chart.
+    It disappears at the end of the battle.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 181
+    section: Call the Bats / Summoned Creature
+  name_i18n:
+    en: Summoned Creature
+    es: null
+  effect_i18n:
+    en: If a Vampire Bat loses its last Wound it is immediately taken Out of Action without rolling on the Injury chart. It
+      disappears at the end of the battle.
+    es: null
+  applies_to:
+    profile_ids:
+    - vampire-bat
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.injury-profile
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.injury-profile
+        parameters:
+          value: 4
+- id: band--choose-bloodline
+  name: Choose a Bloodline
+  effect: When the warband is created, choose exactly one Vampire bloodline. The choice cannot later be changed. The selected
+    Vampire is the warband leader and no other Vampire may be recruited as a warband member; Dramatis Personae and Hired Swords
+    are the only stated exceptions.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 173
+    section: Special Rules / Warband Creation
+  name_i18n:
+    en: Choose a Bloodline
+    es: null
+  effect_i18n:
+    en: When the warband is created, choose exactly one Vampire bloodline. The choice cannot later be changed. The selected
+      Vampire is the warband leader and no other Vampire may be recruited as a warband member; Dramatis Personae and Hired
+      Swords are the only stated exceptions.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: compiler.choose-a-bloodline
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: choosing one immutable Vampire leader and excluding other Vampires is a warband-roster and campaign constraint.'
+- id: band--vampiric-powers
+  name: Vampiric Powers
+  effect: When the Vampire gains a new skill, it may choose one Vampiric Power from its own bloodline instead of a normal
+    skill.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 173
+    section: Special Rules / Vampiric Powers
+  name_i18n:
+    en: Vampiric Powers
+    es: null
+  effect_i18n:
+    en: When the Vampire gains a new skill, it may choose one Vampiric Power from its own bloodline instead of a normal skill.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.vampiric-powers
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.vampiric-powers
+- id: band--vampire-power-hypnotic-gaze
+  kind: warband_skill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-vampire-power-hypnotic-gaze
+      scope: LATER
+      binding: null
+      reason: requires Leadership and psychology
+  name: Hypnotic Gaze
+  effect: Once per turn, one enemy in base contact must pass a Leadership test using its own Leadership, not the leader's.
+    If it fails, it may not attack that turn and all attacks against it hit automatically. Models immune to Psychology are
+    unaffected.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 181
+    section: Von Carstein Special Skills / Hypnotic Gaze
+  name_i18n:
+    en: Hypnotic Gaze
+    es: null
+  effect_i18n:
+    en: Once per turn, one enemy in base contact must pass a Leadership test using its own Leadership, not the leader's. If
+      it fails, it may not attack that turn and all attacks against it hit automatically. Models immune to Psychology are
+      unaffected.
+    es: null
+  eligibility:
+  - von-carstein-vampire
+  - lahmia-vampire
+  applies_to:
+    band: true
+- id: band--von-carstein-power-dark-majesty
+  kind: warband_skill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-von-carstein-power-dark-majesty
+      scope: LATER
+      binding: null
+      reason: affects warband Leadership range
+  name: Dark Majesty
+  effect: Increase the Vampire's Leader range by 6" (from 6" to 12"). While the Vampire remains on the battlefield, the warband
+    may re-roll failed Rout tests.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 181
+    section: Von Carstein Special Skills / Dark Majesty
+  name_i18n:
+    en: Dark Majesty
+    es: null
+  effect_i18n:
+    en: Increase the Vampire's Leader range by 6" (from 6" to 12"). While the Vampire remains on the battlefield, the warband
+      may re-roll failed Rout tests.
+    es: null
+  eligibility:
+  - von-carstein-vampire
+  applies_to:
+    band: true
+- id: band--von-carstein-power-call-the-bats
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-von-carstein-power-call-the-bats
+      scope: 'NO'
+      binding: null
+      reason: summons additional models
+  name: Call the Bats
+  effect: 'Once per battle, automatically summon 1D3 Vampire Bats within 6" of the Vampire. The summoned bats disappear at
+    the end of the battle if they have not already been taken Out of Action. Each bat is bound to the Vampire: if it moves
+    beyond the Vampire''s current Leader range it immediately leaves the battlefield, and all remaining bats disappear if
+    the summoning Vampire is removed as a casualty.'
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 181
+    section: Von Carstein Special Skills / Call the Bats
+  name_i18n:
+    en: Call the Bats
+    es: null
+  effect_i18n:
+    en: 'Once per battle, automatically summon 1D3 Vampire Bats within 6" of the Vampire. The summoned bats disappear at the
+      end of the battle if they have not already been taken Out of Action. Each bat is bound to the Vampire: if it moves beyond
+      the Vampire''s current Leader range it immediately leaves the battlefield, and all remaining bats disappear if the summoning
+      Vampire is removed as a casualty.'
+    es: null
+  eligibility:
+  - von-carstein-vampire
+  summoned_profile_id: vampire-bat
+  summoned_count: 1D3
+  applies_to:
+    band: true
+- id: band--von-carstein-power-summon-storm
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-von-carstein-power-summon-storm
+      scope: 'NO'
+      binding: null
+      reason: affects the shooting phase
+  name: Summon the Storm
+  effect: Once per battle at the start of the Shooting phase, roll D6. On 1 the attempt fails; on 2-6 the storm lasts until
+    the Vampire's next turn. All shooting suffers -1 To Hit and no model may use Fly while the storm lasts. The storm ends
+    immediately if the Vampire suffers a Wound or becomes engaged in close combat.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 181
+    section: Von Carstein Special Skills / Summon the Storm
+  name_i18n:
+    en: Summon the Storm
+    es: null
+  effect_i18n:
+    en: Once per battle at the start of the Shooting phase, roll D6. On 1 the attempt fails; on 2-6 the storm lasts until
+      the Vampire's next turn. All shooting suffers -1 To Hit and no model may use Fly while the storm lasts. The storm ends
+      immediately if the Vampire suffers a Wound or becomes engaged in close combat.
+    es: null
+  eligibility:
+  - von-carstein-vampire
+  applies_to:
+    band: true
+- id: band--blood-dragon-power-red-fury
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.red-fury
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.red-fury
+  name: Red Fury
+  effect: The Vampire gains +1 Attack. This does not count toward its normal characteristic maximum.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 182
+    section: Blood Dragon Special Skills / Red Fury
+  name_i18n:
+    en: Red Fury
+    es: null
+  effect_i18n:
+    en: The Vampire gains +1 Attack. This does not count toward its normal characteristic maximum.
+    es: null
+  eligibility:
+  - blood-dragon-vampire
+  applies_to:
+    band: true
+- id: band--blood-dragon-power-sword-master
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.sword-master
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.sword-master
+  name: Sword Master
+  effect: When parrying, the Vampire only needs to equal the opponent's roll and may therefore parry a roll of 6. The Vampire
+    may also re-roll one failed parry, but may not re-roll the re-roll and may not parry more than one attack.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 182
+    section: Blood Dragon Special Skills / Sword Master
+  name_i18n:
+    en: Sword Master
+    es: null
+  effect_i18n:
+    en: When parrying, the Vampire only needs to equal the opponent's roll and may therefore parry a roll of 6. The Vampire
+      may also re-roll one failed parry, but may not re-roll the re-roll and may not parry more than one attack.
+    es: null
+  eligibility:
+  - blood-dragon-vampire
+  applies_to:
+    band: true
+- id: band--blood-dragon-power-infallible
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.infallible
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.infallible
+  name: Infallible
+  effect: The Vampire may re-roll failed To Hit rolls during the turn in which it charges.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 182
+    section: Blood Dragon Special Skills / Infallible
+  name_i18n:
+    en: Infallible
+    es: null
+  effect_i18n:
+    en: The Vampire may re-roll failed To Hit rolls during the turn in which it charges.
+    es: null
+  eligibility:
+  - blood-dragon-vampire
+  applies_to:
+    band: true
+- id: band--blood-dragon-power-strength-of-steel
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.strength-of-steel
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.strength-of-steel
+  name: Strength of Steel
+  effect: The Vampire gains +1 Strength during the turn in which it charges. This does not count toward its normal characteristic
+    maximum.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 182
+    section: Blood Dragon Special Skills / Strength of Steel
+  name_i18n:
+    en: Strength of Steel
+    es: null
+  effect_i18n:
+    en: The Vampire gains +1 Strength during the turn in which it charges. This does not count toward its normal characteristic
+      maximum.
+    es: null
+  eligibility:
+  - blood-dragon-vampire
+  applies_to:
+    band: true
+- id: band--necrarch-power-unholy-focus
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-necrarch-power-unholy-focus
+      scope: 'NO'
+      binding: null
+      reason: affects spell casting
+  name: Unholy Focus
+  effect: Once per battle, the Vampire may re-roll one failed spell-casting attempt.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 182
+    section: Necrarch Special Skills / Unholy Focus
+  name_i18n:
+    en: Unholy Focus
+    es: null
+  effect_i18n:
+    en: Once per battle, the Vampire may re-roll one failed spell-casting attempt.
+    es: null
+  eligibility:
+  - necrarch-vampire
+  applies_to:
+    band: true
+- id: band--necrarch-power-master-of-the-black-arts
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-necrarch-power-master-of-the-black-arts
+      scope: 'NO'
+      binding: null
+      reason: affects spell range
+  name: Master of the Black Arts
+  effect: Increase the range of the Vampire's ranged spells by 6". This has no effect on spells without a range.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 182
+    section: Necrarch Special Skills / Master of the Black Arts
+  name_i18n:
+    en: Master of the Black Arts
+    es: null
+  effect_i18n:
+    en: Increase the range of the Vampire's ranged spells by 6". This has no effect on spells without a range.
+    es: null
+  eligibility:
+  - necrarch-vampire
+  applies_to:
+    band: true
+- id: band--necrarch-power-awakening
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-necrarch-power-awakening
+      scope: 'NO'
+      binding: null
+      reason: affects spell casting and summons
+  name: The Awakening
+  effect: The Vampire may cast Reanimation once per turn in addition to any other spell. Once per battle, instead of casting
+    spells that turn, it may summon 1D3 Zombies within 6". These Zombies disappear after the battle and do not count toward
+    the warband maximum or Rout tests.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 182
+    section: Necrarch Special Skills / The Awakening
+  name_i18n:
+    en: The Awakening
+    es: null
+  effect_i18n:
+    en: The Vampire may cast Reanimation once per turn in addition to any other spell. Once per battle, instead of casting
+      spells that turn, it may summon 1D3 Zombies within 6". These Zombies disappear after the battle and do not count toward
+      the warband maximum or Rout tests.
+    es: null
+  eligibility:
+  - necrarch-vampire
+  summoned_profile_id: zombie
+  summoned_count: 1D3
+  applies_to:
+    band: true
+- id: band--necrarch-power-noble-blood-of-nehekhara
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-necrarch-power-noble-blood-of-nehekhara
+      scope: 'NO'
+      binding: null
+      reason: affects spell casting
+  name: Noble Blood of Nehekhara
+  effect: The Vampire learns one additional spell and gains +1 to all spell-casting rolls. This bonus is cumulative with Sorcery.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 182
+    section: Necrarch Special Skills / Noble Blood of Nehekhara
+  name_i18n:
+    en: Noble Blood of Nehekhara
+    es: null
+  effect_i18n:
+    en: The Vampire learns one additional spell and gains +1 to all spell-casting rolls. This bonus is cumulative with Sorcery.
+    es: null
+  eligibility:
+  - necrarch-vampire
+  applies_to:
+    band: true
+- id: band--lahmia-power-deceive
+  kind: warband_skill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-lahmia-power-deceive
+      scope: LATER
+      binding: null
+      reason: requires Leadership and psychology
+  name: Deceive
+  effect: Once per turn, one enemy in base contact must pass a Leadership test using its own Leadership. If it fails, it may
+    not attack the Lahmia Vampire that turn, though it may attack another model in base contact. Models immune to Psychology,
+    Undead and Daemons are unaffected.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 183
+    section: Lahmia Special Skills / Deceive
+  name_i18n:
+    en: Deceive
+    es: null
+  effect_i18n:
+    en: Once per turn, one enemy in base contact must pass a Leadership test using its own Leadership. If it fails, it may
+      not attack the Lahmia Vampire that turn, though it may attack another model in base contact. Models immune to Psychology,
+      Undead and Daemons are unaffected.
+    es: null
+  eligibility:
+  - lahmia-vampire
+  applies_to:
+    band: true
+- id: band--lahmia-power-seduction
+  kind: warband_skill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.band-lahmia-power-seduction
+      scope: LATER
+      binding: null
+      reason: requires Leadership and psychology
+  name: Seduction
+  effect: During each Vampire turn, one male enemy in base contact must test against its own Leadership. If it fails, the
+    Lahmia player immediately controls that warrior. Any attack by the Lahmia warband that hits the controlled warrior breaks
+    the control. Test in each Recovery phase to see whether the warrior regains control. Only one warrior may be controlled
+    at a time. Models immune to Psychology, Undead, Daemons and models subject to Stupidity are unaffected.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 183
+    section: Lahmia Special Skills / Seduction
+  name_i18n:
+    en: Seduction
+    es: null
+  effect_i18n:
+    en: During each Vampire turn, one male enemy in base contact must test against its own Leadership. If it fails, the Lahmia
+      player immediately controls that warrior. Any attack by the Lahmia warband that hits the controlled warrior breaks the
+      control. Test in each Recovery phase to see whether the warrior regains control. Only one warrior may be controlled
+      at a time. Models immune to Psychology, Undead, Daemons and models subject to Stupidity are unaffected.
+    es: null
+  eligibility:
+  - lahmia-vampire
+  applies_to:
+    band: true
+- id: band--lahmia-power-lost-innocence
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.always-strikes-first
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.always-strikes-first
+  name: Lost Innocence
+  effect: The Lahmia Vampire always strikes first in close combat, including when standing up or when fighting an enemy armed
+    with a spear or similar weapon.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 183
+    section: Lahmia Special Skills / Lost Innocence
+  name_i18n:
+    en: Lost Innocence
+    es: null
+  effect_i18n:
+    en: The Lahmia Vampire always strikes first in close combat, including when standing up or when fighting an enemy armed
+      with a spear or similar weapon.
+    es: null
+  eligibility:
+  - lahmia-vampire
+  applies_to:
+    band: true
+- id: band--strigoi-power-curse-of-the-reborn
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.regeneration
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.regeneration
+    - id: skill.regeneration-blocked-by-blessed
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.regeneration-blocked-by-blessed
+  name: Curse of the Reborn
+  effect: For each unsaved Wound, roll D6; on 4+ the Wound is regenerated and ignored. This regeneration does not work against
+    fire, Holy Water or other blessed attacks/items.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 183
+    section: Strigoi Special Skills / Curse of the Reborn
+  name_i18n:
+    en: Curse of the Reborn
+    es: null
+  effect_i18n:
+    en: For each unsaved Wound, roll D6; on 4+ the Wound is regenerated and ignored. This regeneration does not work against
+      fire, Holy Water or other blessed attacks/items.
+    es: null
+  eligibility:
+  - strigoi-vampire
+  applies_to:
+    band: true
+- id: band--strigoi-power-monstrosity
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: special-rule.band--strigoi-power-monstrosity
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: special-rule.band--strigoi-power-monstrosity
+  name: Monstrosity
+  effect: The Vampire gains +1 Wound. This does not count toward its normal characteristic maximum.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 183
+    section: Strigoi Special Skills / Monstrosity
+  name_i18n:
+    en: Monstrosity
+    es: null
+  effect_i18n:
+    en: The Vampire gains +1 Wound. This does not count toward its normal characteristic maximum.
+    es: null
+  eligibility:
+  - strigoi-vampire
+  applies_to:
+    band: true
+- id: band--strigoi-power-iron-sinews
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.iron-sinews
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.iron-sinews
+  name: Iron Sinews
+  effect: The Vampire gains +1 Strength. This does not count toward its normal characteristic maximum.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 183
+    section: Strigoi Special Skills / Iron Sinews
+  name_i18n:
+    en: Iron Sinews
+    es: null
+  effect_i18n:
+    en: The Vampire gains +1 Strength. This does not count toward its normal characteristic maximum.
+    es: null
+  eligibility:
+  - strigoi-vampire
+  applies_to:
+    band: true
+- id: band--strigoi-power-infinite-hatred
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.infinite-hatred
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.infinite-hatred
+  name: Infinite Hatred
+  effect: The Vampire may re-roll failed To Hit rolls; a roll may never be re-rolled more than once.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 183
+    section: Strigoi Special Skills / Infinite Hatred
+  name_i18n:
+    en: Infinite Hatred
+    es: null
+  effect_i18n:
+    en: The Vampire may re-roll failed To Hit rolls; a roll may never be re-rolled more than once.
+    es: null
+  eligibility:
+  - strigoi-vampire
+  applies_to:
+    band: true

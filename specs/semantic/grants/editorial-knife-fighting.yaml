@@ -1,0 +1,55 @@
+schema_version: 1
+specifications:
+- id: editorial-knife-fighting-grant
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: rule/trollheim/khemri-thieves-guild/band--guild-special-skills-knife-fighting/skill.knife-fighting
+    digest: a9e1583f4ee87a2ab7a3251dadf3a523b88c932dc330ccf03003c9f00445f62e
+  depends_on: [mechanic/skill.knife-fighting]
+  interpretation: Knife Fighting is selectable by the four Thieves' Guild hero profiles. Selection grants the canonical
+    dagger-or-yambiya-only WS and Injury modifiers; ordinary henchmen do not receive access.
+  cases:
+  - id: exact-guild-heroes
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: khemri-thieves-guild
+      profile_id: guild-chief
+    context: {rule_id: band--guild-special-skills-knife-fighting}
+    expect:
+      result.recipients: [guild-chief, guild-hashashiyyin, guild-master-thief, guild-ruffian]
+  - id: granted-injury-consumer
+    roles: [active, boundary, consumer]
+    operation: injury
+    attacker:
+      collection: trollheim
+      band_id: khemri-thieves-guild
+      profile_id: guild-chief
+      special_rule_ids: [band--guild-special-skills-knife-fighting]
+      main_weapon_id: weapon.dagger
+    rolls: [{key: test.injury, value: 2}]
+    expect:
+      result.total: 3
+      result.condition: STUNNED
+    expect_contains:
+      attacker.global_effects.tags: [skill.knife-fighting]
+  - id: granted-but-wrong-weapon
+    roles: [inactive]
+    operation: injury
+    attacker:
+      collection: trollheim
+      band_id: khemri-thieves-guild
+      profile_id: guild-chief
+      special_rule_ids: [band--guild-special-skills-knife-fighting]
+      main_weapon_id: weapon.sword
+    rolls: [{key: test.injury, value: 2}]
+    expect:
+      result.total: 2
+      result.condition: KNOCKED_DOWN
+  mutations:
+  - id: remove-granted-skill
+    path: attacker.global_effects.tags
+    value: []
+    cases: [granted-injury-consumer]

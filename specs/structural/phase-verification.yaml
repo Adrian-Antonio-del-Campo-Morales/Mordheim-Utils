@@ -1,0 +1,214 @@
+schema_version: 1
+ruleset: mordheim
+description: >-
+  Compositional verification contract. Every EffectSet field is consumed by
+  one or more fixed combat phases. Rules with state or control-flow effects
+  additionally declare their smallest meaningful phase sequence.
+
+operator_fields:
+  tags: [duel_start]
+  strength_bonus: [wound]
+  first_round_strength_bonus: [wound]
+  charge_strength_bonus: [wound]
+  toughness_bonus: [duel_start]
+  initiative_bonus: [priority]
+  fixed_strength: [wound]
+  armour_penetration: [armour]
+  target_armour_bonus: [armour]
+  hit_modifier: [hit]
+  wound_modifier: [wound]
+  injury_modifier: [injury]
+  attacks_bonus: [attacks]
+  charge_attacks_bonus: [attacks]
+  first_round_charge_attacks_bonus: [attacks]
+  charge_ws_bonus: [hit]
+  first_round_attacks_bonus: [attacks]
+  incoming_strength_modifier: [wound]
+  armour_strength_modifier: [armour]
+  weapon_skill_bonus: [hit]
+  critical_injury_bonus: [injury]
+  energy_focus_attacks: [attacks, wound]
+  incoming_attacks_modifier: [attacks]
+  incoming_hit_modifier: [hit]
+  armour_save_bonus: [armour]
+  ward_save: [special_save]
+  priority: [priority]
+  parry: [parry]
+  concussion: [injury]
+  two_handed: [attacks, priority]
+  paired: [attacks]
+  reroll_hits: [hit]
+  reroll_wounds: [wound]
+  strongman: [priority]
+  charge_reroll_hits: [hit]
+  step_aside: [special_save]
+  thick_skull: [injury]
+  ignore_armour: [armour]
+  automatic_hit: [hit]
+  cannot_be_parried: [parry]
+  bear_hug: [hit, wound, armour]
+  poison_immunity: [wound]
+  frenzy: [attacks, injury]
+  damage: [injury]
+  regeneration_save: [special_save]
+  out_of_action_threshold: [injury]
+  maximum_wound_target: [wound]
+  armour_save_floor: [armour]
+  armour_cannot_be_ignored: [armour]
+  ward_save_mundane_only: [special_save]
+  natural_armour_negated_by_magic: [armour]
+  regeneration_blocked_by_fire: [special_save]
+  regeneration_blocked_by_blessed: [special_save]
+  ignition_threshold: [aftermath]
+  caught_fire_threshold: [aftermath]
+
+composition_policies:
+  stack: additive
+  best: best-independent-value
+  once: first-per-canonical-id
+
+binding_categories:
+  mechanic: phase_operator
+  trait: compiled_modifier
+  profile: construction
+  compiler: construction
+
+# These are proof obligations, rather than claims that a binding merely
+# exists.  The audit executes the mechanism projection.  Trait, profile and
+# compiler bindings are classified here so their generated scenarios can use
+# the correct kind of observable (value, legal construction, or rejection).
+semantic_evidence:
+  mechanism_projection:
+    source: execution-contract
+    observable: compiled-effect-set
+    requirement: every-non-excluded-mechanism
+  binding_strategies:
+    mechanic: compiled-effect-and-phase
+    trait: compiled-value-and-phase
+    profile: construction-result
+    compiler: acceptance-and-rejection
+  stateful_requirement: minimal-sequence
+  editorial_requirement: grants-canonical-binding
+  tag_only_requirement: named-modular-consumer
+  profile_bindings:
+    profile.characteristics:
+      observable: compiled-characteristics
+      scenario: profile-characteristics-projects-selected-bonuses
+    profile.fist:
+      observable: compiled-main-weapon
+      scenario: profile-fist-overrides-unarmed-fallback
+    profile.natural-attacks:
+      observable: compiled-main-weapon
+      scenario: profile-natural-attacks-selects-natural-weapon
+    profile.random-characteristics:
+      observable: compiled-dice-contract
+      scenario: profile-random-characteristics-preserves-exact-contract
+    profile.equipment-restrictions:
+      observable: accepted-and-rejected-build
+      scenario: profile-equipment-restrictions-legal-and-illegal
+    profile.skill-access:
+      observable: rejected-and-granted-skill
+      scenario: profile-skill-access-rejected-and-granted
+  selectable_compiler_bindings:
+    compiler.berserker-incompatible-with-ferocious-charge: accepted-and-rejected-combination
+    compiler.censer-bearer-loadout: prerequisite-and-exact-loadout
+    compiler.chaos-engineer: positive-only-out-of-scope-negative
+    compiler.ignore-difficult-to-use-restrictions: restricted-and-lifted-loadout
+    compiler.master-of-arms: restricted-and-lifted-loadout
+    compiler.master-of-throwing-weapons: baseline-and-expanded-limit
+    compiler.proven-warrior: eligible-and-ineligible-profile
+    compiler.renowned-virtue: missing-and-exact-selection
+  special_compiler_bindings:
+    profile-rule.centigors--trample: compiled-extra-attack
+    profile-rule.fanatics--frantic: compiled-priority
+    special-rule.trained-bear--bear-hug: compiled-cross-phase-flag
+    special-rule.band--beastmen-special-skills-mutant: cross-band-mutation-grant
+    special-rule.band--marauder-special-skills-mutant: cross-band-mutation-grant
+    special-rule.band--beastmen-special-skills-horned-one: compiled-extra-attack
+    special-rule.band--shield-bash: compiled-extra-attack
+    special-rule.band--blessings-of-nurgle-bloated-foulness: compiled-characteristics
+    special-rule.band--blessings-of-nurgle-mark-of-nurgle: compiled-characteristics-and-trait
+    special-rule.band--mutations-great-claw: compiled-extra-attack
+    special-rule.band--mutations-tentacle: compiled-defensive-modifier
+    special-rule.band--mutations-extra-arm: compiled-extra-hand
+    special-rule.band--norse-special-skills-berserk-charge: compiled-charge-reroll
+    special-rule.band--skaven-special-skills-tail-fighting: compiled-extra-hand
+    special-rule.band--strigoi-power-monstrosity: compiled-characteristics
+    special-rule.band--necromantic-modification-multiple-limbs: compiled-attacks
+    special-rule.band--necromantic-modification-putrid-stench: compiled-hit-modifier
+    special-rule.band--sacred-mark-venom-glands: compiled-replacement-attack
+
+complex_rules:
+  trained-bear--bear-hug:
+    category: cross_phase
+    phases: [hit, wound, armour]
+    engine: scalar-reference
+    scenario: reference-bear-hug-replaces-two-hits-before-wound-resolution
+    decision: bear_hug
+    ruling: Ties in the opposed Strength roll favour the Bear; the resulting wound allows no armour save.
+  mechanic.force-of-will:
+    category: stateful
+    phases: [injury, aftermath, duel_start]
+    engine: scalar-reference
+    scenario: reference-force-of-will-rescues-once-and-sustains-per-round
+  mechanic.mark-of-the-old-ones:
+    category: consumable
+    phases: [hit, wound]
+    engine: scalar-reference
+    scenario: reference-luck-and-mark-are-persistent-consumable-resources
+  skill.luck:
+    category: consumable
+    phases: [hit]
+    engine: scalar-reference
+    scenario: reference-luck-and-mark-are-persistent-consumable-resources
+  acid_blood:
+    category: reaction
+    phases: [injury, aftermath]
+    engine: scalar-reference
+    scenario: reference-spines-acid-blood-and-contagious-are-real-reactions
+  spines:
+    category: reaction
+    phases: [duel_start, wound]
+    engine: scalar-reference
+    scenario: reference-spines-acid-blood-and-contagious-are-real-reactions
+  mechanic.black-hunger:
+    category: aftermath
+    phases: [attacks, aftermath, injury]
+    engine: scalar-reference
+    scenario: reference-black-hunger-resolves-d3-self-hits
+  mechanic.netter:
+    category: cross_phase
+    phases: [duel_start, hit, aftermath]
+    engine: scalar-reference
+    scenario: reference-netter-covers-miss-escape-and-capture
+  mechanic.disability:
+    category: persistent_state
+    phases: [duel_start, priority, wound]
+    engine: scalar-reference
+    scenario: reference-disability-is-applied-during-scalar-initialization
+  contagious:
+    category: reaction
+    phases: [injury, aftermath]
+    engine: scalar-reference
+    scenario: reference-spines-acid-blood-and-contagious-are-real-reactions
+  critical-per-phase:
+    category: consumable
+    phases: [wound, injury]
+    engine: scalar-reference
+    scenario: reference-parry-and-critical-capacity-are-consumed-in-state
+  parry-capacity:
+    category: consumable
+    phases: [parry]
+    engine: scalar-reference
+    scenario: reference-parry-and-critical-capacity-are-consumed-in-state
+  fire:
+    category: persistent_state
+    phases: [aftermath, wound, injury]
+    engine: scalar-reference
+    scenario: reference-fire-persists-until-recovery-succeeds
+
+smoke_scenarios:
+  - id: ordinary-strike-pipeline
+    phases: [hit, wound, armour, special_save, injury]
+  - id: seeded-duel-reproducibility
+    phases: [duel_start, priority, attacks, hit, parry, wound, armour, special_save, injury, aftermath]

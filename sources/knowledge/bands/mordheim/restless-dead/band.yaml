@@ -1,0 +1,67 @@
+schema_version: 2
+id: restless-dead
+canonical_family: restless-dead
+name: The Restless Dead
+name_i18n:
+  en: The Restless Dead
+  es: null
+original_locale: en
+ruleset: mordheim
+categories:
+- 1c
+grade: 1c
+setting: Border Town Burning
+publication: Border Town Burning
+status: source-normalized
+sources:
+- manual: mordheimer.net
+  printed_page: 0
+  section: The Restless Dead
+  url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+roster:
+  minimum_models: 3
+  maximum_models: 12
+  starting_gold: 500
+  members:
+  - profile_id: liche
+    minimum: 1
+    maximum: 1
+  - profile_id: necromancer
+    minimum: 0
+    maximum: 1
+  - profile_id: grave-guards
+    minimum: 0
+    maximum: 3
+  - profile_id: zombies
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: skeletons
+    minimum: 0
+    maximum: 8
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: wights
+    minimum: 0
+    maximum: 3
+    group_size:
+      minimum: 1
+      maximum: 3
+  - profile_id: scarecrows
+    minimum: 0
+    maximum: 2
+    group_size:
+      minimum: 1
+      maximum: 2
+rule_ids:
+- band--bone-goliath-access
+- band--scarecrow-controller-limit
+- band--restless-dead-maximum-characteristics
+- band--restless-dead-special-skills-corpse-bomb
+- band--restless-dead-special-skills-deathspeaker
+- band--restless-dead-special-skills-wraith-touch
+- band--restless-dead-special-skills-forbidden-rite
+- band--restless-dead-special-skills-summoner

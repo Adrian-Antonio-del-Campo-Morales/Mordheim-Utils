@@ -1,0 +1,532 @@
+schema_version: 2
+band_id: kislevites
+rules:
+- id: druzhina-captain--leader
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.kislevites.druzhina-captain.leader
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Leader
+  effect: 'Any warrior within 6" of the Druzhina Captain may
+
+    use his Leadership characteristic when taking any Leadership
+
+    tests.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Druzhina Captain / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any warrior within 6" of the Druzhina Captain may
+
+      use his Leadership characteristic when taking any Leadership
+
+      tests.'
+    es: null
+  applies_to:
+    profile_ids:
+    - druzhina-captain
+- id: druzhina-captain--inheritance
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.kislevites.druzhina-captain.inheritance
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Inheritance
+  effect: When the Kislevite warband is first created, the Druzhina Captain is allowed to purchase one item from the Kislevite
+    Warrior equipment list at half the normal cost. This item represents a treasured family heirloom that has been passed down
+    through the generations. Losing an ancestral item is considered very disrespectful and if the item is ever lost (e.g. from
+    a Robbed result on the Serious Injury chart), the Captain MUST replace it with a finely-made substitute as quickly as possible
+    or risk being haunted by the angry spirits of his ancestors. To replace an ancestral item, the Captain must purchase the
+    same item of equipment at 150% of its normal price. This higher cost represents the fine detail and valuable materials used
+    in the item's manufacture. Until the item is replaced, the Captain suffers a -1 penalty to all tests and rolls to hit.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Druzhina Captain / Special Rules / Inheritance
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  name_i18n:
+    en: Inheritance
+    es: null
+  effect_i18n:
+    en: 'When the Kislevite warband is first created, the
+
+      Druzhina Captain is allowed to purchase one item from the
+
+      Kislevite Warrior equipment list at half the normal cost. This
+
+      item represents a treasured family heirloom that has been
+
+      passed down through the generations. Losing an ancestral
+
+      item is considered very disrespectful and if the item is ever
+
+      lost (e.g. from a Robbed result on the Serious Injury chart),
+
+      the Captain MUST replace it with a finely-made substitute as
+
+      quickly as possible or risk being haunted by the angry spirits
+
+      of his ancestors. To replace an ancestral item, the Captain
+
+      must purchase the same item of equipment at 150% of its
+
+      normal price. This higher cost represents the fine detail and
+
+      valuable materials used in the item''s manufacture. Until the
+
+      item is replaced, the Captain suffers a -1 penalty to all tests
+
+      and rolls to hit.'
+    es: null
+  applies_to:
+    profile_ids:
+    - druzhina-captain
+- id: bear-tamer--bear-handler
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.kislevites.bear-tamer.bear-handler
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Bear Handler
+  effect: 'A Kislevite Warband that includes a Bear
+
+    Tamer is allowed to purchase a Bear as a henchman. This
+
+    bear has been trained to follow the Tamer''s commands, and
+
+    so will automatically pass its stupidity tests when within 6"
+
+    of the Bear Tamer (even if the Tamer has been Knocked
+
+    Down or Stunned).'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Bear Tamer / Special Rules / Bear Handler
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  name_i18n:
+    en: Bear Handler
+    es: null
+  effect_i18n:
+    en: 'A Kislevite Warband that includes a Bear
+
+      Tamer is allowed to purchase a Bear as a henchman. This
+
+      bear has been trained to follow the Tamer''s commands, and
+
+      so will automatically pass its stupidity tests when within 6"
+
+      of the Bear Tamer (even if the Tamer has been Knocked
+
+      Down or Stunned).'
+    es: null
+  applies_to:
+    profile_ids:
+    - bear-tamer
+- id: cossacks--hate-chaos
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.kislevites.cossacks.hate-chaos
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Hate Chaos
+  effect: 'Years of bitter struggle against the forces of
+
+    Chaos have left their mark on the Cossack people. Cossacks
+
+    are subject to hatred against all forces of Chaos (e.g.
+
+    members of any warband the players would apply the
+
+    Ancient Enemies special rule to).'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Cossacks / Special Rules / Hate Chaos
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  name_i18n:
+    en: Hate Chaos
+    es: null
+  effect_i18n:
+    en: 'Years of bitter struggle against the forces of
+
+      Chaos have left their mark on the Cossack people. Cossacks
+
+      are subject to hatred against all forces of Chaos (e.g.
+
+      members of any warband the players would apply the
+
+      Ancient Enemies special rule to).'
+    es: null
+  applies_to:
+    profile_ids:
+    - cossacks
+- id: streltsi--gun-rest
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.kislevites.streltsi.gun-rest
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: impactar."
+  name: Gun-Rest
+  effect: 'A Streltsi warrior armed with both halberd and
+
+    handgun may use the halberd as a gun-rest. The warrior
+
+    receives a +1 on his ‘to hit’ roll with the handgun, as long as
+
+    he did not move that turn (this applies even if the warrior has
+
+    a skill that allows him to move and shoot with his handgun –
+
+    he must not move if he is to rest the gun).'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 3 Streltsi / Special Rules / Gun-Rest
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  name_i18n:
+    en: Gun-Rest
+    es: null
+  effect_i18n:
+    en: 'A Streltsi warrior armed with both halberd and
+
+      handgun may use the halberd as a gun-rest. The warrior
+
+      receives a +1 on his ‘to hit’ roll with the handgun, as long as
+
+      he did not move that turn (this applies even if the warrior has
+
+      a skill that allows him to move and shoot with his handgun –
+
+      he must not move if he is to rest the gun).'
+    es: null
+  applies_to:
+    profile_ids:
+    - streltsi
+- id: trained-bear--requires-bear-tamer
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.kislevites.trained-bear.requires-bear-tamer
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Requires Bear Tamer
+  effect: A Trained Bear may only be included in the warband if it includes a Bear Tamer, and it may not take part in a game
+    in which the Bear Tamer does not take part.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Choice of warriors / Trained Bear
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  name_i18n:
+    en: Requires Bear Tamer
+    es: null
+  effect_i18n:
+    en: A Trained Bear may only be included in the warband if it includes a Bear Tamer, and it may not take part in a game
+      in which the Bear Tamer does not take part.
+    es: null
+  applies_to:
+    profile_ids:
+    - trained-bear
+- id: trained-bear--trained
+  runtime:
+    scope: 'LATER'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.kislevites.trained-bear.trained
+      scope: 'LATER'
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+  name: Trained
+  effect: A bear doesn’t care about the warband's mission or enmity for other warbands – it’s just following the orders of its
+    trainer. Sometimes it gets bored waiting for orders; for this reason Trained Bears are subject to the rules for Stupidity.
+    If given ‘special attention’ by its trainer, it will mind a bit better, so a bear is not required to take these Stupidity
+    tests if the warband's Bear Tamer is within 6". In fact this is the only member of the warband the bear will listen to;
+    a Trained Bear will never use the warband leader’s Leadership for any tests it is required to take. It may use the Bear
+    Tamer's leadership if within 6" of him however. Note that the warband cannot control the bear without a Bear Tamer. The
+    Trained Bear may not be used in any game in which the warband's Bear Tamer does not take part (and this means that if the
+    warband does not include a Bear Tamer at all, the warband must keep the bear staked back at camp until they hire a new one!).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Trained Bear / Special Rules / Trained
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  name_i18n:
+    en: Trained
+    es: null
+  effect_i18n:
+    en: A bear doesn’t care about the warband's mission or enmity for other warbands – it’s just following the orders of its
+      trainer. Sometimes it gets bored waiting for orders; for this reason Trained Bears are subject to the rules for Stupidity.
+      If given ‘special attention’ by its trainer, it will mind a bit better, so a bear is not required to take these Stupidity
+      tests if the warband's Bear Tamer is within 6". In fact this is the only member of the warband the bear will listen
+      to; a Trained Bear will never use the warband leader’s Leadership for any tests it is required to take. It may use the
+      Bear Tamer's leadership if within 6" of him however. Note that the warband cannot control the bear without a Bear Tamer.
+      The Trained Bear may not be used in any game in which the warband's Bear Tamer does not take part (and this means that
+      if the warband does not include a Bear Tamer at all, the warband must keep the bear staked back at camp until they hire
+      a new one!).
+    es: null
+  applies_to:
+    profile_ids:
+    - trained-bear
+- id: trained-bear--fearsome
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.kislevites.trained-bear.fearsome
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Fearsome
+  effect: 'A charging bear is a very scary sight indeed! A
+
+    Trained Bear causes fear.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Trained Bear / Special Rules / Fearsome
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  name_i18n:
+    en: Fearsome
+    es: null
+  effect_i18n:
+    en: 'A charging bear is a very scary sight indeed! A
+
+      Trained Bear causes fear.'
+    es: null
+  applies_to:
+    profile_ids:
+    - trained-bear
+- id: trained-bear--bear-hug
+  kind: profile_ability
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: special-rule.trained-bear--bear-hug
+      scope: "YES"
+      binding:
+        kind: compiler
+        id: special-rule.trained-bear--bear-hug
+  name: Bear Hug
+  effect: If the Bear hits the same enemy warrior with both of his attacks in the same round of combat, the player may choose
+    to make a single ‘Bear Hug’ attack instead of resolving the attacks normally. If this option is chosen, each player must
+    roll a D6 and add his model’s Strength to the roll. If the Bear's total is higher or the totals are equal, the opposing
+    warrior takes a single automatic wound with no armour save allowed. If the enemy warrior's total is higher, the warrior
+    has broken the Bear's hold and suffers no damage from the attack.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Trained Bear / Special Rules / Bear Hug
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  name_i18n:
+    en: Bear Hug
+    es: null
+  effect_i18n:
+    en: If the Bear hits the same enemy warrior with both of his attacks in the same round of combat, the player may choose
+      to make a single ‘Bear Hug’ attack instead of resolving the attacks normally. If this option is chosen, each player
+      must roll a D6 and add his model’s Strength to the roll. If the Bear's total is higher or the totals are equal, the
+      opposing warrior takes a single automatic wound with no armour save allowed. If the enemy warrior's total is higher,
+      the warrior has broken the Bear's hold and suffers no damage from the attack.
+    es: null
+  applies_to:
+    profile_ids:
+    - trained-bear
+- id: trained-bear--fiercely-loyal
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.kislevites.trained-bear.fiercely-loyal
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Fiercely Loyal
+  effect: 'Such dedication is built into the relationship
+
+    between Bear Tamer and bear that if his trainer is injured, a
+
+    bear will often stand over the body to protect it, or even drag
+
+    the trainer’s body to safety. As long as his bear is not taken
+
+    Out of Action during a game, a Bear Tamer ignores the
+
+    following results on the Serious Injuries table: ‘Sold to the
+
+    Pits’, ‘Robbed’, and ‘Captured’ (and ignore equivalent results
+
+    in settings such as Lustria that have their own special Serious
+
+    Injury table). If any of these results are rolled for the Bear
+
+    Tamer, treat the result as a ‘Full Recovery’ instead.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Trained Bear / Special Rules / Fiercely Loyal
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  name_i18n:
+    en: Fiercely Loyal
+    es: null
+  effect_i18n:
+    en: 'Such dedication is built into the relationship
+
+      between Bear Tamer and bear that if his trainer is injured, a
+
+      bear will often stand over the body to protect it, or even drag
+
+      the trainer’s body to safety. As long as his bear is not taken
+
+      Out of Action during a game, a Bear Tamer ignores the
+
+      following results on the Serious Injuries table: ‘Sold to the
+
+      Pits’, ‘Robbed’, and ‘Captured’ (and ignore equivalent results
+
+      in settings such as Lustria that have their own special Serious
+
+      Injury table). If any of these results are rolled for the Bear
+
+      Tamer, treat the result as a ‘Full Recovery’ instead.'
+    es: null
+  applies_to:
+    profile_ids:
+    - trained-bear
+- id: trained-bear--animal
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.kislevites.trained-bear.animal
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Animal
+  effect: Trained Bears are animals and do not gain experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Trained Bear / Special Rules / Animal
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  name_i18n:
+    en: Animal
+    es: null
+  effect_i18n:
+    en: Trained Bears are animals and do not gain experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - trained-bear
+- id: trained-bear--large-target
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.kislevites.trained-bear.large-target
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: disparo."
+  name: Large Target
+  effect: Bears are Large Targets as defined in the shooting rules.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Trained Bear / Special Rules / Large Target
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  name_i18n:
+    en: Large Target
+    es: null
+  effect_i18n:
+    en: Bears are Large Targets as defined in the shooting rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - trained-bear
+- id: band--may-hire
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.kislevites.band.may-hire
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: May Hire
+  effect: A Kislevite warband may hire the same Hired Swords as Human Mercenary warbands.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / May hire
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  name_i18n:
+    en: May Hire
+    es: null
+  effect_i18n:
+    en: A Kislevite warband may hire the same Hired Swords as Human Mercenary warbands.
+    es: null
+  applies_to:
+    band: true
+- id: band--ancient-enemies
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.kislevites.band.ancient-enemies
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Ancient Enemies
+  effect: Kislevite warbands may never ally with Chaos warbands, including Possessed, Beastmen, Carnival of Chaos, Skaven,
+    Dark Elves, Chaos Dwarfs, and other warbands the players judge sufficiently Chaotic.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Ancient Enemies
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  name_i18n:
+    en: Ancient Enemies
+    es: null
+  effect_i18n:
+    en: Kislevite warbands may never ally with Chaos warbands, including Possessed, Beastmen, Carnival of Chaos, Skaven, Dark
+      Elves, Chaos Dwarfs, and other warbands the players judge sufficiently Chaotic.
+    es: null
+  applies_to:
+    band: true

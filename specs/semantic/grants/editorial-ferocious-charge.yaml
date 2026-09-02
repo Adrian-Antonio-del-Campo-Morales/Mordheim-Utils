@@ -1,0 +1,70 @@
+schema_version: 1
+specifications:
+- id: editorial-ferocious-charge-grants
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - {target: rule/mordheim/dwarf-rangers/band--slayer-special-skills-ferocious-charge/skill.ferocious-charge, digest: bc4cd68d38ada7f84ab1529f4b07ab9e82b32adcff3799d52952ad2fb9cefdac}
+  - {target: rule/mordheim/dwarf-treasure-hunters/band--slayer-special-skills-ferocious-charge/skill.ferocious-charge, digest: ade8457ed44d7d2ef90868382a003272731dae9523bb9386093a1ec9cc23b5ac}
+  - {target: rule/mordheim/pit-fighters/band--troll-slayer-special-skills-ferocious-charge/skill.ferocious-charge, digest: 8d4bbe2a51c50556185f07ed3a6acc2dcb34a5c7faf28ce8b4eec903673dc921}
+  - {target: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--slayer-special-skills-ferocious-charge/skill.ferocious-charge, digest: 659ce1765350089e47387cd6f6af474a91cafc53c5b5f71db9df3ca142723432}
+  - {target: rule/trollheim/chaos-streets-pit-fighters/band--troll-slayer-special-skills-ferocious-charge/skill.ferocious-charge, digest: 9782751628b6ddce588fd100ccb4eb6c24feac85dbb20b49d570e14ad1a0d27a}
+  - {target: rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-ferocious-charge/skill.ferocious-charge, digest: d518a19580bbb7893b0f13298253c706172d041c4977b5d44af7ea6fcab2bf62}
+  depends_on: [mechanic/skill.ferocious-charge]
+  interpretation: Each editorial rule is a selectable Slayer skill. It grants the canonical mechanism only to the
+    explicitly named Slayer profile, including sources whose surrounding skill category is available to other heroes.
+  cases:
+  - id: dwarf-rangers-only-slayers
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: runesmith}
+    context: {rule_id: band--slayer-special-skills-ferocious-charge}
+    expect: {result.recipients: [dwarf-troll-slayers]}
+  - id: treasure-hunters-only-slayers
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: dwarf-noble}
+    context: {rule_id: band--slayer-special-skills-ferocious-charge}
+    expect: {result.recipients: [dwarf-troll-slayers]}
+  - id: pit-fighters-only-slayer
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: mordheim, band_id: pit-fighters, profile_id: pit-king}
+    context: {rule_id: band--troll-slayer-special-skills-ferocious-charge}
+    expect: {result.recipients: [dwarf-troll-slayer]}
+  - id: streets-dwarfs-only-slayers
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-noble}
+    context: {rule_id: band--slayer-special-skills-ferocious-charge}
+    expect: {result.recipients: [dwarf-troll-slayers]}
+  - id: streets-pit-fighters-only-slayer
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: pit-king}
+    context: {rule_id: band--troll-slayer-special-skills-ferocious-charge}
+    expect: {result.recipients: [dwarf-troll-slayer]}
+  - id: karak-zorn-only-slayer
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: karak-zorn-noble}
+    context: {rule_id: band--troll-slayer-special-skills-ferocious-charge}
+    expect: {result.recipients: [troll-slayer]}
+  - id: granted-consumer
+    roles: [consumer, boundary]
+    operation: attacks
+    attacker:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids: [band--troll-slayer-special-skills-ferocious-charge]
+      main_weapon_id: weapon.mace
+    context: {first_round: true, charging: true}
+    expect: {result.attacks: 2}
+    expect_contains:
+      attacker.global_effects.tags: [skill.ferocious-charge]
+  mutations:
+  - id: remove-granted-effect
+    path: attacker.global_effects.tags
+    value: []
+    cases: [granted-consumer]

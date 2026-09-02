@@ -1,0 +1,653 @@
+schema_version: 2
+band_id: ostlanders
+rules:
+- id: elder--leader
+  name: Leader
+  effect: 'Any warrior within 6" of the Elder may use his Leadership characteristic when
+
+    taking Leadership tests.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Elder / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any warrior within 6" of the Elder may use his Leadership characteristic when
+
+      taking Leadership tests.'
+    es: null
+  applies_to:
+    profile_ids:
+    - elder
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ostlanders.elder.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: priest-of-taal--prayers
+  name: Prayers
+  effect: A Priest of Taal may use the Prayers of Taal.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Priest of Taal / Special Rules / Prayers
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: Prayers
+    es: null
+  effect_i18n:
+    en: A Priest of Taal may use the Prayers of Taal.
+    es: null
+  applies_to:
+    profile_ids:
+    - priest-of-taal
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ostlanders.priest-of-taal.prayers
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: priest-of-taal--strictures
+  name: Strictures
+  effect: Priests of Taal may never wear heavy armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Priest of Taal / Special Rules / Strictures
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: Strictures
+    es: null
+  effect_i18n:
+    en: Priests of Taal may never wear heavy armour.
+    es: null
+  applies_to:
+    profile_ids:
+    - priest-of-taal
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: heavy-armour
+- id: ruffians--drunk
+  name: Drunk
+  effect: Ruffians automatically pass all Leadership-based tests they are required to take.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Ruffians / Special Rules / Drunk
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: Drunk
+    es: null
+  effect_i18n:
+    en: Ruffians automatically pass all Leadership-based tests they are required to take.
+    es: null
+  applies_to:
+    profile_ids:
+    - ruffians
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ostlanders.ruffians.drunk
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: ruffians--no-respect
+  name: No Respect
+  effect: Ruffians may never become the warband leader.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Ruffians / Special Rules / No Respect
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: No Respect
+    es: null
+  effect_i18n:
+    en: Ruffians may never become the warband leader.
+    es: null
+  applies_to:
+    profile_ids:
+    - ruffians
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ostlanders.ruffians.no-respect
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: ogre--fear
+  name: Fear
+  effect: The Ogre causes Fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Ogre / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Ogre causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - ogre
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ostlanders.ogre.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: ogre--large
+  name: Large
+  effect: The Ogre is a Large Target and may be selected as a shooting target even if it is not the closest target.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Ogre / Special Rules / Large
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: Large
+    es: null
+  effect_i18n:
+    en: The Ogre is a Large Target and may be selected as a shooting target even if it is not the closest target.
+    es: null
+  applies_to:
+    profile_ids:
+    - ogre
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ostlanders.ogre.large
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: ogre--skills
+  name: Skills
+  effect: If the Ogre becomes a Hero through The Lad's Got Talent, it may choose Combat and Strength skills.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Ogre / Special Rules / Skills
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: Skills
+    es: null
+  effect_i18n:
+    en: If the Ogre becomes a Hero through The Lad's Got Talent, it may choose Combat and Strength skills.
+    es: null
+  applies_to:
+    profile_ids:
+    - ogre
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.promoted-hero-skill-access
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.promoted-hero-skill-access
+        parameters:
+          allowed_skill_lists:
+          - combat
+          - strength
+- id: ogre--slow-witted
+  name: Slow witted
+  effect: The Ogre gains advances at half the normal rate and must earn twice the usual Experience for each advance.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Ogre / Special Rules / Slow witted
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: Slow witted
+    es: null
+  effect_i18n:
+    en: The Ogre gains advances at half the normal rate and must earn twice the usual Experience for each advance.
+    es: null
+  applies_to:
+    profile_ids:
+    - ogre
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ostlanders.ogre.slow-witted
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--self-sufficient
+  name: Self-Sufficient
+  effect: Ostlanders may never hire Mercenaries/Hired Swords except Ogres.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Self-Sufficient
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: Self-Sufficient
+    es: null
+  effect_i18n:
+    en: Ostlanders may never hire Mercenaries/Hired Swords except Ogres.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.ostlanders.band.self-sufficient
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--ostlander-special-skills-bull-rush
+  kind: warband_skill
+  name: Bull Rush
+  effect: 'This warrior is huge, even by Ostlander
+
+    standards, and can use his massive girth to
+
+    overpower his opponents. When he charges,
+
+    this Hero may attempt to knock down his
+
+    opponent rather than making his normal
+
+    attacks. Roll to hit once with a +1 to hit
+
+    modifier, though no ''to wound'' roll is
+
+    necessary. Instead, if the warrior hits
+
+    with this attack, the opposing
+
+    model is Knocked Down (Models
+
+    with the Bull Rush skill should
+
+    have a suitably large beer-belly
+
+    modelled out of putty whenever possible!)'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ostlander Special Skills / Bull Rush
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: Bull Rush
+    es: null
+  effect_i18n:
+    en: 'This warrior is huge, even by Ostlander
+
+      standards, and can use his massive girth to
+
+      overpower his opponents. When he charges,
+
+      this Hero may attempt to knock down his
+
+      opponent rather than making his normal
+
+      attacks. Roll to hit once with a +1 to hit
+
+      modifier, though no ''to wound'' roll is
+
+      necessary. Instead, if the warrior hits
+
+      with this attack, the opposing
+
+      model is Knocked Down (Models
+
+      with the Bull Rush skill should
+
+      have a suitably large beer-belly
+
+      modelled out of putty whenever possible!)'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: mechanic.bull-charge
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.bull-charge
+- id: band--ostlander-special-skills-foul-odour
+  kind: warband_skill
+  name: Foul Odour
+  effect: 'Ostlanders are prodigious drinkers and none
+
+    too hygienic! This warrior rises head and
+
+    shoulders above the rest. After a lifetime of
+
+    drinking, liquor has little effect on him any
+
+    more... not that this stops him from
+
+    consuming massive quantities! His unwashed
+
+    clothes and sweat reek of
+
+    alcohol and all living
+
+    enemies (not Undead or
+
+    Possessed) are at -1
+
+    to hit him in
+
+    hand-to-hand combat. In addition, the warrior cannot carry
+
+    any open flames (torch, lantern, etc) and fire
+
+    attacks made against him are resolved at +1
+
+    Strength as his booze soaked clothing burns
+
+    readily.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ostlander Special Skills / Foul Odour
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: Foul Odour
+    es: null
+  effect_i18n:
+    en: 'Ostlanders are prodigious drinkers and none
+
+      too hygienic! This warrior rises head and
+
+      shoulders above the rest. After a lifetime of
+
+      drinking, liquor has little effect on him any
+
+      more... not that this stops him from
+
+      consuming massive quantities! His unwashed
+
+      clothes and sweat reek of
+
+      alcohol and all living
+
+      enemies (not Undead or
+
+      Possessed) are at -1
+
+      to hit him in
+
+      hand-to-hand combat. In addition, the warrior cannot carry
+
+      any open flames (torch, lantern, etc) and fire
+
+      attacks made against him are resolved at +1
+
+      Strength as his booze soaked clothing burns
+
+      readily.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.ostlanders.band.ostlander-special-skills-foul-odour
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--ostlander-special-skills-taunt
+  kind: warband_skill
+  name: Taunt
+  effect: 'After years of baiting opponents into drunken
+
+    brawls, this Ostlander has learned some of
+
+    most vile insults in the Empire. During the
+
+    Shooting phase, the warrior may choose to
+
+    taunt one enemy instead of shooting with a
+
+    missile weapon or casting a spell. The warrior
+
+    must be able to see the enemy and taunting
+
+    follows all the LOS rules for shooting (you
+
+    must taunt the nearest opponent, etc). The
+
+    player should insult the enemy model in some
+
+    manner whenever possible (perhaps his hat
+
+    looks like a strangled parrot or his mother was
+
+    a Bretonnian!). The enemy then takes a
+
+    Leadership test. If he passes, nothing happens,
+
+    but if he fails he must spend his next
+
+    Movement phase trying to get into close
+
+    combat with the warrior who taunted
+
+    him.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ostlander Special Skills / Taunt
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: Taunt
+    es: null
+  effect_i18n:
+    en: 'After years of baiting opponents into drunken
+
+      brawls, this Ostlander has learned some of
+
+      most vile insults in the Empire. During the
+
+      Shooting phase, the warrior may choose to
+
+      taunt one enemy instead of shooting with a
+
+      missile weapon or casting a spell. The warrior
+
+      must be able to see the enemy and taunting
+
+      follows all the LOS rules for shooting (you
+
+      must taunt the nearest opponent, etc). The
+
+      player should insult the enemy model in some
+
+      manner whenever possible (perhaps his hat
+
+      looks like a strangled parrot or his mother was
+
+      a Bretonnian!). The enemy then takes a
+
+      Leadership test. If he passes, nothing happens,
+
+      but if he fails he must spend his next
+
+      Movement phase trying to get into close
+
+      combat with the warrior who taunted
+
+      him.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.ostlanders.band.ostlander-special-skills-taunt
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--ostlander-special-skills-animal-friendship
+  kind: warband_skill
+  name: Animal Friendship
+  effect: 'Having grown up amidst the animals of the forest, this
+
+    warrior exudes a certain charm
+
+    to all ''normal'' animals (ie,
+
+    warhorses, warhounds, etc)
+
+    Animals will never attack him
+
+    and up to two wardogs (see Mordheim book, page 54) that
+
+    the warrior owns do not count
+
+    against the maximum number
+
+    of models in the warband.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ostlander Special Skills / Animal friendship
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: Animal Friendship
+    es: null
+  effect_i18n:
+    en: 'Having grown up amidst the animals of the forest, this
+
+      warrior exudes a certain charm
+
+      to all ''normal'' animals (ie,
+
+      warhorses, warhounds, etc)
+
+      Animals will never attack him
+
+      and up to two wardogs (see Mordheim book, page 54) that
+
+      the warrior owns do not count
+
+      against the maximum number
+
+      of models in the warband.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.ostlanders.band.ostlander-special-skills-animal-friendship
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--ostlander-special-skills-blood-oath
+  kind: warband_skill
+  name: Blood Oath
+  effect: 'The leader of an Ostlander
+
+    warband sometimes takes a
+
+    blood oath never to leave any of
+
+    his fallen ''family'' members
+
+    behind. Such is his
+
+    determination to protect his
+
+    fallen blood-kin that it is
+
+    extremely difficult to cause him
+
+    to rout from the field. Only a
+
+    warband''s leader may have this
+
+    skill, which allows him to reroll a single Rout test once per game.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ostlander Special Skills / Blood Oath
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  name_i18n:
+    en: Blood Oath
+    es: null
+  effect_i18n:
+    en: 'The leader of an Ostlander
+
+      warband sometimes takes a
+
+      blood oath never to leave any of
+
+      his fallen ''family'' members
+
+      behind. Such is his
+
+      determination to protect his
+
+      fallen blood-kin that it is
+
+      extremely difficult to cause him
+
+      to rout from the field. Only a
+
+      warband''s leader may have this
+
+      skill, which allows him to reroll a single Rout test once per game.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.ostlanders.band.ostlander-special-skills-blood-oath
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'

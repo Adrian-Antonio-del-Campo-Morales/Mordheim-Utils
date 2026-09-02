@@ -1,0 +1,122 @@
+schema_version: 1
+specifications:
+- id: editorial-art-of-silent-death-variants
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/mordheim/skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death/skill.art-of-silent-death, digest: 63e78902b0ddd35768ead7d2cc8783727162a15e91a0cbad9ddaccad15616f40}
+  - {target: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death/skill.art-of-silent-death, digest: 137b95a4f4c9243e2669353c708f5ae2ae7e7c1e678d4e85232d502296ed3946}
+  - {target: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-art-of-unarmed-combat/skill.art-of-silent-death, digest: 99e0a1c1c0b6616237c2fbb9c5c4dba19f4227a5e62402311c6061d14edf69a9}
+  depends_on: [mechanic/skill.art-of-silent-death]
+  interpretation: Las tres variantes conceden el mismo mecanismo, pero se comprueban por separado sus listas exactas de Héroes elegibles y que cada selección proyecta el binding al luchador.
+  cases:
+  - id: mordheim-recipients
+    roles: [grant, accepted, rejected]
+    operation: selectable_grant
+    defender: {band_id: skaven-clan-eshin, profile_id: assassin-adept}
+    context: {rule_id: band--skaven-special-skills-art-of-silent-death}
+    expect: {result.recipients: [assassin-adept, black-skaven, eshin-sorcerer, night-runners]}
+  - id: trollheim-skaven-recipients
+    roles: [grant, accepted, rejected]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: trollheim-skaven-clan-eshin, profile_id: assassin-adept}
+    context: {rule_id: band--skaven-special-skills-art-of-silent-death}
+    expect: {result.recipients: [assassin-adept, black-skaven, eshin-sorcerer, night-runners]}
+  - id: deathbringer-recipients
+    roles: [grant, accepted, rejected]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: shadow-blade}
+    context: {rule_id: band--deathbringer-special-skills-art-of-unarmed-combat}
+    expect: {result.recipients: [black-knives, shadow-blade, silent-hunter, young-claw]}
+  - id: mordheim-selected
+    roles: [accepted]
+    operation: wound
+    attacker: {band_id: skaven-clan-eshin, profile_id: assassin-adept, main_weapon_id: weapon.fist, special_rule_ids: [band--skaven-special-skills-art-of-silent-death]}
+    rolls: [{key: wound, value: 5}]
+    expect: {context.critical_threshold: 5, result.critical: true}
+  - id: trollheim-skaven-selected
+    roles: [accepted]
+    operation: attacks
+    attacker: {collection: trollheim, band_id: trollheim-skaven-clan-eshin, profile_id: night-runners, main_weapon_id: weapon.fist, special_rule_ids: [band--skaven-special-skills-art-of-silent-death]}
+    expect_contains: {attacker.global_effects.tags: [skill.art-of-silent-death]}
+    expect: {result.attacks: 2}
+  - id: deathbringer-selected
+    roles: [accepted]
+    operation: wound
+    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: shadow-blade, main_weapon_id: weapon.fist, special_rule_ids: [band--deathbringer-special-skills-art-of-unarmed-combat]}
+    rolls: [{key: wound, value: 5}]
+    expect: {context.critical_threshold: 5, result.critical: true}
+  mutations:
+  - {id: omit-mordheim-binding, path: attacker.global_effects.tags, value: [], cases: [mordheim-selected]}
+  - {id: omit-trollheim-binding, path: attacker.global_effects.tags, value: [], cases: [trollheim-skaven-selected, deathbringer-selected]}
+
+- id: editorial-cripples-disability
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/trollheim/chaos-streets-mordheim-inhabitants/cripples--disability/compiler.disability, digest: 9ef1a7c55e624a31596340909f9907b45c28705bce00d326a4c4950001e6ba40}
+  depends_on: [mechanic/mechanic.disability]
+  interpretation: Disability se concede únicamente al perfil Cripples y provoca en su inicialización la tirada persistente ya verificada por el mecanismo canónico.
+  cases:
+  - id: recipient
+    roles: [grant, accepted, rejected]
+    operation: grant
+    defender: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: cripples}
+    context: {rule_id: cripples--disability}
+    expect: {result.recipients: [cripples]}
+  - id: selected
+    roles: [accepted]
+    operation: initialize
+    attacker: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: cripples}
+    rolls: [{key: a.disability, value: 5}]
+    expect: {result.attacker.strength: 2, result.attacker.resources_spent: [disability.5]}
+  mutations:
+  - {id: omit-disability, path: attacker.global_effects.tags, value: [], cases: [selected]}
+
+- id: editorial-high-elf-luck
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-luck/skill.luck, digest: d210c95b173265e99e1c05ba8a6eced261475b4f25c819e134564cc383434123}
+  depends_on: [mechanic/skill.luck]
+  interpretation: Luck es seleccionable únicamente por Explorers y repite una tirada propia, dejando consumido el recurso canónico.
+  cases:
+  - id: recipients
+    roles: [grant, accepted, rejected]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: lustria-high-elves, profile_id: explorers}
+    context: {rule_id: band--high-elf-special-skills-luck}
+    expect: {result.recipients: [explorers]}
+  - id: selected
+    roles: [accepted]
+    operation: attack
+    attacker: {collection: trollheim, band_id: lustria-high-elves, profile_id: explorers, special_rule_ids: [band--high-elf-special-skills-luck]}
+    context: {hit_only: true}
+    rolls: [{key: test.hit, value: 1}, {key: test.hit.reroll, value: 4}]
+    expect: {result.hit: true, result.attacker.resources_spent: [luck]}
+  mutations:
+  - {id: omit-luck, path: attacker.global_effects.tags, value: [], cases: [selected]}
+
+- id: editorial-mark-of-the-old-ones
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/trollheim/lustria-lizardmen/band--sacred-mark-of-the-old-ones/compiler.mark-of-the-old-ones, digest: 984c2bf57e11bfe52bd5533d65b61e585f98baf2dd1e0c724cafc4693c920d35}
+  depends_on: [mechanic/mechanic.mark-of-the-old-ones]
+  interpretation: Mark of the Old Ones solo puede seleccionarse para los tres Héroes indicados y convierte su primer fallo mediante el mecanismo consumible ya verificado.
+  cases:
+  - id: recipients
+    roles: [grant, accepted, rejected]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest}
+    context: {rule_id: band--sacred-mark-of-the-old-ones}
+    expect: {result.recipients: [saurus-totem-warrior, skink-great-crests, skink-priest]}
+  - id: selected
+    roles: [accepted]
+    operation: attack
+    attacker: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest, special_rule_ids: [band--sacred-mark-of-the-old-ones]}
+    context: {hit_only: true}
+    rolls: [{key: test.hit, value: 1}]
+    expect: {result.hit: true, result.attacker.resources_spent: [mark-of-the-old-ones]}
+  mutations:
+  - {id: omit-mark, path: attacker.global_effects.tags, value: [], cases: [selected]}

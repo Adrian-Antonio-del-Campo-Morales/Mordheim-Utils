@@ -1,0 +1,92 @@
+schema_version: 1
+specifications:
+- id: weapon.vomit-attack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/weapon.vomit-attack
+    digest: 8851f0660b1daee1f542f6aff22cee6329bdc5365e9597a12080df4e7c84b5e5
+  interpretation: The five cited Troll rules agree that Vomit replaces every normal attack with exactly one automatic
+    Strength 5 hit that cannot be parried and allows no armour save. Automatic means no To Hit die is requested; an
+    unsaved wound still follows the ordinary damage and Injury pipeline.
+  interaction_contract:
+    reads:
+    - fighter.attacks
+    writes:
+    - attack.count
+    - hit.success
+    - attack.strength
+    - armour.allowed
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    attacker: {main_weapon_id: weapon.vomit-attack}
+    expect:
+      attacker.main_weapon.fixed_strength: 5
+      attacker.main_weapon.automatic_hit: true
+      attacker.main_weapon.cannot_be_parried: true
+      attacker.main_weapon.ignore_armour: true
+  - id: replaces-four-attacks
+    roles: [active, boundary, consumer]
+    operation: attacks
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 4}
+    expect: {result.attacks: 1}
+  - id: ordinary-weapon-keeps-four
+    roles: [inactive, boundary]
+    operation: attacks
+    attacker:
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 4}
+    expect: {result.attacks: 4}
+  - id: automatic-hit-omits-die
+    roles: [active, consumer]
+    operation: hit
+    attacker: {main_weapon_id: weapon.vomit-attack}
+    expect:
+      result.success: true
+      result.rerolled: false
+  - id: fixed-strength-five
+    roles: [active, consumer]
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+      characteristics: {weapon_skill: 3, strength: 2, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    expect: {result.wound: 5, result.armour: 5}
+  - id: cannot-be-parried
+    roles: [active, consumer]
+    operation: parry
+    attacker: {main_weapon_id: weapon.vomit-attack}
+    defender: {main_weapon_id: weapon.sword}
+    context: {hit_roll: 4}
+    expect: {result.attempted: false, result.blocked: false}
+  - id: armour-roll-omitted
+    roles: [active, boundary, consumer]
+    operation: armour
+    attacker: {main_weapon_id: weapon.vomit-attack}
+    defender: {armour_id: armour.gromril-armour, off_hand_id: defence.shield}
+    expect: {result.eligible: false, result.saved: false, result.roll: null}
+  - id: real-pipeline-requests-only-wound
+    roles: [active, boundary, consumer]
+    operation: attack
+    attacker: {main_weapon_id: weapon.vomit-attack}
+    defender:
+      armour_id: armour.gromril-armour
+      off_hand_id: defence.shield
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+    rolls: [{key: test.wound, value: 2}]
+    expect:
+      result.hit: true
+      result.parried: false
+      result.wounded: true
+      result.saved: false
+      result.defender.wounds: 1
+  mutations:
+  - {id: remove-attack-replacement, path: attacker.main_weapon.tags, value: [material.normal], cases: [replaces-four-attacks]}
+  - {id: remove-automatic-hit, path: attacker.main_weapon.automatic_hit, value: false, cases: [automatic-hit-omits-die, real-pipeline-requests-only-wound]}
+  - {id: change-strength, path: attacker.main_weapon.fixed_strength, value: 4, cases: [fixed-strength-five]}
+  - {id: allow-parry, path: attacker.main_weapon.cannot_be_parried, value: false, cases: [cannot-be-parried]}
+  - {id: allow-armour, path: attacker.main_weapon.ignore_armour, value: false, cases: [armour-roll-omitted, real-pipeline-requests-only-wound]}

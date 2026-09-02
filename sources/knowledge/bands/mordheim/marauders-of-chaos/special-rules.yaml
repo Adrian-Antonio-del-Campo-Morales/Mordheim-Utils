@@ -1,0 +1,1009 @@
+schema_version: 2
+band_id: marauders-of-chaos
+rules:
+- id: marauder-chieftain--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.marauders-of-chaos.marauder-chieftain.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Leader
+  effect: Any Warrior within 6" of the Marauder Chieftain may use his Leadership instead of his own when taking Ld tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Marauder Chieftain / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any Warrior within 6" of the Marauder Chieftain may use his Leadership instead of his own when taking Ld tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - marauder-chieftain
+- id: seer--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.marauders-of-chaos.seer.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: magia.'
+  name: Wizard
+  effect: A Seer is a Wizard and may use Magic as detailed in the Magic section.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Seer / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: A Seer is a Wizard and may use Magic as detailed in the Magic section.
+    es: null
+  applies_to:
+    profile_ids:
+    - seer
+- id: seer--mark-of-chaos
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.marauders-of-chaos.seer.mark-of-chaos
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: magia.'
+  name: Mark of Chaos
+  effect: The Seer gets a Mark of Chaos when hired to determine the kind of magic he uses. He can have the Mark of the Serpent,
+    the Mark of the Crow, the Mark of the Eagle, the Mark of Arkhar or the Mark of Chaos Undivided.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Seer / Special Rules / Mark of Chaos
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Mark of Chaos
+    es: null
+  effect_i18n:
+    en: The Seer gets a Mark of Chaos when hired to determine the kind of magic he uses. He can have the Mark of the Serpent,
+      the Mark of the Crow, the Mark of the Eagle, the Mark of Arkhar or the Mark of Chaos Undivided.
+    es: null
+  applies_to:
+    profile_ids:
+    - seer
+- id: warhounds-of-chaos--natural-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.natural-attacks
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+  name: Natural Weapons
+  effect: Warhounds have no weapons but fight without the normal penalties for being unarmed.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Warhounds of Chaos / Weapons/Armour
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Natural Weapons
+    es: null
+  effect_i18n:
+    en: Warhounds have no weapons but fight without the normal penalties for being unarmed.
+    es: null
+  applies_to:
+    profile_ids:
+    - warhounds-of-chaos
+- id: warhounds-of-chaos--animals
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.marauders-of-chaos.warhounds-of-chaos.animals
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Animals
+  effect: 'Warhounds are animals and thus do not gain
+
+    experience.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Warhounds of Chaos / Special Rules / Animals
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Animals
+    es: null
+  effect_i18n:
+    en: 'Warhounds are animals and thus do not gain
+
+      experience.'
+    es: null
+  applies_to:
+    profile_ids:
+    - warhounds-of-chaos
+- id: condemned--inconsistency
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.random-characteristics
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.random-characteristics
+        parameters:
+          characteristics:
+          - WS
+          - S
+          - T
+          - A
+  name: Inconsistency
+  effect: WS, S, T and A are variable. Whenever one of these characteristics is needed, roll its indicated die once for that
+    turn.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Condemned / Special Rules / Inconsistency
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Inconsistency
+    es: null
+  effect_i18n:
+    en: WS, S, T and A are variable. Whenever one of these characteristics is needed, roll its indicated die once for that
+      turn.
+    es: null
+  applies_to:
+    profile_ids:
+    - condemned
+- id: condemned--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.marauders-of-chaos.condemned.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Fear
+  effect: The Condemned causes Fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Condemned / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Condemned causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - condemned
+- id: condemned--variable-experience
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.marauders-of-chaos.condemned.variable-experience
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Experience
+  effect: When an advance would increase a variable characteristic, roll its die instead. The player may permanently set the
+    characteristic to the result; otherwise it remains variable and the advance is lost. These fixed values may exceed normal
+    Marauder maximum characteristics.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Condemned / Special Rules / Experience
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Experience
+    es: null
+  effect_i18n:
+    en: When an advance would increase a variable characteristic, roll its die instead. The player may permanently set the
+      characteristic to the result; otherwise it remains variable and the advance is lost. These fixed values may exceed normal
+      Marauder maximum characteristics.
+    es: null
+  applies_to:
+    profile_ids:
+    - condemned
+- id: condemned--fate
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.marauders-of-chaos.condemned.fate
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Fate
+  effect: Once all variable characteristics are permanently fixed, the Condemned may use equipment normally. If he reaches
+    90 Experience while any variable characteristic remains, he becomes a Spawn of Chaos. If the warband already contains
+    a Spawn, the Condemned is removed from the warband instead.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Condemned / Special Rules / Fate
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Fate
+    es: null
+  effect_i18n:
+    en: Once all variable characteristics are permanently fixed, the Condemned may use equipment normally. If he reaches 90
+      Experience while any variable characteristic remains, he becomes a Spawn of Chaos. If the warband already contains a
+      Spawn, the Condemned is removed from the warband instead.
+    es: null
+  applies_to:
+    profile_ids:
+    - condemned
+- id: spawn-of-chaos--special-attacks
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: mechanic.spawn-special-attacks
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.spawn-special-attacks
+  name: Special Attacks
+  effect: Roll at the beginning of each Close Combat phase to determine the Spawn's Attacks for that phase.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Spawn of Chaos / Special Rules / Special Attacks
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Special Attacks
+    es: null
+  effect_i18n:
+    en: Roll at the beginning of each Close Combat phase to determine the Spawn's Attacks for that phase.
+    es: null
+  applies_to:
+    profile_ids:
+    - spawn-of-chaos
+- id: spawn-of-chaos--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.marauders-of-chaos.spawn-of-chaos.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Fear
+  effect: A Spawn of Chaos causes Fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Spawn of Chaos / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: A Spawn of Chaos causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - spawn-of-chaos
+- id: spawn-of-chaos--special-movement
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.marauders-of-chaos.spawn-of-chaos.special-movement
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: movimiento.'
+  name: Special Movement
+  effect: The Spawn moves 2D6" straight ahead in each Movement phase after choosing its facing. It does not double movement
+    when charging; if this move contacts a model, it counts as charging and engages it in close combat.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Spawn of Chaos / Special Rules / Special Movement
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Special Movement
+    es: null
+  effect_i18n:
+    en: The Spawn moves 2D6" straight ahead in each Movement phase after choosing its facing. It does not double movement
+      when charging; if this move contacts a model, it counts as charging and engages it in close combat.
+    es: null
+  applies_to:
+    profile_ids:
+    - spawn-of-chaos
+- id: spawn-of-chaos--psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.marauders-of-chaos.spawn-of-chaos.psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Psychology
+  effect: The Spawn automatically passes all Leadership-based tests it is required to take.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Spawn of Chaos / Special Rules / Psychology
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Psychology
+    es: null
+  effect_i18n:
+    en: The Spawn automatically passes all Leadership-based tests it is required to take.
+    es: null
+  applies_to:
+    profile_ids:
+    - spawn-of-chaos
+- id: spawn-of-chaos--no-brain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.marauders-of-chaos.spawn-of-chaos.no-brain
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: No Brain
+  effect: The Spawn never gains Experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Spawn of Chaos / Special Rules / No Brain
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: No Brain
+    es: null
+  effect_i18n:
+    en: The Spawn never gains Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - spawn-of-chaos
+- id: spawn-of-chaos--large
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.marauders-of-chaos.spawn-of-chaos.large
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: disparo.'
+  name: Large
+  effect: The Spawn counts as a Large Target.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Spawn of Chaos / Special Rules / Large
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Large
+    es: null
+  effect_i18n:
+    en: The Spawn counts as a Large Target.
+    es: null
+  applies_to:
+    profile_ids:
+    - spawn-of-chaos
+- id: band--eye-of-the-gods
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.eye-of-the-gods
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Eye of the Gods
+  effect: After each battle, if the warband leader took part, roll 2D6. If the battle was lost, add +1 for each Hero taken
+    Out of Action; on 12+ the leader becomes a Spawn of Chaos and loses all previous experience, skills, injuries and equipment.
+    If a Spawn is already present, the leader is removed instead. If the battle was won, add +1 for each enemy the leader
+    took Out of Action; on 12+ the leader gains a Mark of Chaos. Once a leader gains a Mark, Eye of the Gods is no longer
+    rolled for that leader.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Eye of the Gods
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Eye of the Gods
+    es: null
+  effect_i18n:
+    en: After each battle, if the warband leader took part, roll 2D6. If the battle was lost, add +1 for each Hero taken Out
+      of Action; on 12+ the leader becomes a Spawn of Chaos and loses all previous experience, skills, injuries and equipment.
+      If a Spawn is already present, the leader is removed instead. If the battle was won, add +1 for each enemy the leader
+      took Out of Action; on 12+ the leader gains a Mark of Chaos. Once a leader gains a Mark, Eye of the Gods is no longer
+      rolled for that leader.
+    es: null
+  applies_to:
+    band: true
+- id: band--hired-swords
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Hired Swords
+  effect: The warband may hire Pit Fighters, Ogres, Norse Shamans and Imperial Assassins, plus entries that explicitly allow
+    Marauders of Chaos. Witches and Warlocks may be hired unless the warband contains a warrior with the Mark of Arkhar.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Hired Swords
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Hired Swords
+    es: null
+  effect_i18n:
+    en: The warband may hire Pit Fighters, Ogres, Norse Shamans and Imperial Assassins, plus entries that explicitly allow
+      Marauders of Chaos. Witches and Warlocks may be hired unless the warband contains a warrior with the Mark of Arkhar.
+    es: null
+  applies_to:
+    band: true
+- id: band--tribe-choice
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: mechanic.follow-the-darkest-tribe
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: this is an immutable warband-creation choice whose listed consequences concern roster limits, campaign rarity, post-game rewards, riding and mounted campaign options.'
+  name: Follow the Darkest Tribe
+  effect: 'When the warband is created, choose one tribe: Norse, Kurgan or Hung. Apply only the special rules belonging to
+    the chosen tribe.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Follow the Darkest tribe
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Follow the Darkest Tribe
+    es: null
+  effect_i18n:
+    en: 'When the warband is created, choose one tribe: Norse, Kurgan or Hung. Apply only the special rules belonging to the
+      chosen tribe.'
+    es: null
+  applies_to:
+    band: true
+- id: band--norse-reavers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.norse-reavers
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Norse — Reavers
+  effect: Norse warbands gain +1 on rarity rolls during the post-game sequence.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Follow the Darkest tribe / The Norse / Special Rules / Reavers
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Norse — Reavers
+    es: null
+  effect_i18n:
+    en: Norse warbands gain +1 on rarity rolls during the post-game sequence.
+    es: null
+  applies_to:
+    band: true
+- id: band--norse-pantheon
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.norse-pantheon
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Norse — Pantheon
+  effect: For a Norse warband, Eye of the Gods normally triggers on 13+ instead of 12+. If the leader has Tattooed Body, the
+    threshold is 11+ instead of 10+.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Follow the Darkest tribe / The Norse / Special Rules / Pantheon
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Norse — Pantheon
+    es: null
+  effect_i18n:
+    en: For a Norse warband, Eye of the Gods normally triggers on 13+ instead of 12+. If the leader has Tattooed Body, the
+      threshold is 11+ instead of 10+.
+    es: null
+  applies_to:
+    band: true
+- id: band--kurgan-pedigree
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.kurgan-pedigree
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Kurgan — Pedigree
+  effect: A Kurgan warband may include any number of Warhounds of Chaos instead of being limited to five.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Follow the Darkest tribe / The Kurgan / Special Rules / Pedigree
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Kurgan — Pedigree
+    es: null
+  effect_i18n:
+    en: A Kurgan warband may include any number of Warhounds of Chaos instead of being limited to five.
+    es: null
+  applies_to:
+    band: true
+- id: band--kurgan-difficult-customers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.kurgan-difficult-customers
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Kurgan — Difficult Customers
+  effect: A Kurgan warband suffers -1 on rolls to find Rare items, except Great Axes and Barbed Whips.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Follow the Darkest tribe / The Kurgan / Special Rules / Difficult Customers
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Kurgan — Difficult Customers
+    es: null
+  effect_i18n:
+    en: A Kurgan warband suffers -1 on rolls to find Rare items, except Great Axes and Barbed Whips.
+    es: null
+  applies_to:
+    band: true
+- id: band--hung-disloyalty
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.hung-disloyalty
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaña.'
+  name: Hung — Disloyalty
+  effect: A Hung warband has a maximum of 12 warriors instead of 15.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Follow the Darkest tribe / The Hung / Special Rules / Disloyalty
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Hung — Disloyalty
+    es: null
+  effect_i18n:
+    en: A Hung warband has a maximum of 12 warriors instead of 15.
+    es: null
+  applies_to:
+    band: true
+- id: band--hung-affinity-with-horses
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.hung-affinity-with-horses
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: monturas.'
+  name: Hung — Affinity with Horses
+  effect: All Heroes, including Henchmen promoted to Heroes, automatically have the Ride Warhorse skill. The normal Border
+    Town Burning mount-count restriction does not apply to the warband.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Follow the Darkest tribe / The Hung / Special Rules / Affinity with Horses
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Hung — Affinity with Horses
+    es: null
+  effect_i18n:
+    en: All Heroes, including Henchmen promoted to Heroes, automatically have the Ride Warhorse skill. The normal Border Town
+      Burning mount-count restriction does not apply to the warband.
+    es: null
+  applies_to:
+    band: true
+- id: band--marauder-maximum-characteristics
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.marauder-maximum-characteristics
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Marauder Maximum Characteristics
+  effect: Marauders of Chaos use the Marauder of Chaos maximum characteristic profile. A Hero with Chosen of Chaos instead
+    uses the Warriors of Chaos maximum characteristic profile.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Maximum characteristics
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Marauder Maximum Characteristics
+    es: null
+  effect_i18n:
+    en: Marauders of Chaos use the Marauder of Chaos maximum characteristic profile. A Hero with Chosen of Chaos instead uses
+      the Warriors of Chaos maximum characteristic profile.
+    es: null
+  applies_to:
+    band: true
+- id: band--mark-of-chaos-undivided
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.mark-of-chaos-undivided
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Mark of Chaos Undivided
+  effect: A marked leader allows all warband members within the Leader radius to re-roll failed Leadership tests. If the Seer
+    has this mark, the warband may include 0-3 Gors counting toward the normal warband maximum; The Lad's Got Talent results
+    for those Gors are re-rolled. Spell details are not modelled here.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mark of the Dark Gods / Mark of Chaos Undivided
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Mark of Chaos Undivided
+    es: null
+  effect_i18n:
+    en: A marked leader allows all warband members within the Leader radius to re-roll failed Leadership tests. If the Seer
+      has this mark, the warband may include 0-3 Gors counting toward the normal warband maximum; The Lad's Got Talent results
+      for those Gors are re-rolled. Spell details are not modelled here.
+    es: null
+  applies_to:
+    band: true
+- id: band--mark-of-tchar
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.mark-of-tchar
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: magia.'
+  name: Mark of Tchar the Eagle
+  effect: This Mark changes the Hero or Seer's magic access. The spell list and spell effects are intentionally not modelled
+    in this file.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mark of the Dark Gods / Mark of Tchar the Eagle
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Mark of Tchar the Eagle
+    es: null
+  effect_i18n:
+    en: This Mark changes the Hero or Seer's magic access. The spell list and spell effects are intentionally not modelled
+      in this file.
+    es: null
+  applies_to:
+    band: true
+- id: band--mark-of-arkhar
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.mark-of-arkhar
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Mark of Arkhar the Dog
+  effect: 'A marked leader is subject to Frenzy and spells targeting him fail on 4+. A Seer with this mark becomes a Bloodfather:
+    he cannot cast spells; whenever he takes an enemy Out of Action in hand-to-hand combat, he may pass a Leadership test
+    to gain +1 WS, S, T or I until the end of the battle, with each characteristic increased at most once. A Bloodfather may
+    also take Strength skills.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mark of the Dark Gods / Mark of Arkhar the Dog
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Mark of Arkhar the Dog
+    es: null
+  effect_i18n:
+    en: 'A marked leader is subject to Frenzy and spells targeting him fail on 4+. A Seer with this mark becomes a Bloodfather:
+      he cannot cast spells; whenever he takes an enemy Out of Action in hand-to-hand combat, he may pass a Leadership test
+      to gain +1 WS, S, T or I until the end of the battle, with each characteristic increased at most once. A Bloodfather
+      may also take Strength skills.'
+    es: null
+  applies_to:
+    band: true
+- id: band--mark-of-onogal
+  kind: mark
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: trait.mark-of-onogal-the-crow
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.mark-of-onogal-the-crow
+        parameters:
+          value: true
+  name: Mark of Onogal the Crow
+  effect: A marked leader gains +1 Toughness, may re-roll once on the Serious Injuries table, and is immune to poison. A Seer
+    with this mark is immune to poison. Ritual details are intentionally not modelled here.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mark of the Dark Gods / Mark of Onogal the Crow
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Mark of Onogal the Crow
+    es: null
+  effect_i18n:
+    en: A marked leader gains +1 Toughness, may re-roll once on the Serious Injuries table, and is immune to poison. A Seer
+      with this mark is immune to poison. Ritual details are intentionally not modelled here.
+    es: null
+  applies_to:
+    band: true
+  eligibility:
+  - marauder-chieftain
+  - seer
+- id: band--mark-of-shornaal
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.mark-of-shornaal
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psicología.'
+  name: Mark of Shornaal the Serpent
+  effect: Enemy models that are not Immune to Psychology cannot attack a marked leader in close combat unless they pass a
+    Leadership test on 3D6, discarding the lowest die. On failure, they are hit automatically in close combat. Once passed,
+    no further test is required that battle. Lizardmen Cold Blooded cannot be used for this test. Seer ritual and item-creation
+    effects are intentionally not modelled here.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mark of the Dark Gods / Mark of Shornaal the Serpent
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Mark of Shornaal the Serpent
+    es: null
+  effect_i18n:
+    en: Enemy models that are not Immune to Psychology cannot attack a marked leader in close combat unless they pass a Leadership
+      test on 3D6, discarding the lowest die. On failure, they are hit automatically in close combat. Once passed, no further
+      test is required that battle. Lizardmen Cold Blooded cannot be used for this test. Seer ritual and item-creation effects
+      are intentionally not modelled here.
+    es: null
+  applies_to:
+    band: true
+- id: band--marauder-special-skills-chosen-of-chaos
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.marauder-special-skills-chosen-of-chaos
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Chosen of Chaos
+  effect: The Hero has been found worthy of his god’s service and entered the rank of a Chaos Warrior. He uses the maximum
+    profile for Warriors of Chaos and the Hero equipment list (if he does not already).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marauder special skills / chosen of chaos
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Chosen of Chaos
+    es: null
+  effect_i18n:
+    en: 'The Hero has been found worthy of his god’s service
+
+      and entered the rank of a Chaos Warrior. He uses the
+
+      maximum profile for Warriors of Chaos and the Hero
+
+      equipment list (if he does not already).'
+    es: null
+  applies_to:
+    band: true
+- id: band--marauder-special-skills-tattooed-body
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.marauder-special-skills-tattooed-body
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Tattooed Body
+  effect: Only the warband's leader may have this skill. The Hero's body is covered with unholy Chaos signs to attract his
+    patron's attention. The Eye of the Gods special rule's effect (of becoming a Chaos Spawn or receiving a Mark) happens
+    on a result of 10+ instead of 12+ only. Note that for the less favoured Norse leaders this is 11+.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marauder special skills / tattooed body
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Tattooed Body
+    es: null
+  effect_i18n:
+    en: 'Only the warband''s leader may have this skill. The
+
+      Hero''s body is covered with unholy Chaos signs to
+
+      attract his patron''s attention. The Eye of the Gods
+
+      special rule''s effect (of becoming a Chaos Spawn or
+
+      receiving a Mark) happens on a result of 10+ instead
+
+      of 12+ only. Note that for the less favoured Norse
+
+      leaders this is 11+.'
+    es: null
+  applies_to:
+    band: true
+- id: band--marauder-special-skills-sweeping-blow
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.marauder-special-skills-sweeping-blow
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Sweeping Blow
+  effect: Whenever the Hero takes an enemy model out of action using a double-handed weapon he may immediately make an additional
+    attack against another model in base contact. Requires the Strongman skill.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marauder special skills / sweeping blow
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Sweeping Blow
+    es: null
+  effect_i18n:
+    en: 'Whenever the Hero takes an enemy model out of
+
+      action using a double-handed weapon he may
+
+      immediately make an additional attack against another
+
+      model in base contact. Requires the Strongman skill.'
+    es: null
+  applies_to:
+    band: true
+- id: band--marauder-special-skills-mutant
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: special-rule.band--marauder-special-skills-mutant
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: special-rule.band--marauder-special-skills-mutant
+  name: Mutant
+  effect: 'The Hero may buy one mutation. See the Mutations section of the Possessed on special rules . Heroes with
+
+    the Mark of Onogal may choose a Blessing of Nurgle instead except the
+
+    Mark of Nurgle. Note that unlike other skills Marauder Heroes may take this skill more than once.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marauder special skills / mutant
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Mutant
+    es: null
+  effect_i18n:
+    en: 'The Hero may buy one mutation. See the Mutations section of the Possessed on special rules . Heroes with
+
+      the Mark of Onogal may choose a Blessing of Nurgle instead except the
+
+      Mark of Nurgle. Note that unlike other skills Marauder Heroes may take this skill more than once.'
+    es: null
+  applies_to:
+    band: true
+- id: band--marauder-special-skills-heart-of-the-warrior
+  kind: warband_skill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.marauders-of-chaos.band.marauder-special-skills-heart-of-the-warrior
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+  name: Heart of the Warrior
+  effect: Only the warband's leader may have this skill. He may re-roll any failed Rout test and is immune to fear and all
+    alone tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marauder special skills / heart of the warrior
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    en: Heart of the Warrior
+    es: null
+  effect_i18n:
+    en: Only the warband's leader may have this skill. He may re-roll any failed Rout test and is immune to fear and all alone
+      tests.
+    es: null
+  applies_to:
+    band: true

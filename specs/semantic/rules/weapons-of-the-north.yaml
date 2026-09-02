@@ -1,0 +1,77 @@
+schema_version: 1
+specifications:
+- id: skill.weapons-of-the-north
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/skill.weapons-of-the-north
+    digest: be8a9a49546aecf4a481dfdd4716dae2e376abba3bb9e370789e8bbd9afd26e4
+  interpretation: >-
+    Weapons of the North rerolls each failed To Hit roll with an axe, dwarf axe or the catalogue's double-handed
+    weapon. The generic two_handed implementation property is insufficient; flails and halberds are not axes and
+    receive no reroll. The effect is not limited to charging or the first round.
+  interaction_contract:
+    reads: [weapon.kind, hit.target]
+    writes: [hit.reroll]
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    attacker: {skill_ids: [skill.weapons-of-the-north], main_weapon_id: weapon.axe}
+    expect: {attacker.main_weapon.armour_penetration: 1}
+    expect_contains:
+      attacker.global_effects.tags: [skill.weapons-of-the-north]
+  - id: axe-rerolls
+    roles: [active, boundary, consumer]
+    operation: hit
+    attacker: {skill_ids: [skill.weapons-of-the-north], main_weapon_id: weapon.axe}
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected: {'true': 3/4, 'false': 1/4}
+  - id: double-handed-weapon-rerolls
+    roles: [active, boundary, consumer]
+    operation: hit
+    attacker: {skill_ids: [skill.weapons-of-the-north], main_weapon_id: weapon.double-handed-weapon}
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected: {'true': 3/4, 'false': 1/4}
+  - id: reroll-remains-after-first-round
+    roles: [active, boundary]
+    operation: hit
+    attacker: {skill_ids: [skill.weapons-of-the-north], main_weapon_id: weapon.axe}
+    context: {first_round: false, charging: false}
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected: {'true': 3/4, 'false': 1/4}
+  - id: flail-is-not-an-axe
+    roles: [inactive, boundary]
+    operation: hit
+    attacker: {skill_ids: [skill.weapons-of-the-north], main_weapon_id: weapon.flail}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: halberd-is-not-an-axe
+    roles: [inactive, boundary]
+    operation: hit
+    attacker: {skill_ids: [skill.weapons-of-the-north], main_weapon_id: weapon.halberd}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: ordinary-weapon-does-not-reroll
+    roles: [inactive]
+    operation: hit
+    attacker: {skill_ids: [skill.weapons-of-the-north], main_weapon_id: weapon.mace}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  mutations:
+  - id: remove-northern-training
+    path: attacker.global_effects.tags
+    value: []
+    cases: [axe-rerolls, double-handed-weapon-rerolls]

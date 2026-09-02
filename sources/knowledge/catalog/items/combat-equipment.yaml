@@ -1,0 +1,101 @@
+schema_version: 2
+ruleset: mordheim
+items:
+- id: crimson_shade
+  kind: combat-equipment
+  name: Crimson Shade
+  name_i18n:
+    en: Crimson Shade
+    es: null
+  source_refs:
+  - &id001
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  combat_status: implemented
+  mechanic_id: preparation.crimson-shade
+- id: dark_venom
+  kind: combat-equipment
+  name: Dark Venom
+  name_i18n:
+    en: Dark Venom
+    es: null
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dark Elf Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  - *id001
+  combat_status: implemented
+  mechanic_id: poison.black-venom
+- id: hobgoblin_poisoned_daggers
+  kind: combat-equipment
+  name: Hobgoblin Poisoned Daggers
+  name_i18n:
+    en: Hobgoblin Poisoned Daggers
+    es: null
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hobgoblins equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  combat_status: implemented
+  mechanic_id: weapon.poisoned-daggers
+- id: lucky_charm
+  kind: combat-equipment
+  name: Lucky Charm
+  name_i18n:
+    en: Lucky Charm
+    es: null
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Knights Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  combat_status: implemented
+  mechanic_id: defence.lucky-charm
+- id: mad_cap_mushrooms
+  kind: combat-equipment
+  name: Mad Cap Mushrooms
+  name_i18n:
+    en: Mad Cap Mushrooms
+    es: null
+  source_refs:
+  - &id002
+    manual: mordheimer.net
+    printed_page: 0
+    section: Fanatic Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  - &id003
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  - &id004
+    manual: mordheimer.net
+    printed_page: 0
+    section: Fanatic Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Goblin Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
+  combat_status: implemented
+  mechanic_id: preparation.head-splitter-mushrooms
+- id: poison_daggers
+  kind: combat-equipment
+  name: Poison Daggers
+  name_i18n:
+    en: Poison Daggers
+    es: null
+  source_refs:
+  - *id002
+  - *id003
+  - *id004
+  combat_status: implemented
+  mechanic_id: weapon.poisoned-daggers

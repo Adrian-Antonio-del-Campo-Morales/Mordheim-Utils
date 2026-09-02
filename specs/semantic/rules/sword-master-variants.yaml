@@ -1,0 +1,132 @@
+schema_version: 1
+specifications:
+- id: sword-master-generic-reroll
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/skill.sword-master, digest: dde5b8f4a5031f6f74f875d3258693f8630a18a241fc3bb6ff8425d7c06d9587}
+  interpretation: >-
+    El resumen canónico concede igualdad y una repetición de parada fallida.
+    No concede un arma capaz de parar ni una segunda parada. Las variantes
+    editoriales se comprueban aparte: Master of Blades condiciona la repetición
+    a dos Dwarf Axes; Blood Dragon añade permiso explícito para parar un seis.
+  cases:
+  - id: capacity
+    roles: [compiled]
+    operation: initialize
+    defender: {main_weapon_id: weapon.sword, off_hand_id: weapon.sword, skill_ids: [skill.sword-master]}
+    expect: {result.defender.parries_remaining: 1}
+    expect_contains: {defender.global_effects.tags: [skill.sword-master]}
+  - id: faces-against-four
+    roles: [active, consumer, boundary]
+    operation: parry
+    defender: {main_weapon_id: weapon.sword, skill_ids: [skill.sword-master]}
+    context: {hit_roll: 4}
+    distribution: {observable: result.blocked, max_rolls: 2, expected: {'true': 3/4, 'false': 1/4}}
+  - id: faces-against-five
+    roles: [active, boundary]
+    operation: parry
+    defender: {main_weapon_id: weapon.sword, skill_ids: [skill.sword-master]}
+    context: {hit_roll: 5}
+    distribution: {observable: result.blocked, max_rolls: 2, expected: {'true': 5/9, 'false': 4/9}}
+  - id: first-success-omits-reroll
+    roles: [boundary]
+    operation: parry
+    defender: {main_weapon_id: weapon.sword, skill_ids: [skill.sword-master]}
+    context: {hit_roll: 4}
+    rolls: [{key: test.parry, value: 4}]
+    expect: {result.blocked: true, result.rerolled: false}
+  - id: failed-reroll-spends-capacity
+    roles: [sequence, consumption]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {main_weapon_id: weapon.sword, skill_ids: [skill.sword-master]}
+    rolls: [{key: test.hit, value: 4}, {key: test.parry, value: 1}, {key: test.parry.reroll, value: 2}, {key: test.wound, value: 1}]
+    expect: {result.parried: false, result.defender.parries_remaining: 0, result.wounded: false}
+  - id: not-a-parrying-weapon
+    roles: [inactive]
+    operation: parry
+    defender: {main_weapon_id: weapon.mace, skill_ids: [skill.sword-master]}
+    context: {hit_roll: 4}
+    expect: {result.attempted: false}
+  - id: no-skill
+    roles: [inactive]
+    operation: parry
+    defender: {main_weapon_id: weapon.sword}
+    context: {hit_roll: 4}
+    distribution: {observable: result.blocked, max_rolls: 2, expected: {'true': 1/3, 'false': 2/3}}
+  mutations:
+  - {id: remove-reroll-keep-equality, path: defender.global_effects.tags, value: [skill.swordmaster], cases: [faces-against-four, faces-against-five]}
+  - {id: keep-spent-parry, runtime_fault: retain-parry-capacity, cases: [failed-reroll-spends-capacity]}
+- id: blood-dragon-sword-master-six-and-single-parry
+  question: "¿Sword Master del Blood Dragon puede parar un seis natural pese a la prohibición general?"
+  ruling: >-
+    Sí. Resuelto mediante Chaos in the Streets p.182 / Blood Dragon Special
+    Skills / Sword Master: la regla permite expresamente parar un seis.
+    Conserva el máximo de una parada y una repetición del intento fallido.
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-sword-master/skill.sword-master, digest: 693c837ac74c354319d658f42885d449796b5532294693c75e7cb14b1b463b54}
+  depends_on: [mechanic/skill.sword-master]
+  interpretation: >-
+    Chaos in the Streets p.182 / Blood Dragon Special Skills / Sword Master
+    permite parar incluso un seis, igualando el impacto. Repite una vez una
+    parada fallida, nunca la repetición, y no puede parar más de un ataque.
+    No elimina la necesidad de equipo con Parry ni la prohibición por Fuerza doble.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: blood-dragon-vampire}
+    context: {rule_id: band--blood-dragon-power-sword-master}
+    expect: {result.recipients: [blood-dragon-vampire]}
+  - id: six-faces
+    roles: [active, consumer, boundary]
+    operation: parry
+    defender: &vampire {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: blood-dragon-vampire, main_weapon_id: weapon.sword, special_rule_ids: [band--blood-dragon-power-sword-master]}
+    context: {hit_roll: 6}
+    distribution: {observable: result.blocked, max_rolls: 2, expected: {'true': 11/36, 'false': 25/36}}
+  - id: five-faces
+    roles: [active, boundary]
+    operation: parry
+    defender: *vampire
+    context: {hit_roll: 5}
+    distribution: {observable: result.blocked, max_rolls: 2, expected: {'true': 5/9, 'false': 4/9}}
+  - id: six-success-no-reroll
+    roles: [active, boundary]
+    operation: parry
+    defender: *vampire
+    context: {hit_roll: 6}
+    rolls: [{key: test.parry, value: 6}]
+    expect: {result.blocked: true, result.rerolled: false}
+  - id: one-parry-despite-two-swords
+    roles: [sequence, consumption, boundary]
+    operation: pool
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {<<: *vampire, off_hand_id: weapon.sword}
+    context: {count: 2}
+    rolls: [{key: test.attack.0.hit, value: 6}, {key: test.attack.1.hit, value: 5}, {key: test.attack.0.parry, value: 1}, {key: test.attack.0.parry.reroll, value: 6}, {key: test.attack.1.wound, value: 1}]
+    expect: {result.attacks.0.parried: true, result.attacks.1.parried: false, result.defender.parries_remaining: 0}
+  - id: no-equipment
+    roles: [inactive]
+    operation: parry
+    defender: {<<: *vampire, main_weapon_id: weapon.mace}
+    context: {hit_roll: 6}
+    expect: {result.attempted: false}
+  - id: no-power-no-six
+    roles: [inactive, boundary]
+    operation: parry
+    defender: {<<: *vampire, special_rule_ids: []}
+    context: {hit_roll: 6}
+    expect: {result.attempted: false}
+  - id: double-strength-still-prevents-parry
+    roles: [inactive, boundary]
+    operation: parry
+    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 8, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
+    defender: {<<: *vampire, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
+    context: {hit_roll: 6}
+    expect: {result.attempted: false}
+  mutations:
+  - {id: remove-six-exception, path: defender.global_effects.tags, value: [skill.sword-master], cases: [six-faces]}
+  - {id: retain-single-parry, runtime_fault: retain-parry-capacity, cases: [one-parry-despite-two-swords]}

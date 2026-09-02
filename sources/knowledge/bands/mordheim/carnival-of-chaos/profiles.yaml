@@ -1,0 +1,321 @@
+schema_version: 2
+band_id: carnival-of-chaos
+profiles:
+- id: carnival-master
+  name: Carnival Master
+  type: hero
+  cost: 70
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - carnival-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Carnival Master
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  source_path:
+  - heroes
+  - 1 Carnival Master
+  name_i18n:
+    en: Carnival Master
+    es: null
+  rule_ids:
+  - carnival-master--leader
+  - carnival-master--wizard
+  combat_traits: {}
+- id: brutes
+  name: Brutes
+  type: hero
+  cost: 60
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 0
+    S: 4
+    T: 4
+    W: 1
+    I: 2
+    A: 2
+    Ld: 7
+  equipment_lists:
+  - brute-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Brutes
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  source_path:
+  - heroes
+  - 0 – 2 Brutes
+  name_i18n:
+    en: Brutes
+    es: null
+  rule_ids:
+  - brutes--unnatural-strength
+- id: tainted-ones
+  name: Tainted Ones
+  type: hero
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - carnival-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Tainted Ones
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  source_path:
+  - heroes
+  - 0 – 2 Tainted Ones
+  name_i18n:
+    en: Tainted Ones
+    es: null
+  rule_ids:
+  - tainted-ones--nurgles-blessings
+  combat_traits: {}
+- id: plague-bearers
+  name: Plague Bearers
+  type: henchman
+  cost: 50
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 4
+    A: 2
+    Ld: 10
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Plague Bearers neither need nor use weapons and cannot wear armour.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Plague Bearers
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  source_path:
+  - henchmen
+  - 0 – 2 Plague Bearers
+  name_i18n:
+    en: Plague Bearers
+    es: null
+  rule_ids:
+  - plague-bearers--cloud-of-flies
+  - plague-bearers--stream-of-corruption
+  - plague-bearers--demonic
+  - plague-bearers--immune-to-poison
+  - plague-bearers--immune-to-psychology
+  - plague-bearers--cause-fear
+  - plague-bearers--daemonic-aura
+  - plague-bearers--daemonic-instability
+  combat_traits:
+    poison_immune: true
+    undead_or_possessed: true
+    cloud_of_flies: true
+- id: nurglings
+  name: Nurglings
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 0
+    S: 3
+    T: 2
+    W: 1
+    I: 3
+    A: 1
+    Ld: 10
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Nurglings do not use weapons and do not wear armour.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Nurglings
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  source_path:
+  - henchmen
+  - Nurglings
+  name_i18n:
+    en: Nurglings
+    es: null
+  rule_ids:
+  - nurglings--cloud-of-flies
+  - nurglings--swarm
+  - nurglings--daemonic
+  - nurglings--immune-to-poison
+  - nurglings--immune-to-psychology
+  - nurglings--daemonic-aura
+  - nurglings--daemonic-instability
+  combat_traits:
+    poison_immune: true
+    undead_or_possessed: true
+    cloud_of_flies: true
+- id: brethren
+  name: Brethren
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - carnival-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Brethren
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  source_path:
+  - henchmen
+  - Brethren
+  name_i18n:
+    en: Brethren
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: plague-cart
+  name: Plague Cart
+  type: henchman
+  cost: 120
+  experience: 0
+  characteristics:
+    M: null
+    WS: null
+    BS: null
+    S: null
+    T: 8
+    W: 4
+    I: null
+    A: null
+    Ld: null
+  components:
+  - id: cart
+    name: Cart
+    characteristics:
+      M: null
+      WS: null
+      BS: null
+      S: null
+      T: 8
+      W: 4
+      I: null
+      A: null
+      Ld: null
+  - id: wheel
+    name: Wheel
+    characteristics:
+      M: null
+      WS: null
+      BS: null
+      S: null
+      T: 6
+      W: 1
+      I: null
+      A: null
+      Ld: null
+  - id: horse
+    name: Horse
+    characteristics:
+      M: 8
+      WS: null
+      BS: null
+      S: 3
+      T: 3
+      W: 1
+      I: 3
+      A: null
+      Ld: null
+  - id: guardian
+    name: Guardian
+    characteristics:
+      M: null
+      WS: 3
+      BS: null
+      S: 3
+      T: 3
+      W: null
+      I: 3
+      A: 1
+      Ld: null
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - The Plague Cart and its Guardian cannot use weapons or wear armour.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Plague Cart
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  source_path:
+  - henchmen
+  - 0 – 1 Plague Cart
+  name_i18n:
+    en: Plague Cart
+    es: null
+  rule_ids:
+  - plague-cart--plague-cart
+  - plague-cart--guardian
+  - plague-cart--guardian-unarmed
+  - plague-cart--immune-to-psychology
+  combat_traits: {}

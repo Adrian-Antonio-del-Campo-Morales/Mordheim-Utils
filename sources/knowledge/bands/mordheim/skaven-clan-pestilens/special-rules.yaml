@@ -1,0 +1,385 @@
+schema_version: 2
+band_id: skaven-clan-pestilens
+rules:
+- id: plague-priest--leader
+  name: Leader
+  effect: Any warrior within 6" of the Plague Priest may use his Leadership instead of its own.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Plague Priest / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warrior within 6" of the Plague Priest may use his Leadership instead of its own.
+    es: null
+  applies_to:
+    profile_ids:
+    - plague-priest
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-pestilens.plague-priest.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: pestilens-sorcerer--spellcaster
+  name: Spellcaster
+  effect: The Pestilens Sorcerer is a spellcaster and may cast spells from Magic of the Horned Rat. The spell list itself
+    is not modelled in this file.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Pestilens Sorcerer / Special Rules / Spellcaster
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  name_i18n:
+    en: Spellcaster
+    es: null
+  effect_i18n:
+    en: The Pestilens Sorcerer is a spellcaster and may cast spells from Magic of the Horned Rat. The spell list itself is
+      not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - pestilens-sorcerer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-pestilens.pestilens-sorcerer.spellcaster
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: giant-rats--animal
+  name: Animal
+  effect: Giant Rats are animals and never gain Experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Giant Rats / Experience
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  name_i18n:
+    en: Animal
+    es: null
+  effect_i18n:
+    en: Giant Rats are animals and never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - giant-rats
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-pestilens.giant-rats.animal
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: rat-ogre--fear
+  name: Fear
+  effect: The Rat Ogre causes Fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Rat ogre / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Rat Ogre causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - rat-ogre
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-pestilens.rat-ogre.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: rat-ogre--stupidity
+  name: Stupidity
+  effect: The Rat Ogre is subject to Stupidity unless a Skaven Hero is within 6".
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Rat ogre / Special Rules / Stupidity
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  name_i18n:
+    en: Stupidity
+    es: null
+  effect_i18n:
+    en: The Rat Ogre is subject to Stupidity unless a Skaven Hero is within 6".
+    es: null
+  applies_to:
+    profile_ids:
+    - rat-ogre
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-pestilens.rat-ogre.stupidity
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: rat-ogre--experience
+  name: Experience
+  effect: The Rat Ogre never gains Experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Rat ogre / Special Rules / Experience
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  name_i18n:
+    en: Experience
+    es: null
+  effect_i18n:
+    en: The Rat Ogre never gains Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - rat-ogre
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-pestilens.rat-ogre.experience
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: rat-ogre--large-target
+  name: Large Target
+  effect: The Rat Ogre is a Large Target.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Rat ogre / Special Rules / Large Target
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  name_i18n:
+    en: Large Target
+    es: null
+  effect_i18n:
+    en: The Rat Ogre is a Large Target.
+    es: null
+  applies_to:
+    profile_ids:
+    - rat-ogre
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-clan-pestilens.rat-ogre.large-target
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--clan-pestilens-maximum-characteristics
+  name: Clan Pestilens Maximum Characteristics
+  effect: 'Clan Pestilens Skaven use their own racial maximum profile: M5, WS6, BS6, S4, T5, W3, I7, A4, Ld7.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Racial Maximum Characteristics / Skaven (Clan Pestilens)
+    url: https://mordheimer.net/docs/campaigns/experience
+  name_i18n:
+    en: Clan Pestilens Maximum Characteristics
+    es: null
+  effect_i18n:
+    en: 'Clan Pestilens Skaven use their own racial maximum profile: M5, WS6, BS6, S4, T5, W3, I7, A4, Ld7.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-clan-pestilens.band.clan-pestilens-maximum-characteristics
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--clan-pestilens-special-skills-black-hunger
+  kind: warband_skill
+  name: Black Hunger
+  effect: At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack and +D3" to his
+    total Movement, then suffers D3 Strength 3 hits with no armour save at the end of the turn.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Clan Pestilens Special Skills / black hunger
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  name_i18n:
+    en: Black Hunger
+    es: null
+  effect_i18n:
+    en: At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack and +D3" to his total
+      Movement, then suffers D3 Strength 3 hits with no armour save at the end of the turn.
+    es: null
+  eligibility:
+  - plague-priest
+  - pestilens-sorcerer
+  - plague-monks
+  - monk-initiates
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: mechanic.black-hunger
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.black-hunger
+- id: band--clan-pestilens-special-skills-censer-bearer
+  kind: warband_skill
+  name: Censer Bearer
+  effect: Requires Black Hunger. The Hero gains Frenzy and may use only a Censer as a close-combat weapon.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Clan Pestilens Special Skills / censer bearer
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  name_i18n:
+    en: Censer Bearer
+    es: null
+  effect_i18n:
+    en: Requires Black Hunger. The Hero gains Frenzy and may use only a Censer as a close-combat weapon.
+    es: null
+  eligibility:
+  - plague-priest
+  - pestilens-sorcerer
+  - plague-monks
+  - monk-initiates
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: compiler.censer-bearer-loadout
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.censer-bearer-loadout
+- id: band--clan-pestilens-special-skills-rotten-body
+  kind: warband_skill
+  name: Rotten Body
+  effect: The Hero is immune to poisons and diseases. If taken Out of Action because of a failed Censer-related test, he automatically
+    recovers after the battle and does not roll for injury.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Clan Pestilens Special Skills / rotten body
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  name_i18n:
+    en: Rotten Body
+    es: null
+  effect_i18n:
+    en: The Hero is immune to poisons and diseases. If taken Out of Action because of a failed Censer-related test, he automatically
+      recovers after the battle and does not roll for injury.
+    es: null
+  eligibility:
+  - plague-priest
+  - pestilens-sorcerer
+  - plague-monks
+  - monk-initiates
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+    - id: campaign.censer-recovery
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: post-battle recovery and Serious Injury.'
+- id: band--clan-pestilens-special-skills-contagious
+  kind: warband_skill
+  name: Contagious
+  effect: Requires Rotten Body. A model that inflicts the close-combat injury which takes this Hero Out of Action must take
+    a Toughness test. If the D6 result is higher than its Toughness it suffers one automatic Wound; a 6 always causes a Wound.
+    Undead and Possessed are immune to this test.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Clan Pestilens Special Skills / contagious
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  name_i18n:
+    en: Contagious
+    es: null
+  effect_i18n:
+    en: Requires Rotten Body. A model that inflicts the close-combat injury which takes this Hero Out of Action must take
+      a Toughness test. If the D6 result is higher than its Toughness it suffers one automatic Wound; a 6 always causes a
+      Wound. Undead and Possessed are immune to this test.
+    es: null
+  eligibility:
+  - plague-priest
+  - pestilens-sorcerer
+  - plague-monks
+  - monk-initiates
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--clan-pestilens-special-skills-ignore-pain
+  kind: warband_skill
+  name: Ignore Pain
+  effect: Requires the Resilient Strength skill. The Hero treats Stunned injury results as Knocked Down.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Clan Pestilens Special Skills / ignore pain
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  name_i18n:
+    en: Ignore Pain
+    es: null
+  effect_i18n:
+    en: Requires the Resilient Strength skill. The Hero treats Stunned injury results as Knocked Down.
+    es: null
+  eligibility:
+  - plague-priest
+  - pestilens-sorcerer
+  - plague-monks
+  - monk-initiates
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain

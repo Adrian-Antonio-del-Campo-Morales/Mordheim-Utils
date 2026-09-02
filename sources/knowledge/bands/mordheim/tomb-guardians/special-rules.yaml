@@ -1,0 +1,648 @@
+schema_version: 2
+band_id: tomb-guardians
+rules:
+- id: tomb-lord--leader
+  name: Leader
+  effect: The Tomb Lord is the warband's Leader and follows all the rules for Leaders.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Tomb Lord / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: The Tomb Lord is the warband's Leader and follows all the rules for Leaders.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-lord
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.tomb-guardians.tomb-lord.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: tomb-lord--undead
+  name: Undead
+  effect: The Tomb Lord is undead and follows all rules for the Undead.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Tomb Lord / Special Rules / Undead
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: The Tomb Lord is undead and follows all rules for the Undead.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-lord
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.tomb-guardians.tomb-lord.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: tomb-lord--flammable
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.flammable
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.flammable
+        parameters:
+          value: true
+  name: Flammable
+  effect: A fire-based attack that hits the Tomb Lord causes double the normal number of Wounds.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Flammable
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Flammable
+    es: null
+  effect_i18n:
+    en: A fire-based attack that hits the Tomb Lord causes double the normal number of Wounds.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-lord
+- id: liche-priest--wizard
+  name: Wizard
+  effect: The Liche Priest is a Wizard and uses Mortuary Cult scrolls. The scroll/spell list itself is intentionally not modelled
+    in this file.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Liche Priest / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Liche Priest is a Wizard and uses Mortuary Cult scrolls. The scroll/spell list itself is intentionally not modelled
+      in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - liche-priest
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.tomb-guardians.liche-priest.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: liche-priest--undead
+  name: Undead
+  effect: The Liche Priest is undead and follows all rules for the Undead.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Liche Priest / Special Rules / Undead
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: The Liche Priest is undead and follows all rules for the Undead.
+    es: null
+  applies_to:
+    profile_ids:
+    - liche-priest
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.tomb-guardians.liche-priest.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: acolytes--undead
+  name: Undead
+  effect: Acolytes are undead and follow all rules for the Undead.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 2 Acolytes / Special Rules / Undead
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: Acolytes are undead and follow all rules for the Undead.
+    es: null
+  applies_to:
+    profile_ids:
+    - acolytes
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.tomb-guardians.acolytes.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: skeleton-warriors--undead
+  name: Undead
+  effect: Skeletons are undead and follow all rules for the Undead.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Skeleton warriors / Special Rules / Undead
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: Skeletons are undead and follow all rules for the Undead.
+    es: null
+  applies_to:
+    profile_ids:
+    - skeleton-warriors
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.tomb-guardians.skeleton-warriors.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: tomb-guardians--undead
+  name: Undead
+  effect: The Tomb Guards are undead and follow all rules for the Undead.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Tomb Guardians / Special Rules / Undead
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: The Tomb Guards are undead and follow all rules for the Undead.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-guardians
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.tomb-guardians.tomb-guardians.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: tomb-guardians--experience
+  name: Experience
+  effect: Tomb Guardians gain Experience. Mordheimer recommends using the Tomb Lord racial maximum characteristics for Tomb
+    Guardians when they advance.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Tomb Guardians / Experience
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Experience
+    es: null
+  effect_i18n:
+    en: Tomb Guardians gain Experience. Mordheimer recommends using the Tomb Lord racial maximum characteristics for Tomb
+      Guardians when they advance.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-guardians
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.tomb-guardians.tomb-guardians.experience
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: tomb-scorpions--living
+  name: Living
+  effect: Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not need water.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Tomb Scorpions / Special Rules / Living
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Living
+    es: null
+  effect_i18n:
+    en: Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not need water.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-scorpions
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.tomb-guardians.tomb-scorpions.living
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: tomb-scorpions--animal
+  name: Animal
+  effect: Tomb Scorpions are animals and never gain Experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Tomb Scorpions / Special Rules / Animals
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Animal
+    es: null
+  effect_i18n:
+    en: Tomb Scorpions are animals and never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-scorpions
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.tomb-guardians.tomb-scorpions.animal
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: tomb-scorpions--scorpion-sting
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: poison.black-lotus
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: poison.black-lotus
+  name: Scorpion's Sting
+  effect: The Tomb Scorpion attacks with its poisonous sting. The source resolves this as an attack treated as if using Black
+    Lotus; the underlying poison-item mechanics are intentionally not duplicated in this file.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Tomb Scorpions / Special Rules / Scorpions sting
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Scorpion's Sting
+    es: null
+  effect_i18n:
+    en: The Tomb Scorpion attacks with its poisonous sting. The source resolves this as an attack treated as if using Black
+      Lotus; the underlying poison-item mechanics are intentionally not duplicated in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-scorpions
+- id: band--cause-fear
+  name: Cause Fear
+  effect: All warriors with the Undead special rule cause Fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Cause Fear
+    es: null
+  effect_i18n:
+    en: All warriors with the Undead special rule cause Fear.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tomb-guardians.band.cause-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--immune-to-psychology
+  name: Immune to Psychology
+  effect: All warriors with the Undead special rule are immune to Psychology and never leave combat because of Psychology.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: All warriors with the Undead special rule are immune to Psychology and never leave combat because of Psychology.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tomb-guardians.band.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--no-pain
+  eligibility:
+  - acolytes
+  - liche-priest
+  - skeleton-warriors
+  - tomb-guardians
+  - tomb-lord
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: All warriors with the Undead special rule treat a Stunned result as Knocked Down.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / No pain
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: All warriors with the Undead special rule treat a Stunned result as Knocked Down.
+    es: null
+  applies_to:
+    band: true
+- id: band--may-not-run
+  name: May Not Run
+  effect: Warriors with the Undead special rule may not run, but may charge normally.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / May not run
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: May Not Run
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule may not run, but may charge normally.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tomb-guardians.band.may-not-run
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--immune-to-poison
+  eligibility: [acolytes, liche-priest, skeleton-warriors, tomb-guardians, tomb-lord]
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Warriors with the Undead special rule are unaffected by poison.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Immune to poison
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule are unaffected by poison.
+    es: null
+  applies_to:
+    band: true
+- id: band--no-brain
+  name: No Brain
+  effect: Skeleton Warriors never gain Experience. This rule does not prevent Tomb Guardians from gaining Experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / No Brain
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: No Brain
+    es: null
+  effect_i18n:
+    en: Skeleton Warriors never gain Experience. This rule does not prevent Tomb Guardians from gaining Experience.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tomb-guardians.band.no-brain
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--tomb-lord-skill-memory
+  name: Tomb Lord Skill Memory
+  effect: When a Tomb Lord gains a new skill, it represents remembering knowledge from life rather than learning something
+    new; mechanically it follows the normal skill-advance process.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Note
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Tomb Lord Skill Memory
+    es: null
+  effect_i18n:
+    en: When a Tomb Lord gains a new skill, it represents remembering knowledge from life rather than learning something new;
+      mechanically it follows the normal skill-advance process.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tomb-guardians.band.tomb-lord-skill-memory
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--do-not-drink
+  name: Do Not Drink
+  effect: Undead models do not need food or water. Living animals accompanying the warband follow any applicable water rules
+    normally.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Do not Drink
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Do Not Drink
+    es: null
+  effect_i18n:
+    en: Undead models do not need food or water. Living animals accompanying the warband follow any applicable water rules
+      normally.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tomb-guardians.band.do-not-drink
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--home-ground
+  name: Home Ground
+  effect: A Tomb Guardian warband always rolls one extra die in the Exploration phase.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules / Home Ground
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Home Ground
+    es: null
+  effect_i18n:
+    en: A Tomb Guardian warband always rolls one extra die in the Exploration phase.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tomb-guardians.band.home-ground
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--drive-chariot
+  name: Drive Chariot
+  effect: A warrior needs this Academic skill to drive a Skeleton Chariot effectively in combat; without it, the charioteer
+    cannot charge. The Skeleton Chariot itself is special equipment and is intentionally not modelled in this file.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Tomb Guardian additional skills / drive chariot (academic)
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Drive Chariot
+    es: null
+  effect_i18n:
+    en: A warrior needs this Academic skill to drive a Skeleton Chariot effectively in combat; without it, the charioteer
+      cannot charge. The Skeleton Chariot itself is special equipment and is intentionally not modelled in this file.
+    es: null
+  skill_category: academic
+  applies_to:
+    band: true
+  runtime:
+    scope: 'LATER'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tomb-guardians.band.drive-chariot
+      scope: 'LATER'
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--tomb-guardian-experience-clarification
+  name: Tomb Guardian Experience Clarification
+  effect: The Town Cryer text is inconsistent about 'No Brain'. Mordheimer notes that the original Khemri material specifically
+    states that Tomb Guardians do gain Experience, and recommends using the Tomb Lord maximum characteristic profile for them.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Inconsistencies / No Brain Rule Ambiguity
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    en: Tomb Guardian Experience Clarification
+    es: null
+  effect_i18n:
+    en: The Town Cryer text is inconsistent about 'No Brain'. Mordheimer notes that the original Khemri material specifically
+      states that Tomb Guardians do gain Experience, and recommends using the Tomb Lord maximum characteristic profile for
+      them.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tomb-guardians.band.tomb-guardian-experience-clarification
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--tomb-guardian-maximum-characteristics
+  name: Tomb Guardian Maximum Characteristics
+  effect: 'Tomb Lord maximum: M4, WS6, BS6, S5, T5, W5, I5, A4, Ld9. Liche Priest and Acolyte maximum: M4, WS6, BS6, S4, T4,
+    W3, I6, A4, Ld9. For advancing Tomb Guardians, Mordheimer recommends using the Tomb Lord maximum profile.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Racial Maximum Characteristics / Tomb Guardians
+    url: https://mordheimer.net/docs/campaigns/experience
+  name_i18n:
+    en: Tomb Guardian Maximum Characteristics
+    es: null
+  effect_i18n:
+    en: 'Tomb Lord maximum: M4, WS6, BS6, S5, T5, W5, I5, A4, Ld9. Liche Priest and Acolyte maximum: M4, WS6, BS6, S4, T4,
+      W3, I6, A4, Ld9. For advancing Tomb Guardians, Mordheimer recommends using the Tomb Lord maximum profile.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tomb-guardians.band.tomb-guardian-maximum-characteristics
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'

@@ -1,0 +1,258 @@
+schema_version: 2
+band_id: ostlanders
+profiles:
+- id: elder
+  name: Elder
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - ostlander-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Elder
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  source_path:
+  - heroes
+  - 1 Elder
+  name_i18n:
+    en: Elder
+    es: null
+  rule_ids:
+  - elder--leader
+  combat_traits: {}
+- id: blood-brothers
+  name: Blood-brothers
+  type: hero
+  cost: 35
+  experience: 12
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - ostlander-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Blood-brothers
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  source_path:
+  - heroes
+  - 0 – 2 Blood-brothers
+  name_i18n:
+    en: Blood-brothers
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: priest-of-taal
+  name: Priest of Taal
+  type: hero
+  cost: 45
+  experience: 12
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - ostlander-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons and armour from the Ostlander Equipment List, but may never wear heavy armour.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Priest of Taal
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  source_path:
+  - heroes
+  - 0 – 1 Priest of Taal
+  name_i18n:
+    en: Priest of Taal
+    es: null
+  rule_ids:
+  - priest-of-taal--prayers
+  - priest-of-taal--strictures
+  combat_traits: {}
+- id: kin
+  name: Kin
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - ostlander-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Kin
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  source_path:
+  - henchmen
+  - Kin
+  name_i18n:
+    en: Kin
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: jaeger
+  name: Jaeger
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - jaeger-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 7 Jaeger
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  source_path:
+  - henchmen
+  - 0 – 7 Jaeger
+  name_i18n:
+    en: Jaeger
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: ruffians
+  name: Ruffians
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - ruffian-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Ruffians may never use missile weapons, even if an Advance would otherwise allow them to do so.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Ruffians
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  source_path:
+  - henchmen
+  - 0 – 5 Ruffians
+  name_i18n:
+    en: Ruffians
+    es: null
+  rule_ids:
+  - ruffians--drunk
+  - ruffians--no-respect
+  combat_traits: {}
+- id: ogre
+  name: Ogre
+  type: henchman
+  cost: 160
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 2
+    S: 4
+    T: 4
+    W: 3
+    I: 3
+    A: 2
+    Ld: 10
+  equipment_lists:
+  - ogre-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Ogre
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  source_path:
+  - henchmen
+  - 0 – 1 Ogre
+  name_i18n:
+    en: Ogre
+    es: null
+  rule_ids:
+  - ogre--fear
+  - ogre--large
+  - ogre--skills
+  - ogre--slow-witted
+  combat_traits: {}

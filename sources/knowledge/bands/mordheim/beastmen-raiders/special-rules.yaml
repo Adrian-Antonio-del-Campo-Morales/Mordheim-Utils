@@ -1,0 +1,644 @@
+schema_version: 2
+band_id: beastmen-raiders
+rules:
+- id: beastmen-chieftain--leader
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.beastmen-raiders.beastmen-chieftain.leader
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Leader
+  effect: 'Any Warrior within 6" of the Beastman
+
+    Chieftain may use his Leadership characteristic when
+
+    taking Leadership tests.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Beastmen Chieftain / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any Warrior within 6" of the Beastman
+
+      Chieftain may use his Leadership characteristic when
+
+      taking Leadership tests.'
+    es: null
+  applies_to:
+    profile_ids:
+    - beastmen-chieftain
+- id: beastmen-shaman--wizard
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.beastmen-raiders.beastmen-shaman.wizard
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: magia."
+  name: Wizard
+  effect: 'A Beastmen Shaman is a Wizard
+
+    and may use Chaos Rituals .'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Beastmen Shaman / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: 'A Beastmen Shaman is a Wizard
+
+      and may use Chaos Rituals .'
+    es: null
+  applies_to:
+    profile_ids:
+    - beastmen-shaman
+- id: centigors--drunken
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.beastmen-raiders.centigors.drunken
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Drunken
+  effect: 'Centigor are inclined to drink
+
+    vast quantities of noxious beer and looted
+
+    wine and spirits before battle, working
+
+    themselves up into a drunken frenzy. Roll
+
+    1D6 at the start of each turn. On a roll of 1,
+
+    they must test for stupidity that turn. On a
+
+    roll of 2-5 nothing happens and on the roll
+
+    of a 6 they become subject to frenzy for that
+
+    turn. Whilst subject to either stupidity or
+
+    frenzy, they are immune to all other forms of
+
+    psychology.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Centigors / Special Rules / Drunken
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Drunken
+    es: null
+  effect_i18n:
+    en: 'Centigor are inclined to drink
+
+      vast quantities of noxious beer and looted
+
+      wine and spirits before battle, working
+
+      themselves up into a drunken frenzy. Roll
+
+      1D6 at the start of each turn. On a roll of 1,
+
+      they must test for stupidity that turn. On a
+
+      roll of 2-5 nothing happens and on the roll
+
+      of a 6 they become subject to frenzy for that
+
+      turn. Whilst subject to either stupidity or
+
+      frenzy, they are immune to all other forms of
+
+      psychology.'
+    es: null
+  applies_to:
+    profile_ids:
+    - centigors
+- id: centigors--woodland-dwelling
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.beastmen-raiders.centigors.woodland-dwelling
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Woodland Dwelling
+  effect: 'Centigors are creatures
+
+    of the deep, dark forests. They suffer no
+
+    movement penalties for moving through
+
+    wooded areas.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Centigors / Special Rules / Woodland Dwelling
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Woodland Dwelling
+    es: null
+  effect_i18n:
+    en: 'Centigors are creatures
+
+      of the deep, dark forests. They suffer no
+
+      movement penalties for moving through
+
+      wooded areas.'
+    es: null
+  applies_to:
+    profile_ids:
+    - centigors
+- id: centigors--trample
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: profile-rule.centigors--trample
+      scope: "YES"
+      binding:
+        kind: compiler
+        id: profile-rule.centigors--trample
+  name: Trample
+  effect: 'As well as their weapons,
+
+    Centigors use their hooves and sheer size to
+
+    crush their enemies. This counts as an
+
+    additional attack, which does not benefit
+
+    from weapon bonuses or penalties...'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Centigors / Special Rules / Trample
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Trample
+    es: null
+  effect_i18n:
+    en: 'As well as their weapons,
+
+      Centigors use their hooves and sheer size to
+
+      crush their enemies. This counts as an
+
+      additional attack, which does not benefit
+
+      from weapon bonuses or penalties...'
+    es: null
+  applies_to:
+    profile_ids:
+    - centigors
+- id: ungor--lowest-of-the-low
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.beastmen-raiders.ungor.lowest-of-the-low
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Lowest of the Low
+  effect: 'Ungor are on the lowest
+
+    rung of Beastmen society and regardless of how
+
+    much Experience they accrue they will never
+
+    acquire a position of authority. If an Ungor rolls
+
+    ‘That lad’s got talent’ it must be re-rolled.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Ungor / Special Rules / Lowest of the Low
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Lowest of the Low
+    es: null
+  effect_i18n:
+    en: 'Ungor are on the lowest
+
+      rung of Beastmen society and regardless of how
+
+      much Experience they accrue they will never
+
+      acquire a position of authority. If an Ungor rolls
+
+      ‘That lad’s got talent’ it must be re-rolled.'
+    es: null
+  applies_to:
+    profile_ids:
+    - ungor
+- id: warhounds-of-chaos--natural-weapons
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: profile.natural-attacks
+      scope: "YES"
+      binding:
+        kind: profile
+        id: profile.natural-attacks
+  name: Natural Weapons
+  effect: Chaos Hounds have no weapons, but can fight without any penalties.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Warhounds of Chaos / Weapons/Armour
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Natural Weapons
+    es: null
+  effect_i18n:
+    en: Chaos Hounds have no weapons, but can fight without any penalties.
+    es: null
+  applies_to:
+    profile_ids:
+    - warhounds-of-chaos
+- id: warhounds-of-chaos--animals
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.beastmen-raiders.warhounds-of-chaos.animals
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Animals
+  effect: 'Chaos Hounds are animals and never
+
+    gain Experience.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Warhounds of Chaos / Special Rules / Animals
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Animals
+    es: null
+  effect_i18n:
+    en: 'Chaos Hounds are animals and never
+
+      gain Experience.'
+    es: null
+  applies_to:
+    profile_ids:
+    - warhounds-of-chaos
+- id: minotaur--fear
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.beastmen-raiders.minotaur.fear
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Fear
+  effect: 'Minotaurs are huge, bellowing monsters
+
+    and cause fear .'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Minotaur / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: 'Minotaurs are huge, bellowing monsters
+
+      and cause fear .'
+    es: null
+  applies_to:
+    profile_ids:
+    - minotaur
+- id: minotaur--bloodgreed
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.beastmen-raiders.minotaur.bloodgreed
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Bloodgreed
+  effect: 'If a Minotaur puts all of its
+
+    enemies out of action in hand-to-hand combat,
+
+    it becomes frenzied on a D6 roll of 4+.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Minotaur / Special Rules / Bloodgreed
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Bloodgreed
+    es: null
+  effect_i18n:
+    en: 'If a Minotaur puts all of its
+
+      enemies out of action in hand-to-hand combat,
+
+      it becomes frenzied on a D6 roll of 4+.'
+    es: null
+  applies_to:
+    profile_ids:
+    - minotaur
+- id: minotaur--animal
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.beastmen-raiders.minotaur.animal
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Animal
+  effect: 'A Minotaur is far more bestial than its
+
+    Beastmen brethren and, although it may gain
+
+    Experience, it may never become a Hero.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Minotaur / Special Rules / Animal
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Animal
+    es: null
+  effect_i18n:
+    en: 'A Minotaur is far more bestial than its
+
+      Beastmen brethren and, although it may gain
+
+      Experience, it may never become a Hero.'
+    es: null
+  applies_to:
+    profile_ids:
+    - minotaur
+- id: minotaur--large-target
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.beastmen-raiders.minotaur.large-target
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: disparo."
+  name: Large Target
+  effect: Minotaurs are Large Targets as defined in the shooting rules .
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Minotaur / Special Rules / Large Target
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Large Target
+    es: null
+  effect_i18n:
+    en: Minotaurs are Large Targets as defined in the shooting rules .
+    es: null
+  applies_to:
+    profile_ids:
+    - minotaur
+- id: band--animals
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.beastmen-raiders.band.animals
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Animals
+  effect: 'Animals: Beastmen are fearsome creatures of Chaos that do not interact with other races other than in war. A Beastmen
+    warband may never hire any Hired Swords unless specifically stated with the Hired Sword.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Animals
+    es: null
+  effect_i18n:
+    en: 'Animals: Beastmen are fearsome creatures of Chaos that do not interact with other races other than in war. A Beastmen
+      warband may never hire any Hired Swords unless specifically stated with the Hired Sword.'
+    es: null
+  applies_to:
+    band: true
+- id: band--beastmen-special-skills-shaggy-hide
+  kind: warband_skill
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: selectable
+    effects:
+    - id: trait.natural-armour-save
+      scope: "YES"
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 6
+    - id: trait.natural-armour-stacks
+      scope: "YES"
+      binding:
+        kind: trait
+        id: trait.natural-armour-stacks
+        parameters:
+          value: true
+  name: Shaggy Hide
+  effect: 'The Beastman’s massively shaggy hide acts as armour, deflecting sword strokes and
+
+    protecting him from harm. The model gains a 6+ Armour Save that can be combined
+
+    with other armour as normal.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Beastmen Special Skills / Shaggy Hide
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Shaggy Hide
+    es: null
+  effect_i18n:
+    en: 'The Beastman’s massively shaggy hide acts as armour, deflecting sword strokes and
+
+      protecting him from harm. The model gains a 6+ Armour Save that can be combined
+
+      with other armour as normal.'
+    es: null
+  applies_to:
+    band: true
+- id: band--beastmen-special-skills-mutant
+  kind: warband_skill
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: selectable
+    effects:
+    - id: special-rule.band--beastmen-special-skills-mutant
+      scope: "YES"
+      binding:
+        kind: compiler
+        id: special-rule.band--beastmen-special-skills-mutant
+  name: Mutant
+  effect: 'The Beastman may buy one mutation.
+
+    See Mutants section on special rules.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Beastmen Special Skills / Mutant
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Mutant
+    es: null
+  effect_i18n:
+    en: 'The Beastman may buy one mutation.
+
+      See Mutants section on special rules.'
+    es: null
+  applies_to:
+    band: true
+- id: band--beastmen-special-skills-fearless
+  kind: warband_skill
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.beastmen-raiders.band.beastmen-special-skills-fearless
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Fearless
+  effect: Immune to fear and All Alone tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Beastmen Special Skills / Fearless
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Fearless
+    es: null
+  effect_i18n:
+    en: Immune to fear and All Alone tests.
+    es: null
+  applies_to:
+    band: true
+- id: band--beastmen-special-skills-horned-one
+  kind: warband_skill
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: selectable
+    effects:
+    - id: special-rule.band--beastmen-special-skills-horned-one
+      scope: "YES"
+      binding:
+        kind: compiler
+        id: special-rule.band--beastmen-special-skills-horned-one
+  name: Horned One
+  effect: The Beastman has mighty horns, and can make an additional Attack with its basic Strength on a turn it charges.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Beastmen Special Skills / Horned One
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Horned One
+    es: null
+  effect_i18n:
+    en: The Beastman has mighty horns, and can make an additional Attack with its basic Strength on a turn it charges.
+    es: null
+  applies_to:
+    band: true
+- id: band--beastmen-special-skills-bellowing-roar
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.beastmen-raiders.band.beastmen-special-skills-bellowing-roar
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Bellowing Roar
+  effect: Only the Beastmen Chief may have this skill. He may re-roll any failed Rout tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Beastmen Special Skills / Bellowing Roar
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Bellowing Roar
+    es: null
+  effect_i18n:
+    en: Only the Beastmen Chief may have this skill. He may re-roll any failed Rout tests.
+    es: null
+  applies_to:
+    band: true
+- id: band--beastmen-special-skills-manhater
+  kind: warband_skill
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.beastmen-raiders.band.beastmen-special-skills-manhater
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Manhater
+  effect: Will be affected by the rules of hatred when fighting any Human warbands.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Beastmen Special Skills / Manhater
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  name_i18n:
+    en: Manhater
+    es: null
+  effect_i18n:
+    en: Will be affected by the rules of hatred when fighting any Human warbands.
+    es: null
+  applies_to:
+    band: true

@@ -1,0 +1,62 @@
+schema_version: 2
+id: trollheim-cult-of-the-possessed
+canonical_family: cult-of-the-possessed
+name: Cult of the Possessed
+name_i18n:
+  en: Cult of the Possessed
+  es: null
+original_locale: es
+categories:
+- trollheim
+grade: null
+setting: Mordheim
+publication: Trollheim
+status: source-normalized
+sources:
+- manual: trollheim
+  printed_page: 72-76
+  section: Cult of the Possessed
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: magister
+    minimum: 1
+    maximum: 1
+  - profile_id: the-possessed
+    minimum: 0
+    maximum: 2
+  - profile_id: mutants
+    minimum: 0
+    maximum: 2
+  - profile_id: darksouls
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: brethren
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: beastmen
+    minimum: 0
+    maximum: 3
+    group_size:
+      minimum: 1
+      maximum: 3
+ruleset: mordheim
+rule_ids:
+- band--mutation-purchase
+- band--mutations-daemon-soul
+- band--mutations-great-claw
+- band--mutations-cloven-hooves
+- band--mutations-tentacle
+- band--mutations-acid-blood
+- band--mutations-spines
+- band--mutations-scorpion-tail
+- band--mutations-extra-arm
+- band--mutations-hideous

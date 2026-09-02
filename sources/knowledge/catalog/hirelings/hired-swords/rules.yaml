@@ -1,0 +1,84 @@
+schema_version: 1
+ruleset: mordheim
+catalog: hirelings-hired-sword-rules
+rules:
+- id: hireling.hired-sword.rule.recruitment-window
+  name: Recruitment window
+  effect: A Hired Sword may be recruited when creating a warband or during the post-battle campaign phase.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Recruiting Hired Swords
+    url: https://mordheimer.net/docs/campaigns/hired-swords
+- id: hireling.hired-sword.rule.roster-capacity
+  name: Roster capacity
+  effect: Hired Swords do not count against the warband's maximum number of warriors or Heroes and do not increase the warband size used for wyrdstone income.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Recruiting Hired Swords
+    url: https://mordheimer.net/docs/campaigns/hired-swords
+- id: hireling.hired-sword.rule.battle-membership
+  name: Battle membership
+  effect: A Hired Sword counts as part of the warband for in-battle purposes such as Rout tests.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Recruiting Hired Swords
+    url: https://mordheimer.net/docs/campaigns/hired-swords
+- id: hireling.hired-sword.rule.fixed-equipment
+  name: Fixed equipment
+  effect: Extra equipment cannot normally be bought for a Hired Sword and the Hired Sword's equipment cannot be sold by the warband.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Recruiting Hired Swords
+    url: https://mordheimer.net/docs/campaigns/hired-swords
+- id: hireling.hired-sword.rule.unique-type
+  name: One of each type
+  effect: A warband may include at most one Hired Sword of each type.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Recruiting Hired Swords
+    url: https://mordheimer.net/docs/campaigns/hired-swords
+- id: hireling.hired-sword.rule.no-rout-leadership
+  name: No Rout Leadership
+  effect: A Hired Sword's Leadership cannot be used for Rout tests.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Recruiting Hired Swords
+    url: https://mordheimer.net/docs/campaigns/hired-swords
+- id: hireling.hired-sword.rule.injuries-as-henchman
+  name: Injuries as Henchman
+  effect: A Hired Sword taken Out of Action resolves post-battle injuries using the Henchman serious injury procedure.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Injuries
+    url: https://mordheimer.net/docs/campaigns/hired-swords
+- id: hireling.hired-sword.rule.experience-progression
+  name: Experience progression
+  effect: Hired Swords gain Experience like Henchmen, but when an advance is earned it is resolved on the Heroes advancement table.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Hired Swords and Experience
+    url: https://mordheimer.net/docs/campaigns/hired-swords
+- id: hireling.hired-sword.dwarf-troll-slayer.rule.campaign-eligibility
+  name: Dynamic hiring eligibility — Elven employers
+  effect: Mercenaries and Witch Hunters may hire the Dwarf Troll Slayer. A warband whose current roster includes Elves may also hire him; any associated upkeep change is resolved by the source rule.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Dwarf Troll Slayer
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: hireling.hired-sword.elf-ranger.rule.campaign-eligibility
+  name: Dynamic hiring eligibility — Dwarven employers
+  effect: Mercenaries and Witch Hunters may hire the Elf Ranger. A warband whose current roster includes Dwarfs may also hire him; any associated upkeep change is resolved by the source rule.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Elf Ranger
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a

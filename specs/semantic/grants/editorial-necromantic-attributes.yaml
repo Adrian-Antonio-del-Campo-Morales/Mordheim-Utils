@@ -1,0 +1,195 @@
+schema_version: 1
+specifications:
+- id: editorial-necromantic-bone-armour
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/khemri-necromancers/band--necromantic-modification-bone-armour/profile.characteristics
+    digest: 23c87bb9cea4ee5ca8eeda4bd75064c3546520eeb64a08c1967b674294494d48
+  interpretation: Khemri p.56, Necromantic Modification Table / bone-armour. La mejora seleccionada suma uno a toughness
+    del perfil de Abominación (valor base 4). Se comprueba su concesión exclusiva y su consumo por la fase wound;
+    costes y adquisición 2D6 quedan fuera de esta prueba de combate.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      main_weapon_id: weapon.mace
+    context:
+      rule_id: band--necromantic-modification-bone-armour
+    expect:
+      result.recipients:
+      - necromantic-abomination
+  - id: selected-consumer
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      main_weapon_id: weapon.mace
+      special_rule_ids:
+      - band--necromantic-modification-bone-armour
+    expect:
+      defender.characteristics.toughness: 5
+      result.target: 6
+    attacker:
+      main_weapon_id: weapon.mace
+    rolls:
+    - key: wound
+      value: 4
+  - id: unselected-consumer
+    roles:
+    - inactive
+    - boundary
+    operation: wound
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      main_weapon_id: weapon.mace
+    expect:
+      result.target: 5
+    attacker:
+      main_weapon_id: weapon.mace
+    rolls:
+    - key: wound
+      value: 4
+  mutations:
+  - id: remove-attribute-bonus
+    path: defender.characteristics.toughness
+    value: 4
+    cases:
+    - selected-consumer
+- id: editorial-necromantic-killers-precision
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/khemri-necromancers/band--necromantic-modification-killers-precision/profile.characteristics
+    digest: 939fbdc1f85dca057792276acae2964aaa217681f83653699f8952857656f5fb
+  interpretation: Khemri p.56, Necromantic Modification Table / killers-precision. La mejora seleccionada suma uno
+    a weapon_skill del perfil de Abominación (valor base 3). Se comprueba su concesión exclusiva y su consumo por
+    la fase hit; costes y adquisición 2D6 quedan fuera de esta prueba de combate.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      main_weapon_id: weapon.mace
+    context:
+      rule_id: band--necromantic-modification-killers-precision
+    expect:
+      result.recipients:
+      - necromantic-abomination
+  - id: selected-consumer
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      main_weapon_id: weapon.mace
+      special_rule_ids:
+      - band--necromantic-modification-killers-precision
+    expect:
+      attacker.characteristics.weapon_skill: 4
+      result.target: 3
+    rolls:
+    - key: hit
+      value: 4
+  - id: unselected-consumer
+    roles:
+    - inactive
+    - boundary
+    operation: hit
+    attacker:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      main_weapon_id: weapon.mace
+    expect:
+      result.target: 4
+    rolls:
+    - key: hit
+      value: 4
+  mutations:
+  - id: remove-attribute-bonus
+    path: attacker.characteristics.weapon_skill
+    value: 3
+    cases:
+    - selected-consumer
+- id: editorial-necromantic-enhanced-reflexes
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/khemri-necromancers/band--necromantic-modification-enhanced-reflexes/profile.characteristics
+    digest: 9b303d6f20166e16b7180abf7f843744ac521c383c7e50aae169c8eca19c2bb7
+  interpretation: Khemri p.56, Necromantic Modification Table / enhanced-reflexes. La mejora seleccionada suma uno
+    a initiative del perfil de Abominación (valor base 2). Se comprueba su concesión exclusiva y su consumo por
+    la fase priority; costes y adquisición 2D6 quedan fuera de esta prueba de combate.
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      main_weapon_id: weapon.mace
+    context:
+      rule_id: band--necromantic-modification-enhanced-reflexes
+    expect:
+      result.recipients:
+      - necromantic-abomination
+  - id: selected-consumer
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
+    operation: priority
+    attacker:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      main_weapon_id: weapon.mace
+      special_rule_ids:
+      - band--necromantic-modification-enhanced-reflexes
+    expect:
+      attacker.characteristics.initiative: 3
+      result.initiative: 3
+  - id: unselected-consumer
+    roles:
+    - inactive
+    - boundary
+    operation: priority
+    attacker:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      main_weapon_id: weapon.mace
+    expect:
+      result.initiative: 2
+  mutations:
+  - id: remove-attribute-bonus
+    path: attacker.characteristics.initiative
+    value: 2
+    cases:
+    - selected-consumer

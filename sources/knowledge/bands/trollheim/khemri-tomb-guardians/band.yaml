@@ -1,0 +1,57 @@
+schema_version: 2
+id: khemri-tomb-guardians
+canonical_family: tomb-guardians
+name: Tomb Guardians
+name_i18n:
+  en: Tomb Guardians
+  es: null
+original_locale: es
+categories:
+- trollheim
+grade: null
+setting: Khemri
+publication: Khemri
+status: source-normalized
+sources:
+- manual: khemri
+  printed_page: 40-47
+  section: Tomb Guardians
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: tomb-lord
+    minimum: 1
+    maximum: 1
+  - profile_id: mortuary-priest
+    minimum: 0
+    maximum: 1
+  - profile_id: necrotect
+    minimum: 0
+    maximum: 1
+  - profile_id: mortuary-acolytes
+    minimum: 0
+    maximum: 3
+  - profile_id: skeleton-warriors
+    minimum: 0
+    maximum: null
+  - profile_id: tomb-guardians
+    minimum: 0
+    maximum: 2
+  - profile_id: tomb-scorpions
+    minimum: 0
+    maximum: 3
+  - profile_id: stone-golem
+    minimum: 0
+    maximum: 1
+ruleset: mordheim
+rule_ids:
+- band--cause-fear
+- band--immune-to-psychology
+- band--no-pain
+- band--no-food-or-water
+- band--may-not-run
+- band--immune-to-poison
+- band--brainless
+- band--at-home

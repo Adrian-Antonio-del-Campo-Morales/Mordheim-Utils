@@ -1,0 +1,216 @@
+schema_version: 2
+band_id: trollheim-witch-hunters
+profiles:
+- id: witch-hunter-captain
+  name: Witch Hunter Captain
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - witch-hunter-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  source:
+    manual: trollheim
+    printed_page: 80
+    section: 1 Witch Hunter Captain
+  source_path:
+  - heroes
+  - 1 Witch Hunter Captain
+  name_i18n:
+    en: Witch Hunter Captain
+    es: null
+  rule_ids:
+  - witch-hunter-captain--leader
+  - witch-hunter-captain--burn-the-witch
+  combat_traits: {}
+- id: witch-hunters
+  name: Witch Hunters
+  type: hero
+  cost: 25
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - witch-hunter-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - speed
+  source:
+    manual: trollheim
+    printed_page: 80
+    section: 0-3 Witch Hunters
+  source_path:
+  - heroes
+  - 0-3 Witch Hunters
+  name_i18n:
+    en: Witch Hunters
+    es: null
+  rule_ids:
+  - witch-hunters--burn-the-witch
+  combat_traits: {}
+- id: warrior-priest
+  name: Warrior-Priest
+  type: hero
+  cost: 40
+  experience: 12
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - witch-hunter-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - strength
+  source:
+    manual: trollheim
+    printed_page: 80
+    section: 0-1 Warrior-Priest
+  source_path:
+  - heroes
+  - 0-1 Warrior-Priest
+  name_i18n:
+    en: Warrior-Priest
+    es: null
+  rule_ids:
+  - warrior-priest--prayers
+  combat_traits: {}
+- id: flagellants
+  name: Flagellants
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 10
+  equipment_lists:
+  - flagellant-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select equipment only from the Flagellant Equipment List.
+  - May never use missile weapons, even if an Advance would otherwise allow access to them.
+  skill_access: []
+  source:
+    manual: trollheim
+    printed_page: 81
+    section: 0-5 Flagellants
+  source_path:
+  - henchmen
+  - 0-5 Flagellants
+  name_i18n:
+    en: Flagellants
+    es: null
+  rule_ids:
+  - flagellants--fanatical
+  combat_traits: {}
+- id: zealots
+  name: Zealots
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - zealot-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select equipment only from the Zealot Equipment List.
+  skill_access: []
+  source:
+    manual: trollheim
+    printed_page: 81
+    section: Zealots
+  source_path:
+  - henchmen
+  - Zealots
+  name_i18n:
+    en: Zealots
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: war-hounds
+  name: War Hounds
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - War Hounds never use or need weapons or armour; their jaws and brute force are natural attacks.
+  skill_access: []
+  source:
+    manual: trollheim
+    printed_page: 81
+    section: 0-5 War Hounds
+  source_path:
+  - henchmen
+  - 0-5 War Hounds
+  name_i18n:
+    en: War Hounds
+    es: null
+  rule_ids:
+  - war-hounds--animals
+  combat_traits: {}

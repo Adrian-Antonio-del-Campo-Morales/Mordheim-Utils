@@ -1,0 +1,137 @@
+schema_version: 2
+band_id: mootlanders
+rules:
+- id: moot-elder--leader
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.mootlanders.moot-elder.leader
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Leader
+  effect: Any warrior within 6" of the Moot Elder may use his Leadership characteristic when taking Leadership tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 1 Moot Elder / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/mootlanders
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warrior within 6" of the Moot Elder may use his Leadership characteristic when taking Leadership tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - moot-elder
+- id: master-chef--inspired-cooking
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mootlanders.master-chef.inspired-cooking
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+  name: Inspired Cooking
+  effect: Any Halfling models within 6" of a Halfling Master Chef may re-roll any failed hits in combat (once per turn).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 1 Master Chef / Special Rules / Inspired Cooking
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/mootlanders
+  name_i18n:
+    en: Inspired Cooking
+    es: null
+  effect_i18n:
+    en: Any Halfling models within 6" of a Halfling Master Chef may re-roll any failed hits in combat (once per turn).
+    es: null
+  applies_to:
+    profile_ids:
+    - master-chef
+- id: halfling-thieves--sneaky
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.mootlanders.halfling-thieves.sneaky
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: impactar."
+  name: Sneaky
+  effect: Halfling Thieves are always at -1 to hit when targeted by shooting. This modifier is cumulative with other shooting
+    modifiers.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 3 Halfling Thieves / Special Rules / Sneaky
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/mootlanders
+  name_i18n:
+    en: Sneaky
+    es: null
+  effect_i18n:
+    en: Halfling Thieves are always at -1 to hit when targeted by shooting. This modifier is cumulative with other shooting
+      modifiers.
+    es: null
+  applies_to:
+    profile_ids:
+    - halfling-thieves
+- id: scouts--keen-eyesight
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.mootlanders.scouts.keen-eyesight
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Keen Eyesight
+  effect: Halfling Scouts can spot hidden enemies at twice their Initiative value in inches.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Scouts / Special Rules / Keen Eyesight
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/mootlanders
+  name_i18n:
+    en: Keen Eyesight
+    es: null
+  effect_i18n:
+    en: Halfling Scouts can spot hidden enemies at twice their Initiative value in inches.
+    es: null
+  applies_to:
+    profile_ids:
+    - scouts
+- id: band--fragile-halflings
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: band
+    effects:
+    - id: trait.fragile-halflings
+      scope: "YES"
+      binding:
+        kind: trait
+        id: trait.fragile-halflings
+        parameters:
+          value: true
+  name: Fragile Halflings
+  effect: When rolling on the Injury chart for a Halfling, a roll of 2 is treated as Stunned rather than Knocked Down.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/mootlanders
+  name_i18n:
+    en: Fragile Halflings
+    es: null
+  effect_i18n:
+    en: When rolling on the Injury chart for a Halfling, a roll of 2 is treated as Stunned rather than Knocked Down.
+    es: null
+  applies_to:
+    band: true

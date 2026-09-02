@@ -1,0 +1,44 @@
+schema_version: 2
+id: khemri-mages
+canonical_family: khemri-mages
+name: Mages
+name_i18n:
+  en: Mages
+  es: null
+original_locale: es
+categories:
+- trollheim
+grade: null
+setting: Khemri
+publication: Khemri
+status: source-normalized
+sources:
+- manual: khemri
+  printed_page: 58-63
+  section: Mages
+roster:
+  minimum_models: 3
+  maximum_models: 12
+  starting_gold: 500
+  members:
+  - profile_id: archmage
+    minimum: 1
+    maximum: 1
+  - profile_id: mage
+    minimum: 0
+    maximum: 2
+  - profile_id: witch
+    minimum: 0
+    maximum: 1
+  - profile_id: pupil
+    minimum: 0
+    maximum: 6
+  - profile_id: mechanical-beast
+    minimum: 0
+    maximum: 5
+ruleset: mordheim
+rule_ids:
+- band--pupil-limit
+- band--mage-special-skills-dispel-magic
+- band--mage-special-skills-store-spell
+- band--mage-special-skills-mechanic

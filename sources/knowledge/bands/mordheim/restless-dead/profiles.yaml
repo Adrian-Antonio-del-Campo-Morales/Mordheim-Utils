@@ -1,0 +1,296 @@
+schema_version: 2
+band_id: restless-dead
+profiles:
+- id: liche
+  name: Liche
+  type: hero
+  cost: 125
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 2
+    T: 2
+    W: 4
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - restless-dead-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions:
+  - May wear armour from the Restless Dead Equipment List.
+  - May not carry non-magical weapons and suffers no penalty for fighting without a weapon.
+  skill_access:
+  - academic
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Liche
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  source_path:
+  - heroes
+  - 1 Liche
+  name_i18n:
+    en: Liche
+    es: null
+  rule_ids:
+  - liche--wizard
+  - liche--cause-fear
+  - liche--immune-to-psychology
+  - liche--no-pain
+  - liche--immune-to-poison
+  - liche--eternal
+  - liche--feed-upon-magic
+  - liche--warrior-wizard
+  - liche--advancement
+  combat_traits:
+    poison_immune: true
+- id: necromancer
+  name: Necromancer
+  type: hero
+  cost: 40
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - restless-dead-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - academic
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 - 1 Necromancer
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  source_path:
+  - heroes
+  - 0 – 1 Necromancer
+  name_i18n:
+    en: Necromancer
+    es: null
+  rule_ids:
+  - necromancer--wizard
+  - necromancer--apprentices
+  - necromancer--gofer
+  combat_traits: {}
+- id: grave-guards
+  name: Grave Guards
+  type: hero
+  cost: 35
+  experience: 6
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - restless-dead-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 - 3 Grave Guards
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  source_path:
+  - heroes
+  - 0 – 3 Grave Guards
+  name_i18n:
+    en: Grave Guards
+    es: null
+  rule_ids:
+  - grave-guards--wight-blades
+  - grave-guards--cause-fear
+  - grave-guards--immune-to-poison
+  - grave-guards--immune-to-psychology
+  - grave-guards--no-pain
+  - grave-guards--may-not-run
+  - grave-guards--no-deal
+  combat_traits:
+    poison_immune: true
+    wight_blades: true
+- id: zombies
+  name: Zombies
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 1
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not carry weapons or wear armour and suffers no penalty for fighting unarmed.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Zombies
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  source_path:
+  - henchmen
+  - Zombies
+  name_i18n:
+    en: Zombies
+    es: null
+  rule_ids:
+  - zombies--cause-fear
+  - zombies--may-not-run
+  - zombies--immune-to-psychology
+  - zombies--immune-to-poison
+  - zombies--no-pain
+  - zombies--no-brain
+  combat_traits:
+    poison_immune: true
+- id: skeletons
+  name: Skeletons
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - restless-dead-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 - 8 Skeletons
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  source_path:
+  - henchmen
+  - 0 – 8 Skeletons
+  name_i18n:
+    en: Skeletons
+    es: null
+  rule_ids:
+  - skeletons--cause-fear
+  - skeletons--may-not-run
+  - skeletons--immune-to-psychology
+  - skeletons--immune-to-poison
+  - skeletons--no-pain
+  - skeletons--no-brain
+  combat_traits:
+    poison_immune: true
+- id: wights
+  name: Wights
+  type: henchman
+  cost: 30
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - restless-dead-equipment-lists
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 - 3 Wights
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  source_path:
+  - henchmen
+  - 0 – 3 Wights
+  name_i18n:
+    en: Wights
+    es: null
+  rule_ids:
+  - wights--cause-fear
+  - wights--may-not-run
+  - wights--immune-to-psychology
+  - wights--immune-to-poison
+  - wights--no-pain
+  - wights--experience
+  combat_traits:
+    poison_immune: true
+- id: scarecrows
+  name: Scarecrows
+  type: henchman
+  cost: 65
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 2
+    Ld: 10
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Carries no equipment and suffers no penalty for fighting unarmed.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 - 2 Scarecrows
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  source_path:
+  - henchmen
+  - 0 – 2 Scarecrows
+  name_i18n:
+    en: Scarecrows
+    es: null
+  rule_ids:
+  - scarecrows--cause-fear
+  - scarecrows--immune-to-psychology
+  - scarecrows--immune-to-poison
+  - scarecrows--no-pain
+  - scarecrows--no-brain
+  - scarecrows--no-substance
+  - scarecrows--flammable
+  - scarecrows--construct
+  - scarecrows--animated-construct
+  combat_traits:
+    poison_immune: true

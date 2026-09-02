@@ -1,0 +1,259 @@
+schema_version: 2
+band_id: merchant-caravans
+profiles:
+- id: merchant
+  name: Merchant
+  type: hero
+  cost: 50
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - academic
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Merchant
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  source_path:
+  - Heroes
+  - 1 Merchant
+  name_i18n:
+    en: Merchant
+    es: null
+  rule_ids:
+  - merchant--merchant
+  combat_traits: {}
+- id: apprentice
+  name: Apprentice
+  type: hero
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Apprentice
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  source_path:
+  - Heroes
+  - 0 – 1 Apprentice
+  name_i18n:
+    en: Apprentice
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: knights-vanguard
+  name: Knights Vanguard
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - hero-equipment-list
+  - cathayan-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Knights Vanguard
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  source_path:
+  - Heroes
+  - 0 – 2 Knights Vanguard
+  name_i18n:
+    en: Knights Vanguard
+    es: null
+  rule_ids:
+  - knights-vanguard--lightning-reflexes
+  - knights-vanguard--ride-warhorse
+  - knights-vanguard--hirelings
+  combat_traits:
+    starting_skills:
+    - skill.lightning-reflexes
+- id: magician
+  name: Magician
+  type: hero
+  cost: 40
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - academic
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Magician
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  source_path:
+  - Heroes
+  - 0 – 1 Magician
+  name_i18n:
+    en: Magician
+    es: null
+  rule_ids:
+  - magician--wizard
+  - magician--hireling
+  combat_traits: {}
+- id: sell-swords
+  name: Sell-swords
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - henchman-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Sell-swords
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  source_path:
+  - Henchmen
+  - Sell-swords
+  name_i18n:
+    en: Sell-swords
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: marksmen
+  name: Marksmen
+  type: henchman
+  cost: 30
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - henchman-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Marksmen
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  source_path:
+  - Henchmen
+  - 0 – 5 Marksmen
+  name_i18n:
+    en: Marksmen
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: blackguards
+  name: Blackguards
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - cathayan-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 3 Blackguards
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  source_path:
+  - Henchmen
+  - 0 – 3 Blackguards
+  name_i18n:
+    en: Blackguards
+    es: null
+  rule_ids:
+  - blackguards--strongman
+  - blackguards--unreliable-hirelings
+  combat_traits:
+    starting_skills:
+    - skill.strongman

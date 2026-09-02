@@ -1,0 +1,786 @@
+schema_version: 2
+ruleset: mordheim
+items:
+- id: blunderbuss
+  kind: ranged-weapon
+  name: Blunderbuss
+  name_i18n:
+    en: Blunderbuss
+    es: null
+  source_refs:
+  - &id001
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marksman equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+  - &id024
+    manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Dwarf Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
+  - &id017
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marksman equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+  - &id026
+    manual: mordheimer.net
+    printed_page: 0
+    section: Imperial Outriders equipment lists / Outrider Missile Weapons
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/imperial-outriders
+  - &id002
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marksman equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+  - &id003
+    manual: mordheimer.net
+    printed_page: 0
+    section: Jaeger Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  - &id020
+    manual: mordheimer.net
+    printed_page: 0
+    section: Gunner Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  combat_status: out_of_scope
+- id: blunderbuss_one_per_warband
+  kind: ranged-weapon
+  name: Blunderbuss One Per Warband
+  name_i18n:
+    en: Blunderbuss One Per Warband
+    es: null
+  source_refs:
+  - &id018
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  combat_status: out_of_scope
+- id: bow
+  kind: ranged-weapon
+  name: Bow
+  name_i18n:
+    en: Bow
+    es: null
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Heroines Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  - &id051
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchwomen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  - &id027
+    manual: mordheimer.net
+    printed_page: 0
+    section: Jaguar Warrior Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  - &id052
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchwomen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  - &id028
+    manual: mordheimer.net
+    printed_page: 0
+    section: Scout Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  - &id023
+    manual: mordheimer.net
+    printed_page: 0
+    section: Warrior equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  - &id030
+    manual: mordheimer.net
+    printed_page: 0
+    section: Scout Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+  - *id001
+  - &id004
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mountainguard Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+  - &id005
+    manual: mordheimer.net
+    printed_page: 0
+    section: Soldier Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  - &id053
+    manual: mordheimer.net
+    printed_page: 0
+    section: Informer Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
+  - &id006
+    manual: mordheimer.net
+    printed_page: 0
+    section: Orc equipment lists / Black Orc List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
+  - &id007
+    manual: mordheimer.net
+    printed_page: 0
+    section: Orc equipment lists / Henchmen List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
+  - &id031
+    manual: mordheimer.net
+    printed_page: 0
+    section: Bowmen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  - &id032
+    manual: mordheimer.net
+    printed_page: 0
+    section: Squires Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  - &id033
+    manual: mordheimer.net
+    printed_page: 0
+    section: Bowmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  - &id037
+    manual: mordheimer.net
+    printed_page: 0
+    section: Carnival equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  - &id044
+    manual: mordheimer.net
+    printed_page: 0
+    section: Possessed equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
+  - &id014
+    manual: mordheimer.net
+    printed_page: 0
+    section: Thralls Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  - &id056
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  - &id008
+    manual: mordheimer.net
+    printed_page: 0
+    section: Poacher equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  - &id034
+    manual: mordheimer.net
+    printed_page: 0
+    section: Horned Hunter equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
+  - &id009
+    manual: mordheimer.net
+    printed_page: 0
+    section: Kislev Warrior equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  - &id010
+    manual: mordheimer.net
+    printed_page: 0
+    section: Streltsi equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/kislevites
+  - &id011
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mercenary equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+  - *id002
+  - &id045
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mootlander Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/mootlanders
+  - &id029
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hunters equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  - &id012
+    manual: mordheimer.net
+    printed_page: 0
+    section: Orc Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
+  - &id041
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ostlander Equipment Lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/ostlander
+  - *id003
+  - &id035
+    manual: mordheimer.net
+    printed_page: 0
+    section: Outlaws equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/outlaws-of-stirwood-forest
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Swabbie Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  - &id049
+    manual: mordheimer.net
+    printed_page: 0
+    section: Restless Dead equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
+  - &id022
+    manual: mordheimer.net
+    printed_page: 0
+    section: Shadow Warrior equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
+  - &id050
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hobgoblins equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  - &id013
+    manual: mordheimer.net
+    printed_page: 0
+    section: Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  - &id036
+    manual: mordheimer.net
+    printed_page: 0
+    section: Undead equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  - &id046
+    manual: mordheimer.net
+    printed_page: 0
+    section: Undead equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
+  - &id047
+    manual: mordheimer.net
+    printed_page: 0
+    section: Zealot equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/witch-hunters
+  combat_status: out_of_scope
+- id: chaos_dwarf_blunderbuss
+  kind: ranged-weapon
+  name: Chaos Dwarf Blunderbuss
+  name_i18n:
+    en: Chaos Dwarf Blunderbuss
+    es: null
+  source_refs:
+  - &id042
+    manual: mordheimer.net
+    printed_page: 0
+    section: Blunderbusser equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  combat_status: out_of_scope
+- id: crossbow
+  kind: ranged-weapon
+  name: Crossbow
+  name_i18n:
+    en: Crossbow
+    es: null
+  source_refs:
+  - *id001
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Crossbowmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - &id025
+    manual: mordheimer.net
+    printed_page: 0
+    section: Thunderer Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  - *id008
+  - *id009
+  - *id010
+  - *id011
+  - *id002
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Henchman Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  - *id012
+  - &id019
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pirate Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  - *id013
+  - &id021
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marksman equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  - &id015
+    manual: mordheimer.net
+    printed_page: 0
+    section: Witch Hunter equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/witch-hunters
+  combat_status: out_of_scope
+- id: crossbow_max_3_per_warband
+  kind: ranged-weapon
+  name: Crossbow Max 3 Per Warband
+  name_i18n:
+    en: Crossbow Max 3 Per Warband
+    es: null
+  source_refs:
+  - *id014
+  combat_status: out_of_scope
+- id: crossbow_pistol
+  kind: ranged-weapon
+  name: Crossbow Pistol
+  name_i18n:
+    en: Crossbow Pistol
+    es: null
+  source_refs:
+  - &id043
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dark Elf Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  - *id015
+  combat_status: out_of_scope
+- id: double_barrelled_duelling_pistol
+  kind: ranged-weapon
+  name: Double Barrelled Duelling Pistol
+  name_i18n:
+    en: Double Barrelled Duelling Pistol
+    es: null
+  source_refs:
+  - &id016
+    manual: mordheimer.net
+    printed_page: 0
+    section: Gunnery School equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+  combat_status: out_of_scope
+- id: double_barrelled_handgun
+  kind: ranged-weapon
+  name: Double Barrelled Handgun
+  name_i18n:
+    en: Double Barrelled Handgun
+    es: null
+  source_refs:
+  - *id016
+  - *id017
+  combat_status: out_of_scope
+- id: double_barrelled_hunting_rifle
+  kind: ranged-weapon
+  name: Double Barrelled Hunting Rifle
+  name_i18n:
+    en: Double Barrelled Hunting Rifle
+    es: null
+  source_refs:
+  - *id003
+  combat_status: out_of_scope
+- id: double_barrelled_pistol
+  kind: ranged-weapon
+  name: Double Barrelled Pistol
+  name_i18n:
+    en: Double Barrelled Pistol
+    es: null
+  source_refs:
+  - *id016
+  - *id017
+  - *id003
+  combat_status: out_of_scope
+- id: duelling_pistol
+  kind: ranged-weapon
+  name: Duelling Pistol
+  name_i18n:
+    en: Duelling Pistol
+    es: null
+  source_refs:
+  - *id004
+  - *id005
+  - *id018
+  - *id016
+  - &id038
+    manual: mordheimer.net
+    printed_page: 0
+    section: Duelist equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  - *id009
+  - *id010
+  - *id011
+  - &id040
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  - *id019
+  - *id020
+  - *id013
+  - *id021
+  combat_status: implemented
+  mechanic_id: weapon.duelling-pistol
+- id: elf_bow
+  kind: ranged-weapon
+  name: Elf Bow
+  name_i18n:
+    en: Elf Bow
+    es: null
+  source_refs:
+  - *id022
+  combat_status: out_of_scope
+- id: handgun
+  kind: ranged-weapon
+  name: Handgun
+  name_i18n:
+    en: Handgun
+    es: null
+  source_refs:
+  - *id023
+  - *id001
+  - *id005
+  - *id024
+  - *id025
+  - *id016
+  - *id017
+  - *id026
+  - *id010
+  - *id002
+  - *id003
+  - *id020
+  - *id021
+  combat_status: out_of_scope
+- id: harpoon_crossbow
+  kind: ranged-weapon
+  name: Harpoon Crossbow
+  name_i18n:
+    en: Harpoon Crossbow
+    es: null
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Mountain Guide Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
+  combat_status: out_of_scope
+- id: hochland_long_rifle
+  kind: ranged-weapon
+  name: Hochland Long Rifle
+  name_i18n:
+    en: Hochland Long Rifle
+    es: null
+  source_refs:
+  - *id017
+  - *id026
+  combat_status: out_of_scope
+- id: hunting_rifle
+  kind: ranged-weapon
+  name: Hunting Rifle
+  name_i18n:
+    en: Hunting Rifle
+    es: null
+  source_refs:
+  - *id001
+  - *id018
+  - *id002
+  - *id003
+  - *id021
+  combat_status: out_of_scope
+- id: javelin
+  kind: ranged-weapon
+  name: Javelin
+  name_i18n:
+    en: Javelin
+    es: null
+  source_refs:
+  - &id039
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  combat_status: out_of_scope
+- id: javelins
+  kind: ranged-weapon
+  name: Javelins
+  name_i18n:
+    en: Javelins
+    es: null
+  source_refs:
+  - *id027
+  - *id028
+  - &id048
+    manual: mordheimer.net
+    printed_page: 0
+    section: Skinks equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  - *id029
+  combat_status: out_of_scope
+- id: long_bow
+  kind: ranged-weapon
+  name: Long Bow
+  name_i18n:
+    en: Long Bow
+    es: null
+  source_refs:
+  - *id030
+  - *id001
+  - *id031
+  - *id032
+  - *id033
+  - *id018
+  - *id008
+  - *id034
+  - *id002
+  - *id035
+  - *id022
+  - *id021
+  combat_status: out_of_scope
+- id: nehekharan_javelin
+  kind: ranged-weapon
+  name: Nehekharan Javelin
+  name_i18n:
+    en: Nehekharan Javelin
+    es: null
+  source_refs:
+  - *id036
+  combat_status: out_of_scope
+- id: pistol
+  kind: ranged-weapon
+  name: Pistol
+  name_i18n:
+    en: Pistol
+    es: null
+  source_refs:
+  - *id001
+  - *id004
+  - *id024
+  - *id037
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Warrior Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Warrior Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  - *id025
+  - *id016
+  - *id017
+  - *id038
+  - *id026
+  - *id009
+  - *id010
+  - *id039
+  - *id011
+  - *id002
+  - *id040
+  - *id041
+  - *id003
+  - *id019
+  - *id020
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Dwarf equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  - *id042
+  - *id013
+  - *id021
+  - *id015
+  combat_status: implemented
+  mechanic_id: weapon.pistol
+- id: repeater_crossbow
+  kind: ranged-weapon
+  name: Repeater Crossbow
+  name_i18n:
+    en: Repeater Crossbow
+    es: null
+  source_refs:
+  - *id043
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Shades Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  combat_status: out_of_scope
+- id: repeater_handgun
+  kind: ranged-weapon
+  name: Repeater Handgun
+  name_i18n:
+    en: Repeater Handgun
+    es: null
+  source_refs:
+  - *id017
+  combat_status: out_of_scope
+- id: repeater_pistol
+  kind: ranged-weapon
+  name: Repeater Pistol
+  name_i18n:
+    en: Repeater Pistol
+    es: null
+  source_refs:
+  - *id017
+  combat_status: out_of_scope
+- id: short_bow
+  kind: ranged-weapon
+  name: Short Bow
+  name_i18n:
+    en: Short Bow
+    es: null
+  source_refs:
+  - *id037
+  - *id044
+  - *id014
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/forest-goblins
+  - *id008
+  - *id034
+  - manual: mordheimer.net
+    printed_page: 0
+    section: PROSPECT EQUIPMENT LIST
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  - *id045
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblin Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  - &id054
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Goblin Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
+  - *id035
+  - *id046
+  - *id047
+  combat_status: out_of_scope
+- id: shortbow
+  kind: ranged-weapon
+  name: Shortbow
+  name_i18n:
+    en: Shortbow
+    es: null
+  source_refs:
+  - *id023
+  - *id009
+  - *id048
+  - *id049
+  - *id050
+  combat_status: out_of_scope
+- id: sling
+  kind: ranged-weapon
+  name: Sling
+  name_i18n:
+    en: Sling
+    es: null
+  source_refs:
+  - *id051
+  - *id027
+  - *id052
+  - *id028
+  - *id053
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Coward equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  - *id045
+  - *id054
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Sisters of Sigmar equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
+  - &id055
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skaven equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Heroes equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skaven equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+  combat_status: out_of_scope
+- id: throwing_axe
+  kind: ranged-weapon
+  name: Throwing Axe
+  name_i18n:
+    en: Throwing Axe
+    es: null
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Bandit equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  combat_status: out_of_scope
+- id: throwing_axes_same_as_throwing_knives
+  kind: ranged-weapon
+  name: Throwing Axes Same As Throwing Knives
+  name_i18n:
+    en: Throwing Axes Same As Throwing Knives
+    es: null
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hero equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  combat_status: out_of_scope
+- id: throwing_knives
+  kind: ranged-weapon
+  name: Throwing Knives
+  name_i18n:
+    en: Throwing Knives
+    es: null
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Imperial Outriders equipment lists / Scout Missile Weapons
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/imperial-outriders
+  - *id009
+  - *id048
+  - *id039
+  - *id054
+  combat_status: out_of_scope
+- id: throwing_stars
+  kind: ranged-weapon
+  name: Throwing Stars
+  name_i18n:
+    en: Throwing Stars
+    es: null
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Monk Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  - *id055
+  combat_status: out_of_scope
+- id: throwing_weapons
+  kind: ranged-weapon
+  name: Throwing Weapons
+  name_i18n:
+    en: Throwing Weapons
+    es: null
+  source_refs:
+  - *id056
+  combat_status: out_of_scope
+- id: warp_pistol
+  kind: ranged-weapon
+  name: Warp Pistol
+  name_i18n:
+    en: Warp Pistol
+    es: null
+  source_refs:
+  - *id055
+  combat_status: out_of_scope

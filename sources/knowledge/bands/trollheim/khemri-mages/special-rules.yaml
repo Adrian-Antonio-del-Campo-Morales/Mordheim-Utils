@@ -1,0 +1,442 @@
+schema_version: 2
+band_id: khemri-mages
+rules:
+- id: archmage--leader
+  name: Leader
+  effect: Any warband model within 6" of the Archmage may use his Leadership instead of its own.
+  source:
+    manual: khemri
+    printed_page: 62
+    section: Heroes / 1 Archmage / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Archmage may use his Leadership instead of its own.
+    es: null
+  applies_to:
+    profile_ids:
+    - archmage
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-mages.archmage.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: archmage--spellcaster
+  name: Spellcaster
+  effect: The Archmage is a spellcaster and begins with two randomly generated spells. Choose two different Elemental Magic
+    lores and generate one spell from each. Spell lists and spell effects are intentionally not modelled in this file.
+  source:
+    manual: khemri
+    printed_page: 62
+    section: Heroes / 1 Archmage / Spellcaster
+  name_i18n:
+    en: Spellcaster
+    es: null
+  effect_i18n:
+    en: The Archmage is a spellcaster and begins with two randomly generated spells. Choose two different Elemental Magic
+      lores and generate one spell from each. Spell lists and spell effects are intentionally not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - archmage
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-mages.archmage.spellcaster
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: mage--spellcaster
+  name: Spellcaster
+  effect: When recruited, a Mage chooses one Elemental Magic lore and generates one random spell from it. Every later spell
+    learned by that Mage must come from the same chosen lore. Spell lists and spell effects are intentionally not modelled
+    in this file.
+  source:
+    manual: khemri
+    printed_page: 62
+    section: Heroes / 0-2 Mages / Spellcaster
+  name_i18n:
+    en: Spellcaster
+    es: null
+  effect_i18n:
+    en: When recruited, a Mage chooses one Elemental Magic lore and generates one random spell from it. Every later spell
+      learned by that Mage must come from the same chosen lore. Spell lists and spell effects are intentionally not modelled
+      in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - mage
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-mages.mage.spellcaster
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: witch--spellcaster
+  name: Spellcaster
+  effect: The Witch is a spellcaster and begins with two randomly generated Lesser Magic spells. Spell lists and spell effects
+    are intentionally not modelled in this file.
+  source:
+    manual: khemri
+    printed_page: 62
+    section: Heroes / 0-1 Witch / Spellcaster
+  name_i18n:
+    en: Spellcaster
+    es: null
+  effect_i18n:
+    en: The Witch is a spellcaster and begins with two randomly generated Lesser Magic spells. Spell lists and spell effects
+      are intentionally not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - witch
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-mages.witch.spellcaster
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: pupil--minor-trick
+  name: Minor Trick
+  effect: Minor Trick is the only magic a Pupil may use before becoming a Hero. Its spell mechanics are intentionally not
+    modelled in this file.
+  source:
+    manual: khemri
+    printed_page: 63
+    section: Henchmen / Pupils / Minor Trick
+  name_i18n:
+    en: Minor Trick
+    es: null
+  effect_i18n:
+    en: Minor Trick is the only magic a Pupil may use before becoming a Hero. Its spell mechanics are intentionally not modelled
+      in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - pupil
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-mages.pupil.minor-trick
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: pupil--experience
+  name: Experience
+  effect: When a Pupil becomes a Hero, choose one Elemental Magic lore or Lesser Magic and generate one random spell. Every
+    later spell learned by that Hero must come from the same chosen lore.
+  source:
+    manual: khemri
+    printed_page: 63
+    section: Henchmen / Pupils / Experience
+  name_i18n:
+    en: Experience
+    es: null
+  effect_i18n:
+    en: When a Pupil becomes a Hero, choose one Elemental Magic lore or Lesser Magic and generate one random spell. Every
+      later spell learned by that Hero must come from the same chosen lore.
+    es: null
+  applies_to:
+    profile_ids:
+    - pupil
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-mages.pupil.experience
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: mechanical-beast--mechanical-armour
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 5
+  name: Mechanical Armour
+  effect: Mechanical Beasts have a 5+ armour save.
+  source:
+    manual: khemri
+    printed_page: 63
+    section: Henchmen / 0-5 Mechanical Beasts / Weapons and Armour
+  name_i18n:
+    en: Mechanical Armour
+    es: null
+  effect_i18n:
+    en: Mechanical Beasts have a 5+ armour save.
+    es: null
+  applies_to:
+    profile_ids:
+    - mechanical-beast
+- id: mechanical-beast--immune-to-psychology
+  name: Immune to Psychology
+  effect: Mechanical Beasts are immune to Psychology and never leave combat because of Psychology.
+  source:
+    manual: khemri
+    printed_page: 63
+    section: Henchmen / 0-5 Mechanical Beasts / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: Mechanical Beasts are immune to Psychology and never leave combat because of Psychology.
+    es: null
+  applies_to:
+    profile_ids:
+    - mechanical-beast
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-mages.mechanical-beast.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: mechanical-beast--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Mechanical Beasts are immune to poison.
+  source:
+    manual: khemri
+    printed_page: 63
+    section: Henchmen / 0-5 Mechanical Beasts / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: Mechanical Beasts are immune to poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - mechanical-beast
+- id: mechanical-beast--brainless
+  name: Brainless
+  effect: Mechanical Beasts never gain Experience.
+  source:
+    manual: khemri
+    printed_page: 63
+    section: Henchmen / 0-5 Mechanical Beasts / Brainless
+  name_i18n:
+    en: Brainless
+    es: null
+  effect_i18n:
+    en: Mechanical Beasts never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - mechanical-beast
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-mages.mechanical-beast.brainless
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: mechanical-beast--do-not-eat
+  name: Do Not Eat
+  effect: Mechanical Beasts do not need water.
+  source:
+    manual: khemri
+    printed_page: 63
+    section: Henchmen / 0-5 Mechanical Beasts / Do Not Eat
+  name_i18n:
+    en: Do Not Eat
+    es: null
+  effect_i18n:
+    en: Mechanical Beasts do not need water.
+    es: null
+  applies_to:
+    profile_ids:
+    - mechanical-beast
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-mages.mechanical-beast.do-not-eat
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: mechanical-beast--may-not-run
+  name: May Not Run
+  effect: Mechanical Beasts may not run, but may charge normally.
+  source:
+    manual: khemri
+    printed_page: 63
+    section: Henchmen / 0-5 Mechanical Beasts / May Not Run
+  name_i18n:
+    en: May Not Run
+    es: null
+  effect_i18n:
+    en: Mechanical Beasts may not run, but may charge normally.
+    es: null
+  applies_to:
+    profile_ids:
+    - mechanical-beast
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-mages.mechanical-beast.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--pupil-limit
+  name: Pupil Limit
+  effect: The warband may include no more than three Pupils per Mage and no more than six Pupils in total. If a Mage dies,
+    it must be replaced as soon as possible. A Pupil that has advanced to Hero counts as a Mage for this rule.
+  source:
+    manual: khemri
+    printed_page: 63
+    section: Henchmen / Pupils / Apprentices
+  name_i18n:
+    en: Pupil Limit
+    es: null
+  effect_i18n:
+    en: The warband may include no more than three Pupils per Mage and no more than six Pupils in total. If a Mage dies, it
+      must be replaced as soon as possible. A Pupil that has advanced to Hero counts as a Mage for this rule.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-mages.band.pupil-limit
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--mage-special-skills-dispel-magic
+  kind: warband_skill
+  name: Dispel Magic
+  effect: Whenever an opponent successfully casts a spell, this Hero may attempt to dispel it by rolling 2D6 and exceeding
+    the opponent's successful casting result. For example, a casting result of 10 requires an 11 or 12 to dispel.
+  source:
+    manual: khemri
+    printed_page: 60
+    section: Mage Special Skills / Dispel Magic
+  name_i18n:
+    en: Dispel Magic
+    es: null
+  effect_i18n:
+    en: Whenever an opponent successfully casts a spell, this Hero may attempt to dispel it by rolling 2D6 and exceeding the
+      opponent's successful casting result. For example, a casting result of 10 requires an 11 or 12 to dispel.
+    es: null
+  eligibility:
+  - archmage
+  - mage
+  - witch
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-mages.band.mage-special-skills-dispel-magic
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--mage-special-skills-store-spell
+  kind: warband_skill
+  name: Store Spell
+  effect: Requires a Staff. Before the battle, the Hero may store one chosen spell in the Staff and decide when to use it
+    during the game. Resolve the stored spell with the source's additional +3 casting difficulty; if the casting roll is a
+    double, the stored spell is lost.
+  source:
+    manual: khemri
+    printed_page: 60
+    section: Mage Special Skills / Store Spell
+  name_i18n:
+    en: Store Spell
+    es: null
+  effect_i18n:
+    en: Requires a Staff. Before the battle, the Hero may store one chosen spell in the Staff and decide when to use it during
+      the game. Resolve the stored spell with the source's additional +3 casting difficulty; if the casting roll is a double,
+      the stored spell is lost.
+    es: null
+  eligibility:
+  - archmage
+  - mage
+  - witch
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-mages.band.mage-special-skills-store-spell
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--mage-special-skills-mechanic
+  kind: warband_skill
+  name: Mechanic
+  effect: The Hero may improve Mechanical Beasts by paying 5 gc to increase either WS by +1 or Movement by +1". The maximum
+    improvement is +2 WS or +2" Movement respectively, and the whole Mechanical Beast group must be upgraded together.
+  source:
+    manual: khemri
+    printed_page: 60
+    section: Mage Special Skills / Mechanic
+  name_i18n:
+    en: Mechanic
+    es: null
+  effect_i18n:
+    en: The Hero may improve Mechanical Beasts by paying 5 gc to increase either WS by +1 or Movement by +1". The maximum
+      improvement is +2 WS or +2" Movement respectively, and the whole Mechanical Beast group must be upgraded together.
+    es: null
+  eligibility:
+  - archmage
+  - mage
+  - witch
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.khemri-mages.band.mage-special-skills-mechanic
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'

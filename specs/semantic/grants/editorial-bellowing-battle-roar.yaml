@@ -1,0 +1,43 @@
+schema_version: 1
+specifications:
+- id: editorial-bellowing-battle-roar-grants
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - {target: rule/mordheim/lizardmen/band--lizardmen-special-skills-saurus-only-bellowing-battle-roar/skill.bellowing-battle-roar, digest: c00b717729fbf98cb45803a096ffa0b6d1a2cb58b464465137c41d0ff6d002fb}
+  - {target: rule/trollheim/lustria-lizardmen/band--lizardmen-special-skills-battle-roar/skill.bellowing-battle-roar, digest: 0ea00b85463f7f36e5df77d435fbe0c1cdfc9c674d8005702fb90d11358322f3}
+  depends_on: [mechanic/skill.bellowing-battle-roar]
+  interpretation: Both publications restrict the selectable roar to the Saurus Totem Warrior. Other Saurus and every
+    Skink profile remain ineligible; selecting the rule compiles the canonical incoming hit penalty.
+  cases:
+  - id: mordheim-only-totem-warrior
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: mordheim, band_id: lizardmen, profile_id: skink-priest}
+    context: {rule_id: band--lizardmen-special-skills-saurus-only-bellowing-battle-roar}
+    expect: {result.recipients: [saurus-totem-warrior]}
+  - id: trollheim-only-totem-warrior
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest}
+    context: {rule_id: band--lizardmen-special-skills-battle-roar}
+    expect: {result.recipients: [saurus-totem-warrior]}
+  - id: granted-consumer
+    roles: [consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    defender:
+      collection: mordheim
+      band_id: lizardmen
+      profile_id: saurus-totem-warrior
+      special_rule_ids: [band--lizardmen-special-skills-saurus-only-bellowing-battle-roar]
+    context: {first_round: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/3, 'false': 2/3}
+  mutations:
+  - id: remove-granted-roar
+    path: defender.global_effects.tags
+    value: []
+    cases: [granted-consumer]

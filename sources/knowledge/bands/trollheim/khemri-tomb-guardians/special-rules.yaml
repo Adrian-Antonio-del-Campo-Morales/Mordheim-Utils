@@ -1,0 +1,839 @@
+schema_version: 2
+band_id: khemri-tomb-guardians
+rules:
+- id: tomb-lord--leader
+  name: Leader
+  effect: Any warband model within 6" of the Tomb Lord may use his Leadership instead of its own.
+  source:
+    manual: khemri
+    printed_page: 44
+    section: Heroes / 1 Tomb Lord / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Tomb Lord may use his Leadership instead of its own.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-lord
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.tomb-lord.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: tomb-lord--undead
+  name: Undead
+  effect: The Tomb Lord is Undead and is subject to the warband's Undead special rules.
+  source:
+    manual: khemri
+    printed_page: 44
+    section: Heroes / 1 Tomb Lord / Undead
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: The Tomb Lord is Undead and is subject to the warband's Undead special rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-lord
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.tomb-lord.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: tomb-lord--flammable
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.flammable
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.flammable
+        parameters:
+          value: true
+  name: Flammable
+  effect: A fire-based attack that wounds the Tomb Lord causes double the normal number of Wounds.
+  source:
+    manual: khemri
+    printed_page: 43
+    section: Undead Special Rules / Flammable
+  name_i18n:
+    en: Flammable
+    es: null
+  effect_i18n:
+    en: A fire-based attack that wounds the Tomb Lord causes double the normal number of Wounds.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-lord
+- id: mortuary-priest--wizard
+  name: Wizard
+  effect: The Mortuary Priest is a spellcaster and may use the Mortuary Priests' scrolls. The individual scroll list and its
+    effects are intentionally not modelled in this file.
+  source:
+    manual: khemri
+    printed_page: 44
+    section: Heroes / 0-1 Mortuary Priest / Wizard
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Mortuary Priest is a spellcaster and may use the Mortuary Priests' scrolls. The individual scroll list and its
+      effects are intentionally not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - mortuary-priest
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.mortuary-priest.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: mortuary-priest--undead
+  name: Undead
+  effect: The Mortuary Priest is Undead and is subject to the warband's Undead special rules.
+  source:
+    manual: khemri
+    printed_page: 44
+    section: Heroes / 0-1 Mortuary Priest / Undead
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: The Mortuary Priest is Undead and is subject to the warband's Undead special rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - mortuary-priest
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.mortuary-priest.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: necrotect--undead
+  name: Undead
+  effect: The Necrotect is Undead and is subject to the warband's Undead special rules.
+  source:
+    manual: khemri
+    printed_page: 45
+    section: Heroes / 0-1 Necrotect / Undead
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: The Necrotect is Undead and is subject to the warband's Undead special rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - necrotect
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.necrotect.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: necrotect--hatred
+  kind: profile_ability
+  runtime:
+    scope: LATER
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.hatred
+      scope: LATER
+      binding:
+        kind: mechanic
+        id: skill.hatred
+  name: Hatred
+  effect: The Necrotect may re-roll failed To Hit rolls during the first round of each close combat.
+  source:
+    manual: khemri
+    printed_page: 45
+    section: Heroes / 0-1 Necrotect / Hatred
+  name_i18n:
+    en: Hatred
+    es: null
+  effect_i18n:
+    en: The Necrotect may re-roll failed To Hit rolls during the first round of each close combat.
+    es: null
+  applies_to:
+    profile_ids:
+    - necrotect
+- id: necrotect--stone-forger
+  name: Stone Forger
+  effect: Friendly Stone Golems within 6" of the Necrotect gain a 6+ Regeneration save.
+  source:
+    manual: khemri
+    printed_page: 45
+    section: Heroes / 0-1 Necrotect / Stone Forger
+  name_i18n:
+    en: Stone Forger
+    es: null
+  effect_i18n:
+    en: Friendly Stone Golems within 6" of the Necrotect gain a 6+ Regeneration save.
+    es: null
+  applies_to:
+    profile_ids:
+    - necrotect
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.necrotect.stone-forger
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: mortuary-acolytes--undead
+  name: Undead
+  effect: Mortuary Acolytes are Undead and are subject to the warband's Undead special rules.
+  source:
+    manual: khemri
+    printed_page: 45
+    section: Heroes / 0-3 Mortuary Acolytes / Undead
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: Mortuary Acolytes are Undead and are subject to the warband's Undead special rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - mortuary-acolytes
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.mortuary-acolytes.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: skeleton-warriors--undead
+  name: Undead
+  effect: Skeleton Warriors are Undead and are subject to the warband's Undead special rules.
+  source:
+    manual: khemri
+    printed_page: 46
+    section: Henchmen / Skeleton Warriors / Undead
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: Skeleton Warriors are Undead and are subject to the warband's Undead special rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - skeleton-warriors
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.skeleton-warriors.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: tomb-guardians--undead
+  name: Undead
+  effect: Tomb Guardians are Undead and are subject to the warband's Undead special rules.
+  source:
+    manual: khemri
+    printed_page: 46
+    section: Henchmen / Tomb Guardians / Undead
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: Tomb Guardians are Undead and are subject to the warband's Undead special rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-guardians
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.tomb-guardians.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: tomb-scorpions--living
+  name: Living
+  effect: Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not need water.
+  source:
+    manual: khemri
+    printed_page: 46
+    section: Henchmen / 0-3 Tomb Scorpions / Living
+  name_i18n:
+    en: Living
+    es: null
+  effect_i18n:
+    en: Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not need water.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-scorpions
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.tomb-scorpions.living
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: tomb-scorpions--animal
+  name: Animal
+  effect: Tomb Scorpions are animals and never gain Experience.
+  source:
+    manual: khemri
+    printed_page: 46
+    section: Henchmen / 0-3 Tomb Scorpions / Animal
+  name_i18n:
+    en: Animal
+    es: null
+  effect_i18n:
+    en: Tomb Scorpions are animals and never gain Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-scorpions
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.tomb-scorpions.animal
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: tomb-scorpions--scorpion-sting
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: poison.black-lotus
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: poison.black-lotus
+  name: Scorpion's Sting
+  effect: A Tomb Scorpion attacks with the poisonous sting in its tail. The source resolves this as though the attack used
+    Black Lotus; the underlying poison-item mechanics are intentionally not duplicated in this file.
+  source:
+    manual: khemri
+    printed_page: 46
+    section: Henchmen / 0-3 Tomb Scorpions / Scorpion's Sting
+  name_i18n:
+    en: Scorpion's Sting
+    es: null
+  effect_i18n:
+    en: A Tomb Scorpion attacks with the poisonous sting in its tail. The source resolves this as though the attack used Black
+      Lotus; the underlying poison-item mechanics are intentionally not duplicated in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-scorpions
+- id: stone-golem--stone-body
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 4
+  name: Stone Body
+  effect: The Stone Golem has a natural 4+ armour save.
+  source:
+    manual: khemri
+    printed_page: 47
+    section: Henchmen / 0-1 Stone Golem / Weapons and Armour
+  name_i18n:
+    en: Stone Body
+    es: null
+  effect_i18n:
+    en: The Stone Golem has a natural 4+ armour save.
+    es: null
+  applies_to:
+    profile_ids:
+    - stone-golem
+- id: stone-golem--fear
+  name: Fear
+  effect: The Stone Golem causes Fear.
+  source:
+    manual: khemri
+    printed_page: 47
+    section: Henchmen / 0-1 Stone Golem / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Stone Golem causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - stone-golem
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.stone-golem.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: stone-golem--immune-to-psychology
+  name: Immune to Psychology
+  effect: The Stone Golem is immune to Psychology and never leaves combat because of Psychology.
+  source:
+    manual: khemri
+    printed_page: 47
+    section: Henchmen / 0-1 Stone Golem / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: The Stone Golem is immune to Psychology and never leaves combat because of Psychology.
+    es: null
+  applies_to:
+    profile_ids:
+    - stone-golem
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.stone-golem.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: stone-golem--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: The Stone Golem is immune to poison.
+  source:
+    manual: khemri
+    printed_page: 47
+    section: Henchmen / 0-1 Stone Golem / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: The Stone Golem is immune to poison.
+    es: null
+  applies_to:
+    profile_ids:
+    - stone-golem
+- id: stone-golem--brainless
+  name: Brainless
+  effect: The Stone Golem never gains Experience.
+  source:
+    manual: khemri
+    printed_page: 47
+    section: Henchmen / 0-1 Stone Golem / Brainless
+  name_i18n:
+    en: Brainless
+    es: null
+  effect_i18n:
+    en: The Stone Golem never gains Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - stone-golem
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.stone-golem.brainless
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: stone-golem--impossible-to-hide
+  name: Impossible to Hide
+  effect: The Stone Golem is too large to Hide.
+  source:
+    manual: khemri
+    printed_page: 47
+    section: Henchmen / 0-1 Stone Golem / Impossible to Hide
+  name_i18n:
+    en: Impossible to Hide
+    es: null
+  effect_i18n:
+    en: The Stone Golem is too large to Hide.
+    es: null
+  applies_to:
+    profile_ids:
+    - stone-golem
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.stone-golem.impossible-to-hide
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: stone-golem--large-target
+  name: Large Target
+  effect: The Stone Golem may be selected as a shooting target even when it is not the closest eligible target.
+  source:
+    manual: khemri
+    printed_page: 47
+    section: Henchmen / 0-1 Stone Golem / Large Target
+  name_i18n:
+    en: Large Target
+    es: null
+  effect_i18n:
+    en: The Stone Golem may be selected as a shooting target even when it is not the closest eligible target.
+    es: null
+  applies_to:
+    profile_ids:
+    - stone-golem
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.stone-golem.large-target
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: stone-golem--no-water
+  name: No Water
+  effect: The Stone Golem does not need water.
+  source:
+    manual: khemri
+    printed_page: 47
+    section: Henchmen / 0-1 Stone Golem / No Water
+  name_i18n:
+    en: No Water
+    es: null
+  effect_i18n:
+    en: The Stone Golem does not need water.
+    es: null
+  applies_to:
+    profile_ids:
+    - stone-golem
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.stone-golem.no-water
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: stone-golem--animated
+  name: Animated
+  effect: The Stone Golem is an animated being and is not Undead.
+  source:
+    manual: khemri
+    printed_page: 47
+    section: Henchmen / 0-1 Stone Golem / Animated
+  name_i18n:
+    en: Animated
+    es: null
+  effect_i18n:
+    en: The Stone Golem is an animated being and is not Undead.
+    es: null
+  applies_to:
+    profile_ids:
+    - stone-golem
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.stone-golem.animated
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--cause-fear
+  name: Cause Fear
+  effect: All warriors with the Undead special rule cause Fear.
+  source:
+    manual: khemri
+    printed_page: 43
+    section: Undead Special Rules / Cause Fear
+  name_i18n:
+    en: Cause Fear
+    es: null
+  effect_i18n:
+    en: All warriors with the Undead special rule cause Fear.
+    es: null
+  eligibility:
+  - tomb-lord
+  - mortuary-priest
+  - necrotect
+  - mortuary-acolytes
+  - skeleton-warriors
+  - tomb-guardians
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.band.cause-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--immune-to-psychology
+  name: Immune to Psychology
+  effect: All warriors with the Undead special rule are immune to Psychology and never leave combat because of Psychology.
+  source:
+    manual: khemri
+    printed_page: 43
+    section: Undead Special Rules / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: All warriors with the Undead special rule are immune to Psychology and never leave combat because of Psychology.
+    es: null
+  eligibility:
+  - tomb-lord
+  - mortuary-priest
+  - necrotect
+  - mortuary-acolytes
+  - skeleton-warriors
+  - tomb-guardians
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.band.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: All warriors with the Undead special rule treat a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: khemri
+    printed_page: 43
+    section: Undead Special Rules / No Pain
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: All warriors with the Undead special rule treat a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  eligibility:
+  - tomb-lord
+  - mortuary-priest
+  - necrotect
+  - mortuary-acolytes
+  - skeleton-warriors
+  - tomb-guardians
+  applies_to:
+    band: true
+- id: band--no-food-or-water
+  name: No Food or Water
+  effect: Warriors with the Undead special rule do not need food or water.
+  source:
+    manual: khemri
+    printed_page: 43
+    section: Undead Special Rules / No Food or Water
+  name_i18n:
+    en: No Food or Water
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule do not need food or water.
+    es: null
+  eligibility:
+  - tomb-lord
+  - mortuary-priest
+  - necrotect
+  - mortuary-acolytes
+  - skeleton-warriors
+  - tomb-guardians
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.band.no-food-or-water
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--may-not-run
+  name: May Not Run
+  effect: Warriors with the Undead special rule may not run, but may charge normally.
+  source:
+    manual: khemri
+    printed_page: 43
+    section: Undead Special Rules / May Not Run
+  name_i18n:
+    en: May Not Run
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule may not run, but may charge normally.
+    es: null
+  eligibility:
+  - tomb-lord
+  - mortuary-priest
+  - necrotect
+  - mortuary-acolytes
+  - skeleton-warriors
+  - tomb-guardians
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.band.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Warriors with the Undead special rule are immune to poison.
+  source:
+    manual: khemri
+    printed_page: 43
+    section: Undead Special Rules / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule are immune to poison.
+    es: null
+  eligibility:
+  - tomb-lord
+  - mortuary-priest
+  - necrotect
+  - mortuary-acolytes
+  - skeleton-warriors
+  - tomb-guardians
+  applies_to:
+    band: true
+- id: band--brainless
+  name: Brainless
+  effect: Undead Henchmen never gain Experience. The printed paragraph is broader, but the same warband gives all four Hero
+    profiles starting Experience and skill access; the Necrotect is omitted from the paragraph's named exceptions. This normalized
+    model therefore applies Brainless to Skeleton Warriors and Tomb Guardians only.
+  source:
+    manual: khemri
+    printed_page: 43
+    section: Undead Special Rules / Brainless
+  name_i18n:
+    en: Brainless
+    es: null
+  effect_i18n:
+    en: Undead Henchmen never gain Experience. The printed paragraph is broader, but the same warband gives all four Hero
+      profiles starting Experience and skill access; the Necrotect is omitted from the paragraph's named exceptions. This
+      normalized model therefore applies Brainless to Skeleton Warriors and Tomb Guardians only.
+    es: null
+  eligibility:
+  - skeleton-warriors
+  - tomb-guardians
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.band.brainless
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--at-home
+  name: At Home
+  effect: When the warband explores in Khemri, roll one additional die during the Exploration phase.
+  source:
+    manual: khemri
+    printed_page: 43
+    section: Undead Special Rules / At Home
+  name_i18n:
+    en: At Home
+    es: null
+  effect_i18n:
+    en: When the warband explores in Khemri, roll one additional die during the Exploration phase.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-tomb-guardians.band.at-home
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'

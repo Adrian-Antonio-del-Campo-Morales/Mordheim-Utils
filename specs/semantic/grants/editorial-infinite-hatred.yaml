@@ -1,0 +1,43 @@
+schema_version: 1
+specifications:
+- id: editorial-infinite-hatred-grant
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-infinite-hatred/skill.infinite-hatred
+    digest: 47049529e8a1d561c8025cf4c430b036d2423c9ac17bf6429177c9b70d10a369
+  depends_on: [mechanic/skill.infinite-hatred]
+  interpretation: Infinite Hatred is selectable only by the Strigoi Vampire. It grants the canonical permission to
+    reroll each failed To Hit roll once, without allowing a reroll of that reroll.
+  cases:
+  - id: only-strigoi-vampire
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
+    context: {rule_id: band--strigoi-power-infinite-hatred}
+    expect: {result.recipients: [strigoi-vampire]}
+  - id: granted-consumer
+    roles: [active, boundary, consumer]
+    operation: hit
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
+      special_rule_ids: [band--strigoi-power-infinite-hatred]
+      main_weapon_id: weapon.dagger
+    rolls:
+    - {key: hit, value: 1}
+    - {key: hit.reroll, value: 6}
+    expect:
+      attacker.global_effects.reroll_hits: true
+      result.success: true
+      result.rerolled: true
+      result.roll: 6
+  mutations:
+  - id: remove-granted-reroll
+    path: attacker.global_effects.reroll_hits
+    value: false
+    cases: [granted-consumer]

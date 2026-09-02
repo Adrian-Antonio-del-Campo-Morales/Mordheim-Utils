@@ -1,0 +1,2044 @@
+schema_version: 2
+ruleset: mordheim
+scope: close-combat-only
+weapons:
+- id: weapon.sword
+  name: Sword
+  summary: May parry one eligible close-combat hit.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Sword
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id001
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroines Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  - &id002
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchwomen equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+  - &id003
+    manual: mordheimer.net
+    printed_page: 0
+    section: Jaguar Warrior Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons-lustria
+- id: weapon.mace
+  name: Mace
+  summary: Uses normal Strength and has Concussion on Injury rolls of 2-4.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Mace
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id001
+  - *id002
+  - *id003
+- id: weapon.dagger
+  name: Dagger
+  summary: Uses normal Strength but grants the target +1 armour save.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Dagger
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id001
+  - *id002
+  - *id003
+- id: weapon.axe
+  name: Axe
+  summary: Uses normal Strength and applies an additional -1 armour-save modifier.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Axe
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id028
+    manual: mordheimer.net
+    printed_page: 0
+    section: Scout Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+  - &id009
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marksman equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+  - &id004
+    manual: mordheimer.net
+    printed_page: 0
+    section: Mountainguard Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/averlander
+- id: weapon.flail
+  name: Flail
+  summary: Two-handed; +2 Strength in the first round only.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Flail
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id006
+    manual: mordheimer.net
+    printed_page: 0
+    section: Warrior equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  - &id005
+    manual: mordheimer.net
+    printed_page: 0
+    section: Knights Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Brute equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+- id: weapon.morning-star
+  name: Morning star
+  summary: +1 Strength in the first round; cannot be combined with another weapon.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Morning star
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id004
+  - *id005
+  - &id022
+    manual: mordheimer.net
+    printed_page: 0
+    section: Knights Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+- id: weapon.halberd
+  name: Halberd
+  summary: Two-handed weapon granting +1 Strength.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Halberd
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id004
+  - &id029
+    manual: mordheimer.net
+    printed_page: 0
+    section: Beastmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/beastmen-raiders
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Pilgrims’ equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+- id: weapon.spear
+  name: Spear
+  summary: Strikes first and may only be combined with a shield or buckler.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Spear
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id001
+  - *id002
+  - *id003
+- id: weapon.double-handed-weapon
+  name: Double-handed weapon
+  summary: Two-handed, +2 Strength and strikes last unless Strongman applies.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Double-handed weapon
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id001
+  - *id006
+  - *id004
+- id: weapon.stone-axe
+  name: Stone axe
+  summary: 'Uses club rules: normal Strength and Concussion on Injury rolls of 2-4.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Stone axe
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Saurus equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skinks equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+- id: weapon.rapier
+  name: Rapier
+  summary: May parry; attacks at -1 Strength and a failed wound grants one extra attack at -1 to hit.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Rapier
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id008
+    manual: mordheimer.net
+    printed_page: 0
+    section: Duelist equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  - &id007
+    manual: mordheimer.net
+    printed_page: 0
+    section: Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+- id: weapon.pike
+  name: Pike
+  summary: Two-handed weapon that strikes first; uses the wielder's Strength.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Pike
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Henchman Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  - *id007
+- id: weapon.elven-greatsword
+  name: Elven greatsword
+  summary: Two-handed, +2 Strength, strikes last and may parry.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Elven greatsword
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.ankus
+  name: Ankus
+  summary: Strikes first and has Concussion on Injury rolls of 2-4.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Ankus
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.yambiya
+  name: Yambiya
+  summary: 'Dagger-like weapon: grants the target +1 armour save and works with Knife Fighting.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Yambiya
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.katar
+  name: Katar
+  summary: 'Range: Close Combat Strength: As user Special Rules -1 enemy armour save: Target gets -1 to armour save'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Katar
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id033
+    manual: mordheimer.net
+    printed_page: 0
+    section: Slave equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+- id: weapon.scythe
+  name: Scythe
+  summary: Two-handed weapon with an additional -1 armour-save modifier.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Scythe
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.cutlass
+  name: Cutlass
+  summary: May parry; a successful parry can trigger its counterattack mechanic.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Cutlass
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id014
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pirate Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  - &id015
+    manual: mordheimer.net
+    printed_page: 0
+    section: Swabbie Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Gunner Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+- id: weapon.scimitar
+  name: Scimitar
+  summary: May parry and applies an additional -1 armour-save modifier.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Scimitar
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.great-scimitar
+  name: Great scimitar
+  summary: Two-handed, +2 Strength, strikes last and applies an additional -1 armour-save modifier.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Great scimitar
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.bagh-nakh
+  name: Bagh Nakh
+  summary: 'Paired weapon: +1 Attack, +1 Strength and an additional -1 armour-save modifier.'
+  hands: 1
+  paired: true
+  main_hand: true
+  off_hand: false
+  engine_option: Bagh Nakh
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.sword-breaker
+  name: Sword breaker
+  summary: 'Range: Close Combat Strength: As user Special Rules Parry: The sword breaker allows the wielder to parry the attacks
+    of his opponents in close combat. When your opponent scores a hit roll a D6.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Sword breaker
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id008
+- id: weapon.pistol
+  name: Pistol
+  summary: 'Close-combat use only: one Strength 4 shot in the first round with an additional -2 armour-save modifier.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Pistol
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id009
+  - *id004
+  - &id011
+    manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Dwarf Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
+- id: weapon.duelling-pistol
+  name: Duelling pistol
+  summary: As a pistol in close combat, with +1 to hit in the first round.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Duelling pistol
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id004
+  - &id024
+    manual: mordheimer.net
+    printed_page: 0
+    section: Soldier Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  - &id023
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+- id: weapon.natural-attacks
+  name: Natural attacks
+  summary: Innate attacks using the model's profile; no off-hand weapon is available.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Natural attacks
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.fist
+  name: Fist
+  summary: 'Unarmed: Strength as user -1; at most 1 Attack; the target gains +1 armour save or a 6+ save if it had none.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Fist
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Close-combat Weapons / Fist
+    url: https://mordheimer.net/docs/weapons-armour/close-combat
+- id: weapon.brazier-iron
+  name: Brazier iron
+  summary: 'Range: Close Combat Strength: As user +1 Special Rules Two handed: A warrior armed with a brazier staff requires
+    two hands to wield it effectively and so may not use a shield with it or another hand weapon or buckler in close combat.'
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Brazier iron
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id017
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroines Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
+  - *id001
+  - *id002
+- id: weapon.brass-knuckles
+  name: Brass knuckles
+  summary: 'Range: Close Combat Strength: As user +1 Special Rules Pair: Brass knuckles are used in pairs and the warrior
+    fighting with them gains an extra Attack. He may not use any other weapons or items in his hands while doing this however.'
+  hands: 1
+  paired: true
+  main_hand: true
+  off_hand: false
+  engine_option: Brass knuckles
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.war-maul
+  name: War maul
+  summary: Two-handed, +2 Strength, -1 Initiative, strikes last, cannot be parried and adds -1 to armour saves.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: War maul
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.double-bladed-sword
+  name: Double-bladed sword
+  summary: Two-handed weapon granting +1 Attack and two parry attempts.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Double-bladed sword
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.dwarf-axe
+  name: Dwarf axe
+  summary: 'Range: Close Combat Strength: As user Special Rules Cutting Edge: Dwarf axes have an extra save modifier of -1,
+    so a model with Strength 4 using a Dwarf axe has a -2 save modifier when he hits an opponent with the axe in close combat.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Dwarf axe
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id030
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Warrior Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - &id031
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Warrior Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  - &id010
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pit fighter equipment lists / Ogre & Slayer equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+- id: weapon.trident
+  name: Trident
+  summary: 'Range: Close Combat Strength: As user Special Rules Parry: Can parry enemy blows Strike first Strikes first when
+    charged'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Trident
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.spiked-gauntlet
+  name: Spiked gauntlet
+  summary: 'Range: Close Combat Strength: As user Special Rules Parry: Can parry enemy blows'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Spiked gauntlet
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id010
+  - &id025
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ogre Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
+- id: weapon.sigmarite-hammer
+  name: Sigmarite hammer
+  summary: +1 Strength, Concussion, and +1 to wound Undead or Possessed opponents.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Sigmarite hammer
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id012
+    manual: mordheimer.net
+    printed_page: 0
+    section: Sisters of Sigmar equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
+- id: weapon.steel-whip
+  name: Steel whip
+  summary: 'Range: Close Combat Strength: As user Special Rules Cannot be parried: The steel whip is a flexible weapon and
+    the Priestesses use it with great expertise. Attempts to parry its strikes are futile. A model attacked by a steel whip
+    may not make parries with swords or bucklers.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Steel whip
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id011
+  - *id012
+- id: weapon.choppa
+  name: Choppa
+  summary: +1 Strength in the first round and an additional -1 armour-save modifier; may be used with a shield.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Choppa
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Orc equipment lists / Black Orc List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Orc equipment lists / Henchmen List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
+- id: weapon.fighting-claws
+  name: Fighting claws
+  summary: 'Range: Close Combat Strength: As user Special Rules Pair: Fighting Claws are traditionally used in pairs, one
+    in each hand. A warrior armed with Fighting Claws gets an additional attack. Climb A Skaven equipped with Fighting Claws
+    can add +1 to his Initiative when making Climbing tests.'
+  hands: 1
+  paired: true
+  main_hand: true
+  off_hand: false
+  engine_option: Fighting claws
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id013
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
+- id: weapon.weeping-blades
+  name: Weeping blades
+  summary: 'Range: Close Combat Strength: As user Special Rules Pair: Weeping Blades are traditionally used in pairs, one
+    in each hand. A warrior armed with Weeping Blades gets an additional attack. Venomous The venom of Weeping Blades will
+    enter the blood of the victim and ravage his organs and muscles.'
+  hands: 1
+  paired: true
+  main_hand: true
+  off_hand: false
+  engine_option: Weeping blades
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id013
+- id: weapon.serpent-staff
+  name: Serpent staff
+  summary: 'Range: Close Combat Strength: As user Special Rules Parry: The staff is used with two hands and may be used to
+    Parry. However, the Liche Priest may forgo all his normal attacks and parries in a round to use the power contained within
+    the staff.'
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Serpent staff
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id027
+    manual: mordheimer.net
+    printed_page: 0
+    section: Liche Priest Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+- id: weapon.chained-squig
+  name: Chained Squig
+  summary: Strength 3, strikes first, cannot be parried and entangles an opponent it hits.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Chained Squig
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.squig-prodder
+  name: Squig prodder
+  summary: Strikes first and may be combined with a shield or spiked gauntlet.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Squig prodder
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id016
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  - &id037
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+  - &id021
+    manual: mordheimer.net
+    printed_page: 0
+    section: Goblin Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
+- id: weapon.kusara-kama
+  name: Kusara Kama
+  summary: Two-handed, adds -1 to armour saves, and a hit roll of 5+ removes one enemy attack next phase.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Kusara Kama
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.witch-sword
+  name: Witch sword
+  summary: +1 Strength in the first round and may parry.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Witch sword
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.long-boat-hook
+  name: Long boat hook
+  summary: 'Range: Close Combat Strength: As user -1 Special Rules Strike First: Boat Hooks are used in Close Combat. They
+    allow the user to Strike First in the first round of any close combat, no matter which model charged, but require both
+    hands to use.'
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Long boat hook
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id014
+  - *id015
+- id: weapon.pirate-scourge
+  name: Pirate scourge
+  summary: 'Range: Close Combat Strength: As user Special Rules Cannot be parried: Like the Steel Whips of the Sisterhood,
+    Cats cannot be parried by swords or bucklers.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Pirate scourge
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id014
+- id: weapon.bo
+  name: Bo
+  summary: Two-handed weapon granting +1 Attack and one parry.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Bo
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.poisoned-daggers
+  name: Poisoned daggers
+  summary: 'Range: Close Combat Strength: As user Special Rules Paired: Poisoned Daggers are traditionally used in pairs,
+    one in each hand. A warrior armed with Poisoned Daggers gets an additional attack. Poisoned These blades are coated in
+    Death Cap Mushroom juice.'
+  hands: 1
+  paired: true
+  main_hand: true
+  off_hand: false
+  engine_option: Poisoned daggers
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id019
+    manual: mordheimer.net
+    printed_page: 0
+    section: Fanatic Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  - *id016
+  - &id020
+    manual: mordheimer.net
+    printed_page: 0
+    section: Fanatic Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+- id: weapon.serpent-whip
+  name: Serpent whip
+  summary: Whip attack that cannot be parried and uses Black Lotus; grants one strike-first attack when charging or charged.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Serpent whip
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.beastlash
+  name: Beastlash
+  summary: 'Range: Close Combat Strength: As user -1 Special Rules Beastbane: The Beastmaster wielding a Beastlash causes
+    Fear in animals, any animal charged or wishing to charge a Beastmaster with one of these weapons must first take a Fear
+    test as mentioned in the psychology section of the Mordheim rules.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Beastlash
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id034
+    manual: mordheimer.net
+    printed_page: 0
+    section: Dark Elf Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hero equipment list
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+- id: weapon.sun-gauntlet
+  name: Sun gauntlet
+  summary: Off-hand-only Strength 4 attack that ignores armour saves.
+  hands: 1
+  paired: false
+  main_hand: false
+  off_hand: true
+  engine_option: Sun gauntlet
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id017
+- id: weapon.unholy-sword
+  name: Unholy sword
+  summary: Uses the wielder's Strength and may parry.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Unholy sword
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.stiletto
+  name: Stiletto
+  summary: Grants +1 Attack but resolves its attacks at -1 Strength.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Stiletto
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.claw-of-the-old-ones
+  name: Claw of the Old Ones
+  summary: 'Range: Close Combat Strength: As user +1 Special Rules No save: The blade of the Claw can literally cut through
+    anything. A warrior wounded by a Claw receives no armour save whatsoever. Parry Swords offer an excellent balance of defence
+    and offence. A model armed with a sword may parry blows.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Claw of the Old Ones
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id017
+- id: weapon.draich
+  name: Draich
+  summary: Two-handed, +2 Strength, strikes last, may parry, has Concussion and adds +1 on Critical Hit tables.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Draich
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.yari-one-handed
+  name: Yari (one-handed)
+  summary: One-handed weapon that may parry.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Yari (one-handed)
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.yari-two-handed
+  name: Yari (two-handed)
+  summary: Two-handed weapon that strikes first and may parry.
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Yari (two-handed)
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.death-knife
+  name: Death knife
+  summary: Attacks at -1 Strength, ignore armour saves and gain +1 on Injury rolls.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Death knife
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.disease-dagger
+  name: Disease dagger
+  summary: 'Range: Close Combat Strength: As user Special Rules +1 Enemy Armour Save: Daggers are not the best weapons to
+    use for penetrating an enemy model''s armour. An enemy wounded by a dagger gains a +1 bonus to his armour save, and a
+    6+ armour save if he has none normally.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Disease dagger
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - &id018
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+- id: weapon.censer
+  name: Censer
+  summary: 'Range: Close Combat Strength: As user +2 Special Rules Heavy: The +2 Strength bonus applies only to the first
+    turn of hand to hand combat. Two-handed A censer requires two hands to be used and the wielder cannot use a shield, buckler
+    or additional weapon in close combat.'
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Censer
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id018
+- id: weapon.ball-and-chain
+  name: Ball and chain
+  summary: 'Range: Close Combat Strength: As user +2 Special Rules Incredible Force: Because the Ball and Chain is so heavy,
+    normal armour does very little to protect against it. No armour saves are allowed against wounds caused by a Ball and
+    Chain.'
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Ball and chain
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id019
+  - *id020
+  - *id021
+- id: weapon.lance
+  name: Lance
+  summary: 'Range: Close Combat Strength: As user +2 when charging on horseback Special Rules Cavalry weapon: A warrior must
+    own a warhorse to use a lance, as it can only be used whilst he is on horseback.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Lance
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id022
+  - *id023
+  - &id032
+    manual: mordheimer.net
+    printed_page: 0
+    section: Imperial Outriders equipment lists / Hand-to-hand Combat Weapons and Armour
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/imperial-outriders
+- id: weapon.misericordia
+  name: Misericordia
+  summary: 'Range: Close Combat Strength: As user Special Rules +1 Enemy armour save: Daggers are not the best weapons to
+    use for penetrating an enemy model''s armour. An enemy wounded by a dagger gains a +1 bonus to his armour save, and a
+    6+ armour save if he has none normally.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Misericordia
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id023
+  - &id036
+    manual: mordheimer.net
+    printed_page: 0
+    section: Hero Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+- id: weapon.starblade
+  name: Starblade
+  summary: 'Range: Close Combat Strength: As user Special Rules +1 Enemy armour save: Enemy gets +1 to armour save Potential
+    Parry A Starblade can parry the first successful hit of any combat on a 4+.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Starblade
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id001
+- id: weapon.starsword
+  name: Starsword
+  summary: 'Range: Close Combat Strength: As user +1 Special Rules Parry: Can parry enemy blows Ignores Armour A Starsword
+    ignores all armour saves except for ward and Dodge saves.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Starsword
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id001
+- id: weapon.broadsword
+  name: Broadsword
+  summary: 'Range: Close Combat Strength: As user +1 Special Rules Difficult to use: A model with a Broadsword may not use
+    a second weapon or buckler in his other hand because it requires all his skill to wield it. He may carry a shield or a
+    kite shield as normal though.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Broadsword
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id005
+- id: weapon.dragon-sword
+  name: Dragon Sword
+  summary: 'Range: Close Combat Strength: As user +1 Special Rules Two-handed: A model armed with a Dragon Sword may not use
+    a shield, buckler or additional weapon in close combat. It gets an additional +1 armour save bonus against ranged attacks
+    if it carries a shield.'
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Dragon Sword
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id024
+  - &id026
+    manual: mordheimer.net
+    printed_page: 0
+    section: Monk Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/battle-monks-of-cathay
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Cathayan Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+- id: weapon.cathayan-longsword
+  name: Cathayan Longsword
+  summary: 'Range: Close Combat Strength: As user Special Rules Mastercrafted: Attacks made with a Cathayan longsword give
+    the bearer +1 Initiative and +1 Weapon Skill.'
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: true
+  engine_option: Cathayan Longsword
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id024
+  - *id025
+- id: weapon.chain-sticks
+  name: Chain Sticks
+  summary: 'Range: Close Combat Strength: As user Special Rules Flurry: A set of chain sticks allows its wielder to unleash
+    a furious bludgeoning. A warrior armed with chain sticks gets +2 Attacks. This bonus only applies in the first turn of
+    each hand-to-hand combat.'
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Chain Sticks
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id026
+- id: weapon.man-catcher
+  name: Man-catcher
+  summary: 'Range: Close Combat Strength: As user Special Rules Capture: A model taken out of action by a Mancatcher becomes
+    captured. Do not roll for Serious Injuries. The catch is locked up in the Engine of Chaos instead. If the warband does
+    not include an Engine of Chaos, roll for Serious Injuries as normal.'
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Man-catcher
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id011
+- id: weapon.quarter-staff
+  name: Quarter Staff
+  summary: 'Range: Close Combat Strength: As user Special Rules Balanced: A quarter staff is especially light and easy to
+    wield. A model armed with a fighting staff gets +1 Initiative in close combat.'
+  hands: 2
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Quarter Staff
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id026
+  - *id027
+- id: weapon.vomit-attack
+  name: Vomit attack
+  summary: One automatic Strength 5 hit that ignores armour saves; replaces the model's normal attacks.
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Vomit attack
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs: []
+- id: weapon.boar-spear
+  name: Boar Spear
+  summary: Strikes first and only combines with a shield or buckler; a mounted charge grants +1 Strength, while a charging
+    enemy loses one base Attack (minimum 1).
+  hands: 1
+  paired: false
+  main_hand: true
+  off_hand: false
+  engine_option: Boar Spear
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/close-combat
+  source_refs:
+  - *id023
+armours:
+- id: armour.no-armour
+  name: No Armour
+  summary: No body armour is equipped. Other saves may still apply.
+  base_save: null
+  engine_option: No Armour
+  engine_code: 0
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/armour
+  source_refs: []
+- id: armour.light-armour
+  name: Light armour
+  summary: 'Save: 6+ Special Rules Movement Penalty: No penalty when worn with a shield.'
+  base_save: 6
+  engine_option: Light armour
+  engine_code: 1
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/armour
+  source_refs:
+  - *id006
+  - *id028
+  - *id009
+- id: armour.heavy-armour
+  name: Heavy armour
+  summary: 'Save: 5+ Special Rules Movement Penalty: A warrior that is armed with both heavy armour and a shield suffers a
+    -1 Movement penalty'
+  base_save: 5
+  engine_option: Heavy armour
+  engine_code: 2
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/armour
+  source_refs:
+  - *id004
+  - *id024
+  - *id029
+- id: armour.gromril-armour
+  name: Gromril armour
+  summary: 'Save: 4+ Special Rules Movement Penalty: Gromril armour gives the wearer a 4+ basic save, and does not slow
+    him down if he is also armed with a shield.'
+  base_save: 4
+  engine_option: Gromril armour
+  engine_code: 3
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/armour
+  source_refs:
+  - *id030
+  - *id031
+  - *id032
+- id: armour.ithilmar-armour
+  name: Ithilmar armour
+  summary: 'Save: 5+ Special Rules Movement Penalty: Ithilmar armour gives the wearer a 5+ basic save, and does not slow
+    him down if he is also armed with a shield.'
+  base_save: 5
+  engine_option: Ithilmar armour
+  engine_code: 4
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/armour
+  source_refs:
+  - *id032
+  - &id035
+    manual: mordheimer.net
+    printed_page: 0
+    section: Shadow Warrior equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
+- id: armour.toughened-leathers
+  name: Toughened leathers
+  summary: 'Save: 6+ Special Rules Compatibility: Toughened leathers cannot be combined with the effects of any other armour
+    except a helmet or buckler (so not a shield). Sellback Toughened leathers cannot be sold back at the Trading Posts;'
+  base_save: 6
+  engine_option: Toughened leathers
+  engine_code: 5
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/armour
+  source_refs: []
+- id: armour.plate-armour
+  name: Plate armour
+  summary: Grants a 4+ armour save. A shield may be combined with it; the resulting -1 Movement is outside the close-combat duel runtime.
+  base_save: 4
+  engine_option: Plate armour
+  engine_code: 6
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/armour
+  source_refs: []
+- id: armour.wizard-s-robe
+  name: Wizard's robe
+  summary: Grants a 6+ armour save, cannot combine with other armour except a helmet, and does not prevent spellcasting.
+  base_save: 6
+  engine_option: Wizard's robe
+  engine_code: 7
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/armour
+  source_refs: []
+- id: armour.ninja-robes
+  name: Ninja robes
+  summary: 'Counts as Toughened Leathers (also called Hardened Leathers): grants a 6+ armour save and cannot combine with a shield.'
+  base_save: 6
+  engine_option: Ninja robes
+  engine_code: 8
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/armour
+  source_refs: []
+- id: armour.eshin-assassin-robes
+  name: Eshin assassin robes
+  summary: Counts as Light Armour, granting a 6+ save; cannot combine with any other armour except a helmet.
+  base_save: 6
+  engine_option: Eshin assassin robes
+  engine_code: 9
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/armour
+  source_refs: []
+- id: armour.spider-chitin-armour
+  name: Spider chitin armour
+  summary: Legacy catalogue entry. The ruling represents chitin as the spider's intrinsic 4+ natural armour, not selectable equipment.
+  base_save: null
+  engine_option: Spider chitin armour
+  engine_code: 10
+  rules_source_url: https://mordheimer.net/docs/weapons-armour/armour
+  source_refs: []
+- id: armour.cathayan-quilted-silk
+  name: Cathayan Quilted Silk Armour
+  summary: +1 armour save against every attack; combines with any body armour.
+  base_save: null
+  overlay: true
+  engine_option: Cathayan quilted silk armour
+  rules_source_url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  source_refs:
+  - *id023
+defences:
+- id: defence.shield
+  name: Shield
+  summary: +1 armour save; occupies the off hand.
+  engine_option: Shield
+  source_refs:
+  - *id006
+  - *id033
+  - *id004
+- id: defence.buckler
+  name: Buckler
+  summary: May parry one eligible close-combat hit; does not improve armour.
+  engine_option: Buckler
+  source_refs:
+  - *id001
+  - *id002
+  - *id017
+- id: defence.helmet
+  name: Helmet
+  summary: A 4+ roll converts a Stunned injury result to Knocked Down.
+  engine_option: Helmet
+  source_refs:
+  - *id001
+  - *id002
+  - *id003
+- id: defence.lucky-charm
+  name: Lucky charm
+  summary: Ignores the first successful hit on a 4+; consumed after the attempt.
+  engine_option: Lucky charm
+  source_refs:
+  - *id005
+- id: defence.sea-dragon-cloak
+  name: Sea Dragon cloak
+  summary: Grants a 5+ save in close combat and 4+ against shooting; cannot combine with other armour. Shooting is outside the current runtime.
+  engine_option: Sea Dragon cloak
+  source_refs:
+  - *id034
+- id: defence.cooking-pot-helmet
+  name: Cooking pot helmet
+  summary: An unmodified 5+ converts a Stunned injury result to Knocked Down.
+  engine_option: Cooking pot helmet
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Mootlander Equipment List
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/mootlanders
+- id: defence.enchanted-skins
+  name: Enchanted skins
+  summary: Unmodified 6+ special save against wounds after armour saves.
+  engine_option: Enchanted skins
+  source_refs:
+  - *id001
+  - *id002
+  - *id003
+- id: defence.kite-shield
+  name: Kite Shield
+  summary: +2 armour save on foot or +1 while mounted; the final save cannot improve beyond 1+.
+  engine_option: Kite Shield
+  source_refs:
+  - *id005
+materials:
+- id: material.normal
+  name: Normal
+  summary: No material modifier.
+  engine_option: Normal
+  engine_code: 0
+  source_refs: []
+- id: material.gromril
+  name: Gromril
+  summary: Adds a further -1 armour-save modifier.
+  engine_option: Gromril
+  engine_code: 1
+  source_refs:
+  - *id030
+  - *id031
+  - *id010
+- id: material.ithilmar
+  name: Ithilmar
+  summary: +1 Initiative while the weapon is equipped.
+  engine_option: Ithilmar
+  engine_code: 2
+  source_refs:
+  - *id035
+- id: material.obsidian
+  name: Obsidian
+  summary: +1 Strength for attacks made with the weapon.
+  engine_option: Obsidian
+  engine_code: 3
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Dwarf equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+- id: material.dark-steel
+  name: Dark steel
+  summary: Re-rolls failed wound rolls.
+  engine_option: Dark steel
+  engine_code: 4
+  source_refs: []
+- id: material.dark-elf-blade
+  name: Dark Elf blade
+  summary: +1 on Injury rolls caused by the upgraded blade.
+  engine_option: Dark Elf blade
+  engine_code: 5
+  source_refs:
+  - *id034
+preparations:
+- id: preparation.crimson-shade
+  name: Crimson Shade
+  summary: +1 S and +1D3 I for the entire battle.
+  engine_option: Crimson Shade
+  engine_code: 1
+  source_refs:
+  - *id036
+- id: preparation.mandrake-root
+  name: Mandrake Root
+  summary: +1 T and Stunned results become Knocked Down instead.
+  engine_option: Mandrake Root
+  engine_code: 2
+  source_refs: []
+- id: preparation.tears-of-shallaya
+  name: Tears of Shallaya
+  summary: Immunity to all poisons for the battle.
+  engine_option: Tears of Shallaya
+  engine_code: 4
+  source_refs: []
+- id: preparation.mad-cap-mushrooms
+  name: Mad Cap Mushrooms
+  summary: 'Frenzy: doubles Attacks until Knocked Down or Stunned.'
+  engine_option: Mad Cap Mushrooms
+  engine_code: 8
+  source_refs: []
+- id: preparation.head-splitter-mushrooms
+  name: Head-splitter mushrooms
+  summary: Frenzy; also allows the use of a Ball and Chain.
+  engine_option: Head-splitter mushrooms
+  engine_code: 16
+  source_refs:
+  - *id019
+  - *id016
+  - *id037
+poisons:
+- id: poison.black-lotus
+  name: Black Lotus
+  summary: A natural 6 to hit wounds automatically.
+  engine_option: Black Lotus
+  engine_code: 1
+  source_refs: []
+- id: poison.black-venom
+  name: Black Venom
+  summary: +1 S when wounding and calculating armour penetration.
+  engine_option: Black Venom
+  engine_code: 2
+  source_refs:
+  - *id034
+  - *id036
+- id: poison.reptile-venom
+  name: Reptile Venom
+  summary: +1 S when wounding, without increasing armour penetration.
+  engine_option: Reptile Venom
+  engine_code: 3
+  source_refs: []
+- id: poison.manbane
+  name: Manbane
+  summary: +1 to wound rolls; a natural 1 always fails.
+  engine_option: Manbane
+  engine_code: 4
+  source_refs: []
+- id: poison.wolfsbane
+  name: Wolfsbane
+  summary: Causes critical hits on 5-6 unless a natural 6 is required to wound.
+  engine_option: Wolfsbane
+  engine_code: 5
+  source_refs: []
+- id: poison.nightshade
+  name: Nightshade
+  summary: Each unsaved wound reduces the opponent’s Initiative by 1, to a minimum of 1.
+  engine_option: Nightshade
+  engine_code: 6
+  source_refs: []
+- id: poison.bloodroot
+  name: Bloodroot
+  summary: Doubles wounds caused.
+  engine_option: Bloodroot
+  engine_code: 7
+  source_refs: []
+- id: poison.devil-s-toxin
+  name: Devil's Toxin
+  summary: Re-rolls failed wound rolls; the re-roll cannot cause a critical hit.
+  engine_option: Devil's Toxin
+  engine_code: 8
+  source_refs: []
+- id: poison.spider-spittle
+  name: Spider Spittle
+  summary: to the hit, the opponent cheques R or is paralized.
+  engine_option: Spider Spittle
+  engine_code: 9
+  source_refs: []
+pending_mechanics: []
+skills:
+- id: skill.always-strikes-first
+  name: Always Strikes First
+  category: special
+  summary: Strikes first in close combat.
+  kind: warband
+  engine_option: Always Strikes First
+  source_refs: []
+- id: skill.unarmed-fighting
+  name: Unarmed Fighting
+  category: special
+  summary: Fights unarmed without penalties and gains +1 Attack while unarmed.
+  kind: warband
+  engine_option: Unarmed Fighting
+  source_refs: []
+- id: skill.axe-expert
+  name: Axe Expert
+  category: special
+  summary: Re-rolls missed axe attacks when charging.
+  kind: warband
+  engine_option: Axe Expert
+  source_refs: []
+- id: skill.axe-master
+  name: Axe Master
+  category: special
+  summary: May parry with normal axes.
+  kind: warband
+  engine_option: Axe Master
+  source_refs: []
+- id: skill.bellowing-battle-roar
+  name: Bellowing Battle Roar
+  category: special
+  summary: Enemies suffer -1 to hit in the first round.
+  kind: warband
+  engine_option: Bellowing Battle Roar
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Lizardmen special skills / Saurus Only / Bellowing Battle Roar
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+- id: skill.berserker
+  name: Berserker
+  category: special
+  summary: +1 to hit while charging.
+  kind: warband
+  engine_option: Berserker
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Slayer Special Skills / Berserker
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - manual: mordheimer.net
+    printed_page: 0
+    section: TROLL SLAYER SKILLS / Berserker
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Troll Slayer Special Skills / Berserker
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+- id: skill.crushing-blow
+  name: Crushing Blow
+  category: special
+  summary: Attacks cannot be parried.
+  kind: warband
+  engine_option: Crushing Blow
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Norse special skills / crushing blow
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+- id: skill.defensive-stance
+  name: Defensive Stance
+  category: special
+  summary: May parry with any weapon; Parry weapons match the roll.
+  kind: warband
+  engine_option: Defensive Stance
+  source_refs: []
+- id: skill.elven-agility
+  name: Elven Agility
+  category: special
+  summary: 6+ special save in close combat; improves to 4+ with Step Aside.
+  kind: warband
+  engine_option: Elven Agility
+  source_refs: []
+- id: skill.expert-fighter
+  name: Expert Fighter
+  category: special
+  summary: +1 to wound rolls.
+  kind: warband
+  engine_option: Expert Fighter
+  source_refs: []
+- id: skill.expert-swordsman
+  name: Expert Swordsman
+  category: combat
+  summary: Re-roll missed attacks with normal swords or weeping blades when charging.
+  kind: general
+  engine_option: Expert Swordsman
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 2 Companions / Special Rules / Expert Swordsman
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+- id: skill.ferocious-charge
+  name: Ferocious Charge
+  category: special
+  summary: Doubles Attacks while charging, with -1 to hit that turn.
+  kind: warband
+  engine_option: Ferocious Charge
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Slayer Special Skills / Ferocious Charge
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - manual: mordheimer.net
+    printed_page: 0
+    section: TROLL SLAYER SKILLS / Ferocious Charge
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Troll Slayer Special Skills / Ferocious Charge
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+- id: skill.hard-to-kill
+  name: Hard to Kill
+  category: special
+  summary: Injury rolls of 1-2 cause Knocked Down, 3-5 cause Stunned, and 6 causes Out of Action.
+  kind: warband
+  engine_option: Hard to Kill
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hard to Kill
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hard to Kill
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hard to Kill
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+- id: skill.hardy-constitution
+  name: Hardy Constitution
+  category: special
+  summary: Ignores a critical hit on 5+.
+  kind: warband
+  engine_option: Hardy Constitution
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Pirate Special Skills / Hardy Constitution
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+- id: skill.head-crusher
+  name: Head Crusher
+  category: special
+  summary: Knocked Down results caused by the warrior become Stunned.
+  kind: warband
+  engine_option: Head Crusher
+  source_refs: []
+- id: skill.ignore-pain
+  name: Ignore Pain
+  category: special
+  summary: Stunned results become Knocked Down.
+  kind: warband
+  engine_option: Ignore Pain
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Clan Pestilens Special Skills / ignore pain
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
+- id: skill.infallible
+  name: Infallible
+  category: special
+  summary: Re-rolls failed hit rolls while charging.
+  kind: warband
+  engine_option: Infallible
+  source_refs: []
+- id: skill.infinite-hatred
+  name: Infinite Hatred
+  category: special
+  summary: Re-rolls failed hit rolls.
+  kind: warband
+  engine_option: Infinite Hatred
+  source_refs: []
+- id: skill.inspiring-sermon
+  name: Inspiring Sermon
+  category: special
+  summary: +1 Attack for the turn.
+  kind: warband
+  engine_option: Inspiring Sermon
+  source_refs: []
+- id: skill.iron-sinews
+  name: Iron Sinews
+  category: special
+  summary: +1 Strength.
+  kind: warband
+  engine_option: Iron Sinews
+  source_refs: []
+- id: skill.jump-up
+  name: Jump Up
+  category: speed
+  summary: Ignores knocked-down Injury results, except those caused by No Pain or a successful helmet save.
+  kind: general
+  engine_option: Jump Up
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs: []
+- id: skill.knife-fighting
+  name: Knife Fighting
+  category: special
+  summary: +1 WS and +1 on the Injury table with a dagger or yambiya.
+  kind: warband
+  engine_option: Knife Fighting
+  source_refs: []
+- id: skill.lightning-reflexes
+  name: Lightning Reflexes
+  category: speed
+  summary: When charged, strikes first and resolves ties by Initiative.
+  kind: general
+  engine_option: Lightning Reflexes
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 2 Knights Vanguard / Special Rules / Lightning Reflexes
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+- id: skill.luck
+  name: Luck
+  category: special
+  summary: Re-roll one of your own rolls once per battle.
+  kind: warband
+  engine_option: Luck
+  source_refs: []
+- id: skill.mighty-biceps
+  name: Mighty Biceps
+  category: special
+  summary: Retains the Strength bonus of heavy weapons.
+  kind: warband
+  engine_option: Mighty Biceps
+  source_refs: []
+- id: skill.mighty-blow
+  name: Mighty Blow
+  category: strength
+  summary: +1 Strength in close combat, excluding pistols.
+  kind: general
+  engine_option: Mighty Blow
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs: []
+- id: skill.miniath
+  name: Miniath
+  category: special
+  summary: May parry with any weapon and re-rolls one failed parry.
+  kind: warband
+  engine_option: Miniath
+  source_refs: []
+- id: skill.monster-slayer
+  name: Monster Slayer
+  category: special
+  summary: Always wounds on at least 4+.
+  kind: warband
+  engine_option: Monster Slayer
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Slayer Special Skills / Monster Slayer
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - manual: mordheimer.net
+    printed_page: 0
+    section: TROLL SLAYER SKILLS / Monster Slayer
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Troll Slayer Special Skills / Monster Slayer
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+- id: skill.monstrous
+  name: Monstrous
+  category: special
+  summary: +1 Wound.
+  kind: warband
+  engine_option: Monstrous
+  source_refs: []
+- id: skill.red-fury
+  name: Red Fury
+  category: special
+  summary: +1 Attack.
+  kind: warband
+  engine_option: Red Fury
+  source_refs: []
+- id: skill.regeneration
+  name: Regeneration
+  category: special
+  summary: Regenerates unsaved wounds on 4+.
+  kind: warband
+  engine_option: Regeneration
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Troll / Special Rules / Regeneration
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
+  - manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Troll / Special Rules / Regeneration
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 1 Troll / Special Rules / Regeneration
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
+- id: skill.resilient
+  name: Resilient
+  category: strength
+  summary: Close-combat hits against the warrior suffer -1 Strength without changing save modifiers.
+  kind: general
+  engine_option: Resilient
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs: []
+- id: skill.shield-mastery
+  name: Shield Mastery
+  category: special
+  summary: A shield can parry and retains its armour save.
+  kind: warband
+  engine_option: Shield Mastery
+  source_refs: []
+- id: skill.shield-strike
+  name: Shield Strike
+  category: special
+  summary: Gains an additional attack at the user's Strength; armour is modified normally according to that Strength.
+  kind: warband
+  engine_option: Shield Strike
+  source_refs: []
+- id: skill.sigmar-s-sign
+  name: Sigmar's Sign
+  category: special
+  summary: Undead and Possessed enemies lose one attack in the first round.
+  kind: warband
+  engine_option: Sigmar's Sign
+  source_refs: []
+- id: skill.step-aside
+  name: Step Aside
+  category: combat
+  summary: Unmodified 5+ save against close-combat wounds after armour saves.
+  kind: general
+  engine_option: Step Aside
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs: []
+- id: skill.strength-of-steel
+  name: Strength of Steel
+  category: special
+  summary: +1 Strength while charging.
+  kind: warband
+  engine_option: Strength of Steel
+  source_refs: []
+- id: skill.strike-to-injure
+  name: Strike to Injure
+  category: combat
+  summary: +1 to Injury rolls caused in close combat.
+  kind: general
+  engine_option: Strike to Injure
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs: []
+- id: skill.strongman
+  name: Strongman
+  category: strength
+  summary: Double-handed weapons not longer strike last.
+  kind: general
+  engine_option: Strongman
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 3 Blackguards / Special Rules / Strongman
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+- id: skill.sure-strike
+  name: Sure Strike
+  category: special
+  summary: Re-rolls failed wound rolls.
+  kind: warband
+  engine_option: Sure Strike
+  source_refs: []
+- id: skill.sweep
+  name: Sweep
+  category: special
+  summary: With a double-handed weapon, replaces all attacks with one automatic hit if the opponent fails an Initiative test.
+  kind: warband
+  engine_option: Sweep
+  source_refs: []
+- id: skill.sword-master
+  name: Sword Master
+  category: special
+  summary: Parries matching rolls and re-rolls one failed parry.
+  kind: warband
+  engine_option: Sword Master
+  source_refs: []
+- id: skill.thick-skull
+  name: Thick Skull
+  category: special
+  summary: Turns Stunned into Knocked Down on 3+, or 2+ with a Helmet.
+  kind: warband
+  engine_option: Thick Skull
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Chaos Dwarf special skills / thick skull
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Special Skills / Thick Skull
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Special Skills / Thick Skull
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+- id: skill.tireless
+  name: Tireless
+  category: special
+  summary: Retains the Strength bonus of heavy weapons in later rounds.
+  kind: warband
+  engine_option: Tireless
+  source_refs: []
+- id: skill.tough-as-steel
+  name: Tough as Steel
+  category: special
+  summary: Only goes Out of Action on a 6 on the Injury table.
+  kind: warband
+  engine_option: Tough as Steel
+  source_refs: []
+- id: skill.unbeatable-warrior
+  name: Unbeatable Warrior
+  category: special
+  summary: Improves parries and allows two parries with two Parry weapons.
+  kind: warband
+  engine_option: Unbeatable Warrior
+  source_refs: []
+- id: skill.unstoppable-charge
+  name: Unstoppable Charge
+  category: strength
+  summary: +1 WS when charging.
+  kind: general
+  engine_option: Unstoppable Charge
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs: []
+- id: skill.vampire-reflexes
+  name: Vampire Reflexes
+  category: special
+  summary: Unmodifiable 6+ save against wounds, rolled before multiplying Wounds; combines with Step Aside to 4+.
+  kind: warband
+  engine_option: Vampire Reflexes
+  source_refs: []
+- id: skill.virtue-of-valour
+  name: Virtue of Valour
+  category: special
+  summary: Re-rolls hit rolls against enemies with higher Strength.
+  kind: warband
+  engine_option: Virtue of Valour
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Bretonnian Knight Virtues
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+- id: skill.weapons-of-the-north
+  name: Weapons of the North
+  category: special
+  summary: Re-rolls failed hit rolls with an axe or double-handed weapon.
+  kind: warband
+  engine_option: Weapons of the North
+  source_refs: []
+- id: skill.web-of-steel
+  name: Web of Steel
+  category: combat
+  summary: +1 on close-combat Critical Hit tables.
+  kind: general
+  engine_option: Web of Steel
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs: []
+- id: skill.art-of-silent-death
+  name: Art of Silent Death
+  category: special
+  summary: Fights unarmed without penalties, gains +1 Attack unarmed or one additional Attack with Fighting Claws, and scores close-combat criticals on To Wound rolls of 5-6.
+  kind: profile
+  engine_option: Art of Silent Death
+  source_refs: []
+- id: skill.unarmed-critical-strikes
+  name: Unarmed Critical Strikes
+  category: special
+  summary: Unarmed attacks score critical hits on To Wound rolls of 5-6.
+  kind: profile
+  engine_option: Unarmed Critical Strikes
+  source_refs: []
+- id: skill.blessed-sight
+  name: Blessed Sight
+  category: special
+  summary: Re-rolls failed characteristic tests and failed close-combat hit rolls.
+  kind: profile
+  engine_option: Blessed Sight
+  source_refs: []
+- id: skill.crack-shot
+  name: Crack Shot
+  category: special
+  summary: Re-rolls missed close-combat pistol attacks in the first combat round.
+  kind: profile
+  engine_option: Crack Shot
+  source_refs: []
+- id: skill.duellist
+  name: Duellist
+  category: special
+  summary: Grants the profile's documented duelling benefits.
+  kind: profile
+  engine_option: Duellist
+  source_refs: []
+- id: skill.extra-attack
+  name: Extra Attack
+  category: special
+  summary: Adds one Attack to the profile.
+  kind: profile
+  engine_option: Extra Attack
+  source_refs: []
+- id: skill.hatred
+  name: Hatred
+  category: special
+  summary: Re-rolls failed hit rolls in the first round of close combat.
+  kind: profile
+  engine_option: Hatred
+  source_refs: []
+- id: skill.swordmaster
+  name: Swordmaster
+  category: special
+  summary: Applies the profile's documented sword mastery.
+  kind: profile
+  engine_option: Swordmaster
+  source_refs: []
+- id: mechanic.black-hunger
+  name: Black Hunger
+  category: special
+  summary: 'Simulation convention: activates every turn, granting +1 Attack for that turn before D3 Strength 3 hits that ignore armour.'
+  kind: warband
+  engine_option: Black Hunger
+  source_refs: []
+- id: mechanic.body-slam
+  name: Body Slam
+  category: special
+  summary: Replaces charge attacks with one +1 Strength, +1 To Hit attack that critically wounds on 5+ and ignores weapon and skill modifiers.
+  kind: warband
+  engine_option: Body Slam
+  source_refs: []
+- id: mechanic.bull-charge
+  name: Bull Charge
+  category: special
+  summary: Replaces charge attacks with one +1 To Hit attempt that knocks the target down.
+  kind: warband
+  engine_option: Bull Charge
+  source_refs: []
+- id: mechanic.force-of-will
+  name: Force of Will
+  category: special
+  summary: May survive the first Out of Action result on a Toughness test, with cumulative follow-up tests.
+  kind: warband
+  engine_option: Force of Will
+  source_refs: []
+- id: mechanic.unpredictable-attack
+  name: Unpredictable
+  category: special
+  summary: One attack per combat phase cannot be parried.
+  kind: warband
+  engine_option: Unpredictable
+  source_refs: []
+- id: mechanic.strike-first-vs-skinks-first-round
+  name: Skink Hunter (first round)
+  category: special
+  summary: Always strikes first in the first combat round against Skink profiles.
+  kind: warband
+  engine_option: Strike First vs Skinks (First Round)
+  source_refs: []
+- id: mechanic.strike-first-vs-skinks-always
+  name: Lizard Hunter
+  category: special
+  summary: Always strikes first against Skink profiles in every combat round.
+  kind: warband
+  engine_option: Strike First vs Skinks (Always)
+  source_refs: []
+- id: skill.monster-slayer-effective-strength-armour
+  name: Monster Slayer (effective Strength armour modifier)
+  category: special
+  summary: Uses the effective Strength needed to wound on 4+ when calculating the armour-save modifier.
+  kind: warband
+  engine_option: Monster Slayer Effective Strength
+  source_refs: []
+- id: skill.regeneration-blocked-by-blessed
+  name: Regeneration blocked by blessed attacks
+  category: special
+  summary: Blessed attacks prevent the warrior's Regeneration roll.
+  kind: warband
+  engine_option: Regeneration Blocked by Blessed Attacks
+  source_refs: []
+- id: skill.regeneration-5-plus
+  name: Regeneration (5+)
+  category: armour
+  summary: Ignores wounds on 5+, except wounds caused by fire.
+  kind: warband
+  engine_option: Regeneration 5+
+  source_refs: []
+- id: mechanic.anvil-head
+  name: Anvil Head
+  category: special
+  summary: Replaces charge attacks with one attack that inflicts D3 separately resolved wounds on a hit.
+  kind: warband
+  engine_option: Anvil Head
+  source_refs: []
+- id: mechanic.death-blow
+  name: Death Blow
+  category: special
+  summary: Replaces two or more profile attacks with one attack at +1 To Hit, +1 To Wound and +1 Injury.
+  kind: warband
+  engine_option: Death Blow
+  source_refs: []
+- id: mechanic.disability
+  name: Disability
+  category: special
+  summary: Resolves the Cripple group's permanent D6 disability in each independent simulation row.
+  kind: profile
+  engine_option: Disability
+  source_refs: []
+- id: mechanic.energy-focus
+  name: Energy Focus
+  category: special
+  summary: While unarmed, may sacrifice any number of profile Attacks and gains the same amount of Strength.
+  kind: warband
+  engine_option: Energy Focus
+  source_refs: []
+- id: mechanic.mark-of-the-old-ones
+  name: Mark of the Old Ones
+  category: special
+  summary: Converts the first failed combat roll into a successful result once per duel.
+  kind: warband
+  engine_option: Mark of the Old Ones
+  source_refs: []
+- id: mechanic.netter
+  name: Netter
+  category: special
+  summary: Resolves a net charge before the first close-combat phase and knocks down a target that fails to escape.
+  kind: warband
+  engine_option: Netter
+  source_refs: []
+- id: mechanic.spawn-special-attacks
+  name: Spawn Special Attacks
+  category: attacks
+  summary: Rolls D6+1 Attacks again at the start of every close-combat phase.
+  kind: profile
+  engine_option: Spawn Special Attacks
+  source_refs: []
+- id: mechanic.amazon-isolationists
+  name: Amazon Isolationists
+  category: attacks
+  summary: Re-rolls failed attacks in the first combat round against Lizardmen and Norse.
+  kind: warband
+  engine_option: Amazon Isolationists
+  source_refs: []
+- id: mechanic.spider-infested
+  name: Spider Infested
+  category: initiative
+  summary: Applies a cumulative Initiative penalty when an enemy misses or has an attack parried; this penalty may reduce Initiative to 0 while engagement continues.
+  kind: warband
+  engine_option: Spider Infested
+  source_refs: []
+- id: mechanic.untiring
+  name: Untiring
+  category: armour
+  summary: Preserves a 5+ armour save against modifiers and non-magical armour denial.
+  kind: warband
+  engine_option: Untiring
+  source_refs: []
+- id: mechanic.armour-save-bonus
+  name: Armour Save Bonus
+  category: armour
+  summary: Improves the warrior's armour save by one point.
+  kind: warband
+  engine_option: Armour Save Bonus
+  source_refs: []
+- id: mechanic.retain-flail-morning-star-strength-bonus
+  name: Retain Flail and Morning Star Strength Bonus
+  category: strength
+  summary: Retains the first-round Strength bonus of Flails and Morning Stars in later rounds.
+  kind: warband
+  engine_option: Retain Flail and Morning Star Strength Bonus
+  source_refs: []

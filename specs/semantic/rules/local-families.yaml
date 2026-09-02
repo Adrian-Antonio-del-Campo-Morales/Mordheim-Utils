@@ -1,0 +1,1673 @@
+schema_version: 1
+specifications:
+- id: skill.iron-sinews
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/skill.iron-sinews
+    digest: 335e5c79c86a19609693d1fdf74bf830bfb91870cee8809db4171177620ff3af
+  interpretation: The written +1 Strength applies when wounding and calculating armour penetration. A Strength 3
+    wielder becomes Strength 4 and wounds Toughness 3 on 3+.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.iron-sinews
+    expect:
+      attacker.global_effects.strength_bonus: 1
+  - id: wound-consumer
+    roles:
+    - consumer
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.iron-sinews
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 2/3
+        'false': 1/3
+  - id: minimum-strength
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.iron-sinews
+      characteristics:
+        weapon_skill: 3
+        strength: 1
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect:
+      result.wound: 2
+      result.armour: 2
+  - id: ordinary-strength
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.iron-sinews
+    expect:
+      result.wound: 4
+      result.armour: 4
+  mutations:
+  - id: remove-strength
+    path: attacker.global_effects.strength_bonus
+    value: 0
+    cases:
+    - wound-consumer
+    - ordinary-strength
+  interaction_contract:
+    reads:
+    - fighter.strength
+    writes:
+    - attack.strength
+    - armour.strength
+- id: material.obsidian
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/material.obsidian
+    digest: 7b7903dd36cabe0fe0b2bef36fa7481a4b77d31f69849fedb5db42ddf1ecda82
+  interpretation: The written +1 Strength applies when wounding and calculating armour penetration. A Strength 3
+    wielder becomes Strength 4 and wounds Toughness 3 on 3+.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.obsidian
+    expect:
+      attacker.main_weapon.strength_bonus: 1
+  - id: wound-consumer
+    roles:
+    - consumer
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.obsidian
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 2/3
+        'false': 1/3
+  - id: minimum-strength
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.obsidian
+      characteristics:
+        weapon_skill: 3
+        strength: 1
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect:
+      result.wound: 2
+      result.armour: 2
+  - id: ordinary-strength
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.obsidian
+    expect:
+      result.wound: 4
+      result.armour: 4
+  mutations:
+  - id: remove-strength
+    path: attacker.main_weapon.strength_bonus
+    value: 0
+    cases:
+    - wound-consumer
+    - ordinary-strength
+  interaction_contract:
+    reads:
+    - fighter.strength
+    writes:
+    - attack.strength
+    - armour.strength
+- id: poison.black-venom
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/poison.black-venom
+    digest: b7e264f4e5af9e2da9889fd91855e0b820afb43f38ac34b7482ba124db8dc204
+  interpretation: The written +1 Strength applies when wounding and calculating armour penetration. A Strength 3
+    wielder becomes Strength 4 and wounds Toughness 3 on 3+.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    expect:
+      attacker.main_weapon.strength_bonus: 1
+  - id: wound-consumer
+    roles:
+    - consumer
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 2/3
+        'false': 1/3
+  - id: minimum-strength
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+      characteristics:
+        weapon_skill: 3
+        strength: 1
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect:
+      result.wound: 2
+      result.armour: 2
+  - id: ordinary-strength
+    roles:
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    expect:
+      result.wound: 4
+      result.armour: 4
+  mutations:
+  - id: remove-strength
+    path: attacker.main_weapon.strength_bonus
+    value: 0
+    cases:
+    - wound-consumer
+    - ordinary-strength
+  interaction_contract:
+    reads:
+    - fighter.strength
+    - defender.poison_immunity
+    writes:
+    - attack.strength
+    - armour.strength
+- id: armour.light-armour
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/armour.light-armour
+    digest: 57bd1a43cd4dd321a0c9977933bbb424611516e4d0365b9668accebf80693100
+  interpretation: The written body armour save is 6+. Against Strength 3 there is no Strength modifier; Strength
+    4 worsens the required roll by one. Movement clauses are outside the duel scope.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      armour_id: armour.light-armour
+    expect:
+      defender.armour_save: 6
+  - id: all-d6-faces
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      armour_id: armour.light-armour
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 1/6
+        'false': 5/6
+  - id: strength-modifier
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      armour_id: armour.light-armour
+    rolls: []
+    expect:
+      result.target: 7
+      result.saved: false
+  mutations:
+  - id: wrong-base-save
+    path: defender.armour_save
+    value: 5
+    cases:
+    - all-d6-faces
+    - strength-modifier
+  interaction_contract:
+    reads:
+    - armour.strength
+    - attack.penetration
+    - armour.allowed
+    writes:
+    - armour.target
+- id: armour.heavy-armour
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/armour.heavy-armour
+    digest: cdb2aab2fe4f44f635403eafa8b5915cf3b388c725ddce9f1f0a5f8028ecb2d4
+  interpretation: The written body armour save is 5+. Against Strength 3 there is no Strength modifier; Strength
+    4 worsens the required roll by one. Movement clauses are outside the duel scope.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      armour_id: armour.heavy-armour
+    expect:
+      defender.armour_save: 5
+  - id: all-d6-faces
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      armour_id: armour.heavy-armour
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 2/6
+        'false': 4/6
+  - id: strength-modifier
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.saved: false
+  mutations:
+  - id: wrong-base-save
+    path: defender.armour_save
+    value: 4
+    cases:
+    - all-d6-faces
+    - strength-modifier
+  interaction_contract:
+    reads:
+    - armour.strength
+    - attack.penetration
+    - armour.allowed
+    writes:
+    - armour.target
+- id: armour.gromril-armour
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/armour.gromril-armour
+    digest: 2281c24195e9907aef633f3d3f3668c9af6cfe078b7f34a18f0e5a10cc7953ef
+  interpretation: The written body armour save is 4+. Against Strength 3 there is no Strength modifier; Strength
+    4 worsens the required roll by one. Movement clauses are outside the duel scope.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      armour_id: armour.gromril-armour
+    expect:
+      defender.armour_save: 4
+  - id: all-d6-faces
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      armour_id: armour.gromril-armour
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 3/6
+        'false': 3/6
+  - id: strength-modifier
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 5
+      result.saved: false
+  mutations:
+  - id: wrong-base-save
+    path: defender.armour_save
+    value: 3
+    cases:
+    - all-d6-faces
+    - strength-modifier
+  interaction_contract:
+    reads:
+    - armour.strength
+    - attack.penetration
+    - armour.allowed
+    writes:
+    - armour.target
+- id: armour.ithilmar-armour
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - target: mechanic/armour.ithilmar-armour
+    digest: ac9b7eb54b506df8b147fbb9e560d4555139e7b8beb958427e373ab63208f1fb
+  interpretation: The written body armour save is 5+. Against Strength 3 there is no Strength modifier; Strength
+    4 worsens the required roll by one. Movement clauses are outside the duel scope.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      armour_id: armour.ithilmar-armour
+    expect:
+      defender.armour_save: 5
+  - id: all-d6-faces
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      armour_id: armour.ithilmar-armour
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 2/6
+        'false': 4/6
+  - id: strength-modifier
+    roles:
+    - consumer
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      armour_id: armour.ithilmar-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.saved: false
+  mutations:
+  - id: wrong-base-save
+    path: defender.armour_save
+    value: 4
+    cases:
+    - all-d6-faces
+    - strength-modifier
+  interaction_contract:
+    reads:
+    - armour.strength
+    - attack.penetration
+    - armour.allowed
+    writes:
+    - armour.target
+- id: skill.step-aside
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.step-aside
+    digest: 7d543001fc0b5b9a9361518b4ddeaf5a0f31d89b9ef071e6f5f7732590893d36
+  interpretation: The written special save succeeds on 5+ independently of armour. Its absence grants no such save.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      skill_ids:
+      - skill.step-aside
+    expect:
+      defender.global_effects.step_aside: true
+  - id: all-d6-faces
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: special_save
+    defender:
+      skill_ids:
+      - skill.step-aside
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 2/6
+        'false': 4/6
+  - id: absent
+    roles:
+    - inactive
+    operation: special_save
+    expect:
+      result.saved: false
+      result.ward_roll: null
+      result.regeneration_roll: null
+  mutations:
+  - id: remove-save
+    path: defender.global_effects.step_aside
+    value: false
+    cases:
+    - all-d6-faces
+  interaction_contract:
+    reads:
+    - damage.wound
+    writes:
+    - damage.unsaved
+- id: skill.regeneration
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.regeneration
+    digest: e62b1af731034d359dddd60508897a38dcb86fe9d387a19b23d1c2cb308a4a3b
+  interpretation: The written special save succeeds on 4+ independently of armour. Its absence grants no such save.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      skill_ids:
+      - skill.regeneration
+    expect:
+      defender.global_effects.regeneration_save: 4
+  - id: all-d6-faces
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: special_save
+    defender:
+      skill_ids:
+      - skill.regeneration
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 3/6
+        'false': 3/6
+  - id: absent
+    roles:
+    - inactive
+    operation: special_save
+    expect:
+      result.saved: false
+      result.ward_roll: null
+      result.regeneration_roll: null
+  mutations:
+  - id: remove-save
+    path: defender.global_effects.regeneration_save
+    value: 7
+    cases:
+    - all-d6-faces
+  interaction_contract:
+    reads:
+    - damage.wound
+    writes:
+    - damage.unsaved
+- id: defence.enchanted-skins
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/defence.enchanted-skins
+    digest: 3d08915534aaa2db55aa808792d27ae4a50f51d807ad70e4fdacec786919ec67
+  interpretation: The written special save succeeds on 6+ independently of armour. Its absence grants no such save.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      defence_ids:
+      - defence.enchanted-skins
+    expect:
+      defender.global_effects.ward_save: 6
+  - id: all-d6-faces
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: special_save
+    defender:
+      defence_ids:
+      - defence.enchanted-skins
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 1/6
+        'false': 5/6
+  - id: absent
+    roles:
+    - inactive
+    operation: special_save
+    expect:
+      result.saved: false
+      result.ward_roll: null
+      result.regeneration_roll: null
+  mutations:
+  - id: remove-save
+    path: defender.global_effects.ward_save
+    value: 7
+    cases:
+    - all-d6-faces
+  interaction_contract:
+    reads:
+    - damage.wound
+    writes:
+    - damage.unsaved
+- id: skill.infinite-hatred
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.infinite-hatred
+    digest: 04e5fb5a6e2b7e4f0aa920b8ac8d0af91b41595a3259db12e42c469c65f47710
+  interpretation: Re-roll failed rolls once. With a base 4+ target, success is 3/4. A first-roll success consumes
+    no second roll.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.infinite-hatred
+    expect:
+      attacker.global_effects.reroll_hits: true
+  - id: all-branches
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.infinite-hatred
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 3/4
+        'false': 1/4
+  - id: no-reroll-on-success
+    roles:
+    - inactive
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.infinite-hatred
+    rolls:
+    - key: hit
+      value: 4
+    expect:
+      result.success: true
+      result.rerolled: false
+  mutations:
+  - id: remove-reroll
+    path: attacker.global_effects.reroll_hits
+    value: false
+    cases:
+    - all-branches
+  interaction_contract:
+    reads:
+    - hit.target
+    writes:
+    - hit.success
+    - hit.rolls
+- id: skill.sure-strike
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.sure-strike
+    digest: ca1bb0a4961fa059e1c59165d4113d473e86420c9c975d899fa02b0870a8c509
+  interpretation: Re-roll failed rolls once. With a base 4+ target, success is 3/4. A first-roll success consumes
+    no second roll.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.sure-strike
+    expect:
+      attacker.global_effects.reroll_wounds: true
+  - id: all-branches
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.sure-strike
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 3/4
+        'false': 1/4
+  - id: no-reroll-on-success
+    roles:
+    - inactive
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.sure-strike
+    rolls:
+    - key: wound
+      value: 4
+    expect:
+      result.success: true
+      result.rerolled: false
+  mutations:
+  - id: remove-reroll
+    path: attacker.global_effects.reroll_wounds
+    value: false
+    cases:
+    - all-branches
+  interaction_contract:
+    reads:
+    - wound.target
+    writes:
+    - wound.success
+    - wound.rolls
+- id: material.dark-steel
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/material.dark-steel
+    digest: 8d728f140afba7fe68d83eafebfe5b51c1688d5252cee6f3c50969272b668133
+  interpretation: Re-roll failed rolls once. With a base 4+ target, success is 3/4. A first-roll success consumes
+    no second roll.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.dark-steel
+    expect:
+      attacker.main_weapon.reroll_wounds: true
+  - id: all-branches
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.dark-steel
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 3/4
+        'false': 1/4
+  - id: no-reroll-on-success
+    roles:
+    - inactive
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.dark-steel
+    rolls:
+    - key: wound
+      value: 4
+    expect:
+      result.success: true
+      result.rerolled: false
+  mutations:
+  - id: remove-reroll
+    path: attacker.main_weapon.reroll_wounds
+    value: false
+    cases:
+    - all-branches
+  interaction_contract:
+    reads:
+    - wound.target
+    writes:
+    - wound.success
+    - wound.rolls
+- id: skill.expert-fighter
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.expert-fighter
+    digest: 640efbf098901ce14e76e63e189547eb0cf642ae90d26f2e1468a38e0ab22319
+  interpretation: +1 to wound lowers the ordinary 4+ target to 3+; a natural 1 remains a failure.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.expert-fighter
+    expect:
+      attacker.global_effects.wound_modifier: 1
+  - id: all-faces
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.expert-fighter
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 2/3
+        'false': 1/3
+  - id: natural-one
+    roles:
+    - inactive
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.expert-fighter
+      characteristics:
+        weapon_skill: 3
+        strength: 6
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.success: false
+      result.target: 2
+  mutations:
+  - id: remove-wound-bonus
+    path: attacker.global_effects.wound_modifier
+    value: 0
+    cases:
+    - all-faces
+  interaction_contract:
+    reads:
+    - attack.strength
+    - defender.toughness
+    writes:
+    - wound.target
+- id: skill.hard-to-kill
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.hard-to-kill
+    digest: b66c185a5a58b1f030ef4dc30f29ae0054d249281805410af7521c982cc88cd4
+  interpretation: Dwarf Treasure Hunters / Special Rules / Hard to Kill explicitly states 1-2 Knocked Down, 3-5
+    Stunned, 6 Out of Action. The normalized catalogue previously mistranscribed face 3.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.hard-to-kill
+    expect:
+      defender.global_effects.tags:
+      - skill.hard-to-kill
+      - armour.no-armour
+  - id: face-1
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-2
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-3
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: face-4
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: face-5
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: face-6
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.hard-to-kill
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-rule
+    changes:
+    - path: defender.global_effects.tags
+      value: []
+    - path: defender.global_effects.out_of_action_threshold
+      value: 5
+    cases:
+    - face-5
+  interaction_contract:
+    reads:
+    - injury.total
+    writes:
+    - injury.condition
+- id: skill.ignore-pain
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.ignore-pain
+    digest: 38aff21454539c3b866e4b04592950668da23cf87004c9def80eaf2f8f5b75ae
+  interpretation: The independently transcribed injury outcomes for natural D6 faces 1 through 6 are KNOCKED_DOWN,
+    KNOCKED_DOWN, KNOCKED_DOWN, KNOCKED_DOWN, OUT, OUT. The input die is controlled; injury conversion is tested
+    without a duel.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.ignore-pain
+    expect:
+      defender.global_effects.tags:
+      - skill.ignore-pain
+      - armour.no-armour
+  - id: face-1
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-2
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-3
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-4
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-5
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  - id: face-6
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-rule
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - face-1
+    - face-2
+    - face-3
+    - face-4
+    - face-5
+    - face-6
+  interaction_contract:
+    reads:
+    - injury.condition
+    writes:
+    - injury.condition
+- id: skill.head-crusher
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.head-crusher
+    digest: 1cd6a6960dc58bd81cda4ad81081d49240052ad3ba0597687056d72474da1e83
+  interpretation: The independently transcribed injury outcomes for natural D6 faces 1 through 6 are STUNNED, STUNNED,
+    STUNNED, STUNNED, OUT, OUT. The input die is controlled; injury conversion is tested without a duel.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.head-crusher
+    expect:
+      attacker.global_effects.tags:
+      - skill.head-crusher
+      - armour.no-armour
+  - id: face-1
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.head-crusher
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STUNNED
+  - id: face-2
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.head-crusher
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: face-3
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.head-crusher
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: face-4
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.head-crusher
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: face-5
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.head-crusher
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  - id: face-6
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.head-crusher
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-rule
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - face-1
+    - face-2
+    - face-3
+    - face-4
+    - face-5
+    - face-6
+  interaction_contract:
+    reads:
+    - injury.condition
+    writes:
+    - injury.condition
+- id: skill.strike-to-injure
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.strike-to-injure
+    digest: 2b4caf05f463a41260f0e7d62ee217070f60f7707f86f8d8476c820dcf472a98
+  interpretation: The independently transcribed injury outcomes for natural D6 faces 1 through 6 are KNOCKED_DOWN,
+    STUNNED, STUNNED, OUT, OUT, OUT. The input die is controlled; injury conversion is tested without a duel.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.strike-to-injure
+    expect:
+      attacker.global_effects.injury_modifier: 1
+  - id: face-1
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.strike-to-injure
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-2
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.strike-to-injure
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: face-3
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.strike-to-injure
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: face-4
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.strike-to-injure
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: OUT
+  - id: face-5
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.strike-to-injure
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  - id: face-6
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.strike-to-injure
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-rule
+    path: attacker.global_effects.injury_modifier
+    value: 0
+    cases:
+    - face-1
+    - face-2
+    - face-3
+    - face-4
+    - face-5
+    - face-6
+  interaction_contract:
+    reads:
+    - injury.roll
+    writes:
+    - injury.total
+- id: material.dark-elf-blade
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/material.dark-elf-blade
+    digest: 104e6c588d3587239b1e356846b55410dd9f6a407a6bf33f9d57b94213463a8e
+  interpretation: The independently transcribed injury outcomes for natural D6 faces 1 through 6 are KNOCKED_DOWN,
+    STUNNED, STUNNED, OUT, OUT, OUT. The input die is controlled; injury conversion is tested without a duel.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.dagger
+      main_material_id: material.dark-elf-blade
+    expect:
+      attacker.main_weapon.injury_modifier: 1
+  - id: face-1
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.dagger
+      main_material_id: material.dark-elf-blade
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-2
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.dagger
+      main_material_id: material.dark-elf-blade
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+  - id: face-3
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.dagger
+      main_material_id: material.dark-elf-blade
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: face-4
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.dagger
+      main_material_id: material.dark-elf-blade
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: OUT
+  - id: face-5
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.dagger
+      main_material_id: material.dark-elf-blade
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  - id: face-6
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.dagger
+      main_material_id: material.dark-elf-blade
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-rule
+    path: attacker.main_weapon.injury_modifier
+    value: 0
+    cases:
+    - face-1
+    - face-2
+    - face-3
+    - face-4
+    - face-5
+    - face-6
+  interaction_contract:
+    reads:
+    - injury.roll
+    writes:
+    - injury.total
+- id: skill.tough-as-steel
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.tough-as-steel
+    digest: 405b225f16f360f04f2f88daddae771eb9d9d72cd0217e1e169b61ac8c84a46f
+  interpretation: The six editorial sources independently establish natural D6 outcomes KNOCKED_DOWN, KNOCKED_DOWN,
+    KNOCKED_DOWN, STUNNED, STUNNED, OUT. This differs from Hard to Kill specifically on face 3.
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.tough-as-steel
+    expect:
+      defender.global_effects.out_of_action_threshold: 6
+  - id: face-1
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.tough-as-steel
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-2
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.tough-as-steel
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-3
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.tough-as-steel
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: face-4
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.tough-as-steel
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: face-5
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.tough-as-steel
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+  - id: face-6
+    roles:
+    - active
+    - inactive
+    - boundary
+    - consumer
+    operation: injury
+    defender:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.tough-as-steel
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  mutations:
+  - id: remove-injury-rule
+    changes:
+    - path: defender.global_effects.tags
+      value: []
+    - path: defender.global_effects.out_of_action_threshold
+      value: 5
+    cases:
+    - face-1
+    - face-2
+    - face-3
+    - face-4
+    - face-5
+    - face-6

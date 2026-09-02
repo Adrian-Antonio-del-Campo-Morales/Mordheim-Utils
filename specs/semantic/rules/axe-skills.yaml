@@ -1,0 +1,117 @@
+schema_version: 1
+specifications:
+- id: skill.axe-expert
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/skill.axe-expert
+    digest: c4272098dc7490eb648bebcf0502f59a2d0960dd6aef6a3bb50042c3c4467382
+  interpretation: Axe Expert rerolls a failed To Hit roll made with an axe only during the first round in which the
+    fighter charged. It does not apply with another weapon, without charging, or in a later combat round.
+  interaction_contract:
+    reads: [round.first, round.charging, weapon.kind, hit.target]
+    writes: [hit.reroll]
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    attacker: {skill_ids: [skill.axe-expert], main_weapon_id: weapon.axe}
+    expect: {attacker.main_weapon.armour_penetration: 1}
+    expect_contains:
+      attacker.global_effects.tags: [skill.axe-expert]
+  - id: charging-axe-rerolls
+    roles: [active, boundary, consumer]
+    operation: hit
+    attacker: {skill_ids: [skill.axe-expert], main_weapon_id: weapon.axe}
+    context: {first_round: true, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected: {'true': 3/4, 'false': 1/4}
+  - id: axe-without-charge
+    roles: [inactive, boundary]
+    operation: hit
+    attacker: {skill_ids: [skill.axe-expert], main_weapon_id: weapon.axe}
+    context: {first_round: true, charging: false}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: axe-after-first-round
+    roles: [inactive, boundary]
+    operation: hit
+    attacker: {skill_ids: [skill.axe-expert], main_weapon_id: weapon.axe}
+    context: {first_round: false, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: wrong-weapon-does-not-reroll
+    roles: [inactive, boundary]
+    operation: hit
+    attacker: {skill_ids: [skill.axe-expert], main_weapon_id: weapon.mace}
+    context: {first_round: true, charging: true}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  mutations:
+  - id: remove-axe-expert
+    path: attacker.global_effects.tags
+    value: []
+    cases: [charging-axe-rerolls]
+- id: skill.axe-master
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.axe-master
+    digest: a066f62e6bd118418f11f64bf568ebee8dc71e190597d37abd6e169da9398082
+  interpretation: Axe Master permits one ordinary parry while carrying a normal axe. The parry must exceed the hit
+    roll and retains every generic parry restriction. Carrying no axe does not provide a parry.
+  interaction_contract:
+    reads: [hit.roll, weapon.kind, state.parries]
+    writes: [state.parries]
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    defender: {skill_ids: [skill.axe-master], main_weapon_id: weapon.axe}
+    expect: {defender.main_weapon.parry: false}
+    expect_contains:
+      defender.global_effects.tags: [skill.axe-master]
+  - id: axe-can-parry
+    roles: [active, boundary, consumer]
+    operation: parry
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.axe-master], main_weapon_id: weapon.axe}
+    context: {hit_roll: 4}
+    distribution:
+      observable: result.blocked
+      max_rolls: 1
+      expected: {'true': 1/3, 'false': 2/3}
+  - id: axe-without-skill-cannot-parry
+    roles: [inactive, boundary]
+    operation: parry
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {main_weapon_id: weapon.axe}
+    context: {hit_roll: 4}
+    expect: {result.attempted: false, result.blocked: false}
+  - id: skill-without-axe-cannot-parry
+    roles: [inactive, boundary]
+    operation: parry
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.axe-master], main_weapon_id: weapon.mace}
+    context: {hit_roll: 4}
+    expect: {result.attempted: false, result.blocked: false}
+  - id: natural-six-remains-unparryable
+    roles: [active, boundary]
+    operation: parry
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {skill_ids: [skill.axe-master], main_weapon_id: weapon.axe}
+    context: {hit_roll: 6}
+    expect: {result.attempted: false, result.blocked: false}
+  mutations:
+  - id: remove-axe-master
+    path: defender.global_effects.tags
+    value: []
+    cases: [axe-can-parry]

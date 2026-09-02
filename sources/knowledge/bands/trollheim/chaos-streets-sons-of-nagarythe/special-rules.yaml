@@ -1,0 +1,408 @@
+schema_version: 2
+band_id: chaos-streets-sons-of-nagarythe
+rules:
+- id: shadow-master--leader
+  name: Leader
+  effect: Any warband model within 6" of the Shadow Master may use his Leadership when taking Leadership tests.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 140
+    section: Heroes / 1 Shadow Master / Special Rules / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Shadow Master may use his Leadership when taking Leadership tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - shadow-master
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-sons-of-nagarythe.shadow-master.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: shadow-weaver--wizard
+  name: Wizard
+  effect: The Shadow Weaver is a Wizard and may use Shadow Magic. The spell list itself is intentionally not modelled in this
+    file.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 140
+    section: Heroes / 0-1 Shadow Weaver / Special Rules / Wizard
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Shadow Weaver is a Wizard and may use Shadow Magic. The spell list itself is intentionally not modelled in this
+      file.
+    es: null
+  applies_to:
+    profile_ids:
+    - shadow-weaver
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-sons-of-nagarythe.shadow-weaver.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--hate-dark-elves
+  name: Hate Dark Elves
+  effect: All Sons of Nagarythe warriors, excluding Hired Swords, are subject to Hatred against Dark Elves.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 137
+    section: Special Rules / Hate Dark Elves
+  name_i18n:
+    en: Hate Dark Elves
+    es: null
+  effect_i18n:
+    en: All Sons of Nagarythe warriors, excluding Hired Swords, are subject to Hatred against Dark Elves.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.chaos-streets-sons-of-nagarythe.band.hate-dark-elves
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--excellent-sight
+  name: Excellent Sight
+  effect: All Elves in the warband spot Hidden enemies at twice the normal distance.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 137
+    section: Special Rules / Excellent Sight
+  name_i18n:
+    en: Excellent Sight
+    es: null
+  effect_i18n:
+    en: All Elves in the warband spot Hidden enemies at twice the normal distance.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.chaos-streets-sons-of-nagarythe.band.excellent-sight
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--honourable
+  name: Honourable
+  effect: Warriors in the warband may not use poisons or drugs of any kind.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 137
+    section: Special Rules / Honourable
+  name_i18n:
+    en: Honourable
+    es: null
+  effect_i18n:
+    en: Warriors in the warband may not use poisons or drugs of any kind.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.forbid-item-categories
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.forbid-item-categories
+        parameters:
+          categories:
+          - poison
+          - drug
+- id: band--unforgiving
+  name: Unforgiving
+  effect: In multiplayer games, the warband may never form an alliance with a Chaotic warband, including Possessed, Skaven,
+    Beastmen and Dark Elves.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 137
+    section: Special Rules / Unforgiving
+  name_i18n:
+    en: Unforgiving
+    es: null
+  effect_i18n:
+    en: In multiplayer games, the warband may never form an alliance with a Chaotic warband, including Possessed, Skaven,
+      Beastmen and Dark Elves.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.chaos-streets-sons-of-nagarythe.band.unforgiving
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--tolerant
+  name: Tolerant
+  effect: The warband may hire Hired Swords provided they are not Chaotic or evil. The source explicitly excludes Skaven,
+    Possessed, Beastmen, Dark Elves and Undead, and also forbids specialists in poison such as Assassins.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 137
+    section: Special Rules / Tolerant
+  name_i18n:
+    en: Tolerant
+    es: null
+  effect_i18n:
+    en: The warband may hire Hired Swords provided they are not Chaotic or evil. The source explicitly excludes Skaven, Possessed,
+      Beastmen, Dark Elves and Undead, and also forbids specialists in poison such as Assassins.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.chaos-streets-sons-of-nagarythe.band.tolerant
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--shadow-warrior-special-skills-see-in-shadows
+  kind: warband_skill
+  name: See in Shadows
+  effect: If the warrior has enough Movement to reach an unseen opponent, he may re-roll the test made to charge that opponent;
+    the source contrasts this with the normal 4" limit.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 142
+    section: Sons of Nagarythe Special Skills / See in Shadows
+  name_i18n:
+    en: See in Shadows
+    es: null
+  effect_i18n:
+    en: If the warrior has enough Movement to reach an unseen opponent, he may re-roll the test made to charge that opponent;
+      the source contrasts this with the normal 4" limit.
+    es: null
+  eligibility:
+  - shadow-master
+  - shadow-weaver
+  - shadow-walker
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-see-in-shadows
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--shadow-warrior-special-skills-master-of-runes
+  kind: warband_skill
+  name: Master of Runes
+  effect: When using Elven Runestones, the warrior gains +1 to the roll to dispel a spell. The warrior may also inscribe Elven
+    runes on a warband member's weapon or armour; once during that battle, that model may re-roll one failed armour save or
+    one failed parry, as appropriate. The rune loses its power after the battle. The Spanish source labels this skill 'Only
+    Loremaster'; because the warband has no Loremaster profile, this restriction is mapped to the Shadow Weaver, the warband's
+    wizard profile.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 142
+    section: Sons of Nagarythe Special Skills / Master of Runes
+  name_i18n:
+    en: Master of Runes
+    es: null
+  effect_i18n:
+    en: When using Elven Runestones, the warrior gains +1 to the roll to dispel a spell. The warrior may also inscribe Elven
+      runes on a warband member's weapon or armour; once during that battle, that model may re-roll one failed armour save
+      or one failed parry, as appropriate. The rune loses its power after the battle. The Spanish source labels this skill
+      'Only Loremaster'; because the warband has no Loremaster profile, this restriction is mapped to the Shadow Weaver, the
+      warband's wizard profile.
+    es: null
+  eligibility:
+  - shadow-weaver
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-master-of-runes
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--shadow-warrior-special-skills-elven-agility
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.elven-agility
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.elven-agility
+  name: Elven Agility
+  effect: The Elf avoids close-combat and missile attacks on a 6+. If he also has Dodge or Step Aside, the corresponding save
+    improves to 4+ for the attack type covered by that skill.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 142
+    section: Sons of Nagarythe Special Skills / Elven Agility
+  name_i18n:
+    en: Elven Agility
+    es: null
+  effect_i18n:
+    en: The Elf avoids close-combat and missile attacks on a 6+. If he also has Dodge or Step Aside, the corresponding save
+      improves to 4+ for the attack type covered by that skill.
+    es: null
+  eligibility:
+  - shadow-master
+  - shadow-weaver
+  - shadow-walker
+  applies_to:
+    band: true
+- id: band--shadow-warrior-special-skills-powerful-build
+  kind: warband_skill
+  name: Powerful Build
+  effect: The warrior may choose skills from the Strength skill list. A Shadow Weaver may never take this skill, and no more
+    than two warriors in the warband may have it at the same time.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 142
+    section: Sons of Nagarythe Special Skills / Powerful Build
+  name_i18n:
+    en: Powerful Build
+    es: null
+  effect_i18n:
+    en: The warrior may choose skills from the Strength skill list. A Shadow Weaver may never take this skill, and no more
+      than two warriors in the warband may have it at the same time.
+    es: null
+  eligibility:
+  - shadow-master
+  - shadow-walker
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: strength
+    - id: roster.maximum-two-powerful-build
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: warband-level roster limit.'
+- id: band--shadow-warrior-special-skills-infiltration
+  kind: warband_skill
+  name: Infiltration
+  effect: The warrior deploys after the opposing warband and may be placed anywhere outside enemy line of sight and more than
+    12" from every enemy model. If both players have infiltrating models, roll D6 for each; the lowest roll deploys first.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 142
+    section: Sons of Nagarythe Special Skills / Infiltration
+  name_i18n:
+    en: Infiltration
+    es: null
+  effect_i18n:
+    en: The warrior deploys after the opposing warband and may be placed anywhere outside enemy line of sight and more than
+      12" from every enemy model. If both players have infiltrating models, roll D6 for each; the lowest roll deploys first.
+    es: null
+  eligibility:
+  - shadow-master
+  - shadow-weaver
+  - shadow-walker
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-infiltration
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--shadow-warrior-special-skills-sniper
+  kind: warband_skill
+  name: Sniper
+  effect: If Hidden, the warrior may shoot or cast spells and remain Hidden.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 142
+    section: Sons of Nagarythe Special Skills / Sniper
+  name_i18n:
+    en: Sniper
+    es: null
+  effect_i18n:
+    en: If Hidden, the warrior may shoot or cast spells and remain Hidden.
+    es: null
+  eligibility:
+  - shadow-master
+  - shadow-weaver
+  - shadow-walker
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-sniper
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--shadow-warrior-special-skills-hide-in-shadows
+  kind: warband_skill
+  name: Hide in Shadows
+  effect: An enemy attempting to detect this Hidden warrior halves its Initiative before measuring the detection distance.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 142
+    section: Sons of Nagarythe Special Skills / Hide in Shadows
+  name_i18n:
+    en: Hide in Shadows
+    es: null
+  effect_i18n:
+    en: An enemy attempting to detect this Hidden warrior halves its Initiative before measuring the detection distance.
+    es: null
+  eligibility:
+  - shadow-master
+  - shadow-weaver
+  - shadow-walker
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-hide-in-shadows
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'

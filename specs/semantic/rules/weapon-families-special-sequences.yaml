@@ -1,0 +1,232 @@
+schema_version: 1
+specifications:
+- id: weapon.rapier
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/weapon.rapier, digest: d17428d8641474619b5c73c4fa09d5dcafc41b6c33c8b839f48616b0987b5eb1}
+  interpretation: Rapier resta uno a Fuerza, permite una parada y, tras fallar To Wound, concede un único intento adicional con -1 To Hit. Solo se tira la herida extra si ese impacto tiene éxito.
+  cases:
+  - id: compiled-strength
+    roles: [compiled, active, consumer]
+    operation: strength
+    attacker: {main_weapon_id: weapon.rapier}
+    expect: {attacker.main_weapon.strength_bonus: -1, attacker.main_weapon.parry: true, result.wound: 2, result.armour: 2}
+  - id: parry
+    roles: [active, boundary]
+    operation: parry
+    defender: {main_weapon_id: weapon.rapier}
+    context: {hit_roll: 4}
+    rolls: [{key: test.parry, value: 5}]
+    expect: {result.blocked: true}
+  - id: failed-wound-extra-attack-succeeds
+    roles: [active, consumer, sequence, consumption, boundary]
+    operation: attack
+    attacker: {main_weapon_id: weapon.rapier}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 1}, {key: test.rapier.hit, value: 5}, {key: test.rapier.wound, value: 5}]
+    expect: {result.hit: true, result.wounded: true, result.damage: 1, result.defender.wounds: 2}
+  - id: failed-extra-hit-omits-extra-wound
+    roles: [inactive, sequence, consumption, boundary]
+    operation: attack
+    attacker: {main_weapon_id: weapon.rapier}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 1}, {key: test.rapier.hit, value: 4}]
+    expect: {result.hit: true, result.wounded: false, result.damage: 0}
+  mutations:
+  - {id: remove-strength-penalty, path: attacker.main_weapon.strength_bonus, value: 0, cases: [compiled-strength]}
+  - {id: remove-parry, path: defender.main_weapon.parry, value: false, cases: [parry]}
+  - {id: remove-extra-attack-tag, path: attacker.main_weapon.tags, value: [], cases: [failed-wound-extra-attack-succeeds]}
+
+- id: weapon.cutlass
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/weapon.cutlass, digest: 1bab536df4175c3938cfcd5acebdc39a4c2e99debcff5f1bd328851c3f8b7a43}
+  interpretation: Una parada exitosa con Cutlass cancela el impacto y desencadena inmediatamente un contraataque normal. Una parada fallida no crea contraataque.
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    defender: {main_weapon_id: weapon.cutlass}
+    expect: {defender.main_weapon.parry: true}
+  - id: parry-counterattack
+    roles: [active, consumer, sequence, consumption, boundary]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {main_weapon_id: weapon.cutlass}
+    rolls: [{key: test.hit, value: 4}, {key: test.parry, value: 5}, {key: test.cutlass-counter.hit, value: 4}, {key: test.cutlass-counter.wound, value: 4}]
+    expect: {result.parried: true, result.attacker.wounds: 2, result.defender.wounds: 3}
+  - id: failed-parry-no-counterattack
+    roles: [inactive, sequence, consumption, boundary]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {main_weapon_id: weapon.cutlass}
+    rolls: [{key: test.hit, value: 4}, {key: test.parry, value: 4}, {key: test.wound, value: 4}]
+    expect: {result.parried: false, result.wounded: true, result.defender.wounds: 2}
+  mutations:
+  - {id: remove-cutlass-counter, path: defender.main_weapon.tags, value: [], cases: [parry-counterattack]}
+  - {id: remove-cutlass-parry, path: defender.main_weapon.parry, value: false, cases: [parry-counterattack]}
+
+- id: weapon.blackpowder-melee-family
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - {target: mechanic/weapon.pistol, digest: fe4825b3dd5d0437a2a7838ff6b8fa22ffb0f5bf375533e3014b30db14486bc7}
+  - {target: mechanic/weapon.duelling-pistol, digest: 74dac5d22400cc7d2bee05c3f4d2cf34536660c7bc4b1e91d6a5ddd4f135c23d}
+  interpretation: Cada pistola aporta un ataque de Fuerza 4 y penetración 2 exclusivamente en la primera ronda. La Duelling Pistol añade +1 To Hit a ese ataque.
+  cases:
+  - id: pistol-compiled-strength
+    roles: [compiled, active, consumer]
+    operation: strength
+    attacker: {main_weapon_id: weapon.pistol}
+    context: {first_round: true}
+    expect: {attacker.main_weapon.fixed_strength: 4, attacker.main_weapon.armour_penetration: 2, result.wound: 4, result.armour: 4}
+  - id: pistol-first-round-one-attack
+    roles: [active, boundary]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.pistol, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 3}}
+    context: {first_round: true}
+    expect: {result.attacks: 1}
+  - id: pistol-later-round-no-attacks
+    roles: [inactive, boundary, consumption]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.pistol}
+    context: {first_round: false}
+    expect: {result.attacks: 0}
+  - id: pistol-and-dagger-later-use-dagger-only
+    roles: [inactive, boundary]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.pistol, off_hand_id: weapon.dagger}
+    context: {first_round: false}
+    expect: {result.attacks: 1}
+  - id: duelling-pistol-hit-bonus
+    roles: [compiled, active, consumer, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.duelling-pistol}
+    context: {first_round: true}
+    rolls: [{key: hit, value: 3}]
+    expect: {attacker.main_weapon.fixed_strength: 4, attacker.main_weapon.armour_penetration: 2, context.modifier: 1, result.target: 3, result.success: true}
+  - id: ordinary-pistol-has-no-hit-bonus
+    roles: [inactive, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.pistol}
+    context: {first_round: true}
+    rolls: [{key: hit, value: 3}]
+    expect: {context.modifier: 0, result.target: 4, result.success: false}
+  mutations:
+  - {id: remove-pistol-strength, path: attacker.main_weapon.fixed_strength, value: 0, cases: [pistol-compiled-strength]}
+  - {id: make-pistol-persistent, path: attacker.main_weapon.tags, value: [], cases: [pistol-later-round-no-attacks]}
+  - {id: remove-duelling-accuracy, path: attacker.main_weapon.hit_modifier, value: 0, cases: [duelling-pistol-hit-bonus]}
+
+- id: weapon.unarmed-family
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - {target: mechanic/weapon.natural-attacks, digest: a437e6db926d3e94c576689c022f9fe42933bb353bbd5bc92ccdd71e86e2ca7d}
+  - {target: mechanic/weapon.fist, digest: 023f168db270d61c348a3e35ae900ff112024a4d1792b1eaa148454c8c10582e}
+  interpretation: Natural Attacks usa perfil y número de ataques sin penalización ni mano secundaria. Fist limita a un ataque, aplica Fuerza -1 y mejora en uno la salvación del objetivo, creando 6+ si no tenía armadura.
+  cases:
+  - id: natural-profile-strength
+    roles: [compiled, active, consumer]
+    operation: strength
+    attacker: {main_weapon_id: weapon.natural-attacks}
+    expect: {attacker.main_weapon.strength_bonus: 0, result.wound: 3, result.armour: 3}
+  - id: natural-profile-attacks
+    roles: [active, boundary]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.natural-attacks, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 3}}
+    expect: {result.attacks: 3}
+  - id: natural-rejects-offhand
+    roles: [rejected]
+    operation: compile
+    attacker: {main_weapon_id: weapon.natural-attacks, off_hand_id: weapon.dagger}
+    reject: weapon.natural-attacks cannot be combined with weapon.dagger
+  - id: fist-strength
+    roles: [compiled, active, consumer]
+    operation: strength
+    attacker: {main_weapon_id: weapon.fist}
+    expect: {attacker.main_weapon.strength_bonus: -1, attacker.main_weapon.target_armour_bonus: 1, result.wound: 2, result.armour: 2}
+  - id: fist-limits-attacks
+    roles: [active, boundary]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.fist, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 4}}
+    expect: {result.attacks: 1}
+  - id: ordinary-weapon-keeps-profile-attacks
+    roles: [inactive, boundary]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 4}}
+    expect: {result.attacks: 4}
+  - id: fist-creates-six-plus-save
+    roles: [active, consumer, boundary]
+    operation: armour
+    attacker: {main_weapon_id: weapon.fist}
+    rolls: [{key: armour, value: 6}]
+    expect: {result.target: 6, result.eligible: true, result.saved: true}
+  - id: fist-rejects-offhand
+    roles: [rejected]
+    operation: compile
+    attacker: {main_weapon_id: weapon.fist, off_hand_id: weapon.dagger}
+    reject: weapon.fist cannot be combined with weapon.dagger
+  mutations:
+  - {id: weaken-natural-attacks, path: attacker.main_weapon.strength_bonus, value: -1, cases: [natural-profile-strength]}
+  - {id: remove-fist-penalty, path: attacker.main_weapon.strength_bonus, value: 0, cases: [fist-strength]}
+  - {id: remove-fist-limit, path: attacker.main_weapon.tags, value: [], cases: [fist-limits-attacks]}
+  - {id: remove-fist-armour-bonus, path: attacker.main_weapon.target_armour_bonus, value: 0, cases: [fist-creates-six-plus-save]}
+
+- id: weapon.impact-and-fire-family
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/weapon.brazier-iron, digest: 51e5dff6eb24ecd7147dc823fdb9cdebbde4cf57d8dbdd65917d1936a396567d}
+  - {target: mechanic/weapon.brass-knuckles, digest: e1ec976e8778a6eb5ecc424cf1706ed48d631ad64d32ccc63fb7cbb4023ab199}
+  - {target: mechanic/weapon.war-maul, digest: 4f8613ba343d61145ddc374ede547f8d2197c41275760a691da4d93fa5d2466d}
+  - {target: mechanic/weapon.double-bladed-sword, digest: c14bade074dde7ad8fbe986e5d73178967c53ea35c1a1694f0965af3ae069454}
+  interpretation: Se verifican por separado el fuego 5+ y Fuerza +1 del Brazier, el par emparejado de Brass Knuckles, el paquete pesado e imparable del War Maul y el ataque/parada repetida del Double-bladed Sword.
+  cases:
+  - id: brazier-ignites-on-five
+    roles: [compiled, active, consumer, sequence, consumption, boundary]
+    operation: attack
+    attacker: {main_weapon_id: weapon.brazier-iron}
+    rolls: [{key: test.hit, value: 4}, {key: test.ignition, value: 5}, {key: test.wound, value: 3}]
+    expect: {attacker.main_weapon.strength_bonus: 1, attacker.main_weapon.two_handed: true, result.defender.on_fire: true, result.wounded: true}
+  - id: brazier-four-does-not-ignite
+    roles: [inactive, boundary, sequence]
+    operation: attack
+    attacker: {main_weapon_id: weapon.brazier-iron}
+    rolls: [{key: test.hit, value: 4}, {key: test.ignition, value: 4}, {key: test.wound, value: 3}]
+    expect: {result.defender.on_fire: false}
+  - id: brass-knuckles-pair
+    roles: [compiled, active, consumer]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.brass-knuckles}
+    expect: {attacker.main_weapon.paired: true, attacker.main_weapon.strength_bonus: 1, result.attacks: 2}
+  - id: war-maul-strength
+    roles: [compiled, active, consumer]
+    operation: strength
+    attacker: {main_weapon_id: weapon.war-maul}
+    expect: {attacker.main_weapon.strength_bonus: 2, attacker.main_weapon.armour_penetration: 1, attacker.main_weapon.priority: -1, attacker.main_weapon.initiative_bonus: -1, attacker.main_weapon.cannot_be_parried: true, result.wound: 5, result.armour: 5}
+  - id: war-maul-cannot-be-parried
+    roles: [active, boundary, consumption]
+    operation: attack
+    attacker: {main_weapon_id: weapon.war-maul}
+    defender: {main_weapon_id: weapon.sword}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 2}]
+    expect: {result.parried: false, result.wounded: true}
+  - id: double-bladed-extra-attack
+    roles: [compiled, active, consumer]
+    operation: attacks
+    attacker: {main_weapon_id: weapon.double-bladed-sword}
+    expect: {attacker.main_weapon.two_handed: true, attacker.main_weapon.attacks_bonus: 1, attacker.main_weapon.parry: true, result.attacks: 2}
+  - id: double-bladed-second-parry-attempt
+    roles: [active, boundary, sequence, consumption]
+    operation: parry
+    defender: {main_weapon_id: weapon.double-bladed-sword}
+    context: {hit_roll: 4}
+    rolls: [{key: test.parry, value: 4}, {key: test.parry.reroll, value: 5}]
+    expect: {result.blocked: true, result.rerolled: true}
+  mutations:
+  - {id: remove-brazier-ignition, path: attacker.main_weapon.ignition_threshold, value: 7, cases: [brazier-ignites-on-five]}
+  - {id: remove-brass-pair, path: attacker.main_weapon.paired, value: false, cases: [brass-knuckles-pair]}
+  - {id: remove-war-maul-strength, path: attacker.main_weapon.strength_bonus, value: 0, cases: [war-maul-strength]}
+  - {id: allow-war-maul-parry, path: attacker.main_weapon.cannot_be_parried, value: false, cases: [war-maul-cannot-be-parried]}
+  - {id: remove-double-bladed-attack, path: attacker.main_weapon.attacks_bonus, value: 0, cases: [double-bladed-extra-attack]}
+  - {id: remove-double-bladed-reroll, path: defender.main_weapon.tags, value: [], cases: [double-bladed-second-parry-attempt]}

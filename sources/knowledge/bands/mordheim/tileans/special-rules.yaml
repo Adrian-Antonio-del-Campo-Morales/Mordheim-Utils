@@ -1,0 +1,290 @@
+schema_version: 2
+band_id: tileans
+rules:
+- id: captain--leader
+  name: Leader
+  effect: 'Any warrior within 6" of the Captain may use his Leadership characteristic when
+
+    taking Leadership tests.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Captain / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any warrior within 6" of the Captain may use his Leadership characteristic when
+
+      taking Leadership tests.'
+    es: null
+  applies_to:
+    profile_ids:
+    - captain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.tileans.captain.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: duelists--cloak-dagger
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.counts-as-buckler
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.counts-as-buckler
+        parameters:
+          value: true
+  name: Cloak & Dagger
+  effect: A Duellist counts as using a buckler in close combat because of the defensive use of the cloak.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Duelists / Special Rules / Cloak & Dagger
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  name_i18n:
+    en: Cloak & Dagger
+    es: null
+  effect_i18n:
+    en: A Duellist counts as using a buckler in close combat because of the defensive use of the cloak.
+    es: null
+  applies_to:
+    profile_ids:
+    - duelists
+- id: band--human-maximum-characteristics
+  name: Human Maximum Characteristics
+  effect: 'Tileans use the Human racial maximum profile: M4, WS6, BS6, S4, T4, W3, I6, A4, Ld9.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Racial Maximum Characteristics / Human
+    url: https://mordheimer.net/docs/campaigns/experience
+  name_i18n:
+    en: Human Maximum Characteristics
+    es: null
+  effect_i18n:
+    en: 'Tileans use the Human racial maximum profile: M4, WS6, BS6, S4, T4, W3, I6, A4, Ld9.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tileans.band.human-maximum-characteristics
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--miraglean-crossbow-mastery
+  name: Miraglean — Crossbow Mastery
+  effect: Miraglean Heroes gain +1 to hit when using crossbows. The bonus applies only to crossbows.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Miragleans
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  name_i18n:
+    en: Miraglean — Crossbow Mastery
+    es: null
+  effect_i18n:
+    en: Miraglean Heroes gain +1 to hit when using crossbows. The bonus applies only to crossbows.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tileans.band.miraglean-crossbow-mastery
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--miraglean-marksman-accuracy
+  name: Miraglean — Marksman Accuracy
+  effect: Miraglean Marksmen gain +1 to hit with any missile weapon they use.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Miragleans
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  name_i18n:
+    en: Miraglean — Marksman Accuracy
+    es: null
+  effect_i18n:
+    en: Miraglean Marksmen gain +1 to hit with any missile weapon they use.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tileans.band.miraglean-marksman-accuracy
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--miraglean-hatred-skaven
+  name: Miraglean — Hatred of Skaven
+  effect: All Miraglean warband members are subject to Hatred against Skaven. Hired Swords do not gain this Hatred.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Miragleans
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  name_i18n:
+    en: Miraglean — Hatred of Skaven
+    es: null
+  effect_i18n:
+    en: All Miraglean warband members are subject to Hatred against Skaven. Hired Swords do not gain this Hatred.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tileans.band.miraglean-hatred-skaven
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--miraglean-hired-sword-restriction
+  name: Miraglean — Hired Sword Restriction
+  effect: A Miraglean warband may not hire Skaven Hired Swords.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Miragleans
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  name_i18n:
+    en: Miraglean — Hired Sword Restriction
+    es: null
+  effect_i18n:
+    en: A Miraglean warband may not hire Skaven Hired Swords.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tileans.band.miraglean-hired-sword-restriction
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--remasen-dark-elf-rout
+  name: Remasen — Defiance Against Dark Elves
+  effect: When fighting a Dark Elf warband, a Remasen warband may re-roll one failed Rout test. The second result must be
+    accepted.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Remasens
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  name_i18n:
+    en: Remasen — Defiance Against Dark Elves
+    es: null
+  effect_i18n:
+    en: When fighting a Dark Elf warband, a Remasen warband may re-roll one failed Rout test. The second result must be accepted.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tileans.band.remasen-dark-elf-rout
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--remasen-officer-leadership
+  name: Remasen — Steadfast Officers
+  effect: The Captain, Champions and Youngbloods in a Remasen warband have +1 Leadership at all times.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Remasens
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  name_i18n:
+    en: Remasen — Steadfast Officers
+    es: null
+  effect_i18n:
+    en: The Captain, Champions and Youngbloods in a Remasen warband have +1 Leadership at all times.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tileans.band.remasen-officer-leadership
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--remasen-hired-sword-restriction
+  name: Remasen — Hired Sword Restriction
+  effect: A Remasen warband may not hire Dark Elf Hired Swords.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Remasens
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  name_i18n:
+    en: Remasen — Hired Sword Restriction
+    es: null
+  effect_i18n:
+    en: A Remasen warband may not hire Dark Elf Hired Swords.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tileans.band.remasen-hired-sword-restriction
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--trantio-wealth
+  name: Trantio — Wealth and Experience
+  effect: A Trantio warband starts a one-off match with an extra 100 gc. In a Lustrian campaign it starts with 20% more gold
+    crowns, which is 600 gc when the normal starting amount is 500 gc.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Trantios
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
+  name_i18n:
+    en: Trantio — Wealth and Experience
+    es: null
+  effect_i18n:
+    en: A Trantio warband starts a one-off match with an extra 100 gc. In a Lustrian campaign it starts with 20% more gold
+      crowns, which is 600 gc when the normal starting amount is 500 gc.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.tileans.band.trantio-wealth
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'

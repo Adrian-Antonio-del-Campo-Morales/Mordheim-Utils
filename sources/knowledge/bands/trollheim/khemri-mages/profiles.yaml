@@ -1,0 +1,193 @@
+schema_version: 2
+band_id: khemri-mages
+profiles:
+- id: archmage
+  name: Archmage
+  type: hero
+  cost: 70
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - mage-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Sling is Pupils only.
+  skill_access:
+  - academic
+  - speed
+  - special
+  source:
+    manual: khemri
+    printed_page: 62
+    section: 1 Archmage
+  source_path:
+  - heroes
+  - 1 Archmage
+  name_i18n:
+    en: Archmage
+    es: null
+  rule_ids:
+  - archmage--leader
+  - archmage--spellcaster
+  combat_traits: {}
+- id: mage
+  name: Mages
+  type: hero
+  cost: 30
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - mage-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Sling is Pupils only.
+  - A Familiar cannot be bought by this profile during warband creation; after creation it may be acquired through Trading
+    because this profile is a spellcaster.
+  skill_access:
+  - academic
+  - speed
+  - special
+  source:
+    manual: khemri
+    printed_page: 62
+    section: 0-2 Mages
+  source_path:
+  - heroes
+  - 0-2 Mages
+  name_i18n:
+    en: Mages
+    es: null
+  rule_ids:
+  - mage--spellcaster
+  combat_traits: {}
+- id: witch
+  name: Witch
+  type: hero
+  cost: 50
+  experience: 10
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - mage-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Sling is Pupils only.
+  - A Familiar cannot be bought by this profile during warband creation; after creation it may be acquired through Trading
+    because this profile is a spellcaster.
+  skill_access:
+  - academic
+  - speed
+  - special
+  source:
+    manual: khemri
+    printed_page: 62
+    section: 0-1 Witch
+  source_path:
+  - heroes
+  - 0-1 Witch
+  name_i18n:
+    en: Witch
+    es: null
+  rule_ids:
+  - witch--spellcaster
+  combat_traits: {}
+- id: pupil
+  name: Pupils
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 2
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - mage-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Familiar cannot be selected at warband creation.
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 63
+    section: 0-6 Pupils
+  source_path:
+  - henchmen
+  - 0-6 Pupils
+  name_i18n:
+    en: Pupils
+    es: null
+  rule_ids:
+  - pupil--minor-trick
+  - pupil--experience
+  combat_traits: {}
+- id: mechanical-beast
+  name: Mechanical Beasts
+  type: henchman
+  cost: 50
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 0
+    S: 4
+    T: 4
+    W: 2
+    I: 2
+    A: 1
+    Ld: null
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Mechanical Beasts never use weapons or armour and suffer no penalty for fighting without weapons.
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 63
+    section: 0-5 Mechanical Beasts
+  source_path:
+  - henchmen
+  - 0-5 Mechanical Beasts
+  name_i18n:
+    en: Mechanical Beasts
+    es: null
+  rule_ids:
+  - mechanical-beast--mechanical-armour
+  - mechanical-beast--immune-to-psychology
+  - mechanical-beast--immune-to-poison
+  - mechanical-beast--brainless
+  - mechanical-beast--do-not-eat
+  - mechanical-beast--may-not-run
+  combat_traits:
+    natural_armour_save: 5

@@ -1,0 +1,506 @@
+schema_version: 2
+band_id: chaos-streets-dwarf-treasure-hunters
+rules:
+- id: dwarf-noble--leader
+  name: Leader
+  effect: Any warband model within 15 cm of the Dwarf Noble may use his Leadership when taking Leadership tests.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 114
+    section: Heroes / 1 Dwarf Noble / Special Rules / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 15 cm of the Dwarf Noble may use his Leadership when taking Leadership tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - dwarf-noble
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-dwarf-treasure-hunters.dwarf-noble.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: dwarf-engineer--expert-armourer
+  name: Expert Armourer
+  effect: While the Dwarf Engineer remains in the warband, all missile weapons used by the warband increase their range by
+    15 cm. The modifications require the Engineer's constant maintenance.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 114
+    section: Heroes / 0-1 Dwarf Engineer / Special Rules / Expert Armourer
+  name_i18n:
+    en: Expert Armourer
+    es: null
+  effect_i18n:
+    en: While the Dwarf Engineer remains in the warband, all missile weapons used by the warband increase their range by 15
+      cm. The modifications require the Engineer's constant maintenance.
+    es: null
+  applies_to:
+    profile_ids:
+    - dwarf-engineer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-dwarf-treasure-hunters.dwarf-engineer.expert-armourer
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: dwarf-troll-slayers--death-oath
+  name: Death Oath
+  effect: Dwarf Troll Slayers are completely immune to all Psychology and do not need to take tests for fighting alone.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 114
+    section: Heroes / 0-2 Dwarf Troll Slayers / Special Rules / Death Oath
+  name_i18n:
+    en: Death Oath
+    es: null
+  effect_i18n:
+    en: Dwarf Troll Slayers are completely immune to all Psychology and do not need to take tests for fighting alone.
+    es: null
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayers
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-dwarf-treasure-hunters.dwarf-troll-slayers.death-oath
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: dwarf-troll-slayers--slayer-skills
+  name: Slayer Skills
+  effect: When gaining a new skill, a Dwarf Troll Slayer may choose from the Troll Slayer Special Skills. He may also choose
+    from the Dwarf Treasure Hunter Special Skills.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 113
+    section: Troll Slayer Special Skills
+  name_i18n:
+    en: Slayer Skills
+    es: null
+  effect_i18n:
+    en: When gaining a new skill, a Dwarf Troll Slayer may choose from the Troll Slayer Special Skills. He may also choose
+      from the Dwarf Treasure Hunter Special Skills.
+    es: null
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayers
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+- id: band--hard-to-kill
+  kind: profile_ability
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: skill.hard-to-kill
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
+  name: Hard to Kill
+  effect: Dwarfs are taken Out of Action only on a 6 on the Injury chart; 1-2 is Knocked Down and 3-5 is Stunned.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 111
+    section: Special Rules / Hard to Kill
+  name_i18n:
+    en: Hard to Kill
+    es: null
+  effect_i18n:
+    en: Dwarfs are taken Out of Action only on a 6 on the Injury chart; 1-2 is Knocked Down and 3-5 is Stunned.
+    es: null
+  applies_to:
+    band: true
+- id: band--hard-head
+  name: Hard Head
+  effect: Dwarfs ignore the special rules of maces, clubs and similar weapons that would make them easier to Stun.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 111
+    section: Special Rules / Hard Head
+  name_i18n:
+    en: Hard Head
+    es: null
+  effect_i18n:
+    en: Dwarfs ignore the special rules of maces, clubs and similar weapons that would make them easier to Stun.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: trait.concussion-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.concussion-immune
+        parameters:
+          value: true
+- id: band--armour
+  name: Armour
+  effect: Dwarfs never suffer a Movement penalty for wearing armour.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 111
+    section: Special Rules / Armour
+  name_i18n:
+    en: Armour
+    es: null
+  effect_i18n:
+    en: Dwarfs never suffer a Movement penalty for wearing armour.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.armour
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--hate-orcs-and-goblins
+  name: Hate Orcs and Goblins
+  effect: All Dwarfs are subject to Hatred against Orcs and Goblins.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 111
+    section: Special Rules / Hate Orcs and Goblins
+  name_i18n:
+    en: Hate Orcs and Goblins
+    es: null
+  effect_i18n:
+    en: All Dwarfs are subject to Hatred against Orcs and Goblins.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.hate-orcs-and-goblins
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--grudgebearers
+  name: Grudgebearers
+  effect: A Dwarf Treasure Hunter warband may never hire an Elven Hired Sword.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 111
+    section: Special Rules / Ancestral Grudge
+  name_i18n:
+    en: Grudgebearers
+    es: null
+  effect_i18n:
+    en: A Dwarf Treasure Hunter warband may never hire an Elven Hired Sword.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.grudgebearers
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--incomparable-miners
+  name: Incomparable Miners
+  effect: When determining how much wyrdstone the warband finds, add +1 to the number of shards found.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 111
+    section: Special Rules / Excellent Miners
+  name_i18n:
+    en: Incomparable Miners
+    es: null
+  effect_i18n:
+    en: When determining how much wyrdstone the warband finds, add +1 to the number of shards found.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.incomparable-miners
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--dwarf-special-skills-master-of-blades
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.unbeatable-warrior
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.unbeatable-warrior
+    - id: skill.sword-master
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.sword-master
+  name: Master of Blades
+  effect: When using a weapon with the Parry special rule, this Hero parries successfully if his roll equals or exceeds the
+    opponent's highest To Hit roll. If using two weapons with Parry, he may attempt two parries against the two highest attack
+    rolls. If using two Dwarf Axes, he may also re-roll failed parries.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 113
+    section: Dwarf Treasure Hunter Special Skills / Master of Blades
+  name_i18n:
+    en: Master of Blades
+    es: null
+  effect_i18n:
+    en: When using a weapon with the Parry special rule, this Hero parries successfully if his roll equals or exceeds the
+      opponent's highest To Hit roll. If using two weapons with Parry, he may attempt two parries against the two highest
+      attack rolls. If using two Dwarf Axes, he may also re-roll failed parries.
+    es: null
+  eligibility:
+  - dwarf-noble
+  - dwarf-engineer
+  - dwarf-troll-slayers
+  applies_to:
+    band: true
+- id: band--dwarf-special-skills-extra-tough
+  kind: warband_skill
+  name: Extra Tough
+  effect: After a battle in which this Hero was taken Out of Action, he may re-roll his result on the Heroes Serious Injury
+    table once. The second result must be accepted even if it is worse.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 113
+    section: Dwarf Treasure Hunter Special Skills / Extra Tough
+  name_i18n:
+    en: Extra Tough
+    es: null
+  effect_i18n:
+    en: After a battle in which this Hero was taken Out of Action, he may re-roll his result on the Heroes Serious Injury
+      table once. The second result must be accepted even if it is worse.
+    es: null
+  eligibility:
+  - dwarf-noble
+  - dwarf-engineer
+  - dwarf-troll-slayers
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.dwarf-special-skills-extra-tough
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--dwarf-special-skills-resource-hunter
+  kind: warband_skill
+  name: Resource Hunter
+  effect: During post-battle Exploration, this Hero may modify one die result by +1 or -1.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 113
+    section: Dwarf Treasure Hunter Special Skills / Resource Hunter
+  name_i18n:
+    en: Resource Hunter
+    es: null
+  effect_i18n:
+    en: During post-battle Exploration, this Hero may modify one die result by +1 or -1.
+    es: null
+  eligibility:
+  - dwarf-noble
+  - dwarf-engineer
+  - dwarf-troll-slayers
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.dwarf-special-skills-resource-hunter
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--dwarf-special-skills-true-grit
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.tough-as-steel
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.tough-as-steel
+  name: True Grit
+  effect: For this Hero, Injury chart results are 1-3 Knocked Down, 4-5 Stunned, and 6 Out of Action.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 113
+    section: Dwarf Treasure Hunter Special Skills / True Grit
+  name_i18n:
+    en: True Grit
+    es: null
+  effect_i18n:
+    en: For this Hero, Injury chart results are 1-3 Knocked Down, 4-5 Stunned, and 6 Out of Action.
+    es: null
+  eligibility:
+  - dwarf-noble
+  - dwarf-engineer
+  - dwarf-troll-slayers
+  applies_to:
+    band: true
+- id: band--dwarf-special-skills-thick-skull
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.thick-skull
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.thick-skull
+  name: Thick Skull
+  effect: Whenever this Hero would be Stunned, he may make a 3+ save to be Knocked Down instead. If he is wearing a Helmet,
+    this save becomes 2+ and replaces the Helmet's normal special rule.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 113
+    section: Dwarf Treasure Hunter Special Skills / Thick Skull
+  name_i18n:
+    en: Thick Skull
+    es: null
+  effect_i18n:
+    en: Whenever this Hero would be Stunned, he may make a 3+ save to be Knocked Down instead. If he is wearing a Helmet,
+      this save becomes 2+ and replaces the Helmet's normal special rule.
+    es: null
+  eligibility:
+  - dwarf-noble
+  - dwarf-engineer
+  - dwarf-troll-slayers
+  applies_to:
+    band: true
+- id: band--slayer-special-skills-monster-slayer
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.monster-slayer
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.monster-slayer
+  name: Monster Slayer
+  effect: The Slayer always wounds an opponent on a 4+ regardless of Toughness, unless his modified Strength would normally
+    allow him to wound on a lower result.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 113
+    section: Troll Slayer Special Skills / Monster Slayer
+  name_i18n:
+    en: Monster Slayer
+    es: null
+  effect_i18n:
+    en: The Slayer always wounds an opponent on a 4+ regardless of Toughness, unless his modified Strength would normally
+      allow him to wound on a lower result.
+    es: null
+  eligibility:
+  - dwarf-troll-slayers
+  applies_to:
+    band: true
+- id: band--slayer-special-skills-ferocious-charge
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.ferocious-charge
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ferocious-charge
+  name: Ferocious Charge
+  effect: The Slayer may double his Attacks on the turn he charges, but suffers -1 To Hit during that turn.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 113
+    section: Troll Slayer Special Skills / Ferocious Charge
+  name_i18n:
+    en: Ferocious Charge
+    es: null
+  effect_i18n:
+    en: The Slayer may double his Attacks on the turn he charges, but suffers -1 To Hit during that turn.
+    es: null
+  eligibility:
+  - dwarf-troll-slayers
+  applies_to:
+    band: true
+- id: band--slayer-special-skills-berserker
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.berserker
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.berserker
+  name: Berserker
+  effect: The Slayer gains +1 To Hit during the turn in which he charges.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 113
+    section: Troll Slayer Special Skills / Berserker
+  name_i18n:
+    en: Berserker
+    es: null
+  effect_i18n:
+    en: The Slayer gains +1 To Hit during the turn in which he charges.
+    es: null
+  eligibility:
+  - dwarf-troll-slayers
+  applies_to:
+    band: true

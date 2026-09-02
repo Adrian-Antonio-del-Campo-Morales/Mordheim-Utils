@@ -1,0 +1,843 @@
+schema_version: 1
+specifications:
+- id: selectable-hit-cloud
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-cloud-of-flies/trait.cloud-of-flies
+    digest: 43eec70b4166d2e988e48b174d3e26ddf5a1b8703d0244cab4a3a81f62b7feb9
+  interpretation: 'Blessings of Nurgle / Cloud of Flies: bendición comprada solo por Tainted Ones. Penaliza cada
+    ataque enemigo, nunca el propio; no exige carga ni primera ronda. HA3 contra HA3 pasa de 4+ a 5+.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-cloud-of-flies
+    context:
+      rule_id: band--blessings-of-nurgle-cloud-of-flies
+    expect:
+      result.recipients:
+      - tainted-ones
+  - id: active-false-false
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-cloud-of-flies
+    attacker:
+      main_weapon_id: weapon.mace
+    context:
+      first_round: false
+      charging: false
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
+  - id: active-false-true
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-cloud-of-flies
+    attacker:
+      main_weapon_id: weapon.mace
+    context:
+      first_round: false
+      charging: true
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
+  - id: active-true-false
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-cloud-of-flies
+    attacker:
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+      charging: false
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
+  - id: active-true-true
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-cloud-of-flies
+    attacker:
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+      charging: true
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
+  - id: unselected
+    roles:
+    - inactive
+    - consumer
+    operation: hit
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-bloated-foulness
+    attacker:
+      main_weapon_id: weapon.mace
+    rolls:
+    - key: hit
+      value: 4
+    expect:
+      result.target: 4
+      result.success: true
+  - id: owner-unaffected
+    roles:
+    - inactive
+    operation: hit
+    attacker:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-cloud-of-flies
+    rolls:
+    - key: hit
+      value: 4
+    expect:
+      result.target: 4
+      result.success: true
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-cloud-of-flies
+    expect:
+      defender.characteristics.weapon_skill: 3
+    expect_contains:
+      defender.global_effects.tags:
+      - cloud_of_flies
+  mutations:
+  - id: remove-flies
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - active-false-false
+- id: selectable-hit-stench
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/khemri-necromancers/band--necromantic-modification-putrid-stench/special-rule.band--necromantic-modification-putrid-stench
+    digest: 1b128bef9b0bd4a1bb1da66497c3e9a4a77fca05f6a0705e3f6f4e507b6a8105
+  interpretation: 'Khemri p.56 / Putrid Stench: solo criaturas vivas sufren -1 al impactar a la Abominación. HA3
+    contra HA3 pasa de 4+ a 5+; un no muerto conserva 4+.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids:
+      - band--necromantic-modification-putrid-stench
+    context:
+      rule_id: band--necromantic-modification-putrid-stench
+    expect:
+      result.recipients:
+      - necromantic-abomination
+  - id: active-false-false
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids:
+      - band--necromantic-modification-putrid-stench
+    attacker:
+      main_weapon_id: weapon.mace
+    context:
+      first_round: false
+      charging: false
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
+  - id: active-false-true
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids:
+      - band--necromantic-modification-putrid-stench
+    attacker:
+      main_weapon_id: weapon.mace
+    context:
+      first_round: false
+      charging: true
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
+  - id: active-true-false
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids:
+      - band--necromantic-modification-putrid-stench
+    attacker:
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+      charging: false
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
+  - id: active-true-true
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids:
+      - band--necromantic-modification-putrid-stench
+    attacker:
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+      charging: true
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
+  - id: unselected
+    roles:
+    - inactive
+    - consumer
+    operation: hit
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids: []
+    attacker:
+      main_weapon_id: weapon.mace
+    rolls:
+    - key: hit
+      value: 4
+    expect:
+      result.target: 4
+      result.success: true
+  - id: owner-unaffected
+    roles:
+    - inactive
+    operation: hit
+    attacker:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids:
+      - band--necromantic-modification-putrid-stench
+    rolls:
+    - key: hit
+      value: 4
+    expect:
+      result.target: 4
+      result.success: true
+  - id: undead-unaffected
+    roles:
+    - inactive
+    - boundary
+    operation: hit
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids:
+      - band--necromantic-modification-putrid-stench
+    attacker:
+      main_weapon_id: weapon.mace
+      trait_overrides:
+        undead_or_possessed: true
+    rolls:
+    - key: hit
+      value: 4
+    expect:
+      result.target: 4
+      result.success: true
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids:
+      - band--necromantic-modification-putrid-stench
+    expect:
+      defender.global_effects.incoming_hit_modifier: -1
+  mutations:
+  - id: remove-stench
+    path: defender.global_effects.incoming_hit_modifier
+    value: 0
+    cases:
+    - active-false-false
+  - id: penalize-nonliving
+    path: defender.global_effects.tags
+    value: []
+    cases: [undead-unaffected]
+- id: selected-attributes-multiple-limbs
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/khemri-necromancers/band--necromantic-modification-multiple-limbs/special-rule.band--necromantic-modification-multiple-limbs
+    digest: ffb855e936bfff93056378ac623aee17a25123e0e531f76975119ed3a6161261
+  interpretation: 'Khemri p.56 / Multiple Limbs: +1 Ataque sobre los dos ataques de perfil; no requiere carga ni
+    primera ronda. No sustituye un ataque existente.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids:
+      - band--necromantic-modification-multiple-limbs
+    context:
+      rule_id: band--necromantic-modification-multiple-limbs
+    expect:
+      result.recipients:
+      - necromantic-abomination
+  - id: active-false
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: attacks
+    attacker:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids:
+      - band--necromantic-modification-multiple-limbs
+    context:
+      first_round: false
+    expect:
+      result.attacks: 3
+  - id: active-true
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: attacks
+    attacker:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids:
+      - band--necromantic-modification-multiple-limbs
+    context:
+      first_round: true
+    expect:
+      result.attacks: 3
+  - id: unselected
+    roles:
+    - inactive
+    operation: attacks
+    attacker:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids: []
+    expect:
+      result.attacks: 2
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids:
+      - band--necromantic-modification-multiple-limbs
+    expect:
+      attacker.global_effects.attacks_bonus: 1
+  mutations:
+  - id: remove-bonus
+    path: attacker.global_effects.attacks_bonus
+    value: 0
+    cases:
+    - active-false
+- id: selected-attributes-monstrosity
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-monstrosity/special-rule.band--strigoi-power-monstrosity
+    digest: 5c96432379404109dbc7b455c0970a530bd279b92531b84ec5644ecadb23c9e4
+  interpretation: 'Chaos in the Streets p.183 / Monstrosity: +1 Herida, sin consumir el máximo normal. La inicialización
+    debe usar las heridas compiladas: perfil W2 pasa a W3; un perfil avanzado W10 pasa a W11.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
+      special_rule_ids:
+      - band--strigoi-power-monstrosity
+    context:
+      rule_id: band--strigoi-power-monstrosity
+    expect:
+      result.recipients:
+      - strigoi-vampire
+  - id: active
+    roles:
+    - active
+    - consumer
+    operation: initialize
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
+      special_rule_ids:
+      - band--strigoi-power-monstrosity
+    expect:
+      result.attacker.wounds: 3
+  - id: unselected
+    roles:
+    - inactive
+    operation: initialize
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
+      special_rule_ids: []
+    expect:
+      result.attacker.wounds: 2
+  - id: above-normal
+    roles:
+    - boundary
+    - consumer
+    operation: initialize
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
+      special_rule_ids:
+      - band--strigoi-power-monstrosity
+      characteristics:
+        weapon_skill: 4
+        strength: 4
+        toughness: 4
+        wounds: 10
+        initiative: 5
+        attacks: 3
+    expect:
+      result.attacker.wounds: 11
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
+      special_rule_ids:
+      - band--strigoi-power-monstrosity
+    expect:
+      attacker.characteristics.wounds: 3
+  mutations:
+  - id: remove-wound
+    path: attacker.characteristics.wounds
+    value: 2
+    cases:
+    - active
+- id: selected-blessings-bloated-foulness
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-bloated-foulness/special-rule.band--blessings-of-nurgle-bloated-foulness
+    digest: 27492d24849e6c3151c9085326265de7fe48c38d4abe4789c88d1516ec8f536c
+  interpretation: 'Blessings of Nurgle / Bloated Foulness: W1 T3 pasa a W2 T4. La reducción de Movimiento no pertenece
+    al duelo. Se comprueban inicialización de heridas y todas las caras de herir S3 contra T4.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-bloated-foulness
+    context:
+      rule_id: band--blessings-of-nurgle-bloated-foulness
+    expect:
+      result.recipients:
+      - tainted-ones
+  - id: wounds
+    roles:
+    - active
+    - consumer
+    operation: initialize
+    attacker:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-bloated-foulness
+    expect:
+      result.attacker.wounds: 2
+  - id: without-blessing
+    roles:
+    - inactive
+    operation: initialize
+    attacker:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-cloud-of-flies
+    expect:
+      result.attacker.wounds: 1
+  - id: wound-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-bloated-foulness
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.target: 5
+      result.success: false
+  - id: wound-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-bloated-foulness
+    rolls:
+    - key: wound
+      value: 2
+    expect:
+      result.target: 5
+      result.success: false
+  - id: wound-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-bloated-foulness
+    rolls:
+    - key: wound
+      value: 3
+    expect:
+      result.target: 5
+      result.success: false
+  - id: wound-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-bloated-foulness
+    rolls:
+    - key: wound
+      value: 4
+    expect:
+      result.target: 5
+      result.success: false
+  - id: wound-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-bloated-foulness
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      result.target: 5
+      result.success: true
+  - id: wound-6
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-bloated-foulness
+    rolls:
+    - key: wound
+      value: 6
+    expect:
+      result.target: 5
+      result.success: true
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-bloated-foulness
+    expect:
+      attacker.characteristics.wounds: 2
+  mutations:
+  - id: remove-toughness
+    path: defender.characteristics.toughness
+    value: 3
+    cases:
+    - wound-4
+  - id: remove-wound
+    path: attacker.characteristics.wounds
+    value: 1
+    cases:
+    - wounds
+- id: selected-blessings-mark-of-nurgle
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-mark-of-nurgle/special-rule.band--blessings-of-nurgle-mark-of-nurgle
+    digest: f7f11d6ed16bb7fe411e3fdd061f6426eedf8a3cac890e56fd7f97269e3c0714
+  interpretation: 'Blessings of Nurgle / Mark of Nurgle: W1 pasa a W2 e inmunidad a todos los venenos. La matriz
+    de venenos del consumidor se comparte con Tears of Shallaya; aquí se comprueba la concesión sin conceder esa
+    preparación.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-mark-of-nurgle
+    context:
+      rule_id: band--blessings-of-nurgle-mark-of-nurgle
+    expect:
+      result.recipients:
+      - tainted-ones
+  - id: wounds
+    roles:
+    - active
+    - consumer
+    operation: initialize
+    attacker:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-mark-of-nurgle
+    expect:
+      result.attacker.wounds: 2
+  - id: without-blessing
+    roles:
+    - inactive
+    operation: initialize
+    attacker:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-cloud-of-flies
+    expect:
+      result.attacker.wounds: 1
+  - id: poison-immune
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-mark-of-nurgle
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: poison-control
+    roles:
+    - inactive
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-cloud-of-flies
+    expect:
+      result.wound: 4
+      result.armour: 4
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-mark-of-nurgle
+    expect:
+      attacker.characteristics.wounds: 2
+  mutations:
+  - id: remove-wound
+    path: attacker.characteristics.wounds
+    value: 1
+    cases:
+    - wounds
+  - id: remove-immunity
+    changes:
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - poison-immune
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya

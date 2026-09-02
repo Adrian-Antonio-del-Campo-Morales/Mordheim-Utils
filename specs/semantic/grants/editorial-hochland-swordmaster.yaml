@@ -1,0 +1,97 @@
+schema_version: 1
+specifications:
+- id: hochland-swordmaster-equality-without-free-reroll
+  question: "¿Swordmaster del Duelist de Hochland concede repetir una parada fallida, además de igualar el impacto?"
+  ruling: >-
+    No. Resuelto mediante el texto Hochland Bandits / Duelist / Swordmaster:
+    solo concede igualdad y exige equipo que permita parar. No concede una
+    repetición; espada más rodela conserva su repetición independiente.
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: mechanic/skill.swordmaster, digest: c9171b826b8af8625da00aa133af5410069199ea9e85f4be9c4a75fc67ab1730}
+  - {target: rule/mordheim/hochland-bandits/duelist--swordmaster/skill.swordmaster, digest: 251f4d3aa4b6c197cb9205097c5bb92fed434fcbe6b6f07dc52dbc70ad40e6c4}
+  interpretation: >-
+    Hochland Bandits / Duelist / Swordmaster permite igualar la tirada de impacto
+    si el equipo ya permite parar. No concede repeticiones ni paradas adicionales.
+    El resumen canónico remite a esta regla del perfil. Se conserva la prohibición
+    general de parar un seis natural: esta fuente no la exceptúa expresamente.
+    Espada y rodela sí repiten por su propia regla, no por Swordmaster.
+  cases:
+  - id: recipients
+    roles: [grant, compiled]
+    operation: grant
+    defender: {band_id: hochland-bandits, profile_id: duelist, main_weapon_id: weapon.sword}
+    context: {rule_id: duelist--swordmaster}
+    expect: {result.recipients: [duelist]}
+  - id: equal-four
+    roles: [active, consumer, boundary]
+    operation: parry
+    defender: {band_id: hochland-bandits, profile_id: duelist, main_weapon_id: weapon.sword}
+    context: {hit_roll: 4}
+    rolls: [{key: test.parry, value: 4}]
+    expect: {result.blocked: true, result.rerolled: false}
+  - id: all-faces
+    roles: [active, consumer, boundary]
+    operation: parry
+    defender: {band_id: hochland-bandits, profile_id: duelist, main_weapon_id: weapon.sword}
+    context: {hit_roll: 4}
+    distribution: {observable: result.blocked, max_rolls: 2, expected: {'true': 1/2, 'false': 1/2}}
+  - id: canonical-faces
+    roles: [active, consumer]
+    operation: parry
+    defender: {main_weapon_id: weapon.sword, skill_ids: [skill.swordmaster]}
+    context: {hit_roll: 5}
+    distribution: {observable: result.blocked, max_rolls: 2, expected: {'true': 1/3, 'false': 2/3}}
+  - id: failure-does-not-reroll
+    roles: [sequence, consumption, boundary]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {band_id: hochland-bandits, profile_id: duelist, main_weapon_id: weapon.sword}
+    rolls: [{key: test.hit, value: 4}, {key: test.parry, value: 3}, {key: test.wound, value: 1}]
+    expect: {result.parried: false, result.wounded: false, result.defender.parries_remaining: 0}
+  - id: spent-parry
+    roles: [inactive, consumption]
+    operation: attack
+    attacker: {main_weapon_id: weapon.mace}
+    defender: {band_id: hochland-bandits, profile_id: duelist, main_weapon_id: weapon.sword}
+    defender_state: {parries_remaining: 0}
+    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 1}]
+    expect: {result.parried: false, result.defender.parries_remaining: 0}
+  - id: no-parrying-equipment
+    roles: [inactive, boundary]
+    operation: parry
+    defender: {band_id: hochland-bandits, profile_id: duelist, main_weapon_id: weapon.mace}
+    context: {hit_roll: 4}
+    expect: {result.attempted: false, result.blocked: false}
+  - id: no-skill-equality-fails
+    roles: [inactive]
+    operation: parry
+    defender: {main_weapon_id: weapon.sword}
+    context: {hit_roll: 4}
+    rolls: [{key: test.parry, value: 4}]
+    expect: {result.blocked: false, result.rerolled: false}
+  - id: natural-six
+    roles: [inactive, boundary]
+    operation: parry
+    defender: {band_id: hochland-bandits, profile_id: duelist, main_weapon_id: weapon.sword}
+    context: {hit_roll: 6}
+    expect: {result.attempted: false, result.blocked: false}
+  - id: sword-buckler-keeps-independent-reroll
+    roles: [active, boundary]
+    operation: parry
+    defender: {main_weapon_id: weapon.sword, off_hand_id: defence.buckler, skill_ids: [skill.swordmaster]}
+    context: {hit_roll: 4}
+    distribution: {observable: result.blocked, max_rolls: 2, expected: {'true': 3/4, 'false': 1/4}}
+  mutations:
+  - id: omit-equality
+    path: defender.global_effects.tags
+    value: []
+    cases: [equal-four, all-faces, canonical-faces]
+  - id: do-not-consume-parry
+    runtime_fault: retain-parry-capacity
+    cases: [failure-does-not-reroll]
+  - id: introduce-unsupported-reroll
+    path: defender.global_effects.tags
+    value: [skill.swordmaster, skill.miniath]
+    cases: [all-faces, canonical-faces]

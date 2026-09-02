@@ -1,0 +1,180 @@
+schema_version: 2
+band_id: chaos-streets-bretonnian-knights
+profiles:
+- id: questing-knight
+  name: Questing Knight
+  type: hero
+  cost: 80
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - knights-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 108
+    section: 1 Questing Knight
+  source_path:
+  - heroes
+  - 1 Questing Knight
+  name_i18n:
+    en: Questing Knight
+    es: null
+  rule_ids:
+  - questing-knight--leader
+  - questing-knight--knights-virtue
+  - questing-knight--ride-warhorse
+  combat_traits: {}
+- id: knights-errant
+  name: Knights Errant
+  type: hero
+  cost: 50
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - knights-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - speed
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 108
+    section: 0-2 Knights Errant
+  source_path:
+  - heroes
+  - 0-2 Knights Errant
+  name_i18n:
+    en: Knights Errant
+    es: null
+  rule_ids:
+  - knights-errant--knights-virtue
+  - knights-errant--ride-warhorse
+  combat_traits: {}
+- id: squires
+  name: Squires
+  type: hero
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - squires-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Squire may not ride a Horse unless the Questing Knight and every Knight Errant in the warband are riding Warhorses.
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 109
+    section: 0-3 Squires
+  source_path:
+  - heroes
+  - 0-3 Squires
+  name_i18n:
+    en: Squires
+    es: null
+  rule_ids:
+  - squires--ride-horse
+  combat_traits: {}
+- id: men-at-arms
+  name: Men-at-Arms
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - men-at-arms-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 109
+    section: Men-at-Arms
+  source_path:
+  - henchmen
+  - Men-at-Arms
+  name_i18n:
+    en: Men-at-Arms
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: bowmen
+  name: Bowmen
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - bowmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 109
+    section: Bowmen
+  source_path:
+  - henchmen
+  - Bowmen
+  name_i18n:
+    en: Bowmen
+    es: null
+  rule_ids: []
+  combat_traits: {}

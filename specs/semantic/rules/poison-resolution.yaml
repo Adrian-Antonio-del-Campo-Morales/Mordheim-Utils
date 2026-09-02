@@ -1,0 +1,2260 @@
+schema_version: 1
+specifications:
+- id: poison.devil-s-toxin
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/poison.devil-s-toxin
+    digest: 1d60b4b208bcdaef2a755fd9e9f63668e79b94e1453f4efed437d6c987840275
+  interpretation: Reroll failed wounds once, but that reroll cannot cause a critical. Original natural sixes still
+    cause criticals unless six was required.
+  interaction_contract:
+    reads:
+    - defender.poison_immunity
+    - weapon.kind
+    writes:
+    - wound.roll
+    - state.critical_available
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    expect:
+      attacker.main_weapon.reroll_wounds: true
+  - id: without-poison
+    roles:
+    - inactive
+    operation: wound
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.success: false
+      result.rerolled: false
+  - id: six-required
+    roles:
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 5
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 6
+    expect:
+      result.success: true
+      result.critical: false
+  - id: overall-success
+    roles:
+    - consumer
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 3/4
+        'false': 1/4
+  - id: overall-critical
+    roles:
+    - consumer
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    distribution:
+      observable: result.critical
+      max_rolls: 2
+      expected:
+        'true': 1/6
+        'false': 5/6
+  - id: first-1-repeat-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 1
+    - key: wound.reroll
+      value: 1
+    expect:
+      result.success: false
+      result.critical: false
+      result.rerolled: true
+  - id: first-1-repeat-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 1
+    - key: wound.reroll
+      value: 2
+    expect:
+      result.success: false
+      result.critical: false
+      result.rerolled: true
+  - id: first-1-repeat-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 1
+    - key: wound.reroll
+      value: 3
+    expect:
+      result.success: false
+      result.critical: false
+      result.rerolled: true
+  - id: first-1-repeat-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 1
+    - key: wound.reroll
+      value: 4
+    expect:
+      result.success: true
+      result.critical: false
+      result.rerolled: true
+  - id: first-1-repeat-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 1
+    - key: wound.reroll
+      value: 5
+    expect:
+      result.success: true
+      result.critical: false
+      result.rerolled: true
+  - id: first-1-repeat-6
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 1
+    - key: wound.reroll
+      value: 6
+    expect:
+      result.success: true
+      result.critical: false
+      result.rerolled: true
+  - id: first-2-repeat-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 2
+    - key: wound.reroll
+      value: 1
+    expect:
+      result.success: false
+      result.critical: false
+      result.rerolled: true
+  - id: first-2-repeat-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 2
+    - key: wound.reroll
+      value: 2
+    expect:
+      result.success: false
+      result.critical: false
+      result.rerolled: true
+  - id: first-2-repeat-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 2
+    - key: wound.reroll
+      value: 3
+    expect:
+      result.success: false
+      result.critical: false
+      result.rerolled: true
+  - id: first-2-repeat-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 2
+    - key: wound.reroll
+      value: 4
+    expect:
+      result.success: true
+      result.critical: false
+      result.rerolled: true
+  - id: first-2-repeat-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 2
+    - key: wound.reroll
+      value: 5
+    expect:
+      result.success: true
+      result.critical: false
+      result.rerolled: true
+  - id: first-2-repeat-6
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 2
+    - key: wound.reroll
+      value: 6
+    expect:
+      result.success: true
+      result.critical: false
+      result.rerolled: true
+  - id: first-3-repeat-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 3
+    - key: wound.reroll
+      value: 1
+    expect:
+      result.success: false
+      result.critical: false
+      result.rerolled: true
+  - id: first-3-repeat-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 3
+    - key: wound.reroll
+      value: 2
+    expect:
+      result.success: false
+      result.critical: false
+      result.rerolled: true
+  - id: first-3-repeat-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 3
+    - key: wound.reroll
+      value: 3
+    expect:
+      result.success: false
+      result.critical: false
+      result.rerolled: true
+  - id: first-3-repeat-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 3
+    - key: wound.reroll
+      value: 4
+    expect:
+      result.success: true
+      result.critical: false
+      result.rerolled: true
+  - id: first-3-repeat-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 3
+    - key: wound.reroll
+      value: 5
+    expect:
+      result.success: true
+      result.critical: false
+      result.rerolled: true
+  - id: first-3-repeat-6
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 3
+    - key: wound.reroll
+      value: 6
+    expect:
+      result.success: true
+      result.critical: false
+      result.rerolled: true
+  - id: first-4-repeat-omitted
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 4
+    expect:
+      result.success: true
+      result.critical: false
+      result.rerolled: false
+  - id: first-5-repeat-omitted
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      result.success: true
+      result.critical: false
+      result.rerolled: false
+  - id: first-6-repeat-omitted
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.devil-s-toxin
+    rolls:
+    - key: wound
+      value: 6
+    expect:
+      result.success: true
+      result.critical: true
+      result.rerolled: false
+  mutations:
+  - id: remove-reroll
+    path: attacker.main_weapon.reroll_wounds
+    value: false
+    cases:
+    - overall-success
+  - id: allow-reroll-critical
+    path: attacker.main_weapon.tags
+    value:
+    - weapon.sword
+    cases:
+    - first-1-repeat-6
+- id: poison.reptile-venom
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/poison.reptile-venom
+    digest: e942ef4e90104e285b62d63d7832a8d041ab5e6bd0a7c8c7a95c74797735dc4e
+  interpretation: The poison increases only Strength used to wound by one. It does not increase Strength used for
+    armour penetration.
+  interaction_contract:
+    reads:
+    - defender.poison_immunity
+    - weapon.kind
+    writes:
+    - attack.strength
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.reptile-venom
+    expect:
+      attacker.main_weapon.strength_bonus: 1
+      attacker.main_weapon.armour_strength_modifier: -1
+  - id: strengths
+    roles:
+    - active
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.reptile-venom
+    expect:
+      result.wound: 4
+      result.armour: 3
+  - id: without-poison
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.sword
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: minimum-strength
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.reptile-venom
+      characteristics:
+        weapon_skill: 3
+        strength: 1
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    expect:
+      result.wound: 2
+      result.armour: 1
+  - id: material-preserved
+    roles:
+    - boundary
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.reptile-venom
+      main_material_id: material.obsidian
+    expect:
+      result.wound: 5
+      result.armour: 4
+  - id: all-wound-faces
+    roles:
+    - consumer
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.reptile-venom
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected:
+        'true': 2/3
+        'false': 1/3
+  mutations:
+  - id: remove-wound-bonus
+    path: attacker.main_weapon.strength_bonus
+    value: 0
+    cases:
+    - strengths
+  - id: incorrect-penetration
+    path: attacker.main_weapon.armour_strength_modifier
+    value: 0
+    cases:
+    - strengths
+- id: poison.manbane
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/poison.manbane
+    digest: 110da7ca0a12b44f9e8a5324a17ff906a668acb36217e58dcb796d99d118d143
+  interpretation: Add one to wound rolls; a natural one still fails. No Strength or armour modifier is granted.
+  interaction_contract:
+    reads:
+    - defender.poison_immunity
+    - weapon.kind
+    writes:
+    - wound.target
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.manbane
+    expect:
+      attacker.main_weapon.wound_modifier: 1
+  - id: without-poison
+    roles:
+    - inactive
+    operation: wound
+    rolls:
+    - key: wound
+      value: 3
+    expect:
+      result.success: false
+  - id: face-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.manbane
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.target: 3
+      result.success: false
+      result.critical: false
+  - id: face-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.manbane
+    rolls:
+    - key: wound
+      value: 2
+    expect:
+      result.target: 3
+      result.success: false
+      result.critical: false
+  - id: face-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.manbane
+    rolls:
+    - key: wound
+      value: 3
+    expect:
+      result.target: 3
+      result.success: true
+      result.critical: false
+  - id: face-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.manbane
+    rolls:
+    - key: wound
+      value: 4
+    expect:
+      result.target: 3
+      result.success: true
+      result.critical: false
+  - id: face-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.manbane
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      result.target: 3
+      result.success: true
+      result.critical: false
+  - id: face-6
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.manbane
+    rolls:
+    - key: wound
+      value: 6
+    expect:
+      result.target: 3
+      result.success: true
+      result.critical: true
+  - id: one-fails-even-with-high-strength
+    roles:
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.manbane
+      characteristics:
+        weapon_skill: 3
+        strength: 8
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.success: false
+      result.critical: false
+  mutations:
+  - id: remove-wound-modifier
+    path: attacker.main_weapon.wound_modifier
+    value: 0
+    cases:
+    - face-3
+- id: poison.wolfsbane
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/poison.wolfsbane
+    digest: 38c26725d6eb0e2dcf7859c71c57c2a98b555f670abe51574ac9ff2cebc5f765
+  interpretation: Criticals occur on natural wound rolls of five or six, except when only six can wound.
+  interaction_contract:
+    reads:
+    - defender.poison_immunity
+    - weapon.kind
+    writes:
+    - state.critical_available
+  cases:
+  - id: compiled-and-active
+    roles:
+    - compiled
+    - active
+    - consumer
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.wolfsbane
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      context.critical_threshold: 5
+      result.critical: true
+  - id: without-poison
+    roles:
+    - inactive
+    operation: wound
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      result.critical: false
+  - id: ordinary-1
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.wolfsbane
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.success: false
+      result.critical: false
+  - id: six-required-1
+    roles:
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.wolfsbane
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 5
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.success: false
+      result.critical: false
+  - id: ordinary-2
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.wolfsbane
+    rolls:
+    - key: wound
+      value: 2
+    expect:
+      result.success: false
+      result.critical: false
+  - id: six-required-2
+    roles:
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.wolfsbane
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 5
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 2
+    expect:
+      result.success: false
+      result.critical: false
+  - id: ordinary-3
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.wolfsbane
+    rolls:
+    - key: wound
+      value: 3
+    expect:
+      result.success: false
+      result.critical: false
+  - id: six-required-3
+    roles:
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.wolfsbane
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 5
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 3
+    expect:
+      result.success: false
+      result.critical: false
+  - id: ordinary-4
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.wolfsbane
+    rolls:
+    - key: wound
+      value: 4
+    expect:
+      result.success: true
+      result.critical: false
+  - id: six-required-4
+    roles:
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.wolfsbane
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 5
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 4
+    expect:
+      result.success: false
+      result.critical: false
+  - id: ordinary-5
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.wolfsbane
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      result.success: true
+      result.critical: true
+  - id: six-required-5
+    roles:
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.wolfsbane
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 5
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      result.success: false
+      result.critical: false
+  - id: ordinary-6
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.wolfsbane
+    rolls:
+    - key: wound
+      value: 6
+    expect:
+      result.success: true
+      result.critical: true
+  - id: six-required-6
+    roles:
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.wolfsbane
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 5
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 6
+    expect:
+      result.success: true
+      result.critical: false
+  mutations:
+  - id: remove-critical-extension
+    path: attacker.main_weapon.tags
+    value:
+    - weapon.sword
+    cases:
+    - ordinary-5
+- id: poison.black-lotus
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/poison.black-lotus
+    digest: c8d33654afbd1137e21cb298daa9a1fd3e793cf042889f16305fda5934172ccc
+  interpretation: A natural hit roll of six wounds automatically. No wound die is requested and no automatic critical
+    is invented; armour remains available.
+  interaction_contract:
+    reads:
+    - defender.poison_immunity
+    - weapon.kind
+    writes:
+    - wound.success
+  cases:
+  - id: compiled-and-triggered
+    roles:
+    - compiled
+    - active
+    - consumer
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+    context:
+      hit_roll: 6
+    expect:
+      context.automatic: true
+      result.success: true
+      result.critical: false
+  - id: unmodified-five-does-not-trigger
+    roles:
+    - inactive
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+    context:
+      hit_roll: 5
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.success: false
+  - id: armour-still-applies
+    roles:
+    - boundary
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+    defender:
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: test.hit
+      value: 6
+    - key: test.armour
+      value: 4
+    expect:
+      result.wounded: true
+      result.saved: true
+      result.defender.wounds: 3
+  - id: ignores-wound-table-not-injury-table
+    roles:
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+      characteristics:
+        weapon_skill: 3
+        strength: 1
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 10
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      hit_roll: 6
+    expect:
+      result.success: true
+      result.critical: false
+  - id: ordinary-face-1
+    roles:
+    - inactive
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+    context:
+      hit_roll: 4
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.success: false
+      result.critical: false
+  - id: ordinary-face-2
+    roles:
+    - inactive
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+    context:
+      hit_roll: 4
+    rolls:
+    - key: wound
+      value: 2
+    expect:
+      result.success: false
+      result.critical: false
+  - id: ordinary-face-3
+    roles:
+    - inactive
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+    context:
+      hit_roll: 4
+    rolls:
+    - key: wound
+      value: 3
+    expect:
+      result.success: false
+      result.critical: false
+  - id: ordinary-face-4
+    roles:
+    - inactive
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+    context:
+      hit_roll: 4
+    rolls:
+    - key: wound
+      value: 4
+    expect:
+      result.success: true
+      result.critical: false
+  - id: ordinary-face-5
+    roles:
+    - inactive
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+    context:
+      hit_roll: 4
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      result.success: true
+      result.critical: false
+  - id: ordinary-face-6
+    roles:
+    - inactive
+    - boundary
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+    context:
+      hit_roll: 4
+    rolls:
+    - key: wound
+      value: 6
+    expect:
+      result.success: true
+      result.critical: true
+  mutations:
+  - id: remove-automatic-wound
+    path: attacker.main_weapon.tags
+    value:
+    - weapon.sword
+    cases:
+    - compiled-and-triggered
+- id: poison.bloodroot
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/poison.bloodroot
+    digest: 3134964907d78b26d1da2eec50d04cf0a89261efa3764ebd5dc80c364181feb5
+  interpretation: An unsaved ordinary wound causes two wounds. At one remaining Wound, roll twice for injury and
+    apply the worse result. Armour prevents the wound before doubling.
+  interaction_contract:
+    reads:
+    - defender.poison_immunity
+    - weapon.kind
+    writes:
+    - damage.unsaved
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    expect:
+      attacker.main_weapon.damage: 2
+  - id: ordinary-damage
+    roles:
+    - active
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.damage: 2
+      result.defender.wounds: 1
+  - id: without-poison
+    roles:
+    - inactive
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.damage: 1
+      result.defender.wounds: 2
+  - id: armour-prevents-both-wounds
+    roles:
+    - boundary
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.armour
+      value: 4
+    expect:
+      result.damage: 0
+      result.defender.wounds: 3
+  - id: injuries-1-1
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+      result.damage: 2
+  - id: injuries-1-2
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 2
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+      result.damage: 2
+  - id: injuries-1-3
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 3
+    expect:
+      result.defender.condition: STUNNED
+      result.damage: 2
+  - id: injuries-1-4
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 4
+    expect:
+      result.defender.condition: STUNNED
+      result.damage: 2
+  - id: injuries-1-5
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 5
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-1-6
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 6
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-2-1
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 2
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+      result.damage: 2
+  - id: injuries-2-2
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 2
+    - key: test.injury.1
+      value: 2
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+      result.damage: 2
+  - id: injuries-2-3
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 2
+    - key: test.injury.1
+      value: 3
+    expect:
+      result.defender.condition: STUNNED
+      result.damage: 2
+  - id: injuries-2-4
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 2
+    - key: test.injury.1
+      value: 4
+    expect:
+      result.defender.condition: STUNNED
+      result.damage: 2
+  - id: injuries-2-5
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 2
+    - key: test.injury.1
+      value: 5
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-2-6
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 2
+    - key: test.injury.1
+      value: 6
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-3-1
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.defender.condition: STUNNED
+      result.damage: 2
+  - id: injuries-3-2
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.injury.1
+      value: 2
+    expect:
+      result.defender.condition: STUNNED
+      result.damage: 2
+  - id: injuries-3-3
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.injury.1
+      value: 3
+    expect:
+      result.defender.condition: STUNNED
+      result.damage: 2
+  - id: injuries-3-4
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.injury.1
+      value: 4
+    expect:
+      result.defender.condition: STUNNED
+      result.damage: 2
+  - id: injuries-3-5
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.injury.1
+      value: 5
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-3-6
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.injury.1
+      value: 6
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-4-1
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.defender.condition: STUNNED
+      result.damage: 2
+  - id: injuries-4-2
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.injury.1
+      value: 2
+    expect:
+      result.defender.condition: STUNNED
+      result.damage: 2
+  - id: injuries-4-3
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.injury.1
+      value: 3
+    expect:
+      result.defender.condition: STUNNED
+      result.damage: 2
+  - id: injuries-4-4
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.injury.1
+      value: 4
+    expect:
+      result.defender.condition: STUNNED
+      result.damage: 2
+  - id: injuries-4-5
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.injury.1
+      value: 5
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-4-6
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 4
+    - key: test.injury.1
+      value: 6
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-5-1
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 5
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-5-2
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 5
+    - key: test.injury.1
+      value: 2
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-5-3
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 5
+    - key: test.injury.1
+      value: 3
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-5-4
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 5
+    - key: test.injury.1
+      value: 4
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-5-5
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 5
+    - key: test.injury.1
+      value: 5
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-5-6
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 5
+    - key: test.injury.1
+      value: 6
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-6-1
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 6
+    - key: test.injury.1
+      value: 1
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-6-2
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 6
+    - key: test.injury.1
+      value: 2
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-6-3
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 6
+    - key: test.injury.1
+      value: 3
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-6-4
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 6
+    - key: test.injury.1
+      value: 4
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-6-5
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 6
+    - key: test.injury.1
+      value: 5
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  - id: injuries-6-6
+    roles:
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 6
+    - key: test.injury.1
+      value: 6
+    expect:
+      result.defender.condition: OUT
+      result.damage: 2
+  mutations:
+  - id: remove-doubled-damage
+    path: attacker.main_weapon.damage
+    value: 1
+    cases:
+    - ordinary-damage
+    - injuries-1-6

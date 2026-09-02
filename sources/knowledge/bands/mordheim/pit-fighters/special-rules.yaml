@@ -1,0 +1,972 @@
+schema_version: 2
+band_id: pit-fighters
+rules:
+- id: pit-king--leader
+  name: Leader
+  effect: 'Any models in the warband within 6"
+
+    of the King may use his Leadership instead of
+
+    their own.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Pit King / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any models in the warband within 6"
+
+      of the King may use his Leadership instead of
+
+      their own.'
+    es: null
+  applies_to:
+    profile_ids:
+    - pit-king
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pit-fighters.pit-king.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: pit-king--pit-fighter
+  name: Pit Fighter
+  effect: This warrior has the warband's Pit Fighter skill.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Pit King / Special Rules / Pit Fighter
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Pit Fighter
+    es: null
+  effect_i18n:
+    en: This warrior has the warband's Pit Fighter skill.
+    es: null
+  applies_to:
+    profile_ids:
+    - pit-king
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.pit-fighter
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.pit-fighter
+        parameters:
+          value: true
+- id: dwarf-troll-slayer--pit-fighter
+  name: Pit Fighter
+  effect: This warrior has the warband's Pit Fighter skill.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Dwarf Troll Slayer / Special Rules / Pit Fighter
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Pit Fighter
+    es: null
+  effect_i18n:
+    en: This warrior has the warband's Pit Fighter skill.
+    es: null
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayer
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.pit-fighter
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.pit-fighter
+        parameters:
+          value: true
+- id: dwarf-troll-slayer--hard-to-kill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.hard-to-kill
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
+  name: Hard to Kill
+  effect: 'Dwarfs are tough, resilient
+
+    individuals who can only be taken out of
+
+    action on a roll of a 6 instead of 5-6 when
+
+    rolling on the Injury chart. Treat a roll of 1-2
+
+    as knocked down, 3-5 as stunned, and 6 as
+
+    out of action.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Dwarf Troll Slayer / Special Rules / Hard to Kill
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Hard to Kill
+    es: null
+  effect_i18n:
+    en: 'Dwarfs are tough, resilient
+
+      individuals who can only be taken out of
+
+      action on a roll of a 6 instead of 5-6 when
+
+      rolling on the Injury chart. Treat a roll of 1-2
+
+      as knocked down, 3-5 as stunned, and 6 as
+
+      out of action.'
+    es: null
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayer
+- id: dwarf-troll-slayer--hard-head
+  name: Hard Head
+  effect: 'Dwarfs ignores the special rules
+
+    for maces, clubs, etc. They are not easy to
+
+    knock out!'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Dwarf Troll Slayer / Special Rules / Hard Head
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Hard Head
+    es: null
+  effect_i18n:
+    en: 'Dwarfs ignores the special rules
+
+      for maces, clubs, etc. They are not easy to
+
+      knock out!'
+    es: null
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayer
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.concussion-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.concussion-immune
+        parameters:
+          value: true
+- id: dwarf-troll-slayer--hate-orcs-and-goblins
+  name: Hate Orcs and Goblins
+  effect: 'All Dwarfs hate Orcs
+
+    and Goblins. See the psychology section of
+
+    the Mordheim rules for details on the effects
+
+    of hatred.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Dwarf Troll Slayer / Special Rules / Hate Orcs and Goblins
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Hate Orcs and Goblins
+    es: null
+  effect_i18n:
+    en: 'All Dwarfs hate Orcs
+
+      and Goblins. See the psychology section of
+
+      the Mordheim rules for details on the effects
+
+      of hatred.'
+    es: null
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayer
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pit-fighters.dwarf-troll-slayer.hate-orcs-and-goblins
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: dwarf-troll-slayer--grudgebearers
+  name: Grudgebearers
+  effect: 'Dwarfs hold an ancient
+
+    grudge against Elves from the days when the
+
+    two races fought for the supremacy of the Old
+
+    World. If the Pit Fighters ever hire any kind of
+
+    Elven Hired Sword, he will leave the warband
+
+    immediately, he refuses to fight alongside
+
+    these pansy Elves!'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Dwarf Troll Slayer / Special Rules / Grudgebearers
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Grudgebearers
+    es: null
+  effect_i18n:
+    en: 'Dwarfs hold an ancient
+
+      grudge against Elves from the days when the
+
+      two races fought for the supremacy of the Old
+
+      World. If the Pit Fighters ever hire any kind of
+
+      Elven Hired Sword, he will leave the warband
+
+      immediately, he refuses to fight alongside
+
+      these pansy Elves!'
+    es: null
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pit-fighters.dwarf-troll-slayer.grudgebearers
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: dwarf-troll-slayer--death-wish
+  name: Death Wish
+  effect: 'Troll Slayers seek an honourable
+
+    death in combat. They are completely immune
+
+    to all psychology'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Dwarf Troll Slayer / Special Rules / Death Wish
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Death Wish
+    es: null
+  effect_i18n:
+    en: 'Troll Slayers seek an honourable
+
+      death in combat. They are completely immune
+
+      to all psychology'
+    es: null
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayer
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pit-fighters.dwarf-troll-slayer.death-wish
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: pit-veterans--pit-fighter
+  name: Pit Fighter
+  effect: This warrior has the warband's Pit Fighter skill.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 2 Pit Veterans / Special Rules / Pit Fighter
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Pit Fighter
+    es: null
+  effect_i18n:
+    en: This warrior has the warband's Pit Fighter skill.
+    es: null
+  applies_to:
+    profile_ids:
+    - pit-veterans
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.pit-fighter
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.pit-fighter
+        parameters:
+          value: true
+- id: pit-fighters--pit-fighter
+  name: Pit Fighter
+  effect: This warrior has the warband's Pit Fighter skill.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Pit Fighters / Special Rules / Pit Fighter
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Pit Fighter
+    es: null
+  effect_i18n:
+    en: This warrior has the warband's Pit Fighter skill.
+    es: null
+  applies_to:
+    profile_ids:
+    - pit-fighters
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.pit-fighter
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.pit-fighter
+        parameters:
+          value: true
+- id: pursuers--pit-fighter
+  name: Pit Fighter
+  effect: This warrior has the warband's Pit Fighter skill.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 7 Pursuers / Special Rules / Pit Fighter
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Pit Fighter
+    es: null
+  effect_i18n:
+    en: This warrior has the warband's Pit Fighter skill.
+    es: null
+  applies_to:
+    profile_ids:
+    - pursuers
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.pit-fighter
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.pit-fighter
+        parameters:
+          value: true
+- id: pursuers--evade
+  name: Evade
+  effect: When an enemy charges a Pursuer, the Pursuer may attempt to evade. On a successful Initiative test the charge counts
+    as failed and the normal failed-charge rules apply.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 7 Pursuers / Special Rules / Evade
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Evade
+    es: null
+  effect_i18n:
+    en: When an enemy charges a Pursuer, the Pursuer may attempt to evade. On a successful Initiative test the charge counts
+      as failed and the normal failed-charge rules apply.
+    es: null
+  applies_to:
+    profile_ids:
+    - pursuers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pit-fighters.pursuers.evade
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: ogre-pit-fighter--pit-fighter
+  name: Pit Fighter
+  effect: This warrior has the warband's Pit Fighter skill.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Ogre Pit Fighter / Special Rules / Pit Fighter
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Pit Fighter
+    es: null
+  effect_i18n:
+    en: This warrior has the warband's Pit Fighter skill.
+    es: null
+  applies_to:
+    profile_ids:
+    - ogre-pit-fighter
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.pit-fighter
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.pit-fighter
+        parameters:
+          value: true
+- id: ogre-pit-fighter--fear
+  name: Fear
+  effect: 'Ogre Pit Fighters are large, threatening
+
+    creatures that cause fear.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Ogre Pit Fighter / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: 'Ogre Pit Fighters are large, threatening
+
+      creatures that cause fear.'
+    es: null
+  applies_to:
+    profile_ids:
+    - ogre-pit-fighter
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pit-fighters.ogre-pit-fighter.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: ogre-pit-fighter--large
+  name: Large
+  effect: 'Ogre Pit Fighters are huge, lumbering
+
+    creatures and therefore make tempting targets
+
+    for archers. Any model may shoot at the Ogre
+
+    Pit Fighter, even if he is not the closest target.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Ogre Pit Fighter / Special Rules / Large
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Large
+    es: null
+  effect_i18n:
+    en: 'Ogre Pit Fighters are huge, lumbering
+
+      creatures and therefore make tempting targets
+
+      for archers. Any model may shoot at the Ogre
+
+      Pit Fighter, even if he is not the closest target.'
+    es: null
+  applies_to:
+    profile_ids:
+    - ogre-pit-fighter
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pit-fighters.ogre-pit-fighter.large
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: ogre-pit-fighter--skills
+  name: Skills
+  effect: If the Ogre Pit Fighter becomes a Hero through The Lad's Got Talent, it may choose Combat, Strength and Pit Fighter
+    Special Skills.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Ogre Pit Fighter / Special Rules / Skills
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Skills
+    es: null
+  effect_i18n:
+    en: If the Ogre Pit Fighter becomes a Hero through The Lad's Got Talent, it may choose Combat, Strength and Pit Fighter
+      Special Skills.
+    es: null
+  applies_to:
+    profile_ids:
+    - ogre-pit-fighter
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.promoted-hero-skill-access
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.promoted-hero-skill-access
+        parameters:
+          allowed_skill_lists:
+          - combat
+          - strength
+          - special
+- id: ogre-pit-fighter--slow-witted
+  name: Slow Witted
+  effect: 'Although Ogres are capable of
+
+    earning experience and bettering themselves,
+
+    they are not the smartest creatures. Ogres
+
+    only gain advances at half the rate of everyone
+
+    else (i.e., they must accrue twice as much
+
+    experience as normal to get an advance).'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 1 Ogre Pit Fighter / Special Rules / Slow Witted
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Slow Witted
+    es: null
+  effect_i18n:
+    en: 'Although Ogres are capable of
+
+      earning experience and bettering themselves,
+
+      they are not the smartest creatures. Ogres
+
+      only gain advances at half the rate of everyone
+
+      else (i.e., they must accrue twice as much
+
+      experience as normal to get an advance).'
+    es: null
+  applies_to:
+    profile_ids:
+    - ogre-pit-fighter
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.pit-fighters.ogre-pit-fighter.slow-witted
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--pit-fighter-skill
+  name: Pit Fighter
+  effect: 'All Pit Fighters have the Pit Fighter skill: they gain +1 WS and +1 A when fighting in ruins, buildings or The
+    Pit.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Pit Fighter
+    es: null
+  effect_i18n:
+    en: 'All Pit Fighters have the Pit Fighter skill: they gain +1 WS and +1 A when fighting in ruins, buildings or The Pit.'
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.pit-fighters.band.pit-fighter-skill
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--hired-swords
+  name: Hired Swords
+  effect: Pit Fighters may hire all normally available Hired Swords except the Elf Ranger.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hired Swords
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Hired Swords
+    es: null
+  effect_i18n:
+    en: Pit Fighters may hire all normally available Hired Swords except the Elf Ranger.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.pit-fighters.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+- id: band--fighting-styles
+  name: Weapons & Armour — Fighting Styles
+  effect: Pit Kings, Veterans, Pit Fighters and Pursuers must select one of the fighting styles in their appropriate equipment
+    list; the style determines their initial weapons and armour. Troll Slayers and Ogres instead choose from the Ogre & Slayer
+    Equipment List. A Pit Fighter may later change style by swapping styles with another warrior or buying a new style or
+    its separate components. Heroes are not prevented from using other items if they later learn the appropriate skills. A
+    Pit Fighter Henchman group may mix multiple fighting styles and its members do not need identical equipment.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Weapons & Armour
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Weapons & Armour — Fighting Styles
+    es: null
+  effect_i18n:
+    en: Pit Kings, Veterans, Pit Fighters and Pursuers must select one of the fighting styles in their appropriate equipment
+      list; the style determines their initial weapons and armour. Troll Slayers and Ogres instead choose from the Ogre &
+      Slayer Equipment List. A Pit Fighter may later change style by swapping styles with another warrior or buying a new
+      style or its separate components. Heroes are not prevented from using other items if they later learn the appropriate
+      skills. A Pit Fighter Henchman group may mix multiple fighting styles and its members do not need identical equipment.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: compiler.pit-fighter-fighting-styles
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: initial recruitment packages, gold costs, later purchases and swapping equipment between warband members require roster and campaign state.'
+- id: band--free-the-slaves
+  name: Free the Slaves!
+  effect: Pit Fighters hate slavers and will never sell captured opponents to slavers.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Free the Slaves!
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Free the Slaves!
+    es: null
+  effect_i18n:
+    en: Pit Fighters hate slavers and will never sell captured opponents to slavers.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.pit-fighters.band.free-the-slaves
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--in-the-pit
+  name: In the Pit!
+  effect: A captured opponent may be sent to fight in the pits against one or more warriors from the Pit Fighter warband.
+    If a Pit Fighter wins, that warrior gains +2 Experience and the warband receives the captive's armour and weapons plus
+    50 gc. If a Pit Fighter loses, resolve death/injury normally but ignore Robbed, Captured, Hardened, Sold to the Pits and
+    Survives Against the Odds; the Pit Fighter keeps its equipment. A victorious captive gains 50 gc and +2 Experience, then
+    goes free on 4+; on 1-3 the captive remains held and may be sent to the pits again after later games.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / In the Pit!
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: In the Pit!
+    es: null
+  effect_i18n:
+    en: A captured opponent may be sent to fight in the pits against one or more warriors from the Pit Fighter warband. If
+      a Pit Fighter wins, that warrior gains +2 Experience and the warband receives the captive's armour and weapons plus
+      50 gc. If a Pit Fighter loses, resolve death/injury normally but ignore Robbed, Captured, Hardened, Sold to the Pits
+      and Survives Against the Odds; the Pit Fighter keeps its equipment. A victorious captive gains 50 gc and +2 Experience,
+      then goes free on 4+; on 1-3 the captive remains held and may be sent to the pits again after later games.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.pit-fighters.band.in-the-pit
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+- id: band--pit-fighter-skill-bulging-biceps
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.mighty-biceps
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.mighty-biceps
+  name: Bulging Biceps
+  effect: The warrior ignores the penalty from the Heavy weapon special rule; a weapon's Strength bonus therefore applies
+    in every round of close combat.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pit Fighter Skills / Bulging Biceps
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Bulging Biceps
+    es: null
+  effect_i18n:
+    en: The warrior ignores the penalty from the Heavy weapon special rule; a weapon's Strength bonus therefore applies in
+      every round of close combat.
+    es: null
+  applies_to:
+    band: true
+- id: band--pit-fighter-skill-force-of-will
+  kind: warband_skill
+  name: Force of Will
+  effect: When taken Out of Action by losing the last Wound, roll D6 equal to or under Toughness. On success the warrior gets
+    back up and may continue fighting. Repeat in each following round with a cumulative -1 modifier. If the warrior is taken
+    Out of Action a second time, remove it normally.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pit Fighter Skills / Force of Will
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Force of Will
+    es: null
+  effect_i18n:
+    en: When taken Out of Action by losing the last Wound, roll D6 equal to or under Toughness. On success the warrior gets
+      back up and may continue fighting. Repeat in each following round with a cumulative -1 modifier. If the warrior is taken
+      Out of Action a second time, remove it normally.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: mechanic.force-of-will
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.force-of-will
+- id: band--pit-fighter-skill-arms-master
+  kind: warband_skill
+  name: Arms Master
+  effect: The warrior ignores all 'difficult to use' weapon restrictions, allowing combinations that would normally be prohibited.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pit Fighter Skills / Arms Master
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Arms Master
+    es: null
+  effect_i18n:
+    en: The warrior ignores all 'difficult to use' weapon restrictions, allowing combinations that would normally be prohibited.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: compiler.ignore-difficult-to-use-restrictions
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.ignore-difficult-to-use-restrictions
+- id: band--pit-fighter-skill-body-slam
+  kind: warband_skill
+  name: Body Slam
+  effect: Instead of a normal charge attack sequence, the warrior may make one Body Slam attack at +1 Strength and +1 to hit,
+    with no weapon bonuses or abilities; it scores a critical hit on 5+.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pit Fighter Skills / Body Slam
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Body Slam
+    es: null
+  effect_i18n:
+    en: Instead of a normal charge attack sequence, the warrior may make one Body Slam attack at +1 Strength and +1 to hit,
+      with no weapon bonuses or abilities; it scores a critical hit on 5+.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: mechanic.body-slam
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.body-slam
+- id: band--pit-fighter-skill-grizzled-veteran
+  name: Grizzled Veteran
+  effect: The warrior is immune to all psychology.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pit Fighter Skills / Grizzled Veteran
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Grizzled Veteran
+    es: null
+  effect_i18n:
+    en: The warrior is immune to all psychology.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.pit-fighters.band.pit-fighter-skill-grizzled-veteran
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--troll-slayer-special-skills-ferocious-charge
+  kind: warband_skill
+  name: Ferocious Charge
+  effect: The Slayer may double his attacks on the turn that he charges. He will suffer a -1 to hit penalty on that turn.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Troll Slayer Special Skills / Ferocious Charge
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Ferocious Charge
+    es: null
+  effect_i18n:
+    en: The Slayer may double his attacks on the turn that he charges. He will suffer a -1 to hit penalty on that turn.
+    es: null
+  eligibility:
+  - dwarf-troll-slayer
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.ferocious-charge
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ferocious-charge
+- id: band--troll-slayer-special-skills-monster-slayer
+  kind: warband_skill
+  name: Monster Slayer
+  effect: The Slayer always wounds any opponent on a roll of 4+, regardless of Toughness, unless his own Strength (after all
+    modifiers due to weapon bonuses, etc.) would mean that a lower roll than this is needed.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Troll Slayer Special Skills / Monster Slayer
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Monster Slayer
+    es: null
+  effect_i18n:
+    en: The Slayer always wounds any opponent on a roll of 4+, regardless of Toughness, unless his own Strength (after all
+      modifiers due to weapon bonuses, etc.) would mean that a lower roll than this is needed.
+    es: null
+  eligibility:
+  - dwarf-troll-slayer
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.monster-slayer
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.monster-slayer
+- id: band--troll-slayer-special-skills-berserker
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.berserker
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.berserker
+    - id: compiler.berserker-incompatible-with-ferocious-charge
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.berserker-incompatible-with-ferocious-charge
+  name: Berserker
+  effect: The Slayer may add +1 to his close combat to hit rolls during the turn which he charges (may not be used with Ferocious
+    Charge).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Troll Slayer Special Skills / Berserker
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    en: Berserker
+    es: null
+  effect_i18n:
+    en: The Slayer may add +1 to his close combat to hit rolls during the turn which he charges (may not be used with Ferocious
+      Charge).
+    es: null
+  eligibility:
+  - dwarf-troll-slayer
+  applies_to:
+    band: true

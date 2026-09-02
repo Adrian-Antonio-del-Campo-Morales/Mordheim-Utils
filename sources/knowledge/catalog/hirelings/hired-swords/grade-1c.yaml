@@ -1,0 +1,526 @@
+schema_version: 1
+ruleset: mordheim
+catalog: hirelings-hired-swords
+grade: 1c
+profiles:
+- id: hireling.hired-sword.bone-goliath
+  kind: hired-sword
+  grade: 1c
+  publication: Border Town Burning Supplement
+  name: Bone Goliath
+  name_i18n:
+    en: Bone Goliath
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 0
+    S: 5
+    T: 5
+    W: 3
+    I: 2
+    A: 3
+    Ld: 6
+  warband_rating:
+    kind: fixed
+    value: 50
+  skill_access: []
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.bone-goliath.rule.cause-fear
+    name: Cause Fear
+    effect: Causes fear.
+  - id: hireling.hired-sword.bone-goliath.rule.may-not-run
+    name: May Not Run
+    effect: May not run but may charge.
+  - id: hireling.hired-sword.bone-goliath.rule.immune-to-psychology
+    name: Immune to Psychology
+    effect: Immune to psychology.
+  - id: hireling.hired-sword.bone-goliath.rule.immune-to-poison
+    name: Immune to Poison
+    effect: Immune to poison.
+  - id: hireling.hired-sword.bone-goliath.rule.undead-construct
+    name: Undead Construct
+    effect: May ignore Injury results on 4+ except source magical exceptions.
+  - id: hireling.hired-sword.bone-goliath.rule.assembly
+    name: Assembly
+    effect: Is constructed by a Liche with the source cost/consequences.
+  - id: hireling.hired-sword.bone-goliath.rule.large
+    name: Large
+    effect: Counts as a large target.
+  - id: hireling.hired-sword.bone-goliath.rule.no-pain
+    name: No Pain
+    effect: Treats Stunned as Knocked Down.
+  - id: hireling.hired-sword.bone-goliath.rule.mindless
+    name: Mindless
+    effect: Never gains Experience.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Bone Goliath
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+- id: hireling.hired-sword.cathayan-merchant
+  kind: hired-sword
+  grade: 1c
+  publication: Border Town Burning Supplement
+  name: Cathayan Merchant
+  name_i18n:
+    en: Cathayan Merchant
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 10
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - academic
+  - special
+  starting_skill_ids:
+  - skill.haggle
+  rules:
+  - id: hireling.hired-sword.cathayan-merchant.rule.pawnbroker
+    name: Pawnbroker
+    effect: Uses merchant sale-price rule.
+  - id: hireling.hired-sword.cathayan-merchant.rule.marketeer
+    name: Marketeer
+    effect: Uses special-market rule.
+  - id: hireling.hired-sword.cathayan-merchant.rule.stone-cutter
+    name: Stone Cutter
+    effect: Uses source stone-cutting rule.
+  - id: hireling.hired-sword.cathayan-merchant.rule.guardian
+    name: Guardian
+    effect: Uses source guardian rule.
+  - id: hireling.hired-sword.cathayan-merchant.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Human or Dwarf composition
+    effect: The Cathayan Merchant may only be hired when the current warband includes Humans or Dwarfs; Battle Monks of Cathay are explicitly included by the source.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Cathayan Merchant
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+- id: hireling.hired-sword.chaos-centaur
+  kind: hired-sword
+  grade: 1c
+  publication: Border Town Burning Supplement
+  name: Chaos Centaur
+  name_i18n:
+    en: Chaos Centaur
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 8
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 20
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: throwing_axe
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: shield
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.chaos-centaur.rule.drunken
+    name: Drunken
+    effect: Uses source drunken rule.
+  - id: hireling.hired-sword.chaos-centaur.rule.woodland
+    name: Woodland
+    effect: Uses source woodland/terrain rule.
+  - id: hireling.hired-sword.chaos-centaur.rule.trample
+    name: Trample
+    effect: Has source trample attack.
+  unresolved_references:
+  - kind: equipment_choice
+    source_name: Sword or Spear
+  - kind: advancement_choice
+    source_name: may take a mutation instead of a skill
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Chaos Centaur
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+- id: hireling.hired-sword.coachman
+  kind: hired-sword
+  grade: 1c
+  publication: Border Town Burning Supplement
+  name: Coachman
+  name_i18n:
+    en: Coachman
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 8
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: whip
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.coachman.rule.driver
+    name: Driver
+    effect: Uses source vehicle-driving rule.
+  - id: hireling.hired-sword.coachman.rule.handyman
+    name: Handyman
+    effect: Uses source repair rule.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Coachman
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+- id: hireling.hired-sword.grave-robber
+  kind: hired-sword
+  grade: 1c
+  publication: Border Town Burning Supplement
+  name: Grave Robber
+  name_i18n:
+    en: Grave Robber
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  warband_rating:
+    kind: base_plus_experience
+    base: 15
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: toughened_leathers
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.grave-robber.item.pickaxe
+      name: Pickaxe
+      counts_as:
+        item_id: axe
+        context: rules
+  skill_access:
+  - combat
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.grave-robber.rule.hatred
+    name: Hatred
+    effect: Uses source hatred rule.
+  - id: hireling.hired-sword.grave-robber.rule.grave-robbing
+    name: Grave Robbing
+    effect: Uses source post-battle grave-robbing table.
+  - id: hireling.hired-sword.grave-robber.rule.campaign-eligibility
+    name: Dynamic hiring eligibility — Necromantic roster
+    effect: The Grave Robber may only be hired when the current warband includes a Vampire, Necromancer or Liche.
+  unresolved_references:
+  - kind: equipment_mapping
+    source_name: Lantern
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Grave Robber
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+- id: hireling.hired-sword.hobgoblin-scout
+  kind: hired-sword
+  grade: 1c
+  publication: Border Town Burning Supplement
+  name: Hobgoblin Scout
+  name_i18n:
+    en: Hobgoblin Scout
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 6
+  warband_rating:
+    kind: base_plus_experience
+    base: 19
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: short_bow
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: shield
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - shooting
+  - cavalry
+  - special
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.hobgoblin-scout.rule.ride
+    name: Ride
+    effect: Rides a Giant Wolf.
+  - id: hireling.hired-sword.hobgoblin-scout.rule.loner
+    name: Loner
+    effect: Uses source loner rule.
+  - id: hireling.hired-sword.hobgoblin-scout.rule.traitor
+    name: Traitor
+    effect: Uses source traitor rule.
+  - id: hireling.hired-sword.hobgoblin-scout.rule.spy
+    name: Spy
+    effect: Uses source spying rule.
+  - id: hireling.hired-sword.hobgoblin-scout.rule.potshot
+    name: Potshot
+    effect: Uses source shooting rule.
+  unresolved_references:
+  - kind: mount_profile
+    source_name: Giant Wolf profile M9 WS3 BS0 S3 T3 W1 I4 A1 Ld4
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Hobgoblin Scout
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+- id: hireling.hired-sword.ninja
+  kind: hired-sword
+  grade: 1c
+  publication: Border Town Burning Supplement
+  name: Ninja
+  name_i18n:
+    en: Ninja
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 45
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: throwing_stars
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: rope_hook
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.hired-sword.ninja.item.smoke-bomb
+      name: Smoke Bomb
+  skill_access: []
+  starting_skill_ids:
+  - skill.expert-swordsman
+  - skill.knife-fighter
+  - skill.scale-sheer-surfaces
+  rules:
+  - id: hireling.hired-sword.ninja.rule.strictly-business
+    name: Strictly Business
+    effect: Uses the source one-job hiring rule.
+  - id: hireling.hired-sword.ninja.rule.secrecy
+    name: Secrecy
+    effect: Uses the source secrecy rule.
+  - id: hireling.hired-sword.ninja.rule.no-experience
+    name: No Experience
+    effect: Does not gain Experience.
+  unresolved_references:
+  - kind: skill
+    source_name: Art of Silent Death
+  - kind: skill
+    source_name: Lightning Speed
+  - kind: skill
+    source_name: Leap of Faith
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Ninja
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+- id: hireling.hired-sword.pyromaniac
+  kind: hired-sword
+  grade: 1c
+  publication: Border Town Burning Supplement
+  name: Pyromaniac
+  name_i18n:
+    en: Pyromaniac
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 9
+    per_experience_point: 1
+  equipment:
+    unique_equipment:
+    - id: hireling.hired-sword.pyromaniac.item.fireworks
+      name: Fireworks
+    - id: hireling.hired-sword.pyromaniac.item.firecrackers
+      name: Firecrackers
+  skill_access:
+  - special
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.pyromaniac.rule.crazed-firestarter
+    name: Crazed Firestarter
+    effect: Uses source pyromania rule.
+  - id: hireling.hired-sword.pyromaniac.rule.rockets
+    name: Rockets
+    effect: Uses source rocket rule.
+  - id: hireling.hired-sword.pyromaniac.rule.rocket-science
+    name: Rocket Science
+    effect: Special skill option.
+  - id: hireling.hired-sword.pyromaniac.rule.display-artist
+    name: Display Artist
+    effect: Special skill option.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Pyromaniac
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+- id: hireling.hired-sword.swordsmith
+  kind: hired-sword
+  grade: 1c
+  publication: Border Town Burning Supplement
+  name: Swordsmith
+  name_i18n:
+    en: Swordsmith
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 10
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: hammer
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: toughened_leathers
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - academic
+  - strength
+  - special
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.swordsmith.rule.master-craftsman
+    name: Master Craftsman
+    effect: Uses source crafting rule.
+  - id: hireling.hired-sword.swordsmith.rule.honing
+    name: Honing
+    effect: Special skill option.
+  - id: hireling.hired-sword.swordsmith.rule.farrier
+    name: Farrier
+    effect: Special skill option.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Hired Swords / Swordsmith
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1c

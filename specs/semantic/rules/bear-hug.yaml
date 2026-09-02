@@ -1,0 +1,159 @@
+schema_version: 1
+specifications:
+- id: bear-hug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - target: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
+    digest: 5ef4ac20907195dd187a4b96d23c3e2b3c4c88b387d0b82247de92aaf6765c7e
+  interpretation: Two hits on the same enemy in a round offer an optional replacement. D6+Strength ties favour the
+    bear. Success inflicts exactly one automatic wound and forbids armour; failure inflicts no damage. Declining
+    resolves the original hits normally.
+  cases:
+  - id: profile-grant
+    roles:
+    - compiled
+    - grant
+    operation: compile
+    attacker:
+      band_id: kislevites
+      profile_id: trained-bear
+    expect:
+      attacker.global_effects.bear_hug: true
+      attacker.characteristics.strength: 5
+      attacker.characteristics.attacks: 2
+  - id: tie-no-armour
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
+    operation: pool
+    attacker:
+      band_id: kislevites
+      profile_id: trained-bear
+    defender:
+      armour_id: armour.gromril-armour
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 1
+    - key: test.bear-hug.defender
+      value: 3
+    expect:
+      result.defender.wounds: 2
+      result.attacks.0.damage: 1
+      result.attacker.critical_available: true
+  - id: opponent-breaks-hold
+    roles:
+    - inactive
+    - boundary
+    operation: pool
+    attacker:
+      band_id: kislevites
+      profile_id: trained-bear
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 1
+    - key: test.bear-hug.defender
+      value: 6
+    expect:
+      result.defender.wounds: 3
+      result.attacks: []
+  - id: one-hit-no-choice
+    roles:
+    - inactive
+    operation: pool
+    attacker:
+      band_id: kislevites
+      profile_id: trained-bear
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 1
+    - key: test.attack.0.wound
+      value: 1
+    expect:
+      result.defender.wounds: 3
+  - id: decline-original-hits
+    roles:
+    - inactive
+    - sequence
+    operation: pool
+    attacker:
+      band_id: kislevites
+      profile_id: trained-bear
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: false
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.0.wound
+      value: 1
+    - key: test.attack.1.wound
+      value: 1
+    expect:
+      result.defender.wounds: 3
+      result.attacks.0.hit_roll: 4
+      result.attacks.1.hit_roll: 4
+  - id: all-opposed-dice
+    roles:
+    - boundary
+    operation: bear_hug
+    attacker:
+      band_id: kislevites
+      profile_id: trained-bear
+    decisions:
+    - key: hug
+      value: true
+    distribution:
+      observable: result.wounded
+      max_rolls: 2
+      expected:
+        'true': 5/6
+        'false': 1/6
+  mutations:
+  - id: remove-hug-handler-activation
+    path: attacker.global_effects.bear_hug
+    value: false
+    cases:
+    - tie-no-armour
+  - id: strength-changes-tie
+    path: attacker.characteristics.strength
+    value: 4
+    cases:
+    - tie-no-armour
+    - all-opposed-dice
+  interaction_contract:
+    reads:
+    - hit.success
+    - fighter.strength
+    - defender.strength
+    writes:
+    - damage.unsaved
+    - armour.allowed

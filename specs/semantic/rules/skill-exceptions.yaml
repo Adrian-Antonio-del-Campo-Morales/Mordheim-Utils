@@ -1,0 +1,916 @@
+schema_version: 1
+specifications:
+- id: skill.jump-up
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.jump-up
+    digest: 0ddeeeffb0d9b1435c8b575dca91af2981daedcbc841bd875c240ecb9ccf7ccd
+  interpretation: 'Reviewed Skills / Jump Up (Mordheimer, 2026-08-30): ordinary injury knockdown is ignored; conversion
+    from No Pain or a successful helmet save is not. Raw 1-2 still recovers immediately when No Pain is present.'
+  interaction_contract:
+    reads:
+    - injury.condition
+    - injury.origin
+    writes:
+    - injury.condition
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    defender:
+      skill_ids:
+      - skill.jump-up
+    expect:
+      defender.global_effects.tags:
+      - skill.jump-up
+      - armour.no-armour
+  - id: ordinary-1
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STANDING
+  - id: no-pain-1
+    roles:
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STANDING
+  - id: ordinary-2
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STANDING
+  - id: no-pain-2
+    roles:
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STANDING
+  - id: ordinary-3
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+  - id: no-pain-3
+    roles:
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: ordinary-4
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+  - id: no-pain-4
+    roles:
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: ordinary-5
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  - id: no-pain-5
+    roles:
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: OUT
+  - id: ordinary-6
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: no-pain-6
+    roles:
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      - skill.ignore-pain
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
+  - id: without-skill
+    roles:
+    - inactive
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: helmet-1
+    roles:
+    - boundary
+    - sequence
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 1
+    expect:
+      result.defender.condition: STUNNED
+  - id: helmet-2
+    roles:
+    - boundary
+    - sequence
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 2
+    expect:
+      result.defender.condition: STUNNED
+  - id: helmet-3
+    roles:
+    - boundary
+    - sequence
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 3
+    expect:
+      result.defender.condition: STUNNED
+  - id: helmet-4
+    roles:
+    - boundary
+    - sequence
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 4
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: helmet-5
+    roles:
+    - boundary
+    - sequence
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 5
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  - id: helmet-6
+    roles:
+    - boundary
+    - sequence
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      skill_ids:
+      - skill.jump-up
+      defence_ids:
+      - defence.helmet
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.helmet
+      value: 6
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: remove-jump-up
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - ordinary-1
+    - ordinary-2
+- id: skill.unarmed-fighting
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  interpretation: Fists use full Strength, retain the fighter's Attacks and add one, and grant no armour bonus when
+    trained. The printed bonus applies only while unarmed.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    - attacks.base
+    - strength.base
+    writes:
+    - attacks.count
+    - strength.wound
+    - armour.target
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+    expect:
+      attacker.global_effects.tags:
+      - skill.unarmed-fighting
+      - armour.no-armour
+  - id: full-strength
+    roles:
+    - active
+    - consumer
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+    expect:
+      result.wound: 3
+      result.armour: 3
+  - id: extra-attack
+    roles:
+    - active
+    - consumer
+    operation: attacks
+    attacker:
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+    expect:
+      result.attacks: 2
+  - id: retain-profile-attacks
+    roles:
+    - boundary
+    operation: attacks
+    attacker:
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 3
+    expect:
+      result.attacks: 4
+  - id: no-unarmoured-save
+    roles:
+    - consumer
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+    expect:
+      result.eligible: false
+      result.saved: false
+  - id: armoured-1
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 1
+    expect:
+      result.target: 5
+      result.saved: false
+  - id: armoured-2
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 2
+    expect:
+      result.target: 5
+      result.saved: false
+  - id: armoured-3
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 5
+      result.saved: false
+  - id: armoured-4
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 5
+      result.saved: false
+  - id: armoured-5
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.saved: true
+  - id: armoured-6
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 5
+      result.saved: true
+  - id: armed-no-attack-bonus
+    roles:
+    - inactive
+    operation: attacks
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.unarmed-fighting
+    expect:
+      result.attacks: 1
+  - id: untrained-penalty
+    roles:
+    - inactive
+    operation: strength
+    attacker:
+      main_weapon_id: weapon.fist
+    expect:
+      result.wound: 2
+      result.armour: 2
+  - id: untrained-cap
+    roles:
+    - inactive
+    operation: attacks
+    attacker:
+      main_weapon_id: weapon.fist
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 3
+    expect:
+      result.attacks: 1
+  mutations:
+  - id: remove-training
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - full-strength
+    - extra-attack
+    - no-unarmoured-save
+- id: skill.expert-swordsman
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: contextual
+  sources:
+  - target: mechanic/skill.expert-swordsman
+    digest: 417d4a1cc3519510be69e893d00de9bcfa6c662769bdca0945b4d46a284157dd
+  interpretation: Normal swords and weeping blades reroll missed charge attacks. Other weapons and later rounds
+    do not qualify; a reroll cannot itself be rerolled.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    - round.first
+    - charge
+    writes:
+    - hit.reroll
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.expert-swordsman
+    expect:
+      attacker.global_effects.tags:
+      - skill.expert-swordsman
+      - armour.no-armour
+  - id: charge-weapon.sword
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.expert-swordsman
+    context:
+      first_round: true
+      charging: true
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 3/4
+        'false': 1/4
+  - id: charge-weapon.weeping-blades
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.weeping-blades
+      skill_ids:
+      - skill.expert-swordsman
+    context:
+      first_round: true
+      charging: true
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 3/4
+        'false': 1/4
+  - id: charge-weapon.double-handed
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.expert-swordsman
+    context:
+      first_round: true
+      charging: true
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 1/2
+        'false': 1/2
+  - id: charge-weapon.axe
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.expert-swordsman
+    context:
+      first_round: true
+      charging: true
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected:
+        'true': 1/2
+        'false': 1/2
+  - id: not-charging
+    roles:
+    - inactive
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.expert-swordsman
+    context:
+      first_round: true
+    rolls:
+    - key: hit
+      value: 2
+    expect:
+      result.success: false
+      result.rerolled: false
+  - id: following-round
+    roles:
+    - inactive
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.expert-swordsman
+    rolls:
+    - key: hit
+      value: 2
+    expect:
+      result.success: false
+  - id: one-reroll-only
+    roles:
+    - boundary
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.expert-swordsman
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: hit
+      value: 1
+    - key: hit.reroll
+      value: 1
+    expect:
+      result.success: false
+      result.rerolled: true
+  mutations:
+  - id: remove-reroll-condition
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - charge-weapon.sword
+- id: skill.strongman
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: priority
+  sources:
+  - target: mechanic/skill.strongman
+    digest: 0361c3c9a96d2c31adb49189e2d9d8e6a0e77ee6972008715533bf490a5a5e6f
+  interpretation: Strongman removes the two-handed weapon's strike-last penalty. Ordinary Initiative, charging,
+    and recovery restrictions still apply.
+  interaction_contract:
+    reads:
+    - weapon.kind
+    - priority.weapon
+    - recovery.stood-up
+    writes:
+    - priority.tier
+  cases:
+  - id: compiled
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.strongman
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 4
+        attacks: 1
+    expect:
+      attacker.global_effects.strongman: true
+  - id: initiative-restored
+    roles:
+    - active
+    - consumer
+    operation: acting_order
+    attacker:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.strongman
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 4
+        attacks: 1
+    expect:
+      result.first_acts: true
+  - id: without-skill
+    roles:
+    - inactive
+    operation: acting_order
+    attacker:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids: []
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 4
+        attacks: 1
+    expect:
+      result.first_acts: false
+  - id: lower-initiative-still-loses
+    roles:
+    - boundary
+    operation: acting_order
+    attacker:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.strongman
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 4
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 5
+        attacks: 1
+    expect:
+      result.first_acts: false
+  - id: recovery-still-last
+    roles:
+    - boundary
+    operation: acting_order
+    attacker:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.strongman
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 4
+        attacks: 1
+    context:
+      stood_up: true
+    expect:
+      result.first_acts: false
+  - id: ordinary-weapon
+    roles:
+    - inactive
+    operation: priority
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.strongman
+    expect:
+      result.priority: 0
+  mutations:
+  - id: restore-strike-last
+    path: attacker.global_effects.strongman
+    value: false
+    cases:
+    - initiative-restored

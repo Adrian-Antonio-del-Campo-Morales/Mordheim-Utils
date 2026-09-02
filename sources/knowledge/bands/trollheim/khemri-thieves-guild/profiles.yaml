@@ -1,0 +1,276 @@
+schema_version: 2
+band_id: khemri-thieves-guild
+profiles:
+- id: guild-chief
+  name: Guild Chief
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - guild-thief-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select Spear, Ankus, Shield or Heavy Armour from the Thief Equipment List; those entries are Ruffians and Enforcers
+    only.
+  - May not select Bagh Nakh at the listed warband-creation price; only the Hashashiyyin Assassin may do so. Other warband
+    members must acquire it through Trading.
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - speed
+  - special
+  source:
+    manual: khemri
+    printed_page: 72
+    section: 1 Guild Chief
+  source_path:
+  - heroes
+  - 1 Guild Chief
+  name_i18n:
+    en: Guild Chief
+    es: null
+  rule_ids:
+  - guild-chief--leader
+  - guild-chief--wanted
+  - guild-chief--contacts
+  - guild-chief--disable-traps
+  combat_traits: {}
+- id: guild-master-thief
+  name: Master Thief
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - guild-thief-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select Spear, Ankus, Shield or Heavy Armour from the Thief Equipment List; those entries are Ruffians and Enforcers
+    only.
+  - May not select Bagh Nakh at the listed warband-creation price; only the Hashashiyyin Assassin may do so. Other warband
+    members must acquire it through Trading.
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: khemri
+    printed_page: 72
+    section: 0-1 Master Thief
+  source_path:
+  - heroes
+  - 0-1 Master Thief
+  name_i18n:
+    en: Master Thief
+    es: null
+  rule_ids:
+  - guild-master-thief--wanted
+  - guild-master-thief--contacts
+  - guild-master-thief--disable-traps
+  combat_traits: {}
+- id: guild-ruffian
+  name: Ruffians
+  type: hero
+  cost: 35
+  experience: 6
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - guild-thief-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select Bagh Nakh at the listed warband-creation price; only the Hashashiyyin Assassin may do so. Other warband
+    members must acquire it through Trading.
+  skill_access:
+  - combat
+  - shooting
+  - special
+  source:
+    manual: khemri
+    printed_page: 73
+    section: 0-2 Ruffians
+  source_path:
+  - heroes
+  - 0-2 Ruffians
+  name_i18n:
+    en: Ruffians
+    es: null
+  rule_ids:
+  - guild-ruffian--contacts
+  - guild-ruffian--disable-traps
+  combat_traits: {}
+- id: guild-hashashiyyin
+  name: Hashashiyyin Assassin
+  type: hero
+  cost: 75
+  experience: 12
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 4
+    T: 3
+    W: 1
+    I: 5
+    A: 2
+    Ld: 8
+  equipment_lists:
+  - guild-thief-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select Spear, Ankus, Shield or Heavy Armour from the Thief Equipment List; those entries are Ruffians and Enforcers
+    only.
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: khemri
+    printed_page: 73
+    section: 0-1 Hashashiyyin Assassin
+  source_path:
+  - heroes
+  - 0-1 Hashashiyyin Assassin
+  name_i18n:
+    en: Hashashiyyin Assassin
+    es: null
+  rule_ids:
+  - guild-hashashiyyin--consummate-fighter
+  - guild-hashashiyyin--contacts
+  - guild-hashashiyyin--disable-traps
+  combat_traits:
+    perfect_killer: true
+- id: guild-thief
+  name: Thieves
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - guild-thief-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select Spear, Ankus, Shield or Heavy Armour from the Thief Equipment List; those entries are Ruffians and Enforcers
+    only.
+  - May not select Bagh Nakh at the listed warband-creation price; only the Hashashiyyin Assassin may do so. Other warband
+    members must acquire it through Trading.
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 74
+    section: 0-5 Thieves
+  source_path:
+  - henchmen
+  - 0-5 Thieves
+  name_i18n:
+    en: Thieves
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: guild-enforcer
+  name: Enforcers
+  type: henchman
+  cost: 30
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - guild-thief-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select Bagh Nakh at the listed warband-creation price; only the Hashashiyyin Assassin may do so. Other warband
+    members must acquire it through Trading.
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 74
+    section: 0-3 Enforcers
+  source_path:
+  - henchmen
+  - 0-3 Enforcers
+  name_i18n:
+    en: Enforcers
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: guild-beggar
+  name: Beggars
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - guild-beggar-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 74
+    section: Beggars
+  source_path:
+  - henchmen
+  - Beggars
+  name_i18n:
+    en: Beggars
+    es: null
+  rule_ids:
+  - guild-beggar--alms
+  combat_traits: {}

@@ -1,0 +1,168 @@
+schema_version: 1
+ruleset: mordheim
+catalog: hirelings-dramatis-personae
+grade: 1a
+profiles:
+- id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin
+  kind: dramatis-personae
+  grade: 1a
+  publication: Town Cryer 22
+  name: Countess Marianna Chevaux, Vampire Assassin
+  name_i18n:
+    en: Countess Marianna Chevaux, Vampire Assassin
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 6
+    WS: 6
+    BS: 6
+    S: 4
+    T: 4
+    W: 2
+    I: 9
+    A: 3
+    Ld: 9
+  warband_rating:
+    kind: fixed
+    value: 90
+  equipment:
+    fixed_items:
+    - item_id: rapier
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: throwing_knives
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: crossbow_pistol
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access: []
+  starting_skill_ids:
+  - skill.combat-master
+  - skill.step-aside
+  - skill.leap
+  - skill.acrobat
+  - skill.lightning-reflexes
+  - skill.dodge
+  - skill.jump-up
+  - skill.scale-sheer-surfaces
+  rules:
+  - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.immune-to-psychology
+    name: Immune to Psychology
+    effect: Immune to psychology.
+  - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.immune-to-poison
+    name: Immune to Poison
+    effect: Immune to poison.
+  - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.no-pain
+    name: No Pain
+    effect: Ignores Knocked Down/Stunned per source.
+  - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.causes-fear
+    name: Causes Fear
+    effect: Causes fear.
+  - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.serutat
+    name: Serutat
+    effect: Uses the source minion/retainer rule.
+  - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.fighting-undead
+    name: Fighting Undead
+    effect: Uses the source anti-Undead rule.
+  - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.noctu
+    name: Noctu
+    effect: Applies the source shooting penalty.
+  unresolved_references:
+  - kind: equipment_modifier
+    source_name: garlic coating acting as Black Lotus against Vampires
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Countess Marianna Chevaux, Vampire Assassin
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.nicodemus-the-cursed-pilgrim
+  kind: dramatis-personae
+  grade: 1a
+  publication: Mordheim Annual 2002
+  name: Nicodemus, the cursed pilgrim
+  name_i18n:
+    en: Nicodemus, the cursed pilgrim
+    es: null
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 4
+    T: 4
+    W: 2
+    I: 3
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 85
+  equipment:
+    unique_equipment:
+    - id: hireling.dramatis.nicodemus-the-cursed-pilgrim.item.wizards-staff
+      name: Enormous Wizard's Staff
+  skill_access: []
+  starting_skill_ids:
+  - skill.sorcery
+  - skill.fearsome
+  rules:
+  - id: hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.cursed
+    name: Cursed
+    effect: Requires the source wyrdstone payment when joining and after battles.
+  - id: hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.wizard-s-staff
+    name: Wizard's Staff
+    effect: Uses source staff modes.
+  - id: hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.master-of-lesser-magic
+    name: Master of Lesser Magic
+    effect: Knows all six Lesser Magic spells.
+  unresolved_references:
+  - kind: spell_list
+    source_name: Lesser Magic
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Nicodemus, the cursed pilgrim
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: hireling.dramatis.ulli-and-marquand
+  kind: dramatis-personae
+  grade: 1a
+  publication: Town Cryer 13
+  name: Ulli & Marquand
+  name_i18n:
+    en: Ulli & Marquand
+    es: null
+  normalization_status: out_of_scope
+  warband_rating:
+    kind: fixed
+    value: 60
+  skill_access: []
+  starting_skill_ids: []
+  rules:
+  - id: hireling.dramatis.ulli-and-marquand.rule.wanderers
+    name: Wanderers
+    effect: Use the source one-battle/wanderer rule.
+  - id: hireling.dramatis.ulli-and-marquand.rule.a-fistful-of-crowns
+    name: A Fistful of Crowns
+    effect: Uses source payment/behaviour rule.
+  - id: hireling.dramatis.ulli-and-marquand.rule.where-s-the-money
+    name: Where's the Money
+    effect: Uses source post-battle rule.
+  unresolved_references:
+  - kind: multi_profile_entity
+    source_name: Marquand profile M4 WS5 BS4 S3 T3 W2 I5 A2 Ld8; Sword, Light Armour, Throwing Knives; Step Aside, Knife Fighter, Lightning Reflexes
+  - kind: multi_profile_entity
+    source_name: Ulli profile M4 WS4 BS4 S4 T3 W2 I4 A2 Ld7; two-handed warhammer, Light Armour; Strongman, Unstoppable Charge, Combat Master
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dramatis Personae / Ulli & Marquand
+    url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  out_of_scope_reason: Composite Dramatis entry with two independent warrior profiles.

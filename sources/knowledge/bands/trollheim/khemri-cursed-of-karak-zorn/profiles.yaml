@@ -1,0 +1,260 @@
+schema_version: 2
+band_id: khemri-cursed-of-karak-zorn
+profiles:
+- id: karak-zorn-noble
+  name: Karak-Zorn Noble
+  type: hero
+  cost: 85
+  experience: 20
+  characteristics:
+    M: 3
+    WS: 5
+    BS: 4
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - cursed-of-karak-zorn-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - special
+  source:
+    manual: khemri
+    printed_page: 68
+    section: 1 Karak-Zorn Noble
+  source_path:
+  - heroes
+  - 1 Karak-Zorn Noble
+  name_i18n:
+    en: Karak-Zorn Noble
+    es: null
+  rule_ids:
+  - karak-zorn-noble--leader
+  combat_traits: &dwarf_traits
+    starting_skills:
+    - skill.hard-to-kill
+- id: priest-of-grungni
+  name: Priest of Grungni
+  type: hero
+  cost: 50
+  experience: 8
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - cursed-of-karak-zorn-equipment-list
+  fixed_equipment:
+  - blessed_water
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - special
+  source:
+    manual: khemri
+    printed_page: 68
+    section: 0-1 Priest of Grungni
+  source_path:
+  - heroes
+  - 0-1 Priest of Grungni
+  name_i18n:
+    en: Priest of Grungni
+    es: null
+  rule_ids:
+  - priest-of-grungni--devout
+  combat_traits: *dwarf_traits
+- id: longbeard
+  name: Longbeard
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 3
+    WS: 5
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - cursed-of-karak-zorn-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: khemri
+    printed_page: 68
+    section: 0-1 Longbeard
+  source_path:
+  - heroes
+  - 0-1 Longbeard
+  name_i18n:
+    en: Longbeard
+    es: null
+  rule_ids: []
+  combat_traits: *dwarf_traits
+- id: troll-slayer
+  name: Troll Slayer
+  type: hero
+  cost: 50
+  experience: 8
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - cursed-of-karak-zorn-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select close-combat weapons from the Cursed of Karak-Zorn Equipment List.
+  - May never use missile weapons or any form of armour.
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: khemri
+    printed_page: 68
+    section: 0-1 Troll Slayer
+  source_path:
+  - heroes
+  - 0-1 Troll Slayer
+  name_i18n:
+    en: Troll Slayer
+    es: null
+  rule_ids:
+  - troll-slayer--death-oath
+  combat_traits: *dwarf_traits
+- id: clan-warriors
+  name: Clan Warriors
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - cursed-of-karak-zorn-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 69
+    section: Clan Warriors
+  source_path:
+  - henchmen
+  - Clan Warriors
+  name_i18n:
+    en: Clan Warriors
+    es: null
+  rule_ids: []
+  combat_traits: *dwarf_traits
+- id: cannibal-dwarfs
+  name: Cannibal Dwarfs
+  type: henchman
+  cost: 60
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 3
+    BS: 2
+    S: 3
+    T: 5
+    W: 1
+    I: 3
+    A: 2
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment:
+  - club
+  equipment_restrictions:
+  - May not use other weapons or any armour. Their primitive bones count as Clubs.
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 69
+    section: 1-5 Cannibal Dwarfs
+  source_path:
+  - henchmen
+  - 1-5 Cannibal Dwarfs
+  name_i18n:
+    en: Cannibal Dwarfs
+    es: null
+  rule_ids:
+  - cannibal-dwarfs--fear
+  combat_traits: *dwarf_traits
+- id: shadowed
+  name: Shadowed
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 3
+    BS: 0
+    S: 3
+    T: 4
+    W: 1
+    I: 1
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Shadowed may not use weapons or armour and suffer no penalty for fighting without equipment.
+  skill_access: []
+  source:
+    manual: khemri
+    printed_page: 69
+    section: 1-5 Shadowed
+  source_path:
+  - henchmen
+  - 1-5 Shadowed
+  name_i18n:
+    en: Shadowed
+    es: null
+  rule_ids:
+  - shadowed--may-not-run
+  - shadowed--fear
+  - shadowed--immune-to-psychology
+  - shadowed--immune-to-poison
+  - shadowed--no-pain
+  - shadowed--brainless
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+    - skill.hard-to-kill

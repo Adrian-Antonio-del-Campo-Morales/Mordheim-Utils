@@ -1,0 +1,53 @@
+schema_version: 2
+id: outlaws-of-stirwood-forest
+canonical_family: outlaws-of-stirwood-forest
+name: Outlaws of Stirwood Forest
+name_i18n:
+  en: Outlaws of Stirwood Forest
+  es: null
+original_locale: en
+ruleset: mordheim
+categories:
+- 1b
+grade: 1b
+setting: Mordheim
+publication: 'Town Cryer #29'
+status: source-normalized
+sources:
+- manual: mordheimer.net
+  printed_page: 0
+  section: Outlaws of Stirwood Forest
+  url: https://mordheimer.net/docs/warbands/grade-1b-warbands/outlaws-of-stirwood-forest
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: bandit-leader
+    minimum: 1
+    maximum: 1
+  - profile_id: champions
+    minimum: 0
+    maximum: 2
+  - profile_id: cleric
+    minimum: 0
+    maximum: 1
+  - profile_id: petty-thieves
+    minimum: 0
+    maximum: 2
+  - profile_id: marksmen
+    minimum: 0
+    maximum: 7
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: outlaws
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--bow-discipline
+- band--hired-swords
+- band--cleric-hero-slot

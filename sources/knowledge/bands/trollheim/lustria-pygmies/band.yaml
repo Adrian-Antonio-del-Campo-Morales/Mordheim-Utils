@@ -1,0 +1,46 @@
+schema_version: 2
+id: lustria-pygmies
+canonical_family: pygmies
+name: Pygmies
+name_i18n:
+  en: Pygmies
+  es: null
+original_locale: es
+categories:
+- trollheim
+grade: null
+setting: Lustria
+publication: Lustria
+status: source-normalized
+sources:
+- manual: lustria
+  printed_page: 120-124
+  section: Pygmies
+roster:
+  minimum_models: 3
+  maximum_models: 20
+  starting_gold: 500
+  members:
+  - profile_id: great-headhunter
+    minimum: 1
+    maximum: 1
+  - profile_id: silent-walker
+    minimum: 0
+    maximum: 1
+  - profile_id: cannibals
+    minimum: 0
+    maximum: 3
+  - profile_id: pygmies
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: wild-lunatics
+    minimum: 0
+    maximum: 5
+ruleset: mordheim
+rule_ids:
+- band--jungle-natives
+- band--poison-experts
+- band--camouflage

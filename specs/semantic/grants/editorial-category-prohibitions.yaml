@@ -1,0 +1,1821 @@
+schema_version: 1
+specifications:
+- id: category-prohibitions-battle-monks-of-cathay-poison
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/mordheim/battle-monks-of-cathay/band--distaste-for-poison/compiler.forbid-item-categories
+    digest: fbd65cd2dacc966cb9d5c0d34cc505b08b1defb5905331952f21d184079389cd
+  interpretation: 'Prohibición band--distaste-for-poison: destinatarios contrastados con el texto y los perfiles
+    de battle-monks-of-cathay. Se exige rechazo explícito por la categoría prohibida, no simplemente ausencia del
+    equipo en una lista. Cada destinatario conserva su construcción ordinaria. Proyectiles: se prueban las dos pistolas
+    representadas en el runtime de duelo, no disparos ni otros subsistemas excluidos.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+    context:
+      rule_id: band--distaste-for-poison
+    expect:
+      result.recipients:
+      - dragon-monks
+      - warrior-monks
+  - id: choices-dragon-monks
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for battle-monks-of-cathay/dragon-monks
+        nightshade: poisons are forbidden for battle-monks-of-cathay/dragon-monks
+  - id: choices-warrior-monks
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: warrior-monks
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for battle-monks-of-cathay/warrior-monks
+        nightshade: poisons are forbidden for battle-monks-of-cathay/warrior-monks
+  - id: unrestricted-custom-control
+    roles:
+    - accepted
+    operation: equipment_choices
+    attacker:
+      main_weapon_id: weapon.sword
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - black-lotus
+      - nightshade
+      - ordinary
+      result.rejected: {}
+  - id: officer-not-subject-to-monks-prohibition
+    roles:
+    - accepted
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: officer
+    context:
+      choices:
+        ordinary: {}
+        lotus:
+          main_poison_id: poison.black-lotus
+    expect:
+      result.accepted:
+      - lotus
+      - ordinary
+      result.rejected: {}
+  mutations:
+  - id: remove-category-prohibition
+    runtime_fault: suppress-category-prohibitions
+    cases:
+    - choices-dragon-monks
+    - choices-warrior-monks
+- id: category-prohibitions-dark-elves-missile
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/mordheim/dark-elves/fellblades--melee-specialists/compiler.no-missile-weapons
+    digest: 7d3a3ce5f83e2d2d8be777051523e78c3b684c2aba4cfd4f26bbbbec0b62e612
+  interpretation: 'Prohibición fellblades--melee-specialists: destinatarios contrastados con el texto y los perfiles
+    de dark-elves. Se exige rechazo explícito por la categoría prohibida, no simplemente ausencia del equipo en
+    una lista. Cada destinatario conserva su construcción ordinaria. Proyectiles: se prueban las dos pistolas representadas
+    en el runtime de duelo, no disparos ni otros subsistemas excluidos.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: fellblades
+    context:
+      rule_id: fellblades--melee-specialists
+    expect:
+      result.recipients:
+      - fellblades
+  - id: choices-fellblades
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: fellblades
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: missile weapons are forbidden for dark-elves/fellblades
+        duelling-pistol: missile weapons are forbidden for dark-elves/fellblades
+        off-hand-pistol: missile weapons are forbidden for dark-elves/fellblades
+  - id: unrestricted-custom-control
+    roles:
+    - accepted
+    operation: equipment_choices
+    attacker:
+      main_weapon_id: weapon.sword
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - duelling-pistol
+      - off-hand-pistol
+      - ordinary
+      - pistol
+      result.rejected: {}
+  mutations:
+  - id: remove-category-prohibition
+    runtime_fault: suppress-category-prohibitions
+    cases:
+    - choices-fellblades
+- id: category-prohibitions-dark-elves-blackpowder
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/mordheim/dark-elves/band--black-powder-weapons/compiler.no-blackpowder-weapons
+    digest: 8355c2091d8240ea61b944df209fa3a10c803525a43cc9cc9ef33404ca54e7c7
+  interpretation: 'Prohibición band--black-powder-weapons: destinatarios contrastados con el texto y los perfiles
+    de dark-elves. Se exige rechazo explícito por la categoría prohibida, no simplemente ausencia del equipo en
+    una lista. Cada destinatario conserva su construcción ordinaria. Proyectiles: se prueban las dos pistolas representadas
+    en el runtime de duelo, no disparos ni otros subsistemas excluidos.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: high-born
+    context:
+      rule_id: band--black-powder-weapons
+    expect:
+      result.recipients:
+      - beastmaster
+      - cold-one-beasthounds
+      - corsairs
+      - dark-elf-sorceress
+      - fellblades
+      - high-born
+      - shades
+  - id: choices-high-born
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: high-born
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for dark-elves/high-born
+        duelling-pistol: blackpowder weapons are forbidden for dark-elves/high-born
+        off-hand-pistol: blackpowder weapons are forbidden for dark-elves/high-born
+  - id: choices-beastmaster
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: beastmaster
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for dark-elves/beastmaster
+        duelling-pistol: blackpowder weapons are forbidden for dark-elves/beastmaster
+        off-hand-pistol: blackpowder weapons are forbidden for dark-elves/beastmaster
+  - id: choices-fellblades
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: fellblades
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: missile weapons are forbidden for dark-elves/fellblades
+        duelling-pistol: missile weapons are forbidden for dark-elves/fellblades
+        off-hand-pistol: missile weapons are forbidden for dark-elves/fellblades
+  - id: choices-dark-elf-sorceress
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: dark-elf-sorceress
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for dark-elves/dark-elf-sorceress
+        duelling-pistol: blackpowder weapons are forbidden for dark-elves/dark-elf-sorceress
+        off-hand-pistol: blackpowder weapons are forbidden for dark-elves/dark-elf-sorceress
+  - id: choices-corsairs
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: corsairs
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for dark-elves/corsairs
+        duelling-pistol: blackpowder weapons are forbidden for dark-elves/corsairs
+        off-hand-pistol: blackpowder weapons are forbidden for dark-elves/corsairs
+  - id: choices-shades
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: shades
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for dark-elves/shades
+        duelling-pistol: blackpowder weapons are forbidden for dark-elves/shades
+        off-hand-pistol: blackpowder weapons are forbidden for dark-elves/shades
+  - id: choices-cold-one-beasthounds
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for dark-elves/cold-one-beasthounds
+        duelling-pistol: blackpowder weapons are forbidden for dark-elves/cold-one-beasthounds
+  - id: unrestricted-custom-control
+    roles:
+    - accepted
+    operation: equipment_choices
+    attacker:
+      main_weapon_id: weapon.sword
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - duelling-pistol
+      - off-hand-pistol
+      - ordinary
+      - pistol
+      result.rejected: {}
+  mutations:
+  - id: remove-category-prohibition
+    runtime_fault: suppress-category-prohibitions
+    cases:
+    - choices-high-born
+    - choices-beastmaster
+    - choices-fellblades
+    - choices-dark-elf-sorceress
+    - choices-corsairs
+    - choices-shades
+    - choices-cold-one-beasthounds
+- id: category-prohibitions-shadow-warriors-poison
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/mordheim/shadow-warriors/band--distaste-for-poison/compiler.forbid-item-categories
+    digest: bddac220001dd0c32927e9168382ae31204e13ff112cb6d60dff3b9b3e330228
+  interpretation: 'Prohibición band--distaste-for-poison: destinatarios contrastados con el texto y los perfiles
+    de shadow-warriors. Se exige rechazo explícito por la categoría prohibida, no simplemente ausencia del equipo
+    en una lista. Cada destinatario conserva su construcción ordinaria. Proyectiles: se prueban las dos pistolas
+    representadas en el runtime de duelo, no disparos ni otros subsistemas excluidos.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-master
+    context:
+      rule_id: band--distaste-for-poison
+    expect:
+      result.recipients:
+      - shadow-master
+      - shadow-walker
+      - shadow-warrior
+      - shadow-warrior-novices
+      - shadow-weaver
+  - id: choices-shadow-master
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-master
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for shadow-warriors/shadow-master
+        nightshade: poisons are forbidden for shadow-warriors/shadow-master
+  - id: choices-shadow-walker
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-walker
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for shadow-warriors/shadow-walker
+        nightshade: poisons are forbidden for shadow-warriors/shadow-walker
+  - id: choices-shadow-weaver
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-weaver
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for shadow-warriors/shadow-weaver
+        nightshade: poisons are forbidden for shadow-warriors/shadow-weaver
+  - id: choices-shadow-warrior
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-warrior
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for shadow-warriors/shadow-warrior
+        nightshade: poisons are forbidden for shadow-warriors/shadow-warrior
+  - id: choices-shadow-warrior-novices
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: mordheim
+      band_id: shadow-warriors
+      profile_id: shadow-warrior-novices
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for shadow-warriors/shadow-warrior-novices
+        nightshade: poisons are forbidden for shadow-warriors/shadow-warrior-novices
+  - id: unrestricted-custom-control
+    roles:
+    - accepted
+    operation: equipment_choices
+    attacker:
+      main_weapon_id: weapon.sword
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - black-lotus
+      - nightshade
+      - ordinary
+      result.rejected: {}
+  mutations:
+  - id: remove-category-prohibition
+    runtime_fault: suppress-category-prohibitions
+    cases:
+    - choices-shadow-master
+    - choices-shadow-walker
+    - choices-shadow-weaver
+    - choices-shadow-warrior
+    - choices-shadow-warrior-novices
+- id: category-prohibitions-chaos-streets-deathbringers-blackpowder
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/trollheim/chaos-streets-deathbringers/band--no-noise/compiler.no-blackpowder-weapons
+    digest: 83490b6aa3d97f9f8f1c5cfec98786a4716e43695953face97a73fdf2abfb56a
+  interpretation: 'Prohibición band--no-noise: destinatarios contrastados con el texto y los perfiles de chaos-streets-deathbringers.
+    Se exige rechazo explícito por la categoría prohibida, no simplemente ausencia del equipo en una lista. Cada
+    destinatario conserva su construcción ordinaria. Proyectiles: se prueban las dos pistolas representadas en el
+    runtime de duelo, no disparos ni otros subsistemas excluidos.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: shadow-blade
+    context:
+      rule_id: band--no-noise
+    expect:
+      result.recipients:
+      - black-knives
+      - knives
+      - shadow-blade
+      - silent-hunter
+      - snipers
+      - young-claw
+  - id: choices-shadow-blade
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: shadow-blade
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/shadow-blade
+        duelling-pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/shadow-blade
+        off-hand-pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/shadow-blade
+  - id: choices-silent-hunter
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: silent-hunter
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/silent-hunter
+        duelling-pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/silent-hunter
+        off-hand-pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/silent-hunter
+  - id: choices-black-knives
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: black-knives
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/black-knives
+        duelling-pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/black-knives
+        off-hand-pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/black-knives
+  - id: choices-young-claw
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: young-claw
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/young-claw
+        duelling-pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/young-claw
+        off-hand-pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/young-claw
+  - id: choices-snipers
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: snipers
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/snipers
+        duelling-pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/snipers
+        off-hand-pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/snipers
+  - id: choices-knives
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/knives
+        duelling-pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/knives
+        off-hand-pistol: blackpowder weapons are forbidden for chaos-streets-deathbringers/knives
+  - id: unrestricted-custom-control
+    roles:
+    - accepted
+    operation: equipment_choices
+    attacker:
+      main_weapon_id: weapon.sword
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - duelling-pistol
+      - off-hand-pistol
+      - ordinary
+      - pistol
+      result.rejected: {}
+  mutations:
+  - id: remove-category-prohibition
+    runtime_fault: suppress-category-prohibitions
+    cases:
+    - choices-shadow-blade
+    - choices-silent-hunter
+    - choices-black-knives
+    - choices-young-claw
+    - choices-snipers
+    - choices-knives
+- id: category-prohibitions-chaos-streets-sons-of-nagarythe-poison-drug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/trollheim/chaos-streets-sons-of-nagarythe/band--honourable/compiler.forbid-item-categories
+    digest: 32dd811459f97e451db9ce598b42e81c16d819bb45091acb9d1e68400ebd59f9
+  interpretation: 'Prohibición band--honourable: destinatarios contrastados con el texto y los perfiles de chaos-streets-sons-of-nagarythe.
+    Se exige rechazo explícito por la categoría prohibida, no simplemente ausencia del equipo en una lista. Cada
+    destinatario conserva su construcción ordinaria. Proyectiles: se prueban las dos pistolas representadas en el
+    runtime de duelo, no disparos ni otros subsistemas excluidos.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-master
+    context:
+      rule_id: band--honourable
+    expect:
+      result.recipients:
+      - shadow-master
+      - shadow-walker
+      - shadow-warrior
+      - shadow-warrior-novices
+      - shadow-weaver
+  - id: choices-shadow-master
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-master
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        mandrake-root:
+          preparation_ids:
+          - preparation.mandrake-root
+        crimson-shade:
+          preparation_ids:
+          - preparation.crimson-shade
+        mad-cap-mushrooms:
+          preparation_ids:
+          - preparation.mad-cap-mushrooms
+        head-splitter-mushrooms:
+          preparation_ids:
+          - preparation.head-splitter-mushrooms
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for chaos-streets-sons-of-nagarythe/shadow-master
+        mandrake-root: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-master
+        crimson-shade: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-master
+        mad-cap-mushrooms: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-master
+        head-splitter-mushrooms: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-master
+        nightshade: poisons are forbidden for chaos-streets-sons-of-nagarythe/shadow-master
+  - id: choices-shadow-weaver
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-weaver
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        mandrake-root:
+          preparation_ids:
+          - preparation.mandrake-root
+        crimson-shade:
+          preparation_ids:
+          - preparation.crimson-shade
+        mad-cap-mushrooms:
+          preparation_ids:
+          - preparation.mad-cap-mushrooms
+        head-splitter-mushrooms:
+          preparation_ids:
+          - preparation.head-splitter-mushrooms
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for chaos-streets-sons-of-nagarythe/shadow-weaver
+        mandrake-root: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-weaver
+        crimson-shade: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-weaver
+        mad-cap-mushrooms: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-weaver
+        head-splitter-mushrooms: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-weaver
+        nightshade: poisons are forbidden for chaos-streets-sons-of-nagarythe/shadow-weaver
+  - id: choices-shadow-walker
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-walker
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        mandrake-root:
+          preparation_ids:
+          - preparation.mandrake-root
+        crimson-shade:
+          preparation_ids:
+          - preparation.crimson-shade
+        mad-cap-mushrooms:
+          preparation_ids:
+          - preparation.mad-cap-mushrooms
+        head-splitter-mushrooms:
+          preparation_ids:
+          - preparation.head-splitter-mushrooms
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for chaos-streets-sons-of-nagarythe/shadow-walker
+        mandrake-root: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-walker
+        crimson-shade: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-walker
+        mad-cap-mushrooms: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-walker
+        head-splitter-mushrooms: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-walker
+        nightshade: poisons are forbidden for chaos-streets-sons-of-nagarythe/shadow-walker
+  - id: choices-shadow-warrior
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-warrior
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        mandrake-root:
+          preparation_ids:
+          - preparation.mandrake-root
+        crimson-shade:
+          preparation_ids:
+          - preparation.crimson-shade
+        mad-cap-mushrooms:
+          preparation_ids:
+          - preparation.mad-cap-mushrooms
+        head-splitter-mushrooms:
+          preparation_ids:
+          - preparation.head-splitter-mushrooms
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for chaos-streets-sons-of-nagarythe/shadow-warrior
+        mandrake-root: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-warrior
+        crimson-shade: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-warrior
+        mad-cap-mushrooms: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-warrior
+        head-splitter-mushrooms: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-warrior
+        nightshade: poisons are forbidden for chaos-streets-sons-of-nagarythe/shadow-warrior
+  - id: choices-shadow-warrior-novices
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-warrior-novices
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        mandrake-root:
+          preparation_ids:
+          - preparation.mandrake-root
+        crimson-shade:
+          preparation_ids:
+          - preparation.crimson-shade
+        mad-cap-mushrooms:
+          preparation_ids:
+          - preparation.mad-cap-mushrooms
+        head-splitter-mushrooms:
+          preparation_ids:
+          - preparation.head-splitter-mushrooms
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for chaos-streets-sons-of-nagarythe/shadow-warrior-novices
+        mandrake-root: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-warrior-novices
+        crimson-shade: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-warrior-novices
+        mad-cap-mushrooms: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-warrior-novices
+        head-splitter-mushrooms: drugs are forbidden for chaos-streets-sons-of-nagarythe/shadow-warrior-novices
+        nightshade: poisons are forbidden for chaos-streets-sons-of-nagarythe/shadow-warrior-novices
+  - id: unrestricted-custom-control
+    roles:
+    - accepted
+    operation: equipment_choices
+    attacker:
+      main_weapon_id: weapon.sword
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        mandrake-root:
+          preparation_ids:
+          - preparation.mandrake-root
+        crimson-shade:
+          preparation_ids:
+          - preparation.crimson-shade
+        mad-cap-mushrooms:
+          preparation_ids:
+          - preparation.mad-cap-mushrooms
+        head-splitter-mushrooms:
+          preparation_ids:
+          - preparation.head-splitter-mushrooms
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - black-lotus
+      - crimson-shade
+      - head-splitter-mushrooms
+      - mad-cap-mushrooms
+      - mandrake-root
+      - nightshade
+      - ordinary
+      result.rejected: {}
+  mutations:
+  - id: remove-category-prohibition
+    runtime_fault: suppress-category-prohibitions
+    cases:
+    - choices-shadow-master
+    - choices-shadow-weaver
+    - choices-shadow-walker
+    - choices-shadow-warrior
+    - choices-shadow-warrior-novices
+- id: category-prohibitions-lustria-dark-elves-missile
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/trollheim/lustria-dark-elves/darkblades--close-combat-specialists/compiler.no-missile-weapons
+    digest: 7a1d0d8d3b7868c587303c6b7d427a216901ef4a074d0e8c5b88f1d08fb1863a
+  interpretation: 'Prohibición darkblades--close-combat-specialists: destinatarios contrastados con el texto y los
+    perfiles de lustria-dark-elves. Se exige rechazo explícito por la categoría prohibida, no simplemente ausencia
+    del equipo en una lista. Cada destinatario conserva su construcción ordinaria. Proyectiles: se prueban las dos
+    pistolas representadas en el runtime de duelo, no disparos ni otros subsistemas excluidos.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: darkblades
+    context:
+      rule_id: darkblades--close-combat-specialists
+    expect:
+      result.recipients:
+      - darkblades
+  - id: choices-darkblades
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: darkblades
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: missile weapons are forbidden for lustria-dark-elves/darkblades
+        duelling-pistol: missile weapons are forbidden for lustria-dark-elves/darkblades
+        off-hand-pistol: missile weapons are forbidden for lustria-dark-elves/darkblades
+  - id: unrestricted-custom-control
+    roles:
+    - accepted
+    operation: equipment_choices
+    attacker:
+      main_weapon_id: weapon.sword
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - duelling-pistol
+      - off-hand-pistol
+      - ordinary
+      - pistol
+      result.rejected: {}
+  mutations:
+  - id: remove-category-prohibition
+    runtime_fault: suppress-category-prohibitions
+    cases:
+    - choices-darkblades
+- id: category-prohibitions-lustria-dark-elves-blackpowder
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/trollheim/lustria-dark-elves/band--ancestral-customs/compiler.no-blackpowder-weapons
+    digest: d54eee9047b673fd5066ab00c15b49869390a78f92a6f79ed185b8576d82c9b4
+  interpretation: 'Prohibición band--ancestral-customs: destinatarios contrastados con el texto y los perfiles de
+    lustria-dark-elves. Se exige rechazo explícito por la categoría prohibida, no simplemente ausencia del equipo
+    en una lista. Cada destinatario conserva su construcción ordinaria. Proyectiles: se prueban las dos pistolas
+    representadas en el runtime de duelo, no disparos ni otros subsistemas excluidos.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-prince
+    context:
+      rule_id: band--ancestral-customs
+    expect:
+      result.recipients:
+      - beastmaster
+      - cold-ones
+      - corsairs
+      - dark-elf-sorceress
+      - dark-prince
+      - darkblades
+      - shadows
+  - id: choices-dark-prince
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-prince
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for lustria-dark-elves/dark-prince
+        duelling-pistol: blackpowder weapons are forbidden for lustria-dark-elves/dark-prince
+        off-hand-pistol: blackpowder weapons are forbidden for lustria-dark-elves/dark-prince
+  - id: choices-darkblades
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: darkblades
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: missile weapons are forbidden for lustria-dark-elves/darkblades
+        duelling-pistol: missile weapons are forbidden for lustria-dark-elves/darkblades
+        off-hand-pistol: missile weapons are forbidden for lustria-dark-elves/darkblades
+  - id: choices-beastmaster
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: beastmaster
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for lustria-dark-elves/beastmaster
+        duelling-pistol: blackpowder weapons are forbidden for lustria-dark-elves/beastmaster
+        off-hand-pistol: blackpowder weapons are forbidden for lustria-dark-elves/beastmaster
+  - id: choices-dark-elf-sorceress
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-elf-sorceress
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for lustria-dark-elves/dark-elf-sorceress
+        duelling-pistol: blackpowder weapons are forbidden for lustria-dark-elves/dark-elf-sorceress
+        off-hand-pistol: blackpowder weapons are forbidden for lustria-dark-elves/dark-elf-sorceress
+  - id: choices-corsairs
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: corsairs
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for lustria-dark-elves/corsairs
+        duelling-pistol: blackpowder weapons are forbidden for lustria-dark-elves/corsairs
+        off-hand-pistol: blackpowder weapons are forbidden for lustria-dark-elves/corsairs
+  - id: choices-shadows
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: shadows
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for lustria-dark-elves/shadows
+        duelling-pistol: blackpowder weapons are forbidden for lustria-dark-elves/shadows
+        off-hand-pistol: blackpowder weapons are forbidden for lustria-dark-elves/shadows
+  - id: choices-cold-ones
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for lustria-dark-elves/cold-ones
+        duelling-pistol: blackpowder weapons are forbidden for lustria-dark-elves/cold-ones
+  - id: unrestricted-custom-control
+    roles:
+    - accepted
+    operation: equipment_choices
+    attacker:
+      main_weapon_id: weapon.sword
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - duelling-pistol
+      - off-hand-pistol
+      - ordinary
+      - pistol
+      result.rejected: {}
+  mutations:
+  - id: remove-category-prohibition
+    runtime_fault: suppress-category-prohibitions
+    cases:
+    - choices-dark-prince
+    - choices-darkblades
+    - choices-beastmaster
+    - choices-dark-elf-sorceress
+    - choices-corsairs
+    - choices-shadows
+    - choices-cold-ones
+- id: category-prohibitions-lustria-high-elves-poison-drug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/trollheim/lustria-high-elves/band--honourable/compiler.forbid-item-categories
+    digest: d5824ac54b1b2ad59c46becaed94a62a93fd5ceb3c8062e2c87e702ebee00ee2
+  interpretation: 'Prohibición band--honourable: destinatarios contrastados con el texto y los perfiles de lustria-high-elves.
+    Se exige rechazo explícito por la categoría prohibida, no simplemente ausencia del equipo en una lista. Cada
+    destinatario conserva su construcción ordinaria. Proyectiles: se prueban las dos pistolas representadas en el
+    runtime de duelo, no disparos ni otros subsistemas excluidos.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+    context:
+      rule_id: band--honourable
+    expect:
+      result.recipients:
+      - cadets
+      - explorers
+      - loremaster
+      - sea-guard
+      - sword-guardians
+  - id: choices-loremaster
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        mandrake-root:
+          preparation_ids:
+          - preparation.mandrake-root
+        crimson-shade:
+          preparation_ids:
+          - preparation.crimson-shade
+        mad-cap-mushrooms:
+          preparation_ids:
+          - preparation.mad-cap-mushrooms
+        head-splitter-mushrooms:
+          preparation_ids:
+          - preparation.head-splitter-mushrooms
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for lustria-high-elves/loremaster
+        mandrake-root: drugs are forbidden for lustria-high-elves/loremaster
+        crimson-shade: drugs are forbidden for lustria-high-elves/loremaster
+        mad-cap-mushrooms: drugs are forbidden for lustria-high-elves/loremaster
+        head-splitter-mushrooms: drugs are forbidden for lustria-high-elves/loremaster
+        nightshade: poisons are forbidden for lustria-high-elves/loremaster
+  - id: choices-sword-guardians
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: sword-guardians
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        mandrake-root:
+          preparation_ids:
+          - preparation.mandrake-root
+        crimson-shade:
+          preparation_ids:
+          - preparation.crimson-shade
+        mad-cap-mushrooms:
+          preparation_ids:
+          - preparation.mad-cap-mushrooms
+        head-splitter-mushrooms:
+          preparation_ids:
+          - preparation.head-splitter-mushrooms
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for lustria-high-elves/sword-guardians
+        mandrake-root: drugs are forbidden for lustria-high-elves/sword-guardians
+        crimson-shade: drugs are forbidden for lustria-high-elves/sword-guardians
+        mad-cap-mushrooms: drugs are forbidden for lustria-high-elves/sword-guardians
+        head-splitter-mushrooms: drugs are forbidden for lustria-high-elves/sword-guardians
+        nightshade: poisons are forbidden for lustria-high-elves/sword-guardians
+  - id: choices-explorers
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: explorers
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        mandrake-root:
+          preparation_ids:
+          - preparation.mandrake-root
+        crimson-shade:
+          preparation_ids:
+          - preparation.crimson-shade
+        mad-cap-mushrooms:
+          preparation_ids:
+          - preparation.mad-cap-mushrooms
+        head-splitter-mushrooms:
+          preparation_ids:
+          - preparation.head-splitter-mushrooms
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for lustria-high-elves/explorers
+        mandrake-root: drugs are forbidden for lustria-high-elves/explorers
+        crimson-shade: drugs are forbidden for lustria-high-elves/explorers
+        mad-cap-mushrooms: drugs are forbidden for lustria-high-elves/explorers
+        head-splitter-mushrooms: drugs are forbidden for lustria-high-elves/explorers
+        nightshade: poisons are forbidden for lustria-high-elves/explorers
+  - id: choices-sea-guard
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: sea-guard
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        mandrake-root:
+          preparation_ids:
+          - preparation.mandrake-root
+        crimson-shade:
+          preparation_ids:
+          - preparation.crimson-shade
+        mad-cap-mushrooms:
+          preparation_ids:
+          - preparation.mad-cap-mushrooms
+        head-splitter-mushrooms:
+          preparation_ids:
+          - preparation.head-splitter-mushrooms
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for lustria-high-elves/sea-guard
+        mandrake-root: drugs are forbidden for lustria-high-elves/sea-guard
+        crimson-shade: drugs are forbidden for lustria-high-elves/sea-guard
+        mad-cap-mushrooms: drugs are forbidden for lustria-high-elves/sea-guard
+        head-splitter-mushrooms: drugs are forbidden for lustria-high-elves/sea-guard
+        nightshade: poisons are forbidden for lustria-high-elves/sea-guard
+  - id: choices-cadets
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: cadets
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        mandrake-root:
+          preparation_ids:
+          - preparation.mandrake-root
+        crimson-shade:
+          preparation_ids:
+          - preparation.crimson-shade
+        mad-cap-mushrooms:
+          preparation_ids:
+          - preparation.mad-cap-mushrooms
+        head-splitter-mushrooms:
+          preparation_ids:
+          - preparation.head-splitter-mushrooms
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        black-lotus: poisons are forbidden for lustria-high-elves/cadets
+        mandrake-root: drugs are forbidden for lustria-high-elves/cadets
+        crimson-shade: drugs are forbidden for lustria-high-elves/cadets
+        mad-cap-mushrooms: drugs are forbidden for lustria-high-elves/cadets
+        head-splitter-mushrooms: drugs are forbidden for lustria-high-elves/cadets
+        nightshade: poisons are forbidden for lustria-high-elves/cadets
+  - id: unrestricted-custom-control
+    roles:
+    - accepted
+    operation: equipment_choices
+    attacker:
+      main_weapon_id: weapon.sword
+    context:
+      choices:
+        ordinary: {}
+        black-lotus:
+          main_poison_id: poison.black-lotus
+        mandrake-root:
+          preparation_ids:
+          - preparation.mandrake-root
+        crimson-shade:
+          preparation_ids:
+          - preparation.crimson-shade
+        mad-cap-mushrooms:
+          preparation_ids:
+          - preparation.mad-cap-mushrooms
+        head-splitter-mushrooms:
+          preparation_ids:
+          - preparation.head-splitter-mushrooms
+        nightshade:
+          main_poison_id: poison.nightshade
+    expect:
+      result.accepted:
+      - black-lotus
+      - crimson-shade
+      - head-splitter-mushrooms
+      - mad-cap-mushrooms
+      - mandrake-root
+      - nightshade
+      - ordinary
+      result.rejected: {}
+  mutations:
+  - id: remove-category-prohibition
+    runtime_fault: suppress-category-prohibitions
+    cases:
+    - choices-loremaster
+    - choices-sword-guardians
+    - choices-explorers
+    - choices-sea-guard
+    - choices-cadets
+- id: category-prohibitions-lustria-high-elves-blackpowder
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/trollheim/lustria-high-elves/band--ancestral-customs/compiler.no-blackpowder-weapons
+    digest: 528c53e2bd36803898759de67e706adf0617afdfea6dd64cc66dd6d99ea03155
+  interpretation: 'Prohibición band--ancestral-customs: destinatarios contrastados con el texto y los perfiles de
+    lustria-high-elves. Se exige rechazo explícito por la categoría prohibida, no simplemente ausencia del equipo
+    en una lista. Cada destinatario conserva su construcción ordinaria. Proyectiles: se prueban las dos pistolas
+    representadas en el runtime de duelo, no disparos ni otros subsistemas excluidos.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: grant
+    defender:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+    context:
+      rule_id: band--ancestral-customs
+    expect:
+      result.recipients:
+      - cadets
+      - explorers
+      - loremaster
+      - sea-guard
+      - sword-guardians
+  - id: choices-loremaster
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for lustria-high-elves/loremaster
+        duelling-pistol: blackpowder weapons are forbidden for lustria-high-elves/loremaster
+        off-hand-pistol: blackpowder weapons are forbidden for lustria-high-elves/loremaster
+  - id: choices-sword-guardians
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: sword-guardians
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for lustria-high-elves/sword-guardians
+        duelling-pistol: blackpowder weapons are forbidden for lustria-high-elves/sword-guardians
+        off-hand-pistol: blackpowder weapons are forbidden for lustria-high-elves/sword-guardians
+  - id: choices-explorers
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: explorers
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for lustria-high-elves/explorers
+        duelling-pistol: blackpowder weapons are forbidden for lustria-high-elves/explorers
+        off-hand-pistol: blackpowder weapons are forbidden for lustria-high-elves/explorers
+  - id: choices-sea-guard
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: sea-guard
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for lustria-high-elves/sea-guard
+        duelling-pistol: blackpowder weapons are forbidden for lustria-high-elves/sea-guard
+        off-hand-pistol: blackpowder weapons are forbidden for lustria-high-elves/sea-guard
+  - id: choices-cadets
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: cadets
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: blackpowder weapons are forbidden for lustria-high-elves/cadets
+        duelling-pistol: blackpowder weapons are forbidden for lustria-high-elves/cadets
+        off-hand-pistol: blackpowder weapons are forbidden for lustria-high-elves/cadets
+  - id: unrestricted-custom-control
+    roles:
+    - accepted
+    operation: equipment_choices
+    attacker:
+      main_weapon_id: weapon.sword
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+    expect:
+      result.accepted:
+      - duelling-pistol
+      - off-hand-pistol
+      - ordinary
+      - pistol
+      result.rejected: {}
+  mutations:
+  - id: remove-category-prohibition
+    runtime_fault: suppress-category-prohibitions
+    cases:
+    - choices-loremaster
+    - choices-sword-guardians
+    - choices-explorers
+    - choices-sea-guard
+    - choices-cadets

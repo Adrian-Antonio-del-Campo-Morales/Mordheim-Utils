@@ -1,0 +1,51 @@
+schema_version: 1
+specifications:
+- id: skill.elven-agility
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.elven-agility
+    digest: d93679b3fcae0b85de834c52422156e6f94458432e2818a13b79ea45d0e55f84
+  interpretation: Elven Agility grants an independent 6+ special save against close-combat attacks. In the duel
+    scope, combining it with Step Aside replaces both close-combat saves with one 4+ special save; no second save is
+    rolled after that result.
+  interaction_contract:
+    reads: [damage.wound]
+    writes: [damage.unsaved]
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    defender: {skill_ids: [skill.elven-agility]}
+    expect: {defender.global_effects.ward_save: 6}
+    expect_contains:
+      defender.global_effects.tags: [skill.elven-agility]
+  - id: six-plus-save
+    roles: [active, boundary, consumer]
+    operation: special_save
+    defender: {skill_ids: [skill.elven-agility]}
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected: {'true': 1/6, 'false': 5/6}
+  - id: absent-omits-save
+    roles: [inactive, boundary]
+    operation: special_save
+    expect:
+      result.saved: false
+      result.ward_roll: null
+      result.regeneration_roll: null
+  - id: step-aside-combination-is-four-plus
+    roles: [active, boundary, consumer]
+    operation: special_save
+    defender: {skill_ids: [skill.elven-agility, skill.step-aside]}
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  mutations:
+  - id: remove-elven-agility
+    changes:
+    - {path: defender.global_effects.ward_save, value: 7}
+    - {path: defender.global_effects.tags, value: []}
+    cases: [six-plus-save, step-aside-combination-is-four-plus]

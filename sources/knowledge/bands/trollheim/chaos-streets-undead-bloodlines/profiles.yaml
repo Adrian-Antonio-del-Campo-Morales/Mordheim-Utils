@@ -1,0 +1,501 @@
+schema_version: 2
+band_id: chaos-streets-undead-bloodlines
+profiles:
+- id: von-carstein-vampire
+  name: Von Carstein Vampire
+  type: hero
+  cost: 110
+  experience: 20
+  bloodline: von-carstein
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 5
+    A: 2
+    Ld: 8
+  equipment_lists:
+  - undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 174
+    section: 1 Von Carstein Vampire
+  source_path:
+  - heroes
+  - 1 Von Carstein Vampire
+  name_i18n:
+    en: Von Carstein Vampire
+    es: null
+  rule_ids:
+  - von-carstein-vampire--leader
+  - von-carstein-vampire--fear
+  - von-carstein-vampire--immune-to-psychology
+  - von-carstein-vampire--immune-to-poison
+  - von-carstein-vampire--no-pain
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: lahmia-vampire
+  name: Lahmia Vampire
+  type: hero
+  cost: 110
+  experience: 20
+  bloodline: lahmia
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 7
+    A: 2
+    Ld: 8
+  equipment_lists:
+  - undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not use heavy armour, polearms or great weapons.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 175
+    section: 1 Lahmia Vampire
+  source_path:
+  - heroes
+  - 1 Lahmia Vampire
+  name_i18n:
+    en: Lahmia Vampire
+    es: null
+  rule_ids:
+  - lahmia-vampire--leader
+  - lahmia-vampire--fear
+  - lahmia-vampire--immune-to-psychology
+  - lahmia-vampire--immune-to-poison
+  - lahmia-vampire--no-pain
+  - lahmia-vampire--enchanting-beauty
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: blood-dragon-vampire
+  name: Blood Dragon Vampire
+  type: hero
+  cost: 110
+  experience: 20
+  bloodline: blood-dragon
+  characteristics:
+    M: 6
+    WS: 6
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 5
+    A: 2
+    Ld: 8
+  equipment_lists:
+  - undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 176
+    section: 1 Blood Dragon Vampire
+  source_path:
+  - heroes
+  - 1 Blood Dragon Vampire
+  name_i18n:
+    en: Blood Dragon Vampire
+    es: null
+  rule_ids:
+  - blood-dragon-vampire--leader
+  - blood-dragon-vampire--fear
+  - blood-dragon-vampire--immune-to-psychology
+  - blood-dragon-vampire--immune-to-poison
+  - blood-dragon-vampire--no-pain
+  - blood-dragon-vampire--brave
+  - blood-dragon-vampire--honour
+  - blood-dragon-vampire--warriors-code
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: necrarch-vampire
+  name: Necrarch Vampire
+  type: hero
+  cost: 110
+  experience: 20
+  bloodline: necrarch
+  characteristics:
+    M: 6
+    WS: 2
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 5
+    A: 2
+    Ld: 8
+  equipment_lists:
+  - undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May use only one-handed weapons.
+  - May never use polearms.
+  - May never acquire Strength skills.
+  skill_access:
+  - combat
+  - academic
+  - speed
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 177
+    section: 1 Necrarch Vampire
+  source_path:
+  - heroes
+  - 1 Necrarch Vampire
+  name_i18n:
+    en: Necrarch Vampire
+    es: null
+  rule_ids:
+  - necrarch-vampire--leader
+  - necrarch-vampire--fear
+  - necrarch-vampire--immune-to-psychology
+  - necrarch-vampire--immune-to-poison
+  - necrarch-vampire--no-pain
+  - necrarch-vampire--wizard
+  - necrarch-vampire--hates-the-living
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: strigoi-vampire
+  name: Strigoi Vampire
+  type: hero
+  cost: 110
+  experience: 20
+  bloodline: strigoi
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 5
+    A: 3
+    Ld: 8
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not use weapons, armour or items and suffers no penalty for fighting without equipment.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 178
+    section: 1 Strigoi Vampire
+  source_path:
+  - heroes
+  - 1 Strigoi Vampire
+  name_i18n:
+    en: Strigoi Vampire
+    es: null
+  rule_ids:
+  - strigoi-vampire--leader
+  - strigoi-vampire--fear
+  - strigoi-vampire--immune-to-psychology
+  - strigoi-vampire--immune-to-poison
+  - strigoi-vampire--no-pain
+  - strigoi-vampire--hatred-everyone
+  - strigoi-vampire--hates-the-living
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+    - skill.hatred
+- id: necromancer
+  name: Necromancer
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - academic
+  - speed
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 179
+    section: 0-1 Necromancer
+  source_path:
+  - heroes
+  - 0-1 Necromancer
+  name_i18n:
+    en: Necromancer
+    es: null
+  rule_ids:
+  - necromancer--wizard
+  combat_traits: {}
+- id: carrion-ghoul
+  name: Carrion Ghoul
+  type: hero
+  cost: 45
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 2
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Available only to a Strigoi warband.
+  - Never uses weapons or armour and suffers no penalty for fighting without equipment.
+  skill_access:
+  - combat
+  - strength
+  - speed
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 179
+    section: 0-1 Carrion Ghoul
+  source_path:
+  - heroes
+  - 0-1 Carrion Ghoul
+  name_i18n:
+    en: Carrion Ghoul
+    es: null
+  rule_ids:
+  - carrion-ghoul--fear
+  combat_traits: {}
+- id: dreg
+  name: Dregs
+  type: hero
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 179
+    section: 0-3 Dregs
+  source_path:
+  - heroes
+  - 0-3 Dregs
+  name_i18n:
+    en: Dregs
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: zombie
+  name: Zombies
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 1
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Zombies may not use weapons or armour and suffer no penalty for fighting without equipment.
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: Zombies
+  source_path:
+  - henchmen
+  - Zombies
+  name_i18n:
+    en: Zombies
+    es: null
+  rule_ids:
+  - zombie--may-not-run
+  - zombie--fear
+  - zombie--immune-to-psychology
+  - zombie--immune-to-poison
+  - zombie--no-pain
+  - zombie--brainless
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: ghoul
+  name: Ghouls
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 2
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Ghouls never use weapons or armour and suffer no penalty for fighting without equipment.
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: Ghouls
+  source_path:
+  - henchmen
+  - Ghouls
+  name_i18n:
+    en: Ghouls
+    es: null
+  rule_ids:
+  - ghoul--fear
+  combat_traits: {}
+- id: dire-wolf
+  name: Dire Wolves
+  type: henchman
+  cost: 50
+  experience: 0
+  characteristics:
+    M: 9
+    WS: 3
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Dire Wolves use no equipment.
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 180
+    section: 0-5 Dire Wolves
+  source_path:
+  - henchmen
+  - 0-5 Dire Wolves
+  name_i18n:
+    en: Dire Wolves
+    es: null
+  rule_ids:
+  - dire-wolf--charge
+  - dire-wolf--may-not-run
+  - dire-wolf--fear
+  - dire-wolf--immune-to-psychology
+  - dire-wolf--immune-to-poison
+  - dire-wolf--undead-animal
+  - dire-wolf--no-pain
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: vampire-bat
+  name: Vampire Bats
+  type: summoned
+  cost: 0
+  experience: 0
+  characteristics:
+    M: 2
+    WS: 3
+    BS: 0
+    S: 3
+    T: 3
+    W: 2
+    I: 3
+    A: 2
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Vampire Bats use no equipment.
+  skill_access: []
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 181
+    section: Call the Bats / Vampire Bat profile
+  source_path:
+  - summoned
+  - Vampire Bats
+  name_i18n:
+    en: Vampire Bats
+    es: null
+  rule_ids:
+  - vampire-bat--may-not-run
+  - vampire-bat--fear
+  - vampire-bat--immune-to-psychology
+  - vampire-bat--immune-to-poison
+  - vampire-bat--no-pain
+  - vampire-bat--fly
+  - vampire-bat--summoned-creature
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain

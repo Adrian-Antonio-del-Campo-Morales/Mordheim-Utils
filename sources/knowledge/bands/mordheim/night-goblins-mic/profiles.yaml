@@ -1,0 +1,302 @@
+schema_version: 2
+band_id: night-goblins-mic
+profiles:
+- id: big-boss
+  name: Big Boss
+  type: hero
+  cost: 45
+  experience: 17
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - night-goblin-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Big Boss
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  source_path:
+  - heroes
+  - 1 Big Boss
+  name_i18n:
+    en: Big Boss
+    es: null
+  rule_ids:
+  - big-boss--leader
+  combat_traits: {}
+- id: shaman
+  name: Shaman
+  type: hero
+  cost: 50
+  experience: 10
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - night-goblin-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - academic
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Shaman
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  source_path:
+  - heroes
+  - 0 – 1 Shaman
+  name_i18n:
+    en: Shaman
+    es: null
+  rule_ids:
+  - shaman--wizard
+  combat_traits: {}
+- id: bosses
+  name: Bosses
+  type: hero
+  cost: 25
+  experience: 6
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - night-goblin-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 4 Bosses
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  source_path:
+  - heroes
+  - 0 – 4 Bosses
+  name_i18n:
+    en: Bosses
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: night-goblins
+  name: Night Goblins
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - night-goblin-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Night Goblins
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  source_path:
+  - henchmen
+  - Night Goblins
+  name_i18n:
+    en: Night Goblins
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: fanatics
+  name: Fanatics
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - fanatic-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Fanatics
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  source_path:
+  - henchmen
+  - 0 – 2 Fanatics
+  name_i18n:
+    en: Fanatics
+    es: null
+  rule_ids:
+  - fanatics--addict
+  - fanatics--mushroom-brain
+  - fanatics--looney
+  - fanatics--frantic
+  combat_traits:
+    starting_skills:
+    - skill.always-strikes-first
+- id: cave-squigs
+  name: Cave Squigs
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 2D6
+    WS: 4
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Cave Squigs never use or need weapons or armour.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Cave Squigs
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  source_path:
+  - henchmen
+  - 0 – 5 Cave Squigs
+  name_i18n:
+    en: Cave Squigs
+    es: null
+  rule_ids:
+  - cave-squigs--movement
+  - cave-squigs--minderz
+  - cave-squigs--animals
+  combat_traits: {}
+- id: troll
+  name: Troll
+  type: henchman
+  cost: 200
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 1
+    S: 5
+    T: 4
+    W: 3
+    I: 1
+    A: 3
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Trolls can never be given weapons or armour.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Troll
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  source_path:
+  - henchmen
+  - 0 – 1 Troll
+  name_i18n:
+    en: Troll
+    es: null
+  rule_ids:
+  - troll--fear
+  - troll--stupidity
+  - troll--regeneration
+  - troll--dumb-monster
+  - troll--always-hungry
+  - troll--vomit-attack
+  - troll--large-target
+- id: snotling-mob-consists-of-5-snotlings
+  name: Snotling Mob (consists of 5 Snotlings)
+  type: henchman
+  cost: 50
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 2
+    T: 2
+    W: 1
+    I: 3
+    A: 1
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment:
+  - dagger
+  equipment_restrictions:
+  - Each Snotling may only ever use its free pointy stick, which counts as a dagger.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Snotling Mob (consists of 5 Snotlings)
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  source_path:
+  - henchmen
+  - 0 – 1 Snotling Mob (consists of 5 Snotlings)
+  name_i18n:
+    en: Snotling Mob (consists of 5 Snotlings)
+    es: null
+  rule_ids:
+  - snotling-mob-consists-of-5-snotlings--mob
+  - snotling-mob-consists-of-5-snotlings--weedy
+  - snotling-mob-consists-of-5-snotlings--dodgy
+  - snotling-mob-consists-of-5-snotlings--insignificant
+  combat_traits:
+    injury_profile: 1

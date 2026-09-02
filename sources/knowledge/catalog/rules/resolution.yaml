@@ -1,0 +1,38 @@
+schema_version: 2
+ruleset: mordheim
+scope: close-combat-only
+to_hit:
+  defender_ws_zero: 2
+  attacker_ws_greater: 3
+  defender_ws_more_than_double: 5
+  otherwise: 4
+to_wound:
+- strength_minus_toughness_min: 2
+  target: 2
+- strength_minus_toughness: 1
+  target: 3
+- strength_minus_toughness: 0
+  target: 4
+- strength_minus_toughness: -1
+  target: 5
+- strength_minus_toughness_min: -3
+  target: 6
+- strength_minus_toughness_max: -4
+  target: null
+strength_armour_modifier:
+  starts_at_strength: 4
+  modifier: -(strength - 3)
+injury:
+- rolls: 1-2
+  state: knocked_down
+- rolls: 3-4
+  state: stunned
+- rolls: 5-6
+  state: out_of_action
+critical_hit:
+  trigger: natural_6_to_wound_when_6_not_required
+  maximum_per_attacker_per_phase: 1
+parry:
+  success: parry_roll_strictly_greater_than_highest_hit_roll
+  natural_6_to_hit_cannot_be_parried: true
+  strength_limit: attack_strength_must_be_less_than_double_defender_strength

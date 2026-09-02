@@ -1,0 +1,893 @@
+schema_version: 2
+band_id: khemri-necromancers
+rules:
+- id: necromancer--leader
+  name: Leader
+  effect: Any warband model within 6" of the Necromancer may use his Leadership instead of its own.
+  source:
+    manual: khemri
+    printed_page: 54
+    section: Heroes / 1 Necromancer / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Necromancer may use his Leadership instead of its own.
+    es: null
+  applies_to:
+    profile_ids:
+    - necromancer
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-necromancers.necromancer.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: necromancer--wizard
+  name: Wizard
+  effect: The Necromancer is a Wizard and begins with one Necromancy spell. The spell list and spell effects are intentionally
+    not modelled in this file.
+  source:
+    manual: khemri
+    printed_page: 54
+    section: Heroes / 1 Necromancer / Wizard
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: The Necromancer is a Wizard and begins with one Necromancy spell. The spell list and spell effects are intentionally
+      not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - necromancer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-necromancers.necromancer.wizard
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: apprentice--student
+  name: Student
+  effect: The Apprentice begins with no spells. Whenever the Apprentice gains a new skill, it may acquire a randomly generated
+    Necromancy spell. The spell list and spell effects are intentionally not modelled in this file.
+  source:
+    manual: khemri
+    printed_page: 54
+    section: Heroes / 0-1 Apprentice / Student
+  name_i18n:
+    en: Student
+    es: null
+  effect_i18n:
+    en: The Apprentice begins with no spells. Whenever the Apprentice gains a new skill, it may acquire a randomly generated
+      Necromancy spell. The spell list and spell effects are intentionally not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - apprentice
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-necromancers.apprentice.student
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: tomb-robbers--disable-traps
+  name: Disable Traps
+  effect: Tomb Robbers are experts at detecting and disabling traps. Resolve this using the trap rules referenced by the Khemri
+    Experience section.
+  source:
+    manual: khemri
+    printed_page: 54
+    section: Heroes / 0-3 Tomb Robbers / Disable Traps
+  name_i18n:
+    en: Disable Traps
+    es: null
+  effect_i18n:
+    en: Tomb Robbers are experts at detecting and disabling traps. Resolve this using the trap rules referenced by the Khemri
+      Experience section.
+    es: null
+  applies_to:
+    profile_ids:
+    - tomb-robbers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-necromancers.tomb-robbers.disable-traps
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: skeleton-warriors--undead
+  name: Undead
+  effect: Skeleton Warriors are Undead and are subject to the warband's Undead special rules.
+  source:
+    manual: khemri
+    printed_page: 55
+    section: Henchmen / Skeleton Warriors / Undead
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: Skeleton Warriors are Undead and are subject to the warband's Undead special rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - skeleton-warriors
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-necromancers.skeleton-warriors.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: nehekharan-vultures--undead
+  name: Undead
+  effect: Nehekharan Vultures are Undead and are subject to the warband's Undead special rules.
+  source:
+    manual: khemri
+    printed_page: 55
+    section: Henchmen / 0-5 Nehekharan Vultures / Undead
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: Nehekharan Vultures are Undead and are subject to the warband's Undead special rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - nehekharan-vultures
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-necromancers.nehekharan-vultures.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: nehekharan-vultures--flight
+  name: Flight
+  effect: A Nehekharan Vulture ignores terrain while moving and may charge any visible target without restrictions from height
+    or intercepting models. Shooting attacks against a flying Vulture suffer -1 To Hit.
+  source:
+    manual: khemri
+    printed_page: 55
+    section: Henchmen / 0-5 Nehekharan Vultures / Flight
+  name_i18n:
+    en: Flight
+    es: null
+  effect_i18n:
+    en: A Nehekharan Vulture ignores terrain while moving and may charge any visible target without restrictions from height
+      or intercepting models. Shooting attacks against a flying Vulture suffer -1 To Hit.
+    es: null
+  applies_to:
+    profile_ids:
+    - nehekharan-vultures
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-necromancers.nehekharan-vultures.flight
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: nehekharan-vultures--fragile
+  name: Fragile
+  effect: 'When a Nehekharan Vulture suffers a Wound, resolve injury as follows: 1-3 Knocked Down, including the Undead No
+    Pain effect; 4-6 Out of Action.'
+  source:
+    manual: khemri
+    printed_page: 55
+    section: Henchmen / 0-5 Nehekharan Vultures / Fragile
+  name_i18n:
+    en: Fragile
+    es: null
+  effect_i18n:
+    en: 'When a Nehekharan Vulture suffers a Wound, resolve injury as follows: 1-3 Knocked Down, including the Undead No Pain
+      effect; 4-6 Out of Action.'
+    es: null
+  applies_to:
+    profile_ids:
+    - nehekharan-vultures
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.injury-profile
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.injury-profile
+        parameters:
+          value: 3
+- id: necromantic-abomination--undead
+  name: Undead
+  effect: The Necromantic Abomination is Undead and is subject to the warband's Undead special rules.
+  source:
+    manual: khemri
+    printed_page: 55
+    section: Henchmen / 0-1 Necromantic Abomination / Undead
+  name_i18n:
+    en: Undead
+    es: null
+  effect_i18n:
+    en: The Necromantic Abomination is Undead and is subject to the warband's Undead special rules.
+    es: null
+  applies_to:
+    profile_ids:
+    - necromantic-abomination
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-necromancers.necromantic-abomination.undead
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: necromantic-abomination--impossible-to-hide
+  name: Impossible to Hide
+  effect: The Necromantic Abomination is too large to Hide.
+  source:
+    manual: khemri
+    printed_page: 55
+    section: Henchmen / 0-1 Necromantic Abomination / Impossible to Hide
+  name_i18n:
+    en: Impossible to Hide
+    es: null
+  effect_i18n:
+    en: The Necromantic Abomination is too large to Hide.
+    es: null
+  applies_to:
+    profile_ids:
+    - necromantic-abomination
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-necromancers.necromantic-abomination.impossible-to-hide
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: necromantic-abomination--large
+  name: Large
+  effect: The Necromantic Abomination may be selected as a shooting target even when it is not the closest eligible target.
+  source:
+    manual: khemri
+    printed_page: 55
+    section: Henchmen / 0-1 Necromantic Abomination / Large
+  name_i18n:
+    en: Large
+    es: null
+  effect_i18n:
+    en: The Necromantic Abomination may be selected as a shooting target even when it is not the closest eligible target.
+    es: null
+  applies_to:
+    profile_ids:
+    - necromantic-abomination
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-necromancers.necromantic-abomination.large
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: necromantic-abomination--upkeep
+  name: Upkeep
+  effect: After each battle, the Necromancer must pay 15 gc to maintain the Necromantic Abomination.
+  source:
+    manual: khemri
+    printed_page: 55
+    section: Henchmen / 0-1 Necromantic Abomination / Upkeep
+  name_i18n:
+    en: Upkeep
+    es: null
+  effect_i18n:
+    en: After each battle, the Necromancer must pay 15 gc to maintain the Necromantic Abomination.
+    es: null
+  applies_to:
+    profile_ids:
+    - necromantic-abomination
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-necromancers.necromantic-abomination.upkeep
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: necromantic-abomination--constant-evolution
+  name: Constant Evolution
+  effect: The Necromantic Abomination does not use the normal Henchman development table. When it would make a development
+    roll, roll on the Necromantic Modification Table instead. Each modification may be obtained only once, and its listed
+    additional material cost must be paid. Its Experience progression represents the Necromancer's modifications rather than
+    learning from battle.
+  source:
+    manual: khemri
+    printed_page: 55
+    section: Henchmen / 0-1 Necromantic Abomination / Constant Evolution
+  name_i18n:
+    en: Constant Evolution
+    es: null
+  effect_i18n:
+    en: The Necromantic Abomination does not use the normal Henchman development table. When it would make a development roll,
+      roll on the Necromantic Modification Table instead. Each modification may be obtained only once, and its listed additional
+      material cost must be paid. Its Experience progression represents the Necromancer's modifications rather than learning
+      from battle.
+    es: null
+  applies_to:
+    profile_ids:
+    - necromantic-abomination
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.khemri-necromancers.necromantic-abomination.constant-evolution
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--death-of-the-necromancer
+  name: Death of the Necromancer
+  effect: If the Necromancer dies, the Apprentice takes control of the warband, gathers the master's books and writings, and
+    becomes the Necromancer. Only the Necromancer can keep the Undead animated. If both the Necromancer and the Apprentice
+    are dead, all Undead members of the warband disappear.
+  source:
+    manual: khemri
+    printed_page: 54
+    section: Heroes / 1 Necromancer / Death of the Necromancer
+  name_i18n:
+    en: Death of the Necromancer
+    es: null
+  effect_i18n:
+    en: If the Necromancer dies, the Apprentice takes control of the warband, gathers the master's books and writings, and
+      becomes the Necromancer. Only the Necromancer can keep the Undead animated. If both the Necromancer and the Apprentice
+      are dead, all Undead members of the warband disappear.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-necromancers.band.death-of-the-necromancer
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--cause-fear
+  name: Cause Fear
+  effect: Warriors with the Undead special rule cause Fear.
+  source:
+    manual: khemri
+    printed_page: 53
+    section: Undead Special Rules / Cause Fear
+  name_i18n:
+    en: Cause Fear
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule cause Fear.
+    es: null
+  eligibility:
+  - skeleton-warriors
+  - nehekharan-vultures
+  - necromantic-abomination
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-necromancers.band.cause-fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--immune-to-psychology
+  name: Immune to Psychology
+  effect: Warriors with the Undead special rule are immune to Psychology and never leave combat because of Psychology.
+  source:
+    manual: khemri
+    printed_page: 53
+    section: Undead Special Rules / Immune to Psychology
+  name_i18n:
+    en: Immune to Psychology
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule are immune to Psychology and never leave combat because of Psychology.
+    es: null
+  eligibility:
+  - skeleton-warriors
+  - nehekharan-vultures
+  - necromantic-abomination
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-necromancers.band.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  effect: Warriors with the Undead special rule treat a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: khemri
+    printed_page: 53
+    section: Undead Special Rules / No Pain
+  name_i18n:
+    en: No Pain
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule treat a Stunned result on the Injury chart as Knocked Down.
+    es: null
+  eligibility:
+  - skeleton-warriors
+  - nehekharan-vultures
+  - necromantic-abomination
+  applies_to:
+    band: true
+- id: band--may-not-run
+  name: May Not Run
+  effect: Warriors with the Undead special rule may not run, but may charge normally.
+  source:
+    manual: khemri
+    printed_page: 53
+    section: Undead Special Rules / May Not Run
+  name_i18n:
+    en: May Not Run
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule may not run, but may charge normally.
+    es: null
+  eligibility:
+  - skeleton-warriors
+  - nehekharan-vultures
+  - necromantic-abomination
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-necromancers.band.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Warriors with the Undead special rule are immune to poison.
+  source:
+    manual: khemri
+    printed_page: 53
+    section: Undead Special Rules / Immune to Poison
+  name_i18n:
+    en: Immune to Poison
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule are immune to poison.
+    es: null
+  eligibility:
+  - skeleton-warriors
+  - nehekharan-vultures
+  - necromantic-abomination
+  applies_to:
+    band: true
+- id: band--brainless
+  name: Brainless
+  effect: 'Skeleton Warriors and Nehekharan Vultures never gain Experience. The Necromantic Abomination is a specific exception:
+    its progression is governed by Constant Evolution and the Necromantic Modification Table.'
+  source:
+    manual: khemri
+    printed_page: 53
+    section: Undead Special Rules / Brainless
+  name_i18n:
+    en: Brainless
+    es: null
+  effect_i18n:
+    en: 'Skeleton Warriors and Nehekharan Vultures never gain Experience. The Necromantic Abomination is a specific exception:
+      its progression is governed by Constant Evolution and the Necromantic Modification Table.'
+    es: null
+  eligibility:
+  - skeleton-warriors
+  - nehekharan-vultures
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-necromancers.band.brainless
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--no-food-or-water
+  name: No Food or Water
+  effect: Warriors with the Undead special rule do not need food or water. The Necromancer and other living members of the
+    warband use the normal food and water rules.
+  source:
+    manual: khemri
+    printed_page: 53
+    section: Undead Special Rules / No Food or Water
+  name_i18n:
+    en: No Food or Water
+    es: null
+  effect_i18n:
+    en: Warriors with the Undead special rule do not need food or water. The Necromancer and other living members of the warband
+      use the normal food and water rules.
+    es: null
+  eligibility:
+  - skeleton-warriors
+  - nehekharan-vultures
+  - necromantic-abomination
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-necromancers.band.no-food-or-water
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--necromantic-modification-ogre-flesh
+  kind: modification
+  name: Ogre Flesh
+  effect: 2 on 2D6; costs 25 gc. The Necromantic Abomination gains +1 Wound.
+  source:
+    manual: khemri
+    printed_page: 56
+    section: Necromantic Modification Table / Ogre Flesh
+  name_i18n:
+    en: Ogre Flesh
+    es: null
+  effect_i18n:
+    en: 2 on 2D6; costs 25 gc. The Necromantic Abomination gains +1 Wound.
+    es: null
+  eligibility:
+  - necromantic-abomination
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.monstrous
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.monstrous
+- id: band--necromantic-modification-bone-armour
+  kind: modification
+  name: Bone Armour
+  effect: 3 on 2D6; costs 35 gc. The Necromantic Abomination gains +1 Toughness.
+  source:
+    manual: khemri
+    printed_page: 56
+    section: Necromantic Modification Table / Bone Armour
+  name_i18n:
+    en: Bone Armour
+    es: null
+  effect_i18n:
+    en: 3 on 2D6; costs 35 gc. The Necromantic Abomination gains +1 Toughness.
+    es: null
+  eligibility:
+  - necromantic-abomination
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: profile.characteristics
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.characteristics
+        parameters:
+          bonuses:
+            toughness: 1
+- id: band--necromantic-modification-tremendous-strength
+  kind: modification
+  name: Tremendous Strength
+  effect: 4 on 2D6; costs 30 gc. The Necromantic Abomination gains +1 Strength.
+  source:
+    manual: khemri
+    printed_page: 56
+    section: Necromantic Modification Table / Tremendous Strength
+  name_i18n:
+    en: Tremendous Strength
+    es: null
+  effect_i18n:
+    en: 4 on 2D6; costs 30 gc. The Necromantic Abomination gains +1 Strength.
+    es: null
+  eligibility:
+  - necromantic-abomination
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.iron-sinews
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.iron-sinews
+- id: band--necromantic-modification-killers-precision
+  kind: modification
+  name: Killer's Precision
+  effect: 5 on 2D6; costs 20 gc. The Necromantic Abomination gains +1 Weapon Skill.
+  source:
+    manual: khemri
+    printed_page: 56
+    section: Necromantic Modification Table / Killer's Precision
+  name_i18n:
+    en: Killer's Precision
+    es: null
+  effect_i18n:
+    en: 5 on 2D6; costs 20 gc. The Necromantic Abomination gains +1 Weapon Skill.
+    es: null
+  eligibility:
+  - necromantic-abomination
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: profile.characteristics
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.characteristics
+        parameters:
+          bonuses:
+            weapon_skill: 1
+- id: band--necromantic-modification-paladin-of-horror
+  name: Paladin of Horror
+  effect: 6 on 2D6; costs 20 gc. The Necromantic Abomination gains +1 Leadership.
+  source:
+    manual: khemri
+    printed_page: 56
+    section: Necromantic Modification Table / Paladin of Horror
+  name_i18n:
+    en: Paladin of Horror
+    es: null
+  effect_i18n:
+    en: 6 on 2D6; costs 20 gc. The Necromantic Abomination gains +1 Leadership.
+    es: null
+  eligibility:
+  - necromantic-abomination
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-necromancers.band.necromantic-modification-paladin-of-horror
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--necromantic-modification-enhanced-reflexes
+  kind: modification
+  name: Enhanced Reflexes
+  effect: 7 on 2D6; costs 15 gc. The Necromantic Abomination gains +1 Initiative.
+  source:
+    manual: khemri
+    printed_page: 56
+    section: Necromantic Modification Table / Enhanced Reflexes
+  name_i18n:
+    en: Enhanced Reflexes
+    es: null
+  effect_i18n:
+    en: 7 on 2D6; costs 15 gc. The Necromantic Abomination gains +1 Initiative.
+    es: null
+  eligibility:
+  - necromantic-abomination
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: profile.characteristics
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.characteristics
+        parameters:
+          bonuses:
+            initiative: 1
+- id: band--necromantic-modification-multiple-limbs
+  kind: modification
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: special-rule.band--necromantic-modification-multiple-limbs
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: special-rule.band--necromantic-modification-multiple-limbs
+  name: Multiple Limbs
+  effect: 8 on 2D6; costs 30 gc. The Necromantic Abomination gains +1 Attack.
+  source:
+    manual: khemri
+    printed_page: 56
+    section: Necromantic Modification Table / Multiple Limbs
+  name_i18n:
+    en: Multiple Limbs
+    es: null
+  effect_i18n:
+    en: 8 on 2D6; costs 30 gc. The Necromantic Abomination gains +1 Attack.
+    es: null
+  eligibility:
+  - necromantic-abomination
+  applies_to:
+    band: true
+- id: band--necromantic-modification-ram-legs
+  name: Ram Legs
+  effect: 9 on 2D6; costs 35 gc. The Necromantic Abomination gains +1" Movement.
+  source:
+    manual: khemri
+    printed_page: 56
+    section: Necromantic Modification Table / Ram Legs
+  name_i18n:
+    en: Ram Legs
+    es: null
+  effect_i18n:
+    en: 9 on 2D6; costs 35 gc. The Necromantic Abomination gains +1" Movement.
+    es: null
+  eligibility:
+  - necromantic-abomination
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-necromancers.band.necromantic-modification-ram-legs
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--necromantic-modification-wings
+  name: Wings
+  effect: 10 on 2D6; costs 30 gc. The Necromantic Abomination may jump from heights of up to 4" without taking an Initiative
+    test. This modification does not allow the model to fly.
+  source:
+    manual: khemri
+    printed_page: 56
+    section: Necromantic Modification Table / Wings
+  name_i18n:
+    en: Wings
+    es: null
+  effect_i18n:
+    en: 10 on 2D6; costs 30 gc. The Necromantic Abomination may jump from heights of up to 4" without taking an Initiative
+      test. This modification does not allow the model to fly.
+    es: null
+  eligibility:
+  - necromantic-abomination
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.khemri-necromancers.band.necromantic-modification-wings
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--necromantic-modification-anvil-head
+  kind: modification
+  name: Anvil Head
+  effect: 11 on 2D6; costs 45 gc. If the Necromantic Abomination charged, it may replace all of its attacks with one attack.
+    If that attack hits, it inflicts 1D3 Wounds; roll To Wound separately for each Wound.
+  source:
+    manual: khemri
+    printed_page: 56
+    section: Necromantic Modification Table / Anvil Head
+  name_i18n:
+    en: Anvil Head
+    es: null
+  effect_i18n:
+    en: 11 on 2D6; costs 45 gc. If the Necromantic Abomination charged, it may replace all of its attacks with one attack.
+      If that attack hits, it inflicts 1D3 Wounds; roll To Wound separately for each Wound.
+    es: null
+  eligibility:
+  - necromantic-abomination
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: compiler.anvil-head
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.anvil-head
+- id: band--necromantic-modification-putrid-stench
+  kind: modification
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: special-rule.band--necromantic-modification-putrid-stench
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: special-rule.band--necromantic-modification-putrid-stench
+  name: Putrid Stench
+  effect: 12 on 2D6; costs 35 gc. Living creatures fighting the Necromantic Abomination suffer -1 To Hit in close combat.
+  source:
+    manual: khemri
+    printed_page: 56
+    section: Necromantic Modification Table / Putrid Stench
+  name_i18n:
+    en: Putrid Stench
+    es: null
+  effect_i18n:
+    en: 12 on 2D6; costs 35 gc. Living creatures fighting the Necromantic Abomination suffer -1 To Hit in close combat.
+    es: null
+  eligibility:
+  - necromantic-abomination
+  applies_to:
+    band: true

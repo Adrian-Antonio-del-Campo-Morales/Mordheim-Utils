@@ -1,0 +1,47 @@
+schema_version: 1
+ruleset: mordheim
+catalog: campaign-experience-and-advances
+status: draft
+# Define premios y avances permitidos; nunca la experiencia acumulada ni los
+# avances ya obtenidos por una miniatura de una campaña concreta.
+awards: []
+advancement_tables: []
+limits: []
+examples:
+  awards:
+  - id: example.experience-survived
+    recipient: hero
+    trigger: survived_battle
+    amount: 1
+    source_refs: []
+    note: Fictitious example; use a rule ID as the trigger when it is published.
+  advancement_tables:
+  - id: example.advance-hero
+    applies_to: hero
+    resolution:
+      dice:
+        count: 2
+        sides: 6
+      branches:
+      - when:
+          min: 2
+          max: 5
+        result:
+          type: choose_skill
+    source_refs: []
+  limits:
+  - id: example.maximum-weapon-skill
+    characteristic: weapon_skill
+    applies_to: hero
+    maximum: 7
+    source_refs: []
+# awards: id, recipient, trigger, amount, source_refs
+# advancement_tables: id, applies_to, resolution (dice + branches), source_refs.
+# No usar experience_range: los umbrales de experiencia pertenecen al roster;
+# esta tabla solo resuelve el resultado 2D6 una vez alcanzado el umbral.
+# limits: id, characteristic, applies_to, maximum, source_refs
+effect_ids:
+- campaign.experience.gain
+- campaign.experience.prevent-gain
+- campaign.advance.roll
+- campaign.advance.modify-roll

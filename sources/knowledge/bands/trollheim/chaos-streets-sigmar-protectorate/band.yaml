@@ -1,0 +1,62 @@
+schema_version: 2
+id: chaos-streets-sigmar-protectorate
+canonical_family: sigmar-protectorate
+name: Sigmar's Protectorate
+name_i18n:
+  en: Sigmar's Protectorate
+  es: null
+original_locale: es
+categories:
+- trollheim
+grade: null
+setting: Mordheim
+publication: Chaos in the Streets
+status: source-normalized
+sources:
+- manual: chaos-in-the-streets
+  printed_page: 150-155
+  section: Sigmar's Protectorate
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: warrior-priest
+    minimum: 1
+    maximum: 1
+  - profile_id: ranger
+    minimum: 0
+    maximum: 1
+  - profile_id: templar
+    minimum: 0
+    maximum: 2
+  - profile_id: initiate
+    minimum: 0
+    maximum: 2
+  - profile_id: protectorate-marksman
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: crusader
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: protectorate-mastiff
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+ruleset: mordheim
+rule_ids:
+- band--warrior-priest-death
+- band--ranger-templar-limit
+- band--protectorate-special-skills-protection-of-sigmar
+- band--protectorate-special-skills-absolute-faith
+- band--protectorate-special-skills-absolute-determination
+- band--protectorate-special-skills-rousing-sermon
+- band--protectorate-special-skills-guidance-of-sigmar

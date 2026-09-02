@@ -1,0 +1,245 @@
+schema_version: 2
+band_id: gunnery-school-of-nuln
+rules:
+- id: senior-gunnery-officer--leader
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.gunnery-school-of-nuln.senior-gunnery-officer.leader
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Leader
+  effect: Any models in the warband within 12” of the Senior Gunnery Officer may use his Leadership value when using Leadership
+    tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Senior Gunnery Officer / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any models in the warband within 12” of the Senior Gunnery Officer may use his Leadership value when using Leadership
+      tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - senior-gunnery-officer
+- id: senior-gunnery-officer--hunter
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.gunnery-school-of-nuln.senior-gunnery-officer.hunter
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: disparo."
+  name: Hunter
+  effect: See Shooting Skills.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Senior Gunnery Officer / Special Rules / Hunter
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+  name_i18n:
+    en: Hunter
+    es: null
+  effect_i18n:
+    en: See Shooting Skills.
+    es: null
+  applies_to:
+    profile_ids:
+    - senior-gunnery-officer
+- id: instructor--expert-weaponsmith
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.gunnery-school-of-nuln.instructor.expert-weaponsmith
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: disparo."
+  name: Expert Weaponsmith
+  effect: 'The Instructors know every trick in the book when it comes to working with black
+
+    powder weapons. While there is an Instructor in the warband all Pistol weapons receive a +3” range
+
+    bonus and all other black powder weapons receive a +6” range bonus.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Instructor / Special Rules / Expert Weaponsmith
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+  name_i18n:
+    en: Expert Weaponsmith
+    es: null
+  effect_i18n:
+    en: 'The Instructors know every trick in the book when it comes to working with black
+
+      powder weapons. While there is an Instructor in the warband all Pistol weapons receive a +3” range
+
+      bonus and all other black powder weapons receive a +6” range bonus.'
+    es: null
+  applies_to:
+    profile_ids:
+    - instructor
+- id: marksmen--quick-reload
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.quick-reload
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.quick-reload
+  name: Quick Reload
+  effect: Marksmen trained at the Gunnery School are forced to practice many drills day after day, including those that teach
+    them to load their weapons for speed under high-pressure conditions. Marksmen have the Hunter skill from the Mordheim rulebook.
+    A Marksman who becomes a Hero gains no further effect from taking the Hunter skill in addition to this.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 7 Marksmen / Special Rules / Quick Reload
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+  name_i18n:
+    en: Quick Reload
+    es: null
+  effect_i18n:
+    en: 'Marksmen trained at the Gunnery School are forced to practice many drills day after
+
+      day, including those that teach them to load their
+
+      weapons for speed under high-pressure conditions.
+
+      Marksmen have the Hunter skill from the Mordheim
+
+      rulebook. A Marksman who becomes a Hero gains no further effect from taking the Hunter skill in addition to this.'
+    es: null
+  applies_to:
+    profile_ids:
+    - marksmen
+- id: pistoliers--crack-shot
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: profile
+    effects:
+    - id: skill.crack-shot
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.crack-shot
+  name: Crack Shot
+  effect: 'Experts with pistols in close quarters; they have an uncanny ability to turn what should have
+
+    missed its target into a success. When using pistols in close combat, they may re-roll any missed to-hit rolls
+
+    with the pistol in the first round of combat.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Pistoliers / Special Rules / Crack Shot
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+  name_i18n:
+    en: Crack Shot
+    es: null
+  effect_i18n:
+    en: 'Experts with pistols in close quarters; they have an uncanny ability to turn what should have
+
+      missed its target into a success. When using pistols in close combat, they may re-roll any missed to-hit rolls
+
+      with the pistol in the first round of combat.'
+    es: null
+  applies_to:
+    profile_ids:
+    - pistoliers
+- id: band--impeccable-care
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.gunnery-school-of-nuln.band.impeccable-care
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Impeccable Care
+  effect: The warband may always use the reduced black-powder weapon costs listed in its starting Equipment Lists and gains
+    +2 on rarity rolls to find black-powder weapons.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Impeccable Care
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+  name_i18n:
+    en: Impeccable Care
+    es: null
+  effect_i18n:
+    en: The warband may always use the reduced black-powder weapon costs listed in its starting Equipment Lists and gains
+      +2 on rarity rolls to find black-powder weapons.
+    es: null
+  applies_to:
+    band: true
+- id: band--properly-used
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.gunnery-school-of-nuln.band.properly-used
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: disparo."
+  name: Properly Used
+  effect: 'When using the optional Misfire rules, if a 1 is rolled, roll another D6. On a 3+ the misfire is ignored: the shot
+    still misses, but the weapon does not explode.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Properly Used
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+  name_i18n:
+    en: Properly Used
+    es: null
+  effect_i18n:
+    en: 'When using the optional Misfire rules, if a 1 is rolled, roll another D6. On a 3+ the misfire is ignored: the shot
+      still misses, but the weapon does not explode.'
+    es: null
+  applies_to:
+    band: true
+- id: band--proud-to-a-fault
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.proud-to-a-fault
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.proud-to-a-fault
+  name: Proud To A Fault!
+  effect: Members of the Gunnery School warband may never use non-black-powder ranged weapons. This restriction does not apply
+    to Hired Swords or Dramatis Personae.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Proud To A Fault!
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
+  name_i18n:
+    en: Proud To A Fault!
+    es: null
+  effect_i18n:
+    en: Members of the Gunnery School warband may never use non-black-powder ranged weapons. This restriction does not apply
+      to Hired Swords or Dramatis Personae.
+    es: null
+  applies_to:
+    band: true

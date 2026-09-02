@@ -1,0 +1,250 @@
+schema_version: 2
+band_id: arabian-tomb-raiders
+rules:
+- id: sheikh--leader
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.arabian-tomb-raiders.sheikh.leader
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Leader
+  effect: The Sheikh is the leader of the Warband and any Tomb Raiders within 6" may use his Leadership characteristic for
+    any Leadership tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Sheikh / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: The Sheikh is the leader of the Warband and any Tomb Raiders within 6" may use his Leadership characteristic for any
+      Leadership tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - sheikh
+- id: mystic--wizard
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.arabian-tomb-raiders.mystic.wizard
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: magia."
+  name: Wizard
+  effect: A Mystic is a Wizard. He uses spells from the Elemental Magic list. He starts with a single spell chosen at random
+    from the list.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Mystic / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  name_i18n:
+    en: Wizard
+    es: null
+  effect_i18n:
+    en: A Mystic is a Wizard. He uses spells from the Elemental Magic list. He starts with a single spell chosen at random
+      from the list.
+    es: null
+  applies_to:
+    profile_ids:
+    - mystic
+- id: bedouin--desert-trader
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.arabian-tomb-raiders.bedouin.desert-trader
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Desert Trader
+  effect: Add +1 to your search for Equipping/Trading result. Note that you only get +1 even if you have two Bedouins.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 2 Bedouin / Special Rules / Desert Trader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  name_i18n:
+    en: Desert Trader
+    es: null
+  effect_i18n:
+    en: Add +1 to your search for Equipping/Trading result. Note that you only get +1 even if you have two Bedouins.
+    es: null
+  applies_to:
+    profile_ids:
+    - bedouin
+- id: slaves--life-of-slavery
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.arabian-tomb-raiders.slaves.life-of-slavery
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Life of Slavery
+  effect: A Slave may gain experience, but if he rolls Lad’s got Talent, the leader executes the Slave, and he is removed
+    from the roster. The rest of the group may then re-roll their advance.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Slaves / Special Rules / Life of Slavery
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  name_i18n:
+    en: Life of Slavery
+    es: null
+  effect_i18n:
+    en: A Slave may gain experience, but if he rolls Lad’s got Talent, the leader executes the Slave, and he is removed from
+      the roster. The rest of the group may then re-roll their advance.
+    es: null
+  applies_to:
+    profile_ids:
+    - slaves
+- id: band--hate-undead
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.arabian-tomb-raiders.band.hate-undead
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Hate Undead
+  effect: The men of Araby have suffered heavily at the hands (or should that be claws!) of the Tomb King’s armies in the
+    Land of the Dead. Therefore, Araby Nomad Heroes hate all Undead.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Hate Undead
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  name_i18n:
+    en: Hate Undead
+    es: null
+  effect_i18n:
+    en: The men of Araby have suffered heavily at the hands (or should that be claws!) of the Tomb King’s armies in the Land
+      of the Dead. Therefore, Araby Nomad Heroes hate all Undead.
+    es: null
+  applies_to:
+    band: true
+- id: band--arabian-tomb-raiders-special-skills
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: band
+    effects:
+    - id: profile.skill-access
+      scope: "YES"
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+  name: Arabian Tomb Raiders special skills
+  effect: Arab Heroes may use the following skill table instead of any of the standard skill tables available to them.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Arabian Tomb Raiders special skills
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  name_i18n:
+    en: Arabian Tomb Raiders special skills
+    es: null
+  effect_i18n:
+    en: Arab Heroes may use the following skill table instead of any of the standard skill tables available to them.
+    es: null
+  applies_to:
+    band: true
+- id: band--arabian-tomb-raiders-special-skills-sand-worm
+  kind: warband_skill
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.arabian-tomb-raiders.band.arabian-tomb-raiders-special-skills-sand-worm
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Sand Worm
+  effect: The warrior can bury himself in sand and become almost undetectable. The model can hide in open ground. Cannot be
+    used inside buildings.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Arabian Tomb Raiders special skills / Sand Worm
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  name_i18n:
+    en: Sand Worm
+    es: null
+  effect_i18n:
+    en: The warrior can bury himself in sand and become almost undetectable. The model can hide in open ground. Cannot be
+      used inside buildings.
+    es: null
+  applies_to:
+    band: true
+- id: band--arabian-tomb-raiders-special-skills-hit-and-run
+  kind: warband_skill
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.arabian-tomb-raiders.band.arabian-tomb-raiders-special-skills-hit-and-run
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: impactar."
+  name: Hit and Run
+  effect: The warrior can run and shoot but suffer -2 to hit instead of the -1 to hit for moving.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Arabian Tomb Raiders special skills / Hit and Run
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  name_i18n:
+    en: Hit and Run
+    es: null
+  effect_i18n:
+    en: The warrior can run and shoot but suffer -2 to hit instead of the -1 to hit for moving.
+    es: null
+  applies_to:
+    band: true
+- id: band--arabian-tomb-raiders-special-skills-weather-tolerant
+  kind: warband_skill
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.arabian-tomb-raiders.band.arabian-tomb-raiders-special-skills-weather-tolerant
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: movimiento."
+  name: Weather Tolerant
+  effect: The warrior has grown so used to the weather it doesn't even affect him anymore. Weather conditions such as heat
+    and such no longer affect this model.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Arabian Tomb Raiders special skills / Weather Tolerant
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/arabian-tomb-raiders
+  name_i18n:
+    en: Weather Tolerant
+    es: null
+  effect_i18n:
+    en: The warrior has grown so used to the weather it doesn't even affect him anymore. Weather conditions such as heat and
+      such no longer affect this model.
+    es: null
+  applies_to:
+    band: true

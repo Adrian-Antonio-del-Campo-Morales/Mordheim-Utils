@@ -1,0 +1,68 @@
+schema_version: 1
+specifications:
+- id: editorial-tough-as-steel-grants
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - {target: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-true-grit/skill.tough-as-steel, digest: a4faae8178a65f440b962666624a2e059e84de4588e0b4409492c8252a4a0687}
+  - {target: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-true-grit/skill.tough-as-steel, digest: 4d161025905bd4108a0d660644612f74a24981b38455068c45ba446b935b1a56}
+  - {target: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-true-grit/skill.tough-as-steel, digest: 54a4c1adc31118c9bbaba3e52aa22939e0df5908fef1195cd57633cab1c4e3fe}
+  - {target: rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-true-grit/skill.tough-as-steel, digest: b97cf372f2f6def561043b0d4129aeb5fbca81acf2cb03b0a4c1f96bd4266c51}
+  - {target: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-true-grit/skill.tough-as-steel, digest: 9de5c6aa8cc9bd93721d64a22b967e1c62c91def642bbd2695578ca0021e6efe}
+  - {target: rule/trollheim/khemri-cursed-of-karak-zorn/band--karak-zorn-special-skills-hard-as-steel/skill.tough-as-steel, digest: eccd6573f0cbe5a0c0dd7220a1e9a4b2e9733c34215092cc44263cbdb24c3982}
+  depends_on: [mechanic/skill.tough-as-steel]
+  interpretation: All six publications state the same 1-3 / 4-5 / 6 Injury table and expose it as a selectable skill
+    to their listed Dwarf or Chaos Dwarf heroes.
+  cases:
+  - id: black-dwarf-heroes
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: mordheim, band_id: black-dwarfs, profile_id: sorcerer}
+    context: {rule_id: band--chaos-dwarf-special-skills-true-grit}
+    expect: {result.recipients: [gaolers, sorcerer]}
+  - id: dwarf-ranger-heroes
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: runesmith}
+    context: {rule_id: band--dwarf-special-skills-true-grit}
+    expect: {result.recipients: [apprentice-runesmith, dwarf-troll-slayers, runesmith]}
+  - id: treasure-hunter-heroes
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: dwarf-noble}
+    context: {rule_id: band--dwarf-special-skills-true-grit}
+    expect: {result.recipients: [dwarf-engineer, dwarf-noble, dwarf-troll-slayers]}
+  - id: sons-of-hashut-heroes
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: apprentice-sorcerer}
+    context: {rule_id: band--chaos-dwarfs-special-skills-true-grit}
+    expect: {result.recipients: [apprentice-sorcerer, bull-centaur, chaos-dwarf-champions]}
+  - id: streets-dwarf-heroes
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-noble}
+    context: {rule_id: band--dwarf-special-skills-true-grit}
+    expect: {result.recipients: [dwarf-engineer, dwarf-noble, dwarf-troll-slayers]}
+  - id: karak-zorn-heroes
+    roles: [grant]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: karak-zorn-noble}
+    context: {rule_id: band--karak-zorn-special-skills-hard-as-steel}
+    expect: {result.recipients: [karak-zorn-noble, longbeard, priest-of-grungni, troll-slayer]}
+  - id: granted-face-three
+    roles: [active, boundary, consumer]
+    operation: injury
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: apprentice-sorcerer
+      special_rule_ids: [band--chaos-dwarfs-special-skills-true-grit]
+    rolls: [{key: test.injury, value: 3}]
+    expect: {result.condition: KNOCKED_DOWN}
+  mutations:
+  - id: remove-granted-true-grit
+    changes:
+    - {path: defender.global_effects.tags, value: []}
+    - {path: defender.global_effects.out_of_action_threshold, value: 5}
+    cases: [granted-face-three]

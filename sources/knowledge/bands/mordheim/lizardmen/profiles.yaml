@@ -1,0 +1,221 @@
+schema_version: 2
+band_id: lizardmen
+profiles:
+- id: skink-priest
+  name: Skink Priest
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - skinks-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - academic
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Skink Priest
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  source_path:
+  - heroes
+  - 1 Skink Priest
+  name_i18n:
+    en: Skink Priest
+    es: null
+  rule_ids:
+  - skink-priest--leader
+  - skink-priest--wizard
+  combat_traits: {}
+- id: saurus-totem-warrior
+  name: Saurus Totem Warrior
+  type: hero
+  cost: 60
+  experience: 11
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 0
+    S: 4
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - saurus-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Saurus can never use missile weapons.
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Saurus Totem Warrior
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  source_path:
+  - heroes
+  - 0 – 1 Saurus Totem Warrior
+  name_i18n:
+    en: Saurus Totem Warrior
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: skink-great-crests
+  name: Skink Great Crests
+  type: hero
+  cost: 30
+  experience: 8
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 3
+    S: 3
+    T: 2
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - skinks-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Skink Great Crests
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  source_path:
+  - heroes
+  - 0 – 2 Skink Great Crests
+  name_i18n:
+    en: Skink Great Crests
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: skink-braves
+  name: Skink Braves
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 2
+    BS: 3
+    S: 3
+    T: 2
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - skinks-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Skink Braves
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  source_path:
+  - henchmen
+  - Skink Braves
+  name_i18n:
+    en: Skink Braves
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: saurus-braves
+  name: Saurus Braves
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 0
+    S: 4
+    T: 4
+    W: 1
+    I: 1
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - saurus-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Saurus can never use missile weapons.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 4 Saurus Braves
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  source_path:
+  - henchmen
+  - 0 – 4 Saurus Braves
+  name_i18n:
+    en: Saurus Braves
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: kroxigor
+  name: Kroxigor
+  type: henchman
+  cost: 200
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 0
+    S: 5
+    T: 4
+    W: 3
+    I: 1
+    A: 3
+    Ld: 8
+  equipment_lists: []
+  fixed_equipment:
+  - halberd
+  equipment_restrictions:
+  - The Kroxigor is equipped with a halberd rather than selecting equipment from a warband equipment list.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Kroxigor
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
+  source_path:
+  - henchmen
+  - 0 – 1 Kroxigor
+  name_i18n:
+    en: Kroxigor
+    es: null
+  rule_ids:
+  - kroxigor--scaly-skin
+  - kroxigor--aquatic
+  - kroxigor--cause-fear
+  - kroxigor--large
+  - kroxigor--animal
+  combat_traits:
+    natural_armour_save: 4

@@ -1,0 +1,150 @@
+schema_version: 1
+specifications:
+- id: beastmen-and-marauder-mutant-access
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-mutant/special-rule.band--beastmen-special-skills-mutant, digest: dff9c05b49db5a0ee2f907fba4d787d8ea0238ccdd3cdcc3d1cb13e8c992e649}
+  - {target: rule/mordheim/marauders-of-chaos/band--marauder-special-skills-mutant/special-rule.band--marauder-special-skills-mutant, digest: cf42607e697f61114e79572410c914f2bbe24129fee69b5de963fa47a2197b90}
+  interpretation: >-
+    Cada selección de Mutant permite adquirir exactamente una Mutación externa.
+    Los héroes con acceso a la lista especial pueden elegirla; una segunda
+    Mutación exige una segunda concesión y por tanto se rechaza en esta API.
+  cases:
+  - id: beastmen-recipients
+    roles: [grant, accepted]
+    operation: selectable_grant
+    defender: {band_id: beastmen-raiders, profile_id: beastmen-chieftain}
+    context: {rule_id: band--beastmen-special-skills-mutant, prerequisite_rule_ids: [band--mutations-tentacle]}
+    expect: {result.recipients: [beastmen-chieftain, beastmen-shaman, bestigors, centigors]}
+  - id: marauder-recipients
+    roles: [grant, accepted]
+    operation: selectable_grant
+    defender: {band_id: marauders-of-chaos, profile_id: marauder-chieftain}
+    context: {rule_id: band--marauder-special-skills-mutant, prerequisite_rule_ids: [band--mutations-tentacle]}
+    expect: {result.recipients: [champions, condemned, marauder-chieftain, seer]}
+  - id: one-mutation-compiles
+    operation: opposed_attacks
+    attacker: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 3}}
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids: [band--beastmen-special-skills-mutant, band--mutations-tentacle]
+    expect: {result.attacks: 2}
+  - id: two-mutations-rejected
+    roles: [rejected]
+    operation: selection_choices
+    attacker: {band_id: beastmen-raiders, profile_id: beastmen-chieftain}
+    context:
+      choices:
+        legal: {special_rule_ids: [band--beastmen-special-skills-mutant, band--mutations-tentacle]}
+        illegal: {special_rule_ids: [band--beastmen-special-skills-mutant, band--mutations-tentacle, band--mutations-spines]}
+    expect:
+      result.accepted: [legal]
+      result.rejected: {illegal: each purchased mutation requires band--beastmen-special-skills-mutant}
+  mutations:
+  - {id: remove-tentacle-effect, path: defender.global_effects.incoming_attacks_modifier, value: 0, cases: [one-mutation-compiles]}
+
+- id: chaos-engineer-contract
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - {target: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-chaos-engineer/mechanic.chaos-engineer, digest: 022d7600b8ed4093d51676a41e7c402db7caefac53329afa84a651b060c53c25}
+  interpretation: >-
+    Sorcerer y Gaolers pueden elegir Chaos Engineer. Su modificador de búsqueda
+    pertenece a campaña; el contrato de duelo conserva de forma observable la
+    selección y prohíbe que el propio Engineer equipe Chaos Armour.
+  cases:
+  - id: recipients
+    roles: [grant]
+    operation: selectable_grant
+    defender: {band_id: black-dwarfs, profile_id: sorcerer}
+    context: {rule_id: band--chaos-dwarf-special-skills-chaos-engineer}
+    expect: {result.recipients: [gaolers, sorcerer]}
+  - id: contract-present
+    roles: [compiled, consumer, boundary]
+    operation: construction_tag_presence
+    attacker: {band_id: black-dwarfs, profile_id: sorcerer, special_rule_ids: [band--chaos-dwarf-special-skills-chaos-engineer]}
+    context: {tag: compiler.chaos-engineer}
+    expect: {result.present: true}
+  mutations:
+  - {id: remove-engineer-contract, path: attacker.construction_tags, value: [], cases: [contract-present]}
+
+- id: marksmen-quick-reload
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - {target: rule/mordheim/gunnery-school-of-nuln/marksmen--quick-reload/compiler.quick-reload, digest: 20bbd7146130a3d86f0dba2796524f4ea7eb98b276c736f81baf20197160606c}
+  interpretation: Marksmen poseen Hunter de forma intrínseca; repetir Hunter no acumula ningún efecto adicional.
+  cases:
+  - id: recipient
+    roles: [grant]
+    operation: grant
+    defender: {band_id: gunnery-school-of-nuln, profile_id: marksmen}
+    context: {rule_id: marksmen--quick-reload}
+    expect: {result.recipients: [marksmen]}
+  - id: compiled-contract
+    roles: [compiled, consumer, boundary]
+    operation: construction_tag_presence
+    attacker: {band_id: gunnery-school-of-nuln, profile_id: marksmen}
+    context: {tag: compiler.quick-reload}
+    expect: {result.present: true}
+  mutations:
+  - {id: remove-quick-reload, path: attacker.construction_tags, value: [], cases: [compiled-contract]}
+
+- id: duelist-weapon-knowledge
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: permanent
+  sources:
+  - {target: rule/mordheim/hochland-bandits/duelist--weapon-knowledge/compiler.weapon-knowledge, digest: b44befe23e0b2c7b4b0669155d4965f85baa380c75caddd58671be7725549899}
+  interpretation: El Duelist puede seleccionar cualquier arma obtenida por la banda, aunque no figure en su lista inicial.
+  cases:
+  - id: recipient
+    roles: [grant]
+    operation: grant
+    defender: {band_id: hochland-bandits, profile_id: duelist}
+    context: {rule_id: duelist--weapon-knowledge}
+    expect: {result.recipients: [duelist]}
+  - id: exotic-weapon-accepted
+    roles: [compiled, consumer, boundary]
+    operation: construction_tag_presence
+    attacker: {band_id: hochland-bandits, profile_id: duelist, main_weapon_id: weapon.flail}
+    context: {tag: compiler.weapon-knowledge}
+    expect: {result.present: true}
+  mutations:
+  - {id: remove-knowledge-contract, path: attacker.construction_tags, value: [], cases: [exotic-weapon-accepted]}
+
+- id: renowned-virtue
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - {target: rule/mordheim/bretonnian-chapel-guard/band--renowned-virtue/compiler.renowned-virtue, digest: a11e1193c492b800d62b2dad9e03a34b91eddf17a7ee06deeaa99c8ac3e63fe7}
+  interpretation: Los dos perfiles Knight pueden elegir Renowned Virtue una vez y deben acompañarla de exactamente una Virtue de la banda Bretonnian original.
+  cases:
+  - id: recipients
+    roles: [grant, accepted]
+    operation: selectable_grant
+    defender: {band_id: bretonnian-chapel-guard, profile_id: questing-knight}
+    context: {rule_id: band--renowned-virtue, prerequisite_rule_ids: [band--virtue-of-valour]}
+    expect: {result.recipients: [knights-errant, questing-knight]}
+  - id: selected-contract
+    operation: construction_tag_presence
+    attacker: {band_id: bretonnian-chapel-guard, profile_id: questing-knight, special_rule_ids: [band--renowned-virtue, band--virtue-of-valour]}
+    context: {tag: compiler.renowned-virtue}
+    expect: {result.present: true}
+  - id: exactly-one
+    roles: [rejected]
+    operation: selection_choices
+    attacker: {band_id: bretonnian-chapel-guard, profile_id: questing-knight}
+    context:
+      choices:
+        legal: {special_rule_ids: [band--renowned-virtue, band--virtue-of-valour]}
+        missing: {special_rule_ids: [band--renowned-virtue]}
+        two: {special_rule_ids: [band--renowned-virtue, band--virtue-of-valour, band--virtue-of-valour]}
+    expect:
+      result.accepted: [legal]
+      result.rejected:
+        missing: Renowned Virtue requires exactly one Bretonnian Virtue
+        two: Renowned Virtue requires exactly one Bretonnian Virtue
+  mutations:
+  - {id: remove-renowned-contract, path: attacker.construction_tags, value: [], cases: [selected-contract]}

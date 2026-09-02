@@ -1,0 +1,53 @@
+schema_version: 2
+id: sisters-of-sigmar
+canonical_family: sisters-of-sigmar
+name: Sisters of Sigmar
+name_i18n:
+  en: Sisters of Sigmar
+  es: null
+original_locale: en
+ruleset: mordheim
+categories:
+- core
+grade: core
+setting: Mordheim
+publication: Mordheim Rulebook
+status: source-normalized
+sources:
+- manual: mordheimer.net
+  printed_page: 0
+  section: The Sisters of Sigmar
+  url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: sigmarite-matriarch
+    minimum: 1
+    maximum: 1
+  - profile_id: augur
+    minimum: 0
+    maximum: 1
+  - profile_id: sister-superior
+    minimum: 0
+    maximum: 3
+  - profile_id: sigmarite-sister
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: novices
+    minimum: 0
+    maximum: 10
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--human-maximum-characteristics
+- band--special-skills-sign-of-sigmar
+- band--special-skills-protection-of-sigmar
+- band--special-skills-utter-determination
+- band--special-skills-righteous-fury
+- band--special-skills-absolute-faith

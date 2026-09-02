@@ -1,0 +1,345 @@
+schema_version: 2
+band_id: lustria-savage-goblins
+profiles:
+- id: witch-doctor
+  name: Witch Doctor
+  type: hero
+  cost: 65
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - savage-goblin-hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - academic
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 100
+    section: 1 Witch Doctor
+  source_path:
+  - heroes
+  - 1 Witch Doctor
+  name_i18n:
+    en: Witch Doctor
+    es: null
+  rule_ids:
+  - witch-doctor--leader
+  - witch-doctor--spellcaster
+  - witch-doctor--return-from-the-darkness
+  combat_traits: {}
+- id: big-boss
+  name: Big Boss
+  type: hero
+  cost: 50
+  experience: 10
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - savage-goblin-hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not select the Sacrifice Dagger; it is Witch Doctor only.
+  - May not buy the Feather Headdress at creation because the Witch Doctor is the mandatory leader; if leadership later passes
+    to the Big Boss, the source says the headdress is inherited automatically.
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 100
+    section: 0-1 Big Boss
+  source_path:
+  - heroes
+  - 0-1 Big Boss
+  name_i18n:
+    en: Big Boss
+    es: null
+  rule_ids:
+  - big-boss--second-in-command
+  combat_traits: {}
+- id: red-teeth
+  name: Red Teeth
+  type: hero
+  cost: 35
+  experience: 6
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - savage-goblin-hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not use missile weapons unless they have the Thrown Weapon rule.
+  - May not select the Sacrifice Dagger; it is Witch Doctor only.
+  - May not select the Feather Headdress unless this model somehow becomes the warband leader.
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 101
+    section: 0-2 Red Teeth
+  source_path:
+  - heroes
+  - 0-2 Red Teeth
+  name_i18n:
+    en: Red Teeth
+    es: null
+  rule_ids:
+  - red-teeth--frenzy
+  combat_traits: {}
+- id: trackers
+  name: Trackers
+  type: hero
+  cost: 30
+  experience: 6
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - savage-goblin-hero-equipment-list
+  fixed_equipment:
+  - rope_hook
+  - bolas
+  equipment_restrictions:
+  - The starting Rope and Hook and Bolas may not be sold or transferred and are replaced automatically before the next battle
+    if lost.
+  - May not select the Sacrifice Dagger; it is Witch Doctor only.
+  - May not select the Feather Headdress unless this model somehow becomes the warband leader.
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: lustria
+    printed_page: 101
+    section: 0-2 Trackers
+  source_path:
+  - heroes
+  - 0-2 Trackers
+  name_i18n:
+    en: Trackers
+    es: null
+  rule_ids:
+  - trackers--tracker-gear
+  combat_traits: {}
+- id: savage-goblins
+  name: Savage Goblins
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - savage-goblin-henchman-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 102
+    section: Savage Goblins
+  source_path:
+  - henchmen
+  - Savage Goblins
+  name_i18n:
+    en: Savage Goblins
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: headhunters
+  name: Headhunters
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - savage-goblin-henchman-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 102
+    section: 0-5 Headhunters
+  source_path:
+  - henchmen
+  - 0-5 Headhunters
+  name_i18n:
+    en: Headhunters
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: bruisers
+  name: Bruisers
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - bruiser-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 103
+    section: 0-5 Bruisers
+  source_path:
+  - henchmen
+  - 0-5 Bruisers
+  name_i18n:
+    en: Bruisers
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: zomblins
+  name: Zomblins
+  type: henchman
+  cost: 0
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 1
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Zomblins never use weapons or armour; any equipment the model had before transformation is lost.
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 103
+    section: 0-5 Zomblins
+  source_path:
+  - henchmen
+  - 0-5 Zomblins
+  name_i18n:
+    en: Zomblins
+    es: null
+  rule_ids:
+  - zomblins--may-not-run
+  - zomblins--fear
+  - zomblins--immune-to-psychology
+  - zomblins--immune-to-poison
+  - zomblins--no-pain
+  - zomblins--brainless
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+- id: zomblintua
+  name: Zomblintua
+  type: henchman
+  cost: 195
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 0
+    S: 4
+    T: 5
+    W: 3
+    I: 1
+    A: 2
+    Ld: 6
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Zomblintua never uses weapons or armour.
+  skill_access: []
+  source:
+    manual: lustria
+    printed_page: 104
+    section: 0-1 Zomblintua
+  source_path:
+  - henchmen
+  - 0-1 Zomblintua
+  name_i18n:
+    en: Zomblintua
+    es: null
+  rule_ids:
+  - zomblintua--construction
+  - zomblintua--may-not-run
+  - zomblintua--fear
+  - zomblintua--immune-to-psychology
+  - zomblintua--immune-to-poison
+  - zomblintua--no-pain
+  - zomblintua--brainless
+  - zomblintua--large-target
+  - zomblintua--regeneration
+  - zomblintua--blunt-attacks
+  combat_traits:
+    starting_skills:
+    - skill.ignore-pain
+    regeneration_save: 5

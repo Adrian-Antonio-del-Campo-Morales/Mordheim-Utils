@@ -1,0 +1,56 @@
+schema_version: 1
+specifications:
+- id: clan-pestilens-contagious
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: stateful
+  sources:
+  - {target: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious, digest: ed0fbe7bce743e4cab23785156a1fd4d8b4e38d39622ba98d8f7d4b1fcb400e8}
+  interpretation: >-
+    Contagious exige Rotten Body. Si un rival vivo deja Out of Action al portador
+    en combate cuerpo a cuerpo, realiza inmediatamente un test de Toughness; un 6
+    siempre falla y causa una herida. Undead y Possessed no realizan el test.
+  cases:
+  - id: recipients-with-prerequisite
+    roles: [grant, compiled]
+    operation: selectable_grant
+    defender: {collection: trollheim, band_id: lustria-clan-pestilens, profile_id: plague-priest}
+    context:
+      rule_id: band--clan-pestilens-special-skills-contagious
+      prerequisite_rule_ids: [band--clan-pestilens-special-skills-rotten-body]
+    expect: {result.recipients: [monk-initiates, pestilens-sorcerer, plague-monks, plague-priest]}
+  - id: lethal-hit-triggers-test
+    roles: [active, boundary, sequence, consumption]
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 6, strength: 6, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids: [band--clan-pestilens-special-skills-rotten-body, band--clan-pestilens-special-skills-contagious]
+    rolls:
+    - {key: test.hit, value: 6}
+    - {key: test.wound, value: 6}
+    - {key: test.injury.0, value: 6}
+    - {key: test.contagious, value: 6}
+    expect: {result.attacker.wounds: 1, result.defender.condition: OUT}
+  - id: undead-is-immune
+    roles: [inactive, consumer]
+    operation: attack_reaction
+    attacker:
+      main_weapon_id: weapon.mace
+      trait_overrides: {undead_or_possessed: true}
+      characteristics: {weapon_skill: 6, strength: 6, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids: [band--clan-pestilens-special-skills-rotten-body, band--clan-pestilens-special-skills-contagious]
+    rolls:
+    - {key: test.hit, value: 6}
+    - {key: test.wound, value: 6}
+    - {key: test.injury.0, value: 6}
+    expect: {result.attacker.wounds: 2, result.defender.condition: OUT}
+  mutations:
+  - {id: remove-contagious, path: defender.global_effects.tags, value: [], cases: [lethal-hit-triggers-test]}

@@ -1,0 +1,36 @@
+schema_version: 1
+ruleset: mordheim
+catalog: campaign-trading-post
+status: draft
+# Define condiciones de mercado; dinero, compras, disponibilidad ya tirada y
+# existencias de una campaña individual pertenecen a su estado externo.
+source:
+  manual: mordheimer.net
+  printed_page: 0
+  section: Trading Post
+  url: https://mordheimer.net/docs/trading-post
+items: []
+# Fuente canónica de la compra post-batalla. Cada entrada publicada tendrá:
+# id, item_id, price (base_gc y optional_variable_cost), availability,
+# restrictions, purchase_options y source_refs.
+#
+# equipment-access.yaml define quién puede seleccionar un item en la creación
+# de banda. Su campo cost heredado es evidencia de la lista impresa, no debe
+# sobrescribir este catálogo. Una diferencia confirmada se expresa allí como
+# price_override con source_refs, nunca como un segundo precio implícito.
+examples:
+- id: example.trading-post-dagger
+  item_id: dagger
+  price:
+    base_gc: 2
+  availability:
+    kind: common
+  purchase_options:
+  - id: example.first-dagger
+    quantity: 1
+    price:
+      base_gc: 0
+    condition: first_dagger_for_new_recruit
+  restrictions: []
+  source_refs: []
+  note: Fictitious structure example; values must be replaced by verified source data.

@@ -1,0 +1,257 @@
+schema_version: 2
+band_id: norse-explorers-lustria
+profiles:
+- id: jarl
+  name: Jarl
+  type: hero
+  cost: 70
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 2
+    Ld: 8
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Jarl
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  source_path:
+  - heroes
+  - 1 Jarl
+  name_i18n:
+    en: Jarl
+    es: null
+  rule_ids:
+  - jarl--leader
+  combat_traits: {}
+- id: beserkers
+  name: Beserkers
+  type: hero
+  cost: 50
+  experience: 11
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May select weapons from the Hero Equipment List, but may never wear armour.
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Beserkers
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  source_path:
+  - heroes
+  - 0 – 2 Beserkers
+  name_i18n:
+    en: Beserkers
+    es: null
+  rule_ids:
+  - beserkers--berserkers
+  combat_traits: {}
+- id: wulfen
+  name: Wulfen
+  type: hero
+  cost: 90
+  experience: 11
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 0
+    S: 4
+    T: 4
+    W: 2
+    I: 4
+    A: 2
+    Ld: 7
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never use weapons or armour and suffers no penalty for fighting unarmed.
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 1 Wulfen
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  source_path:
+  - heroes
+  - 0 – 1 Wulfen
+  name_i18n:
+    en: Wulfen
+    es: null
+  rule_ids:
+  - wulfen--natural-weapons
+  - wulfen--fear
+  - wulfen--bestial
+  combat_traits: {}
+- id: bondsmen
+  name: Bondsmen
+  type: hero
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 2 Bondsmen
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  source_path:
+  - heroes
+  - 0 – 2 Bondsmen
+  name_i18n:
+    en: Bondsmen
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: marauders
+  name: Marauders
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - henchmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Marauders
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  source_path:
+  - henchmen
+  - Marauders
+  name_i18n:
+    en: Marauders
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: hunters
+  name: Hunters
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - hunters-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Hunters
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  source_path:
+  - henchmen
+  - 0 – 5 Hunters
+  name_i18n:
+    en: Hunters
+    es: null
+  rule_ids: []
+  combat_traits: {}
+- id: wolves
+  name: Wolves
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 9
+    WS: 3
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Wolves never use or need weapons or armour and fight with their natural fangs.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0 – 5 Wolves
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  source_path:
+  - henchmen
+  - 0 – 5 Wolves
+  name_i18n:
+    en: Wolves
+    es: null
+  rule_ids:
+  - wolves--animals
+  - wolves--pack-leader
+  combat_traits: {}

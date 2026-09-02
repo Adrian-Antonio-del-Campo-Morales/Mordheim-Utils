@@ -1,0 +1,79 @@
+schema_version: 1
+specifications:
+- id: skill.blessed-sight
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: local
+  sources:
+  - target: mechanic/skill.blessed-sight
+    digest: 10cd5db7057ce2d9af4ff2c98b64c8384d41a5dd15f7621663ecdb2cd97023d6
+  interpretation: Blessed Sight permits one reroll after a failed close-combat To Hit roll or characteristic test.
+    A successful first roll consumes no second die, while a failed reroll is final. Campaign and shooting uses are
+    outside this duel verifier.
+  interaction_contract:
+    reads:
+    - hit.target
+    writes:
+    - hit.reroll
+  cases:
+  - id: compiled
+    roles: [compiled]
+    operation: compile
+    attacker: {skill_ids: [skill.blessed-sight], main_weapon_id: weapon.mace}
+    expect: {attacker.global_effects.reroll_hits: true}
+    expect_contains:
+      attacker.global_effects.tags: [skill.blessed-sight]
+  - id: rerolls-failed-hits
+    roles: [active, boundary, consumer]
+    operation: hit
+    attacker: {skill_ids: [skill.blessed-sight], main_weapon_id: weapon.mace}
+    distribution:
+      observable: result.success
+      max_rolls: 2
+      expected: {'true': 3/4, 'false': 1/4}
+  - id: ordinary-hit-has-no-reroll
+    roles: [inactive, boundary]
+    operation: hit
+    attacker: {main_weapon_id: weapon.mace}
+    distribution:
+      observable: result.success
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  - id: characteristic-success-omits-reroll
+    roles: [active, boundary, consumer]
+    operation: characteristic_test
+    attacker: {skill_ids: [skill.blessed-sight]}
+    context: {value: 3}
+    rolls: [{key: test.characteristic, value: 3}]
+    expect: {result.passed: true}
+  - id: characteristic-failure-requests-reroll
+    roles: [active, consumer]
+    operation: characteristic_test
+    attacker: {skill_ids: [skill.blessed-sight]}
+    context: {value: 3}
+    rolls:
+    - {key: test.characteristic, value: 4}
+    - {key: test.characteristic.reroll, value: 2}
+    expect: {result.passed: true}
+  - id: characteristic-all-faces
+    roles: [active, boundary]
+    operation: characteristic_test
+    attacker: {skill_ids: [skill.blessed-sight]}
+    context: {value: 3}
+    distribution:
+      observable: result.passed
+      max_rolls: 2
+      expected: {'true': 3/4, 'false': 1/4}
+  - id: ordinary-characteristic-test
+    roles: [inactive, boundary]
+    operation: characteristic_test
+    context: {value: 3}
+    distribution:
+      observable: result.passed
+      max_rolls: 1
+      expected: {'true': 1/2, 'false': 1/2}
+  mutations:
+  - id: remove-blessed-sight
+    changes:
+    - {path: attacker.global_effects.tags, value: []}
+    - {path: attacker.global_effects.reroll_hits, value: false}
+    cases: [rerolls-failed-hits, characteristic-all-faces]

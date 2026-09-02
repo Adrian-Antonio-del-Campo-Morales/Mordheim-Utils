@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mordheim-combat-lab"
+version = "2.0.0a1"
+description = "Knowledge-driven compositional close-combat engine for Mordheim"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24,<3",
+    "PyYAML>=6,<7",
+    "openpyxl>=3.1,<4",
+]
+
+[project.scripts]
+mordheim-combat-lab = "mordheim_combat_lab.cli.commands:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "wheel>=0.43", "pyinstaller>=6.0"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

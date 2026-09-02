@@ -1,0 +1,951 @@
+schema_version: 2
+band_id: lustria-lizardmen
+rules:
+- id: skink-priest--leader
+  name: Leader
+  effect: Any warband model within 6" of the Skink Priest may use his Leadership instead of its own. If the Skink Priest is
+    destroyed, a new Skink Priest may be recruited only after the warband has played one battle without one.
+  source:
+    manual: lustria
+    printed_page: 54
+    section: Heroes / 1 Skink Priest / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warband model within 6" of the Skink Priest may use his Leadership instead of its own. If the Skink Priest is
+      destroyed, a new Skink Priest may be recruited only after the warband has played one battle without one.
+    es: null
+  applies_to:
+    profile_ids:
+    - skink-priest
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-lizardmen.skink-priest.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: skink-priest--spellcaster
+  name: Spellcaster
+  effect: The Skink Priest is a spellcaster and may use the Ancient Psalms. The spell list and spell effects are intentionally
+    not modelled in this file.
+  source:
+    manual: lustria
+    printed_page: 54
+    section: Heroes / 1 Skink Priest / Spellcaster
+  name_i18n:
+    en: Spellcaster
+    es: null
+  effect_i18n:
+    en: The Skink Priest is a spellcaster and may use the Ancient Psalms. The spell list and spell effects are intentionally
+      not modelled in this file.
+    es: null
+  applies_to:
+    profile_ids:
+    - skink-priest
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-lizardmen.skink-priest.spellcaster
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: skink-priest--scaly-skin-6plus
+  name: Scaly Skin 6+
+  effect: The Skink Priest has a natural 6+ Scaly Skin save.
+  source:
+    manual: lustria
+    printed_page: 54
+    section: Heroes / 1 Skink Priest / Scaly Skin
+  name_i18n:
+    en: Scaly Skin 6+
+    es: null
+  effect_i18n:
+    en: The Skink Priest has a natural 6+ Scaly Skin save.
+    es: null
+  applies_to:
+    profile_ids:
+    - skink-priest
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 6
+    - id: trait.natural-armour-stacks
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-stacks
+        parameters:
+          value: true
+    - id: trait.natural-armour-worst-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-worst-save
+        parameters:
+          value: 6
+- id: skink-priest--amphibious
+  name: Amphibious
+  effect: The Skink Priest moves through aquatic terrain without movement penalties and counts as being in cover while in
+    water.
+  source:
+    manual: lustria
+    printed_page: 54
+    section: Heroes / 1 Skink Priest / Amphibious
+  name_i18n:
+    en: Amphibious
+    es: null
+  effect_i18n:
+    en: The Skink Priest moves through aquatic terrain without movement penalties and counts as being in cover while in water.
+    es: null
+  applies_to:
+    profile_ids:
+    - skink-priest
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-lizardmen.skink-priest.amphibious
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: skink-priest--jungle-native
+  name: Jungle Native
+  effect: The Skink Priest moves through jungle terrain without movement penalties.
+  source:
+    manual: lustria
+    printed_page: 54
+    section: Heroes / 1 Skink Priest / Jungle Native
+  name_i18n:
+    en: Jungle Native
+    es: null
+  effect_i18n:
+    en: The Skink Priest moves through jungle terrain without movement penalties.
+    es: null
+  applies_to:
+    profile_ids:
+    - skink-priest
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-lizardmen.skink-priest.jungle-native
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: saurus-totem-warrior--scaly-skin-5plus
+  name: Scaly Skin 5+
+  effect: The Saurus Totem Warrior has a natural 5+ Scaly Skin save.
+  source:
+    manual: lustria
+    printed_page: 54
+    section: Heroes / 0-1 Saurus Totem Warrior / Scaly Skin
+  name_i18n:
+    en: Scaly Skin 5+
+    es: null
+  effect_i18n:
+    en: The Saurus Totem Warrior has a natural 5+ Scaly Skin save.
+    es: null
+  applies_to:
+    profile_ids:
+    - saurus-totem-warrior
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 5
+    - id: trait.natural-armour-stacks
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-stacks
+        parameters:
+          value: true
+    - id: trait.natural-armour-worst-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-worst-save
+        parameters:
+          value: 6
+- id: saurus-totem-warrior--bite-attack
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.bite-attack
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.bite-attack
+  name: Bite Attack
+  effect: The Saurus Totem Warrior makes one additional bite attack using its own Strength to wound and suffers no penalty
+    for fighting unarmed. The bite always strikes last, regardless of who charged or which weapons are used, and is resolved
+    after attacks made with Great Weapons.
+  source:
+    manual: lustria
+    printed_page: 54
+    section: Heroes / 0-1 Saurus Totem Warrior / Bite Attack
+  name_i18n:
+    en: Bite Attack
+    es: null
+  effect_i18n:
+    en: The Saurus Totem Warrior makes one additional bite attack using its own Strength to wound and suffers no penalty for
+      fighting unarmed. The bite always strikes last, regardless of who charged or which weapons are used, and is resolved
+      after attacks made with Great Weapons.
+    es: null
+  applies_to:
+    profile_ids:
+    - saurus-totem-warrior
+- id: skink-great-crests--scaly-skin-6plus
+  name: Scaly Skin 6+
+  effect: A Great Crested Skink has a natural 6+ Scaly Skin save.
+  source:
+    manual: lustria
+    printed_page: 55
+    section: Heroes / 0-2 Great Crested Skinks / Scaly Skin
+  name_i18n:
+    en: Scaly Skin 6+
+    es: null
+  effect_i18n:
+    en: A Great Crested Skink has a natural 6+ Scaly Skin save.
+    es: null
+  applies_to:
+    profile_ids:
+    - skink-great-crests
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 6
+    - id: trait.natural-armour-stacks
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-stacks
+        parameters:
+          value: true
+    - id: trait.natural-armour-worst-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-worst-save
+        parameters:
+          value: 6
+- id: skink-great-crests--amphibious
+  name: Amphibious
+  effect: Great Crested Skinks move through aquatic terrain without movement penalties and count as being in cover while in
+    water.
+  source:
+    manual: lustria
+    printed_page: 55
+    section: Heroes / 0-2 Great Crested Skinks / Amphibious
+  name_i18n:
+    en: Amphibious
+    es: null
+  effect_i18n:
+    en: Great Crested Skinks move through aquatic terrain without movement penalties and count as being in cover while in
+      water.
+    es: null
+  applies_to:
+    profile_ids:
+    - skink-great-crests
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-lizardmen.skink-great-crests.amphibious
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: skink-great-crests--jungle-native
+  name: Jungle Native
+  effect: Great Crested Skinks move through jungle terrain without movement penalties.
+  source:
+    manual: lustria
+    printed_page: 55
+    section: Heroes / 0-2 Great Crested Skinks / Jungle Native
+  name_i18n:
+    en: Jungle Native
+    es: null
+  effect_i18n:
+    en: Great Crested Skinks move through jungle terrain without movement penalties.
+    es: null
+  applies_to:
+    profile_ids:
+    - skink-great-crests
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-lizardmen.skink-great-crests.jungle-native
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: skink-braves--scaly-skin-6plus
+  name: Scaly Skin 6+
+  effect: Skink Braves have a natural 6+ Scaly Skin save.
+  source:
+    manual: lustria
+    printed_page: 55
+    section: Henchmen / Skink Braves / Scaly Skin
+  name_i18n:
+    en: Scaly Skin 6+
+    es: null
+  effect_i18n:
+    en: Skink Braves have a natural 6+ Scaly Skin save.
+    es: null
+  applies_to:
+    profile_ids:
+    - skink-braves
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 6
+    - id: trait.natural-armour-stacks
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-stacks
+        parameters:
+          value: true
+    - id: trait.natural-armour-worst-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-worst-save
+        parameters:
+          value: 6
+- id: skink-braves--amphibious
+  name: Amphibious
+  effect: Skink Braves move through aquatic terrain without movement penalties and count as being in cover while in water.
+  source:
+    manual: lustria
+    printed_page: 55
+    section: Henchmen / Skink Braves / Amphibious
+  name_i18n:
+    en: Amphibious
+    es: null
+  effect_i18n:
+    en: Skink Braves move through aquatic terrain without movement penalties and count as being in cover while in water.
+    es: null
+  applies_to:
+    profile_ids:
+    - skink-braves
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-lizardmen.skink-braves.amphibious
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: skink-braves--jungle-native
+  name: Jungle Native
+  effect: Skink Braves move through jungle terrain without movement penalties.
+  source:
+    manual: lustria
+    printed_page: 55
+    section: Henchmen / Skink Braves / Jungle Native
+  name_i18n:
+    en: Jungle Native
+    es: null
+  effect_i18n:
+    en: Skink Braves move through jungle terrain without movement penalties.
+    es: null
+  applies_to:
+    profile_ids:
+    - skink-braves
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-lizardmen.skink-braves.jungle-native
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: saurus-braves--scaly-skin-5plus
+  name: Scaly Skin 5+
+  effect: Saurus Braves have a natural 5+ Scaly Skin save.
+  source:
+    manual: lustria
+    printed_page: 56
+    section: Henchmen / 0-4 Saurus Braves / Scaly Skin
+  name_i18n:
+    en: Scaly Skin 5+
+    es: null
+  effect_i18n:
+    en: Saurus Braves have a natural 5+ Scaly Skin save.
+    es: null
+  applies_to:
+    profile_ids:
+    - saurus-braves
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 5
+    - id: trait.natural-armour-stacks
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-stacks
+        parameters:
+          value: true
+    - id: trait.natural-armour-worst-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-worst-save
+        parameters:
+          value: 6
+- id: saurus-braves--bite-attack
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.bite-attack
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.bite-attack
+  name: Bite Attack
+  effect: A Saurus Brave makes one additional bite attack using its own Strength to wound and suffers no penalty for fighting
+    unarmed. The bite always strikes last, regardless of who charged or which weapons are used, and is resolved after attacks
+    made with Great Weapons.
+  source:
+    manual: lustria
+    printed_page: 56
+    section: Henchmen / 0-4 Saurus Braves / Bite Attack
+  name_i18n:
+    en: Bite Attack
+    es: null
+  effect_i18n:
+    en: A Saurus Brave makes one additional bite attack using its own Strength to wound and suffers no penalty for fighting
+      unarmed. The bite always strikes last, regardless of who charged or which weapons are used, and is resolved after attacks
+      made with Great Weapons.
+    es: null
+  applies_to:
+    profile_ids:
+    - saurus-braves
+- id: kroxigor--scaly-skin-4plus
+  name: Scaly Skin 4+
+  effect: The Kroxigor has a natural 4+ Scaly Skin save.
+  source:
+    manual: lustria
+    printed_page: 56
+    section: Henchmen / 0-1 Kroxigor / Scaly Skin
+  name_i18n:
+    en: Scaly Skin 4+
+    es: null
+  effect_i18n:
+    en: The Kroxigor has a natural 4+ Scaly Skin save.
+    es: null
+  applies_to:
+    profile_ids:
+    - kroxigor
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 4
+    - id: trait.natural-armour-stacks
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-stacks
+        parameters:
+          value: true
+    - id: trait.natural-armour-worst-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-worst-save
+        parameters:
+          value: 6
+- id: kroxigor--aquatic
+  name: Aquatic
+  effect: The Kroxigor moves through water without movement penalties and counts as being in cover while in water.
+  source:
+    manual: lustria
+    printed_page: 56
+    section: Henchmen / 0-1 Kroxigor / Aquatic
+  name_i18n:
+    en: Aquatic
+    es: null
+  effect_i18n:
+    en: The Kroxigor moves through water without movement penalties and counts as being in cover while in water.
+    es: null
+  applies_to:
+    profile_ids:
+    - kroxigor
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-lizardmen.kroxigor.aquatic
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: kroxigor--fear
+  name: Fear
+  effect: The Kroxigor causes Fear.
+  source:
+    manual: lustria
+    printed_page: 56
+    section: Henchmen / 0-1 Kroxigor / Fear
+  name_i18n:
+    en: Fear
+    es: null
+  effect_i18n:
+    en: The Kroxigor causes Fear.
+    es: null
+  applies_to:
+    profile_ids:
+    - kroxigor
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-lizardmen.kroxigor.fear
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: kroxigor--large-target
+  name: Large Target
+  effect: The Kroxigor may be selected as a shooting target even when it is not the closest eligible target, and missile attacks
+    against it gain +1 To Hit.
+  source:
+    manual: lustria
+    printed_page: 56
+    section: Henchmen / 0-1 Kroxigor / Large Target
+  name_i18n:
+    en: Large Target
+    es: null
+  effect_i18n:
+    en: The Kroxigor may be selected as a shooting target even when it is not the closest eligible target, and missile attacks
+      against it gain +1 To Hit.
+    es: null
+  applies_to:
+    profile_ids:
+    - kroxigor
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-lizardmen.kroxigor.large-target
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: kroxigor--animal
+  name: Animal
+  effect: The Kroxigor never gains Experience.
+  source:
+    manual: lustria
+    printed_page: 56
+    section: Henchmen / 0-1 Kroxigor / Animal
+  name_i18n:
+    en: Animal
+    es: null
+  effect_i18n:
+    en: The Kroxigor never gains Experience.
+    es: null
+  applies_to:
+    profile_ids:
+    - kroxigor
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lustria-lizardmen.kroxigor.animal
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--scaly-skin
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.lizardmen-scaly-skin
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.lizardmen-scaly-skin
+  name: Scaly Skin
+  effect: Lizardmen have natural Scaly Skin saves. Strength modifiers may not reduce a Scaly Skin save beyond 6+, although
+    an Injury-table result that denies armour saves also denies that 6+ Scaly Skin save. Scaly Skin may be combined with other
+    armour, except Hardened Leather provides no additional bonus.
+  source:
+    manual: lustria
+    printed_page: 53
+    section: Lizardmen Special Rules / Scaly Skin
+  name_i18n:
+    en: Scaly Skin
+    es: null
+  effect_i18n:
+    en: Lizardmen have natural Scaly Skin saves. Strength modifiers may not reduce a Scaly Skin save beyond 6+, although an
+      Injury-table result that denies armour saves also denies that 6+ Scaly Skin save. Scaly Skin may be combined with other
+      armour, except Hardened Leather provides no additional bonus.
+    es: null
+  applies_to:
+    band: true
+- id: band--cold-blooded
+  name: Cold-Blooded
+  effect: When taking a Rout test or any other Psychology test, roll 3D6 and keep the two lowest results. The warband may
+    never use the Leadership of a Saurus or Kroxigor when taking a Rout test.
+  source:
+    manual: lustria
+    printed_page: 53
+    section: Lizardmen Special Rules / Cold-Blooded
+  name_i18n:
+    en: Cold-Blooded
+    es: null
+  effect_i18n:
+    en: When taking a Rout test or any other Psychology test, roll 3D6 and keep the two lowest results. The warband may never
+      use the Leadership of a Saurus or Kroxigor when taking a Rout test.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lustria-lizardmen.band.cold-blooded
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--saurus-rarity
+  name: Saurus Rarity
+  effect: The number of Saurus Braves in the warband must always be lower than the number of Skink Braves.
+  source:
+    manual: lustria
+    printed_page: 53
+    section: Lizardmen Special Rules / Saurus Rarity
+  name_i18n:
+    en: Saurus Rarity
+    es: null
+  effect_i18n:
+    en: The number of Saurus Braves in the warband must always be lower than the number of Skink Braves.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lustria-lizardmen.band.saurus-rarity
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--lizardmen-special-skills-infiltration
+  kind: warband_skill
+  name: Infiltration
+  effect: Skink Heroes only. The Hero may deploy anywhere on the table at least 12" from every enemy model and must begin
+    the battle Hidden.
+  source:
+    manual: lustria
+    printed_page: 57
+    section: Lizardmen Special Skills / Infiltration
+  name_i18n:
+    en: Infiltration
+    es: null
+  effect_i18n:
+    en: Skink Heroes only. The Hero may deploy anywhere on the table at least 12" from every enemy model and must begin the
+      battle Hidden.
+    es: null
+  eligibility:
+  - skink-priest
+  - skink-great-crests
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.lustria-lizardmen.band.lizardmen-special-skills-infiltration
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--lizardmen-special-skills-great-hunter
+  kind: warband_skill
+  name: Great Hunter
+  effect: Skink Heroes only. While the Hero is in cover, attacks against the Hero suffer an additional -1 To Hit, for a total
+    cover modifier of -2 To Hit.
+  source:
+    manual: lustria
+    printed_page: 57
+    section: Lizardmen Special Skills / Great Hunter
+  name_i18n:
+    en: Great Hunter
+    es: null
+  effect_i18n:
+    en: Skink Heroes only. While the Hero is in cover, attacks against the Hero suffer an additional -1 To Hit, for a total
+      cover modifier of -2 To Hit.
+    es: null
+  eligibility:
+  - skink-priest
+  - skink-great-crests
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.lustria-lizardmen.band.lizardmen-special-skills-great-hunter
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--lizardmen-special-skills-battle-roar
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.bellowing-battle-roar
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.bellowing-battle-roar
+  name: Battle Roar
+  effect: Saurus Heroes only. Enemy models in base contact with the Hero suffer -1 To Hit during the first round of close
+    combat.
+  source:
+    manual: lustria
+    printed_page: 57
+    section: Lizardmen Special Skills / Battle Roar
+  name_i18n:
+    en: Battle Roar
+    es: null
+  effect_i18n:
+    en: Saurus Heroes only. Enemy models in base contact with the Hero suffer -1 To Hit during the first round of close combat.
+    es: null
+  eligibility:
+  - saurus-totem-warrior
+  applies_to:
+    band: true
+- id: band--lizardmen-special-skills-hardened-skin
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.hard-to-kill
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
+  name: Hardened Skin
+  effect: Saurus Heroes only. On the Injury chart, the Hero is taken Out of Action only on a result of 6+.
+  source:
+    manual: lustria
+    printed_page: 57
+    section: Lizardmen Special Skills / Hardened Skin
+  name_i18n:
+    en: Hardened Skin
+    es: null
+  effect_i18n:
+    en: Saurus Heroes only. On the Injury chart, the Hero is taken Out of Action only on a result of 6+.
+    es: null
+  eligibility:
+  - saurus-totem-warrior
+  applies_to:
+    band: true
+- id: band--sacred-marks
+  name: Sacred Marks
+  effect: A Lizardman Hero may have only one Sacred Mark. A Sacred Mark may be purchased only when that Hero is recruited,
+    never later during a campaign.
+  source:
+    manual: lustria
+    printed_page: 57
+    section: Sacred Marks
+  name_i18n:
+    en: Sacred Marks
+    es: null
+  effect_i18n:
+    en: A Lizardman Hero may have only one Sacred Mark. A Sacred Mark may be purchased only when that Hero is recruited, never
+      later during a campaign.
+    es: null
+  eligibility:
+  - skink-priest
+  - saurus-totem-warrior
+  - skink-great-crests
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.sacred-marks
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.sacred-marks
+    - id: campaign.sacred-mark-acquisition-history
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: proving that a mark was bought only at recruitment and never later requires campaign history.'
+- id: band--sacred-mark-huge-jaws
+  kind: mark
+  name: Huge Jaws
+  effect: Costs 40 gc. Saurus Heroes only. The Hero's Bite Attack gains +1 Strength.
+  source:
+    manual: lustria
+    printed_page: 57
+    section: Sacred Marks / Huge Jaws
+  name_i18n:
+    en: Huge Jaws
+    es: null
+  effect_i18n:
+    en: Costs 40 gc. Saurus Heroes only. The Hero's Bite Attack gains +1 Strength.
+    es: null
+  eligibility:
+  - saurus-totem-warrior
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: trait.huge-jaws
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.huge-jaws
+        parameters:
+          value: true
+- id: band--sacred-mark-venom-glands
+  kind: mark
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: special-rule.band--sacred-mark-venom-glands
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: special-rule.band--sacred-mark-venom-glands
+  runtime_selectable: true
+  name: Venom Glands
+  effect: Costs 40 gc. Skink Heroes only. The Hero may make attacks with its teeth instead of its weapons; resolve them as
+    Saurus Bite Attacks. These attacks give the target +1 to its armour save regardless of the Skink's Strength and gain +1
+    on the Injury roll.
+  source:
+    manual: lustria
+    printed_page: 57
+    section: Sacred Marks / Venom Glands
+  name_i18n:
+    en: Venom Glands
+    es: null
+  effect_i18n:
+    en: Costs 40 gc. Skink Heroes only. The Hero may make attacks with its teeth instead of its weapons; resolve them as Saurus
+      Bite Attacks. These attacks give the target +1 to its armour save regardless of the Skink's Strength and gain +1 on
+      the Injury roll.
+    es: null
+  eligibility:
+  - skink-priest
+  - skink-great-crests
+  applies_to:
+    band: true
+- id: band--sacred-mark-of-the-old-ones
+  kind: mark
+  name: Mark of the Old Ones
+  effect: Costs 50 gc. Once per battle, the Hero may change one failed roll into a valid successful result. This is a Sacred
+    Mark and is therefore available only when the Hero is recruited.
+  source:
+    manual: lustria
+    printed_page: 57
+    section: Sacred Marks / Mark of the Old Ones
+  name_i18n:
+    en: Mark of the Old Ones
+    es: null
+  effect_i18n:
+    en: Costs 50 gc. Once per battle, the Hero may change one failed roll into a valid successful result. This is a Sacred
+      Mark and is therefore available only when the Hero is recruited.
+    es: null
+  eligibility:
+  - skink-priest
+  - saurus-totem-warrior
+  - skink-great-crests
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: compiler.mark-of-the-old-ones
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.mark-of-the-old-ones

@@ -1,0 +1,138 @@
+schema_version: 1
+specifications:
+- id: access-nagarythe-already-strength
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: construction
+  sources:
+  - target: rule/trollheim/chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-powerful-build/profile.skill-access
+    digest: 1181ff58f0cfefa36b7671c566711d47b5063bd672ff143347b183b712916a47
+  interpretation: The source says Powerful Build grants Strength access and excludes Shadow Weavers. In this KB
+    variant both eligible profiles already list Strength (profiles, pp.140); applying the grant is idempotent. Combat
+    and Strength are the only applicable general tables in the current scoped catalogue, unlike the Mordheim Shadow
+    Warrior variant.
+  interaction_contract:
+    reads:
+    - construction.skill-lists
+    writes:
+    - construction.skill-access
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-master
+    context:
+      rule_id: band--shadow-warrior-special-skills-powerful-build
+    expect:
+      result.recipients:
+      - shadow-master
+      - shadow-walker
+  - id: caster-forbidden
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-weaver
+      special_rule_ids:
+      - band--shadow-warrior-special-skills-powerful-build
+    reject: special rule is not available
+  - id: shadow-master-already-available
+    roles:
+    - accepted
+    - grant
+    operation: general_skill_access
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-master
+      special_rule_ids: []
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.mighty-blow
+      - skill.resilient
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.strongman
+      - skill.unstoppable-charge
+      - skill.web-of-steel
+  - id: shadow-master-granted
+    roles:
+    - accepted
+    - grant
+    operation: general_skill_access
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-master
+      special_rule_ids:
+      - band--shadow-warrior-special-skills-powerful-build
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.mighty-blow
+      - skill.resilient
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.strongman
+      - skill.unstoppable-charge
+      - skill.web-of-steel
+  - id: shadow-walker-already-available
+    roles:
+    - accepted
+    - grant
+    operation: general_skill_access
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-walker
+      special_rule_ids: []
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.mighty-blow
+      - skill.resilient
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.strongman
+      - skill.unstoppable-charge
+      - skill.web-of-steel
+  - id: shadow-walker-granted
+    roles:
+    - accepted
+    - grant
+    operation: general_skill_access
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sons-of-nagarythe
+      profile_id: shadow-walker
+      special_rule_ids:
+      - band--shadow-warrior-special-skills-powerful-build
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.mighty-blow
+      - skill.resilient
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.strongman
+      - skill.unstoppable-charge
+      - skill.web-of-steel
+  mutations:
+  - id: redirect-redundant-grant
+    runtime_fault: suppress-skill-access-grant
+    cases:
+    - recipients
+    - shadow-master-already-available
+    - shadow-master-granted
+    - shadow-walker-already-available
+    - shadow-walker-granted
+    equivalent_reason: Both eligible profiles already have Combat and Strength before selecting the rule. Redirecting
+      only this redundant grant from Strength to Combat cannot change any allowed general skill. Every candidate
+      general skill and both eligible profiles are checked, with and without selection. Eligibility is tested separately.
+      Changes to profile lists invalidate the pinned source digest.

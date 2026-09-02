@@ -1,0 +1,567 @@
+schema_version: 2
+ruleset: mordheim
+scope: close-combat-only
+skills:
+- id: skill.acrobat
+  name: Acrobat
+  category: speed
+  summary: Pass an Initiative test to avoid damage from falls or jumps up to 12 inches; re-roll failed Diving Charge rolls.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Speed Skills / Acrobat
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.acrobat
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: movement, falling and diving-charge rules are outside the current scope."
+- id: skill.arcane-lore
+  name: Arcane Lore
+  category: academic
+  summary: A warrior may learn Lesser Magic when they own a Tome of Magic, subject to the listed restrictions.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Academic Skills / Arcane Lore
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.arcane-lore
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: magic progression and Tome of Magic rules are outside the current scope."
+- id: skill.battle-tongue
+  name: Battle Tongue
+  category: academic
+  summary: A leader increases the range of their Leader ability by 6 inches, except for Undead leaders.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Academic Skills / Battle Tongue
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.battle-tongue
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: warband leadership-range rules are outside the current scope."
+- id: skill.dodge
+  name: Dodge
+  category: speed
+  summary: Avoid a missile hit on a 5+ before rolling to wound.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Speed Skills / Dodge
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.dodge
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: missile attacks are outside the current close-combat-only scope."
+- id: skill.eagle-eyes
+  name: Eagle Eyes
+  category: shooting
+  summary: Add 6 inches to the range of every missile weapon used by the warrior.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Shooting Skills / Eagle Eyes
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.eagle-eyes
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: missile-weapon range rules are outside the current close-combat-only scope."
+- id: skill.fearsome
+  name: Fearsome
+  category: strength
+  summary: The warrior causes fear in opposing models.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Strength Skills / Fearsome
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.fearsome
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: psychology rules are outside the current one-against-one combat scope."
+- id: skill.haggle
+  name: Haggle
+  category: academic
+  summary: Once per post-battle sequence, reduce one item's cost by 2D6 gold crowns to a minimum of 1.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Academic Skills / Haggle
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.haggle
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: post-battle trading rules are outside the current scope."
+- id: skill.hunter
+  name: Hunter
+  category: shooting
+  summary: Fire a handgun or Hochland long rifle in every Shooting phase.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Shooting Skills / Hunter
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.hunter
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: shooting and reload rules are outside the current close-combat-only scope."
+- id: skill.knife-fighter
+  name: Knife-Fighter
+  category: shooting
+  summary: Throw up to three throwing knives or stars per Shooting phase, dividing shots among targets.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Shooting Skills / Knife-Fighter
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.knife-fighter
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: shooting attacks and target selection are outside the current scope."
+- id: skill.leap
+  name: Leap
+  category: speed
+  summary: Leap D6 inches once per Movement phase in addition to normal movement.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Speed Skills / Leap
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.leap
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: movement and terrain traversal are outside the current one-against-one combat scope."
+- id: skill.nimble
+  name: Nimble
+  category: shooting
+  summary: Move and fire with weapons that normally require the shooter not to move; cannot combine with Quick Shot.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Shooting Skills / Nimble
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.nimble
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: shooting movement restrictions are outside the current close-combat-only scope."
+- id: skill.pistolier
+  name: Pistolier
+  category: shooting
+  summary: A brace of pistols may fire twice, and a single pistol may fire in the turn it reloads.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Shooting Skills / Pistolier
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.pistolier
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: shooting and reload rules are outside the current close-combat-only scope."
+- id: skill.pit-fighter
+  name: Pit Fighter
+  category: strength
+  summary: Gain +1 Weapon Skill and +1 Attack while fighting inside a building or ruin.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Strength Skills / Pit Fighter
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.pit-fighter
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: terrain and building state are outside the current one-against-one combat scope."
+- id: skill.quick-shot
+  name: Quick Shot
+  category: shooting
+  summary: Shoot twice per Shooting phase with a bow or crossbow, excluding crossbow pistols.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Shooting Skills / Quick Shot
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.quick-shot
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: shooting attacks are outside the current close-combat-only scope."
+- id: skill.scale-sheer-surfaces
+  name: Scale Sheer Surfaces
+  category: speed
+  summary: Climb up or down up to twice the warrior's Movement without Initiative tests.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Speed Skills / Scale Sheer Surfaces
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.scale-sheer-surfaces
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: climbing and terrain traversal are outside the current scope."
+- id: skill.sorcery
+  name: Sorcery
+  category: academic
+  summary: A spellcasting Hero gains +1 to cast spells, except Sisters of Sigmar and Warrior-Priests.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Academic Skills / Sorcery
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.sorcery
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: spellcasting rules are outside the current one-against-one combat scope."
+- id: skill.sprint
+  name: Sprint
+  category: speed
+  summary: Triple Movement when running or charging instead of doubling it.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Speed Skills / Sprint
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.sprint
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: movement and charge-distance rules are outside the current scope."
+- id: skill.streetwise
+  name: Streetwise
+  category: academic
+  summary: Add +2 to the chance of finding rare items.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Academic Skills / Streetwise
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.streetwise
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: trading and rare-item availability are outside the current scope."
+- id: skill.trick-shooter
+  name: Trick Shooter
+  category: shooting
+  summary: Ignore cover modifiers when using missile weapons.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Shooting Skills / Trick Shooter
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.trick-shooter
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: shooting and cover rules are outside the current close-combat-only scope."
+- id: skill.warrior-wizard
+  name: Warrior Wizard
+  category: academic
+  summary: A spellcaster may wear armour and cast spells.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Academic Skills / Warrior Wizard
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.warrior-wizard
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: spellcasting rules are outside the current one-against-one combat scope."
+- id: skill.weapons-expert
+  name: Weapons Expert
+  category: shooting
+  summary: Use any missile weapon, not only weapons in the warrior's normal equipment options.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Shooting Skills / Weapons Expert
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.weapons-expert
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: missile-equipment access is outside the current close-combat-only scope."
+- id: skill.weapons-training
+  name: Weapons Training
+  category: combat
+  summary: Use any hand-to-hand weapon, not only weapons in the warrior's normal equipment options.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Combat Skills / Weapons Training
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.weapons-training
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: dynamic equipment-access changes are outside the current scope."
+- id: skill.wyrdstone-hunter
+  name: Wyrdstone Hunter
+  category: academic
+  summary: Re-roll one Exploration chart die when the Hero searches the ruins.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Skills / Academic Skills / Wyrdstone Hunter
+    url: https://mordheimer.net/docs/campaigns/skills
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: none
+    effects:
+    - id: unimplemented.skill.wyrdstone-hunter
+      scope: "NO"
+      binding: null
+      reason: "Does not impact duel simulations: exploration rules are outside the current scope."
+- id: skill.combat-master
+  name: Combat Master
+  category: combat
+  summary: +1 Attack while fighting two or more enemies; immune to All Alone tests.
+  kind: general
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Dwarf Special Skills / Combat Master
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
+- id: skill.expert-swordsman
+  name: Expert Swordsman
+  category: combat
+  summary: Re-roll missed attacks with normal swords or weeping blades when charging.
+  kind: general
+  engine_option: Expert Swordsman
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 2 Companions / Special Rules / Expert Swordsman
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+- id: skill.jump-up
+  name: Jump Up
+  category: speed
+  summary: Ignores knocked-down Injury results, except those caused by No Pain or a successful helmet save.
+  kind: general
+  engine_option: Jump Up
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs: []
+- id: skill.lightning-reflexes
+  name: Lightning Reflexes
+  category: speed
+  summary: When charged, strikes first and resolves ties by Initiative.
+  kind: general
+  engine_option: Lightning Reflexes
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0 – 2 Knights Vanguard / Special Rules / Lightning Reflexes
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+- id: skill.mighty-blow
+  name: Mighty Blow
+  category: strength
+  summary: +1 Strength in close combat, excluding pistols.
+  kind: general
+  engine_option: Mighty Blow
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs: []
+- id: skill.resilient
+  name: Resilient
+  category: strength
+  summary: Close-combat hits against the warrior suffer -1 Strength without changing save modifiers.
+  kind: general
+  engine_option: Resilient
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs: []
+- id: skill.step-aside
+  name: Step Aside
+  category: combat
+  summary: Unmodified 5+ save against close-combat wounds after armour saves.
+  kind: general
+  engine_option: Step Aside
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs: []
+- id: skill.strike-to-injure
+  name: Strike to Injure
+  category: combat
+  summary: +1 to Injury rolls caused in close combat.
+  kind: general
+  engine_option: Strike to Injure
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs: []
+- id: skill.strongman
+  name: Strongman
+  category: strength
+  summary: Double-handed weapons not longer strike last.
+  kind: general
+  engine_option: Strongman
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0 – 3 Blackguards / Special Rules / Strongman
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+- id: skill.unstoppable-charge
+  name: Unstoppable Charge
+  category: strength
+  summary: +1 WS when charging.
+  kind: general
+  engine_option: Unstoppable Charge
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs: []
+- id: skill.web-of-steel
+  name: Web of Steel
+  category: combat
+  summary: +1 on close-combat Critical Hit tables.
+  kind: general
+  engine_option: Web of Steel
+  rules_source_url: https://mordheimer.net/docs/campaigns/skills
+  source_refs: []

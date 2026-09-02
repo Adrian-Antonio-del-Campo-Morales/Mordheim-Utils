@@ -1,0 +1,71 @@
+schema_version: 2
+id: pirates
+canonical_family: pirates
+name: Pirates
+name_i18n:
+  en: Pirates
+  es: null
+original_locale: en
+ruleset: mordheim
+categories:
+- 1b
+grade: 1b
+setting: Mordheim
+publication: 'Town Cryer #9'
+status: source-normalized
+sources:
+- manual: mordheimer.net
+  printed_page: 0
+  section: Pirates
+  url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: pirate-captain
+    minimum: 1
+    maximum: 1
+  - profile_id: ships-mates
+    minimum: 0
+    maximum: 2
+  - profile_id: cabin-boys
+    minimum: 0
+    maximum: 2
+  - profile_id: crew
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: gunners
+    minimum: 0
+    maximum: 7
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: boatswains
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: swabbies
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--kidnapped
+- band--stragglers-and-prisoners
+- band--hired-swords
+- band--one-off-games
+- band--succession
+- band--swabbie-limit
+- band--pirate-special-skills-sea-shanty-singer
+- band--pirate-special-skills-sea-legs
+- band--pirate-special-skills-cutlass-master
+- band--pirate-special-skills-booming-voice
+- band--pirate-special-skills-hardy-constitution
+- band--pirate-special-skills-swashbuckler

@@ -1,0 +1,242 @@
+schema_version: 2
+band_id: mercenaries
+rules:
+- id: mercenary-captain--leader
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.mercenaries.mercenary-captain.leader
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Leader
+  effect: 'Any warrior within 6" of the Mercenary
+
+    Captain may use his Leadership characteristic when
+
+    taking Leadership tests.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Mercenary captain / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any warrior within 6" of the Mercenary
+
+      Captain may use his Leadership characteristic when
+
+      taking Leadership tests.'
+    es: null
+  applies_to:
+    profile_ids:
+    - mercenary-captain
+- id: swordsmen--expert-swordsmen
+  kind: profile_ability
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: selectable
+    effects:
+    - id: skill.expert-swordsman
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.expert-swordsman
+  name: Expert Swordsmen
+  effect: 'Swordsmen are so skilled with
+
+    their weapons that they may re-roll any failed hits
+
+    when charging. Note that this only applies when they
+
+    are armed with normal swords, and not with doublehanded swords or any other weapons.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Swordsmen / Special Rules / Expert Swordsmen
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+  name_i18n:
+    en: Expert Swordsmen
+    es: null
+  effect_i18n:
+    en: 'Swordsmen are so skilled with
+
+      their weapons that they may re-roll any failed hits
+
+      when charging. Note that this only applies when they
+
+      are armed with normal swords, and not with doublehanded swords or any other weapons.'
+    es: null
+  applies_to:
+    profile_ids:
+    - swordsmen
+- id: band--reikland-command-radius
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.mercenaries.band.reikland-command-radius
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Reikland — Military Discipline
+  effect: Reikland fighters may use their Captain's Leadership while within 12" instead of the normal 6".
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Reikland / Reiklander Special rules
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+  name_i18n:
+    en: Reikland — Military Discipline
+    es: null
+  effect_i18n:
+    en: Reikland fighters may use their Captain's Leadership while within 12" instead of the normal 6".
+    es: null
+  applies_to:
+    band: true
+- id: band--reikland-marksman-training
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.mercenaries.band.reikland-marksman-training
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: disparo."
+  name: Reikland — Marksman Training
+  effect: All Reikland Marksmen have +1 Ballistic Skill, including Marksmen recruited after the warband is created.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Reikland / Reiklander Special rules
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+  name_i18n:
+    en: Reikland — Marksman Training
+    es: null
+  effect_i18n:
+    en: All Reikland Marksmen have +1 Ballistic Skill, including Marksmen recruited after the warband is created.
+    es: null
+  applies_to:
+    band: true
+- id: band--middenheim-physical-prowess
+  kind: warband_variant
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: selectable
+    effects:
+    - id: profile.characteristics
+      scope: "YES"
+      binding:
+        kind: profile
+        id: profile.characteristics
+        parameters:
+          profile_ids:
+          - mercenary-captain
+          - champions
+          bonuses:
+            strength: 1
+  name: Middenheim — Physical Prowess
+  effect: The Mercenary Captain and all Champions in a Middenheim warband start with Strength 4 instead of Strength 3.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Middenheim / Middenheimer Special rules
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+  name_i18n:
+    en: Middenheim — Physical Prowess
+    es: null
+  effect_i18n:
+    en: The Mercenary Captain and all Champions in a Middenheim warband start with Strength 4 instead of Strength 3.
+    es: null
+  applies_to:
+    band: true
+  eligibility:
+  - mercenary-captain
+  - champions
+- id: band--marienburg-traders
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.mercenaries.band.marienburg-traders
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Marienburg — Natural Traders
+  effect: A Marienburg warband receives +1 when attempting to find Rare items.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Marienburg / Marienburger Special rules
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+  name_i18n:
+    en: Marienburg — Natural Traders
+    es: null
+  effect_i18n:
+    en: A Marienburg warband receives +1 when attempting to find Rare items.
+    es: null
+  applies_to:
+    band: true
+- id: band--marienburg-wealth
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.mercenaries.band.marienburg-wealth
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Marienburg — Enormous Wealth
+  effect: A Marienburg warband starts a campaign with 600 gc instead of 500 gc. In a one-off game it receives 20% more gold
+    crowns for recruitment.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Marienburg / Marienburger Special rules
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+  name_i18n:
+    en: Marienburg — Enormous Wealth
+    es: null
+  effect_i18n:
+    en: A Marienburg warband starts a campaign with 600 gc instead of 500 gc. In a one-off game it receives 20% more gold
+      crowns for recruitment.
+    es: null
+  applies_to:
+    band: true
+- id: band--ostermark-stubborn-resolve
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.mercenaries.band.ostermark-stubborn-resolve
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Ostermark — Stubborn Resolve
+  effect: Ostermark Heroes and Henchmen may re-roll a failed Leadership test for All Alone, and the warband may re-roll a
+    failed Rout test. The second result must be accepted.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: special rules / Ostermark / Ostermarker Special rules
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
+  name_i18n:
+    en: Ostermark — Stubborn Resolve
+    es: null
+  effect_i18n:
+    en: Ostermark Heroes and Henchmen may re-roll a failed Leadership test for All Alone, and the warband may re-roll a failed
+      Rout test. The second result must be accepted.
+    es: null
+  applies_to:
+    band: true

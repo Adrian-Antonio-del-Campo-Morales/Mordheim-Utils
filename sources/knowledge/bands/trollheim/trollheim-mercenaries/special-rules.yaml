@@ -1,0 +1,192 @@
+schema_version: 2
+band_id: trollheim-mercenaries
+rules:
+- id: mercenary-captain--leader
+  name: Leader
+  effect: Any warrior within 6" of the Mercenary Captain may use his Leadership when taking Leadership tests.
+  source:
+    manual: trollheim
+    printed_page: 71
+    section: Heroes / 1 Mercenary Captain / Leader
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: Any warrior within 6" of the Mercenary Captain may use his Leadership when taking Leadership tests.
+    es: null
+  applies_to:
+    profile_ids:
+    - mercenary-captain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.trollheim-mercenaries.mercenary-captain.leader
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: swordsmen--expert-swordsmen
+  kind: profile_ability
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.expert-swordsman
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.expert-swordsman
+  name: Expert Swordsmen
+  effect: When charging, Swordsmen may re-roll failed To Hit rolls while armed with normal swords. This does not apply when
+    using great swords or any other weapon.
+  source:
+    manual: trollheim
+    printed_page: 71
+    section: Henchmen / 0-5 Swordsmen / Expert Swordsmen
+  name_i18n:
+    en: Expert Swordsmen
+    es: null
+  effect_i18n:
+    en: When charging, Swordsmen may re-roll failed To Hit rolls while armed with normal swords. This does not apply when
+      using great swords or any other weapon.
+    es: null
+  applies_to:
+    profile_ids:
+    - swordsmen
+- id: band--reikland-command-radius
+  name: Reikland — Military Discipline
+  effect: Reikland warriors may use their Captain's Leadership while within 12" instead of the normal 6".
+  source:
+    manual: trollheim
+    printed_page: 68
+    section: Reikland / Special Rules / Military Discipline
+  name_i18n:
+    en: Reikland — Military Discipline
+    es: null
+  effect_i18n:
+    en: Reikland warriors may use their Captain's Leadership while within 12" instead of the normal 6".
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.trollheim-mercenaries.band.reikland-command-radius
+      scope: LATER
+      binding: null
+      reason: 'Deferred subsystem: psychology or mounts.'
+- id: band--reikland-marksman-training
+  name: Reikland — Marksman Training
+  effect: All Reikland Marksmen add +1 to their Ballistic Skill, whether recruited when the warband is created or later during
+    a campaign.
+  source:
+    manual: trollheim
+    printed_page: 68
+    section: Reikland / Special Rules / Marksman Training
+  name_i18n:
+    en: Reikland — Marksman Training
+    es: null
+  effect_i18n:
+    en: All Reikland Marksmen add +1 to their Ballistic Skill, whether recruited when the warband is created or later during
+      a campaign.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.trollheim-mercenaries.band.reikland-marksman-training
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--middenheim-physical-prowess
+  kind: warband_variant
+  name: Middenheim — Physical Prowess
+  effect: The Mercenary Captain and all Champions in a Middenheim warband start with Strength 4 instead of Strength 3.
+  source:
+    manual: trollheim
+    printed_page: 69
+    section: Middenheim / Special Rules
+  name_i18n:
+    en: Middenheim — Physical Prowess
+    es: null
+  effect_i18n:
+    en: The Mercenary Captain and all Champions in a Middenheim warband start with Strength 4 instead of Strength 3.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: profile.characteristics
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.characteristics
+        parameters:
+          profile_ids:
+          - mercenary-captain
+          - champions
+          bonuses:
+            strength: 1
+  eligibility:
+  - mercenary-captain
+  - champions
+- id: band--marienburg-traders
+  name: Marienburg — Natural Traders
+  effect: A Marienburg warband receives +1 when attempting to find Rare items.
+  source:
+    manual: trollheim
+    printed_page: 69
+    section: Marienburg / Special Rules / Natural Traders
+  name_i18n:
+    en: Marienburg — Natural Traders
+    es: null
+  effect_i18n:
+    en: A Marienburg warband receives +1 when attempting to find Rare items.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.trollheim-mercenaries.band.marienburg-traders
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+- id: band--marienburg-wealth
+  name: Marienburg — Enormous Wealth
+  effect: A Marienburg warband starts a campaign with 600 gc instead of 500 gc. In a one-off game it receives 20% more gold
+    crowns for recruitment.
+  source:
+    manual: trollheim
+    printed_page: 69
+    section: Marienburg / Special Rules / Enormous Wealth
+  name_i18n:
+    en: Marienburg — Enormous Wealth
+    es: null
+  effect_i18n:
+    en: A Marienburg warband starts a campaign with 600 gc instead of 500 gc. In a one-off game it receives 20% more gold
+      crowns for recruitment.
+    es: null
+  applies_to:
+    band: true
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.trollheim-mercenaries.band.marienburg-wealth
+      scope: 'NO'
+      binding: null
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'

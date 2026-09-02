@@ -1,0 +1,378 @@
+schema_version: 2
+band_id: bretonnian-knights
+rules:
+- id: questing-knight--leader
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.bretonnian-knights.questing-knight.leader
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Leader
+  effect: 'Any warrior within 6" of the Questing Knight may
+
+    use his Leadership characteristic when taking Leadership
+
+    tests.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Questing Knight / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  name_i18n:
+    en: Leader
+    es: null
+  effect_i18n:
+    en: 'Any warrior within 6" of the Questing Knight may
+
+      use his Leadership characteristic when taking Leadership
+
+      tests.'
+    es: null
+  applies_to:
+    profile_ids:
+    - questing-knight
+- id: questing-knight--knights-virtue
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.bretonnian-knights.questing-knight.knights-virtue
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Knights Virtue
+  effect: 'A Questing Knight is a chivalrous warrior
+
+    who is superior to ordinary warriors. He will never panic and
+
+    break from combat and so does not have to pass a Leadership
+
+    test for being all alone.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Questing Knight / Special Rules / Knights Virtue
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  name_i18n:
+    en: Knights Virtue
+    es: null
+  effect_i18n:
+    en: 'A Questing Knight is a chivalrous warrior
+
+      who is superior to ordinary warriors. He will never panic and
+
+      break from combat and so does not have to pass a Leadership
+
+      test for being all alone.'
+    es: null
+  applies_to:
+    profile_ids:
+    - questing-knight
+- id: knights-errant--knights-virtue
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: profile
+    effects:
+    - id: unimplemented.bretonnian-knights.knights-errant.knights-virtue
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Knights Virtue
+  effect: 'A Knight Errant is a chivalrous warrior who
+
+    is superior to ordinary warriors. He will never panic and
+
+    break from combat and so does not have to pass a Leadership
+
+    test for being all alone.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 2 Knights Errant / Special Rules / Knights Virtue
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  name_i18n:
+    en: Knights Virtue
+    es: null
+  effect_i18n:
+    en: 'A Knight Errant is a chivalrous warrior who
+
+      is superior to ordinary warriors. He will never panic and
+
+      break from combat and so does not have to pass a Leadership
+
+      test for being all alone.'
+    es: null
+  applies_to:
+    profile_ids:
+    - knights-errant
+- id: band--lady-of-the-lake-blessing
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.bretonnian-knights.band.lady-of-the-lake-blessing
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: disparo."
+  name: Lady of the Lake's Blessing
+  effect: 'Before heading into battle Bretonnian Knights kneel and pray
+
+    to the Lady of the Lake, avowing to fight to the death for
+
+    honour and justice.
+
+    Before playing a game of Mordheim
+
+    make a Leadership test against the Leadership characteristic
+
+    of the warbands leader. If the test is successful the Lady of
+
+    the Lake has bestowed her blessing on the warband. The
+
+    blessing takes the form of a powerful curse upon the enemies
+
+    of chivalry, and in particular upon those that make use of the
+
+    foul and dishonourable weapons of mass destruction. Any
+
+    model in the opposing warband who wishes to fire a black
+
+    powder weapon must roll a D6 and score 4+ to overcome the
+
+    curse, otherwise they may not fire the weapon. The opposing
+
+    player must test each time they wish to fire such a weapon.
+
+    Models armed with other shooting weapons, such as bows
+
+    and crossbows, do not have to test unless they dare raise their
+
+    weapons against the gallant Knights of Bretonnia. If any
+
+    enemy model wishes to shoot at a Bretonnian Knight
+
+    (Questing Knights and Errants only), then they must first roll
+
+    a 4+ on a D6 to overcome the curse.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special rules
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  name_i18n:
+    en: Lady of the Lake's Blessing
+    es: Bendición de la Dama del Lago
+  effect_i18n:
+    en: 'Before heading into battle Bretonnian Knights kneel and pray
+
+      to the Lady of the Lake, avowing to fight to the death for
+
+      honour and justice.
+
+      Before playing a game of Mordheim
+
+      make a Leadership test against the Leadership characteristic
+
+      of the warbands leader. If the test is successful the Lady of
+
+      the Lake has bestowed her blessing on the warband. The
+
+      blessing takes the form of a powerful curse upon the enemies
+
+      of chivalry, and in particular upon those that make use of the
+
+      foul and dishonourable weapons of mass destruction. Any
+
+      model in the opposing warband who wishes to fire a black
+
+      powder weapon must roll a D6 and score 4+ to overcome the
+
+      curse, otherwise they may not fire the weapon. The opposing
+
+      player must test each time they wish to fire such a weapon.
+
+      Models armed with other shooting weapons, such as bows
+
+      and crossbows, do not have to test unless they dare raise their
+
+      weapons against the gallant Knights of Bretonnia. If any
+
+      enemy model wishes to shoot at a Bretonnian Knight
+
+      (Questing Knights and Errants only), then they must first roll
+
+      a 4+ on a D6 to overcome the curse.'
+    es: null
+  applies_to:
+    band: true
+- id: band--squire-retinue-limit
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: band
+    effects:
+    - id: unimplemented.bretonnian-knights.band.squire-retinue-limit
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: campaña."
+  name: Squire Retinue Limit
+  effect: The warband may not include more Squires than Knights. For this limit, Knights are the Questing Knight plus all
+    Knights Errant in the warband.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Choice of warriors / Squires
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  name_i18n:
+    en: Squire Retinue Limit
+    es: Límite de Escuderos
+  effect_i18n:
+    en: The warband may not include more Squires than Knights. For this limit, Knights are the Questing Knight plus all Knights
+      Errant in the warband.
+    es: La banda no puede incluir más Escuderos que Caballeros. Para este límite cuentan el Caballero Andante y todos los
+      Caballeros Noveles de la banda.
+  applies_to:
+    band: true
+- id: band--virtue-of-purity
+  kind: virtue
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.bretonnian-knights.band.virtue-of-purity
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: magia."
+  name: Virtue of Purity
+  effect: Any spell cast against the warrior is dispelled on a D6 roll of 4+.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Bretonnian Knight Virtues
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  name_i18n:
+    en: Virtue of Purity
+    es: Virtud de la Pureza
+  effect_i18n:
+    en: Any spell cast against the warrior is dispelled on a D6 roll of 4+.
+    es: Cualquier hechizo lanzado contra el guerrero se dispersa con un resultado de 4+ en 1D6.
+  applies_to:
+    band: true
+- id: band--virtue-of-valour
+  kind: virtue
+  runtime:
+    scope: "YES"
+    implemented: "YES"
+    grant: selectable
+    effects:
+    - id: skill.virtue-of-valour
+      scope: "YES"
+      binding:
+        kind: mechanic
+        id: skill.virtue-of-valour
+  name: Virtue of Valour
+  effect: When fighting a model with a higher Strength characteristic, the warrior may re-roll failed hand-to-hand hit rolls.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Bretonnian Knight Virtues
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  name_i18n:
+    en: Virtue of Valour
+    es: Virtud del Valor
+  effect_i18n:
+    en: When fighting a model with a higher Strength characteristic, the warrior may re-roll failed hand-to-hand hit rolls.
+    es: Cuando combate contra un modelo con una característica de Fuerza superior, el guerrero puede repetir las tiradas para
+      impactar fallidas en combate cuerpo a cuerpo.
+  applies_to:
+    band: true
+- id: band--virtue-of-discipline
+  kind: virtue
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.bretonnian-knights.band.virtue-of-discipline
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Virtue of Discipline
+  effect: Once per game, if the warrior is not out of action, stunned or knocked down, the warband may re-roll a failed Rout
+    test.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Bretonnian Knight Virtues
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  name_i18n:
+    en: Virtue of Discipline
+    es: Virtud de la Disciplina
+  effect_i18n:
+    en: Once per game, if the warrior is not out of action, stunned or knocked down, the warband may re-roll a failed Rout
+      test.
+    es: Una vez por partida, si el guerrero no está fuera de combate, aturdido ni derribado, la banda puede repetir un chequeo
+      de retirada fallido.
+  applies_to:
+    band: true
+- id: band--virtue-of-noble-disdain
+  kind: virtue
+  runtime:
+    scope: "LATER"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.bretonnian-knights.band.virtue-of-noble-disdain
+      scope: "LATER"
+      binding: null
+      reason: "Deferred subsystem: psicología."
+  name: Virtue of Noble Disdain
+  effect: The warrior is subject to Hatred of all enemies armed with shooting weapons.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Bretonnian Knight Virtues
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  name_i18n:
+    en: Virtue of Noble Disdain
+    es: Virtud del Noble Desdén
+  effect_i18n:
+    en: The warrior is subject to Hatred of all enemies armed with shooting weapons.
+    es: El guerrero está sujeto a Odio contra todos los enemigos armados con armas de proyectiles.
+  applies_to:
+    band: true
+- id: band--virtue-of-impetuous
+  kind: virtue
+  runtime:
+    scope: "NO"
+    implemented: "NO"
+    grant: selectable
+    effects:
+    - id: unimplemented.bretonnian-knights.band.virtue-of-impetuous
+      scope: "NO"
+      binding: null
+      reason: "Out of scope: ataques."
+  name: Virtue of Impetuous
+  effect: The warrior may add +D3" to a charge move. Roll the D3 each time a charge is declared and before moving the model.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Bretonnian Knight Virtues
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
+  name_i18n:
+    en: Virtue of Impetuous
+    es: Virtud del Caballero Impetuoso
+  effect_i18n:
+    en: The warrior may add +D3" to a charge move. Roll the D3 each time a charge is declared and before moving the model.
+    es: El guerrero puede añadir +1D3" a un movimiento de carga. Tira el 1D3 cada vez que declare una carga y antes de mover
+      el modelo.
+  applies_to:
+    band: true
