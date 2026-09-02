@@ -1,19 +1,19 @@
 """combat.modular.aftermath: responsabilidad extraída sin alterar las reglas."""
 from __future__ import annotations
-from mordheim_combat_lab.combat import phases
+from mordheim_combat import phases
 
 from dataclasses import replace
-from mordheim_combat_lab.combat.phases import _characteristic_test
-from mordheim_combat_lab.combat.modular.attacks import resolve_reference_attack
-from mordheim_combat_lab.combat.modular.state import AttackOutcome
-from mordheim_combat_lab.combat.modular.state import FighterState
-from mordheim_combat_lab.combat.modular.state import _parry_capacity
-from mordheim_combat_lab.combat.phases import Condition
-from mordheim_combat_lab.combat.phases import has_tag
-from mordheim_combat_lab.domain.dice import DiceSource
-from mordheim_combat_lab.domain.dice import RollRequest
-from mordheim_combat_lab.domain.models import CompiledFighter
-from mordheim_combat_lab.domain.models import EffectSet
+from mordheim_combat.phases import _characteristic_test
+from mordheim_combat.modular.attacks import resolve_reference_attack
+from mordheim_combat.modular.state import AttackOutcome
+from mordheim_combat.modular.state import FighterState
+from mordheim_combat.modular.state import _parry_capacity
+from mordheim_combat.phases import Condition
+from mordheim_combat.phases import has_tag
+from mordheim_core.dice import DiceSource
+from mordheim_core.dice import RollRequest
+from mordheim_core.models import CompiledFighter
+from mordheim_core.models import EffectSet
 
 
 

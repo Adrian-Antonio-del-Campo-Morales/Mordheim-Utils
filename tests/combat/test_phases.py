@@ -3,43 +3,43 @@ from __future__ import annotations
 
 from dataclasses import replace
 from fractions import Fraction
-from mordheim_combat_lab.combat.phases import ArmourContext
-from mordheim_combat_lab.combat.phases import AttackPoolContext
-from mordheim_combat_lab.combat.phases import BearHugContext
-from mordheim_combat_lab.combat.phases import Condition
-from mordheim_combat_lab.combat.phases import HitContext
-from mordheim_combat_lab.combat.phases import InjuryContext
-from mordheim_combat_lab.combat.phases import ParryContext
-from mordheim_combat_lab.combat.phases import Phase
-from mordheim_combat_lab.combat.phases import PriorityContext
-from mordheim_combat_lab.combat.phases import RoundContext
-from mordheim_combat_lab.combat.phases import SpecialSaveContext
-from mordheim_combat_lab.combat.phases import StrikeContext
-from mordheim_combat_lab.combat.phases import WoundContext
-from mordheim_combat_lab.combat.phases import armour_target
-from mordheim_combat_lab.combat.phases import build_attacks
-from mordheim_combat_lab.combat.phases import resolve_armour
-from mordheim_combat_lab.combat.phases import resolve_attack
-from mordheim_combat_lab.combat.phases import resolve_bear_hug
-from mordheim_combat_lab.combat.phases import resolve_hit
-from mordheim_combat_lab.combat.phases import resolve_injury
-from mordheim_combat_lab.combat.phases import resolve_parry
-from mordheim_combat_lab.combat.phases import resolve_priority
-from mordheim_combat_lab.combat.phases import resolve_strike_sequence
-from mordheim_combat_lab.combat.phases import resolve_special_save
-from mordheim_combat_lab.combat.phases import resolve_wound
-from mordheim_combat_lab.combat.phases import to_hit_target
-from mordheim_combat_lab.combat.phases import wound_target
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.dice import AlwaysAccept
-from mordheim_combat_lab.domain.dice import AlwaysReject
-from mordheim_combat_lab.domain.dice import KeyedDice
-from mordheim_combat_lab.domain.dice import RollRequest
-from mordheim_combat_lab.domain.dice import ScriptedDice
-from mordheim_combat_lab.domain.dice import exact_distribution
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import EffectSet
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_combat.phases import ArmourContext
+from mordheim_combat.phases import AttackPoolContext
+from mordheim_combat.phases import BearHugContext
+from mordheim_combat.phases import Condition
+from mordheim_combat.phases import HitContext
+from mordheim_combat.phases import InjuryContext
+from mordheim_combat.phases import ParryContext
+from mordheim_combat.phases import Phase
+from mordheim_combat.phases import PriorityContext
+from mordheim_combat.phases import RoundContext
+from mordheim_combat.phases import SpecialSaveContext
+from mordheim_combat.phases import StrikeContext
+from mordheim_combat.phases import WoundContext
+from mordheim_combat.phases import armour_target
+from mordheim_combat.phases import build_attacks
+from mordheim_combat.phases import resolve_armour
+from mordheim_combat.phases import resolve_attack
+from mordheim_combat.phases import resolve_bear_hug
+from mordheim_combat.phases import resolve_hit
+from mordheim_combat.phases import resolve_injury
+from mordheim_combat.phases import resolve_parry
+from mordheim_combat.phases import resolve_priority
+from mordheim_combat.phases import resolve_strike_sequence
+from mordheim_combat.phases import resolve_special_save
+from mordheim_combat.phases import resolve_wound
+from mordheim_combat.phases import to_hit_target
+from mordheim_combat.phases import wound_target
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.dice import AlwaysAccept
+from mordheim_core.dice import AlwaysReject
+from mordheim_core.dice import KeyedDice
+from mordheim_core.dice import RollRequest
+from mordheim_core.dice import ScriptedDice
+from mordheim_core.dice import exact_distribution
+from mordheim_core.models import Characteristics
+from mordheim_core.models import EffectSet
+from mordheim_core.models import FighterBuild
 import numpy as np
 import pytest as pytest
 
@@ -236,9 +236,9 @@ def test_bear_hug_is_the_minimal_cross_phase_sequence_with_an_explicit_choice():
 
 
 def test_production_attack_orchestrator_aggregates_bear_hug_across_two_attacks():
-    from mordheim_combat_lab.combat.vectorized import OUT
-    from mordheim_combat_lab.combat.vectorized import _new_state
-    from mordheim_combat_lab.combat.vectorized import resolve_attacks
+    from mordheim_combat.vectorized import OUT
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import resolve_attacks
 
     attacker=replace(
         fighter(characteristics=Characteristics(3,4,3,1,3,2)),

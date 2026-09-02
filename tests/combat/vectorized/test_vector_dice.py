@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import numpy as np
 
-from mordheim_combat_lab.combat.vector_dice import FastVectorDice
-from mordheim_combat_lab.combat.vector_dice import KeyedVectorDice
-from mordheim_combat_lab.combat.vector_dice import VectorRollRequest
+from mordheim_combat.vector_dice import FastVectorDice
+from mordheim_combat.vector_dice import KeyedVectorDice
+from mordheim_combat.vector_dice import VectorRollRequest
 
 
 def test_keyed_vector_dice_are_stable_under_row_reordering_and_chunking():

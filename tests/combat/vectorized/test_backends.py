@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from mordheim_combat_lab.combat.vectorized import available_backends
-from mordheim_combat_lab.combat.vectorized import simulate_duel
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import DuelRequest
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_combat.vectorized import available_backends
+from mordheim_combat.vectorized import simulate_duel
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import Characteristics
+from mordheim_core.models import DuelRequest
+from mordheim_core.models import FighterBuild
 
 
 def request():

@@ -1,13 +1,13 @@
 """construction.restrictions: responsabilidad extraída sin alterar las reglas."""
 from __future__ import annotations
 
-from mordheim_combat_lab.construction.contracts import BLACKPOWDER_WEAPONS
-from mordheim_combat_lab.construction.contracts import DRUG_PREPARATIONS
-from mordheim_combat_lab.construction.contracts import MISSILE_WEAPONS
-from mordheim_combat_lab.construction.selection import _profile_allowed_mechanics
-from mordheim_combat_lab.knowledge.loader import load_bands
-from mordheim_combat_lab.knowledge.loader import load_simulation_mappings
-from mordheim_combat_lab.knowledge.loader import load_skills
+from mordheim_construction.contracts import BLACKPOWDER_WEAPONS
+from mordheim_construction.contracts import DRUG_PREPARATIONS
+from mordheim_construction.contracts import MISSILE_WEAPONS
+from mordheim_construction.selection import _profile_allowed_mechanics
+from mordheim_knowledge.loader import load_bands
+from mordheim_knowledge.loader import load_simulation_mappings
+from mordheim_knowledge.loader import load_skills
 
 
 def _validate_bound_equipment_restrictions(build, main_weapon_id, profile_bindings):

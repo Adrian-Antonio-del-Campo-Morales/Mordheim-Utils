@@ -1,7 +1,7 @@
 """Las virtudes propias no requieren la concesión de virtudes extranjeras."""
 import pytest
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import Characteristics, FighterBuild
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import Characteristics, FighterBuild
 
 
 @pytest.mark.parametrize("collection, band", [

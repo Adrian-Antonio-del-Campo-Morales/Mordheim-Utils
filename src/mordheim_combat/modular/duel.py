@@ -1,13 +1,13 @@
 """combat.modular.duel: responsabilidad extraída sin alterar las reglas."""
 from __future__ import annotations
 
-from mordheim_combat_lab.combat.modular import rounds
-from mordheim_combat_lab.combat.modular.state import initialize_duel
-from mordheim_combat_lab.domain.dice import DecisionPolicy
-from mordheim_combat_lab.domain.dice import SeededDice
-from mordheim_combat_lab.domain.models import CompiledFighter
-from mordheim_combat_lab.domain.models import DuelResult
-from mordheim_combat_lab.domain.models import SimulationCancelled
+from mordheim_combat.modular import rounds
+from mordheim_combat.modular.state import initialize_duel
+from mordheim_core.dice import DecisionPolicy
+from mordheim_core.dice import SeededDice
+from mordheim_core.models import CompiledFighter
+from mordheim_core.models import DuelResult
+from mordheim_core.models import SimulationCancelled
 
 
 def simulate_duel_reference(

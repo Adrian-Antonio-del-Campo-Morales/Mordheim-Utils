@@ -11,18 +11,18 @@ from fractions import Fraction
 
 import numpy as np
 
-from mordheim_combat_lab.combat import phases
-from mordheim_combat_lab.combat import vectorized
-from mordheim_combat_lab.combat.vector_dice import KeyedVectorDice
-from mordheim_combat_lab.combat.vector_dice import VectorRollRequest
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import DuelRequest
-from mordheim_combat_lab.domain.models import EffectSet
-from mordheim_combat_lab.domain.models import FighterBuild
-from mordheim_combat_lab.domain.effects import merge_effects
-from mordheim_combat_lab.domain.dice import KeyedDice
-from mordheim_combat_lab.domain.dice import RollRequest
+from mordheim_combat import phases
+from mordheim_combat import vectorized
+from mordheim_combat.vector_dice import KeyedVectorDice
+from mordheim_combat.vector_dice import VectorRollRequest
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import Characteristics
+from mordheim_core.models import DuelRequest
+from mordheim_core.models import EffectSet
+from mordheim_core.models import FighterBuild
+from mordheim_core.effects import merge_effects
+from mordheim_core.dice import KeyedDice
+from mordheim_core.dice import RollRequest
 from mordheim_combat_lab.verification.consumers import MODULAR_COMPLEX_SCENARIOS
 from mordheim_combat_lab.verification.consumers import MODULAR_FIELD_CONSUMERS
 from mordheim_combat_lab.verification.consumers import MODULAR_TAG_CONSUMERS
@@ -34,8 +34,8 @@ from mordheim_combat_lab.verification.scenarios import _plain
 from mordheim_combat_lab.verification.scenarios import check_case
 from mordheim_combat_lab.verification.scenarios import execute_case
 from mordheim_combat_lab.verification.specifications import load_fixtures
-from mordheim_combat_lab.knowledge.loader import knowledge_root
-from mordheim_combat_lab.knowledge.loader import load_runtime_scope
+from mordheim_knowledge.loader import knowledge_root
+from mordheim_knowledge.loader import load_runtime_scope
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -331,7 +331,7 @@ def _vector_injury(case: dict, root: Path) -> None:
         return
     attacker = build_semantic_fighter(case.get("attacker", {}), root)
     defender = build_semantic_fighter(case.get("defender", {}), root)
-    from mordheim_combat_lab.combat.modular import contexts as modular_contexts
+    from mordheim_combat.modular import contexts as modular_contexts
     weapon = modular_contexts.weapon_against_opponent(attacker, defender, attacker.main_weapon)
     effect = modular_contexts._combined_effect(attacker, weapon)
     context = modular_contexts._injury_context(defender, effect, "test")
@@ -495,8 +495,8 @@ def _vector_wound(case: dict, root: Path) -> None:
     if modular is not None:
         context = phases.WoundContext(**modular["context"])
     else:
-        from mordheim_combat_lab.combat.modular import contexts as modular_contexts
-        from mordheim_combat_lab.combat.modular.state import initialize_fighter
+        from mordheim_combat.modular import contexts as modular_contexts
+        from mordheim_combat.modular.state import initialize_fighter
         attacker = build_semantic_fighter(case.get("attacker", {}), root)
         defender = build_semantic_fighter(case.get("defender", {}), root)
         dice = _RollVectorRng({**case, "rolls": ()})
@@ -593,8 +593,8 @@ def _vector_parry(case: dict, root: Path) -> None:
         if actual != modular["result"]:
             raise AssertionError(f"vectorized parry={actual}, modular={modular['result']}")
         return
-    from mordheim_combat_lab.combat.modular import contexts as modular_contexts
-    from mordheim_combat_lab.combat.modular.state import initialize_fighter
+    from mordheim_combat.modular import contexts as modular_contexts
+    from mordheim_combat.modular.state import initialize_fighter
     attacker = build_semantic_fighter(case.get("attacker", {}), root)
     defender = build_semantic_fighter(case.get("defender", {}), root)
     a = initialize_fighter(attacker, StrictDice([]), "a")
@@ -915,7 +915,7 @@ def _vector_injury_reaction(case: dict, root: Path) -> None:
     modular_observed = check_case(case, root)
     attacker = build_semantic_fighter(case.get("attacker", {}), root)
     defender = build_semantic_fighter(case.get("defender", {}), root)
-    from mordheim_combat_lab.combat.modular import contexts as modular_contexts
+    from mordheim_combat.modular import contexts as modular_contexts
     weapon = modular_contexts.weapon_against_opponent(attacker, defender, attacker.main_weapon)
     effect = modular_contexts._combined_effect(attacker, weapon)
     context = modular_contexts._injury_context(defender, effect, "test")
@@ -1524,7 +1524,7 @@ def _exact_operator_checks() -> tuple[tuple[str, ...], tuple[str, ...]]:
 
 
 def verify_vectorized_parity() -> ParityReport:
-    vector_source = (ROOT / "src/mordheim_combat_lab/combat/vectorized.py").read_text(encoding="utf-8")
+    vector_source = (ROOT / "src/mordheim_combat/vectorized.py").read_text(encoding="utf-8")
     obligations: list[ParityObligation] = []
 
     for field, consumer in sorted(MODULAR_FIELD_CONSUMERS.items()):
@@ -1566,7 +1566,7 @@ def compare_statistical_parity(
     maximum_rounds: int = 50,
 ) -> StatisticalParityResult:
     """Compare independent aggregate samples using the documented six-sigma gate."""
-    from mordheim_combat_lab.combat.modular.duel import simulate_duel_reference
+    from mordheim_combat.modular.duel import simulate_duel_reference
 
     if simulations < 1:
         raise ValueError("statistical parity needs at least one simulation")

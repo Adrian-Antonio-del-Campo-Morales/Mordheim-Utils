@@ -2,24 +2,24 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from mordheim_combat_lab.combat.modular.aftermath import _black_hunger
-from mordheim_combat_lab.combat.modular.aftermath import _fire_recovery
-from mordheim_combat_lab.combat.modular.aftermath import _force_of_will
-from mordheim_combat_lab.combat.modular.aftermath import _netter
-from mordheim_combat_lab.combat.modular.aftermath import _react_to_wound
-from mordheim_combat_lab.combat.modular.aftermath import _spines
-from mordheim_combat_lab.combat.modular.pools import _resolve_attack_pool
-from mordheim_combat_lab.combat.modular.attacks import resolve_reference_attack
-from mordheim_combat_lab.combat.modular.rounds import resolve_round
-from mordheim_combat_lab.combat.modular.state import DuelState
-from mordheim_combat_lab.combat.modular.state import initialize_fighter
-from mordheim_combat_lab.combat.phases import Condition
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.dice import AlwaysAccept
-from mordheim_combat_lab.domain.dice import RollRequest
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import EffectSet
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_combat.modular.aftermath import _black_hunger
+from mordheim_combat.modular.aftermath import _fire_recovery
+from mordheim_combat.modular.aftermath import _force_of_will
+from mordheim_combat.modular.aftermath import _netter
+from mordheim_combat.modular.aftermath import _react_to_wound
+from mordheim_combat.modular.aftermath import _spines
+from mordheim_combat.modular.pools import _resolve_attack_pool
+from mordheim_combat.modular.attacks import resolve_reference_attack
+from mordheim_combat.modular.rounds import resolve_round
+from mordheim_combat.modular.state import DuelState
+from mordheim_combat.modular.state import initialize_fighter
+from mordheim_combat.phases import Condition
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.dice import AlwaysAccept
+from mordheim_core.dice import RollRequest
+from mordheim_core.models import Characteristics
+from mordheim_core.models import EffectSet
+from mordheim_core.models import FighterBuild
 
 
 class ConstantDice:

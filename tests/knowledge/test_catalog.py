@@ -1,23 +1,23 @@
 """external.test_catalog: responsabilidad extraída sin alterar las reglas."""
 from __future__ import annotations
 
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.construction.contracts import COMPILER_CONTRACTS
-from mordheim_combat_lab.construction.contracts import PROFILE_RULE_EFFECTS
-from mordheim_combat_lab.construction.contracts import SPECIAL_RULE_EFFECTS
-from mordheim_combat_lab.construction.contracts import TRAIT_TYPES
-from mordheim_combat_lab.construction.contracts import validate_execution_contract
-from mordheim_combat_lab.domain.models import FighterBuild
-from mordheim_combat_lab.knowledge.loader import PROFILE_BINDING_IDS
-from mordheim_combat_lab.knowledge.loader import load_bands
-from mordheim_combat_lab.knowledge.loader import load_collections
-from mordheim_combat_lab.knowledge.loader import load_execution_contract
-from mordheim_combat_lab.knowledge.loader import load_items
-from mordheim_combat_lab.knowledge.loader import load_mechanics
-from mordheim_combat_lab.knowledge.loader import load_runtime_scope
-from mordheim_combat_lab.knowledge.loader import load_simulation_mappings
-from mordheim_combat_lab.knowledge.loader import load_skills
-from mordheim_combat_lab.knowledge.loader import runtime_bindings
+from mordheim_construction.compiler import compile_fighter
+from mordheim_construction.contracts import COMPILER_CONTRACTS
+from mordheim_construction.contracts import PROFILE_RULE_EFFECTS
+from mordheim_construction.contracts import SPECIAL_RULE_EFFECTS
+from mordheim_construction.contracts import TRAIT_TYPES
+from mordheim_construction.contracts import validate_execution_contract
+from mordheim_core.models import FighterBuild
+from mordheim_knowledge.loader import PROFILE_BINDING_IDS
+from mordheim_knowledge.loader import load_bands
+from mordheim_knowledge.loader import load_collections
+from mordheim_knowledge.loader import load_execution_contract
+from mordheim_knowledge.loader import load_items
+from mordheim_knowledge.loader import load_mechanics
+from mordheim_knowledge.loader import load_runtime_scope
+from mordheim_knowledge.loader import load_simulation_mappings
+from mordheim_knowledge.loader import load_skills
+from mordheim_knowledge.loader import runtime_bindings
 from pathlib import Path
 import yaml as yaml
 
@@ -270,9 +270,9 @@ def test_every_catalogue_mechanic_has_an_executable_definition():
 
 
 def test_execution_metadata_controls_effect_context_and_stacking():
-    from mordheim_combat_lab.domain.effects import ExecutionEffect
-    from mordheim_combat_lab.domain.effects import apply_execution_effects
-    from mordheim_combat_lab.domain.models import EffectSet
+    from mordheim_core.effects import ExecutionEffect
+    from mordheim_core.effects import apply_execution_effects
+    from mordheim_core.models import EffectSet
     effects={
         "passive": ExecutionEffect(EffectSet(strength_bonus=1), "passive", "fighter", "stack"),
         "attack": ExecutionEffect(EffectSet(strength_bonus=2), "attack", "attack", "stack"),
@@ -598,7 +598,7 @@ def test_derived_trollheim_item_mappings_feed_profile_equipment_access():
 
 def test_compiler_rejects_names_and_illegal_hands():
     import pytest
-    from mordheim_combat_lab.domain.models import Characteristics
+    from mordheim_core.models import Characteristics
     c=Characteristics(3,3,3,1,3,1)
     with pytest.raises(KeyError):compile_fighter(FighterBuild("mordheim",c,main_weapon_id="Sword"),ROOT)
     with pytest.raises(ValueError):compile_fighter(FighterBuild("mordheim",c,main_weapon_id="weapon.flail",off_hand_id="weapon.dagger"),ROOT)
@@ -606,7 +606,7 @@ def test_compiler_rejects_names_and_illegal_hands():
 
 
 def test_representative_effects_compile_in_every_mechanic_family():
-    from mordheim_combat_lab.domain.models import Characteristics
+    from mordheim_core.models import Characteristics
     c=Characteristics(3,3,3,1,3,1)
     weapon=compile_fighter(FighterBuild("mordheim",c,main_weapon_id="weapon.draich"),ROOT)
     assert weapon.main_weapon.strength_bonus==2 and weapon.main_weapon.parry and weapon.main_weapon.concussion
@@ -627,7 +627,7 @@ def test_representative_effects_compile_in_every_mechanic_family():
 
 
 def test_every_catalogued_mechanic_can_be_compiled_in_its_legal_slot():
-    from mordheim_combat_lab.domain.models import Characteristics
+    from mordheim_core.models import Characteristics
     c=Characteristics(3,3,3,1,3,1);catalog=load_mechanics("mordheim",ROOT)
     exclusions={row["id"] for row in load_runtime_scope("mordheim",ROOT).get("mechanic_exclusions") or ()}
     for row in catalog["weapons"]:
@@ -657,7 +657,7 @@ def test_every_catalogued_mechanic_can_be_compiled_in_its_legal_slot():
 
 
 def test_all_profiles_are_compilable_or_explicitly_outside_duel_scope():
-    from mordheim_combat_lab.knowledge.loader import load_runtime_scope
+    from mordheim_knowledge.loader import load_runtime_scope
     exclusions={(row["band_id"],row["profile_id"]) for row in load_runtime_scope("mordheim",ROOT)["profile_exclusions"]}
     compiled=0
     for band in load_bands("mordheim",ROOT):
@@ -677,7 +677,7 @@ def test_fixed_equipment_and_natural_attacks_are_applied_by_profile():
 
 def test_profile_access_and_runtime_scope_are_enforced():
     import pytest
-    from mordheim_combat_lab.domain.models import Characteristics
+    from mordheim_core.models import Characteristics
     with pytest.raises(ValueError,match="not available"):
         compile_fighter(FighterBuild("mordheim",band_id="witch-hunters",profile_id="war-hounds",main_weapon_id="weapon.sword"),ROOT)
     troll=compile_fighter(FighterBuild("mordheim",band_id="orc-mob",profile_id="troll",main_weapon_id="weapon.vomit-attack"),ROOT)

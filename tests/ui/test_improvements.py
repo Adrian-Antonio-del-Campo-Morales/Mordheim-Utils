@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from mordheim_combat_lab.application.catalogue import CombatCatalogue
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_core.models import FighterBuild
 from mordheim_combat_lab.application.analyses import add_improvement, improvement_choices
 
 

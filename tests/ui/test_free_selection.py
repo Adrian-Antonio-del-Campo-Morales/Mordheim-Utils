@@ -2,9 +2,9 @@
 from __future__ import annotations
 
 from mordheim_combat_lab.application.catalogue import CombatCatalogue
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import Characteristics
+from mordheim_core.models import FighterBuild
 
 
 def test_free_selection_build_compiles_with_runtime_equipment():

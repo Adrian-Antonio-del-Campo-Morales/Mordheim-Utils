@@ -2,10 +2,10 @@
 from __future__ import annotations
 
 from itertools import product
-import mordheim_combat_lab.combat.phases as phases
-from mordheim_combat_lab.domain.dice import ScriptedDice
-import mordheim_combat_lab.domain.effects as effect_ops
-from mordheim_combat_lab.domain.models import EffectSet
+import mordheim_combat.phases as phases
+from mordheim_core.dice import ScriptedDice
+import mordheim_core.effects as effect_ops
+from mordheim_core.models import EffectSet
 
 
 OPERATOR_CHECKS = ("stack", "best", "once-and-context", "priority-composition", "limits-and-replacement")

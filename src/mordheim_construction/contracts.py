@@ -3,10 +3,10 @@ from __future__ import annotations
 
 from dataclasses import fields
 from functools import lru_cache
-from mordheim_combat_lab.domain.effects import ExecutionEffect
-from mordheim_combat_lab.domain.models import EffectSet
-from mordheim_combat_lab.knowledge.loader import load_execution_contract
-from mordheim_combat_lab.knowledge.loader import load_mechanics
+from mordheim_core.effects import ExecutionEffect
+from mordheim_core.models import EffectSet
+from mordheim_knowledge.loader import load_execution_contract
+from mordheim_knowledge.loader import load_mechanics
 from pathlib import Path
 
 

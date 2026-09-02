@@ -5,7 +5,7 @@ from dataclasses import replace
 from itertools import product
 from mordheim_combat_lab.application.motta import motta_score
 from mordheim_combat_lab.application.analyses import ComparisonCandidate, compare_builds
-from mordheim_combat_lab.domain.models import SimulationCancelled
+from mordheim_core.models import SimulationCancelled
 from mordheim_combat_lab.ui.widgets.progress import AnalysisProgress
 import threading as threading
 from tkinter import IntVar

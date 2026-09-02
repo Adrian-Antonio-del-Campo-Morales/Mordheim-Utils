@@ -2,8 +2,8 @@
 from __future__ import annotations
 
 from fractions import Fraction
-from mordheim_combat_lab.domain.dice import DiceSource
-from mordheim_combat_lab.domain.dice import RollRequest
+from mordheim_core.dice import DiceSource
+from mordheim_core.dice import RollRequest
 from mordheim_combat_lab.verification.reports import EvidenceMismatch
 from typing import Callable
 

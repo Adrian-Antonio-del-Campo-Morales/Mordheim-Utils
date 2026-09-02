@@ -3,18 +3,18 @@ from __future__ import annotations
 
 from dataclasses import replace
 from fractions import Fraction
-from mordheim_combat_lab.combat.phases import ArmourContext
-from mordheim_combat_lab.combat.phases import HitContext
-from mordheim_combat_lab.combat.phases import InjuryContext
-from mordheim_combat_lab.combat.phases import SpecialSaveContext
-from mordheim_combat_lab.combat.phases import WoundContext
-from mordheim_combat_lab.combat.phases import resolve_armour
-from mordheim_combat_lab.combat.phases import resolve_hit
-from mordheim_combat_lab.combat.phases import resolve_injury
-from mordheim_combat_lab.combat.phases import resolve_special_save
-from mordheim_combat_lab.combat.phases import resolve_wound
-from mordheim_combat_lab.domain.dice import ScriptedDice
-from mordheim_combat_lab.domain.dice import exact_distribution
+from mordheim_combat.phases import ArmourContext
+from mordheim_combat.phases import HitContext
+from mordheim_combat.phases import InjuryContext
+from mordheim_combat.phases import SpecialSaveContext
+from mordheim_combat.phases import WoundContext
+from mordheim_combat.phases import resolve_armour
+from mordheim_combat.phases import resolve_hit
+from mordheim_combat.phases import resolve_injury
+from mordheim_combat.phases import resolve_special_save
+from mordheim_combat.phases import resolve_wound
+from mordheim_core.dice import ScriptedDice
+from mordheim_core.dice import exact_distribution
 
 
 def test_hit_bonus_and_reroll_compose_without_changing_natural_d6_domain():

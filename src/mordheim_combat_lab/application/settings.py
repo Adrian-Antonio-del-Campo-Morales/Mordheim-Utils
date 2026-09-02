@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from mordheim_combat_lab.domain.models import DuelRequest
+from mordheim_core.models import DuelRequest
 from threading import Event
 
 

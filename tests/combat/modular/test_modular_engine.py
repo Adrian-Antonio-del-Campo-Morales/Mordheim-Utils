@@ -1,21 +1,21 @@
 """Integración del motor modular."""
 from __future__ import annotations
 
-from mordheim_combat_lab.combat.modular.attacks import resolve_reference_attack
-from mordheim_combat_lab.combat.modular.duel import simulate_duel_reference
-from mordheim_combat_lab.combat.modular.rounds import resolve_round
-from mordheim_combat_lab.combat.modular.state import DuelState
-from mordheim_combat_lab.combat.modular.state import initialize_fighter
-from mordheim_combat_lab.combat.phases import AttackPoolContext
-from mordheim_combat_lab.combat.phases import Condition
-from mordheim_combat_lab.combat.phases import build_attacks
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.dice import AlwaysAccept
-from mordheim_combat_lab.domain.dice import KeyedDice
-from mordheim_combat_lab.domain.dice import ScriptedDice
-from mordheim_combat_lab.domain.models import Characteristics
-from mordheim_combat_lab.domain.models import FighterBuild
-from mordheim_combat_lab.domain.models import SimulationCancelled
+from mordheim_combat.modular.attacks import resolve_reference_attack
+from mordheim_combat.modular.duel import simulate_duel_reference
+from mordheim_combat.modular.rounds import resolve_round
+from mordheim_combat.modular.state import DuelState
+from mordheim_combat.modular.state import initialize_fighter
+from mordheim_combat.phases import AttackPoolContext
+from mordheim_combat.phases import Condition
+from mordheim_combat.phases import build_attacks
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.dice import AlwaysAccept
+from mordheim_core.dice import KeyedDice
+from mordheim_core.dice import ScriptedDice
+from mordheim_core.models import Characteristics
+from mordheim_core.models import FighterBuild
+from mordheim_core.models import SimulationCancelled
 import pytest as pytest
 from threading import Event
 
@@ -30,7 +30,7 @@ def fighter(**changes):
 
 
 def test_scalar_attack_pool_has_no_dependency_on_the_vectorized_engine(monkeypatch):
-    import mordheim_combat_lab.combat.vectorized as engine
+    import mordheim_combat.vectorized as engine
 
     monkeypatch.setattr(engine, "attack_count", lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError()))
     assert build_attacks(AttackPoolContext(fighter(off_hand_id="weapon.dagger"))).attacks == 2
@@ -69,7 +69,7 @@ def test_reference_round_generates_priority_attacks_and_aftermath_itself():
 
 
 def test_reference_duels_are_reproducible_without_calling_numpy_executor(monkeypatch):
-    import mordheim_combat_lab.combat.vectorized as engine
+    import mordheim_combat.vectorized as engine
 
     monkeypatch.setattr(engine, "simulate_duel", lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError()))
     first = fighter(characteristics=Characteristics(3, 4, 3, 1, 3, 1))

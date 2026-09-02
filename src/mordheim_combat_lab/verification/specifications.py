@@ -1,10 +1,10 @@
 """verification.specifications: responsabilidad extraída sin alterar las reglas."""
 from __future__ import annotations
 
-from mordheim_combat_lab.knowledge.loader import read_yaml
+from mordheim_knowledge.loader import read_yaml
 from pathlib import Path
 import os
-from mordheim_combat_lab.paths import project_root
+from mordheim_knowledge.paths import project_root
 
 
 def specifications_root(root: Path | None = None) -> Path:

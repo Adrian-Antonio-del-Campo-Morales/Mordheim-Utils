@@ -1,8 +1,8 @@
 """Bindings especiales de construcción."""
 from __future__ import annotations
 
-from mordheim_combat_lab.construction.compiler import compile_fighter
-from mordheim_combat_lab.domain.models import FighterBuild
+from mordheim_construction.compiler import compile_fighter
+from mordheim_core.models import FighterBuild
 
 
 def build(band_id, profile_id, *, collection="mordheim", **kwargs):

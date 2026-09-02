@@ -2,8 +2,8 @@
 from contextlib import contextmanager, ExitStack
 from dataclasses import replace
 
-from mordheim_combat_lab.combat.modular import attacks, pools, aftermath, contexts, state, rounds
-from mordheim_combat_lab.construction import compiler, selection, restrictions
+from mordheim_combat.modular import attacks, pools, aftermath, contexts, state, rounds
+from mordheim_construction import compiler, selection, restrictions
 
 
 @contextmanager

@@ -5,11 +5,11 @@ from dataclasses import dataclass
 from dataclasses import replace
 from enum import Enum
 from enum import IntEnum
-from mordheim_combat_lab.domain.dice import DecisionPolicy
-from mordheim_combat_lab.domain.dice import DiceSource
-from mordheim_combat_lab.domain.dice import RollRequest
-from mordheim_combat_lab.domain.models import CompiledFighter
-from mordheim_combat_lab.domain.models import EffectSet
+from mordheim_core.dice import DecisionPolicy
+from mordheim_core.dice import DiceSource
+from mordheim_core.dice import RollRequest
+from mordheim_core.models import CompiledFighter
+from mordheim_core.models import EffectSet
 
 
 class Condition(IntEnum):

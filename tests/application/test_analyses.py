@@ -3,7 +3,7 @@ import pytest
 
 from mordheim_combat_lab.application.analyses import ComparisonCandidate, compare_builds
 from mordheim_combat_lab.application.settings import DuelExecutionSettings
-from mordheim_combat_lab.domain.models import Characteristics, FighterBuild, SimulationCancelled
+from mordheim_core.models import Characteristics, FighterBuild, SimulationCancelled
 
 
 def build(weapon="weapon.dagger"):
