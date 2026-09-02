@@ -1,7 +1,7 @@
 """ui.widgets.skills: responsabilidad extraída sin alterar las reglas."""
 from __future__ import annotations
 
-from mordheim_combat_lab.ui.theme import COLORS
+from mordheim_ui.lab_theme import COLORS
 from mordheim_combat_lab.ui.widgets.feedback import tooltip_manager
 import tkinter as tk
 
