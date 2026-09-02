@@ -3,9 +3,9 @@ requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mordheim-combat-lab"
+name = "mordheim-utils"
 version = "2.0.0a1"
-description = "Knowledge-driven compositional close-combat engine for Mordheim"
+description = "Shared Mordheim tooling: knowledge-driven duel engine and campaign manager"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -16,6 +16,7 @@ dependencies = [
 
 [project.scripts]
 mordheim-combat-lab = "mordheim_combat_lab.cli.commands:main"
+mordheim-campaign-manager = "mordheim_campaign.app:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "wheel>=0.43", "pyinstaller>=6.0"]
