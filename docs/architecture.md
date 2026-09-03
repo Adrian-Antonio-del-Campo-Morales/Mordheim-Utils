@@ -48,6 +48,51 @@ El motor modular divide estado, preparación de contextos, ataques, pools, efect
 posteriores, rondas y duelo. El vectorizado es el runtime de análisis de la UI,
 pero no el oráculo de corrección del modular.
 
+## Backend nativo (Cython)
+
+`mordheim_combat._combat_native` es un segundo runtime optimizado, compilado a
+C con Cython, que porta la semántica del motor vectorizado (nunca la del
+modular directamente: el modular sigue siendo el único oráculo de corrección).
+Vive en tres piezas:
+
+- `_combat_compile.py` reutiliza exactamente los helpers Python certificados
+  del vectorizado para plegar en escalares, una vez por duelo, cada decisión
+  de etiquetas que el motor tomaría dentro de sus bucles (fuentes, reacciones,
+  paradas, heridas automáticas, anvil-head, etc.).
+- `_combat_native.pyx` consume ese plan compilado con structs planos
+  (`FighterC`, `SourceC`, `DuelC`, `StateC`) y resuelve cada ronda sobre filas
+  activas en C: paradas, defensas de impacto, heridas y reacciones usan el
+  mismo orden de fases y tablas que el vectorizado.
+- `_combat_native.pxd` declara la frontera C entre las funciones mutuamente
+  recursivas del motor.
+
+El driver de Python (`simulate_duel` en `vectorized.py`) expone el backend con
+`backend="native"` o `"auto"`; `available_backends()` lo reporta solo cuando la
+extensión está compilada, de modo que un entorno sin compilador C conserva el
+comportamiento NumPy sin cambios. El motor usa un PCG32 por lote derivado de la
+semilla de la petición, por lo que una misma petición es reproducible (replay
+determinista por semilla). El plan se compila una vez por petición (~0,5 ms);
+la compilación del `.pyx` a `.pyd` ocurre una sola vez en la instalación y
+queda fuera de cualquier medición de rendimiento.
+
+### Verificación y rendimiento
+
+El nativo se certifica contra el oráculo modular con la misma puerta
+estadística de seis sigmas que NumPy (`compare_statistical_parity(...,
+backend="native")` comparte la muestra modular con NumPy), y la puerta de
+rendimiento exige mejorar al menos un escenario un 10 % sin regresiones
+mayores del 5 % frente a NumPy (`benchmark --backend native`).
+`test-report --statistical` y `parity --statistical` incluyen el backend nativo
+automáticamente cuando está disponible; en el CSV semántico los casos por
+operador no le aplican (`NOT_APPLICABLE`): el nativo es un motor de duelo
+completo sin operadores independientes, verificado en las filas de duelo
+(estadísticas) y con la semántica de operador cubierta por el adaptador NumPy.
+Mientras la extensión no está compilada, esas filas se marcan `NOT_AVAILABLE`
+y el reporte permanece `PENDING`, señal del trabajo pendiente real.
+Los cambios del núcleo C se pasan por AddressSanitizer antes de integrarse
+(sobrescrituras de structs sin inicializar, dimensionado de arrays y
+acumulación por lotes ya detectados y corregidos así).
+
 La legalidad pertenece a `mordheim_construction`; la composición a
 `mordheim_core.effects`; las fases a `mordheim_combat.phases`; workbooks y
 preferencias a `mordheim_combat_lab.persistence`. Los tests de

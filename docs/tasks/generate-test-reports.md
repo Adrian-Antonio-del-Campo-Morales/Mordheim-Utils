@@ -62,10 +62,16 @@ Estados globales de `passes`:
 | `PENDING` | Falta un adaptador, una decisión semántica o un backend. |
 | `OUT_OF_SCOPE` | La regla está excluida del runtime actual. |
 
-Estados específicos como `PASS_SHARED`, `PENDING_ADAPTER`,
-`PENDING_SEMANTIC` y `NOT_AVAILABLE` explican por qué se alcanzó el estado
-global. `PASS_SHARED` indica que los motores consumen el mismo resultado del
-compilador; no representa dos implementaciones independientes.
+Estados específicos como `PASS_SHARED`, `NOT_APPLICABLE`,
+`PENDING_ADAPTER`, `PENDING_SEMANTIC` y `NOT_AVAILABLE` explican por qué se
+alcanzó el estado global. `PASS_SHARED` indica que los motores consumen el
+mismo resultado del compilador; no representa dos implementaciones
+independientes. `NOT_APPLICABLE` marca un caso que un motor no ejecuta por
+diseño: el backend nativo es un motor de duelo completo sin operadores
+independientes, así que los casos por operador le muestran `NOT_APPLICABLE` y
+su certificación aparece en las filas estadísticas por escenario. Cuando la
+extensión nativa no está compilada esas filas se marcan `NOT_AVAILABLE` y el
+reporte queda `PENDING` hasta que exista el backend.
 
 ## Otros comandos relacionados
 

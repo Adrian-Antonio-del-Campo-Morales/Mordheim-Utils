@@ -63,6 +63,7 @@ class ParityReport:
 @dataclass(frozen=True, slots=True)
 class StatisticalParityResult:
     scenario: str
+    backend: str
     simulations: int
     modular_rates: tuple[float, float, float]
     vectorized_rates: tuple[float, float, float]
@@ -127,6 +128,7 @@ def parity_report_payload(
         },
         "statistical": tuple({
             "scenario": item.scenario,
+            "backend": item.backend,
             "simulations_per_engine": item.simulations,
             "modular_rates": item.modular_rates,
             "vectorized_rates": item.vectorized_rates,
@@ -185,14 +187,15 @@ def parity_report_markdown(payload: dict[str, object]) -> str:
     if rows:
         lines.extend((
             "", "## Statistical comparisons", "",
-            "| Scenario | Duels/engine | Modular W/L/U | Vectorized W/L/U | Pass |",
-            "|---|---:|---|---|---|",
+            "| Scenario | Backend | Duels/engine | Modular W/L/U | Candidate W/L/U | Pass |",
+            "|---|---:|---|---|---|---|",
         ))
         for row in rows:
             modular = "/".join(f"{100 * value:.3f}%" for value in row["modular_rates"])
             vector = "/".join(f"{100 * value:.3f}%" for value in row["vectorized_rates"])
             lines.append(
-                f"| {row['scenario']} | {row['simulations_per_engine']:,} | "
+                f"| {row['scenario']} | {row['backend']} | "
+                f"{row['simulations_per_engine']:,} | "
                 f"{modular} | {vector} | {row['passed']} |"
             )
     return "\n".join(lines) + "\n"
@@ -1561,25 +1564,7 @@ def verify_vectorized_parity() -> ParityReport:
     )
 
 
-def compare_statistical_parity(
-    scenario: str, first, second, simulations: int, *, seed: int = 2026,
-    maximum_rounds: int = 50,
-) -> StatisticalParityResult:
-    """Compare independent aggregate samples using the documented six-sigma gate."""
-    from mordheim_combat.modular.duel import simulate_duel_reference
-
-    if simulations < 1:
-        raise ValueError("statistical parity needs at least one simulation")
-    modular = simulate_duel_reference(
-        first, second, simulations, seed=seed, maximum_rounds=maximum_rounds,
-    )
-    vector = vectorized.simulate_duel(
-        DuelRequest(
-            first, second, simulations, seed=seed + 1_000_003,
-            maximum_rounds=maximum_rounds,
-        ),
-        backend="numpy",
-    )
+def _parity_result(scenario: str, backend: str, simulations: int, modular, vector) -> StatisticalParityResult:
     modular_rates = tuple(value / simulations for value in (
         modular.first_wins, modular.second_wins, modular.unresolved,
     ))
@@ -1597,5 +1582,38 @@ def compare_statistical_parity(
         for left, right, tolerance in zip(modular_rates, vector_rates, tolerances)
     )
     return StatisticalParityResult(
-        scenario, simulations, modular_rates, vector_rates, tolerances, passed,
+        scenario=scenario, backend=backend, simulations=simulations,
+        modular_rates=modular_rates, vectorized_rates=vector_rates,
+        tolerances=tolerances, passed=passed,
     )
+
+
+def compare_statistical_parity(
+    scenario: str, first, second, simulations: int, *, seed: int = 2026,
+    maximum_rounds: int = 50, backend: str = "numpy", modular=None,
+) -> StatisticalParityResult:
+    """Compare independent aggregate samples using the documented six-sigma gate.
+
+    The modular engine is the only correctness oracle; ``backend`` selects the
+    optimized candidate to certify against it ("numpy" or "native").  Pass a
+    precomputed ``modular`` result to certify several candidates against the
+    same oracle sample without re-running the modular engine.
+    """
+    from mordheim_combat.modular.duel import simulate_duel_reference
+
+    if simulations < 1:
+        raise ValueError("statistical parity needs at least one simulation")
+    if backend not in {"numpy", "native"}:
+        raise ValueError(f"unknown optimized backend: {backend}")
+    if modular is None:
+        modular = simulate_duel_reference(
+            first, second, simulations, seed=seed, maximum_rounds=maximum_rounds,
+        )
+    vector = vectorized.simulate_duel(
+        DuelRequest(
+            first, second, simulations, seed=seed + 1_000_003,
+            maximum_rounds=maximum_rounds,
+        ),
+        backend=backend,
+    )
+    return _parity_result(scenario, backend, simulations, modular, vector)
