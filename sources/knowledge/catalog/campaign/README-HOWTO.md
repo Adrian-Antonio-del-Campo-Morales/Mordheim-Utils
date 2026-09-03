@@ -154,3 +154,9 @@ ello ninguna pantalla actual puede resolver una secuencia post-batalla. La
 primera implementación debe empezar por los cargadores de reglas y un caso de
 uso que reciba el estado desde la persistencia externa; después podrá añadirse
 la pantalla sin acoplarla a YAML ni al motor de duelo.
+
+El Campaign Manager ya consume la KB para bandas y perfiles: su
+`KnowledgePort` (`mordheim_campaign/application/knowledge_port.py`) usa
+`load_bands`, `load_items` y `load_skills` para alimentar la creación de banda
+sin que la GUI toque YAML, y su persistencia (`.mordheim`) referencia los IDs
+canónicos (`band_id`, `profile_id`, `item_id`) sin duplicar reglas.

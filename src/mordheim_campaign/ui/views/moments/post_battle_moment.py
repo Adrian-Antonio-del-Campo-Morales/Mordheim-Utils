@@ -78,7 +78,7 @@ class PostBattleMoment(tk.Frame):
         title.pack(side="left", fill="x", expand=True)
         tk.Label(title, text=f"POST-BATTLE #{post.battle_number}", bg=COLORS["bg"], fg=COLORS["text"], font=("Georgia", 16)).pack(side="left")
         tk.Label(title, text="IN PROGRESS", bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Segoe UI Semibold", 7), padx=8, pady=4).pack(side="left", padx=10)
-        ttk.Button(top, text="SAVE & CLOSE", command=self._placeholder).pack(side="right")
+        ttk.Button(top, text="SAVE & CLOSE", command=self._save_and_close).pack(side="right")
         ttk.Button(top, text=f"VIEW BATTLE #{post.battle_number}", style="Ghost.TButton", command=lambda: self.controller.select_battle(post.battle_number)).pack(side="right", padx=(0, 5))
 
         intro = (
@@ -393,6 +393,13 @@ class PostBattleMoment(tk.Frame):
             tk.Label(parent, text=title, bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(6, 3))
             for line in lines:
                 tk.Label(parent, text=f"• {line}", bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 9)).pack(anchor="w", padx=(8, 0), pady=1)
+
+    def _save_and_close(self) -> None:
+        """Guarda la campaña (con el post-batalla pendiente) y vuelve al estado actual."""
+        from mordheim_campaign.ui.file_actions import save_current_campaign
+
+        save_current_campaign(self, self.controller)
+        self.controller.go_to_current_state()
 
     def _placeholder(self) -> None:
         messagebox.showinfo("Prototype", "This control is intentionally visual-only in the interface prototype.", parent=self)

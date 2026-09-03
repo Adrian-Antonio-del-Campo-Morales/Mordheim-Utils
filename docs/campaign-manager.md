@@ -4,6 +4,27 @@ This prototype explores a **campaign-timeline-first** desktop interface for Mord
 The campaign is the product: immutable warband states are connected by Battles and
 Post-Battle transitions.
 
+## New in this iteration: KB-backed warbands and campaign files
+
+The warband picker in **Create Campaign** now lists every canonical warband of the
+knowledge base (collections `mordheim` and `trollheim`, ruleset `mordheim`) with its
+model range and starting gold. Band selection produces a **draft roster derived from
+the KB**: required members and a legal minimum starter, canonical profiles with
+characteristics, costs, starting XP, skill access and inherent rules, plus the band
+roster limits used by legality.
+
+The roster actions in the draft are real now: **+ ADD HERO / + ADD HENCHMEN GROUP**
+open a KB-fed profile picker (with per-profile and group limits), the **…** menu of a
+row resizes henchmen groups or removes the entry, and Start Campaign commits when the
+composition is legal. Editing per-warrior equipment/skills stays a future campaign
+rules use case.
+
+File actions in the header are wired to a versioned persistence layer
+(`mordheim_campaign/persistence`): **Save/Load** use `.mordheim` JSON files with the
+full campaign state (including the active view so you can resume), and **Export**
+writes a readable Markdown summary. **SAVE & CLOSE** in Post-Battle saves the pending
+campaign and returns to the current state.
+
 ## New in this iteration: Initial Warband construction
 
 The first campaign moment can now be an editable **INITIAL WARBAND · DRAFT**.
@@ -58,10 +79,13 @@ Python 3.11+ and Tkinter are sufficient.
 
 ## Prototype boundaries
 
-This remains interface-first. The new campaign dialog, Add/Edit warrior actions,
-KB queries, rule validation and persistence are deliberately not the real domain
-implementation yet. The GUI consumes view-model data through `AppController` so
-those pieces can be replaced without coupling Tk widgets to YAML or storage.
+This remains interface-first. Warband and profile data arrive as view models through
+`AppController` from `KnowledgePort` (which wraps the `mordheim_knowledge` loaders), so
+Tk widgets never read YAML or know where the KB lives. Campaign persistence is JSON
+with a stable schema and does not serialize rules. Equipment/skill editing per warrior,
+rule validation of post-battle steps and campaign-rule resolution are still future use
+cases: they will reuse the same IDs (`band_id`, `profile_id`, `item_id`) already stored
+in the campaign state.
 
 ## Searches and Equipment usability pass
 

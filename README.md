@@ -10,7 +10,7 @@ carga de reglas, construcción legal y capa de interfaz.
 | App | Paquete | Entry point | Descripción |
 | --- | --- | --- | --- |
 | Combat Lab | `mordheim_combat_lab` | `mordheim-combat-lab` | Simulador de duelos 1 contra 1 con motor modular (oráculo) y motor vectorizado (análisis), verificación semántica, paridad y benchmark. |
-| Campaign Manager | `mordheim_campaign` | `mordheim-campaign-manager` | Prototipo GUI *campaign-timeline-first*: estados inmutables de banda, batallas y secuencia post-batalla (datos demo; la integración real con la KB llega después). |
+| Campaign Manager | `mordheim_campaign` | `mordheim-campaign-manager` | Prototipo GUI *campaign-timeline-first*: estados inmutables de banda, batallas y secuencia post-batalla. Bandas, perfiles y equipo provienen de la KB canónica vía `KnowledgePort`; las campañas se guardan/cargan como ficheros `.mordheim`. |
 
 ## Paquetes compartidos
 
@@ -64,8 +64,11 @@ mordheim-campaign-manager
 python -m mordheim_campaign
 ```
 
-El prototipo es *interface-first*: consume view-models demo a través de
-`AppController` y no lee la KB todavía. Véase
+El prototipo es *interface-first*: los widgets consumen view-models a través de
+`AppController`, que a su vez obtiene bandas, perfiles, límites y ofertas de
+equipo de la KB canónica mediante `KnowledgePort` (`mordheim_knowledge`). Las
+campañas gestionadas se guardan y cargan como ficheros JSON `.mordheim` (y se
+exportan como resumen Markdown) desde `mordheim_campaign/persistence`. Véase
 [la guía del manager](docs/campaign-manager.md) y
 [su dirección de arquitectura](docs/campaign-architecture.md).
 

@@ -22,10 +22,11 @@ casos de uso sin Tkinter. Las dos aplicaciones presentan resultados con la capa
 compartida `mordheim_ui` y coordinan sus propios hilos. `verification` está
 fuera del runtime y utiliza el motor real como sistema bajo prueba.
 
-`mordheim_campaign` es *interface-first*: depende de view-models demo y de la
-capa UI compartida; su conexión real con `mordheim_knowledge` y
-`mordheim_construction` (KnowledgePort, legalidad, persistencia de campaña) es
-la siguiente fase prevista.
+`mordheim_campaign` es *interface-first*: los widgets dependen de view-models y de la
+capa UI compartida; las bandas y perfiles canónicos entran por
+`mordheim_campaign.application.knowledge_port` (sobre `mordheim_knowledge`) y la
+persistencia de campaña vive en `mordheim_campaign/persistence`. La legalidad de
+post-batalla y el uso de `mordheim_construction` son fases posteriores.
 
 ## Recursos compartidos
 
