@@ -594,7 +594,7 @@ rules:
 - id: band--tomb-guardian-experience-clarification
   name: Tomb Guardian Experience Clarification
   effect: The Town Cryer text is inconsistent about 'No Brain'. Mordheimer notes that the original Khemri material specifically
-    states that Tomb Guardians do gain Experience, and recommends using the Tomb Lord maximum characteristic profile for them.
+    states that Tomb Guardians do gain Experience, and recommends using the Tomb Lord maximum characteristic profile (campaign.limit.racial-maximum.tomb-lord) for them.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -605,8 +605,8 @@ rules:
     es: null
   effect_i18n:
     en: The Town Cryer text is inconsistent about 'No Brain'. Mordheimer notes that the original Khemri material specifically
-      states that Tomb Guardians do gain Experience, and recommends using the Tomb Lord maximum characteristic profile for
-      them.
+      states that Tomb Guardians do gain Experience, and recommends using the Tomb Lord maximum characteristic profile
+      (campaign.limit.racial-maximum.tomb-lord) for them.
     es: null
   applies_to:
     band: true
@@ -621,8 +621,10 @@ rules:
       reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
 - id: band--tomb-guardian-maximum-characteristics
   name: Tomb Guardian Maximum Characteristics
-  effect: 'Tomb Lord maximum: M4, WS6, BS6, S5, T5, W5, I5, A4, Ld9. Liche Priest and Acolyte maximum: M4, WS6, BS6, S4, T4,
-    W3, I6, A4, Ld9. For advancing Tomb Guardians, Mordheimer recommends using the Tomb Lord maximum profile.'
+  effect: 'Tomb Lords use the Tomb Lord racial maximum profile (campaign.limit.racial-maximum.tomb-lord).
+    Liche Priests and Acolytes use the Liche Priest racial maximum profile (campaign.limit.racial-maximum.liche-priest).
+    For advancing Tomb Guardians, Mordheimer recommends using the Tomb Lord racial maximum profile
+    (campaign.limit.racial-maximum.tomb-lord).'
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -632,8 +634,10 @@ rules:
     en: Tomb Guardian Maximum Characteristics
     es: null
   effect_i18n:
-    en: 'Tomb Lord maximum: M4, WS6, BS6, S5, T5, W5, I5, A4, Ld9. Liche Priest and Acolyte maximum: M4, WS6, BS6, S4, T4,
-      W3, I6, A4, Ld9. For advancing Tomb Guardians, Mordheimer recommends using the Tomb Lord maximum profile.'
+    en: 'Tomb Lords use the Tomb Lord racial maximum profile (campaign.limit.racial-maximum.tomb-lord).
+      Liche Priests and Acolytes use the Liche Priest racial maximum profile (campaign.limit.racial-maximum.liche-priest).
+      For advancing Tomb Guardians, Mordheimer recommends using the Tomb Lord racial maximum profile
+      (campaign.limit.racial-maximum.tomb-lord).'
     es: null
   applies_to:
     band: true

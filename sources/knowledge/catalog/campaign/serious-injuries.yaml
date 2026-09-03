@@ -1,64 +1,286 @@
 schema_version: 1
 ruleset: mordheim
 catalog: campaign-serious-injuries
-status: draft
+status: published
 # Define resultados posibles de la tabla. Lesiones sufridas y tiradas realizadas
 # pertenecen al estado persistente de una campaña, fuera de la KB.
-tables: []
-examples:
-- id: example.serious-injury.hero
+# resolution: direct, roll_table o repeat_table. roll_table declara dice y
+# branches (id, when min/max inclusivos, effects). repeat_table declara dice y
+# reroll_ids para resultados excluidos. Cada resultado usa effects: lista
+# ordenada de operaciones declarativas (warrior.characteristic_modifier,
+# warrior.add_condition, warrior.miss_games, warrior.battle_start_check,
+# warrior.equipment_limit, roster.remove_warrior, equipment.disposition,
+# prisoner.create, relationship.add_hatred, encounter.trigger, reward.grant).
+tables:
+- id: campaign.serious-injuries.hero
   applies_to: hero
-  roll: '11-15'
-  result: Example lasting scar
-  resolution:
-    type: direct
-  effects:
-  - type: warrior.characteristic_modifier
-    characteristic: leadership
-    modifier: -1
-  source_refs: []
-  note: Fictitious structure example; not a Mordheim injury result.
-- id: example.serious-injury.hero.secondary-roll
-  applies_to: hero
-  roll: '16'
-  result: Example secondary injury
-  resolution:
-    type: roll_table
-    dice:
-      count: 1
-      sides: 6
-    branches:
-    - id: campaign.serious-injury.example.secondary-roll.severe
-      when:
-        min: 1
-        max: 1
-      effects:
-      - type: warrior.equipment_limit
-        maximum_one_handed_weapons: 1
-    - id: campaign.serious-injury.example.secondary-roll.light
-      when:
-        min: 2
-        max: 6
-      effects:
+  dice: { count: 2, sides: 6 }
+  resolution: d66
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Serious Injuries / Heroes' Serious Injuries Chart
+    url: https://mordheimer.net/docs/campaigns
+  results:
+  - id: campaign.serious-injury.hero.11-15-dead
+    roll: '11-15'
+    result: Dead
+    resolution: direct
+    effects:
+    - type: roster.remove_warrior
+      reason: dead
+  - id: campaign.serious-injury.hero.16-21-multiple-injuries
+    roll: '16-21'
+    result: Multiple Injuries
+    resolution:
+      type: repeat_table
+      dice: { count: 1, sides: 6 }
+      table_id: campaign.serious-injuries.hero
+      reroll_ids:
+      - campaign.serious-injury.hero.11-15-dead
+      - campaign.serious-injury.hero.16-21-multiple-injuries
+      - campaign.serious-injury.hero.61-captured
+  - id: campaign.serious-injury.hero.22-leg-wound
+    roll: '22'
+    result: Leg Wound
+    resolution: direct
+    effects:
+    - type: warrior.characteristic_modifier
+      characteristic: movement
+      modifier: -1
+  - id: campaign.serious-injury.hero.23-arm-wound
+    roll: '23'
+    result: Arm Wound
+    resolution:
+      type: roll_table
+      dice: { count: 1, sides: 6 }
+      branches:
+      - id: campaign.serious-injury.hero.23-arm-wound.severe
+        when: { min: 1, max: 1 }
+        result: Severe arm wound
+        effects:
+        - type: warrior.equipment_limit
+          maximum_one_handed_weapons: 1
+      - id: campaign.serious-injury.hero.23-arm-wound.light
+        when: { min: 2, max: 6 }
+        result: Light wound
+        effects:
+        - type: warrior.miss_games
+          games: { kind: fixed, value: 1 }
+  - id: campaign.serious-injury.hero.24-madness
+    roll: '24'
+    result: Madness
+    resolution:
+      type: roll_table
+      dice: { count: 1, sides: 6 }
+      branches:
+      - id: campaign.serious-injury.hero.24-madness.stupidity
+        when: { min: 1, max: 3 }
+        result: Stupidity
+        effects:
+        - type: warrior.add_condition
+          condition_id: campaign.condition.stupidity
+          duration: permanent
+      - id: campaign.serious-injury.hero.24-madness.frenzy
+        when: { min: 4, max: 6 }
+        result: Frenzy
+        effects:
+        - type: warrior.add_condition
+          condition_id: campaign.condition.frenzy
+          duration: permanent
+  - id: campaign.serious-injury.hero.25-smashed-leg
+    roll: '25'
+    result: Smashed Leg
+    resolution:
+      type: roll_table
+      dice: { count: 1, sides: 6 }
+      branches:
+      - id: campaign.serious-injury.hero.25-smashed-leg.cannot-run
+        when: { min: 1, max: 1 }
+        result: Cannot run
+        effects:
+        - type: warrior.add_condition
+          condition_id: campaign.condition.cannot-run
+          duration: permanent
+      - id: campaign.serious-injury.hero.25-smashed-leg.light
+        when: { min: 2, max: 6 }
+        result: Light wound
+        effects:
+        - type: warrior.miss_games
+          games: { kind: fixed, value: 1 }
+  - id: campaign.serious-injury.hero.26-chest-wound
+    roll: '26'
+    result: Chest Wound
+    resolution: direct
+    effects:
+    - type: warrior.characteristic_modifier
+      characteristic: toughness
+      modifier: -1
+  - id: campaign.serious-injury.hero.31-blinded-in-one-eye
+    roll: '31'
+    result: Blinded In One Eye
+    resolution: direct
+    effects:
+    - type: warrior.characteristic_modifier
+      characteristic: ballistic_skill
+      modifier: -1
+    note: Randomly determine which eye. If the warrior is subsequently blinded
+      in his remaining good eye he must retire from the warband.
+  - id: campaign.serious-injury.hero.32-old-battle-wound
+    roll: '32'
+    result: Old Battle Wound
+    resolution: direct
+    effects:
+    - type: warrior.battle_start_check
+      check_id: campaign.check.old-battle-wound
+      dice: { count: 1, sides: 6 }
+      failure_when: { min: 1, max: 1 }
+      on_failure:
       - type: warrior.miss_games
-        games:
-          kind: fixed
-          value: 1
-  source_refs: []
-  note: Fictitious structure example; not a Mordheim injury result.
-# Cada resultado usa resolution y effects. resolution puede ser direct,
-# roll_table o repeat_table. roll_table declara dice y branches; cada rama tiene
-# id, when (min/max inclusivos) y effects. Así modela resultados secundarios y
-# repeticiones sin convertir una tirada concreta en dato de la KB. effects es una lista
-# ordenada de operaciones declarativas. Tipos inicialmente admitidos:
-# - warrior.characteristic_modifier, warrior.add_condition,
-#   warrior.miss_games, warrior.battle_start_check y warrior.equipment_limit
-# - roster.remove_warrior, equipment.disposition y prisoner.create
-# - relationship.add_hatred, encounter.trigger y reward.grant
-# Cada tipo declara únicamente sus parámetros pertinentes. No guardar aquí el
-# guerrero afectado, la tirada obtenida ni el resultado aplicado: eso es estado
-# de campaña externo. Las reglas de banda que cambien una tirada referenciarán
-# el effect_id publicado aquí.
+        games: { kind: fixed, value: 1 }
+  - id: campaign.serious-injury.hero.33-nervous-condition
+    roll: '33'
+    result: Nervous Condition
+    resolution: direct
+    effects:
+    - type: warrior.characteristic_modifier
+      characteristic: initiative
+      modifier: -1
+  - id: campaign.serious-injury.hero.34-hand-injury
+    roll: '34'
+    result: Hand Injury
+    resolution: direct
+    effects:
+    - type: warrior.characteristic_modifier
+      characteristic: weapon_skill
+      modifier: -1
+  - id: campaign.serious-injury.hero.35-deep-wound
+    roll: '35'
+    result: Deep Wound
+    resolution: direct
+    effects:
+    - type: warrior.miss_games
+      games: { kind: dice, dice: { count: 1, sides: 3 } }
+    note: The warrior may do nothing at all while recovering.
+  - id: campaign.serious-injury.hero.36-robbed
+    roll: '36'
+    result: Robbed
+    resolution: direct
+    effects:
+    - type: equipment.disposition
+      scope: carried_by_subject
+      disposition: lost
+  - id: campaign.serious-injury.hero.41-55-full-recovery
+    roll: '41-55'
+    result: Full Recovery
+    resolution: direct
+    effects: []
+  - id: campaign.serious-injury.hero.56-bitter-enmity
+    roll: '56'
+    result: Bitter Enmity
+    resolution:
+      type: roll_table
+      dice: { count: 1, sides: 6 }
+      branches:
+      - id: campaign.serious-injury.hero.56-bitter-enmity.individual
+        when: { min: 1, max: 3 }
+        result: The individual who caused the injury (the enemy leader if it was a Henchman)
+        effects:
+        - type: relationship.add_hatred
+          target_selector: inflicting_warrior_or_enemy_leader_if_henchman
+          duration: permanent
+      - id: campaign.serious-injury.hero.56-bitter-enmity.leader
+        when: { min: 4, max: 4 }
+        result: The leader of the warband that caused the injury
+        effects:
+        - type: relationship.add_hatred
+          target_selector: enemy_leader
+          duration: permanent
+      - id: campaign.serious-injury.hero.56-bitter-enmity.warband
+        when: { min: 5, max: 5 }
+        result: The entire warband of the warrior responsible for the injury
+        effects:
+        - type: relationship.add_hatred
+          target_selector: inflicting_warband
+          duration: permanent
+      - id: campaign.serious-injury.hero.56-bitter-enmity.warband-type
+        when: { min: 6, max: 6 }
+        result: All warbands of that type
+        effects:
+        - type: relationship.add_hatred
+          target_selector: inflicting_warband_type
+          duration: permanent
+  - id: campaign.serious-injury.hero.61-captured
+    roll: '61'
+    result: Captured
+    resolution: direct
+    effects:
+    - type: prisoner.create
+      captive: subject
+      captor: opposing_warband
+      equipment_policy: retained_until_resolution
+    note: May be ransomed at a price set by the captor, exchanged for one of
+      their warband who is held captive, or sold to slavers at D6x5 gc. Undead
+      may kill the captive and gain a new Zombie; the Possessed may sacrifice
+      the prisoner, granting the warband leader +1 Experience.
+  - id: campaign.serious-injury.hero.62-63-hardened
+    roll: '62-63'
+    result: Hardened
+    resolution: direct
+    effects:
+    - type: warrior.add_condition
+      condition_id: campaign.condition.immune-to-fear
+      duration: permanent
+  - id: campaign.serious-injury.hero.64-horrible-scars
+    roll: '64'
+    result: Horrible Scars
+    resolution: direct
+    effects:
+    - type: warrior.add_condition
+      condition_id: campaign.condition.causes-fear
+      duration: permanent
+  - id: campaign.serious-injury.hero.65-sold-to-the-pits
+    roll: '65'
+    result: Sold To The Pits
+    resolution: direct
+    effects:
+    - type: encounter.trigger
+      encounter_id: campaign.encounter.sold-to-the-pits
+      subject: warrior
+    note: The warrior must fight a Pit Fighter. If he loses, roll D66 (11-35
+      dead or injured) and he is thrown out without armour or weapons. If he
+      wins he gains 50 gc and +2 Experience.
+  - id: campaign.serious-injury.hero.66-survives-against-the-odds
+    roll: '66'
+    result: Survives Against The Odds
+    resolution: direct
+    effects:
+    - type: reward.grant
+      recipient: subject
+      resources:
+        experience: { kind: fixed, value: 1 }
+- id: campaign.serious-injuries.henchman
+  applies_to: henchman
+  dice: { count: 1, sides: 6 }
+  resolution: d6
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Serious Injuries / Henchmen With Serious Injuries
+    url: https://mordheimer.net/docs/campaigns
+  results:
+  - id: campaign.serious-injury.henchman.1-2-removed
+    roll: '1-2'
+    result: Removed
+    resolution: direct
+    effects:
+    - type: roster.remove_warrior
+      reason: severe_injuries_or_died
+  - id: campaign.serious-injury.henchman.3-6-fine
+    roll: '3-6'
+    result: Full Recovery
+    resolution: direct
+    effects: []
 effect_ids:
 - campaign.serious-injury.roll
 - campaign.serious-injury.modify-roll

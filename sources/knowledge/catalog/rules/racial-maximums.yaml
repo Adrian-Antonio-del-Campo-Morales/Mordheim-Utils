@@ -1,0 +1,537 @@
+schema_version: 2
+ruleset: mordheim
+catalog: rules-racial-maximums
+status: published
+# Máximos raciales de atributos: única fuente de verdad para las
+# características máximas por raza. Ningún YAML incrusta estas statlines como
+# texto: las reglas de banda y los avances de campaña referencian las entradas
+# por su ID estable (campaign.limit.racial-maximum.*).
+# Fuente: mordheimer.net, sección Campaigns / Experience / Characteristic
+# Increase / Racial Maximum Characteristics.
+racial_maximums:
+- id: campaign.limit.racial-maximum.human
+  applies_to: profile
+  profile: human
+  characteristics:
+    movement: 4
+    weapon_skill: 6
+    ballistic_skill: 6
+    strength: 4
+    toughness: 4
+    wounds: 3
+    initiative: 6
+    attacks: 4
+    leadership: 9
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.elf
+  applies_to: profile
+  profile: elf
+  characteristics:
+    movement: 5
+    weapon_skill: 7
+    ballistic_skill: 7
+    strength: 4
+    toughness: 4
+    wounds: 3
+    initiative: 9
+    attacks: 4
+    leadership: 10
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.dwarf
+  applies_to: profile
+  profile: dwarf
+  characteristics:
+    movement: 3
+    weapon_skill: 7
+    ballistic_skill: 6
+    strength: 4
+    toughness: 5
+    wounds: 3
+    initiative: 5
+    attacks: 4
+    leadership: 10
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.ogre
+  applies_to: profile
+  profile: ogre
+  characteristics:
+    movement: 6
+    weapon_skill: 6
+    ballistic_skill: 5
+    strength: 5
+    toughness: 5
+    wounds: 5
+    initiative: 6
+    attacks: 5
+    leadership: 9
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.halfling
+  applies_to: profile
+  profile: halfling
+  characteristics:
+    movement: 4
+    weapon_skill: 5
+    ballistic_skill: 7
+    strength: 3
+    toughness: 3
+    wounds: 3
+    initiative: 9
+    attacks: 4
+    leadership: 10
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.possessed
+  applies_to: profile
+  profile: possessed
+  characteristics:
+    movement: 6
+    weapon_skill: 8
+    ballistic_skill: 0
+    strength: 6
+    toughness: 6
+    wounds: 4
+    initiative: 7
+    attacks: 5
+    leadership: 10
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.vampire
+  applies_to: profile
+  profile: vampire
+  characteristics:
+    movement: 6
+    weapon_skill: 8
+    ballistic_skill: 6
+    strength: 7
+    toughness: 6
+    wounds: 4
+    initiative: 9
+    attacks: 4
+    leadership: 10
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.skaven
+  applies_to: profile
+  profile: skaven
+  characteristics:
+    movement: 6
+    weapon_skill: 6
+    ballistic_skill: 6
+    strength: 4
+    toughness: 4
+    wounds: 3
+    initiative: 7
+    attacks: 4
+    leadership: 7
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.skaven-clan-pestilens
+  applies_to: profile
+  profile: skaven_clan_pestilens
+  characteristics:
+    movement: 5
+    weapon_skill: 6
+    ballistic_skill: 6
+    strength: 4
+    toughness: 5
+    wounds: 3
+    initiative: 7
+    attacks: 4
+    leadership: 7
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.ghoul
+  applies_to: profile
+  profile: ghoul
+  characteristics:
+    movement: 5
+    weapon_skill: 5
+    ballistic_skill: 2
+    strength: 4
+    toughness: 5
+    wounds: 3
+    initiative: 5
+    attacks: 5
+    leadership: 7
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.saurus
+  applies_to: profile
+  profile: saurus
+  characteristics:
+    movement: 4
+    weapon_skill: 6
+    ballistic_skill: 0
+    strength: 5
+    toughness: 5
+    wounds: 3
+    initiative: 4
+    attacks: 4
+    leadership: 10
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+  note: Attacks is listed as 4+1 in the source.
+- id: campaign.limit.racial-maximum.skink
+  applies_to: profile
+  profile: skink
+  characteristics:
+    movement: 6
+    weapon_skill: 5
+    ballistic_skill: 6
+    strength: 4
+    toughness: 3
+    wounds: 3
+    initiative: 7
+    attacks: 4
+    leadership: 8
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.goblin
+  applies_to: profile
+  profile: goblin
+  characteristics:
+    movement: 4
+    weapon_skill: 5
+    ballistic_skill: 6
+    strength: 4
+    toughness: 4
+    wounds: 3
+    initiative: 6
+    attacks: 4
+    leadership: 7
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.orc
+  applies_to: profile
+  profile: orc
+  characteristics:
+    movement: 4
+    weapon_skill: 6
+    ballistic_skill: 6
+    strength: 4
+    toughness: 5
+    wounds: 3
+    initiative: 5
+    attacks: 4
+    leadership: 9
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.black-orc
+  applies_to: profile
+  profile: black_orc
+  characteristics:
+    movement: 4
+    weapon_skill: 7
+    ballistic_skill: 6
+    strength: 5
+    toughness: 6
+    wounds: 3
+    initiative: 5
+    attacks: 4
+    leadership: 9
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.werecreature-norse
+  applies_to: profile
+  profile: werecreature_norse
+  characteristics:
+    movement: 8
+    weapon_skill: 6
+    ballistic_skill: 0
+    strength: 6
+    toughness: 5
+    wounds: 4
+    initiative: 7
+    attacks: 4
+    leadership: 9
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+  note: Wulfen/Ulfwerenar.
+- id: campaign.limit.racial-maximum.tomb-lord
+  applies_to: profile
+  profile: tomb_lord
+  characteristics:
+    movement: 4
+    weapon_skill: 6
+    ballistic_skill: 6
+    strength: 5
+    toughness: 5
+    wounds: 5
+    initiative: 5
+    attacks: 4
+    leadership: 9
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.liche-priest
+  applies_to: profile
+  profile: liche_priest
+  characteristics:
+    movement: 4
+    weapon_skill: 6
+    ballistic_skill: 6
+    strength: 4
+    toughness: 4
+    wounds: 3
+    initiative: 6
+    attacks: 4
+    leadership: 9
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+  note: Liche Priest & Acolyte (Tomb Guardians).
+- id: campaign.limit.racial-maximum.liche-restless-dead
+  applies_to: profile
+  profile: liche_restless_dead
+  characteristics:
+    movement: 5
+    weapon_skill: 4
+    ballistic_skill: 4
+    strength: 4
+    toughness: 4
+    wounds: 8
+    initiative: 6
+    attacks: 3
+    leadership: 10
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.grave-guard
+  applies_to: profile
+  profile: grave_guard
+  characteristics:
+    movement: 5
+    weapon_skill: 5
+    ballistic_skill: 5
+    strength: 4
+    toughness: 4
+    wounds: 4
+    initiative: 5
+    attacks: 4
+    leadership: 10
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.bull-centaur-black-dwarfs
+  applies_to: profile
+  profile: bull_centaur_black_dwarfs
+  characteristics:
+    movement: 8
+    weapon_skill: 7
+    ballistic_skill: 6
+    strength: 5
+    toughness: 5
+    wounds: 4
+    initiative: 6
+    attacks: 5
+    leadership: 10
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.bull-centaur-sons-of-hashut
+  applies_to: profile
+  profile: bull_centaur_sons_of_hashut
+  characteristics:
+    movement: 7
+    weapon_skill: 7
+    ballistic_skill: 3
+    strength: 5
+    toughness: 5
+    wounds: 4
+    initiative: 4
+    attacks: 5
+    leadership: 9
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.hobgoblin-sons-of-hashut
+  applies_to: profile
+  profile: hobgoblin_sons_of_hashut
+  characteristics:
+    movement: 4
+    weapon_skill: 5
+    ballistic_skill: 5
+    strength: 4
+    toughness: 4
+    wounds: 3
+    initiative: 5
+    attacks: 3
+    leadership: 8
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.marauder-of-chaos
+  applies_to: profile
+  profile: marauder_of_chaos
+  characteristics:
+    movement: 4
+    weapon_skill: 7
+    ballistic_skill: 7
+    strength: 4
+    toughness: 4
+    wounds: 3
+    initiative: 7
+    attacks: 4
+    leadership: 9
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.warrior-of-chaos
+  applies_to: profile
+  profile: warrior_of_chaos
+  characteristics:
+    movement: 4
+    weapon_skill: 8
+    ballistic_skill: 8
+    strength: 5
+    toughness: 5
+    wounds: 3
+    initiative: 8
+    attacks: 5
+    leadership: 9
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.ungor
+  applies_to: profile
+  profile: ungor
+  characteristics:
+    movement: 6
+    weapon_skill: 6
+    ballistic_skill: 6
+    strength: 4
+    toughness: 4
+    wounds: 3
+    initiative: 7
+    attacks: 4
+    leadership: 7
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.centigor
+  applies_to: profile
+  profile: centigor
+  characteristics:
+    movement: 9
+    weapon_skill: 7
+    ballistic_skill: 6
+    strength: 4
+    toughness: 5
+    wounds: 4
+    initiative: 6
+    attacks: 4
+    leadership: 9
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.minotaur
+  applies_to: profile
+  profile: minotaur
+  characteristics:
+    movement: 6
+    weapon_skill: 6
+    ballistic_skill: 5
+    strength: 5
+    toughness: 5
+    wounds: 5
+    initiative: 6
+    attacks: 5
+    leadership: 9
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.limit.racial-maximum.other-beastmen
+  applies_to: profile
+  profile: other_beastmen
+  characteristics:
+    movement: 5
+    weapon_skill: 7
+    ballistic_skill: 6
+    strength: 4
+    toughness: 5
+    wounds: 4
+    initiative: 6
+    attacks: 4
+    leadership: 9
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
+    url: https://mordheimer.net/docs/campaigns/experience
+  note: Other Beastmen profiles.

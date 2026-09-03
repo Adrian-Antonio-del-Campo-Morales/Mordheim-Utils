@@ -670,8 +670,9 @@ rules:
       binding: null
       reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
   name: Marauder Maximum Characteristics
-  effect: Marauders of Chaos use the Marauder of Chaos maximum characteristic profile. A Hero with Chosen of Chaos instead
-    uses the Warriors of Chaos maximum characteristic profile.
+  effect: Marauders of Chaos use the Marauder of Chaos maximum characteristic profile
+    (campaign.limit.racial-maximum.marauder-of-chaos). A Hero with Chosen of Chaos instead uses the Warriors of Chaos
+    maximum characteristic profile (campaign.limit.racial-maximum.warrior-of-chaos).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -681,8 +682,9 @@ rules:
     en: Marauder Maximum Characteristics
     es: null
   effect_i18n:
-    en: Marauders of Chaos use the Marauder of Chaos maximum characteristic profile. A Hero with Chosen of Chaos instead uses
-      the Warriors of Chaos maximum characteristic profile.
+    en: Marauders of Chaos use the Marauder of Chaos maximum characteristic profile
+      (campaign.limit.racial-maximum.marauder-of-chaos). A Hero with Chosen of Chaos instead uses the Warriors of Chaos
+      maximum characteristic profile (campaign.limit.racial-maximum.warrior-of-chaos).
     es: null
   applies_to:
     band: true
@@ -851,7 +853,8 @@ rules:
       reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
   name: Chosen of Chaos
   effect: The Hero has been found worthy of his god’s service and entered the rank of a Chaos Warrior. He uses the maximum
-    profile for Warriors of Chaos and the Hero equipment list (if he does not already).
+    profile for Warriors of Chaos (campaign.limit.racial-maximum.warrior-of-chaos) and the Hero equipment list (if he does not
+    already).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -861,13 +864,9 @@ rules:
     en: Chosen of Chaos
     es: null
   effect_i18n:
-    en: 'The Hero has been found worthy of his god’s service
-
-      and entered the rank of a Chaos Warrior. He uses the
-
-      maximum profile for Warriors of Chaos and the Hero
-
-      equipment list (if he does not already).'
+    en: 'The Hero has been found worthy of his god’s service and entered the rank of a Chaos Warrior. He uses the maximum
+      profile for Warriors of Chaos (campaign.limit.racial-maximum.warrior-of-chaos) and the Hero equipment list (if he does
+      not already).'
     es: null
   applies_to:
     band: true
