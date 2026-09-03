@@ -1,11 +1,11 @@
-import argparse
+import importlib.util
+import sys
+from pathlib import Path
 
 import pytest
 
-from mordheim_utils.cli import SCOPE_PATHS
-from mordheim_utils.cli import build_parser
-from mordheim_utils.cli import doctor_command
-from mordheim_utils.cli import main
+REPO_ROOT = Path(__file__).resolve().parents[2]
+CLI_SCRIPT = REPO_ROOT / "tools" / "mordheim-utils.py"
 
 COMMANDS = (
     "combat-lab",
@@ -22,114 +22,127 @@ COMMANDS = (
     "doctor",
 )
 
-
-def test_umbrella_help_lists_every_command(capsys):
-    with pytest.raises(SystemExit) as exc:
-        main(["--help"])
-    assert exc.value.code == 0
-    output = capsys.readouterr().out
-    for name in COMMANDS:
-        assert name in output
-    assert "mordheim-utils" in output
+LAB_COMMANDS = ("benchmark", "parity", "test-report", "verify", "audit", "validate")
 
 
-def test_bare_invocation_prints_help(capsys):
-    assert main([]) == 0
-    assert "mordheim-utils" in capsys.readouterr().out
+@pytest.fixture()
+def cli():
+    spec = importlib.util.spec_from_file_location("mordheim_utils_launcher", CLI_SCRIPT)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
 
 
-def test_unknown_command_is_rejected(capsys):
-    with pytest.raises(SystemExit) as exc:
-        main(["does-not-exist"])
-    assert exc.value.code == 2
-    assert "invalid choice" in capsys.readouterr().err
-
-
-def test_benchmark_help_shows_the_lab_detailed_arguments(capsys):
-    with pytest.raises(SystemExit) as exc:
-        main(["benchmark", "--help"])
-    assert exc.value.code == 0
-    output = capsys.readouterr().out
-    assert "--simulation-sizes" in output
-    assert "--batch-sizes" in output
-    assert "--require-improvement" in output
-    assert "--min-improvement" in output
-
-
-def test_audit_help_shows_the_review_status_filter(capsys):
-    with pytest.raises(SystemExit) as exc:
-        main(["audit", "--help"])
-    assert exc.value.code == 0
-    output = capsys.readouterr().out
-    assert "--review-status" in output
-    assert "needs_ruling" in output
-
-
-def test_verify_help_shows_the_semantic_options(capsys):
-    with pytest.raises(SystemExit) as exc:
-        main(["verify", "--help"])
-    assert exc.value.code == 0
-    output = capsys.readouterr().out
-    assert "--require-complete" in output
-    assert "--inventory" in output
-
-
-def test_combine_kb_help_mirrors_the_tool_arguments(capsys):
-    with pytest.raises(SystemExit) as exc:
-        main(["combine-kb", "--help"])
-    assert exc.value.code == 0
-    output = capsys.readouterr().out
-    assert "-o" in output
-    assert "kb_path" in output
-
-
-def test_tests_help_lists_scopes(capsys):
-    with pytest.raises(SystemExit) as exc:
-        main(["tests", "--help"])
-    assert exc.value.code == 0
-    output = capsys.readouterr().out
-    for scope in ("verification", "knowledge", "modular", "vectorized", "native"):
-        assert scope in output
-
-
-def test_test_scope_paths_are_non_empty_and_known():
-    assert set(SCOPE_PATHS) >= {
-        "all", "engines", "modular", "vectorized", "native", "campaign",
-        "knowledge", "verification", "construction", "ui", "cli", "architecture",
-    }
-    for paths in SCOPE_PATHS.values():
-        assert paths
-
-
-def _record_run(monkeypatch):
+def _record_run(cli, monkeypatch):
     calls = []
-    import mordheim_utils.cli as cli
 
-    def fake_run(scope, pytest_args):
-        cleaned = list(pytest_args)
-        if cleaned and cleaned[0] == "--":
-            cleaned.pop(0)
-        calls.append((scope, cleaned))
+    def fake_run(*argv):
+        calls.append(list(argv))
         return 0
 
-    monkeypatch.setattr(cli, "_run_pytest", fake_run)
+    monkeypatch.setattr(cli, "_run", fake_run)
     return calls
 
 
-def test_tests_forwards_pytest_flags_without_double_dash(monkeypatch):
-    calls = _record_run(monkeypatch)
-    assert main(["tests", "--scope", "cli", "-q", "-p", "no:cacheprovider"]) == 0
-    assert calls == [("cli", ["-q", "-p", "no:cacheprovider"])]
+def test_help_lists_every_command(cli, capsys):
+    assert cli.main(["--help"]) == 0
+    output = capsys.readouterr().out
+    for name in COMMANDS:
+        assert name in output
+    assert "mordheim-utils.py" in output
 
 
-def test_tests_forwards_pytest_flags_after_double_dash(monkeypatch):
-    calls = _record_run(monkeypatch)
-    assert main(["tests", "--scope", "cli", "--", "-q", "-p", "no:cacheprovider"]) == 0
-    assert calls == [("cli", ["-q", "-p", "no:cacheprovider"])]
+def test_bare_invocation_prints_help(cli, capsys):
+    assert cli.main([]) == 0
+    output = capsys.readouterr().out
+    for name in COMMANDS:
+        assert name in output
 
 
-def test_doctor_reports_environment(capsys):
-    assert doctor_command(argparse.Namespace()) == 0
+def test_unknown_command_is_rejected(cli, capsys):
+    assert cli.main(["does-not-exist"]) == 2
+    assert "unknown command" in capsys.readouterr().err
+
+
+def test_combat_lab_launches_the_lab_ui(cli, monkeypatch):
+    calls = _record_run(cli, monkeypatch)
+    assert cli.main(["combat-lab"]) == 0
+    assert calls == [[sys.executable, "-m", "mordheim_combat_lab", "ui"]]
+
+
+def test_warband_manager_launches_the_campaign_app(cli, monkeypatch):
+    calls = _record_run(cli, monkeypatch)
+    assert cli.main(["warband-manager"]) == 0
+    assert calls == [[sys.executable, "-m", "mordheim_campaign"]]
+
+
+@pytest.mark.parametrize("name", LAB_COMMANDS)
+def test_lab_commands_are_forwarded_to_the_lab_cli(cli, monkeypatch, name):
+    calls = _record_run(cli, monkeypatch)
+    assert cli.main([name]) == 0
+    assert calls == [[sys.executable, "-m", "mordheim_combat_lab", name]]
+
+
+def test_lab_command_forwards_arguments_verbatim(cli, monkeypatch):
+    calls = _record_run(cli, monkeypatch)
+    assert cli.main(["benchmark", "-n", "1000", "--json"]) == 0
+    assert calls == [
+        [sys.executable, "-m", "mordheim_combat_lab", "benchmark", "-n", "1000", "--json"]
+    ]
+
+
+def test_tests_forwards_pytest_flags_without_double_dash(cli, monkeypatch):
+    calls = _record_run(cli, monkeypatch)
+    assert cli.main(["tests", "--scope", "cli", "-q", "-p", "no:cacheprovider"]) == 0
+    assert calls == [
+        [sys.executable, "-m", "pytest", "tests/cli", "-q", "-p", "no:cacheprovider"]
+    ]
+
+
+def test_tests_forwards_pytest_flags_after_double_dash(cli, monkeypatch):
+    calls = _record_run(cli, monkeypatch)
+    assert cli.main(["tests", "--scope", "cli", "--", "-q", "-p", "no:cacheprovider"]) == 0
+    assert calls == [[sys.executable, "-m", "pytest", "tests/cli", "-q", "-p", "no:cacheprovider"]]
+
+
+def test_tests_default_scope_is_all(cli, monkeypatch):
+    calls = _record_run(cli, monkeypatch)
+    assert cli.main(["tests"]) == 0
+    assert calls == [[sys.executable, "-m", "pytest", "tests"]]
+
+
+def test_tests_rejects_unknown_scope(cli, capsys):
+    assert cli.main(["tests", "--scope", "nope"]) == 2
+    assert "unknown scope" in capsys.readouterr().err
+
+
+def test_test_scope_paths_are_non_empty_and_known(cli):
+    assert set(cli.SCOPE_PATHS) >= {
+        "all", "engines", "modular", "vectorized", "native", "campaign",
+        "knowledge", "verification", "construction", "ui", "cli", "architecture",
+    }
+    for paths in cli.SCOPE_PATHS.values():
+        assert paths
+
+
+def test_combine_kb_forwards_to_the_kb_script(cli, monkeypatch):
+    calls = _record_run(cli, monkeypatch)
+    script = str(cli.COMBINE_KB_SCRIPT)
+    assert cli.main(["combine-kb", "sources/knowledge", "-o", "outputs/kb"]) == 0
+    assert calls == [
+        [sys.executable, script, "sources/knowledge", "-o", "outputs/kb"]
+    ]
+
+
+def test_build_native_editable_install(cli, monkeypatch):
+    calls = _record_run(cli, monkeypatch)
+    assert cli.main(["build-native"]) == 0
+    assert calls == [[sys.executable, "-m", "pip", "install", "-e", "."]]
+
+
+def test_doctor_reports_environment(cli, capsys):
+    assert cli.doctor_command() == 0
     output = capsys.readouterr().out
     assert "Python:" in output
     assert "optimized combat backends:" in output

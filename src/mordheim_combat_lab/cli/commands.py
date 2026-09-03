@@ -412,7 +412,10 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
         choices=("all", "basic", "multiattack", "defences", "stateful", "long"),
         default="all",
     )
-    benchmark.add_argument("--warmups", type=int, choices=range(0, 101), default=1)
+    benchmark.add_argument(
+        "--warmups", type=int, choices=range(0, 101), default=1,
+        help="warm-up runs per configuration (0-100)",
+    )
     benchmark.add_argument("--repeats", type=_positive, default=5)
     benchmark.add_argument("--json", action="store_true")
     benchmark.add_argument("--output",
