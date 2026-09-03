@@ -608,9 +608,14 @@ def _parry_hits(defender: CompiledFighter, effect: EffectSet, hit_rows: np.ndarr
                 hit_values: np.ndarray, hit_strength: np.ndarray,
                 defender_state: CombatState,
                 rng: np.random.Generator,
-                selected_rows: np.ndarray | None = None) -> tuple[np.ndarray,np.ndarray]:
+                selected_rows: np.ndarray | None = None) -> tuple[np.ndarray,np.ndarray,np.ndarray]:
+    """Return (surviving rows, parried rows, survivor mask over the input rows).
+
+    The survivor mask lets callers filter sibling arrays (e.g. positions within
+    the active pool) without a second searchsorted over the whole pool.
+    """
     if effect.cannot_be_parried:
-        return hit_rows,np.empty(0,dtype=np.int64)
+        return hit_rows,np.empty(0,dtype=np.int64),np.ones(hit_rows.size,dtype=bool)
     parry = (defender.main_weapon.parry or bool(defender.off_hand and defender.off_hand.parry)
              or defender.global_effects.parry or has(defender.global_effects,"skill.miniath"))
     parry |= has(defender.global_effects,"skill.axe-master") and (
@@ -619,7 +624,7 @@ def _parry_hits(defender: CompiledFighter, effect: EffectSet, hit_rows: np.ndarr
     )
     parry |= has(defender.global_effects,"skill.shield-mastery") and bool(defender.off_hand and has(defender.off_hand,"defence.shield"))
     if not parry or hit_rows.size == 0:
-        return hit_rows,np.empty(0,dtype=np.int64)
+        return hit_rows,np.empty(0,dtype=np.int64),np.ones(hit_rows.size,dtype=bool)
     eligible = ((defender_state.condition[hit_rows] == STANDING)
                 & (defender_state.parry_remaining[hit_rows] > 0)
                 & (hit_strength < 2 * defender_state.strength[hit_rows]))
@@ -641,7 +646,7 @@ def _parry_hits(defender: CompiledFighter, effect: EffectSet, hit_rows: np.ndarr
                 highest[positions[np.argsort(hit_values[positions])[-limit:]]] = True
             eligible &= highest
     if not eligible.any():
-        return hit_rows,np.empty(0,dtype=np.int64)
+        return hit_rows,np.empty(0,dtype=np.int64),np.ones(hit_rows.size,dtype=bool)
     parry_roll = rng.integers(1, 7, hit_rows.size)
     match_allowed = any(has(defender.global_effects,x) for x in ("skill.sword-master","skill.swordmaster","skill.defensive-stance","skill.unbeatable-warrior"))
     starblade = has(defender.main_weapon, "weapon.starblade") or bool(
@@ -674,7 +679,7 @@ def _parry_hits(defender: CompiledFighter, effect: EffectSet, hit_rows: np.ndarr
         blocked |= eligible & blockable_roll & second_success
     defender_state.parry_used[hit_rows[eligible]] = True
     defender_state.parry_remaining[hit_rows[eligible]] -= 1
-    return hit_rows[~blocked],hit_rows[blocked]
+    return hit_rows[~blocked],hit_rows[blocked],~blocked
 
 
 @lru_cache(maxsize=1024)
@@ -857,17 +862,22 @@ def _apply_hit_defences(
     attacker_state: CombatState, defender_state: CombatState,
     rng: np.random.Generator, charging: np.ndarray,
     parry_rows: np.ndarray | None = None,
+    hit_positions: np.ndarray | None = None,
 ) -> np.ndarray:
     """Resolve the hit-to-parry boundary once and return surviving hits."""
     weapon,effect,active,strength,rolls = (
         prepared.weapon,prepared.effect,prepared.active,prepared.strength,prepared.rolls
     )
     hit_rows=prepared.hit_rows[defender_state.condition[prepared.hit_rows]!=OUT]
-    hit_positions=np.searchsorted(active,hit_rows)
+    if hit_positions is None:
+        hit_positions=np.searchsorted(active,hit_rows)
+    else:
+        hit_positions=hit_positions[defender_state.condition[prepared.hit_rows]!=OUT]
     hit_values=rolls[hit_positions]
-    hit_rows,parried_rows=_parry_hits(
+    hit_rows,parried_rows,survived=_parry_hits(
         defender,effect,hit_rows,hit_values,strength[hit_positions],defender_state,rng,parry_rows
     )
+    hit_positions=hit_positions[survived]
     if parried_rows.size and has(defender.global_effects,"mechanic.spider-infested"):
         np.add.at(attacker_state.initiative_penalty,parried_rows,1)
         attacker_state.initiative_floor[parried_rows]=0
@@ -886,9 +896,9 @@ def _apply_hit_defences(
         eligible=defender_state.lucky_charm[hit_rows]
         charm_rolls=rng.integers(1,7,hit_rows.size)
         defender_state.lucky_charm[hit_rows[eligible]]=False
-        hit_rows=hit_rows[~(eligible&(charm_rolls>=4))]
-    hit_positions = (np.searchsorted(active, hit_rows)
-                     if hit_rows.size else np.empty(0, dtype=np.int64))
+        kept=~(eligible&(charm_rolls>=4))
+        hit_rows=hit_rows[kept]
+        hit_positions=hit_positions[kept]
     return hit_rows, hit_positions
 
 
@@ -900,6 +910,7 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
                     defender_phase_condition: np.ndarray | None = None,
                     decisions: DecisionPolicy | None = None,
                     defences_resolved: bool = False,
+                    hit_positions: np.ndarray | None = None,
                     observation: VectorAttackObservation | None = None) -> None:
     prepared = prepared or _prepare_weapon_attack(attacker,defender,weapon,active,charging,attacker_state,defender_state,rng,first_round)
     if prepared is None:
@@ -916,7 +927,8 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
         parries_before = defender_state.parry_remaining.copy()
         charms_before = defender_state.lucky_charm.copy()
         hit_rows, hit_positions = _apply_hit_defences(
-            attacker,defender,prepared,attacker_state,defender_state,rng,charging,parry_rows
+            attacker,defender,prepared,attacker_state,defender_state,rng,charging,parry_rows,
+            hit_positions,
         )
         if observation is not None and prepared.hit_rows.size and hit_rows.size == 0:
             row = int(prepared.hit_rows[0])
@@ -1185,7 +1197,7 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
             hit_positions=np.searchsorted(prepared.active,hit_rows)
             hit_values=prepared.rolls[hit_positions]
             hit_strength=prepared.strength[hit_positions]
-            hit_rows,_=_parry_hits(defender,prepared.effect,hit_rows,hit_values,hit_strength,defender_state,rng)
+            hit_rows,_,_=_parry_hits(defender,prepared.effect,hit_rows,hit_values,hit_strength,defender_state,rng)
             if observation is not None and prepared.hit_rows.size and hit_rows.size == 0:
                 row=int(prepared.hit_rows[0])
                 observation.parried=defender_state.parry_remaining[row] < parries_before[row]
@@ -1255,8 +1267,10 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
     owner = np.full(charging.size,-1,dtype=np.int32)
     second_owner = np.full(charging.size,-1,dtype=np.int32)
     two_parries = _parry_capacity(defender) == 2
+    positions_by_attack: list[np.ndarray] = []
     for attack_index,prepared in enumerate(prepared_attacks):
         positions=np.searchsorted(prepared.active,prepared.hit_rows)
+        positions_by_attack.append(positions)
         values=prepared.rolls[positions]
         better=values>best_roll[prepared.hit_rows]
         if two_parries:
@@ -1348,6 +1362,8 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
                         defender_phase_condition=defender_phase_condition,
                         decisions=decisions,
                         defences_resolved=defences_resolved,
+                        hit_positions=positions_by_attack[attack_index]
+                        if attack_index < len(positions_by_attack) else None,
                         observation=observation)
         if (observations is not None and observation is not None
                 and attack_index not in replaced_attack_indices):
