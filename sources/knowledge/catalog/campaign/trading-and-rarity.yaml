@@ -1,34 +1,79 @@
 schema_version: 1
 ruleset: mordheim
 catalog: campaign-trading-and-rarity
-status: draft
+status: published
 # Define el procedimiento de compra. Tiradas de rareza, objetos comprados y
 # contenido del alijo son datos de una campaña individual, fuera de la KB.
 rarity:
-  tests: []
+  tests:
+  - id: campaign.trading.rarity-test
+    actor: eligible_hero
+    attempt_limit: one_per_actor
+    dice: { count: 2, sides: 6 }
+    target_rarity:
+      source: catalog_field
+      catalog: campaign/trading-post
+      item_id: $requested_item_id
+      field: availability.rarity
+    success_when: greater_than_or_equal_to_target
+    units_per_success: 1
+    note: Common items are always available and need no test. A Hero taken out
+      of action in the last battle may not look for rare items. One rare item
+      is bought per successful roll.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Trading / Availability
+      url: https://mordheimer.net/docs/campaigns/trading
+  modifiers: []
   market_catalog: trading-post.yaml
 equipment_allocation:
-  rules: []
-examples:
-  tests:
-  - id: example.rarity-test
-    actor: hero
-    roll: 2D6
-    target_rarity: 8
-    outcome: available_when_roll_gte_target
-    source_refs: []
-  equipment_allocation:
-    rules:
-    - id: example.equipment-stash-transfer
-      from: warband_stash
-      to: eligible_warrior
-      condition: warrior_can_use_item
-      source_refs: []
-# tests: id, actor, roll, target_rarity, outcome, source_refs. Rarity, base
-# price and availability are resolved through trading-post.yaml by item_id.
-# equipment rules definen alijo, elegibilidad y objetos no transferibles.
-# La rareza, precio y tipo de cada item pertenecen a catalog/items. Este
-# documento solo indica cómo se resuelve la prueba y cómo se mueve equipo.
+  rules:
+  - id: campaign.equipment.sell-at-half-price
+    from: warband
+    to: treasury
+    condition: item_is_sellable
+    price_rule: half_of_listed_price
+    note: Rare equipment and weapons with a variable price sell for half of the
+      basic cost only.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Trading / Selling
+      url: https://mordheimer.net/docs/campaigns/trading
+  - id: campaign.equipment.hoard-in-stash
+    from: warrior
+    to: warband_stash
+    condition: any
+    note: Weapons, armour and equipment may be hoarded for future use and
+      recorded on the warband roster.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Trading / Selling
+      url: https://mordheimer.net/docs/campaigns/trading
+  - id: campaign.equipment.reallocate
+    from: warband_stash_or_warrior
+    to: eligible_warrior
+    condition: warrior_can_use_item
+    note: Equipment may be swapped between models provided they are eligible to
+      use it; equipment may not move between warbands.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Trading / Selling
+      url: https://mordheimer.net/docs/campaigns/trading
+  - id: campaign.equipment.lost-on-death
+    from: warrior
+    to: none
+    condition: warrior_died
+    note: When a warrior is killed, all his weapons and equipment are lost; it
+      is not possible to reallocate a dead warrior's equipment.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Death Of A Warrior
+      url: https://mordheimer.net/docs/campaigns
 effect_ids:
 - campaign.trading.rarity-test
 - campaign.trading.modify-rarity-test

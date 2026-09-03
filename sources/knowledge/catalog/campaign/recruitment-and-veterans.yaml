@@ -1,39 +1,64 @@
 schema_version: 1
 ruleset: mordheim
 catalog: campaign-recruitment-and-veterans
-status: draft
+status: published
 # Define reglas de contratación y disponibilidad; reclutas contratados y grupos
 # existentes son estado de campaña, no conocimiento de reglas.
-recruitment_policy: []
-veteran_availability: []
-examples:
-  recruitment_policy:
-  - id: example.recruitment-free-dagger
-    applies_to: newly_hired_recruit
-    effect: grant_item
-    item_id: dagger
-    source_refs: []
-    note: The profile cost, starting experience and roster limits are read from
-      profiles.yaml and band.yaml; this expresses only the universal procedure.
-  veteran_availability:
-  - id: example.veteran-availability
-    roll:
-      dice:
-        count: 2
-        sides: 6
-    experience_pool:
-      source: roll_total
-      allocation: shared_across_hires
-    incremental_cost:
-      per_experience_point_gc: 2
-    source_refs: []
-# recruitment_policy: id, applies_to, effect, item_id, source_refs
-# veteran_availability: id, roll, experience_pool, incremental_cost, source_refs.
-# experience_pool.source: roll_total expresa una bolsa común determinada por
-# 2D6, no el valor almacenado de una campaña.
-# El perfil, coste, experiencia inicial, límites y acceso de una banda ya viven
-# en profiles.yaml y band.yaml. Los objetos comunes se compran por la política
-# global y su precio/disponibilidad pertenece al catálogo de items.
+recruitment_policy:
+- id: campaign.recruitment.free-dagger
+  applies_to: newly_hired_recruit
+  effect: grant_item
+  item_id: dagger
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Tools / Post-battle / Hire new recruits & buy common items
+    url: https://mordheimer.net/docs/tools
+- id: campaign.recruitment.common-items-only-for-recruits
+  applies_to: newly_hired_recruit
+  effect: purchase_limit
+  scope: common_items_only
+  note: Newly hired recruits cannot buy rare items directly; they may only be
+    equipped with rare items from the warband's stash in stage 9.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Trading / New Recruits
+    url: https://mordheimer.net/docs/campaigns/trading
+- id: campaign.recruitment.henchmen-armed-like-group
+  applies_to: henchman_recruit
+  effect: equipment_match
+  note: New Henchmen must be armed and equipped in the same way as existing
+    members of the group they join.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Trading / New Recruits And Existing Henchmen Groups
+    url: https://mordheimer.net/docs/campaigns/trading
+veteran_availability:
+- id: campaign.veterans.availability
+  roll:
+    dice:
+      count: 2
+      sides: 6
+  experience_pool:
+    source: roll_total
+    allocation: shared_across_hires
+  incremental_cost:
+    per_experience_point_gc: 2
+  note: You may hire as many warriors as you wish as long as their combined
+    Experience does not exceed the dice roll. Disregard any excess Experience
+    points. The experience pool is available once per post-battle sequence and
+    there is no obligation to hire at that point.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Trading / New Recruits And Existing Henchmen Groups
+    url: https://mordheimer.net/docs/campaigns/trading
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Tools / Post-battle / Check available veterans
+    url: https://mordheimer.net/docs/tools
 effect_ids:
 - campaign.recruitment.hire
 - campaign.recruitment.hire-veteran

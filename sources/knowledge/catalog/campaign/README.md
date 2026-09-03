@@ -37,7 +37,10 @@ de campaña mediante ese campo. Los bloques `examples` siguen reservados a IDs
 equipo y reglas de cada perfil. `bands/*/band.yaml` contiene la composición y
 los límites de la banda. `catalog/items/` contiene la ficha de cada objeto.
 `trading-post.yaml` es la fuente canónica de precio de mercado, rareza y
-disponibilidad post-batalla. El catálogo de campaña solo define procedimientos,
+disponibilidad post-batalla. `catalog/rules/racial-maximums.yaml` es la única
+fuente de los máximos raciales de atributos: las reglas de banda y el avance de
+campaña referencian sus entradas (`campaign.limit.racial-maximum.*`) por ID y
+no incrustan la statline. El catálogo de campaña solo define procedimientos,
 tablas de campaña y enlaces por ID; por ejemplo, una contratación refiere
 `profile_id` y nunca copia la ficha del perfil.
 
@@ -64,8 +67,55 @@ No completar esta migración por coincidencia de nombres ni asumir que dos
 precios distintos describen el mismo tipo de compra: revisar por `item_id`,
 lista de equipo, perfil y opción de compra.
 
-Cada YAML incluye un bloque `examples` con datos deliberadamente ficticios.
-No debe copiarse ese bloque a la ingestión: es una referencia de forma. La
-ingestión real añade entradas al bloque principal (`tables`, `awards`,
-`exploration`, etc.), elimina el ejemplo equivalente y adjunta `source_refs`
-verificables.
+## Estado de los catálogos
+
+Los catálogos de este directorio contienen datos reales con `source_refs`
+verificables (fuente: The New Mordheimer, mordheimer.net) y `status:
+published`. No quedan bloques `examples`: fueron sustituidos por la ingesta
+real en el bloque principal de cada fichero.
+
+| Fichero | Contenido | Estado |
+|---|---|---|
+| `post-battle-sequence.yaml` | Los 10 pasos post-batalla en orden normativo | publicado |
+| `trading-post.yaml` | 338 entradas: precio base/coste variable, disponibilidad (77 común, 183 rare, 78 no vendidas) y restricciones | publicado |
+| `serious-injuries.yaml` | Tablas D66 de héroe (20 resultados) y D6 de mercenario (2) con efectos tipados | publicado |
+| `experience-and-advances.yaml` | 3 premios de XP, bono de underdog y 2 tablas de avance | publicado |
+| `exploration-and-income.yaml` | Asignación de dados, tabla de resultados de exploración, venta de wyrdstone y artefactos mágicos | publicado |
+| `recruitment-and-veterans.yaml` | 3 políticas de reclutamiento y disponibilidad de veteranos | publicado |
+| `warband-rating.yaml` | Fórmula de rating con componentes y exclusiones | publicado |
+| `trading-and-rarity.yaml` | Test de rareza, modificadores y reasignación de equipo | publicado |
+| `scenarios.yaml` | 98 escenarios, 2 tablas de selección, reglas previas a la batalla y recompensas de progresión (`progression:`) transcritas en los 98 desde la página individual de cada escenario | publicado |
+| `magic.yaml` | Reglas de lanzamiento, 45 asignaciones lore↔mago y 31 lores con 188 conjuros | publicado |
+| `mutations.yaml` | Reglas de compra y 9 mutaciones con efectos tipados | publicado |
+| `hired-swords-and-dramatis.yaml` | Schema v2: 98 entradas (72 Hired Swords + 26 Dramatis Personae) con fee/upkeep por recursos, procedimiento de búsqueda y elegibilidad estática + 18 reglas dinámicas | publicado |
+
+Los máximos raciales de atributos viven fuera de este directorio, en el
+catálogo compartido `catalog/rules/racial-maximums.yaml` (29 entradas
+`campaign.limit.racial-maximum.*` con `source_refs`). Las reglas de banda de
+`bands/*/special-rules.yaml` que describen avance los referencian por ID en el
+texto (`effect`/`effect_i18n.en`) en vez de incrustar la statline numérica, de
+modo que no existen dos copias que puedan desincronizarse.
+
+La KB declara reglas y tablas, nunca su resultado: la experiencia acumulada,
+coronas, wyrdstone, alijo, tiradas realizadas y compras de una banda concreta
+pertenecen al estado/persistencia de campaña de las aplicaciones.
+
+Cada escenario tiene página propia en mordheimer.net
+(`/docs/campaigns/scenarios/<familia>/<slug>`) que publica las secciones de
+`experience`, `wyrdstone`, tesoro e ingresos. La KB ingesta solo lo que afecta
+a la progresión de la banda en esos escenarios: premios de experiencia
+(referenciando los `campaign.experience.award.*` canónicos cuando coinciden),
+wyrdstone obtenido, tesoro/objetos e ingresos en coronas, bajo la clave
+`progression:` de cada entrada (véase el HOWTO). Las mecánicas de juego sobre
+el tablero (terreno, despliegue, condiciones de victoria, monstruos,
+reglas especiales de mesa) no se modelan por decisión de alcance. Cobertura
+completa: los 98 escenarios del catálogo (rulebook, Town Cryer, Fanatic
+Magazine, Fanatic Online, Archive Pestilen y Rynn Tyrr) tienen `progression:`
+transcrita desde su página individual. Algunas fuentes de la Archive Pestilen
+no declaran premios de progresión (invasiones zombi tipo Romero's Pride, The
+Restless Dead o The Battle At Koleshire Keep): en esos casos la ausencia queda
+documentada en `progression.notes`. Las dudas puntuales sobre una fuente se
+documentan en `progression.notes` de la entrada.
+Ningún YAML de este catálogo debe cargarse como implementación de reglas: los
+cargadores (`load_campaign_catalog`, `load_post_battle_sequence`) y su
+validación son trabajo de integración del runtime.

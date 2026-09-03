@@ -88,6 +88,13 @@ groups:
   - lustria-savage-goblins
   - night-goblins-mic
   - night-goblins-web
+# Audit completado (ver "Seguimiento de KB no bloqueante" en CAMPAIGN INGESTION RESULTS.md):
+# las bandas de alineamiento bueno se clasifican por la fuente cuando esta lo declara
+# (paridad de acceso a Hired Swords con las bandas Human Mercenary, o listas de
+# exclusión que dejan disponibles los espadas de contrato de alineamiento bueno) y por
+# pertenencia a razas/órdenes canónicamente buenas (Enanos, Altos Elfos, Medios, órdenes
+# de Sigmar, caballeros bretonianos e instituciones imperiales), siempre sin contradecir
+# los grupos warband-group.evil / warband-group.chaotic.
 - id: warband-group.good-aligned
   kind: alignment
   band_ids:
@@ -96,20 +103,34 @@ groups:
   - arabian-tomb-raiders
   - averlanders
   - battle-monks-of-cathay
+  - bretonnian-chapel-guard
+  - bretonnian-knights
+  - chaos-streets-bretonnian-knights
   - chaos-streets-dwarf-treasure-hunters
   - chaos-streets-pit-fighters
+  - chaos-streets-sigmar-protectorate
   - chaos-streets-sons-of-nagarythe
   - dwarf-rangers
   - dwarf-treasure-hunters
+  - gunnery-school-of-nuln
+  - hochland-bandits
+  - imperial-outriders
   - khemri-cursed-of-karak-zorn
   - khemri-nomads-of-araby
+  - kislevites
   - lizardmen
   - lustria-amazons
+  - lustria-high-elves
   - lustria-lizardmen
+  - lustria-pirates
   - lustria-tileans
   - maneaters
   - mercenaries
+  - merchant-caravans
+  - mootlanders
   - ostlanders
+  - outlaws-of-stirwood-forest
+  - pirates
   - pit-fighters
   - shadow-warriors
   - sisters-of-sigmar
@@ -117,7 +138,6 @@ groups:
   - trollheim-mercenaries
   - trollheim-witch-hunters
   - witch-hunters
-  status: partial
 - id: warband-group.halfling
   kind: race
   band_ids:

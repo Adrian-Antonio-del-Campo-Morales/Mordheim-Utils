@@ -1,45 +1,210 @@
 schema_version: 1
 ruleset: mordheim
 catalog: campaign-experience-and-advances
-status: draft
+status: published
 # Define premios y avances permitidos; nunca la experiencia acumulada ni los
 # avances ya obtenidos por una miniatura de una campaña concreta.
-awards: []
-advancement_tables: []
-limits: []
-examples:
-  awards:
-  - id: example.experience-survived
-    recipient: hero
-    trigger: survived_battle
-    amount: 1
-    source_refs: []
-    note: Fictitious example; use a rule ID as the trigger when it is published.
-  advancement_tables:
-  - id: example.advance-hero
-    applies_to: hero
-    resolution:
-      dice:
-        count: 2
-        sides: 6
-      branches:
-      - when:
-          min: 2
-          max: 5
-        result:
-          type: choose_skill
-    source_refs: []
-  limits:
-  - id: example.maximum-weapon-skill
-    characteristic: weapon_skill
-    applies_to: hero
-    maximum: 7
-    source_refs: []
 # awards: id, recipient, trigger, amount, source_refs
 # advancement_tables: id, applies_to, resolution (dice + branches), source_refs.
-# No usar experience_range: los umbrales de experiencia pertenecen al roster;
-# esta tabla solo resuelve el resultado 2D6 una vez alcanzado el umbral.
-# limits: id, characteristic, applies_to, maximum, source_refs
+# Los umbrales de experiencia pertenecen al roster; esta tabla solo resuelve el
+# resultado del 2D6 una vez alcanzado el umbral.
+# Los máximos raciales de atributos viven en el catálogo compartido
+# catalog/rules/racial-maximums.yaml (ids campaign.limit.racial-maximum.*).
+awards:
+- id: campaign.experience.award.survives
+  recipient: hero_and_henchman_group
+  trigger: survived_battle
+  amount: 1
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Earning Experience
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.experience.award.winning-leader
+  recipient: leader
+  trigger: warband_won_battle
+  amount: 1
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Tools / Post-battle / Allocate experience
+    url: https://mordheimer.net/docs/tools
+- id: campaign.experience.award.per-enemy-out-of-action
+  recipient: hero
+  trigger: enemy_put_out_of_action
+  amount: 1
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Tools / Post-battle / Allocate experience
+    url: https://mordheimer.net/docs/tools
+underdog_bonus:
+  id: campaign.experience.underdog-bonus
+  applies_to: participating_fighters
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Underdogs
+    url: https://mordheimer.net/docs/campaigns/experience
+  bands:
+  - when:
+      rating_difference:
+        min: 0
+        max: 50
+    amount: 0
+  - when:
+      rating_difference:
+        min: 51
+        max: 75
+    amount: 1
+  - when:
+      rating_difference:
+        min: 76
+        max: 100
+    amount: 2
+  - when:
+      rating_difference:
+        min: 101
+        max: 150
+    amount: 3
+  - when:
+      rating_difference:
+        min: 151
+        max: 300
+    amount: 4
+  - when:
+      rating_difference:
+        min: 301
+    amount: 5
+advancement_tables:
+- id: campaign.advance.hero
+  applies_to: hero
+  resolution:
+    dice:
+      count: 2
+      sides: 6
+    branches:
+    - when:
+        min: 2
+        max: 5
+      result:
+        type: choose_one
+        options:
+        - type: choose_skill
+          source: hero_skill_access
+        - type: generate_spell
+          source: wizard_spell_list
+          when: subject_is_wizard
+    - when:
+        min: 6
+        max: 6
+      result:
+        type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 1, max: 3 }
+          result: { type: characteristic_increase, characteristic: strength, amount: 1 }
+        - when: { min: 4, max: 6 }
+          result: { type: characteristic_increase, characteristic: attacks, amount: 1 }
+    - when:
+        min: 7
+        max: 7
+      result:
+        type: choose_one
+        options:
+        - { type: characteristic_increase, characteristic: weapon_skill, amount: 1 }
+        - { type: characteristic_increase, characteristic: ballistic_skill, amount: 1 }
+    - when:
+        min: 8
+        max: 8
+      result:
+        type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 1, max: 3 }
+          result: { type: characteristic_increase, characteristic: initiative, amount: 1 }
+        - when: { min: 4, max: 6 }
+          result: { type: characteristic_increase, characteristic: leadership, amount: 1 }
+    - when:
+        min: 9
+        max: 9
+      result:
+        type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 1, max: 3 }
+          result: { type: characteristic_increase, characteristic: wounds, amount: 1 }
+        - when: { min: 4, max: 6 }
+          result: { type: characteristic_increase, characteristic: toughness, amount: 1 }
+    - when:
+        min: 10
+        max: 12
+      result:
+        type: choose_one
+        options:
+        - type: choose_skill
+          source: hero_skill_access
+        - type: generate_spell
+          source: wizard_spell_list
+          when: subject_is_wizard
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Advance Rolls / Heroes
+    url: https://mordheimer.net/docs/campaigns/experience
+- id: campaign.advance.henchman
+  applies_to: henchman_group
+  resolution:
+    dice:
+      count: 2
+      sides: 6
+    branches:
+    - when:
+        min: 2
+        max: 4
+      result: { type: characteristic_increase, characteristic: initiative, amount: 1 }
+    - when:
+        min: 5
+        max: 5
+      result: { type: characteristic_increase, characteristic: strength, amount: 1 }
+    - when:
+        min: 6
+        max: 7
+      result:
+        type: choose_one
+        options:
+        - { type: characteristic_increase, characteristic: ballistic_skill, amount: 1 }
+        - { type: characteristic_increase, characteristic: weapon_skill, amount: 1 }
+    - when:
+        min: 8
+        max: 8
+      result: { type: characteristic_increase, characteristic: attacks, amount: 1 }
+    - when:
+        min: 9
+        max: 9
+      result: { type: characteristic_increase, characteristic: leadership, amount: 1 }
+    - when:
+        min: 10
+        max: 12
+      result:
+        type: promote_henchman
+        promotion: lads_got_talent
+        on_maximum_heroes: reroll_current_advance
+        preserve: [henchman_type, experience, characteristic_increases]
+        skill_lists: { choose: 2, source: warband_hero_skill_access }
+        immediate_follow_up: campaign.advance.hero
+        remaining_group:
+          reroll_current_advance_excluding: [lads_got_talent]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Advance Rolls / Henchmen
+    url: https://mordheimer.net/docs/campaigns/experience
+  note: Henchmen never add more than +1 point to any of their initial
+    characteristics; if the roll indicates an increase in a characteristic
+    which has already been increased (or is at its racial maximum), roll again
+    until an unincreased characteristic is rolled. All warriors in the group
+    gain the same advance.
 effect_ids:
 - campaign.experience.gain
 - campaign.experience.prevent-gain

@@ -1,37 +1,47 @@
 schema_version: 1
 ruleset: mordheim
 catalog: campaign-warband-rating
-status: draft
+status: published
 # Define la fórmula. El rating calculado de una banda concreta es estado de
 # campaña derivado y no se persiste en la KB.
 formula:
   id: campaign.warband-rating
-  components: []
+  components:
+  - id: campaign.warband-rating.per-warrior
+    applies_to: warrior
+    operation: add_per_model
+    value: 5
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Warband Rating
+      url: https://mordheimer.net/docs/campaigns
+  - id: campaign.warband-rating.experience
+    applies_to: warrior
+    operation: add_experience
+    value: 1
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Warband Rating
+      url: https://mordheimer.net/docs/campaigns
+  - id: campaign.warband-rating.large-creature
+    applies_to: large_creature
+    operation: add_per_model
+    value: 20
+    note: Large creatures such as Rat Ogres are worth 20 points plus the
+      Experience points they have accumulated.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Warband Rating
+      url: https://mordheimer.net/docs/campaigns
   exclusions: []
-  source_refs: []
-examples:
-  formula:
-    id: example.warband-rating
-    components:
-    - id: example.rating-earned-experience
-      applies_to: hero
-      operation: add_experience
-      value: 1
-      source_refs: []
-    - id: example.rating-per-henchman
-      applies_to: henchman
-      operation: add_per_model
-      value: 4
-      source_refs: []
-    exclusions:
-    - id: example.rating-exclude-hirelings
-      applies_to: hired_sword
-      source_refs: []
-    source_refs: []
-    note: Fictitious formula example; do not use these values as Mordheim rules.
-# components: id, applies_to, operation, value, source_refs
-# operation debe ser declarativa (for example: add_experience, add_per_model)
-# para que la UI y un futuro runtime calculen exactamente la misma valoración.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Warband Rating
+    url: https://mordheimer.net/docs/campaigns
 effect_ids:
 - campaign.warband-rating.calculate
 - campaign.warband-rating.modify

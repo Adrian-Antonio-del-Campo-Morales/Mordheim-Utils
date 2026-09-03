@@ -1,68 +1,115 @@
 schema_version: 1
 ruleset: mordheim
 catalog: campaign-post-battle-sequence
-status: draft
+status: published
 # Define el orden de resolución; nunca registra qué pasos o tiradas ha completado
 # una campaña individual.
 sequence:
   id: campaign.post-battle
   name: Post-battle sequence
-  source_refs: [] # Añadir fuente antes de convertir cualquier paso en regla publicada.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Post Battle Sequence
+    url: https://mordheimer.net/docs/campaigns
   steps:
   - order: 1
     id: campaign.step.serious-injuries
     name: Serious injuries
     resolves: serious-injuries.yaml
     repeatability: once
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Tools / Post-battle / Injuries
+      url: https://mordheimer.net/docs/tools
   - order: 2
     id: campaign.step.experience
     name: Allocate experience
     resolves: experience-and-advances.yaml
     repeatability: once
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Tools / Post-battle / Allocate experience
+      url: https://mordheimer.net/docs/tools
   - order: 3
     id: campaign.step.exploration
     name: Roll on the Exploration chart
     resolves: exploration-and-income.yaml
     repeatability: once
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Tools / Post-battle / Roll on the Exploration chart
+      url: https://mordheimer.net/docs/tools
   - order: 4
     id: campaign.step.sell-wyrdstone
     name: Sell Wyrdstone
     resolves: exploration-and-income.yaml
     repeatability: once
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Tools / Post-battle / Sell Wyrdstone
+      url: https://mordheimer.net/docs/tools
   - order: 5
     id: campaign.step.veterans
     name: Check available veterans
     resolves: recruitment-and-veterans.yaml
     repeatability: once
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Tools / Post-battle / Check available veterans
+      url: https://mordheimer.net/docs/tools
   - order: 6
     id: campaign.step.rare-items
     name: Make rarity rolls and buy rare items
     resolves: trading-and-rarity.yaml
     repeatability: once
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Tools / Post-battle / Make rarity rolls and buy rare items
+      url: https://mordheimer.net/docs/tools
   - order: 7
     id: campaign.step.dramatis-personae
     name: Look for Dramatis Personae
     resolves: hired-swords-and-dramatis.yaml
     repeatability: once
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Tools / Post-battle / Look for Dramatis Personae
+      url: https://mordheimer.net/docs/tools
   - order: 8
     id: campaign.step.recruit-and-buy-common
     name: Hire recruits and buy common items
     resolves: recruitment-and-veterans.yaml
     repeatability: repeatable
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Tools / Post-battle / Hire new recruits & buy common items
+      url: https://mordheimer.net/docs/tools
   - order: 9
     id: campaign.step.reallocate-equipment
     name: Reallocate equipment
     resolves: trading-and-rarity.yaml
     repeatability: repeatable
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Tools / Post-battle / Reallocate equipment
+      url: https://mordheimer.net/docs/tools
   - order: 10
     id: campaign.step.update-rating
     name: Update warband rating
     resolves: warband-rating.yaml
     repeatability: once
-examples:
-- id: campaign.step.example-aftermath
-  order: 11
-  name: Example optional aftermath step
-  resolves: example.yaml
-  repeatability: once
-  note: Fictitious example only. Real steps must retain their official order.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Tools / Post-battle / Update your warband rating
+      url: https://mordheimer.net/docs/tools
