@@ -364,8 +364,8 @@ def ui_command(_args) -> int:
     return int(main() or 0)
 
 
-def build_parser() -> ArgumentParser:
-    parser = ArgumentParser(prog="mordheim-combat-lab")
+def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
+    parser = ArgumentParser(prog=prog)
     commands = parser.add_subparsers(dest="command")
     commands.add_parser("ui", help="open the graphical interface").set_defaults(handler=ui_command)
     validation = commands.add_parser("validate", help="validate the KB and structural connections")

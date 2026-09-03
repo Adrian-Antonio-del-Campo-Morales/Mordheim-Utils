@@ -17,5 +17,14 @@ Application-specific documents:
 - [Campaign Manager guide](campaign-manager.md)
 - [Campaign architecture direction](campaign-architecture.md)
 
+## Central command line
+
+Every command in these guides can be run through the single entry point
+`mordheim-utils` (or `python -m mordheim_utils`): `mordheim-utils --help`
+lists everything and `mordheim-utils <command> --help` gives the detailed
+arguments of one command. The lab commands (`verify`, `parity`, `benchmark`,
+`audit`, `test-report`, `validate`) behave exactly like the Combat Lab CLI; the
+test suites are reached with `mordheim-utils tests --scope <area>`.
+
 Semantic expectations are reviewed against the written sources, never against
 historical engine output.
