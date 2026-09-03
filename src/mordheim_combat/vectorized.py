@@ -212,22 +212,20 @@ def to_hit(attacker_ws: int, defender_ws: int) -> int:
 
 
 def hit_targets(attacker_ws: np.ndarray, defender_ws: np.ndarray) -> np.ndarray:
-    return np.where(
-        defender_ws == 0, 2,
-        np.where(attacker_ws > defender_ws, 3,
-                 np.where(defender_ws > 2 * attacker_ws, 5, 4)),
-    ).astype(np.int8)
+    # The three cases are mutually exclusive, so the table collapses to one
+    # arithmetic expression: 4 minus (attacker stronger) plus (defender much
+    # stronger), with defender WS 0 always hitting on 2+.
+    target = 4 + (defender_ws > 2 * attacker_ws) - (attacker_ws > defender_ws)
+    return np.where(defender_ws == 0, 2, target).astype(np.int8)
 
 
 def wound_targets(strength: np.ndarray, toughness: int | np.ndarray,
                   maximum: int = 7) -> np.ndarray:
     difference = strength - np.broadcast_to(toughness, strength.shape)
-    targets = np.select(
-        (difference >= 2, difference == 1, difference == 0,
-         difference == -1, difference >= -3),
-        (2, 3, 4, 5, 6),
-        default=7,
-    )
+    # The wound table is a single descending ramp: 4 - diff clipped to [2, 6],
+    # with the "impossible" tail (diff <= -4) as 7. Cheaper than np.select.
+    targets = np.clip(4 - difference, 2, 6)
+    targets = np.where(difference <= -4, 7, targets)
     return np.minimum(targets, maximum).astype(np.int8)
 
 
@@ -461,8 +459,9 @@ def attack_count(fighter: CompiledFighter, charging: np.ndarray, first_round: bo
               if base_attacks is not None else np.full(charging.size,base,dtype=np.int16))
     if wounded is not None and has(effect,"maddened_with_pain"):
         result += wounded.astype(np.int16)
-    result += charging.astype(np.int16) * effect.charge_attacks_bonus
-    if first_round:
+    if effect.charge_attacks_bonus and charging.any():
+        result += charging.astype(np.int16) * effect.charge_attacks_bonus
+    if first_round and effect.first_round_charge_attacks_bonus and charging.any():
         result += charging.astype(np.int16) * effect.first_round_charge_attacks_bonus
     if has(fighter.main_weapon, "weapon.fist") and not ignores_unarmed_penalties(effect):
         result[:] = 1
@@ -743,7 +742,7 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
     )
     if first_round or has(effect,"skill.tireless") or has(effect,"skill.mighty-biceps") or retain_named_weapon_bonus:
         strength += weapon.first_round_strength_bonus
-    if first_round:
+    if first_round and effect.charge_strength_bonus and charge_rows.any():
         mounted_only = any(has(weapon, tag) for tag in ("weapon.lance", "weapon.boar-spear"))
         if not mounted_only or attacker.mounted:
             strength += charge_rows.astype(np.int16) * effect.charge_strength_bonus
@@ -756,7 +755,7 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
         has(weapon,"weapon.dagger") or has(weapon,"weapon.yambiya")
     )
     attacker_ws += int(knife_fighting)
-    if first_round:
+    if first_round and effect.charge_ws_bonus and charge_rows.any():
         attacker_ws_values = attacker_ws + charge_rows.astype(np.int8) * effect.charge_ws_bonus
     else:
         attacker_ws_values = attacker_ws
