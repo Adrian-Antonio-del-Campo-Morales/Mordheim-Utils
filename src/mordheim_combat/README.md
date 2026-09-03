@@ -24,6 +24,10 @@ la suite técnica, y genera CSV preparados para Excel en `outputs/test-report/`.
 El reporte semántico coloca juntos los resultados y estados del modular, NumPy
 y nativo. Un estado `PENDING` no equivale a una divergencia: puede indicar que
 falta el adaptador vectorizado o que el backend nativo aún no está disponible.
+Los casos por operador no le aplican al nativo (`NOT_APPLICABLE`, motor de
+duelo completo): su certificación vive en las filas estadísticas por escenario
+y en `parity --statistical`, donde comparte la muestra del oráculo modular con
+NumPy y debe pasar la misma puerta de seis sigmas.
 
 La guía completa de opciones y estados está en
 [Generar reportes de tests y paridad](../../../docs/tasks/generate-test-reports.md).
