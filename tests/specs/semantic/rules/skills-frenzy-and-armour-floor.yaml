@@ -5,7 +5,7 @@ specifications:
   category: stateful
   sources:
   - {target: mechanic/preparation.mad-cap-mushrooms, digest: b74e037db5442adb65438a7cfe3c01ed5dc74a92cd9a1b60c9c2029d6e805786}
-  interpretation: Mad Cap Mushrooms activa Frenzy, duplica los ataques del perfil y la pierde al quedar Knocked Down o Stunned.
+  interpretation: "Mad Cap Mushrooms activates Frenzy, doubles the profile's attacks and loses it upon becoming Knocked Down or Stunned."
   cases:
   - id: compiled
     roles: [compiled]
@@ -43,7 +43,7 @@ specifications:
   category: stateful
   sources:
   - {target: mechanic/skill.luck, digest: 170730f89fa9d030dd0ab2b0f443684537e523de42c79a717991841c24de7776}
-  interpretation: Luck repite el primer impacto fallido propio y consume el recurso durante el resto del duelo.
+  interpretation: "Luck re-rolls the first failed hit of its own and consumes the resource for the rest of the duel."
   cases:
   - id: compiled
     roles: [compiled]
@@ -74,7 +74,7 @@ specifications:
   category: contextual
   sources:
   - {target: mechanic/skill.sweep, digest: ce206c6287524ae7e4d5834babd8ad541803f27a9502f3d3c3e06f63698ee903}
-  interpretation: Sweep con arma a dos manos sustituye el conjunto de ataques por uno y produce impacto automático únicamente cuando el rival falla Iniciativa.
+  interpretation: "Sweep with a two-handed weapon replaces the attack set with one and produces an automatic hit only when the opponent fails Initiative."
   cases:
   - id: one-attack
     roles: [compiled, active, consumer, boundary]
@@ -111,7 +111,7 @@ specifications:
   category: contextual
   sources:
   - {target: mechanic/skill.art-of-silent-death, digest: 12f2fe6a74b2c3206bfa2d2143f8486db180c94a81eb4538b8190ca136438965}
-  interpretation: Art of Silent Death elimina la limitación del puño, añade un ataque con puño o Fighting Claws y convierte heridas naturales de 5-6 en críticas.
+  interpretation: "Art of Silent Death removes the fist limitation, adds an attack with Fist or Fighting Claws and turns natural 5-6 to-wound rolls into criticals."
   cases:
   - id: unarmed-extra-attack
     roles: [compiled, active, consumer, boundary]
@@ -143,7 +143,7 @@ specifications:
   category: local
   sources:
   - {target: mechanic/mechanic.untiring, digest: 0dea8073a2ae6bde0bf8036d0b52452ae7d91699cd0bb50d5dc9e40792056d14}
-  interpretation: Untiring garantiza una salvación mínima de 5+ frente a modificadores y frente a ataques no mágicos que normalmente ignoran armadura.
+  interpretation: "Untiring guarantees a minimum save of 5+ against modifiers and against non-magical attacks that normally ignore armour."
   cases:
   - id: strength-floor
     roles: [compiled, active, consumer, boundary]

@@ -1,33 +1,36 @@
 # Combat
 
-Fases, motor modular y vectorizado. Consume luchadores compilados y no carga YAML. Véase [Arquitectura](../../../docs/architecture.md).
+Phases, modular and vectorized engines. Consumes compiled fighters and never
+loads YAML. See [Architecture](../../../docs/architecture.md).
 
-## Paridad entre motores
+## Parity between engines
 
-La evidencia semántica corresponde al motor modular. El vectorizado usado por la UI se
-certifica por separado mediante `python -m mordheim_combat_lab parity`: cada campo, etiqueta
-y secuencia compleja del oráculo debe tener un consumidor y evidencia vectorizada.
+Semantic evidence belongs to the modular engine. The vectorized engine used by
+the UI is certified separately with `python -m mordheim_combat_lab parity`:
+every field, tag and complex sequence of the oracle must have a vectorized
+consumer and evidence.
 
-Las antiguas divergencias de `Poisonous` y de la Iniciativa del arma secundaria están cubiertas
-por regresiones explícitas. Una regla puede seguir ejecutándose mientras su paridad está pendiente,
-pero no puede entrar en un camino de ejecución nuevo u optimizado hasta quedar certificada.
+The former `Poisonous` and secondary-weapon Initiative divergences are covered
+by explicit regressions. A rule may keep running while its parity is pending,
+but it cannot enter a new or optimized execution path until it is certified.
 
-La KB y el motor modular son el oráculo protegido. Una divergencia detectada durante el trabajo
-del vectorizado se presume un defecto del candidato: `parity` solo los lee y nunca los modifica.
-Cambiar el oráculo requiere una revisión semántica independiente y queda fuera del flujo de
-optimización.
+The KB and the modular engine are the protected oracle. A divergence detected
+while working on the vectorized engine is presumed to be a defect of the
+candidate: `parity` only reads the oracle and never modifies it. Changing the
+oracle requires an independent semantic review and is outside the optimization
+flow.
 
-## Reportes
+## Reports
 
-`python -m mordheim_combat_lab test-report` ejecuta el inventario de paridad y
-la suite técnica, y genera CSV preparados para Excel en `outputs/test-report/`.
-El reporte semántico coloca juntos los resultados y estados del modular, NumPy
-y nativo. Un estado `PENDING` no equivale a una divergencia: puede indicar que
-falta el adaptador vectorizado o que el backend nativo aún no está disponible.
-Los casos por operador no le aplican al nativo (`NOT_APPLICABLE`, motor de
-duelo completo): su certificación vive en las filas estadísticas por escenario
-y en `parity --statistical`, donde comparte la muestra del oráculo modular con
-NumPy y debe pasar la misma puerta de seis sigmas.
+`python -m mordheim_combat_lab test-report` runs the parity inventory and the
+technical suite and writes Excel-ready CSVs to `outputs/test-report/`. The
+semantic report places the modular, NumPy and native results and statuses side
+by side. A `PENDING` status is not a divergence: it may mean the vectorized
+adapter is missing or that the native backend is not yet available. The
+per-operator cases do not apply to the native engine (`NOT_APPLICABLE`, a
+complete duel engine): its certification lives in the per-scenario statistical
+rows and in `parity --statistical`, where it shares the modular-oracle sample
+with NumPy and must pass the same six-sigma gate.
 
-La guía completa de opciones y estados está en
-[Generar reportes de tests y paridad](../../../docs/tasks/generate-test-reports.md).
+The full guide of options and statuses is in
+[Generate test and parity reports](../../../docs/tasks/generate-test-reports.md).

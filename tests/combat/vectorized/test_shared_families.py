@@ -1,4 +1,4 @@
-"""Familias canónicas compartidas del runtime vectorizado."""
+"""Canonical families shared by the vectorized runtime."""
 from __future__ import annotations
 
 from mordheim_combat.vectorized import OUT
@@ -143,14 +143,14 @@ def test_body_slam_and_bull_charge_replace_charge_attacks(monkeypatch):
     defender = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1)), ROOT)
     state1, state2 = _new_state(body, 1, FixedRng()), _new_state(defender, 1, FixedRng())
     captured = []
-    import mordheim_combat.vectorized as engine
-    original = engine._prepare_weapon_attack
+    import mordheim_combat.vectorized._attacks as engine_attacks
+    original = engine_attacks._prepare_weapon_attack
 
     def record(*args, **kwargs):
         captured.append(args[2])
         return original(*args, **kwargs)
 
-    monkeypatch.setattr(engine, "_prepare_weapon_attack", record)
+    monkeypatch.setattr(engine_attacks, "_prepare_weapon_attack", record)
     resolve_attacks(body, defender, np.array([0]), np.array([1]), np.array([True]), state1, state2, FixedRng(6), True)
     slam = next(effect for effect in captured if "mechanic.body-slam" in effect.tags)
     assert slam.strength_bonus == 1 and slam.hit_modifier == 1
@@ -187,14 +187,14 @@ def test_unpredictable_marks_one_attack_unparryable(monkeypatch):
     defender = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1)), ROOT)
     state1, state2 = _new_state(attacker, 1, FixedRng()), _new_state(defender, 1, FixedRng())
     captured = []
-    import mordheim_combat.vectorized as engine
-    original = engine._prepare_weapon_attack
+    import mordheim_combat.vectorized._attacks as engine_attacks
+    original = engine_attacks._prepare_weapon_attack
 
     def record(*args, **kwargs):
         captured.append(args[2])
         return original(*args, **kwargs)
 
-    monkeypatch.setattr(engine, "_prepare_weapon_attack", record)
+    monkeypatch.setattr(engine_attacks, "_prepare_weapon_attack", record)
     resolve_attacks(attacker, defender, np.array([0]), np.array([1]), np.array([False]),
                     state1, state2, FixedRng(6), False)
     assert captured[0].cannot_be_parried

@@ -1,1 +1,1 @@
-"""combat — API del área."""
+"""combat — area API."""

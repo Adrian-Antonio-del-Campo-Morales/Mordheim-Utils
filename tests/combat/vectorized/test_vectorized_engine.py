@@ -1,4 +1,4 @@
-"""Regresiones del motor vectorizado."""
+"""Regressions of the vectorized engine."""
 from __future__ import annotations
 
 from dataclasses import replace
@@ -256,6 +256,7 @@ def test_unbeatable_warrior_parries_twice_with_two_parry_weapons():
 
 def test_parry_selects_highest_hit_across_main_and_off_hand(monkeypatch):
     import mordheim_combat.vectorized as engine
+    import mordheim_combat.vectorized._attacks as engine_attacks
     attacker=compile_fighter(FighterBuild("mordheim",Characteristics(3,3,3,1,3,1),main_weapon_id="weapon.mace",off_hand_id="weapon.dagger"))
     defender=compile_fighter(FighterBuild("mordheim",Characteristics(3,3,3,1,3,1),main_weapon_id="weapon.sword"))
     attacker_state=engine._new_state(attacker,1,np.random.default_rng(1));defender_state=engine._new_state(defender,1,np.random.default_rng(2))
@@ -268,7 +269,7 @@ def test_parry_selects_highest_hit_across_main_and_off_hand(monkeypatch):
         )
     selected=[]
     def capture(*args,**kwargs): selected.append((kwargs["prepared"].rolls[0],kwargs["parry_rows"].tolist()))
-    monkeypatch.setattr(engine,"_prepare_weapon_attack",prepare);monkeypatch.setattr(engine,"_resolve_weapon",capture)
+    monkeypatch.setattr(engine_attacks,"_prepare_weapon_attack",prepare);monkeypatch.setattr(engine_attacks,"_resolve_weapon",capture)
     engine.resolve_attacks(attacker,defender,np.array([0]),np.array([2]),np.array([False]),attacker_state,defender_state,np.random.default_rng(3),False)
     assert selected==[(3,[]),(5,[0])]
 

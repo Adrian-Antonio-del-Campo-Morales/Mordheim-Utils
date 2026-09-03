@@ -1,4 +1,4 @@
-"""ui.tabs.equipment: responsabilidad extraída sin alterar las reglas."""
+"""ui.tabs.equipment: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from dataclasses import replace

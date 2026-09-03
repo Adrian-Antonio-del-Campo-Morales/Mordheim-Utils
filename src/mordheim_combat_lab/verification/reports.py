@@ -1,4 +1,4 @@
-"""verification.reports: responsabilidad extraída sin alterar las reglas."""
+"""verification.reports: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from dataclasses import dataclass

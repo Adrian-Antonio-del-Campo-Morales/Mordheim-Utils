@@ -1,4 +1,4 @@
-"""application.motta: responsabilidad extraída sin alterar las reglas."""
+"""application.motta: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from math import hypot

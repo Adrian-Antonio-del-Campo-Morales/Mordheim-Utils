@@ -1,4 +1,4 @@
-"""ui.widgets.feedback: responsabilidad extraída sin alterar las reglas."""
+"""ui.widgets.feedback: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from mordheim_ui.lab_theme import COLORS

@@ -1,9 +1,8 @@
-"""Comandos de desarrollo y aplicación; las importaciones pesadas son locales."""
+"""Development and application commands; heavy imports stay local."""
 from argparse import ArgumentParser
 from dataclasses import asdict
 from pathlib import Path
 import json
-import os
 import sys
 
 
@@ -72,7 +71,8 @@ def verify_command(args) -> int:
     knowledge = Path(args.knowledge).resolve() if args.knowledge else knowledge_root()
     specs = Path(args.specs).resolve() if args.specs else None
     if args.inventory:
-        print(json.dumps([asdict(item) for item in inventory(knowledge)], ensure_ascii=True, indent=2))
+        print(json.dumps([asdict(item) for item in inventory(knowledge)],
+                         ensure_ascii=True, indent=2))
         return 0
     structural = audit_phase_verification("mordheim", knowledge, specs)
     semantic = verify_semantics(knowledge, specs)
@@ -102,50 +102,98 @@ def verify_command(args) -> int:
 
 
 def benchmark_command(args) -> int:
+    from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
     from mordheim_combat_lab.cli.benchmarking import benchmark_payload
     from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
     from mordheim_combat_lab.cli.benchmarking import compare_with_baseline
     from mordheim_combat_lab.cli.benchmarking import load_benchmark_payload
+    from mordheim_combat_lab.cli.benchmarking import parse_sizes
+    from mordheim_combat_lab.cli.benchmarking import print_gate
+    from mordheim_combat_lab.cli.benchmarking import print_results_table
+    from mordheim_combat_lab.cli.benchmarking import print_sweep_table
     from mordheim_combat_lab.cli.benchmarking import run_benchmark
+    from mordheim_combat_lab.cli.benchmarking import sweep_payload
     from mordheim_combat_lab.cli.benchmarking import write_benchmark_payload
+    from mordheim_combat_lab.cli.benchmarking import write_report
     from mordheim_combat.vectorized import available_backends
 
+    sweep = args.simulation_sizes is not None or args.batch_sizes is not None
+    if sweep and (args.baseline or args.save_baseline or args.require_improvement):
+        print("Benchmark configuration error: --baseline/--save-baseline and "
+              "--require-improvement apply to single-configuration runs only",
+              file=sys.stderr)
+        return 2
     if args.require_improvement and not args.baseline:
-        print("Benchmark baseline error: --require-improvement requires --baseline", file=sys.stderr)
+        print("Benchmark baseline error: --require-improvement requires --baseline",
+              file=sys.stderr)
         return 2
 
     scenarios = benchmark_scenarios()
     if args.scenario != "all":
         scenarios = tuple(item for item in scenarios if item.id == args.scenario)
     backends = ("modular", "numpy", "native") if args.backend == "all" else (args.backend,)
-    results = []
-    unavailable = []
     installed = available_backends()
     runnable_backends = tuple(
         backend for backend in backends
         if backend != "native" or backend in installed
     )
-    progress = None if args.json else _BenchmarkProgress(
-        len(scenarios) * len(runnable_backends) * (args.warmups + args.repeats)
+    simulation_sizes = parse_sizes(args.simulation_sizes, args.simulations)
+    batch_sizes = parse_sizes(args.batch_sizes, args.batch_size)
+    units = (
+        len(scenarios) * len(runnable_backends)
+        * len(simulation_sizes) * len(batch_sizes) * (args.warmups + args.repeats)
     )
-    for backend in backends:
-        if backend == "native" and backend not in installed:
-            unavailable.append({"backend": backend, "reason": "backend nativo no disponible"})
-            continue
-        for scenario in scenarios:
-            try:
-                results.append(run_benchmark(
-                    scenario, simulations=args.simulations, batch_size=args.batch_size,
-                    seed=args.seed, backend=backend, warmups=args.warmups, repeats=args.repeats,
-                    on_progress=progress.advance if progress is not None else None,
-                ))
-            except RuntimeError as error:
-                unavailable.append({"scenario": scenario.id, "backend": backend, "reason": str(error)})
+    progress = None if args.json else BenchmarkProgress(units)
+    results = []
+    unavailable = []
+    for simulations in simulation_sizes:
+        for batch_size in batch_sizes:
+            for backend in backends:
+                if backend == "native" and backend not in installed:
+                    unavailable.append({
+                        "backend": backend,
+                        "reason": "native backend is not compiled in this environment",
+                    })
+                    continue
+                for scenario in scenarios:
+                    try:
+                        results.append(run_benchmark(
+                            scenario, simulations=simulations, batch_size=batch_size,
+                            seed=args.seed, backend=backend, warmups=args.warmups,
+                            repeats=args.repeats,
+                            on_progress=progress.advance if progress is not None else None,
+                        ))
+                    except RuntimeError as error:
+                        unavailable.append({
+                            "scenario": scenario.id, "backend": backend,
+                            "reason": str(error),
+                        })
     if progress is not None:
         progress.finish()
+
+    if sweep:
+        payload = sweep_payload(
+            results, unavailable, simulation_sizes=simulation_sizes,
+            batch_sizes=batch_sizes, seed=args.seed, warmups=args.warmups,
+            repeats=args.repeats,
+        )
+        if args.output:
+            write_report(Path(args.output), payload)
+        if args.json:
+            print(json.dumps(payload, ensure_ascii=True, indent=2))
+        else:
+            print_sweep_table(
+                results, unavailable, simulation_sizes=simulation_sizes,
+                batch_sizes=batch_sizes, seed=args.seed, repeats=args.repeats,
+            )
+            if args.output:
+                print(f"Report: {Path(args.output).resolve()}")
+        return 0
+
     payload = benchmark_payload(
-        results, unavailable, simulations=args.simulations, batch_size=args.batch_size,
-        seed=args.seed, warmups=args.warmups, repeats=args.repeats,
+        results, unavailable, simulations=args.simulations,
+        batch_size=args.batch_size, seed=args.seed, warmups=args.warmups,
+        repeats=args.repeats,
     )
     gate = None
     if args.baseline:
@@ -169,116 +217,22 @@ def benchmark_command(args) -> int:
     if args.save_baseline:
         write_benchmark_payload(Path(args.save_baseline), payload)
     if args.output:
-        write_benchmark_payload(Path(args.output), payload)
+        write_report(Path(args.output), payload)
     if args.json:
         print(json.dumps(payload, ensure_ascii=True, indent=2))
     else:
-        _print_benchmark_table(scenarios, backends, results, unavailable, args)
+        print_results_table(
+            results, unavailable, simulations=args.simulations,
+            batch_size=args.batch_size, seed=args.seed, repeats=args.repeats,
+        )
         if gate is not None:
-            _print_benchmark_comparison(gate, args)
-        for path, label in ((args.output, "Informe"), (args.save_baseline, "Línea base")):
-            if path:
-                print(f"{label}: {Path(path).resolve()}")
+            print_gate(gate, improvement=args.min_improvement,
+                       regression=args.max_regression)
+        if args.output:
+            print(f"Report: {Path(args.output).resolve()}")
+        if args.save_baseline:
+            print(f"Baseline: {Path(args.save_baseline).resolve()}")
     return int(bool(args.require_improvement and (gate is None or not gate.passed)))
-
-
-class _BenchmarkProgress:
-    """Barra de progreso mínima para unidades de trabajo ya completadas."""
-
-    def __init__(self, total: int) -> None:
-        self.total = total
-        self.completed = 0
-        self.rendered = False
-        self._render()
-
-    def advance(self) -> None:
-        self.completed += 1
-        self._render()
-
-    def finish(self) -> None:
-        if self.rendered:
-            print()
-
-    def _render(self) -> None:
-        if not self.total:
-            return
-        width = 24
-        completed = min(self.completed, self.total)
-        filled = round(width * completed / self.total)
-        percent = completed * 100 // self.total
-        print(
-            f"\rProgreso: [{'#' * filled}{'-' * (width - filled)}] "
-            f"{percent:3}% ({completed}/{self.total})",
-            end="", flush=True,
-        )
-        self.rendered = True
-
-
-def _print_benchmark_table(scenarios, backends, results, unavailable, args) -> None:
-    """Renderizar una comparación legible aun cuando falte algún backend."""
-    engines = (
-        ("modular", "Modular"),
-        ("numpy", "Vectorizado"),
-        ("native", "Nativo"),
-    )
-    labels = dict(engines)
-    by_result = {(result.scenario, result.backend): result for result in results}
-    unavailable_by_engine = {
-        (item.get("scenario"), item["backend"]): item["reason"]
-        for item in unavailable
-    }
-    rows = []
-    for scenario in scenarios:
-        cells = []
-        for backend, _label in engines:
-            result = by_result.get((scenario.id, backend))
-            if result is not None:
-                cells.extend((
-                    f"{result.simulations_per_second:,.0f}",
-                    f"{result.median_seconds * 1_000:.1f} ms",
-                ))
-            elif backend not in backends:
-                cells.extend(("NO EJECUTADO", "NO EJECUTADO"))
-            else:
-                cells.extend(("NO DISPONIBLE", "NO DISPONIBLE"))
-        rows.append((scenario.id, *cells))
-
-    headers = (
-        "Escenario",
-        "Modular sim/s", "Vectorizado sim/s", "Nativo sim/s",
-        "Modular Mid", "Vectorizado Mid", "Nativo Mid",
-    )
-    rows = tuple(
-        (row[0], row[1], row[3], row[5], row[2], row[4], row[6])
-        for row in rows
-    )
-    widths = [max(len(str(row[index])) for row in (headers, *rows)) for index in range(len(headers))]
-    separator = "+".join("-" * (width + 2) for width in widths)
-
-    print(
-        f"Benchmark: {args.simulations:,} simulaciones por escenario y motor; "
-        f"mediana de {args.repeats} repeticiones."
-    )
-    print(" | ".join(f"{value:<{width}}" for value, width in zip(headers, widths)))
-    print(separator)
-    for row in rows:
-        print(" | ".join(f"{value:<{width}}" for value, width in zip(row, widths)))
-    for (scenario, backend), reason in unavailable_by_engine.items():
-        scope = f" en {scenario}" if scenario else ""
-        print(f"{labels[backend]} no disponible{scope}: {reason}")
-
-
-def _print_benchmark_comparison(gate, args) -> None:
-    print(
-        f"Comparación con línea base (mejora requerida {args.min_improvement:g} %, "
-        f"regresión máxima {args.max_regression:g} %):"
-    )
-    for item in gate.comparisons:
-        print(
-            f"  {item.scenario}/{item.backend}: {item.change_ratio:+.2%} "
-            f"[{item.status}]"
-        )
-    print(f"Puerta de rendimiento: {'PASS' if gate.passed else 'FAIL'} — {gate.detail}")
 
 
 def parity_command(args) -> int:
@@ -413,66 +367,82 @@ def ui_command(_args) -> int:
 def build_parser() -> ArgumentParser:
     parser = ArgumentParser(prog="mordheim-combat-lab")
     commands = parser.add_subparsers(dest="command")
-    commands.add_parser("ui", help="abrir la interfaz gráfica").set_defaults(handler=ui_command)
-    validation = commands.add_parser("validate", help="validar KB y conexiones estructurales")
+    commands.add_parser("ui", help="open the graphical interface").set_defaults(handler=ui_command)
+    validation = commands.add_parser("validate", help="validate the KB and structural connections")
     validation.add_argument("--knowledge")
     validation.add_argument("--specs")
     validation.set_defaults(handler=validate_command)
-    verification = commands.add_parser("verify", help="ejecutar especificaciones semánticas")
+    verification = commands.add_parser(
+        "verify", help="run the semantic specifications against the modular engine")
     verification.add_argument("--knowledge")
     verification.add_argument("--specs")
     verification.add_argument("--inventory", action="store_true")
     verification.add_argument("--json", action="store_true")
     verification.add_argument("--require-complete", action="store_true")
     verification.set_defaults(handler=verify_command)
-    audit = commands.add_parser("audit", help="generar el inventario auditable de reglas")
+    audit = commands.add_parser("audit", help="generate the auditable rule inventory")
     audit.add_argument("--knowledge")
     audit.add_argument("--specs")
     audit.add_argument("--output")
     audit.add_argument("--scope", choices=("YES", "NO", "LATER"))
     audit.add_argument("--status", choices=("verified", "pending", "out_of_scope"))
-    audit.add_argument("--review-status", choices=("ready", "blocked_by_dependency", "needs_ruling", "verified", "not_applicable"),
-                       help="filtrar por estado de revisión; needs_ruling muestra 100_000s sin respuesta")
+    audit.add_argument("--review-status",
+                       choices=("ready", "blocked_by_dependency", "needs_ruling",
+                                "verified", "not_applicable"),
+                       help="filter by review status; needs_ruling surfaces unanswered 100_000s")
     audit.set_defaults(handler=audit_command)
-    benchmark = commands.add_parser("benchmark", help="medir los backends de combate")
-    benchmark.add_argument("-n", "--simulations", type=_positive, default=100_000)
+    benchmark = commands.add_parser("benchmark", help="measure the combat engines")
+    benchmark.add_argument("-n", "--simulations", type=_positive, default=100_000,
+                           help="simulations per scenario and engine")
     benchmark.add_argument("--seed", type=int, default=2026)
-    benchmark.add_argument("--batch-size", type=_positive, default=100_000)
+    benchmark.add_argument("--batch-size", type=_positive, default=100_000,
+                           help="batch size for the vectorized and native engines")
+    benchmark.add_argument(
+        "--simulation-sizes",
+        help="comma/space separated simulation counts, e.g. 1k,10k,100k (sweep mode)")
+    benchmark.add_argument(
+        "--batch-sizes",
+        help="comma/space separated batch sizes, e.g. 10k,100k (sweep mode)")
     benchmark.add_argument(
         "--backend", choices=("all", "modular", "numpy", "native"), default="all",
-        help="motor a medir; por defecto mide modular, vectorizado y nativo por separado",
+        help="engines to measure; by default modular, vectorized and native are measured separately",
     )
     benchmark.add_argument(
-        "--scenario", choices=("all", "basic", "multiattack", "defences", "stateful", "long"),
+        "--scenario",
+        choices=("all", "basic", "multiattack", "defences", "stateful", "long"),
         default="all",
     )
     benchmark.add_argument("--warmups", type=int, choices=range(0, 101), default=1)
     benchmark.add_argument("--repeats", type=_positive, default=5)
     benchmark.add_argument("--json", action="store_true")
-    benchmark.add_argument("--output", help="guardar el informe JSON de esta ejecución")
-    benchmark.add_argument("--save-baseline", help="guardar esta ejecución como línea base JSON")
-    benchmark.add_argument("--baseline", help="comparar contra una línea base JSON previa")
+    benchmark.add_argument("--output",
+                           help="save this run as a report (.json, or .csv/.md in sweep mode)")
+    benchmark.add_argument("--save-baseline",
+                           help="save this single-configuration run as a JSON baseline")
+    benchmark.add_argument("--baseline",
+                           help="compare against a previous single-configuration JSON baseline")
     benchmark.add_argument(
         "--require-improvement", action="store_true",
-        help="fallar si no mejora algún escenario o existe una regresión excesiva",
+        help="fail unless some scenario improves and none exceeds the allowed regression",
     )
     benchmark.add_argument("--min-improvement", type=_percentage, default=10.0)
     benchmark.add_argument("--max-regression", type=_percentage, default=5.0)
     benchmark.set_defaults(handler=benchmark_command)
-    parity = commands.add_parser("parity", help="certificar el vectorizado contra el motor modular")
+    parity = commands.add_parser(
+        "parity", help="certify the vectorized engine against the modular oracle")
     parity.add_argument("--json", action="store_true")
     parity.add_argument("--require-complete", action="store_true")
-    parity.add_argument("--statistical", action="store_true")
-    parity.add_argument("--statistical-simulations", type=_positive, default=100.000)
+    parity.add_argument("--statistical", action="store_true",
+                        help="add aggregate six-sigma statistical certification samples")
+    parity.add_argument("--statistical-simulations", type=_positive, default=100_000)
     parity.add_argument("--seed", type=int, default=2026)
-    parity.add_argument("--output", help="guardar informe .json o .md")
+    parity.add_argument("--output", help="save the report as .json or .md")
     parity.set_defaults(handler=parity_command)
     test_report = commands.add_parser(
-        "test-report", help="generar CSV humano de paridad y tests técnicos",
-    )
+        "test-report", help="generate the human-readable parity and technical test CSVs")
     test_report.add_argument("--output", default="outputs/test-report")
     test_report.add_argument("--statistical", action="store_true")
-    test_report.add_argument("--statistical-simulations", type=_positive, default=100.000)
+    test_report.add_argument("--statistical-simulations", type=_positive, default=100_000)
     test_report.add_argument("--seed", type=int, default=2026)
     test_report.add_argument("--require-complete", action="store_true")
     test_report.set_defaults(handler=test_report_command)

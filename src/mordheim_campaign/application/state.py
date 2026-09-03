@@ -24,7 +24,7 @@ class WarriorVM:
     equipment_cost: int = 0
     stat_modifiers: dict[str, int] = field(default_factory=dict)
     skill_access: list[str] = field(default_factory=list)
-    #: ID canónico del perfil KB (bandas/<collection>/<band>/profiles.yaml).
+    #: Canonical KB profile id (bands/<collection>/<band>/profiles.yaml).
     profile_id: str = ""
 
 
@@ -115,8 +115,8 @@ class CampaignVM:
     maximum_models: int = 15
     hero_limit: int = 5
 
-    # Identidad KB de la banda: los casos de uso posteriores resuelven reglas
-    # por estos IDs estables y nunca por el nombre visible.
+    # KB identity of the warband: later use cases resolve rules by these
+    # stable ids, never by the visible name.
     collection: str = ""
     band_id: str = ""
     ruleset: str = "mordheim"
@@ -227,7 +227,7 @@ def _clamp(value: int, low: int, high: int) -> int:
 
 
 def _draft_campaign(port: KnowledgePort, option, *, campaign_name: str, warriors: list[WarriorVM]) -> CampaignVM:
-    """Campaña en borrador con los límites canónicos de la banda seleccionada."""
+    """Draft campaign with the canonical limits of the selected warband."""
     rules = port.roster_rules(option.collection, option.band_id)
     return CampaignVM(
         campaign_name=campaign_name,
@@ -246,11 +246,11 @@ def _draft_campaign(port: KnowledgePort, option, *, campaign_name: str, warriors
 
 
 def _starter_warriors(port: KnowledgePort, option) -> list[WarriorVM]:
-    """Borrador inicial legal mínimo derivado del roster canónico.
+    """Initial legal draft derived from the canonical roster.
 
-    Arranca con los miembros obligatorios (mínimos del roster) y completa hasta
-    alcanzar el mínimo de modelos con los secuaces más baratos, sin exceder el
-    tesoro inicial.
+    Starts with the mandatory members (roster minimums) and fills up to the
+    minimum model count with the cheapest henchmen, without exceeding the
+    starting treasury.
     """
     profiles = {p.profile_id: p for p in port.profiles(option.collection, option.band_id)}
     rules = port.roster_rules(option.collection, option.band_id)
@@ -283,8 +283,8 @@ def _starter_warriors(port: KnowledgePort, option) -> list[WarriorVM]:
         quantity = _clamp(needed, 1, per_row_cap)
         occurrences[profile.profile_id] = occurrences.get(profile.profile_id, 0) + 1
         add(profile, quantity, row_id=f"{profile.profile_id}#{occurrences[profile.profile_id]}")
-    # Bandas que declaran todos sus héroes opcionales: el borrador necesita al
-    # menos un héroe, así que se añade el héroe legal más barato disponible.
+    # Warbands that declare all their heroes optional: the draft still needs
+    # at least one hero, so the cheapest legal hero available is added.
     if not any(row.kind == "hero" for row in rows):
         hero_candidates = [
             profile for profile in profiles.values()
@@ -307,7 +307,7 @@ def make_draft_state(
     collection: str | None = None,
     campaign_name: str = "New Mordheim Campaign",
 ) -> AppState:
-    """Estado de borrador nuevo: identidad, límites y roster inicial canónicos."""
+    """New draft state: canonical identity, limits and initial roster."""
     package = port.find_package(band_id, collection)
     option = port.warband(package.collection, band_id)
     campaign = _draft_campaign(port, option, campaign_name=campaign_name, warriors=_starter_warriors(port, option))
@@ -315,11 +315,11 @@ def make_draft_state(
 
 
 def make_example_state(port: KnowledgePort) -> AppState:
-    """Ejemplo navegable del prototipo construido sobre perfiles canónicos.
+    """Navigable prototype example built on canonical profiles.
 
-    La composición (perfiles, estadísticas, costes, acceso y reglas inherentes)
-    proviene de la KB. Los números de batallas/estados posteriores son narrativa
-    de ejemplo: ese estado mutable pertenece al modelo de campaña, no a la KB.
+    The composition (profiles, stats, costs, access and inherent rules) comes
+    from the KB. The later battle/state numbers are example narrative: that
+    mutable state belongs to the campaign model, not the KB.
     """
     sisters = port.find_package("sisters-of-sigmar")
     option = port.warband(sisters.collection, str(sisters.band["id"]))
@@ -432,10 +432,10 @@ def warrior_vm(
     condition_detail: str | None = None,
     stat_modifiers: dict[str, int] | None = None,
 ) -> WarriorVM:
-    """Convierte un perfil canónico en el view-model de guerrero usado por la GUI.
+    """Converts a canonical profile into the warrior view-model used by the GUI.
 
-    ``equipment`` recibe ya nombres canónicos de catálogo (no IDs); ``skills``
-    combina las reglas inherentes del perfil con habilidades ganadas en juego.
+    ``equipment`` already receives canonical catalogue names (not ids); ``skills``
+    combines the profile's inherent rules with skills gained in play.
     """
     return WarriorVM(
         id=row_id or f"{profile.profile_id}#1",

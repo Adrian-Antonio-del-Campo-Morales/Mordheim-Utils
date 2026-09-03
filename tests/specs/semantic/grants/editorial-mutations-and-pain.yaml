@@ -6,7 +6,7 @@ specifications:
   sources:
   - {target: rule/mordheim/bretonnian-chapel-guard/band--untiring/mechanic.untiring, digest: c1c749bdc2169d347fccd5adb7c0f6af449ac26438d39b3f65bf9a320be27679}
   depends_on: [mechanic/mechanic.untiring]
-  interpretation: Untiring solo puede seleccionarse para Questing Knight y Knights Errant; al seleccionarla concede exactamente el mecanismo Untiring ya verificado.
+  interpretation: "Untiring can only be selected for Questing Knight and Knights Errant; selecting it grants exactly the already verified Untiring mechanism."
   cases:
   - id: recipients
     roles: [grant, accepted, rejected]
@@ -34,7 +34,7 @@ specifications:
   sources:
   - {target: rule/mordheim/cult-of-the-possessed/band--mutations-great-claw/special-rule.band--mutations-great-claw, digest: 14e6ddd209b6912e04b3bccd2fae8041cd8a8a00d06177dbf39f6716d4deb22f}
   - {target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-great-claw/special-rule.band--mutations-great-claw, digest: 676b847b1033a24dc9ff3f44bca71dd772ee7681911a3bc362c122fb9deffcfe}
-  interpretation: Great Claw es seleccionable únicamente por Mutants y Possessed y añade un ataque separado con Fuerza +1 en ambas colecciones.
+  interpretation: "Great Claw is selectable only by Mutants and Possessed and adds a separate attack at Strength +1 in both collections."
   cases:
   - id: mordheim-recipients
     roles: [grant, accepted, rejected]
@@ -75,7 +75,7 @@ specifications:
   sources:
   - {target: rule/mordheim/cult-of-the-possessed/band--mutations-tentacle/special-rule.band--mutations-tentacle, digest: fd8475a0607f59950dacd4609169d87dc4fb7431c8f3b112bcfdc3a2c18f53bd}
   - {target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-tentacle/special-rule.band--mutations-tentacle, digest: 951bdb0f51e502194381c0f4dc911c790364438ced0933229d698b90b7c68bea}
-  interpretation: Tentacle es seleccionable por Mutants y Possessed y resta un ataque al rival sin reducirlo por debajo de uno.
+  interpretation: "Tentacle is selectable by Mutants and Possessed and removes one attack from the opponent without reducing it below one."
   cases:
   - id: mordheim-recipients
     roles: [grant, accepted, rejected]
@@ -115,7 +115,7 @@ specifications:
   sources:
   - {target: rule/mordheim/cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm, digest: 15064642e29aadccad119766b2be9d5f436d2a61b52486d9fa8493d446b74020}
   - {target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm, digest: c1ffb749816664eb15d839ca598e160061e7dd0651bcdc5d336ba804cc04857b}
-  interpretation: Extra Arm admite arma de una mano, Shield o Buckler para Mutants y Possessed; el arma crea un ataque separado y el escudo conserva además el ataque natural del Possessed.
+  interpretation: "Extra Arm accepts a one-handed weapon, Shield or Buckler for Mutants and Possessed; the weapon creates a separate attack and the shield additionally keeps the Possessed's natural attack."
   cases:
   - id: mordheim-recipients
     roles: [grant, accepted, rejected]
@@ -160,7 +160,7 @@ specifications:
   category: contextual
   sources:
   - {target: rule/mordheim/cursed-cavalcade/great-bear--maddened-with-pain/trait.maddened-with-pain, digest: 527dec24fe181a5af4fa608b961fa420b317944e5505f33babc6ae83e8e1ecd7}
-  interpretation: Solo el Great Bear recibe Maddened With Pain y suma exactamente un ataque después de haber perdido al menos una Herida.
+  interpretation: "Only the Great Bear receives Maddened With Pain and gains exactly one attack after having lost at least one Wound."
   cases:
   - id: recipient
     roles: [grant]

@@ -1,4 +1,4 @@
-"""verification.dice: responsabilidad extraída sin alterar las reglas."""
+"""verification.dice: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from fractions import Fraction

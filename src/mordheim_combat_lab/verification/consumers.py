@@ -1,4 +1,4 @@
-"""verification.consumers: responsabilidad extraída sin alterar las reglas."""
+"""verification.consumers: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 

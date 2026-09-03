@@ -1,4 +1,4 @@
-"""combat.modular.duel: responsabilidad extraída sin alterar las reglas."""
+"""combat.modular.duel: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from mordheim_combat.modular import rounds
@@ -41,7 +41,7 @@ def simulate_duel_reference(
 
 
 def simulate_duel(request) -> DuelResult:
-    """Adaptar el mismo `DuelRequest` que consume el motor vectorizado."""
+    """Accept the same `DuelRequest` consumed by the vectorized engine."""
     return simulate_duel_reference(
         request.first, request.second, request.simulations,
         seed=request.seed, maximum_rounds=request.maximum_rounds,

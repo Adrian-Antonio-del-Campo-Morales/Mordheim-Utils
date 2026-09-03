@@ -1,14 +1,18 @@
-# Interfaz activa
+# Active interface
 
-Presentación Tkinter del simulador. Conserva la navegación Candidate, Enemy, Improvements, Weapons, Equipment y House Rules.
+Tkinter presentation of the simulator. Keeps the Candidate, Enemy,
+Improvements, Weapons, Equipment and House Rules navigation.
 
-La UI posee ventanas, widgets, coordinación de threads y adaptación de resultados. No debe contener reglas, validación de construcciones ni bucles de simulación:
+The UI owns windows, widgets, thread coordination and result adaptation. It
+must not contain rules, construction validation or simulation loops:
 
-- `application.catalogue` prepara opciones de la KB.
-- `application.analyses` ejecuta comparaciones sin Tkinter.
-- `persistence` guarda preferencias y workbooks versionados.
-- `construction` compila configuraciones y `combat.vectorized` las simula.
+- `application.catalogue` prepares the KB options.
+- `application.analyses` runs comparisons without Tkinter.
+- `persistence` saves versioned preferences and workbooks.
+- `construction` compiles configurations and `combat.vectorized` simulates them.
 
-El workbook mantiene IDs estables en una hoja oculta y resúmenes legibles en las hojas visibles. Su contrato y ubicación de preferencias se conservan durante esta reorganización.
+The workbook keeps stable ids on a hidden sheet and readable summaries on the
+visible sheets. Its contract and preferences location are preserved during
+this reorganization.
 
-Véase [Modificar la aplicación](../../../docs/tasks/modify-application.md).
+See [Modify the application](../../../docs/tasks/modify-application.md).

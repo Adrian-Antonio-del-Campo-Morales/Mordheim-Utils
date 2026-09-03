@@ -6,10 +6,14 @@ from mordheim_combat_lab.cli.benchmarking import benchmark_payload
 from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
 from mordheim_combat_lab.cli.benchmarking import compare_with_baseline
 from mordheim_combat_lab.cli.benchmarking import load_benchmark_payload
+from mordheim_combat_lab.cli.benchmarking import parse_sizes
+from mordheim_combat_lab.cli.benchmarking import print_results_table
+from mordheim_combat_lab.cli.benchmarking import print_sweep_table
 from mordheim_combat_lab.cli.benchmarking import run_benchmark
+from mordheim_combat_lab.cli.benchmarking import sweep_payload
 from mordheim_combat_lab.cli.benchmarking import write_benchmark_payload
+from mordheim_combat_lab.cli.benchmarking import write_report
 from mordheim_combat_lab.cli.commands import build_parser
-from mordheim_combat_lab.cli.commands import _print_benchmark_table
 from mordheim_combat_lab.cli.commands import main
 
 
@@ -59,14 +63,70 @@ def test_benchmark_table_states_the_shared_simulation_count(capsys):
         scenario, simulations=2, batch_size=2, seed=3,
         backend="numpy", warmups=0, repeats=1,
     )
-    args = build_parser().parse_args(["benchmark", "-n", "2", "--repeats", "1"])
-    _print_benchmark_table((scenario,), ("modular", "numpy"), [result], [], args)
+    print_results_table(
+        [result], [], simulations=2, batch_size=2, seed=3, repeats=1,
+    )
     output = capsys.readouterr().out
-    assert "2 simulaciones por escenario y motor" in output
-    assert "Escenario" in output
-    assert "Modular sim/s" in output
-    assert "Vectorizado Mid" in output
-    assert "NO DISPONIBLE" in output
+    assert "2 simulations per scenario and engine" in output
+    assert "Scenario" in output
+    assert "Engine" in output
+    assert "Vectorized" in output
+    assert "sim/s" in output
+    assert "Median" in output
+
+
+def test_benchmark_table_lists_unavailable_engines(capsys):
+    print_results_table(
+        [], [{"backend": "native", "reason": "backend is not compiled in this environment"}],
+        simulations=2, batch_size=2, seed=3, repeats=1,
+    )
+    output = capsys.readouterr().out
+    assert "native not available: backend is not compiled in this environment" in output
+
+
+def test_parse_sizes_supports_suffixes_lists_and_defaults():
+    assert parse_sizes("1k, 10k;100k", default=5) == (1_000, 10_000, 100_000)
+    assert parse_sizes("2m", default=5) == (2_000_000,)
+    assert parse_sizes("100000,100000", default=5) == (100_000,)
+    assert parse_sizes(None, default=5) == (5,)
+    assert parse_sizes("", default=5) == (5,)
+    with pytest.raises(ValueError, match="invalid size token"):
+        parse_sizes("ten", default=5)
+    with pytest.raises(ValueError, match="must be positive"):
+        parse_sizes("-5", default=5)
+
+
+def test_sweep_payload_keeps_per_configuration_results():
+    result = run_benchmark(
+        benchmark_scenarios()[0], simulations=2, batch_size=1, seed=3,
+        backend="numpy", warmups=0, repeats=1,
+    )
+    payload = sweep_payload(
+        [result], [], simulation_sizes=(2,), batch_sizes=(1,), seed=3,
+        warmups=0, repeats=1,
+    )
+    assert payload["schema"] == "mordheim-combat-benchmark-sweep/v1"
+    assert payload["results"][0]["simulations"] == 2
+    assert payload["results"][0]["batch_size"] == 1
+    assert payload["results"][0]["median_seconds"] > 0
+
+
+def test_sweep_report_writes_csv_and_markdown(tmp_path):
+    result = run_benchmark(
+        benchmark_scenarios()[0], simulations=2, batch_size=2, seed=3,
+        backend="numpy", warmups=0, repeats=1,
+    )
+    payload = sweep_payload(
+        [result], [], simulation_sizes=(2,), batch_sizes=(2,), seed=3,
+        warmups=0, repeats=1,
+    )
+    csv_path = tmp_path / "sweep.csv"
+    md_path = tmp_path / "sweep.md"
+    write_report(csv_path, payload)
+    write_report(md_path, payload)
+    assert csv_path.read_text(encoding="utf-8").splitlines()[0].startswith("scenario;engine")
+    assert "| scenario | engine |" in md_path.read_text(encoding="utf-8")
+    assert "Vectorized" in md_path.read_text(encoding="utf-8")
 
 
 def test_benchmark_report_round_trips_as_a_versioned_baseline(tmp_path):
@@ -136,6 +196,44 @@ def test_benchmark_parser_exposes_performance_gate_options():
     assert (args.min_improvement, args.max_regression) == (12.0, 4.0)
 
 
+def test_benchmark_parser_exposes_sweep_sizes():
+    args = build_parser().parse_args([
+        "benchmark", "--simulation-sizes", "1k,10k", "--batch-sizes", "100,1k",
+    ])
+    assert args.simulation_sizes == "1k,10k"
+    assert args.batch_sizes == "100,1k"
+
+
+def test_sweep_mode_runs_and_prints_per_configuration_rows(capsys):
+    assert main(["benchmark", "--simulation-sizes", "2", "--batch-sizes", "2",
+                 "--scenario", "basic", "--backend", "numpy",
+                 "--warmups", "0", "--repeats", "1", "--seed", "3"]) == 0
+    output = capsys.readouterr().out
+    assert "Benchmark sweep:" in output
+    assert "2 simulations" in output
+    assert "Vectorized" in output
+    assert "sim/s" in output
+
+
 def test_required_improvement_needs_a_baseline_without_running_benchmarks(capsys):
     assert main(["benchmark", "--require-improvement"]) == 2
     assert "requires --baseline" in capsys.readouterr().err
+
+
+def test_gate_options_are_rejected_in_sweep_mode(capsys):
+    assert main(["benchmark", "--simulation-sizes", "2",
+                 "--baseline", "before.json"]) == 2
+    assert "single-configuration" in capsys.readouterr().err
+
+
+def test_sweep_table_mentions_all_configured_sizes(capsys):
+    result = run_benchmark(
+        benchmark_scenarios()[0], simulations=2, batch_size=2, seed=3,
+        backend="numpy", warmups=0, repeats=1,
+    )
+    print_sweep_table(
+        [result], [], simulation_sizes=(2, 4), batch_sizes=(2,), seed=3, repeats=1,
+    )
+    output = capsys.readouterr().out
+    assert "2 simulations, 4 simulations" in output
+    assert "batch sizes 2" in output

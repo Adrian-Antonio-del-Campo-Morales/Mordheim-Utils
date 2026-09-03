@@ -1,4 +1,4 @@
-"""Borrador y ejemplo: perfiles canónicos + acciones de edición del controlador."""
+"""Draft and example: canonical profiles + controller edit actions."""
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.application.knowledge_port import KnowledgePort
 from mordheim_campaign.application.state import make_example_state
@@ -20,7 +20,7 @@ def test_controller_default_draft_is_sisters_starter():
 
 def test_cannot_add_beyond_profile_limits():
     controller = _controller()
-    # Máximo de la banda: 1 matriarca + 1 augur + 3 superioras = 5 héroes.
+    # Warband maximum: 1 matriarch + 1 augur + 3 sisters superior = 5 heroes.
     for _ in range(3):
         ok, _ = controller.add_draft_warriors("sister-superior")
         assert ok
@@ -29,13 +29,13 @@ def test_cannot_add_beyond_profile_limits():
     ok, _ = controller.add_draft_warriors("augur")
     assert ok
     ok, _ = controller.add_draft_warriors("augur")
-    assert not ok  # máximo 1 augur
+    assert not ok  # maximum 1 augur
 
 
 def test_henchmen_groups_respect_group_limits():
     controller = _controller()
     ok, message = controller.add_draft_warriors("sigmarite-sister", 6)
-    assert not ok and "at most 5" in message  # group_size máximo 5
+    assert not ok and "at most 5" in message  # group_size maximum 5
     ok, _ = controller.add_draft_warriors("sigmarite-sister", 5)
     assert ok
 
@@ -45,7 +45,7 @@ def test_treasury_guard_blocks_unaffordable_additions():
 
     port = KnowledgePort()
     controller = AppController(port=port, state=make_draft_state(port, "lustrian-reavers"))
-    # Héroes caros de Lustrian Reavers: el tesoro inicial no alcanza para todos.
+    # Expensive Lustrian Reavers heroes: the starting treasury cannot pay for all.
     assert controller.add_draft_warriors("conqueror", 1)[0]
     assert controller.add_draft_warriors("trapmaster", 1)[0]
     ok, message = controller.add_draft_warriors("saurus-slayer", 1)
@@ -60,7 +60,7 @@ def test_group_resize_and_removal():
     ok, _ = controller.adjust_draft_group(sisters.id, -2)
     assert ok and sisters.quantity == 1
     ok, _ = controller.adjust_draft_group(sisters.id, -1)
-    assert not ok  # un grupo conserva al menos un miembro
+    assert not ok  # a group keeps at least one member
     ok, message = controller.remove_draft_warrior(sisters.id)
     assert ok
     assert all(w.id != sisters.id for w in controller.state.campaign.warriors)

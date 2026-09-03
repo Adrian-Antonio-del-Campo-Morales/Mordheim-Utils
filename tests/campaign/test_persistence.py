@@ -1,4 +1,4 @@
-"""Persistencia de campañas: round-trip JSON, robustez y exportación Markdown."""
+"""Campaign persistence: JSON round-trip, robustness and Markdown export."""
 from dataclasses import asdict
 import json
 
@@ -11,7 +11,7 @@ from mordheim_campaign.persistence import CampaignFileError, export_campaign_sum
 
 
 def _canonical(state):
-    """Comparable JSON-safe del estado (convierte conjuntos de dataclasses)."""
+    """JSON-safe comparable of the state (converts dataclass sets)."""
 
     def fix(value):
         if isinstance(value, set):
@@ -29,7 +29,7 @@ def _canonical(state):
 def test_campaign_round_trip(tmp_path, builder):
     port = KnowledgePort()
     original = builder(port)
-    path = save_campaign(tmp_path / "campaña.mordheim", original)
+    path = save_campaign(tmp_path / "campaign.mordheim", original)
     assert path.exists()
     restored = load_campaign(path)
     assert _canonical(restored) == _canonical(original)
@@ -82,14 +82,14 @@ def test_suggest_filename_slugifies_campaign_name():
     from mordheim_campaign.application.state import CampaignVM
     from mordheim_campaign.persistence import suggest_filename
 
-    campaign = CampaignVM("La Campaña de Morr!", "My Warband", "Sisters of Sigmar", "")
-    assert suggest_filename(campaign) == "la-campaña-de-morr.mordheim"
+    campaign = CampaignVM("The Campaign of Morr!", "My Warband", "Sisters of Sigmar", "")
+    assert suggest_filename(campaign) == "the-campaign-of-morr.mordheim"
 
 
 def test_export_markdown_summary(tmp_path):
     port = KnowledgePort()
     state = make_example_state(port)
-    path = export_campaign_summary(tmp_path / "resumen.md", state)
+    path = export_campaign_summary(tmp_path / "summary.md", state)
     text = path.read_text(encoding="utf-8")
     assert "The Sisters of Morr" in text
     assert "Sisters of Sigmar" in text

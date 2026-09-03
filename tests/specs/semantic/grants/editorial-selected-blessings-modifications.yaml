@@ -6,8 +6,10 @@ specifications:
   sources:
   - target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-cloud-of-flies/trait.cloud-of-flies
     digest: 43eec70b4166d2e988e48b174d3e26ddf5a1b8703d0244cab4a3a81f62b7feb9
-  interpretation: 'Blessings of Nurgle / Cloud of Flies: bendición comprada solo por Tainted Ones. Penaliza cada
-    ataque enemigo, nunca el propio; no exige carga ni primera ronda. HA3 contra HA3 pasa de 4+ a 5+.'
+  interpretation: >-
+    Blessings of Nurgle / Cloud of Flies: blessing bought only by Tainted Ones. It penalises each
+    enemy attack, never one's own; it requires neither a charge nor the first round. WS3 versus WS3
+    goes from 4+ to 5+.
   cases:
   - id: recipients
     roles:
@@ -178,8 +180,9 @@ specifications:
   sources:
   - target: rule/trollheim/khemri-necromancers/band--necromantic-modification-putrid-stench/special-rule.band--necromantic-modification-putrid-stench
     digest: 1b128bef9b0bd4a1bb1da66497c3e9a4a77fca05f6a0705e3f6f4e507b6a8105
-  interpretation: 'Khemri p.56 / Putrid Stench: solo criaturas vivas sufren -1 al impactar a la Abominación. HA3
-    contra HA3 pasa de 4+ a 5+; un no muerto conserva 4+.'
+  interpretation: >-
+    Khemri p.56 / Putrid Stench: only living creatures suffer -1 when hitting the Abomination. WS3
+    versus WS3 goes from 4+ to 5+; an undead keeps 4+.
   cases:
   - id: recipients
     roles:
@@ -371,8 +374,9 @@ specifications:
   sources:
   - target: rule/trollheim/khemri-necromancers/band--necromantic-modification-multiple-limbs/special-rule.band--necromantic-modification-multiple-limbs
     digest: ffb855e936bfff93056378ac623aee17a25123e0e531f76975119ed3a6161261
-  interpretation: 'Khemri p.56 / Multiple Limbs: +1 Ataque sobre los dos ataques de perfil; no requiere carga ni
-    primera ronda. No sustituye un ataque existente.'
+  interpretation: >-
+    Khemri p.56 / Multiple Limbs: +1 Attack on top of the profile's two attacks; it requires neither a
+    charge nor the first round. It does not replace an existing attack.
   cases:
   - id: recipients
     roles:
@@ -456,8 +460,10 @@ specifications:
   sources:
   - target: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-monstrosity/special-rule.band--strigoi-power-monstrosity
     digest: 5c96432379404109dbc7b455c0970a530bd279b92531b84ec5644ecadb23c9e4
-  interpretation: 'Chaos in the Streets p.183 / Monstrosity: +1 Herida, sin consumir el máximo normal. La inicialización
-    debe usar las heridas compiladas: perfil W2 pasa a W3; un perfil avanzado W10 pasa a W11.'
+  interpretation: >-
+    Chaos in the Streets p.183 / Monstrosity: +1 Wound, without consuming the normal maximum. The
+    initialisation must use the compiled wounds: a W2 profile becomes W3; an advanced W10 profile
+    becomes W11.
   cases:
   - id: recipients
     roles:
@@ -542,8 +548,9 @@ specifications:
   sources:
   - target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-bloated-foulness/special-rule.band--blessings-of-nurgle-bloated-foulness
     digest: 27492d24849e6c3151c9085326265de7fe48c38d4abe4789c88d1516ec8f536c
-  interpretation: 'Blessings of Nurgle / Bloated Foulness: W1 T3 pasa a W2 T4. La reducción de Movimiento no pertenece
-    al duelo. Se comprueban inicialización de heridas y todas las caras de herir S3 contra T4.'
+  interpretation: >-
+    Blessings of Nurgle / Bloated Foulness: W1 T3 becomes W2 T4. The Movement reduction does not
+    belong to the duel. Wound initialisation and all the to-wound faces of S3 versus T4 are checked.
   cases:
   - id: recipients
     roles:
@@ -734,9 +741,10 @@ specifications:
   sources:
   - target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-mark-of-nurgle/special-rule.band--blessings-of-nurgle-mark-of-nurgle
     digest: f7f11d6ed16bb7fe411e3fdd061f6426eedf8a3cac890e56fd7f97269e3c0714
-  interpretation: 'Blessings of Nurgle / Mark of Nurgle: W1 pasa a W2 e inmunidad a todos los venenos. La matriz
-    de venenos del consumidor se comparte con Tears of Shallaya; aquí se comprueba la concesión sin conceder esa
-    preparación.'
+  interpretation: >-
+    Blessings of Nurgle / Mark of Nurgle: W1 becomes W2 plus immunity to all poisons. The consumer's
+    poison matrix is shared with Tears of Shallaya; here only the grant is checked without granting
+    that preparation.
   cases:
   - id: recipients
     roles:

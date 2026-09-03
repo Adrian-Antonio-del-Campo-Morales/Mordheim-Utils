@@ -141,7 +141,7 @@ class InitialWarbandDraftMoment(tk.Frame):
         return outer
 
     def _warrior_menu(self, warrior: WarriorVM):
-        """Menu contextual de fila: tamaño de grupo y eliminación del borrador."""
+        """Row context menu: group size and draft removal."""
 
         def popup() -> None:
             menu = tk.Menu(

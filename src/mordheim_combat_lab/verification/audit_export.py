@@ -1,4 +1,4 @@
-"""Generación de un informe humano de cobertura sin modificar KB ni specs."""
+"""Generation of a human coverage report without modifying KB or specs."""
 from __future__ import annotations
 
 from csv import DictWriter
@@ -66,7 +66,7 @@ def _scenario_evidence(report) -> tuple[dict[str, list[str]], dict[str, list[str
 
 
 def build_audit_rows(knowledge: Path | None = None, specs: Path | None = None) -> tuple[AuditRow, ...]:
-    """Combine el inventario editorial, scope y evidencia realmente ejecutada."""
+    """Combine the editorial inventory, scope and actually executed evidence."""
     from mordheim_combat_lab.verification.specifications import load_fixtures
 
     root = Path(knowledge) if knowledge else knowledge_root()
@@ -101,18 +101,18 @@ def build_audit_rows(knowledge: Path | None = None, specs: Path | None = None) -
                source: dict | None, scope: str, reason: str, implemented: bool,
                binding: dict | None = None) -> None:
         if scope != "YES" and not _text(reason).strip():
-            reason = "Razón de exclusión o aplazamiento no documentada en la KB."
+            reason = "Exclusion or deferral reason not documented in the KB."
         obligation = obligations.get(identifier)
         key = binding_key(binding) if binding else (obligation.binding if obligation else "unbound")
         if scope != "YES":
             structural, semantic, semantic_reason = "not_applicable", "out_of_scope", reason
         elif obligation is None:
             structural, semantic = "missing", "pending"
-            semantic_reason = "No existe una obligación semántica para este efecto incluido."
+            semantic_reason = "There is no semantic obligation for this included effect."
         else:
             structural = "linked" if obligation.binding != "unbound" else "unbound"
             semantic = "verified" if identifier in verified else "pending"
-            semantic_reason = "" if semantic == "verified" else pending.get(identifier, "Evidencia incompleta.")
+            semantic_reason = "" if semantic == "verified" else pending.get(identifier, "Incomplete evidence.")
         section, url = _source_fields(source)
         review_status = classify_review_status(
             scope=scope, verified=semantic == "verified",
@@ -180,7 +180,7 @@ def build_audit_rows(knowledge: Path | None = None, specs: Path | None = None) -
             effects = runtime.get("effects") or []
             if not effects:
                 effects = [{"id": "unclassified", "scope": runtime.get("scope", "NO"),
-                            "reason": runtime.get("reason", "No hay efectos runtime clasificados."), "binding": None}]
+                            "reason": runtime.get("reason", "No classified runtime effects."), "binding": None}]
             for effect in effects:
                 identifier = f"rule/{collection}/{owner}/{rule['id']}/{effect['id']}"
                 scope = effect.get("scope", runtime.get("scope", "NO"))
@@ -195,7 +195,7 @@ def build_audit_rows(knowledge: Path | None = None, specs: Path | None = None) -
 
 def classify_review_status(*, scope: str, verified: bool, needs_ruling: bool,
                           missing_dependencies: bool) -> str:
-    """Estado de trabajo explícito, nunca inferido de palabras del motivo libre."""
+    """Explicit work status, never inferred from free-text reason wording."""
     if scope != "YES":
         return "not_applicable"
     if needs_ruling:

@@ -1,4 +1,4 @@
-"""external.test_execution: responsabilidad extraída sin alterar las reglas."""
+"""external.test_execution: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from mordheim_combat_lab.application.settings import DuelExecutionSettings

@@ -1,11 +1,14 @@
-# Implementar comportamiento de combate
+# Implement combat behaviour
 
-1. Clasifique el efecto como construcción, modificador, resolución local o flujo con estado.
-2. Use `mordheim_construction`, `mordheim_core.effects`, `mordheim_combat.phases` o `mordheim_combat/modular` respectivamente.
-3. Comparta el preparador de contexto entre orquestador y verificador.
-4. Inyecte `DiceSource` y `DecisionPolicy`; no consulte azar global ni la UI.
-5. Añada tests de fase o la mini-secuencia mínima.
+1. Classify the effect as construction, modifier, local resolution or stateful flow.
+2. Use `mordheim_construction`, `mordheim_core.effects`, `mordheim_combat.phases`
+   or `mordheim_combat/modular` accordingly.
+3. Share the context preparer between orchestrator and verifier.
+4. Inject `DiceSource` and `DecisionPolicy`; never consult global randomness or the UI.
+5. Add a phase test or the minimal mini-sequence.
 
-Ejemplo: regeneración bloqueada por fuego se compila como dato y la consumen el contexto y la fase de salvación especial.
+Example: fire-blocked regeneration compiles as data and is consumed by the
+context and the special-save phase.
 
-Terminado cuando el binding llega a un resultado observable y pasan activación, ausencia, límites y arquitectura.
+Done when the binding reaches an observable result and activation, absence,
+limits and architecture tests pass.

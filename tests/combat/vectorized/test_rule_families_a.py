@@ -1,4 +1,4 @@
-"""Regresiones vectorizadas de familias canónicas A."""
+"""Vectorized regressions of canonical rule families A."""
 from __future__ import annotations
 
 from mordheim_combat.vectorized import _new_state
@@ -126,8 +126,8 @@ def test_construction_contracts_enforce_access_restrictions_and_limits():
             "bretonnian-chapel-guard", "questing-knight",
             main_poison_id="poison.black-lotus",
         ), ROOT)
-    # La eleccion de tribu pertenece a la construccion de la banda y a la
-    # campana (incluidas opciones montadas), no al constructor de duelos 1v1.
+    # Tribe choice belongs to warband construction and to the campaign
+    # (including mounted options), not to the 1v1 duel builder.
     with pytest.raises(ValueError, match="choose exactly one Foreign or Native background"):
         compile_fighter(build(
             "khemri-lahmian-brotherhood", "lahmian-vampire", collection="trollheim",

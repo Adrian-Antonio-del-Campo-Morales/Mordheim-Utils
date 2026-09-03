@@ -7,7 +7,7 @@ specifications:
   - {target: mechanic/weapon.dwarf-axe, digest: 116c7e0ffbb1a9a1b4222fade2cbe6c446c832a646e6692b75b04a820a44f6de}
   - {target: mechanic/weapon.trident, digest: 70ccf5d6d111475b3ce0dd89e5abf79482cb2ec36e7a6ff513bf306ea024e7f2}
   - {target: mechanic/weapon.spiked-gauntlet, digest: 937041a345dd4c6e1f40788fa6f4f3015d3af264dba84be1c37b2ee8723aaeeb}
-  interpretation: Las tres armas permiten una parada ordinaria. Dwarf Axe añade penetración 1; Trident ataca primero solo cuando su portador ha recibido una carga; Spiked Gauntlet no añade otros modificadores.
+  interpretation: "The three weapons allow an ordinary parry. Dwarf Axe adds penetration 1; Trident strikes first only when its bearer has received a charge; Spiked Gauntlet adds no other modifiers."
   cases:
   - id: dwarf-axe-parry
     roles: [compiled, active, consumer, boundary]
@@ -64,7 +64,7 @@ specifications:
   - {target: mechanic/weapon.sigmarite-hammer, digest: f74237d3dd01f663717012b1809f19f7336447eac05e4bc289e7531288a08bce}
   - {target: mechanic/weapon.choppa, digest: 0b064c7f4cb666f718f7892daa9590d805f780acca46e37fd3f08353cb88d096}
   - {target: mechanic/weapon.witch-sword, digest: faabdc3109cdfc3c58c5a117a5ddbf20e94c5c63b7b583c9999dd80b4aca9cbe}
-  interpretation: Sigmarite Hammer tiene Fuerza +1, Concussion y +1 To Wound contra Undead/Possessed. Choppa y Witch Sword ganan Fuerza +1 solo en primera ronda; Choppa añade penetración y Witch Sword parada.
+  interpretation: "Sigmarite Hammer has Strength +1, Concussion and +1 To Wound against Undead/Possessed. Choppa and Witch Sword gain Strength +1 only in the first round; Choppa adds penetration and Witch Sword a parry."
   cases:
   - id: sigmarite-strength
     roles: [compiled, active, consumer]
@@ -134,7 +134,7 @@ specifications:
   sources:
   - {target: mechanic/weapon.steel-whip, digest: edc66f3b64f8ba5e3468b9a3af5dabc23b5a10bb5e65ab7fe8bc33d8bd15b24f}
   - {target: mechanic/weapon.pirate-scourge, digest: 2fce438d373b750360ebf719c6ca577574328fe01775c4d4935c8d74818d4938}
-  interpretation: Ambos ataques ignoran por completo las paradas. No modifican Fuerza, daño ni la tirada para herir.
+  interpretation: "Both attacks ignore parries completely. They modify neither Strength, damage nor the to-wound roll."
   cases:
   - id: steel-whip-compiled
     roles: [compiled]
@@ -178,7 +178,7 @@ specifications:
   - {target: mechanic/weapon.fighting-claws, digest: badfc295b3fd18a017f45e627d77255e97582770c20c9865ba60d57dc552fbfa}
   - {target: mechanic/weapon.weeping-blades, digest: 556cdfe9883b9ec36ae95a276affb2c9489f75b654a790e7e1208b6b03bf96bb}
   depends_on: [mechanic/poison.black-lotus]
-  interpretation: Ambas armas emparejadas conceden un ataque adicional y una parada. Weeping Blades incorpora Black Lotus; Fighting Claws no modifica heridas en el duelo.
+  interpretation: "Both paired weapons grant one extra attack and one parry. Weeping Blades carries Black Lotus; Fighting Claws does not modify wounds in the duel."
   cases:
   - id: fighting-claws-pair
     roles: [compiled, active, consumer, boundary]
@@ -225,7 +225,7 @@ specifications:
   - {target: mechanic/weapon.squig-prodder, digest: d482ff414389cfdf4d2a252f320a0ae2cb51d663870dd4b514d56a2790b1d2e7}
   - {target: mechanic/weapon.kusara-kama, digest: bb0af301dd0d716d9d1f89c64ea7cebf605449f851c2449efe10f8163d1aeda5}
   - {target: mechanic/weapon.long-boat-hook, digest: 5bc7e178d8f8395a3ea3515ae58f3a4761beafe19215d8a622800627a56d2161}
-  interpretation: Chained Squig fija Fuerza 3, ataca primero, no puede pararse y enreda al impactar. Squig Prodder ataca primero. Kusara-kama reduce un ataque tras un impacto 5+. Long Boat Hook tiene Fuerza -1 y prioridad solo en primera ronda.
+  interpretation: "Chained Squig fixes Strength 3, strikes first, cannot be parried and entangles on a hit. Squig Prodder strikes first. Kusara-kama removes one attack after a 5+ hit. Long Boat Hook has Strength -1 and priority only in the first round."
   cases:
   - id: chained-squig-entangles-on-hit
     roles: [compiled, active, consumer, sequence, consumption, boundary]

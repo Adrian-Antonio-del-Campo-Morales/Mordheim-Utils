@@ -5,7 +5,7 @@ specifications:
   category: contextual
   sources:
   - {target: mechanic/preparation.crimson-shade, digest: 78d02c317f76fe0eb45b319809cadceebd9559426b242abee9053d39039e12cf}
-  interpretation: Crimson Shade aporta +1 Fuerza durante todo el combate y suma una única tirada D3 a la Iniciativa al inicializar al luchador.
+  interpretation: "Crimson Shade grants +1 Strength for the whole combat and adds a single D3 roll to Initiative when initialising the fighter."
   cases:
   - id: compiled-and-strength
     roles: [compiled, active, consumer]
@@ -40,7 +40,7 @@ specifications:
   category: stateful
   sources:
   - {target: mechanic/poison.nightshade, digest: 48573b826e479034d0c4198b1a3ad8e95e0362289a2855f8e753af35e95650a5}
-  interpretation: Cada herida no salvada con Nightshade reduce la Iniciativa del defensor en uno; la inmunidad a venenos impide la reducción.
+  interpretation: "Each unsaved wound with Nightshade reduces the defender's Initiative by one; poison immunity prevents the reduction."
   cases:
   - id: compiled
     roles: [compiled]
@@ -76,7 +76,7 @@ specifications:
   category: stateful
   sources:
   - {target: mechanic/poison.spider-spittle, digest: 70ca6ec307d804651e269fbff2bdf18bdcb266a63f6f178c942f7349b2cfff0d}
-  interpretation: Tras una herida no salvada, Spider Spittle paraliza si el defensor falla un chequeo de Resistencia; la inmunidad a venenos omite el chequeo.
+  interpretation: "After an unsaved wound, Spider Spittle paralyses if the defender fails a Toughness check; poison immunity skips the check."
   cases:
   - id: compiled
     roles: [compiled]
@@ -112,7 +112,7 @@ specifications:
   category: stateful
   sources:
   - {target: mechanic/mechanic.disability, digest: d896e3431a8f92afc65c10789e323eeb90b3658b18995c08f9eeeee20225e23a}
-  interpretation: La simulación tira una vez el D6 de Disability por fila y aplica los efectos de combate representables de cada cara, conservando la cara consumida en el estado.
+  interpretation: "The simulation rolls the Disability D6 once per row and applies the representable combat effects of each face, keeping the consumed face in the state."
   cases:
   - id: compiled
     roles: [compiled]
@@ -169,7 +169,7 @@ specifications:
   category: stateful
   sources:
   - {target: mechanic/mechanic.mark-of-the-old-ones, digest: 2a60366318ece33e52fcc6554656a4184c5b5944845e99f945875689ee2740c2}
-  interpretation: Mark of the Old Ones convierte el primer fallo de impacto o herida en éxito y después queda consumida durante el duelo.
+  interpretation: "Mark of the Old Ones turns the first failed to-hit or to-wound roll into a success and is then consumed for the rest of the duel."
   cases:
   - id: compiled
     roles: [compiled]

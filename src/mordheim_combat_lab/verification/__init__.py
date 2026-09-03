@@ -1,1 +1,1 @@
-"""verification — API del área."""
+"""verification — area API."""

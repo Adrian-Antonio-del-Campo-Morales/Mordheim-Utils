@@ -1,4 +1,4 @@
-"""Secuencias con estado del motor modular."""
+"""Stateful sequences of the modular engine."""
 from __future__ import annotations
 
 from dataclasses import replace

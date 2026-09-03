@@ -7,9 +7,7 @@ specifications:
   - {target: mechanic/skill.monster-slayer-effective-strength-armour, digest: de7c7e0ffbc828085c66756fdde7d858910c1814a7f57497a0ed9d3180d3e944}
   - {target: rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-monster-slayer/skill.monster-slayer-effective-strength-armour, digest: a6a6d09dd7745aafdd87a6f0c9558b9b249f285fec83bb171b8b5725011b38f9}
   depends_on: [mechanic/skill.monster-slayer]
-  interpretation: Si Monster Slayer mejora la herida a 4+, la salvacion usa la Fuerza efectiva
-    que produciria ese 4+. Contra R6, un Slayer F3 hiere a 4+ y calcula el modificador como F6.
-    Si la Fuerza real ya es mejor, no se reduce.
+  interpretation: "If Monster Slayer improves the wound to 4+, the save uses the effective Strength that would produce that 4+. Against R6, a Slayer S3 wounds on 4+ and computes the modifier as S6. If the real Strength is already better, it is not reduced."
   cases:
   - id: recipient
     roles: [grant, compiled]

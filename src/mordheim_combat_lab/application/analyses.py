@@ -1,4 +1,4 @@
-"""Casos de uso de análisis sin Tkinter ni conocimiento de la presentación."""
+"""Analysis use cases without Tkinter or presentation knowledge."""
 from dataclasses import dataclass, replace
 from threading import Event
 from typing import Callable, Iterable
@@ -35,7 +35,7 @@ class ComparisonBatch:
 def compare_builds(baseline: FighterBuild, enemy: FighterBuild,
                    candidates: Iterable[ComparisonCandidate], settings: DuelExecutionSettings,
                    cancel_event: Event, progress: Callable[[int], None] = lambda _n: None) -> ComparisonBatch:
-    """Compilar y simular variantes; devolver también construcciones ilegales."""
+    """Compile and simulate variants; also return illegal constructions."""
     compiled_enemy = compile_fighter(enemy)
     baseline_result = simulate_duel(settings.request(compile_fighter(baseline), compiled_enemy, cancel_event))
     results, rejected = [], []

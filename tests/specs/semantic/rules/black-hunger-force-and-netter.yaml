@@ -5,7 +5,7 @@ specifications:
   category: stateful
   sources:
   - {target: mechanic/mechanic.black-hunger, digest: 2322961242e3ac4dc563c46834b5c753176b5ca2cbb290fe3e35eb5ed9e9bb30}
-  interpretation: Black Hunger añade un ataque mientras está activo y, al final, causa D3 impactos automáticos de Fuerza 3 que ignoran armadura.
+  interpretation: "Black Hunger adds an attack while active and, at the end, causes D3 automatic Strength 3 hits that ignore armour."
   cases:
   - id: attack-bonus
     roles: [compiled, active, consumer, boundary]
@@ -43,7 +43,7 @@ specifications:
   category: stateful
   sources:
   - {target: mechanic/mechanic.force-of-will, digest: a4d3209047c07c7fcd3601e5228809632291e7a1953f27be1d1d77781ce13bee}
-  interpretation: Force of Will intenta rescatar una sola vez el primer Out of Action con Resistencia y exige después chequeos acumulativos con -1 adicional por ronda.
+  interpretation: "Force of Will attempts to rescue the first Out of Action once with Toughness and afterwards requires cumulative checks with an extra -1 per round."
   cases:
   - id: compiled
     roles: [compiled]
@@ -87,7 +87,7 @@ specifications:
   category: stateful
   sources:
   - {target: mechanic/mechanic.netter, digest: cb9427cb4a627f5f18ffa5a1c7bf2c436a6013a317e2f7e04d1f0e7f0fb434dc}
-  interpretation: Netter tira para impactar con BS antes del combate y derriba al objetivo solamente si el impacto acierta y este falla su chequeo de Fuerza para escapar.
+  interpretation: "Netter rolls to hit with BS before combat and knocks down the target only if the hit lands and it fails its Strength check to escape."
   cases:
   - id: compiled
     roles: [compiled]
@@ -125,7 +125,7 @@ specifications:
   - {target: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger, digest: 80c0c6a2b9fda34ed3805f3b1c1c1c9ab4f386d56e5d7e3ac4e385dbaebda338}
   - {target: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-black-hunger/mechanic.black-hunger, digest: f0f109a4d74b35f15e95f9706d9a33e93956efbb9c3745fd12d11471b388fab9}
   depends_on: [mechanic/mechanic.black-hunger]
-  interpretation: Las cuatro reglas conceden Black Hunger a sus listas exactas de Héroes; las diferencias editoriales de Movimiento quedan fuera del duelo y comparten el mismo efecto de combate.
+  interpretation: "The four rules grant Black Hunger to their exact Hero lists; the editorial Movement differences stay outside the duel and share the same combat effect."
   cases:
   - id: eshin-mordheim
     roles: [grant, accepted, rejected]
@@ -166,7 +166,7 @@ specifications:
   - {target: rule/mordheim/pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will, digest: 7dc92f8c015737a1dea6fed33d96f911f7b6d0a422cf6bff80fb9ea4a36d17aa}
   - {target: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will, digest: 09ef760ee98d7ded7659143be4af787211c214fe8639ad3c24a69370038f59b1}
   depends_on: [mechanic/mechanic.force-of-will]
-  interpretation: Ambas ediciones conceden Force of Will exclusivamente a Dwarf Troll Slayer, Pit King y Pit Veterans y consumen el mismo rescate canónico.
+  interpretation: "Both editions grant Force of Will exclusively to Dwarf Troll Slayer, Pit King and Pit Veterans and consume the same canonical rescue."
   cases:
   - id: mordheim-recipients
     roles: [grant, accepted, rejected]
@@ -196,7 +196,7 @@ specifications:
   sources:
   - {target: rule/mordheim/night-goblins-mic/band--night-goblin-special-skills-netter/mechanic.netter, digest: a7d8a2871be4f52a0c4ad10bb4fb40a6bcba2ebcc59acb360e47b105e14bd427}
   depends_on: [mechanic/mechanic.netter]
-  interpretation: Netter solo puede seleccionarse para Big Boss y Bosses y proyecta el mecanismo de lanzamiento previo al combate.
+  interpretation: "Netter can only be selected for Big Boss and Bosses and projects the pre-combat throwing mechanism."
   cases:
   - id: recipients
     roles: [grant, accepted, rejected]

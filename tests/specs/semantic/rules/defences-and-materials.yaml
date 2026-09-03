@@ -5,7 +5,7 @@ specifications:
   category: local
   sources:
   - {target: mechanic/defence.shield, digest: 43d3529b96ece2d932e95a8116a0100e4273112ca47a5759d0b294800bf3a23e}
-  interpretation: Shield concede un punto de salvación y ocupa la mano secundaria. A Fuerza 3 produce 6+ sin armadura y convierte una armadura 4+ en 3+.
+  interpretation: "Shield grants one save point and occupies the off hand. At Strength 3 it produces 6+ without armour and turns a 4+ armour save into 3+."
   cases:
   - id: compiled
     roles: [compiled]
@@ -47,7 +47,7 @@ specifications:
   category: stateful
   sources:
   - {target: mechanic/defence.buckler, digest: 9306ebd03cc785ace9b33e055b0aa42925fc5c2f29fb33366a49864090484729}
-  interpretation: Buckler permite una parada que debe superar el impacto y no mejora armadura. La capacidad se consume con el intento aunque este falle; espada más rodela repite una parada fallida.
+  interpretation: "Buckler allows a parry that must beat the hit and does not improve armour. The ability is consumed with the attempt even if it fails; sword plus buckler re-rolls a failed parry."
   cases:
   - id: compiled
     roles: [compiled]
@@ -96,7 +96,7 @@ specifications:
   category: permanent
   sources:
   - {target: mechanic/material.normal, digest: cdd0357700ba0c315ef350831731da8dad5bfe38c23c06dbafb4d5b94944452c}
-  interpretation: Normal representa ausencia de mejora material. Conserva Fuerza, Iniciativa, salvaciones y efectos del arma elegida.
+  interpretation: "Normal represents the absence of a material improvement. It keeps the Strength, Initiative, saves and effects of the chosen weapon."
   cases:
   - id: no-strength-modifier
     roles: [compiled, consumer]
@@ -130,7 +130,7 @@ specifications:
   category: local
   sources:
   - {target: mechanic/material.ithilmar, digest: d5fffe8ff567f82d3276ee1da5970b90ed93c4ed7a90eab9a30f391c85881eb1}
-  interpretation: Ithilmar concede +1 Initiative mientras se equipa el arma; no concede atacar primero ni modifica Fuerza. La mano secundaria también es equipo del luchador.
+  interpretation: "Ithilmar grants +1 Initiative while the weapon is equipped; it does not grant striking first nor modify Strength. The off hand is also the fighter's equipment."
   cases:
   - id: main-hand-initiative
     roles: [compiled, active, consumer]

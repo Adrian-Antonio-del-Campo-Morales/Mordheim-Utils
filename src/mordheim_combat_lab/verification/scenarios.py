@@ -1,4 +1,4 @@
-"""verification.scenarios: responsabilidad extraída sin alterar las reglas."""
+"""verification.scenarios: responsibility extracted without altering the rules."""
 from __future__ import annotations
 import mordheim_combat.modular.pools as pools
 

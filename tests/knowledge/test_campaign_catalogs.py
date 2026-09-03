@@ -1,14 +1,14 @@
-"""knowledge.campaign-catalogs: estado e integridad de los catálogos de campaña.
+"""knowledge.campaign-catalogs: state and integrity of the campaign catalogues.
 
-Verifica la ingesta declarativa de reglas post-batalla y campaña en
-``sources/knowledge/catalog/campaign``: cabeceras, ausencia de ejemplos
-ficticios, conteos canónicos, resolución de referencias (items, bandas,
-grupos, condiciones, habilidades, perfiles de mago) e invariantes de tablas.
+Verifies the declarative ingestion of post-battle and campaign rules in
+``sources/knowledge/catalog/campaign``: headers, absence of fictitious
+examples, canonical counts, reference resolution (items, warbands, groups,
+conditions, skills, wizard profiles) and table invariants.
 
-La KB declara reglas y tablas, nunca su resultado. Estos tests solo validan
-que los datos están correctamente ingestados y referenciados; la ejecución de
-las reglas corresponde a los futuros cargadores/runtime (``load_campaign_catalog``,
-``load_post_battle_sequence``), aún no implementados.
+The KB declares rules and tables, never their outcome. These tests only
+validate that the data is correctly ingested and referenced; rule execution
+belongs to the future loaders/runtime (``load_campaign_catalog``,
+``load_post_battle_sequence``), not yet implemented.
 """
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ def campaign_files() -> list[Path]:
 
 
 def collect(node, key: str) -> list:
-    """Todos los valores del ``key`` en un árbol YAML (listas incluidas)."""
+    """All values of ``key`` in a YAML tree (lists included)."""
     found = []
     if isinstance(node, dict):
         if key in node:
@@ -68,7 +68,7 @@ def canonical_skill_ids() -> set[str]:
 
 
 def band_profile_ids() -> dict[str, set[str]]:
-    """band dir name -> ids de perfiles de la banda (ambas colecciones)."""
+    """band dir name -> ids of the warband profiles (both collections)."""
     profiles: dict[str, set[str]] = {}
     for band_yaml in BANDS.glob("*/*/band.yaml"):
         band_dir = band_yaml.parent
@@ -85,7 +85,7 @@ def hireling_profile_ids() -> set[str]:
 
 
 # --------------------------------------------------------------------------
-# Cabeceras, estado de ingesta y ausencia de ejemplos ficticios
+# Headers, ingestion state and absence of fictitious examples
 # --------------------------------------------------------------------------
 
 def test_campaign_catalogs_have_headers_and_declare_status():
@@ -104,8 +104,8 @@ def test_campaign_catalogs_all_published_and_hired_swords_is_schema_v2():
     drafts = [name for name, status in statuses.items() if status == "draft"]
     assert len(published) == 12
     assert drafts == []
-    # hired-swords-and-dramatis usa el schema v2 (recursos y procedimientos de
-    # disponibilidad); el resto de catálogos de campaña siguen en v1.
+    # hired-swords-and-dramatis uses schema v2 (availability resources and
+    # procedures); the rest of the campaign catalogues stay on v1.
     assert campaign("hired-swords-and-dramatis.yaml").get("schema_version") == 2
 
 
@@ -116,19 +116,19 @@ def test_ingested_catalogs_removed_fictitious_examples():
 
 
 # --------------------------------------------------------------------------
-# Condiciones canónicas
+# Canonical conditions
 # --------------------------------------------------------------------------
 
 def test_conditions_catalog_is_canonical():
     conditions = load("catalog/rules/conditions.yaml").get("conditions", [])
     assert {c["id"] for c in conditions} == {
-        # Efectos de heridas serias de campaña.
+        # Effects of campaign serious injuries.
         "campaign.condition.frenzy",
         "campaign.condition.stupidity",
         "campaign.condition.cannot-run",
         "campaign.condition.immune-to-fear",
         "campaign.condition.causes-fear",
-        # Condiciones de psicología canónicas del rulebook.
+        # Canonical psychology conditions of the rulebook.
         "condition.fear",
         "condition.terror",
         "condition.hatred",
@@ -160,9 +160,9 @@ def test_trading_post_ingestion_state():
 def test_trading_post_price_and_availability_shapes():
     items = campaign("trading-post.yaml")["items"]
     no_price = sorted(item["id"] for item in items if item.get("price") is None)
-    # Cuatro entradas de la fuente con coste «—» (bec-de-corbin, fist,
-    # firepots, masterwork heavy armour) y 78 objetos que el Trading Post de
-    # Mordheim no vende (solo listas de equipo de banda).
+    # Four source entries with cost "—" (bec-de-corbin, fist, firepots,
+    # masterwork heavy armour) and 78 items the Mordheim Trading Post does not
+    # sell (only warband equipment lists).
     assert len(no_price) == 82
     source_no_price = {
         "campaign.trading-post.bec-de-corbin",
@@ -214,13 +214,13 @@ def test_trading_post_restricted_variants_share_item_id_deliberately():
     assert set(repeats) == {"obsidian_weapon", "pike", "double_barrelled_pistol"}
     for item_id, entries in repeats.items():
         assert len({entry["id"] for entry in entries}) == len(entries)
-        # Variantes restringidas: precio y/o rareza distintos en cada entrada.
+        # Restricted variants: distinct price and/or rarity in each entry.
         assert len({(entry["price"].get("base_gc"), entry["price"].get("multiplier"),
                      entry["availability"].get("rarity")) for entry in entries}) > 1, item_id
 
 
 # --------------------------------------------------------------------------
-# Heridas serias
+# Serious injuries
 # --------------------------------------------------------------------------
 
 def test_serious_injuries_tables_state():
@@ -275,7 +275,7 @@ def test_serious_injuries_conditions_land_on_canonical_rolls():
 
 
 # --------------------------------------------------------------------------
-# Experiencia y avances
+# Experience and advances
 # --------------------------------------------------------------------------
 
 def test_experience_awards_and_underdog_state():
@@ -307,8 +307,8 @@ def test_advance_tables_cover_2_to_12_without_gaps():
 
 
 def test_racial_maximums_live_in_the_shared_catalog():
-    # Única fuente de verdad: catalog/rules/racial-maximums.yaml. El catálogo de
-    # campaña no duplica el bloque (`limits` no debe reaparecer ahí).
+    # Single source of truth: catalog/rules/racial-maximums.yaml. The campaign
+    # catalogue does not duplicate the block (`limits` must not reappear there).
     assert "limits" not in campaign("experience-and-advances.yaml")
     limits = load("catalog/rules/racial-maximums.yaml")["racial_maximums"]
     assert len(limits) == 29
@@ -326,8 +326,8 @@ def test_racial_maximums_live_in_the_shared_catalog():
 
 
 def test_racial_maximum_values_match_band_rules_that_used_to_inline_them():
-    # Valores canónicos fijados por la fuente (mordheimer.net /docs/campaigns/experience);
-    # las reglas de banda referencian estos IDs en vez de incrustar statlines.
+    # Canonical values fixed by the source (mordheimer.net /docs/campaigns/experience);
+    # warband rules reference these ids instead of inlining statlines.
     by_profile = {limit["profile"]: limit["characteristics"]
                   for limit in load("catalog/rules/racial-maximums.yaml")["racial_maximums"]}
     checks = {
@@ -356,9 +356,9 @@ def test_racial_maximum_values_match_band_rules_that_used_to_inline_them():
 
 
 def test_band_rules_reference_racial_maximums_without_inlining_statlines():
-    # Las reglas de banda no incrustan statlines de máximos raciales: referencian
-    # las entradas canónicas (campaign.limit.racial-maximum.*) y toda mención de
-    # «maximum profile» debe resolver contra el catálogo compartido.
+    # Warband rules do not inline racial-maximum statlines: they reference the
+    # canonical entries (campaign.limit.racial-maximum.*) and every mention of
+    # "maximum profile" must resolve against the shared catalogue.
     maximum_ids = {limit["id"]
                    for limit in load("catalog/rules/racial-maximums.yaml")["racial_maximums"]}
     profile_mention = re.compile(r"maximum (?:characteristic )?profiles?\b", re.IGNORECASE)
@@ -376,19 +376,19 @@ def test_band_rules_reference_racial_maximums_without_inlining_statlines():
             if "maximum" not in text.lower():
                 continue
             rules_with_maximums += 1
-            # La statline numérica se declara una sola vez: en el catálogo compartido.
+            # The numeric statline is declared once: in the shared catalogue.
             assert not statline.search(text), f"{path.name}: {rule['id']} inlines a statline"
             if profile_mention.search(text):
                 refs = re.findall(r"campaign\.limit\.racial-maximum\.[a-z0-9-]+", text)
                 assert refs, f"{path.name}: {rule['id']} mentions a max profile without ref"
                 referenced.extend(refs)
-    assert rules_with_maximums >= 20  # 81 ficheros, ~20 reglas mencionan máximos
-    assert referenced, "se esperaban referencias a máximos raciales desde las bandas"
+    assert rules_with_maximums >= 20  # 81 files, ~20 rules mention maximums
+    assert referenced, "expected racial-maximum references from the warbands"
     assert set(referenced) <= maximum_ids
 
 
 # --------------------------------------------------------------------------
-# Exploración e ingresos
+# Exploration and income
 # --------------------------------------------------------------------------
 
 def test_exploration_dice_and_shards_chart():
@@ -431,7 +431,7 @@ def test_wyrdstone_sale_and_magical_artefacts_state():
 
 
 # --------------------------------------------------------------------------
-# Reclutamiento, veteranos, rating y rareza
+# Recruitment, veterans, rating and rarity
 # --------------------------------------------------------------------------
 
 def test_recruitment_and_veterans_state():
@@ -493,7 +493,7 @@ def test_post_battle_sequence_has_ten_steps():
 
 
 # --------------------------------------------------------------------------
-# Escenarios
+# Scenarios
 # --------------------------------------------------------------------------
 
 def test_scenarios_state_and_selection_tables():
@@ -526,7 +526,7 @@ def test_scenario_selection_references_resolve():
 
 
 def test_scenario_progression_ingested_for_selection_table_scenarios():
-    """Los 16 escenarios de las tablas de selección oficiales tienen progresión."""
+    """The 16 scenarios of the official selection tables have progression."""
     document = campaign("scenarios.yaml")
     scenarios = {scenario["id"]: scenario for scenario in document["scenarios"]}
     referenced = {row["scenario"] for table in document["selection_tables"]
@@ -543,8 +543,8 @@ def test_scenario_progression_shape_and_reference_integrity():
     document = campaign("scenarios.yaml")
     scenarios = document["scenarios"]
     with_progression = [scenario for scenario in scenarios if "progression" in scenario]
-    # Cobertura completa: los 98 escenarios del catálogo tienen datos de
-    # progresión transcritos desde sus páginas fuente individuales.
+    # Full coverage: all 98 scenarios of the catalogue have progression data
+    # transcribed from their individual source pages.
     assert len(with_progression) == 98
     xp_award_ids = {award["id"] for award in campaign("experience-and-advances.yaml")["awards"]}
     trading_post = campaign("trading-post.yaml")
@@ -552,11 +552,11 @@ def test_scenario_progression_shape_and_reference_integrity():
     hub_url = "https://mordheimer.net/docs/campaigns/scenarios"
     for scenario in with_progression:
         progression = scenario["progression"]
-        # URL de página individual, no el índice.
+        # Individual page URL, not the index.
         url = scenario["source_refs"][0]["url"]
         assert url != hub_url and url.startswith(hub_url + "/"), scenario["id"]
-        # Fuentes sin premios de progresión explícitos deben documentar esa
-        # ausencia en notes (p. ej. escenarios de invasión zombi de la AP).
+        # Sources without explicit progression awards must document that
+        # absence in notes (e.g. AP zombie-invasion scenarios).
         if "experience" not in progression:
             assert progression.get("notes"), \
                 f"{scenario['id']}: progression without experience needs a note"
@@ -592,7 +592,7 @@ def test_scenario_progression_shape_and_reference_integrity():
 
 
 # --------------------------------------------------------------------------
-# Magia
+# Magic
 # --------------------------------------------------------------------------
 
 def test_magic_assignment_table_covers_lores_and_pending_lores():
@@ -605,14 +605,14 @@ def test_magic_assignment_table_covers_lores_and_pending_lores():
     assert len(defined) == 31
     assert pending == set()
     assert defined.isdisjoint(pending)
-    # Todos los lores asignados están definidos y viceversa; nada pendiente.
+    # Every assigned lore is defined and vice versa; nothing pending.
     assert used == defined | pending
     for row in rows:
         assert row["wizard"]
         assert row["profile_id"]
         assert row["lore"]
-    # Todos los magos contratables (hired swords y dramatis personae) con listas
-    # de conjuros quedan enlazados a su lore canónico (Abdul conoce dos listas).
+    # All contractable wizards (hired swords and dramatis personae) with spell
+    # lists are linked to their canonical lore (Abdul knows two lists).
     hireling_rows = [row for row in rows if row["profile_id"].startswith("hireling.")]
     assert len(hireling_rows) == 15
     assert len({row["profile_id"] for row in hireling_rows}) == 14
@@ -623,9 +623,9 @@ def test_magic_lore_spell_lists_are_complete_per_roll():
     spells = [spell for lore in document["lores"] for spell in lore.get("spells", [])]
     assert len(spells) == 188
     assert len({spell["id"] for spell in spells}) == 188
-    # Excepciones documentadas de la fuente: rituals-of-hashut tiene un ritual
-    # fijo (roll 0, el Sorcerer empieza con él) y necromancy-restless-dead
-    # reparte el roll 6 entre Deathly Visage (Necromancer) y Living Horror (Liche).
+    # Documented source exceptions: rituals-of-hashut has a fixed ritual
+    # (roll 0, the Sorcerer starts with it) and necromancy-restless-dead
+    # shares roll 6 between Deathly Visage (Necromancer) and Living Horror (Liche).
     multi_roll = {
         "lore.rituals-of-hashut",
         "lore.necromancy-restless-dead",
@@ -666,7 +666,7 @@ def test_casting_rules_are_declarative():
 
 
 # --------------------------------------------------------------------------
-# Mutaciones
+# Mutations
 # --------------------------------------------------------------------------
 
 def test_mutations_ingestion_state():
@@ -684,12 +684,12 @@ def test_mutations_ingestion_state():
 
 
 # --------------------------------------------------------------------------
-# Mercenarios (Hired Swords y Dramatis Personae) — schema v2
+# Mercenaries (Hired Swords and Dramatis Personae) — schema v2
 # --------------------------------------------------------------------------
 
 def test_hired_swords_campaign_catalog_state():
-    """El catálogo de mercenarios está publicado con el schema v2 y sus conteos
-    canónicos: 72 Hired Swords + 26 Dramatis Personae = 98 entradas únicas."""
+    """The mercenary catalogue is published with schema v2 and its canonical
+    counts: 72 Hired Swords + 26 Dramatis Personae = 98 unique entries."""
     document = campaign("hired-swords-and-dramatis.yaml")
     assert document["status"] == "published"
     assert document["schema_version"] == 2
@@ -701,11 +701,11 @@ def test_hired_swords_campaign_catalog_state():
     assert len({entry["id"] for entry in entries}) == 98
     assert all(entry["id"].startswith("campaign.hireling.") for entry in entries)
     assert all(entry["profile_id"].startswith("hireling.") for entry in entries)
-    # Toda entrada declara disponibilidad, referencia de fuente y perfil canónico.
+    # Every entry declares availability, a source reference and a canonical profile.
     assert all(entry.get("availability") for entry in entries)
     assert all(entry.get("source_refs") for entry in entries)
-    # 4 Dramatis Personae quedaron deliberadamente out of scope (compuestos o
-    # con perfil aleatorio), documentado en CAMPAIGN INGESTION RESULTS.md.
+    # 4 Dramatis Personae were deliberately left out of scope (composite or
+    # random profile), documented in CAMPAIGN INGESTION RESULTS.md.
 
 
 def test_hired_swords_profile_ids_resolve_against_hirelings_catalog():
@@ -716,8 +716,8 @@ def test_hired_swords_profile_ids_resolve_against_hirelings_catalog():
 
 
 def test_hired_swords_availability_and_cost_shapes():
-    """Formas del schema v2: procedimientos de disponibilidad, kinds admitidos y
-    recursos canónicos de coste (gold_crowns, wyrdstone_fragments, treasures,
+    """Schema v2 shapes: availability procedures, allowed kinds and canonical
+    cost resources (gold_crowns, wyrdstone_fragments, treasures,
     campaign_points)."""
     document = campaign("hired-swords-and-dramatis.yaml")
     procedures = {p["id"] for p in document["availability_procedures"]}
@@ -736,7 +736,7 @@ def test_hired_swords_availability_and_cost_shapes():
             cost = entry.get(cost_key)
             if cost is None:
                 continue
-            assert cost.get("resources"), f"{entry['id']}: {cost_key} sin resources"
+            assert cost.get("resources"), f"{entry['id']}: {cost_key} without resources"
             resources.update(cost["resources"])
             assert all(v.get("cost") is not None for v in cost["resources"].values())
     assert resources <= {"gold_crowns", "wyrdstone_fragments", "treasures",
@@ -744,8 +744,8 @@ def test_hired_swords_availability_and_cost_shapes():
 
 
 def test_hired_swords_eligibility_resolves_and_grammar_is_valid():
-    """Elegibilidad: listas simples o expresión booleana; bandas y grupos se
-    resuelven contra band.yaml y registry/warband-groups.yaml."""
+    """Eligibility: simple lists or a boolean expression; warbands and groups
+    resolve against band.yaml and registry/warband-groups.yaml."""
     document = campaign("hired-swords-and-dramatis.yaml")
     band_ids = {yaml.safe_load(path.read_text(encoding="utf-8")).get("id")
                 for path in BANDS.glob("*/*/band.yaml")}
@@ -797,9 +797,9 @@ def check_expression(node, leaf_keys, band_ids, groups, where):
 
 
 def test_hired_swords_dynamic_eligibility_rules_are_declared():
-    """Las 18 reglas dinámicas de elegibilidad (dependientes de roster, variante
-    mercenaria o tirada condicional) están declaradas en catalog/hirelings; las
-    entradas sin elegibilidad estática corresponden exactamente a ese conjunto."""
+    """The 18 dynamic eligibility rules (roster-, mercenary-variant- or
+    conditional-roll-dependent) are declared in catalog/hirelings; entries
+    without static eligibility correspond exactly to that set."""
     document = campaign("hired-swords-and-dramatis.yaml")
     entries = document["hired_swords"] + document["dramatis_personae"]
     static_less = [entry["id"] for entry in entries if not entry.get("eligibility")]
@@ -820,10 +820,10 @@ def test_hired_swords_dynamic_eligibility_rules_are_declared():
                     if rule_id and rule_id.endswith(".rule.campaign-eligibility"):
                         declared_rules.add(rule_id)
     assert len(declared_rules) == 18
-    # Sin elegibilidad estática <-> regla dinámica declarada para ese perfil.
-    # Las 18 reglas dinámicas dependen de roster/variante/tirada condicional;
-    # 6 de ellas son la única vía de elegibilidad (sin lista estática) y las
-    # 12 restantes añaden condiciones sobre una base estática.
+    # No static eligibility <-> declared dynamic rule for that profile.
+    # The 18 dynamic rules depend on roster/variant/conditional roll; 6 of
+    # them are the only eligibility path (no static list) and the remaining
+    # 12 add conditions on top of a static base.
     static_less_profiles = {entry["id"].removeprefix("campaign.")
                             for entry in entries if not entry.get("eligibility")}
     rule_profiles = {".".join(rule_id.split(".")[:3]) for rule_id in declared_rules}
@@ -832,8 +832,8 @@ def test_hired_swords_dynamic_eligibility_rules_are_declared():
 
 
 def test_hired_swords_goblin_lantern_bearer_is_unrestricted():
-    """Decisión documentada de ingesta: el Goblin Lantern Bearer puede ser
-    contratado por cualquier banda (sin restricción estática)."""
+    """Documented ingestion decision: the Goblin Lantern Bearer can be hired
+    by any warband (no static restriction)."""
     document = campaign("hired-swords-and-dramatis.yaml")
     entry = next(e for e in document["hired_swords"]
                  if e["id"].endswith("goblin-lantern-bearer"))
@@ -846,9 +846,9 @@ def test_hired_swords_goblin_lantern_bearer_is_unrestricted():
 
 
 def test_hired_swords_no_pending_spell_list_references():
-    """Las 15 referencias ``spell_list`` de los perfiles de hired swords y
-    dramatis personae están enlazadas con los ``lore_id`` canónicos de
-    magic.yaml (lore_assignments.rows); ninguna queda pendiente en
+    """The 15 ``spell_list`` references of hired sword and dramatis personae
+    profiles are linked to the canonical ``lore_id`` values of magic.yaml
+    (lore_assignments.rows); none remains pending in
     ``unresolved_references``."""
     pending = []
     for path in sorted(HIRELINGS.glob("**/*.yaml")):
@@ -857,24 +857,24 @@ def test_hired_swords_no_pending_spell_list_references():
             for ref in profile.get("unresolved_references") or []:
                 if ref.get("kind") == "spell_list":
                     pending.append((path.name, profile["id"], ref.get("source_name")))
-    assert pending == [], f"spell_list sin enlazar: {pending}"
+    assert pending == [], f"unlinked spell_list: {pending}"
 
 
 # --------------------------------------------------------------------------
-# Integridad de referencias de los catálogos de campaña
+# Reference integrity of the campaign catalogues
 # --------------------------------------------------------------------------
 
 def test_campaign_references_resolve_against_canonical_catalogs():
     item_ids = canonical_item_ids()
     skill_ids = canonical_skill_ids()
     conditions = {c["id"] for c in load("catalog/rules/conditions.yaml").get("conditions", [])}
-    # trading-post, magic y hired-swords se validan por separado (schema propio).
+    # trading-post, magic and hired-swords are validated separately (own schema).
     excluded = {"trading-post.yaml", "magic.yaml", "hired-swords-and-dramatis.yaml"}
     for path in campaign_files():
         if path.name in excluded:
             continue
         document = yaml.safe_load(path.read_text(encoding="utf-8"))
-        # Las variables de contexto ($var) pertenecen a procedimientos, no a IDs.
+        # Context variables ($var) belong to procedures, not ids.
         item_refs = [value for value in collect(document, "item_id")
                      if not (isinstance(value, str) and value.startswith("$"))]
         condition_refs = [value for value in collect(document, "condition_id")
@@ -900,15 +900,15 @@ def test_trading_post_restrictions_resolve_against_bands_and_groups():
 
 
 def test_procedural_placeholders_stay_out_of_canonical_ids():
-    # Las variables de contexto (prefijo «$») se usan solo en procedimientos;
-    # el validador genérico no debe tratarlas como IDs canónicos.
+    # Context variables (prefix "$") are used only in procedures; the generic
+    # validator must not treat them as canonical ids.
     document = campaign("trading-and-rarity.yaml")
     assert collect(document, "item_id") == ["$requested_item_id"]
     exploration = campaign("exploration-and-income.yaml")
     bindings = [value for value in collect(exploration, "bind") if isinstance(value, str)]
     assert bindings
-    # Los nombres locales de procedimiento se declaran sin «$» y se referencian
-    # con «$» (p. ej. bind: searching_hero -> actor: $searching_hero); «leader»
-    # es un selector literal del procedimiento, no una variable.
+    # Local procedure names are declared without "$" and referenced with "$"
+    # (e.g. bind: searching_hero -> actor: $searching_hero); "leader" is a
+    # literal procedure selector, not a variable.
     actors = [value for value in collect(exploration, "actor") if isinstance(value, str)]
     assert "$searching_hero" in actors

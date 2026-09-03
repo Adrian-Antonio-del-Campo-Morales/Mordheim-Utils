@@ -1,4 +1,4 @@
-"""combat.phases: responsabilidad extraída sin alterar las reglas."""
+"""combat.phases: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -646,7 +646,7 @@ class RoundResult:
 
 
 def resolve_strike_sequence(context: RoundContext, dice: DiceSource) -> RoundResult:
-    """Secuencia reducida para comprobar composición de golpes ordinarios.
+    """Reduced sequence to verify the composition of ordinary strikes.
 
     Catalogue-specific attack generation and priority are independently tested;
     the round contract proves that ordinary strikes traverse the resolution

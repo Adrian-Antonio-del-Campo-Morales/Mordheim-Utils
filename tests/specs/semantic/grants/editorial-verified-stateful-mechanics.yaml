@@ -8,7 +8,7 @@ specifications:
   - {target: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death/skill.art-of-silent-death, digest: 137b95a4f4c9243e2669353c708f5ae2ae7e7c1e678d4e85232d502296ed3946}
   - {target: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-art-of-unarmed-combat/skill.art-of-silent-death, digest: 99e0a1c1c0b6616237c2fbb9c5c4dba19f4227a5e62402311c6061d14edf69a9}
   depends_on: [mechanic/skill.art-of-silent-death]
-  interpretation: Las tres variantes conceden el mismo mecanismo, pero se comprueban por separado sus listas exactas de Héroes elegibles y que cada selección proyecta el binding al luchador.
+  interpretation: "The three variants grant the same mechanism, but their exact lists of eligible Heroes are checked separately and that each selection projects the binding onto the fighter."
   cases:
   - id: mordheim-recipients
     roles: [grant, accepted, rejected]
@@ -56,7 +56,7 @@ specifications:
   sources:
   - {target: rule/trollheim/chaos-streets-mordheim-inhabitants/cripples--disability/compiler.disability, digest: 9ef1a7c55e624a31596340909f9907b45c28705bce00d326a4c4950001e6ba40}
   depends_on: [mechanic/mechanic.disability]
-  interpretation: Disability se concede únicamente al perfil Cripples y provoca en su inicialización la tirada persistente ya verificada por el mecanismo canónico.
+  interpretation: "Disability is granted only to the Cripples profile and causes, at its initialisation, the persistent roll already verified by the canonical mechanism."
   cases:
   - id: recipient
     roles: [grant, accepted, rejected]
@@ -79,7 +79,7 @@ specifications:
   sources:
   - {target: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-luck/skill.luck, digest: d210c95b173265e99e1c05ba8a6eced261475b4f25c819e134564cc383434123}
   depends_on: [mechanic/skill.luck]
-  interpretation: Luck es seleccionable únicamente por Explorers y repite una tirada propia, dejando consumido el recurso canónico.
+  interpretation: "Luck is selectable only by Explorers and re-rolls one of their own rolls, leaving the canonical resource consumed."
   cases:
   - id: recipients
     roles: [grant, accepted, rejected]
@@ -103,7 +103,7 @@ specifications:
   sources:
   - {target: rule/trollheim/lustria-lizardmen/band--sacred-mark-of-the-old-ones/compiler.mark-of-the-old-ones, digest: 984c2bf57e11bfe52bd5533d65b61e585f98baf2dd1e0c724cafc4693c920d35}
   depends_on: [mechanic/mechanic.mark-of-the-old-ones]
-  interpretation: Mark of the Old Ones solo puede seleccionarse para los tres Héroes indicados y convierte su primer fallo mediante el mecanismo consumible ya verificado.
+  interpretation: "Mark of the Old Ones can only be selected for the three indicated Heroes and turns their first failure through the already verified consumable mechanism."
   cases:
   - id: recipients
     roles: [grant, accepted, rejected]

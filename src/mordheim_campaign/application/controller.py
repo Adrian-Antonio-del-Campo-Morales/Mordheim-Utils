@@ -152,7 +152,7 @@ class AppController:
     # ------------------------------------------------------------- campaigns
 
     def warband_options(self):
-        """Bandas canónicas seleccionables (DTOs de solo lectura)."""
+        """Canonical selectable warbands (read-only DTOs)."""
         return self.port.options()
 
     def new_campaign(self, campaign_name: str, band_id: str) -> None:
@@ -199,7 +199,7 @@ class AppController:
         return self.state.campaign
 
     def addable_profiles(self, kind: str) -> tuple[WarbandProfile, ...]:
-        """Perfiles que aún pueden añadirse al borrador (sin exceder el roster)."""
+        """Profiles that can still be added to the draft (within the roster)."""
         campaign = self._campaign()
         if not campaign.is_draft or not campaign.band_id:
             return ()
@@ -215,13 +215,13 @@ class AppController:
         return tuple(result)
 
     def profile_allowance(self, profile: WarbandProfile) -> tuple[int, int | None]:
-        """(modelos actuales, tope de miembro) para un perfil del borrador."""
+        """(models already taken, member cap) for a draft profile."""
         campaign = self._campaign()
         taken = sum(row.quantity for row in campaign.warriors if row.profile_id == profile.profile_id)
         return taken, profile.member_maximum
 
     def add_draft_warriors(self, profile_id: str, quantity: int = 1) -> tuple[bool, str]:
-        """Añade un guerrero o grupo al borrador validando límites canónicos."""
+        """Add a warrior or group to the draft, validating canonical limits."""
         campaign = self._campaign()
         if not campaign.is_draft:
             return False, "Only the initial warband draft can be edited."
@@ -255,7 +255,7 @@ class AppController:
         return True, f"{name}{f' ×{quantity}' if quantity > 1 else ''} added to the draft."
 
     def adjust_draft_group(self, warrior_id: str, delta: int) -> tuple[bool, str]:
-        """Cambia el tamaño de una fila de secuaces manteniendo los límites."""
+        """Resizes a henchman row keeping the limits in force."""
         campaign = self._campaign()
         row = next((w for w in campaign.warriors if w.id == warrior_id), None)
         if row is None or not campaign.is_draft:
@@ -287,7 +287,7 @@ class AppController:
         return True, f"{row.name} now has {new_quantity} member{'s' if new_quantity != 1 else ''}."
 
     def remove_draft_warrior(self, warrior_id: str) -> tuple[bool, str]:
-        """Elimina una fila del borrador; la legalidad se revalúa al instante."""
+        """Removes a draft row; legality is re-evaluated instantly."""
         campaign = self._campaign()
         if not campaign.is_draft:
             return False, "Only the initial warband draft can be edited."

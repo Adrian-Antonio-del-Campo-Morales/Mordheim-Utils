@@ -39,15 +39,15 @@ def test_semantic_csv_inventory_is_human_readable_and_complete():
 def test_csv_uses_excel_friendly_bom_semicolons_and_unicode(tmp_path):
     path = tmp_path / "report.csv"
     write_csv(path, SEMANTIC_COLUMNS, ({
-        "test_id": "regla/ñ", "details": "+Parada\ncon héroe",
-        "expected": '{"resultado":"éxito"}', "passes": "PASS",
+        "test_id": "rule/Ω", "details": "+Parry\nwith hero",
+        "expected": '{"result":"success"}', "passes": "PASS",
     },))
     raw = path.read_bytes()
     assert raw.startswith(b"\xef\xbb\xbf")
     assert b";" in raw
     with path.open("r", encoding="utf-8-sig", newline="") as stream:
         rows = tuple(csv.DictReader(stream, delimiter=";"))
-    assert rows[0]["details"] == "'+Parada con héroe"
+    assert rows[0]["details"] == "'+Parry with hero"
     assert len(raw.splitlines()) == 2
 
 
