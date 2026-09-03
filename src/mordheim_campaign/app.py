@@ -3,7 +3,6 @@ from __future__ import annotations
 import tkinter as tk
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_campaign.application.state import make_creation_demo_state
 from mordheim_campaign.ui.shell import AppShell
 from mordheim_ui.theme import COLORS, configure_theme
 
@@ -16,7 +15,7 @@ class CampaignManagerApp(tk.Tk):
         self.title("Mordheim Campaign Manager — GUI Prototype")
         self.geometry("1560x900")
         self.minsize(1280, 760)
-        self.controller = AppController(make_creation_demo_state())
+        self.controller = AppController()
         AppShell(self, self.controller)
 
 

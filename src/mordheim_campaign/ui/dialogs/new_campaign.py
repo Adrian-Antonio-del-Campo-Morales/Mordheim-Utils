@@ -11,16 +11,18 @@ from mordheim_ui.widgets import BorderedFrame
 class NewCampaignDialog(tk.Toplevel):
     """Small campaign creation dialog.
 
-    It deliberately asks only for the identity of the campaign and warband.
-    Rulesets, KB validation and persistence are intentionally outside this GUI
-    prototype and can be added later without enlarging the onboarding flow.
+    It deliberately asks only for the identity of the campaign and warband. The
+    warband list comes from the canonical KB through ``KnowledgePort``; rules,
+    KB validation and the initial roster are resolved after creation without
+    enlarging the onboarding flow.
     """
 
-    WARBANDS = ("Sisters of Sigmar", "Mercenaries", "Witch Hunters")
+    DEFAULT_BAND_ID = "sisters-of-sigmar"
 
     def __init__(self, parent: tk.Misc, controller: AppController) -> None:
         super().__init__(parent)
         self.controller = controller
+        self.options = controller.warband_options()
         self.configure(bg=COLORS["bg"])
         self.title("Create Campaign")
         self.resizable(False, False)
@@ -40,9 +42,18 @@ class NewCampaignDialog(tk.Toplevel):
         ttk.Entry(body, textvariable=self.name_var, width=38).grid(row=3, column=0, columnspan=2, sticky="ew", pady=(5, 14))
 
         tk.Label(body, text="WARBAND", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8)).grid(row=4, column=0, sticky="w")
-        self.warband_var = tk.StringVar(value=self.WARBANDS[0])
-        ttk.Combobox(body, textvariable=self.warband_var, values=self.WARBANDS, state="readonly", width=35).grid(row=5, column=0, columnspan=2, sticky="ew", pady=(5, 6))
-        tk.Label(body, text="Warband options are visual prototype data for now.", bg=COLORS["panel"], fg=COLORS["muted_dark"], font=("Segoe UI", 8)).grid(row=6, column=0, columnspan=2, sticky="w")
+        labels = [option.label for option in self.options]
+        self._selected = next(
+            (index for index, option in enumerate(self.options) if option.band_id == self.DEFAULT_BAND_ID and option.collection == "mordheim"),
+            0,
+        )
+        self.warband_var = tk.StringVar(value=labels[self._selected])
+        self.warband_box = ttk.Combobox(body, textvariable=self.warband_var, values=labels, state="readonly", width=35)
+        self.warband_box.grid(row=5, column=0, columnspan=2, sticky="ew", pady=(5, 6))
+        self.warband_box.bind("<<ComboboxSelected>>", self._on_warband_change)
+        self.caption_var = tk.StringVar()
+        tk.Label(body, textvariable=self.caption_var, bg=COLORS["panel"], fg=COLORS["muted_dark"], font=("Segoe UI", 8), justify="left", wraplength=330).grid(row=6, column=0, columnspan=2, sticky="w")
+        self._update_caption()
 
         actions = tk.Frame(body, bg=COLORS["panel"])
         actions.grid(row=7, column=0, columnspan=2, sticky="e", pady=(22, 0))
@@ -54,6 +65,20 @@ class NewCampaignDialog(tk.Toplevel):
         self.bind("<Escape>", lambda _e: self.destroy())
         self.after_idle(self._center)
 
+    def _current_option(self):
+        label = self.warband_var.get()
+        return next((option for option in self.options if option.label == label), self.options[self._selected])
+
+    def _update_caption(self) -> None:
+        option = self._current_option()
+        source = f" · {option.source_label}" if option.collection != "mordheim" else ""
+        self.caption_var.set(
+            f"{option.minimum_models}–{option.maximum_models} models · {option.starting_gold} gc starting{source} · {option.publication}"
+        )
+
+    def _on_warband_change(self, _event=None) -> None:
+        self._update_caption()
+
     def _center(self) -> None:
         self.update_idletasks()
         parent = self.master.winfo_toplevel()
@@ -63,5 +88,6 @@ class NewCampaignDialog(tk.Toplevel):
 
     def _create(self) -> None:
         name = self.name_var.get().strip() or "New Mordheim Campaign"
-        self.controller.new_campaign(name, self.warband_var.get())
+        option = self._current_option()
+        self.controller.new_campaign(name, option.band_id)
         self.destroy()

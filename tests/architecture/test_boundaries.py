@@ -61,3 +61,20 @@ def test_importing_package_is_lazy_about_ui_and_verification():
                "assert 'mordheim_combat_lab.verification.audit' not in sys.modules"]
     environment = {**os.environ, "PYTHONPATH": str(SRC)}
     subprocess.run(command, cwd=ROOT, env=environment, check=True)
+
+
+def test_campaign_application_and_persistence_have_no_tkinter_dependency():
+    for area in ("application", "persistence"):
+        imports = imported_modules("mordheim_campaign", area)
+        assert not any(module.startswith("tkinter") for module in imports), area
+
+
+def test_campaign_ui_reads_kb_only_through_application():
+    imports = imported_modules("mordheim_campaign", "ui")
+    assert not any(module.startswith(("mordheim_knowledge", "mordheim_construction", "yaml")) for module in imports)
+
+
+def test_campaign_application_never_imports_ui():
+    for area in ("application", "persistence"):
+        imports = imported_modules("mordheim_campaign", area)
+        assert not any(module.startswith(("mordheim_campaign.ui", "tkinter")) for module in imports), area

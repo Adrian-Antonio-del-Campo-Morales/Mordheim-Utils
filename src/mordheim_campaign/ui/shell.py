@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import ttk
 
 from mordheim_campaign.application.controller import AppController
+from mordheim_campaign.ui.file_actions import export_campaign_markdown, load_campaign_file, save_current_campaign
 from mordheim_campaign.ui.views import CampaignView, RulesView, SettingsView
 from mordheim_ui.theme import COLORS
 
@@ -58,8 +59,13 @@ class AppShell(tk.Frame):
 
         actions = tk.Frame(header, bg=COLORS["bg"], padx=12)
         actions.pack(side="right", fill="y")
-        for text in ("Load", "Save", "Export"):
-            ttk.Button(actions, text=text, style="Ghost.TButton", command=self._placeholder).pack(side="left", pady=13, padx=2)
+        handlers = {
+            "Load": lambda: load_campaign_file(self, self.controller),
+            "Save": lambda: save_current_campaign(self, self.controller),
+            "Export": lambda: export_campaign_markdown(self, self.controller),
+        }
+        for text, handler in handlers.items():
+            ttk.Button(actions, text=text, style="Ghost.TButton", command=handler).pack(side="left", pady=13, padx=2)
 
         tk.Frame(self, bg=COLORS["border_soft"], height=1).pack(fill="x")
 
@@ -70,6 +76,3 @@ class AppShell(tk.Frame):
             child.destroy()
         view_type = VIEWS.get(self.controller.state.active_view, CampaignView)
         view_type(self.content, self.controller).pack(fill="both", expand=True)
-
-    def _placeholder(self) -> None:
-        messagebox.showinfo("Prototype", "File actions are placeholders in this interface-first prototype.", parent=self)
