@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import date
+
+from mordheim_campaign.application.knowledge_port import KnowledgePort, WarbandProfile
 
 
 @dataclass(slots=True)
@@ -21,6 +24,8 @@ class WarriorVM:
     equipment_cost: int = 0
     stat_modifiers: dict[str, int] = field(default_factory=dict)
     skill_access: list[str] = field(default_factory=list)
+    #: ID canónico del perfil KB (bandas/<collection>/<band>/profiles.yaml).
+    profile_id: str = ""
 
 
 @dataclass(slots=True)
@@ -103,12 +108,18 @@ class CampaignVM:
     rare_finds: int = 0
 
     # Draft-only construction metadata. In the real application these values
-    # will be supplied by the selected warband rules rather than the GUI.
+    # are supplied by the selected warband rules rather than the GUI.
     is_draft: bool = False
     starting_gold: int = 500
     minimum_models: int = 3
     maximum_models: int = 15
     hero_limit: int = 5
+
+    # Identidad KB de la banda: los casos de uso posteriores resuelven reglas
+    # por estos IDs estables y nunca por el nombre visible.
+    collection: str = ""
+    band_id: str = ""
+    ruleset: str = "mordheim"
 
     def state(self, number: int) -> WarbandStateVM:
         return next(item for item in self.states if item.number == number)
@@ -211,102 +222,142 @@ def _stats(values: tuple[int, ...]) -> dict[str, int]:
     return dict(zip(STAT_KEYS, values, strict=True))
 
 
-def _creation_warriors() -> list[WarriorVM]:
-    return [
-        WarriorVM(
-            id="matriarch",
-            name="Mother Superior",
-            profile_name="Sigmarite Matriarch",
-            kind="hero",
-            stats=_stats((4, 4, 4, 3, 3, 1, 4, 1, 8)),
-            equipment=[],
-            skills=["Leader", "Prayers of Sigmar"],
-            skill_access=["Combat", "Academic", "Strength", "Special"],
-            experience=20,
-            cost=70,
-        ),
-        WarriorVM(
-            id="sister-group",
-            name="Sigmarite Sisters",
-            profile_name="Sigmarite Sister",
-            kind="henchman",
-            stats=_stats((4, 3, 3, 3, 3, 1, 3, 1, 7)),
-            equipment=[],
-            skills=[],
-            experience=0,
-            quantity=1,
-            cost=25,
-        ),
-        WarriorVM(
-            id="novices",
-            name="Novices",
-            profile_name="Novice",
-            kind="henchman",
-            stats=_stats((4, 2, 2, 3, 3, 1, 3, 1, 6)),
-            equipment=[],
-            skills=[],
-            experience=0,
-            quantity=4,
-            cost=15,
-        ),
-    ]
+def _clamp(value: int, low: int, high: int) -> int:
+    return max(low, min(value, high))
 
 
-def make_creation_demo_state(*, campaign_name: str = "The Sisters of Morr", warband_type: str = "Sisters of Sigmar", empty: bool = False) -> AppState:
-    campaign = CampaignVM(
+def _draft_campaign(port: KnowledgePort, option, *, campaign_name: str, warriors: list[WarriorVM]) -> CampaignVM:
+    """Campaña en borrador con los límites canónicos de la banda seleccionada."""
+    rules = port.roster_rules(option.collection, option.band_id)
+    return CampaignVM(
         campaign_name=campaign_name,
-        warband_name="My Sisters of Sigmar Warband" if warband_type == "Sisters of Sigmar" else f"My {warband_type} Warband",
-        warband_type=warband_type,
+        warband_name=f"My {option.name} Warband",
+        warband_type=option.name,
         started="Draft",
-        warriors=[] if empty else _creation_warriors(),
+        warriors=warriors,
         is_draft=True,
-        starting_gold=500,
-        minimum_models=3,
-        maximum_models=15,
-        hero_limit=5,
+        starting_gold=rules.starting_gold,
+        minimum_models=rules.minimum_models,
+        maximum_models=rules.maximum_models,
+        hero_limit=rules.hero_limit or 5,
+        collection=option.collection,
+        band_id=option.band_id,
     )
+
+
+def _starter_warriors(port: KnowledgePort, option) -> list[WarriorVM]:
+    """Borrador inicial legal mínimo derivado del roster canónico.
+
+    Arranca con los miembros obligatorios (mínimos del roster) y completa hasta
+    alcanzar el mínimo de modelos con los secuaces más baratos, sin exceder el
+    tesoro inicial.
+    """
+    profiles = {p.profile_id: p for p in port.profiles(option.collection, option.band_id)}
+    rules = port.roster_rules(option.collection, option.band_id)
+    rows: list[WarriorVM] = []
+
+    def add(profile: WarbandProfile, quantity: int, *, row_id: str) -> None:
+        if quantity <= 0:
+            return
+        rows.append(warrior_vm(profile, quantity=quantity, row_id=row_id))
+
+    required = [profile for profile in profiles.values() if profile.required]
+    occurrences: dict[str, int] = {}
+    for profile in required:
+        occurrences[profile.profile_id] = occurrences.get(profile.profile_id, 0) + 1
+        add(profile, profile.member_minimum, row_id=f"{profile.profile_id}#{occurrences[profile.profile_id]}")
+
+    def model_count() -> int:
+        return sum(row.quantity for row in rows)
+
+    fill_candidates = [
+        profile for profile in profiles.values()
+        if profile.kind == "henchman" and profile.member_maximum != 0 and not profile.random_characteristics
+    ]
+    for profile in fill_candidates:
+        if model_count() >= rules.minimum_models:
+            break
+        needed = rules.minimum_models - model_count()
+        group_cap = profile.group_maximum
+        per_row_cap = group_cap if group_cap is not None else (profile.member_maximum if profile.member_maximum is not None else needed)
+        quantity = _clamp(needed, 1, per_row_cap)
+        occurrences[profile.profile_id] = occurrences.get(profile.profile_id, 0) + 1
+        add(profile, quantity, row_id=f"{profile.profile_id}#{occurrences[profile.profile_id]}")
+    # Bandas que declaran todos sus héroes opcionales: el borrador necesita al
+    # menos un héroe, así que se añade el héroe legal más barato disponible.
+    if not any(row.kind == "hero" for row in rows):
+        hero_candidates = [
+            profile for profile in profiles.values()
+            if profile.kind == "hero" and not profile.random_characteristics
+            and profile.member_maximum not in (None, 0) and profile.member_maximum > 0
+        ]
+        for profile in sorted(hero_candidates, key=lambda profile: (profile.cost, profile.name)):
+            if profile.cost > rules.starting_gold - sum(row.cost * row.quantity for row in rows):
+                continue
+            occurrences[profile.profile_id] = occurrences.get(profile.profile_id, 0) + 1
+            add(profile, 1, row_id=f"{profile.profile_id}#{occurrences[profile.profile_id]}")
+            break
+    return rows
+
+
+def make_draft_state(
+    port: KnowledgePort,
+    band_id: str,
+    *,
+    collection: str | None = None,
+    campaign_name: str = "New Mordheim Campaign",
+) -> AppState:
+    """Estado de borrador nuevo: identidad, límites y roster inicial canónicos."""
+    package = port.find_package(band_id, collection)
+    option = port.warband(package.collection, band_id)
+    campaign = _draft_campaign(port, option, campaign_name=campaign_name, warriors=_starter_warriors(port, option))
     return AppState(campaign=campaign, selected_moment="draft:0", draft_warrior_tab="hero")
 
 
-def make_demo_state() -> AppState:
+def make_example_state(port: KnowledgePort) -> AppState:
+    """Ejemplo navegable del prototipo construido sobre perfiles canónicos.
+
+    La composición (perfiles, estadísticas, costes, acceso y reglas inherentes)
+    proviene de la KB. Los números de batallas/estados posteriores son narrativa
+    de ejemplo: ese estado mutable pertenece al modelo de campaña, no a la KB.
+    """
+    sisters = port.find_package("sisters-of-sigmar")
+    option = port.warband(sisters.collection, str(sisters.band["id"]))
+
+    def hero(profile_id: str, name: str, *, experience: int, previous: int | None = None,
+             equipment: list[str] | None = None, extra_skills: list[str] | None = None,
+             condition: str | None = None, condition_detail: str | None = None,
+             modifiers: dict[str, int] | None = None, row_id: str | None = None) -> WarriorVM:
+        profile = port.profile(option.collection, option.band_id, profile_id)
+        return warrior_vm(
+            profile, row_id=row_id or f"{profile_id}:1", name=name, experience=experience,
+            previous_experience=previous, equipment=[port.item_name(item) or item for item in equipment or []],
+            extra_skills=extra_skills or [], condition=condition, condition_detail=condition_detail,
+            stat_modifiers=modifiers or {},
+        )
+
+    def group(profile_id: str, *, quantity: int, experience: int, equipment: list[str], row_id: str) -> WarriorVM:
+        profile = port.profile(option.collection, option.band_id, profile_id)
+        return warrior_vm(
+            profile, row_id=row_id, quantity=quantity, experience=experience,
+            equipment=[port.item_name(item) or item for item in equipment],
+        )
+
     warriors = [
-        WarriorVM(
-            id="matriarch", name="Mother Superior", profile_name="Matriarch", kind="hero",
-            stats=_stats((4, 4, 4, 3, 3, 1, 4, 1, 8)),
-            equipment=["Sigmarite Warhammer", "Light Armour", "Hand Weapon", "Rosary"],
-            skills=["Strike to Injure", "Expert Swordsman", "Leader", "Prayers of Sigmar"],
-            skill_access=["Combat", "Academic", "Strength", "Special"],
-            experience=23, cost=70,
-        ),
-        WarriorVM(
-            id="anna", name="Sister Superior Anna", profile_name="Sister Superior", kind="hero",
-            stats=_stats((4, 4, 3, 3, 3, 1, 4, 1, 8)),
-            equipment=["Sigmarite Hammer", "Light Armour", "Shield"],
-            skills=["Step Aside", "Mighty Blow", "Faith"], skill_access=["Combat", "Strength"],
-            experience=19, cost=35,
-        ),
-        WarriorVM(
-            id="marta", name="Sister Superior Marta", profile_name="Sister Superior", kind="hero",
-            stats=_stats((3, 4, 3, 3, 3, 1, 4, 1, 8)),
-            equipment=["Crossbow", "Light Armour", "Dagger"],
-            skills=["Marksman", "Dodge", "Prayer of Healing"], skill_access=["Shooting", "Speed"],
-            experience=13, condition="Injured", condition_detail="Leg Wound (M -1)", cost=35,
-        ),
-        WarriorVM(
-            id="veriet", name="Sister Veriet", profile_name="Augur", kind="hero",
-            stats=_stats((4, 3, 3, 3, 3, 1, 4, 1, 7)),
-            equipment=["Sword", "Light Armour"], skills=["Dodge", "Faith"], skill_access=["Speed", "Special"], experience=10, cost=25,
-        ),
-        WarriorVM(
-            id="sisters", name="Sigmarite Sisters", profile_name="Sigmarite Sister", kind="henchman",
-            stats=_stats((4, 3, 3, 3, 3, 1, 3, 1, 7)),
-            equipment=["Hammer", "Buckler"], skills=[], experience=6, quantity=2, cost=25,
-        ),
-        WarriorVM(
-            id="novices", name="Novices", profile_name="Novices", kind="henchman",
-            stats=_stats((4, 2, 2, 3, 3, 1, 3, 1, 6)),
-            equipment=["Hammer", "Dagger"], skills=[], experience=4, quantity=2, cost=15,
-        ),
+        hero("sigmarite-matriarch", "Mother Superior", row_id="matriarch", experience=23, previous=20,
+             equipment=["sigmarite_hammer", "light_armour"],
+             extra_skills=["Strike to Injure", "Expert Swordsman"]),
+        hero("sister-superior", "Sister Superior Anna", row_id="anna", experience=19, previous=17,
+             equipment=["sigmarite_hammer", "shield", "light_armour"],
+             extra_skills=["Step Aside", "Mighty Blow"]),
+        hero("sister-superior", "Sister Superior Marta", row_id="marta", experience=13, previous=12,
+             equipment=["dagger", "buckler", "light_armour"],
+             extra_skills=["Dodge"], condition="Injured", condition_detail="Leg Wound (M -1)",
+             modifiers={"M": -1}),
+        hero("augur", "Sister Veriet", row_id="veriet", experience=10, previous=8,
+             equipment=["hammer", "dagger"], extra_skills=["Dodge", "Faith"]),
+        group("sigmarite-sister", row_id="sisters", quantity=2, experience=6, equipment=["hammer", "buckler"]),
+        group("novices", row_id="novices", quantity=2, experience=4, equipment=["hammer", "dagger"]),
     ]
 
     battles = [
@@ -337,22 +388,21 @@ def make_demo_state() -> AppState:
     ]
 
     inventory = [
-        InventoryItemVM("sigmarite-warhammer", "Sigmarite Warhammer", "Weapon", 1, 1, 0, 15, "Rare"),
-        InventoryItemVM("hammer", "Hammer", "Weapon", 5, 4, 1, 3),
-        InventoryItemVM("sword", "Sword", "Weapon", 3, 2, 1, 10),
-        InventoryItemVM("crossbow", "Crossbow", "Weapon", 2, 1, 1, 25),
-        InventoryItemVM("light-armour", "Light Armour", "Armour", 4, 3, 1, 20),
-        InventoryItemVM("shield", "Shield", "Armour", 2, 1, 1, 5),
-        InventoryItemVM("rope-hook", "Rope & Hook", "Misc", 2, 1, 1, 5),
-        InventoryItemVM("lucky-charm", "Lucky Charm", "Misc", 2, 1, 1, 10),
-        InventoryItemVM("healing-herbs", "Healing Herbs", "Consumable", 4, 0, 4, 8),
-        InventoryItemVM("holy-relic", "Holy Relic", "Misc", 1, 0, 1, 15, "Rare"),
+        InventoryItemVM("sigmarite_hammer", "Sigmarite Hammer", "Weapon", 2, 2, 0, 15, "Rare"),
+        InventoryItemVM("hammer", "Hammer", "Weapon", 5, 5, 0, 3),
+        InventoryItemVM("dagger", "Dagger", "Weapon", 4, 3, 1, 2),
+        InventoryItemVM("buckler", "Buckler", "Armour", 3, 3, 0, 5),
+        InventoryItemVM("light_armour", "Light Armour", "Armour", 3, 3, 0, 20),
+        InventoryItemVM("shield", "Shield", "Armour", 1, 1, 0, 5),
+        InventoryItemVM("lucky_charm", "Lucky Charm", "Misc", 1, 0, 1, 10),
+        InventoryItemVM("healing_herbs", "Healing Herbs", "Consumable", 3, 0, 3, 8),
+        InventoryItemVM("holy_relic", "Holy Relic", "Misc", 1, 0, 1, 15, "Rare"),
     ]
 
     campaign = CampaignVM(
         campaign_name="The Sisters of Morr",
         warband_name="My Sisters of Sigmar Warband",
-        warband_type="Sisters of Sigmar",
+        warband_type=option.name,
         started="14 Jul 2026",
         current_state_number=7,
         warriors=warriors,
@@ -360,7 +410,49 @@ def make_demo_state() -> AppState:
         states=states,
         post_battles=post_battles,
         inventory=inventory,
-        stash_value=118,
+        stash_value=54,
         rare_finds=2,
+        collection=option.collection,
+        band_id=option.band_id,
     )
     return AppState(campaign=campaign, selected_moment="state:7")
+
+
+def warrior_vm(
+    profile: WarbandProfile,
+    *,
+    row_id: str | None = None,
+    name: str | None = None,
+    quantity: int = 1,
+    experience: int | None = None,
+    previous_experience: int | None = None,
+    equipment: list[str] | None = None,
+    extra_skills: list[str] | None = None,
+    condition: str | None = None,
+    condition_detail: str | None = None,
+    stat_modifiers: dict[str, int] | None = None,
+) -> WarriorVM:
+    """Convierte un perfil canónico en el view-model de guerrero usado por la GUI.
+
+    ``equipment`` recibe ya nombres canónicos de catálogo (no IDs); ``skills``
+    combina las reglas inherentes del perfil con habilidades ganadas en juego.
+    """
+    return WarriorVM(
+        id=row_id or f"{profile.profile_id}#1",
+        name=name or profile.name,
+        profile_name=profile.name,
+        kind=profile.kind,
+        stats={**profile.characteristics, **(stat_modifiers or {})},
+        equipment=list(profile.fixed_equipment if equipment is None else equipment),
+        skills=list(profile.inherent_rules) + list(extra_skills or []),
+        experience=profile.experience if experience is None else experience,
+        previous_experience=previous_experience,
+        quantity=quantity,
+        condition=condition,
+        condition_detail=condition_detail,
+        cost=profile.cost,
+        equipment_cost=0,
+        stat_modifiers=dict(stat_modifiers or {}),
+        skill_access=list(profile.skill_tables),
+        profile_id=profile.profile_id,
+    )

@@ -8,9 +8,13 @@ src/
 ├── mordheim_core/        # future domain + KB-facing ports
 ├── mordheim_ui/          # reusable theme and generic Mordheim widgets
 └── mordheim_campaign/
-    ├── application/      # UI-facing state + thin controller
+    ├── application/
+    │   ├── knowledge_port.py   # KB read model (mordheim_knowledge loaders)
+    │   ├── controller.py       # UI-facing actions + draft editing
+    │   └── state.py            # view models + canonical builders
+    ├── persistence/campaigns.py  # .mordheim JSON save/load + Markdown export
     └── ui/
-        ├── dialogs/      # NewCampaignDialog
+        ├── dialogs/      # NewCampaignDialog, AddWarriorDialog
         ├── components/   # dice resolution + sequential workflow UI
         ├── panels/       # timeline, inventory, shared cards
         └── views/
@@ -20,6 +24,17 @@ src/
                 ├── battle_moment.py
                 └── post_battle_moment.py
 ```
+
+Layer rule (executable in `tests/architecture/test_boundaries.py`):
+
+```text
+KB YAML → mordheim_knowledge.loader → application.knowledge_port → AppController → ui
+                                                                    ↕ persistence
+```
+
+`ui` never imports the KB loaders or YAML. `application` and `persistence` never
+import Tkinter. Campaign files reference stable KB IDs only; the rules never leave
+the KB.
 
 ## Central timeline model
 
@@ -51,12 +66,19 @@ job is to configure the roster. Density is still controlled by one rule:
 Therefore +/- characteristic buttons, equipment checkboxes and other editing
 controls do not live permanently on the roster cards.
 
-## Future real implementation
+## Real implementation status
 
-The next implementation layer should replace demo `CampaignVM` / `WarriorVM` data
-with application use-cases that read from the shared Mordheim KB and persist user
-campaign state. Tk widgets should continue to depend only on UI-facing models and
-controller actions, not on `KnowledgeRepository` directly.
+`KnowledgePort` (application) now provides the KB read model used to replace the old
+demo warband/profile data: canonical band picker, profile DTOs with roster limits,
+canonical item names and inherent rules. Draft rosters are derived from the KB and
+edited through controller actions that enforce per-profile/group/model/gold limits.
+`mordheim_campaign/persistence` saves and loads `.mordheim` JSON files (marker +
+format version) and exports Markdown summaries; the payload references stable KB IDs
+(`band_id`, `profile_id`, `item_id`) and never serializes rules.
+
+Still future: rule validation and resolution of post-battle steps, and per-warrior
+equipment/skill editors. They should continue to depend only on UI-facing models and
+controller actions, not on `KnowledgePort` or storage directly.
 
 ## Post-Battle interaction boundary
 

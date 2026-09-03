@@ -5,6 +5,7 @@ from tkinter import messagebox, ttk
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.application.state import STAT_KEYS, WarriorVM
+from mordheim_campaign.ui.dialogs import AddWarriorDialog
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import BorderedFrame, ExperienceTrack, ScrollableFrame, SegmentedTabs, SummaryStrip
 
@@ -66,8 +67,11 @@ class InitialWarbandDraftMoment(tk.Frame):
             self.controller.set_draft_warrior_tab,
         ).pack(side="left")
         action = "+ ADD HERO" if tab == "hero" else "+ ADD HENCHMAN GROUP"
-        ttk.Button(frame, text=action, style="Accent.TButton", command=self._placeholder).pack(side="right")
+        ttk.Button(frame, text=action, style="Accent.TButton", command=self._open_add_warrior).pack(side="right")
         return frame
+
+    def _open_add_warrior(self) -> None:
+        AddWarriorDialog(self, self.controller, kind=self.controller.state.draft_warrior_tab)
 
     def _build_roster(self) -> tk.Frame:
         frame = tk.Frame(self, bg=COLORS["bg"])
@@ -84,11 +88,17 @@ class InitialWarbandDraftMoment(tk.Frame):
             body.configure(height=230)
             body.pack_propagate(False)
             label = "No heroes yet" if kind == "hero" else "No henchman groups yet"
-            tk.Label(body, text=label, bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 13)).pack(pady=(68, 6))
-            tk.Label(body, text="Use the action above to add the first entry.", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9)).pack()
+            tk.Label(body, text=label, bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 13)).pack(pady=(58, 6))
+            tk.Label(body, text="Pick a canonical profile from the warband roster to begin.", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9)).pack()
+            ttk.Button(
+                body,
+                text=("+ ADD FIRST HERO" if kind == "hero" else "+ ADD FIRST GROUP"),
+                style="Accent.TButton",
+                command=self._open_add_warrior,
+            ).pack(pady=(12, 0))
             return frame
         for warrior in warriors:
-            DraftWarriorCard(scroll.inner, warrior, on_edit=self._placeholder, on_more=self._placeholder).pack(fill="x", pady=(0, 8))
+            DraftWarriorCard(scroll.inner, warrior, on_edit=self._placeholder, on_more=self._warrior_menu(warrior)).pack(fill="x", pady=(0, 8))
         return frame
 
     def _build_footer(self) -> tk.Frame:
@@ -130,8 +140,42 @@ class InitialWarbandDraftMoment(tk.Frame):
             start.state(["disabled"])
         return outer
 
+    def _warrior_menu(self, warrior: WarriorVM):
+        """Menu contextual de fila: tamaño de grupo y eliminación del borrador."""
+
+        def popup() -> None:
+            menu = tk.Menu(
+                self,
+                tearoff=False,
+                bg=COLORS["panel"],
+                fg=COLORS["text"],
+                activebackground=COLORS["panel_soft"],
+                activeforeground=COLORS["text"],
+            )
+            if warrior.kind == "henchman":
+                menu.add_command(label="+ 1 member", command=lambda: self._adjust_group(warrior, 1))
+                menu.add_command(label="− 1 member", command=lambda: self._adjust_group(warrior, -1))
+                menu.add_separator()
+            menu.add_command(label="Remove from draft", command=lambda: self._remove_warrior(warrior))
+            try:
+                menu.tk_popup(self.winfo_pointerx(), self.winfo_pointery())
+            finally:
+                menu.grab_release()
+
+        return popup
+
+    def _adjust_group(self, warrior: WarriorVM, delta: int) -> None:
+        ok, message = self.controller.adjust_draft_group(warrior.id, delta)
+        if not ok:
+            messagebox.showerror("Cannot resize group", message, parent=self)
+
+    def _remove_warrior(self, warrior: WarriorVM) -> None:
+        ok, message = self.controller.remove_draft_warrior(warrior.id)
+        if not ok:
+            messagebox.showerror("Cannot remove warrior", message, parent=self)
+
     def _placeholder(self) -> None:
-        messagebox.showinfo("Prototype", "This editor action is intentionally visual-only in the construction prototype.", parent=self)
+        messagebox.showinfo("Prototype", "Per-warrior equipment and skill editing arrives with the campaign rules engine.", parent=self)
 
 
 class DraftWarriorCard(tk.Frame):
