@@ -19,12 +19,13 @@ Application-specific documents:
 
 ## Central command line
 
-Every command in these guides can be run through the single entry point
-`mordheim-utils` (or `python -m mordheim_utils`): `mordheim-utils --help`
-lists everything and `mordheim-utils <command> --help` gives the detailed
-arguments of one command. The lab commands (`verify`, `parity`, `benchmark`,
-`audit`, `test-report`, `validate`) behave exactly like the Combat Lab CLI; the
-test suites are reached with `mordheim-utils tests --scope <area>`.
+Every command in these guides can be run through the single launcher script
+`tools/mordheim-utils.py` (no installation needed): `python
+tools/mordheim-utils.py --help` lists everything and `<command> --help` shows
+the detailed arguments of the delegated command. The lab commands (`verify`,
+`parity`, `benchmark`, `audit`, `test-report`, `validate`) behave exactly
+like the Combat Lab CLI; the test suites are reached with `python
+tools/mordheim-utils.py tests --scope <area>`.
 
 Semantic expectations are reviewed against the written sources, never against
 historical engine output.

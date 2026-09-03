@@ -47,7 +47,6 @@ depended on from above and know nothing about the KB or the engines.
 | `mordheim_construction` | Turns canonical ids and legal choices into `CompiledFighter`; enforces every restriction, prohibition, promotion and skill access. | `compiler.py`, `restrictions.py`, `selection.py`, `contracts.py` |
 | `mordheim_combat` | Phases and the three engines. Consumes `CompiledFighter`; never loads the KB. | `phases.py`, `modular/`, `vectorized/`, `native/`, `vector_dice.py` |
 | `mordheim_ui` | Shared Tkinter theme, colour tokens and generic widgets reused by both applications. | `lab_theme.py`, widgets |
-| `mordheim_utils` | Central CLI: both applications and every utility under one command, with two-level help. Lab commands delegate to the Combat Lab parsers verbatim. | `cli.py` |
 
 ### `mordheim_combat` in detail
 
@@ -109,22 +108,25 @@ Layer rule (executable in `tests/architecture/test_boundaries.py`):
 `ui` never imports the KB loaders or YAML; `application` and `persistence`
 never import Tkinter.
 
-## Central CLI (`mordheim_utils`)
+## Central CLI (`tools/mordheim-utils.py`)
 
-`mordheim-utils` (or `python -m mordheim_utils`) is the single entry point for
-the whole project: the two graphical applications and every utility. `--help`
-lists every command; `<command> --help` opens the second level of detail.
+`tools/mordheim-utils.py` is the single launcher for the whole project — a
+plain script, nothing is installed, so a source checkout is enough. `--help`
+lists every command; a delegated command keeps its own parser, so
+`<command> --help` shows the real detailed arguments. Each command simply runs
+the matching module or script from the repository root:
 
-- `combat-lab`, `warband-manager` — launch the two graphical applications.
+- `combat-lab`, `warband-manager` — launch the two graphical applications
+  (`python -m mordheim_combat_lab ui`, `python -m mordheim_campaign`).
 - `benchmark`, `parity`, `test-report`, `verify`, `audit`, `validate` —
-  delegated verbatim to the Combat Lab parsers, so help text and behaviour
-  never drift from `mordheim-combat-lab <command>`.
+  forwarded verbatim to the Combat Lab CLI (`python -m mordheim_combat_lab
+  <command>`), so help text and behaviour never drift.
 - `tests --scope <area>` — pytest with named areas (`all`, `engines`,
   `modular`, `vectorized`, `native`, `campaign`, `knowledge`, `verification`,
   `construction`, `ui`, `cli`, `architecture`); any unknown flag is forwarded
   to pytest (`-q`, `-k`, `-x`, …).
-- `combine-kb`, `build-native` — wrappers over `tools/kb/combine_kb_yaml.py`
-  and the editable native rebuild.
+- `combine-kb`, `build-native` — run `tools/kb/combine_kb_yaml.py` and the
+  editable native rebuild.
 - `doctor` — reports the environment, installed engines and KB location.
 
 ## Tests and verification corpus
@@ -152,8 +154,8 @@ tests/
 
 ## Tooling and outputs
 
-- `mordheim-utils` — the central CLI (see above); the underlying scripts remain
-  callable directly.
+- `tools/mordheim-utils.py` — the central launcher (see above); the
+  underlying modules and scripts remain callable directly.
 - `tools/kb/combine_kb_yaml.py` — combines each KB directory into single text
   files (e.g. to feed an editor or a review pass).
 - `tools/windows/*.bat` + `.iss` — PyInstaller/Inno Setup packaging for the two

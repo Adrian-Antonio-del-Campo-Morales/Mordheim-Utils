@@ -1,1 +1,0 @@
-"""Central command line and entry points for the Mordheim Utils project."""
