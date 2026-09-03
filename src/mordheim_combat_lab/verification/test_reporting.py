@@ -143,8 +143,20 @@ def semantic_report_rows(*, statistical: bool = False, simulations: int = 100_00
                 base["numpy_detail"] = item.detail
                 if item.status == "PASS":
                     base["numpy_result"] = base["modular_result"]
-                base["native_status"] = "PENDING_ADAPTER" if native_available else "NOT_AVAILABLE"
-                if not native_available:
+                if native_available:
+                    # Per-operator cases certify each engine's operator
+                    # semantics.  The native backend is a duel-level engine
+                    # without independent per-operator entry points: its C
+                    # loop is certified on the duel-level (statistical) rows
+                    # and reuses the operator semantics verified above.
+                    base["native_status"] = "NOT_APPLICABLE"
+                    base["native_detail"] = (
+                        "native is a duel-level engine; per-operator cases are "
+                        "covered by the numpy adapter, duel-level rows by the "
+                        "statistical comparison"
+                    )
+                else:
+                    base["native_status"] = "NOT_AVAILABLE"
                     base["native_detail"] = "native combat backend is not available"
             base["passes"] = _overall(
                 str(base["shared_status"]), str(base["modular_status"]),
@@ -160,14 +172,46 @@ def semantic_report_rows(*, statistical: bool = False, simulations: int = 100_00
 
     if statistical:
         for scenario in benchmark_scenarios():
-            result = compare_statistical_parity(
-                scenario.id, compile_fighter(scenario.first), compile_fighter(scenario.second),
-                simulations, seed=seed, maximum_rounds=scenario.maximum_rounds,
+            from mordheim_combat.modular.duel import simulate_duel_reference
+
+            first, second = compile_fighter(scenario.first), compile_fighter(scenario.second)
+            modular_result = simulate_duel_reference(
+                first, second, simulations, seed=seed,
+                maximum_rounds=scenario.maximum_rounds,
             )
-            modular = {"rates_w_l_u": result.modular_rates, "simulations": simulations}
-            numpy = {"rates_w_l_u": result.vectorized_rates, "tolerances": result.tolerances,
+            numpy_result = compare_statistical_parity(
+                scenario.id, first, second, simulations, seed=seed,
+                maximum_rounds=scenario.maximum_rounds, backend="numpy",
+                modular=modular_result,
+            )
+            modular = {"rates_w_l_u": numpy_result.modular_rates, "simulations": simulations}
+            numpy = {"rates_w_l_u": numpy_result.vectorized_rates, "tolerances": numpy_result.tolerances,
                      "simulations": simulations}
-            native_status = "PENDING_ADAPTER" if native_available else "NOT_AVAILABLE"
+            native = {}
+            native_status = "NOT_AVAILABLE"
+            native_detail = "native combat backend is not available"
+            if native_available:
+                try:
+                    native_result = compare_statistical_parity(
+                        scenario.id, first, second, simulations, seed=seed,
+                        maximum_rounds=scenario.maximum_rounds, backend="native",
+                        modular=modular_result,
+                    )
+                except Exception as error:
+                    native_status = "FAIL"
+                    native_detail = str(error)
+                else:
+                    native_status = "PASS" if native_result.passed else "FAIL"
+                    native = {
+                        "rates_w_l_u": native_result.vectorized_rates,
+                        "tolerances": native_result.tolerances, "simulations": simulations,
+                    }
+                    native_detail = ""
+            numpy_passed = numpy_result.passed
+            native_passed = not native_available or native_status == "PASS"
+            passes = "PASS" if numpy_passed and native_passed else "FAIL"
+            if not native_available and numpy_passed:
+                passes = "PENDING"
             rows.append({
                 "test_id": f"statistical/{scenario.id}", "specification": "statistical",
                 "case": scenario.id, "category": "statistical", "operation": "duel",
@@ -177,11 +221,11 @@ def semantic_report_rows(*, statistical: bool = False, simulations: int = 100_00
                 "expected": _json({"minimum_tolerance": 0.0025}), "rng_mode": "statistical",
                 "shared_status": "NOT_APPLICABLE", "shared_result": "", "shared_detail": "",
                 "modular_status": "PASS", "modular_result": _json(modular), "modular_detail": "",
-                "numpy_status": "PASS" if result.passed else "FAIL", "numpy_result": _json(numpy), "numpy_detail": "",
-                "native_status": native_status, "native_result": "",
-                "native_detail": "" if native_available else "native combat backend is not available",
-                "passes": "PENDING" if result.passed else "FAIL",
-                "details": "" if native_available else "native: native combat backend is not available",
+                "numpy_status": "PASS" if numpy_passed else "FAIL", "numpy_result": _json(numpy), "numpy_detail": "",
+                "native_status": native_status, "native_result": _json(native) if native else "",
+                "native_detail": native_detail,
+                "passes": passes,
+                "details": "" if not native_detail else f"native: {native_detail}",
             })
     return rows
 

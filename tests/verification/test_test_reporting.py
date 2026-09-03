@@ -23,7 +23,17 @@ def test_semantic_csv_inventory_is_human_readable_and_complete():
     assert any(row["numpy_status"] == "PASS" for row in rows)
     assert not any(row["numpy_status"] == "PENDING_ADAPTER" for row in rows)
     assert any(row["numpy_status"] == "PENDING_SEMANTIC" for row in rows)
-    assert any(row["native_status"] == "NOT_AVAILABLE" for row in rows)
+    from mordheim_combat.vectorized import available_backends
+
+    native_present = "native" in available_backends()
+    if native_present:
+        # Per-operator rows are not applicable to a duel-level engine; its
+        # certification appears on the duel-level (statistical) rows.
+        assert any(row["native_status"] == "NOT_APPLICABLE" for row in rows)
+        assert not any(row["native_status"] == "NOT_AVAILABLE" for row in rows)
+        assert not any(row["native_status"] == "PENDING_ADAPTER" for row in rows)
+    else:
+        assert any(row["native_status"] == "NOT_AVAILABLE" for row in rows)
 
 
 def test_csv_uses_excel_friendly_bom_semicolons_and_unicode(tmp_path):

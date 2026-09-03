@@ -294,14 +294,31 @@ def parity_command(args) -> int:
     specification_report = verify_specification_parity()
     statistical = ()
     if args.statistical:
-        statistical = tuple(
-            compare_statistical_parity(
-                scenario.id, compile_fighter(scenario.first), compile_fighter(scenario.second),
-                args.statistical_simulations, seed=args.seed,
+        from mordheim_combat.vectorized import available_backends
+        from mordheim_combat.modular.duel import simulate_duel_reference
+
+        installed = available_backends()
+        samples: list = []
+        for scenario in benchmark_scenarios():
+            first, second = (
+                compile_fighter(scenario.first), compile_fighter(scenario.second),
+            )
+            # One modular oracle sample certifies every optimized candidate;
+            # `backend` records which engine produced each comparison.
+            modular = simulate_duel_reference(
+                first, second, args.statistical_simulations, seed=args.seed,
                 maximum_rounds=scenario.maximum_rounds,
             )
-            for scenario in benchmark_scenarios()
-        )
+            samples.append(compare_statistical_parity(
+                scenario.id, first, second, args.statistical_simulations, seed=args.seed,
+                maximum_rounds=scenario.maximum_rounds, modular=modular, backend="numpy",
+            ))
+            if "native" in installed:
+                samples.append(compare_statistical_parity(
+                    scenario.id, first, second, args.statistical_simulations, seed=args.seed,
+                    maximum_rounds=scenario.maximum_rounds, modular=modular, backend="native",
+                ))
+        statistical = tuple(samples)
     complete = (
         report.complete and specification_report.complete
         and all(item.passed for item in statistical)
@@ -339,7 +356,7 @@ def parity_command(args) -> int:
             print(f"SPEC DIVERGENCE: {divergence}")
         for item in statistical:
             print(
-                f"STATISTICAL: {item.scenario} "
+                f"STATISTICAL: {item.scenario}/{item.backend} "
                 f"{'PASS' if item.passed else 'FAIL'} ({item.simulations:,} duels/engine)"
             )
         if args.output:
