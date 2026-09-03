@@ -1,4 +1,4 @@
-"""external.test_free_selection: responsabilidad extraída sin alterar las reglas."""
+"""external.test_free_selection: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from mordheim_combat_lab.application.catalogue import CombatCatalogue

@@ -7,7 +7,7 @@ specifications:
   - {target: mechanic/weapon.spear, digest: 0dd3155ca6aa1f4c3d639010264934f906d8ef6a60acb55cf040847674d37820}
   - {target: mechanic/weapon.pike, digest: a94e427053bdfd430879d26c56a0cc3e2913092c497a3ff126fa8cc6f0869881}
   - {target: mechanic/weapon.ankus, digest: 2cd0c699b9a8aacdf6cbc1e035b91fd192436b34b701fe080bfbb30360d1af26}
-  interpretation: Spear, Pike y Ankus ocupan el estrato de atacar primero. Pike usa dos manos sin modificar Fuerza; Ankus conserva además Concussion.
+  interpretation: "Spear, Pike and Ankus occupy the strike-first layer. Pike uses two hands without modifying Strength; Ankus additionally keeps Concussion."
   cases:
   - id: spear-compiled
     roles: [compiled]
@@ -53,7 +53,7 @@ specifications:
   sources:
   - {target: mechanic/weapon.elven-greatsword, digest: 86b2cb7a3eb1685d9c3ef731d02518296209304e232f5c3f62743b3d9738ee9b}
   - {target: mechanic/weapon.great-scimitar, digest: 12d78624c23d31ccd7e4a69f79454831ed8d5012fb870a31a97cbdab0a65d7c0}
-  interpretation: Ambas armas usan dos manos, suman dos a Fuerza y atacan últimas. El Elven Greatsword permite parar; el Great Scimitar aporta un punto adicional de penetración.
+  interpretation: "Both weapons use two hands, add two to Strength and strike last. The Elven Greatsword allows parrying; the Great Scimitar contributes one extra penetration point."
   cases:
   - id: elven-strength
     roles: [compiled, active, consumer]
@@ -103,7 +103,7 @@ specifications:
   - {target: mechanic/weapon.scythe, digest: 45ca20e90fe68073db8d1787f6dbb931b15579596864e9f212cdeae1af18cb17}
   - {target: mechanic/weapon.scimitar, digest: fe8af663b22a8712af86466fff221e3ad4b1082fe28c5e0cfb5f5201796affbd}
   - {target: mechanic/weapon.bagh-nakh, digest: 70cda067f0c2a7fb2358355ae0befd1d968638d0217bdf3683371667911101d6}
-  interpretation: Las tres armas añaden un punto de penetración. Scythe usa dos manos, Scimitar permite parar y Bagh Nakh es emparejada y suma uno a Fuerza.
+  interpretation: "The three weapons add one penetration point. Scythe uses two hands, Scimitar allows parrying and Bagh Nakh is paired and adds one to Strength."
   cases:
   - id: scythe-armour
     roles: [compiled, active, consumer, boundary]
@@ -153,7 +153,7 @@ specifications:
   category: local
   sources:
   - {target: mechanic/weapon.sword-breaker, digest: c7d7fb2893b5660c18ab794fc203cefbb07f72cb0c36990edd5613af79914168}
-  interpretation: Sword Breaker concede una parada ordinaria; debe superar la tirada para impactar y no puede parar un 6 natural.
+  interpretation: "Sword Breaker grants an ordinary parry; it must beat the to-hit roll and cannot parry a natural 6."
   cases:
   - id: compiled
     roles: [compiled]
@@ -188,7 +188,7 @@ specifications:
   category: contextual
   sources:
   - {target: mechanic/weapon.morning-star, digest: c2058c4f463f8f3234e344473b1dccc83b9f2ffc9db025321f90469c7e33971d}
-  interpretation: Morning Star suma uno a Fuerza únicamente durante la primera ronda y no admite otra arma en la mano secundaria.
+  interpretation: "Morning Star adds one to Strength only during the first round and accepts no other weapon in the off hand."
   cases:
   - id: compiled
     roles: [compiled]

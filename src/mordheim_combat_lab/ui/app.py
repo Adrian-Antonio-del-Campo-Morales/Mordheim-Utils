@@ -1,4 +1,4 @@
-"""ui.app: responsabilidad extraída sin alterar las reglas."""
+"""ui.app: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from mordheim_combat_lab.application.catalogue import CombatCatalogue

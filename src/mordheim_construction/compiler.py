@@ -1,4 +1,4 @@
-"""construction.compiler: responsabilidad extraída sin alterar las reglas."""
+"""construction.compiler: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from dataclasses import fields

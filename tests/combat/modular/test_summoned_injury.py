@@ -1,4 +1,4 @@
-"""La criatura invocada conserva sus heridas antes de desaparecer."""
+"""The summoned creature keeps its wounds before disappearing."""
 from mordheim_combat.modular.attacks import resolve_reference_attack
 from mordheim_combat.modular.state import initialize_fighter
 from mordheim_combat.phases import Condition

@@ -1,9 +1,11 @@
-# Diagnosticar un fallo
+# Diagnose a failure
 
-1. Reduzca el problema a compilación, fase, mini-secuencia o integración.
-2. Reproduzca con dados y decisiones explícitos.
-3. Inspeccione binding, valor compilado, contexto, resolver y transferencia de estado.
-4. Compare con la fuente escrita, no con el vectorizado.
-5. Corrija la responsabilidad propietaria y añada una regresión.
+1. Reduce the problem to compilation, phase, mini-sequence or integration.
+2. Reproduce with explicit dice and decisions.
+3. Inspect the binding, the compiled value, the context, the resolver and the
+   state transfer.
+4. Compare against the written source, not the vectorized engine.
+5. Fix the owning responsibility and add a regression.
 
-Terminado cuando la reproducción falla antes, pasa después y expresa la causa del defecto.
+Done when the reproduction fails before, passes after, and expresses the cause
+of the defect.

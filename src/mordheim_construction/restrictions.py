@@ -1,4 +1,4 @@
-"""construction.restrictions: responsabilidad extraída sin alterar las reglas."""
+"""construction.restrictions: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from mordheim_construction.contracts import BLACKPOWDER_WEAPONS
@@ -11,7 +11,7 @@ from mordheim_knowledge.loader import load_skills
 
 
 def _validate_bound_equipment_restrictions(build, main_weapon_id, profile_bindings):
-    """Aplica prohibiciones explícitas independientemente de la lista de acceso."""
+    """Apply explicit prohibitions regardless of the access list."""
     forbidden = set()
     for binding in profile_bindings:
         if binding.get("id") != "profile.equipment-restrictions":
@@ -39,7 +39,7 @@ def _validate_bound_equipment_restrictions(build, main_weapon_id, profile_bindin
 
 
 def _validate_category_prohibitions(build, main_weapon_id, compiler_contracts, compiler_bindings):
-    """Prohibiciones explícitas, independientes de las listas de equipo disponibles."""
+    """Explicit prohibitions, independent of the available equipment lists."""
     hands = {main_weapon_id, build.off_hand_id, build.extra_hand_id}
     if "compiler.no-missile-weapons" in compiler_contracts and hands & MISSILE_WEAPONS:
         raise ValueError(f"missile weapons are forbidden for {build.band_id}/{build.profile_id}")
@@ -61,7 +61,7 @@ def _validate_category_prohibitions(build, main_weapon_id, compiler_contracts, c
 
 
 def _validate_required_initial_choices(build, compiler_contracts):
-    """Elecciones obligatorias de la construcción inicial, no historial de campaña."""
+    """Mandatory choices of initial construction, not campaign history."""
     if "compiler.mutant-requires-mutation-at-recruitment" in compiler_contracts:
         if not any(rule_id.startswith("band--mutations-") for rule_id in build.special_rule_ids):
             raise ValueError(f"at least one mutation is required for {build.band_id}/{build.profile_id}")

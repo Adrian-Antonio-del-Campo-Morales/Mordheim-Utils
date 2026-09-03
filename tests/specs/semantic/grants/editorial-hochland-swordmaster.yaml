@@ -1,22 +1,22 @@
 schema_version: 1
 specifications:
 - id: hochland-swordmaster-equality-without-free-reroll
-  question: "¿Swordmaster del Duelist de Hochland concede repetir una parada fallida, además de igualar el impacto?"
+  question: "Does the Duelist of Hochland's Swordmaster grant re-rolling a failed parry in addition to matching the hit?"
   ruling: >-
-    No. Resuelto mediante el texto Hochland Bandits / Duelist / Swordmaster:
-    solo concede igualdad y exige equipo que permita parar. No concede una
-    repetición; espada más rodela conserva su repetición independiente.
+    No. Resolved through the Hochland Bandits / Duelist / Swordmaster text: it only grants the tie and
+    requires equipment that allows parrying. It does not grant a re-roll; sword plus buckler keeps its
+    own independent re-roll.
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
   - {target: mechanic/skill.swordmaster, digest: c9171b826b8af8625da00aa133af5410069199ea9e85f4be9c4a75fc67ab1730}
   - {target: rule/mordheim/hochland-bandits/duelist--swordmaster/skill.swordmaster, digest: 251f4d3aa4b6c197cb9205097c5bb92fed434fcbe6b6f07dc52dbc70ad40e6c4}
   interpretation: >-
-    Hochland Bandits / Duelist / Swordmaster permite igualar la tirada de impacto
-    si el equipo ya permite parar. No concede repeticiones ni paradas adicionales.
-    El resumen canónico remite a esta regla del perfil. Se conserva la prohibición
-    general de parar un seis natural: esta fuente no la exceptúa expresamente.
-    Espada y rodela sí repiten por su propia regla, no por Swordmaster.
+    Hochland Bandits / Duelist / Swordmaster allows matching the to-hit roll when the equipment
+    already allows parrying. It grants no re-rolls or extra parries. The canonical summary refers to
+    this profile rule. The general ban on parrying a natural six is kept: this source does not
+    explicitly exempt it. Sword and buckler do re-roll through their own rule, not through
+    Swordmaster.
   cases:
   - id: recipients
     roles: [grant, compiled]

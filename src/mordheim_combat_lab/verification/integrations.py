@@ -1,4 +1,4 @@
-"""verification.integrations: responsabilidad extraída sin alterar las reglas."""
+"""verification.integrations: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from contextlib import ExitStack

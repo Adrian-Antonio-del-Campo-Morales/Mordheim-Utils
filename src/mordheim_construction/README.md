@@ -1,3 +1,4 @@
 # Construction
 
-Convierte IDs y elecciones legales en `CompiledFighter`. Véase [Implementar comportamiento](../../../docs/tasks/implement-rule.md).
+Converts ids and legal choices into `CompiledFighter`. See
+[Implement behaviour](../../../docs/tasks/implement-rule.md).

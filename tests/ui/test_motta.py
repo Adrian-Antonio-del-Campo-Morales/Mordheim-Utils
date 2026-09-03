@@ -1,4 +1,4 @@
-"""external.test_motta: responsabilidad extraída sin alterar las reglas."""
+"""external.test_motta: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from mordheim_combat_lab.application.motta import motta_score

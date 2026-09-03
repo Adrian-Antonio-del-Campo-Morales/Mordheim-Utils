@@ -1,3 +1,4 @@
 # Domain
 
-Tipos, dados y composición pura. No carga KB, motores, UI ni verificadores. Véase [Arquitectura](../../../docs/architecture.md).
+Types, dice and pure composition. Does not load the KB, engines, UI or
+verifiers. See [Architecture](../../../docs/architecture.md).

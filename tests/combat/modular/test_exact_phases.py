@@ -1,4 +1,4 @@
-"""Enumeración exacta de resoluciones locales."""
+"""Exact enumeration of local resolutions."""
 from __future__ import annotations
 
 from fractions import Fraction

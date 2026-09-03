@@ -1,4 +1,4 @@
-"""verification.operators: responsabilidad extraída sin alterar las reglas."""
+"""verification.operators: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from itertools import product

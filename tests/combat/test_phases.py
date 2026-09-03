@@ -1,4 +1,4 @@
-"""Contratos puros de fases."""
+"""Pure phase contracts."""
 from __future__ import annotations
 
 from dataclasses import replace

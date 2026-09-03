@@ -1,13 +1,21 @@
-# Guías para desarrolladores
+# Developer guides
 
-Empiece por [Arquitectura](architecture.md). Tareas frecuentes:
+Start with the [Project structure](structure.md) and the
+[Architecture](architecture.md). Frequent tasks:
 
-- [Modificar la base de conocimiento](tasks/modify-kb.md)
-- [Implementar comportamiento](tasks/implement-rule.md)
-- [Verificar reglas](tasks/verify-rules.md)
-- [Generar reportes de tests y paridad](tasks/generate-test-reports.md)
-- [Diagnosticar fallos](tasks/diagnose-bug.md)
-- [Modificar la aplicación](tasks/modify-application.md)
-- [Desarrollar y distribuir](tasks/develop-and-release.md)
+- [Modify the knowledge base](tasks/modify-kb.md)
+- [Implement behaviour](tasks/implement-rule.md)
+- [Verify rules](tasks/verify-rules.md)
+- [Generate test and parity reports](tasks/generate-test-reports.md)
+- [Diagnose failures](tasks/diagnose-bug.md)
+- [Modify the application](tasks/modify-application.md)
+- [Develop and distribute](tasks/develop-and-release.md)
 
-Las expectativas semánticas se revisan contra las fuentes escritas, nunca contra la salida histórica del motor.
+Application-specific documents:
+
+- [Mordheim Combat Lab verification corpus](../tests/specs/README.md)
+- [Campaign Manager guide](campaign-manager.md)
+- [Campaign architecture direction](campaign-architecture.md)
+
+Semantic expectations are reviewed against the written sources, never against
+historical engine output.

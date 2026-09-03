@@ -5,7 +5,7 @@ specifications:
   category: stateful
   sources:
   - {target: mechanic/weapon.rapier, digest: d17428d8641474619b5c73c4fa09d5dcafc41b6c33c8b839f48616b0987b5eb1}
-  interpretation: Rapier resta uno a Fuerza, permite una parada y, tras fallar To Wound, concede un único intento adicional con -1 To Hit. Solo se tira la herida extra si ese impacto tiene éxito.
+  interpretation: "Rapier subtracts one from Strength, allows one parry and, after a failed To Wound, grants a single extra attempt at -1 To Hit. The extra wound roll is only made if that hit succeeds."
   cases:
   - id: compiled-strength
     roles: [compiled, active, consumer]
@@ -41,7 +41,7 @@ specifications:
   category: stateful
   sources:
   - {target: mechanic/weapon.cutlass, digest: 1bab536df4175c3938cfcd5acebdc39a4c2e99debcff5f1bd328851c3f8b7a43}
-  interpretation: Una parada exitosa con Cutlass cancela el impacto y desencadena inmediatamente un contraataque normal. Una parada fallida no crea contraataque.
+  interpretation: "A successful parry with Cutlass cancels the hit and immediately triggers a normal riposte. A failed parry creates no riposte."
   cases:
   - id: compiled
     roles: [compiled]
@@ -72,7 +72,7 @@ specifications:
   sources:
   - {target: mechanic/weapon.pistol, digest: fe4825b3dd5d0437a2a7838ff6b8fa22ffb0f5bf375533e3014b30db14486bc7}
   - {target: mechanic/weapon.duelling-pistol, digest: 74dac5d22400cc7d2bee05c3f4d2cf34536660c7bc4b1e91d6a5ddd4f135c23d}
-  interpretation: Cada pistola aporta un ataque de Fuerza 4 y penetración 2 exclusivamente en la primera ronda. La Duelling Pistol añade +1 To Hit a ese ataque.
+  interpretation: "Each pistol contributes a Strength 4 attack with penetration 2 exclusively in the first round. The Duelling Pistol adds +1 To Hit to that attack."
   cases:
   - id: pistol-compiled-strength
     roles: [compiled, active, consumer]
@@ -123,7 +123,7 @@ specifications:
   sources:
   - {target: mechanic/weapon.natural-attacks, digest: a437e6db926d3e94c576689c022f9fe42933bb353bbd5bc92ccdd71e86e2ca7d}
   - {target: mechanic/weapon.fist, digest: 023f168db270d61c348a3e35ae900ff112024a4d1792b1eaa148454c8c10582e}
-  interpretation: Natural Attacks usa perfil y número de ataques sin penalización ni mano secundaria. Fist limita a un ataque, aplica Fuerza -1 y mejora en uno la salvación del objetivo, creando 6+ si no tenía armadura.
+  interpretation: "Natural Attacks uses the profile's Strength and number of attacks without penalty or off hand. Fist limits to one attack, applies Strength -1 and improves the target's save by one, creating 6+ if it had no armour."
   cases:
   - id: natural-profile-strength
     roles: [compiled, active, consumer]
@@ -180,7 +180,7 @@ specifications:
   - {target: mechanic/weapon.brass-knuckles, digest: e1ec976e8778a6eb5ecc424cf1706ed48d631ad64d32ccc63fb7cbb4023ab199}
   - {target: mechanic/weapon.war-maul, digest: 4f8613ba343d61145ddc374ede547f8d2197c41275760a691da4d93fa5d2466d}
   - {target: mechanic/weapon.double-bladed-sword, digest: c14bade074dde7ad8fbe986e5d73178967c53ea35c1a1694f0965af3ae069454}
-  interpretation: Se verifican por separado el fuego 5+ y Fuerza +1 del Brazier, el par emparejado de Brass Knuckles, el paquete pesado e imparable del War Maul y el ataque/parada repetida del Double-bladed Sword.
+  interpretation: "The Brazier's 5+ fire and Strength +1, the paired set of Brass Knuckles, the heavy unparriable package of the War Maul, and the repeated attack/parry of the Double-bladed Sword are verified separately."
   cases:
   - id: brazier-ignites-on-five
     roles: [compiled, active, consumer, sequence, consumption, boundary]

@@ -1,1 +1,1 @@
-"""persistence — API del área."""
+"""persistence — area API."""

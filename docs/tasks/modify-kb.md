@@ -1,9 +1,10 @@
-# Modificar la base de conocimiento
+# Modify the knowledge base
 
-1. Modifique `sources/knowledge/catalog/`, `bands/` o `registry/` conservando IDs estables.
-2. Clasifique cada efecto con scope, implementación, concesión y binding conforme al esquema.
-3. Reutilice mecánicas compartidas; no introduzca nombres editoriales en el bucle de combate.
-4. Ejecute `python -m mordheim_combat_lab validate`.
-5. Si cambia una obligación revisada, revise su escenario y huella.
+1. Modify `sources/knowledge/catalog/`, `bands/` or `registry/` keeping stable ids.
+2. Classify every effect with scope, implementation, granting and binding per the schema.
+3. Reuse shared mechanics; do not introduce editorial names into the combat loop.
+4. Run `python -m mordheim_combat_lab validate`.
+5. If you change a reviewed obligation, review its scenario and footprint.
 
-Terminado cuando compilan los casos legales, se rechazan los ilegales y la evidencia afectada está revisada o explícitamente pendiente.
+Done when legal cases compile, illegal ones are rejected, and the affected
+evidence is reviewed or explicitly pending.

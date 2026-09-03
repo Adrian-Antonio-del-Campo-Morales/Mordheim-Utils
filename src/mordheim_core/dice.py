@@ -1,4 +1,4 @@
-"""domain.dice: responsabilidad extraída sin alterar las reglas."""
+"""domain.dice: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from collections import Counter

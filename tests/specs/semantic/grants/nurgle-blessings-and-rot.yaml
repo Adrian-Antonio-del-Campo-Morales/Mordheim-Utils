@@ -6,9 +6,8 @@ specifications:
   sources:
   - {target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle/mechanic.blessings-of-nurgle, digest: e0e1fae91096cbaf7132bb472a0a4a6b56a1611de9b455e2db47d2b27fd479e5}
   interpretation: >-
-    En el runtime de construcción, únicamente Tainted Ones puede seleccionar una
-    o varias Blessings. Compra posterior y costes crecientes son campaña y están
-    separados explícitamente fuera de scope.
+    In the construction runtime, only Tainted Ones can select one or several Blessings. Later purchase
+    and increasing costs are campaign and explicitly separated outside scope.
   cases:
   - id: one-and-many
     roles: [grant, accepted, rejected]
@@ -41,8 +40,8 @@ specifications:
   sources:
   - {target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-nurgles-rot/trait.poison-immune, digest: 174282b076c9b645cb98b11d9ad6ef8c4415e4b34b00102f51fb037899d64477}
   interpretation: >-
-    En el simulador Nurgle's Rot concede únicamente inmunidad a todos los venenos.
-    Enfermedad, contagio y persistencia son efectos de campaña fuera del scope actual.
+    In the simulator, Nurgle's Rot grants only immunity to all poisons. Disease, contagion and
+    persistence are campaign effects outside the current scope.
   cases:
   - id: recipient
     roles: [grant, compiled]

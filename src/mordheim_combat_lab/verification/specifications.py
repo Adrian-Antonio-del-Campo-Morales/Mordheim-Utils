@@ -1,4 +1,4 @@
-"""verification.specifications: responsabilidad extraída sin alterar las reglas."""
+"""verification.specifications: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from mordheim_knowledge.loader import read_yaml

@@ -1,4 +1,4 @@
-"""ui.editors: responsabilidad extraída sin alterar las reglas."""
+"""ui.editors: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from dataclasses import replace

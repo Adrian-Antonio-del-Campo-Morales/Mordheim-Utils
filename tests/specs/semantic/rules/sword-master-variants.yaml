@@ -6,10 +6,10 @@ specifications:
   sources:
   - {target: mechanic/skill.sword-master, digest: dde5b8f4a5031f6f74f875d3258693f8630a18a241fc3bb6ff8425d7c06d9587}
   interpretation: >-
-    El resumen canónico concede igualdad y una repetición de parada fallida.
-    No concede un arma capaz de parar ni una segunda parada. Las variantes
-    editoriales se comprueban aparte: Master of Blades condiciona la repetición
-    a dos Dwarf Axes; Blood Dragon añade permiso explícito para parar un seis.
+    The canonical summary grants the tie and one re-roll of a failed parry. It grants neither a weapon
+    capable of parrying nor a second parry. The editorial variants are checked separately: Master of
+    Blades conditions the re-roll on two Dwarf Axes; Blood Dragon adds explicit permission to parry a
+    six.
   cases:
   - id: capacity
     roles: [compiled]
@@ -59,21 +59,21 @@ specifications:
   - {id: remove-reroll-keep-equality, path: defender.global_effects.tags, value: [skill.swordmaster], cases: [faces-against-four, faces-against-five]}
   - {id: keep-spent-parry, runtime_fault: retain-parry-capacity, cases: [failed-reroll-spends-capacity]}
 - id: blood-dragon-sword-master-six-and-single-parry
-  question: "¿Sword Master del Blood Dragon puede parar un seis natural pese a la prohibición general?"
+  question: "Can the Blood Dragon's Sword Master parry a natural six despite the general ban?"
   ruling: >-
-    Sí. Resuelto mediante Chaos in the Streets p.182 / Blood Dragon Special
-    Skills / Sword Master: la regla permite expresamente parar un seis.
-    Conserva el máximo de una parada y una repetición del intento fallido.
+    Yes. Resolved through Chaos in the Streets p.182 / Blood Dragon Special Skills / Sword Master: the
+    rule explicitly allows parrying a six. It keeps the maximum of one parry and one re-roll of the
+    failed attempt.
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
   - {target: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-sword-master/skill.sword-master, digest: 693c837ac74c354319d658f42885d449796b5532294693c75e7cb14b1b463b54}
   depends_on: [mechanic/skill.sword-master]
   interpretation: >-
-    Chaos in the Streets p.182 / Blood Dragon Special Skills / Sword Master
-    permite parar incluso un seis, igualando el impacto. Repite una vez una
-    parada fallida, nunca la repetición, y no puede parar más de un ataque.
-    No elimina la necesidad de equipo con Parry ni la prohibición por Fuerza doble.
+    Chaos in the Streets p.182 / Blood Dragon Special Skills / Sword Master allows parrying even a
+    six, matching the hit. It re-rolls a failed parry once, never the re-roll itself, and cannot parry
+    more than one attack. It does not remove the need for equipment with Parry nor the double-Strength
+    ban.
   cases:
   - id: recipients
     roles: [grant, compiled]

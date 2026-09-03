@@ -1,1 +1,1 @@
-"""Entradas de línea de comandos."""
+"""Command-line entry points."""

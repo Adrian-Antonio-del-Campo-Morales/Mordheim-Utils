@@ -1,4 +1,4 @@
-"""Interacciones del motor modular."""
+"""Interactions of the modular engine."""
 from __future__ import annotations
 
 from dataclasses import replace

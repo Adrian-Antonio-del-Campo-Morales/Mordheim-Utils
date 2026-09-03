@@ -1,79 +1,78 @@
-# HOWTO: usar la KB de campaña
+# HOWTO: using the campaign KB
 
-Esta guía explica cómo consultar y ampliar las reglas post-batalla sin crear
-una segunda fuente de verdad. Está dirigida a desarrolladores que implementen
-pantallas, casos de uso o ingestiones de campaña.
+This guide explains how to consult and extend the post-battle rules without
+creating a second source of truth. It is aimed at developers implementing
+screens, use cases or campaign ingestions.
 
-## Límite de responsabilidad
+## Responsibility boundary
 
-La KB contiene exclusivamente reglas inmutables del juego: tablas, costes de
-mercado, disponibilidad, procedimientos, restricciones y fórmulas. Nunca
-contiene una campaña concreta ni el resultado de aplicarle una regla.
+The KB contains exclusively immutable game rules: tables, market costs,
+availability, procedures, restrictions and formulas. It never contains a
+concrete campaign nor the result of applying a rule to one.
 
-Fuera de la KB se almacenan, entre otros, la experiencia actual de cada
-guerrero, coronas y wyrdstone de una banda, su alijo, lesiones recibidas,
-tiradas realizadas, compras, reclutamientos y el historial de post-batalla.
-Ese estado pertenece al modelo/persistencia de campaña y se identifica mediante
-IDs estables de la KB (`band_id`, `profile_id`, `item_id`, `rule_id`).
+Outside the KB live, among other things, the current experience of each
+warrior, a warband's crowns and wyrdstone, its stash, received injuries, rolls
+made, purchases, recruitments and the post-battle history. That state belongs
+to the campaign model/persistence and is identified through stable KB IDs
+(`band_id`, `profile_id`, `item_id`, `rule_id`).
 
-## Principio básico
+## Basic principle
 
-La GUI nunca lee YAML y nunca decide reglas. La ruta correcta es:
+The GUI never reads YAML and never decides rules. The correct path is:
 
 ```text
-YAML de la KB → knowledge.loader → application → ui
+KB YAML → knowledge.loader → application → ui
 ```
 
-El área `knowledge` carga y valida documentos; `application` los convierte en
-opciones y resultados para un caso de uso; `ui` solo presenta esos resultados
-y remite las acciones del usuario a `application`.
+The `knowledge` area loads and validates documents; `application` turns them
+into options and results for a use case; `ui` only presents those results
+and forwards the user's actions to `application`.
 
-No cargar archivos de `sources/knowledge/` desde Tkinter ni copiar tablas de
-campaña a widgets, constantes de UI o persistencia.
+Do not load files from `sources/knowledge/` from Tkinter, nor copy campaign
+tables into widgets, UI constants or persistence.
 
-## Dónde vive cada dato
+## Where each piece of data lives
 
-| Necesidad | Fuente canónica | Consultar por |
+| Need | Canonical source | Query by |
 |---|---|---|
-| Perfil, coste de recluta, experiencia inicial, equipo y reglas propias | `bands/<collection>/<band>/profiles.yaml` | `profile_id` |
-| Límites y composición de una banda | `bands/<collection>/<band>/band.yaml` | `band_id` |
-| Acceso de un perfil a una lista de equipo | `bands/<collection>/<band>/equipment-access.yaml` | `equipment_list_id` + `item_id` |
-| Identidad y regla de un objeto | `catalog/items/*.yaml` | `item_id` |
-| Precio de mercado, rareza y disponibilidad | `campaign/trading-post.yaml` | `item_id` |
-| Orden post-batalla | `campaign/post-battle-sequence.yaml` | `campaign.step.*` |
-| Heridas, experiencia, exploración, comercio y rating | Los ficheros hermanos de este directorio | `campaign.*` |
-| Máximos raciales de atributos (avance) | `catalog/rules/racial-maximums.yaml` | `campaign.limit.racial-maximum.*` |
-| Excepción de una banda o de un perfil | `bands/<collection>/<band>/special-rules.yaml` | `rule_id` / `effect_id` |
+| Profile, recruit cost, starting experience, equipment and own rules | `bands/<collection>/<band>/profiles.yaml` | `profile_id` |
+| Limits and composition of a warband | `bands/<collection>/<band>/band.yaml` | `band_id` |
+| A profile's access to an equipment list | `bands/<collection>/<band>/equipment-access.yaml` | `equipment_list_id` + `item_id` |
+| Identity and rule of an item | `catalog/items/*.yaml` | `item_id` |
+| Market price, rarity and availability | `campaign/trading-post.yaml` | `item_id` |
+| Post-battle order | `campaign/post-battle-sequence.yaml` | `campaign.step.*` |
+| Injuries, experience, exploration, trading and rating | The sibling files of this directory | `campaign.*` |
+| Racial characteristic maximums (advancement) | `catalog/rules/racial-maximums.yaml` | `campaign.limit.racial-maximum.*` |
+| Exception of a warband or of a profile | `bands/<collection>/<band>/special-rules.yaml` | `rule_id` / `effect_id` |
 
-Una entrada de campaña puede referir `item_id`, `profile_id`, `band_id` o
-`rule_id`, pero no vuelve a declarar la ficha a la que apunta.
+A campaign entry may reference `item_id`, `profile_id`, `band_id` or
+`rule_id`, but it does not redeclare the record it points to.
 
-Los IDs propios de campaña siguen `campaign.<familia>.<detalle>`, con
-segmentos en kebab-case. Por ejemplo,
-`campaign.serious-injury.hero.22-leg-wound` y
-`campaign.trading-post.sword`. El objeto de la segunda entrada sigue siendo
-`item_id: sword`; no se crea un segundo ID de objeto. Para opciones de compra,
-usar un ID hijo explícito, como `campaign.trading-post.pistol.brace`.
+Campaign-owned IDs follow `campaign.<family>.<detail>`, with kebab-case
+segments. For example, `campaign.serious-injury.hero.22-leg-wound` and
+`campaign.trading-post.sword`. The object of the second entry is still
+`item_id: sword`; no second item ID is created. For purchase options, use an
+explicit child ID such as `campaign.trading-post.pistol.brace`.
 
-Las tiradas derivadas se estructuran, no se expresan como texto. Una subtabla
-declara `resolution.type: roll_table`, los dados y ramas con `when.min`/
-`when.max`; cada rama tiene su propio ID y sus efectos. Para valores como D3,
-usar `games: { kind: dice, dice: { count: 1, sides: 3 } }`; para un valor fijo,
-`games: { kind: fixed, value: 1 }`. Los resultados obtenidos siguen fuera de
-la KB, en el estado de campaña.
+Derived rolls are structured, not expressed as text. A sub-table declares
+`resolution.type: roll_table`, the dice and the branches with `when.min`/
+`when.max`; each branch has its own ID and effects. For values like D3 use
+`games: { kind: dice, dice: { count: 1, sides: 3 } }`; for a fixed value,
+`games: { kind: fixed, value: 1 }`. Obtained results stay outside the KB, in
+the campaign state.
 
-Para una recompensa de exploración que sea un objeto, usar `rewards.item_ids`.
-Ejemplos ya presentes: `lucky_charm` en `catalog/items/combat-equipment.yaml`,
-`axe`, `dagger` y `sword` en `catalog/items/weapons-close-combat.yaml`, y
-`light_armour` en `catalog/items/armour.yaml`. Si el objeto no existe en el
-catálogo —como ocurrió con Mordheim Map antes de añadir su ficha canónica en
-`catalog/items/out-of-scope.yaml`— detener la ingestión de ese resultado y
-añadir primero la ficha canónica del objeto con su fuente.
+For an exploration reward that is an item, use `rewards.item_ids`. Existing
+examples: `lucky_charm` in `catalog/items/combat-equipment.yaml`, `axe`,
+`dagger` and `sword` in `catalog/items/weapons-close-combat.yaml`, and
+`light_armour` in `catalog/items/armour.yaml`. If the item does not exist in
+the catalogue — as happened with Mordheim Map before adding its canonical
+record in `catalog/items/out-of-scope.yaml` — stop that result's ingestion and
+first add the canonical record of the item with its source.
 
-## Cómo consultar la KB existente desde código
+## How to query the existing KB from code
 
-Para información de bandas y perfiles, usar los cargadores existentes. Nunca
-reconstruir rutas a mano desde la GUI:
+For warband and profile information use the existing loaders. Never rebuild
+paths by hand from the GUI:
 
 ```python
 from mordheim_knowledge.loader import load_bands
@@ -83,36 +82,36 @@ package = next(row for row in packages if row.band["id"] == "pit-fighters")
 profile = next(row for row in package.profiles if row["id"] == "pit-king")
 ```
 
-Para un selector o pantalla que ya pertenece al simulador de combate, usar
-`application.catalogue.CombatCatalogue`. Por ejemplo, `bands`, `profiles`,
-`profile`, `weapons` y `cost` ya ofrecen datos preparados para la UI. Esta
-clase es de solo combate: no debe ampliarse con estado post-batalla.
+For a selector or screen that already belongs to the combat simulator, use
+`application.catalogue.CombatCatalogue`. For example, `bands`, `profiles`,
+`profile`, `weapons` and `cost` already offer data prepared for the UI. This
+class is combat-only: it must not be extended with post-battle state.
 
-## Patrón para una función de campaña
+## Pattern for a campaign feature
 
-Cuando se implemente campaña, crear un caso de uso en `application` —por
-ejemplo `CampaignCatalogue` o `PostBattleService`— que reciba IDs y estado de
-campaña, cargue las reglas mediante `knowledge.loader` y devuelva DTOs simples
-para la UI.
+When implementing campaign, create a use case in `application` — for example
+`CampaignCatalogue` or `PostBattleService` — that receives IDs and campaign
+state, loads the rules through `knowledge.loader` and returns simple DTOs for
+the UI.
 
 ```text
-UI: «resolver exploración»
+UI: "resolve exploration"
   → application: resolve_exploration(campaign_state, band_id)
-    → knowledge: tablas de exploración + reglas especiales aplicables
+    → knowledge: exploration tables + applicable special rules
     → application: ExplorationResult
-  → UI: muestra dados, resultado y cambios propuestos
+  → UI: shows dice, result and proposed changes
 ```
 
-El estado mutable —oro, wyrdstone, lesiones, experiencia acumulada, alijo y
-equipo asignado— pertenece por completo a `persistence`/modelo de campaña,
-nunca a los YAML. La KB solo define cómo transformarlo. La UI solicita una
-previsualización y el caso de uso aplica una transacción validada; no actualiza
-valores directamente.
+Mutable state — gold, wyrdstone, injuries, accumulated experience, stash and
+assigned equipment — belongs entirely to `persistence`/the campaign model,
+never to the YAML. The KB only defines how to transform it. The UI requests a
+preview and the use case applies a validated transaction; it does not update
+values directly.
 
-## Contrato mínimo de lectura que habrá que implementar
+## Minimum reading contract to implement
 
-Antes de conectar una pantalla de campaña, añadir a
-`knowledge.loader` cargadores con esta responsabilidad:
+Before connecting a campaign screen, add loaders to `knowledge.loader` with
+this responsibility:
 
 ```text
 load_campaign_catalog("serious-injuries", ruleset)
@@ -120,104 +119,102 @@ load_campaign_catalog("trading-post", ruleset)
 load_post_battle_sequence(ruleset)
 ```
 
-Cada cargador debe comprobar `schema_version`, `ruleset`, IDs únicos y que las
-referencias (`item_id`, `profile_id`, `rule_id`) existen. El caso de uso nunca
-debe interpretar YAML crudo ni tolerar referencias faltantes silenciosamente.
+Each loader must check `schema_version`, `ruleset`, unique IDs and that the
+references (`item_id`, `profile_id`, `rule_id`) exist. The use case must never
+interpret raw YAML nor silently tolerate missing references.
 
-## Reglas de precio y equipo
+## Price and equipment rules
 
-1. Consultar primero el precio y la disponibilidad en `trading-post.yaml`.
-2. Usar `equipment-access.yaml` solo para saber si ese perfil puede seleccionar
-   el objeto.
-3. Aplicar `price_override` únicamente si existe, está referenciado y su fuente
-   confirma una excepción.
-4. Representar pares, descuentos y costes variables con `purchase_options` y
-   el precio estructurado del Trading Post; no con nuevos `item_id` ni precios
-   alternativos implícitos.
+1. Consult first the price and availability in `trading-post.yaml`.
+2. Use `equipment-access.yaml` only to know whether that profile may select
+   the item.
+3. Apply `price_override` only if it exists, is referenced and its source
+   confirms an exception.
+4. Represent pairs, discounts and variable costs with `purchase_options` and
+   the structured Trading Post price; not with new `item_id` values or implicit
+   alternative prices.
 
-Los `cost` históricos de las listas de equipo todavía deben ser cotejados:
-véase el TODO en [README.md](README.md).
+The historical `cost` values of the equipment lists still need to be collated:
+see the TODO in [README.md](README.md).
 
-## Cómo añadir conocimiento
+## How to add knowledge
 
-1. Localizar primero el dueño del dato en la tabla anterior.
-2. Añadir la regla o tabla al fichero canónico y mantener un ID estable.
-3. Añadir `source_refs` verificables; no convertir ejemplos en datos reales.
-4. Para una excepción, crear o ampliar la regla especial de la banda y enlazar
-   el `effect_id` de campaña pertinente.
-5. Añadir validación de referencias y un caso semántico antes de hacer el dato
-   ejecutable. La validación de la ingesta actual de campaña (cabeceras,
-   ausencia de ejemplos ficticios, conteos canónicos y resolución de
-   referencias contra items, bandas, grupos, condiciones, habilidades y
-   perfiles) vive en `tests/knowledge/test_campaign_catalogs.py`.
-6. Ejecutar `python -m mordheim_combat_lab validate`.
+1. First locate the owner of the data in the table above.
+2. Add the rule or table to the canonical file and keep a stable ID.
+3. Add verifiable `source_refs`; do not turn examples into real data.
+4. For an exception, create or extend the warband's special rule and link the
+   relevant campaign `effect_id`.
+5. Add reference validation and a semantic case before making the data
+   executable. The validation of the current campaign ingestion (headers,
+   absence of fictional examples, canonical counts and reference resolution
+   against items, warbands, groups, conditions, skills and profiles) lives in
+   `tests/knowledge/test_campaign_catalogs.py`.
+6. Run `python -m mordheim_combat_lab validate`.
 
-## Añadir o revisar recompensas de un escenario
+## Adding or reviewing scenario rewards
 
-Cada escenario con datos de progresión transcritos lleva la clave
-`progression:` con estas subclaves (todas opcionales salvo `experience` cuando
-la clave existe; si la fuente no declara premios de progresión —p. ej.
-ciertas invasiones zombi de la Archive Pestilen— la ausencia debe quedar
-documentada en `notes`):
+Every scenario with transcribed progression data carries the `progression:`
+key with these sub-keys (all optional except `experience` when the key
+exists; if the source does not declare progression rewards — e.g. certain
+zombie invasions of the Archive Pestilen — the absence must be documented in
+`notes`):
 
-- `experience`: lista de premios. Cada fila tiene **o bien** `ref` (un id
-  canónico `campaign.experience.award.*` de `experience-and-advances.yaml`
-  cuando la línea coincide con el premio estándar) **o bien** `summary` (texto
-  fiel a la fuente para premios propios del escenario), nunca ambos. Cuando la
-  cantidad es numérica se declara `amount`; cuando la fuente la da en dados,
-  `amount_dice` (p. ej. `D6`). Nunca ambos.
-- `wyrdstone`: texto con el wyrdstone que obtiene la banda al final (p. ej.
-  por contador en posesión, con tope si la fuente lo declara).
-- `income`: texto con ingresos en coronas o pagos fijos.
-- `loot`: tesoro/objetos. `summary` describe cuándo se obtiene;
-  `contents` (opcional) lista las filas con `reward`, `roll` (p. ej. `4D6`),
-  `when.min`/`when.max` (opcional, si la tirada discrimina) e `item_id`
-  (opcional, id canónico del catálogo de items cuando el premio es un objeto
-  concreto del Trading Post).
-- `exploration`: (opcional) texto con bonificaciones sobre la fase de
-  exploración posterior (dados extra o repeticiones).
-- `notes`: dudas o aclaraciones de la fuente para pasos posteriores
-  (erratas sospechadas, discrepancias de cantidad/etiqueta, convenciones
-  asumidas no declaradas en la página, conversiones de contadores no
-  explícitas).
+- `experience`: list of awards. Each row has **either** `ref` (a canonical
+  `campaign.experience.award.*` id from `experience-and-advances.yaml` when
+  the line matches the standard award) **or** `summary` (text faithful to the
+  source for scenario-specific awards), never both. When the amount is numeric
+  it is declared as `amount`; when the source gives it in dice,
+  `amount_dice` (e.g. `D6`). Never both.
+- `wyrdstone`: text with the wyrdstone the warband gets at the end (e.g. per
+  shard in possession, with a cap if the source declares one).
+- `income`: text with income in crowns or fixed payments.
+- `loot`: treasure/items. `summary` describes when it is obtained;
+  `contents` (optional) lists rows with `reward`, `roll` (e.g. `4D6`),
+  `when.min`/`when.max` (optional, if the roll discriminates) and `item_id`
+  (optional, canonical item-catalogue id when the reward is a concrete Trading
+  Post item).
+- `exploration`: (optional) text with bonuses on the later exploration phase
+  (extra dice or rerolls).
+- `notes`: doubts or clarifications of the source for later steps (suspected
+  errata, amount/label discrepancies, assumed conventions not declared on the
+  page, non-explicit counter conversions).
 
-La URL de `source_refs` de un escenario transcrito apunta a la página
-individual (`…/scenarios/<familia>/<slug>`), no al índice.
+The `source_refs` URL of a transcribed scenario points to the individual page
+(`…/scenarios/<family>/<slug>`), not to the index.
 
-Los tests de forma y referencias viven en
-`tests/knowledge/test_campaign_catalogs.py` (sección Escenarios).
+The shape and reference tests live in
+`tests/knowledge/test_campaign_catalogs.py` (Scenarios section).
 
-## Estado actual
+## Current state
 
-Los catálogos de este directorio están ingestados desde The New Mordheimer
-(mordheimer.net) como datos declarativos con `source_refs` y `status:
-published`: trading post (338 entradas con precio, rareza y restricciones),tablas de heridas, experiencia, exploración, reclutamiento, rating, escenarios
-(98, los 98 con `progression:` transcrita desde su página individual: rulebook,
-Town Cryer, Fanatic Magazine, Fanatic Online, Archive Pestilen y Rynn Tyrr),
-magia (31 lores con 188
-conjuros, con las 15 referencias `spell_list` de los perfiles de mercenarios
-enlazadas por `lore_id` en `lore_assignments`) y mutaciones. Son reglas y tablas, no
- implementación: ningún YAML
-codifica cómo aplicar una regla ni guarda estado de una campaña concreta.
+The catalogues of this directory are ingested from The New Mordheimer
+(mordheimer.net) as declarative data with `source_refs` and `status:
+published`: trading post (338 entries with price, rarity and restrictions),
+injury tables, experience, exploration, recruitment, rating, scenarios (98,
+all 98 with `progression:` transcribed from their individual page: rulebook,
+Town Cryer, Fanatic Magazine, Fanatic Online, Archive Pestilen and Rynn Tyrr),
+magic (31 lores with 188 spells, with the 15 `spell_list` references of the
+mercenary profiles linked by `lore_id` in `lore_assignments`) and mutations.
+They are rules and tables, not implementation: no YAML encodes how to apply a
+rule nor saves the state of a concrete campaign.
 
-Siguen sin cargarlos los cargadores del runtime (`load_campaign_catalog`,
-`load_post_battle_sequence`), por lo que ninguna pantalla actual resuelve una
-secuencia post-batalla. La primera implementación debe empezar por esos
-cargadores —que comprueben `schema_version`, `ruleset`, unicidad de IDs y que
-las referencias (`item_id`, `profile_id`, `band_id`, `condition_id`) existen—
-y por un caso de uso que reciba el estado desde la persistencia externa;
-después podrá añadirse la pantalla sin acoplarla a YAML ni al motor de duelo.
-El catálogo de mercenarios
-(`hired-swords-and-dramatis.yaml`, 98 entradas, ver `CAMPAIGN INGESTION
-RESULTS.md`) está integrado con schema v2 y publicado; las 18 reglas de
-elegibilidad dinámicas (dependientes de roster, variante mercenaria o tirada
-condicional) viven declaradas en `catalog/hirelings/**` y las evaluará la
-aplicación, igual que los 4 Dramatis out of scope y las 74 referencias
-intrínsecas pendientes de los catálogos de perfiles (no bloquean coste ni
-elegibilidad).
+The runtime loaders (`load_campaign_catalog`, `load_post_battle_sequence`)
+are still not implemented, so no current screen resolves a post-battle
+sequence. The first implementation must start with those loaders — checking
+`schema_version`, `ruleset`, ID uniqueness and that the references
+(`item_id`, `profile_id`, `band_id`, `condition_id`) exist — and with a use
+case that receives the state from external persistence; afterwards the screen
+can be added without coupling it to YAML or to the duel engine. The mercenary
+catalogue (`hired-swords-and-dramatis.yaml`, 98 entries, see `CAMPAIGN
+INGESTION RESULTS.md`) is integrated with schema v2 and published; the 18
+dynamic eligibility rules (dependent on roster, mercenary variant or
+conditional roll) are declared in `catalog/hirelings/**` and will be evaluated
+by the application, like the 4 out-of-scope Dramatis and the 74 pending
+intrinsic references of the profile catalogues (they do not block cost or
+eligibility).
 
-El Campaign Manager ya consume la KB para bandas y perfiles: su
-`KnowledgePort` (`mordheim_campaign/application/knowledge_port.py`) usa
-`load_bands`, `load_items` y `load_skills` para alimentar la creación de banda
-sin que la GUI toque YAML, y su persistencia (`.mordheim`) referencia los IDs
-canónicos (`band_id`, `profile_id`, `item_id`) sin duplicar reglas.
+The Campaign Manager already consumes the KB for warbands and profiles: its
+`KnowledgePort` (`mordheim_campaign/application/knowledge_port.py`) uses
+`load_bands`, `load_items` and `load_skills` to feed warband creation without
+the GUI touching YAML, and its persistence (`.mordheim`) references the
+canonical IDs (`band_id`, `profile_id`, `item_id`) without duplicating rules.

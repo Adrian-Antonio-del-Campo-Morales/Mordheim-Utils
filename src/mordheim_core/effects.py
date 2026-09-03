@@ -1,4 +1,4 @@
-"""domain.effects: responsabilidad extraída sin alterar las reglas."""
+"""domain.effects: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from dataclasses import dataclass

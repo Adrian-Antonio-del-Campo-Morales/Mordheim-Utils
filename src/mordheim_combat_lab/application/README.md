@@ -1,3 +1,4 @@
 # Application
 
-Casos de uso sin Tkinter: catálogo, comparaciones y settings. Véase [Modificar la aplicación](../../../docs/tasks/modify-application.md).
+Tkinter-free use cases: catalogue, comparisons and settings. See
+[Modify the application](../../../docs/tasks/modify-application.md).

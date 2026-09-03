@@ -1,4 +1,4 @@
-"""external.test_catalog: responsabilidad extraída sin alterar las reglas."""
+"""external.test_catalog: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from mordheim_construction.compiler import compile_fighter

@@ -1,4 +1,4 @@
-"""Regresiones de reglas del motor vectorizado."""
+"""Rule regressions of the vectorized engine."""
 from __future__ import annotations
 
 from dataclasses import replace
@@ -96,6 +96,7 @@ def test_frenzy_persists_and_pistols_only_fire_in_the_first_round():
 
 def test_pistol_and_sword_allocate_attacks_to_the_correct_weapon(monkeypatch):
     import mordheim_combat.vectorized as engine
+    import mordheim_combat.vectorized._attacks as engine_attacks
 
     attacker = build(main_weapon_id="weapon.pistol", off_hand_id="weapon.sword")
     defender = build()
@@ -107,7 +108,7 @@ def test_pistol_and_sword_allocate_attacks_to_the_correct_weapon(monkeypatch):
             seen.append(weapon.tags)
         return None
 
-    monkeypatch.setattr(engine, "_prepare_weapon_attack", capture)
+    monkeypatch.setattr(engine_attacks, "_prepare_weapon_attack", capture)
     for first_round in (True, False):
         attacks = engine.attack_count(attacker, flags, first_round=first_round)
         engine.resolve_attacks(

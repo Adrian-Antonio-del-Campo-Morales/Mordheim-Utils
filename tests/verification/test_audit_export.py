@@ -1,4 +1,4 @@
-"""Contrato del informe de auditoría generado."""
+"""Contract of the generated audit report."""
 from csv import DictReader
 from dataclasses import fields
 from types import SimpleNamespace
@@ -13,11 +13,11 @@ import pytest
 
 
 @pytest.mark.parametrize("question,ruling,verified,dependencies,expected", [
-    ("¿Cómo se combina?", "", False, (), "needs_ruling"),
-    ("¿Cómo se combina?", "", False, ("missing",), "needs_ruling"),
-    ("¿Cómo se combina?", "Se suma, según la fuente.", False, (), "ready"),
-    ("¿Cómo se combina?", "Se suma, según la fuente.", True, (), "verified"),
-    ("¿Cómo se combina?", "Se suma, según la fuente.", False, ("missing",), "blocked_by_dependency"),
+    ("How does it combine?", "", False, (), "needs_ruling"),
+    ("How does it combine?", "", False, ("missing",), "needs_ruling"),
+    ("How does it combine?", "It adds up, per the source.", False, (), "ready"),
+    ("How does it combine?", "It adds up, per the source.", True, (), "verified"),
+    ("How does it combine?", "It adds up, per the source.", False, ("missing",), "blocked_by_dependency"),
     ("", "", False, (), "ready"),
 ])
 def test_review_keeps_history_separate_from_verification(
@@ -28,7 +28,7 @@ def test_review_keeps_history_separate_from_verification(
     report = SimpleNamespace(
         obligations=[SimpleNamespace(id=target, binding="bound", dependencies=dependencies)],
         verified=[target] if verified else [], fixtures=[], verified_interactions=[],
-        pending=[] if verified else [(target, "Trabajo pendiente, no una pregunta.")],
+        pending=[] if verified else [(target, "Pending work, not a question.")],
     )
     monkeypatch.setattr(audit_export, "verify_semantics", lambda *args: report)
     monkeypatch.setattr(audit_export, "read_yaml", lambda path: {
@@ -36,7 +36,7 @@ def test_review_keeps_history_separate_from_verification(
     } if path.name == "close-combat.yaml" else {})
     monkeypatch.setattr(specifications, "load_fixtures", lambda *args: [{
         "sources": [{"target": target}], "question": question, "ruling": ruling,
-        "interpretation": "Descripción de la especificación, no una decisión.",
+        "interpretation": "Description of the specification, not a decision.",
     }])
     row, = build_audit_rows(tmp_path)
     assert row.review_status == expected
@@ -47,9 +47,9 @@ def test_review_keeps_history_separate_from_verification(
 
 
 @pytest.mark.parametrize("metadata,valid", [
-    ({"question": "¿Qué valor?", "pending": "Falta respuesta"}, True),
-    ({"question": "¿Qué valor?", "ruling": "El valor es 4."}, True),
-    ({"question": "¿Qué valor?"}, False),
+    ({"question": "What value?", "pending": "Missing answer"}, True),
+    ({"question": "What value?", "ruling": "The value is 4."}, True),
+    ({"question": "What value?"}, False),
     ({"question": " "}, False),
     ({"ruling": 4}, False),
 ])
@@ -114,17 +114,17 @@ def test_resolved_real_question_is_preserved_in_verified_row(audit_rows):
 
 def test_audit_writer_creates_excel_friendly_csv(tmp_path):
     row = AuditRow(
-        "rule/example", "editorial_effect", "Regla <ejemplo>", "rules.yaml", "Sección", "",
+        "rule/example", "editorial_effect", "Rule <example>", "rules.yaml", "Section", "",
         "YES", "", "YES", '{"id": "example"}', "linked", "verified", "", "scenario-1",
-        "", "Respuesta, con fundamento", "verified", "¿Primera línea?\n¿Segunda?", "Interpretación general",
+        "", "Answer, with grounds", "verified", "First line?\nSecond?", "General interpretation",
     )
     csv_path = tmp_path / "audit.csv"
     write_csv((row,), csv_path)
     with csv_path.open(encoding="utf-8-sig", newline="") as stream:
         parsed = list(DictReader(stream))
     assert list(parsed[0]) == [field.name for field in fields(AuditRow)]
-    assert parsed[0]["name"] == "Regla <ejemplo>"
-    assert parsed[0]["question"] == "¿Primera línea? ¿Segunda?"
+    assert parsed[0]["name"] == "Rule <example>"
+    assert parsed[0]["question"] == "First line? Second?"
     assert parsed[0]["ruling"] == row.ruling
     assert parsed[0]["review_status"] == "verified"
     assert len(csv_path.read_text(encoding="utf-8-sig").splitlines()) == 2

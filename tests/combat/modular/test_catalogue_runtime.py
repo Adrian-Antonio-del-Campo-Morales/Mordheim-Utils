@@ -1,4 +1,4 @@
-"""Entrada de todo el catálogo al motor modular."""
+"""Full-catalogue entry through the modular engine."""
 from __future__ import annotations
 
 from dataclasses import replace

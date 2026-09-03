@@ -395,7 +395,7 @@ class PostBattleMoment(tk.Frame):
                 tk.Label(parent, text=f"• {line}", bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 9)).pack(anchor="w", padx=(8, 0), pady=1)
 
     def _save_and_close(self) -> None:
-        """Guarda la campaña (con el post-batalla pendiente) y vuelve al estado actual."""
+        """Saves the campaign (with the pending post-battle) and returns to the current state."""
         from mordheim_campaign.ui.file_actions import save_current_campaign
 
         save_current_campaign(self, self.controller)

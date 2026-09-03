@@ -1,1 +1,1 @@
-"""knowledge — API del área."""
+"""knowledge — area API."""

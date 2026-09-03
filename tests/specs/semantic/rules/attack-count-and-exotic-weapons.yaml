@@ -5,7 +5,7 @@ specifications:
   category: stateful
   sources:
   - {target: mechanic/mechanic.spawn-special-attacks, digest: 5b0b8facd29152f7b960b5020f73a0a1b3ffeaef22f71bfd0cccdc532ffec22e}
-  interpretation: Special Attacks sustituye al inicio de cada fase el número ordinario de ataques por D6+1 y vuelve a tirar en la fase siguiente.
+  interpretation: "Special Attacks replaces, at the start of each phase, the ordinary number of attacks with D6+1 and rolls again in the next phase."
   cases:
   - id: compiled
     roles: [compiled]
@@ -42,7 +42,7 @@ specifications:
   sources:
   - {target: rule/mordheim/marauders-of-chaos/spawn-of-chaos--special-attacks/mechanic.spawn-special-attacks, digest: d4c88379a7adf498349205c9b12d769df19fc0184ce71fdeb3b6c75b9e613f2a}
   depends_on: [mechanic/mechanic.spawn-special-attacks]
-  interpretation: La regla se concede únicamente al Spawn of Chaos y hace que su recuento de ataques consuma el D6+1 canónico.
+  interpretation: "The rule is granted only to the Spawn of Chaos and makes its attack count consume the canonical D6+1."
   cases:
   - id: recipient
     roles: [grant, accepted, rejected]
@@ -65,7 +65,7 @@ specifications:
   category: contextual
   sources:
   - {target: mechanic/skill.sigmar-s-sign, digest: 5a1bea66b636f2475ab41760ff56411eaa9df34d7d1437726c9df65317de4457}
-  interpretation: Sigmar's Sign resta un ataque, con mínimo uno, exclusivamente a rivales Undead o Possessed durante la primera ronda.
+  interpretation: "Sigmar's Sign removes one attack, with a minimum of one, exclusively from Undead or Possessed opponents during the first round."
   cases:
   - id: first-round-undead
     roles: [compiled, active, consumer, boundary]
@@ -104,7 +104,7 @@ specifications:
   category: local
   sources:
   - {target: mechanic/weapon.sun-gauntlet, digest: 984d38e6ab49fa8749edd1e2bb586a1115012f1dc0cf51a2ff71f73904f207c9}
-  interpretation: Sun Gauntlet solo ocupa la mano secundaria y resuelve ese ataque con Fuerza fija 4 ignorando la salvación por armadura.
+  interpretation: "Sun Gauntlet only occupies the off hand and resolves that attack at fixed Strength 4 ignoring the armour save."
   cases:
   - id: compiled-strength
     roles: [compiled, active, consumer, boundary]
@@ -134,7 +134,7 @@ specifications:
   category: local
   sources:
   - {target: mechanic/weapon.starblade, digest: ba1475c5f6ebda5da52e6f65213aea3d0b52acd47b29e814dd221bae387830f4}
-  interpretation: Starblade concede una única parada fija a 4+ y mejora en uno la salvación por armadura del enemigo.
+  interpretation: "Starblade grants a single fixed parry at 4+ and improves the enemy's armour save by one."
   cases:
   - id: fixed-parry
     roles: [compiled, active, consumer, boundary]

@@ -1,6 +1,6 @@
-# Arquitectura
+# Architecture
 
-## Paquetes del monorepo y dependencias permitidas
+## Monorepo packages and allowed dependencies
 
 ```text
 mordheim_core
@@ -10,90 +10,134 @@ mordheim_knowledge → mordheim_construction → mordheim_combat
                   └ mordheim_combat_lab.application ← mordheim_combat_lab.persistence
                          ↑
                          mordheim_combat_lab.ui
-                         mordheim_campaign (reutiliza mordheim_ui)
+                         mordheim_campaign (reuses mordheim_ui)
 
 mordheim_combat_lab.verification → mordheim_knowledge + mordheim_construction
                                    + mordheim_combat + tests/specs
 ```
 
-`mordheim_core` no conoce YAML, UI ni verificadores. `mordheim_combat` recibe
-`CompiledFighter` y no carga la KB. `mordheim_combat_lab.application` ejecuta
-casos de uso sin Tkinter. Las dos aplicaciones presentan resultados con la capa
-compartida `mordheim_ui` y coordinan sus propios hilos. `verification` está
-fuera del runtime y utiliza el motor real como sistema bajo prueba.
+`mordheim_core` knows no YAML, UI or verifiers. `mordheim_combat` receives
+`CompiledFighter` and never loads the KB. `mordheim_combat_lab.application`
+runs use cases without Tkinter. Both applications present results with the
+shared `mordheim_ui` layer and coordinate their own threads. `verification`
+sits outside the runtime and exercises the real engine as the system under
+test.
 
-`mordheim_campaign` es *interface-first*: los widgets dependen de view-models y de la
-capa UI compartida; las bandas y perfiles canónicos entran por
-`mordheim_campaign.application.knowledge_port` (sobre `mordheim_knowledge`) y la
-persistencia de campaña vive en `mordheim_campaign/persistence`. La legalidad de
-post-batalla y el uso de `mordheim_construction` son fases posteriores.
+`mordheim_campaign` is interface-first: widgets depend on view-models and the
+shared UI layer; canonical warbands and profiles enter through
+`mordheim_campaign.application.knowledge_port` (on top of `mordheim_knowledge`)
+and campaign persistence lives in `mordheim_campaign/persistence`. Post-battle
+legality and the use of `mordheim_construction` are later phases.
 
-## Recursos compartidos
+## Shared resources
 
-La KB vive una sola vez en `sources/knowledge/`. La resolución de rutas
-pertenece a `mordheim_knowledge.paths` (`knowledge_root()`), con override por
-variable de entorno (`MORDHEIM_COMBAT_LAB_KNOWLEDGE_PATH`) y soporte de EXE
-congelado para ambas aplicaciones. El corpus de verificación vive en
-`tests/specs/` (`specifications_root()`), es material de test y no se distribuye.
+The KB lives once in `sources/knowledge/`. Path resolution belongs to
+`mordheim_knowledge.paths` (`knowledge_root()`), with an override via the
+`MORDHEIM_COMBAT_LAB_KNOWLEDGE_PATH` environment variable and frozen-EXE
+support for both applications. The verification corpus lives in `tests/specs/`
+(`specifications_root()`); it is test material and is not distributed.
 
-## Recorrido de una regla
+## Path of a rule
 
-1. La regla editorial y su binding están en `sources/knowledge/`.
-2. `mordheim_knowledge` valida y carga documentos por IDs estables.
-3. `mordheim_construction` valida accesos y compila el binding en `CompiledFighter`.
-4. El motor consume el efecto en una fase o handler con estado.
-5. Un escenario de `tests/specs/` comprueba concesión, compilación y resultado observable.
+1. The editorial rule and its binding live in `sources/knowledge/`.
+2. `mordheim_knowledge` validates and loads documents by stable ids.
+3. `mordheim_construction` validates access and compiles the binding into a
+   `CompiledFighter`.
+4. The engine consumes the effect in a phase or stateful handler.
+5. A scenario in `tests/specs/` checks granting, compilation and the observable
+   result.
 
-El motor modular divide estado, preparación de contextos, ataques, pools, efectos
-posteriores, rondas y duelo. El vectorizado es el runtime de análisis de la UI,
-pero no el oráculo de corrección del modular.
+## Engines
 
-## Backend nativo (Cython)
+### Modular (oracle)
 
-`mordheim_combat._combat_native` es un segundo runtime optimizado, compilado a
-C con Cython, que porta la semántica del motor vectorizado (nunca la del
-modular directamente: el modular sigue siendo el único oráculo de corrección).
-Vive en tres piezas:
+`mordheim_combat/modular/` is the scalar reference engine and the **only
+correctness oracle**. It splits responsibility into state, context preparation,
+attacks, pools, aftermath effects, rounds and duel orchestration:
 
-- `_combat_compile.py` reutiliza exactamente los helpers Python certificados
-  del vectorizado para plegar en escalares, una vez por duelo, cada decisión
-  de etiquetas que el motor tomaría dentro de sus bucles (fuentes, reacciones,
-  paradas, heridas automáticas, anvil-head, etc.).
-- `_combat_native.pyx` consume ese plan compilado con structs planos
-  (`FighterC`, `SourceC`, `DuelC`, `StateC`) y resuelve cada ronda sobre filas
-  activas en C: paradas, defensas de impacto, heridas y reacciones usan el
-  mismo orden de fases y tablas que el vectorizado.
-- `_combat_native.pxd` declara la frontera C entre las funciones mutuamente
-  recursivas del motor.
+- `state.py` — fighter/duel state and immutable transitions.
+- `contexts.py` — prepared per-attack contexts shared by orchestration and
+  verification.
+- `attacks.py` / `pools.py` — reference attack resolution and pooled attacks.
+- `aftermath.py` — stateful post-wound effects (fire, nets, black hunger, …).
+- `rounds.py` — per-round state machine; `duel.py` — the public
+  `simulate_duel` API.
 
-El driver de Python (`simulate_duel` en `vectorized.py`) expone el backend con
-`backend="native"` o `"auto"`; `available_backends()` lo reporta solo cuando la
-extensión está compilada, de modo que un entorno sin compilador C conserva el
-comportamiento NumPy sin cambios. El motor usa un PCG32 por lote derivado de la
-semilla de la petición, por lo que una misma petición es reproducible (replay
-determinista por semilla). El plan se compila una vez por petición (~0,5 ms);
-la compilación del `.pyx` a `.pyd` ocurre una sola vez en la instalación y
-queda fuera de cualquier medición de rendimiento.
+Changing the oracle requires an independent semantic review and is outside the
+optimization flow. Its behaviour is exercised by `tests/specs/` (see
+[Verify rules](tasks/verify-rules.md)) and is considered critical: functional
+changes are treated as dangerous and must never be made casually.
 
-### Verificación y rendimiento
+### Vectorized (analysis)
 
-El nativo se certifica contra el oráculo modular con la misma puerta
-estadística de seis sigmas que NumPy (`compare_statistical_parity(...,
-backend="native")` comparte la muestra modular con NumPy), y la puerta de
-rendimiento exige mejorar al menos un escenario un 10 % sin regresiones
-mayores del 5 % frente a NumPy (`benchmark --backend native`).
-`test-report --statistical` y `parity --statistical` incluyen el backend nativo
-automáticamente cuando está disponible; en el CSV semántico los casos por
-operador no le aplican (`NOT_APPLICABLE`): el nativo es un motor de duelo
-completo sin operadores independientes, verificado en las filas de duelo
-(estadísticas) y con la semántica de operador cubierta por el adaptador NumPy.
-Mientras la extensión no está compilada, esas filas se marcan `NOT_AVAILABLE`
-y el reporte permanece `PENDING`, señal del trabajo pendiente real.
-Los cambios del núcleo C se pasan por AddressSanitizer antes de integrarse
-(sobrescrituras de structs sin inicializar, dimensionado de arrays y
-acumulación por lotes ya detectados y corregidos así).
+`mordheim_combat/vectorized/` is the NumPy batch engine used by the UI for
+analysis; it is **not** the correctness oracle. The former single
+`vectorized.py` module was split into a package without changing its public
+namespace:
 
-La legalidad pertenece a `mordheim_construction`; la composición a
-`mordheim_core.effects`; las fases a `mordheim_combat.phases`; workbooks y
-preferencias a `mordheim_combat_lab.persistence`. Los tests de
-`tests/architecture/` hacen ejecutables estos límites.
+- `_types.py` — run constants, ledger types, tag predicates and compile-time
+  helpers shared by every layer.
+- `_operators.py` — stateless NumPy projections of the canonical scalar phase
+  operators.
+- `_attacks.py` — per-weapon attack preparation, hit/parry boundaries and wound
+  resolution.
+- `_driver.py` — per-round state machines, the batch loop and the public
+  `simulate_duel` / `available_backends` entry points.
+- `__init__.py` — facade that re-exports the historical module namespace so
+  existing imports keep working unchanged.
+
+The vectorized engine is certified against the modular oracle by
+`mordheim_combat_lab.verification.parity` (per-field obligations, semantic
+specifications and statistical six-sigma gates). A divergence detected while
+working on the vectorized engine is presumed to be a defect of the candidate:
+`parity` only reads the oracle and never modifies it.
+
+### Native (compiled)
+
+`mordheim_combat/native/` holds the sources of the compiled Cython backend.
+The built extension keeps the historical module name
+`mordheim_combat._combat_native` so importers and already-compiled binaries are
+unaffected by the source layout:
+
+- `_combat_compile.py` — pure-Python folding layer that reuses the exact
+  certified helpers of the vectorized engine to flatten every per-duel tag
+  decision into scalar flags once per duel.
+- `_combat_native.pyx` / `.pxd` — the Cython core consuming the compiled plan
+  with flat structs (`FighterC`, `SourceC`, `DuelC`, `StateC`); each round runs
+  over the active rows in C with the same phase order and tables as the
+  vectorized engine.
+- `__init__.py` — package description; the root `mordheim_combat/_combat_compile.py`
+  facade keeps the historical import path of compiled binaries working.
+
+The Python driver (`simulate_duel` in `vectorized`) exposes the backend with
+`backend="native"` or `"auto"`; `available_backends()` reports it only when the
+extension is compiled, so an environment without a C compiler keeps the NumPy
+behaviour unchanged. The engine uses one PCG32 per batch derived from the
+request seed, so the same request is reproducible (deterministic replay per
+seed). The plan is compiled once per request (~0.5 ms); compiling the `.pyx`
+to a `.pyd` happens once at install time and is outside any performance
+measurement.
+
+### Verification and performance
+
+The native backend is certified against the modular oracle with the same
+six-sigma statistical gate as NumPy (`compare_statistical_parity(...,
+backend="native")` shares the modular sample with NumPy), and the performance
+gate requires at least one scenario to improve 10 % without regressions above
+5 % versus NumPy (`benchmark --backend native`). `test-report --statistical`
+and `parity --statistical` include the native backend automatically when it is
+available; in the semantic CSV the per-operator cases do not apply to it
+(`NOT_APPLICABLE`): the native engine is a complete duel engine without
+independent operators, verified on the duel (statistical) rows, with operator
+semantics covered by the NumPy adapter. While the extension is not compiled,
+those rows are marked `NOT_AVAILABLE` and the report stays `PENDING` — a
+signal of real pending work. Core C changes pass through AddressSanitizer
+before integration (uninitialised struct overwrites, array sizing and batch
+accumulation have already been detected and fixed that way).
+
+## Responsibility map
+
+Legality belongs to `mordheim_construction`; composition to
+`mordheim_core.effects`; phases to `mordheim_combat.phases`; workbooks and
+preferences to `mordheim_combat_lab.persistence`. The tests in
+`tests/architecture/` make these boundaries executable.

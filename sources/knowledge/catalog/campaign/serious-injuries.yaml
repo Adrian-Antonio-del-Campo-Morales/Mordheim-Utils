@@ -2,12 +2,12 @@ schema_version: 1
 ruleset: mordheim
 catalog: campaign-serious-injuries
 status: published
-# Define resultados posibles de la tabla. Lesiones sufridas y tiradas realizadas
-# pertenecen al estado persistente de una campaña, fuera de la KB.
-# resolution: direct, roll_table o repeat_table. roll_table declara dice y
-# branches (id, when min/max inclusivos, effects). repeat_table declara dice y
-# reroll_ids para resultados excluidos. Cada resultado usa effects: lista
-# ordenada de operaciones declarativas (warrior.characteristic_modifier,
+# Defines the possible table results. Injuries suffered and rolls performed
+# belong to the persistent state of a campaign, outside the KB.
+# resolution: direct, roll_table or repeat_table. roll_table declares dice and
+# branches (id, when min/max inclusive, effects). repeat_table declares dice and
+# reroll_ids for excluded results. Each result uses effects: an ordered list of
+# declarative operations (warrior.characteristic_modifier,
 # warrior.add_condition, warrior.miss_games, warrior.battle_start_check,
 # warrior.equipment_limit, roster.remove_warrior, equipment.disposition,
 # prisoner.create, relationship.add_hatred, encounter.trigger, reward.grant).

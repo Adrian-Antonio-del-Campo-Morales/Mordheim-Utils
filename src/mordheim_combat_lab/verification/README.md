@@ -1,17 +1,20 @@
 # Verification
 
-Ejecuta `tests/specs/` contra el motor modular real y queda fuera de la UI. `audit_export.py` combina, sin modificar sus fuentes, el inventario editorial, el scope y la evidencia ejecutada para producir un CSV. Véase [Verificar reglas](../../../docs/tasks/verify-rules.md).
+Runs `tests/specs/` against the real modular engine and stays out of the UI.
+`audit_export.py` combines — without modifying its sources — the editorial
+inventory, the scope and the executed evidence into a CSV. See
+[Verify rules](../../../docs/tasks/verify-rules.md).
 
-`equipment_choices` permite probar equipo, `main_poison_id`, `off_poison_id` y
-`preparation_ids` mediante el compilador real. Los escenarios de prohibiciones por
-categoría exigen el motivo específico del rechazo y un control legal sin la prohibición.
-La mutación aislada `suppress-category-prohibitions` elimina ese validador durante
-una ejecución; no modifica la KB ni convierte la ausencia en una lista de equipo
-en evidencia de una prohibición explícita.
+`equipment_choices` allows testing equipment, `main_poison_id`, `off_poison_id`
+and `preparation_ids` through the real compiler. Category-prohibition scenarios
+require the specific reason for the rejection and a legal control without the
+prohibition. The isolated mutation `suppress-category-prohibitions` removes
+that validator for one execution; it neither modifies the KB nor turns an
+absent equipment list into evidence of an explicit prohibition.
 
-Para mini-secuencias de mutaciones, `spines` invoca el handler de inicio de ronda,
-`extra_attack` resuelve un ataque adicional compilado (índice explícito) y
-`attack_reaction` enlaza un ataque real con su reacción a la herida. No calculan
-impactos, daño ni probabilidades por su cuenta. Los fixtures comprueban las
-solicitudes de dados, la pérdida de heridas y la ausencia de críticos donde
-corresponde. `pool` comprueba además que el ataque adicional se añade al normal.
+For mutation mini-sequences, `spines` invokes the round-start handler,
+`extra_attack` resolves one compiled extra attack (explicit index) and
+`attack_reaction` links a real attack with its wound reaction. They do not
+compute hits, damage or probabilities on their own. Fixtures check the dice
+requests, the loss of wounds and the absence of criticals where it applies.
+`pool` additionally checks that the extra attack is added to the ordinary one.

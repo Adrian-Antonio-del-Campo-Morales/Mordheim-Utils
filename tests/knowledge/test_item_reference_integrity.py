@@ -1,11 +1,11 @@
-"""knowledge.items: integridad de referencias canónicas a objetos.
+"""knowledge.items: integrity of canonical object references.
 
-Verifica que ``catalog/items`` no contenga ids duplicados ni dos objetos con el
-mismo nombre normalizado (regresión de short_bow/shortbow y
-superior_black_powder/superior_blackpowder) y que toda referencia ``item_id``
-de la KB (listas de equipo, catálogos de campaña, hirelings, mecánicas)
-resuelva contra el catálogo canónico. Las variables de contexto (prefijo «$»)
-pertenecen a procedimientos y se excluyen.
+Verifies that ``catalog/items`` has no duplicated ids and no two objects with
+the same normalized name (regression of short_bow/shortbow and
+superior_black_powder/superior_blackpowder) and that every ``item_id``
+reference in the KB (equipment lists, campaign catalogues, hirelings,
+mechanics) resolves against the canonical catalogue. Context variables
+(prefix "$") belong to procedures and are excluded.
 """
 from __future__ import annotations
 
@@ -45,12 +45,12 @@ def test_no_duplicate_item_ids() -> None:
     assert len(ids) == sum(
         len(yaml.safe_load(path.read_text(encoding="utf-8")).get("items", []))
         for path in ITEMS.glob("*.yaml")
-    ), "ids duplicados en catalog/items"
+    ), "duplicated ids in catalog/items"
 
 
 def test_no_two_items_share_a_normalized_name() -> None:
-    # shortbow/short_bow y superior_black_powder/superior_blackpowder eran dos
-    # fichas canónicas para el mismo objeto con grafías distintas.
+    # shortbow/short_bow and superior_black_powder/superior_blackpowder used to
+    # be two canonical records for the same object with different spellings.
     names: dict[str, list[str]] = {}
     for path in ITEMS.glob("*.yaml"):
         for item in yaml.safe_load(path.read_text(encoding="utf-8")).get("items", []):

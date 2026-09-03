@@ -1,4 +1,4 @@
-"""KnowledgePort: lectura canónica de bandas/perfiles para el Campaign Manager."""
+"""KnowledgePort: canonical warband/profile reads for the Campaign Manager."""
 from mordheim_campaign.application.knowledge_port import CHARACTERISTIC_KEYS, KnowledgePort
 from mordheim_campaign.application.state import make_draft_state
 
@@ -6,7 +6,7 @@ from mordheim_campaign.application.state import make_draft_state
 def test_options_expose_every_canonical_warband():
     port = KnowledgePort()
     options = port.options()
-    assert len(options) >= 80  # colecciones mordheim + trollheim del ruleset
+    assert len(options) >= 80  # mordheim + trollheim collections of the ruleset
     assert {option.collection for option in options} == {"mordheim", "trollheim"}
     for option in options:
         assert option.band_id and option.name
@@ -22,7 +22,7 @@ def test_sisters_roster_is_canonical():
     assert rules.minimum_models == 3
     assert rules.maximum_models == 15
     assert rules.starting_gold == 500
-    assert rules.hero_limit == 5  # matriarca 1 + augur 1 + superioras 3
+    assert rules.hero_limit == 5  # matriarch 1 + augur 1 + sisters superior 3
 
     profiles = {profile.profile_id: profile for profile in port.profiles(option.collection, option.band_id)}
     matriarch = profiles["sigmarite-matriarch"]
@@ -61,7 +61,7 @@ def test_every_warband_has_usable_hero_profiles():
 
 
 def test_every_kb_draft_starter_is_legal():
-    """El borrador inicial derivado de la KB cumple la legalidad para toda banda."""
+    """The initial draft derived from the KB is legal for every warband."""
     port = KnowledgePort()
     for option in port.options():
         campaign = make_draft_state(port, option.band_id, collection=option.collection).campaign
@@ -83,7 +83,7 @@ def test_equipment_offers_resolve_canonical_item_names():
     assert by_id["sigmarite_hammer"].name == "Sigmarite Hammer"
     assert by_id["light_armour"].name == "Light Armour"
     assert by_id["dagger"].cost == 2
-    # Cada lista declarada por la banda es visible como oferta de creación.
+    # Every list declared by the warband is visible as a creation offer.
     option = port.warband("mordheim", "sisters-of-sigmar")
     lists = {offer.list_id for offer in offers}
     assert "sisters-of-sigmar-equipment-lists" in lists
@@ -95,5 +95,5 @@ def test_unknown_warband_raises():
         port.warband("mordheim", "does-not-exist")
     except ValueError as exc:
         assert "Unknown warband" in str(exc)
-    else:  # pragma: no cover - defensivo
+    else:  # pragma: no cover - defensive
         raise AssertionError("expected an unknown-warband error")

@@ -1,4 +1,4 @@
-"""Secuencias mínimas de reglas complejas."""
+"""Minimal sequences of complex rules."""
 from __future__ import annotations
 
 from mordheim_combat.vectorized import KNOCKED_DOWN

@@ -1,4 +1,4 @@
-"""combat.modular.aftermath: responsabilidad extraída sin alterar las reglas."""
+"""combat.modular.aftermath: responsibility extracted without altering the rules."""
 from __future__ import annotations
 from mordheim_combat import phases
 

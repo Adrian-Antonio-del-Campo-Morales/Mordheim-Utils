@@ -112,7 +112,7 @@ class AddWarriorDialog(tk.Toplevel):
         ttk.Button(actions, text=label, style="Accent.TButton", command=self._add).pack(side="right")
 
     def _quantity_limits(self, profile: WarbandProfile) -> int:
-        """Cantidad máxima para una fila nueva según límites del roster."""
+        """Maximum quantity for a new row according to the roster limits."""
         campaign = self.controller.state.campaign
         taken, member_max = self.controller.profile_allowance(profile)
         capacity = campaign.maximum_models - campaign.draft_model_count

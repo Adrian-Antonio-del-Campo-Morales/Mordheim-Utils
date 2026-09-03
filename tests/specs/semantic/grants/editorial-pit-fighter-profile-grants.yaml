@@ -11,9 +11,9 @@ specifications:
   - {target: rule/mordheim/pit-fighters/pursuers--pit-fighter/trait.pit-fighter, digest: 611d5210e07a63256c111c02138fd2abf5ddaf14df928f0734e5bcd5e99d0988}
   - {target: rule/mordheim/pit-fighters/ogre-pit-fighter--pit-fighter/trait.pit-fighter, digest: a25fbc53b776d072678b3f6dfcb35184382ef96ebccb781c8a85f2c0026d178b}
   interpretation: >-
-    Cada una de las seis reglas de perfil concede el rasgo Pit Fighter al perfil
-    nombrado. Esta obligación verifica la concesión editorial; los efectos del
-    rasgo en contextos de terreno no se inventan dentro del duelo aislado.
+    Each of the six profile rules grants the Pit Fighter trait to the named profile. This obligation
+    verifies the editorial grant; the trait's effects in terrain contexts are not invented inside the
+    isolated duel.
   cases:
   - {id: pit-king, roles: [grant, accepted], operation: trait_presence, attacker: {band_id: pit-fighters, profile_id: pit-king}, context: {tag: pit_fighter}, expect: {result.present: true}}
   - {id: slayer, roles: [grant, accepted], operation: trait_presence, attacker: {band_id: pit-fighters, profile_id: dwarf-troll-slayer}, context: {tag: pit_fighter}, expect: {result.present: true}}
