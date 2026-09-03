@@ -20,7 +20,6 @@ mordheim_knowledge     KB loading and validation (sources/knowledge), resource p
 mordheim_construction  profile compilation and equipment/choice legality
 mordheim_combat        phases, modular engine (oracle), vectorized engine, kernel, native backend
 mordheim_ui            shared Tkinter theme and generic widgets
-mordheim_utils         central CLI for both apps and every utility
 ```
 
 The knowledge base lives once in `sources/knowledge/` (371 YAML files: warbands,
@@ -38,37 +37,40 @@ python -m pip install -e ".[dev]"
 
 ### Central command line
 
-`mordheim-utils` is the single entry point for both applications and every
-utility. `--help` lists all commands; any command followed by `--help` shows
-its detailed arguments (the lab commands reuse the Combat Lab parsers
-verbatim):
+`tools/mordheim-utils.py` is the single launcher for both applications and
+every utility — a plain script, nothing to install. `--help` lists every
+command; a delegated command keeps its own parser, so `... benchmark --help`
+shows the exact detailed arguments of the real command:
 
 ```powershell
-mordheim-utils --help                # overview of every command
-mordheim-utils benchmark --help      # detailed arguments of one command
-mordheim-utils combat-lab            # open the Combat Lab application
-mordheim-utils warband-manager       # open the Campaign Manager application
-mordheim-utils verify                # run the semantic specifications
-mordheim-utils parity --require-complete
-mordheim-utils tests --scope engines # run the engine test suites
-mordheim-utils doctor                # environment, engines and KB location
+python tools/mordheim-utils.py --help                # overview of every command
+python tools/mordheim-utils.py benchmark --help      # detailed arguments of one command
+python tools/mordheim-utils.py combat-lab            # open the Combat Lab application
+python tools/mordheim-utils.py warband-manager       # open the Campaign Manager application
+python tools/mordheim-utils.py verify                # run the semantic specifications
+python tools/mordheim-utils.py parity --require-complete
+python tools/mordheim-utils.py tests --scope engines # run the engine test suites
+python tools/mordheim-utils.py doctor                # environment, engines and KB location
 ```
 
 The commands are `combat-lab`, `warband-manager`, `benchmark`, `parity`,
 `test-report`, `verify`, `audit`, `validate`, `tests` (with `--scope` filters
 and arbitrary pytest flags forwarded), `combine-kb`, `build-native` and
-`doctor`. `python -m mordheim_utils` behaves identically.
+`doctor`. Each one just runs the matching module or script (`python -m
+mordheim_combat_lab <command>` for the lab utilities, `python -m
+mordheim_campaign`, `python -m pytest`, `tools/kb/combine_kb_yaml.py`), so
+the underlying entry points remain callable directly and nothing drifts.
 
 ### Combat Lab
 
 ```powershell
 python -m mordheim_combat_lab
-mordheim-utils validate
-mordheim-utils verify
-mordheim-utils parity --require-complete
-mordheim-utils test-report
-mordheim-utils audit
-mordheim-utils benchmark -n 100000
+python tools/mordheim-utils.py validate
+python tools/mordheim-utils.py verify
+python tools/mordheim-utils.py parity --require-complete
+python tools/mordheim-utils.py test-report
+python tools/mordheim-utils.py audit
+python tools/mordheim-utils.py benchmark -n 100000
 python -m pytest -q
 ```
 
@@ -109,12 +111,14 @@ src/
   mordheim_ui/            shared Tk theme and widgets
   mordheim_combat_lab/    app 1: cli, ui, application, persistence, verification
   mordheim_campaign/      app 2: application, persistence, ui
-  mordheim_utils/         central CLI (apps + utilities, two-level help)
 tests/
   specs/                  structural contract + semantic scenarios (verification corpus)
   architecture/           boundaries between packages and executables
 docs/                     architecture, structure and task guides
-tools/                    KB helpers and Windows packaging scripts
+tools/
+  mordheim-utils.py       central launcher: both apps and every utility (no install)
+  kb/                     KB helper scripts (combine_kb_yaml.py)
+  windows/                Windows packaging scripts
 ```
 
 See [the architecture](docs/architecture.md), the
