@@ -20,6 +20,7 @@ mordheim_knowledge     KB loading and validation (sources/knowledge), resource p
 mordheim_construction  profile compilation and equipment/choice legality
 mordheim_combat        phases, modular engine (oracle), vectorized engine, kernel, native backend
 mordheim_ui            shared Tkinter theme and generic widgets
+mordheim_utils         central CLI for both apps and every utility
 ```
 
 The knowledge base lives once in `sources/knowledge/` (371 YAML files: warbands,
@@ -35,16 +36,39 @@ Requires Python 3.10 or later.
 python -m pip install -e ".[dev]"
 ```
 
+### Central command line
+
+`mordheim-utils` is the single entry point for both applications and every
+utility. `--help` lists all commands; any command followed by `--help` shows
+its detailed arguments (the lab commands reuse the Combat Lab parsers
+verbatim):
+
+```powershell
+mordheim-utils --help                # overview of every command
+mordheim-utils benchmark --help      # detailed arguments of one command
+mordheim-utils combat-lab            # open the Combat Lab application
+mordheim-utils warband-manager       # open the Campaign Manager application
+mordheim-utils verify                # run the semantic specifications
+mordheim-utils parity --require-complete
+mordheim-utils tests --scope engines # run the engine test suites
+mordheim-utils doctor                # environment, engines and KB location
+```
+
+The commands are `combat-lab`, `warband-manager`, `benchmark`, `parity`,
+`test-report`, `verify`, `audit`, `validate`, `tests` (with `--scope` filters
+and arbitrary pytest flags forwarded), `combine-kb`, `build-native` and
+`doctor`. `python -m mordheim_utils` behaves identically.
+
 ### Combat Lab
 
 ```powershell
 python -m mordheim_combat_lab
-python -m mordheim_combat_lab validate
-python -m mordheim_combat_lab verify
-python -m mordheim_combat_lab parity --require-complete
-python -m mordheim_combat_lab test-report
-python -m mordheim_combat_lab audit
-python -m mordheim_combat_lab benchmark -n 100000
+mordheim-utils validate
+mordheim-utils verify
+mordheim-utils parity --require-complete
+mordheim-utils test-report
+mordheim-utils audit
+mordheim-utils benchmark -n 100000
 python -m pytest -q
 ```
 
@@ -85,6 +109,7 @@ src/
   mordheim_ui/            shared Tk theme and widgets
   mordheim_combat_lab/    app 1: cli, ui, application, persistence, verification
   mordheim_campaign/      app 2: application, persistence, ui
+  mordheim_utils/         central CLI (apps + utilities, two-level help)
 tests/
   specs/                  structural contract + semantic scenarios (verification corpus)
   architecture/           boundaries between packages and executables
