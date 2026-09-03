@@ -725,7 +725,9 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
         return None
     charge_rows = charging[active]
     strength = (np.full(active.size,effect.fixed_strength,dtype=np.int16) if effect.fixed_strength
-                else attacker_state.strength[active]+effect.strength_bonus)
+                else attacker_state.strength[active]
+                + effect.strength_bonus if effect.strength_bonus
+                else attacker_state.strength[active])
     if unarmed_adjustment:
         strength += 1
     if has(effect,"mechanic.energy-focus") and any(
@@ -750,7 +752,9 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
                        if effect.armour_strength_modifier else strength)
     if defender.global_effects.incoming_strength_modifier:
         strength = np.maximum(1, strength + defender.global_effects.incoming_strength_modifier)
-    attacker_ws = attacker_state.weapon_skill[active] + weapon.weapon_skill_bonus
+    attacker_ws = attacker_state.weapon_skill[active]
+    if weapon.weapon_skill_bonus:
+        attacker_ws = attacker_ws + weapon.weapon_skill_bonus
     knife_fighting=has(effect,"skill.knife-fighting") and (
         has(weapon,"weapon.dagger") or has(weapon,"weapon.yambiya")
     )
@@ -1261,11 +1265,11 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
         extra = _prepare_weapon_attack(attacker, defender, weapon, rows, charging, attacker_state, defender_state, rng, first_round)
         if extra is not None: prepared_attacks.append(extra)
     best_roll = np.full(charging.size,-1,dtype=np.int8)
-    second_roll = np.full(charging.size,-1,dtype=np.int8)
+    two_parries = _parry_capacity(defender) == 2
+    second_roll = np.full(charging.size,-1,dtype=np.int8) if two_parries else None
+    second_owner = np.full(charging.size,-1,dtype=np.int32) if two_parries else None
     selected = [np.zeros(0,dtype=np.int64) for _ in prepared_attacks]
     owner = np.full(charging.size,-1,dtype=np.int32)
-    second_owner = np.full(charging.size,-1,dtype=np.int32)
-    two_parries = _parry_capacity(defender) == 2
     positions_by_attack: list[np.ndarray] = []
     for attack_index,prepared in enumerate(prepared_attacks):
         positions=np.searchsorted(prepared.active,prepared.hit_rows)
@@ -1284,7 +1288,10 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
         best_roll[chosen]=values[better]
         owner[chosen]=attack_index
     for attack_index in range(len(prepared_attacks)):
-        selected[attack_index]=np.flatnonzero((owner==attack_index) | (second_owner==attack_index))
+        selected[attack_index] = (
+            np.flatnonzero((owner==attack_index) | (second_owner==attack_index))
+            if two_parries else np.flatnonzero(owner==attack_index)
+        )
     defences_resolved=False
     replaced_attack_indices: set[int] = set()
     if attacker.global_effects.bear_hug and prepared_attacks:
