@@ -1,8 +1,8 @@
-# Convenciones de modelado de campaña
+# Campaign modelling conventions
 
-## Efectos de heridas
+## Injury effects
 
-Los efectos son operaciones tipadas, no texto libre ni estado de campaña.
+Effects are typed operations, not free text or campaign state.
 
 ```yaml
 - type: warrior.add_condition
@@ -37,30 +37,30 @@ Los efectos son operaciones tipadas, no texto libre ni estado de campaña.
     experience: { kind: fixed, value: 2 }
 ```
 
-`condition_id` debe existir como condición canónica antes de usarse. La
-condición contiene la regla persistente; el efecto solo la aplica.
+`condition_id` must exist as a canonical condition before being used. The
+condition holds the persistent rule; the effect only applies it.
 
-Una subtabla usa `resolution.type: roll_table`, con `dice` y `branches`. Cada
-rama tiene `id`, `when` (intervalo inclusivo) y sus propios `effects`.
+A sub-table uses `resolution.type: roll_table`, with `dice` and `branches`. Each
+branch has `id`, `when` (inclusive interval) and its own `effects`.
 
-## Resultados de avances
+## Advancement results
 
-`advancement_tables` describe el resultado del 2D6, no el umbral de experiencia.
-Un `result` usa estas formas:
+`advancement_tables` describes the outcome of the 2D6, not the experience
+threshold. A `result` uses these forms:
 
 ```yaml
-# Aumento directo.
+# Direct increase.
 type: characteristic_increase
 characteristic: weapon_skill
 amount: 1
 
-# Elección.
+# Choice.
 type: choose_one
 options:
 - { type: characteristic_increase, characteristic: weapon_skill, amount: 1 }
 - { type: characteristic_increase, characteristic: ballistic_skill, amount: 1 }
 
-# Subtirada.
+# Sub-roll.
 type: roll_table
 dice: { count: 1, sides: 6 }
 branches:
@@ -69,14 +69,14 @@ branches:
 - when: { min: 4, max: 6 }
   result: { type: characteristic_increase, characteristic: attacks, amount: 1 }
 
-# Habilidad o hechizo, cuando proceda.
+# Skill or spell, where applicable.
 type: choose_one
 options:
 - { type: choose_skill, source: hero_skill_access }
 - { type: generate_spell, source: wizard_spell_list, when: subject_is_wizard }
 ```
 
-`Lad's Got Talent` usa:
+`Lad's Got Talent` uses:
 
 ```yaml
 type: promote_henchman
@@ -89,10 +89,10 @@ remaining_group:
   reroll_current_advance_excluding: [lads_got_talent]
 ```
 
-## Test de rareza
+## Rarity test
 
-La regla recibe el objeto solicitado como contexto y lee su rareza del Trading
-Post; no repite `Rare N` en la regla.
+The rule receives the requested item as context and reads its rarity from the
+Trading Post; it does not repeat `Rare N` in the rule.
 
 ```yaml
 id: campaign.trading.rarity-test
@@ -108,13 +108,13 @@ success_when: greater_than_or_equal_to_target
 units_per_success: 1
 ```
 
-Un Hero fuera de combate no es `eligible_hero`. Los objetos `common` no usan
-este test.
+A Hero out of action is not an `eligible_hero`. `common` items do not use this
+test.
 
-## Procedimientos de exploración
+## Exploration procedures
 
-`follow_up` es un árbol con `sequence`, `roll_table`, `characteristic_test`,
-`choose_one`, `conditional` y `grant`.
+`follow_up` is a tree with `sequence`, `roll_table`, `characteristic_test`,
+`choose_one`, `conditional` and `grant`.
 
 ```yaml
 follow_up:
@@ -139,10 +139,10 @@ follow_up:
       games: { kind: fixed, value: 1 }
 ```
 
-Para D3/D6: `{ kind: dice, dice: { count: 1, sides: 3 } }` o `sides: 6`.
-Para objetos: `items: [{ item_id: sword, quantity: { kind: fixed, value: 1 } }]`.
+For D3/D6: `{ kind: dice, dice: { count: 1, sides: 3 } }` or `sides: 6`.
+For items: `items: [{ item_id: sword, quantity: { kind: fixed, value: 1 } }]`.
 
-Las ramas por banda usan `conditional`; no duplican el resultado:
+Per-warband branches use `conditional`; they do not duplicate the outcome:
 
 ```yaml
 type: conditional
@@ -152,5 +152,5 @@ cases:
 default: [...]
 ```
 
-`bind` crea una variable local del procedimiento. Tiradas, opciones y
-recompensas aplicadas se guardan solo en el estado externo de campaña.
+`bind` creates a local variable of the procedure. Rolls, choices and applied
+rewards are saved only in the external campaign state.

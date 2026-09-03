@@ -1,5 +1,5 @@
-"""mordheim_ui — capa Tkinter compartida por las aplicaciones del monorepo.
+"""mordheim_ui — shared Tkinter layer for the monorepo applications.
 
-Tema, tokens de color y widgets genéricos. Las aplicaciones aportan sus
-pantallas específicas; aquí no vive ninguna regla ni consulta la KB.
+Theme, colour tokens and generic widgets. Applications provide their own
+specific screens; no rule lives here and the KB is never queried.
 """

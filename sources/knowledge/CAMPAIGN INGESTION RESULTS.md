@@ -2,26 +2,25 @@
 
 ## Hired Swords & Dramatis Personae
 
-Este documento resume el estado final de la ingestión de **Hired Swords** y **Dramatis Personae**, las decisiones de modelado tomadas durante el proceso y los trabajos pendientes para integrar esta parte en la KB compartida.
+This document summarizes the final state of the **Hired Swords** and **Dramatis Personae** ingestion, the modelling decisions taken during the process and the pending work to integrate this part into the shared KB.
 
-> Este archivo es documentación de ingestión. No forma parte del modelo ejecutable de reglas.
+> This file is ingestion documentation. It is not part of the executable rules model.
 
-## Estado
+## Status
 
-- **Perfiles identificados:** 102
+- **Profiles identified:** 102
 - **Hired Swords:** 72
 - **Dramatis Personae:** 30
-- **Perfiles normalizados dentro de scope:** 98
-- **Perfiles deliberadamente out of scope:** 4
-- **Entradas de contratación de campaña:** 98
-- **Elegibilidad modelada:** 98/98
-- **Reglas dinámicas/condicionales que debe evaluar la aplicación:** 18
-- **KB compartida original modificada:** Sí — catálogo v2 integrado y publicado, perfiles/grupos ya viven en `sources/knowledge`
+- **Profiles normalized within scope:** 98
+- **Profiles deliberately out of scope:** 4
+- **Campaign hiring entries:** 98
+- **Eligibility modelled:** 98/98
+- **Dynamic/conditional rules the application must evaluate:** 18
+- **Shared KB originally modified:** Yes — v2 catalogue integrated and published; profiles/groups already live in `sources/knowledge`
 
-La ingestión funcional de Hired Swords y Dramatis Personae se considera **completa**. La **integración en la KB compartida de Mordheim-Utils está hecha**:
-`sources/knowledge/catalog/campaign/hired-swords-and-dramatis.yaml` está en schema v2 con `status: published`, sus 98 entradas resuelven contra `catalog/hirelings/**` y `registry/warband-groups.yaml`, y los invariantes quedan cubiertos en `tests/knowledge/test_campaign_catalogs.py` (sección Mercenarios). Los TODOs 2-5 siguientes son trabajo de cargadores/runtime de las aplicaciones, fuera del alcance de datos de la KB.
+The functional ingestion of Hired Swords and Dramatis Personae is considered **complete**. The **integration into the shared Mordheim-Utils KB is done**: `sources/knowledge/catalog/campaign/hired-swords-and-dramatis.yaml` is schema v2 with `status: published`, its 98 entries resolve against `catalog/hirelings/**` and `registry/warband-groups.yaml`, and the invariants are covered in `tests/knowledge/test_campaign_catalogs.py` (Mercenaries section). The following TODOs 2–5 are loader/runtime work in the applications, outside the scope of the KB data.
 
-## Qué información vive en cada parte de la KB
+## Where each piece of information lives in the KB
 
 ### `catalog/hirelings/**`
 - canonical hireling identity
@@ -42,13 +41,13 @@ La ingestión funcional de Hired Swords y Dramatis Personae se considera **compl
 ### `registry/warband-groups.yaml`
 - explicit reusable sets of canonical band_id values used by hiring eligibility
 
-## Convenciones de IDs
+## ID conventions
 
 - **hired sword profile:** `hireling.hired-sword.<slug>`
 - **dramatis profile:** `hireling.dramatis.<slug>`
 - **warband group:** `warband-group.<slug>`
 
-## Decisiones e invariantes de modelado
+## Modelling decisions and invariants
 
 - Do not reuse a band profile as a hireling profile merely because names match.
 - Existing canonical item_id values are referenced; item definitions are not duplicated.
@@ -57,16 +56,16 @@ La ingestión funcional de Hired Swords y Dramatis Personae se considera **compl
 - Campaign-resolved rolls, choices and rewards remain outside the KB.
 - Current-roster and selected-warband-variant eligibility checks live as hireling rules and are evaluated by the application.
 
-## Decisiones específicas tomadas durante la ingestión
+## Specific decisions taken during the ingestion
 
 - **hireling.hired-sword.goblin-lantern-bearer** — May be hired by any warband.
 - Dynamic roster-dependent restrictions are modelled at hireling rule level and checked by the application.
 - Chaos/followers-of-Chaos/devoted-to-Chaos hireling restrictions use warband-group.chaotic.
 - Halfling Thief uses warband-group.elf rather than a Wood-Elf-only group.
 
-## Trabajo deliberadamente fuera de scope
+## Deliberately out-of-scope work
 
-Estos cuatro Dramatis no bloquean el cierre de la ingestión:
+These four Dramatis entries do not block the closing of the ingestion:
 
 - **`hireling.dramatis.ulli-and-marquand`** — Composite entry with two independent warrior profiles.
 - **`hireling.dramatis.belandysh-condemned-champion-of-chen`** — Random characteristics plus random-characteristic mount.
@@ -75,41 +74,41 @@ Estos cuatro Dramatis no bloquean el cierre de la ingestión:
 
 # TODO
 
-## Necesario antes de integrar en la KB compartida
+## Required before integrating into the shared KB
 
-### 1. hirelings.integration.schema-v2 — COMPLETADO
+### 1. hirelings.integration.schema-v2 — COMPLETED
 
-**Objetivo:** `catalog/campaign/hired-swords-and-dramatis.yaml`
+**Target:** `catalog/campaign/hired-swords-and-dramatis.yaml`
 
-Schema_version 2 integrado en la KB compartida (`status: published`), con invariantes en `tests/knowledge/test_campaign_catalogs.py`.
+Schema_version 2 integrated into the shared KB (`status: published`), with invariants in `tests/knowledge/test_campaign_catalogs.py`.
 
-Incluye:
+Includes:
 - hiring_fee/upkeep resource structures instead of hiring_fee_gc/upkeep_gc
 - availability_procedures and special availability kinds
 - eligibility simple lists
 - eligibility boolean expression with all_of/any_of/not
 
-> Pendiente solo en las aplicaciones: actualizar los consumidores que esperan schema_version 1 (cargadores/runtime), nunca en la KB de datos.
+> Pending only in the applications: updating the consumers that expect schema_version 1 (loaders/runtime), never in the KB data.
 
 ### 2. hirelings.integration.profile-resolution
 
-**Objetivo:** `shared loaders/validators`
+**Target:** `shared loaders/validators`
 
 Resolve profile_id references against catalog/hirelings/** as well as existing band profile locations.
 
 ### 3. hirelings.integration.warband-groups
 
-**Objetivo:** `shared loaders/validators and campaign evaluator`
+**Target:** `shared loaders/validators and campaign evaluator`
 
 Load registry/warband-groups.yaml and resolve warband-group.* references used by eligibility.
 
 ### 4. hirelings.integration.application-rules
 
-**Objetivo:** `campaign/warband-building application`
+**Target:** `campaign/warband-building application`
 
 Implement the 18 campaign-eligibility rule IDs that depend on current roster composition, current hirelings, selected Mercenary variant, or a conditional acceptance roll. Do not infer these from static warband groups.
 
-Reglas a implementar en la aplicación (18):
+Rules to implement in the application (18):
 - `hireling.dramatis.dijin-katal-the-renegade-assassin.rule.campaign-eligibility`
 - `hireling.dramatis.grand-master-ippan-shu.rule.campaign-eligibility`
 - `hireling.dramatis.maximilian-the-mad.rule.campaign-eligibility`
@@ -131,86 +130,85 @@ Reglas a implementar en la aplicación (18):
 
 ### 5. hirelings.integration.resource-ids
 
-**Objetivo:** `campaign resource handling`
+**Target:** `campaign resource handling`
 
 Confirm/port canonical handling for every resource used by hireling costs, especially treasures and campaign_points.
 
-Recursos afectados:
+Resources affected:
 - `gold_crowns`
 - `wyrdstone_fragments`
 - `treasures`
 - `campaign_points`
 
-### 6. campaign.runtime-loaders — PENDIENTE (no iniciado)
+### 6. campaign.runtime-loaders — PENDING (not started)
 
-**Objetivo:** `mordheim_knowledge` (runtime de aplicaciones; fuera del alcance de datos)
+**Target:** `mordheim_knowledge` (application runtime; outside the data scope)
 
-Implementar los loaders de campaña pedidos en el siguiente milestone, **sin tocar la KB**
-ni el motor vectorizado:
-- `load_campaign_catalog(...)` — cargar los catálogos de `catalog/campaign/**`
+Implement the campaign loaders requested for the next milestone, **without touching the KB**
+or the vectorized engine:
+- `load_campaign_catalog(...)` — load the catalogues from `catalog/campaign/**`
   (scenarios, post-battle-sequence, experience-and-advances, serious-injuries,
-  trading-post, magic, mutations, hired-swords-and-dramatis, …) validando
-  `schema_version`, unicidad de IDs por documento y resolución de referencias
+  trading-post, magic, mutations, hired-swords-and-dramatis, …), validating
+  `schema_version`, per-document ID uniqueness and reference resolution
   (item_ids, profile_ids, lore_ids, band_ids, warband-group.*).
-- `load_post_battle_sequence(...)` — cargador específico del catálogo
-  `post-battle-sequence.yaml` con la misma validación.
-- Empezar por un caso de uso que reciba estado de campaña (roster + resultados de
-  partida) y consuma los catálogos cargados; el contrato de carga debe ser reutilizable
-  por `mordheim_campaign.application.knowledge_port`.
+- `load_post_battle_sequence(...)` — specific loader for the
+  `post-battle-sequence.yaml` catalogue with the same validation.
+- Start from a use case that receives campaign state (roster + match results)
+  and consumes the loaded catalogues; the loading contract must be reusable
+  by `mordheim_campaign.application.knowledge_port`.
 
-## Seguimiento de KB no bloqueante para la contratación
+## Non-blocking KB tracking for hiring
 
-### 1. hirelings.groups.good-aligned — COMPLETADO
+### 1. hirelings.groups.good-aligned — COMPLETED
 
-**Objetivo:** `registry/warband-groups.yaml`
+**Target:** `registry/warband-groups.yaml`
 
-Auditoría de pertenencia de `warband-group.good-aligned` completada y `status: partial`
-eliminado (**40 bandas**). No contradice a `warband-group.evil` ni a `warband-group.chaotic`.
+Membership audit of `warband-group.good-aligned` completed and `status: partial`
+removed (**40 warbands**). It does not contradict `warband-group.evil` nor `warband-group.chaotic`.
 
-**Método (banda a banda contra mordheimer.net):** las páginas de warband del sitio no
-publican una etiqueta de alineamiento; la clasificación se apoya en (a) los textos
-oficiales de disponibilidad de Hired Swords (paridad expresa de acceso con las bandas
-Human Mercenary, acceso sin restricción a espadas de contrato de alineamiento bueno,
-o listas de exclusión cortas que las dejan disponibles) y (b) la pertenencia a
-razas/órdenes canónicamente buenas (Enanos, Altos Elfos, Medios, órdenes de Sigmar,
-caballeros bretonianos, instituciones imperiales), cuando la banda no pertenece a los
-grupos evil/chaotic del propio registro.
+**Method (warband by warband against mordheimer.net):** the warband pages on the site
+do not publish an alignment tag; the classification relies on (a) the official
+Hired Swords availability texts (express parity of access with the Human Mercenary
+warbands, unrestricted access to good-aligned contract swords, or short exclusion
+lists that leave them available) and (b) membership of canonically good races/orders
+(Dwarfs, High Elves, Halflings, Sigmar's orders, Bretonnian knights, imperial
+institutions), when the warband does not belong to the registry's own evil/chaotic groups.
 
-**Añadidas en la auditoría (14):**
+**Added during the audit (14):**
 - `hochland-bandits`, `kislevites`, `merchant-caravans`, `pirates`, `lustria-pirates` —
-  la página declara acceso a Hired Swords idéntico al de una banda Human Mercenary
+  the page declares Hired Swords access identical to a Human Mercenary warband
   (pirates: «same access to Hired Swords & any other items as for a regular human
   Mercenary Warband»).
-- `imperial-outriders` — solo espadas montadas, incluida la Roadwarden (de contrato bueno).
-- `outlaws-of-stirwood-forest` — únicamente 4 exclusiones (Bounty Hunter, Wolf-Priest of
-  Ulric, Norse Shaman, Dark Elf Assassin); el resto de espadas, incluidas las de contrato
-  bueno, queda disponible.
+- `imperial-outriders` — mounted swords only, including the Roadwarden (good-aligned contract).
+- `outlaws-of-stirwood-forest` — only 4 exclusions (Bounty Hunter, Wolf-Priest of
+  Ulric, Norse Shaman, Dark Elf Assassin); the remaining swords, including the
+  good-aligned contract ones, stay available.
 - `bretonnian-knights`, `bretonnian-chapel-guard`, `chaos-streets-bretonnian-knights` —
-  orden caballeresca bretoniana (Chivalry, Holy Water, sin venenos/drogas).
-- `chaos-streets-sigmar-protectorate` — espejo de `warband-group.sigmar-devoted`
-  (Sisters of Sigmar y Witch Hunters ya estaban incluidas).
-- `lustria-high-elves` — espejo de `warband-group.high-elf` (Shadow Warriors y Sons of
-  Nagarythe ya estaban incluidos).
-- `mootlanders` — raza media, sin declaración contraria en la página (convención de raza).
-- `gunnery-school-of-nuln` — institución estatal imperial; la página no publica sección de
-  Hired Swords (inferencia documentada).
+  Bretonnian knightly order (Chivalry, Holy Water, no poisons/drugs).
+- `chaos-streets-sigmar-protectorate` — mirror of `warband-group.sigmar-devoted`
+  (Sisters of Sigmar and Witch Hunters were already included).
+- `lustria-high-elves` — mirror of `warband-group.high-elf` (Shadow Warriors and Sons of
+  Nagarythe were already included).
+- `mootlanders` — halfling race, no contrary declaration on the page (race convention).
+- `gunnery-school-of-nuln` — imperial state institution; the page does not publish a
+  Hired Swords section (documented inference).
 
-**Dudas residuales (bandas sin declaración en la fuente, tratadas como no-buenas/
-neutrales y, por tanto, NO incluidas):** `horned-hunters`, `lustrian-reavers`,
+**Residual doubts (warbands with no source declaration, treated as non-good/
+neutral and therefore NOT included):** `horned-hunters`, `lustrian-reavers`,
 `khemri-mages`, `khemri-thieves-guild`, `chaos-streets-arcane-society`,
 `chaos-streets-deathbringers`, `chaos-streets-mordheim-inhabitants`, `lustria-pygmies`,
-y las bandas orcas/goblins (`black-orcs`, `orc-mob`, `forest-goblins`, `night-goblins-*`,
-`lustria-savage-goblins`, `khemri-hobgoblin-raiders`, `chaos-streets-greenskins`), que el
-canon de contratación excluye expresamente («Orcs & Goblins»). Si una fuente futura las
-clasifica, la auditoría debe repetirse solo para esas bandas.
+and the orc/goblin warbands (`black-orcs`, `orc-mob`, `forest-goblins`, `night-goblins-*`,
+`lustria-savage-goblins`, `khemri-hobgoblin-raiders`, `chaos-streets-greenskins`), which
+the hiring canon expressly excludes («Orcs & Goblins»). If a future source classifies
+them, the audit must be repeated only for those warbands.
 
 ### 2. hirelings.profile-dependencies
 
-**Objetivo:** `catalog items/skills/magic/companions and related rule catalogs`
+**Target:** `catalog items/skills/magic/companions and related rule catalogs`
 
 Canonicalize the remaining intrinsic profile references below when the corresponding shared KB schemas/catalogs exist. These do not prevent hiring/cost/eligibility from being represented.
 
-Hay **59 referencias intrínsecas pendientes**:
+There are **59 pending intrinsic references**:
 - `advancement_choice`: 1
 - `alternate_hire_payment`: 1
 - `alternate_profile`: 1
@@ -235,17 +233,17 @@ Hay **59 referencias intrínsecas pendientes**:
 - `special_skill_options`: 1
 - `summoning_procedure`: 2
 
-> **Actualización (enlace con magic.yaml):** las 15 referencias `spell_list`
-> de los perfiles de hired swords y dramatis personae quedaron enlazadas con
-> los `lore_id` canónicos de `catalog/campaign/magic.yaml` (45 asignaciones
-> lore↔mago y 31 lores con 188 conjuros; `pending_lores` vacío). Se eliminaron
-> de `unresolved_references` de los perfiles (0 pendientes de tipo
-> `spell_list`). Incluye el alta del lore canónico `lore.dark-magic` (lista
-> Dark Magic del Dark Mage, Letters of the Damned 6), transcrito desde su
-> página de contratación al no estar indexado en la sección de magia del sitio.
+> **Update (link with magic.yaml):** the 15 `spell_list` references
+> of the hired sword and dramatis personae profiles were linked with
+> the canonical `lore_id` values of `catalog/campaign/magic.yaml` (45 lore↔wizard
+> assignments and 31 lores with 188 spells; `pending_lores` empty). They were removed
+> from the profiles' `unresolved_references` (0 pending of type
+> `spell_list`). This includes registering the canonical lore `lore.dark-magic` (the
+> Dark Mage's Dark Magic list, Letters of the Damned 6), transcribed from its
+> hiring page because it was not indexed in the magic section of the site.
 
 <details>
-<summary>Ver referencias pendientes una por una</summary>
+<summary>See the pending references one by one</summary>
 
 - **`hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne`** · `summoning_procedure` — Chaos spell-caster + Macabre Tome + Leadership test
 - **`hireling.dramatis.bertha-bestraufrung`** · `skill` — Righteous Fury — Only a band-scoped rule exists in the supplied KB; no global canonical skill ID.
@@ -309,11 +307,11 @@ Hay **59 referencias intrínsecas pendientes**:
 
 </details>
 
-# Validación del paquete
+# Package validation
 
-**Alcance:** structural/internal consistency of the final generated package
+**Scope:** structural/internal consistency of the final generated package
 
-## Comprobaciones
+## Checks
 
 - ✅ all yaml parses
 - ✅ yaml only package
@@ -324,7 +322,7 @@ Hay **59 referencias intrínsecas pendientes**:
 - ✅ goblin lantern bearer unrestricted
 - ✅ good aligned group still marked partial
 
-## Conteos
+## Counts
 
 - **yaml files:** 17
 - **profiles total:** 102
@@ -341,13 +339,13 @@ Hay **59 referencias intrínsecas pendientes**:
 
 > This validation does not replace future loader/runtime integration tests in the shared KB projects.
 
-## Baseline final
+## Final baseline
 
-Los archivos funcionales que forman esta entrega son:
+The functional files that make up this delivery are:
 
 - `catalog/hirelings/hired-swords/*.yaml`
 - `catalog/hirelings/dramatis-personae/*.yaml`
 - `catalog/campaign/hired-swords-and-dramatis.yaml`
 - `registry/warband-groups.yaml`
 
-Este documento (`CAMPAIGN INGESTION.md`) es únicamente la documentación de ingestión e integración.
+This document (`CAMPAIGN INGESTION RESULTS.md`) is only the ingestion and integration documentation.

@@ -1,4 +1,4 @@
-"""Ejecutor y matriz de verificación semántica."""
+"""Semantic verification runner and matrix."""
 from __future__ import annotations
 
 from copy import deepcopy

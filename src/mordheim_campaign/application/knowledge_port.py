@@ -1,11 +1,11 @@
-"""knowledge_port: lectura KB canónica para el gestor de campaña.
+"""knowledge_port: canonical KB reads for the campaign manager.
 
-El recorrido autorizado es ``YAML de la KB → knowledge.loader → application → ui``
-(véase ``sources/knowledge/catalog/campaign/README-HOWTO.md``). Este módulo es la
-frontera ``application`` de ese recorrido: consume exclusivamente los cargadores de
-``mordheim_knowledge`` y expone DTOs planos de bandas, perfiles, límites de banda y
-equipo disponible. Los widgets Tk no deben importar ``mordheim_knowledge`` ni leer
-YAML directamente; deben depender de estos DTOs y de las acciones del controlador.
+The authorised path is ``KB YAML → knowledge.loader → application → ui``
+(see ``sources/knowledge/catalog/campaign/README-HOWTO.md``). This module is the
+``application`` boundary of that path: it consumes exclusively the loaders in
+``mordheim_knowledge`` and exposes flat DTOs for warbands, profiles, warband
+limits and available equipment. Tk widgets must not import ``mordheim_knowledge``
+or read YAML directly; they must depend on these DTOs and controller actions.
 """
 from __future__ import annotations
 
@@ -20,10 +20,10 @@ from mordheim_knowledge.loader import load_skills
 
 CHARACTERISTIC_KEYS = ("M", "WS", "BS", "S", "T", "W", "I", "A", "Ld")
 
-#: Tipos de perfil que se compran en grupos como si fueran secuaces.
+#: Profile types purchased in groups, like henchmen.
 GROUP_PROFILE_TYPES = frozenset({"henchman", "animal"})
 
-#: Etiquetas humanas de las tablas de habilidades canónicas de un perfil.
+#: Human labels for the canonical skill tables of a profile.
 SKILL_TABLE_LABELS = {
     "combat": "Combat",
     "academic": "Academic",
@@ -35,18 +35,18 @@ SKILL_TABLE_LABELS = {
 
 
 class KnowledgePortError(ValueError):
-    """Un identificador de banda/perfil no se resuelve en la KB cargada."""
+    """A warband/profile identifier does not resolve in the loaded KB."""
 
 
 _DICE_EXPRESSION = re.compile(r"(\d*)D(\d+)(?:\+(\d+))?", re.IGNORECASE)
 
 
 def _characteristics(row: dict) -> tuple[dict[str, int], bool]:
-    """Características numéricas; detecta perfiles aleatorios o compuestos.
+    """Numeric characteristics; detects random or composite profiles.
 
-    Los valores en dados (p. ej. ``2D6``) o ausentes (perfiles con componentes)
-    no son individualmente deterministas: se marcan como aleatorios y, como hace
-    el compilador, se proyectan a su valor mínimo para poder mostrarlos.
+    Dice values (e.g. ``2D6``) or absent values (profiles built from components)
+    are not individually deterministic: they are marked as random and, as the
+    compiler does, projected to their minimum value so they can be displayed.
     """
     raw = row.get("characteristics") or {}
     values: dict[str, int] = {}
@@ -72,7 +72,7 @@ def _category_labels(skill_access: tuple[str, ...]) -> tuple[str, ...]:
 
 @dataclass(frozen=True, slots=True)
 class WarbandOption:
-    """Una banda seleccionable para crear una campaña."""
+    """A warband selectable to start a campaign."""
 
     collection: str
     band_id: str
@@ -92,7 +92,7 @@ class WarbandOption:
 
 @dataclass(frozen=True, slots=True)
 class WarbandProfile:
-    """Un perfil canónico del roster de una banda, listo para mostrar y añadir."""
+    """A canonical warband roster profile, ready to show and add."""
 
     collection: str
     band_id: str
@@ -109,7 +109,7 @@ class WarbandProfile:
     starting_skills: tuple[str, ...]
     required: bool
     member_minimum: int
-    member_maximum: int | None  # None = sin tope declarado (tope real: modelos máx.)
+    member_maximum: int | None  # None = no declared cap (real cap: max models)
     group_minimum: int
     group_maximum: int | None
     equipment_list_ids: tuple[str, ...]
@@ -122,7 +122,7 @@ class WarbandProfile:
 
 @dataclass(frozen=True, slots=True)
 class EquipmentOffer:
-    """Un objeto del acceso de equipo canónico de una banda, con su coste de creación."""
+    """An item from a warband's canonical equipment access, with creation cost."""
 
     list_id: str
     list_name: str
@@ -138,7 +138,7 @@ class EquipmentOffer:
 
 @dataclass(frozen=True, slots=True)
 class RosterRules:
-    """Composición y límites canónicos de una banda."""
+    """Canonical composition and limits of a warband."""
 
     minimum_models: int
     maximum_models: int
@@ -151,11 +151,11 @@ class RosterRules:
 
 
 class KnowledgePort:
-    """Read model canónico de bandas/perfiles para el Campaign Manager.
+    """Canonical read model of warbands/profiles for the Campaign Manager.
 
-    No decide reglas ni contiene estado de campaña: mapea los documentos
-    validados por ``mordheim_knowledge`` a DTOs de solo lectura. Los cargadores
-    están cacheados, de modo que el índice de paquetes se construye una vez.
+    It does not decide rules or hold campaign state: it maps the documents
+    validated by ``mordheim_knowledge`` to read-only DTOs. Loaders are cached,
+    so the package index is built only once.
     """
 
     def __init__(self, ruleset: str = "mordheim") -> None:
@@ -182,11 +182,11 @@ class KnowledgePort:
     # ------------------------------------------------------------------ bands
 
     def collections(self) -> tuple[tuple[str, str], ...]:
-        """Colecciones activas para este ruleset: (id, nombre)."""
+        """Active collections for this ruleset: (id, name)."""
         return tuple((str(row["id"]), str(row.get("name") or row["id"])) for row in self._collections)
 
     def options(self, collection: str | None = None) -> tuple[WarbandOption, ...]:
-        """Todas las bandas seleccionables, ordenadas por nombre."""
+        """All selectable warbands, ordered by name."""
         wanted = {collection} if collection else None
         options = []
         for (package_collection, band_id), package in self._packages.items():
@@ -216,7 +216,7 @@ class KnowledgePort:
             raise KnowledgePortError(f"Unknown warband: {collection}/{band_id}") from exc
 
     def find_package(self, band_id: str, collection: str | None = None) -> BandPackage:
-        """Localiza un paquete de banda por su ``band_id`` canónico."""
+        """Locate a warband package by its canonical ``band_id``."""
         if collection is not None and (collection, band_id) in self._packages:
             return self._packages[(collection, band_id)]
         matches = [package for (package_collection, _), package in self._packages.items() if package.band["id"] == band_id]
@@ -227,7 +227,7 @@ class KnowledgePort:
     # ---------------------------------------------------------------- profiles
 
     def roster_rules(self, collection: str, band_id: str) -> RosterRules:
-        """Límites de composición de la banda: modelos, oro inicial y héroes."""
+        """Warband composition limits: models, starting gold and heroes."""
         package = self._packages[(collection, band_id)]
         roster = package.band.get("roster") or {}
         hero_caps = []
@@ -246,7 +246,7 @@ class KnowledgePort:
         )
 
     def profiles(self, collection: str, band_id: str, *, kind: str | None = None) -> tuple[WarbandProfile, ...]:
-        """Perfiles del roster en orden editorial, filtrables por tipo."""
+        """Roster profiles in editorial order, filterable by kind."""
         key = (collection, band_id)
         if key not in self._profiles_cache:
             self._profiles_cache[key] = self._build_profiles(collection, band_id)
@@ -313,7 +313,7 @@ class KnowledgePort:
 
     @staticmethod
     def _inherent_rules(package: BandPackage, profile_id: str) -> tuple[str, ...]:
-        """Reglas fijas del perfil (grant ``profile``) declaradas por la banda."""
+        """Fixed profile rules (grant ``profile``) declared by the warband."""
         names = []
         for rule in package.special_rules:
             applies = rule.get("applies_to") or {}
@@ -329,7 +329,7 @@ class KnowledgePort:
     # -------------------------------------------------------------- equipment
 
     def equipment(self, collection: str, band_id: str) -> tuple[EquipmentOffer, ...]:
-        """Ofertas de equipo de creación: acceso canónico de la banda + nombres de catálogo."""
+        """Creation equipment offers: canonical warband access + catalogue names."""
         package = self._packages[(collection, band_id)]
         offers = []
         for equipment_list in package.equipment_lists:
@@ -354,6 +354,6 @@ class KnowledgePort:
         return str(row["name"]) if row else None
 
     def items_for_profile(self, profile: WarbandProfile) -> tuple[EquipmentOffer, ...]:
-        """Ofertas aplicables a un perfil concreto (sus listas de equipo)."""
+        """Offers applicable to a concrete profile (its equipment lists)."""
         allowed = set(profile.equipment_list_ids)
         return tuple(offer for offer in self.equipment(profile.collection, profile.band_id) if offer.list_id in allowed)

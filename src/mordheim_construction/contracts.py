@@ -1,4 +1,4 @@
-"""construction.contracts: responsabilidad extraída sin alterar las reglas."""
+"""construction.contracts: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from dataclasses import fields

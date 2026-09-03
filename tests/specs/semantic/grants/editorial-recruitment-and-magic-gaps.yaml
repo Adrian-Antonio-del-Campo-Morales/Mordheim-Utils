@@ -1,18 +1,17 @@
 schema_version: 1
 specifications:
 - id: possessed-optional-initial-mutations-ruling
-  question: "¿Possessed puede reclutarse sin mutaciones, como sugiere may, o debe adquirir al menos una? Confirmar para Mordheim y Trollheim."
+  question: "Can a Possessed be recruited without mutations, as may suggests, or must it acquire at least one? Confirm for Mordheim and Trollheim."
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
   - {target: rule/mordheim/cult-of-the-possessed/the-possessed--mutations/compiler.possessed-optional-mutations-at-recruitment, digest: 6b5221569ef267afdcdf8d510bef50f32c5d0ce31c46a3c73affef2907e6ae17}
   - {target: rule/trollheim/trollheim-cult-of-the-possessed/the-possessed--mutations/compiler.possessed-optional-zero-to-two-mutations-at-recruitment, digest: df96adf96fdce48c2c0e8a79e529c12f40e86a777efd281ca2250065ff019a9e}
-  ruling: Los Possessed de Mordheim y Trollheim pueden comenzar con cero mutaciones; se respeta el may del texto.
+  ruling: "The Possessed of Mordheim and Trollheim may start with zero mutations; the may of the text is respected."
   interpretation: >-
-    Ambos perfiles Possessed dicen may, frente al must de Mutants. El compilador
-    permite cero o más mutaciones en Mordheim y cero, una o dos en Trollheim.
-    El límite superior de Trollheim se verifica separadamente; los costes y el
-    historial posterior pertenecen a obligaciones independientes.
+    Both Possessed profiles say may, against the must of Mutants. The compiler allows zero or more
+    mutations in Mordheim and zero, one or two in Trollheim. Trollheim's upper limit is verified
+    separately; costs and later history belong to independent obligations.
   cases:
   - id: mordheim-recipients
     roles: [grant]
@@ -53,7 +52,7 @@ specifications:
   sources:
   - {target: rule/mordheim/cult-of-the-possessed/band--mutations/compiler.mutation-purchase-at-recruitment, digest: 9f8f71b8e780b9ba450614e6a0da463cc4e8026007a4ca18e044cf2a07bc9b52}
   - {target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutation-purchase/compiler.mutation-purchase-at-recruitment, digest: bc38e97861444d7b091201fa0b43afb5a20a335c2596227042e7eb4c05d788ad}
-  interpretation: La construcción aislada permite seleccionar mutaciones únicamente a Mutants y Possessed. Costes, momento posterior e historial son efectos de campaña separados fuera de scope.
+  interpretation: "The isolated build allows selecting mutations only for Mutants and Possessed. Costs, later timing and history are separate campaign effects outside scope."
   cases:
   - id: mordheim-selection
     roles: [accepted, rejected]
@@ -81,7 +80,7 @@ specifications:
   category: construction
   sources:
   - {target: rule/trollheim/trollheim-cult-of-the-possessed/mutants--mutations/compiler.mutant-requires-mutation-at-recruitment, digest: eb291da616c87acf1a5730366b322d971e49de5988bcfe1c4e69b2ad2e85f5da}
-  interpretation: El FighterBuild inicial de un Mutant exige al menos una mutación. Costes y cambios posteriores son campaña y están fuera de scope.
+  interpretation: "A Mutant's initial FighterBuild requires at least one mutation. Costs and later changes are campaign and outside scope."
   cases:
   - id: zero-versus-one
     roles: [grant, accepted, rejected, boundary]
@@ -102,7 +101,7 @@ specifications:
   category: construction
   sources:
   - {target: rule/trollheim/lustria-lizardmen/band--sacred-marks/compiler.sacred-marks, digest: d9b162c6f20e332c3f29ea460f6043330021f321a4cc3b30d6994dbe1caa9715}
-  interpretation: Un Lizardman Hero puede llevar como máximo una Sacred Mark en su construcción. El momento de compra posterior es campaña y está fuera de scope.
+  interpretation: "A Lizardman Hero can carry at most one Sacred Mark in its build. The later purchase timing is campaign and outside scope."
   cases:
   - id: zero-one-two
     roles: [grant, accepted, rejected, boundary]

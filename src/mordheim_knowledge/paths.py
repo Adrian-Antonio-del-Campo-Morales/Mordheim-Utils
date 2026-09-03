@@ -1,4 +1,4 @@
-"""Localización de recursos; nunca depende del directorio de trabajo."""
+"""Resource location; never depends on the working directory."""
 from pathlib import Path
 import sys
 
@@ -9,4 +9,4 @@ def project_root() -> Path:
     for parent in Path(__file__).resolve().parents:
         if (parent / "pyproject.toml").is_file():
             return parent
-    raise FileNotFoundError("No se encontró el proyecto; indica una ruta explícita de recursos.")
+    raise FileNotFoundError("Project not found; point an explicit resources path.")

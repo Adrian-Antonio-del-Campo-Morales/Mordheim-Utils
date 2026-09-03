@@ -1,4 +1,4 @@
-"""Bindings automáticos de perfil."""
+"""Automatic profile bindings."""
 from __future__ import annotations
 
 from mordheim_construction.compiler import compile_fighter

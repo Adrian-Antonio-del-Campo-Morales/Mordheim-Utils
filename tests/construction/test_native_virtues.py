@@ -1,4 +1,4 @@
-"""Las virtudes propias no requieren la concesión de virtudes extranjeras."""
+"""Native virtues do not require the granting of foreign virtues."""
 import pytest
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, FighterBuild

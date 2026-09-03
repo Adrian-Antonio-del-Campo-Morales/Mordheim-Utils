@@ -1,4 +1,4 @@
-"""ui.tabs.improvements: responsabilidad extraída sin alterar las reglas."""
+"""ui.tabs.improvements: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from mordheim_combat_lab.application.analyses import (

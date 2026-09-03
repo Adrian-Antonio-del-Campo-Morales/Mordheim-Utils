@@ -1,4 +1,4 @@
-"""knowledge.loader: responsabilidad extraída sin alterar las reglas."""
+"""knowledge.loader: responsibility extracted without altering the rules."""
 from __future__ import annotations
 from mordheim_knowledge.paths import project_root
 

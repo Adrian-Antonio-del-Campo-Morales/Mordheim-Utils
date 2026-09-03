@@ -1,1 +1,1 @@
-"""domain — API del área."""
+"""domain — area API."""

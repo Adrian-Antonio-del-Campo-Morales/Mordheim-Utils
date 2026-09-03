@@ -1,4 +1,4 @@
-"""Integración del motor modular."""
+"""Integration of the modular engine."""
 from __future__ import annotations
 
 from mordheim_combat.modular.attacks import resolve_reference_attack

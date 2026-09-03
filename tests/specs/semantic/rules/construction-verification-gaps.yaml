@@ -8,8 +8,8 @@ specifications:
   - {target: mechanic/armour.wizard-s-robe, digest: 88c73290f4bfb092f9e004f69c573052316157f1ae3fd06bdc8eadee701c0f08}
   - {target: mechanic/armour.ninja-robes, digest: 4d46f2794bcbe9727a2bbebabd1a4e95541fb4f2838c8edf4a40e93a3eed4200}
   - {target: mechanic/armour.eshin-assassin-robes, digest: 67d8574442696fad90b23ed444b8412e6a10454685bc37728c99b4147369347d}
-  ruling: Plate Armour salva a 4+; Wizard's Robe y Eshin Assassin Robes salvan a 6+ y solo combinan con casco; Ninja Robes cuenta como Toughened Leathers.
-  interpretation: Las cuatro armaduras ocupan el slot corporal. Plate Armour puede combinar con escudo; su penalización de Movimiento queda fuera del duelo. Wizard's y Eshin no combinan con escudos. Ninja tampoco combina con escudo, igual que Toughened Leathers.
+  ruling: "Plate Armour saves on 4+; Wizard's Robe and Eshin Assassin Robes save on 6+ and only combine with a helmet; Ninja Robes counts as Toughened Leathers."
+  interpretation: "The four armours occupy the body slot. Plate Armour can combine with a shield; its Movement penalty stays outside the duel. Wizard's and Eshin do not combine with shields. Ninja likewise does not combine with a shield, just like Toughened Leathers."
   cases:
   - id: plate-four-plus
     roles: [grant, active, consumer, boundary]
@@ -76,7 +76,7 @@ specifications:
   category: construction
   sources:
   - {target: mechanic/armour.cathayan-quilted-silk, digest: 51bd12df6db08a839173e02f3325fa8c36cf402a0006c33db5da1ab483ff6593}
-  interpretation: Cathayan Quilted Silk ocupa un overlay en defence_ids y mejora en un punto cualquier armadura corporal; no sustituye armour_id.
+  interpretation: Cathayan Quilted Silk occupies an overlay slot in defence_ids and improves any body armour by one point; it does not replace armour_id.
   cases:
   - id: no-body-armour
     roles: [compiled]
@@ -97,13 +97,13 @@ specifications:
   mutations:
   - {id: remove-silk-bonus, path: defender.armour_save, value: 7, cases: [light-armour-combination]}
 - id: sea-dragon-cloak-close-combat
-  question: "¿Cómo se calcula Sea Dragon Cloak y con qué protecciones puede combinarse?"
+  question: "How is Sea Dragon Cloak calculated and which protections can it combine with?"
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
   - {target: mechanic/defence.sea-dragon-cloak, digest: a098b201476d545c88a16e9509c8a3931100e9dd4cf7d3c5d9b19ce029c62a41}
-  ruling: Sea Dragon Cloak salva a 5+ en combate y a 4+ contra disparos, y no puede combinarse con otras armaduras.
-  interpretation: El runtime de duelo verifica el 5+ en combate y rechaza armadura corporal, escudos y cascos. La rama de disparo queda fuera del alcance actual.
+  ruling: "Sea Dragon Cloak saves on 5+ in combat and on 4+ against shooting, and cannot combine with other armour."
+  interpretation: "The duel runtime verifies the 5+ in combat and rejects body armour, shields and helmets. The shooting branch is outside the current scope."
   cases:
   - id: close-combat-five-plus
     roles: [grant, compiled, active, consumer, boundary]
@@ -139,7 +139,7 @@ specifications:
   category: contextual
   sources:
   - {target: mechanic/defence.kite-shield, digest: fe300d6318729690f6d79dd26a0bbcc96b0ff8679d342ba85dd1f0a3a69ae2a9}
-  interpretation: Kite Shield mejora la salvación en dos puntos a pie y en uno si mounted es true; el compilador limita siempre la salvación final a 1+.
+  interpretation: "Kite Shield improves the save by two points on foot and by one when mounted is true; the compiler always caps the final save at 1+."
   cases:
   - id: compiled-on-foot
     roles: [compiled]
@@ -167,18 +167,18 @@ specifications:
   mutations:
   - {id: remove-kite-save, path: defender.armour_save, value: 7, cases: [on-foot, mounted]}
 - id: energy-focus-choice-convention-conflict
-  question: "¿Energy Focus conserva la elección de cuántos ataques sacrificar, o debe aplicarse la convención canónica de sacrificar todos menos uno?"
+  question: "Does Energy Focus keep the choice of how many attacks to sacrifice, or must the canonical convention of sacrificing all but one be applied?"
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
   - {target: mechanic/mechanic.energy-focus, digest: 25e2b717f02ca947169c3d82f597c2df384bfdd2be20ff1d1790932cc6130387}
   - {target: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills-energy-focus/compiler.energy-focus, digest: 24d1098cd9a608f927a6b745776780a301d1ac6551da35f2a8f5a16c8d1eca9a}
-  ruling: Energy Focus permite seleccionar cualquier número de ataques, incluido cero o todos los ataques del perfil.
+  ruling: "Energy Focus allows selecting any number of attacks, including zero or all of the profile's attacks."
   interpretation: >-
-    Battle Monks Special Skills / Energy Focus permite elegir cualquier cantidad
-    entre cero y los Ataques del perfil. Cada ataque sacrificado reduce A en uno
-    y concede +1 Fuerza mientras el monje lucha desarmado. La convención histórica
-    de conservar siempre un ataque era una simplificación y no forma parte del RAW.
+    Battle Monks Special Skills / Energy Focus allows choosing any amount between zero and the
+    profile's Attacks. Each sacrificed attack reduces A by one and grants +1 Strength while the monk
+    fights unarmed. The historical convention of always keeping one attack was a simplification and is
+    not part of the RAW.
   cases:
   - id: compiled-selection
     roles: [compiled]

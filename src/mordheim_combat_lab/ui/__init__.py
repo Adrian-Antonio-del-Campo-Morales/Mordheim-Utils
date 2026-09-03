@@ -1,4 +1,4 @@
-"""ui: responsabilidad extraída sin alterar las reglas."""
+"""ui: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 

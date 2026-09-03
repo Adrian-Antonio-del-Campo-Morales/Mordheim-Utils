@@ -1,4 +1,4 @@
-"""API pública del motor modular escalar."""
+"""Public API of the scalar modular engine."""
 from .duel import simulate_duel
 from .rounds import resolve_round
 

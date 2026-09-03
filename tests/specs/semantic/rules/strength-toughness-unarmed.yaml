@@ -5,7 +5,7 @@ specifications:
   category: contextual
   sources:
   - {target: mechanic/skill.tireless, digest: 175a77fb21a3cd08a4f9b05f275dbd12b4bfd043ae581ec6ec688205f2392d92}
-  interpretation: Tireless conserva el bono Heavy en rondas posteriores. No duplica el bono inicial ni concede Fuerza a armas sin Heavy; tampoco elimina atacar último.
+  interpretation: "Tireless keeps the Heavy bonus in later rounds. It does not double the initial bonus nor grant Strength to weapons without Heavy; neither does it remove striking last."
   cases:
   - id: later-flail
     roles: [compiled, active, consumer, boundary]
@@ -53,7 +53,7 @@ specifications:
   category: local
   sources:
   - {target: mechanic/preparation.mandrake-root, digest: 638063a0cf297f76cc383e54570769a79798aa936a747fdfa78d13a5d0f9be79}
-  interpretation: Mandrake Root suma uno a Toughness y convierte Stunned en Knocked Down. No protege frente a Out of Action. La tabla ordinaria queda 1-4 KD y 5-6 OUT.
+  interpretation: "Mandrake Root adds one to Toughness and turns Stunned into Knocked Down. It does not protect against Out of Action. The ordinary table stays 1-4 KD and 5-6 OUT."
   cases:
   - id: toughness-consumed-by-wound
     roles: [compiled, active, consumer, boundary]
@@ -95,7 +95,7 @@ specifications:
   category: local
   sources:
   - {target: mechanic/skill.unarmed-critical-strikes, digest: c89770449f97636283efda52504ecb02febff98b146bd02f3918a42751e06151}
-  interpretation: To Wound natural 5-6 causa crítico únicamente con Fist y si quedan críticos disponibles. El veto general cuando hace falta 6 para herir sigue aplicándose.
+  interpretation: "A natural 5-6 To Wound causes a critical only with Fist and only while criticals remain available. The general veto when 6 is needed to wound still applies."
   cases:
   - id: compiled-critical-five
     roles: [compiled, active, consumer, boundary]
@@ -144,7 +144,7 @@ specifications:
   sources:
   - {target: rule/mordheim/battle-monks-of-cathay/dragon-monks--art-of-silent-death/skill.unarmed-critical-strikes, digest: df1ec263aeabac0fae0c89725cc7d4c6610eb48cf15e7df9458e46c7fb36fbc3}
   depends_on: [mechanic/skill.unarmed-critical-strikes]
-  interpretation: Battle Monks of Cathay / Dragon Monks / Art of Silent Death. Solo los ataques desarmados del Dragon Monk reciben crítico 5+; los del Quarter Staff mantienen 6.
+  interpretation: "Battle Monks of Cathay / Dragon Monks / Art of Silent Death. Only the Dragon Monk's unarmed attacks score criticals on 5+; the Quarter Staff ones keep 6."
   cases:
   - id: recipients
     roles: [grant]

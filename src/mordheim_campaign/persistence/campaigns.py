@@ -1,12 +1,13 @@
-"""persistence.campaigns: ficheros de campaña del Campaign Manager.
+"""persistence.campaigns: campaign files of the Campaign Manager.
 
-El formato es JSON autocontenido con marcador y versión. Guarda el estado de la
-campaña gestionado en la GUI —banda, roster, batallas, estados, post-batalla e
-inventario— junto con la selección de UI para poder reanudar la misma vista.
-La KB nunca se serializa: el fichero referencia identidades estables
-(``band_id``, ``profile_id``, ``item_id``) que la KB vuelve a resolver al cargar.
+The format is self-contained JSON with a marker and a version. It saves the
+campaign state managed by the GUI —warband, roster, battles, states,
+post-battle and inventory— together with the UI selection so the same view
+can be resumed. The KB is never serialised: the file references stable
+identities (``band_id``, ``profile_id``, ``item_id``) that the KB resolves
+again on load.
 
-Los valores persistidos son estado externo de la campaña, nunca reglas.
+Persisted values are external campaign state, never rules.
 """
 from __future__ import annotations
 
@@ -33,17 +34,17 @@ FILE_EXTENSION = ".mordheim"
 
 
 class CampaignFileError(ValueError):
-    """El fichero no satisface el esquema actual de campaña."""
+    """The file does not satisfy the current campaign schema."""
 
 
 def suggest_filename(campaign: CampaignVM) -> str:
-    """Nombre de fichero legible derivado del nombre de la campaña."""
+    """Readable filename derived from the campaign name."""
     slug = re.sub(r"[^\w]+", "-", campaign.campaign_name).strip("-").lower() or "campaign"
     return f"{slug}{FILE_EXTENSION}"
 
 
 def _asdict_plain(value):
-    """Serializa dataclasses y contenedores en objetos simples JSON."""
+    """Serialises dataclasses and containers into plain JSON objects."""
     if is_dataclass(value):
         return {field.name: _asdict_plain(getattr(value, field.name)) for field in fields(value)}
     if isinstance(value, dict):
@@ -56,7 +57,7 @@ def _asdict_plain(value):
 
 
 def save_campaign(path, state: AppState) -> Path:
-    """Escribe la campaña completa (incluida la vista activa) en un fichero JSON."""
+    """Saves the whole campaign (including the active view) to a JSON file."""
     destination = Path(path)
     campaign = state.campaign
     payload = {
@@ -83,7 +84,7 @@ def save_campaign(path, state: AppState) -> Path:
 
 
 def load_campaign(path) -> AppState:
-    """Carga una campaña guardada por :func:`save_campaign`."""
+    """Loads a campaign saved by :func:`save_campaign`."""
     source = Path(path)
     try:
         payload = json.loads(source.read_text(encoding="utf-8"))
@@ -113,7 +114,7 @@ def load_campaign(path) -> AppState:
 
 
 def _validate_selection(state: AppState) -> None:
-    """Asegura que la selección de vista apunte a un nodo existente."""
+    """Ensures the view selection points at an existing node."""
     campaign = state.campaign
     node = state.selected_moment
     kind = node.split(":", 1)[0] if ":" in node else node
@@ -247,7 +248,7 @@ def _inventory_from_payload(row: dict) -> InventoryItemVM:
 
 
 def export_campaign_summary(path, state: AppState) -> Path:
-    """Escribe un resumen Markdown legible del estado actual de la campaña."""
+    """Writes a readable Markdown summary of the current campaign state."""
     campaign = state.campaign
     lines = [
         f"# {campaign.campaign_name}",

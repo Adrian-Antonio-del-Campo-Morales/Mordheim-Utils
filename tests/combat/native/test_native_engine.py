@@ -1,8 +1,8 @@
-"""Regresiones del backend nativo compilado (mordheim_combat._combat_native).
+"""Regressions of the compiled native backend (mordheim_combat._combat_native).
 
-El backend se omite con ``pytest.skip`` cuando la extensión no está compilada
-(entornos sin compilador C): ``available_backends()`` entonces solo reporta
-NumPy y el comportamiento público no cambia.
+The backend is skipped with ``pytest.skip`` when the extension is not compiled
+(environments without a C compiler): ``available_backends()`` then only reports
+NumPy and the public behaviour is unchanged.
 """
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ def test_native_is_selected_by_auto_when_available() -> None:
 
 
 def test_native_accumulates_counts_across_batches() -> None:
-    """La acumulación por lotes no debe perder ni duplicar duelos."""
+    """Batch accumulation must neither lose nor duplicate duels."""
     _require_native()
     request = _request(2_500, batch_size=700)
     result = simulate_duel(request, backend="native")
@@ -48,7 +48,7 @@ def test_native_accumulates_counts_across_batches() -> None:
 
 
 def test_native_symmetric_duel_is_statistically_fair() -> None:
-    """Dos perfiles idénticos deben ganar ~50% cada uno (lote único y grande)."""
+    """Two identical profiles must each win ~50% (single large batch)."""
     _require_native()
     request = _request(20_000, batch_size=20_000, seed=2026)
     result = simulate_duel(request, backend="native")
@@ -57,9 +57,9 @@ def test_native_symmetric_duel_is_statistically_fair() -> None:
 
 
 def test_native_runs_are_deterministic_per_seed() -> None:
-    """Reproducibilidad tipo replay: misma semilla ⇒ idéntico resultado;
-    distinta semilla ⇒ corriente de dados distinta (el PCG32 por lote se
-    deriva de la semilla de la petición)."""
+    """Replay-style reproducibility: same seed ⇒ identical result;
+    different seed ⇒ different dice stream (the per-batch PCG32 is derived
+    from the request seed)."""
     _require_native()
     first = simulate_duel(_request(8_000, seed=2024), backend="native")
     second = simulate_duel(_request(8_000, seed=2024), backend="native")
@@ -71,7 +71,7 @@ def test_native_runs_are_deterministic_per_seed() -> None:
 
 
 def test_native_statistical_parity_against_modular_oracle() -> None:
-    """La puerta estadística (oráculo modular) certifica el backend nativo."""
+    """The statistical gate (modular oracle) certifies the native backend."""
     _require_native()
     fighter = compile_fighter(FighterBuild(
         "mordheim", Characteristics(3, 3, 3, 1, 3, 1),

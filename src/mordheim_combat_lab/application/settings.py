@@ -1,4 +1,4 @@
-"""application.settings: responsabilidad extraída sin alterar las reglas."""
+"""application.settings: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from dataclasses import dataclass

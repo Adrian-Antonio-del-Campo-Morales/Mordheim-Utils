@@ -1,4 +1,4 @@
-"""ui.tabs.analysis: responsabilidad extraída sin alterar las reglas."""
+"""ui.tabs.analysis: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 

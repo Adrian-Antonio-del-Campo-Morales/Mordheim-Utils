@@ -8,9 +8,10 @@ specifications:
     digest: 12d6373b6aa56e172187767442ced1bbb65ac061823efddc020bbd6661611f5d
   - target: rule/mordheim/bretonnian-chapel-guard/band--bulging-muscles/mechanic.retain-flail-morning-star-strength-bonus
     digest: 2a1268fca63780a162f86fc3970c101f4cb604f59a15e2902dcfe0b1a9b3f93c
-  interpretation: 'Knightly Skills / Bulging Muscles: retiene +2 F de mayal y +1 F de estrella del alba después
-    de la primera ronda. No aumenta espadas ni añade más fuerza al bono inicial; las heridas y la penetración por
-    Fuerza usan el mismo valor.'
+  interpretation: >-
+    Knightly Skills / Bulging Muscles: keeps the flail's +2 S and the morning star's +1 S after the
+    first round. It does not increase swords nor add more Strength to the initial bonus; wounds and
+    Strength-based penetration use the same value.
   cases:
   - id: recipients
     roles:
@@ -246,9 +247,10 @@ specifications:
     digest: 69d14860a2af98f88815ce045a0af2b0e35b4107b6fa781a78a3bd619d0f14e0
   - target: rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-rousing-sermon/skill.inspiring-sermon
     digest: 1233d95e760970a863987e8db9135170567869f0bfa652fd83877a7ea90273d0
-  interpretation: 'Chaos in the Streets p.153 / Rousing Sermon: en el turno en que se declara, el sacerdote recibe
-    +1 Ataque. Esta selección representa el sermón activo en el turno probado. Prayers y aliados a 6 pulgadas no
-    pertenecen al duelo individual; no se simulan aquí.'
+  interpretation: >-
+    Chaos in the Streets p.153 / Rousing Sermon: on the turn it is declared, the priest gains +1
+    Attack. This selection represents the sermon active in the tested turn. Prayers and allies within
+    6 inches do not belong to the individual duel; they are not simulated here.
   cases:
   - id: recipients
     roles:
@@ -380,7 +382,7 @@ specifications:
     cases:
     - active-false-false
 - id: well-ard-no-armour-ruling
-  question: "¿El +1 de Well 'Ard crea una salvación 6+ cuando el guerrero no tiene ninguna salvación por armadura?"
+  question: "Does the +1 from Well 'Ard create a 6+ armour save when the warrior has no armour save at all?"
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
@@ -390,11 +392,10 @@ specifications:
     digest: 783f79c9339673872720b157b57ffb784fc35558929c1ab41ebb1b4ebecf53ff
   - target: rule/mordheim/orc-mob/band--orc-special-skills-well-ard/mechanic.armour-save-bonus
     digest: 1ae228710ef27463423da43ad137ecec7f92507e585a9b01009546cbd8d442dc
-  ruling: Well 'Ard crea una salvación por armadura de 6+ si el guerrero no tenía ninguna.
+  ruling: "Well 'Ard creates a 6+ armour save if the warrior had none."
   interpretation: >-
-    Well 'Ard mejora en un punto una salvación por armadura existente y convierte
-    la ausencia de armadura en una salvación 6+. Se aplica como armadura ordinaria,
-    por lo que sigue sufriendo los modificadores de penetración pertinentes.
+    Well 'Ard improves an existing armour save by one point and turns the absence of armour into a 6+
+    save. It applies as ordinary armour, so it still suffers the relevant penetration modifiers.
   cases:
   - id: compiled-bonus
     roles: [compiled]
@@ -449,14 +450,14 @@ specifications:
     value: 7
     cases: [no-armour-six-saves]
 - id: shield-strike-penetration-ruling
-  question: "¿Shield Strike aplica una penalización especial o la modificación normal por Fuerza?"
+  question: "Does Shield Strike apply a special penalty or the normal Strength-based modification?"
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
   - target: mechanic/skill.shield-strike
     digest: 44393f01efecdb9a51e8e3e0bc5386a0881a1e8f30c8c2ffbf0bfd1105e61e81
-  ruling: Shield Strike modifica la armadura normalmente según la Fuerza del impacto.
-  interpretation: El ataque adicional usa la Fuerza del guerrero y no aporta una bonificación o penalización de armadura propia. La concesión existente requiere un shield estándar.
+  ruling: "Shield Strike modifies armour normally according to the Strength of the hit."
+  interpretation: "The extra attack uses the warrior's Strength and contributes no armour bonus or penalty of its own. The existing grant requires a standard shield."
   cases:
   - id: compiled-without-special-penetration
     roles: [grant, compiled]

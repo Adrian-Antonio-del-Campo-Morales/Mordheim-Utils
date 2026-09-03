@@ -1,4 +1,4 @@
-"""ui.widgets.inputs: responsabilidad extraída sin alterar las reglas."""
+"""ui.widgets.inputs: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 

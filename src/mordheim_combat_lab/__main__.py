@@ -1,4 +1,4 @@
-"""Punto de entrada unificado para UI, validación, verificación y benchmark."""
+"""Unified entry point for UI, validation, verification and benchmarking."""
 from mordheim_combat_lab.cli.commands import main
 
 

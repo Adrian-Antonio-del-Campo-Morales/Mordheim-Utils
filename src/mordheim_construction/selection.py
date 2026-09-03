@@ -1,4 +1,4 @@
-"""construction.selection: responsabilidad extraída sin alterar las reglas."""
+"""construction.selection: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from mordheim_core.models import Characteristics

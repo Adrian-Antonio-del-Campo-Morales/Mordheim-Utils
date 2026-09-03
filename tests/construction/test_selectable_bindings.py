@@ -1,4 +1,4 @@
-"""Bindings seleccionables de construcción."""
+"""Selectable construction bindings."""
 from __future__ import annotations
 
 from mordheim_construction.compiler import compile_fighter

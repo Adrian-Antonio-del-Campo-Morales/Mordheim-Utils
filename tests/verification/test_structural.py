@@ -1,4 +1,4 @@
-"""Auditoría estructural de fases y bindings."""
+"""Structural audit of phases and bindings."""
 from __future__ import annotations
 
 from dataclasses import fields

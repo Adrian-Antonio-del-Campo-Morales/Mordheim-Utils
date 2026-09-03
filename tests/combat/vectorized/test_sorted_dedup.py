@@ -1,4 +1,4 @@
-"""Invariante O(n) de dedup sobre arrays ascendentes (optimización del motor vectorial)."""
+"""O(n) dedup invariant over ascending arrays (vector engine optimization)."""
 from __future__ import annotations
 
 import numpy as np

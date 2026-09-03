@@ -1,4 +1,4 @@
-"""verification.audit: responsabilidad extraída sin alterar las reglas."""
+"""verification.audit: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from dataclasses import replace

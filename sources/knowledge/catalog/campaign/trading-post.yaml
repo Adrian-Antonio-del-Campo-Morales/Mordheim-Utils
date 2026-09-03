@@ -2,28 +2,28 @@ schema_version: 1
 ruleset: mordheim
 catalog: campaign-trading-post
 status: published
-# Define condiciones de mercado; dinero, compras, disponibilidad ya tirada y
-# existencias de una campaña individual pertenecen a su estado externo.
+# Defines market conditions; money, purchases, already-rolled availability and
+# stock of an individual campaign belong to its external state.
 source:
   manual: mordheimer.net
   printed_page: 0
   section: Trading Post
   url: https://mordheimer.net/docs/trading-post
-# Cada entrada publicada: id, item_id, price (base_gc y optional_variable_cost),
-# availability (kind common|rare + rarity), restrictions, purchase_options y
+# Each published entry: id, item_id, price (base_gc and optional_variable_cost),
+# availability (kind common|rare + rarity), restrictions, purchase_options and
 # source_refs.
-# - price.base_gc: parte fija. price.multiplier: aplica a la ficha que se
-#   mejora (p.ej. Gromril Weapon 4x el precio del arma base). price.per: unidad
-#   de venta (pair). optional_variable_cost: { dice, multiplier } para costes
-#   como "10 + 1D6 gc" o "200 + D6 x 25 gc".
-# - availability.kind: common siempre disponible; rare requiere test contra
-#   availability.rarity (ver trading-and-rarity.yaml).
-# - restrictions tipadas: warband_only (groups/band_ids), warband_forbidden,
+# - price.base_gc: fixed part. price.multiplier: applies to the record being
+#   upgraded (e.g. Gromril Weapon 4x the base weapon price). price.per: unit of
+#   sale (pair). optional_variable_cost: { dice, multiplier } for costs such as
+#   "10 + 1D6 gc" or "200 + D6 x 25 gc".
+# - availability.kind: common is always available; rare requires a test against
+#   availability.rarity (see trading-and-rarity.yaml).
+# - typed restrictions: warband_only (groups/band_ids), warband_forbidden,
 #   heroes_only, profile_only (note), limit_per_warband, condition (note).
-# - purchase_options: pares (quantity 2), primera unidad gratis, rareza propia.
-# equipment-access.yaml define quién puede seleccionar un item al crear la
-# banda. Una diferencia confirmada de precio se expresa como price_override con
-# source_refs, nunca como un segundo precio implícito.
+# - purchase_options: pairs (quantity 2), first unit free, own rarity.
+# equipment-access.yaml defines who may select an item when creating the
+# warband. A confirmed price difference is expressed as a price_override with
+# source_refs, never as a second implicit price.
 items:
 # Hand-to-hand Combat Weapons
 - id: campaign.trading-post.axe

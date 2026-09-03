@@ -1,4 +1,4 @@
-"""verification.interactions: responsabilidad extraída sin alterar las reglas."""
+"""verification.interactions: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -54,7 +54,7 @@ class InteractionAssessment:
 
 def assess_interaction(left: str, right: str, contracts: dict[str, dict], *,
                        tested: bool = False, override: dict | None = None) -> InteractionAssessment:
-    """Clasifica una pareja; el override documentado prevalece sobre la heurística."""
+    """Classify a pair; a documented override prevails over the heuristic."""
     a, b = contracts[left], contracts[right]
     concepts = ((set(a["writes"]) & (set(b["reads"]) | set(b["writes"])))
                 | (set(b["writes"]) & set(a["reads"])))

@@ -1,4 +1,4 @@
-"""ui.widgets.progress: responsabilidad extraída sin alterar las reglas."""
+"""ui.widgets.progress: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from threading import Event

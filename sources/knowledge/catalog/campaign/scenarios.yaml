@@ -2,10 +2,9 @@ schema_version: 1
 ruleset: mordheim
 catalog: campaign-scenarios
 status: published
-# Catálogo de escenarios: identidad, selección y condiciones de victoria.
-# El desarrollo de un escenario concreto (terreno, despliegue, reglas
-# especiales) es regla del escenario; su resultado en una campaña concreta es
-# estado externo.
+# Scenario catalogue: identity, selection and victory conditions.
+# The development of a concrete scenario (terrain, deployment, special rules)
+# is scenario rule; its result in a concrete campaign is external state.
 pre_battle:
   id: campaign.pre-battle
   summary: The player with the lowest warband rating rolls on the scenario
@@ -411,11 +410,11 @@ scenarios:
         roll: 5+
     notes:
     - >-
-      El defensor recibe además, por cada banda atacante adicional, una tirada
-      en la tabla de equipo inicial (Wooden Man, Mandrake Root, Crimson Shade,
-      Lucky Charm, Holy/Unholy Relic o Cathayan Silk Cloak); cada objeto solo
-      puede encontrarse una vez. Verificar reglas especiales de esos objetos en
-      Town Cryer #5 antes de modelarlos.
+      The defender receives, in addition, one roll on the initial equipment
+      table per additional attacking warband (Wooden Man, Mandrake Root,
+      Crimson Shade, Lucky Charm, Holy/Unholy Relic or Cathayan Silk Cloak);
+      each item may be found only once. Verify the special rules of those
+      items in Town Cryer #5 before modelling them.
 - id: scenario.the-pool
   name: The Pool
   setting: Mordheim
@@ -444,10 +443,10 @@ scenarios:
       the game.
     notes:
     - >-
-      La página no repite la conversión final de contadores a fragmentos (una
-      pieza por contador en posesión al final); se asume la misma convención que
-      Treasure Hunt, que sí la declara. Verificar contra el impreso de Town
-      Cryer #5.
+      The page does not repeat the final conversion of counters into shards
+      (one shard per counter held at the end); the same convention as Treasure
+      Hunt, which does declare it, is assumed. Verify against the Town Cryer
+      #5 print.
 - id: scenario.ambush
   name: Ambush!
   setting: Mordheim
@@ -476,10 +475,9 @@ scenarios:
       one of its Heroes when the game ends) is the winner.
     notes:
     - >-
-      La página no declara la conversión de contadores en posesión al final en
-      fragmentos de wyrdstone ganados; se asume la convención estándar de los
-      escenarios de wyrdstone (ver Treasure Hunt). Verificar contra Town Cryer
-      #5.
+      The page does not declare the conversion of counters held at the end into
+      earned wyrdstone shards; the standard convention of wyrdstone scenarios
+      is assumed (see Treasure Hunt). Verify against Town Cryer #5.
 - id: scenario.monster-hunt
   name: Monster Hunt
   setting: Mordheim
@@ -538,9 +536,9 @@ scenarios:
         roll: 5+
     notes:
     - >-
-      La fila de 'Suit of light armour' aparece dos veces en la fuente (Town
-      Cryer #5); se transcribe tal cual por fidelidad, pendiente de verificar si
-      es errata o dos tiradas independientes.
+      The 'Suit of light armour' row appears twice in the source (Town Cryer
+      #5); it is transcribed as-is for fidelity, pending verification of
+      whether it is an errata or two independent rolls.
 # Town Cryer and other supplements (registry entries)
 - id: scenario.kidnapped
   name: Kidnapped
@@ -589,11 +587,11 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     notes:
     - >-
-      La fuente lista además '+2 Putting a Skaven Out of Action' con el texto
-      de un +1 genérico por enemigo fuera de combate; la propia página lo
-      marca como probable errata ('should probably read +1 additional
-      Experience for each Skaven enemy put out of action'). Se transcribe el
-      aviso sin fijar cantidad hasta verificar el impreso de Town Cryer #7.
+      The source additionally lists '+2 Putting a Skaven Out of Action' with
+      the text of a generic +1 per enemy out of action; the page itself marks
+      it as a probable errata ('should probably read +1 additional Experience
+      for each Skaven enemy put out of action'). The notice is transcribed
+      without fixing the amount until verifying the Town Cryer #7 print.
 - id: scenario.scourge-and-purge
   name: Scourge & Purge
   setting: Mordheim
@@ -621,9 +619,9 @@ scenarios:
     - summary: '+6 Scourge: if the Witch Hunter Captain personally takes the possessed wizard Out of Action he earns double Experience'
     notes:
     - >-
-      Los premios '+2 Purge' y '+6 Scourge' mezclan cantidad y texto ('earns
-      double Experience'); se transcriben ambos tal cual, pendiente de
-      verificar contra Town Cryer #7.
+      The '+2 Purge' and '+6 Scourge' awards mix amount and text ('earns
+      double Experience'); both are transcribed as-is, pending verification
+      against Town Cryer #7.
 - id: scenario.surrounded
   name: Surrounded
   setting: Mordheim
@@ -672,12 +670,11 @@ scenarios:
       the game ends and the player with the most stones wins.
     notes:
     - >-
-      La página no declara la conversión de contadores en posesión al final a
-      fragmentos de wyrdstone ganados. El texto del premio '+1 Winning Leader'
-      declara '+2 Experience'; además, el encabezado de la página cita Town
-      Cryer #7 / Christian Ellegaard mientras el índice del sitio lo asigna a
-      Town Cryer #8 / Donato Ranzato. Verificar ambos extremos contra los
-      impresos.
+      The page does not declare the conversion of counters held at the end into
+      earned wyrdstone shards. The text of the '+1 Winning Leader' award
+      declares '+2 Experience'; the page header cites Town Cryer #7 /
+      Christian Ellegaard while the site index assigns it to Town Cryer #8 /
+      Donato Ranzato. Verify both ends against the prints.
 - id: scenario.stake-out
   name: Stake-Out
   setting: Mordheim
@@ -704,8 +701,8 @@ scenarios:
     wyrdstone: The loser earns D6 shards of wyrdstone and the winner D6+1 shards.
     notes:
     - >-
-      'Fame' no es una métrica de campaña estándar; la propia página lo marca
-      como posible resto de una versión previa. Verificar contra Town Cryer #8.
+      'Fame' is not a standard campaign metric; the page itself marks it as a
+      possible leftover of a previous version. Verify against Town Cryer #8.
 - id: scenario.the-lair-of-the-snake
   name: The Lair of the Snake
   setting: Mordheim
@@ -730,10 +727,9 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     notes:
     - >-
-      El texto del primer premio declara '+2 experience' bajo la etiqueta '+1
-      First to reach the platform'; se fija 2 como cantidad y se deja
-      documentada la discrepancia de etiqueta para verificación contra Town
-      Cryer #9.
+      The text of the first award declares '+2 experience' under the '+1 First
+      to reach the platform' label; 2 is fixed as the amount and the label
+      discrepancy is left documented for verification against Town Cryer #9.
 - id: scenario.the-script-of-sigmar
   name: The Script of Sigmar
   setting: Mordheim
@@ -762,9 +758,9 @@ scenarios:
       amount: 1
     notes:
     - >-
-      Los cinco soldados de la hermandad que patrullan fuera en la misión 1 no
-      cuentan como parte de la banda y no ganan experiencia, salvo que se usen
-      miembros reales de la banda (que entonces sí ganan experiencia normal).
+      The five brotherhood soldiers patrolling outside in mission 1 do not
+      count as part of the warband and gain no experience, unless real warband
+      members are used (who then do gain normal experience).
 - id: scenario.thats-all-mine
   name: That's All Mine
   setting: Mordheim
@@ -825,10 +821,10 @@ scenarios:
       was hired to protect receives 3D6 gold crowns per looted wagon instead.
     notes:
     - >-
-      La banda defensora traidora nunca puede escoltar otra caravana en la
-      campaña y sufre -1 al buscar objetos raros durante las siguientes D6
-      partidas. Defensores solo pueden ser Mercenarios, Witch Hunters,
-      Sisters of Sigmar o Bretonnians.
+      The traitor defender warband can never escort another caravan in the
+      campaign and suffers -1 when searching for rare items over the next D6
+      games. Defenders can only be Mercenaries, Witch Hunters, Sisters of
+      Sigmar or Bretonnians.
 - id: scenario.the-secrets-of-beujuntae
   name: The Secrets of Beujuntae
   setting: Lustria
@@ -862,10 +858,10 @@ scenarios:
         roll: 8+
     notes:
     - >-
-      La tabla de recompensas de la página está mal formateada (encabezado
-      'Roll 2D6' con columnas confusas); se interpreta como en otras tablas de
-      tesoro del sitio: coronas automáticas y cada objeto con su tirada
-      necesaria. Verificar contra Town Cryer #12.
+      The page reward table is badly formatted ('Roll 2D6' heading with
+      confusing columns); it is interpreted like other treasure tables of the
+      site: automatic crowns and each item with its required roll. Verify
+      against Town Cryer #12.
 - id: scenario.jungle-skirmish
   name: Jungle Skirmish / The Fog of War
   setting: Lustria
@@ -936,9 +932,9 @@ scenarios:
         Headless One at the start of any subsequent game.
     notes:
     - >-
-      La tirada de invocación del cráneo (1 se pierde; 2-5 el Headless One no
-      aparece; 6 aparece y aumenta el rating de la banda en +125 durante la
-      partida) queda pendiente de modelado junto al perfil del Headless One.
+      The skull summoning roll (1 it is lost; 2-5 the Headless One does not
+      appear; 6 it appears and increases the warband rating by +125 for the
+      game) remains pending modelling together with the Headless One profile.
 - id: scenario.the-hunters-become-the-hunted
   name: The Hunters Become The Hunted
   setting: Lustria
@@ -967,10 +963,10 @@ scenarios:
       are the equivalent of a Wyrdstone shard each and can also be sold.
     notes:
     - >-
-      La unidad que pone al Beastmaster Fuera de Combate obtiene su látigo y
-      control de los Cold Ones; lleva además D3 artefactos. Los perfiles del
-      Beastmaster y Cold Ones (Town Cryer #11) no se modelan aquí. Un modelo
-      muerto por una planta carnívora se retira de la campaña en un 1 (D6).
+      The unit that puts the Beastmaster Out of Action obtains his whip and
+      control of the Cold Ones; it also carries D3 artefacts. The Beastmaster
+      and Cold Ones profiles (Town Cryer #11) are not modelled here. A model
+      killed by a carnivorous plant is removed from the campaign on a 1 (D6).
 - id: scenario.lost-temple-of-the-slann
   name: Lost Temple Of The Slann
   setting: Lustria
@@ -1013,12 +1009,12 @@ scenarios:
         roll: 5+
     notes:
     - >-
-      El defensor recibe además, por cada banda atacante adicional, una tirada
-      en la tabla de botín (1 Temple Stone Guard; 2 1D3 dosis de Dark Venom;
-      3 1D3 dosis de Crimson Shade; 4 Holy/Unholy Relic; 5 Lucky Charm;
-      6 Heavy Armour); cada objeto solo puede encontrarse una vez. Los objetos
-      mágicos (Cloak of Mists, Dispel Scroll, Gromril Sword, Tome of Magic) no
-      tienen entrada en el Trading Post canónico.
+      The defender receives, in addition, one roll on the loot table per
+      additional attacking warband (1 Temple Stone Guard; 2 1D3 doses of Dark
+      Venom; 3 1D3 doses of Crimson Shade; 4 Holy/Unholy Relic; 5 Lucky Charm;
+      6 Heavy Armour); each item may only be found once. The magic items
+      (Cloak of Mists, Dispel Scroll, Gromril Sword, Tome of Magic) have no
+      entry in the canonical Trading Post.
 - id: scenario.the-sword-of-the-herald
   name: The Sword of the Herald
   setting: Mordheim
@@ -1046,10 +1042,11 @@ scenarios:
       Sword of the Herald.
     notes:
     - >-
-      Los jugadores que elijan que la partida 'no cuenta' no ganan experiencia,
-      no tiran heridas graves y no buscan wyrdstone en la secuencia post
-      partida, pero sí pueden ganar los premios por retirar la espada y las
-      astillas. El valor de la espada queda a criterio del referee.
+      Players who choose that the game 'does not count' gain no experience, do
+      not roll serious injuries and do not search for wyrdstone in the
+      post-battle sequence, but they can still gain the awards for drawing the
+      sword and the shards. The sword value is left to the referee's
+      discretion.
 - id: scenario.finders-keepers
   name: Finders Keepers
   setting: Mordheim
@@ -1102,9 +1099,9 @@ scenarios:
       at the end of the scenario.
     notes:
     - >-
-      La página muestra '(4 4 4 4 4 4)' junto a la referencia de la banda
-      masacrada en exploración sin aclarar su significado; verificar contra
-      Town Cryer #14.
+      The page shows '(4 4 4 4 4 4)' next to the reference of the warband wiped
+      out in exploration without clarifying its meaning; verify against Town
+      Cryer #14.
 - id: scenario.death-in-the-mists
   name: Death in the Mists
   setting: Albion
@@ -1229,10 +1226,10 @@ scenarios:
         roll: 4+
     notes:
     - >-
-      La tabla de tesoro de la página aparece con el orden de columnas
-      alterado; las tiradas necesarias se reconstruyen siguiendo el patrón de
-      tablas equivalentes del mismo sitio (Monster Hunt, Hidden Treasure) y
-      quedan pendientes de verificación contra Town Cryer #15.
+      The page treasure table appears with the column order altered; the
+      required rolls are reconstructed following the pattern of equivalent
+      tables of the same site (Monster Hunt, Hidden Treasure) and remain
+      pending verification against Town Cryer #15.
 - id: scenario.the-ogham-stones
   name: The Ogham Stones
   setting: Albion
@@ -1302,8 +1299,8 @@ scenarios:
         roll: 5+
     notes:
     - >-
-      El encabezado de la página cita Town Cryer #14 mientras el índice del
-      sitio lo asigna a Town Cryer #18; verificar contra los impresos.
+      The page header cites Town Cryer #14 while the site index assigns it to
+      Town Cryer #18; verify against the prints.
 - id: scenario.a-night-in-the-graveyard
   name: A Night In The Graveyard
   setting: Mordheim
@@ -1350,9 +1347,9 @@ scenarios:
     income: If Sam is out of action, the winning warband gets 3D6 gc from the cash register and a supply of Bugman's Ale, in addition to anything from normal exploring.
     notes:
     - >-
-      La etiqueta del premio por Sam dice '+1 Taking Out Sam' pero el texto
-      declara '+3 Experience'; se fija 3 y se documenta la discrepancia para
-      verificación contra Town Cryer #19.
+      The Sam award label says '+1 Taking Out Sam' but the text declares '+3
+      Experience'; 3 is fixed and the discrepancy is documented for
+      verification against Town Cryer #19.
 - id: scenario.defend-the-oasis
   name: Defend the Oasis
   setting: Khemri
@@ -1379,8 +1376,8 @@ scenarios:
       roll on the Exploration chart with a -1 modifier.
     notes:
     - >-
-      Las mecánicas de agua y caravana del escenario corresponden a la campaña
-      de Khemri (water como recurso) y quedan documentadas sin modelar.
+      The water and caravan mechanics of the scenario belong to the Khemri
+      campaign (water as a resource) and are documented without modelling.
 - id: scenario.tomb-raid
   name: Tomb Raid
   setting: Khemri
@@ -1474,8 +1471,8 @@ scenarios:
     wyrdstone: The attackers can pilfer the tomb after the battle and find D3+1 wyrdstone shards.
     notes:
     - >-
-      Las tres reliquias (Holy Tome, Holy Relic y Blessed Water) las elige el
-      defensor si solo se rescatan algunas; los atacantes no las usan.
+      The three relics (Holy Tome, Holy Relic and Blessed Water) are chosen
+      by the defender if only some are rescued; the attackers do not use them.
 - id: scenario.one-mans-rescue
   name: One Man's Rescue is Another Man's Kidnap
   setting: Khemri
@@ -1522,9 +1519,9 @@ scenarios:
       amount: 1
     notes:
     - >-
-      El 'Gran Tesoro' lo define el árbitro (objetos mágicos, cofre, etc.) y
-      hay D3 contadores de wyrdstone/tesoro extra en la sala central; el valor
-      concreto no se fija en la fuente.
+      The 'Great Treasure' is defined by the referee (magic items, chest,
+      etc.) and there are D3 extra wyrdstone/treasure counters in the central
+      room; the concrete value is not fixed in the source.
 - id: scenario.assault-on-the-rock
   name: Assault on the Rock
   setting: Mordheim
@@ -1549,11 +1546,11 @@ scenarios:
       summary: The tome of magic allows the user to gain two spells from the lesser magic list, two new spells from his own list, or any combination thereof; any warband may use it except Sisters of Sigmar, Witch Hunters and warbands containing a priest of Morr.
     notes:
     - >-
-      Recompensas por facción: las Sisters ganan 100 gc y +2 Experience para la
-      Matriarca, y las Sisters reclutadas durante la batalla pueden unirse a la
-      banda; los Witch Hunters y bandas con sacerdote de Morr destruyen el libro
-      y ganan +D6 Experience a repartir, los Witch Hunters además +2 Experience
-      por cada Augur/Matriarca fuera de combate y 50 gc.
+      Awards per faction: the Sisters gain 100 gc and +2 Experience for the
+      Matriarch, and Sisters recruited during the battle may join the warband;
+      the Witch Hunters and warbands with a priest of Morr destroy the book and
+      gain +D6 Experience to share, the Witch Hunters additionally +2
+      Experience per Augur/Matriarch out of action and 50 gc.
 - id: scenario.in-the-dead-of-the-night
   name: In The Dead Of The Night
   setting: Mordheim
@@ -1578,9 +1575,9 @@ scenarios:
     wyrdstone: The winning warband recovers D3 shards of Wyrdstone left over from the ritual.
     notes:
     - >-
-      Si el defensor completa el ritual retiene D3+3 de los Zombies invocados
-      (sin superar su límite de banda); los modelos del rival fuera de combate
-      vuelven como Zombies conservando su equipo original.
+      If the defender completes the ritual he retains D3+3 of the summoned
+      Zombies (without exceeding his warband limit); the rival models out of
+      action come back as Zombies keeping their original equipment.
 - id: scenario.a-stroll-in-the-garden
   name: A Stroll In The Garden
   setting: Mordheim
@@ -1693,10 +1690,10 @@ scenarios:
       amount: 2
     notes:
     - >-
-      Cada banda recibe gratis los servicios de un Dramatis Personae durante el
-      escenario; si ese Dramatis Personae es puesto Fuera de Combate, la banda
-      Ruta automáticamente al inicio de su siguiente turno. El catálogo de
-      Dramatis Personae (hired-swords-and-dramatis.yaml) sigue en draft.
+      Each warband receives the services of a Dramatis Personae free of charge
+      during the scenario; if that Dramatis Personae is put Out of Action, the
+      warband automatically routs at the start of its next turn. The Dramatis
+      Personae catalogue (hired-swords-and-dramatis.yaml) remains in draft.
 - id: scenario.bounty-hunting
   name: Bounty Hunting
   setting: The Empire
@@ -1852,9 +1849,9 @@ scenarios:
       amount: 2
     notes:
     - >-
-      La URL de la página conserva la errata del sitio ('stagecoash'); el
-      escenario se publica como 'Stagecoach Ambush'. Roadwarden y Highwayman
-      pueden contratarse a mitad de precio en este escenario.
+      The page URL keeps the site typo ('stagecoash'); the scenario is
+      published as 'Stagecoach Ambush'. Roadwarden and Highwayman can be hired
+      at half price in this scenario.
 - id: scenario.the-item-lost
   name: The Item Lost
   setting: Mordheim
@@ -1905,9 +1902,9 @@ scenarios:
       amount: 1
     notes:
     - >-
-      Un guerrero maldito por la licantropía del Balewolf puede desaparecer de
-      la lista de la banda (roll 1 tras la batalla); regla de progresión
-      excepcional dependiente del perfil del Balewolf (TC28), aún no modelado.
+      A warrior cursed by the Balewolf's lycanthropy may disappear from the
+      warband roster (roll 1 after the battle); exceptional progression rule
+      dependent on the Balewolf profile (TC28), not yet modelled.
 - id: scenario.gathering-of-the-horde
   name: Gathering of the Horde
   setting: Mordheim
@@ -2021,10 +2018,10 @@ scenarios:
         must then roll for a new camp.
     notes:
     - >-
-      El escenario se juega como Defend the Find con excepciones, por lo que su
-      sección de experiencia no está repetida en la página; se asumen los premios
-      estándar equivalentes a los de scenario.defend-the-find. La página no
-      detalla el contenido del stash capturado.
+      The scenario is played as Defend the Find with exceptions, so its
+      experience section is not repeated on the page; the standard awards
+      equivalent to those of scenario.defend-the-find are assumed. The page
+      does not detail the contents of the captured stash.
 - id: scenario.the-rats-lair
   name: The Rat's Lair
   setting: Mordheim
@@ -2070,9 +2067,9 @@ scenarios:
       amount: 1
     notes:
     - >-
-      Un modelo que deambule fuera del borde de la mesa perdido en la niebla
-      se retira de la lista de la banda (nunca vuelve a ser visto); regla de
-      progresión excepcional sin modelar.
+      A model that wanders off the table edge lost in the fog is removed from
+      the warband roster (never seen again); exceptional progression rule not
+      modelled.
 - id: scenario.battle-for-the-farm
   name: Battle for the Farm
   setting: The Empire
@@ -2132,9 +2129,9 @@ scenarios:
       amount: 1
     notes:
     - >-
-      Los caballos robados con éxito se añaden a la lista de la banda; si una
-      banda falla su test de huida pierde D3-1 de sus caballos robados en la
-      confusión.
+      Successfully stolen horses are added to the warband roster; if a warband
+      fails its fleeing test it loses D3-1 of its stolen horses in the
+      confusion.
 - id: scenario.through-black-fire-pass
   name: Through Black Fire Pass
   setting: The Empire
@@ -2158,9 +2155,9 @@ scenarios:
       amount: 1
     notes:
     - >-
-      Por lo duro de su tarea, el Defensor gana el doble de Experience por
-      sobrevivir o por ser el líder ganador; la página indica los premios +1
-      con el doble aplicado al Defensor.
+      Because of how hard his task is, the Defender gains double Experience for
+      surviving or for being the winning leader; the page shows the +1 awards
+      with the double applied to the Defender.
 - id: scenario.brigands-in-the-pasturelands
   name: Brigands in the Pasturelands
   setting: The Empire
@@ -2187,9 +2184,9 @@ scenarios:
       chart the Baron pays an additional D6 x 10 gold crowns for that Hero.
     notes:
     - >-
-      Si ganan los defensores, uno de los mercenarios contratados que aún
-      esté en pie se une a la banda gratis (aunque sea un hired sword no
-      permitido normalmente); su mantenimiento posterior es normal.
+      If the defenders win, one of the hired mercenaries still standing joins
+      the warband for free (even if he is a hired sword normally not allowed);
+      his subsequent upkeep is normal.
 - id: scenario.the-watchtower
   name: The Watchtower
   setting: The Empire
@@ -2359,8 +2356,8 @@ scenarios:
     wyrdstone: A pile of wyrdstone sits in an 8" circle in the centre of the board; the pile is brought to safety as D6+2 wyrdstone. Each time a model takes wyrdstone from the pile, D3+1 Zombies per warband
       are generated 8" away around the pile.
     notes:
-    - Multijugador (uno o varios jugadores; adaptado del Troll 23). Solo un Héroe y un grupo de secuaces elegidos al azar están en mesa a la vez; al volver a la zona de despliegue con wyrdstone, otro del
-      mismo tipo puede salir. La niebla limita la visibilidad a 4" con su propia tabla 2D6. La victoria se decide por opción acordada (más wyrdstone recuperada, último en pie, etc.).
+    - Multiplayer (one or several players; adapted from Troll 23). Only one Hero and one group of henchmen chosen at random are on the table at a time; upon returning to the deployment zone with wyrdstone, another of the
+      same type may come out. The fog limits visibility to 4" with its own 2D6 table. Victory is decided by the agreed option (most wyrdstone recovered, last one standing, etc.).
 - id: scenario.happy-harpy-hunting-grounds
   name: Happy Harpy Hunting Grounds
   setting: Mordheim
@@ -2417,7 +2414,7 @@ scenarios:
         reward: D3 Swords.
         item_id: sword
     notes:
-    - 'Escenario multijugador para tres jugadores: uno controla la banda de tres Arpías (perfil propio, nunca huyen) y los otros dos intentan matarlas para hacerse con el tesoro.'
+    - 'Multiplayer scenario for three players: one controls a warband of three Harpies (own profile, never flee) and the other two try to kill them to get the treasure.'
 - id: scenario.round-up-at-the-mordheim-corral
   name: Round-up at the Mordheim Corral
   setting: Mordheim
@@ -2443,7 +2440,7 @@ scenarios:
     wyrdstone: 'The boars have swallowed the wyrdstone. Each boar must be killed before it can be searched: roll D6, on 1-3 the warrior cannot locate the stomach and may try again next turn, on 4-6 he rolls
       D3 to determine how many shards are found. A warrior carrying wyrdstone who is killed, stunned or knocked down drops counters where he fell.'
     notes:
-    - Multijugador; los jabalíes (perfil propio, D3+1 por banda, no huyen) se mueven primero. Reglas opcionales de mutación (5+ por jabalí desde su segundo turno) y de domesticación por Héroes Orcos.
+    - Multiplayer; the boars (own profile, D3+1 per warband, do not flee) move first. Optional mutation rules (5+ per boar from its second turn) and domestication by Orc Heroes.
 - id: scenario.the-recipe
   name: The Recipe
   setting: Mordheim
@@ -2469,8 +2466,8 @@ scenarios:
       ruined may also be turned in: worth 1 gc each for a non-winning warband, or half that amount rounded up for the winning warband. A winning warband also gets any pies held by its warriors or still in
       the cart at the end of the game.'
     notes:
-    - Multijugador (dos o más). Geefer Lugbottom (perfil propio, ignora psicología) y sus seis guardias halflings (arcos) defienden el carro de tartas (3D6+6 tartas). Si todas las bandas huyen quedando Geefer
-      o sus guardias en juego, todas pierden.
+    - Multiplayer (two or more). Geefer Lugbottom (own profile, ignores psychology) and his six halfling guards (bows) defend the pie cart (3D6+6 pies). If all warbands flee leaving Geefer
+      or his guards in play, all lose.
 - id: scenario.ambush-archive-pestilens
   name: Ambush
   setting: Mordheim
@@ -2572,7 +2569,7 @@ scenarios:
         roll: D6
         reward: 1D3 Wyrdstone shards.
     notes:
-    - La tabla de recompensas original lista el rango 5-7 con un D6; el +1 del atacante explica el 7 (al ganar el atacante el rango efectivo pasa a 2-3 / 4-5 / 6-8).
+    - The original reward table lists the 5-7 range with a D6; the attacker's +1 explains the 7 (when the attacker wins, the effective range becomes 2-3 / 4-5 / 6-8).
 - id: scenario.dont-wake-the-giant
   name: Don't Wake the Giant
   setting: Mordheim
@@ -2715,7 +2712,7 @@ scenarios:
     - summary: 'Defenders: any warrior gains +1 Experience for each wounding hit caused.'
     - summary: 'Defenders: any warrior gains +1 Experience for surviving the battle.'
     notes:
-    - 'La página no detalla recompensas en gc ni wyrdstone: solo Experience por bando. Los Atacantes reciben dos barriles de polvora (reglas de gunpowder, no descritas en el propio articulo).'
+    - 'The page does not detail rewards in gc or wyrdstone: only Experience per side. The Attackers receive two barrels of gunpowder (gunpowder rules, not described in the article itself).'
 - id: scenario.raid
   name: Raid
   setting: Mordheim
@@ -2781,7 +2778,7 @@ scenarios:
       out of action count as one Slave, recorded on the roster and usable in a later post-battle phase to add one die to the warband dice pool (then crossed off). After the raid roll D6 minus 1 per Slave
       captured plus 1 per building set on fire; on 1 or less the warband was traced and ambushed: randomly roll D6 Henchmen and roll on the Injury table for each.'
     notes:
-    - 'La página no incluye sección de Experience ni premios de líder ganador: es un evento de campaña con sus propias recompensas (búsqueda de edificios, esclavos y quema).'
+    - 'The page has no Experience section nor winning-leader awards: it is a campaign event with its own rewards (building searches, slaves and burning).'
 - id: scenario.rawhide
   name: Rawhide
   setting: The Empire
@@ -2813,8 +2810,8 @@ scenarios:
       empty for no bonus. If the ambushers stop the wyrdstone from leaving the table they gain whatever amount was placed in the wagon. If the Marienburgers get the wyrdstone off the table they gain 30% of
       the amount placed in the wagon (e.g. 100 gc of wyrdstone becomes 130 gc).
     notes:
-    - La página adapta los premios originales del impreso (que usaban +20 xp al líder, +5 xp por driver, D6 xp por superviviente, +5 xp por herida y por detener un wagon) al sistema de +1 estándar de la web;
-      los originales se listan en la propia página bajo Original Experience.
+    - The page adapts the original print awards (which used +20 xp to the leader, +5 xp per driver, D6 xp per survivor, +5 xp per wound and for stopping a wagon) to the site standard +1 system;
+      the originals are listed on the page itself under Original Experience.
 - id: scenario.rescue
   name: Rescue
   setting: Mordheim
@@ -2834,7 +2831,7 @@ scenarios:
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
     notes:
-    - La página copia erróneamente la frase del Single Combat de Grudge Match en el premio +1 Per Enemy Out of Action, inaplicable aquí.
+    - The page wrongly copies the Grudge Match Single Combat sentence into the +1 Per Enemy Out of Action award, inapplicable here.
 - id: scenario.romeros-pride
   name: Romero's Pride
   setting: Mordheim
@@ -2850,8 +2847,8 @@ scenarios:
     url: https://mordheimer.net/docs/campaigns/scenarios/archive-pestilen/romeros-pride
   progression:
     notes:
-    - 'La página no incluye sección de Experience, wyrdstone ni recompensas en gc: solo las reglas de la horda zombi (llegada 1D3 por cada salida al final del turno 3, 1D4 en el 4 y 1D6 desde el 5 en adelante).
-      La victoria y sus premios quedan sin definir en la fuente; documentado para pasos posteriores.'
+    - 'The page has no Experience, wyrdstone or gc reward section: only the zombie horde rules (arrival 1D3 per exit at the end of turn 3, 1D4 on the 4th and 1D6 from the 5th onwards).
+      Victory and its awards remain undefined in the source; documented for later steps.'
 - id: scenario.the-battle-at-koleshire-keep
   name: The Battle At Koleshire Keep
   setting: The Empire
@@ -2867,8 +2864,8 @@ scenarios:
     url: https://mordheimer.net/docs/campaigns/scenarios/archive-pestilen/the-battle-at-koleshire-keep
   progression:
     notes:
-    - 'La página no incluye sección de Experience ni recompensas: el primer bando en huir o ser destruido pierde. El escenario usa perfiles propios (Jarsyn Gaylord, capitán mercenario Reikland con 2 Heridas
-      y Expert Swordsman, 80 gc; Skaggle, Orc Boss con Ld 9 y low-blow, 90 gc); sin premios de progresión documentados.'
+    - 'The page has no Experience or rewards section: the first side to flee or be destroyed loses. The scenario uses own profiles (Jarsyn Gaylord, Reikland mercenary captain with 2 Wounds
+      and Expert Swordsman, 80 gc; Skaggle, Orc Boss with Ld 9 and low-blow, 90 gc); no documented progression awards.'
 - id: scenario.the-caravan-archive-pestilens
   name: The Caravan
   setting: Mordheim
@@ -2892,8 +2889,8 @@ scenarios:
     wyrdstone: The merchant carries a small chest with D3+1 shards of wyrdstone. If a warband ends the game in possession of the cargo it keeps all of the wyrdstone. If the merchant successfully keeps the
       cargo, the guarding warband receives 1 shard plus D6 x 5 gold crowns for their trouble.
     notes:
-    - 'La nota editorial de la página indica que el escenario resultó muy difícil para el defensor en cuatro partidas; sugieren endurecer al mercader (T4, escudo, lucky bastard) y que los defensores no fallen
-      el test de huida salvo voluntariamente. Variantes opcionales: Lucky Fool, Two''s a Crowd, Greedy Bastard y A Friend in the Business (descuento/recargo del 20% en equipo hasta la siguiente batalla).'
+    - 'The editorial note of the page says the scenario proved very difficult for the defender in four games; they suggest toughening the merchant (T4, shield, lucky bastard) and that the defenders should not fail
+      the fleeing test except voluntarily. Optional variants: Lucky Fool, Two''s a Crowd, Greedy Bastard and A Friend in the Business (20% discount/surcharge on equipment until the next battle).'
 - id: scenario.the-restless-dead
   name: The Restless Dead
   setting: Mordheim
@@ -2909,8 +2906,8 @@ scenarios:
     url: https://mordheimer.net/docs/campaigns/scenarios/archive-pestilen/the-restless-dead
   progression:
     notes:
-    - 'La página no incluye sección de Experience, wyrdstone ni recompensas: solo las reglas de la invasión de no-muertos (aparición desde el turno 2 con 6+, turno 3 con 5+, y turno 4+ en adelante con 4+;
-      D6 esqueletos o zombis por aparición). La victoria y sus premios quedan sin definir en la fuente; documentado para pasos posteriores.'
+    - 'The page has no Experience, wyrdstone or rewards section: only the undead invasion rules (appearance from turn 2 on 6+, turn 3 on 5+, and from turn 4+ onwards on 4+;
+      D6 skeletons or zombies per appearance). Victory and its awards remain undefined in the source; documented for later steps.'
 - id: scenario.the-square-of-the-snake
   name: The Square Of The Snake
   setting: Mordheim
@@ -2929,8 +2926,8 @@ scenarios:
     - summary: The warrior who reaches the tombstone at the end of the battle (after eliminating his chosen enemy warband) is awarded 5 free Experience points
       amount: 5
     notes:
-    - 'Escenario multijugador por puntos de victoria, no por experiencia estándar: 10 puntos al primer bando que alcanza la plataforma y recibe un oponente al azar, 1 por poner fuera de combate a cualquier
-      guerrero, 2 por un guerrero del enemigo elegido, y 10 por volver a la plataforma tras eliminar al enemigo elegido. No hay recompensas en gc ni wyrdstone en la página.'
+    - 'Multiplayer scenario by victory points, not standard experience: 10 points for the first warband that reaches the platform and receives a random opponent, 1 for putting any warrior out of action,
+      2 for the chosen enemy warrior, and 10 for returning to the platform after eliminating the chosen enemy. There are no gc or wyrdstone rewards on the page.'
 - id: scenario.the-wizards-tower
   name: The Wizard's Tower
   setting: Mordheim
@@ -2994,9 +2991,9 @@ scenarios:
     wyrdstone: The winning warband is the only warband that may search for wyrdstone after the battle (it does not roll the extra exploration D6). Due to the increased demand after the city's destruction,
       wyrdstone sells for triple the normal gold crowns.
     notes:
-    - 'Escenario multijugador de fin de campaña (mínimo tres bandas con rating 300+). Tabla de heridas especial: cualquier fuera de combate tira en la tabla propia (1-5 muerte, 6 el guerrero escapa ileso
-      y gana +1 Experience). Sin huida voluntaria: solo se empiezan a hacer tests de huida al 50% de bajas, con Ld 10 sin modificar mientras viva el líder. Los eventos aleatorios ocurren automáticamente cada
-      turno.'
+    - 'Multiplayer end-of-campaign scenario (at least three warbands with rating 300+). Special injury table: anyone out of action rolls on the own table (1-5 death, 6 the warrior escapes unhurt
+      and gains +1 Experience). No voluntary fleeing: fleeing tests only start at 50% casualties, with unmodified Ld 10 while the leader lives. Random events occur automatically every
+      turn.'
 effect_ids:
 - campaign.scenario.select
 - campaign.scenario.victory

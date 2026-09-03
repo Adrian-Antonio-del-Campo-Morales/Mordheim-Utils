@@ -1,4 +1,4 @@
-"""ui.theme: responsabilidad extraída sin alterar las reglas."""
+"""ui.theme: responsibility extracted without altering the rules."""
 from __future__ import annotations
 
 from tkinter import ttk

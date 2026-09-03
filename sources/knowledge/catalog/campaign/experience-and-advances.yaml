@@ -2,13 +2,13 @@ schema_version: 1
 ruleset: mordheim
 catalog: campaign-experience-and-advances
 status: published
-# Define premios y avances permitidos; nunca la experiencia acumulada ni los
-# avances ya obtenidos por una miniatura de una campaña concreta.
+# Defines allowed awards and advances; never the accumulated experience or the
+# advances already gained by a miniature of a concrete campaign.
 # awards: id, recipient, trigger, amount, source_refs
 # advancement_tables: id, applies_to, resolution (dice + branches), source_refs.
-# Los umbrales de experiencia pertenecen al roster; esta tabla solo resuelve el
-# resultado del 2D6 una vez alcanzado el umbral.
-# Los máximos raciales de atributos viven en el catálogo compartido
+# Experience thresholds belong to the roster; this table only resolves the
+# 2D6 result once the threshold is reached.
+# Racial characteristic maximums live in the shared catalogue
 # catalog/rules/racial-maximums.yaml (ids campaign.limit.racial-maximum.*).
 awards:
 - id: campaign.experience.award.survives

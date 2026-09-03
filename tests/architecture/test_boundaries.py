@@ -1,4 +1,4 @@
-"""Dependencias deliberadas entre los paquetes del monorepo."""
+"""Deliberate dependencies between the monorepo packages."""
 from pathlib import Path
 import ast
 import subprocess

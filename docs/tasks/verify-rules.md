@@ -1,114 +1,119 @@
-# Verificar reglas
+# Verifying rules
 
-Para consultar el estado global antes de editar especificaciones:
+To consult the global status before editing specifications:
 
 ```powershell
 python -m mordheim_combat_lab audit
 ```
 
-El comando genera `outputs/audit/rules-audit.csv`, codificado para abrirse correctamente en Excel. Puede limitar la salida con `--scope YES`, `--status pending` y `--output <directorio>`. Es una operación de solo lectura respecto a la KB, las especificaciones y el código.
+The command generates `outputs/audit/rules-audit.csv`, encoded to open correctly in Excel. The output can be limited with `--scope YES`, `--status pending` and `--output <directory>`. It is a read-only operation with respect to the KB, the specifications and the code.
 
-## Preguntas y decisiones de revisión
+## Review questions and decisions
 
-El CSV separa el estado de trabajo (`review_status`) de la evidencia semántica
-(`semantic_status`). Para ver qué decisiones necesitan respuesta, filtre
-`review_status = needs_ruling`, no todas las filas `pending`.
+The CSV separates the work status (`review_status`) from the semantic evidence
+(`semantic_status`). To see which decisions need an answer, filter
+`review_status = needs_ruling`, not every `pending` row.
 
-| review_status | Significado |
+| review_status | Meaning |
 | --- | --- |
-| `needs_ruling` | Existe una pregunta explícita aún sin respuesta documentada. |
-| `blocked_by_dependency` | No hay una pregunta propia sin resolver, pero falta verificar una dependencia. |
-| `ready` | Queda trabajo de implementación, búsqueda de fuentes o verificación; no hay una decisión explícita sin respuesta ni una dependencia sin verificar. No significa que la regla funcione ya. |
-| `verified` | La evidencia semántica exigida está aprobada. |
-| `not_applicable` | Efecto fuera del scope activo. |
+| `needs_ruling` | There is an explicit question with no documented answer yet. |
+| `blocked_by_dependency` | There is no unanswered question of its own, but a dependency still needs verification. |
+| `ready` | Implementation work, source research or verification remains; there is no explicit unanswered decision or unverified dependency. It does not mean the rule already works. |
+| `verified` | The required semantic evidence is approved. |
+| `not_applicable` | Effect outside the active scope. |
 
-Para generar solo las preguntas sin sustituir el informe completo:
+To generate only the questions without replacing the full report:
 
 ```powershell
 python -m mordheim_combat_lab audit --review-status needs_ruling --output outputs/audit/questions
 ```
 
-`question` conserva la pregunta aunque se haya resuelto. `ruling` contiene la
-respuesta adoptada y su fundamento (fuente, sección o decisión del usuario).
-`interpretation` es la explicación general de la especificación: no implica que
-haya existido una pregunta o una decisión adicional. Las antiguas explicaciones
-exportadas como `ruling` se conservan ahora en `interpretation`.
+`question` keeps the question even once it is resolved. `ruling` holds the
+adopted answer and its rationale (source, section or user decision).
+`interpretation` is the general explanation of the specification: it does not
+imply that a question or an extra decision existed. The old explanations
+exported as `ruling` now live in `interpretation`.
 
-Estos datos se editan en la especificación YAML correspondiente dentro de
-`tests/tests/specs/semantic/`, **nunca manualmente en el CSV generado**. El estado se calcula;
-no se escribe `review_status` en YAML. Ejemplo real resuelto:
+These data are edited in the corresponding YAML specification under
+`tests/specs/semantic/`, **never manually in the generated CSV**. The status is computed;
+`review_status` is not written into the YAML. Real resolved example:
 
 ```yaml
-question: ¿Swordmaster del Duelist de Hochland concede repetir una parada fallida?
+question: Does the Duelist of Hochland's Swordmaster grant re-rolling a failed
+  parry in addition to matching the hit?
 ruling: >-
-  No. Hochland Bandits / Duelist / Swordmaster solo permite igualar el impacto.
-  Espada más rodela conserva su repetición independiente.
+  No. Resolved through the Hochland Bandits / Duelist / Swordmaster text: it only grants the tie and
+  requires equipment that allows parrying. It does not grant a re-roll; sword plus buckler keeps its
+  own independent re-roll.
 ```
 
-Si falta respuesta, omita `ruling` y mantenga `pending` con el motivo del bloqueo.
-El cargador rechaza una pregunta sin respuesta que no esté marcada pendiente.
-Cuando se resuelva, conserve `question`, añada `ruling` y retire o actualice
-`pending` según el trabajo restante. Una respuesta no verifica la regla: hay
-que actualizar y ejecutar los escenarios, sus dependencias y mutaciones.
-Si la fuente cambia, la huella invalidará la evidencia anterior como hasta ahora.
+If an answer is missing, omit `ruling` and keep `pending` with the reason for
+the block. The loader rejects an unanswered question that is not marked pending.
+When it is resolved, keep `question`, add `ruling` and remove or update
+`pending` according to the remaining work. An answer does not verify the rule:
+the scenarios, their dependencies and mutations must be updated and executed.
+If the source changes, the footprint invalidates the previous evidence as before.
 
-Véase `tests/specs/semantic/grants/editorial-hochland-swordmaster.yaml` para una pregunta
-resuelta, y `tests/specs/semantic/rules/contextual-bonuses-and-rulings.yaml` para preguntas
-pendientes. No se reconstruye automáticamente un historial de decisiones que
-no se haya documentado; se incorpora al revisar cada especificación.
+See `tests/specs/semantic/grants/editorial-hochland-swordmaster.yaml` for a resolved
+question, and `tests/specs/semantic/rules/contextual-bonuses-and-rulings.yaml` for pending
+questions. A decision history that was never documented is not automatically
+rebuilt; it is incorporated while reviewing each specification.
 
-## Procedimiento
+## Procedure
 
-1. Consulte `python -m mordheim_combat_lab verify --inventory`.
-2. Añada en `tests/tests/specs/semantic/` fuente, interpretación, categoría, casos, interacción y huellas revisadas.
-3. Cubra activación, no activación, límites y consumo; use mini-secuencias solo para estado o flujo.
-4. Declare dados y decisiones exactos; use fracciones para distribuciones.
-5. Añada una mutación detectada por comportamiento, no solo por el mismo campo compilado.
-6. Ejecute `python -m pytest tests/verification/test_semantics.py -q` y `python -m mordheim_combat_lab verify --json`.
+1. Run `python -m mordheim_combat_lab verify --inventory`.
+2. Add under `tests/specs/semantic/` the source, interpretation, category, cases, interaction and reviewed footprints.
+3. Cover activation, non-activation, boundaries and consumption; use mini-sequences only for state or flow.
+4. Declare exact dice and decisions; use fractions for distributions.
+5. Add a mutation detected by behaviour, not only by the same compiled field.
+6. Run `python -m pytest tests/verification/test_semantics.py -q` and `python -m mordheim_combat_lab verify --json`.
 
-Si falta un ruling, marque pendiente. Terminado cuando la obligación, dependencias, interacciones y mutaciones están aprobadas.
+If a ruling is missing, mark it pending. Done when the obligation, dependencies, interactions and mutations are approved.
 
-Para restricciones de equipo, `equipment_choices` ejecuta el compilador real para cada construcción de
-`context.choices` y devuelve `result.accepted` y `result.rejected` (con el motivo exacto).
-No calcula por sí mismo la legalidad. Véase `tests/specs/semantic/grants/editorial-savage-equipment.yaml`:
-comprueba armas legales, armaduras prohibidas y el perfil vecino sin la restricción.
-Una prueba de prohibición no debe pasar simplemente porque el objeto no está en la lista del guerrero.
-La mutación aislada `suppress-bound-equipment-restrictions` desactiva solo ese control y lo restaura al salir.
+For equipment restrictions, `equipment_choices` runs the real compiler for every
+`context.choices` construction and returns `result.accepted` and `result.rejected`
+(with the exact reason). It does not compute legality by itself. See
+`tests/specs/semantic/grants/editorial-savage-equipment.yaml`:
+it checks legal weapons, prohibited armour and the neighbouring profile without
+the restriction. A prohibition test must not pass merely because the item is not
+in the warrior's list. The isolated mutation `suppress-bound-equipment-restrictions`
+disables only that control and restores it on exit.
 
-Para elecciones de habilidades, reglas especiales, variantes y `energy_focus_attacks`,
-use `selection_choices`. Devuelve las listas de opciones aceptadas y los motivos exactos
-de rechazo tras llamar al compilador real; no decide la legalidad por su cuenta.
-El caso debe partir de una construcción válida y declarar las selecciones alternativas
-en `context.choices`. Véase `tests/specs/semantic/grants/editorial-required-initial-choices.yaml`:
-prueba cero, una y dos elecciones y elimina temporalmente el requisito con
-`suppress-required-initial-choices` para demostrar que la prueba detecta su ausencia.
+For skill choices, special rules, variants and `energy_focus_attacks`,
+use `selection_choices`. It returns the accepted option lists and the exact
+rejection reasons after calling the real compiler; it does not decide legality
+by itself. The case must start from a valid construction and declare the
+alternative selections in `context.choices`. See
+`tests/specs/semantic/grants/editorial-required-initial-choices.yaml`:
+it tests zero, one and two choices and temporarily removes the requirement with
+`suppress-required-initial-choices` to prove the test detects its absence.
 
-Distinga una fuente ambigua de una limitación de implementación al escribir `pending`.
-Una regla que también prohíbe adquirir mejoras después del reclutamiento no queda
-verificada por comprobar solamente su cantidad inicial. Los ficheros
-`tests/specs/semantic/grants/editorial-recruitment-and-magic-gaps.yaml` y
-`tests/specs/semantic/rules/construction-verification-gaps.yaml` documentan esos pendientes;
-no aportan evidencia aprobada ni requieren todos una decisión del usuario.
+Distinguish an ambiguous source from an implementation limitation when writing
+`pending`. A rule that also forbids acquiring upgrades after recruitment is not
+verified by checking only its initial amount. The files
+`tests/specs/semantic/grants/editorial-recruitment-and-magic-gaps.yaml` and
+`tests/specs/semantic/rules/construction-verification-gaps.yaml` document those pendings;
+they provide no approved evidence and do not all require a user decision.
 
-## Riesgo y prioridad de interacciones
+## Interaction risk and priority
 
-La auditoría separa el riesgo técnico de la exigencia actual:
+The audit separates technical risk from the current requirement:
 
-| Campo | Valores |
+| Field | Values |
 | --- | --- |
 | `risk_level` | `critical`, `high`, `medium`, `low` |
 | `verification_requirement` | `required`, `recommended`, `optional`, `not_applicable` |
 | `interaction_status` | `tested`, `covered_by_composition`, `independent`, `illegal`, `pending`, `needs_ruling` |
 
-La política está en `tests/specs/interaction-policy.yaml`. Por defecto, `critical` y
-`high` son `required`, `medium` es `recommended` y `low` es `optional`. Solo las
-interacciones requeridas sin resolver bloquean `semantic_complete`; las demás
-siguen visibles para ampliar la cobertura más adelante.
+The policy lives in `tests/specs/interaction-policy.yaml`. By default, `critical` and
+`high` are `required`, `medium` is `recommended` and `low` is `optional`. Only
+unresolved required interactions block `semantic_complete`; the rest stay
+visible to broaden coverage later.
 
-La clasificación automática parte de los conceptos leídos y escritos por cada
-regla. Estado persistente, heridas y recursos compartidos son críticos; ataques,
-prioridad y salvaciones compartidas son de riesgo alto. Una revisión puede
-sobrescribir la clasificación mediante `overrides`, dejando motivo y evidencia:
+The automatic classification starts from the concepts each rule reads and
+writes. Persistent state, wounds and shared resources are critical; attacks,
+priority and shared saves are high risk. A review can override the
+classification through `overrides`, leaving reason and evidence:
 
 ```yaml
 overrides:
@@ -120,6 +125,6 @@ overrides:
   evidence: [operator:stack]
 ```
 
-Un override es una decisión semántica revisada, no un mecanismo para hacer pasar
-el informe. Debe explicar por qué una composición genérica, una incompatibilidad
-o una prueba existente cubre la pareja.
+An override is a reviewed semantic decision, not a mechanism to make the report
+pass. It must explain why a generic composition, an incompatibility or an
+existing test covers the pair.

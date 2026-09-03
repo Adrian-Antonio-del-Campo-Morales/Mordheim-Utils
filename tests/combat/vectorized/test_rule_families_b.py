@@ -1,4 +1,4 @@
-"""Regresiones vectorizadas de familias canónicas B."""
+"""Vectorized regressions of canonical rule families B."""
 from __future__ import annotations
 
 from mordheim_combat.vectorized import _new_state

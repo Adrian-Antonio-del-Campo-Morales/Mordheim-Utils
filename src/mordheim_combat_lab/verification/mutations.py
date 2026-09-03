@@ -1,4 +1,4 @@
-"""Fallos deliberados limitados a una ejecución y restaurados incluso al fallar."""
+"""Deliberate faults limited to one execution and restored even on failure."""
 from contextlib import contextmanager, ExitStack
 from dataclasses import replace
 

@@ -1,8 +1,8 @@
-"""Acciones de fichero del Campaign Manager.
+"""File actions of the Campaign Manager.
 
-Solo esta capa conoce los diálogos de Tk; las decisiones (qué guardar, con qué
-formato) viven en ``mordheim_campaign.persistence`` y el estado se reemplaza a
-través de :class:`AppController`.
+Only this layer knows the Tk dialogs; the decisions (what to save, in which
+format) live in ``mordheim_campaign.persistence`` and the state is replaced
+through :class:`AppController`.
 """
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ def _report_error(parent, action: str, exc: Exception) -> None:
 
 
 def save_current_campaign(parent, controller: AppController):
-    """Guarda la campaña activa; pide ruta solo la primera vez."""
+    """Saves the active campaign; asks for a path only the first time."""
     path = controller.persist_path
     if path is None:
         path = filedialog.asksaveasfilename(
@@ -47,7 +47,7 @@ def save_current_campaign(parent, controller: AppController):
 
 
 def save_campaign_copy(parent, controller: AppController):
-    """Guarda la campaña en una ruta elegida por el usuario (Save As / Export)."""
+    """Saves the campaign to a user-chosen path (Save As / Export)."""
     path = filedialog.asksaveasfilename(
         parent=parent,
         title="Save a copy of the Mordheim campaign",
@@ -67,7 +67,7 @@ def save_campaign_copy(parent, controller: AppController):
 
 
 def load_campaign_file(parent, controller: AppController):
-    """Carga una campaña guardada y la convierte en el estado activo."""
+    """Loads a saved campaign and makes it the active state."""
     path = filedialog.askopenfilename(parent=parent, title="Load Mordheim campaign", filetypes=_FILE_TYPES)
     if not path:
         return None
@@ -82,7 +82,7 @@ def load_campaign_file(parent, controller: AppController):
 
 
 def export_campaign_markdown(parent, controller: AppController):
-    """Exporta un resumen Markdown legible del estado actual."""
+    """Exports a readable Markdown summary of the current state."""
     path = filedialog.asksaveasfilename(
         parent=parent,
         title="Export campaign summary",
