@@ -196,7 +196,7 @@ def test_sword_and_buckler_rerolls_a_failed_parry():
 
     defender = build(main_weapon_id="weapon.sword", off_hand_id="defence.buckler")
     state = _new_state(defender, 1, np.random.default_rng(1))
-    remaining, blocked = _parry_hits(
+    remaining, blocked, _ = _parry_hits(
         defender, EffectSet(), np.array([0]), np.array([4]), np.array([3]),
         state, FixedRng(3, 5),
     )
@@ -213,12 +213,12 @@ def test_offhand_axe_master_and_starblade_use_their_special_parries():
         skill_ids=("skill.axe-master",),
     )
     starblade = build(main_weapon_id="weapon.starblade")
-    remaining, blocked = _parry_hits(
+    remaining, blocked, _ = _parry_hits(
         axe_master, EffectSet(), np.array([0]), np.array([4]), np.array([3]),
         _new_state(axe_master, 1, np.random.default_rng(1)), FixedRng(6),
     )
     assert remaining.size == 0 and blocked.tolist() == [0]
-    remaining, blocked = _parry_hits(
+    remaining, blocked, _ = _parry_hits(
         starblade, EffectSet(), np.array([0]), np.array([5]), np.array([3]),
         _new_state(starblade, 1, np.random.default_rng(2)), FixedRng(4),
     )

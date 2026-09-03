@@ -231,14 +231,14 @@ def test_parry_is_one_attempt_per_phase_and_respects_strength_limit():
     defender=compile_fighter(FighterBuild("mordheim",Characteristics(3,3,3,1,3,1),main_weapon_id="weapon.sword"))
     state=_new_state(defender,2,np.random.default_rng(1))
     effect=defender.main_weapon
-    remaining,blocked=_parry_hits(defender,effect,np.array([0]),np.array([4]),np.array([3]),state,FixedRng(6))
+    remaining,blocked,_=_parry_hits(defender,effect,np.array([0]),np.array([4]),np.array([3]),state,FixedRng(6))
     assert remaining.size==0 and blocked.tolist()==[0]
-    remaining,blocked=_parry_hits(defender,effect,np.array([0]),np.array([2]),np.array([3]),state,FixedRng(6))
+    remaining,blocked,_=_parry_hits(defender,effect,np.array([0]),np.array([2]),np.array([3]),state,FixedRng(6))
     assert remaining.tolist()==[0] and blocked.size==0
-    remaining,blocked=_parry_hits(defender,effect,np.array([1]),np.array([2]),np.array([6]),state,FixedRng(6))
+    remaining,blocked,_=_parry_hits(defender,effect,np.array([1]),np.array([2]),np.array([6]),state,FixedRng(6))
     assert remaining.tolist()==[1] and blocked.size==0
     fresh=_new_state(defender,1,np.random.default_rng(2))
-    remaining,blocked=_parry_hits(defender,effect,np.array([0,0]),np.array([3,5]),np.array([3,3]),fresh,FixedRng([6,6]))
+    remaining,blocked,_=_parry_hits(defender,effect,np.array([0,0]),np.array([3,5]),np.array([3,3]),fresh,FixedRng([6,6]))
     assert remaining.size==1 and blocked.size==1
 
 
@@ -249,8 +249,8 @@ def test_unbeatable_warrior_parries_twice_with_two_parry_weapons():
         "mordheim",Characteristics(3,3,3,1,3,1),main_weapon_id="weapon.sword",
         off_hand_id="weapon.sword",skill_ids=("skill.unbeatable-warrior",)))
     state=_new_state(defender,1,np.random.default_rng(1))
-    remaining,blocked=_parry_hits(defender,defender.main_weapon,np.array([0,0]),
-                                  np.array([3,4]),np.array([3,3]),state,FixedRng([6,6]))
+    remaining,blocked,_=_parry_hits(defender,defender.main_weapon,np.array([0,0]),
+                                    np.array([3,4]),np.array([3,3]),state,FixedRng([6,6]))
     assert remaining.size==0 and blocked.tolist()==[0,0]
 
 
@@ -369,8 +369,8 @@ def test_master_of_blades_rerolls_only_with_two_dwarf_axes():
     master=replace(core,global_effects=EffectSet(tags=("skill.unbeatable-warrior","skill.sword-master")))
     core_state=_new_state(core,1,np.random.default_rng(1))
     master_state=_new_state(master,1,np.random.default_rng(1))
-    remaining,_=_parry_hits(core,axe,np.array([0]),np.array([4]),np.array([3]),core_state,FixedRng(3))
-    rerolled,_=_parry_hits(master,axe,np.array([0]),np.array([4]),np.array([3]),master_state,FixedRng(3,6))
+    remaining,_,_=_parry_hits(core,axe,np.array([0]),np.array([4]),np.array([3]),core_state,FixedRng(3))
+    rerolled,_,_=_parry_hits(master,axe,np.array([0]),np.array([4]),np.array([3]),master_state,FixedRng(3,6))
     assert remaining.tolist()==[0]
     assert rerolled.size==0
 
