@@ -1,7 +1,7 @@
 schema_version: 1
 ruleset: mordheim
 catalog: campaign-trading-post
-status: draft
+status: published
 # Define condiciones de mercado; dinero, compras, disponibilidad ya tirada y
 # existencias de una campaña individual pertenecen a su estado externo.
 source:
@@ -9,28 +9,4332 @@ source:
   printed_page: 0
   section: Trading Post
   url: https://mordheimer.net/docs/trading-post
-items: []
-# Fuente canónica de la compra post-batalla. Cada entrada publicada tendrá:
-# id, item_id, price (base_gc y optional_variable_cost), availability,
-# restrictions, purchase_options y source_refs.
-#
-# equipment-access.yaml define quién puede seleccionar un item en la creación
-# de banda. Su campo cost heredado es evidencia de la lista impresa, no debe
-# sobrescribir este catálogo. Una diferencia confirmada se expresa allí como
-# price_override con source_refs, nunca como un segundo precio implícito.
-examples:
-- id: example.trading-post-dagger
-  item_id: dagger
+# Cada entrada publicada: id, item_id, price (base_gc y optional_variable_cost),
+# availability (kind common|rare + rarity), restrictions, purchase_options y
+# source_refs.
+# - price.base_gc: parte fija. price.multiplier: aplica a la ficha que se
+#   mejora (p.ej. Gromril Weapon 4x el precio del arma base). price.per: unidad
+#   de venta (pair). optional_variable_cost: { dice, multiplier } para costes
+#   como "10 + 1D6 gc" o "200 + D6 x 25 gc".
+# - availability.kind: common siempre disponible; rare requiere test contra
+#   availability.rarity (ver trading-and-rarity.yaml).
+# - restrictions tipadas: warband_only (groups/band_ids), warband_forbidden,
+#   heroes_only, profile_only (note), limit_per_warband, condition (note).
+# - purchase_options: pares (quantity 2), primera unidad gratis, rareza propia.
+# equipment-access.yaml define quién puede seleccionar un item al crear la
+# banda. Una diferencia confirmada de precio se expresa como price_override con
+# source_refs, nunca como un segundo precio implícito.
+items:
+# Hand-to-hand Combat Weapons
+- id: campaign.trading-post.axe
+  item_id: axe
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.ball-and-chain
+  item_id: ball_chain
+  price: { base_gc: 15 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.goblin]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.barbed-whip
+  item_id: barbed_whip
+  price: { base_gc: 15 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    band_ids: [marauders-of-chaos]
+  - type: profile_only
+    note: One Marauders of Chaos Hero only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.beastlash
+  item_id: beastlash
   price:
-    base_gc: 2
+    base_gc: 10
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    band_ids: [dark-elves]
+  - type: profile_only
+    note: Dark Elves Beastmaster only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bec-de-corbin
+  item_id: bec_de_corbin
+  price: null
+  availability: { kind: common }
+  restrictions:
+  - type: condition
+    note: Not sold at trading posts; granted through warband equipment lists
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.boat-hook
+  item_id: boat_hook
+  price: { base_gc: 8 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [pirates]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.boss-pole
+  item_id: boss_pole
+  price: { base_gc: 20 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [forest-goblins, night-goblins-mic, night-goblins-web]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.brass-knuckles
+  item_id: brass_knuckles
+  price: { base_gc: 20, per: pair }
+  availability: { kind: rare, rarity: 6 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.brazier-iron
+  item_id: brazier_iron
+  price: { base_gc: 35 }
+  availability: { kind: rare, rarity: 7 }
+  restrictions:
+  - type: warband_only
+    band_ids: [witch-hunters]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.broadsword
+  item_id: broadsword
+  price: { base_gc: 15 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [bretonnian-chapel-guard]
+  - type: profile_only
+    note: Bretonnian Chapel Guard Knights only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.cat-o-nine-tails
+  item_id: cat_o_nine_tails
+  price: { base_gc: 8 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [pirates]
+  - type: heroes_only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.cathayan-longsword
+  item_id: cathayan_longsword
+  price:
+    base_gc: 75
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 12 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.censer
+  item_id: censer
+  price: { base_gc: 40 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    band_ids: [skaven-clan-pestilens]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.chain-sticks
+  item_id: chain_sticks
+  price: { base_gc: 20 }
+  availability: { kind: rare, rarity: 7 }
+  restrictions:
+  - type: warband_only
+    band_ids: [battle-monks-of-cathay]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.claw-of-the-old-ones
+  item_id: claw_of_the_old_ones
+  price: { base_gc: 30 }
+  availability: { kind: rare, rarity: 12 }
+  restrictions:
+  - type: warband_only
+    band_ids: [amazons-mordheim]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.cleaver
+  item_id: cleaver
+  price: { base_gc: 3 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [mootlanders]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.club
+  item_id: club
+  price: { base_gc: 3 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.club-mace-or-hammer
+  item_id: mace_hammer
+  price: { base_gc: 3 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.dagger
+  item_id: dagger
+  price: { base_gc: 2 }
+  availability: { kind: common }
+  restrictions: []
+  purchase_options:
+  - id: campaign.trading-post.dagger.first-free
+    quantity: 1
+    price: { base_gc: 0 }
+    condition: first_dagger_for_new_recruit
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.dark-elf-blade
+  item_id: dark_elf_blade_weapon_upgrade
+  price: { base_gc: 20 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    band_ids: [dark-elves]
+  - type: condition
+    note: Upgrade applied to a weapon; cost added to the weapon price
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.disease-dagger
+  item_id: disease_dagger
+  price: { base_gc: 15 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    band_ids: [skaven-clan-pestilens]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.double-handed-weapon
+  item_id: two_handed_weapon
+  price: { base_gc: 15 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.dragon-sword
+  item_id: dragon_sword
+  price: { base_gc: 20 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    band_ids: [battle-monks-of-cathay, merchant-caravans]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.dwarf-axe
+  item_id: dwarf_axe
+  price: { base_gc: 15 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.dwarf]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.fighting-claws
+  item_id: fighting_claws
+  price: { base_gc: 35, per: pair }
+  availability: { kind: rare, rarity: 7 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.skaven]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.fist
+  item_id: fist
+  price: null
+  availability: { kind: common }
+  restrictions:
+  - type: condition
+    note: Not sold; unarmed combat profile for models without weapons
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.flail
+  item_id: flail
+  price: { base_gc: 15 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.great-axe
+  item_id: great_axe
+  price: { base_gc: 25 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    band_ids: [marauders-of-chaos]
+  - type: profile_only
+    note: Marauders of Chaos Heroes with the Chosen of Chaos skill only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.gromril-weapon
+  item_id: gromril_weapon
+  price: { multiplier: 4 }
+  availability: { kind: rare, rarity: 11 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.halberd
+  item_id: halberd
+  price: { base_gc: 10 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.hammer
+  item_id: hammer
+  price: { base_gc: 3 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.hobgoblin-poisoned-daggers
+  item_id: hobgoblin_poisoned_daggers
+  price: { base_gc: 15 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    band_ids: [khemri-hobgoblin-raiders]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.horsemans-hammer
+  item_id: horsemans_hammer
+  price: { base_gc: 12 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.iron-fist
+  item_id: iron_fist
+  price: { base_gc: 15 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [maneaters]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.ithilmar-weapon
+  item_id: ithilmar_weapon
+  price: { multiplier: 3 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.katar
+  item_id: katar
+  price: { base_gc: 5 }
+  availability: { kind: rare, rarity: 4 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.kitchen-knife
+  item_id: kitchen_knife
+  price: { base_gc: 2 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [mootlanders]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.ladle
+  item_id: ladle
+  price: { base_gc: 2 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [mootlanders]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.lance
+  item_id: lance
+  price: { base_gc: 40 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.mace
+  item_id: mace
+  price: { base_gc: 3 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.main-gauche
+  item_id: main_gauche
+  price: { base_gc: 7 }
+  availability: { kind: rare, rarity: 7 }
+  restrictions:
+  - type: warband_only
+    band_ids: [hochland-bandits]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.man-catcher
+  item_id: man_catcher
+  price: { base_gc: 25 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.misericordia
+  item_id: misericordia
+  price: { base_gc: 10 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [lustrian-reavers]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.morning-star
+  item_id: morning_star
+  price: { base_gc: 15 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.obsidian-weapon
+  item_id: obsidian_weapon
+  price: { multiplier: 4 }
+  availability: { kind: rare, rarity: 12 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.chaos-human, warband-group.beastmen, warband-group.chaos-dwarf]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.ogre-club
+  item_id: ogre_club
+  price: { base_gc: 10 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [maneaters]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.pike.merchant-caravans
+  item_id: pike
+  price: { base_gc: 10 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    band_ids: [merchant-caravans]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.pike.tileans
+  item_id: pike
+  price: { base_gc: 12 }
+  availability: { kind: rare, rarity: 7 }
+  restrictions:
+  - type: warband_only
+    band_ids: [tileans]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.poison-daggers
+  item_id: poison_daggers
+  price: { base_gc: 25 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [night-goblins-mic, night-goblins-web]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.quarter-staff
+  item_id: quarter_staff
+  price: { base_gc: 15 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [battle-monks-of-cathay]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.rapier
+  item_id: rapier
+  price: { base_gc: 15 }
+  availability: { kind: rare, rarity: 5 }
+  restrictions:
+  - type: warband_only
+    band_ids: [mercenaries, tileans, hochland-bandits, merchant-caravans]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.serpent-staff
+  item_id: serpent_staff
+  price: { base_gc: 30 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [tomb-guardians]
+  - type: profile_only
+    note: Tomb Guardians Liche Priest only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.shortsword
+  item_id: shortsword
+  price: { base_gc: 7 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [bretonnian-chapel-guard]
+  - type: profile_only
+    note: Bretonnian Chapel Guard Knights only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.sigmarite-warhammer
+  item_id: sigmarite_hammer
+  price: { base_gc: 15 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [sisters-of-sigmar]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.sons-of-hashut-obsidian-weapon
+  item_id: obsidian_weapon
+  price: { base_gc: 60 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    band_ids: [sons-of-hashut, black-dwarfs]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.spear
+  item_id: spear
+  price: { base_gc: 10 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.spiked-gauntlet
+  item_id: spiked_gauntlet
+  price: { base_gc: 15 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [pit-fighters]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.starblade
+  item_id: starblade
+  price: { base_gc: 15 }
+  availability: { kind: rare, rarity: 7 }
+  restrictions:
+  - type: warband_only
+    band_ids: [amazons-lustria]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.starsword
+  item_id: starsword
+  price: { base_gc: 30 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    band_ids: [amazons-lustria]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.steel-whip
+  item_id: steel_whip
+  price: { base_gc: 10 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [sisters-of-sigmar, sons-of-hashut, black-dwarfs]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.sword
+  item_id: sword
+  price: { base_gc: 10 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.sword-breaker
+  item_id: sword_breaker
+  price: { base_gc: 30 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.tenderiser
+  item_id: tenderiser
+  price: { base_gc: 3 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [mootlanders]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.trident
+  item_id: trident
+  price: { base_gc: 15 }
+  availability: { kind: rare, rarity: 7 }
+  restrictions:
+  - type: warband_only
+    band_ids: [pit-fighters]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.weeping-blades
+  item_id: weeping_blades
+  price: { base_gc: 50, per: pair }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.skaven]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+# Missile Weapons
+- id: campaign.trading-post.belaying-pins
+  item_id: belaying_pin
+  price: { base_gc: 3 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [pirates]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.blowpipe
+  item_id: blowpipe
+  price: { base_gc: 25 }
+  availability: { kind: rare, rarity: 7 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.skaven, warband-group.lizardmen, warband-group.goblin]
+  - type: condition
+    note: Common for Forest Goblins instead of rare
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bolas
+  item_id: bolas
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [lizardmen, lustria-lizardmen, amazons-lustria]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bow
+  item_id: bow
+  price: { base_gc: 10 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.cathayan-candles
+  item_id: cathayan_candles
+  price:
+    base_gc: 25
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.crossbow
+  item_id: crossbow
+  price: { base_gc: 25 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.crossbow-pistol
+  item_id: crossbow_pistol
+  price: { base_gc: 35 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.elf-bow
+  item_id: elf_bow
+  price:
+    base_gc: 35
+    optional_variable_cost: { dice: { count: 3, sides: 6 } }
+  availability: { kind: rare, rarity: 12 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.firepots-miragliano
+  item_id: firepots_miragliano
+  price: null
+  availability: { kind: common }
+  restrictions:
+  - type: condition
+    note: Not sold at trading posts; granted through warband equipment lists
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.fish-hook-shot
+  item_id: fish_hook_shot
+  price: { base_gc: 10 }
+  availability: { kind: rare, rarity: 7 }
+  restrictions:
+  - type: warband_only
+    band_ids: [battle-monks-of-cathay]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.harpoon-crossbow
+  item_id: harpoon_crossbow
+  price: { base_gc: 50 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    band_ids: [maneaters]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.javelins
+  item_id: javelins
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [amazons-mordheim, norse-explorers-btb, norse-explorers-lustria, pit-fighters]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.long-bow
+  item_id: long_bow
+  price: { base_gc: 15 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.nehekharan-javelins
+  item_id: nehekharan_javelin
+  price: { base_gc: 10 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [tomb-guardians]
+  - type: profile_only
+    note: Tomb Guardians Tomb Lord only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.repeater-crossbow
+  item_id: repeater_crossbow
+  price: { base_gc: 40 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.short-bow
+  item_id: short_bow
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.sling
+  item_id: sling
+  price: { base_gc: 2 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.sun-gauntlet
+  item_id: sun_gauntlet
+  price: { base_gc: 40 }
+  availability: { kind: rare, rarity: 12 }
+  restrictions:
+  - type: warband_only
+    band_ids: [amazons-mordheim]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.sunstaff
+  item_id: sunstaff
+  price: { base_gc: 50 }
+  availability: { kind: rare, rarity: 12 }
+  restrictions:
+  - type: warband_only
+    band_ids: [amazons-mordheim]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.sunstaff-lustria
+  item_id: sunstaff_lustria
+  price: { base_gc: 35 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    band_ids: [amazons-lustria]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.throwing-knives-stars
+  item_id: throwing_weapons
+  price: { base_gc: 15 }
+  availability: { kind: rare, rarity: 5 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.tufenk
+  item_id: tufenk
+  price: { base_gc: 15 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+# Blackpowder Weapons
+- id: campaign.trading-post.blunderbuss
+  item_id: blunderbuss
+  price: { base_gc: 30 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.chaos-dwarf-blunderbuss
+  item_id: chaos_dwarf_blunderbuss
+  price: { base_gc: 40 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.chaos-dwarf]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.double-barrelled-duelling-pistol
+  item_id: double_barrelled_duelling_pistol
+  price:
+    base_gc: 45
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 11 }
+  restrictions:
+  - type: warband_only
+    band_ids: [gunnery-school-of-nuln]
+  purchase_options:
+  - id: campaign.trading-post.double-barrelled-duelling-pistol.brace
+    quantity: 2
+    price:
+      base_gc: 80
+      optional_variable_cost: { dice: { count: 4, sides: 6 } }
+    availability: { kind: rare, rarity: 12 }
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.double-barrelled-handgun
+  item_id: double_barrelled_handgun
+  price:
+    base_gc: 60
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    band_ids: [gunnery-school-of-nuln]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.double-barrelled-pistol
+  item_id: double_barrelled_pistol
+  price:
+    base_gc: 25
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    band_ids: [gunnery-school-of-nuln]
+  purchase_options:
+  - id: campaign.trading-post.double-barrelled-pistol.brace
+    quantity: 2
+    price:
+      base_gc: 46
+      optional_variable_cost: { dice: { count: 2, sides: 6 } }
+    availability: { kind: rare, rarity: 10 }
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.duelling-pistol
+  item_id: duelling_pistol
+  price: { base_gc: 30 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions: []
+  purchase_options:
+  - id: campaign.trading-post.duelling-pistol.brace
+    quantity: 2
+    price: { base_gc: 60 }
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.hand-held-mortar
+  item_id: hand_held_mortar
+  price:
+    base_gc: 80
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 12 }
+  restrictions:
+  - type: warband_only
+    band_ids: [gunnery-school-of-nuln, maneaters]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.handgun
+  item_id: handgun
+  price: { base_gc: 35 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.hersten-wenkler-pigeon-bombs
+  item_id: pigeon_bombs
+  price:
+    base_gc: 30
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    band_ids: [gunnery-school-of-nuln]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.hunting-rifle
+  item_id: hunting_rifle
+  price: { base_gc: 200 }
+  availability: { kind: rare, rarity: 11 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.ostlander-double-barrelled-hunting-rifle
+  item_id: double_barrelled_hunting_rifle
+  price: { base_gc: 300 }
+  availability: { kind: rare, rarity: 12 }
+  restrictions:
+  - type: warband_only
+    band_ids: [ostlanders]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.ostlander-double-barrelled-pistol
+  item_id: double_barrelled_pistol
+  price: { base_gc: 30 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    band_ids: [ostlanders]
+  purchase_options:
+  - id: campaign.trading-post.ostlander-double-barrelled-pistol.brace
+    quantity: 2
+    price: { base_gc: 60 }
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.pistol
+  item_id: pistol
+  price: { base_gc: 15 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  purchase_options:
+  - id: campaign.trading-post.pistol.brace
+    quantity: 2
+    price: { base_gc: 30 }
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.repeater-handgun
+  item_id: repeater_handgun
+  price:
+    base_gc: 60
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 11 }
+  restrictions:
+  - type: warband_only
+    band_ids: [gunnery-school-of-nuln]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.repeater-pistol
+  item_id: repeater_pistol
+  price:
+    base_gc: 30
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    band_ids: [gunnery-school-of-nuln]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.swivel-gun
+  item_id: swivel_gun
+  price: { base_gc: 65 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    band_ids: [pirates]
+  - type: profile_only
+    note: Pirate Gunners only
+  - type: limit_per_warband
+    value: 1
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.warplock-pistol
+  item_id: warp_pistol
+  price: { base_gc: 35 }
+  availability: { kind: rare, rarity: 11 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.skaven]
+  purchase_options:
+  - id: campaign.trading-post.warplock-pistol.brace
+    quantity: 2
+    price: { base_gc: 70 }
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Blackpowder Weapons
+    url: https://mordheimer.net/docs/trading-post
+# Armour
+- id: campaign.trading-post.barding
+  item_id: barding
+  price: { base_gc: 80 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: condition
+    note: Warhorses only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bretonnian-barding
+  item_id: bretonnian_barding
+  price: { base_gc: 30 }
+  availability: { kind: rare, rarity: 11 }
+  restrictions:
+  - type: condition
+    note: Bretonnian Warhorses only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.buckler
+  item_id: buckler
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.chaos-armour
+  item_id: chaos_armour
+  price: { base_gc: 185 }
+  availability: { kind: rare, rarity: 13 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.chaos-human, warband-group.beastmen, warband-group.chaos-dwarf]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.cooking-pot-helmet
+  item_id: cooking_pot_helmet
+  price: { base_gc: 8 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [mootlanders]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.enchanted-skins
+  item_id: enchanted_skins
+  price: { base_gc: 20 }
+  availability: { kind: rare, rarity: 6 }
+  restrictions:
+  - type: warband_only
+    band_ids: [amazons-lustria]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.gromril-armour
+  item_id: gromril_armour
+  price: { base_gc: 150 }
+  availability: { kind: rare, rarity: 11 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.heavy-armour
+  item_id: heavy_armour
+  price: { base_gc: 50 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.helmet
+  item_id: helmet
+  price: { base_gc: 10 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.ithilmar-armour
+  item_id: ithilmar_armour
+  price: { base_gc: 90 }
+  availability: { kind: rare, rarity: 11 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.kite-shield
+  item_id: kite_shield
+  price: { base_gc: 10 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [bretonnian-chapel-guard]
+  - type: profile_only
+    note: Bretonnian Chapel Guard Knights only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.lamellar-armour
+  item_id: lamellar_armour
+  price: { base_gc: 120 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.light-armour
+  item_id: light_armour
+  price: { base_gc: 20 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.masterwork-heavy-armour
+  item_id: masterwork_heavy_armour
+  price: null
+  availability: { kind: common }
+  restrictions:
+  - type: condition
+    note: Not sold at trading posts; granted through warband equipment lists
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.mechanical-suit
+  item_id: mechanical_suit
+  price: { base_gc: 225 }
+  availability: { kind: rare, rarity: 14 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.chaos-dwarf]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.pavise
+  item_id: pavise
+  price: { base_gc: 25 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.shield
+  item_id: shield
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.toughened-leathers
+  item_id: toughened_leathers
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+# Miscellaneous
+- id: campaign.trading-post.amulet-of-the-moon
+  item_id: amulet_of_the_moon
+  price: { base_gc: 50 }
+  availability: { kind: rare, rarity: 12 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.elf]
+  - type: condition
+    note: Rare 11 for Amazons (Lustria)
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.asp-arrows
+  item_id: asp_arrows
+  price: { base_gc: 10 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [tomb-guardians]
+  - type: profile_only
+    note: Tomb Guardians Tomb Lord only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.banner
+  item_id: banner
+  price: { base_gc: 10 }
+  availability: { kind: rare, rarity: 5 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bear-claw-necklace
+  item_id: bear_claw_necklace
+  price:
+    base_gc: 75
+    optional_variable_cost: { dice: { count: 3, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    band_ids: [kislevites]
+  - type: heroes_only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.black-lotus
+  item_id: black_lotus
+  price:
+    base_gc: 10
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_forbidden
+    band_ids: [witch-hunters, sisters-of-sigmar]
+  - type: condition
+    note: Rare 7 for Skaven and Lizardmen; 10 gc and Common for Skink Heroes
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.blessed-stag-hide
+  item_id: blessed_stag_hide
+  price: { base_gc: 40 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    band_ids: [horned-hunters]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.blessed-water
+  item_id: blessed_water
+  price:
+    base_gc: 10
+    optional_variable_cost: { dice: { count: 3, sides: 6 } }
+  availability: { kind: rare, rarity: 6 }
+  restrictions:
+  - type: warband_forbidden
+    groups: [warband-group.undead]
+  - type: condition
+    note: Common for Warrior-Priests and Sisters of Sigmar
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.book-of-the-dead
+  item_id: book_of_the_dead
+  price:
+    base_gc: 200
+    optional_variable_cost: { dice: { count: 1, sides: 6 }, multiplier: 25 }
+  availability: { kind: rare, rarity: 12 }
+  restrictions:
+  - type: condition
+    note: Vampires and Necromancers only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bota-bag
+  item_id: bota_bag
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bugmans-ale
+  item_id: bugmans_ale
+  price:
+    base_gc: 50
+    optional_variable_cost: { dice: { count: 3, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.caltrops
+  item_id: caltrops
+  price:
+    base_gc: 15
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 6 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.cathayan-silk-clothes
+  item_id: cathayan_silk_cloak
+  price:
+    base_gc: 50
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.chest
+  item_id: chest
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.clan-pestilens-banner
+  item_id: pestilens_banner
+  price: { base_gc: 10 }
+  availability: { kind: rare, rarity: 5 }
+  restrictions:
+  - type: warband_only
+    band_ids: [skaven-clan-pestilens]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.compass
+  item_id: compass
+  price:
+    base_gc: 45
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    band_ids: [pirates]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.conch-shell-horn
+  item_id: conch_shell_horn
+  price: { base_gc: 25 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    band_ids: [amazons-lustria]
+  - type: profile_only
+    note: Amazons (Lustria) Piranha Warrior only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.crimson-shade
+  item_id: crimson_shade
+  price:
+    base_gc: 35
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.dark-venom
+  item_id: dark_venom
+  price:
+    base_gc: 30
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_forbidden
+    band_ids: [witch-hunters, sisters-of-sigmar]
+  - type: condition
+    note: Rare 6 for Dark Elves and Lizardmen; 20 gc and Common for Skink Heroes
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.elven-boots
+  item_id: elf_boots
+  price:
+    base_gc: 75
+    optional_variable_cost: { dice: { count: 1, sides: 6 }, multiplier: 10 }
+  availability: { kind: rare, rarity: 12 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.elven-cloak
+  item_id: elven_cloak
+  price:
+    base_gc: 100
+    optional_variable_cost: { dice: { count: 1, sides: 6 }, multiplier: 10 }
+  availability: { kind: rare, rarity: 12 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.elven-runestones
+  item_id: elven_runestones
+  price:
+    base_gc: 50
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 11 }
+  restrictions:
+  - type: warband_only
+    band_ids: [shadow-warriors]
+  - type: profile_only
+    note: Shadow Warrior Weavers only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.elven-wine
+  item_id: elven_wine
+  price:
+    base_gc: 50
+    optional_variable_cost: { dice: { count: 3, sides: 6 } }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    band_ids: [shadow-warriors]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.engine-of-chaos
+  item_id: engine_of_chaos
+  price: { base_gc: 195 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.chaos-dwarf]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.familiar
+  item_id: familiar
+  price:
+    base_gc: 20
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: condition
+    note: Only spell casters may attempt to find; gold is spent even on an unsuccessful rarity roll
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.fire-arrows
+  item_id: fire_arrows
+  price:
+    base_gc: 30
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.fire-bomb
+  item_id: fire_bomb
+  price:
+    base_gc: 35
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.firecrackers
+  item_id: firecrackers
+  price: { base_gc: 20 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.flash-powder
+  item_id: flash_powder
+  price:
+    base_gc: 25
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.fog-enhancing-warpstone-shards
+  item_id: fog_warpstone_fragments
+  price:
+    base_gc: 100
+    optional_variable_cost: { dice: { count: 1, sides: 6 }, multiplier: 10 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    band_ids: [skaven-clan-pestilens]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.forest-cloak
+  item_id: forest_cloak
+  price: { base_gc: 50 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: heroes_only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.garlic
+  item_id: garlic
+  price: { base_gc: 1 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_forbidden
+    groups: [warband-group.undead]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.halfling-cookbook
+  item_id: halfling_cookbook
+  price:
+    base_gc: 30
+    optional_variable_cost: { dice: { count: 3, sides: 6 } }
+  availability: { kind: rare, rarity: 7 }
+  restrictions:
+  - type: warband_forbidden
+    groups: [warband-group.undead]
+  - type: warband_forbidden
+    band_ids: [carnival-of-chaos]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.hammer-of-witches
+  item_id: hammer_of_witches
+  price: { base_gc: 100 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    band_ids: [witch-hunters]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.hardtack-biscuits
+  item_id: hardtack_biscuits
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [pirates]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.healing-herbs
+  item_id: healing_herbs
+  price:
+    base_gc: 20
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: condition
+    note: Common for Amazons (Lustria)
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.holy-relic
+  item_id: holy_relic
+  price:
+    base_gc: 15
+    optional_variable_cost: { dice: { count: 3, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: condition
+    note: Rare 6 for Warrior-Priests and Sisters of Sigmar
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.holy-tome
+  item_id: holy_tome
+  price:
+    base_gc: 100
+    optional_variable_cost: { dice: { count: 1, sides: 6 }, multiplier: 10 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    band_ids: [witch-hunters, sisters-of-sigmar]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.hook-hand
+  item_id: hook_hand
+  price: { base_gc: 4 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [pirates]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.hunting-arrows
+  item_id: hunting_arrows
+  price:
+    base_gc: 25
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.iron-shod-boots
+  item_id: iron_shod_boots
+  price:
+    base_gc: 20
+    optional_variable_cost: { dice: { count: 3, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.jolly-roger
+  item_id: pirate_flag
+  price:
+    base_gc: 40
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    band_ids: [pirates]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.lamp-of-the-djinn
+  item_id: lamp_of_the_djinn
+  price:
+    base_gc: 50
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 12 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.lantern
+  item_id: lantern
+  price: { base_gc: 10 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.large-ladder
+  item_id: large_ladder
+  price: { base_gc: 10 }
+  availability: { kind: rare, rarity: 5 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.liber-bubonicus
+  item_id: liber_bubonicus
+  price:
+    base_gc: 200
+    optional_variable_cost: { dice: { count: 1, sides: 6 }, multiplier: 25 }
+  availability: { kind: rare, rarity: 12 }
+  restrictions:
+  - type: warband_only
+    band_ids: [skaven-clan-pestilens]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.liturgicus-infecticus
+  item_id: liturgicus_infecticus
+  price:
+    base_gc: 30
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    band_ids: [skaven-clan-pestilens]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.lock-picks
+  item_id: lock_picks
+  price: { base_gc: 15 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.lookout-gnoblar
+  item_id: lookout_gnoblar
+  price: { base_gc: 20 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    band_ids: [maneaters]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.luck-gnoblar
+  item_id: luck_gnoblar
+  price: { base_gc: 25 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    band_ids: [maneaters]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.lucky-charm
+  item_id: lucky_charm
+  price: { base_gc: 10 }
+  availability: { kind: rare, rarity: 6 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.mad-cap-mushrooms
+  item_id: mad_cap_mushrooms
+  price:
+    base_gc: 30
+    optional_variable_cost: { dice: { count: 3, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: condition
+    note: Common if the warband includes Goblins
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.magic-carpet
+  item_id: flying_carpet
+  price:
+    base_gc: 50
+    optional_variable_cost: { dice: { count: 4, sides: 6 } }
+  availability: { kind: rare, rarity: 12 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.magic-gourd
+  item_id: magic_gourd
+  price: { base_gc: 10 }
+  availability: { kind: rare, rarity: 7 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.magic-gubbinz
+  item_id: magic_gubbinz
+  price: { base_gc: 50 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    band_ids: [forest-goblins]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.mandrake-root
+  item_id: mandrake_root
+  price:
+    base_gc: 25
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.manticore-spoor
+  item_id: manticore_spoor
+  price:
+    base_gc: 30
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.map-of-cathay
+  item_id: map_of_cathay
+  price:
+    base_gc: 20
+    optional_variable_cost: { dice: { count: 4, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.monkeys-paw
+  item_id: monkeys_paw
+  price:
+    base_gc: 50
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 10 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.mordheim-map
+  item_id: mordheim_map
+  price:
+    base_gc: 20
+    optional_variable_cost: { dice: { count: 4, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.nehekharan-map
+  item_id: nehekharan_map
+  price:
+    base_gc: 20
+    optional_variable_cost: { dice: { count: 4, sides: 6 } }
+  availability: { kind: rare, rarity: 10 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.net
+  item_id: net
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.nomad-robes
+  item_id: nomad_robes
+  price: { base_gc: 25 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.opulent-coach
+  item_id: opulent_coach
+  price: { base_gc: 250 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.parrot
+  item_id: parrot
+  price: { base_gc: 15 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    band_ids: [pirates]
+  - type: profile_only
+    note: Pirate Captain and Mates only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.peg-leg
+  item_id: peg_leg
+  price: { base_gc: 8 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [pirates]
+  - type: limit_per_model
+    value: 1
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.poisoned-weapon
+  item_id: poisoned_weapon
+  price: { base_gc: 25 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [forest-goblins]
+  - type: condition
+    note: Upgrade applied to a weapon; cost added to the weapon price
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.powder-keg
+  item_id: powder_keg
+  price: { base_gc: 15 }
+  availability: { kind: rare, rarity: 7 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.rabbits-foot
+  item_id: rabbits_foot
+  price: { base_gc: 10 }
+  availability: { kind: rare, rarity: 5 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.rain-coat
+  item_id: rain_coat
+  price: { base_gc: 10 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.red-toof-tribal-jewellery
+  item_id: red_toof_tribal_jewellery
+  price: { base_gc: 40 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    band_ids: [forest-goblins]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.reptile-venom
+  item_id: reptile_venom
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions:
+  - type: profile_only
+    note: Skink Henchmen only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.rickshaw
+  item_id: rickshaw
+  price: { base_gc: 70 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.human]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.river-barge
+  item_id: river_barge
+  price: { base_gc: 200 }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.riverboat
+  item_id: riverboat
+  price: { base_gc: 100 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.rope-and-hook
+  item_id: rope_hook
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.rosary
+  item_id: rosary
+  price: { base_gc: 10 }
+  availability: { kind: rare, rarity: 6 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.rowboat
+  item_id: rowboat
+  price: { base_gc: 40 }
+  availability: { kind: rare, rarity: 7 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.scorpion-ring
+  item_id: scorpion_ring
+  price:
+    base_gc: 10
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 11 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.scroll-of-the-rat-familiar
+  item_id: rat_familiar_scroll
+  price:
+    base_gc: 25
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    band_ids: [skaven-clan-pestilens]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.sea-dragon-cloak
+  item_id: sea_dragon_cloak
+  price:
+    base_gc: 50
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.dark-elf]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.skeleton-chariot
+  item_id: skeleton_chariot
+  price:
+    base_gc: 200
+    optional_variable_cost: { dice: { count: 10, sides: 6 } }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [tomb-guardians]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.small-ladder
+  item_id: small_ladder
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.smoke-bomb
+  item_id: smoke_bomb
+  price:
+    base_gc: 30
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 10 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.snake-charmers-flute
+  item_id: snake_charmers_flute
+  price:
+    base_gc: 10
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.spider-spittle
+  item_id: spider_spit
+  price:
+    base_gc: 30
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 7 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.spy-glass
+  item_id: spy_glass
+  price: { base_gc: 20 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    band_ids: [pirates]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.squig-prodder
+  item_id: squig_prodder
+  price: { base_gc: 15 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.goblin]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.standard-of-nagarythe
+  item_id: standard_of_nagarythe
+  price:
+    base_gc: 75
+    optional_variable_cost: { dice: { count: 3, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    band_ids: [shadow-warriors]
+  - type: condition
+    note: May only be purchased when the warband is created
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.superior-blackpowder
+  item_id: superior_blackpowder
+  price: { base_gc: 30 }
+  availability: { kind: rare, rarity: 11 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.sword-gnoblar
+  item_id: sword_gnoblar
+  price: { base_gc: 30 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    band_ids: [maneaters]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.tarot-cards
+  item_id: tarot_cards
+  price: { base_gc: 50 }
+  availability: { kind: rare, rarity: 7 }
+  restrictions:
+  - type: warband_forbidden
+    band_ids: [witch-hunters, sisters-of-sigmar]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.tears-of-shallaya
+  item_id: tears_of_shallaya
+  price:
+    base_gc: 10
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 7 }
+  restrictions:
+  - type: warband_forbidden
+    band_ids: [cult-of-the-possessed, carnival-of-chaos]
+  - type: warband_forbidden
+    groups: [warband-group.undead]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.telescope
+  item_id: telescope
+  price:
+    base_gc: 75
+    optional_variable_cost: { dice: { count: 3, sides: 6 } }
+  availability: { kind: rare, rarity: 10 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.tome-of-magic
+  item_id: tome_of_magic
+  price:
+    base_gc: 200
+    optional_variable_cost: { dice: { count: 1, sides: 6 }, multiplier: 25 }
+  availability: { kind: rare, rarity: 12 }
+  restrictions:
+  - type: warband_forbidden
+    band_ids: [witch-hunters, sisters-of-sigmar]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.torch
+  item_id: torch
+  price: { base_gc: 2 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.trade-wagon
+  item_id: trade_wagon
+  price: { base_gc: 180 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [merchant-caravans]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.treasure-map
+  item_id: treasure_map
+  price:
+    base_gc: 75
+    optional_variable_cost: { dice: { count: 4, sides: 6 } }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    band_ids: [pirates]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.trip-wire
+  item_id: trip_wire
+  price: { base_gc: 15 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [horned-hunters]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.venom-ring
+  item_id: venom_ring
+  price:
+    base_gc: 20
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 10 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.vial-of-pestilens
+  item_id: vial_of_pestilens
+  price:
+    base_gc: 25
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.skaven]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.victuals
+  item_id: victuals
+  price: { base_gc: 8 }
+  availability: { kind: common }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.vodka
+  item_id: vodka
+  price:
+    base_gc: 35
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    band_ids: [kislevites]
+  - type: heroes_only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.wagon-stagecoach
+  item_id: wagon_stagecoach
+  price: { base_gc: 100 }
+  availability: { kind: rare, rarity: 7 }
+  restrictions:
+  - type: condition
+    note: Without draft animals
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.war-horn
+  item_id: war_horn
+  price:
+    base_gc: 30
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 8 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.war-horn-of-nagarythe
+  item_id: war_horn_of_nagarythe
+  price:
+    base_gc: 25
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 6 }
+  restrictions:
+  - type: warband_only
+    band_ids: [shadow-warriors]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.warpstone-amulet
+  item_id: warpstone_amulet
+  price: { base_gc: 10 }
+  availability: { kind: rare, rarity: 5 }
+  restrictions:
+  - type: warband_only
+    band_ids: [skaven-clan-pestilens]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.wheelbarrow
+  item_id: wheelbarrow
+  price: { base_gc: 5 }
+  availability: { kind: rare, rarity: 5 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.winter-furs
+  item_id: winter_furs
+  price: { base_gc: 5 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_forbidden
+    groups: [warband-group.beastmen]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.wolfcloak
+  item_id: wolfcloak
+  price: { base_gc: 10 }
+  availability: { kind: common }
+  restrictions:
+  - type: warband_only
+    band_ids: [mercenaries, norse-explorers-btb, norse-explorers-lustria, marauders-of-chaos]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.wyrdstone-pendulum
+  item_id: wyrdstone_pendulum
+  price:
+    base_gc: 25
+    optional_variable_cost: { dice: { count: 3, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+# Animal Bestiary
+- id: campaign.trading-post.chaos-steed
+  item_id: chaos_steed
+  price: { base_gc: 90 }
+  availability: { kind: rare, rarity: 11 }
+  restrictions:
+  - type: warband_only
+    band_ids: [cult-of-the-possessed, marauders-of-chaos]
+  - type: condition
+    note: Marauders with the Chosen of Chaos skill only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Animal Bestiary
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.cold-one
+  item_id: cold_one
+  price: { base_gc: 100 }
+  availability: { kind: rare, rarity: 11 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.dark-elf, warband-group.lizardmen, warband-group.norse, warband-group.chaos-human]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Animal Bestiary
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.elven-steed
+  item_id: elven_steed
+  price: { base_gc: 90 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.elf]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Animal Bestiary
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.giant-spider
+  item_id: giant_spider
+  price: { base_gc: 100 }
+  availability: { kind: rare, rarity: 11 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.goblin]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Animal Bestiary
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.giant-wolf
+  item_id: giant_wolf
+  price: { base_gc: 85 }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.goblin]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Animal Bestiary
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.gnoblar-fighter
+  item_id: gnoblar_fighter
+  price:
+    base_gc: 15
+    optional_variable_cost: { dice: { count: 1, sides: 6 } }
+  availability: { kind: rare, rarity: 9 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.ogre, warband-group.chaos-dwarf]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Animal Bestiary
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.mule
+  item_id: mule
+  price: { base_gc: 30 }
+  availability: { kind: rare, rarity: 7 }
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Animal Bestiary
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.nightmare
+  item_id: nightmare
+  price: { base_gc: 95 }
+  availability: { kind: rare, rarity: 11 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.undead]
+  - type: condition
+    note: Vampires, Necromancers and Grave Guards only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Animal Bestiary
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.rhinox
+  item_id: rhinox
+  price:
+    base_gc: 200
+    optional_variable_cost: { dice: { count: 1, sides: 6 }, multiplier: 10 }
+  availability: { kind: rare, rarity: 15 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.ogre, warband-group.chaos-human, warband-group.norse]
+  - type: warband_only
+    band_ids: [merchant-caravans]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Animal Bestiary
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.riding-draft-horse
+  item_id: horse
+  price: { base_gc: 40 }
+  availability: { kind: rare, rarity: 8 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.human]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Animal Bestiary
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.temple-dog
+  item_id: temple_dog
+  price:
+    base_gc: 250
+    optional_variable_cost: { dice: { count: 1, sides: 6 }, multiplier: 10 }
+  availability: { kind: rare, rarity: 13 }
+  restrictions:
+  - type: warband_only
+    band_ids: [battle-monks-of-cathay, sisters-of-sigmar, witch-hunters]
+  - type: condition
+    note: Dragon Monks, Sisters of Sigmar and Priests only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Animal Bestiary
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.war-boar
+  item_id: war_boar
+  price: { base_gc: 90 }
+  availability: { kind: rare, rarity: 11 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.orc]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Animal Bestiary
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.wardogs
+  item_id: warhound
+  price:
+    base_gc: 25
+    optional_variable_cost: { dice: { count: 2, sides: 6 } }
+  availability: { kind: rare, rarity: 10 }
+  restrictions:
+  - type: warband_forbidden
+    groups: [warband-group.skaven]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Animal Bestiary
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.warhorse
+  item_id: warhorse
+  price: { base_gc: 80 }
+  availability: { kind: rare, rarity: 11 }
+  restrictions:
+  - type: warband_only
+    groups: [warband-group.human]
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Animal Bestiary
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.ancestral-claw
+  item_id: ancestral_claw
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.ankus
+  item_id: ankus
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.anointed-bolts
+  item_id: anointed_bolts
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.arcane-familiar
+  item_id: arcane_familiar
+  price:
+    base_gc: 20
+    optional_variable_cost:
+      dice: &id002
+        count: 1
+        sides: 6
+  availability:
+    kind: rare
+    rarity: 8
+  restrictions:
+  - type: condition
+    note: Sold as Familiar in the trading post (entry familiar); only spell casters
+      may attempt to find it.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bagh-nakh
+  item_id: bagh_nakh
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.ball-shot
+  item_id: ball_shot
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.battle-axe
+  item_id: battle_axe
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.beastmaster-whip
+  item_id: beastmaster_whip
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bird-of-prey-aristocrat-only
+  item_id: bird_of_prey_aristocrat_only
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.blood-root
+  item_id: blood_root
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.blunderbuss-one-per-warband
+  item_id: blunderbuss_one_per_warband
+  price:
+    base_gc: 30
+  availability:
+    kind: rare
+    rarity: 9
+  restrictions:
+  - type: condition
+    note: Blunderbuss with a warband limit of 1; sold as Blunderbuss (entry blunderbuss).
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.boar-spear-aristocrat-only
+  item_id: boar_spear_aristocrat_only
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bone-helmet
+  item_id: bone_helmet
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bone-helmet-skink-priest-only
+  item_id: bone_helmet_skink_priest_only
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bronze-axe
+  item_id: bronze_axe
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bronze-breastplate
+  item_id: bronze_breastplate
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bronze-dagger
+  item_id: bronze_dagger
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bronze-helmet
+  item_id: bronze_helmet
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bronze-spear
+  item_id: bronze_spear
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.bronze-sword
+  item_id: bronze_sword
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.carronade
+  item_id: carronade
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.carronade-cannonball
+  item_id: carronade_cannonball
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.carronade-chain
+  item_id: carronade_chain
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.carronade-grapeshot
+  item_id: carronade_grapeshot
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.cathayan-quilted-silk-armour
+  item_id: cathayan_quilted_silk_armour
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Armour
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.chain-shot
+  item_id: chain_shot
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.chained-squig
+  item_id: chained_squig
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.choppa
+  item_id: choppa
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.choppa-counts-as-a-morning-star
+  item_id: choppa_counts_as_a_morning_star
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.cleaver-counts-as-axe
+  item_id: cleaver_counts_as_axe
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.crossbow-max-3-per-warband
+  item_id: crossbow_max_3_per_warband
+  price:
+    base_gc: 25
   availability:
     kind: common
-  purchase_options:
-  - id: example.first-dagger
-    quantity: 1
-    price:
-      base_gc: 0
-    condition: first_dagger_for_new_recruit
-  restrictions: []
-  source_refs: []
-  note: Fictitious structure example; values must be replaced by verified source data.
+  restrictions:
+  - type: condition
+    note: Crossbow with a warband limit of 3; sold as Crossbow (entry crossbow).
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.cutlass-sword
+  item_id: cutlass_sword
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.dagger-jambiya
+  item_id: dagger_jambiya
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.dark-steel-weapon
+  item_id: dark_steel_weapon
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.death-knife
+  item_id: death_knife
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.devil-toxin
+  item_id: devil_toxin
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.dispelling-scroll
+  item_id: dispelling_scroll
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.draich
+  item_id: draich
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.elven-greatsword
+  item_id: elven_greatsword
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.eshin-assassin-clothes
+  item_id: eshin_assassin_clothes
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.feather-headdress
+  item_id: feather_headdress
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.grape-shot
+  item_id: grape_shot
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.great-scimitar
+  item_id: great_scimitar
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.great-weapon
+  item_id: great_weapon
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.hammer-or-mace
+  item_id: hammer_or_mace
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.hochland-long-rifle
+  item_id: hochland_long_rifle
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.holy-relic-pilgrim-only
+  item_id: holy_relic_pilgrim_only
+  price:
+    base_gc: 15
+    optional_variable_cost:
+      dice: &id001
+        count: 3
+        sides: 6
+  availability:
+    kind: rare
+    rarity: 8
+  restrictions:
+  - type: condition
+    note: Sold as Holy (Unholy) Relic (entry holy_relic).
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.horned-rat-amulet
+  item_id: horned_rat_amulet
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.horse-damsel-squire-only
+  item_id: horse_damsel_squire_only
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.icon-of-manann
+  item_id: icon_of_manann
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.javelin
+  item_id: javelin
+  price:
+    base_gc: 5
+  availability:
+    kind: common
+  restrictions:
+  - type: condition
+    note: Sold as Javelins in the trading post (entry javelins).
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.jungle-roast
+  item_id: jungle_roast
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.kusara-kama
+  item_id: kusara_kama
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.lance-not-questing-knight
+  item_id: lance_not_questing_knight
+  price:
+    base_gc: 40
+  availability:
+    kind: rare
+    rarity: 8
+  restrictions:
+  - type: condition
+    note: Sold as Lance (entry lance); not available to Questing Knights.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.long-boathook
+  item_id: long_boathook
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.mage-robes
+  item_id: mage_robes
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.mage-staff
+  item_id: mage_staff
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.magic-tattoo
+  item_id: magic_tattoo
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.magic-tattoos
+  item_id: magic_tattoos
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.manbane
+  item_id: manbane
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.nagarythe-standard
+  item_id: nagarythe_standard
+  price:
+    base_gc: 75
+    optional_variable_cost:
+      dice: *id001
+  availability:
+    kind: rare
+    rarity: 9
+  restrictions:
+  - type: condition
+    note: Sold as Standard of Nagarythe (entry standard_of_nagarythe); may only be
+      purchased at warband creation.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.nagarythe-war-horn
+  item_id: nagarythe_war_horn
+  price:
+    base_gc: 25
+    optional_variable_cost:
+      dice: *id002
+  availability:
+    kind: rare
+    rarity: 6
+  restrictions:
+  - type: condition
+    note: Sold as War Horn of Nagarythe (entry war_horn_of_nagarythe).
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.nightmare-aristocrat-only
+  item_id: nightmare_aristocrat_only
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.nightshade
+  item_id: nightshade
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.pistol-brace
+  item_id: pistol_brace
+  price:
+    base_gc: 30
+  availability:
+    kind: rare
+    rarity: 8
+  restrictions:
+  - type: condition
+    note: Sold as Pistol brace; also modeled as purchase_option of pistol.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.poison-darts
+  item_id: poison_darts
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.poisoned-darts
+  item_id: poisoned_darts
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.sacrifice-dagger
+  item_id: sacrifice_dagger
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.scourge
+  item_id: scourge
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.scythe
+  item_id: scythe
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.shrunken-head
+  item_id: shrunken_head
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.sigmar-shield
+  item_id: sigmar_shield
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.snake-whip
+  item_id: snake_whip
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.spider-amulet
+  item_id: spider_amulet
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.spider-chitin-armour
+  item_id: spider_chitin_armour
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.staff
+  item_id: staff
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.staff-club-mace
+  item_id: staff_club_mace
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.stone-axe
+  item_id: stone_axe
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.stone-axe-counts-as-a-club
+  item_id: stone_axe_counts_as_a_club
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.sword-heroes-only
+  item_id: sword_heroes_only
+  price:
+    base_gc: 10
+  availability:
+    kind: common
+  restrictions:
+  - type: condition
+    note: Sold as Sword (entry sword); heroes only.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.sword-scimitar
+  item_id: sword_scimitar
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Hand-to-hand Combat Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.throwing-axe
+  item_id: throwing_axe
+  price:
+    base_gc: 15
+  availability:
+    kind: rare
+    rarity: 5
+  restrictions:
+  - type: condition
+    note: Sold as Throwing Knives/Stars (entry throwing_weapons); throwing axes count
+      as throwing knives.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.throwing-axes-same-as-throwing-knives
+  item_id: throwing_axes_same_as_throwing_knives
+  price:
+    base_gc: 15
+  availability:
+    kind: rare
+    rarity: 5
+  restrictions:
+  - type: condition
+    note: Sold as Throwing Knives/Stars (entry throwing_weapons); these axes count
+      as throwing knives.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.throwing-knives
+  item_id: throwing_knives
+  price:
+    base_gc: 15
+  availability:
+    kind: rare
+    rarity: 5
+  restrictions:
+  - type: condition
+    note: Sold as Throwing Knives/Stars (entry throwing_weapons).
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.throwing-stars
+  item_id: throwing_stars
+  price:
+    base_gc: 15
+  availability:
+    kind: rare
+    rarity: 5
+  restrictions:
+  - type: condition
+    note: Sold as Throwing Knives/Stars (entry throwing_weapons).
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Missile Weapons
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.travel-staff
+  item_id: travel_staff
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.two-handed-club
+  item_id: two_handed_club
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.whip
+  item_id: whip
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.witch-sword
+  item_id: witch_sword
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.wizard-robe
+  item_id: wizard_robe
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.wolfsbane
+  item_id: wolfsbane
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+- id: campaign.trading-post.yari
+  item_id: yari
+  price: null
+  availability:
+    kind: not_sold
+  restrictions:
+  - type: condition
+    note: Not sold at the Mordheim trading post; available only through its warband
+      equipment list.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Trading Post / Miscellaneous
+    url: https://mordheimer.net/docs/trading-post
+effect_ids:
+- campaign.trading.buy-common-item
+- campaign.trading.rarity-test
+- campaign.trading.modify-rarity-test
+- campaign.trading.buy-rare-item

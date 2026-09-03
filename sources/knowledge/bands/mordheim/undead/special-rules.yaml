@@ -540,9 +540,10 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--undead-maximum-characteristics
   name: Undead Maximum Characteristics
-  effect: 'Vampire maximum characteristics: M6, WS8, BS6, S7, T6, W4, I9, A4, Ld10. Necromancers and Dregs use the Human maximum
-    profile: M4, WS6, BS6, S4, T4, W3, I6, A4, Ld9. Ghouls use the Ghoul maximum profile: M5, WS5, BS2, S4, T5, W3, I5, A5,
-    Ld7. Dire Wolves and Zombies do not gain Experience and therefore do not use advancement maximums.'
+  effect: 'Vampires use the Vampire racial maximum profile (campaign.limit.racial-maximum.vampire).
+    Necromancers and Dregs use the Human racial maximum profile (campaign.limit.racial-maximum.human).
+    Ghouls use the Ghoul racial maximum profile (campaign.limit.racial-maximum.ghoul).
+    Dire Wolves and Zombies do not gain Experience and therefore do not use advancement maximums.'
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -552,9 +553,10 @@ rules:
     en: Undead Maximum Characteristics
     es: null
   effect_i18n:
-    en: 'Vampire maximum characteristics: M6, WS8, BS6, S7, T6, W4, I9, A4, Ld10. Necromancers and Dregs use the Human maximum
-      profile: M4, WS6, BS6, S4, T4, W3, I6, A4, Ld9. Ghouls use the Ghoul maximum profile: M5, WS5, BS2, S4, T5, W3, I5,
-      A5, Ld7. Dire Wolves and Zombies do not gain Experience and therefore do not use advancement maximums.'
+    en: 'Vampires use the Vampire racial maximum profile (campaign.limit.racial-maximum.vampire).
+      Necromancers and Dregs use the Human racial maximum profile (campaign.limit.racial-maximum.human).
+      Ghouls use the Ghoul racial maximum profile (campaign.limit.racial-maximum.ghoul).
+      Dire Wolves and Zombies do not gain Experience and therefore do not use advancement maximums.'
     es: null
   applies_to:
     band: true

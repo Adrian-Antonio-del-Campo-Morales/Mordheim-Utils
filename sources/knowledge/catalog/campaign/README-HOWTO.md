@@ -42,6 +42,7 @@ campaña a widgets, constantes de UI o persistencia.
 | Precio de mercado, rareza y disponibilidad | `campaign/trading-post.yaml` | `item_id` |
 | Orden post-batalla | `campaign/post-battle-sequence.yaml` | `campaign.step.*` |
 | Heridas, experiencia, exploración, comercio y rating | Los ficheros hermanos de este directorio | `campaign.*` |
+| Máximos raciales de atributos (avance) | `catalog/rules/racial-maximums.yaml` | `campaign.limit.racial-maximum.*` |
 | Excepción de una banda o de un perfil | `bands/<collection>/<band>/special-rules.yaml` | `rule_id` / `effect_id` |
 
 Una entrada de campaña puede referir `item_id`, `profile_id`, `band_id` o
@@ -65,8 +66,9 @@ Para una recompensa de exploración que sea un objeto, usar `rewards.item_ids`.
 Ejemplos ya presentes: `lucky_charm` en `catalog/items/combat-equipment.yaml`,
 `axe`, `dagger` y `sword` en `catalog/items/weapons-close-combat.yaml`, y
 `light_armour` en `catalog/items/armour.yaml`. Si el objeto no existe en el
-catálogo —como ocurre actualmente con Mordheim Map— detener la ingestión de
-ese resultado y añadir primero la ficha canónica del objeto con su fuente.
+catálogo —como ocurrió con Mordheim Map antes de añadir su ficha canónica en
+`catalog/items/out-of-scope.yaml`— detener la ingestión de ese resultado y
+añadir primero la ficha canónica del objeto con su fuente.
 
 ## Cómo consultar la KB existente desde código
 
@@ -144,16 +146,75 @@ véase el TODO en [README.md](README.md).
 4. Para una excepción, crear o ampliar la regla especial de la banda y enlazar
    el `effect_id` de campaña pertinente.
 5. Añadir validación de referencias y un caso semántico antes de hacer el dato
-   ejecutable.
+   ejecutable. La validación de la ingesta actual de campaña (cabeceras,
+   ausencia de ejemplos ficticios, conteos canónicos y resolución de
+   referencias contra items, bandas, grupos, condiciones, habilidades y
+   perfiles) vive en `tests/knowledge/test_campaign_catalogs.py`.
 6. Ejecutar `python -m mordheim_combat_lab validate`.
+
+## Añadir o revisar recompensas de un escenario
+
+Cada escenario con datos de progresión transcritos lleva la clave
+`progression:` con estas subclaves (todas opcionales salvo `experience` cuando
+la clave existe; si la fuente no declara premios de progresión —p. ej.
+ciertas invasiones zombi de la Archive Pestilen— la ausencia debe quedar
+documentada en `notes`):
+
+- `experience`: lista de premios. Cada fila tiene **o bien** `ref` (un id
+  canónico `campaign.experience.award.*` de `experience-and-advances.yaml`
+  cuando la línea coincide con el premio estándar) **o bien** `summary` (texto
+  fiel a la fuente para premios propios del escenario), nunca ambos. Cuando la
+  cantidad es numérica se declara `amount`; cuando la fuente la da en dados,
+  `amount_dice` (p. ej. `D6`). Nunca ambos.
+- `wyrdstone`: texto con el wyrdstone que obtiene la banda al final (p. ej.
+  por contador en posesión, con tope si la fuente lo declara).
+- `income`: texto con ingresos en coronas o pagos fijos.
+- `loot`: tesoro/objetos. `summary` describe cuándo se obtiene;
+  `contents` (opcional) lista las filas con `reward`, `roll` (p. ej. `4D6`),
+  `when.min`/`when.max` (opcional, si la tirada discrimina) e `item_id`
+  (opcional, id canónico del catálogo de items cuando el premio es un objeto
+  concreto del Trading Post).
+- `exploration`: (opcional) texto con bonificaciones sobre la fase de
+  exploración posterior (dados extra o repeticiones).
+- `notes`: dudas o aclaraciones de la fuente para pasos posteriores
+  (erratas sospechadas, discrepancias de cantidad/etiqueta, convenciones
+  asumidas no declaradas en la página, conversiones de contadores no
+  explícitas).
+
+La URL de `source_refs` de un escenario transcrito apunta a la página
+individual (`…/scenarios/<familia>/<slug>`), no al índice.
+
+Los tests de forma y referencias viven en
+`tests/knowledge/test_campaign_catalogs.py` (sección Escenarios).
 
 ## Estado actual
 
-Los YAML de campaña son contratos de reglas y aún no los carga el runtime. Por
-ello ninguna pantalla actual puede resolver una secuencia post-batalla. La
-primera implementación debe empezar por los cargadores de reglas y un caso de
-uso que reciba el estado desde la persistencia externa; después podrá añadirse
-la pantalla sin acoplarla a YAML ni al motor de duelo.
+Los catálogos de este directorio están ingestados desde The New Mordheimer
+(mordheimer.net) como datos declarativos con `source_refs` y `status:
+published`: trading post (338 entradas con precio, rareza y restricciones),tablas de heridas, experiencia, exploración, reclutamiento, rating, escenarios
+(98, los 98 con `progression:` transcrita desde su página individual: rulebook,
+Town Cryer, Fanatic Magazine, Fanatic Online, Archive Pestilen y Rynn Tyrr),
+magia (31 lores con 188
+conjuros, con las 15 referencias `spell_list` de los perfiles de mercenarios
+enlazadas por `lore_id` en `lore_assignments`) y mutaciones. Son reglas y tablas, no
+ implementación: ningún YAML
+codifica cómo aplicar una regla ni guarda estado de una campaña concreta.
+
+Siguen sin cargarlos los cargadores del runtime (`load_campaign_catalog`,
+`load_post_battle_sequence`), por lo que ninguna pantalla actual resuelve una
+secuencia post-batalla. La primera implementación debe empezar por esos
+cargadores —que comprueben `schema_version`, `ruleset`, unicidad de IDs y que
+las referencias (`item_id`, `profile_id`, `band_id`, `condition_id`) existen—
+y por un caso de uso que reciba el estado desde la persistencia externa;
+después podrá añadirse la pantalla sin acoplarla a YAML ni al motor de duelo.
+El catálogo de mercenarios
+(`hired-swords-and-dramatis.yaml`, 98 entradas, ver `CAMPAIGN INGESTION
+RESULTS.md`) está integrado con schema v2 y publicado; las 18 reglas de
+elegibilidad dinámicas (dependientes de roster, variante mercenaria o tirada
+condicional) viven declaradas en `catalog/hirelings/**` y las evaluará la
+aplicación, igual que los 4 Dramatis out of scope y las 74 referencias
+intrínsecas pendientes de los catálogos de perfiles (no bloquean coste ni
+elegibilidad).
 
 El Campaign Manager ya consume la KB para bandas y perfiles: su
 `KnowledgePort` (`mordheim_campaign/application/knowledge_port.py`) usa

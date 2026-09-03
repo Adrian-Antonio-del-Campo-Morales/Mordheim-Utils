@@ -1,41 +1,1002 @@
 schema_version: 1
 ruleset: mordheim
 catalog: campaign-exploration-and-income
-status: draft
+status: published
 # Define tablas y recompensas posibles. Dados tirados, hallazgos, coronas y
 # wyrdstone obtenidos se guardan en el estado de campaña, no aquí.
 exploration:
-  dice_allocation: []
-  results: []
-income:
-  wyrdstone_sale: []
-examples:
   dice_allocation:
-  - id: example.exploration-surviving-hero
+  - id: campaign.exploration.dice.per-surviving-hero
     eligible_warrior: hero
     dice: 1
     condition: survived_battle
-    source_refs: []
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Exploration
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.dice.bonus-if-won
+    eligible_warrior: warband
+    dice: 1
+    condition: warband_won_battle
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Exploration
+      url: https://mordheimer.net/docs/campaigns/income
+  max_dice: 6
+  shards_chart:
+    id: campaign.exploration.shards-chart
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Number Of Wyrdstone Shards Found
+      url: https://mordheimer.net/docs/campaigns/income
+    cells:
+    - when: { dice_total: { min: 1, max: 5 } }
+      shards: 1
+    - when: { dice_total: { min: 6, max: 11 } }
+      shards: 2
+    - when: { dice_total: { min: 12, max: 17 } }
+      shards: 3
+    - when: { dice_total: { min: 18, max: 24 } }
+      shards: 4
+    - when: { dice_total: { min: 25, max: 30 } }
+      shards: 5
+    - when: { dice_total: { min: 31, max: 35 } }
+      shards: 6
+    - when: { dice_total: { min: 36 } }
+      shards: 7
   results:
-  - id: example.exploration-double-one
+  # DOUBLES
+  - id: campaign.exploration.result.11-well
     dice_pattern: '1,1'
-    outcome: Example hidden cache
-    rewards:
-      gold_crowns: 10
-      wyrdstone_fragments: 1
-    follow_up: null
-    source_refs: []
-  - id: example.exploration-item-reward
+    outcome: Well
+    follow_up:
+      type: sequence
+      steps:
+      - type: choose_one
+        bind: searching_hero
+        from: eligible_heroes
+      - type: characteristic_test
+        actor: $searching_hero
+        characteristic: toughness
+        dice: { count: 1, sides: 6 }
+        success_when: roll_less_than_or_equal_to_characteristic
+        on_success:
+        - type: grant
+          recipient: warband
+          resources:
+            wyrdstone_fragments: { kind: fixed, value: 1 }
+        on_failure:
+        - type: warrior.miss_games
+          subject: $searching_hero
+          games: { kind: fixed, value: 1 }
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Doubles / (1 1) Well
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.22-shop
     dice_pattern: '2,2'
-    outcome: Example discovered cache
-    rewards:
-      item_ids:
-      - dagger
-    follow_up: null
-    source_refs: []
-    note: Fictitious example of an item reference; dagger is not a claimed reward here.
+    outcome: Shop
+    follow_up:
+      type: sequence
+      steps:
+      - type: grant
+        recipient: warband
+        resources:
+          gold_crowns: { kind: dice, dice: { count: 1, sides: 6 } }
+      - type: conditional
+        cases:
+        - when: { field: roll, operator: equals, value: 1 }
+          then:
+          - type: grant
+            recipient: warband
+            items: [{ item_id: lucky_charm, quantity: { kind: fixed, value: 1 } }]
+        default: []
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Doubles / (2 2) Shop
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.33-corpse
+    dice_pattern: '3,3'
+    outcome: Corpse
+    follow_up:
+      type: roll_table
+      dice: { count: 1, sides: 6 }
+      branches:
+      - when: { min: 1, max: 2 }
+        then:
+        - type: grant
+          recipient: warband
+          resources:
+            gold_crowns: { kind: dice, dice: { count: 1, sides: 6 } }
+      - when: { min: 3, max: 3 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: dagger, quantity: { kind: fixed, value: 1 } }]
+      - when: { min: 4, max: 4 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: axe, quantity: { kind: fixed, value: 1 } }]
+      - when: { min: 5, max: 5 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: sword, quantity: { kind: fixed, value: 1 } }]
+      - when: { min: 6, max: 6 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: light_armour, quantity: { kind: fixed, value: 1 } }]
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Doubles / (3 3) Corpse
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.44-straggler
+    dice_pattern: '4,4'
+    outcome: Straggler
+    follow_up:
+      type: conditional
+      cases:
+      - when: { field: context.band_id, operator: equals, value: skaven-clan-eshin }
+        then:
+        - type: grant
+          recipient: warband
+          resources:
+            gold_crowns: { kind: dice, dice: { count: 2, sides: 6 } }
+      - when: { field: context.band_id, operator: equals, value: cult-of-the-possessed }
+        then:
+        - type: reward.grant
+          recipient: leader
+          resources:
+            experience: { kind: fixed, value: 1 }
+      - when: { field: context.band_id, operator: in, value: [undead, restless-dead] }
+        then:
+        - type: grant
+          recipient: warband
+          note: Gain a Zombie for no cost
+      default:
+      - type: grant
+        recipient: warband
+        note: Next exploration roll gains one extra dice and discards any one dice
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Doubles / (4 4) Straggler
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.55-overturned-cart
+    dice_pattern: '5,5'
+    outcome: Overturned Cart
+    follow_up:
+      type: roll_table
+      dice: { count: 1, sides: 6 }
+      branches:
+      - when: { min: 1, max: 2 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: mordheim_map, quantity: { kind: fixed, value: 1 } }]
+      - when: { min: 3, max: 4 }
+        then:
+        - type: grant
+          recipient: warband
+          resources:
+            gold_crowns: { kind: dice, dice: { count: 2, sides: 6 } }
+      - when: { min: 5, max: 6 }
+        then:
+        - type: grant
+          recipient: warband
+          items:
+          - { item_id: sword, quantity: { kind: fixed, value: 1 } }
+          - { item_id: dagger, quantity: { kind: fixed, value: 1 } }
+          note: Jewelled sword and dagger, saleable at twice the normal value
+            (the jewelled sword sells for 10 gc, for instance).
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Doubles / (5 5) Overturned Cart
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.66-ruined-hovels
+    dice_pattern: '6,6'
+    outcome: Ruined Hovels
+    follow_up:
+      type: grant
+      recipient: warband
+      resources:
+        gold_crowns: { kind: dice, dice: { count: 1, sides: 6 } }
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Doubles / (6 6) Ruined Hovels
+      url: https://mordheimer.net/docs/campaigns/income
+  # TRIPLES
+  - id: campaign.exploration.result.111-tavern
+    dice_pattern: '1,1,1'
+    outcome: Tavern
+    follow_up:
+      type: sequence
+      steps:
+      - type: characteristic_test
+        actor: leader
+        characteristic: leadership
+        dice: { count: 2, sides: 6 }
+        success_when: roll_less_than_or_equal_to_characteristic
+        on_success:
+        - type: grant
+          recipient: warband
+          resources:
+            gold_crowns: { kind: dice, dice: { count: 4, sides: 6 } }
+        on_failure:
+        - type: grant
+          recipient: warband
+          resources:
+            gold_crowns: { kind: dice, dice: { count: 1, sides: 6 } }
+      - type: conditional
+        cases:
+        - when: { field: context.band_id, operator: in, value: [undead, restless-dead, witch-hunters, sisters-of-sigmar] }
+          then:
+          - type: grant
+            recipient: warband
+            note: Automatically pass the test; not tempted by alcohol
+        default: []
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Triples / (1 1 1) Tavern
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.222-smithy
+    dice_pattern: '2,2,2'
+    outcome: Smithy
+    follow_up:
+      type: roll_table
+      dice: { count: 1, sides: 6 }
+      branches:
+      - when: { min: 1, max: 1 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: sword, quantity: { kind: fixed, value: 1 } }]
+      - when: { min: 2, max: 2 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: two_handed_weapon, quantity: { kind: fixed, value: 1 } }]
+      - when: { min: 3, max: 3 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: flail, quantity: { kind: fixed, value: 1 } }]
+      - when: { min: 4, max: 4 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: halberd, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+      - when: { min: 5, max: 5 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: lance, quantity: { kind: fixed, value: 1 } }]
+      - when: { min: 6, max: 6 }
+        then:
+        - type: grant
+          recipient: warband
+          resources:
+            gold_crowns: { kind: dice, dice: { count: 2, sides: 6 } }
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Triples / (2 2 2) Smithy
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.333-prisoners
+    dice_pattern: '3,3,3'
+    outcome: Prisoners
+    follow_up:
+      type: conditional
+      cases:
+      - when: { field: context.band_id, operator: in, value: [cult-of-the-possessed, trollheim-cult-of-the-possessed] }
+        then:
+        - type: reward.grant
+          recipient: heroes
+          resources:
+            experience: { kind: dice, dice: { count: 1, sides: 3 } }
+      - when: { field: context.band_id, operator: in, value: [undead, restless-dead, trollheim-undead] }
+        then:
+        - type: grant
+          recipient: warband
+          note: Gain D3 Zombies at no cost
+      - when: { field: context.band_id, operator: in, value: [skaven-clan-eshin, skaven-clan-pestilens, trollheim-skaven-clan-eshin] }
+        then:
+        - type: grant
+          recipient: warband
+          resources:
+            gold_crowns: { kind: dice, dice: { count: 3, sides: 6 } }
+      default:
+      - type: grant
+        recipient: warband
+        resources:
+          gold_crowns: { kind: dice, dice: { count: 2, sides: 6 } }
+        note: One prisoner may join a human Henchman group if equipped.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Triples / (3 3 3) Prisoners
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.444-fletcher
+    dice_pattern: '4,4,4'
+    outcome: Fletcher
+    follow_up:
+      type: roll_table
+      dice: { count: 1, sides: 6 }
+      branches:
+      - when: { min: 1, max: 2 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: short_bow, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+      - when: { min: 3, max: 3 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: bow, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+      - when: { min: 4, max: 4 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: long_bow, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+      - when: { min: 5, max: 5 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: hunting_arrows, quantity: { kind: fixed, value: 1 } }]
+      - when: { min: 6, max: 6 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: crossbow, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Triples / (4 4 4) Fletcher
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.555-market-hall
+    dice_pattern: '5,5,5'
+    outcome: Market Hall
+    follow_up:
+      type: grant
+      recipient: warband
+      resources:
+        gold_crowns: { kind: dice, dice: { count: 2, sides: 6 } }
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Triples / (5 5 5) Market Hall
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.666-returning-a-favour
+    dice_pattern: '6,6,6'
+    outcome: Returning a Favour
+    follow_up:
+      type: grant
+      recipient: warband
+      note: Free Hired Sword of choice (from those available to the warband)
+        for the duration of the next battle; upkeep may be paid afterwards.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Triples / (6 6 6) Returning a Favour
+      url: https://mordheimer.net/docs/campaigns/income
+  # FOUR OF A KIND
+  - id: campaign.exploration.result.1111-gunsmith
+    dice_pattern: '1,1,1,1'
+    outcome: Gunsmith
+    follow_up:
+      type: roll_table
+      dice: { count: 1, sides: 6 }
+      branches:
+      - when: { min: 1, max: 1 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: blunderbuss, quantity: { kind: fixed, value: 1 } }]
+      - when: { min: 2, max: 2 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: pistol, quantity: { kind: fixed, value: 2 } }]
+      - when: { min: 3, max: 3 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: duelling_pistol, quantity: { kind: fixed, value: 2 } }]
+      - when: { min: 4, max: 4 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: handgun, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+      - when: { min: 5, max: 5 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: superior_blackpowder, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+      - when: { min: 6, max: 6 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: hochland_long_rifle, quantity: { kind: fixed, value: 1 } }]
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Four of a kind / (1 1 1 1) Gunsmith
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.2222-shrine
+    dice_pattern: '2,2,2,2'
+    outcome: Shrine
+    follow_up:
+      type: sequence
+      steps:
+      - type: conditional
+        cases:
+        - when: { field: context.band_id, operator: in, value: [sisters-of-sigmar, witch-hunters] }
+          then:
+          - type: grant
+            recipient: warband
+            resources:
+              gold_crowns: { kind: dice, dice: { count: 3, sides: 6 } }
+          - type: grant
+            recipient: warband
+            note: One chosen weapon is blessed; it always wounds Undead or
+              Possessed models on a to-wound roll of 2+.
+        default:
+        - type: grant
+          recipient: warband
+          resources:
+            gold_crowns: { kind: dice, dice: { count: 3, sides: 6 } }
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Four of a kind / (2 2 2 2) Shrine
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.3333-townhouse
+    dice_pattern: '3,3,3,3'
+    outcome: Townhouse
+    follow_up:
+      type: grant
+      recipient: warband
+      resources:
+        gold_crowns: { kind: dice, dice: { count: 3, sides: 6 } }
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Four of a kind / (3 3 3 3) Townhouse
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.4444-armourer
+    dice_pattern: '4,4,4,4'
+    outcome: Armourer
+    follow_up:
+      type: roll_table
+      dice: { count: 1, sides: 6 }
+      branches:
+      - when: { min: 1, max: 2 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: shield, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+          note: D3 Shields or Bucklers, chosen by the player
+      - when: { min: 3, max: 3 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: helmet, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+      - when: { min: 4, max: 4 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: light_armour, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+      - when: { min: 5, max: 5 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: heavy_armour, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+      - when: { min: 6, max: 6 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: ithilmar_armour, quantity: { kind: fixed, value: 1 } }]
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Four of a kind / (4 4 4 4) Armourer
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.5555-graveyard
+    dice_pattern: '5,5,5,5'
+    outcome: Graveyard
+    follow_up:
+      type: conditional
+      cases:
+      - when: { field: context.band_id, operator: in, value: [sisters-of-sigmar, witch-hunters] }
+        then:
+        - type: reward.grant
+          recipient: heroes
+          resources:
+            experience: { kind: dice, dice: { count: 1, sides: 6 } }
+          note: The warband seals the graves.
+      default:
+      - type: grant
+        recipient: warband
+        resources:
+          gold_crowns: { kind: dice, dice: { count: 1, sides: 6 }, multiplier: 10 }
+        note: Looting the graveyard means the entire enemy warband will hate all
+          models in this warband the next time they fight Sisters of Sigmar or
+          Witch Hunters.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Four of a kind / (5 5 5 5) Graveyard
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.6666-catacombs
+    dice_pattern: '6,6,6,6'
+    outcome: Catacombs
+    follow_up:
+      type: grant
+      recipient: warband
+      note: Up to three fighters (not Rat Ogres or the Possessed) may deploy
+        anywhere at ground level in the next battle, at the end of the first
+        turn and not within 8" of enemy models.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Four of a kind / (6 6 6 6) Catacombs
+      url: https://mordheimer.net/docs/campaigns/income
+  # FIVE OF A KIND
+  - id: campaign.exploration.result.11111-moneylenders-house
+    dice_pattern: '1,1,1,1,1'
+    outcome: Moneylender's House
+    follow_up:
+      type: grant
+      recipient: warband
+      resources:
+        gold_crowns: { kind: dice, dice: { count: 1, sides: 6 }, multiplier: 10 }
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Five of a kind / (1 1 1 1 1) Moneylender's House
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.22222-alchemists-laboratory
+    dice_pattern: '2,2,2,2,2'
+    outcome: Alchemist's Laboratory
+    follow_up:
+      type: sequence
+      steps:
+      - type: grant
+        recipient: warband
+        resources:
+          gold_crowns: { kind: dice, dice: { count: 3, sides: 6 } }
+      - type: grant
+        recipient: hero
+        note: One Hero may study the Alchemist's notebook and may choose from
+          Academic skills whenever he gains a new skill.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Five of a kind / (2 2 2 2 2) Alchemist's Laboratory
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.33333-jewelsmith
+    dice_pattern: '3,3,3,3,3'
+    outcome: Jewelsmith
+    follow_up:
+      type: sequence
+      steps:
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 1, max: 2 }
+          then:
+          - type: grant
+            recipient: warband
+            resources:
+              gold_crowns: { kind: dice, dice: { count: 1, sides: 6 }, multiplier: 5 }
+            note: Quartz stones
+        - when: { min: 3, max: 4 }
+          then:
+          - type: grant
+            recipient: warband
+            resources:
+              gold_crowns: { kind: fixed, value: 20 }
+            note: Amethyst
+        - when: { min: 5, max: 5 }
+          then:
+          - type: grant
+            recipient: warband
+            resources:
+              gold_crowns: { kind: fixed, value: 50 }
+            note: Necklace
+        - when: { min: 6, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            resources:
+              gold_crowns: { kind: dice, dice: { count: 1, sides: 6 }, multiplier: 15 }
+            note: Ruby
+      - type: conditional
+        cases:
+        - when: { field: kept_by_hero, operator: equals, value: true }
+          then:
+          - type: grant
+            recipient: hero
+            note: If the gems are not sold, one Hero may keep them and gains +1
+              to rolls for locating rare items.
+        default: []
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Five of a kind / (3 3 3 3 3) Jewelsmith
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.44444-merchants-house
+    dice_pattern: '4,4,4,4,4'
+    outcome: Merchant's House
+    follow_up:
+      type: sequence
+      steps:
+      - type: roll_table
+        dice: { count: 2, sides: 6 }
+        branches:
+        - when: { min: 2, max: 11 }
+          then:
+          - type: grant
+            recipient: warband
+            resources:
+              gold_crowns: { kind: dice, dice: { count: 2, sides: 6 }, multiplier: 5 }
+        - when: { min: 12, max: 12 }
+          then:
+          - type: grant
+            recipient: hero
+            note: Symbol of the Order of Freetraders; a Hero in possession of
+              it gains the Haggle skill.
+        default: []
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Five of a kind / (4 4 4 4 4) Merchant's House
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.55555-shattered-building
+    dice_pattern: '5,5,5,5,5'
+    outcome: Shattered Building
+    follow_up:
+      type: sequence
+      steps:
+      - type: grant
+        recipient: warband
+        resources:
+          wyrdstone_fragments: { kind: dice, dice: { count: 1, sides: 3 } }
+      - type: characteristic_test
+        actor: leader
+        characteristic: leadership
+        dice: { count: 2, sides: 6 }
+        success_when: roll_less_than_or_equal_to_characteristic
+        on_success:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: warhound, quantity: { kind: fixed, value: 1 } }]
+          note: A wardog that was guarding the building joins the warband.
+        on_failure: []
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Five of a kind / (5 5 5 5 5) Shattered Building
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.66666-entrance-to-the-catacombs
+    dice_pattern: '6,6,6,6,6'
+    outcome: Entrance to the Catacombs
+    follow_up:
+      type: grant
+      recipient: warband
+      note: From now on the warband may re-roll one dice when rolling on the
+        Exploration chart. Second entrances grant no additional re-rolls.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Five of a kind / (6 6 6 6 6) Entrance to the Catacombs
+      url: https://mordheimer.net/docs/campaigns/income
+  # SIX OF A KIND
+  - id: campaign.exploration.result.111111-the-pit
+    dice_pattern: '1,1,1,1,1,1'
+    outcome: The Pit
+    follow_up:
+      type: sequence
+      steps:
+      - type: choose_one
+        bind: searching_hero
+        from: eligible_heroes
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 1, max: 1 }
+          then:
+          - type: warrior.miss_games
+            subject: $searching_hero
+            games: { kind: fixed, value: 999 }
+            note: The Hero is devoured by the guardians of the Pit and never seen again.
+        - when: { min: 2, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            resources:
+              wyrdstone_fragments: { kind: dice, dice: { count: 1, sides: 6 }, offset: 1 }
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Six of a kind / (1 1 1 1 1 1) The Pit
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.222222-hidden-treasure
+    dice_pattern: '2,2,2,2,2,2'
+    outcome: Hidden Treasure
+    follow_up:
+      type: sequence
+      steps:
+      - type: grant
+        recipient: warband
+        resources:
+          gold_crowns: { kind: dice, dice: { count: 5, sides: 6 }, multiplier: 5 }
+        note: Automatic.
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 4, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            resources:
+              wyrdstone_fragments: { kind: dice, dice: { count: 1, sides: 3 } }
+        default: []
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 5, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            items: [{ item_id: holy_relic, quantity: { kind: fixed, value: 1 } }]
+        default: []
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 5, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            items: [{ item_id: heavy_armour, quantity: { kind: fixed, value: 1 } }]
+        default: []
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 4, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            resources:
+              gold_crowns: { kind: dice, dice: { count: 1, sides: 3 }, multiplier: 10 }
+            note: D3 gems worth 10 gc each.
+        default: []
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 5, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            items: [{ item_id: elven_cloak, quantity: { kind: fixed, value: 1 } }]
+        default: []
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 5, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            items: [{ item_id: holy_tome, quantity: { kind: fixed, value: 1 } }]
+        default: []
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 5, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            note: Magical artefact; roll on the Magical Artefacts table.
+        default: []
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Six of a kind / (2 2 2 2 2 2) Hidden Treasure
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.333333-dwarf-smithy
+    dice_pattern: '3,3,3,3,3,3'
+    outcome: Dwarf Smithy
+    follow_up:
+      type: roll_table
+      dice: { count: 1, sides: 6 }
+      branches:
+      - when: { min: 1, max: 1 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: two_handed_weapon, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+          note: D3 double-handed axes
+      - when: { min: 2, max: 2 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: heavy_armour, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+      - when: { min: 3, max: 3 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: axe, quantity: { kind: fixed, value: 1 } }]
+          note: Gromril Axe
+      - when: { min: 4, max: 4 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: hammer, quantity: { kind: fixed, value: 1 } }]
+          note: Gromril Hammer
+      - when: { min: 5, max: 5 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: two_handed_weapon, quantity: { kind: fixed, value: 1 } }]
+          note: Double-handed Gromril Axe
+      - when: { min: 6, max: 6 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: gromril_armour, quantity: { kind: fixed, value: 1 } }]
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Six of a kind / (3 3 3 3 3 3) Dwarf Smithy
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.444444-slaughtered-warband
+    dice_pattern: '4,4,4,4,4,4'
+    outcome: Slaughtered Warband
+    follow_up:
+      type: sequence
+      steps:
+      - type: grant
+        recipient: warband
+        resources:
+          gold_crowns: { kind: dice, dice: { count: 3, sides: 6 }, multiplier: 5 }
+        note: Automatic.
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 4, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            items: [{ item_id: light_armour, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+        default: []
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 5, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            items: [{ item_id: heavy_armour, quantity: { kind: fixed, value: 1 } }]
+        default: []
+      - type: grant
+        recipient: warband
+        items: [{ item_id: dagger, quantity: { kind: dice, dice: { count: 1, sides: 6 } } }]
+        note: Automatic.
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 4, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            items: [{ item_id: mordheim_map, quantity: { kind: fixed, value: 1 } }]
+        default: []
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 5, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            items: [{ item_id: halberd, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+        default: []
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 3, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            items: [{ item_id: sword, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+        default: []
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 2, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            items: [{ item_id: shield, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+        default: []
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 4, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            items: [{ item_id: bow, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+        default: []
+      - type: roll_table
+        dice: { count: 1, sides: 6 }
+        branches:
+        - when: { min: 2, max: 6 }
+          then:
+          - type: grant
+            recipient: warband
+            items: [{ item_id: helmet, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+        default: []
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Six of a kind / (4 4 4 4 4 4) Slaughtered Warband
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.555555-fighting-arena
+    dice_pattern: '5,5,5,5,5,5'
+    outcome: Fighting Arena
+    follow_up:
+      type: grant
+      recipient: warband
+      note: A training manual is found. It may be sold for 100 gc, or one Hero
+        may read it to choose from Combat skills when gaining new skills and to
+        increase his WS one extra point above his racial maximum.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Six of a kind / (5 5 5 5 5 5) Fighting Arena
+      url: https://mordheimer.net/docs/campaigns/income
+  - id: campaign.exploration.result.666666-nobles-villa
+    dice_pattern: '6,6,6,6,6,6'
+    outcome: Noble's Villa
+    follow_up:
+      type: roll_table
+      dice: { count: 1, sides: 6 }
+      branches:
+      - when: { min: 1, max: 2 }
+        then:
+        - type: grant
+          recipient: warband
+          resources:
+            gold_crowns: { kind: dice, dice: { count: 1, sides: 6 }, multiplier: 10 }
+      - when: { min: 3, max: 4 }
+        then:
+        - type: grant
+          recipient: warband
+          items: [{ item_id: crimson_shade, quantity: { kind: dice, dice: { count: 1, sides: 6 } } }]
+      - when: { min: 5, max: 6 }
+        then:
+        - type: grant
+          recipient: warband
+          note: Magical artefact; roll on the Magical Artefacts table.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Campaigns / Income / Six of a kind / (6 6 6 6 6 6) Noble's Villa
+      url: https://mordheimer.net/docs/campaigns/income
+income:
   wyrdstone_sale:
-    id: example.wyrdstone-sale-table
+    id: campaign.income.wyrdstone-sale-table
     inputs:
     - id: fragments_sold
       kind: integer
@@ -43,23 +1004,254 @@ examples:
       kind: integer
     cells:
     - when:
-        fragments_sold:
-          min: 1
-          max: 1
-        warband_size:
-          min: 1
-          max: 3
-      profit_gc: 12
+        fragments_sold: { min: 1, max: 1 }
+        warband_size: { min: 1, max: 3 }
+      profit_gc: 45
+    - when:
+        fragments_sold: { min: 1, max: 1 }
+        warband_size: { min: 4, max: 6 }
+      profit_gc: 40
+    - when:
+        fragments_sold: { min: 1, max: 1 }
+        warband_size: { min: 7, max: 9 }
+      profit_gc: 35
+    - when:
+        fragments_sold: { min: 1, max: 1 }
+        warband_size: { min: 10, max: 12 }
+      profit_gc: 30
+    - when:
+        fragments_sold: { min: 1, max: 1 }
+        warband_size: { min: 13, max: 15 }
+      profit_gc: 30
+    - when:
+        fragments_sold: { min: 1, max: 1 }
+        warband_size: { min: 16 }
+      profit_gc: 25
+    - when:
+        fragments_sold: { min: 2, max: 2 }
+        warband_size: { min: 1, max: 3 }
+      profit_gc: 60
+    - when:
+        fragments_sold: { min: 2, max: 2 }
+        warband_size: { min: 4, max: 6 }
+      profit_gc: 55
+    - when:
+        fragments_sold: { min: 2, max: 2 }
+        warband_size: { min: 7, max: 9 }
+      profit_gc: 50
+    - when:
+        fragments_sold: { min: 2, max: 2 }
+        warband_size: { min: 10, max: 12 }
+      profit_gc: 45
+    - when:
+        fragments_sold: { min: 2, max: 2 }
+        warband_size: { min: 13, max: 15 }
+      profit_gc: 40
+    - when:
+        fragments_sold: { min: 2, max: 2 }
+        warband_size: { min: 16 }
+      profit_gc: 35
+    - when:
+        fragments_sold: { min: 3, max: 3 }
+        warband_size: { min: 1, max: 3 }
+      profit_gc: 75
+    - when:
+        fragments_sold: { min: 3, max: 3 }
+        warband_size: { min: 4, max: 6 }
+      profit_gc: 70
+    - when:
+        fragments_sold: { min: 3, max: 3 }
+        warband_size: { min: 7, max: 9 }
+      profit_gc: 65
+    - when:
+        fragments_sold: { min: 3, max: 3 }
+        warband_size: { min: 10, max: 12 }
+      profit_gc: 60
+    - when:
+        fragments_sold: { min: 3, max: 3 }
+        warband_size: { min: 13, max: 15 }
+      profit_gc: 55
+    - when:
+        fragments_sold: { min: 3, max: 3 }
+        warband_size: { min: 16 }
+      profit_gc: 50
+    - when:
+        fragments_sold: { min: 4, max: 4 }
+        warband_size: { min: 1, max: 3 }
+      profit_gc: 90
+    - when:
+        fragments_sold: { min: 4, max: 4 }
+        warband_size: { min: 4, max: 6 }
+      profit_gc: 80
+    - when:
+        fragments_sold: { min: 4, max: 4 }
+        warband_size: { min: 7, max: 9 }
+      profit_gc: 70
+    - when:
+        fragments_sold: { min: 4, max: 4 }
+        warband_size: { min: 10, max: 12 }
+      profit_gc: 65
+    - when:
+        fragments_sold: { min: 4, max: 4 }
+        warband_size: { min: 13, max: 15 }
+      profit_gc: 60
+    - when:
+        fragments_sold: { min: 4, max: 4 }
+        warband_size: { min: 16 }
+      profit_gc: 55
+    - when:
+        fragments_sold: { min: 5, max: 5 }
+        warband_size: { min: 1, max: 3 }
+      profit_gc: 110
+    - when:
+        fragments_sold: { min: 5, max: 5 }
+        warband_size: { min: 4, max: 6 }
+      profit_gc: 100
+    - when:
+        fragments_sold: { min: 5, max: 5 }
+        warband_size: { min: 7, max: 9 }
+      profit_gc: 90
+    - when:
+        fragments_sold: { min: 5, max: 5 }
+        warband_size: { min: 10, max: 12 }
+      profit_gc: 80
+    - when:
+        fragments_sold: { min: 5, max: 5 }
+        warband_size: { min: 13, max: 15 }
+      profit_gc: 70
+    - when:
+        fragments_sold: { min: 5, max: 5 }
+        warband_size: { min: 16 }
+      profit_gc: 65
+    - when:
+        fragments_sold: { min: 6, max: 6 }
+        warband_size: { min: 1, max: 3 }
+      profit_gc: 120
+    - when:
+        fragments_sold: { min: 6, max: 6 }
+        warband_size: { min: 4, max: 6 }
+      profit_gc: 110
+    - when:
+        fragments_sold: { min: 6, max: 6 }
+        warband_size: { min: 7, max: 9 }
+      profit_gc: 100
+    - when:
+        fragments_sold: { min: 6, max: 6 }
+        warband_size: { min: 10, max: 12 }
+      profit_gc: 90
+    - when:
+        fragments_sold: { min: 6, max: 6 }
+        warband_size: { min: 13, max: 15 }
+      profit_gc: 80
+    - when:
+        fragments_sold: { min: 6, max: 6 }
+        warband_size: { min: 16 }
+      profit_gc: 70
+    - when:
+        fragments_sold: { min: 7, max: 7 }
+        warband_size: { min: 1, max: 3 }
+      profit_gc: 145
+    - when:
+        fragments_sold: { min: 7, max: 7 }
+        warband_size: { min: 4, max: 6 }
+      profit_gc: 130
+    - when:
+        fragments_sold: { min: 7, max: 7 }
+        warband_size: { min: 7, max: 9 }
+      profit_gc: 120
+    - when:
+        fragments_sold: { min: 7, max: 7 }
+        warband_size: { min: 10, max: 12 }
+      profit_gc: 110
+    - when:
+        fragments_sold: { min: 7, max: 7 }
+        warband_size: { min: 13, max: 15 }
+      profit_gc: 100
+    - when:
+        fragments_sold: { min: 7, max: 7 }
+        warband_size: { min: 16 }
+      profit_gc: 90
+    - when:
+        fragments_sold: { min: 8 }
+        warband_size: { min: 1, max: 3 }
+      profit_gc: 155
+    - when:
+        fragments_sold: { min: 8 }
+        warband_size: { min: 4, max: 6 }
+      profit_gc: 140
+    - when:
+        fragments_sold: { min: 8 }
+        warband_size: { min: 7, max: 9 }
+      profit_gc: 130
+    - when:
+        fragments_sold: { min: 8 }
+        warband_size: { min: 10, max: 12 }
+      profit_gc: 120
+    - when:
+        fragments_sold: { min: 8 }
+        warband_size: { min: 13, max: 15 }
+      profit_gc: 110
+    - when:
+        fragments_sold: { min: 8 }
+        warband_size: { min: 16 }
+      profit_gc: 100
     restrictions:
     - once_per_post_battle_sequence
-    source_refs: []
-    note: Fictitious value; real rows must be transcribed from the income table.
-# dice_allocation: id, eligible_warrior, dice, condition, source_refs
-# results: id, dice_pattern, outcome, rewards, follow_up, source_refs. Objetos
-# dentro de rewards se refieren solo por item_ids canónicos.
-# wyrdstone_sale: id, inputs, cells, restrictions, source_refs. cells es una
-# tabla de decisión: cada when define rangos inclusivos para fragmentos vendidos
-# y tamaño de banda, y produce profit_gc. No usar cadenas como '1-3'.
+    source_refs:
+    - manual: mordheimer.net
+      printed_page: 0
+      section: Tools / Post-battle / Sell Wyrdstone / Wyrdstone Pricing Table
+      url: https://mordheimer.net/docs/tools
+magical_artefacts:
+  id: campaign.magical-artefacts-table
+  dice: { count: 1, sides: 6 }
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Income / Magical Artefacts Table
+    url: https://mordheimer.net/docs/campaigns/income
+  note: In a campaign none of these items can appear more than once; if a magic
+    item is already in someone else's possession, roll again.
+  results:
+  - id: campaign.magical-artefact.boots-and-rope-of-pieter
+    roll: '1'
+    result: The Boots and Rope of Pieter
+    summary: The wearer may move normally (including running, charging, etc) on
+      any kind of terrain, including vertical surfaces, with no Initiative test
+      needed (except to jump across gaps).
+  - id: campaign.magical-artefact.count-of-ventimiglias-misericordia
+    roll: '2'
+    result: The Count of Ventimiglia's Misericordia
+    summary: Treated as a sword. Opponents wounded by it are stunned on a
+      result of 1-3 (Undead are knocked down as normal) and put out of action
+      on a 4-6.
+  - id: campaign.magical-artefact.attlas-plate-mail
+    roll: '3'
+    result: Att'la's Plate Mail
+    summary: A suit of Gromril Armour with Rune of Spell Eating (immune to all
+      spells), Rune of Passage (move through solid objects) and Rune of
+      Fortitude (an extra wound, possibly above the race's maximum).
+  - id: campaign.magical-artefact.bow-of-seeking
+    roll: '4'
+    result: Bow of Seeking
+    summary: Treated as an Elven Bow that always hits on a 2+, regardless of to
+      hit modifiers; all arrows count as Hunting Arrows (+1 on all Injury
+      rolls). May pick any visible enemy model in range, not just the closest.
+      Cannot be used to shoot at Elves.
+  - id: campaign.magical-artefact.executioners-hood
+    roll: '5'
+    result: Executioner's Hood
+    summary: The wearer is always frenzied even if knocked down or stunned, and
+      adds +1 to his Strength in close combat. He never leaves combat and
+      always attacks opponents in base contact until they are taken out of
+      action.
+  - id: campaign.magical-artefact.all-seeing-eye-of-numas
+    roll: '6'
+    result: All-seeing Eye of Numas
+    summary: The bearer can see all models on the table top, may roll two dice
+      after battle when rolling on the Exploration chart, and has an additional
+      6+ save against all shooting attacks and strikes in close combat that is
+      not modified by Strength or weapon modifiers.
 effect_ids:
 - campaign.exploration.dice
 - campaign.exploration.reroll

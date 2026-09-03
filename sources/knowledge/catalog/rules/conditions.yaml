@@ -1,4 +1,106 @@
 schema_version: 2
 ruleset: mordheim
-conditions: []
-note: Structured conditions will be added as combat mechanics are reviewed.
+conditions:
+- id: campaign.condition.frenzy
+  name: Frenzy
+  summary: The warrior suffers from frenzy from now on.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Serious Injuries / Heroes' Serious Injuries Chart
+    url: https://mordheimer.net/docs/campaigns
+- id: campaign.condition.stupidity
+  name: Stupidity
+  summary: The warrior suffers from stupidity from now on.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Serious Injuries / Heroes' Serious Injuries Chart
+    url: https://mordheimer.net/docs/campaigns
+- id: campaign.condition.cannot-run
+  name: Smashed Leg
+  summary: The warrior may not run any more but he may still charge.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Serious Injuries / Heroes' Serious Injuries Chart
+    url: https://mordheimer.net/docs/campaigns
+- id: campaign.condition.immune-to-fear
+  name: Hardened
+  summary: The warrior becomes inured to the horrors of Mordheim and is immune to fear from now on.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Serious Injuries / Heroes' Serious Injuries Chart
+    url: https://mordheimer.net/docs/campaigns
+- id: campaign.condition.causes-fear
+  name: Horrible Scars
+  summary: The warrior causes fear from now on.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Serious Injuries / Heroes' Serious Injuries Chart
+    url: https://mordheimer.net/docs/campaigns
+- id: condition.fear
+  name: Fear
+  summary: A model charged by an enemy that causes fear must pass a Leadership
+    test or flee. A model that causes fear does not need to test when charged
+    by another model that causes fear.
+  source_refs:
+  - manual: Mordheim Rulebook
+    printed_page: 0
+    section: Psychology / Fear
+- id: condition.terror
+  name: Terror
+  summary: A model charged by an enemy that causes terror must pass a
+    Leadership test or flee. Models that cause fear or terror are immune to
+    terror.
+  source_refs:
+  - manual: Mordheim Rulebook
+    printed_page: 0
+    section: Psychology / Terror
+- id: condition.hatred
+  name: Hatred
+  summary: The model must pass a Leadership test to avoid charging an enemy it
+    hates; it re-rolls failed to hit rolls in close combat against hated
+    enemies.
+  source_refs:
+  - manual: Mordheim Rulebook
+    printed_page: 0
+    section: Psychology / Hatred
+- id: condition.stubborn
+  name: Stubborn
+  summary: The model never automatically breaks when losing close combat; it
+    always takes a Leadership test as normal.
+  source_refs:
+  - manual: Mordheim Rulebook
+    printed_page: 0
+    section: Psychology / Stubborn
+- id: condition.animosity
+  name: Animosity
+  summary: At the start of its turn the model must pass a Leadership test; if
+    it fails, it may not move, shoot or cast spells that turn.
+  source_refs:
+  - manual: Mordheim Rulebook
+    printed_page: 0
+    section: Psychology / Animosity
+- id: condition.immune-to-psychology
+  name: Immune to Psychology
+  summary: The model ignores all psychology rules, including fear, terror,
+    hatred, frenzy, stupidity and animosity.
+  source_refs:
+  - manual: Mordheim Rulebook
+    printed_page: 0
+    section: Psychology / Immune to Psychology
+- id: condition.cold-blooded
+  name: Cold-Blooded
+  summary: Lizardmen take Leadership tests using two dice, discarding the
+    highest result.
+  source_refs:
+  - manual: Mordheim Rulebook
+    printed_page: 0
+    section: Psychology / Cold-Blooded
+note: Structured conditions will be extended as combat and psychology mechanics
+  are reviewed. The general ids (condition.*) declare canonical psychology
+  conditions; the campaign ids (campaign.condition.*) cover the serious injury
+  effects that apply them.
