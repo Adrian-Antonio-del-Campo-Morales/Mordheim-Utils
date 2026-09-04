@@ -6,6 +6,11 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+try:
+    from mordheim_combat_lab.console import HelpFormatter as _HelpFormatter
+except Exception:  # standalone run without the package importable
+    _HelpFormatter = argparse.HelpFormatter
+
 
 SEPARATOR = "=" * 80
 
@@ -18,7 +23,7 @@ def parse_arguments() -> argparse.Namespace:
             ".yml files recursively."
         ),
         epilog="Run from a source checkout: python tools/mordheim-utils.py combine-kb",
-        formatter_class=lambda prog: argparse.HelpFormatter(prog, max_help_position=34),
+        formatter_class=_HelpFormatter,
     )
     parser.add_argument(
         "kb_path",

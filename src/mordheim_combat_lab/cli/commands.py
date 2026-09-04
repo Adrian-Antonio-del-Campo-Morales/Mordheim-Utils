@@ -1,12 +1,14 @@
 """Development and application commands; heavy imports stay local."""
+from argparse import SUPPRESS
 from argparse import ArgumentParser
-from argparse import HelpFormatter
 from dataclasses import asdict
 from pathlib import Path
 import json
 import os
 import sys
 import time
+
+from mordheim_combat_lab.console import HelpFormatter as _StyledHelpFormatter
 
 
 def _positive(value: str) -> int:
@@ -358,6 +360,7 @@ def benchmark_command(args) -> int:
 
 
 def parity_command(args) -> int:
+    apply_parity_level(args)
     if args.deep and not args.output:
         args.output = "outputs/parity/deep.json"
     started = time.perf_counter()
@@ -700,14 +703,82 @@ def ui_command(_args) -> int:
     return int(main() or 0)
 
 
-class _HelpFormatter(HelpFormatter):
-    """Help layout with a wider, better-aligned option column."""
-
-    def __init__(self, prog: str) -> None:
-        super().__init__(prog, max_help_position=38, width=100)
+class _HelpFormatter(_StyledHelpFormatter):
+    """Help layout with the shared repository palette (console.py)."""
 
 
-def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
+#: Options that stay accepted but are only documented by ``--help-all`` (and by
+#: the task guides).  They tune deep runs, sweeps and baselines — useful during
+#: specific profiling phases, noise for the everyday ``--help``.
+_ADVANCED_OPTIONS = {
+    "parity": frozenset((
+        # Historical mode flags, superseded by ``--level``.
+        "--statistical", "--deep",
+        # Sample sizing for the statistical / deep / truncation layers.
+        "--statistical-simulations", "--deep-simulations",
+        "--deep-cross-simulations", "--max-modular-duels",
+        "--truncation-simulations",
+    )),
+    "benchmark": frozenset((
+        "--seed", "--batch-size", "--warmups", "--repeats",
+        # Sweep and deep-profile shapes.
+        "--simulation-sizes", "--batch-sizes", "--deep",
+        "--deep-simulation-sizes", "--deep-batch-sizes",
+        "--deep-modular-simulations",
+    )),
+}
+
+
+def apply_parity_level(args) -> None:
+    """Map the ``--level`` preset onto the historical sample flags.
+
+    ``parity`` keeps its three independent certification layers (exact checks,
+    aggregate statistical samples, deep matrix + cross); ``--level`` is the
+    convenient way to select one of the common presets.  The historical
+    ``--statistical`` / ``--deep`` flags stay accepted and keep their exact
+    semantics, so ``--level deep --statistical`` still runs both sample groups.
+    """
+    level = getattr(args, "level", None)
+    if level == "statistical":
+        args.statistical = True
+    elif level == "deep":
+        args.deep = True
+
+
+def _apply_help_policy(parser: ArgumentParser, *, advanced: bool) -> None:
+    """Keep the everyday ``--help`` short: ``_ADVANCED_OPTIONS`` are still
+    parsed (completions and the ``--help-all`` route keep them documented) but
+    hidden from the default help output."""
+    if advanced:
+        return
+    subparsers = next(
+        (action for action in parser._actions
+         if action.__class__.__name__ == "_SubParsersAction"),
+        None,
+    )
+    if subparsers is None:
+        return
+    for name, hidden in _ADVANCED_OPTIONS.items():
+        subparser = subparsers.choices.get(name)
+        if subparser is None:
+            continue
+        for action in subparser._actions:
+            if any(option in hidden for option in action.option_strings):
+                action.help = SUPPRESS
+        # argparse only skips a group header when the group has no actions, so
+        # drop the undocumented actions (and any group left with none) from the
+        # help listing.  Parsing is unaffected: the actions stay registered.
+        for group in list(subparser._action_groups):
+            kept = [action for action in group._group_actions
+                    if action.help is not SUPPRESS]
+            group._group_actions[:] = kept
+        for group in list(subparser._action_groups):
+            if (group.title not in ("positional arguments", "optional arguments")
+                    and not any(action.option_strings for action in group._group_actions)):
+                subparser._action_groups.remove(group)
+
+
+def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = False) -> ArgumentParser:
     parser = ArgumentParser(prog=prog, formatter_class=_HelpFormatter)
     commands = parser.add_subparsers(dest="command")
     commands.add_parser("ui", help="open the graphical interface",
@@ -803,6 +874,9 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
         "benchmark", help="measure the combat engines",
         description="Measure the combat engines (modular, NumPy, native) in a single "
                     "configuration, a size sweep, or a --deep large-scale profile.",
+        epilog="Sweep/deep shapes and timing options are accepted but hidden from this "
+               "help -- run `benchmark --help-all` or see "
+               "docs/tasks/generate-test-reports.md.",
         formatter_class=_HelpFormatter)
     run_options = benchmark.add_argument_group("run configuration")
     run_options.add_argument("-n", "--simulations", type=_positive, default=100_000,
@@ -871,6 +945,8 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
                                 metavar="PCT", help="required improvement threshold, percent")
     report_options.add_argument("--max-regression", type=_percentage, default=5.0,
                                 metavar="PCT", help="maximum allowed regression, percent")
+    report_options.add_argument("--help-all", action="store_true",
+                                help="also document the advanced sweep/deep and timing options")
     benchmark.set_defaults(handler=benchmark_command)
 
     parity = commands.add_parser(
@@ -878,8 +954,21 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
         description="Certify the vectorized engine (and, when compiled, the native "
                     "backend) against the modular oracle with deterministic checks, "
                     "optional six-sigma statistical samples and --deep certification.",
+        epilog="Sample presets are selected with --level; the advanced sample-tuning "
+               "options (historical --statistical/--deep flags and the "
+               "--*-simulations sizes) are accepted but hidden from this help -- "
+               "run `parity --help-all` or see docs/tasks/generate-test-reports.md.",
         formatter_class=_HelpFormatter)
     parity_samples = parity.add_argument_group("certification samples")
+    parity_samples.add_argument(
+        "--level", choices=("deterministic", "statistical", "deep"),
+        default="deterministic", metavar="LEVEL",
+        help="preset: deterministic (default) runs the exact checks only; "
+             "statistical adds the aggregate six-sigma samples on the five "
+             "standard scenarios; deep runs the 25-pair archetype matrix plus "
+             "the numpy<->native cross at scale (equivalent to the historical "
+             "--statistical / --deep flags)",
+    )
     parity_samples.add_argument("--statistical", action="store_true",
                                 help="add aggregate six-sigma statistical certification samples")
     parity_samples.add_argument("--statistical-simulations", type=_positive, default=100_000,
@@ -922,9 +1011,10 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     parity_samples.add_argument(
         "--workers", type=_oracle_workers, metavar="N|auto",
         default=os.environ.get("MORDHEIM_PARALLEL_ORACLE_WORKERS", "auto"),
-        help="processes for the modular-oracle samples of --statistical/--deep; "
-             "auto pools only samples estimated to take over ~20 s sequentially, "
-             "1 disables the pool (also from MORDHEIM_PARALLEL_ORACLE_WORKERS)",
+        help="processes for the modular-oracle samples of the statistical and "
+             "deep layers; auto pools only samples estimated to take over ~20 s "
+             "sequentially, 1 disables the pool (also from "
+             "MORDHEIM_PARALLEL_ORACLE_WORKERS)",
     )
     parity_output = parity.add_argument_group("report and strictness")
     parity_output.add_argument("--json", action="store_true",
@@ -933,7 +1023,9 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
                                help="fail unless the certificate is complete")
     parity_output.add_argument("--output", metavar="PATH",
                                help="save the report as .json or .md (defaults to "
-                                    "outputs/parity/deep.json in --deep mode)")
+                                    "outputs/parity/deep.json in the deep preset)")
+    parity_output.add_argument("--help-all", action="store_true",
+                               help="also document the advanced sample-tuning options")
     parity.set_defaults(handler=parity_command)
 
     test_report = commands.add_parser(
@@ -964,12 +1056,22 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
                                     help="fail when pending items or missing backends "
                                          "would keep the report from being complete")
     test_report.set_defaults(handler=test_report_command)
+    _apply_help_policy(parser, advanced=advanced_help)
     return parser
 
 
 def main(argv=None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if getattr(args, "help_all", False) and args.command in _ADVANCED_OPTIONS:
+        verbose = build_parser(advanced_help=True)
+        subparsers = next(
+            (action for action in verbose._actions
+             if action.__class__.__name__ == "_SubParsersAction"),
+            None,
+        )
+        subparsers.choices[args.command].print_help()
+        return 0
     if args.command is None:
         return ui_command(args)
     if getattr(args, "inventory", False) and getattr(args, "require_complete", False):

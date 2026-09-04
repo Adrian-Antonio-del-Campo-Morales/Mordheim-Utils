@@ -19,9 +19,14 @@ from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
 from mordheim_construction.compiler import compile_fighter
 import os
 
+try:
+    from mordheim_combat_lab.console import HelpFormatter as _HelpFormatter  # noqa: E402
+except Exception:  # standalone run without the package importable
+    from argparse import HelpFormatter as _HelpFormatter  # type: ignore[assignment]
+
 
 def _parse() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=_HelpFormatter)
     parser.add_argument("--scenario", default="basic",
                         help="scenario id to measure (default: basic)")
     parser.add_argument("--simulations", type=int, default=None,

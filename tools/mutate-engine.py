@@ -23,9 +23,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from mordheim_combat_lab.verification import engine_mutation  # noqa: E402
 
+try:
+    from mordheim_combat_lab.console import HelpFormatter as _HelpFormatter  # noqa: E402
+except Exception:  # standalone run without the package importable
+    from argparse import HelpFormatter as _HelpFormatter  # type: ignore[assignment]
+
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=_HelpFormatter)
     parser.add_argument(
         "--mutant", action="append", metavar="ID",
         help="restrict the run to catalogue ids (repeatable; default: all)")

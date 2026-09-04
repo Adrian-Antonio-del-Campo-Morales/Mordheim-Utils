@@ -128,6 +128,12 @@ def test_test_scope_paths_are_non_empty_and_known(cli):
         assert paths
 
 
+def test_deterministic_scope_mirrors_the_coverage_gate_suites(cli):
+    from mordheim_combat_lab.verification.coverage_gate import DEFAULT_SUITES
+
+    assert cli.SCOPE_PATHS["deterministic"] == DEFAULT_SUITES
+
+
 def test_combine_kb_forwards_to_the_kb_script(cli, monkeypatch):
     calls = _record_run(cli, monkeypatch)
     script = str(cli.COMBINE_KB_SCRIPT)
@@ -176,6 +182,7 @@ def test_completion_introspects_lab_options_and_choices(cli):
 
 def test_completion_covers_tests_scope_values(cli):
     assert cli._command_candidates(["tests", "--scope", "vec"]) == ["vectorized"]
+    assert cli._command_candidates(["tests", "--scope", "det"]) == ["deterministic"]
     assert "all" in cli._command_candidates(["tests", "--scope", ""])
     assert cli._command_candidates(["tests", "--scope=ver"]) == ["--scope=verification"]
 

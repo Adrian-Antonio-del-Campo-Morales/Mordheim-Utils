@@ -94,6 +94,26 @@ def test_frenzy_persists_and_pistols_only_fire_in_the_first_round():
     assert attack_count(sword_and_pistol, flags, first_round=False).tolist() == [2]
 
 
+def test_frenzy_doubling_is_gated_on_the_live_state_not_the_effect():
+    """Regression: the driver always passes the frenzy *state* array, so an
+    all-False state must not double even when the fighter carries a constant
+    frenzy effect.  The ``elif effect.frenzy`` fallback is only the operator's
+    no-state-array default; the native port once merged both branches and
+    re-doubled a frenzied fighter after a knockdown had cleared its state.
+    """
+    from mordheim_combat.vectorized import attack_count
+
+    frenzy = build(preparation_ids=("preparation.mad-cap-mushrooms",))
+    no_frenzy_state = np.zeros(1, dtype=bool)
+    live_frenzy_state = np.ones(1, dtype=bool)
+    assert attack_count(
+        frenzy, no_frenzy_state, frenzy=no_frenzy_state,
+    ).tolist() == [1]
+    assert attack_count(
+        frenzy, no_frenzy_state, frenzy=live_frenzy_state,
+    ).tolist() == [2]
+
+
 def test_pistol_and_sword_allocate_attacks_to_the_correct_weapon(monkeypatch):
     import mordheim_combat.vectorized as engine
     import mordheim_combat.vectorized._attacks as engine_attacks
@@ -205,6 +225,107 @@ def test_sword_and_buckler_rerolls_a_failed_parry():
     )
     assert remaining.size == 0
     assert blocked.tolist() == [0]
+
+
+def test_natural_six_never_consumes_a_lone_parry():
+    """A natural 6 cannot be parried, so it must not spend the capacity.
+
+    The modular oracle skips unparryable hits without consuming parry
+    capacity (parry candidates are offered from the highest hit downwards).
+    """
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _parry_hits
+
+    defender = build(main_weapon_id="weapon.sword", off_hand_id="defence.buckler")
+    state = _new_state(defender, 1, np.random.default_rng(1))
+    remaining, blocked, _ = _parry_hits(
+        defender, EffectSet(), np.array([0]), np.array([6]), np.array([3]),
+        state, FixedRng(6),
+    )
+    # No parryable hit: nothing attempted, capacity untouched, hit survives.
+    assert remaining.tolist() == [0]
+    assert blocked.size == 0
+    assert state.parry_used.tolist() == [False]
+    assert state.parry_remaining.tolist() == [1]
+
+
+def test_parry_skips_a_natural_six_for_the_next_best_hit():
+    """With one capacity and hits [6, 4], the parry goes to the 4.
+
+    The standalone operator path picks the best *parryable* hit per row: the
+    natural 6 is passed over without consuming capacity, so the parry roll is
+    spent against the 4 (a 6 beats it).
+    """
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _parry_hits
+
+    defender = build(main_weapon_id="weapon.sword", off_hand_id="defence.buckler")
+    state = _new_state(defender, 1, np.random.default_rng(1))
+    remaining, blocked, _ = _parry_hits(
+        defender, EffectSet(), np.array([0, 0]), np.array([6, 4]),
+        np.array([3, 3]), state, FixedRng(6, 6),
+    )
+    # Only the natural six survives; the parry blocked the 4 on the same row.
+    assert remaining.tolist() == [0]
+    assert blocked.tolist() == [0]
+    assert state.parry_used.tolist() == [True]
+    assert state.parry_remaining.tolist() == [0]
+
+
+def test_multi_hit_pool_parries_the_best_parryable_hit_not_a_natural_six():
+    """Pool regression for the two-weapons-vs-parry deep-matrix divergence.
+
+    An A2 attacker lands a natural 6 and a 4 in one pool against a
+    sword+buckler defender with a single parry.  The parry must be spent on
+    the 4 (parry roll 6 beats it), so the defender takes no wound; wasting it
+    on the unparryable 6 would let the 4 wound the defender.
+    """
+    from mordheim_combat.vectorized import STANDING
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import resolve_attacks
+
+    attacker = build(attacks=2, main_weapon_id="weapon.axe")
+    defender = build(main_weapon_id="weapon.sword", off_hand_id="defence.buckler")
+    attacker_state = _new_state(attacker, 1, np.random.default_rng(1))
+    defender_state = _new_state(defender, 1, np.random.default_rng(2))
+    # Hit rolls 6 and 4, a failing wound roll for the 6, then a parry roll 6
+    # against the 4.
+    resolve_attacks(
+        attacker, defender, np.array([0]), np.array([2]), np.zeros(1, dtype=bool),
+        attacker_state, defender_state, FixedRng(6, 4, 1, 6), False,
+    )
+    assert defender_state.wounds.tolist() == [1]
+    assert defender_state.condition.tolist() == [STANDING]
+    assert defender_state.parry_used.tolist() == [True]
+    assert defender_state.parry_remaining.tolist() == [0]
+
+
+def test_stunned_defender_is_taken_out_by_the_follow_up_attack():
+    """Pool regression for the elite-vs-durable deep-matrix divergence.
+
+    The modular oracle takes a defender that is STUNNED at the start of an
+    attack out instantly.  The NumPy driver prepared every attack of a pool
+    upfront, so a defender stunned by attack 1 of a 2-attack pool survived
+    into attack 2 and received a fresh injury roll instead of being removed.
+    """
+    from mordheim_combat.vectorized import OUT
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import resolve_attacks
+
+    attacker = build(attacks=2, main_weapon_id="weapon.axe", strength=6)
+    defender = build(toughness=5, wounds=1, armour_id="armour.no-armour")
+    attacker_state = _new_state(attacker, 1, np.random.default_rng(1))
+    defender_state = _new_state(defender, 1, np.random.default_rng(2))
+    # Attack 1: hit 4 (WS3 vs WS3 needs 4+), wound 5 (S6 vs T5 wounds on
+    # 3+), injury 3 = stunned at 0 wounds.  Attack 2 must then remove the
+    # stunned defender instantly, consuming no further dice (FixedRng raises
+    # if the unfixed engine draws a second wound/injury roll).
+    resolve_attacks(
+        attacker, defender, np.array([0]), np.array([2]), np.zeros(1, dtype=bool),
+        attacker_state, defender_state, FixedRng(4, 4, 5, 3), False,
+    )
+    assert defender_state.condition.tolist() == [OUT]
+    assert defender_state.wounds.tolist() == [0]
 
 
 def test_offhand_axe_master_and_starblade_use_their_special_parries():
