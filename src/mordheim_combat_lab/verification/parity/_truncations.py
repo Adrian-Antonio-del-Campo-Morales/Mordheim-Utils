@@ -28,11 +28,20 @@ from mordheim_combat_lab.verification.parity._statistical import compare_statist
 TRUNCATION_HORIZONS = (2, 4, 6, 8, 10, 12, 15, 20)
 
 
+from collections.abc import Callable
+import time
+
+from mordheim_core.models import CompiledFighter
+from mordheim_combat_lab.verification.parity._report import StatisticalParityResult
+from mordheim_combat_lab.verification.parity._statistical import compare_statistical_parity
+
+
 def compare_truncation_parity(
     scenario: str, first: CompiledFighter, second: CompiledFighter,
     simulations: int, *, seed: int = 2026, maximum_rounds: int = 50,
     horizons: tuple[int, ...] = TRUNCATION_HORIZONS,
-    backend: str = "numpy",
+    backend: str = "numpy", workers: object | None = None,
+    on_progress: Callable[[], None] | None = None,
 ) -> tuple[StatisticalParityResult, ...]:
     """Certify the outcome rates at every truncation horizon up to the duel's
     round budget, each with its own independent oracle and candidate sample.
@@ -40,7 +49,10 @@ def compare_truncation_parity(
     Rows are labelled ``<scenario>@rounds=<h>`` so a failing horizon names
     the round at which the divergence starts.  ``backend`` selects the
     optimized candidate (``"numpy"`` or ``"native"``), mirroring the
-    aggregate comparisons.
+    aggregate comparisons.  ``workers`` applies the same oracle pooling
+    policy as the deep layer (``None``/``"auto"`` pools only samples whose
+    estimated sequential time exceeds the gate; ``1`` stays sequential), and
+    ``on_progress`` is invoked once per completed horizon row.
     """
     if simulations < 1:
         raise ValueError("truncation parity needs at least one simulation")
@@ -49,10 +61,26 @@ def compare_truncation_parity(
     effective = tuple(sorted({h for h in horizons if 1 <= h <= maximum_rounds}))
     if not effective:
         raise ValueError("no truncation horizon fits the round budget")
+    from mordheim_combat.modular.parallel import resolve_oracle_workers
+    from mordheim_combat.modular.parallel import run_oracle_sample
+
     rows = []
     for horizon in effective:
+        # One modular oracle sample certifies the candidate at this horizon,
+        # exactly like the deep layer (bit-for-bit identical to the
+        # sequential path whatever the pooling policy).
+        chosen = resolve_oracle_workers(workers, simulations, horizon)
+        oracle_started = time.perf_counter()
+        modular = run_oracle_sample(
+            first, second, simulations, seed=seed,
+            maximum_rounds=horizon, workers=chosen,
+        )
+        oracle_seconds = time.perf_counter() - oracle_started
         rows.append(compare_statistical_parity(
             f"{scenario}@rounds={horizon}", first, second, simulations,
             seed=seed, maximum_rounds=horizon, backend=backend,
+            modular=modular, reference_seconds=oracle_seconds,
         ))
+        if on_progress is not None:
+            on_progress()
     return tuple(rows)

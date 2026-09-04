@@ -25,4 +25,5 @@ from mordheim_combat_lab.verification.parity._truncations import compare_truncat
 from mordheim_combat_lab.verification.parity._deep import (
     DeepPair,
     certify_deep,
+    escalation_plan,
 )

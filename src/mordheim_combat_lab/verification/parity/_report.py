@@ -40,6 +40,10 @@ class StatisticalParityResult:
     # was supplied by the caller without a measurement.
     reference_seconds: float = 0.0
     candidate_seconds: float = 0.0
+    # True when the row's deep pair was re-certified at a larger sample after
+    # a suspicious first pass (adaptive escalation; statistical and cross
+    # rows never carry the flag).
+    escalated: bool = False
 
 @dataclass(frozen=True, slots=True)
 class SpecificationParityCase:
@@ -129,6 +133,7 @@ def parity_report_payload(
                 "passed": item.passed,
                 "reference_seconds": item.reference_seconds,
                 "candidate_seconds": item.candidate_seconds,
+                "escalated": item.escalated,
             } for item in deep_samples),
         },
         "truncations": None if not truncation_samples else {

@@ -326,6 +326,69 @@ DEEP_SCENARIOS: tuple[BenchmarkScenario, ...] = (
         _build(characteristics=Characteristics(4, 3, 3, 1, 5, 2),
                main_weapon_id="weapon.sword", off_hand_id="defence.buckler"),
     ),
+    # Timing and parry amplifiers (2026-09-04): pairs selected so the
+    # failure classes found in the first deep certification (natural-6
+    # parry waste, stunned-defender follow-up, frenzy re-doubling,
+    # per-round timing drift on grinds) are exercised at higher
+    # statistical power than the profile archetypes above.  The
+    # truncation sweep covers every deep pair, so resolution-timing
+    # defects show at intermediate horizons even when aggregate rates
+    # agree.
+    # 13. Four hits per pool vs a single parry: the unparryable
+    #     natural-6 co-occurrence (6 + another hit in the same pool)
+    #     fires far more often than in two-weapons-vs-parry, so a
+    #     wasted parry on a 6 moves the first-winner rate measurably.
+    BenchmarkScenario(
+        "triple-weapon-vs-parry",
+        _build(characteristics=Characteristics(4, 4, 3, 2, 4, 3),
+               main_weapon_id="weapon.axe", off_hand_id="weapon.dagger"),
+        _build(characteristics=Characteristics(4, 3, 3, 1, 5, 2),
+               main_weapon_id="weapon.sword", off_hand_id="defence.buckler"),
+    ),
+    # 14. Two attacks vs a W1 injury-profile-1 defender: the first
+    #     attack stuns at 0 wounds in roughly a quarter of the duels,
+    #     so the follow-up attack's stunned-defender auto-out-of-action
+    #     path is heavily exercised (visible at the round-1/round-2
+    #     horizons of the truncation sweep).
+    BenchmarkScenario(
+        "a2-vs-w1-stun",
+        _build(characteristics=VETERAN, main_weapon_id="weapon.axe"),
+        _build(band_id="night-goblins-web", profile_id="snotlings"),
+    ),
+    # 15. Frenzy amplifier with a measurable rare-win rate: the fanatic
+    #     keeps frenzy + always-strikes-first, but the defender drops
+    #     its armour so the fanatic's base rate rises from ~2% to ~8%
+    #     (no W2+frenzy profile exists; every frenzy grant is a W1
+    #     profile rule).  A relative frenzy defect is far above the
+    #     six-sigma gate at this base rate.
+    BenchmarkScenario(
+        "frenzy-vs-w2",
+        _build(band_id="night-goblins-mic", profile_id="fanatics"),
+        _build(characteristics=VETERAN, main_weapon_id="weapon.axe"),
+    ),
+    # 16. Mirror of elite-vs-durable with the durable side first: the
+    #     unresolved rate stays ~1%, so the timing class is certified
+    #     from both directions and any direction-dependent drift shows.
+    BenchmarkScenario(
+        "durable-vs-elite",
+        _build(characteristics=DURABLE, armour_id="armour.gromril-armour",
+               off_hand_id="defence.shield"),
+        _build(characteristics=Characteristics(5, 4, 4, 2, 5, 2),
+               main_weapon_id="weapon.sword", off_hand_id="defence.buckler"),
+    ),
+    # 17. Heavy grind at 75 rounds: both sides W3/T4, heavy armour and
+    #     shield; ~14% of duels reach the horizon.  Per-round
+    #     accumulation is maximised, so timing/orchestration drift in
+    #     the resolution ledger shows at the long horizons.
+    BenchmarkScenario(
+        "heavy-grind",
+        _build(characteristics=Characteristics(3, 3, 4, 3, 3, 1),
+               armour_id="armour.heavy-armour", off_hand_id="defence.shield"),
+        _build(characteristics=Characteristics(3, 3, 4, 3, 3, 1),
+               armour_id="armour.heavy-armour", off_hand_id="defence.shield"),
+        maximum_rounds=75,
+    ),
+
 )
 
 
