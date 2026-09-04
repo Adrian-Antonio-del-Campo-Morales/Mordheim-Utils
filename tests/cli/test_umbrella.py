@@ -13,6 +13,7 @@ COMMANDS = (
     "benchmark",
     "parity",
     "test-report",
+    "coverage-gate",
     "verify",
     "audit",
     "validate",
@@ -22,7 +23,8 @@ COMMANDS = (
     "doctor",
 )
 
-LAB_COMMANDS = ("benchmark", "parity", "test-report", "verify", "audit", "validate")
+LAB_COMMANDS = ("benchmark", "parity", "test-report", "coverage-gate",
+                "verify", "audit", "validate")
 
 
 @pytest.fixture()
@@ -149,3 +151,35 @@ def test_doctor_reports_environment(cli, capsys):
     assert "modular reference engine:" in output
     assert "Combat Lab:" in output
     assert "Campaign Manager:" in output
+
+
+def test_completion_offers_every_command(cli):
+    candidates = cli._command_candidates([])
+    assert set(candidates) == {name for name, _ in cli.COMMANDS}
+
+
+def test_completion_filters_the_command_name(cli):
+    assert cli._command_candidates(["bench"]) == ["benchmark"]
+    assert "parity" in cli._command_candidates(["par"])
+    assert cli._command_candidates(["doctor"]) == ["doctor"]
+
+
+def test_completion_introspects_lab_options_and_choices(cli):
+    # An empty trailing word models the cursor right after a space.
+    options = cli._command_candidates(["benchmark", ""])
+    assert "--deep" in options
+    assert "--simulation-sizes" in options
+    assert "--deep-simulation-sizes" in cli._command_candidates(["benchmark", "--deep-"])
+    assert cli._command_candidates(["benchmark", "--backend", "nat"]) == ["native"]
+    assert "all" in cli._command_candidates(["benchmark", "--backend", ""])
+
+
+def test_completion_covers_tests_scope_values(cli):
+    assert cli._command_candidates(["tests", "--scope", "vec"]) == ["vectorized"]
+    assert "all" in cli._command_candidates(["tests", "--scope", ""])
+    assert cli._command_candidates(["tests", "--scope=ver"]) == ["--scope=verification"]
+
+
+def test_completion_is_empty_for_unknown_commands(cli):
+    assert cli._command_candidates(["does-not-exist", "--x"]) == []
+    assert cli._command_candidates(["doctor", "--nope"]) == []

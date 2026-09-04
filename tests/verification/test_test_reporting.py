@@ -16,7 +16,7 @@ from mordheim_combat_lab.verification.test_reporting import write_csv
 
 def test_semantic_csv_inventory_is_human_readable_and_complete():
     rows = semantic_report_rows()
-    assert len(rows) == 3347
+    assert len(rows) == 3727
     assert len({row["test_id"] for row in rows}) == len(rows)
     assert not [row for row in rows if row["passes"] == "FAIL"]
     assert {row["passes"] for row in rows} == {"PASS", "PENDING"}

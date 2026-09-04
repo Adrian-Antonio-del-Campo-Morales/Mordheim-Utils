@@ -1,0 +1,525 @@
+schema_version: 1
+specifications:
+- id: interaction-skill.axe-expert--skill.blessed-sight
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.axe-expert
+    digest: c4272098dc7490eb648bebcf0502f59a2d0960dd6aef6a3bb50042c3c4467382
+  - target: mechanic/skill.blessed-sight
+    digest: 10cd5db7057ce2d9af4ff2c98b64c8384d41a5dd15f7621663ecdb2cd97023d6
+  bindings:
+  - '{"id": "skill.axe-expert", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.blessed-sight", "kind": "mechanic", "parameters": {}}'
+  interpretation: Blessed Sight rerolls missed hits unconditionally; Axe Expert's conditional charge reroll
+    overlaps harmlessly while charging.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: hit
+    attacker: &id001
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.axe-expert
+      - skill.blessed-sight
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 5
+    expect:
+      result.success: true
+      result.rerolled: true
+  - id: boundary-reroll-fails
+    roles:
+    - boundary
+    operation: hit
+    attacker: *id001
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 2
+    expect:
+      result.success: false
+      result.rerolled: true
+  mutations:
+  - id: remove-reroll-source
+    path: attacker.global_effects.reroll_hits
+    value: false
+    cases:
+    - composition
+- id: interaction-skill.axe-expert--skill.crack-shot
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.axe-expert
+    digest: c4272098dc7490eb648bebcf0502f59a2d0960dd6aef6a3bb50042c3c4467382
+  - target: mechanic/skill.crack-shot
+    digest: 9f328d7b850439e017bdc370b7e4dd69bae4044422f8be396b807e29b0208639
+  bindings:
+  - '{"id": "skill.axe-expert", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.crack-shot", "kind": "mechanic", "parameters": {}}'
+  interpretation: Axe Expert rerolls missed axe attacks while charging; Crack Shot only covers pistols,
+    which this axe fighter does not carry.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: hit
+    attacker: &id002
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.axe-expert
+      - skill.crack-shot
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 5
+    expect:
+      result.success: true
+      result.rerolled: true
+  - id: boundary-condition-off
+    roles:
+    - boundary
+    operation: hit
+    attacker: *id002
+    rolls:
+    - key: hit
+      value: 2
+    expect:
+      result.success: false
+      result.rerolled: false
+  mutations:
+  - id: remove-reroll-source
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.axe-expert--skill.expert-swordsman
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.axe-expert
+    digest: c4272098dc7490eb648bebcf0502f59a2d0960dd6aef6a3bb50042c3c4467382
+  - target: mechanic/skill.expert-swordsman
+    digest: 417d4a1cc3519510be69e893d00de9bcfa6c662769bdca0945b4d46a284157dd
+  bindings:
+  - '{"id": "skill.axe-expert", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.expert-swordsman", "kind": "mechanic", "parameters": {}}'
+  interpretation: Axe Expert rerolls missed axe attacks while charging; Expert Swordsman only covers swords,
+    which this axe fighter does not carry.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: hit
+    attacker: &id003
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.axe-expert
+      - skill.expert-swordsman
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 5
+    expect:
+      result.success: true
+      result.rerolled: true
+  - id: boundary-condition-off
+    roles:
+    - boundary
+    operation: hit
+    attacker: *id003
+    rolls:
+    - key: hit
+      value: 2
+    expect:
+      result.success: false
+      result.rerolled: false
+  mutations:
+  - id: remove-reroll-source
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.axe-expert--skill.weapons-of-the-north
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.axe-expert
+    digest: c4272098dc7490eb648bebcf0502f59a2d0960dd6aef6a3bb50042c3c4467382
+  - target: mechanic/skill.weapons-of-the-north
+    digest: be8a9a49546aecf4a481dfdd4716dae2e376abba3bb9e370789e8bbd9afd26e4
+  bindings:
+  - '{"id": "skill.axe-expert", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.weapons-of-the-north", "kind": "mechanic", "parameters": {}}'
+  interpretation: Both reroll missed axe attacks; the composed fighter shares one reroll die per missed
+    hit.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: hit
+    attacker: &id004
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.axe-expert
+      - skill.weapons-of-the-north
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 5
+    expect:
+      result.success: true
+      result.rerolled: true
+  - id: boundary-reroll-fails
+    roles:
+    - boundary
+    operation: hit
+    attacker: *id004
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 2
+    expect:
+      result.success: false
+      result.rerolled: true
+  mutations:
+  - id: remove-reroll-source
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.blessed-sight--skill.crack-shot
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.blessed-sight
+    digest: 10cd5db7057ce2d9af4ff2c98b64c8384d41a5dd15f7621663ecdb2cd97023d6
+  - target: mechanic/skill.crack-shot
+    digest: 9f328d7b850439e017bdc370b7e4dd69bae4044422f8be396b807e29b0208639
+  bindings:
+  - '{"id": "skill.blessed-sight", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.crack-shot", "kind": "mechanic", "parameters": {}}'
+  interpretation: Blessed Sight rerolls missed hits unconditionally; Crack Shot adds nothing to an axe
+    fighter.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: hit
+    attacker: &id005
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.blessed-sight
+      - skill.crack-shot
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 5
+    expect:
+      result.success: true
+      result.rerolled: true
+  - id: boundary-reroll-fails
+    roles:
+    - boundary
+    operation: hit
+    attacker: *id005
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 2
+    expect:
+      result.success: false
+      result.rerolled: true
+  mutations:
+  - id: remove-reroll-source
+    path: attacker.global_effects.reroll_hits
+    value: false
+    cases:
+    - composition
+- id: interaction-skill.blessed-sight--skill.expert-swordsman
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.blessed-sight
+    digest: 10cd5db7057ce2d9af4ff2c98b64c8384d41a5dd15f7621663ecdb2cd97023d6
+  - target: mechanic/skill.expert-swordsman
+    digest: 417d4a1cc3519510be69e893d00de9bcfa6c662769bdca0945b4d46a284157dd
+  bindings:
+  - '{"id": "skill.blessed-sight", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.expert-swordsman", "kind": "mechanic", "parameters": {}}'
+  interpretation: Blessed Sight rerolls missed hits unconditionally; Expert Swordsman's charging reroll
+    overlaps harmlessly with a sword.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: hit
+    attacker: &id006
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.blessed-sight
+      - skill.expert-swordsman
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 5
+    expect:
+      result.success: true
+      result.rerolled: true
+  - id: boundary-reroll-fails
+    roles:
+    - boundary
+    operation: hit
+    attacker: *id006
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 2
+    expect:
+      result.success: false
+      result.rerolled: true
+  mutations:
+  - id: remove-reroll-source
+    path: attacker.global_effects.reroll_hits
+    value: false
+    cases:
+    - composition
+- id: interaction-skill.blessed-sight--skill.weapons-of-the-north
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.blessed-sight
+    digest: 10cd5db7057ce2d9af4ff2c98b64c8384d41a5dd15f7621663ecdb2cd97023d6
+  - target: mechanic/skill.weapons-of-the-north
+    digest: be8a9a49546aecf4a481dfdd4716dae2e376abba3bb9e370789e8bbd9afd26e4
+  bindings:
+  - '{"id": "skill.blessed-sight", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.weapons-of-the-north", "kind": "mechanic", "parameters": {}}'
+  interpretation: Blessed Sight rerolls missed hits unconditionally; Weapons of the North covers only
+    axes and double-handed weapons.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: hit
+    attacker: &id007
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.blessed-sight
+      - skill.weapons-of-the-north
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 5
+    expect:
+      result.success: true
+      result.rerolled: true
+  - id: boundary-reroll-fails
+    roles:
+    - boundary
+    operation: hit
+    attacker: *id007
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 2
+    expect:
+      result.success: false
+      result.rerolled: true
+  mutations:
+  - id: remove-reroll-source
+    path: attacker.global_effects.reroll_hits
+    value: false
+    cases:
+    - composition
+- id: interaction-skill.crack-shot--skill.expert-swordsman
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.crack-shot
+    digest: 9f328d7b850439e017bdc370b7e4dd69bae4044422f8be396b807e29b0208639
+  - target: mechanic/skill.expert-swordsman
+    digest: 417d4a1cc3519510be69e893d00de9bcfa6c662769bdca0945b4d46a284157dd
+  bindings:
+  - '{"id": "skill.crack-shot", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.expert-swordsman", "kind": "mechanic", "parameters": {}}'
+  interpretation: Expert Swordsman rerolls missed sword attacks while charging; Crack Shot covers only
+    pistols.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: hit
+    attacker: &id008
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.crack-shot
+      - skill.expert-swordsman
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 5
+    expect:
+      result.success: true
+      result.rerolled: true
+  - id: boundary-condition-off
+    roles:
+    - boundary
+    operation: hit
+    attacker: *id008
+    rolls:
+    - key: hit
+      value: 2
+    expect:
+      result.success: false
+      result.rerolled: false
+  mutations:
+  - id: remove-reroll-source
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.crack-shot--skill.weapons-of-the-north
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.crack-shot
+    digest: 9f328d7b850439e017bdc370b7e4dd69bae4044422f8be396b807e29b0208639
+  - target: mechanic/skill.weapons-of-the-north
+    digest: be8a9a49546aecf4a481dfdd4716dae2e376abba3bb9e370789e8bbd9afd26e4
+  bindings:
+  - '{"id": "skill.crack-shot", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.weapons-of-the-north", "kind": "mechanic", "parameters": {}}'
+  interpretation: Weapons of the North rerolls missed axe attacks; Crack Shot covers only pistols.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: hit
+    attacker: &id009
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.crack-shot
+      - skill.weapons-of-the-north
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 5
+    expect:
+      result.success: true
+      result.rerolled: true
+  - id: boundary-reroll-fails
+    roles:
+    - boundary
+    operation: hit
+    attacker: *id009
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 2
+    expect:
+      result.success: false
+      result.rerolled: true
+  mutations:
+  - id: remove-reroll-source
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.expert-swordsman--skill.weapons-of-the-north
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.expert-swordsman
+    digest: 417d4a1cc3519510be69e893d00de9bcfa6c662769bdca0945b4d46a284157dd
+  - target: mechanic/skill.weapons-of-the-north
+    digest: be8a9a49546aecf4a481dfdd4716dae2e376abba3bb9e370789e8bbd9afd26e4
+  bindings:
+  - '{"id": "skill.expert-swordsman", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.weapons-of-the-north", "kind": "mechanic", "parameters": {}}'
+  interpretation: Weapons of the North rerolls missed axe attacks unconditionally; Expert Swordsman covers
+    only swords while charging.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: hit
+    attacker: &id010
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.expert-swordsman
+      - skill.weapons-of-the-north
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 5
+    expect:
+      result.success: true
+      result.rerolled: true
+  - id: boundary-reroll-fails
+    roles:
+    - boundary
+    operation: hit
+    attacker: *id010
+    context:
+      first_round: true
+      charging: true
+    rolls:
+    - key: hit
+      value: 2
+    - key: hit.reroll
+      value: 2
+    expect:
+      result.success: false
+      result.rerolled: true
+  mutations:
+  - id: remove-reroll-source
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition

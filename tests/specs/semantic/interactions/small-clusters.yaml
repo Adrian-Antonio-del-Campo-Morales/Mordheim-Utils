@@ -1,0 +1,65 @@
+schema_version: 1
+specifications:
+- id: interaction-combat-injury-states--skill.monstrous
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
+  - target: mechanic/skill.monstrous
+    digest: 25e380f85bbfa6ebde7ab6cae9254f02c97870c694d7e41eb726d3e77b123bbc
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.monstrous", "kind": "mechanic", "parameters": {}}'
+  interpretation: Monstrous adds +1 Wound, so the fighter survives one unsaved wound; the Injury states
+    only resolve once every Wound is lost.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id001
+      main_weapon_id: weapon.sword
+    defender: &id002
+      skill_ids:
+      - skill.monstrous
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.wounded: true
+      result.defender.wounds: 1
+      result.defender.condition: STANDING
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id001
+    defender: *id002
+    defender_state:
+      wounds: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    expect:
+      result.defender.condition: STUNNED
+      result.defender.wounds: 0
+  mutations:
+  - id: remove-monstrous-wound
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - composition

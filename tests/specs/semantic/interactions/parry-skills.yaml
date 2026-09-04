@@ -1,0 +1,804 @@
+schema_version: 1
+specifications:
+- id: interaction-combat-parry--skill.axe-master
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-parry
+    digest: 68a462cce29f54af24fc6165eae8f85d39c185965a399bb295d1f4ed95e586c9
+  - target: mechanic/skill.axe-master
+    digest: a066f62e6bd118418f11f64bf568ebee8dc71e190597d37abd6e169da9398082
+  bindings:
+  - '{"id": "combat-parry", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.axe-master", "kind": "mechanic", "parameters": {}}'
+  interpretation: Axe Master lets normal axes parry one eligible hit; the parry must beat the hit roll.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id001
+      main_weapon_id: weapon.axe
+    defender: &id002
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.axe-master
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      result.attempted: true
+      result.blocked: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id001
+    defender: *id002
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 4
+    expect:
+      result.attempted: true
+      result.blocked: false
+  mutations:
+  - id: remove-parry-composition
+    changes:
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - composition
+- id: interaction-combat-parry--skill.crushing-blow
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-parry
+    digest: 68a462cce29f54af24fc6165eae8f85d39c185965a399bb295d1f4ed95e586c9
+  - target: mechanic/skill.crushing-blow
+    digest: cdc966ebf1c8e9a3454ed299153112fcdee60f3114f24375e9b6a27a3140df8b
+  bindings:
+  - '{"id": "combat-parry", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.crushing-blow", "kind": "mechanic", "parameters": {}}'
+  interpretation: Crushing Blow makes the attacker's hits unparriable, so even a sword-wielding defender
+    attempts no parry; a natural 6 also cannot be parried.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id003
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.crushing-blow
+    defender: &id004
+      main_weapon_id: weapon.sword
+      skill_ids: []
+    context:
+      hit_roll: 4
+    expect:
+      result.attempted: false
+      result.blocked: false
+  - id: boundary-natural-six
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id003
+    defender: *id004
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
+  mutations:
+  - id: allow-parry
+    path: attacker.global_effects.cannot_be_parried
+    value: false
+    cases:
+    - composition
+- id: interaction-combat-parry--skill.defensive-stance
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-parry
+    digest: 68a462cce29f54af24fc6165eae8f85d39c185965a399bb295d1f4ed95e586c9
+  - target: mechanic/skill.defensive-stance
+    digest: 1ee22995c06c835e513d7b04cbf698865f75e8159ca957ae3e402f3e1ae177cb
+  bindings:
+  - '{"id": "combat-parry", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.defensive-stance", "kind": "mechanic", "parameters": {}}'
+  interpretation: Axe Master lets normal axes parry one eligible hit; the parry must beat the hit roll.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id005
+      main_weapon_id: weapon.axe
+    defender: &id006
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.defensive-stance
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      result.attempted: true
+      result.blocked: true
+  - id: boundary-natural-six
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id005
+    defender: *id006
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
+  mutations:
+  - id: remove-parry-composition
+    changes:
+    - path: defender.global_effects.parry
+      value: false
+    cases:
+    - composition
+- id: interaction-combat-parry--skill.shield-mastery
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-parry
+    digest: 68a462cce29f54af24fc6165eae8f85d39c185965a399bb295d1f4ed95e586c9
+  - target: mechanic/skill.shield-mastery
+    digest: 0e5b9977b9143371eeb178aa51d6dc46b843d88a3a58a317c6bac08789903306
+  bindings:
+  - '{"id": "combat-parry", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.shield-mastery", "kind": "mechanic", "parameters": {}}'
+  interpretation: Shield Mastery lets a shield parry one eligible hit; the parry must beat the hit roll.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id007
+      main_weapon_id: weapon.axe
+    defender: &id008
+      off_hand_id: defence.shield
+      skill_ids:
+      - skill.shield-mastery
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      result.attempted: true
+      result.blocked: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id007
+    defender: *id008
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 4
+    expect:
+      result.attempted: true
+      result.blocked: false
+  mutations:
+  - id: remove-parry-composition
+    changes:
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - composition
+- id: interaction-combat-parry--weapon.sword
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-parry
+    digest: 68a462cce29f54af24fc6165eae8f85d39c185965a399bb295d1f4ed95e586c9
+  - target: mechanic/weapon.sword
+    digest: b0269721d63c45f8e54c648b250807896035778ea2cbc482cbc3f54bc6e46c18
+  bindings:
+  - '{"id": "combat-parry", "kind": "core", "parameters": {}}'
+  - '{"id": "weapon.sword", "kind": "mechanic", "parameters": {}}'
+  interpretation: A sword parries one eligible hit by beating the attacker's hit roll; composed parry
+    skills share the single attempt.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id009
+      main_weapon_id: weapon.axe
+    defender: &id010
+      main_weapon_id: weapon.sword
+      skill_ids: []
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      result.attempted: true
+      result.blocked: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id009
+    defender: *id010
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 4
+    expect:
+      result.attempted: true
+      result.blocked: false
+  mutations:
+  - id: remove-parry-composition
+    changes:
+    - path: defender.main_weapon.parry
+      value: false
+    cases:
+    - composition
+- id: interaction-skill.axe-master--skill.crushing-blow
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.axe-master
+    digest: a066f62e6bd118418f11f64bf568ebee8dc71e190597d37abd6e169da9398082
+  - target: mechanic/skill.crushing-blow
+    digest: cdc966ebf1c8e9a3454ed299153112fcdee60f3114f24375e9b6a27a3140df8b
+  bindings:
+  - '{"id": "skill.axe-master", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.crushing-blow", "kind": "mechanic", "parameters": {}}'
+  interpretation: Crushing Blow makes the attacker's hits unparriable, so even a sword-wielding defender
+    attempts no parry; a natural 6 also cannot be parried.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id011
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.crushing-blow
+    defender: &id012
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.axe-master
+    context:
+      hit_roll: 4
+    expect:
+      result.attempted: false
+      result.blocked: false
+  - id: boundary-natural-six
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id011
+    defender: *id012
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
+  mutations:
+  - id: allow-parry
+    path: attacker.global_effects.cannot_be_parried
+    value: false
+    cases:
+    - composition
+- id: interaction-skill.axe-master--skill.defensive-stance
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.axe-master
+    digest: a066f62e6bd118418f11f64bf568ebee8dc71e190597d37abd6e169da9398082
+  - target: mechanic/skill.defensive-stance
+    digest: 1ee22995c06c835e513d7b04cbf698865f75e8159ca957ae3e402f3e1ae177cb
+  bindings:
+  - '{"id": "skill.axe-master", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.defensive-stance", "kind": "mechanic", "parameters": {}}'
+  interpretation: Axe Master lets normal axes parry one eligible hit; the parry must beat the hit roll.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id013
+      main_weapon_id: weapon.axe
+    defender: &id014
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.defensive-stance
+      - skill.axe-master
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      result.attempted: true
+      result.blocked: true
+  - id: boundary-natural-six
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id013
+    defender: *id014
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
+  mutations:
+  - id: remove-parry-composition
+    changes:
+    - path: defender.global_effects.parry
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - composition
+- id: interaction-skill.axe-master--skill.shield-mastery
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.axe-master
+    digest: a066f62e6bd118418f11f64bf568ebee8dc71e190597d37abd6e169da9398082
+  - target: mechanic/skill.shield-mastery
+    digest: 0e5b9977b9143371eeb178aa51d6dc46b843d88a3a58a317c6bac08789903306
+  bindings:
+  - '{"id": "skill.axe-master", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.shield-mastery", "kind": "mechanic", "parameters": {}}'
+  interpretation: Shield Mastery lets a shield parry one eligible hit; the parry must beat the hit roll.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id015
+      main_weapon_id: weapon.axe
+    defender: &id016
+      off_hand_id: defence.shield
+      skill_ids:
+      - skill.axe-master
+      - skill.shield-mastery
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      result.attempted: true
+      result.blocked: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id015
+    defender: *id016
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 4
+    expect:
+      result.attempted: true
+      result.blocked: false
+  mutations:
+  - id: remove-parry-composition
+    changes:
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - composition
+- id: interaction-skill.axe-master--weapon.sword
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.axe-master
+    digest: a066f62e6bd118418f11f64bf568ebee8dc71e190597d37abd6e169da9398082
+  - target: mechanic/weapon.sword
+    digest: b0269721d63c45f8e54c648b250807896035778ea2cbc482cbc3f54bc6e46c18
+  bindings:
+  - '{"id": "skill.axe-master", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.sword", "kind": "mechanic", "parameters": {}}'
+  interpretation: A sword parries one eligible hit by beating the attacker's hit roll; composed parry
+    skills share the single attempt.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id017
+      main_weapon_id: weapon.axe
+    defender: &id018
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.axe-master
+      off_hand_id: weapon.axe
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      result.attempted: true
+      result.blocked: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id017
+    defender: *id018
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 4
+    expect:
+      result.attempted: true
+      result.blocked: false
+  mutations:
+  - id: remove-parry-composition
+    changes:
+    - path: defender.main_weapon.parry
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - composition
+- id: interaction-skill.crushing-blow--skill.defensive-stance
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.crushing-blow
+    digest: cdc966ebf1c8e9a3454ed299153112fcdee60f3114f24375e9b6a27a3140df8b
+  - target: mechanic/skill.defensive-stance
+    digest: 1ee22995c06c835e513d7b04cbf698865f75e8159ca957ae3e402f3e1ae177cb
+  bindings:
+  - '{"id": "skill.crushing-blow", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.defensive-stance", "kind": "mechanic", "parameters": {}}'
+  interpretation: Crushing Blow makes the attacker's hits unparriable, so even a sword-wielding defender
+    attempts no parry; a natural 6 also cannot be parried.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id019
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.crushing-blow
+    defender: &id020
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.defensive-stance
+    context:
+      hit_roll: 4
+    expect:
+      result.attempted: false
+      result.blocked: false
+  - id: boundary-natural-six
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id019
+    defender: *id020
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
+  mutations:
+  - id: allow-parry
+    path: attacker.global_effects.cannot_be_parried
+    value: false
+    cases:
+    - composition
+- id: interaction-skill.crushing-blow--skill.shield-mastery
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.crushing-blow
+    digest: cdc966ebf1c8e9a3454ed299153112fcdee60f3114f24375e9b6a27a3140df8b
+  - target: mechanic/skill.shield-mastery
+    digest: 0e5b9977b9143371eeb178aa51d6dc46b843d88a3a58a317c6bac08789903306
+  bindings:
+  - '{"id": "skill.crushing-blow", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.shield-mastery", "kind": "mechanic", "parameters": {}}'
+  interpretation: Crushing Blow makes the attacker's hits unparriable, so even a sword-wielding defender
+    attempts no parry; a natural 6 also cannot be parried.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id021
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.crushing-blow
+    defender: &id022
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.shield-mastery
+    context:
+      hit_roll: 4
+    expect:
+      result.attempted: false
+      result.blocked: false
+  - id: boundary-natural-six
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id021
+    defender: *id022
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
+  mutations:
+  - id: allow-parry
+    path: attacker.global_effects.cannot_be_parried
+    value: false
+    cases:
+    - composition
+- id: interaction-skill.crushing-blow--weapon.sword
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.crushing-blow
+    digest: cdc966ebf1c8e9a3454ed299153112fcdee60f3114f24375e9b6a27a3140df8b
+  - target: mechanic/weapon.sword
+    digest: b0269721d63c45f8e54c648b250807896035778ea2cbc482cbc3f54bc6e46c18
+  bindings:
+  - '{"id": "skill.crushing-blow", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.sword", "kind": "mechanic", "parameters": {}}'
+  interpretation: Crushing Blow makes the attacker's hits unparriable, so even a sword-wielding defender
+    attempts no parry; a natural 6 also cannot be parried.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id023
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.crushing-blow
+    defender: &id024
+      main_weapon_id: weapon.sword
+      skill_ids: []
+    context:
+      hit_roll: 4
+    expect:
+      result.attempted: false
+      result.blocked: false
+  - id: boundary-natural-six
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id023
+    defender: *id024
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
+  mutations:
+  - id: allow-parry
+    path: attacker.global_effects.cannot_be_parried
+    value: false
+    cases:
+    - composition
+- id: interaction-skill.defensive-stance--skill.shield-mastery
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.defensive-stance
+    digest: 1ee22995c06c835e513d7b04cbf698865f75e8159ca957ae3e402f3e1ae177cb
+  - target: mechanic/skill.shield-mastery
+    digest: 0e5b9977b9143371eeb178aa51d6dc46b843d88a3a58a317c6bac08789903306
+  bindings:
+  - '{"id": "skill.defensive-stance", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.shield-mastery", "kind": "mechanic", "parameters": {}}'
+  interpretation: Shield Mastery lets a shield parry one eligible hit; the parry must beat the hit roll.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id025
+      main_weapon_id: weapon.axe
+    defender: &id026
+      off_hand_id: defence.shield
+      skill_ids:
+      - skill.defensive-stance
+      - skill.shield-mastery
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      result.attempted: true
+      result.blocked: true
+  - id: boundary-natural-six
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id025
+    defender: *id026
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
+  mutations:
+  - id: remove-parry-composition
+    changes:
+    - path: defender.global_effects.parry
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - composition
+- id: interaction-skill.defensive-stance--weapon.sword
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.defensive-stance
+    digest: 1ee22995c06c835e513d7b04cbf698865f75e8159ca957ae3e402f3e1ae177cb
+  - target: mechanic/weapon.sword
+    digest: b0269721d63c45f8e54c648b250807896035778ea2cbc482cbc3f54bc6e46c18
+  bindings:
+  - '{"id": "skill.defensive-stance", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.sword", "kind": "mechanic", "parameters": {}}'
+  interpretation: A sword parries one eligible hit by beating the attacker's hit roll; composed parry
+    skills share the single attempt.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id027
+      main_weapon_id: weapon.axe
+    defender: &id028
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.defensive-stance
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      result.attempted: true
+      result.blocked: true
+  - id: boundary-natural-six
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id027
+    defender: *id028
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
+  mutations:
+  - id: remove-parry-composition
+    changes:
+    - path: defender.global_effects.parry
+      value: false
+    - path: defender.main_weapon.parry
+      value: false
+    cases:
+    - composition
+- id: interaction-skill.shield-mastery--weapon.sword
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.shield-mastery
+    digest: 0e5b9977b9143371eeb178aa51d6dc46b843d88a3a58a317c6bac08789903306
+  - target: mechanic/weapon.sword
+    digest: b0269721d63c45f8e54c648b250807896035778ea2cbc482cbc3f54bc6e46c18
+  bindings:
+  - '{"id": "skill.shield-mastery", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.sword", "kind": "mechanic", "parameters": {}}'
+  interpretation: Shield Mastery lets a shield parry one eligible hit; the parry must beat the hit roll.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: parry
+    attacker: &id029
+      main_weapon_id: weapon.axe
+    defender: &id030
+      off_hand_id: defence.shield
+      skill_ids:
+      - skill.shield-mastery
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      result.attempted: true
+      result.blocked: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: parry
+    attacker: *id029
+    defender: *id030
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 4
+    expect:
+      result.attempted: true
+      result.blocked: false
+  mutations:
+  - id: remove-parry-composition
+    changes:
+    - path: defender.main_weapon.parry
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - composition
+- id: interaction-special-rule.trained-bear--bear-hug--weapon.vomit-attack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/weapon.vomit-attack
+    digest: 8851f0660b1daee1f542f6aff22cee6329bdc5365e9597a12080df4e7c84b5e5
+  - target: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
+    digest: 13deefeb497e8e1cc5c0f2f27763b987ec9d70b854f763ea9037d97ee0ecf326
+  bindings:
+  - '{"id": "special-rule.trained-bear--bear-hug", "kind": "compiler", "parameters": {}}'
+  - '{"id": "weapon.vomit-attack", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'Both Bear Hug and Vomit Attack consume hit success: a trained bear needs two weapon
+    attacks to offer the hug, while Vomit''s automatic hit guarantees its single hit. They never co-occur
+    on one fighter, so each resolves independently.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker:
+      band_id: kislevites
+      profile_id: trained-bear
+    expect:
+      result.attacks: 2
+  - id: boundary-vomit-hit
+    roles:
+    - boundary
+    operation: hit
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    expect:
+      result.success: true
+      result.rerolled: false
+  mutations:
+  - id: remove-hug-capacity
+    path: attacker.characteristics.attacks
+    value: 1
+    cases:
+    - composition

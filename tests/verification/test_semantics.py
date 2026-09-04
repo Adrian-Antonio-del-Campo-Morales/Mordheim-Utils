@@ -190,6 +190,9 @@ def _single_spec(monkeypatch, change):
     fixture = deepcopy(next(s for s in load_fixtures() if s["id"] == "mighty-blow"))
     change(fixture)
     monkeypatch.setattr(semantic, "load_fixtures", lambda root: (fixture,))
+    # Isolated audits run against a truncated corpus; the corpus-level policy
+    # overrides only make sense against the full fixture set.
+    monkeypatch.setattr(semantic, "load_interaction_policy", lambda root: None)
     return verify_semantics()
 
 
@@ -228,6 +231,7 @@ def test_interaction_proof_does_not_certify_participant_rules(monkeypatch):
     import mordheim_combat_lab.verification.audit as semantic
     interaction = next(s for s in load_fixtures() if s["id"] == "two-strength-skills-stack")
     monkeypatch.setattr(semantic, "load_fixtures", lambda root: (interaction,))
+    monkeypatch.setattr(semantic, "load_interaction_policy", lambda root: None)
     report = verify_semantics()
     assert not report.errors
     assert not report.verified
@@ -339,6 +343,7 @@ def test_unverified_shared_consumer_keeps_editorial_grant_pending(monkeypatch):
     import mordheim_combat_lab.verification.audit as semantic
     fixture = next(s for s in load_fixtures() if s["id"] == "poison-grant-mordheim-undead-vampire")
     monkeypatch.setattr(semantic, "load_fixtures", lambda root: (fixture,))
+    monkeypatch.setattr(semantic, "load_interaction_policy", lambda root: None)
     report = verify_semantics()
     assert not report.errors
     assert not report.verified
@@ -357,6 +362,7 @@ def test_redundant_access_mutation_is_justified_not_counted_as_detected(monkeypa
     import mordheim_combat_lab.verification.audit as semantic
     fixture = next(s for s in load_fixtures() if s["id"] == "access-nagarythe-already-strength")
     monkeypatch.setattr(semantic, "load_fixtures", lambda root: (fixture,))
+    monkeypatch.setattr(semantic, "load_interaction_policy", lambda root: None)
     report = verify_semantics()
     assert not report.errors
     assert report.fixtures[0].killed_mutations == ()
@@ -368,6 +374,7 @@ def test_three_rule_evidence_does_not_certify_pairs_or_bindings(monkeypatch):
     import mordheim_combat_lab.verification.audit as semantic
     fixture = next(s for s in load_fixtures() if s["id"] == "concussion-no-pain-jump-up")
     monkeypatch.setattr(semantic, "load_fixtures", lambda root: (fixture,))
+    monkeypatch.setattr(semantic, "load_interaction_policy", lambda root: None)
     report = verify_semantics()
     assert not report.errors
     assert not report.verified

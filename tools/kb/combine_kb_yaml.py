@@ -12,16 +12,20 @@ SEPARATOR = "=" * 80
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
+        prog="combine-kb",
         description=(
             "Generates one .txt per KB subdirectory, combining its .yaml and "
             ".yml files recursively."
-        )
+        ),
+        epilog="Run from a source checkout: python tools/mordheim-utils.py combine-kb",
+        formatter_class=lambda prog: argparse.HelpFormatter(prog, max_help_position=34),
     )
     parser.add_argument(
         "kb_path",
         nargs="?",
         type=Path,
         default=Path.cwd(),
+        metavar="KB",
         help="Parent/root directory of the KB (default: current directory).",
     )
     parser.add_argument(
@@ -29,6 +33,7 @@ def parse_arguments() -> argparse.Namespace:
         "--output",
         type=Path,
         default=Path("kb-combined"),
+        metavar="DIR",
         help="Output directory (default: kb-combined).",
     )
     return parser.parse_args()

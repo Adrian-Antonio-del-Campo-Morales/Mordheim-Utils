@@ -413,7 +413,12 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
         and has(defender.global_effects, "undead_or_possessed")
     )
     targets = np.maximum(2, targets - effect.wound_modifier - sigmarite_bonus)
-    wound_rolls = rng.integers(1, 7, hit_rows.size)
+    # Automatic wounds (e.g. a won bear hug) roll no die: the modular oracle
+    # returns roll=0 for them, so drawing one here would shift every later
+    # roll (special saves, injury) and diverge from the oracle.
+    wound_rolls = np.zeros(hit_rows.size, dtype=np.int8)
+    if not automatic_wound.all():
+        wound_rolls[~automatic_wound] = rng.integers(1, 7, int((~automatic_wound).sum()))
     critical_rolls = wound_rolls.copy()
     wounded = automatic_wound | (wound_rolls >= targets)
     if has(weapon,"weapon.rapier") and (~wounded).any():

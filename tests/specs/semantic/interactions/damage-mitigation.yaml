@@ -1,0 +1,1800 @@
+schema_version: 1
+specifications:
+- id: interaction-combat-injury-states--defence.enchanted-skins
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
+  - target: mechanic/defence.enchanted-skins
+    digest: 3d08915534aaa2db55aa808792d27ae4a50f51d807ad70e4fdacec786919ec67
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "defence.enchanted-skins", "kind": "mechanic", "parameters": {}}'
+  interpretation: enchanted skins's ward (6+) intercepts the unsaved wound before the Injury table; when
+    it fails the defender drops to zero Wounds and the ordinary Injury states resolve.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id001
+      main_weapon_id: weapon.sword
+    defender: &id002
+      defence_ids:
+      - defence.enchanted-skins
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 6
+    expect:
+      result.saved: true
+      result.wounded: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id001
+    defender: *id002
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.defender.condition: KNOCKED_DOWN
+      result.defender.wounds: 0
+  mutations:
+  - id: remove-ward
+    path: defender.global_effects.ward_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-combat-injury-states--poison.bloodroot
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
+  - target: mechanic/poison.bloodroot
+    digest: 3134964907d78b26d1da2eec50d04cf0a89261efa3764ebd5dc80c364181feb5
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "poison.bloodroot", "kind": "mechanic", "parameters": {}}'
+  interpretation: Bloodroot doubles an unsaved wound to 2; the ordinary Injury states resolve only when
+    the doubled damage drives the defender to zero Wounds.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id003
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.wounded: true
+      result.damage: 2
+      result.defender.wounds: 0
+      result.defender.condition: KNOCKED_DOWN
+  - id: boundary-three-wounds
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id003
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.wounded: true
+      result.damage: 2
+      result.defender.wounds: 1
+      result.defender.condition: STANDING
+  mutations:
+  - id: remove-bloodroot-damage
+    path: attacker.main_weapon.damage
+    value: 1
+    cases:
+    - composition
+- id: interaction-combat-injury-states--skill.elven-agility
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
+  - target: mechanic/skill.elven-agility
+    digest: d93679b3fcae0b85de834c52422156e6f94458432e2818a13b79ea45d0e55f84
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.elven-agility", "kind": "mechanic", "parameters": {}}'
+  interpretation: elven agility's ward (6+) intercepts the unsaved wound before the Injury table; when
+    it fails the defender drops to zero Wounds and the ordinary Injury states resolve.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id004
+      main_weapon_id: weapon.sword
+    defender: &id005
+      skill_ids:
+      - skill.elven-agility
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 6
+    expect:
+      result.saved: true
+      result.wounded: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id004
+    defender: *id005
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.defender.condition: KNOCKED_DOWN
+      result.defender.wounds: 0
+  mutations:
+  - id: remove-ward
+    path: defender.global_effects.ward_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-combat-injury-states--skill.regeneration
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
+  - target: mechanic/skill.regeneration
+    digest: e62b1af731034d359dddd60508897a38dcb86fe9d387a19b23d1c2cb308a4a3b
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.regeneration", "kind": "mechanic", "parameters": {}}'
+  interpretation: regeneration's regeneration (4+) intercepts the unsaved wound before the Injury table;
+    when it fails the defender drops to zero Wounds and the ordinary Injury states resolve.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id006
+      main_weapon_id: weapon.sword
+    defender: &id007
+      skill_ids:
+      - skill.regeneration
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.regeneration
+      value: 4
+    expect:
+      result.saved: true
+      result.wounded: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id006
+    defender: *id007
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.regeneration
+      value: 3
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.defender.condition: KNOCKED_DOWN
+      result.defender.wounds: 0
+  mutations:
+  - id: remove-regeneration
+    path: defender.global_effects.regeneration_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-combat-injury-states--skill.regeneration-5-plus
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
+  - target: mechanic/skill.regeneration-5-plus
+    digest: 696041a7c52dce76d761c74874d2dd412453066e8bd914ac8ec2101690039e98
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.regeneration-5-plus", "kind": "mechanic", "parameters": {}}'
+  interpretation: regeneration 5 plus's regeneration (5+) intercepts the unsaved wound before the Injury
+    table; when it fails the defender drops to zero Wounds and the ordinary Injury states resolve.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id008
+      main_weapon_id: weapon.sword
+    defender: &id009
+      skill_ids:
+      - skill.regeneration-5-plus
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.regeneration
+      value: 5
+    expect:
+      result.saved: true
+      result.wounded: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id008
+    defender: *id009
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.regeneration
+      value: 4
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.defender.condition: KNOCKED_DOWN
+      result.defender.wounds: 0
+  mutations:
+  - id: remove-regeneration
+    path: defender.global_effects.regeneration_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-combat-injury-states--skill.step-aside
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
+  - target: mechanic/skill.step-aside
+    digest: 7d543001fc0b5b9a9361518b4ddeaf5a0f31d89b9ef071e6f5f7732590893d36
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.step-aside", "kind": "mechanic", "parameters": {}}'
+  interpretation: step aside's ward (5+) intercepts the unsaved wound before the Injury table; when it
+    fails the defender drops to zero Wounds and the ordinary Injury states resolve.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id010
+      main_weapon_id: weapon.sword
+    defender: &id011
+      skill_ids:
+      - skill.step-aside
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    expect:
+      result.saved: true
+      result.wounded: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id010
+    defender: *id011
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 4
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.defender.condition: KNOCKED_DOWN
+      result.defender.wounds: 0
+  mutations:
+  - id: remove-ward
+    path: defender.global_effects.step_aside
+    value: false
+    cases:
+    - composition
+- id: interaction-combat-injury-states--special-rule.trained-bear--bear-hug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
+  - target: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
+    digest: 13deefeb497e8e1cc5c0f2f27763b987ec9d70b854f763ea9037d97ee0ecf326
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "special-rule.trained-bear--bear-hug", "kind": "compiler", "parameters": {}}'
+  interpretation: A won bear hug inflicts one automatic unsaved wound before the Injury states; a broken
+    hold deals no damage.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: pool
+    attacker: &id012
+      band_id: kislevites
+      profile_id: trained-bear
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    expect:
+      result.attacks.0.damage: 1
+      result.defender.wounds: 2
+  - id: boundary-hold-broken
+    roles:
+    - boundary
+    operation: pool
+    attacker: *id012
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 1
+    - key: test.bear-hug.defender
+      value: 6
+    expect:
+      result.attacks: []
+      result.defender.wounds: 3
+  mutations:
+  - id: remove-hug
+    path: attacker.global_effects.bear_hug
+    value: false
+    cases:
+    - composition
+- id: interaction-defence.enchanted-skins--poison.bloodroot
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/defence.enchanted-skins
+    digest: 3d08915534aaa2db55aa808792d27ae4a50f51d807ad70e4fdacec786919ec67
+  - target: mechanic/poison.bloodroot
+    digest: 3134964907d78b26d1da2eec50d04cf0a89261efa3764ebd5dc80c364181feb5
+  bindings:
+  - '{"id": "defence.enchanted-skins", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "poison.bloodroot", "kind": "mechanic", "parameters": {}}'
+  interpretation: Bloodroot doubles the wound to 2; enchanted skins's ward (6+) intercepts the unsaved
+    wound, and when it fails the doubled damage drives the defender to zero Wounds and one Injury roll.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id013
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender: &id014
+      defence_ids:
+      - defence.enchanted-skins
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 6
+    expect:
+      result.saved: true
+      result.defender.wounds: 2
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id013
+    defender: *id014
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.damage: 2
+      result.defender.wounds: 0
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: remove-ward
+    path: defender.global_effects.ward_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-defence.enchanted-skins--skill.elven-agility
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/defence.enchanted-skins
+    digest: 3d08915534aaa2db55aa808792d27ae4a50f51d807ad70e4fdacec786919ec67
+  - target: mechanic/skill.elven-agility
+    digest: d93679b3fcae0b85de834c52422156e6f94458432e2818a13b79ea45d0e55f84
+  bindings:
+  - '{"id": "defence.enchanted-skins", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.elven-agility", "kind": "mechanic", "parameters": {}}'
+  interpretation: elven agility and enchanted skins both grant an unmodified ward save; the better 6+
+    applies once.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id015
+      main_weapon_id: weapon.sword
+    defender: &id016
+      skill_ids:
+      - skill.elven-agility
+      defence_ids:
+      - defence.enchanted-skins
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 6
+    expect:
+      result.saved: true
+      result.wounded: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id015
+    defender: *id016
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: remove-ward
+    path: defender.global_effects.ward_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-defence.enchanted-skins--skill.regeneration
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/defence.enchanted-skins
+    digest: 3d08915534aaa2db55aa808792d27ae4a50f51d807ad70e4fdacec786919ec67
+  - target: mechanic/skill.regeneration
+    digest: e62b1af731034d359dddd60508897a38dcb86fe9d387a19b23d1c2cb308a4a3b
+  bindings:
+  - '{"id": "defence.enchanted-skins", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.regeneration", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'regeneration and enchanted skins compose a two-stage special save: the ward (6+) is
+    rolled first and the regeneration (4+) only when the ward fails.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id017
+      main_weapon_id: weapon.sword
+    defender: &id018
+      skill_ids:
+      - skill.regeneration
+      defence_ids:
+      - defence.enchanted-skins
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    - key: test.special.regeneration
+      value: 4
+    expect:
+      result.saved: true
+      result.wounded: true
+      result.defender.wounds: 1
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id017
+    defender: *id018
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    - key: test.special.regeneration
+      value: 3
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.defender.condition: KNOCKED_DOWN
+      result.defender.wounds: 0
+  mutations:
+  - id: remove-regeneration
+    path: defender.global_effects.regeneration_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-defence.enchanted-skins--skill.regeneration-5-plus
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/defence.enchanted-skins
+    digest: 3d08915534aaa2db55aa808792d27ae4a50f51d807ad70e4fdacec786919ec67
+  - target: mechanic/skill.regeneration-5-plus
+    digest: 696041a7c52dce76d761c74874d2dd412453066e8bd914ac8ec2101690039e98
+  bindings:
+  - '{"id": "defence.enchanted-skins", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.regeneration-5-plus", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'regeneration 5 plus and enchanted skins compose a two-stage special save: the ward
+    (6+) is rolled first and the regeneration (5+) only when the ward fails.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id019
+      main_weapon_id: weapon.sword
+    defender: &id020
+      skill_ids:
+      - skill.regeneration-5-plus
+      defence_ids:
+      - defence.enchanted-skins
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    - key: test.special.regeneration
+      value: 5
+    expect:
+      result.saved: true
+      result.wounded: true
+      result.defender.wounds: 1
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id019
+    defender: *id020
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    - key: test.special.regeneration
+      value: 4
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.defender.condition: KNOCKED_DOWN
+      result.defender.wounds: 0
+  mutations:
+  - id: remove-regeneration
+    path: defender.global_effects.regeneration_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-defence.enchanted-skins--skill.step-aside
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/defence.enchanted-skins
+    digest: 3d08915534aaa2db55aa808792d27ae4a50f51d807ad70e4fdacec786919ec67
+  - target: mechanic/skill.step-aside
+    digest: 7d543001fc0b5b9a9361518b4ddeaf5a0f31d89b9ef071e6f5f7732590893d36
+  bindings:
+  - '{"id": "defence.enchanted-skins", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.step-aside", "kind": "mechanic", "parameters": {}}'
+  interpretation: step aside and enchanted skins both grant an unmodified ward save; the better 5+ applies
+    once.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id021
+      main_weapon_id: weapon.sword
+    defender: &id022
+      skill_ids:
+      - skill.step-aside
+      defence_ids:
+      - defence.enchanted-skins
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    expect:
+      result.saved: true
+      result.wounded: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id021
+    defender: *id022
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 4
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: remove-ward
+    path: defender.global_effects.step_aside
+    value: false
+    cases:
+    - composition
+- id: interaction-defence.enchanted-skins--special-rule.trained-bear--bear-hug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/defence.enchanted-skins
+    digest: 3d08915534aaa2db55aa808792d27ae4a50f51d807ad70e4fdacec786919ec67
+  - target: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
+    digest: 13deefeb497e8e1cc5c0f2f27763b987ec9d70b854f763ea9037d97ee0ecf326
+  bindings:
+  - '{"id": "defence.enchanted-skins", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "special-rule.trained-bear--bear-hug", "kind": "compiler", "parameters": {}}'
+  interpretation: 'The bear hug''s automatic wound is armour-ignored but still goes through the special-save
+    pipeline: enchanted skins''s ward (6+) can intercept it, and when it fails the hug wound applies.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: pool
+    attacker: *id012
+    defender: &id023
+      defence_ids:
+      - defence.enchanted-skins
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    - key: test.bear-hug.result.special.ward
+      value: 6
+    expect:
+      result.attacks.0.saved: true
+      result.attacks.0.wounded: true
+      result.defender.wounds: 3
+  - id: boundary-save-fails
+    roles:
+    - boundary
+    operation: pool
+    attacker: *id012
+    defender: *id023
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    - key: test.bear-hug.result.special.ward
+      value: 5
+    expect:
+      result.attacks.0.saved: false
+      result.defender.wounds: 2
+  mutations:
+  - id: remove-ward
+    path: defender.global_effects.ward_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-poison.bloodroot--skill.elven-agility
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/poison.bloodroot
+    digest: 3134964907d78b26d1da2eec50d04cf0a89261efa3764ebd5dc80c364181feb5
+  - target: mechanic/skill.elven-agility
+    digest: d93679b3fcae0b85de834c52422156e6f94458432e2818a13b79ea45d0e55f84
+  bindings:
+  - '{"id": "poison.bloodroot", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.elven-agility", "kind": "mechanic", "parameters": {}}'
+  interpretation: Bloodroot doubles the wound to 2; elven agility's ward (6+) intercepts the unsaved wound,
+    and when it fails the doubled damage drives the defender to zero Wounds and one Injury roll.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id024
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender: &id025
+      skill_ids:
+      - skill.elven-agility
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 6
+    expect:
+      result.saved: true
+      result.defender.wounds: 2
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id024
+    defender: *id025
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.damage: 2
+      result.defender.wounds: 0
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: remove-ward
+    path: defender.global_effects.ward_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-poison.bloodroot--skill.regeneration
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/poison.bloodroot
+    digest: 3134964907d78b26d1da2eec50d04cf0a89261efa3764ebd5dc80c364181feb5
+  - target: mechanic/skill.regeneration
+    digest: e62b1af731034d359dddd60508897a38dcb86fe9d387a19b23d1c2cb308a4a3b
+  bindings:
+  - '{"id": "poison.bloodroot", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.regeneration", "kind": "mechanic", "parameters": {}}'
+  interpretation: Bloodroot doubles the wound to 2; regeneration's regeneration (4+) intercepts the unsaved
+    wound, and when it fails the doubled damage drives the defender to zero Wounds and one Injury roll.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id026
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender: &id027
+      skill_ids:
+      - skill.regeneration
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.regeneration
+      value: 4
+    expect:
+      result.saved: true
+      result.defender.wounds: 2
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id026
+    defender: *id027
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.regeneration
+      value: 3
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.damage: 2
+      result.defender.wounds: 0
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: remove-regeneration
+    path: defender.global_effects.regeneration_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-poison.bloodroot--skill.regeneration-5-plus
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/poison.bloodroot
+    digest: 3134964907d78b26d1da2eec50d04cf0a89261efa3764ebd5dc80c364181feb5
+  - target: mechanic/skill.regeneration-5-plus
+    digest: 696041a7c52dce76d761c74874d2dd412453066e8bd914ac8ec2101690039e98
+  bindings:
+  - '{"id": "poison.bloodroot", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.regeneration-5-plus", "kind": "mechanic", "parameters": {}}'
+  interpretation: Bloodroot doubles the wound to 2; regeneration 5 plus's regeneration (5+) intercepts
+    the unsaved wound, and when it fails the doubled damage drives the defender to zero Wounds and one
+    Injury roll.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id028
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender: &id029
+      skill_ids:
+      - skill.regeneration-5-plus
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.regeneration
+      value: 5
+    expect:
+      result.saved: true
+      result.defender.wounds: 2
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id028
+    defender: *id029
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.regeneration
+      value: 4
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.damage: 2
+      result.defender.wounds: 0
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: remove-regeneration
+    path: defender.global_effects.regeneration_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-poison.bloodroot--skill.step-aside
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/poison.bloodroot
+    digest: 3134964907d78b26d1da2eec50d04cf0a89261efa3764ebd5dc80c364181feb5
+  - target: mechanic/skill.step-aside
+    digest: 7d543001fc0b5b9a9361518b4ddeaf5a0f31d89b9ef071e6f5f7732590893d36
+  bindings:
+  - '{"id": "poison.bloodroot", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.step-aside", "kind": "mechanic", "parameters": {}}'
+  interpretation: Bloodroot doubles the wound to 2; step aside's ward (5+) intercepts the unsaved wound,
+    and when it fails the doubled damage drives the defender to zero Wounds and one Injury roll.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id030
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.bloodroot
+    defender: &id031
+      skill_ids:
+      - skill.step-aside
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    expect:
+      result.saved: true
+      result.defender.wounds: 2
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id030
+    defender: *id031
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 4
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.damage: 2
+      result.defender.wounds: 0
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: remove-ward
+    path: defender.global_effects.step_aside
+    value: false
+    cases:
+    - composition
+- id: interaction-poison.bloodroot--special-rule.trained-bear--bear-hug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/poison.bloodroot
+    digest: 3134964907d78b26d1da2eec50d04cf0a89261efa3764ebd5dc80c364181feb5
+  - target: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
+    digest: 13deefeb497e8e1cc5c0f2f27763b987ec9d70b854f763ea9037d97ee0ecf326
+  bindings:
+  - '{"id": "poison.bloodroot", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "special-rule.trained-bear--bear-hug", "kind": "compiler", "parameters": {}}'
+  interpretation: Bloodroot doubles wounds caused by ordinary attacks; a chosen bear hug is its own automatic
+    wound (fixed damage 1), so the poison only doubles damage when the hug is declined and the original
+    attacks resolve.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: pool
+    attacker: &id032
+      band_id: kislevites
+      profile_id: trained-bear
+      main_poison_id: poison.bloodroot
+    defender: &id033
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    expect:
+      result.attacks.0.damage: 1
+      result.defender.wounds: 2
+  - id: boundary-declined
+    roles:
+    - boundary
+    operation: pool
+    attacker: *id032
+    defender: *id033
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: false
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.0.wound
+      value: 1
+    - key: test.attack.1.wound
+      value: 2
+    expect:
+      result.attacks.1.damage: 2
+      result.defender.wounds: 1
+  mutations:
+  - id: remove-bloodroot-damage
+    path: attacker.main_weapon.damage
+    value: 1
+    cases:
+    - boundary-declined
+- id: interaction-skill.elven-agility--skill.regeneration
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.elven-agility
+    digest: d93679b3fcae0b85de834c52422156e6f94458432e2818a13b79ea45d0e55f84
+  - target: mechanic/skill.regeneration
+    digest: e62b1af731034d359dddd60508897a38dcb86fe9d387a19b23d1c2cb308a4a3b
+  bindings:
+  - '{"id": "skill.elven-agility", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.regeneration", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'elven agility and regeneration compose a two-stage special save: the ward (6+) is rolled
+    first and the regeneration (4+) only when the ward fails.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id034
+      main_weapon_id: weapon.sword
+    defender: &id035
+      skill_ids:
+      - skill.elven-agility
+      - skill.regeneration
+      defence_ids: []
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    - key: test.special.regeneration
+      value: 4
+    expect:
+      result.saved: true
+      result.wounded: true
+      result.defender.wounds: 1
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id034
+    defender: *id035
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    - key: test.special.regeneration
+      value: 3
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.defender.condition: KNOCKED_DOWN
+      result.defender.wounds: 0
+  mutations:
+  - id: remove-regeneration
+    path: defender.global_effects.regeneration_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-skill.elven-agility--skill.regeneration-5-plus
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.elven-agility
+    digest: d93679b3fcae0b85de834c52422156e6f94458432e2818a13b79ea45d0e55f84
+  - target: mechanic/skill.regeneration-5-plus
+    digest: 696041a7c52dce76d761c74874d2dd412453066e8bd914ac8ec2101690039e98
+  bindings:
+  - '{"id": "skill.elven-agility", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.regeneration-5-plus", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'elven agility and regeneration 5 plus compose a two-stage special save: the ward (6+)
+    is rolled first and the regeneration (5+) only when the ward fails.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id036
+      main_weapon_id: weapon.sword
+    defender: &id037
+      skill_ids:
+      - skill.elven-agility
+      - skill.regeneration-5-plus
+      defence_ids: []
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    - key: test.special.regeneration
+      value: 5
+    expect:
+      result.saved: true
+      result.wounded: true
+      result.defender.wounds: 1
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id036
+    defender: *id037
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    - key: test.special.regeneration
+      value: 4
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.defender.condition: KNOCKED_DOWN
+      result.defender.wounds: 0
+  mutations:
+  - id: remove-regeneration
+    path: defender.global_effects.regeneration_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-skill.elven-agility--special-rule.trained-bear--bear-hug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.elven-agility
+    digest: d93679b3fcae0b85de834c52422156e6f94458432e2818a13b79ea45d0e55f84
+  - target: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
+    digest: 13deefeb497e8e1cc5c0f2f27763b987ec9d70b854f763ea9037d97ee0ecf326
+  bindings:
+  - '{"id": "skill.elven-agility", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "special-rule.trained-bear--bear-hug", "kind": "compiler", "parameters": {}}'
+  interpretation: 'The bear hug''s automatic wound is armour-ignored but still goes through the special-save
+    pipeline: elven agility''s ward (6+) can intercept it, and when it fails the hug wound applies.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: pool
+    attacker: *id012
+    defender: &id038
+      skill_ids:
+      - skill.elven-agility
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    - key: test.bear-hug.result.special.ward
+      value: 6
+    expect:
+      result.attacks.0.saved: true
+      result.attacks.0.wounded: true
+      result.defender.wounds: 3
+  - id: boundary-save-fails
+    roles:
+    - boundary
+    operation: pool
+    attacker: *id012
+    defender: *id038
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    - key: test.bear-hug.result.special.ward
+      value: 5
+    expect:
+      result.attacks.0.saved: false
+      result.defender.wounds: 2
+  mutations:
+  - id: remove-ward
+    path: defender.global_effects.ward_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-skill.regeneration--skill.regeneration-5-plus
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.regeneration
+    digest: e62b1af731034d359dddd60508897a38dcb86fe9d387a19b23d1c2cb308a4a3b
+  - target: mechanic/skill.regeneration-5-plus
+    digest: 696041a7c52dce76d761c74874d2dd412453066e8bd914ac8ec2101690039e98
+  bindings:
+  - '{"id": "skill.regeneration", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.regeneration-5-plus", "kind": "mechanic", "parameters": {}}'
+  interpretation: regeneration and regeneration 5 plus compose one regeneration save; the best 4+ applies
+    once.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id039
+      main_weapon_id: weapon.sword
+    defender: &id040
+      skill_ids:
+      - skill.regeneration
+      - skill.regeneration-5-plus
+      defence_ids: []
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.regeneration
+      value: 4
+    expect:
+      result.saved: true
+      result.wounded: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id039
+    defender: *id040
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.regeneration
+      value: 3
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.defender.condition: KNOCKED_DOWN
+  mutations:
+  - id: remove-regeneration
+    path: defender.global_effects.regeneration_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-skill.regeneration--skill.step-aside
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.regeneration
+    digest: e62b1af731034d359dddd60508897a38dcb86fe9d387a19b23d1c2cb308a4a3b
+  - target: mechanic/skill.step-aside
+    digest: 7d543001fc0b5b9a9361518b4ddeaf5a0f31d89b9ef071e6f5f7732590893d36
+  bindings:
+  - '{"id": "skill.regeneration", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.step-aside", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'regeneration and step aside compose a two-stage special save: the ward (5+) is rolled
+    first and the regeneration (4+) only when the ward fails.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attack
+    attacker: &id041
+      main_weapon_id: weapon.sword
+    defender: &id042
+      skill_ids:
+      - skill.regeneration
+      - skill.step-aside
+      defence_ids: []
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 4
+    - key: test.special.regeneration
+      value: 4
+    expect:
+      result.saved: true
+      result.wounded: true
+      result.defender.wounds: 1
+  - id: boundary
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id041
+    defender: *id042
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 4
+    - key: test.special.regeneration
+      value: 3
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.saved: false
+      result.defender.condition: KNOCKED_DOWN
+      result.defender.wounds: 0
+  mutations:
+  - id: remove-regeneration
+    path: defender.global_effects.regeneration_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-skill.regeneration--special-rule.trained-bear--bear-hug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.regeneration
+    digest: e62b1af731034d359dddd60508897a38dcb86fe9d387a19b23d1c2cb308a4a3b
+  - target: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
+    digest: 13deefeb497e8e1cc5c0f2f27763b987ec9d70b854f763ea9037d97ee0ecf326
+  bindings:
+  - '{"id": "skill.regeneration", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "special-rule.trained-bear--bear-hug", "kind": "compiler", "parameters": {}}'
+  interpretation: 'The bear hug''s automatic wound is armour-ignored but still goes through the special-save
+    pipeline: regeneration''s regeneration (4+) can intercept it, and when it fails the hug wound applies.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: pool
+    attacker: *id012
+    defender: &id043
+      skill_ids:
+      - skill.regeneration
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    - key: test.bear-hug.result.special.regeneration
+      value: 4
+    expect:
+      result.attacks.0.saved: true
+      result.attacks.0.wounded: true
+      result.defender.wounds: 3
+  - id: boundary-save-fails
+    roles:
+    - boundary
+    operation: pool
+    attacker: *id012
+    defender: *id043
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    - key: test.bear-hug.result.special.regeneration
+      value: 3
+    expect:
+      result.attacks.0.saved: false
+      result.defender.wounds: 2
+  mutations:
+  - id: remove-regeneration
+    path: defender.global_effects.regeneration_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-skill.regeneration-5-plus--special-rule.trained-bear--bear-hug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.regeneration-5-plus
+    digest: 696041a7c52dce76d761c74874d2dd412453066e8bd914ac8ec2101690039e98
+  - target: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
+    digest: 13deefeb497e8e1cc5c0f2f27763b987ec9d70b854f763ea9037d97ee0ecf326
+  bindings:
+  - '{"id": "skill.regeneration-5-plus", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "special-rule.trained-bear--bear-hug", "kind": "compiler", "parameters": {}}'
+  interpretation: 'The bear hug''s automatic wound is armour-ignored but still goes through the special-save
+    pipeline: regeneration 5 plus''s regeneration (5+) can intercept it, and when it fails the hug wound
+    applies.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: pool
+    attacker: *id012
+    defender: &id044
+      skill_ids:
+      - skill.regeneration-5-plus
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    - key: test.bear-hug.result.special.regeneration
+      value: 5
+    expect:
+      result.attacks.0.saved: true
+      result.attacks.0.wounded: true
+      result.defender.wounds: 3
+  - id: boundary-save-fails
+    roles:
+    - boundary
+    operation: pool
+    attacker: *id012
+    defender: *id044
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    - key: test.bear-hug.result.special.regeneration
+      value: 4
+    expect:
+      result.attacks.0.saved: false
+      result.defender.wounds: 2
+  mutations:
+  - id: remove-regeneration
+    path: defender.global_effects.regeneration_save
+    value: 7
+    cases:
+    - composition
+- id: interaction-skill.step-aside--special-rule.trained-bear--bear-hug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.step-aside
+    digest: 7d543001fc0b5b9a9361518b4ddeaf5a0f31d89b9ef071e6f5f7732590893d36
+  - target: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
+    digest: 13deefeb497e8e1cc5c0f2f27763b987ec9d70b854f763ea9037d97ee0ecf326
+  bindings:
+  - '{"id": "skill.step-aside", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "special-rule.trained-bear--bear-hug", "kind": "compiler", "parameters": {}}'
+  interpretation: 'The bear hug''s automatic wound is armour-ignored but still goes through the special-save
+    pipeline: step aside''s ward (5+) can intercept it, and when it fails the hug wound applies.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: pool
+    attacker: *id012
+    defender: &id045
+      skill_ids:
+      - skill.step-aside
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    - key: test.bear-hug.result.special.ward
+      value: 5
+    expect:
+      result.attacks.0.saved: true
+      result.attacks.0.wounded: true
+      result.defender.wounds: 3
+  - id: boundary-save-fails
+    roles:
+    - boundary
+    operation: pool
+    attacker: *id012
+    defender: *id045
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    - key: test.bear-hug.result.special.ward
+      value: 4
+    expect:
+      result.attacks.0.saved: false
+      result.defender.wounds: 2
+  mutations:
+  - id: remove-ward
+    path: defender.global_effects.step_aside
+    value: false
+    cases:
+    - composition

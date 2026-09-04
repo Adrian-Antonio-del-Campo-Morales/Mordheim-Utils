@@ -1,0 +1,601 @@
+schema_version: 1
+specifications:
+- id: interaction-combat-two-weapons--skill.extra-attack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-two-weapons
+    digest: e290594d3c6ecf49bf33cc116ac8663f5f8e293bfb69699379c899634097c87b
+  - target: mechanic/skill.extra-attack
+    digest: 82f5c464d737753aff836db387a8150b196246c320cb13b4e388269bb6f6567f
+  bindings:
+  - '{"id": "combat-two-weapons", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.extra-attack", "kind": "mechanic", "parameters": {}}'
+  interpretation: Two one-handed weapons grant one extra Attack after other modifiers; Extra Attack adds
+    one more, composing to 3.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker: &id001
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      skill_ids:
+      - skill.extra-attack
+    expect:
+      result.attacks: 3
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id001
+    context:
+      attack_penalty: 1
+    expect:
+      result.attacks: 2
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.off_hand_attacks
+    value: false
+    cases:
+    - composition
+- id: interaction-combat-two-weapons--skill.ferocious-charge
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-two-weapons
+    digest: e290594d3c6ecf49bf33cc116ac8663f5f8e293bfb69699379c899634097c87b
+  - target: mechanic/skill.ferocious-charge
+    digest: d0e9cbebc4255ae4a5f8c7c76ad78ab3997fc6399a6aeef8c68be1ff4787c44d
+  bindings:
+  - '{"id": "combat-two-weapons", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.ferocious-charge", "kind": "mechanic", "parameters": {}}'
+  interpretation: Ferocious Charge doubles Attacks while charging and the two-weapon bonus is added after
+    that doubling.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker: &id002
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      skill_ids:
+      - skill.ferocious-charge
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.attacks: 3
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id002
+    context:
+      first_round: true
+    expect:
+      result.attacks: 2
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-combat-two-weapons--skill.red-fury
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-two-weapons
+    digest: e290594d3c6ecf49bf33cc116ac8663f5f8e293bfb69699379c899634097c87b
+  - target: mechanic/skill.red-fury
+    digest: d4b1b8b2ca2be4cf877d9356bfe88f2ad47533521760dc347185fd43c7270aba
+  bindings:
+  - '{"id": "combat-two-weapons", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.red-fury", "kind": "mechanic", "parameters": {}}'
+  interpretation: Red Fury adds one Attack; the two-weapon bonus adds one more.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker: &id003
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      skill_ids:
+      - skill.red-fury
+    expect:
+      result.attacks: 3
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id003
+    context:
+      attack_penalty: 1
+    expect:
+      result.attacks: 2
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.global_effects.attacks_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-combat-two-weapons--skill.unarmed-fighting
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-two-weapons
+    digest: e290594d3c6ecf49bf33cc116ac8663f5f8e293bfb69699379c899634097c87b
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  bindings:
+  - '{"id": "combat-two-weapons", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  interpretation: Unarmed Fighting only adds an Attack while fighting unarmed; with two swords the two-weapon
+    bonus is the only addition.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker: &id004
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      skill_ids:
+      - skill.unarmed-fighting
+    expect:
+      result.attacks: 2
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id004
+    context:
+      attack_penalty: 1
+    expect:
+      result.attacks: 1
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.off_hand_attacks
+    value: false
+    cases:
+    - composition
+- id: interaction-combat-two-weapons--weapon.vomit-attack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-two-weapons
+    digest: e290594d3c6ecf49bf33cc116ac8663f5f8e293bfb69699379c899634097c87b
+  - target: mechanic/weapon.vomit-attack
+    digest: 8851f0660b1daee1f542f6aff22cee6329bdc5365e9597a12080df4e7c84b5e5
+  bindings:
+  - '{"id": "combat-two-weapons", "kind": "core", "parameters": {}}'
+  - '{"id": "weapon.vomit-attack", "kind": "mechanic", "parameters": {}}'
+  interpretation: Vomit Attack replaces every normal attack with exactly one, overriding the two-weapon
+    bonus.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker: &id005
+      main_weapon_id: weapon.vomit-attack
+      off_hand_id: weapon.dagger
+    expect:
+      result.attacks: 1
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id005
+    context:
+      base_attacks: 4
+    expect:
+      result.attacks: 1
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.main_weapon.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.extra-attack--skill.ferocious-charge
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.extra-attack
+    digest: 82f5c464d737753aff836db387a8150b196246c320cb13b4e388269bb6f6567f
+  - target: mechanic/skill.ferocious-charge
+    digest: d0e9cbebc4255ae4a5f8c7c76ad78ab3997fc6399a6aeef8c68be1ff4787c44d
+  bindings:
+  - '{"id": "skill.extra-attack", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.ferocious-charge", "kind": "mechanic", "parameters": {}}'
+  interpretation: Extra Attack and Ferocious Charge compose multiplicatively while charging.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker: &id006
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.extra-attack
+      - skill.ferocious-charge
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.attacks: 4
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id006
+    context:
+      first_round: true
+    expect:
+      result.attacks: 2
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.global_effects.attacks_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-skill.extra-attack--skill.red-fury
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.extra-attack
+    digest: 82f5c464d737753aff836db387a8150b196246c320cb13b4e388269bb6f6567f
+  - target: mechanic/skill.red-fury
+    digest: d4b1b8b2ca2be4cf877d9356bfe88f2ad47533521760dc347185fd43c7270aba
+  bindings:
+  - '{"id": "skill.extra-attack", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.red-fury", "kind": "mechanic", "parameters": {}}'
+  interpretation: Extra Attack and Red Fury each add one Attack.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker: &id007
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.extra-attack
+      - skill.red-fury
+    expect:
+      result.attacks: 3
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id007
+    context:
+      attack_penalty: 1
+    expect:
+      result.attacks: 2
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.global_effects.attacks_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-skill.extra-attack--skill.unarmed-fighting
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.extra-attack
+    digest: 82f5c464d737753aff836db387a8150b196246c320cb13b4e388269bb6f6567f
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  bindings:
+  - '{"id": "skill.extra-attack", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  interpretation: Unarmed Fighting's +1 Attack with the fist composes with Extra Attack's profile bonus.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker: &id008
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.extra-attack
+      - skill.unarmed-fighting
+    expect:
+      result.attacks: 3
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id008
+    context:
+      attack_penalty: 1
+    expect:
+      result.attacks: 2
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.extra-attack--weapon.vomit-attack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.extra-attack
+    digest: 82f5c464d737753aff836db387a8150b196246c320cb13b4e388269bb6f6567f
+  - target: mechanic/weapon.vomit-attack
+    digest: 8851f0660b1daee1f542f6aff22cee6329bdc5365e9597a12080df4e7c84b5e5
+  bindings:
+  - '{"id": "skill.extra-attack", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.vomit-attack", "kind": "mechanic", "parameters": {}}'
+  interpretation: Vomit replaces all attacks; Extra Attack's bonus is consumed by the replacement.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker: &id009
+      main_weapon_id: weapon.vomit-attack
+      skill_ids:
+      - skill.extra-attack
+    expect:
+      result.attacks: 1
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id009
+    context:
+      base_attacks: 4
+    expect:
+      result.attacks: 1
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.main_weapon.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.ferocious-charge--skill.red-fury
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.ferocious-charge
+    digest: d0e9cbebc4255ae4a5f8c7c76ad78ab3997fc6399a6aeef8c68be1ff4787c44d
+  - target: mechanic/skill.red-fury
+    digest: d4b1b8b2ca2be4cf877d9356bfe88f2ad47533521760dc347185fd43c7270aba
+  bindings:
+  - '{"id": "skill.ferocious-charge", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.red-fury", "kind": "mechanic", "parameters": {}}'
+  interpretation: Red Fury's +1 Attack is doubled by Ferocious Charge while charging.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker: &id010
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.ferocious-charge
+      - skill.red-fury
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.attacks: 4
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id010
+    context:
+      first_round: true
+    expect:
+      result.attacks: 2
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.global_effects.attacks_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-skill.ferocious-charge--skill.unarmed-fighting
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.ferocious-charge
+    digest: d0e9cbebc4255ae4a5f8c7c76ad78ab3997fc6399a6aeef8c68be1ff4787c44d
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  bindings:
+  - '{"id": "skill.ferocious-charge", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  interpretation: Unarmed Fighting's +1 Attack with the fist is doubled by Ferocious Charge.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker: &id011
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.ferocious-charge
+      - skill.unarmed-fighting
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.attacks: 4
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id011
+    context:
+      first_round: true
+    expect:
+      result.attacks: 2
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.ferocious-charge--weapon.vomit-attack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.ferocious-charge
+    digest: d0e9cbebc4255ae4a5f8c7c76ad78ab3997fc6399a6aeef8c68be1ff4787c44d
+  - target: mechanic/weapon.vomit-attack
+    digest: 8851f0660b1daee1f542f6aff22cee6329bdc5365e9597a12080df4e7c84b5e5
+  bindings:
+  - '{"id": "skill.ferocious-charge", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.vomit-attack", "kind": "mechanic", "parameters": {}}'
+  interpretation: Vomit replaces all attacks even during a Ferocious Charge.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker: &id012
+      main_weapon_id: weapon.vomit-attack
+      skill_ids:
+      - skill.ferocious-charge
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.attacks: 1
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id012
+    context:
+      base_attacks: 4
+    expect:
+      result.attacks: 1
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.main_weapon.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.red-fury--skill.unarmed-fighting
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.red-fury
+    digest: d4b1b8b2ca2be4cf877d9356bfe88f2ad47533521760dc347185fd43c7270aba
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  bindings:
+  - '{"id": "skill.red-fury", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  interpretation: Unarmed Fighting's +1 Attack with the fist composes with Red Fury's profile bonus.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker: &id013
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.red-fury
+      - skill.unarmed-fighting
+    expect:
+      result.attacks: 3
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id013
+    context:
+      attack_penalty: 1
+    expect:
+      result.attacks: 2
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.red-fury--weapon.vomit-attack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.red-fury
+    digest: d4b1b8b2ca2be4cf877d9356bfe88f2ad47533521760dc347185fd43c7270aba
+  - target: mechanic/weapon.vomit-attack
+    digest: 8851f0660b1daee1f542f6aff22cee6329bdc5365e9597a12080df4e7c84b5e5
+  bindings:
+  - '{"id": "skill.red-fury", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.vomit-attack", "kind": "mechanic", "parameters": {}}'
+  interpretation: Vomit replaces all attacks; Red Fury's bonus is consumed by the replacement.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: attacks
+    attacker: &id014
+      main_weapon_id: weapon.vomit-attack
+      skill_ids:
+      - skill.red-fury
+    expect:
+      result.attacks: 1
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id014
+    context:
+      base_attacks: 4
+    expect:
+      result.attacks: 1
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.main_weapon.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.unarmed-fighting--weapon.vomit-attack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  - target: mechanic/weapon.vomit-attack
+    digest: 8851f0660b1daee1f542f6aff22cee6329bdc5365e9597a12080df4e7c84b5e5
+  bindings:
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.vomit-attack", "kind": "mechanic", "parameters": {}}'
+  interpretation: Vomit replaces all attacks (fixed Strength 5) even for an Unarmed Fighting warrior.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: strength
+    attacker: &id015
+      main_weapon_id: weapon.vomit-attack
+      skill_ids:
+      - skill.unarmed-fighting
+    expect:
+      result.wound: 5
+      result.armour: 5
+  - id: boundary
+    roles:
+    - boundary
+    operation: attacks
+    attacker: *id015
+    context:
+      base_attacks: 4
+    expect:
+      result.attacks: 1
+  mutations:
+  - id: remove-composed-attack
+    path: attacker.main_weapon.fixed_strength
+    value: 4
+    cases:
+    - composition

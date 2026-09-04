@@ -1,0 +1,2659 @@
+schema_version: 1
+specifications:
+- id: interaction-armour.gromril-armour--material.gromril
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.gromril-armour
+    digest: 2281c24195e9907aef633f3d3f3668c9af6cfe078b7f34a18f0e5a10cc7953ef
+  - target: mechanic/material.gromril
+    digest: e7dd5d61e2f8e547890471309390d16ddbb8346753e64efc6241fcaba00aa5c4
+  bindings:
+  - '{"id": "armour.gromril-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "material.gromril", "kind": "mechanic", "parameters": {}}'
+  interpretation: gromril armour saves on 4+; gromril composes the armour target to 4 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id001
+      main_weapon_id: weapon.sword
+      main_material_id: material.gromril
+    defender: &id002
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id001
+    defender: *id002
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 5
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - boundary
+- id: interaction-armour.gromril-armour--skill.unarmed-fighting
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.gromril-armour
+    digest: 2281c24195e9907aef633f3d3f3668c9af6cfe078b7f34a18f0e5a10cc7953ef
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  bindings:
+  - '{"id": "armour.gromril-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  interpretation: gromril armour saves on 4+; unarmed fighting composes the armour target to 4 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id003
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+    defender: &id004
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id003
+    defender: *id004
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-unarmed-skill
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - boundary
+- id: interaction-armour.gromril-armour--special-rule.trained-bear--bear-hug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.no-armour
+    digest: ec03523647acce576db9b07c4f7e92942ce4d77a0755e931647d3a386b6350ea
+  - target: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
+    digest: 13deefeb497e8e1cc5c0f2f27763b987ec9d70b854f763ea9037d97ee0ecf326
+  bindings:
+  - '{"id": "armour.gromril-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "special-rule.trained-bear--bear-hug", "kind": "compiler", "parameters": {}}'
+  interpretation: 'A bear hug that wins its opposed roll inflicts one automatic wound that forbids armour:
+    gromril armour is not allowed to save. A broken hold deals no damage.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: pool
+    attacker: &id005
+      band_id: kislevites
+      profile_id: trained-bear
+    defender: &id006
+      armour_id: armour.gromril-armour
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    expect:
+      result.attacks.0.damage: 1
+      result.attacks.0.saved: false
+      result.defender.wounds: 2
+  - id: boundary-hold-broken
+    roles:
+    - boundary
+    operation: pool
+    attacker: *id005
+    defender: *id006
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 1
+    - key: test.bear-hug.defender
+      value: 6
+    expect:
+      result.attacks: []
+      result.defender.wounds: 3
+  mutations:
+  - id: remove-hug
+    path: attacker.global_effects.bear_hug
+    value: false
+    cases:
+    - composition
+- id: interaction-armour.gromril-armour--weapon.axe
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.gromril-armour
+    digest: 2281c24195e9907aef633f3d3f3668c9af6cfe078b7f34a18f0e5a10cc7953ef
+  - target: mechanic/weapon.axe
+    digest: 331fe535d241616ebe9c23e0b6084bf29105b5799abb42da5217032862efec81
+  bindings:
+  - '{"id": "armour.gromril-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: gromril armour saves on 4+; axe composes the armour target to 4 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id007
+      main_weapon_id: weapon.axe
+    defender: &id008
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id007
+    defender: *id008
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 5
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - boundary
+- id: interaction-armour.gromril-armour--weapon.dagger
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.gromril-armour
+    digest: 2281c24195e9907aef633f3d3f3668c9af6cfe078b7f34a18f0e5a10cc7953ef
+  - target: mechanic/weapon.dagger
+    digest: da875a2d1f4c5cfe74dc4c74a0191eff6b4af9a8f88194088a47ce7be79b5046
+  bindings:
+  - '{"id": "armour.gromril-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.dagger", "kind": "mechanic", "parameters": {}}'
+  interpretation: gromril armour saves on 4+; dagger composes the armour target to 4 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id009
+      main_weapon_id: weapon.dagger
+    defender: &id010
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 3
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id009
+    defender: *id010
+    rolls:
+    - key: armour
+      value: 2
+    expect:
+      result.target: 3
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-save-bonus
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-armour.gromril-armour--weapon.katar
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.gromril-armour
+    digest: 2281c24195e9907aef633f3d3f3668c9af6cfe078b7f34a18f0e5a10cc7953ef
+  - target: mechanic/weapon.katar
+    digest: f29fd952be27eff95e8595a27bd1e17d814b7684bb3c6382443d183543dbfdb9
+  bindings:
+  - '{"id": "armour.gromril-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.katar", "kind": "mechanic", "parameters": {}}'
+  interpretation: gromril armour saves on 4+; katar composes the armour target to 4 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id011
+      main_weapon_id: weapon.katar
+    defender: &id012
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id011
+    defender: *id012
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 5
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - boundary
+- id: interaction-armour.gromril-armour--weapon.vomit-attack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.gromril-armour
+    digest: 2281c24195e9907aef633f3d3f3668c9af6cfe078b7f34a18f0e5a10cc7953ef
+  - target: mechanic/weapon.vomit-attack
+    digest: 8851f0660b1daee1f542f6aff22cee6329bdc5365e9597a12080df4e7c84b5e5
+  bindings:
+  - '{"id": "armour.gromril-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.vomit-attack", "kind": "mechanic", "parameters": {}}'
+  interpretation: Vomit Attack is one automatic Strength 5 hit that ignores armour saves, so gromril armour
+    grants no save and requests no armour die; an unsaved wound still applies normally.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id013
+      main_weapon_id: weapon.vomit-attack
+    defender: &id014
+      armour_id: armour.gromril-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  - id: boundary-pipeline
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id013
+    defender: *id014
+    rolls:
+    - key: test.wound
+      value: 2
+    expect:
+      result.hit: true
+      result.wounded: true
+      result.saved: false
+      result.defender.wounds: 2
+  mutations:
+  - id: drop-vomit-strength
+    path: attacker.main_weapon.fixed_strength
+    value: 4
+    cases:
+    - boundary-pipeline
+- id: interaction-armour.gromril-armour--weapon.yambiya
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.gromril-armour
+    digest: 2281c24195e9907aef633f3d3f3668c9af6cfe078b7f34a18f0e5a10cc7953ef
+  - target: mechanic/weapon.yambiya
+    digest: 3ea6ae8dd67f08bb811eef6ba0e2506ef14c5df892c7069078d219999606418d
+  bindings:
+  - '{"id": "armour.gromril-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.yambiya", "kind": "mechanic", "parameters": {}}'
+  interpretation: gromril armour saves on 4+; yambiya composes the armour target to 4 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id015
+      main_weapon_id: weapon.yambiya
+    defender: &id016
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 3
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id015
+    defender: *id016
+    rolls:
+    - key: armour
+      value: 2
+    expect:
+      result.target: 3
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-save-bonus
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-armour.heavy-armour--material.gromril
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.heavy-armour
+    digest: cdb2aab2fe4f44f635403eafa8b5915cf3b388c725ddce9f1f0a5f8028ecb2d4
+  - target: mechanic/material.gromril
+    digest: e7dd5d61e2f8e547890471309390d16ddbb8346753e64efc6241fcaba00aa5c4
+  bindings:
+  - '{"id": "armour.heavy-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "material.gromril", "kind": "mechanic", "parameters": {}}'
+  interpretation: heavy armour saves on 5+; gromril composes the armour target to 5 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id017
+      main_weapon_id: weapon.sword
+      main_material_id: material.gromril
+    defender: &id018
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id017
+    defender: *id018
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - boundary
+- id: interaction-armour.heavy-armour--skill.unarmed-fighting
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.heavy-armour
+    digest: cdb2aab2fe4f44f635403eafa8b5915cf3b388c725ddce9f1f0a5f8028ecb2d4
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  bindings:
+  - '{"id": "armour.heavy-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  interpretation: heavy armour saves on 5+; unarmed fighting composes the armour target to 5 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id019
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+    defender: &id020
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id019
+    defender: *id020
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 5
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-unarmed-skill
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - boundary
+- id: interaction-armour.heavy-armour--special-rule.trained-bear--bear-hug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.no-armour
+    digest: ec03523647acce576db9b07c4f7e92942ce4d77a0755e931647d3a386b6350ea
+  - target: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
+    digest: 13deefeb497e8e1cc5c0f2f27763b987ec9d70b854f763ea9037d97ee0ecf326
+  bindings:
+  - '{"id": "armour.heavy-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "special-rule.trained-bear--bear-hug", "kind": "compiler", "parameters": {}}'
+  interpretation: 'A bear hug that wins its opposed roll inflicts one automatic wound that forbids armour:
+    heavy armour is not allowed to save. A broken hold deals no damage.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: pool
+    attacker: *id005
+    defender: &id021
+      armour_id: armour.heavy-armour
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    expect:
+      result.attacks.0.damage: 1
+      result.attacks.0.saved: false
+      result.defender.wounds: 2
+  - id: boundary-hold-broken
+    roles:
+    - boundary
+    operation: pool
+    attacker: *id005
+    defender: *id021
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 1
+    - key: test.bear-hug.defender
+      value: 6
+    expect:
+      result.attacks: []
+      result.defender.wounds: 3
+  mutations:
+  - id: remove-hug
+    path: attacker.global_effects.bear_hug
+    value: false
+    cases:
+    - composition
+- id: interaction-armour.heavy-armour--weapon.axe
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.heavy-armour
+    digest: cdb2aab2fe4f44f635403eafa8b5915cf3b388c725ddce9f1f0a5f8028ecb2d4
+  - target: mechanic/weapon.axe
+    digest: 331fe535d241616ebe9c23e0b6084bf29105b5799abb42da5217032862efec81
+  bindings:
+  - '{"id": "armour.heavy-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: heavy armour saves on 5+; axe composes the armour target to 5 plus Strength-based modifier,
+    penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id022
+      main_weapon_id: weapon.axe
+    defender: &id023
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id022
+    defender: *id023
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - boundary
+- id: interaction-armour.heavy-armour--weapon.dagger
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.heavy-armour
+    digest: cdb2aab2fe4f44f635403eafa8b5915cf3b388c725ddce9f1f0a5f8028ecb2d4
+  - target: mechanic/weapon.dagger
+    digest: da875a2d1f4c5cfe74dc4c74a0191eff6b4af9a8f88194088a47ce7be79b5046
+  bindings:
+  - '{"id": "armour.heavy-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.dagger", "kind": "mechanic", "parameters": {}}'
+  interpretation: heavy armour saves on 5+; dagger composes the armour target to 5 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id024
+      main_weapon_id: weapon.dagger
+    defender: &id025
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id024
+    defender: *id025
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-save-bonus
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-armour.heavy-armour--weapon.katar
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.heavy-armour
+    digest: cdb2aab2fe4f44f635403eafa8b5915cf3b388c725ddce9f1f0a5f8028ecb2d4
+  - target: mechanic/weapon.katar
+    digest: f29fd952be27eff95e8595a27bd1e17d814b7684bb3c6382443d183543dbfdb9
+  bindings:
+  - '{"id": "armour.heavy-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.katar", "kind": "mechanic", "parameters": {}}'
+  interpretation: heavy armour saves on 5+; katar composes the armour target to 5 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id026
+      main_weapon_id: weapon.katar
+    defender: &id027
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id026
+    defender: *id027
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - boundary
+- id: interaction-armour.heavy-armour--weapon.vomit-attack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.heavy-armour
+    digest: cdb2aab2fe4f44f635403eafa8b5915cf3b388c725ddce9f1f0a5f8028ecb2d4
+  - target: mechanic/weapon.vomit-attack
+    digest: 8851f0660b1daee1f542f6aff22cee6329bdc5365e9597a12080df4e7c84b5e5
+  bindings:
+  - '{"id": "armour.heavy-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.vomit-attack", "kind": "mechanic", "parameters": {}}'
+  interpretation: Vomit Attack is one automatic Strength 5 hit that ignores armour saves, so heavy armour
+    grants no save and requests no armour die; an unsaved wound still applies normally.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id028
+      main_weapon_id: weapon.vomit-attack
+    defender: &id029
+      armour_id: armour.heavy-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  - id: boundary-pipeline
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id028
+    defender: *id029
+    rolls:
+    - key: test.wound
+      value: 2
+    expect:
+      result.hit: true
+      result.wounded: true
+      result.saved: false
+      result.defender.wounds: 2
+  mutations:
+  - id: drop-vomit-strength
+    path: attacker.main_weapon.fixed_strength
+    value: 4
+    cases:
+    - boundary-pipeline
+- id: interaction-armour.heavy-armour--weapon.yambiya
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.heavy-armour
+    digest: cdb2aab2fe4f44f635403eafa8b5915cf3b388c725ddce9f1f0a5f8028ecb2d4
+  - target: mechanic/weapon.yambiya
+    digest: 3ea6ae8dd67f08bb811eef6ba0e2506ef14c5df892c7069078d219999606418d
+  bindings:
+  - '{"id": "armour.heavy-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.yambiya", "kind": "mechanic", "parameters": {}}'
+  interpretation: heavy armour saves on 5+; yambiya composes the armour target to 5 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id030
+      main_weapon_id: weapon.yambiya
+    defender: &id031
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id030
+    defender: *id031
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-save-bonus
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-armour.ithilmar-armour--material.gromril
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.ithilmar-armour
+    digest: ac9b7eb54b506df8b147fbb9e560d4555139e7b8beb958427e373ab63208f1fb
+  - target: mechanic/material.gromril
+    digest: e7dd5d61e2f8e547890471309390d16ddbb8346753e64efc6241fcaba00aa5c4
+  bindings:
+  - '{"id": "armour.ithilmar-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "material.gromril", "kind": "mechanic", "parameters": {}}'
+  interpretation: ithilmar armour saves on 5+; gromril composes the armour target to 5 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id032
+      main_weapon_id: weapon.sword
+      main_material_id: material.gromril
+    defender: &id033
+      armour_id: armour.ithilmar-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id032
+    defender: *id033
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - boundary
+- id: interaction-armour.ithilmar-armour--skill.unarmed-fighting
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.ithilmar-armour
+    digest: ac9b7eb54b506df8b147fbb9e560d4555139e7b8beb958427e373ab63208f1fb
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  bindings:
+  - '{"id": "armour.ithilmar-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  interpretation: ithilmar armour saves on 5+; unarmed fighting composes the armour target to 5 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id034
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+    defender: &id035
+      armour_id: armour.ithilmar-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id034
+    defender: *id035
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 5
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-unarmed-skill
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - boundary
+- id: interaction-armour.ithilmar-armour--special-rule.trained-bear--bear-hug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.no-armour
+    digest: ec03523647acce576db9b07c4f7e92942ce4d77a0755e931647d3a386b6350ea
+  - target: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
+    digest: 13deefeb497e8e1cc5c0f2f27763b987ec9d70b854f763ea9037d97ee0ecf326
+  bindings:
+  - '{"id": "armour.ithilmar-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "special-rule.trained-bear--bear-hug", "kind": "compiler", "parameters": {}}'
+  interpretation: 'A bear hug that wins its opposed roll inflicts one automatic wound that forbids armour:
+    ithilmar armour is not allowed to save. A broken hold deals no damage.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: pool
+    attacker: *id005
+    defender: &id036
+      armour_id: armour.ithilmar-armour
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    expect:
+      result.attacks.0.damage: 1
+      result.attacks.0.saved: false
+      result.defender.wounds: 2
+  - id: boundary-hold-broken
+    roles:
+    - boundary
+    operation: pool
+    attacker: *id005
+    defender: *id036
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 1
+    - key: test.bear-hug.defender
+      value: 6
+    expect:
+      result.attacks: []
+      result.defender.wounds: 3
+  mutations:
+  - id: remove-hug
+    path: attacker.global_effects.bear_hug
+    value: false
+    cases:
+    - composition
+- id: interaction-armour.ithilmar-armour--weapon.axe
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.ithilmar-armour
+    digest: ac9b7eb54b506df8b147fbb9e560d4555139e7b8beb958427e373ab63208f1fb
+  - target: mechanic/weapon.axe
+    digest: 331fe535d241616ebe9c23e0b6084bf29105b5799abb42da5217032862efec81
+  bindings:
+  - '{"id": "armour.ithilmar-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: ithilmar armour saves on 5+; axe composes the armour target to 5 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id037
+      main_weapon_id: weapon.axe
+    defender: &id038
+      armour_id: armour.ithilmar-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id037
+    defender: *id038
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - boundary
+- id: interaction-armour.ithilmar-armour--weapon.dagger
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.ithilmar-armour
+    digest: ac9b7eb54b506df8b147fbb9e560d4555139e7b8beb958427e373ab63208f1fb
+  - target: mechanic/weapon.dagger
+    digest: da875a2d1f4c5cfe74dc4c74a0191eff6b4af9a8f88194088a47ce7be79b5046
+  bindings:
+  - '{"id": "armour.ithilmar-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.dagger", "kind": "mechanic", "parameters": {}}'
+  interpretation: ithilmar armour saves on 5+; dagger composes the armour target to 5 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id039
+      main_weapon_id: weapon.dagger
+    defender: &id040
+      armour_id: armour.ithilmar-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id039
+    defender: *id040
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-save-bonus
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-armour.ithilmar-armour--weapon.katar
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.ithilmar-armour
+    digest: ac9b7eb54b506df8b147fbb9e560d4555139e7b8beb958427e373ab63208f1fb
+  - target: mechanic/weapon.katar
+    digest: f29fd952be27eff95e8595a27bd1e17d814b7684bb3c6382443d183543dbfdb9
+  bindings:
+  - '{"id": "armour.ithilmar-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.katar", "kind": "mechanic", "parameters": {}}'
+  interpretation: ithilmar armour saves on 5+; katar composes the armour target to 5 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id041
+      main_weapon_id: weapon.katar
+    defender: &id042
+      armour_id: armour.ithilmar-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id041
+    defender: *id042
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - boundary
+- id: interaction-armour.ithilmar-armour--weapon.vomit-attack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.ithilmar-armour
+    digest: ac9b7eb54b506df8b147fbb9e560d4555139e7b8beb958427e373ab63208f1fb
+  - target: mechanic/weapon.vomit-attack
+    digest: 8851f0660b1daee1f542f6aff22cee6329bdc5365e9597a12080df4e7c84b5e5
+  bindings:
+  - '{"id": "armour.ithilmar-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.vomit-attack", "kind": "mechanic", "parameters": {}}'
+  interpretation: Vomit Attack is one automatic Strength 5 hit that ignores armour saves, so ithilmar
+    armour grants no save and requests no armour die; an unsaved wound still applies normally.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id043
+      main_weapon_id: weapon.vomit-attack
+    defender: &id044
+      armour_id: armour.ithilmar-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  - id: boundary-pipeline
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id043
+    defender: *id044
+    rolls:
+    - key: test.wound
+      value: 2
+    expect:
+      result.hit: true
+      result.wounded: true
+      result.saved: false
+      result.defender.wounds: 2
+  mutations:
+  - id: drop-vomit-strength
+    path: attacker.main_weapon.fixed_strength
+    value: 4
+    cases:
+    - boundary-pipeline
+- id: interaction-armour.ithilmar-armour--weapon.yambiya
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.ithilmar-armour
+    digest: ac9b7eb54b506df8b147fbb9e560d4555139e7b8beb958427e373ab63208f1fb
+  - target: mechanic/weapon.yambiya
+    digest: 3ea6ae8dd67f08bb811eef6ba0e2506ef14c5df892c7069078d219999606418d
+  bindings:
+  - '{"id": "armour.ithilmar-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.yambiya", "kind": "mechanic", "parameters": {}}'
+  interpretation: ithilmar armour saves on 5+; yambiya composes the armour target to 5 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id045
+      main_weapon_id: weapon.yambiya
+    defender: &id046
+      armour_id: armour.ithilmar-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id045
+    defender: *id046
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-save-bonus
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-armour.light-armour--material.gromril
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.light-armour
+    digest: 57bd1a43cd4dd321a0c9977933bbb424611516e4d0365b9668accebf80693100
+  - target: mechanic/material.gromril
+    digest: e7dd5d61e2f8e547890471309390d16ddbb8346753e64efc6241fcaba00aa5c4
+  bindings:
+  - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "material.gromril", "kind": "mechanic", "parameters": {}}'
+  interpretation: light armour saves on 6+; gromril composes the armour target to 6 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.sword
+      main_material_id: material.gromril
+    defender: &id047
+      armour_id: armour.light-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  - id: boundary-strength-modifier
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.sword
+      main_material_id: material.gromril
+      characteristics:
+        weapon_skill: 3
+        strength: 5
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender: *id047
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  mutations:
+  - id: armour-becomes-eligible
+    path: defender.armour_save
+    value: 3
+    cases:
+    - composition
+- id: interaction-armour.light-armour--skill.unarmed-fighting
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.light-armour
+    digest: 57bd1a43cd4dd321a0c9977933bbb424611516e4d0365b9668accebf80693100
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  bindings:
+  - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  interpretation: light armour saves on 6+; unarmed fighting composes the armour target to 6 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id048
+      main_weapon_id: weapon.fist
+      skill_ids:
+      - skill.unarmed-fighting
+    defender: &id049
+      armour_id: armour.light-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id048
+    defender: *id049
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-unarmed-skill
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - boundary
+- id: interaction-armour.light-armour--special-rule.trained-bear--bear-hug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.no-armour
+    digest: ec03523647acce576db9b07c4f7e92942ce4d77a0755e931647d3a386b6350ea
+  - target: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
+    digest: 13deefeb497e8e1cc5c0f2f27763b987ec9d70b854f763ea9037d97ee0ecf326
+  bindings:
+  - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "special-rule.trained-bear--bear-hug", "kind": "compiler", "parameters": {}}'
+  interpretation: 'A bear hug that wins its opposed roll inflicts one automatic wound that forbids armour:
+    light armour is not allowed to save. A broken hold deals no damage.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: pool
+    attacker: *id005
+    defender: &id050
+      armour_id: armour.light-armour
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    expect:
+      result.attacks.0.damage: 1
+      result.attacks.0.saved: false
+      result.defender.wounds: 2
+  - id: boundary-hold-broken
+    roles:
+    - boundary
+    operation: pool
+    attacker: *id005
+    defender: *id050
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 1
+    - key: test.bear-hug.defender
+      value: 6
+    expect:
+      result.attacks: []
+      result.defender.wounds: 3
+  mutations:
+  - id: remove-hug
+    path: attacker.global_effects.bear_hug
+    value: false
+    cases:
+    - composition
+- id: interaction-armour.light-armour--weapon.axe
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.light-armour
+    digest: 57bd1a43cd4dd321a0c9977933bbb424611516e4d0365b9668accebf80693100
+  - target: mechanic/weapon.axe
+    digest: 331fe535d241616ebe9c23e0b6084bf29105b5799abb42da5217032862efec81
+  bindings:
+  - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: light armour saves on 6+; axe composes the armour target to 6 plus Strength-based modifier,
+    penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.axe
+    defender: &id051
+      armour_id: armour.light-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  - id: boundary-strength-modifier
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.axe
+      characteristics:
+        weapon_skill: 3
+        strength: 5
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender: *id051
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  mutations:
+  - id: armour-becomes-eligible
+    path: defender.armour_save
+    value: 3
+    cases:
+    - composition
+- id: interaction-armour.light-armour--weapon.dagger
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.light-armour
+    digest: 57bd1a43cd4dd321a0c9977933bbb424611516e4d0365b9668accebf80693100
+  - target: mechanic/weapon.dagger
+    digest: da875a2d1f4c5cfe74dc4c74a0191eff6b4af9a8f88194088a47ce7be79b5046
+  bindings:
+  - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.dagger", "kind": "mechanic", "parameters": {}}'
+  interpretation: light armour saves on 6+; dagger composes the armour target to 6 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id052
+      main_weapon_id: weapon.dagger
+    defender: &id053
+      armour_id: armour.light-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id052
+    defender: *id053
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 5
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-save-bonus
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-armour.light-armour--weapon.katar
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.light-armour
+    digest: 57bd1a43cd4dd321a0c9977933bbb424611516e4d0365b9668accebf80693100
+  - target: mechanic/weapon.katar
+    digest: f29fd952be27eff95e8595a27bd1e17d814b7684bb3c6382443d183543dbfdb9
+  bindings:
+  - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.katar", "kind": "mechanic", "parameters": {}}'
+  interpretation: light armour saves on 6+; katar composes the armour target to 6 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.katar
+    defender: &id054
+      armour_id: armour.light-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  - id: boundary-strength-modifier
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.katar
+      characteristics:
+        weapon_skill: 3
+        strength: 5
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender: *id054
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  mutations:
+  - id: armour-becomes-eligible
+    path: defender.armour_save
+    value: 3
+    cases:
+    - composition
+- id: interaction-armour.light-armour--weapon.vomit-attack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.light-armour
+    digest: 57bd1a43cd4dd321a0c9977933bbb424611516e4d0365b9668accebf80693100
+  - target: mechanic/weapon.vomit-attack
+    digest: 8851f0660b1daee1f542f6aff22cee6329bdc5365e9597a12080df4e7c84b5e5
+  bindings:
+  - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.vomit-attack", "kind": "mechanic", "parameters": {}}'
+  interpretation: Vomit Attack is one automatic Strength 5 hit that ignores armour saves, so light armour
+    grants no save and requests no armour die; an unsaved wound still applies normally.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id055
+      main_weapon_id: weapon.vomit-attack
+    defender: &id056
+      armour_id: armour.light-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  - id: boundary-pipeline
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id055
+    defender: *id056
+    rolls:
+    - key: test.wound
+      value: 2
+    expect:
+      result.hit: true
+      result.wounded: true
+      result.saved: false
+      result.defender.wounds: 2
+  mutations:
+  - id: drop-vomit-strength
+    path: attacker.main_weapon.fixed_strength
+    value: 4
+    cases:
+    - boundary-pipeline
+- id: interaction-armour.light-armour--weapon.yambiya
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.light-armour
+    digest: 57bd1a43cd4dd321a0c9977933bbb424611516e4d0365b9668accebf80693100
+  - target: mechanic/weapon.yambiya
+    digest: 3ea6ae8dd67f08bb811eef6ba0e2506ef14c5df892c7069078d219999606418d
+  bindings:
+  - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.yambiya", "kind": "mechanic", "parameters": {}}'
+  interpretation: light armour saves on 6+; yambiya composes the armour target to 6 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id057
+      main_weapon_id: weapon.yambiya
+    defender: &id058
+      armour_id: armour.light-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id057
+    defender: *id058
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 5
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-save-bonus
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-armour.no-armour--material.gromril
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.no-armour
+    digest: ec03523647acce576db9b07c4f7e92942ce4d77a0755e931647d3a386b6350ea
+  - target: mechanic/material.gromril
+    digest: e7dd5d61e2f8e547890471309390d16ddbb8346753e64efc6241fcaba00aa5c4
+  bindings:
+  - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "material.gromril", "kind": "mechanic", "parameters": {}}'
+  interpretation: no armour saves on 7+; gromril composes the armour target to 7 plus Strength-based modifier,
+    penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.sword
+      main_material_id: material.gromril
+    defender: &id059
+      armour_id: armour.no-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  - id: boundary-strength-modifier
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.sword
+      main_material_id: material.gromril
+      characteristics:
+        weapon_skill: 3
+        strength: 5
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender: *id059
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  mutations:
+  - id: armour-becomes-eligible
+    path: defender.armour_save
+    value: 3
+    cases:
+    - composition
+- id: interaction-armour.no-armour--skill.unarmed-fighting
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.no-armour
+    digest: ec03523647acce576db9b07c4f7e92942ce4d77a0755e931647d3a386b6350ea
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  bindings:
+  - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  interpretation: no armour saves on 7+; unarmed fighting composes the armour target to 7 plus Strength-based
+    modifier, penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.fist
+      skill_ids: &id060
+      - skill.unarmed-fighting
+    defender: &id061
+      armour_id: armour.no-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  - id: boundary-strength-modifier
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.fist
+      skill_ids: *id060
+      characteristics:
+        weapon_skill: 3
+        strength: 5
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender: *id061
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  mutations:
+  - id: armour-becomes-eligible
+    path: defender.armour_save
+    value: 3
+    cases:
+    - composition
+- id: interaction-armour.no-armour--special-rule.trained-bear--bear-hug
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.no-armour
+    digest: ec03523647acce576db9b07c4f7e92942ce4d77a0755e931647d3a386b6350ea
+  - target: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
+    digest: 13deefeb497e8e1cc5c0f2f27763b987ec9d70b854f763ea9037d97ee0ecf326
+  bindings:
+  - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "special-rule.trained-bear--bear-hug", "kind": "compiler", "parameters": {}}'
+  interpretation: 'A bear hug that wins its opposed roll inflicts one automatic wound that forbids armour:
+    no armour is not allowed to save. A broken hold deals no damage.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: pool
+    attacker: *id005
+    defender: &id062
+      armour_id: armour.no-armour
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 3
+    - key: test.bear-hug.defender
+      value: 2
+    expect:
+      result.attacks.0.damage: 1
+      result.attacks.0.saved: false
+      result.defender.wounds: 2
+  - id: boundary-hold-broken
+    roles:
+    - boundary
+    operation: pool
+    attacker: *id005
+    defender: *id062
+    context:
+      count: 2
+    decisions:
+    - key: test.bear-hug
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.bear-hug.attacker
+      value: 1
+    - key: test.bear-hug.defender
+      value: 6
+    expect:
+      result.attacks: []
+      result.defender.wounds: 3
+  mutations:
+  - id: remove-hug
+    path: attacker.global_effects.bear_hug
+    value: false
+    cases:
+    - composition
+- id: interaction-armour.no-armour--weapon.axe
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.no-armour
+    digest: ec03523647acce576db9b07c4f7e92942ce4d77a0755e931647d3a386b6350ea
+  - target: mechanic/weapon.axe
+    digest: 331fe535d241616ebe9c23e0b6084bf29105b5799abb42da5217032862efec81
+  bindings:
+  - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: no armour saves on 7+; axe composes the armour target to 7 plus Strength-based modifier,
+    penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.axe
+    defender: &id063
+      armour_id: armour.no-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  - id: boundary-strength-modifier
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.axe
+      characteristics:
+        weapon_skill: 3
+        strength: 5
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender: *id063
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  mutations:
+  - id: armour-becomes-eligible
+    path: defender.armour_save
+    value: 3
+    cases:
+    - composition
+- id: interaction-armour.no-armour--weapon.dagger
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.no-armour
+    digest: ec03523647acce576db9b07c4f7e92942ce4d77a0755e931647d3a386b6350ea
+  - target: mechanic/weapon.dagger
+    digest: da875a2d1f4c5cfe74dc4c74a0191eff6b4af9a8f88194088a47ce7be79b5046
+  bindings:
+  - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.dagger", "kind": "mechanic", "parameters": {}}'
+  interpretation: no armour saves on 7+; dagger composes the armour target to 7 plus Strength-based modifier,
+    penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id064
+      main_weapon_id: weapon.dagger
+    defender: &id065
+      armour_id: armour.no-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id064
+    defender: *id065
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-save-bonus
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-armour.no-armour--weapon.katar
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.no-armour
+    digest: ec03523647acce576db9b07c4f7e92942ce4d77a0755e931647d3a386b6350ea
+  - target: mechanic/weapon.katar
+    digest: f29fd952be27eff95e8595a27bd1e17d814b7684bb3c6382443d183543dbfdb9
+  bindings:
+  - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.katar", "kind": "mechanic", "parameters": {}}'
+  interpretation: no armour saves on 7+; katar composes the armour target to 7 plus Strength-based modifier,
+    penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.katar
+    defender: &id066
+      armour_id: armour.no-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  - id: boundary-strength-modifier
+    roles:
+    - boundary
+    operation: armour
+    attacker:
+      main_weapon_id: weapon.katar
+      characteristics:
+        weapon_skill: 3
+        strength: 5
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender: *id066
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  mutations:
+  - id: armour-becomes-eligible
+    path: defender.armour_save
+    value: 3
+    cases:
+    - composition
+- id: interaction-armour.no-armour--weapon.vomit-attack
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.no-armour
+    digest: ec03523647acce576db9b07c4f7e92942ce4d77a0755e931647d3a386b6350ea
+  - target: mechanic/weapon.vomit-attack
+    digest: 8851f0660b1daee1f542f6aff22cee6329bdc5365e9597a12080df4e7c84b5e5
+  bindings:
+  - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.vomit-attack", "kind": "mechanic", "parameters": {}}'
+  interpretation: Vomit Attack is one automatic Strength 5 hit that ignores armour saves, so no armour
+    grants no save and requests no armour die; an unsaved wound still applies normally.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id067
+      main_weapon_id: weapon.vomit-attack
+    defender: &id068
+      armour_id: armour.no-armour
+    expect:
+      result.target: 7
+      result.eligible: false
+      result.saved: false
+      result.roll: null
+  - id: boundary-pipeline
+    roles:
+    - boundary
+    operation: attack
+    attacker: *id067
+    defender: *id068
+    rolls:
+    - key: test.wound
+      value: 2
+    expect:
+      result.hit: true
+      result.wounded: true
+      result.saved: false
+      result.defender.wounds: 2
+  mutations:
+  - id: drop-vomit-strength
+    path: attacker.main_weapon.fixed_strength
+    value: 4
+    cases:
+    - boundary-pipeline
+- id: interaction-armour.no-armour--weapon.yambiya
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/armour.no-armour
+    digest: ec03523647acce576db9b07c4f7e92942ce4d77a0755e931647d3a386b6350ea
+  - target: mechanic/weapon.yambiya
+    digest: 3ea6ae8dd67f08bb811eef6ba0e2506ef14c5df892c7069078d219999606418d
+  bindings:
+  - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.yambiya", "kind": "mechanic", "parameters": {}}'
+  interpretation: no armour saves on 7+; yambiya composes the armour target to 7 plus Strength-based modifier,
+    penetration and target bonus. The save is ineligible when the target exceeds 6.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id069
+      main_weapon_id: weapon.yambiya
+    defender: &id070
+      armour_id: armour.no-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id069
+    defender: *id070
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-save-bonus
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-material.gromril--skill.unarmed-fighting
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/material.gromril
+    digest: e7dd5d61e2f8e547890471309390d16ddbb8346753e64efc6241fcaba00aa5c4
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  bindings:
+  - '{"id": "material.gromril", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  interpretation: Unarmed Fighting removes the fist's armour-save bonus; Gromril material then applies
+    its own -1 penetration against the heavy armour target.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id071
+      main_weapon_id: weapon.fist
+      main_material_id: material.gromril
+      skill_ids:
+      - skill.unarmed-fighting
+    defender: &id072
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id071
+    defender: *id072
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-gromril-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - boundary
+- id: interaction-material.gromril--weapon.dagger
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/material.gromril
+    digest: e7dd5d61e2f8e547890471309390d16ddbb8346753e64efc6241fcaba00aa5c4
+  - target: mechanic/weapon.dagger
+    digest: da875a2d1f4c5cfe74dc4c74a0191eff6b4af9a8f88194088a47ce7be79b5046
+  bindings:
+  - '{"id": "material.gromril", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.dagger", "kind": "mechanic", "parameters": {}}'
+  interpretation: Gromril material adds -1 armour-save modifier; composed with dagger the armour target
+    is 4+ against gromril armour.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id073
+      main_weapon_id: weapon.dagger
+      main_material_id: material.gromril
+    defender: &id074
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id073
+    defender: *id074
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-gromril-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - boundary
+- id: interaction-material.gromril--weapon.yambiya
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/material.gromril
+    digest: e7dd5d61e2f8e547890471309390d16ddbb8346753e64efc6241fcaba00aa5c4
+  - target: mechanic/weapon.yambiya
+    digest: 3ea6ae8dd67f08bb811eef6ba0e2506ef14c5df892c7069078d219999606418d
+  bindings:
+  - '{"id": "material.gromril", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.yambiya", "kind": "mechanic", "parameters": {}}'
+  interpretation: Gromril material adds -1 armour-save modifier; composed with yambiya the armour target
+    is 4+ against gromril armour.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id075
+      main_weapon_id: weapon.yambiya
+      main_material_id: material.gromril
+    defender: &id076
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id075
+    defender: *id076
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-gromril-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - boundary
+- id: interaction-skill.unarmed-fighting--weapon.axe
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  - target: mechanic/weapon.axe
+    digest: 331fe535d241616ebe9c23e0b6084bf29105b5799abb42da5217032862efec81
+  bindings:
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.axe", "kind": "mechanic", "parameters": {}}'
+  interpretation: Unarmed Fighting removes only the fist's unarmed penalties; wielding axe the fighter
+    attacks with the weapon's own modifier, composing the heavy armour target to 6+.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id077
+      main_weapon_id: weapon.axe
+      skill_ids:
+      - skill.unarmed-fighting
+    defender: &id078
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id077
+    defender: *id078
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-weapon-modifier
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - boundary
+- id: interaction-skill.unarmed-fighting--weapon.dagger
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  - target: mechanic/weapon.dagger
+    digest: da875a2d1f4c5cfe74dc4c74a0191eff6b4af9a8f88194088a47ce7be79b5046
+  bindings:
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.dagger", "kind": "mechanic", "parameters": {}}'
+  interpretation: Unarmed Fighting removes only the fist's unarmed penalties; wielding dagger the fighter
+    attacks with the weapon's own modifier, composing the heavy armour target to 4+.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id079
+      main_weapon_id: weapon.dagger
+      skill_ids:
+      - skill.unarmed-fighting
+    defender: &id080
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id079
+    defender: *id080
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-weapon-modifier
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-skill.unarmed-fighting--weapon.katar
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  - target: mechanic/weapon.katar
+    digest: f29fd952be27eff95e8595a27bd1e17d814b7684bb3c6382443d183543dbfdb9
+  bindings:
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.katar", "kind": "mechanic", "parameters": {}}'
+  interpretation: Unarmed Fighting removes only the fist's unarmed penalties; wielding katar the fighter
+    attacks with the weapon's own modifier, composing the heavy armour target to 6+.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id081
+      main_weapon_id: weapon.katar
+      skill_ids:
+      - skill.unarmed-fighting
+    defender: &id082
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id081
+    defender: *id082
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-weapon-modifier
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - boundary
+- id: interaction-skill.unarmed-fighting--weapon.yambiya
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.unarmed-fighting
+    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
+  - target: mechanic/weapon.yambiya
+    digest: 3ea6ae8dd67f08bb811eef6ba0e2506ef14c5df892c7069078d219999606418d
+  bindings:
+  - '{"id": "skill.unarmed-fighting", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.yambiya", "kind": "mechanic", "parameters": {}}'
+  interpretation: Unarmed Fighting removes only the fist's unarmed penalties; wielding yambiya the fighter
+    attacks with the weapon's own modifier, composing the heavy armour target to 4+.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id083
+      main_weapon_id: weapon.yambiya
+      skill_ids:
+      - skill.unarmed-fighting
+    defender: &id084
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: armour
+    attacker: *id083
+    defender: *id084
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: false
+  mutations:
+  - id: remove-weapon-modifier
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-weapon.axe--weapon.dagger
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/weapon.axe
+    digest: 331fe535d241616ebe9c23e0b6084bf29105b5799abb42da5217032862efec81
+  - target: mechanic/weapon.dagger
+    digest: da875a2d1f4c5cfe74dc4c74a0191eff6b4af9a8f88194088a47ce7be79b5046
+  bindings:
+  - '{"id": "weapon.axe", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.dagger", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'With axe main and dagger off hand, each attack applies its own armour modifier: the
+    main attack targets 6+ and the off-hand attack targets 4+ against heavy armour.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id085
+      main_weapon_id: weapon.axe
+      off_hand_id: weapon.dagger
+    defender: &id086
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  - id: boundary-off-hand
+    roles:
+    - boundary
+    operation: off_hand_armour
+    attacker: *id085
+    defender: *id086
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: true
+  mutations:
+  - id: remove-main-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - composition
+- id: interaction-weapon.axe--weapon.yambiya
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/weapon.axe
+    digest: 331fe535d241616ebe9c23e0b6084bf29105b5799abb42da5217032862efec81
+  - target: mechanic/weapon.yambiya
+    digest: 3ea6ae8dd67f08bb811eef6ba0e2506ef14c5df892c7069078d219999606418d
+  bindings:
+  - '{"id": "weapon.axe", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.yambiya", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'With axe main and yambiya off hand, each attack applies its own armour modifier: the
+    main attack targets 6+ and the off-hand attack targets 4+ against heavy armour.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id087
+      main_weapon_id: weapon.axe
+      off_hand_id: weapon.yambiya
+    defender: &id088
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  - id: boundary-off-hand
+    roles:
+    - boundary
+    operation: off_hand_armour
+    attacker: *id087
+    defender: *id088
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: true
+  mutations:
+  - id: remove-main-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - composition
+- id: interaction-weapon.dagger--weapon.katar
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/weapon.dagger
+    digest: da875a2d1f4c5cfe74dc4c74a0191eff6b4af9a8f88194088a47ce7be79b5046
+  - target: mechanic/weapon.katar
+    digest: f29fd952be27eff95e8595a27bd1e17d814b7684bb3c6382443d183543dbfdb9
+  bindings:
+  - '{"id": "weapon.dagger", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.katar", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'With dagger main and katar off hand, each attack applies its own armour modifier: the
+    main attack targets 4+ and the off-hand attack targets 6+ against heavy armour.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id089
+      main_weapon_id: weapon.dagger
+      off_hand_id: weapon.katar
+    defender: &id090
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: false
+  - id: boundary-off-hand
+    roles:
+    - boundary
+    operation: off_hand_armour
+    attacker: *id089
+    defender: *id090
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: true
+  mutations:
+  - id: remove-main-save-bonus
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-weapon.dagger--weapon.yambiya
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/weapon.dagger
+    digest: da875a2d1f4c5cfe74dc4c74a0191eff6b4af9a8f88194088a47ce7be79b5046
+  - target: mechanic/weapon.yambiya
+    digest: 3ea6ae8dd67f08bb811eef6ba0e2506ef14c5df892c7069078d219999606418d
+  bindings:
+  - '{"id": "weapon.dagger", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.yambiya", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'With dagger main and yambiya off hand, each attack applies its own armour modifier:
+    the main attack targets 4+ and the off-hand attack targets 4+ against heavy armour.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id091
+      main_weapon_id: weapon.dagger
+      off_hand_id: weapon.yambiya
+    defender: &id092
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: false
+  - id: boundary-off-hand
+    roles:
+    - boundary
+    operation: off_hand_armour
+    attacker: *id091
+    defender: *id092
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: true
+  mutations:
+  - id: remove-main-save-bonus
+    path: attacker.main_weapon.target_armour_bonus
+    value: 0
+    cases:
+    - composition
+- id: interaction-weapon.katar--weapon.yambiya
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/weapon.katar
+    digest: f29fd952be27eff95e8595a27bd1e17d814b7684bb3c6382443d183543dbfdb9
+  - target: mechanic/weapon.yambiya
+    digest: 3ea6ae8dd67f08bb811eef6ba0e2506ef14c5df892c7069078d219999606418d
+  bindings:
+  - '{"id": "weapon.katar", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.yambiya", "kind": "mechanic", "parameters": {}}'
+  interpretation: 'With katar main and yambiya off hand, each attack applies its own armour modifier:
+    the main attack targets 6+ and the off-hand attack targets 4+ against heavy armour.'
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: armour
+    attacker: &id093
+      main_weapon_id: weapon.katar
+      off_hand_id: weapon.yambiya
+    defender: &id094
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.eligible: true
+      result.saved: false
+  - id: boundary-off-hand
+    roles:
+    - boundary
+    operation: off_hand_armour
+    attacker: *id093
+    defender: *id094
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.eligible: true
+      result.saved: true
+  mutations:
+  - id: remove-main-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - composition
