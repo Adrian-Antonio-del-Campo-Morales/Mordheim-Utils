@@ -100,3 +100,28 @@ def test_truncation_rows_flow_into_payload_and_markdown():
     assert "## Round-truncation parity samples" in markdown
     assert "basic@rounds=2" in markdown
     assert "| True |" in markdown
+
+
+def test_truncation_pooled_oracle_matches_the_sequential_path():
+    first, second, maximum_rounds = _pair()
+    kwargs = dict(simulations=300, seed=3, maximum_rounds=maximum_rounds,
+                  horizons=(2, 4, 6))
+    sequential = compare_truncation_parity("basic", first, second, **kwargs)
+    pooled = compare_truncation_parity(
+        "basic", first, second, workers=2, **kwargs)
+    def fields(rows):
+        return [(row.scenario, row.modular_rates, row.vectorized_rates,
+                 row.tolerances, row.passed) for row in rows]
+    assert fields(pooled) == fields(sequential)
+
+
+def test_truncation_progress_fires_once_per_horizon():
+    first, second, maximum_rounds = _pair()
+    calls = []
+    rows = compare_truncation_parity(
+        "basic", first, second, 60, seed=3,
+        maximum_rounds=maximum_rounds, horizons=(2, 4, 6),
+        on_progress=lambda: calls.append(1),
+    )
+    assert len(calls) == len(rows) == 3
+

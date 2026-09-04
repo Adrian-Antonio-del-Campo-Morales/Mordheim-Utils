@@ -39,6 +39,27 @@ def test_deep_suite_scenarios_compile_into_legal_duels():
         compile_fighter(scenario.second)
 
 
+def test_deep_suite_includes_the_timing_and_parry_amplifiers():
+    by_id = {item.id: item for item in deep_test_scenarios()}
+    assert {
+        "triple-weapon-vs-parry", "a2-vs-w1-stun", "frenzy-vs-w2",
+        "durable-vs-elite", "heavy-grind",
+    } <= set(by_id)
+    # The grind pairs are the long 75-round budget, like the core ``long``.
+    assert by_id["heavy-grind"].maximum_rounds == 75
+    assert by_id["long"].maximum_rounds == 75
+    # The amplifiers must keep the timing-prone signature alive: the heavy
+    # grind is expected to leave a measurable share of duels unresolved.
+    from mordheim_combat.modular.duel import simulate_duel_reference
+    from mordheim_construction.compiler import compile_fighter
+    scenario = by_id["heavy-grind"]
+    result = simulate_duel_reference(
+        compile_fighter(scenario.first), compile_fighter(scenario.second),
+        2_000, seed=2026, maximum_rounds=scenario.maximum_rounds,
+    )
+    assert result.unresolved / 2_000 >= 0.05
+
+
 def test_deep_benchmark_plan_keeps_modular_at_the_reference_size_only():
     scenarios = benchmark_scenarios()
     plan = deep_benchmark_plan(
