@@ -179,8 +179,12 @@ python tools/mutate-engine.py --mutant wound-ramp-off-by-one --json   # one muta
 ### L5 — process and certificates
 
 - **Every change** touching the engines must leave green: unit suites,
-  semantic specs, deterministic parity inventory, and `coverage-gate`.
-- **Engine-touching changes** additionally run `parity --truncations` and, for
+  semantic specs, deterministic parity inventory, and `coverage-gate` — all
+  of the deterministic suites at once with `tests --scope deterministic`
+  (the same selection the coverage gate measures).
+- **Engine-touching changes** additionally run `parity --truncations` — the
+  `--level` presets of `parity` select the statistical/deep certification
+  tiers, see [the report guide](tasks/generate-test-reports.md) — and, for
   vectorized/native code, the mutation catalogue.
 - **Deep statistical runs** (`parity --deep`, hours) are certification runs,
   executed on demand or before a release — never the default loop. Because

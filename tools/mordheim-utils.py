@@ -38,6 +38,10 @@ SCOPE_PATHS = {
     "modular": ("tests/combat/modular",),
     "vectorized": ("tests/combat/vectorized",),
     "native": ("tests/combat/native",),
+    # The per-change engine gate: the deterministic suites that certify rule
+    # behaviour without statistical noise (mirrors the coverage-gate budget).
+    "deterministic": ("tests/combat/modular", "tests/combat/vectorized",
+                      "tests/combat/test_phases.py", "tests/verification/test_parity.py"),
     "campaign": ("tests/campaign", "tests/application"),
     "knowledge": ("tests/knowledge", "tests/specs"),
     "verification": ("tests/verification",),
@@ -191,6 +195,16 @@ def doctor_command() -> int:
     return 0
 
 
+def _print_styled(text: str) -> None:
+    """Print with the shared repository palette when it is importable."""
+    try:
+        from mordheim_combat_lab.console import style_help
+    except Exception:  # package not importable here: plain text
+        sys.stdout.write(text)
+        return
+    sys.stdout.write(style_help(text))
+
+
 def _help_text() -> str:
     by_name = dict(COMMANDS)
     lines = [
@@ -307,7 +321,7 @@ def _command_candidates(words: list[str]) -> list[str]:
 def main(argv: list[str] | None = None) -> int:
     raw = list(sys.argv[1:] if argv is None else argv)
     if not raw or raw[0] in ("-h", "--help"):
-        print(_help_text(), end="")
+        _print_styled(_help_text())
         return 0
     if raw[0] == "--version":
         try:

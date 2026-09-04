@@ -333,6 +333,62 @@ def test_parallel_oracle_workers_honour_the_environment_default(monkeypatch):
     assert build_parser().parse_args(["parity", "--workers", "2"]).workers == 2
 
 
+def test_parity_level_presets_map_onto_the_historical_sample_flags():
+    from argparse import Namespace
+    from mordheim_combat_lab.cli.commands import apply_parity_level
+
+    args = Namespace(level="statistical", statistical=False, deep=False)
+    apply_parity_level(args)
+    assert args.statistical and not args.deep
+    args = Namespace(level="deep", statistical=False, deep=False)
+    apply_parity_level(args)
+    assert args.deep and not args.statistical
+    # Without --level the historical flags keep their exact semantics.
+    args = Namespace(level="deterministic", statistical=True, deep=False)
+    apply_parity_level(args)
+    assert args.statistical and not args.deep
+    # A preset plus an explicit alias still runs both sample groups.
+    args = Namespace(level="statistical", statistical=False, deep=True)
+    apply_parity_level(args)
+    assert args.statistical and args.deep
+
+
+def test_parity_parser_accepts_level_and_keeps_the_hidden_aliases():
+    parsed = build_parser().parse_args(["parity", "--level", "deep"])
+    assert parsed.level == "deep"
+    # The historical aliases are hidden from the help but still parse.
+    parsed = build_parser().parse_args(["parity", "--deep", "--statistical"])
+    assert parsed.deep and parsed.statistical
+
+
+def test_advanced_options_are_hidden_from_help_and_shown_by_help_all():
+    import argparse
+    from mordheim_combat_lab.cli.commands import _ADVANCED_OPTIONS
+
+    def option(parser, command, flag):
+        subparsers = next(action for action in parser._actions
+                          if action.__class__.__name__ == "_SubParsersAction")
+        sub = subparsers.choices[command]
+        return next(action for action in sub._actions if flag in action.option_strings)
+
+    concise = build_parser()
+    verbose = build_parser(advanced_help=True)
+    for command, flags in _ADVANCED_OPTIONS.items():
+        for flag in tuple(flags)[:3]:  # spot-check the hidden set
+            assert option(concise, command, flag).help is argparse.SUPPRESS
+            assert option(verbose, command, flag).help is not argparse.SUPPRESS
+    # Everyday options stay documented on the concise parser.
+    assert option(concise, "parity", "--level").help is not argparse.SUPPRESS
+    assert option(concise, "parity", "--truncations").help is not argparse.SUPPRESS
+
+
+def test_help_all_prints_the_advanced_options(capsys):
+    assert main(["parity", "--help-all"]) == 0
+    output = capsys.readouterr().out
+    assert "--statistical-simulations" in output
+    assert "--deep-simulations" in output
+
+
 def test_deep_parity_saves_the_report_by_default(monkeypatch, tmp_path):
     monkeypatch.chdir(tmp_path)
     assert main(["parity", "--deep", "--deep-simulations", "30",
