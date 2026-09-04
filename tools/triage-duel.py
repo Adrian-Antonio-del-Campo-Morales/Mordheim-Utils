@@ -45,6 +45,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 from mordheim_combat.modular.parallel import run_oracle_sample  # noqa: E402
 from mordheim_combat.vectorized import simulate_duel as simulate_numpy  # noqa: E402
 from mordheim_combat_lab.cli.benchmarking import DEEP_SCENARIOS  # noqa: E402
+
+try:
+    from mordheim_combat_lab.console import HelpFormatter as _HelpFormatter  # noqa: E402
+except Exception:  # standalone run without the package importable
+    from argparse import HelpFormatter as _HelpFormatter  # type: ignore[assignment]
 from mordheim_construction.compiler import compile_fighter  # noqa: E402
 from mordheim_core.models import Characteristics  # noqa: E402
 from mordheim_core.models import DuelRequest  # noqa: E402
@@ -469,15 +474,26 @@ def duel(pair_id: str, seed: int, rounds: int) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=_HelpFormatter)
     parser.add_argument("command",
                         choices=("cards", "ablate", "seeds", "duel", "rounds",
                                  "bisect", "states"))
-    parser.add_argument("--pair", default="brute-vs-fencer")
-    parser.add_argument("--simulations", type=int, default=20_000)
-    parser.add_argument("--workers", type=int, default=0)
-    parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--rounds", type=int, default=100)
+    parser.add_argument("--pair", default="brute-vs-fencer",
+                        help="deep-matrix pair id to triage (default: "
+                             "brute-vs-fencer)")
+    parser.add_argument("--simulations", type=int, default=20_000,
+                        help="duels per engine per leg/sweep point; each "
+                             "command caps it to its own budget (default: "
+                             "20 000)")
+    parser.add_argument("--workers", type=int, default=0,
+                        help="oracle pool size (default: the machine's "
+                             "core count)")
+    parser.add_argument("--seed", type=int, default=0,
+                        help="single-duel seed for the `duel` command "
+                             "(default: 0)")
+    parser.add_argument("--rounds", type=int, default=100,
+                        help="round budget for the `duel` command "
+                             "(default: 100)")
     args = parser.parse_args()
 
     if args.command == "cards":

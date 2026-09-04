@@ -49,7 +49,8 @@ python tools/mordheim-utils.py combat-lab            # open the Combat Lab appli
 python tools/mordheim-utils.py warband-manager       # open the Campaign Manager application
 python tools/mordheim-utils.py verify                # run the semantic specifications
 python tools/mordheim-utils.py parity --require-complete
-python tools/mordheim-utils.py tests --scope engines # run the engine test suites
+python tools/mordheim-utils.py tests --scope engines       # run the engine test suites
+python tools/mordheim-utils.py tests --scope deterministic  # per-change engine gate (the deterministic suites of the coverage budget)
 python tools/mordheim-utils.py doctor                # environment, engines and KB location
 ```
 

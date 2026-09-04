@@ -1690,6 +1690,7 @@ cdef int parry_resolve_c(FighterC* defender, SourceC* src, int* hit_rows, int hi
             if (def_state.condition[row] == STANDING
                     and def_state.parry_remaining[row] > 0
                     and hit_strength[i] < 2 * def_state.strength[row]
+                    and (hit_values[i] != 6 or defender.parry_can_parry_six)
                     and sel_pos < selected_n and selected_rows[sel_pos] == row):
                 eligible[i] = 1
     else:
@@ -1700,7 +1701,8 @@ cdef int parry_resolve_c(FighterC* defender, SourceC* src, int* hit_rows, int hi
             row = hit_rows[i]
             if (def_state.condition[row] == STANDING
                     and def_state.parry_remaining[row] > 0
-                    and hit_strength[i] < 2 * def_state.strength[row]):
+                    and hit_strength[i] < 2 * def_state.strength[row]
+                    and (hit_values[i] != 6 or defender.parry_can_parry_six)):
                 eligible[i] = 1
                 count += 1
         if count:
@@ -2244,6 +2246,15 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
                 row = tmp_prep.hit_rows[i]
                 j = search_position_c(tmp_prep.active, tmp_prep.active_n, row)
                 any_c = tmp_prep.rolls[j]
+                # Mirror the modular oracle's offer-from-the-highest-downwards:
+                # a hit that can never be parried (a natural 6 without
+                # can_parry_six, a cannot_be_parried effect, or strength >= 2x
+                # the defender's strength) never owns a parry slot, so the slot
+                # lands on the best parryable hit.
+                if (any_c == 6 and not defender.parry_can_parry_six) \
+                        or tmp_prep.src.effect.v[<int>F_CANNOT_BE_PARRIED] \
+                        or tmp_prep.strength[j] >= 2 * s_def.strength[row]:
+                    continue
                 if any_c > best_roll[row]:
                     if two_parries:
                         second_roll[row] = best_roll[row]
@@ -2366,6 +2377,20 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
             defences_resolved = 1
         for index in range(prepared_count):
             tmp_prep = prepared[index][0]
+            # Mirror the modular oracle's per-attack rule: a defender that is
+            # STUNNED when this attack begins (stunned by an earlier attack of
+            # the same pool) is taken out instantly - no further hit, wound or
+            # injury rolls.  Preparation rolls every attack of the pool
+            # upfront, so the STUNNED check cannot live at prepare time; it
+            # runs here between resolutions.  Only a *landed* follow-up hit
+            # triggers it: the oracle skips the attack entirely when the
+            # pre-rolled hit missed, leaving the stunned defender in place
+            # until round recovery.
+            if index:
+                for i in range(tmp_prep.hit_n):
+                    row = tmp_prep.hit_rows[i]
+                    if s_def.condition[row] == STUNNED:
+                        s_def.condition[row] = OUT
             if resolve_weapon_c(d, atk_side, &tmp_prep.src, prepared[index], charging,
                                 s_atk, s_def, rng, first_round, phase_cond,
                                 defences_resolved, selected[index],
@@ -2472,9 +2497,13 @@ cdef int attack_count_c(FighterC* f, StateC* s, const int8_t* charging,
             result += 1
         if first_round:
             result += f.first_round_attacks_bonus
+        # Doubling is gated on the per-row frenzy state only.  The NumPy
+        # operator doubles unconditionally when no state array is supplied
+        # (its ``elif effect.frenzy`` default), but the driver always passes
+        # the state; that default must not resurface here or a frenzied
+        # fighter would regain doubled attacks after a knockdown cleared
+        # ``s.frenzy``.
         if s.frenzy[i]:
-            result *= 2
-        elif f.frenzy_effect:
             result *= 2
         if first_round and f.ferocious_charge and charging[i]:
             result *= 2

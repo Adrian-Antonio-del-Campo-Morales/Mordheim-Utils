@@ -62,9 +62,16 @@ def _parry_hits(defender: CompiledFighter, effect: EffectSet, hit_rows: np.ndarr
     parry |= has(defender.global_effects,"skill.shield-mastery") and bool(defender.off_hand and has(defender.off_hand,"defence.shield"))
     if not parry or hit_rows.size == 0:
         return hit_rows,np.empty(0,dtype=np.int64),np.ones(hit_rows.size,dtype=bool)
+    can_parry_six = has(defender.global_effects, "rule.blood-dragon-sword-master")
+    # Mirror the modular oracle: parry candidates are offered from the highest
+    # hit roll downwards, and a hit that can never be parried (a natural 6
+    # without can_parry_six, or strength >= 2x the defender's strength) is
+    # skipped *without consuming* parry capacity, so the parry is spent on the
+    # best parryable hit instead of being wasted on an unparryable one.
     eligible = ((defender_state.condition[hit_rows] == STANDING)
                 & (defender_state.parry_remaining[hit_rows] > 0)
-                & (hit_strength < 2 * defender_state.strength[hit_rows]))
+                & (hit_strength < 2 * defender_state.strength[hit_rows])
+                & ((hit_values != 6) | can_parry_six))
     if selected_rows is not None:
         # ``resolve_attacks`` has already selected the highest one or two hits
         # for each duel row across the complete attack pool. Repeating that
@@ -92,7 +99,6 @@ def _parry_hits(defender: CompiledFighter, effect: EffectSet, hit_rows: np.ndarr
     parry_success = parry_roll >= 4 if starblade else (
         (parry_roll >= hit_values) if match_allowed else (parry_roll > hit_values)
     )
-    can_parry_six = has(defender.global_effects, "rule.blood-dragon-sword-master")
     blockable_roll = (hit_values != 6) | can_parry_six
     blocked = eligible & blockable_roll & parry_success
     dwarf_axes = has(defender.main_weapon,"weapon.dwarf-axe") and bool(defender.off_hand and has(defender.off_hand,"weapon.dwarf-axe"))
@@ -709,21 +715,32 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
     selected = [np.zeros(0,dtype=np.int64) for _ in prepared_attacks]
     owner = np.full(charging.size,-1,dtype=np.int32)
     positions_by_attack: list[np.ndarray] = []
+    can_parry_six = has(defender.global_effects, "rule.blood-dragon-sword-master")
     for attack_index,prepared in enumerate(prepared_attacks):
         positions=np.searchsorted(prepared.active,prepared.hit_rows)
         positions_by_attack.append(positions)
         values=prepared.rolls[positions]
-        better=values>best_roll[prepared.hit_rows]
+        # Mirror the modular oracle's offer-from-the-highest-downwards: hits
+        # that can never be parried (natural 6 without can_parry_six,
+        # cannot_be_parried effects, strength >= 2x the defender's strength)
+        # never own a parry slot, so the slot lands on the best parryable hit.
+        competing=np.where(
+            ((values != 6) | can_parry_six)
+            & (not prepared.effect.cannot_be_parried)
+            & (prepared.strength[positions] < 2 * defender_state.strength[prepared.hit_rows]),
+            values, -1,
+        )
+        better=competing>best_roll[prepared.hit_rows]
         if two_parries:
             replaced_rows=prepared.hit_rows[better]
             second_roll[replaced_rows]=best_roll[replaced_rows]
             second_owner[replaced_rows]=owner[replaced_rows]
-            between=(~better) & (values>second_roll[prepared.hit_rows])
+            between=(~better) & (competing>second_roll[prepared.hit_rows])
             second_rows=prepared.hit_rows[between]
-            second_roll[second_rows]=values[between]
+            second_roll[second_rows]=competing[between]
             second_owner[second_rows]=attack_index
         chosen=prepared.hit_rows[better]
-        best_roll[chosen]=values[better]
+        best_roll[chosen]=competing[better]
         owner[chosen]=attack_index
     for attack_index in range(len(prepared_attacks)):
         selected[attack_index] = (
@@ -799,6 +816,21 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
                         observations.append(hug_observation)
         defences_resolved=True
     for attack_index,(prepared,parry_rows) in enumerate(zip(prepared_attacks,selected)):
+        # Mirror the modular oracle's per-attack rule: a defender that is
+        # STUNNED when an attack begins (stunned by an earlier attack of this
+        # same pool) is taken out instantly - no further hit, wound or injury
+        # rolls.  Preparation rolls every attack of the pool upfront, so the
+        # STUNNED check cannot live at prepare time; it must run here between
+        # resolutions.  Only a *landed* follow-up hit triggers it: the oracle
+        # skips the attack entirely when the pre-rolled hit missed
+        # (``if not prepared.hit: continue``), leaving the stunned defender
+        # in place until round recovery.
+        if attack_index:
+            stunned_mask = defender_state.condition == STUNNED
+            if stunned_mask.any():
+                follow_up_hits = np.zeros(defender_state.condition.size, dtype=bool)
+                follow_up_hits[prepared.hit_rows] = True
+                defender_state.condition[stunned_mask & follow_up_hits] = OUT
         observation = VectorAttackObservation() if observations is not None else None
         _resolve_weapon(attacker,defender,prepared.weapon,prepared.active,charging,
                         attacker_state,defender_state,rng,first_round,

@@ -104,6 +104,32 @@ can tell a defective engine apart from the oracle. Both are documented in the
 certification-sized from `CERTIFICATION_SIMULATIONS` (100 000 duels per
 engine); smaller samples are diagnostic.
 
+## Certification presets: `--level` and `--help-all`
+
+The everyday `--help` of `parity` and `benchmark` documents only the common
+options; sample sizing, sweep shapes and the historical mode flags stay
+accepted but are hidden from it. Select the tier with one flag, and keep the
+hidden knobs for tuning:
+
+- `python tools/mordheim-utils.py parity --level statistical` — exact checks
+  plus the aggregate six-sigma samples on the five standard scenarios
+  (equivalent to the historical `--statistical`).
+- `python tools/mordheim-utils.py parity --level deep` — exact checks plus
+  the archetype matrix and numpy↔native cross (historical `--deep`); add
+  `--truncations` for the orchestration horizons.
+- `python tools/mordheim-utils.py benchmark` — a single-configuration
+  measurement of all engines; the sweep/deep profiles and timing knobs are
+  available through `benchmark --help-all` and documented below.
+
+`parity --help-all` and `benchmark --help-all` print the full option set;
+the historical `--statistical` / `--deep` / `--deep-simulations` … flags keep
+working unchanged.
+
+The deterministic engine gate of every change runs in one shot with
+`python tools/mordheim-utils.py tests --scope deterministic` — the same
+suite selection the coverage gate measures (`modular + vectorized + phases +
+parity corpus`).
+
 ## Deep profiles: `parity --deep` and `benchmark --deep`
 
 Both tools ship a `--deep` mode for long-running, large-scale runs (hours are
