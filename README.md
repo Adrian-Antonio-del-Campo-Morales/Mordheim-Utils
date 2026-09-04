@@ -54,12 +54,24 @@ python tools/mordheim-utils.py doctor                # environment, engines and 
 ```
 
 The commands are `combat-lab`, `warband-manager`, `benchmark`, `parity`,
-`test-report`, `verify`, `audit`, `validate`, `tests` (with `--scope` filters
-and arbitrary pytest flags forwarded), `combine-kb`, `build-native` and
-`doctor`. Each one just runs the matching module or script (`python -m
+`test-report`, `verify`, `audit`, `validate`, `coverage-gate`, `tests` (with
+`--scope` filters and arbitrary pytest flags forwarded), `combine-kb`,
+`build-native` and `doctor`. Each one just runs the matching module or script (`python -m
 mordheim_combat_lab <command>` for the lab utilities, `python -m
 mordheim_campaign`, `python -m pytest`, `tools/kb/combine_kb_yaml.py`), so
 the underlying entry points remain callable directly and nothing drifts.
+
+#### Tab completion (bash / zsh)
+
+```powershell
+source tools/completions/mordheim-utils.bash   # add to ~/.bashrc (Git Bash works)
+source tools/completions/mordheim-utils.zsh    # add to ~/.zshrc
+```
+
+After sourcing, the `mordheim-utils` command runs the launcher and Tab
+completes the subcommand names plus, for every delegated lab command, its
+options and choice values — read live from the real argparse parsers, so the
+completion never drifts from `--help`.
 
 ### Combat Lab
 
@@ -80,9 +92,16 @@ semantic evidence; `verify --require-complete` is the strict gate. `audit`
 writes the per-rule status CSV to `outputs/audit/`. The executable report, not a
 figure copied here, is the source of the current status.
 
-`parity` certifies the vectorized engine against the modular one. `benchmark`
-measures engines with baselines and improvement/regression gates. `test-report`
-writes the human CSVs of parity and technical tests into `outputs/test-report/`.
+`parity` certifies the vectorized and native engines against the modular
+oracle — deterministic checks plus, with `--statistical`/`--deep`/`--truncations`,
+six-sigma samples over aggregate rates, the archetype matrix and round-truncation
+horizons. `benchmark` measures engines with baselines and
+improvement/regression gates. `test-report` writes the human CSVs of parity and
+technical tests into `outputs/test-report/`. `coverage-gate` checks the
+committed deterministic-coverage drift budget, and `tools/mutate-engine.py`
+runs the engine-mutation catalogue (kill/survive) against staged copies.
+How the layers fit together is documented in the
+[testing strategy](docs/testing-strategy.md).
 
 ### Campaign Manager
 

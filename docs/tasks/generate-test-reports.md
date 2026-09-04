@@ -6,7 +6,9 @@ The recommended human-readable report is produced with:
 python -m mordheim_combat_lab test-report
 ```
 
-The command runs semantic parity and the whole technical suite. It writes two
+The command runs semantic parity and the whole technical suite. A live progress
+bar tracks the semantic phase (one unit per specification) and the optional
+statistical samples; the `pytest` phase reports its own dots. It writes two
 files under `outputs/test-report/`:
 
 - `semantic-parity.csv`: the spec cases compared between the modular engine,
@@ -33,6 +35,7 @@ python -m mordheim_combat_lab test-report --statistical --statistical-simulation
 | `--statistical` | Adds the five statistical scenarios to the semantic CSV. |
 | `--statistical-simulations N` | Duels per engine and scenario; 100,000 by default. |
 | `--seed N` | Seed for the statistical comparisons. |
+| `--workers N\|auto` | Processes for the modular-oracle samples; see *Parallel oracle samples* below. |
 
 Without `--require-complete`, a pending item does not fail the command. A
 semantic divergence, a technical failure or a `pytest` error do produce a
@@ -87,9 +90,200 @@ To require full parity and save the machine certificate as JSON:
 python -m mordheim_combat_lab parity --require-complete --output outputs/parity/report.json
 ```
 
+Coverage of the deterministic layer is measured separately: `coverage-gate`
+runs the deterministic engine suites under `coverage` and fails when any line
+of the committed budget (`tests/fixtures/coverage/budget.json`) stops being
+exercised (regenerate with `tools/update-coverage-budget.py` after adding the
+tests that cover new code), and `tools/mutate-engine.py` applies the
+engine-mutation catalogue to staged copies to prove the deterministic tests
+can tell a defective engine apart from the oracle. Both are documented in the
+[testing strategy](../testing-strategy.md).
+
 `parity --statistical` runs the same aggregate comparisons as
-`test-report --statistical`. A sample below two million duels per engine is
-considered diagnostic, not a certification.
+`test-report --statistical`. The certificate counts a sample as
+certification-sized from `CERTIFICATION_SIMULATIONS` (100 000 duels per
+engine); smaller samples are diagnostic.
+
+## Deep profiles: `parity --deep` and `benchmark --deep`
+
+Both tools ship a `--deep` mode for long-running, large-scale runs (hours are
+acceptable). Both keep the modular engine on a short leash on purpose:
+
+- the modular oracle runs at roughly 1000 duels/s (about 76 duels/s on the
+  75-round `long` scenario), while the NumPy engine runs hundreds of
+  thousands of duels/s;
+- the six-sigma statistical gate is capped by the smaller of the two
+  samples, so running millions of duels on the modular engine buys no extra
+  evidence;
+- therefore the optimized engines are swept at scale and the modular oracle
+  is only sampled where its contribution is real.
+
+### `parity --deep` — deep certification
+
+```powershell
+python tools/mordheim-utils.py parity --deep
+```
+
+Runs the six-sigma certification over the **archetype matrix** (25 pairs:
+the five standard scenarios, profile/equipment archetypes covering glass
+cannons, brutes, elite fighters, tanks, dual weapons, parry duels and
+Ithilmar armour, and twelve mechanic-coverage pairs added 2026-09-04 for
+undead/sigmarite, regeneration vs fire, natural armour vs magic, pistols,
+concussion vs dwarfs, frenzy/always-strikes-first, paired poisoned blades,
+two-handed weapons, ward saves, unarmed combat, fragile injury profiles
+and entangle) and, when the native backend is compiled, the
+**numpy→native cross-certification at scale**:
+
+- `--deep-simulations` (default 100 000 per pair, 25 000 for the long
+  75-round pair): duels per matrix pair and engine; the modular sample is
+  computed once and shared by every backend. Passing the flag explicitly
+  applies the same count to every pair. It sizes the **matrix layer only** —
+  the numpy↔native cross layer keeps its own `--deep-cross-simulations`
+  default, so a small `--deep-simulations` smoke run still samples the cross
+  layer at 1 000 000 duels/pair unless you scale it down too (the CLI warns
+  about this when it happens).
+- `--deep-cross-simulations` (default 1 000 000): duels per pair for the
+  numpy→native comparison; never touches the modular engine.
+- `--max-modular-duels` (default 3 000 000): ceiling on the total modular
+  duels a single run may request (the default split needs 2 425 000 — 24
+  pairs at 100k plus the long 75-round pair at 25k). A plan above the
+  ceiling exits with code 2 before running anything.
+- Default run cost: roughly 2 425 000 modular duels (≈ 50–70 minutes
+  sequentially, or ≈ 8–12 minutes with the parallel oracle enabled; see below)
+  plus the cross layer when native is present.
+- Progress: `parity --deep` (and `parity --statistical`) render a live
+  progress bar; pass `--json` to suppress it. `benchmark --deep` shows the
+  same bar for every grid cell.
+- Output: `parity --deep` saves the certificate to
+  `outputs/parity/deep.json` by default (`.json`, or `.md` via `--output`);
+  the report gains a `deep` block with one sample per
+  pair (`reference_rates` vs `candidate_rates`, tolerances, pass) and, per
+  engine, the sample's wall time (`reference_seconds`, `candidate_seconds`);
+  console prints one `DEEP:` line per sample ending in
+  `(duels/engine; oracle X.XXs + numpy Y.YYs)`. Every run also records its
+  **total wall time** at the top level of the certificate
+  (`elapsed_seconds`), shown in the Markdown header and on the console as a
+  final `Elapsed: X.XXs` line. Exit-code semantics match `--statistical`: a
+  failing sample fails the run only with `--require-complete`.
+
+### Engine-level execution times in the certificate
+
+Every statistical and deep sample in the certificate reports the wall time
+of **each engine's sample** at engine level: `reference_seconds` is the
+modular oracle for statistical/matrix rows and NumPy for cross rows, and
+`candidate_seconds` is the certified backend (NumPy or native). The JSON
+rows carry them as raw floats, the Markdown tables add a
+`Time (oracle/cand, s)` / `Time (ref/cand, s)` column, and the console
+`STATISTICAL:`/`DEEP:` lines print them inline. The numbers measure the
+whole sample call, so a pooled sample (`--workers auto`) reports its
+accelerated wall time; sequential and pooled runs are otherwise
+bit-for-bit identical.
+
+The top-level `elapsed_seconds` in the certificate is the total wall time
+of the whole `parity` run (deterministic checks + samples + report
+writing); `test-report` prints the same total on its console summary.
+
+Current status of the shipped matrix (2026-09-04): a full certification
+run at 100k duels/pair exposed **six** drifting archetype pairs
+(`brute-vs-fencer` ~15 pp, `axes-vs-light`, `two-weapons-vs-parry`,
+`glass-vs-tank`, `stateful`, `elite-vs-durable`). Triage traced them to a
+single orchestration defect — the vectorized drivers derived each reply
+attack phase from the primary actor's rows, so a downed primary silently
+suppressed the standing opponent's attack (and its helpless auto-OOA).
+The fix landed in both the NumPy driver and the native Cython port
+(2026-09-04) and `brute-vs-fencer` converges to ≈0 pp at 30k duels; a
+fresh full certification is the authoritative confirmation.
+
+The matrix was then extended from 13 to 25 pairs with twelve
+mechanic-targeted pairs. A 10k-duel smoke shows NumPy matching the oracle
+on **all** of them (max gap ≈ 0.9 pp), but the native port still drifts
+5–9 pp on six mechanics it previously never exercised: `regen-vs-fire`,
+`natural-armour-vs-magic`, `concussion-vs-dwarf`, `paired-poison-vs-undead`,
+`great-weapon-vs-tank` and `entangle-vs-fencer` (plus ≈5 pp on
+`frenzy-vs-heavy`). Those native gaps are the next triage targets; NumPy
+rows of the same pairs are already clean.
+
+### Round-truncation samples (`--truncations`)
+
+The aggregate gate compares only the duel *end state*; orchestration defects
+— wrong acting order, a suppressed reply phase, a stateful recovery resolved
+at the wrong moment — shift *when* duels resolve without necessarily moving
+the final winner rates past the gate. `parity --truncations` re-applies the
+six-sigma gate at every horizon (2, 4, 6, 8, 10, 12, 15, 20 rounds) on the
+five standard scenarios: both engines run each pair truncated to `h` rounds
+and rows are labelled `<scenario>@rounds=<h>` so a failing horizon names the
+round where the divergence starts.
+
+```powershell
+python -m mordheim_combat_lab parity --truncations
+python -m mordheim_combat_lab parity --truncations --truncation-simulations 50000 --workers auto
+```
+
+| Option | Use |
+| --- | --- |
+| `--truncations` | Add the round-truncation samples to the certificate. |
+| `--truncation-simulations N` | Duels per engine, scenario and horizon; 10 000 by default. |
+
+Truncation samples count towards `--require-complete` and appear in the
+certificate's `truncations` block (schema `mordheim-combat-parity/v2`).
+Outcome after exactly `h` rounds is engine-agnostic by construction — a duel
+that has not resolved by the horizon counts as unresolved in both drivers —
+so no round-counting convention leaks into the comparison. See
+[the testing strategy](../testing-strategy.md) for why per-duel resolution
+rounds are *not* comparable and were replaced by this sweep.
+
+### Parallel oracle samples (`--workers`)
+
+The scalar oracle is the bottleneck of every certification run and is
+embarrassingly parallel by construction: duel `i` runs on its own
+`SeededDice(seed + i)` stream and the outcome counts are additive, so a
+process pool over contiguous duel chunks reproduces the sequential oracle
+**duel for duel** — certificates are bit-for-bit identical whatever the pool
+size. `parity --deep`, `parity --statistical` and
+`test-report --statistical` accept:
+
+- `--workers auto` (default): pool only the samples whose estimated
+  sequential runtime exceeds ~20 s (a smoke run with 2 000 duels stays
+  sequential; the 100k/25k deep samples are pooled).
+- `--workers N`: force a pool of `N` processes for every oracle sample
+  (`1` disables it).
+- The default can be set once per shell with
+  `MORDHEIM_PARALLEL_ORACLE_WORKERS` (e.g. `8` or `auto`).
+
+`benchmark` intentionally has no such option: its modular cells are
+*measurements* of the engine's single-process throughput, and pooling them
+would make the medians and baseline comparisons meaningless. The oracle
+samples of `parity`/`test-report` are evidence gathering, not measurement,
+so they may be pooled freely.
+
+### `benchmark --deep` — deep performance characterization
+
+```powershell
+python tools/mordheim-utils.py benchmark --deep
+```
+
+Sweeps the optimized engines (NumPy and, when compiled, native) over large
+simulation counts and batch sizes while measuring the modular engine **only
+at a small reference size**:
+
+- `--deep-simulation-sizes` (default `10k,100k,500k,1M,5M`) and
+  `--deep-batch-sizes` (default `25k,100k,200k,500k`) size the
+  vectorized grid; override with the regular `--simulation-sizes` /
+  `--batch-sizes` flags.
+- `--deep-modular-simulations` (default 10 000): the modular reference point
+  per scenario; never included in the large grid.
+- Scenario and backend filters apply (`--scenario`, `--backend numpy` …);
+  `--backend modular` alone is rejected (exit 2) because deep mode is about
+  the optimized engines. The baseline/gate flags are not combinable with
+  `--deep`.
+- When native is not compiled it is reported as unavailable and skipped;
+  the report payload marks `"mode": "deep"` and records the modular
+  reference size.
+- `--deep` saves the report to `outputs/benchmarks/deep.json` by default;
+  pass `--output` to choose another path or format (.json, .csv or .md).
+- Runtime scales with the largest simulation size: keep the top size and
+  the number of batch sizes proportional to the question you are answering.
+  The modular contribution stays negligible.
 
 To measure performance without certifying rules:
 

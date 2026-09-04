@@ -67,6 +67,11 @@ rebuilt; it is incorporated while reviewing each specification.
 4. Declare exact dice and decisions; use fractions for distributions.
 5. Add a mutation detected by behaviour, not only by the same compiled field.
 6. Run `python -m pytest tests/verification/test_semantics.py -q` and `python -m mordheim_combat_lab verify --json`.
+7. When the new evidence reaches the interaction matrix, certify the
+   vectorized/native engines against the modular oracle with
+   `python tools/mordheim-utils.py parity --require-complete` — a new spec
+   exercises the same case operations on the vectorized engine and must show
+   `PASS`, not `PENDING_ADAPTER` or `DIVERGENCE`.
 
 If a ruling is missing, mark it pending. Done when the obligation, dependencies, interactions and mutations are approved.
 
@@ -127,4 +132,15 @@ overrides:
 
 An override is a reviewed semantic decision, not a mechanism to make the report
 pass. It must explain why a generic composition, an incompatibility or an
-existing test covers the pair.
+existing test covers the pair. Since 2026-09-04 the file carries the ten
+`illegal` body-armour × body-armour entries: each names two bindings that can
+never be granted to one fighter (a single `armour_id` slot per `FighterBuild`)
+and records the construction evidence instead of a pair spec.
+
+Pairs that are not overridden are closed by authored interaction specs
+(`semantic/interactions/`), one per pair, with composition + boundary cases
+and a detected mutation. As of 2026-09-04 the matrix is complete:
+`verify` reports 217/217 required interactions covered, 0 required pending,
+and `parity` reports 0 divergences. The per-cluster case patterns and the
+triage that produced the overrides are documented in the
+[interaction matrix](../interaction-matrix.md).

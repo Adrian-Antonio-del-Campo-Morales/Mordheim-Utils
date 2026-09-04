@@ -11,6 +11,18 @@ Start with the [Project structure](structure.md) and the
 - [Modify the application](tasks/modify-application.md)
 - [Develop and distribute](tasks/develop-and-release.md)
 
+Reference guides:
+
+- [Knowledge base guide](knowledge-base-guide.md) — layout of
+  `sources/knowledge/` and how a rule flows from YAML to the engines
+- [Interaction matrix](interaction-matrix.md) — how every required
+  interaction pair of the verification gate is covered (case patterns per
+  cluster, triage and policy overrides)
+- [Testing strategy](testing-strategy.md) — the layered verification of the
+  duel engines: deterministic per-rule and whole-duel evidence, the coverage
+  drift gate, engine mutation, and when the statistical pairs are worth their
+  cost
+
 Application-specific documents:
 
 - [Mordheim Combat Lab verification corpus](../tests/specs/README.md)
