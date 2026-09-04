@@ -1,7 +1,9 @@
 from mordheim_combat_lab.verification.parity import verify_vectorized_parity
 from mordheim_combat_lab.verification.parity import compare_statistical_parity
 from mordheim_combat_lab.verification.parity import certify_deep
+from mordheim_combat_lab.verification.parity import escalation_plan
 from mordheim_combat_lab.verification.parity import DeepPair
+from mordheim_combat_lab.verification.parity import StatisticalParityResult
 from mordheim_combat_lab.verification.parity import ParityReport
 from mordheim_combat_lab.verification.parity import parity_report_markdown
 from mordheim_combat_lab.verification.parity import parity_report_payload
@@ -34,9 +36,9 @@ def test_parity_inventory_covers_fields_tags_and_complex_sequences():
 
 def test_semantic_specs_are_reused_as_a_case_level_parity_inventory():
     report = verify_specification_parity()
-    assert len(report.cases) == 3727
+    assert len(report.cases) == 3730
     assert report.divergences == ()
-    assert len(report.passed) == 3724
+    assert len(report.passed) == 3727
     assert len(report.pending) == 3
     assert report.out_of_scope == ()
     assert {item.status for item in report.cases} <= {
@@ -239,3 +241,114 @@ def test_deep_payload_exposes_samples_and_passes_only_when_all_pass():
     markdown = parity_report_markdown(payload)
     assert "## Deep certification samples" in markdown
     assert "matrix:basic" in markdown
+
+
+def _synthetic_row(label, backend, modular, vector, n):
+    """StatisticalParityResult computed from rates with the six-sigma gate."""
+    import math
+    tolerances = tuple(
+        max(.0025, 6 * math.sqrt(m * (1 - m) / n + v * (1 - v) / n))
+        for m, v in zip(modular, vector)
+    )
+    passed = all(
+        abs(left - right) <= tolerance
+        for left, right, tolerance in zip(modular, vector, tolerances)
+    )
+    return StatisticalParityResult(
+        scenario=label, backend=backend, simulations=n,
+        modular_rates=modular, vectorized_rates=vector,
+        tolerances=tolerances, passed=passed,
+    )
+
+
+def _prepared_matrix():
+    """Four DeepPairs whose first-pass samples cover the trigger bands."""
+    import math
+    pair = _single_deep_pair()
+    delta4 = 4 * math.sqrt(2 * .25 / 10_000)   # exactly four sigma at p=.5
+    delta7 = 7 * math.sqrt(2 * .25 / 10_000)   # conclusive, above six sigma
+    first, second = pair.first, pair.second
+    prepared = tuple(
+        (DeepPair(label, first, second, 50, simulations=10_000), 10_000, None)
+        for label in ("border", "grind", "broken", "clean")
+    )
+    samples = (
+        _synthetic_row("matrix:border", "numpy", (0.5, 0.5, 0.0),
+                       (0.5 + delta4, 0.5 - delta4, 0.0), 10_000),
+        _synthetic_row("matrix:grind", "numpy", (0.3, 0.3, 0.4),
+                       (0.3, 0.3, 0.4), 10_000),
+        _synthetic_row("matrix:broken", "numpy", (0.5, 0.5, 0.0),
+                       (0.5 + delta7, 0.5 - delta7, 0.0), 10_000),
+        _synthetic_row("matrix:clean", "numpy", (0.5, 0.5, 0.0),
+                       (0.5 + math.sqrt(2 * .25 / 10_000),
+                        0.5 - math.sqrt(2 * .25 / 10_000), 0.0), 10_000),
+    )
+    return prepared, samples
+
+
+def test_escalation_plan_marks_suspicious_and_unresolved_pairs():
+    prepared, samples = _prepared_matrix()
+    plan = escalation_plan(
+        prepared, samples, factor=2, sigma=3.0, unresolved=0.01,
+        remaining=None,
+    )
+    # The 4-sigma pair (doubling decides defect vs noise) and the
+    # unresolved-prone pair escalate; the conclusive 7-sigma failure and the
+    # clean 1-sigma pair stay at the base sample.
+    assert {label: size for label, size in
+            ((item.label, size) for item, size in plan)} == {
+        "border": 20_000, "grind": 20_000,
+    }
+    assert [item.label for item, _ in plan] == ["border", "grind"]
+
+
+def test_escalation_plan_respects_the_modular_ceiling():
+    prepared, samples = _prepared_matrix()
+    plan = escalation_plan(
+        prepared, samples, factor=2, sigma=3.0, unresolved=0.01,
+        remaining=10_000,
+    )
+    # Only the highest-priority pair fits in the remaining budget.
+    assert [item.label for item, _ in plan] == ["border"]
+
+
+def test_certify_deep_escalates_and_clamps_to_the_ceiling():
+    pair = _single_deep_pair()
+    pairs = tuple(
+        DeepPair(label, pair.first, pair.second, 50, simulations=60)
+        for label in ("a", "b", "c")
+    )
+    samples, modular_duels = certify_deep(
+        pairs, simulations=10, cross_simulations=100, seed=3,
+        native_installed=False, escalate=True, escalate_sigma=0.0,
+        max_modular_duels=240,
+    )
+    # Base 180 duels; exactly one pair fits an escalation to 120 under the
+    # 240-duel ceiling (tie-breaks keep insertion order: "a").
+    assert {row.scenario: row.simulations for row in samples} == {
+        "matrix:a": 120, "matrix:b": 60, "matrix:c": 60,
+    }
+    assert sum(row.escalated for row in samples) == 1
+    escalated = next(row for row in samples if row.escalated)
+    assert escalated.scenario == "matrix:a"
+    assert escalated.simulations == 120
+    assert modular_duels == 240
+    payload = parity_report_payload(
+        ParityReport(complete=True, obligations=(), verified=(),
+                     pending=(), divergences=(), exact_checks=()),
+        deep=samples,
+    )
+    row = next(item for item in payload["deep"]["samples"]
+               if item["scenario"] == "matrix:a")
+    assert row["escalated"] is True
+
+
+def test_certify_deep_does_not_escalate_by_default():
+    pair = _single_deep_pair()
+    samples, modular_duels = certify_deep(
+        (pair,), simulations=60, cross_simulations=100, seed=3,
+        native_installed=False,
+    )
+    assert modular_duels == 60
+    assert all(not row.escalated for row in samples)
+

@@ -19,6 +19,8 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from collections.abc import Iterable
+from dataclasses import replace
+import math
 import time
 
 from mordheim_combat import vectorized
@@ -54,12 +56,74 @@ def _backend_sample(label: str, pair: DeepPair, simulations: int, seed: int,
     )
 
 
+def _rate_sigma(row: StatisticalParityResult) -> float:
+    """Worst deviation across the three outcome rates, in sigma units."""
+    worst = 0.0
+    for left, right in zip(row.modular_rates, row.vectorized_rates):
+        variance = (
+            left * (1 - left) / row.simulations
+            + right * (1 - right) / row.simulations
+        )
+        if variance > 0:
+            worst = max(worst, abs(left - right) / math.sqrt(variance))
+    return worst
+
+
+def _pair_unresolved_rate(row: StatisticalParityResult) -> float:
+    """Highest unresolved rate across the two engines for one row."""
+    return max(row.modular_rates[2], row.vectorized_rates[2])
+
+
+def escalation_plan(
+    prepared, samples, *, factor: int, sigma: float, unresolved: float,
+    remaining: int | None,
+):
+    """Pick the pairs that deserve a larger oracle sample, in priority order.
+
+    A pair is escalated when the first-pass comparison is suspicious
+    (``sigma <= pair_sigma < 6`` -- the band where doubling the sample
+    decides between a real defect and noise) or when its unresolved rate
+    shows the timing-prone profile the flat gate is blind to (the
+    ``elite-vs-durable`` class).  Conclusive failures (six sigma or above)
+    are not re-run: the defect is already established.  Escalated sizes are
+    ``base * factor``, allocated greedily in priority order (most
+    suspicious first) until ``remaining`` duels run out; pairs that do not
+    fit stay at the base sample.  Returns ``(pair, new_size)`` tuples.
+    """
+    plan = []
+    sizes = {}
+    for pair, size, _ in prepared:
+        sizes[pair.label] = size
+        rows = [row for row in samples if row.scenario == f"matrix:{pair.label}"]
+        if not rows:
+            continue
+        worst = max(_rate_sigma(row) for row in rows)
+        unresolved_rate = max(_pair_unresolved_rate(row) for row in rows)
+        if not (sigma <= worst < 6.0 or unresolved_rate >= unresolved):
+            continue
+        plan.append((pair, sizes[pair.label] * factor, worst, unresolved_rate))
+    plan.sort(key=lambda item: (-item[2], -item[3]))
+    chosen = []
+    budget = remaining
+    for pair, new_size, _worst, _unresolved in plan:
+        extra = new_size - sizes[pair.label]
+        if budget is not None:
+            if extra > budget:
+                continue
+            budget -= extra
+        chosen.append((pair, new_size))
+    return tuple(chosen)
+
+
 def certify_deep(
     pairs: Iterable[DeepPair], *,
     simulations: int, cross_simulations: int, seed: int,
     native_installed: bool,
     on_progress: Callable[[], None] | None = None,
     workers: object | None = None,
+    escalate: bool = False, escalation_factor: int = 2,
+    escalate_sigma: float = 3.0, escalate_unresolved: float = 0.01,
+    max_modular_duels: int | None = None,
 ) -> tuple[tuple[StatisticalParityResult, ...], int]:
     """Certify the deep matrix.
 
@@ -77,6 +141,16 @@ def certify_deep(
     to the sequential path whatever the policy.  When any pair is pooled, a
     single shared executor serves every pair so the workers spawn once per
     run rather than once per sample.
+
+    ``escalate`` enables adaptive per-pair re-certification: pairs whose
+    first pass is suspicious (three to just under six sigma) or timing-prone
+    (unresolved rate at or above ``escalate_unresolved``) are re-run at
+    ``escalation_factor`` times the base sample, bounded by
+    ``max_modular_duels`` (``None`` leaves the escalation unbounded).
+    Duels are seeded per index, so a larger sample with the same seed is a
+    superset of the smaller one: the base duels are not wasted and
+    ``modular_duels`` counts the final (escalated) sizes.  Escalated matrix
+    rows carry ``escalated=True``.
     """
     from mordheim_combat.modular.parallel import resolve_oracle_workers
     from mordheim_combat.modular.parallel import run_oracle_sample
@@ -134,6 +208,42 @@ def certify_deep(
                     f"cross:{label}", pair, cross_simulations, seed, "native",
                     reference=numpy_reference, reference_seconds=cross_seconds,
                 ))
+                if on_progress is not None:
+                    on_progress()
+        if escalate:
+            base_duels = sum(size for _, size, _ in prepared)
+            remaining = (
+                None if max_modular_duels is None
+                else max_modular_duels - base_duels
+            )
+            for pair, new_size in escalation_plan(
+                prepared, samples, factor=escalation_factor,
+                sigma=escalate_sigma, unresolved=escalate_unresolved,
+                remaining=remaining,
+            ):
+                label = pair.label
+                chosen = resolve_oracle_workers(
+                    workers, new_size, pair.maximum_rounds)
+                oracle_started = time.perf_counter()
+                modular = run_oracle_sample(
+                    pair.first, pair.second, new_size, seed=seed,
+                    maximum_rounds=pair.maximum_rounds,
+                    workers=chosen, executor=executor,
+                )
+                oracle_seconds = time.perf_counter() - oracle_started
+                base_size = pair.simulations if pair.simulations is not None else simulations
+                modular_duels += new_size - base_size
+                replacement = [
+                    _backend_sample(
+                        f"matrix:{label}", pair, new_size, seed, "numpy",
+                        reference=modular, reference_seconds=oracle_seconds)]
+                if native_installed:
+                    replacement.append(_backend_sample(
+                        f"matrix:{label}", pair, new_size, seed, "native",
+                        reference=modular, reference_seconds=oracle_seconds))
+                replacement = [replace(row, escalated=True) for row in replacement]
+                samples = [row for row in samples
+                           if row.scenario != f"matrix:{label}"] + replacement
                 if on_progress is not None:
                     on_progress()
     finally:

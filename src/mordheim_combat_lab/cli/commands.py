@@ -481,23 +481,35 @@ def parity_command(args) -> int:
             native_installed="native" in installed,
             on_progress=progress.advance if progress is not None else None,
             workers=args.workers,
+            escalate=True,
+            max_modular_duels=args.max_modular_duels,
         )
         if progress is not None:
             progress.finish()
     truncation_samples = ()
     if args.truncations:
         from mordheim_combat_lab.verification.parity import TRUNCATION_HORIZONS
-        truncation_samples = tuple(
-            row
-            for scenario in benchmark_scenarios()
-            for row in compare_truncation_parity(
-                scenario.id,
+        truncation_progress = None if args.json else BenchmarkProgress(
+            len(deep_test_scenarios()) * len(TRUNCATION_HORIZONS)
+        )
+        rows: list = []
+        for scenario in deep_test_scenarios():
+            first, second = (
                 compile_fighter(scenario.first), compile_fighter(scenario.second),
+            )
+            for row in compare_truncation_parity(
+                scenario.id, first, second,
                 args.truncation_simulations, seed=args.seed,
                 maximum_rounds=scenario.maximum_rounds,
                 horizons=TRUNCATION_HORIZONS,
-            )
-        )
+                workers=args.workers,
+                on_progress=(truncation_progress.advance
+                             if truncation_progress is not None else None),
+            ):
+                rows.append(row)
+        if truncation_progress is not None:
+            truncation_progress.finish()
+        truncation_samples = tuple(rows)
     complete = (
         report.complete and specification_report.complete
         and all(item.passed for item in statistical)
@@ -556,6 +568,18 @@ def parity_command(args) -> int:
                     f"DEEP: modular oracle {modular_duels:,} duels across the "
                     "archetype matrix; cross-backend certification skipped "
                     "(native backend is not compiled in this environment)"
+                )
+            escalated = {
+                row.scenario[len("matrix:"):]: row.simulations
+                for row in deep_samples if row.escalated
+            }
+            if escalated:
+                detail = ", ".join(
+                    f"{label} ({size:,})" for label, size in sorted(escalated.items())
+                )
+                print(
+                    f"DEEP: escalated {len(escalated)} pair(s) to larger "
+                    f"samples: {detail}"
                 )
             for item in deep_samples:
                 print(
@@ -965,7 +989,7 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
         default="deterministic", metavar="LEVEL",
         help="preset: deterministic (default) runs the exact checks only; "
              "statistical adds the aggregate six-sigma samples on the five "
-             "standard scenarios; deep runs the 25-pair archetype matrix plus "
+             "standard scenarios; deep runs the full archetype matrix plus "
              "the numpy<->native cross at scale (equivalent to the historical "
              "--statistical / --deep flags)",
     )
@@ -984,7 +1008,10 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
         "--deep-simulations", type=_positive, default=None, metavar="DUELS",
         help="duels per archetype pair and engine in --deep mode; defaults to "
              "100 000 per pair, or 25 000 for the long 75-round pair; an "
-             "explicit value applies to every pair",
+             "explicit value applies to every pair.  Pairs that come back "
+             "suspicious (3-6 sigma) or timing-prone (1%%+ unresolved) are "
+             "re-certified at twice the sample while the "
+             "--max-modular-duels budget allows",
     )
     parity_samples.add_argument("--deep-cross-simulations", type=_positive, default=1_000_000,
                                 metavar="DUELS",
@@ -993,12 +1020,13 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
     parity_samples.add_argument("--max-modular-duels", type=_positive, default=3_000_000,
                                 metavar="DUELS",
                                 help="ceiling for the total modular-oracle duels a --deep "
-                                     "run may ask for (the default split needs 2 425 000)")
+                                     "run may ask for (the default split needs 2 850 000, plus any "
+             "adaptive escalation within the same ceiling)")
     parity_samples.add_argument(
         "--truncations", action="store_true",
         help="add round-truncation outcome samples: the six-sigma gate is "
              "reapplied at every horizon (2, 4, 6, 8, 10, 12, 15, 20 rounds) on "
-             "the five standard scenarios, so orchestration defects that only "
+             "every deep-matrix pair, so orchestration defects that only "
              "shift *when* duels resolve become visible",
     )
     parity_samples.add_argument(
