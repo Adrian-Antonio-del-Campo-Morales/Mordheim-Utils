@@ -21,6 +21,16 @@ def load_phase_verification(ruleset: str = "mordheim", root: Path | None = None)
     return document
 
 
+def load_interaction_policy(root: Path | None = None) -> dict | None:
+    """Return the interaction policy document, or None when the corpus has none.
+
+    The policy is a corpus-level artifact (sibling of the semantic fixtures); a
+    root without one audits with the built-in default policy and no overrides.
+    """
+    path = specifications_root(root) / "interaction-policy.yaml"
+    return read_yaml(path) if path.exists() else None
+
+
 def load_fixtures(root: Path | None = None) -> tuple[dict, ...]:
     root = specifications_root(root)
     if not (root / "semantic").is_dir():

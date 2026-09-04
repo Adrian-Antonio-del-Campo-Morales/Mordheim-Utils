@@ -1,9 +1,12 @@
 """Development and application commands; heavy imports stay local."""
 from argparse import ArgumentParser
+from argparse import HelpFormatter
 from dataclasses import asdict
 from pathlib import Path
 import json
+import os
 import sys
+import time
 
 
 def _positive(value: str) -> int:
@@ -18,6 +21,43 @@ def _percentage(value: str) -> float:
     if not 0 <= parsed <= 100:
         raise ValueError("percentage must be between 0 and 100")
     return parsed
+
+
+def _warmups(value: str) -> int:
+    """Warm-up count for benchmark runs (0-100)."""
+    parsed = int(value)
+    if not 0 <= parsed <= 100:
+        raise ValueError("warm-ups must be between 0 and 100")
+    return parsed
+
+
+def _oracle_workers(value: str) -> int | None:
+    """Worker policy for the modular-oracle samples.
+
+    ``auto`` (the default) pools only the samples whose estimated sequential
+    runtime exceeds the parallel gate; an explicit positive integer forces
+    that pool size; ``1`` stays sequential.
+    """
+    if value.casefold() == "auto":
+        return None
+    parsed = int(value)
+    if parsed < 1:
+        raise ValueError("workers must be at least one")
+    return parsed
+
+
+def _parity_sample_timing(item) -> str:
+    """Engine-level wall times for one statistical/deep parity sample line.
+
+    ``reference`` is the modular oracle for statistical/matrix rows and NumPy
+    for the numpy<->native cross rows; the candidate is the certified engine.
+    """
+    reference = "numpy" if item.scenario.startswith("cross:") else "oracle"
+    return (
+        f"({item.simulations:,} duels/engine; "
+        f"{reference} {item.reference_seconds:.2f}s + "
+        f"{item.backend} {item.candidate_seconds:.2f}s)"
+    )
 
 
 def validate_command(args) -> int:
@@ -101,6 +141,77 @@ def verify_command(args) -> int:
                     args.require_complete and not semantic.semantic_complete))
 
 
+def _deep_benchmark_command(args, scenarios, installed) -> int:
+    """Deep benchmark: modular as a small reference, optimized engines swept
+    over large sizes and batch sizes (see deep_benchmark_plan for the policy)."""
+    if not args.output:
+        args.output = "outputs/benchmarks/deep.json"
+    from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
+    from mordheim_combat_lab.cli.benchmarking import deep_benchmark_plan
+    from mordheim_combat_lab.cli.benchmarking import print_deep_benchmark_header
+    from mordheim_combat_lab.cli.benchmarking import print_sweep_table
+    from mordheim_combat_lab.cli.benchmarking import run_benchmark
+    from mordheim_combat_lab.cli.benchmarking import sweep_payload
+    from mordheim_combat_lab.cli.benchmarking import write_report
+    from mordheim_combat_lab.cli.benchmarking import parse_sizes
+
+    vector_sizes = parse_sizes(
+        args.simulation_sizes if args.simulation_sizes else args.deep_simulation_sizes, 10_000)
+    batch_sizes = parse_sizes(
+        args.batch_sizes if args.batch_sizes else args.deep_batch_sizes, 4_000)
+    backends = ("numpy", "native") if args.backend == "all" else (args.backend,)
+    plan = deep_benchmark_plan(
+        scenarios, vector_sizes=vector_sizes, batch_sizes=batch_sizes,
+        modular_simulations=args.deep_modular_simulations,
+        backends=backends, installed=installed,
+    )
+    if not plan.vector_backends:
+        print("Benchmark configuration error: no optimized backend available "
+              "for --deep (requested backends are not compiled in this environment)",
+              file=sys.stderr)
+        return 2
+    by_id = {scenario.id: scenario for scenario in scenarios}
+    progress = None if args.json else BenchmarkProgress(len(plan.runs))
+    results = []
+    unavailable = list(plan.excluded)
+    for scenario_id, backend, simulations, batch_size in plan.runs:
+        try:
+            results.append(run_benchmark(
+                by_id[scenario_id], simulations=simulations, batch_size=batch_size,
+                seed=args.seed, backend=backend,
+                warmups=0 if backend == "modular" else args.warmups,
+                repeats=1 if backend == "modular" else args.repeats,
+                on_progress=progress.advance if progress is not None else None,
+            ))
+        except RuntimeError as error:
+            unavailable.append({"scenario": scenario_id, "backend": backend,
+                                "reason": str(error)})
+    if progress is not None:
+        progress.finish()
+    payload = sweep_payload(
+        results, unavailable, simulation_sizes=vector_sizes,
+        batch_sizes=batch_sizes, seed=args.seed, warmups=args.warmups,
+        repeats=args.repeats,
+    )
+    payload["mode"] = "deep"
+    payload["modular_reference_simulations"] = plan.modular_simulations
+    if args.output:
+        write_report(Path(args.output), payload)
+    if args.json:
+        print(json.dumps(payload, ensure_ascii=True, indent=2))
+    else:
+        print_deep_benchmark_header(plan)
+        print_sweep_table(
+            results, unavailable, simulation_sizes=vector_sizes,
+            batch_sizes=batch_sizes, seed=args.seed, repeats=args.repeats,
+        )
+        for entry in plan.excluded:
+            print(f"{entry['backend']} not available: {entry['reason']}")
+        if args.output:
+            print(f"Report: {Path(args.output).resolve()}")
+    return 0
+
+
 def benchmark_command(args) -> int:
     from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
     from mordheim_combat_lab.cli.benchmarking import benchmark_payload
@@ -117,8 +228,17 @@ def benchmark_command(args) -> int:
     from mordheim_combat_lab.cli.benchmarking import write_report
     from mordheim_combat.vectorized import available_backends
 
+    if args.deep and (args.baseline or args.save_baseline or args.require_improvement):
+        print("Benchmark configuration error: --deep cannot be combined with "
+              "--baseline/--save-baseline/--require-improvement", file=sys.stderr)
+        return 2
+    if args.deep and args.backend == "modular":
+        print("Benchmark configuration error: --deep measures the optimized engines; "
+              "the modular oracle is included only as a small reference point",
+              file=sys.stderr)
+        return 2
     sweep = args.simulation_sizes is not None or args.batch_sizes is not None
-    if sweep and (args.baseline or args.save_baseline or args.require_improvement):
+    if sweep and not args.deep and (args.baseline or args.save_baseline or args.require_improvement):
         print("Benchmark configuration error: --baseline/--save-baseline and "
               "--require-improvement apply to single-configuration runs only",
               file=sys.stderr)
@@ -131,8 +251,10 @@ def benchmark_command(args) -> int:
     scenarios = benchmark_scenarios()
     if args.scenario != "all":
         scenarios = tuple(item for item in scenarios if item.id == args.scenario)
-    backends = ("modular", "numpy", "native") if args.backend == "all" else (args.backend,)
     installed = available_backends()
+    if args.deep:
+        return _deep_benchmark_command(args, scenarios, installed)
+    backends = ("modular", "numpy", "native") if args.backend == "all" else (args.backend,)
     runnable_backends = tuple(
         backend for backend in backends
         if backend != "native" or backend in installed
@@ -236,9 +358,15 @@ def benchmark_command(args) -> int:
 
 
 def parity_command(args) -> int:
+    if args.deep and not args.output:
+        args.output = "outputs/parity/deep.json"
+    started = time.perf_counter()
+    from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
     from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
+    from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
     from mordheim_construction.compiler import compile_fighter
     from mordheim_combat_lab.verification.parity import compare_statistical_parity
+    from mordheim_combat_lab.verification.parity import compare_truncation_parity
     from mordheim_combat_lab.verification.parity import parity_report_markdown
     from mordheim_combat_lab.verification.parity import parity_report_payload
     from mordheim_combat_lab.verification.parity import verify_vectorized_parity
@@ -248,10 +376,12 @@ def parity_command(args) -> int:
     specification_report = verify_specification_parity()
     statistical = ()
     if args.statistical:
+        from mordheim_combat.modular.parallel import resolve_oracle_workers
+        from mordheim_combat.modular.parallel import run_oracle_sample
         from mordheim_combat.vectorized import available_backends
-        from mordheim_combat.modular.duel import simulate_duel_reference
 
         installed = available_backends()
+        progress = None if args.json else BenchmarkProgress(len(benchmark_scenarios()))
         samples: list = []
         for scenario in benchmark_scenarios():
             first, second = (
@@ -259,25 +389,123 @@ def parity_command(args) -> int:
             )
             # One modular oracle sample certifies every optimized candidate;
             # `backend` records which engine produced each comparison.
-            modular = simulate_duel_reference(
+            oracle_started = time.perf_counter()
+            modular = run_oracle_sample(
                 first, second, args.statistical_simulations, seed=args.seed,
                 maximum_rounds=scenario.maximum_rounds,
+                workers=resolve_oracle_workers(
+                    args.workers, args.statistical_simulations,
+                    scenario.maximum_rounds,
+                ),
             )
+            oracle_seconds = time.perf_counter() - oracle_started
             samples.append(compare_statistical_parity(
                 scenario.id, first, second, args.statistical_simulations, seed=args.seed,
                 maximum_rounds=scenario.maximum_rounds, modular=modular, backend="numpy",
+                reference_seconds=oracle_seconds,
             ))
             if "native" in installed:
                 samples.append(compare_statistical_parity(
                     scenario.id, first, second, args.statistical_simulations, seed=args.seed,
                     maximum_rounds=scenario.maximum_rounds, modular=modular, backend="native",
+                    reference_seconds=oracle_seconds,
                 ))
+            if progress is not None:
+                progress.advance()
+        if progress is not None:
+            progress.finish()
         statistical = tuple(samples)
+    deep_samples, modular_duels = (), 0
+    deep_native_installed = False
+    if args.deep:
+        from mordheim_combat.vectorized import available_backends
+        from mordheim_combat_lab.verification.parity import DeepPair
+        from mordheim_combat_lab.verification.parity import certify_deep
+
+        installed = available_backends()
+        deep_native_installed = "native" in installed
+        if (args.deep_simulations is not None
+                and args.deep_simulations <= 10_000
+                and args.deep_cross_simulations == 1_000_000
+                and deep_native_installed):
+            print(
+                "Note: --deep-simulations sizes the matrix samples (modular "
+                "oracle + backends); the numpy<->native cross layer still runs "
+                f"at the default {args.deep_cross_simulations:,} duels/pair, "
+                "which dominates smoke runs once the matrix is small. Pass "
+                "--deep-cross-simulations to scale it down too.",
+                file=sys.stderr,
+            )
+        pairs = tuple(
+            DeepPair(
+                scenario.id,
+                compile_fighter(scenario.first),
+                compile_fighter(scenario.second),
+                scenario.maximum_rounds,
+                simulations=(
+                    args.deep_simulations
+                    if args.deep_simulations is not None
+                    else (25_000 if scenario.maximum_rounds > 50 else 100_000)
+                ),
+            )
+            for scenario in deep_test_scenarios()
+        )
+        requested_duels = sum(pair.simulations for pair in pairs)
+        breakdown = (
+            f"{len(pairs)} pairs x {args.deep_simulations:,}"
+            if args.deep_simulations is not None
+            else "100k per pair, 25k for the long 75-round pair"
+        )
+        if requested_duels > args.max_modular_duels:
+            print(
+                "Parity configuration error: --deep would need "
+                f"{requested_duels:,} modular duels ({breakdown}), above the "
+                f"--max-modular-duels ceiling of {args.max_modular_duels:,}. "
+                "Lower --deep-simulations or raise --max-modular-duels.",
+                file=sys.stderr,
+            )
+            return 2
+        progress = None if args.json else BenchmarkProgress(
+            len(pairs) * (2 if deep_native_installed else 1)
+        )
+        deep_samples, modular_duels = certify_deep(
+            pairs,
+            simulations=(
+                args.deep_simulations
+                if args.deep_simulations is not None else 100_000
+            ),
+            cross_simulations=args.deep_cross_simulations, seed=args.seed,
+            native_installed="native" in installed,
+            on_progress=progress.advance if progress is not None else None,
+            workers=args.workers,
+        )
+        if progress is not None:
+            progress.finish()
+    truncation_samples = ()
+    if args.truncations:
+        from mordheim_combat_lab.verification.parity import TRUNCATION_HORIZONS
+        truncation_samples = tuple(
+            row
+            for scenario in benchmark_scenarios()
+            for row in compare_truncation_parity(
+                scenario.id,
+                compile_fighter(scenario.first), compile_fighter(scenario.second),
+                args.truncation_simulations, seed=args.seed,
+                maximum_rounds=scenario.maximum_rounds,
+                horizons=TRUNCATION_HORIZONS,
+            )
+        )
     complete = (
         report.complete and specification_report.complete
         and all(item.passed for item in statistical)
+        and all(item.passed for item in deep_samples)
+        and all(item.passed for item in truncation_samples)
     )
-    payload = parity_report_payload(report, statistical, specification_report)
+    elapsed = time.perf_counter() - started
+    payload = parity_report_payload(
+        report, statistical, specification_report, deep=deep_samples,
+        truncations=truncation_samples, elapsed_seconds=elapsed,
+    )
     if args.output:
         output = Path(args.output).resolve()
         output.parent.mkdir(parents=True, exist_ok=True)
@@ -311,8 +539,33 @@ def parity_command(args) -> int:
         for item in statistical:
             print(
                 f"STATISTICAL: {item.scenario}/{item.backend} "
-                f"{'PASS' if item.passed else 'FAIL'} ({item.simulations:,} duels/engine)"
+                f"{'PASS' if item.passed else 'FAIL'} {_parity_sample_timing(item)}"
             )
+        if deep_samples:
+            if deep_native_installed:
+                print(
+                    f"DEEP: modular oracle {modular_duels:,} duels across the "
+                    f"archetype matrix; cross-backend samples at "
+                    f"{args.deep_cross_simulations:,} duels/engine"
+                )
+            else:
+                print(
+                    f"DEEP: modular oracle {modular_duels:,} duels across the "
+                    "archetype matrix; cross-backend certification skipped "
+                    "(native backend is not compiled in this environment)"
+                )
+            for item in deep_samples:
+                print(
+                    f"DEEP: {item.scenario}/{item.backend} "
+                    f"{'PASS' if item.passed else 'FAIL'} {_parity_sample_timing(item)}"
+                )
+        for item in truncation_samples:
+            print(
+                f"TRUNCATION: {item.scenario}/{item.backend} "
+                f"{'PASS' if item.passed else 'FAIL'} "
+                f"{_parity_sample_timing(item)}"
+            )
+        print(f"Elapsed: {elapsed:.2f}s")
         if args.output:
             print(f"REPORT: {Path(args.output).resolve()}")
     return int(bool(args.require_complete and not complete))
@@ -321,12 +574,28 @@ def parity_command(args) -> int:
 def test_report_command(args) -> int:
     import csv
     from collections import Counter
-    from mordheim_combat_lab.verification.test_reporting import generate_test_report
+    started = time.perf_counter()
+    from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
+    from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
+    from mordheim_combat_lab.verification.specifications import load_fixtures
+    from mordheim_combat_lab.verification.test_reporting import run_technical_tests
+    from mordheim_combat_lab.verification.test_reporting import write_semantic_report
 
-    semantic_path, technical_path, semantic_rows, technical_exit = generate_test_report(
-        Path(args.output).resolve(), statistical=args.statistical,
-        simulations=args.statistical_simulations, seed=args.seed,
+    # One unit per semantic specification, plus one per statistical scenario.
+    # The bar closes before the pytest phase, which prints its own dots.
+    output = Path(args.output).resolve()
+    units = len(load_fixtures()) + (
+        len(benchmark_scenarios()) if args.statistical else 0
     )
+    progress = BenchmarkProgress(units)
+    semantic_path, semantic_rows = write_semantic_report(
+        output, statistical=args.statistical,
+        simulations=args.statistical_simulations, seed=args.seed,
+        on_progress=progress.advance, workers=args.workers,
+    )
+    progress.finish()
+    technical_path = output / "technical-tests.csv"
+    technical_exit = run_technical_tests(technical_path)
     semantic_counts = Counter(str(row.get("passes", "")) for row in semantic_rows)
     with technical_path.open("r", encoding="utf-8-sig", newline="") as stream:
         technical_rows = tuple(csv.DictReader(stream, delimiter=";"))
@@ -341,9 +610,76 @@ def test_report_command(args) -> int:
     ))
     print(f"SEMANTIC REPORT: {semantic_path}")
     print(f"TECHNICAL REPORT: {technical_path}")
+    print(f"Elapsed: {time.perf_counter() - started:.2f}s")
     semantic_failed = semantic_counts.get("FAIL", 0) > 0
     incomplete = semantic_counts.get("PENDING", 0) > 0
     return int(bool(technical_exit or semantic_failed or (args.require_complete and incomplete)))
+
+
+def coverage_gate_command(args) -> int:
+    from mordheim_combat_lab.verification import coverage_gate
+
+    suites = tuple(args.suites) if args.suites else coverage_gate.DEFAULT_SUITES
+    floors = {}
+    for token in args.area_floor or ():
+        area, separator, percent = token.partition(":")
+        if not separator or area not in coverage_gate.AREA_PATHS:
+            print(
+                f"Coverage configuration error: {token!r} must be "
+                f"<area>:<percent> for one of {tuple(coverage_gate.AREA_PATHS)}",
+                file=sys.stderr,
+            )
+            return 2
+        try:
+            floors[area] = _percentage(percent)
+        except ValueError:
+            print(f"Coverage configuration error: bad percentage in {token!r}",
+                  file=sys.stderr)
+            return 2
+    started = time.perf_counter()
+    try:
+        report = coverage_gate.measure_coverage(suites)
+    except ModuleNotFoundError:
+        print(
+            "Coverage gate error: the `coverage` package is not installed; "
+            "install the project dev extra (`pip install -e .[dev]`)",
+            file=sys.stderr,
+        )
+        return 2
+    budget_path = Path(args.budget).resolve()
+    if args.update_budget:
+        coverage_gate.write_budget(budget_path, report)
+        result = coverage_gate.evaluate(report, None, minimum_percent=floors)
+    else:
+        try:
+            budget = coverage_gate.load_budget(budget_path)
+        except (OSError, ValueError, json.JSONDecodeError) as error:
+            print(f"Coverage budget error: {error}", file=sys.stderr)
+            return 2
+        result = coverage_gate.evaluate(report, budget, minimum_percent=floors)
+    payload = coverage_gate.report_payload(
+        result, minimum_percent=floors, budget_path=str(budget_path),
+    )
+    payload["elapsed_seconds"] = time.perf_counter() - started
+    if args.json:
+        print(json.dumps(payload, ensure_ascii=True, indent=2))
+    else:
+        areas = payload["areas"]
+        for area, stats in areas.items():
+            print(
+                f"coverage {area}: {stats['percent']:.2f}% "
+                f"({stats['covered']}/{stats['statements']} statements)"
+            )
+        if args.update_budget:
+            print(f"BUDGET: {budget_path} updated")
+        if result.passed:
+            print("coverage_gate=passed")
+        else:
+            for error in result.errors:
+                print(f"FAIL: {error}")
+            print("coverage_gate=failed")
+        print(f"Elapsed: {payload['elapsed_seconds']:.2f}s")
+    return int(not result.passed)
 
 
 def audit_command(args) -> int:
@@ -364,90 +700,269 @@ def ui_command(_args) -> int:
     return int(main() or 0)
 
 
+class _HelpFormatter(HelpFormatter):
+    """Help layout with a wider, better-aligned option column."""
+
+    def __init__(self, prog: str) -> None:
+        super().__init__(prog, max_help_position=38, width=100)
+
+
 def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
-    parser = ArgumentParser(prog=prog)
+    parser = ArgumentParser(prog=prog, formatter_class=_HelpFormatter)
     commands = parser.add_subparsers(dest="command")
-    commands.add_parser("ui", help="open the graphical interface").set_defaults(handler=ui_command)
-    validation = commands.add_parser("validate", help="validate the KB and structural connections")
-    validation.add_argument("--knowledge")
-    validation.add_argument("--specs")
+    commands.add_parser("ui", help="open the graphical interface",
+                        formatter_class=_HelpFormatter).set_defaults(handler=ui_command)
+
+    validation = commands.add_parser(
+        "validate", help="validate the KB and structural connections",
+        description="Validate the knowledge base and its structural connections, "
+                    "including the phase-verification contract.",
+        formatter_class=_HelpFormatter)
+    validation_paths = validation.add_argument_group("paths")
+    validation_paths.add_argument("--knowledge", metavar="PATH",
+                                  help="override the knowledge base location")
+    validation_paths.add_argument("--specs", metavar="PATH",
+                                  help="override the specifications directory")
     validation.set_defaults(handler=validate_command)
+
     verification = commands.add_parser(
-        "verify", help="run the semantic specifications against the modular engine")
-    verification.add_argument("--knowledge")
-    verification.add_argument("--specs")
-    verification.add_argument("--inventory", action="store_true")
-    verification.add_argument("--json", action="store_true")
-    verification.add_argument("--require-complete", action="store_true")
+        "verify", help="run the semantic specifications against the modular engine",
+        description="Run the semantic specifications against the modular engine and "
+                    "report verified obligations, pending items and interactions.",
+        formatter_class=_HelpFormatter)
+    verify_paths = verification.add_argument_group("paths")
+    verify_paths.add_argument("--knowledge", metavar="PATH",
+                              help="override the knowledge base location")
+    verify_paths.add_argument("--specs", metavar="PATH",
+                              help="override the specifications directory")
+    verify_output = verification.add_argument_group("output and strictness")
+    verify_output.add_argument("--inventory", action="store_true",
+                               help="print the rule inventory as JSON and exit")
+    verify_output.add_argument("--json", action="store_true",
+                               help="print the verification payload as JSON")
+    verify_output.add_argument("--require-complete", action="store_true",
+                               help="fail unless every obligation is verified "
+                                    "(pending items are allowed otherwise)")
     verification.set_defaults(handler=verify_command)
-    audit = commands.add_parser("audit", help="generate the auditable rule inventory")
-    audit.add_argument("--knowledge")
-    audit.add_argument("--specs")
-    audit.add_argument("--output")
-    audit.add_argument("--scope", choices=("YES", "NO", "LATER"))
-    audit.add_argument("--status", choices=("verified", "pending", "out_of_scope"))
-    audit.add_argument("--review-status",
-                       choices=("ready", "blocked_by_dependency", "needs_ruling",
-                                "verified", "not_applicable"),
-                       help="filter by review status; needs_ruling surfaces unanswered 100_000s")
+
+    audit = commands.add_parser(
+        "audit", help="generate the auditable rule inventory",
+        description="Generate the auditable per-rule inventory CSV "
+                    "(default: outputs/audit/rules-audit.csv).",
+        formatter_class=_HelpFormatter)
+    audit_paths = audit.add_argument_group("paths")
+    audit_paths.add_argument("--knowledge", metavar="PATH",
+                             help="override the knowledge base location")
+    audit_paths.add_argument("--specs", metavar="PATH",
+                             help="override the specifications directory")
+    audit_filters = audit.add_argument_group("filters")
+    audit_filters.add_argument("--scope", choices=("YES", "NO", "LATER"),
+                               help="filter by scope classification")
+    audit_filters.add_argument("--status", choices=("verified", "pending", "out_of_scope"),
+                               help="filter by semantic status")
+    audit_filters.add_argument("--review-status",
+                               choices=("ready", "blocked_by_dependency", "needs_ruling",
+                                        "verified", "not_applicable"),
+                               help="filter by review status; needs_ruling surfaces "
+                                    "the unanswered review questions")
+    audit_output = audit.add_argument_group("output")
+    audit_output.add_argument("--output", metavar="PATH",
+                              help="output directory for the CSV (default: outputs/audit)")
     audit.set_defaults(handler=audit_command)
-    benchmark = commands.add_parser("benchmark", help="measure the combat engines")
-    benchmark.add_argument("-n", "--simulations", type=_positive, default=100_000,
-                           help="simulations per scenario and engine")
-    benchmark.add_argument("--seed", type=int, default=2026)
-    benchmark.add_argument("--batch-size", type=_positive, default=100_000,
-                           help="batch size for the vectorized and native engines")
-    benchmark.add_argument(
-        "--simulation-sizes",
-        help="comma/space separated simulation counts, e.g. 1k,10k,100k (sweep mode)")
-    benchmark.add_argument(
-        "--batch-sizes",
-        help="comma/space separated batch sizes, e.g. 10k,100k (sweep mode)")
-    benchmark.add_argument(
+
+    coverage = commands.add_parser(
+        "coverage-gate",
+        help="measure deterministic engine coverage and check the drift budget",
+        description="Run the deterministic combat-engine suites under coverage and "
+                    "check that every line in the committed budget is still "
+                    "exercised (drift gate), with optional per-area floors.",
+        formatter_class=_HelpFormatter)
+    coverage_content = coverage.add_argument_group("measurement")
+    coverage_content.add_argument(
+        "--suites", nargs="+", metavar="PATH",
+        help="pytest paths to measure (default: modular + vectorized + phases "
+             "+ the parity deterministic corpus)")
+    coverage_content.add_argument(
+        "--area-floor", action="append", metavar="AREA:PCT",
+        help="minimum coverage percent per area, e.g. --area-floor modular:95 "
+             "(repeatable)")
+    coverage_output = coverage.add_argument_group("budget and output")
+    coverage_output.add_argument(
+        "--budget", default="tests/fixtures/coverage/budget.json", metavar="PATH",
+        help="coverage budget file to check against (default: "
+             "tests/fixtures/coverage/budget.json)")
+    coverage_output.add_argument(
+        "--update-budget", action="store_true",
+        help="write the measured covered lines as the new budget instead of "
+             "checking the existing one")
+    coverage_output.add_argument("--json", action="store_true",
+                                help="print the machine-readable report as JSON")
+    coverage.set_defaults(handler=coverage_gate_command)
+
+    benchmark = commands.add_parser(
+        "benchmark", help="measure the combat engines",
+        description="Measure the combat engines (modular, NumPy, native) in a single "
+                    "configuration, a size sweep, or a --deep large-scale profile.",
+        formatter_class=_HelpFormatter)
+    run_options = benchmark.add_argument_group("run configuration")
+    run_options.add_argument("-n", "--simulations", type=_positive, default=100_000,
+                             metavar="DUELS", help="simulations per scenario and engine")
+    run_options.add_argument("--seed", type=int, default=2026,
+                             help="random seed for the engines")
+    run_options.add_argument("--batch-size", type=_positive, default=100_000,
+                             metavar="DUELS",
+                             help="batch size for the vectorized and native engines")
+    run_options.add_argument(
         "--backend", choices=("all", "modular", "numpy", "native"), default="all",
         help="engines to measure; by default modular, vectorized and native are measured separately",
     )
-    benchmark.add_argument(
+    run_options.add_argument(
         "--scenario",
         choices=("all", "basic", "multiattack", "defences", "stateful", "long"),
-        default="all",
+        default="all", help="scenario family to measure (default: all five)",
     )
-    benchmark.add_argument(
-        "--warmups", type=int, choices=range(0, 101), default=1,
+    run_options.add_argument(
+        "--warmups", type=_warmups, default=1, metavar="N",
         help="warm-up runs per configuration (0-100)",
     )
-    benchmark.add_argument("--repeats", type=_positive, default=5)
-    benchmark.add_argument("--json", action="store_true")
-    benchmark.add_argument("--output",
-                           help="save this run as a report (.json, or .csv/.md in sweep mode)")
-    benchmark.add_argument("--save-baseline",
-                           help="save this single-configuration run as a JSON baseline")
-    benchmark.add_argument("--baseline",
-                           help="compare against a previous single-configuration JSON baseline")
-    benchmark.add_argument(
+    run_options.add_argument("--repeats", type=_positive, default=5, metavar="TIMES",
+                             help="timed repetitions per configuration (median is reported)")
+    deep_options = benchmark.add_argument_group("sweeps and deep profiles")
+    deep_options.add_argument(
+        "--simulation-sizes", metavar="SIZES",
+        help="comma/space separated simulation counts, e.g. 1k,10k,100k (sweep mode)")
+    deep_options.add_argument(
+        "--batch-sizes", metavar="SIZES",
+        help="comma/space separated batch sizes, e.g. 10k,100k (sweep mode)")
+    deep_options.add_argument(
+        "--deep", action="store_true",
+        help="deep profile: sweep the optimized engines over large sizes and batch "
+             "sizes while measuring the modular oracle only at a small reference size",
+    )
+    deep_options.add_argument(
+        "--deep-simulation-sizes", default="10k,100k,500k,1M,5M", metavar="SIZES",
+        help="simulation counts for the optimized engines in --deep mode "
+             "(comma/space separated); overridable with --simulation-sizes",
+    )
+    deep_options.add_argument(
+        "--deep-batch-sizes", default="25k,100k,200k,500k", metavar="SIZES",
+        help="batch sizes for the optimized engines in --deep mode "
+             "(comma/space separated); overridable with --batch-sizes",
+    )
+    deep_options.add_argument(
+        "--deep-modular-simulations", type=_positive, default=10_000, metavar="DUELS",
+        help="duels per scenario for the modular reference point in --deep mode",
+    )
+    report_options = benchmark.add_argument_group("comparison gates and reports")
+    report_options.add_argument("--json", action="store_true",
+                                help="print the machine-readable report as JSON")
+    report_options.add_argument("--output", metavar="PATH",
+                                help="save this run as a report (.json, or .csv/.md in sweep mode; "
+                                     "--deep defaults to outputs/benchmarks/deep.json)")
+    report_options.add_argument("--save-baseline", metavar="PATH",
+                                help="save this single-configuration run as a JSON baseline")
+    report_options.add_argument("--baseline", metavar="PATH",
+                                help="compare against a previous single-configuration JSON baseline")
+    report_options.add_argument(
         "--require-improvement", action="store_true",
         help="fail unless some scenario improves and none exceeds the allowed regression",
     )
-    benchmark.add_argument("--min-improvement", type=_percentage, default=10.0)
-    benchmark.add_argument("--max-regression", type=_percentage, default=5.0)
+    report_options.add_argument("--min-improvement", type=_percentage, default=10.0,
+                                metavar="PCT", help="required improvement threshold, percent")
+    report_options.add_argument("--max-regression", type=_percentage, default=5.0,
+                                metavar="PCT", help="maximum allowed regression, percent")
     benchmark.set_defaults(handler=benchmark_command)
+
     parity = commands.add_parser(
-        "parity", help="certify the vectorized engine against the modular oracle")
-    parity.add_argument("--json", action="store_true")
-    parity.add_argument("--require-complete", action="store_true")
-    parity.add_argument("--statistical", action="store_true",
-                        help="add aggregate six-sigma statistical certification samples")
-    parity.add_argument("--statistical-simulations", type=_positive, default=100_000)
-    parity.add_argument("--seed", type=int, default=2026)
-    parity.add_argument("--output", help="save the report as .json or .md")
+        "parity", help="certify the vectorized and native engines against the modular oracle",
+        description="Certify the vectorized engine (and, when compiled, the native "
+                    "backend) against the modular oracle with deterministic checks, "
+                    "optional six-sigma statistical samples and --deep certification.",
+        formatter_class=_HelpFormatter)
+    parity_samples = parity.add_argument_group("certification samples")
+    parity_samples.add_argument("--statistical", action="store_true",
+                                help="add aggregate six-sigma statistical certification samples")
+    parity_samples.add_argument("--statistical-simulations", type=_positive, default=100_000,
+                                metavar="DUELS",
+                                help="duels per engine and scenario for --statistical")
+    parity_samples.add_argument(
+        "--deep", action="store_true",
+        help="deep certification: six-sigma samples over the archetype matrix plus "
+             "numpy<->native cross-certification at scale; the modular oracle stays "
+             "within --max-modular-duels",
+    )
+    parity_samples.add_argument(
+        "--deep-simulations", type=_positive, default=None, metavar="DUELS",
+        help="duels per archetype pair and engine in --deep mode; defaults to "
+             "100 000 per pair, or 25 000 for the long 75-round pair; an "
+             "explicit value applies to every pair",
+    )
+    parity_samples.add_argument("--deep-cross-simulations", type=_positive, default=1_000_000,
+                                metavar="DUELS",
+                                help="duels per pair for the numpy<->native "
+                                     "cross-certification (never touches the modular engine)")
+    parity_samples.add_argument("--max-modular-duels", type=_positive, default=3_000_000,
+                                metavar="DUELS",
+                                help="ceiling for the total modular-oracle duels a --deep "
+                                     "run may ask for (the default split needs 2 425 000)")
+    parity_samples.add_argument(
+        "--truncations", action="store_true",
+        help="add round-truncation outcome samples: the six-sigma gate is "
+             "reapplied at every horizon (2, 4, 6, 8, 10, 12, 15, 20 rounds) on "
+             "the five standard scenarios, so orchestration defects that only "
+             "shift *when* duels resolve become visible",
+    )
+    parity_samples.add_argument(
+        "--truncation-simulations", type=_positive, default=10_000,
+        metavar="DUELS",
+        help="duels per engine, scenario and horizon for --truncations",
+    )
+    parity_samples.add_argument("--seed", type=int, default=2026,
+                                help="seed for the statistical and deep samples")
+    parity_samples.add_argument(
+        "--workers", type=_oracle_workers, metavar="N|auto",
+        default=os.environ.get("MORDHEIM_PARALLEL_ORACLE_WORKERS", "auto"),
+        help="processes for the modular-oracle samples of --statistical/--deep; "
+             "auto pools only samples estimated to take over ~20 s sequentially, "
+             "1 disables the pool (also from MORDHEIM_PARALLEL_ORACLE_WORKERS)",
+    )
+    parity_output = parity.add_argument_group("report and strictness")
+    parity_output.add_argument("--json", action="store_true",
+                               help="print the certificate as JSON")
+    parity_output.add_argument("--require-complete", action="store_true",
+                               help="fail unless the certificate is complete")
+    parity_output.add_argument("--output", metavar="PATH",
+                               help="save the report as .json or .md (defaults to "
+                                    "outputs/parity/deep.json in --deep mode)")
     parity.set_defaults(handler=parity_command)
+
     test_report = commands.add_parser(
-        "test-report", help="generate the human-readable parity and technical test CSVs")
-    test_report.add_argument("--output", default="outputs/test-report")
-    test_report.add_argument("--statistical", action="store_true")
-    test_report.add_argument("--statistical-simulations", type=_positive, default=100_000)
-    test_report.add_argument("--seed", type=int, default=2026)
-    test_report.add_argument("--require-complete", action="store_true")
+        "test-report", help="generate the human-readable parity and technical test CSVs",
+        description="Generate the Excel-friendly CSVs of semantic parity and technical "
+                    "tests into an output directory.",
+        formatter_class=_HelpFormatter)
+    test_report_content = test_report.add_argument_group("content")
+    test_report_content.add_argument("--statistical", action="store_true",
+                                     help="add the five statistical parity rows to "
+                                          "the semantic CSV")
+    test_report_content.add_argument("--statistical-simulations", type=_positive, default=100_000,
+                                     metavar="DUELS",
+                                     help="duels per engine and scenario for --statistical")
+    test_report_content.add_argument("--seed", type=int, default=2026,
+                                     help="seed for the statistical comparisons")
+    test_report_content.add_argument(
+        "--workers", type=_oracle_workers, metavar="N|auto",
+        default=os.environ.get("MORDHEIM_PARALLEL_ORACLE_WORKERS", "auto"),
+        help="processes for the modular-oracle samples of --statistical; "
+             "auto pools only samples estimated to take over ~20 s sequentially, "
+             "1 disables the pool (also from MORDHEIM_PARALLEL_ORACLE_WORKERS)",
+    )
+    test_report_output = test_report.add_argument_group("output and strictness")
+    test_report_output.add_argument("--output", default="outputs/test-report", metavar="PATH",
+                                    help="directory for the two CSVs (default: outputs/test-report)")
+    test_report_output.add_argument("--require-complete", action="store_true",
+                                    help="fail when pending items or missing backends "
+                                         "would keep the report from being complete")
     test_report.set_defaults(handler=test_report_command)
     return parser
 

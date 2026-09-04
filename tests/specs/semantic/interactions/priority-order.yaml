@@ -1,0 +1,494 @@
+schema_version: 1
+specifications:
+- id: interaction-combat-injury-states--combat-order
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
+  - target: core/combat-order
+    digest: 0d22d9fffb278f0dbee553ccac5afd7cca3b8018f1f652af103da3b28bfbdc22
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "combat-order", "kind": "core", "parameters": {}}'
+  interpretation: A warrior who stood up in the Recovery phase strikes last, behind ordinary order.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: acting_order
+    context:
+      stood_up: true
+    expect:
+      result.first_acts: false
+  - id: boundary
+    roles:
+    - boundary
+    operation: acting_order
+    context:
+      initiative_bonus: 1
+    expect:
+      result.first_acts: true
+  mutations:
+  - id: compose-against-strike-last
+    path: attacker.global_effects.priority
+    value: -1
+    cases:
+    - boundary
+- id: interaction-combat-injury-states--skill.strongman
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-injury-states
+    digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
+  - target: mechanic/skill.strongman
+    digest: 0361c3c9a96d2c31adb49189e2d9d8e6a0e77ee6972008715533bf490a5a5e6f
+  bindings:
+  - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.strongman", "kind": "mechanic", "parameters": {}}'
+  interpretation: Standing up makes even a Strongman with a double-handed weapon strike last.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: acting_order
+    attacker: &id001
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.strongman
+    context:
+      stood_up: true
+    expect:
+      result.first_acts: false
+  - id: boundary
+    roles:
+    - boundary
+    operation: acting_order
+    attacker: *id001
+    defender:
+      main_weapon_id: weapon.double-handed-weapon
+    expect:
+      result.first_acts: true
+  mutations:
+  - id: compose-against-strike-last
+    path: defender.main_weapon.priority
+    value: 0
+    cases:
+    - boundary
+- id: interaction-combat-order--skill.always-strikes-first
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-order
+    digest: 0d22d9fffb278f0dbee553ccac5afd7cca3b8018f1f652af103da3b28bfbdc22
+  - target: mechanic/skill.always-strikes-first
+    digest: 3c5bc14ee8ba7c3552b52d5bf42e6c2f8e7162597829cc42517aa162a2659b6d
+  bindings:
+  - '{"id": "combat-order", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.always-strikes-first", "kind": "mechanic", "parameters": {}}'
+  interpretation: Always Strikes First raises priority above the ordinary Initiative order.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: acting_order
+    attacker: &id002
+      skill_ids:
+      - skill.always-strikes-first
+    expect:
+      result.first_acts: true
+  - id: boundary-opponent
+    roles:
+    - boundary
+    operation: acting_order
+    attacker: *id002
+    defender:
+      skill_ids:
+      - skill.always-strikes-first
+    expect:
+      result.first_acts: false
+    rolls:
+    - key: priority-tie
+      value: 1
+  mutations:
+  - id: remove-composed-priority
+    path: attacker.global_effects.priority
+    value: 0
+    cases:
+    - composition
+- id: interaction-combat-order--skill.lightning-reflexes
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-order
+    digest: 0d22d9fffb278f0dbee553ccac5afd7cca3b8018f1f652af103da3b28bfbdc22
+  - target: mechanic/skill.lightning-reflexes
+    digest: a14b1677ce99a62c6eb607f2f83bc8a0b4f7066a827d0e56bda8e7cc08ef40be
+  bindings:
+  - '{"id": "combat-order", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.lightning-reflexes", "kind": "mechanic", "parameters": {}}'
+  interpretation: Lightning Reflexes strikes first when charged in the first round.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: acting_order
+    attacker: &id003
+      skill_ids:
+      - skill.lightning-reflexes
+    context:
+      first_round: true
+      charged: true
+    expect:
+      result.first_acts: true
+  - id: boundary-tie
+    roles:
+    - boundary
+    operation: acting_order
+    attacker: *id003
+    expect:
+      result.first_acts: false
+    rolls:
+    - key: priority-tie
+      value: 2
+  mutations:
+  - id: remove-composed-priority
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-combat-order--skill.strongman
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-order
+    digest: 0d22d9fffb278f0dbee553ccac5afd7cca3b8018f1f652af103da3b28bfbdc22
+  - target: mechanic/skill.strongman
+    digest: 0361c3c9a96d2c31adb49189e2d9d8e6a0e77ee6972008715533bf490a5a5e6f
+  bindings:
+  - '{"id": "combat-order", "kind": "core", "parameters": {}}'
+  - '{"id": "skill.strongman", "kind": "mechanic", "parameters": {}}'
+  interpretation: Strongman cancels the double-handed strike-last penalty, restoring ordinary order; standing
+    up still strikes last.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: acting_order
+    attacker: &id004
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.strongman
+    expect:
+      result.first_acts: true
+    rolls:
+    - key: priority-tie
+      value: 5
+  - id: boundary
+    roles:
+    - boundary
+    operation: acting_order
+    attacker: *id004
+    context:
+      stood_up: true
+    expect:
+      result.first_acts: false
+  mutations:
+  - id: remove-composed-priority
+    path: attacker.global_effects.strongman
+    value: false
+    cases:
+    - composition
+- id: interaction-combat-order--weapon.double-handed-weapon
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: core/combat-order
+    digest: 0d22d9fffb278f0dbee553ccac5afd7cca3b8018f1f652af103da3b28bfbdc22
+  - target: mechanic/weapon.double-handed-weapon
+    digest: 8e54d9ce13baf2f879cf316a31fd36830786ba558db7c5a122fa6c574863789f
+  bindings:
+  - '{"id": "combat-order", "kind": "core", "parameters": {}}'
+  - '{"id": "weapon.double-handed-weapon", "kind": "mechanic", "parameters": {}}'
+  interpretation: A double-handed weapon strikes last unless charging in the first round.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: acting_order
+    attacker: &id005
+      main_weapon_id: weapon.double-handed-weapon
+    expect:
+      result.first_acts: false
+  - id: boundary
+    roles:
+    - boundary
+    operation: acting_order
+    attacker: *id005
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: true
+  mutations:
+  - id: remove-composed-priority
+    path: attacker.main_weapon.priority
+    value: 0
+    cases:
+    - composition
+- id: interaction-skill.always-strikes-first--skill.lightning-reflexes
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.always-strikes-first
+    digest: 3c5bc14ee8ba7c3552b52d5bf42e6c2f8e7162597829cc42517aa162a2659b6d
+  - target: mechanic/skill.lightning-reflexes
+    digest: a14b1677ce99a62c6eb607f2f83bc8a0b4f7066a827d0e56bda8e7cc08ef40be
+  bindings:
+  - '{"id": "skill.always-strikes-first", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.lightning-reflexes", "kind": "mechanic", "parameters": {}}'
+  interpretation: Both grant strike-first; only one priority tier applies, and an opponent with the same
+    tier falls to the tie die.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: acting_order
+    attacker: &id006
+      skill_ids:
+      - skill.always-strikes-first
+      - skill.lightning-reflexes
+    expect:
+      result.first_acts: true
+  - id: boundary-opponent
+    roles:
+    - boundary
+    operation: acting_order
+    attacker: *id006
+    defender:
+      skill_ids:
+      - skill.always-strikes-first
+    expect:
+      result.first_acts: false
+    rolls:
+    - key: priority-tie
+      value: 1
+  mutations:
+  - id: remove-composed-priority
+    path: attacker.global_effects.priority
+    value: 0
+    cases:
+    - composition
+- id: interaction-skill.always-strikes-first--skill.strongman
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.always-strikes-first
+    digest: 3c5bc14ee8ba7c3552b52d5bf42e6c2f8e7162597829cc42517aa162a2659b6d
+  - target: mechanic/skill.strongman
+    digest: 0361c3c9a96d2c31adb49189e2d9d8e6a0e77ee6972008715533bf490a5a5e6f
+  bindings:
+  - '{"id": "skill.always-strikes-first", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.strongman", "kind": "mechanic", "parameters": {}}'
+  interpretation: Always Strikes First outranks Strongman's ordinary order.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: acting_order
+    attacker: &id007
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.always-strikes-first
+      - skill.strongman
+    expect:
+      result.first_acts: true
+  - id: boundary-opponent
+    roles:
+    - boundary
+    operation: acting_order
+    attacker: *id007
+    defender:
+      skill_ids:
+      - skill.always-strikes-first
+    expect:
+      result.first_acts: false
+    rolls:
+    - key: priority-tie
+      value: 1
+  mutations:
+  - id: remove-composed-priority
+    path: attacker.global_effects.priority
+    value: 0
+    cases:
+    - composition
+- id: interaction-skill.always-strikes-first--weapon.double-handed-weapon
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.always-strikes-first
+    digest: 3c5bc14ee8ba7c3552b52d5bf42e6c2f8e7162597829cc42517aa162a2659b6d
+  - target: mechanic/weapon.double-handed-weapon
+    digest: 8e54d9ce13baf2f879cf316a31fd36830786ba558db7c5a122fa6c574863789f
+  bindings:
+  - '{"id": "skill.always-strikes-first", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.double-handed-weapon", "kind": "mechanic", "parameters": {}}'
+  interpretation: Always Strikes First's +1 cancels the double-handed weapon's -1, tying the order.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: acting_order
+    attacker: &id008
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.always-strikes-first
+    expect:
+      result.first_acts: true
+    rolls:
+    - key: priority-tie
+      value: 5
+  - id: boundary-opponent
+    roles:
+    - boundary
+    operation: acting_order
+    attacker: *id008
+    defender:
+      skill_ids:
+      - skill.always-strikes-first
+    expect:
+      result.first_acts: false
+  mutations:
+  - id: remove-composed-priority
+    path: attacker.main_weapon.priority
+    value: 0
+    cases:
+    - composition
+- id: interaction-skill.lightning-reflexes--skill.strongman
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.lightning-reflexes
+    digest: a14b1677ce99a62c6eb607f2f83bc8a0b4f7066a827d0e56bda8e7cc08ef40be
+  - target: mechanic/skill.strongman
+    digest: 0361c3c9a96d2c31adb49189e2d9d8e6a0e77ee6972008715533bf490a5a5e6f
+  bindings:
+  - '{"id": "skill.lightning-reflexes", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "skill.strongman", "kind": "mechanic", "parameters": {}}'
+  interpretation: Lightning Reflexes strikes first when charged even with a double-handed weapon.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: acting_order
+    attacker: &id009
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.lightning-reflexes
+      - skill.strongman
+    context:
+      first_round: true
+      charged: true
+    expect:
+      result.first_acts: true
+  - id: boundary-tie
+    roles:
+    - boundary
+    operation: acting_order
+    attacker: *id009
+    expect:
+      result.first_acts: false
+    rolls:
+    - key: priority-tie
+      value: 2
+  mutations:
+  - id: remove-composed-priority
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.lightning-reflexes--weapon.double-handed-weapon
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.lightning-reflexes
+    digest: a14b1677ce99a62c6eb607f2f83bc8a0b4f7066a827d0e56bda8e7cc08ef40be
+  - target: mechanic/weapon.double-handed-weapon
+    digest: 8e54d9ce13baf2f879cf316a31fd36830786ba558db7c5a122fa6c574863789f
+  bindings:
+  - '{"id": "skill.lightning-reflexes", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.double-handed-weapon", "kind": "mechanic", "parameters": {}}'
+  interpretation: Lightning Reflexes' strike-first overrides the double-handed weapon's penalty when charged.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: acting_order
+    attacker: &id010
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.lightning-reflexes
+    context:
+      first_round: true
+      charged: true
+    expect:
+      result.first_acts: true
+  - id: boundary
+    roles:
+    - boundary
+    operation: acting_order
+    attacker: *id010
+    context:
+      first_round: true
+    expect:
+      result.first_acts: false
+    rolls:
+    - key: priority-tie
+      value: 1
+  mutations:
+  - id: remove-composed-priority
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - composition
+- id: interaction-skill.strongman--weapon.double-handed-weapon
+  scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
+  category: interaction
+  sources:
+  - target: mechanic/skill.strongman
+    digest: 0361c3c9a96d2c31adb49189e2d9d8e6a0e77ee6972008715533bf490a5a5e6f
+  - target: mechanic/weapon.double-handed-weapon
+    digest: 8e54d9ce13baf2f879cf316a31fd36830786ba558db7c5a122fa6c574863789f
+  bindings:
+  - '{"id": "skill.strongman", "kind": "mechanic", "parameters": {}}'
+  - '{"id": "weapon.double-handed-weapon", "kind": "mechanic", "parameters": {}}'
+  interpretation: Strongman removes the double-handed strike-last penalty; standing up still strikes last.
+  cases:
+  - id: composition
+    roles:
+    - composition
+    operation: acting_order
+    attacker: &id011
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.strongman
+    expect:
+      result.first_acts: true
+    rolls:
+    - key: priority-tie
+      value: 5
+  - id: boundary
+    roles:
+    - boundary
+    operation: acting_order
+    attacker: *id011
+    context:
+      stood_up: true
+    expect:
+      result.first_acts: false
+  mutations:
+  - id: remove-composed-priority
+    path: attacker.global_effects.strongman
+    value: false
+    cases:
+    - composition

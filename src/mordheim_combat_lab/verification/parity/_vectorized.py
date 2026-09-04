@@ -71,11 +71,20 @@ def _exact_operator_checks() -> tuple[tuple[str, ...], tuple[str, ...]]:
             passed.append(name)
 
     def hit_targets() -> None:
-        for attacker_ws in range(11):
-            for defender_ws in range(11):
-                assert vectorized.to_hit(attacker_ws, defender_ws) == phases.to_hit_target(
-                    attacker_ws, defender_ws
-                )
+        # Exercise the engine's actual vector formula ``hit_targets`` (the
+        # array operator the attack path calls), not the ``to_hit`` scalar
+        # wrapper that delegates straight to the shared ``to_hit_target``.
+        # The 11x11 grid includes the ``defender_ws == 2 * attacker_ws``
+        # boundary and the ``defender_ws == 0`` case, so an off-by-one on
+        # either branch is caught deterministically.
+        attacker_ws = np.repeat(np.arange(11, dtype=np.int16), 11)
+        defender_ws = np.tile(np.arange(11, dtype=np.int16), 11)
+        actual = vectorized.hit_targets(attacker_ws, defender_ws)
+        expected = np.asarray([
+            phases.to_hit_target(int(a), int(d))
+            for a, d in zip(attacker_ws, defender_ws)
+        ], dtype=np.int8)
+        assert np.array_equal(actual, expected)
 
     def wound_targets() -> None:
         strength = np.repeat(np.arange(11, dtype=np.int16), 11)

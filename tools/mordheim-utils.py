@@ -48,15 +48,16 @@ SCOPE_PATHS = {
 }
 
 #: Combat Lab subcommands forwarded verbatim to ``python -m mordheim_combat_lab``.
-LAB_COMMANDS = ("benchmark", "parity", "test-report", "verify", "audit", "validate")
+LAB_COMMANDS = ("benchmark", "parity", "test-report", "coverage-gate", "verify", "audit", "validate")
 
 #: Command help lines, in the order shown by ``--help``.
 COMMANDS = (
     ("combat-lab", "open the Combat Lab graphical application"),
     ("warband-manager", "open the Campaign Manager (warband) graphical application"),
     ("benchmark", "measure the combat engines (modular, NumPy, native) with configurable sizes"),
-    ("parity", "certify the vectorized engine against the modular oracle"),
+    ("parity", "certify the vectorized and native engines against the modular oracle"),
     ("test-report", "generate the human-readable parity and technical test CSVs"),
+    ("coverage-gate", "measure deterministic engine coverage and check the drift budget"),
     ("verify", "run the semantic specifications against the modular engine"),
     ("audit", "generate the auditable rule inventory"),
     ("validate", "validate the KB and structural connections"),
@@ -64,6 +65,14 @@ COMMANDS = (
     ("combine-kb", "combine the KB YAML files into one .txt per subdirectory"),
     ("build-native", "compile the native Cython backend (editable install)"),
     ("doctor", "report the environment, installed engines and KB location"),
+)
+
+#: Command groups for ``--help``; every name in COMMANDS appears exactly once.
+COMMAND_GROUPS = (
+    ("Graphical applications", ("combat-lab", "warband-manager")),
+    ("Engines, parity and benchmarks", ("benchmark", "parity", "test-report", "coverage-gate")),
+    ("Rules and knowledge base", ("verify", "audit", "validate")),
+    ("Development and testing", ("tests", "combine-kb", "build-native", "doctor")),
 )
 
 COMBINE_KB_SCRIPT = REPO_ROOT / "tools" / "kb" / "combine_kb_yaml.py"
@@ -183,7 +192,7 @@ def doctor_command() -> int:
 
 
 def _help_text() -> str:
-    width = max(len(name) for name, _ in COMMANDS)
+    by_name = dict(COMMANDS)
     lines = [
         "usage: python tools/mordheim-utils.py <command> [args ...]",
         "",
@@ -194,15 +203,105 @@ def _help_text() -> str:
         "",
         "commands:",
     ]
-    for name, help_text in COMMANDS:
-        lines.append(f"  {name:<{width}}  {help_text}")
+    for label, names in COMMAND_GROUPS:
+        width = max(len(name) for name in names)
+        lines.append("")
+        lines.append(f"  {label}")
+        for name in names:
+            lines.append(f"    {name:<{width}}  {by_name[name]}")
     lines.extend((
         "",
         "The lab commands (benchmark, parity, test-report, verify, audit, validate) "
         "run as `python -m mordheim_combat_lab <command>`; the underlying modules "
         "and scripts remain callable directly.",
+        "",
+        "Tab completion (bash/zsh): source tools/completions/mordheim-utils.bash "
+        "or mordheim-utils.zsh. Completion covers the command names and, for the "
+        "delegated parsers, their options and choice values.",
     ))
     return "\n".join(lines) + "\n"
+
+
+def _choice_values(choices) -> tuple[str, ...]:
+    """Return a tuple of choice strings, or () for unbounded choices (ranges)."""
+    if isinstance(choices, (tuple, list, set, frozenset)):
+        return tuple(str(item) for item in choices)
+    return ()
+
+
+def _tests_candidates(typed: list[str]) -> list[str]:
+    """Candidates after ``tests``: only the --scope values are enumerable;
+    the remaining arguments are forwarded to pytest as-is."""
+    current = typed[-1] if typed else ""
+    previous = typed[-2] if len(typed) >= 2 else None
+    if previous == "--scope":
+        return sorted(scope for scope in SCOPE_PATHS if scope.startswith(current))
+    if current.startswith("--scope="):
+        value = current.split("=", 1)[1]
+        return [f"--scope={scope}" for scope in SCOPE_PATHS if scope.startswith(value)]
+    if current.startswith("-"):
+        return ["--scope"]
+    return []
+
+
+def _lab_candidates(command: str, typed: list[str]) -> list[str]:
+    """Candidates for a lab command, introspected from its real argparse parser
+    so the completion never drifts from the actual options."""
+    current = typed[-1] if typed else ""
+    previous = typed[-2] if len(typed) >= 2 else None
+    try:
+        from mordheim_combat_lab.cli.commands import build_parser
+    except Exception:
+        return []
+    parser = build_parser()
+    subparsers = next(
+        (action for action in parser._actions
+         if action.__class__.__name__ == "_SubParsersAction"),
+        None,
+    )
+    if subparsers is None or command not in subparsers.choices:
+        return []
+    subparser = subparsers.choices[command]
+    valued: dict[str, tuple[bool, object]] = {}
+    for action in subparser._actions:
+        if not action.option_strings or action.__class__.__name__ == "_HelpAction":
+            continue
+        takes_value = action.nargs != 0
+        for option in action.option_strings:
+            valued[option] = (takes_value, action.choices)
+    options = sorted(valued)
+    if current.startswith("-"):
+        return [option for option in options if option.startswith(current)]
+    if previous in valued:
+        takes_value, choices = valued[previous]
+        values = _choice_values(choices)
+        if takes_value and values:
+            return [value for value in values if value.startswith(current)]
+        if takes_value:
+            return []  # free-form value; let the shell fall back to files
+        if not current:
+            return [option for option in options if option != previous]
+        return []
+    if not current:
+        return options
+    return []
+
+
+def _command_candidates(words: list[str]) -> list[str]:
+    """Return the completion candidates for the words typed after the launcher
+    program name (the last word may be the partially typed token)."""
+    names = [name for name, _ in COMMANDS]
+    if not words:
+        return names
+    if len(words) == 1:
+        current = words[0]
+        return [name for name in names if name.startswith(current)]
+    head, rest = words[0], words[1:]
+    if head == "tests":
+        return _tests_candidates(rest)
+    if head in LAB_COMMANDS:
+        return _lab_candidates(head, rest)
+    return []
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -230,6 +329,10 @@ def main(argv: list[str] | None = None) -> int:
         return build_native_command(args)
     if name == "doctor":
         return doctor_command()
+    if name == "_complete":
+        for candidate in _command_candidates(args):
+            print(candidate)
+        return 0
     if name in LAB_COMMANDS:
         return lab_command(name, args)
     print(f"mordheim-utils: unknown command {name!r}", file=sys.stderr)

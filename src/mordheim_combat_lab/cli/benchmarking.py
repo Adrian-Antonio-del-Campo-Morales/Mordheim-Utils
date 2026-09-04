@@ -74,10 +74,15 @@ SWEEP_SCHEMA = "mordheim-combat-benchmark-sweep/v1"
 ENGINE_LABELS = {"modular": "Modular", "numpy": "Vectorized", "native": "Native"}
 
 
+ORDINARY = Characteristics(3, 3, 3, 1, 3, 1)
+VETERAN = Characteristics(4, 4, 4, 2, 4, 2)
+DURABLE = Characteristics(2, 2, 5, 4, 2, 1)
+
+
 def benchmark_scenarios() -> tuple[BenchmarkScenario, ...]:
-    ordinary = Characteristics(3, 3, 3, 1, 3, 1)
-    veteran = Characteristics(4, 4, 4, 2, 4, 2)
-    durable = Characteristics(2, 2, 5, 4, 2, 1)
+    ordinary = ORDINARY
+    veteran = VETERAN
+    durable = DURABLE
     return (
         BenchmarkScenario(
             "basic",
@@ -113,6 +118,292 @@ def benchmark_scenarios() -> tuple[BenchmarkScenario, ...]:
                          off_hand_id="defence.shield"),
             maximum_rounds=75,
         ),
+    )
+
+
+def _build(*, characteristics=None, main_weapon_id: str = "weapon.dagger",
+           off_hand_id: str | None = None, armour_id: str = "armour.no-armour",
+           defence_ids: tuple[str, ...] = (), band_id: str | None = None,
+           profile_id: str | None = None, special_rule_ids: tuple[str, ...] = ()) -> FighterBuild:
+    """Build a FighterBuild for the deep scenario matrix with explicit knobs.
+
+    ``characteristics`` and the ``band_id``/``profile_id`` pair are mutually
+    exclusive ways to describe the fighter (mirroring ``FighterBuild``); a
+    characteristics-less profile build must never silently receive the
+    ordinary profile.
+    """
+    if band_id is None and characteristics is None:
+        characteristics = ORDINARY
+    return FighterBuild(
+        "mordheim", characteristics, band_id=band_id, profile_id=profile_id,
+        main_weapon_id=main_weapon_id, off_hand_id=off_hand_id, armour_id=armour_id,
+        defence_ids=defence_ids, special_rule_ids=special_rule_ids,
+    )
+
+
+DEEP_SCENARIOS: tuple[BenchmarkScenario, ...] = (
+    # Standard certification families first (same ids as benchmark_scenarios).
+    BenchmarkScenario("basic", _build(), _build()),
+    BenchmarkScenario(
+        "multiattack",
+        _build(characteristics=VETERAN, main_weapon_id="weapon.axe", off_hand_id="weapon.dagger"),
+        _build(characteristics=VETERAN, armour_id="armour.heavy-armour"),
+    ),
+    BenchmarkScenario(
+        "defences",
+        _build(characteristics=VETERAN, main_weapon_id="weapon.sword",
+               off_hand_id="defence.buckler", armour_id="armour.light-armour"),
+        _build(characteristics=VETERAN, main_weapon_id="weapon.dwarf-axe",
+               off_hand_id="defence.shield", armour_id="armour.gromril-armour"),
+    ),
+    BenchmarkScenario(
+        "stateful",
+        _build(band_id="pit-fighters", profile_id="pit-king",
+               special_rule_ids=("band--pit-fighter-skill-force-of-will",)),
+        _build(characteristics=VETERAN, main_weapon_id="weapon.brazier-iron"),
+    ),
+    BenchmarkScenario(
+        "long",
+        _build(characteristics=DURABLE, armour_id="armour.gromril-armour",
+               off_hand_id="defence.shield"),
+        _build(characteristics=DURABLE, armour_id="armour.gromril-armour",
+               off_hand_id="defence.shield"),
+        maximum_rounds=75,
+    ),
+    # Archetype matrix: profiles x equipment families beyond the five core ones.
+    BenchmarkScenario(
+        "elite-vs-durable",
+        _build(characteristics=Characteristics(5, 4, 4, 2, 5, 2),
+               main_weapon_id="weapon.sword", off_hand_id="defence.buckler"),
+        _build(characteristics=DURABLE, armour_id="armour.gromril-armour",
+               off_hand_id="defence.shield"),
+    ),
+    BenchmarkScenario(
+        "axes-vs-light",
+        _build(characteristics=Characteristics(4, 5, 4, 2, 2, 1),
+               main_weapon_id="weapon.axe"),
+        _build(characteristics=VETERAN, main_weapon_id="weapon.sword",
+               armour_id="armour.light-armour"),
+    ),
+    BenchmarkScenario(
+        "glass-vs-tank",
+        _build(characteristics=Characteristics(4, 3, 3, 1, 5, 2)),
+        _build(characteristics=DURABLE, armour_id="armour.heavy-armour",
+               off_hand_id="defence.shield"),
+    ),
+    BenchmarkScenario(
+        "two-weapons-vs-parry",
+        _build(characteristics=VETERAN, main_weapon_id="weapon.axe",
+               off_hand_id="weapon.dagger"),
+        _build(characteristics=VETERAN, main_weapon_id="weapon.sword",
+               off_hand_id="defence.buckler"),
+    ),
+    BenchmarkScenario(
+        "heavy-clash",
+        _build(characteristics=VETERAN, main_weapon_id="weapon.axe",
+               armour_id="armour.heavy-armour", off_hand_id="defence.shield"),
+        _build(characteristics=VETERAN, main_weapon_id="weapon.axe",
+               armour_id="armour.heavy-armour", off_hand_id="defence.shield"),
+    ),
+    BenchmarkScenario(
+        "fencer-mirror",
+        _build(characteristics=Characteristics(4, 3, 3, 1, 5, 2),
+               main_weapon_id="weapon.sword", off_hand_id="defence.buckler"),
+        _build(characteristics=Characteristics(4, 3, 3, 1, 5, 2),
+               main_weapon_id="weapon.sword", off_hand_id="defence.buckler"),
+    ),
+    BenchmarkScenario(
+        "brute-vs-fencer",
+        _build(characteristics=Characteristics(4, 5, 4, 2, 2, 1),
+               main_weapon_id="weapon.axe"),
+        _build(characteristics=Characteristics(4, 3, 3, 1, 5, 2),
+               main_weapon_id="weapon.sword", off_hand_id="defence.buckler"),
+    ),
+    BenchmarkScenario(
+        "ithilmar-duel",
+        _build(characteristics=VETERAN, main_weapon_id="weapon.sword",
+               armour_id="armour.ithilmar-armour"),
+        _build(characteristics=VETERAN, main_weapon_id="weapon.sword",
+               armour_id="armour.ithilmar-armour"),
+    ),
+    # Mechanic-coverage extension (2026-09-04): each pair targets an engine
+    # behaviour family the profile/equipment archetypes above never exercise.
+    # They were selected with a coverage fingerprint (distinct effect axes)
+    # against the catalogue; together they lift the matrix from 29 to ~100
+    # distinct axes.  NumPy matches the modular oracle on every pair at 10k
+    # duels; the native port still lags on several (see
+    # docs/tasks/generate-test-reports.md, "Current status").
+    # 1. Undead family: sigmarite hammer bonus vs undead_or_possessed,
+    #    poison immunity and ignore-pain injury resolution.
+    BenchmarkScenario(
+        "sigmarite-vs-undead",
+        _build(characteristics=Characteristics(4, 5, 4, 2, 2, 1),
+               main_weapon_id="weapon.sigmarite-hammer"),
+        _build(band_id="tomb-guardians", profile_id="skeleton-warriors"),
+    ),
+    # 2. Regeneration (4+) blocked by fire: troll vs a burning brazier-iron.
+    BenchmarkScenario(
+        "regen-vs-fire",
+        _build(band_id="orc-mob", profile_id="troll"),
+        _build(characteristics=VETERAN, main_weapon_id="weapon.brazier-iron"),
+    ),
+    # 3. Natural armour negated by magic + magical attacks + extra bite:
+    #    lizardmen scaly skin vs a carnival daemon's attack.magical.
+    BenchmarkScenario(
+        "natural-armour-vs-magic",
+        _build(band_id="lizardmen", profile_id="saurus-braves"),
+        _build(band_id="carnival-of-chaos", profile_id="plague-bearers"),
+    ),
+    # 4. Pistols: ballistic-skilled shot, fixed strength, armour
+    #    penetration and the crack-shot first-round path vs a parry defence.
+    BenchmarkScenario(
+        "pistol-vs-parry",
+        _build(characteristics=VETERAN, main_weapon_id="weapon.duelling-pistol"),
+        _build(characteristics=Characteristics(4, 3, 3, 1, 5, 2),
+               main_weapon_id="weapon.sword", off_hand_id="defence.buckler"),
+    ),
+    # 5. Concussion + critical-injury bonus vs dwarfs: concussion
+    #    immunity, hard-to-kill and the out-of-action threshold of 6.
+    BenchmarkScenario(
+        "concussion-vs-dwarf",
+        _build(characteristics=Characteristics(4, 5, 4, 2, 2, 1),
+               main_weapon_id="weapon.draich"),
+        _build(band_id="dwarf-rangers", profile_id="beardlings"),
+    ),
+    # 6. Frenzy + always strikes first: fanatic priority 10 and its
+    #    frenzy-boosted attacks vs a shielded heavy.
+    BenchmarkScenario(
+        "frenzy-vs-heavy",
+        _build(band_id="night-goblins-mic", profile_id="fanatics"),
+        _build(characteristics=VETERAN, main_weapon_id="weapon.axe",
+               armour_id="armour.heavy-armour", off_hand_id="defence.shield"),
+    ),
+    # 7. Paired poisoned blades (black-lotus auto-wound) vs a poison-
+    #    immune undead beast: poison-blocked and paired-attack paths.
+    BenchmarkScenario(
+        "paired-poison-vs-undead",
+        _build(characteristics=Characteristics(4, 3, 3, 1, 5, 2),
+               main_weapon_id="weapon.weeping-blades"),
+        _build(band_id="undead", profile_id="dire-wolves"),
+    ),
+    # 8. Two-handed great weapon: strength bonus, both hands occupied,
+    #    initiative penalty vs gromril armour and a shield.
+    BenchmarkScenario(
+        "great-weapon-vs-tank",
+        _build(characteristics=Characteristics(4, 5, 4, 2, 2, 1),
+               main_weapon_id="weapon.double-handed-weapon"),
+        _build(characteristics=VETERAN, main_weapon_id="weapon.sword",
+               armour_id="armour.gromril-armour", off_hand_id="defence.shield"),
+    ),
+    # 9. Ward save vs a magical attacker: enchanted skins against a
+    #    daemon's attack.magical (also cloud of flies, poison immunity).
+    BenchmarkScenario(
+        "ward-vs-magic",
+        _build(characteristics=VETERAN, main_weapon_id="weapon.sword",
+               defence_ids=("defence.enchanted-skins",)),
+        _build(band_id="carnival-of-chaos", profile_id="nurglings"),
+    ),
+    # 10. Unarmed combat: fists/natural attacks, unarmed criticals and
+    #     the monk strictures vs a cannot-be-parried whip.
+    BenchmarkScenario(
+        "unarmed-vs-steel",
+        _build(band_id="battle-monks-of-cathay", profile_id="dragon-monks"),
+        _build(characteristics=VETERAN, main_weapon_id="weapon.steel-whip"),
+    ),
+    # 11. Injury profile 1 (out of action on 4+) vs an armour-ignoring
+    #     weapon with an injury modifier (death-knife).
+    BenchmarkScenario(
+        "injury-profile-vs-death-knife",
+        _build(band_id="night-goblins-web", profile_id="snotlings"),
+        _build(characteristics=VETERAN, main_weapon_id="weapon.death-knife"),
+    ),
+    # 12. Entangle: the chained squig's fixed-strength, cannot-be-parried
+    #     attack entangles its victim vs a parrying fencer.
+    BenchmarkScenario(
+        "entangle-vs-fencer",
+        _build(characteristics=Characteristics(4, 3, 3, 1, 5, 2),
+               main_weapon_id="weapon.chained-squig"),
+        _build(characteristics=Characteristics(4, 3, 3, 1, 5, 2),
+               main_weapon_id="weapon.sword", off_hand_id="defence.buckler"),
+    ),
+)
+
+
+def deep_test_scenarios() -> tuple[BenchmarkScenario, ...]:
+    """Return the deep-testing scenario matrix (standard + archetype pairs).
+
+    Every pair is a complete legal duel construction (compile-time checked);
+    together they sweep profiles (glass cannon, brute, elite, tank, undead,
+    dwarfs, trolls, lizardmen, daemons, goblins, monks), weapon families
+    (single, dual, paired, parrying, two-handed, unarmed, pistols, whips,
+    entangling), defence mechanics (parry, shields, ward, helmets, natural
+    armour, regeneration, poison immunity) and stateful skills
+    (force-of-will, frenzy, always-strikes-first, hard-to-kill,
+    concussion immunity, ignore-pain).
+    """
+    return DEEP_SCENARIOS
+
+
+@dataclass(frozen=True, slots=True)
+class DeepBenchmarkPlan:
+    """Runs for a ``--deep`` benchmark: a small modular reference plus the
+    vectorized grid. The modular oracle is deliberately only measured at the
+    reference size so deep sweeps stay feasible."""
+    vector_sizes: tuple[int, ...]
+    batch_sizes: tuple[int, ...]
+    modular_simulations: int
+    modular_backend: str
+    vector_backends: tuple[str, ...]
+    runs: tuple[tuple[str, str, int, int], ...]  # (scenario id, backend, simulations, batch_size)
+    excluded: tuple[dict[str, str], ...]
+
+
+def deep_benchmark_plan(
+    scenarios: tuple[BenchmarkScenario, ...], *,
+    vector_sizes: tuple[int, ...], batch_sizes: tuple[int, ...],
+    modular_simulations: int, backends: tuple[str, ...], installed: tuple[str, ...],
+) -> DeepBenchmarkPlan:
+    """Plan a deep benchmark run without executing anything.
+
+    Policy: the modular engine is measured only at ``modular_simulations``
+    (a reference point; it is the slow oracle). The optimized backends
+    (NumPy and, when compiled, native) are swept over the full size and
+    batch-size grid. ``backends`` is the requested set ("all" expands to
+    numpy + native); modular is never part of the large grid.
+    """
+    requested = ("numpy", "native") if backends == ("all",) else backends
+    excluded = []
+    vector_backends = []
+    for backend in ("numpy", "native"):
+        if backend not in requested:
+            continue
+        if backend not in installed:
+            excluded.append({"backend": backend,
+                             "reason": "backend is not compiled in this environment"})
+            continue
+        vector_backends.append(backend)
+    vector_backends = tuple(vector_backends)
+    runs = []
+    for scenario in scenarios:
+        runs.append((scenario.id, "modular", modular_simulations, batch_sizes[0]))
+    for scenario in scenarios:
+        for simulations in vector_sizes:
+            for batch_size in batch_sizes:
+                for backend in vector_backends:
+                    runs.append((scenario.id, backend, simulations, batch_size))
+    return DeepBenchmarkPlan(
+        vector_sizes, batch_sizes, modular_simulations, "modular",
+        vector_backends, tuple(runs), tuple(excluded),
+    )
+
+
+def print_deep_benchmark_header(plan: DeepBenchmarkPlan) -> None:
+    print(
+        "Deep benchmark: modular reference at "
+        f"{plan.modular_simulations:,} duels/scenario; "
+        f"{', '.join(plan.vector_backends)} swept over sizes "
+        f"{', '.join(f'{size:,}' for size in plan.vector_sizes)} x batches "
+        f"{', '.join(f'{size:,}' for size in plan.batch_sizes)}."
     )
 
 

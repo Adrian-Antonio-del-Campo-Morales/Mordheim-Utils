@@ -1,10 +1,13 @@
 from dataclasses import replace
+import json
 
 import pytest
 
 from mordheim_combat_lab.cli.benchmarking import benchmark_payload
 from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
 from mordheim_combat_lab.cli.benchmarking import compare_with_baseline
+from mordheim_combat_lab.cli.benchmarking import deep_benchmark_plan
+from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
 from mordheim_combat_lab.cli.benchmarking import load_benchmark_payload
 from mordheim_combat_lab.cli.benchmarking import parse_sizes
 from mordheim_combat_lab.cli.benchmarking import print_results_table
@@ -21,6 +24,58 @@ def test_benchmark_suite_has_the_five_required_scenarios():
     assert {item.id for item in benchmark_scenarios()} == {
         "basic", "multiattack", "defences", "stateful", "long",
     }
+
+
+def test_deep_suite_extends_the_five_core_scenarios():
+    ids = {item.id for item in deep_test_scenarios()}
+    assert {item.id for item in benchmark_scenarios()} <= ids
+    assert len(ids) >= 10  # the core five plus archetype matrix pairs
+
+
+def test_deep_suite_scenarios_compile_into_legal_duels():
+    from mordheim_construction.compiler import compile_fighter
+    for scenario in deep_test_scenarios():
+        compile_fighter(scenario.first)
+        compile_fighter(scenario.second)
+
+
+def test_deep_benchmark_plan_keeps_modular_at_the_reference_size_only():
+    scenarios = benchmark_scenarios()
+    plan = deep_benchmark_plan(
+        scenarios, vector_sizes=(1_000, 10_000), batch_sizes=(1_000, 10_000),
+        modular_simulations=100, backends=("all",), installed=("numpy",),
+    )
+    assert plan.vector_backends == ("numpy",)
+    assert plan.excluded[0]["backend"] == "native"
+    modular_runs = [run for run in plan.runs if run[1] == "modular"]
+    vector_runs = [run for run in plan.runs if run[1] != "modular"]
+    assert len(modular_runs) == len(scenarios)
+    assert all(run[2] == 100 for run in modular_runs)
+    # The full numpy grid: every scenario x every size x every batch.
+    assert len(vector_runs) == len(scenarios) * 2 * 2
+    assert all(run[1] == "numpy" for run in vector_runs)
+    assert {run[2] for run in vector_runs} == {1_000, 10_000}
+    assert {run[3] for run in vector_runs} == {1_000, 10_000}
+    assert all(run[2] >= 1_000 for run in vector_runs)
+
+
+def test_deep_benchmark_plan_respects_backend_restriction():
+    plan = deep_benchmark_plan(
+        benchmark_scenarios()[:1], vector_sizes=(1_000,), batch_sizes=(1_000,),
+        modular_simulations=100, backends=("numpy",), installed=("numpy", "native"),
+    )
+    assert plan.vector_backends == ("numpy",)
+
+
+def test_deep_parser_defaults_and_guards():
+    args = build_parser().parse_args(["benchmark", "--deep"])
+    assert args.deep is True
+    assert args.deep_simulation_sizes == "10k,100k,500k,1M,5M"
+    assert args.deep_batch_sizes == "25k,100k,200k,500k"
+    assert args.deep_modular_simulations == 10_000
+
+    from mordheim_combat_lab.cli.commands import main
+    assert main(["benchmark", "--deep", "--backend", "modular"]) == 2
 
 
 def test_benchmark_reports_raw_samples_and_median():
@@ -237,3 +292,55 @@ def test_sweep_table_mentions_all_configured_sizes(capsys):
     output = capsys.readouterr().out
     assert "2 simulations, 4 simulations" in output
     assert "batch sizes 2" in output
+
+
+def test_deep_benchmark_saves_the_report_by_default(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    assert main(["benchmark", "--deep", "--simulation-sizes", "1k", "--batch-sizes", "1k",
+                 "--scenario", "basic", "--backend", "numpy",
+                 "--deep-modular-simulations", "100", "--warmups", "0", "--repeats", "1"]) == 0
+    path = tmp_path / "outputs" / "benchmarks" / "deep.json"
+    assert path.is_file()
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    assert payload["mode"] == "deep"
+    assert payload["schema"] == "mordheim-combat-benchmark-sweep/v1"
+    assert payload["results"]
+
+
+def test_parity_deep_parser_uses_the_certification_sample_policy():
+    args = build_parser().parse_args(["parity", "--deep"])
+    assert args.deep_simulations is None  # split policy resolved at run time
+    assert args.max_modular_duels == 3_000_000
+
+
+def test_parallel_oracle_worker_policies_default_to_auto(monkeypatch):
+    monkeypatch.delenv("MORDHEIM_PARALLEL_ORACLE_WORKERS", raising=False)
+    parser = build_parser()
+    # None means "auto": pool only samples estimated over the ~20 s gate.
+    assert parser.parse_args(["parity"]).workers is None
+    assert parser.parse_args(["test-report"]).workers is None
+    assert parser.parse_args(["parity", "--workers", "4"]).workers == 4
+    # 1 is kept verbatim and collapses to sequential at resolve time.
+    assert parser.parse_args(["test-report", "--workers", "1"]).workers == 1
+    assert parser.parse_args(["test-report", "--workers", "auto"]).workers is None
+
+
+def test_parallel_oracle_workers_honour_the_environment_default(monkeypatch):
+    monkeypatch.setenv("MORDHEIM_PARALLEL_ORACLE_WORKERS", "8")
+    assert build_parser().parse_args(["parity"]).workers == 8
+    assert build_parser().parse_args(["test-report"]).workers == 8
+    # An explicit flag wins over the environment.
+    assert build_parser().parse_args(["parity", "--workers", "2"]).workers == 2
+
+
+def test_deep_parity_saves_the_report_by_default(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    assert main(["parity", "--deep", "--deep-simulations", "30",
+                 "--deep-cross-simulations", "50", "--seed", "3"]) == 0
+    path = tmp_path / "outputs" / "parity" / "deep.json"
+    assert path.is_file()
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    assert payload["schema"] == "mordheim-combat-parity/v2"
+    assert payload["deep"] is not None
+    assert payload["elapsed_seconds"] > 0
+    assert all("reference_seconds" in row for row in payload["deep"]["samples"])

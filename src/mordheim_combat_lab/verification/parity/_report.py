@@ -34,6 +34,12 @@ class StatisticalParityResult:
     vectorized_rates: tuple[float, float, float]
     tolerances: tuple[float, float, float]
     passed: bool
+    # Wall time of each engine's sample, at engine level: ``reference`` is the
+    # modular oracle for statistical/matrix rows and NumPy for cross rows;
+    # ``candidate`` is the backend named in ``backend``. Zero when the sample
+    # was supplied by the caller without a measurement.
+    reference_seconds: float = 0.0
+    candidate_seconds: float = 0.0
 
 @dataclass(frozen=True, slots=True)
 class SpecificationParityCase:
@@ -59,21 +65,34 @@ def parity_report_payload(
     report: ParityReport,
     statistical: Iterable[StatisticalParityResult] = (),
     specifications: SpecificationParityReport | None = None,
+    deep: Iterable[StatisticalParityResult] = (),
+    truncations: Iterable[StatisticalParityResult] = (),
+    elapsed_seconds: float | None = None,
 ) -> dict[str, object]:
-    """Return a serializable, self-describing parity certificate."""
+    """Return a serializable, self-describing parity certificate.
+
+    ``elapsed_seconds`` is the total wall time of the run that produced the
+    certificate (measured by the caller around the whole command); ``None``
+    when a payload is assembled from already-computed samples.
+    """
     samples = tuple(statistical)
     statistical_passed = all(item.passed for item in samples)
     certification = bool(samples) and all(
         item.simulations >= CERTIFICATION_SIMULATIONS for item in samples
     )
+    deep_samples = tuple(deep)
+    deep_passed = all(item.passed for item in deep_samples)
+    truncation_samples = tuple(truncations)
+    truncations_passed = all(item.passed for item in truncation_samples)
     return {
-        "schema": "mordheim-combat-parity/v1",
+        "schema": "mordheim-combat-parity/v2",
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "elapsed_seconds": elapsed_seconds,
         "oracle": "combat.modular (read-only)",
         "candidate": "combat.vectorized",
-        "complete": report.complete and statistical_passed and (
+        "complete": report.complete and statistical_passed and deep_passed and (
             specifications is None or specifications.complete
-        ),
+        ) and (not truncation_samples or truncations_passed),
         "certification_sample_complete": certification,
         "certification_minimum_simulations_per_engine": CERTIFICATION_SIMULATIONS,
         "deterministic": {
@@ -95,7 +114,37 @@ def parity_report_payload(
             "vectorized_rates": item.vectorized_rates,
             "tolerances": item.tolerances,
             "passed": item.passed,
+            "reference_seconds": item.reference_seconds,
+            "candidate_seconds": item.candidate_seconds,
         } for item in samples),
+        "deep": None if not deep_samples else {
+            "complete": deep_passed,
+            "samples": tuple({
+                "scenario": item.scenario,
+                "backend": item.backend,
+                "simulations_per_engine": item.simulations,
+                "reference_rates": item.modular_rates,
+                "candidate_rates": item.vectorized_rates,
+                "tolerances": item.tolerances,
+                "passed": item.passed,
+                "reference_seconds": item.reference_seconds,
+                "candidate_seconds": item.candidate_seconds,
+            } for item in deep_samples),
+        },
+        "truncations": None if not truncation_samples else {
+            "complete": truncations_passed,
+            "samples": tuple({
+                "scenario": item.scenario,
+                "backend": item.backend,
+                "simulations_per_engine": item.simulations,
+                "modular_rates": item.modular_rates,
+                "vectorized_rates": item.vectorized_rates,
+                "tolerances": item.tolerances,
+                "passed": item.passed,
+                "reference_seconds": item.reference_seconds,
+                "candidate_seconds": item.candidate_seconds,
+            } for item in truncation_samples),
+        },
         "specifications": None if specifications is None else {
             "complete": specifications.complete,
             "passed": specifications.passed,
@@ -122,6 +171,9 @@ def parity_report_markdown(payload: dict[str, object]) -> str:
         "# Vectorized engine parity report",
         "",
         f"- Generated: `{payload['generated_at']}`",
+        *([f"- Elapsed: `{payload['elapsed_seconds']:.1f}s`"]
+          if isinstance(payload.get("elapsed_seconds"), (int, float))
+          else ["- Elapsed: not recorded"]),
         f"- Oracle: `{payload['oracle']}`",
         f"- Candidate: `{payload['candidate']}`",
         f"- Overall pass: `{payload['complete']}`",
@@ -147,8 +199,8 @@ def parity_report_markdown(payload: dict[str, object]) -> str:
     if rows:
         lines.extend((
             "", "## Statistical comparisons", "",
-            "| Scenario | Backend | Duels/engine | Modular W/L/U | Candidate W/L/U | Pass |",
-            "|---|---:|---|---|---|---|",
+            "| Scenario | Backend | Duels/engine | Modular W/L/U | Candidate W/L/U | Pass | Time (oracle/cand, s) |",
+            "|---|---:|---|---|---|---|---|",
         ))
         for row in rows:
             modular = "/".join(f"{100 * value:.3f}%" for value in row["modular_rates"])
@@ -156,6 +208,40 @@ def parity_report_markdown(payload: dict[str, object]) -> str:
             lines.append(
                 f"| {row['scenario']} | {row['backend']} | "
                 f"{row['simulations_per_engine']:,} | "
-                f"{modular} | {vector} | {row['passed']} |"
+                f"{modular} | {vector} | {row['passed']} | "
+                f"{row['reference_seconds']:.2f} / {row['candidate_seconds']:.2f} |"
+            )
+    deep = payload.get("deep")
+    if isinstance(deep, dict):
+        deep_rows = deep["samples"]
+        lines.extend((
+            "", "## Deep certification samples", "",
+            "| Scenario | Candidate | Duels/engine | Reference W/L/U | Candidate W/L/U | Pass | Time (ref/cand, s) |",
+            "|---|---:|---|---|---|---|---|",
+        ))
+        for row in deep_rows:
+            reference = "/".join(f"{100 * value:.3f}%" for value in row["reference_rates"])
+            candidate = "/".join(f"{100 * value:.3f}%" for value in row["candidate_rates"])
+            lines.append(
+                f"| {row['scenario']} | {row['backend']} | "
+                f"{row['simulations_per_engine']:,} | "
+                f"{reference} | {candidate} | {row['passed']} | "
+                f"{row['reference_seconds']:.2f} / {row['candidate_seconds']:.2f} |"
+            )
+    truncations = payload.get("truncations")
+    if isinstance(truncations, dict):
+        lines.extend((
+            "", "## Round-truncation parity samples", "",
+            "| Horizon | Candidate | Duels/engine | Modular W/L/U | Candidate W/L/U | Pass | Time (oracle/cand, s) |",
+            "|---|---:|---|---|---|---|---|",
+        ))
+        for row in truncations["samples"]:
+            modular = "/".join(f"{100 * value:.3f}%" for value in row["modular_rates"])
+            candidate = "/".join(f"{100 * value:.3f}%" for value in row["vectorized_rates"])
+            lines.append(
+                f"| {row['scenario']} | {row['backend']} | "
+                f"{row['simulations_per_engine']:,} | "
+                f"{modular} | {candidate} | {row['passed']} | "
+                f"{row['reference_seconds']:.2f} / {row['candidate_seconds']:.2f} |"
             )
     return "\n".join(lines) + "\n"

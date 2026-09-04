@@ -3168,11 +3168,15 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
             if rescue_force_of_will_c(&d.second, &s2, rows, n_rows, &rng) < 0:
                 rc = -1
                 return rc
+            # Reply rows are scanned from the reply fighter's OWN standing
+            # state, never derived from the primary's row set: when the primary
+            # is down (knocked down / stunned at round start) the standing
+            # opponent must still strike and auto-out the helpless target,
+            # exactly like the scalar oracle's independent pools.
             n_reply = 0
-            for i in range(n_rows):
-                row = rows[i]
-                if s2.condition[row] == STANDING:
-                    reply[n_reply] = row
+            for i in range(count):
+                if unresolved[i] and s2.condition[i] == STANDING and first_acts[i]:
+                    reply[n_reply] = i
                     n_reply += 1
             if resolve_attacks_c(d, 1, reply, n_reply, attacks2, charge2, &s2, &s1,
                                  &rng, first_round, decisions, second_py, "") < 0:
@@ -3201,10 +3205,9 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
                 rc = -1
                 return rc
             n_reply = 0
-            for i in range(n_rows):
-                row = rows[i]
-                if s1.condition[row] == STANDING:
-                    reply[n_reply] = row
+            for i in range(count):
+                if unresolved[i] and s1.condition[i] == STANDING and not first_acts[i]:
+                    reply[n_reply] = i
                     n_reply += 1
             if resolve_attacks_c(d, 0, reply, n_reply, attacks1, charge1, &s1, &s2,
                                  &rng, first_round, decisions, first_py, "") < 0:

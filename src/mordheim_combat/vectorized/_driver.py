@@ -248,22 +248,30 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         i1,i2=effective_initiative(first,state1),effective_initiative(second,state2)
         first_acts=(p1>p2)|((p1==p2)&(i1>i2));ties=(p1==p2)&(i1==i2)
         first_acts[ties]=rng.random(int(ties.sum()))<.5
-        rows=np.flatnonzero(unresolved&(state1.condition==STANDING)&first_acts)
-        resolve_attacks(first,second,rows,attacks1,charge1,state1,state2,rng,first_round,decisions)
-        if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows,rng)
-        if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows,rng)
-        reply=rows[state2.condition[rows]==STANDING]
-        resolve_attacks(second,first,reply,attacks2,charge2,state2,state1,rng,first_round,decisions)
-        if optional.first_force_of_will:_rescue_force_of_will(first,state1,reply,rng)
-        if optional.second_force_of_will:_rescue_force_of_will(second,state2,reply,rng)
-        rows=np.flatnonzero(unresolved&(state2.condition==STANDING)&~first_acts)
-        resolve_attacks(second,first,rows,attacks2,charge2,state2,state1,rng,first_round,decisions)
-        if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows,rng)
-        if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows,rng)
-        reply=rows[state1.condition[rows]==STANDING]
-        resolve_attacks(first,second,reply,attacks1,charge1,state1,state2,rng,first_round,decisions)
-        if optional.first_force_of_will:_rescue_force_of_will(first,state1,reply,rng)
-        if optional.second_force_of_will:_rescue_force_of_will(second,state2,reply,rng)
+        # Each fighter's attack phase is gated only on *their own* standing,
+        # never on the other fighter's row set.  Deriving the reply rows from
+        # the primary actor's rows once silently dropped the standing
+        # opponent's attack whenever the primary was down (knocked down or
+        # stunned at round start): the downed primary's rows are empty, so the
+        # reply — and with it the helpless auto-OOA execution — vanished too.
+        # The scalar oracle resolves each pool independently, so the opponent
+        # must still strike (and auto-out the helpless target).
+        rows1=np.flatnonzero(unresolved&(state1.condition==STANDING)&first_acts)
+        resolve_attacks(first,second,rows1,attacks1,charge1,state1,state2,rng,first_round,decisions)
+        if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows1,rng)
+        if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows1,rng)
+        reply1=np.flatnonzero(unresolved&(state2.condition==STANDING)&first_acts)
+        resolve_attacks(second,first,reply1,attacks2,charge2,state2,state1,rng,first_round,decisions)
+        if optional.first_force_of_will:_rescue_force_of_will(first,state1,reply1,rng)
+        if optional.second_force_of_will:_rescue_force_of_will(second,state2,reply1,rng)
+        rows2=np.flatnonzero(unresolved&(state2.condition==STANDING)&~first_acts)
+        resolve_attacks(second,first,rows2,attacks2,charge2,state2,state1,rng,first_round,decisions)
+        if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows2,rng)
+        if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows2,rng)
+        reply2=np.flatnonzero(unresolved&(state1.condition==STANDING)&~first_acts)
+        resolve_attacks(first,second,reply2,attacks1,charge1,state1,state2,rng,first_round,decisions)
+        if optional.first_force_of_will:_rescue_force_of_will(first,state1,reply2,rng)
+        if optional.second_force_of_will:_rescue_force_of_will(second,state2,reply2,rng)
         if optional.first_black_hunger:
             _black_hunger_backlash(first,state1,active_rows,rng)
         if optional.second_black_hunger:
@@ -310,18 +318,122 @@ def available_backends() -> tuple[str, ...]:
         return ("numpy",)
     return ("native", "numpy") if hasattr(_combat_native, "simulate_duel") else ("numpy",)
 
+# Per-batch stream derivation for the NumPy driver.
+#
+# The native backend seeds one stream per batch, which makes its batches
+# independent, reproducible work units.  The NumPy driver used to carry a
+# single Generator across the whole sample, so its batches were not
+# splittable.  Deriving a generator per batch from (seed, batch_index) keeps
+# every draw site untouched while turning each batch into an independent
+# unit: a large sample can now be split across processes batch by batch and
+# the totals are bit-for-bit identical to the sequential run.  Batch 0 keeps
+# the historical seed, so single-batch samples (<= one batch_size) are
+# unchanged.
+_BATCH_STREAM_SALT = 0x9E3779B97F4A7C15  # golden-ratio constant (as native)
+
+
+def _batch_seed(seed: int, batch_index: int) -> int:
+    return (seed + batch_index * _BATCH_STREAM_SALT) % (1 << 32)
+
+
+def _batch_sizes(simulations: int, batch_size: int) -> tuple[int, ...]:
+    """Canonical per-batch duel counts: full batches plus a final partial."""
+    full, remainder = divmod(simulations, batch_size)
+    return (batch_size,) * full + ((remainder,) if remainder else ())
+
+
+def _run_one_batch(first: CompiledFighter, second: CompiledFighter, count: int,
+                   seed: int, batch_index: int, maximum_rounds: int,
+                   decisions: DecisionPolicy | None) -> tuple[int, int, int]:
+    """Simulate exactly one batch on its own independent stream."""
+    rng = np.random.default_rng(
+        seed if batch_index == 0 else _batch_seed(seed, batch_index))
+    return simulate_batch(first, second, count, rng, maximum_rounds, decisions)
+
+
 def _simulate_duel_numpy(request: DuelRequest) -> DuelResult:
-    rng=np.random.default_rng(request.seed);a=b=u=0;remaining=request.simulations
-    while remaining:
+    first_wins = second_wins = unresolved = 0
+    for batch_index, count in enumerate(_batch_sizes(
+            request.simulations, request.batch_size)):
         if request.cancel_event is not None and request.cancel_event.is_set():
             raise SimulationCancelled("simulation cancelled")
-        count=min(remaining,request.batch_size)
-        x,y,z=simulate_batch(
-            request.first,request.second,count,rng,request.maximum_rounds,
-            request.decision_policy,
+        x, y, z = _run_one_batch(
+            request.first, request.second, count, request.seed, batch_index,
+            request.maximum_rounds, request.decision_policy,
         )
-        a+=x;b+=y;u+=z;remaining-=count
-    return DuelResult(a,b,u,request.simulations)
+        first_wins += x
+        second_wins += y
+        unresolved += z
+    return DuelResult(first_wins, second_wins, unresolved, request.simulations)
+
+
+def _run_batch_segment(first: CompiledFighter, second: CompiledFighter,
+                       start: int, stop: int, simulations: int,
+                       batch_size: int, seed: int, maximum_rounds: int,
+                       decisions: DecisionPolicy | None) -> tuple[int, int, int]:
+    """Run whole batches ``[start, stop)`` of the canonical plan (worker)."""
+    sizes = _batch_sizes(simulations, batch_size)
+    first_wins = second_wins = unresolved = 0
+    for batch_index in range(start, stop):
+        x, y, z = _run_one_batch(
+            first, second, sizes[batch_index], seed, batch_index,
+            maximum_rounds, decisions,
+        )
+        first_wins += x
+        second_wins += y
+        unresolved += z
+    return first_wins, second_wins, unresolved
+
+
+def simulate_duel_parallel(request: DuelRequest, *,
+                           workers: int | None = None) -> DuelResult:
+    """Bit-for-bit parallel equivalent of the NumPy driver.
+
+    The sample is partitioned along whole batches (each batch has its own
+    stream derived from the seed), so any worker split reproduces the
+    sequential ``simulate_duel(backend="numpy")`` totals exactly.  Processes
+    are required because the NumPy hot loops hold the GIL.  ``workers``
+    defaults to the machine's core count and is capped at the number of
+    batches; ``cancel_event`` is honoured between completed segments.
+    """
+    from concurrent.futures import ProcessPoolExecutor
+    from concurrent.futures import as_completed
+    import os
+
+    sizes = _batch_sizes(request.simulations, request.batch_size)
+    total = len(sizes)
+    available = workers if workers is not None else os.cpu_count() or 1
+    workers_used = max(1, min(available, total))
+    base, extra = divmod(total, workers_used)
+    segments = []
+    start = 0
+    for index in range(workers_used):
+        count = base + (1 if index < extra else 0)
+        segments.append((start, start + count))
+        start += count
+    first_wins = second_wins = unresolved = 0
+    with ProcessPoolExecutor(max_workers=workers_used) as pool:
+        futures = [
+            pool.submit(
+                _run_batch_segment, request.first, request.second,
+                start, stop, request.simulations, request.batch_size,
+                request.seed, request.maximum_rounds,
+                request.decision_policy,
+            )
+            for start, stop in segments
+        ]
+        try:
+            for future in as_completed(futures):
+                if request.cancel_event is not None and request.cancel_event.is_set():
+                    raise SimulationCancelled("parallel simulation cancelled")
+                x, y, z = future.result()
+                first_wins += x
+                second_wins += y
+                unresolved += z
+        finally:
+            for future in futures:
+                future.cancel()
+    return DuelResult(first_wins, second_wins, unresolved, request.simulations)
 
 def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
     """Run a duel through the selected backend without changing `DuelRequest`."""

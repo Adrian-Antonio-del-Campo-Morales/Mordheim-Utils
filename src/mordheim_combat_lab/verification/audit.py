@@ -16,6 +16,7 @@ from mordheim_combat_lab.verification.reports import REQUIRED_CASES
 from mordheim_combat_lab.verification.reports import SemanticReport
 from mordheim_combat_lab.verification.scenarios import check_case
 from mordheim_combat_lab.verification.specifications import load_fixtures
+from mordheim_combat_lab.verification.specifications import load_interaction_policy
 from mordheim_combat_lab.verification.specifications import specifications_root
 from pathlib import Path
 
@@ -177,11 +178,10 @@ def verify_semantics(root: Path | None = None, specs_root: Path | None = None) -
         if (set(a["writes"]) & (set(b["reads"]) | set(b["writes"]))
                 or set(b["writes"]) & set(a["reads"])):
             candidates.add((left, right))
-    policy_path = specifications_root(specs_root) / "interaction-policy.yaml"
     overrides = {}
     policy_name = "critical_and_high_required"
-    if policy_path.exists():
-        policy = read_yaml(policy_path)
+    policy = load_interaction_policy(specs_root)
+    if policy is not None:
         if policy.get("schema_version") != 1:
             errors.append("unsupported interaction policy schema")
         policy_name = str(policy.get("policy") or policy_name)

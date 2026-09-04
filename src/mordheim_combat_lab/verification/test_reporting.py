@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+from typing import Callable
 from typing import Iterable
 
 
@@ -79,7 +80,10 @@ def _overall(*statuses: str) -> str:
 
 
 def semantic_report_rows(*, statistical: bool = False, simulations: int = 100_000,
-                         seed: int = 2026) -> list[dict[str, object]]:
+                         seed: int = 2026,
+                         on_progress: Callable[[], None] | None = None,
+                         workers: object | None = None,
+                         ) -> list[dict[str, object]]:
     root = knowledge_root()
     parity = verify_specification_parity(root)
     indexed = {(item.specification, item.case): item for item in parity.cases}
@@ -169,20 +173,29 @@ def semantic_report_rows(*, statistical: bool = False, simulations: int = 100_00
             )
             base["details"] = " | ".join(details)
             rows.append(base)
+        if on_progress is not None:
+            on_progress()
 
     if statistical:
         for scenario in benchmark_scenarios():
-            from mordheim_combat.modular.duel import simulate_duel_reference
+            from mordheim_combat.modular.parallel import resolve_oracle_workers
+            from mordheim_combat.modular.parallel import run_oracle_sample
+            import time
 
             first, second = compile_fighter(scenario.first), compile_fighter(scenario.second)
-            modular_result = simulate_duel_reference(
+            oracle_started = time.perf_counter()
+            modular_result = run_oracle_sample(
                 first, second, simulations, seed=seed,
                 maximum_rounds=scenario.maximum_rounds,
+                workers=resolve_oracle_workers(
+                    workers, simulations, scenario.maximum_rounds,
+                ),
             )
+            oracle_seconds = time.perf_counter() - oracle_started
             numpy_result = compare_statistical_parity(
                 scenario.id, first, second, simulations, seed=seed,
                 maximum_rounds=scenario.maximum_rounds, backend="numpy",
-                modular=modular_result,
+                modular=modular_result, reference_seconds=oracle_seconds,
             )
             modular = {"rates_w_l_u": numpy_result.modular_rates, "simulations": simulations}
             numpy = {"rates_w_l_u": numpy_result.vectorized_rates, "tolerances": numpy_result.tolerances,
@@ -195,7 +208,7 @@ def semantic_report_rows(*, statistical: bool = False, simulations: int = 100_00
                     native_result = compare_statistical_parity(
                         scenario.id, first, second, simulations, seed=seed,
                         maximum_rounds=scenario.maximum_rounds, backend="native",
-                        modular=modular_result,
+                        modular=modular_result, reference_seconds=oracle_seconds,
                     )
                 except Exception as error:
                     native_status = "FAIL"
@@ -227,33 +240,27 @@ def semantic_report_rows(*, statistical: bool = False, simulations: int = 100_00
                 "passes": passes,
                 "details": "" if not native_detail else f"native: {native_detail}",
             })
+            if on_progress is not None:
+                on_progress()
     return rows
 
 
-def run_technical_tests(path: Path) -> int:
-    environment = dict(__import__("os").environ)
-    environment["MORDHEIM_TEST_REPORT_CSV"] = str(path.resolve())
-    command = [
-        sys.executable, "-m", "pytest", "-p",
-        "mordheim_combat_lab.verification.pytest_reporter", "-p", "no:cacheprovider", "-q",
-    ]
-    try:
-        return subprocess.run(command, env=environment, check=False).returncode
-    except Exception as error:
-        write_csv(path, TECHNICAL_COLUMNS, ({
-            "test_id": "pytest/session", "status": "ERROR", "error": str(error), "passes": "FAIL",
-        },))
-        return 1
+def write_semantic_report(output: Path, *, statistical: bool = False,
+                          simulations: int = 100_000, seed: int = 2026,
+                          on_progress: Callable[[], None] | None = None,
+                          workers: object | None = None,
+                          ) -> tuple[Path, list[dict[str, object]]]:
+    """Compute the semantic parity rows and write the CSV; return its path.
 
-
-def generate_test_report(output: Path, *, statistical: bool = False,
-                         simulations: int = 100_000, seed: int = 2026) -> tuple[Path, Path, list[dict[str, object]], int]:
+    The on_progress hook fires once per semantic specification and once per
+    statistical scenario, so callers can render a live bar over this phase.
+    """
     output = Path(output)
     semantic_path = output / "semantic-parity.csv"
-    technical_path = output / "technical-tests.csv"
     try:
         semantic_rows = semantic_report_rows(
             statistical=statistical, simulations=simulations, seed=seed,
+            on_progress=on_progress, workers=workers,
         )
     except Exception as error:
         semantic_rows = [{
@@ -262,11 +269,44 @@ def generate_test_report(output: Path, *, statistical: bool = False,
             "modular_status": "ERROR", "modular_detail": str(error), "passes": "FAIL",
         }]
     write_csv(semantic_path, SEMANTIC_COLUMNS, semantic_rows)
-    technical_exit = run_technical_tests(technical_path)
-    if not technical_path.is_file():
-        write_csv(technical_path, TECHNICAL_COLUMNS, ({
+    return semantic_path, semantic_rows
+
+
+def run_technical_tests(path: Path) -> int:
+    path = Path(path)
+    environment = dict(__import__("os").environ)
+    environment["MORDHEIM_TEST_REPORT_CSV"] = str(path.resolve())
+    command = [
+        sys.executable, "-m", "pytest", "-p",
+        "mordheim_combat_lab.verification.pytest_reporter", "-p", "no:cacheprovider", "-q",
+    ]
+    try:
+        exit_code = subprocess.run(command, env=environment, check=False).returncode
+    except Exception as error:
+        write_csv(path, TECHNICAL_COLUMNS, ({
+            "test_id": "pytest/session", "status": "ERROR", "error": str(error), "passes": "FAIL",
+        },))
+        return 1
+    if not path.is_file():
+        write_csv(path, TECHNICAL_COLUMNS, ({
             "test_id": "pytest/session", "status": "ERROR",
             "error": "pytest did not create its report", "passes": "FAIL",
         },))
-        technical_exit = 1
+        return 1
+    return exit_code
+
+
+def generate_test_report(output: Path, *, statistical: bool = False,
+                         simulations: int = 100_000, seed: int = 2026,
+                         on_progress: Callable[[], None] | None = None,
+                         workers: object | None = None,
+                         ) -> tuple[Path, Path, list[dict[str, object]], int]:
+    """Both report phases in one call; see write_semantic_report."""
+    output = Path(output)
+    semantic_path, semantic_rows = write_semantic_report(
+        output, statistical=statistical, simulations=simulations, seed=seed,
+        on_progress=on_progress, workers=workers,
+    )
+    technical_path = output / "technical-tests.csv"
+    technical_exit = run_technical_tests(technical_path)
     return semantic_path, technical_path, semantic_rows, technical_exit

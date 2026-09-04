@@ -20,3 +20,9 @@ from mordheim_combat_lab.verification.parity._specifications import (
 )
 from mordheim_combat_lab.verification.parity._vectorized import verify_vectorized_parity
 from mordheim_combat_lab.verification.parity._statistical import compare_statistical_parity
+from mordheim_combat_lab.verification.parity._truncations import TRUNCATION_HORIZONS
+from mordheim_combat_lab.verification.parity._truncations import compare_truncation_parity
+from mordheim_combat_lab.verification.parity._deep import (
+    DeepPair,
+    certify_deep,
+)

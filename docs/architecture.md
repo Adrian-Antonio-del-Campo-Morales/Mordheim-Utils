@@ -90,7 +90,13 @@ The vectorized engine is certified against the modular oracle by
 `mordheim_combat_lab.verification.parity` (per-field obligations, semantic
 specifications and statistical six-sigma gates). A divergence detected while
 working on the vectorized engine is presumed to be a defect of the candidate:
-`parity` only reads the oracle and never modifies it.
+`parity` only reads the oracle and never modifies it. The full interaction
+corpus (217/217 required pairs, see
+[interaction-matrix.md](interaction-matrix.md)) runs through these adapters;
+the 2026-09-04 implementation of that corpus surfaced and fixed exactly such
+a candidate defect — the vectorized engine drew a wound die for automatic
+wounds, shifting the ward-save roll stream that follows (`_attacks.py` now
+mirrors the oracle's roll order for `automatic-wound` rows).
 
 ### Native (compiled)
 

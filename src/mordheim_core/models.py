@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from dataclasses import field
 from mordheim_core.dice import AlwaysAccept
 from mordheim_core.dice import DecisionPolicy
+import numpy as np
 from threading import Event
 from typing import Mapping
 
@@ -123,6 +124,57 @@ class DuelResult:
     def second_win_rate(self): return 100.0 * self.second_wins / self.simulations
     @property
     def unresolved_rate(self): return 100.0 * self.unresolved / self.simulations
+
+
+@dataclass(frozen=True, slots=True)
+class ObservedDuelResult:
+    """Per-duel terminal records for one whole-oracle sample.
+
+    Exposed only to verification and diagnostics; the production counting
+    path (``DuelResult``) is unchanged.  Arrays are row-aligned with duel
+    index ``seed + i``.  ``winner`` follows the ``DuelResult`` convention
+    (0 first wins, 1 second wins, 2 unresolved).  ``resolution_rounds``
+    counts the rounds actually executed before the duel ended (1..
+    ``maximum_rounds``); a duel that runs out of its round budget is
+    unresolved (``winner == 2``) and reports ``maximum_rounds``, mirroring
+    the vectorized driver's per-row round ledger.  ``first_condition`` /
+    ``second_condition`` use the shared ``Condition`` codes.
+    """
+    winner: np.ndarray
+    resolution_rounds: np.ndarray
+    first_wounds: np.ndarray
+    second_wounds: np.ndarray
+    first_condition: np.ndarray
+    second_condition: np.ndarray
+    simulations: int
+    maximum_rounds: int
+
+    def __post_init__(self) -> None:
+        if self.simulations < 1 or self.maximum_rounds < 1:
+            raise ValueError("simulation limits must be positive")
+        length = len(self.winner)
+        if length != self.simulations:
+            raise ValueError("winner records must match the simulation count")
+        for name in ("resolution_rounds", "first_wounds", "second_wounds",
+                     "first_condition", "second_condition"):
+            if len(getattr(self, name)) != length:
+                raise ValueError(f"{name} records must match the simulation count")
+
+    @property
+    def first_wins(self) -> int:
+        return int(np.count_nonzero(self.winner == 0))
+
+    @property
+    def second_wins(self) -> int:
+        return int(np.count_nonzero(self.winner == 1))
+
+    @property
+    def unresolved(self) -> int:
+        return int(np.count_nonzero(self.winner == 2))
+
+    def as_result(self) -> DuelResult:
+        return DuelResult(self.first_wins, self.second_wins, self.unresolved,
+                          self.simulations)
 
 
 class SimulationCancelled(RuntimeError): pass

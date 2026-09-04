@@ -158,9 +158,11 @@ def test_automatic_wounds_cannot_claim_a_synthetic_critical():
     defender = build(wounds=2)
     attacker_state = _new_state(attacker, 1, np.random.default_rng(1))
     defender_state = _new_state(defender, 1, np.random.default_rng(2))
+    # Automatic wounds roll no wound die (the modular oracle returns roll 0 for
+    # them), so the second die is the dagger-vs-no-armour 6+ save, rolled 1.
     _resolve_weapon(
         attacker, defender, attacker.main_weapon, np.array([0]), np.zeros(1, dtype=bool),
-        attacker_state, defender_state, FixedRng(6, 6, 1), False,
+        attacker_state, defender_state, FixedRng(6, 1), False,
     )
     assert defender_state.wounds.tolist() == [1]
     assert not attacker_state.critical_used[0]
