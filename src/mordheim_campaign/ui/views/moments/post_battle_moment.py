@@ -10,6 +10,35 @@ from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import BorderedFrame, ExperienceTrack, ScrollableFrame, SummaryStrip
 
 
+def _injury_card(dice: list[int], resolver, *, hero: bool) -> tuple[str, str, str]:
+    """Live KB resolution for an injury card's roll."""
+    outcome = (resolver.resolve_hero_serious_injury(10 * dice[0] + dice[1]) if hero
+               else resolver.resolve_henchman_serious_injury(dice[0]))
+    parts = list(outcome.effects)
+    if outcome.follow_up:
+        parts.append(outcome.follow_up)
+    detail = " · ".join(parts) or "No lasting effect."
+    tone = "danger" if outcome.result in ("Dead", "Removed", "Multiple Injuries") else "accent"
+    return outcome.result, detail, tone
+
+
+def _exploration_card(dice: list[int], resolver) -> tuple[str, str, str]:
+    """Live KB resolution of an exploration roll."""
+    resolved = resolver.resolve_exploration(tuple(dice))
+    detail = f"Total {resolved.total} → {resolved.shards} wyrdstone shard(s)"
+    if resolved.matching_dice_note:
+        detail += f" · {resolved.matching_dice_note}"
+    return f"Exploration resolved · {resolved.shards} shard(s)", detail, "accent"
+
+
+def _rarity_card(dice: list[int], resolver, item_id: str, name: str) -> tuple[str, str, str]:
+    """Live KB rarity-test resolution for a rare-item search."""
+    search = resolver.resolve_rarity_search(item_id, sum(dice))
+    title = "Available" if search.success else "Not found"
+    tone = "success" if search.success else "neutral"
+    return title, f"{name}: {search.note}", tone
+
+
 class PostBattleMoment(tk.Frame):
     """Resolve one battle-to-state transition as eight sequential user actions.
 
@@ -165,21 +194,36 @@ class PostBattleMoment(tk.Frame):
             tk.Label(frame, text=subtitle, bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8), wraplength=900, justify="left").pack(anchor="w", pady=(3, 8))
         return frame
 
+    def _kb_provenance(self, index: int) -> str:
+        """KB provenance line (sequence step ids + resolved catalogue files)."""
+        sources = self.controller.post_battle_content().action_sources()
+        source = sources[index]
+        step_ids = " + ".join(source.kb_step_ids)
+        files = ", ".join(source.resolved_catalogues)
+        return f"KB source: {step_ids} — resolves {files}"
+
     def _injuries(self, parent: tk.Misc, _battle) -> None:
-        self._title(parent, "01 · Injuries", "Resolve warriors that went Out of Action. Every required roll starts unresolved so physical dice and in-app dice are equally supported.")
+        resolver = self.controller.post_battle_resolver()
+        self._title(parent, "01 · Injuries", f"Resolve warriors that went Out of Action against the KB serious-injury charts. Every required roll starts unresolved so physical dice and in-app dice are equally supported. {self._kb_provenance(0)}")
+        hero = resolver.resolve_hero_serious_injury(24)  # demo preview: D66 = 2 & 4
+        hero_detail = " · ".join(part for part in (hero.effects + ((hero.follow_up,) if hero.follow_up else ()))) or "No lasting effect."
         DiceResolutionCard(
-            parent, title="Sister Superior Marta", subtitle="Hero · Out of Action · Serious Injury roll required",
+            parent, title="Sister Superior Marta", subtitle=f"Hero · Out of Action · Serious Injury roll required · resolved from the KB hero D66 table",
             notation="D66", dice_count=2, demo_dice=(2, 4), combine="d66",
-            outcome_title="Madness", outcome_detail="A follow-up D6 would be required", outcome_tone="danger",
+            outcome_title=hero.result, outcome_detail=hero_detail, outcome_tone="danger",
+            on_resolved=lambda dice, _r=resolver: _injury_card(dice, _r, hero=True),
         ).pack(fill="x", pady=(0, 9))
+        henchman = resolver.resolve_henchman_serious_injury(1)
         DiceResolutionCard(
-            parent, title="Novices", subtitle="Henchmen · 1 member Out of Action · survival roll required",
+            parent, title="Novices", subtitle="Henchmen · 1 member Out of Action · survival roll required · resolved from the KB henchman D6 table",
             notation="D6", dice_count=1, demo_dice=(1,), combine="sum",
-            outcome_title="Removed", outcome_detail="Group size 3 → 2", outcome_tone="danger",
+            outcome_title=henchman.result, outcome_detail=" · ".join(henchman.effects) or "No lasting effect.",
+            outcome_tone="danger" if henchman.result == "Removed" else "neutral",
+            on_resolved=lambda dice, _r=resolver: _injury_card(dice, _r, hero=False),
         ).pack(fill="x", pady=(0, 8))
 
     def _experience(self, parent: tk.Misc, _battle) -> None:
-        self._title(parent, "02 · Experience", "Allocate experience first. Any advancement created by the new XP is then resolved here before moving on to Exploration.")
+        self._title(parent, "02 · Experience", f"Allocate experience first. Any advancement created by the new XP is then resolved here before moving on to Exploration. {self._kb_provenance(1)}")
         for warrior, before, after in (
             (self.controller.state.campaign.warriors[0], 23, 26),
             (self.controller.state.campaign.warriors[1], 19, 21),
@@ -208,15 +252,22 @@ class PostBattleMoment(tk.Frame):
         ).pack(fill="x", pady=(0, 8))
 
     def _exploration(self, parent: tk.Misc, _battle) -> None:
-        self._title(parent, "03 · Exploration", "Roll once for each eligible Hero. The app can detect wyrdstone and matching-dice exploration results after the dice are entered.")
+        resolver = self.controller.post_battle_resolver()
+        self._title(parent, "03 · Exploration", f"Roll once for each eligible Hero, plus one die when the warband won. Shards come from the KB shard chart; matching dice open the KB special-result table. {self._kb_provenance(2)}")
+        dice_count = resolver.exploration_dice(surviving_heroes=4, warband_won=False)
+        resolved = resolver.resolve_exploration((3, 3, 5, 6))
+        detail = f"Total {resolved.total} → {resolved.shards} wyrdstone shard(s)"
+        if resolved.matching_dice_note:
+            detail += f" · {resolved.matching_dice_note}"
         DiceResolutionCard(
-            parent, title="Exploration Dice", subtitle="Eligible Heroes: 4",
-            notation="4D6", dice_count=4, demo_dice=(3, 3, 5, 6), combine="list",
-            outcome_title="Exploration resolved", outcome_detail="Matching dice can open additional result cards",
+            parent, title="Exploration Dice", subtitle=f"Eligible Heroes: 4 · {dice_count}D6 from the KB allocation",
+            notation=f"{dice_count}D6", dice_count=dice_count, demo_dice=(3, 3, 5, 6), combine="list",
+            outcome_title=f"Exploration resolved · {resolved.shards} shard(s)", outcome_detail=detail,
+            on_resolved=lambda dice, _r=resolver: _exploration_card(dice, _r),
         ).pack(fill="x")
 
     def _sell_wyrdstone(self, parent: tk.Misc, _battle) -> None:
-        self._title(parent, "04 · Sell Wyrdstone", "Choose how many shards to sell. This action can only be performed once in the post-battle sequence; the sale value is derived automatically.")
+        self._title(parent, "04 · Sell Wyrdstone", f"Choose how many shards to sell. This action can only be performed once in the post-battle sequence; the sale value is derived automatically. {self._kb_provenance(3)}")
         SummaryStrip(parent, [("In stash", "4 shards"), ("Sell now", "3 shards"), ("Keep", "1 shard"), ("Income", "Auto")]).pack(fill="x", pady=(0, 12))
         card = self._section(parent, "Choose quantity to sell", "The prototype keeps the calculation out of the player's workload.")
         row = tk.Frame(card, bg=COLORS["panel_alt"])
@@ -228,7 +279,7 @@ class PostBattleMoment(tk.Frame):
         tk.Label(card, text="Sale value will use the current warband size and campaign rules automatically.", bg=COLORS["panel_alt"], fg=COLORS["muted_dark"], font=("Segoe UI", 7)).pack(anchor="w", pady=(9, 0))
 
     def _veterans(self, parent: tk.Misc, _battle) -> None:
-        self._title(parent, "05 · Available Veterans", "Determine the post-battle experience pool available for hiring experienced recruits. You are not committing to hire anyone yet.")
+        self._title(parent, "05 · Available Veterans", f"Determine the post-battle experience pool available for hiring experienced recruits. You are not committing to hire anyone yet. {self._kb_provenance(4)}")
         DiceResolutionCard(
             parent, title="Veteran Experience Pool", subtitle="Availability check before recruitment",
             notation="2D6", dice_count=2, demo_dice=(4, 3), combine="sum",
@@ -236,47 +287,122 @@ class PostBattleMoment(tk.Frame):
         ).pack(fill="x")
 
     def _rare_and_dramatis(self, parent: tk.Misc, _battle) -> None:
-        self._title(parent, "06 · Rare Items & Dramatis", "One UI phase contains the two consecutive searches: first rare items, then Dramatis Personae. Eligible Heroes are a limited search resource.")
+        content = self.controller.post_battle_content()
+        rare = content.rare_items()
+        dramatis = content.dramatis_personae()
+        self._title(
+            parent,
+            "06 · Rare Items & Dramatis",
+            f"One UI phase contains the two consecutive searches: first rare items, then Dramatis Personae. Eligible Heroes are a limited search resource. Offers come from the KB Trading Post and hiring catalogue. {self._kb_provenance(5)}",
+        )
 
         tk.Label(parent, text="A · RARE ITEMS", bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 6))
-        rare = self._section(parent, "Choose a rare item", "Assign an eligible Hero to search for one specific item; successful purchases go to the stash.")
-        controls = tk.Frame(rare, bg=COLORS["panel_alt"])
-        controls.pack(fill="x")
-        ttk.Combobox(controls, state="readonly", values=("Healing Herbs · Rare 8", "Holy Relic · Rare 9", "Lucky Charm · Rare 6"), width=34).pack(side="left")
-        ttk.Combobox(controls, state="readonly", values=("Mother Superior", "Sister Anna", "Sister Veriet"), width=22).pack(side="left", padx=8)
-        ttk.Button(controls, text="ADD SEARCH", style="Mini.TButton", command=self._placeholder).pack(side="left")
-        DiceResolutionCard(
-            parent, title="Mother Superior searches for a Holy Relic", subtitle="Rare-item availability search",
-            notation="2D6", dice_count=2, demo_dice=(5, 4), combine="sum",
-            outcome_title="Available", outcome_detail="Holy Relic · 15 gc · purchase is optional",
-            outcome_actions=(("BUY · 15 GC", self._placeholder, "Accent.TButton"),),
-        ).pack(fill="x", pady=(0, 12))
+        rare_section = self._section(
+            parent, "Choose a rare item",
+            f"{len(rare)} rare Trading Post items are available to this warband. Assign an eligible Hero to search for one specific item; successful purchases go to the stash.",
+        )
+        if rare:
+            controls = tk.Frame(rare_section, bg=COLORS["panel_alt"])
+            controls.pack(fill="x")
+            item_labels = [f"{entry.name} · Rare {entry.rarity} · {entry.price_label}" for entry in rare[:12]]
+            ttk.Combobox(controls, state="readonly", values=item_labels, width=42).pack(side="left")
+            ttk.Button(controls, text="ADD SEARCH", style="Mini.TButton", command=self._placeholder).pack(side="left", padx=8)
+            tk.Label(
+                rare_section,
+                text=f"Showing {min(len(rare), 12)} of {len(rare)} available entries from the KB trading post.",
+                bg=COLORS["panel_alt"], fg=COLORS["muted_dark"], font=("Segoe UI", 7),
+            ).pack(anchor="w", pady=(8, 0))
+            resolver = self.controller.post_battle_resolver()
+            search = resolver.resolve_rarity_search(rare[0].item_id, 9)  # demo preview: 2D6 = 5 & 4
+            search_title = "Available" if search.success else "Not found"
+            search_tone = "success" if search.success else "neutral"
+            DiceResolutionCard(
+                parent, title=f"Rare item availability search · {rare[0].name}",
+                subtitle=("A successful search reveals a contextual Buy action. "
+                          "Test resolved from the KB rarity rules against the offered item."),
+                notation="2D6", dice_count=2, demo_dice=(5, 4), combine="sum",
+                outcome_title=search_title, outcome_detail=search.note, outcome_tone=search_tone,
+                on_resolved=lambda dice, _r=resolver, _id=rare[0].item_id, _n=rare[0].name: _rarity_card(dice, _r, _id, _n),
+            ).pack(fill="x", pady=(10, 12))
+        else:
+            tk.Label(
+                rare_section, text="No rare items from the Trading Post are available to this warband.",
+                bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8),
+            ).pack(anchor="w")
 
         divider = tk.Frame(parent, bg=COLORS["border_soft"], height=1)
         divider.pack(fill="x", pady=(0, 11))
         tk.Label(parent, text="B · DRAMATIS PERSONAE", bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 6))
-        dramatis = self._section(parent, "Choose a special character", "Heroes assigned to this search are not available to look for rare items in the same sequence.")
-        controls = tk.Frame(dramatis, bg=COLORS["panel_alt"])
-        controls.pack(fill="x")
-        ttk.Combobox(controls, state="readonly", values=("Johann the Knife", "Veskit", "Aenur"), width=30).pack(side="left")
-        ttk.Button(controls, text="ASSIGN SEARCHERS", style="Mini.TButton", command=self._placeholder).pack(side="left", padx=8)
-        DiceResolutionCard(
-            parent, title="Sister Veriet searches for Johann", subtitle="One D6 per searcher · a result under the Hero's Initiative locates the character",
-            notation="D6", dice_count=1, demo_dice=(3,), combine="sum",
-            outcome_title="Located", outcome_detail="Johann the Knife · Hire 30 gc · hiring remains optional",
-            outcome_actions=(("HIRE · 30 GC", self._placeholder, "Accent.TButton"),),
-        ).pack(fill="x")
+        dramatis_section = self._section(
+            parent, "Choose a special character",
+            "Heroes assigned to this search are not available to look for rare items in the same sequence. Entries marked * depend on roster/variant conditions evaluated by the application.",
+        )
+        if dramatis:
+            eligibility_notes = [
+                f"{offer.name}: {offer.eligibility_note}" for offer in dramatis
+                if offer.eligibility != "eligible"
+            ]
+            if eligibility_notes:
+                tk.Label(
+                    dramatis_section,
+                    text="\n".join(f"• {line}" for line in eligibility_notes[:4]),
+                    bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 7), justify="left",
+                    wraplength=860,
+                ).pack(anchor="w", pady=(0, 6))
+            controls = tk.Frame(dramatis_section, bg=COLORS["panel_alt"])
+            controls.pack(fill="x")
+            labels = []
+            for offer in dramatis[:12]:
+                marker = " *" if offer.eligibility != "eligible" else ""
+                label = f"{offer.name}{marker}"
+                if offer.fee_label:
+                    label += f" · {offer.fee_label}"
+                labels.append(label)
+            ttk.Combobox(controls, state="readonly", values=labels, width=40).pack(side="left")
+            ttk.Button(controls, text="ASSIGN SEARCHERS", style="Mini.TButton", command=self._placeholder).pack(side="left", padx=8)
+            DiceResolutionCard(
+                parent, title="Dramatis Personae search", subtitle="One D6 per searcher · a result under the Hero's Initiative locates the character",
+                notation="D6", dice_count=1, demo_dice=(3,), combine="sum",
+                outcome_title="Located", outcome_detail="Character found · hiring remains optional",
+                outcome_actions=(("HIRE", self._placeholder, "Accent.TButton"),),
+            ).pack(fill="x", pady=(10, 0))
+        else:
+            tk.Label(
+                dramatis_section, text="No Dramatis Personae are currently searchable by this warband.",
+                bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8),
+            ).pack(anchor="w")
 
     def _recruitment(self, parent: tk.Misc, _battle) -> None:
-        self._title(parent, "07 · Recruitment", "Hire new warriors or Hired Swords and buy common items. This is the warband-building stage; rare-item searches are already closed.")
+        content = self.controller.post_battle_content()
+        hired = content.hired_swords()
+        common = content.common_items()
+        self._title(
+            parent,
+            "07 · Recruitment",
+            f"Hire new warriors or Hired Swords and buy common items. This is the warband-building stage; rare-item searches are already closed. {self._kb_provenance(6)}",
+        )
         SummaryStrip(parent, [("Treasury", "72 gc"), ("Veteran pool", "7 XP"), ("New hires", "0"), ("Common purchases", "0 gc")]).pack(fill="x", pady=(0, 12))
 
-        for heading, detail, rows in (
-            ("WARRIORS", "Recruit new members or add to eligible Henchman groups.", (("Sigmarite Sister", "25 gc"), ("Novice", "15 gc"))),
-            ("HIRED SWORDS", "Hire available mercenaries and account for upkeep where applicable.", (("Warlock", "Hire 30 · Upkeep 15"), ("Pit Fighter", "Hire 30 · Upkeep 15"))),
-            ("COMMON ITEMS", "Common equipment can be purchased without a rarity search.", (("Hammer", "3 gc"), ("Sword", "10 gc"), ("Light Armour", "20 gc"))),
+        warriors = [
+            profile for profile in self.controller.port.profiles(
+                self.controller.state.campaign.collection, self.controller.state.campaign.band_id, kind="henchman"
+            )
+            if profile.kind == "henchman"
+        ]
+        warrior_rows = tuple((profile.name, f"{profile.cost} gc") for profile in warriors)
+        common_rows = tuple((f"{offer.name} · {offer.price_label}", offer.price_label) for offer in common[:14])
+        for heading, detail, rows, limit_note in (
+            ("WARRIORS", "Recruit new members or add to eligible Henchman groups (KB roster).", warrior_rows, f"{len(warriors)} recruit profiles"),
+            ("HIRED SWORDS", "Hire available mercenaries and account for upkeep where applicable. * = acceptance roll or Mercenary-variant condition.", tuple(
+                (f"{offer.name}{' *' if offer.eligibility != 'eligible' else ''} · {offer.availability_label.lower()}",
+                 f"Hire {offer.fee_label or '—'} · Upkeep {offer.upkeep_label or '—'}")
+                for offer in hired[:14]
+            ), f"{len(hired)} available Hired Swords"),
+            ("COMMON ITEMS", "Common equipment can be purchased without a rarity search (KB Trading Post).", common_rows, f"{len(common)} common items available"),
         ):
-            section = self._section(parent, heading, detail)
+            if not rows:
+                continue
+            section = self._section(parent, heading, f"{detail} ({limit_note})")
             for name, cost in rows:
                 row = tk.Frame(section, bg=COLORS["panel_alt"])
                 row.pack(fill="x", pady=2)
@@ -284,14 +410,15 @@ class PostBattleMoment(tk.Frame):
                 ttk.Button(row, text=cost, style="Mini.TButton", command=self._placeholder).pack(side="right")
 
     def _equipment(self, parent: tk.Misc, _battle) -> None:
+        # Purchase area: money is intentionally visible at the point where the
+        # player spends it, rather than repeated across unrelated phases.
+        content = self.controller.post_battle_content()
+        common = content.common_items()
         self._title(
             parent,
             "08 · Equipment",
-            "Buy common equipment, then manage the complete band inventory from the stash. Items found or purchased earlier appear here before the next warband state is committed.",
+            f"Buy common equipment, then manage the complete band inventory from the stash. Items found or purchased earlier appear here before the next warband state is committed. {self._kb_provenance(7)}",
         )
-
-        # Purchase area: money is intentionally visible at the point where the
-        # player spends it, rather than repeated across unrelated phases.
         purchase = self._section(parent, "BUY EQUIPMENT", "Common items can be bought here. Rare finds from Searches have already been resolved and, if purchased, are waiting in the stash below.")
         purchase_head = tk.Frame(purchase, bg=COLORS["panel_alt"])
         purchase_head.pack(fill="x", pady=(0, 9))
@@ -304,17 +431,26 @@ class PostBattleMoment(tk.Frame):
         tk.Label(chooser, text="ITEM", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).grid(row=0, column=0, sticky="w")
         tk.Label(chooser, text="QTY", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).grid(row=0, column=1, sticky="w", padx=(8, 0))
         tk.Label(chooser, text="COST", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).grid(row=0, column=2, sticky="w", padx=(8, 0))
-        item = ttk.Combobox(chooser, state="readonly", values=("Hammer · Weapon", "Sword · Weapon", "Shield · Armour", "Light Armour · Armour", "Rope & Hook · Misc"), width=34)
+        item_labels = [f"{offer.name} · {offer.price_label}" for offer in common[:14]]
+        item = ttk.Combobox(chooser, state="readonly", values=item_labels, width=40)
         item.grid(row=1, column=0, sticky="ew", pady=(3, 0))
-        item.set("Sword · Weapon")
+        if common:
+            item.set(item_labels[0])
         qty = tk.IntVar(value=1)
         ttk.Spinbox(chooser, from_=1, to=10, width=5, textvariable=qty).grid(row=1, column=1, sticky="w", padx=(8, 0), pady=(3, 0))
-        tk.Label(chooser, text="10 gc", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI Semibold", 9)).grid(row=1, column=2, sticky="w", padx=(8, 14), pady=(3, 0))
+        cost_var = tk.StringVar(value=common[0].price_label if common else "—")
+        tk.Label(chooser, textvariable=cost_var, bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI Semibold", 9)).grid(row=1, column=2, sticky="w", padx=(8, 14), pady=(3, 0))
         ttk.Button(chooser, text="BUY & ADD TO STASH", style="Accent.TButton", command=self._placeholder).grid(row=1, column=3, sticky="e", pady=(3, 0))
         chooser.columnconfigure(0, weight=1)
+        if common:
+            def update_cost(_event=None) -> None:
+                selection = item.get()
+                match = next((offer for offer in common if f"{offer.name} · {offer.price_label}" == selection), None)
+                cost_var.set(match.price_label if match else "—")
+            item.bind("<<ComboboxSelected>>", update_cost)
         tk.Label(
             purchase,
-            text="Select any common item available to the warband. The real implementation will filter this list from the KB and update the cost as quantity changes.",
+            text=f"{len(common)} common items are available to this warband (KB Trading Post); showing {min(len(common), 14)}. The list and the price update from the KB when the warband changes.",
             bg=COLORS["panel_alt"], fg=COLORS["muted_dark"], font=("Segoe UI", 7), wraplength=900, justify="left",
         ).pack(anchor="w", pady=(8, 0))
 

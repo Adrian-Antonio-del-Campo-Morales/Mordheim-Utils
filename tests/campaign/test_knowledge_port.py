@@ -97,3 +97,64 @@ def test_unknown_warband_raises():
         assert "Unknown warband" in str(exc)
     else:  # pragma: no cover - defensive
         raise AssertionError("expected an unknown-warband error")
+
+
+def test_port_exposes_the_kb_post_battle_sequence():
+    """The campaign loading contract is reusable from the app's KnowledgePort."""
+    port = KnowledgePort()
+    sequence = port.post_battle_sequence()
+    assert sequence.id == "campaign.post-battle"
+    assert len(sequence.steps) == 10
+    assert [step.id for step in sequence.steps][:3] == [
+        "campaign.step.serious-injuries",
+        "campaign.step.experience",
+        "campaign.step.exploration",
+    ]
+    # Every resolved catalogue is available through the same port.
+    catalog = port.campaign_catalog()
+    for resolves in sequence.resolved_catalogues:
+        assert catalog.has_catalogue(resolves)
+    assert len(catalog.documents) == 12
+    assert len(catalog.catalogue("trading-post.yaml")["items"]) == 338
+
+
+def test_price_override_only_for_source_confirmed_exceptions():
+    """Trading Post prices prevail unless the warband source confirms an exception."""
+    port = KnowledgePort()
+
+    # No override for the majority of list prices: creation evidence only.
+    assert port.price_override("mordheim", "sisters-of-sigmar", "holy_tome") is None
+    assert port.price_override("mordheim", "sisters-of-sigmar", "dagger") is None
+    assert port.price_override("mordheim", "mercenaries", "duelling_pistol") is None
+
+    # Impeccable Care (Nuln): black-powder list costs apply always.
+    assert port.price_override("mordheim", "gunnery-school-of-nuln", "pistol") == 10
+    assert port.price_override("mordheim", "gunnery-school-of-nuln", "handgun") == 25
+    assert port.price_override("mordheim", "gunnery-school-of-nuln", "hand_held_mortar") == 70
+    # …but the rule covers black-powder weapons, not the Miscellaneous accessory.
+    assert port.price_override("mordheim", "gunnery-school-of-nuln", "superior_blackpowder") is None
+
+    # Powder's Expensive! (Hochland): heroes always pay the higher list cost.
+    assert port.price_override("mordheim", "hochland-bandits", "pistol") == 20
+    # Armour rule (Lizardmen): light armour always costs 50 gc for Lizardmen.
+    assert port.price_override("mordheim", "lizardmen", "light_armour") == 50
+    assert port.price_override("mordheim", "lizardmen", "javelins") is None
+
+    # The amount always agrees with the printed list cost it encodes.
+    for option in port.options():
+        for offer in port.equipment(option.collection, option.band_id):
+            override = port.price_override(option.collection, option.band_id, offer.item_id)
+            if override is not None:
+                assert override == offer.cost, (option.band_id, offer.item_id)
+
+
+def test_port_exposes_hireling_and_group_resolution():
+    port = KnowledgePort()
+    hirelings = port.hireling_catalogue()
+    assert len(hirelings.profiles) == 102
+    entries = port.campaign_catalog().catalogue("hired-swords-and-dramatis.yaml")
+    entries = entries["hired_swords"] + entries["dramatis_personae"]
+    # Hiring entries are the canonical consumers of the profile pool.
+    assert {entry["profile_id"] for entry in entries} <= hirelings.profile_ids
+    groups = {group["id"] for group in port.warband_groups()}
+    assert "warband-group.human-mercenary" in groups

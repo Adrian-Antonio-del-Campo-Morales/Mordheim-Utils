@@ -387,11 +387,18 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
         penalized=hit_rows[hit_values>=5];np.add.at(defender_state.attack_penalty,penalized,1)
     if has(weapon,"weapon.chained-squig"):
         defender_state.entangled[hit_rows]=True
-    if has(effect,"mechanic.anvil-head"):
-        repeats=rng.integers(1,4,hit_rows.size)
-        hit_rows=np.repeat(hit_rows,repeats)
-        hit_positions=np.repeat(hit_positions,repeats)
-        hit_values=np.repeat(hit_values,repeats)
+    # Anvil Head replaces charge attacks only: the D3 wound expansion is
+    # inert outside a charge (Khemri, Necromantic Modification / Anvil Head).
+    # Dice are drawn only for charging rows so the RNG stream stays aligned
+    # with the native backend.
+    if first_round and has(effect,"mechanic.anvil-head"):
+        charging_hits = charging[hit_rows]
+        if charging_hits.any():
+            repeats=np.ones(hit_rows.size,dtype=np.int64)
+            repeats[charging_hits]=rng.integers(1,4,int(charging_hits.sum()))
+            hit_rows=np.repeat(hit_rows,repeats)
+            hit_positions=np.repeat(hit_positions,repeats)
+            hit_values=np.repeat(hit_values,repeats)
     ignition_target=(
         min(effect.ignition_threshold,defender.global_effects.caught_fire_threshold)
         if effect.ignition_threshold <= 6 else 7

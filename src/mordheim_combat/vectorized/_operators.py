@@ -370,6 +370,11 @@ def priority(fighter: CompiledFighter, opponent: CompiledFighter, first_round: b
         weapon_priority = 0
     if has(fighter.main_weapon, "weapon.long-boat-hook") and not first_round:
         weapon_priority = 0
+    # The spear's Strike First only applies in the first turn of hand-to-hand
+    # combat (mordheimer.net, close-combat weapons / Strike First), mirroring
+    # the long-boat-hook's first-round scope.
+    if has(fighter.main_weapon, "weapon.spear") and not first_round:
+        weapon_priority = 0
     value = np.full(charging.size, weapon_priority + fighter.global_effects.priority, dtype=np.int8)
     if has(fighter.global_effects,"mechanic.strike-first-vs-skinks-always") and has(opponent.global_effects,"species.skink"):
         value[:] = 20
@@ -381,6 +386,15 @@ def priority(fighter: CompiledFighter, opponent: CompiledFighter, first_round: b
             value[:] = 20
         if has(fighter.global_effects, "skill.lightning-reflexes"):
             value[charged] = np.maximum(value[charged], 1)
+        # Spear: strikes first in the first turn of close combat, even if
+        # charged (mordheimer.net, close-combat weapons / Strike First), so
+        # it outranks the charger's own strike-first tier.  An opponent with
+        # Always Strikes First keeps its unconditional priority and the pair
+        # resolves by Initiative instead.
+        if has(fighter.main_weapon, "weapon.spear") and not has(
+            opponent.global_effects, "skill.always-strikes-first"
+        ):
+            value[charged] = np.maximum(value[charged], 2)
     if not has(fighter.global_effects, "skill.always-strikes-first"):
         value[stood] = -1
     return value

@@ -20,6 +20,16 @@ The CSVs use UTF-8 with BOM and `;` as separator. They are sanitized so that
 line breaks, control characters or formula prefixes never break their display
 in Excel.
 
+> **Warning — long-running.** `test-report` executes the whole semantic
+> corpus (≈3 700 cases) plus the complete `pytest` suite, and
+> `--statistical` adds the five 100k-duel aggregate samples — minutes in
+> total. The full report is a **certification artifact**: generate it
+> occasionally, after large modifications or before a release. To verify a
+> small change use the trimmed alternatives listed under *Deep profiles*
+> below (smaller sample sizes, targeted `pytest` files) instead of the full
+> run; `parity` without `--statistical`/`--deep`/`--truncations` is the
+> fast deterministic gate.
+
 ## Options
 
 ```powershell
@@ -150,15 +160,25 @@ acceptable). Both keep the modular engine on a short leash on purpose:
 python tools/mordheim-utils.py parity --deep
 ```
 
-Runs the six-sigma certification over the **archetype matrix** (25 pairs:
+> **Warning — long-running.** The full deep certification needs ≈2 850 000
+> modular duels plus the numpy→native cross at 1 000 000 duels/pair (≈50–70
+> min sequential, ≈10–15 min with `--workers auto`). It is a *point run*:
+> after large modifications or before a release, never for small changes.
+> For a small check, trim it — `--deep-simulations 10 000
+> --deep-cross-simulations 100 000` brings the run to a few minutes (the
+> CLI warns when the cross layer still dominates).
+
+Runs the six-sigma certification over the **archetype matrix** (30 pairs:
 the five standard scenarios, profile/equipment archetypes covering glass
 cannons, brutes, elite fighters, tanks, dual weapons, parry duels and
-Ithilmar armour, and twelve mechanic-coverage pairs added 2026-09-04 for
+Ithilmar armour, twelve mechanic-coverage pairs added 2026-09-04 for
 undead/sigmarite, regeneration vs fire, natural armour vs magic, pistols,
 concussion vs dwarfs, frenzy/always-strikes-first, paired poisoned blades,
 two-handed weapons, ward saves, unarmed combat, fragile injury profiles
-and entangle) and, when the native backend is compiled, the
-**numpy→native cross-certification at scale**:
+and entangle, and five timing/parry amplifiers added 2026-09-05:
+`triple-weapon-vs-parry`, `a2-vs-w1-stun`, `frenzy-vs-w2`,
+`durable-vs-elite` and the 75-round `heavy-grind`) and, when the native
+backend is compiled, the **numpy→native cross-certification at scale**:
 
 - `--deep-simulations` (default 100 000 per pair, 25 000 for the long
   75-round pair): duels per matrix pair and engine; the modular sample is
@@ -171,12 +191,20 @@ and entangle) and, when the native backend is compiled, the
 - `--deep-cross-simulations` (default 1 000 000): duels per pair for the
   numpy→native comparison; never touches the modular engine.
 - `--max-modular-duels` (default 3 000 000): ceiling on the total modular
-  duels a single run may request (the default split needs 2 425 000 — 24
-  pairs at 100k plus the long 75-round pair at 25k). A plan above the
+  duels a single run may request (the default split needs 2 850 000 — 28
+  pairs at 100k plus the two 75-round pairs at 25k; the adaptive
+  escalation below stays within the same ceiling). A plan above the
   ceiling exits with code 2 before running anything.
-- Default run cost: roughly 2 425 000 modular duels (≈ 50–70 minutes
-  sequentially, or ≈ 8–12 minutes with the parallel oracle enabled; see below)
-  plus the cross layer when native is present.
+- **Adaptive escalation**: pairs whose first pass comes back suspicious
+  (3–6σ) or timing-prone (≥1% unresolved) are re-certified at twice the
+  sample, allocated most-suspicious-first and clamped by
+  `--max-modular-duels`. Escalated rows carry `"escalated": true` in the
+  certificate and the console prints a `DEEP: escalated N pair(s)…`
+  summary line.
+- Default run cost: roughly 2 850 000 modular duels (≈ 50–70 minutes
+  sequentially, or ≈ 10–15 minutes with the parallel oracle enabled; see
+  below) plus the cross layer when native is present; escalation may raise
+  the oracle total toward the ceiling.
 - Progress: `parity --deep` (and `parity --statistical`) render a live
   progress bar; pass `--json` to suppress it. `benchmark --deep` shows the
   same bar for every grid cell.
@@ -231,14 +259,23 @@ rows of the same pairs are already clean.
 
 ### Round-truncation samples (`--truncations`)
 
+> **Warning — long-running.** The truncation sweep now covers the whole
+> 30-pair deep matrix, so the default 10 000 duels/horizon is itself a long
+> run (≈20–40 min sequential, ≈5–10 min pooled). It is part of the
+> certification tiers — run it after orchestration-level modifications, not
+> per small change. For a small check, trim it with
+> `--truncation-simulations 2 000` (a few minutes) or run the horizons for
+> one pair through the API.
+
 The aggregate gate compares only the duel *end state*; orchestration defects
 — wrong acting order, a suppressed reply phase, a stateful recovery resolved
 at the wrong moment — shift *when* duels resolve without necessarily moving
 the final winner rates past the gate. `parity --truncations` re-applies the
-six-sigma gate at every horizon (2, 4, 6, 8, 10, 12, 15, 20 rounds) on the
-five standard scenarios: both engines run each pair truncated to `h` rounds
-and rows are labelled `<scenario>@rounds=<h>` so a failing horizon names the
-round where the divergence starts.
+six-sigma gate at every horizon (2, 4, 6, 8, 10, 12, 15, 20 rounds) on
+**every deep-matrix pair** (30 scenarios, previously only the five standard
+ones): both engines run each pair truncated to `h` rounds and rows are
+labelled `<scenario>@rounds=<h>` so a failing horizon names the round where
+the divergence starts.
 
 ```powershell
 python -m mordheim_combat_lab parity --truncations

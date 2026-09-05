@@ -69,7 +69,8 @@ specifications:
   interpretation: >-
     When charging, Anvil Head offers replacing all attacks with one. If that attack hits, the total
     number of to-wound rolls is D3. Declining the option keeps the normal set and outside a charge it
-    is not asked.
+    is not asked; the D3 expansion only ever applies to a charging Necromantic Abomination in the
+    first round, never to later rounds or when the fighter was charged.
   cases:
   - id: compiled
     roles: [compiled]
@@ -117,6 +118,36 @@ specifications:
     attacker_state: {condition: OUT}
     context: {first_round: true, charging: false}
     expect: {result.count: 3}
+  - id: not-charging-no-d3
+    roles: [active, boundary, sequence, consumption]
+    operation: replacement_pool
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.anvil-head], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 3}}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 4, initiative: 3, attacks: 1}}
+    context: {first_round: true, charging: false}
+    rolls:
+    - {key: test.attack.0.hit, value: 4}
+    - {key: test.attack.1.hit, value: 1}
+    - {key: test.attack.2.hit, value: 1}
+    - {key: test.attack.0.wound, value: 4}
+    expect:
+      result.count: 3
+      result.attacks.0.wounded: true
+      result.defender.wounds: 3
+  - id: later-round-no-d3
+    roles: [active, boundary, sequence, consumption]
+    operation: replacement_pool
+    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.anvil-head], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 3}}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 4, initiative: 3, attacks: 1}}
+    context: {first_round: false, charging: false}
+    rolls:
+    - {key: test.attack.0.hit, value: 4}
+    - {key: test.attack.1.hit, value: 1}
+    - {key: test.attack.2.hit, value: 1}
+    - {key: test.attack.0.wound, value: 4}
+    expect:
+      result.count: 3
+      result.attacks.0.wounded: true
+      result.defender.wounds: 3
   mutations:
   - id: remove-anvil-head
     path: attacker.global_effects.tags

@@ -11,6 +11,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import re
+from mordheim_knowledge.campaign import CampaignCatalog
+from mordheim_knowledge.campaign import HirelingCatalogue
+from mordheim_knowledge.campaign import PostBattleSequence
+from mordheim_knowledge.campaign import load_campaign_catalog
+from mordheim_knowledge.campaign import load_hirelings
+from mordheim_knowledge.campaign import load_post_battle_sequence
+from mordheim_knowledge.campaign import load_warband_groups
 from mordheim_knowledge.loader import BandPackage
 from mordheim_knowledge.loader import load_bands
 from mordheim_knowledge.loader import load_collections
@@ -353,7 +360,63 @@ class KnowledgePort:
         row = self._items.get(item_id)
         return str(row["name"]) if row else None
 
+    def price_override(self, collection: str, band_id: str, item_id: str) -> int | None:
+        """Flat Trading Post price exception a warband pays for an item.
+
+        The warband equipment lists keep their printed ``cost`` as historical
+        evidence; the Trading Post is the market price unless the warband's own
+        source confirms an exception, which is declared as ``price_override``
+        on the equipment-access row (see the campaign catalogue README).
+        Returns the overriding amount in gc, or ``None`` when the Trading Post
+        prevails.
+        """
+        package = self._packages.get((collection, band_id))
+        if package is None:
+            return None
+        for equipment_list in package.equipment_lists:
+            for item in equipment_list.get("items") or ():
+                if str(item.get("item_id") or "") != item_id:
+                    continue
+                override = item.get("price_override")
+                if isinstance(override, dict):
+                    base = override.get("base_gc")
+                    return int(base) if isinstance(base, (int, float)) else None
+                if isinstance(override, (int, float)):
+                    return int(override)
+        return None
+
     def items_for_profile(self, profile: WarbandProfile) -> tuple[EquipmentOffer, ...]:
         """Offers applicable to a concrete profile (its equipment lists)."""
         allowed = set(profile.equipment_list_ids)
         return tuple(offer for offer in self.equipment(profile.collection, profile.band_id) if offer.list_id in allowed)
+
+    # -------------------------------------------------------------- campaign
+
+    def post_battle_sequence(self) -> PostBattleSequence:
+        """Normative KB post-battle resolution order (validated at load).
+
+        The catalogue the step resolves can be read from the returned
+        ``CampaignCatalog`` via ``campaign_catalog().catalogue(step.resolves)``.
+        """
+        return load_post_battle_sequence(self.ruleset)
+
+    def campaign_catalog(self) -> CampaignCatalog:
+        """Every published campaign document, validated at load time.
+
+        Read model for post-battle tables (trading post, injuries, advances,
+        exploration, scenarios, magic, mutations, hiring); keyed by catalogue
+        file name stem. Never decide rules here: this is the KB read boundary.
+        """
+        return load_campaign_catalog(self.ruleset)
+
+    def hireling_catalogue(self) -> HirelingCatalogue:
+        """Hireling profiles and rules of ``catalog/hirelings`` (validated).
+
+        Profiles referenced by ``campaign.hireling.*`` hiring entries resolve
+        against this catalogue; ``profile_ids`` is the authoritative pool.
+        """
+        return load_hirelings(self.ruleset)
+
+    def warband_groups(self) -> tuple[dict, ...]:
+        """Reusable ``warband-group.*`` band sets from the registry (validated)."""
+        return load_warband_groups(self.ruleset)

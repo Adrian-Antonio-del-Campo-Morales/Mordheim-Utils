@@ -1,5 +1,16 @@
 # Develop and distribute
 
+> **Warning — long-running release gates.** The commands below run the
+> whole engine suite and the complete semantic corpus (`python -m pytest
+> -q` and `test-report` take minutes), so they are the **release
+> procedure**, not the per-change loop. For a small change, run the
+> targeted suites instead — `python -m pytest tests/combat/... -q` for the
+> unit level, `python tools/mordheim-utils.py tests --scope deterministic`
+> for the engine gate, and the trimmed parity samples described in
+> [Generate test and parity reports](generate-test-reports.md). Reserve the
+> full `pytest -q`, `test-report` and `parity --deep` runs for after large
+> modifications and before releases.
+
 ```powershell
 python -m pip install -e ".[dev]"
 python -m pytest -q

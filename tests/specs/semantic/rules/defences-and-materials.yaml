@@ -157,6 +157,8 @@ specifications:
     operation: acting_order
     attacker: {main_weapon_id: weapon.mace, main_material_id: material.ithilmar}
     defender: {main_weapon_id: weapon.spear}
+    context: {first_round: true}
+    opponent_context: {first_round: true}
     expect: {result.first_acts: false}
   mutations:
   - {id: remove-main-initiative, path: attacker.main_weapon.initiative_bonus, value: 0, cases: [main-hand-initiative]}

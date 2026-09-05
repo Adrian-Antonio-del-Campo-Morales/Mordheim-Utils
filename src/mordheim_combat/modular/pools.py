@@ -290,7 +290,10 @@ def _resolve_attack_pool(
         result = _react_to_wound(attacker, defender, result, dice, f"{key}.attack.{index}")
         attacker_state, defender_state = result.attacker, result.defender
         outcomes.append(result)
-        if result.hit and not result.parried and phases.has_tag(_combined_effect(attacker, weapon), "mechanic.anvil-head"):
+        # Anvil Head replaces charge attacks only: the D3 wound expansion is
+        # inert outside a charge (Khemri, Necromantic Modification / Anvil Head).
+        if (result.hit and not result.parried and first_round and charging
+                and phases.has_tag(_combined_effect(attacker, weapon), "mechanic.anvil-head")):
             repeats = dice.roll(RollRequest(f"{key}.attack.{index}.anvil-hits", 3)) - 1
             repeated = merge_effects(weapon, EffectSet(automatic_hit=True, cannot_be_parried=True))
             for repeat_index in range(repeats):

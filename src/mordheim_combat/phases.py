@@ -119,6 +119,11 @@ def resolve_priority(context: PriorityContext) -> PriorityResult:
         weapon_priority = 0
     if has_tag(fighter.main_weapon, "weapon.long-boat-hook") and not context.first_round:
         weapon_priority = 0
+    # The spear's Strike First only applies in the first turn of hand-to-hand
+    # combat (mordheimer.net, close-combat weapons / Strike First), mirroring
+    # the long-boat-hook's first-round scope.
+    if has_tag(fighter.main_weapon, "weapon.spear") and not context.first_round:
+        weapon_priority = 0
     value = weapon_priority + fighter.global_effects.priority
     if has_tag(fighter.main_weapon, "weapon.trident") and context.charged:
         value = max(value, 1)
@@ -130,6 +135,14 @@ def resolve_priority(context: PriorityContext) -> PriorityResult:
             value = 20
         if has_tag(fighter.global_effects, "skill.lightning-reflexes") and context.charged:
             value = max(value, 1)
+        # Spear: strikes first in the first turn of close combat, even if
+        # charged (mordheimer.net, close-combat weapons / Strike First), so
+        # it outranks the charger's own strike-first tier.  An opponent with
+        # Always Strikes First keeps its unconditional priority and the pair
+        # resolves by Initiative instead.
+        if (has_tag(fighter.main_weapon, "weapon.spear") and context.charged
+                and not has_tag(opponent.global_effects, "skill.always-strikes-first")):
+            value = max(value, 2)
     # Lost Innocence explicitly retains strike-first when standing up.
     if context.stood_up and not has_tag(fighter.global_effects, "skill.always-strikes-first"):
         value = -1

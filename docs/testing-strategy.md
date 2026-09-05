@@ -49,6 +49,30 @@ carry the load.
 L0 is documented in the [knowledge base guide](knowledge-base-guide.md) and the
 verification-corpus README; this document focuses on L1–L5.
 
+## Runtime budget: the expensive layers run rarely
+
+> **Warning — long-running commands.** The certification tiers below take
+> minutes to hours by design and are **not** part of the per-change loop.
+> Their intent is *point certification*: run them occasionally, after large
+> modifications (a new engine pass, a new archetype family, a release), when
+> the drift they watch can actually have moved.
+>
+> | Command | Full run | Trimmed version for small checks |
+> | --- | --- | --- |
+> | `parity --deep` (L3) | ≈2.85M oracle duels + 1M duels/pair cross (≈50–70 min sequential, ≈10–15 min pooled) | `--deep-simulations 10 000 --deep-cross-simulations 100 000` |
+> | `parity --truncations` (L2) | 30 pairs × 8 horizons × 10k duels/engine (≈20–40 min sequential, ≈5–10 min pooled) | `--truncation-simulations 2 000` |
+> | `coverage-gate` (L4) | ≈3–10 min under `coverage` | run the deterministic suites directly (`pytest tests/combat/... tests/verification/test_parity.py -q`) |
+> | `tools/mutate-engine.py` (L4) | full catalogue ≈3–5 min | `--mutant <name>` for the single defect under test |
+> | `test-report` | whole semantic corpus + full `pytest` suite (minutes) | omit `--statistical`; or `pytest tests/verification/test_semantics.py -q` |
+> | `benchmark --deep` | vectorized grid up to 5M duels | shrink the sizes (`--simulation-sizes 10k,100k`) |
+>
+> A small change cannot escape the cheap layers — L1 pins every rule and
+> every engine line deterministically — so the full certification adds
+> nothing to the small-change loop. When a certification command is
+> genuinely needed for a small check, prefer the trimmed version; the CLI
+> warns when a trimmed matrix still leaves an expensive layer at its full
+> size (e.g. the deep cross at its 1M default).
+
 ### L1 — deterministic per-rule evidence (both engines)
 
 - The **semantic specifications** (`tests/specs/semantic/`) declare exact dice
@@ -81,8 +105,9 @@ duels.
 
 The **round-truncation outcome parity** (`_truncations.py`, CLI
 `parity --truncations`) certifies the outcome distribution at every horizon
-`h ∈ {2, 4, 6, 8, 10, 12, 15, 20}` on the five standard scenarios: both
-engines run the pair with `maximum_rounds = h` and the three outcome rates
+`h ∈ {2, 4, 6, 8, 10, 12, 15, 20}` on **every deep-matrix pair** (30
+scenarios; previously only the five standard ones): both engines run the
+pair with `maximum_rounds = h` and the three outcome rates
 (first / second / unresolved) must stay inside the same six-sigma gate used
 for full duels. A defect that shifts *when* duels resolve pushes one or more
 horizon rows apart (rows are labelled `<scenario>@rounds=<h>`) while the
@@ -108,10 +133,13 @@ ledger they keep — which is why the truncation sweep replaced the histogram.
 What remains for statistics is *interaction*: many rules composed over real
 archetype duels, watched for joint drift. The 6σ marginal gate
 (`--statistical`, `--deep`) compares first/second/unresolved rates on the
-25-pair archetype matrix (glass cannons, brutes, elites, tanks, parry,
-mechanics like regeneration-vs-fire, ward saves, entangle …) plus the
-numpy↔native cross-certification at 1 000 000 duels/pair where the optimized
-engines make scale cheap and the oracle is never touched.
+30-pair archetype matrix (glass cannons, brutes, elites, tanks, parry,
+mechanics like regeneration-vs-fire, ward saves, entangle, and the
+timing/parry amplifiers added 2026-09-05 — 4 hits vs one parry, a W1
+stun stressor, a measurable-rate frenzy pair, the durable mirror and a
+75-round heavy grind) plus the numpy↔native cross-certification at
+1 000 000 duels/pair where the optimized engines make scale cheap and the
+oracle is never touched.
 
 Two properties keep this honest:
 
@@ -189,7 +217,8 @@ python tools/mutate-engine.py --mutant wound-ramp-off-by-one --json   # one muta
 - **Deep statistical runs** (`parity --deep`, hours) are certification runs,
   executed on demand or before a release — never the default loop. Because
   L1/L2/L4 already pin each rule and each engine line, the deep layer only
-  watches interaction drift.
+  watches interaction drift. See *Runtime budget* above for the trimmed
+  versions to use when a small change still deserves a statistical check.
 - Certificates are versioned. The parity certificate is schema
   `mordheim-combat-parity/v2`: it adds the `truncations` block (horizon rows
   with their own `complete` flag) and records top-level `elapsed_seconds`;

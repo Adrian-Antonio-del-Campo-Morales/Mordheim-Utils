@@ -134,8 +134,13 @@ interpret raw YAML nor silently tolerate missing references.
    the structured Trading Post price; not with new `item_id` values or implicit
    alternative prices.
 
-The historical `cost` values of the equipment lists still need to be collated:
-see the TODO in [README.md](README.md).
+The historical `cost` values of the equipment lists were collated against
+the Trading Post (first run; see [README.md](README.md) and
+`docs/knowledge/price-collation.md`): `price_override` is recorded on the
+`equipment-access.yaml` row as a flat gc amount equal to the printed list
+cost, only for exceptions confirmed by the warband source (Nuln black-powder
+weapons, Hochland Duelist pistol, Lizardmen light armour). Regenerate the
+report with `python tools/kb/price-collation.py`.
 
 ## How to add knowledge
 
@@ -198,23 +203,27 @@ mercenary profiles linked by `lore_id` in `lore_assignments`) and mutations.
 They are rules and tables, not implementation: no YAML encodes how to apply a
 rule nor saves the state of a concrete campaign.
 
-The runtime loaders (`load_campaign_catalog`, `load_post_battle_sequence`)
-are still not implemented, so no current screen resolves a post-battle
-sequence. The first implementation must start with those loaders — checking
-`schema_version`, `ruleset`, ID uniqueness and that the references
-(`item_id`, `profile_id`, `band_id`, `condition_id`) exist — and with a use
-case that receives the state from external persistence; afterwards the screen
-can be added without coupling it to YAML or to the duel engine. The mercenary
-catalogue (`hired-swords-and-dramatis.yaml`, 98 entries, see `CAMPAIGN
-INGESTION RESULTS.md`) is integrated with schema v2 and published; the 18
-dynamic eligibility rules (dependent on roster, mercenary variant or
-conditional roll) are declared in `catalog/hirelings/**` and will be evaluated
-by the application, like the 4 out-of-scope Dramatis and the 74 pending
-intrinsic references of the profile catalogues (they do not block cost or
-eligibility).
+The runtime loaders are implemented in `mordheim_knowledge/campaign.py`:
+`load_campaign_catalog`, `load_post_battle_sequence`, `load_hirelings` and
+`load_warband_groups` validate `schema_version`, `ruleset`, per-document ID
+uniqueness and that the references (`item_id`, `profile_id`, `band_id`,
+`condition_id`, `skill_id`, `lore`, `warband-group.*`) exist. The Campaign
+Manager consumes them through its `KnowledgePort`
+(`mordheim_campaign/application/knowledge_port.py`) — which also exposes the
+warband-market price rule (`price_override`) for the Trading Post offers of
+its post-battle screens (`PostBattleCatalogue` in
+`mordheim_campaign/application/post_battle_catalogue.py`), without the GUI
+touching YAML. The mercenary catalogue (`hired-swords-and-dramatis.yaml`, 98
+entries, see `CAMPAIGN INGESTION RESULTS.md`) is integrated with schema v2
+and published; the 18 dynamic eligibility rules (dependent on roster,
+mercenary variant or conditional roll) are declared in `catalog/hirelings/**`
+and are evaluated by the application, like the 4 out-of-scope Dramatis and
+the 74 pending intrinsic references of the profile catalogues (they do not
+block cost or eligibility).
 
-The Campaign Manager already consumes the KB for warbands and profiles: its
-`KnowledgePort` (`mordheim_campaign/application/knowledge_port.py`) uses
-`load_bands`, `load_items` and `load_skills` to feed warband creation without
-the GUI touching YAML, and its persistence (`.mordheim`) references the
+The Campaign Manager consumes the KB for warbands, profiles and campaign
+content: its `KnowledgePort` (`mordheim_campaign/application/knowledge_port.py`) uses
+`load_bands`, `load_items`, `load_skills` and the campaign loaders to feed
+warband creation and the post-battle screens without the GUI touching YAML,
+and its persistence (`.mordheim`) references the
 canonical IDs (`band_id`, `profile_id`, `item_id`) without duplicating rules.

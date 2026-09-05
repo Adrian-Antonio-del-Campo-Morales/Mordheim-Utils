@@ -20,7 +20,7 @@ cluster uses, and the reviewed decisions recorded as policy overrides.
   fields, dice keys and observables grounded in how the bindings were
   already exercised.
 - Vectorized/native certification: `parity` reports **0 divergences** over
-  3724 specification rows; the corpus exposed and helped fix a real
+  3728 specification rows; the corpus exposed and helped fix a real
   vectorized-engine defect (an extra dice draw for automatic wounds shifted
   the ward-save roll stream).
 

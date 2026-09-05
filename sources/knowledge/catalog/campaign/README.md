@@ -51,21 +51,44 @@ price: when an amount is a real exception it must be declared explicitly as
 Multi-unit purchases — for example, pairs — are modelled in
 `purchase_options`, not as another price of the same `item_id`.
 
-## TODO: collate warband-list prices
+## Collation of warband-list prices (first run)
 
-Before using campaign prices in the runtime, compare every `cost` value of
-every `equipment-access.yaml` with the Trading Post. For each difference:
+The collation tool `tools/kb/price-collation.py` compares every `cost` value
+of every `equipment-access.yaml` with the Trading Post (2,152 rows across 81
+warbands) and regenerates `docs/knowledge/price-collation.md` (+ CSV). A
+warband list is the creation/recruitment price list of its source; the
+Trading Post is the market price for post-battle purchases. A difference is
+therefore not itself an exception: per the review rules below, an amount is
+recorded as a `price_override` only when the warband's own source confirms
+that the warband pays that amount as a market price too.
 
-1. confirm whether it is a published exception, a warband-creation rule or a
-   source discrepancy;
-2. if it is an exception, replace the implicit use of the cost with a
-   `price_override` with verifiable `source_refs`;
-3. otherwise keep the amount only as historical evidence and apply the price
-   of `trading-post.yaml`.
+First-run result: 18 rows carry a `price_override`, all source-confirmed; 14 differing rows are page-verified as plain creation prices (`docs/knowledge/price-collation-resolutions.csv`), and 119 rows remain in the review queue:
 
-Do not complete this migration by name matching nor assume that two different
-prices describe the same purchase type: review by `item_id`, equipment list,
-profile and purchase option.
+- `gunnery-school-of-nuln` — the black-powder weapons of both lists
+  (Impeccable Care: “always use the reduced … costs listed in its starting
+  Equipment Lists”); the `superior_blackpowder` accessory is not a weapon
+  and keeps the Trading Post price;
+- `hochland-bandits` — the Duelist list pistol (Powder's Expensive!: bandit
+  heroes “always pay the higher black-powder weapon costs shown in its
+  equipment lists”);
+- `lizardmen` — light armour (Armour rule: “always costs 50 gc for
+  Lizardmen, including when bought from the Equipment chart”).
+
+Each `price_override` equals the list `cost` it encodes (the exception amount
+is the printed list amount); the warband page in `source` is its
+verification. Rows that were checked against their page and shown to be
+creation prices are recorded in the resolutions sidecar
+(`docs/knowledge/price-collation-resolutions.csv`, outcome
+`creation-price`) and leave the queue: the list price is what a recruit pays,
+and the Trading Post prevails at the market. The remaining rows keep their
+`cost` only as historical evidence and stay listed in the review queue until
+each printed source is verified (the Trollheim/Lustria/Khemri rows have no
+recorded source URL in the files yet). Review by `item_id`, equipment list,
+profile and purchase option — never by name matching.
+
+To record a newly confirmed exception: add `price_override: <gc>` to the
+`equipment-access.yaml` row (same value as its `cost`), then regenerate the
+report.
 
 ## Catalogue state
 
@@ -115,6 +138,10 @@ Archive Pestilen sources do not declare progression rewards (zombie invasions
 like Romero's Pride, The Restless Dead or The Battle At Koleshire Keep): in
 those cases the absence is documented in `progression.notes`. Point doubts
 about a source are documented in the `progression.notes` of the entry.
-No YAML of this catalogue must be loaded as rule implementation: the loaders
-(`load_campaign_catalog`, `load_post_battle_sequence`) and their validation
-are runtime-integration work.
+No YAML of this catalogue is loaded as rule implementation: the runtime read
+path lives in `mordheim_knowledge/campaign.py` — `load_campaign_catalog`,
+`load_post_battle_sequence`, `load_hirelings` and `load_warband_groups` — whose
+load-time validation (schema_version, per-document id uniqueness and reference
+resolution) is covered by `tests/knowledge/test_campaign_loaders.py`. The
+remaining runtime work is application-side (rule resolution, price
+collation), not KB data.
