@@ -9,6 +9,14 @@ and this module is the application's reviewed interpretation of it, keyed by
 the canonical rule id so a reader can cross-check every predicate against the
 declared ``effect``.
 
+The race/alignment/nature facts the rules reason about are *declared* on the
+hireling profiles themselves (``catalog/hirelings/traits.yaml``: elf, dwarf,
+human, undead, ogre, evil, spellcaster, priest, fear-causing) and loaded
+through ``KnowledgePort.hireling_traits()``; this module no longer keeps
+curated trait sets. The only remaining application-side facts are the
+warband-side heuristics (band groups from ``registry/warband-groups.yaml``
+and profile keywords for band members), which the KB does not declare.
+
 Decisions depend on facts the prototype campaign may not track yet (the
 Mercenary variant, currently-employed Hired Swords). The module never
 silently guesses: when a rule needs a fact the context does not provide it
@@ -17,13 +25,15 @@ and callers decide how to present it.
 
 The roster context is intentionally small: the warband identity (whose
 race/alignment groups come from ``registry/warband-groups.yaml``), the band
-member profile ids, the currently employed Hired Sword profile ids and the
-optional Mercenary variant (reikland/middenheim/marienburg/ostermark).
+member profile ids, the currently employed Hired Sword profile ids, the
+optional Mercenary variant (reikland/middenheim/marienburg/ostermark) and
+the canonical trait table the context derives facts from.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
+from typing import Mapping
 
 from mordheim_campaign.application.knowledge_port import KnowledgePort
 
@@ -74,52 +84,23 @@ class WarbandHireContext:
     #: "ostermark". ``None`` means the warband did not choose one (or is not a
     #: Mercenary warband).
     variant: str | None = None
+    #: Canonical intrinsic traits of hireling profiles, keyed by profile id
+    #: (``catalog/hirelings/traits.yaml`` via ``KnowledgePort.hireling_traits``).
+    hireling_traits: Mapping[str, frozenset[str]] = field(default_factory=dict)
 
 
 # --------------------------------------------------------------------------- #
-# Curated roster facts (interpretation support)
+# Roster facts (interpretation support)
 # --------------------------------------------------------------------------- #
 #
-# The KB does not declare a race/feat field on profiles; race, alignment and
-# fear/spellcaster nature are editorial facts used by the prose eligibility
-# rules. They are keyed by stable hireling profile id suffix and warband-group
-# id so each entry is reviewable against the source text.
+# Hireling race/alignment/nature facts come from ``catalog/hirelings/traits.yaml``
+# (the canonical, validated declaration; see ``KnowledgePort.hireling_traits``).
+# The facts below that are *not* hireling traits stay application-side because
+# the KB deliberately does not declare them: warband-group membership is the
+# canonical band-side race/alignment signal (``registry/warband-groups.yaml``)
+# and profile-keyword heuristics cover the band members of the canonical
+# warbands (e.g. the wizard profiles the Witch Hunter rule counts).
 
-#: Hireling profiles of each race/type the rules reason about (id suffixes).
-ELF_HIRELINGS = frozenset({
-    "elf-ranger", "elf-mage", "wood-elf-hunter", "shadow-warrior",
-    "dark-elf-assassin", "dark-mage",
-})
-DWARF_HIRELINGS = frozenset({
-    "dwarf-troll-slayer", "dwarf-treasure-hunter", "dwarf-pathfinder",
-    "dwarf-slayer-pirate", "runesmith-journeyman",
-})
-HUMAN_HIRELINGS = frozenset({"highwayman", "roadwarden", "warrior-priest-of-sigmar"})
-OGRE_HIRELINGS = frozenset({"ogre-bodyguard", "ogre-slave-master", "bone-goliath"})
-UNDEAD_HIRELINGS = frozenset({"grave-robber", "gravesman"})
-
-#: Hired Swords that cause fear (Ninja Gnoblar rule).
-FEAR_HIRELINGS = frozenset({
-    "ogre-bodyguard", "ogre-slave-master", "bone-goliath", "chaos-fury",
-    "emissary-of-chaos", "grave-robber", "gravesman", "dark-mage", "chaos-centaur",
-})
-
-#: Hired Swords regarded as "evil" (Shadow Warrior incompatibility).
-EVIL_HIRELINGS = frozenset({
-    "dark-elf-assassin", "dark-mage", "chaos-fury", "chaos-centaur",
-    "emissary-of-chaos", "the-fallen-sister", "ninja-gnoblar", "goblin-lantern-bearer",
-    "skaven" , "grave-robber", "gravesman", "slaver", "thief", "beggar",
-})
-
-#: Hired Swords that are spellcasters (Witch Hunter incompatibility). Priests
-#: of Sigmar/Ulric/Taal/Morr are not covered by the rule and are excluded.
-SPELLCASTER_HIRELINGS = frozenset({
-    "warlock", "witch", "elf-mage", "norse-shaman", "dark-mage", "chaos-fury",
-})
-#: Priests that may share a warband with a Witch Hunter.
-PRIEST_HIRELINGS = frozenset({
-    "priest-of-morr", "warrior-priest-of-sigmar", "wolf-priest-of-ulric",
-})
 
 #: Warband heroes the witch-hunter rule treats as spellcasters (wizard
 #: profiles of the canonical bands, by profile-id keyword).
@@ -162,8 +143,12 @@ FEAR_BAND_GROUPS = frozenset({
 SPELLCASTER_BAND_GROUPS = frozenset({"warband-group.undead", "warband-group.chaotic"})
 
 
-def _has_suffix(profile_ids: frozenset[str], suffixes: frozenset[str]) -> bool:
-    return any(pid.split(".")[-1] in suffixes for pid in profile_ids)
+def _traits_of(profile_ids: frozenset[str], traits: Mapping[str, frozenset[str]]) -> frozenset[str]:
+    """Union of the declared traits of the given profile ids."""
+    union: set[str] = set()
+    for profile_id in profile_ids:
+        union |= set(traits.get(profile_id, frozenset()))
+    return frozenset(union)
 
 
 def _has_keyword(profile_ids: frozenset[str], keywords: tuple[str, ...]) -> bool:
@@ -204,11 +189,15 @@ class RosterFacts:
         hired_ids = ctx.hired_sword_profile_ids
         all_ids = member_ids | hired_ids
         groups = ctx.band_groups
+        traits = ctx.hireling_traits
+        member_traits = _traits_of(member_ids, traits)
+        hired_traits = _traits_of(hired_ids, traits)
+        all_traits = member_traits | hired_traits
 
         # Employer band classification.
         is_mercenary = ctx.band_id in MERCENARY_EMPLOYER_BANDS
         is_witch_hunter = ctx.band_id in WITCH_HUNTER_EMPLOYER_BANDS
-        # Races implied by the warband itself.
+        # Races implied by the warband itself (canonical warband-group registry).
         band_elf = bool(groups & {"warband-group.elf", "warband-group.high-elf", "warband-group.dark-elf"})
         band_dwarf = "warband-group.dwarf" in groups
         band_human = "warband-group.human" in groups or "warband-group.human-mercenary" in groups
@@ -227,26 +216,27 @@ class RosterFacts:
             _has_keyword({pid}, SPELLCASTER_PROFILE_KEYWORDS) for pid in all_ids
         ) or bool(groups & SPELLCASTER_BAND_GROUPS)
         # Priests never make the roster "spellcaster-tainted" for the Witch Hunter rule.
-        spellcaster_members = spellcaster_members and not (
-            _has_suffix(all_ids, PRIEST_HIRELINGS) and not _has_keyword(all_ids, SPELLCASTER_PROFILE_KEYWORDS)
+        priests_only = "priest" in all_traits and not any(
+            _has_keyword({pid}, SPELLCASTER_PROFILE_KEYWORDS) for pid in all_ids
         )
+        spellcaster_members = spellcaster_members and not priests_only
 
         return cls(
             is_mercenary_employer=is_mercenary,
             is_witch_hunter_employer=is_witch_hunter,
-            has_elf_member=band_elf or _has_suffix(all_ids, ELF_HIRELINGS),
-            has_dwarf_member=band_dwarf or _has_suffix(all_ids, DWARF_HIRELINGS),
-            has_human_member=band_human or _has_suffix(all_ids, HUMAN_HIRELINGS),
-            has_undead_member=band_undead or _has_suffix(all_ids, UNDEAD_HIRELINGS),
+            has_elf_member=band_elf or "elf" in all_traits,
+            has_dwarf_member=band_dwarf or "dwarf" in all_traits,
+            has_human_member=band_human or "human" in all_traits,
+            has_undead_member=band_undead or "undead" in all_traits,
             has_fear_causing_member=bool(groups & FEAR_BAND_GROUPS)
-            or _has_suffix(hired_ids, FEAR_HIRELINGS)
+            or "fear-causing" in hired_traits
             or _has_keyword(all_ids, FEAR_PROFILE_KEYWORDS),
-            has_spellcaster_member=spellcaster_members or _has_suffix(hired_ids, SPELLCASTER_HIRELINGS),
-            has_warrior_priest_member=_has_suffix(all_ids, {"warrior-priest-of-sigmar", "priest-of-morr", "wolf-priest-of-ulric"}),
-            has_elven_hired_sword=_has_suffix(hired_ids, ELF_HIRELINGS),
-            has_evil_hired_sword=_has_suffix(hired_ids, EVIL_HIRELINGS),
-            has_highwayman=_has_suffix(hired_ids, {"highwayman"}),
-            has_roadwarden=_has_suffix(hired_ids, {"roadwarden"}),
+            has_spellcaster_member=spellcaster_members or "spellcaster" in hired_traits,
+            has_warrior_priest_member="priest" in all_traits,
+            has_elven_hired_sword="elf" in hired_traits,
+            has_evil_hired_sword="evil" in hired_traits,
+            has_highwayman="hireling.hired-sword.highwayman" in hired_ids,
+            has_roadwarden="hireling.hired-sword.roadwarden" in hired_ids,
             is_middenheim=is_middenheim,
             variant_capable=variant_capable,
             variant_known=variant_known,
@@ -441,4 +431,5 @@ def context_from_roster(
         member_profile_ids=frozenset(member_profile_ids),
         hired_sword_profile_ids=frozenset(hired_sword_profile_ids),
         variant=variant,
+        hireling_traits=port.hireling_traits(),
     )

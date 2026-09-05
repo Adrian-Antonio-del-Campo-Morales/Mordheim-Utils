@@ -29,9 +29,7 @@ class SequenceRng:
 
 
 def test_no_scope_yes_rules_remain_without_an_implementation_family():
-    pending = yaml.safe_load((ROOT / "catalog/rules/pending-canonical-families.yaml").read_text(encoding="utf-8"))
     implemented = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
-    assert pending["families"] == []
     assert implemented["summary"] == {"families": 66, "rules": 101, "kinds": {"compiler": 41, "mechanic": 20, "trait": 5}}
 
 

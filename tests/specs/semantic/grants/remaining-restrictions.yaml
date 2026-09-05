@@ -4,163 +4,301 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/bretonnian-chapel-guard/band--chivalry/mechanic.chivalry, digest: b21c4f9d057b13c7c1512814959878e8dfcc2ebbd54574bc3d34533241c9e817}
-  interpretation: "Knights cannot use missile weapons, poisons or drugs; an ordinary build remains legal."
+  - target: rule/mordheim/bretonnian-chapel-guard/band--chivalry/mechanic.chivalry
+    digest: b21c4f9d057b13c7c1512814959878e8dfcc2ebbd54574bc3d34533241c9e817
+  interpretation: Knights cannot use missile weapons, poisons or drugs; an ordinary build remains legal.
   cases:
   - id: poison-and-drug-rejected
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: equipment_choices
-    attacker: {band_id: bretonnian-chapel-guard, profile_id: knights-errant}
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: knights-errant
     context:
       choices:
         ordinary: {}
-        poison: {main_poison_id: poison.black-lotus}
-        drug: {preparation_ids: [preparation.crimson-shade]}
-        missile: {main_weapon_id: weapon.pistol}
+        poison:
+          main_poison_id: poison.black-lotus
+        drug:
+          preparation_ids:
+          - preparation.crimson-shade
+        missile:
+          main_weapon_id: weapon.pistol
     expect:
-      result.accepted: [ordinary]
+      result.accepted:
+      - ordinary
       result.rejected:
-        poison: "poisons are forbidden for Knights: bretonnian-chapel-guard/knights-errant"
-        drug: "drugs are forbidden for Knights: bretonnian-chapel-guard/knights-errant"
-        missile: "missile weapons are forbidden for Knights: bretonnian-chapel-guard/knights-errant"
+        poison: 'poisons are forbidden for Knights: bretonnian-chapel-guard/knights-errant'
+        drug: 'drugs are forbidden for Knights: bretonnian-chapel-guard/knights-errant'
+        missile: 'missile weapons are forbidden for Knights: bretonnian-chapel-guard/knights-errant'
   - id: contract-present
     operation: construction_tag_presence
-    attacker: {band_id: bretonnian-chapel-guard, profile_id: knights-errant}
-    context: {tag: compiler.chivalry}
-    expect: {result.present: true}
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: knights-errant
+    context:
+      tag: compiler.chivalry
+    expect:
+      result.present: true
   mutations:
-  - {id: remove-chivalry-contract, path: attacker.construction_tags, value: [], cases: [contract-present]}
-
+  - id: remove-chivalry-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract-present
 - id: bandit-powder-restriction
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/hochland-bandits/band--powders-expensive/compiler.powder-s-expensive, digest: 3bed1545c75c63737eb592e42b7fdf32297f10587eb42c8d1fca976db4e4d3c0}
-  interpretation: "Bandit Henchmen cannot buy blackpowder weapons; Heroes keep whatever access corresponds to them. Campaign costs are not part of the duel."
+  - target: rule/mordheim/hochland-bandits/band--powders-expensive/compiler.powder-s-expensive
+    digest: ff9532de0aa543e12600875e0013836abafa1de4c0f46fe2917f3eb0a2c921e9
+  interpretation: Bandit Henchmen cannot buy blackpowder weapons; Heroes keep whatever access corresponds to
+    them. Campaign costs are not part of the duel.
   cases:
   - id: henchman-pistol-rejected
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: equipment_choices
-    attacker: {band_id: hochland-bandits, profile_id: thugs}
-    context: {choices: {ordinary: {}, pistol: {main_weapon_id: weapon.pistol}}}
+    attacker:
+      band_id: hochland-bandits
+      profile_id: thugs
+    context:
+      choices:
+        ordinary: {}
+        pistol:
+          main_weapon_id: weapon.pistol
     expect:
-      result.accepted: [ordinary]
-      result.rejected: {pistol: "blackpowder weapons are forbidden for Bandit Henchmen: hochland-bandits/thugs"}
+      result.accepted:
+      - ordinary
+      result.rejected:
+        pistol: 'blackpowder weapons are forbidden for Bandit Henchmen: hochland-bandits/thugs'
   - id: contract-present
     operation: construction_tag_presence
-    attacker: {band_id: hochland-bandits, profile_id: thugs}
-    context: {tag: compiler.powder-s-expensive}
-    expect: {result.present: true}
+    attacker:
+      band_id: hochland-bandits
+      profile_id: thugs
+    context:
+      tag: compiler.powder-s-expensive
+    expect:
+      result.present: true
   mutations:
-  - {id: remove-powder-contract, path: attacker.construction_tags, value: [], cases: [contract-present]}
-
+  - id: remove-powder-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract-present
 - id: saurus-skill-and-missile-prohibitions
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/lizardmen/band--saurus-skill-prohibitions/compiler.saurus-skill-prohibitions, digest: a732927eefa750fd9dff52c35b6c88cf097f6b1960e979c5b980ddf2441d3f53}
-  interpretation: "Saurus Totem Warriors and Braves reject Academic skills and every missile weapon, regardless of later generic accesses."
+  - target: rule/mordheim/lizardmen/band--saurus-skill-prohibitions/compiler.saurus-skill-prohibitions
+    digest: a973752cb109db1a41c5fa143b73e1070beddd1adff4ca719dd06546a7f6ed69
+  interpretation: Saurus Totem Warriors and Braves reject Academic skills and every missile weapon, regardless
+    of later generic accesses.
   cases:
   - id: academic-rejected
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selection_choices
-    attacker: {band_id: lizardmen, profile_id: saurus-totem-warrior}
-    context: {choices: {ordinary: {}, academic: {skill_ids: [skill.arcane-lore]}}}
+    attacker:
+      band_id: lizardmen
+      profile_id: saurus-totem-warrior
+    context:
+      choices:
+        ordinary: {}
+        academic:
+          skill_ids:
+          - skill.arcane-lore
     expect:
-      result.accepted: [ordinary]
-      result.rejected: {academic: "Academic skills are forbidden for Saurus: ['skill.arcane-lore']"}
+      result.accepted:
+      - ordinary
+      result.rejected:
+        academic: 'Academic skills are forbidden for Saurus: [''skill.arcane-lore'']'
   - id: missile-rejected
     operation: equipment_choices
-    attacker: {band_id: lizardmen, profile_id: saurus-totem-warrior}
-    context: {choices: {ordinary: {}, missile: {main_weapon_id: weapon.pistol}}}
+    attacker:
+      band_id: lizardmen
+      profile_id: saurus-totem-warrior
+    context:
+      choices:
+        ordinary: {}
+        missile:
+          main_weapon_id: weapon.pistol
     expect:
-      result.accepted: [ordinary]
-      result.rejected: {missile: missile weapons are forbidden for Saurus}
+      result.accepted:
+      - ordinary
+      result.rejected:
+        missile: missile weapons are forbidden for Saurus
   - id: contract-present
     operation: construction_tag_presence
-    attacker: {band_id: lizardmen, profile_id: saurus-totem-warrior}
-    context: {tag: compiler.saurus-skill-prohibitions}
-    expect: {result.present: true}
+    attacker:
+      band_id: lizardmen
+      profile_id: saurus-totem-warrior
+    context:
+      tag: compiler.saurus-skill-prohibitions
+    expect:
+      result.present: true
   mutations:
-  - {id: remove-saurus-contract, path: attacker.construction_tags, value: [], cases: [contract-present]}
-
+  - id: remove-saurus-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract-present
 - id: cleric-disciple-of-sigmar
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/outlaws-of-stirwood-forest/cleric--disciple-of-sigmar/mechanic.disciple-of-sigmar, digest: c712466d3a1fbb3c9a65e866c523d7cae13617e1ab6af8dea0ba2f4411ba2337}
-  interpretation: "The Cleric rejects Sorcery and Arcane Lore; Prayers remain outside the current duel engine."
+  - target: rule/mordheim/outlaws-of-stirwood-forest/cleric--disciple-of-sigmar/mechanic.disciple-of-sigmar
+    digest: c712466d3a1fbb3c9a65e866c523d7cae13617e1ab6af8dea0ba2f4411ba2337
+  interpretation: The Cleric rejects Sorcery and Arcane Lore; Prayers remain outside the current duel engine.
   cases:
   - id: magic-rejected
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selection_choices
-    attacker: {band_id: outlaws-of-stirwood-forest, profile_id: cleric}
-    context: {choices: {ordinary: {}, arcane: {skill_ids: [skill.arcane-lore]}, sorcery: {skill_ids: [skill.sorcery]}}}
+    attacker:
+      band_id: outlaws-of-stirwood-forest
+      profile_id: cleric
+    context:
+      choices:
+        ordinary: {}
+        arcane:
+          skill_ids:
+          - skill.arcane-lore
+        sorcery:
+          skill_ids:
+          - skill.sorcery
     expect:
-      result.accepted: [ordinary]
+      result.accepted:
+      - ordinary
       result.rejected:
-        arcane: "sorcery and Arcane Lore are forbidden for outlaws-of-stirwood-forest/cleric: ['skill.arcane-lore']"
-        sorcery: "sorcery and Arcane Lore are forbidden for outlaws-of-stirwood-forest/cleric: ['skill.sorcery']"
+        arcane: 'sorcery and Arcane Lore are forbidden for outlaws-of-stirwood-forest/cleric: [''skill.arcane-lore'']'
+        sorcery: 'sorcery and Arcane Lore are forbidden for outlaws-of-stirwood-forest/cleric: [''skill.sorcery'']'
   - id: contract-present
     operation: construction_tag_presence
-    attacker: {band_id: outlaws-of-stirwood-forest, profile_id: cleric}
-    context: {tag: compiler.disciple-of-sigmar}
-    expect: {result.present: true}
+    attacker:
+      band_id: outlaws-of-stirwood-forest
+      profile_id: cleric
+    context:
+      tag: compiler.disciple-of-sigmar
+    expect:
+      result.present: true
   mutations:
-  - {id: remove-disciple-contract, path: attacker.construction_tags, value: [], cases: [contract-present]}
-
+  - id: remove-disciple-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract-present
 - id: high-elf-haughty
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/trollheim/lustria-high-elves/band--haughty/compiler.haughty, digest: d14936b198f5274a62c66cd8f3cb5383120465b095c46232d40b2414cd68168c}
-  interpretation: "High Elves cannot use Dwarf-made materials or armour; the Hired Swords restriction belongs to campaign."
+  - target: rule/trollheim/lustria-high-elves/band--haughty/compiler.haughty
+    digest: d14936b198f5274a62c66cd8f3cb5383120465b095c46232d40b2414cd68168c
+  interpretation: High Elves cannot use Dwarf-made materials or armour; the Hired Swords restriction belongs
+    to campaign.
   cases:
   - id: dwarf-materials-rejected
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: equipment_choices
-    attacker: {collection: trollheim, band_id: lustria-high-elves, profile_id: loremaster}
-    context: {choices: {ordinary: {}, gromril: {main_material_id: material.gromril}, obsidian: {main_material_id: material.obsidian}}}
+    attacker:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+    context:
+      choices:
+        ordinary: {}
+        gromril:
+          main_material_id: material.gromril
+        obsidian:
+          main_material_id: material.obsidian
     expect:
-      result.accepted: [ordinary]
+      result.accepted:
+      - ordinary
       result.rejected:
         gromril: Dwarf-made equipment is forbidden for lustria-high-elves/loremaster
         obsidian: Dwarf-made equipment is forbidden for lustria-high-elves/loremaster
   - id: contract-present
     operation: construction_tag_presence
-    attacker: {collection: trollheim, band_id: lustria-high-elves, profile_id: loremaster}
-    context: {tag: compiler.haughty}
-    expect: {result.present: true}
+    attacker:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+    context:
+      tag: compiler.haughty
+    expect:
+      result.present: true
   mutations:
-  - {id: remove-haughty-contract, path: attacker.construction_tags, value: [], cases: [contract-present]}
-
+  - id: remove-haughty-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract-present
 - id: outlaw-bow-discipline
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/mechanic.bow-discipline, digest: cc36b20e3237414b0bf2dc25c5d5900e26129490865e22b66567fb164be1f53a}
-  interpretation: "Bow Discipline limits each warrior to one missile weapon; the obligation to carry a bow and the crossbow exclusion are kept as a construction contract outside the 1v1 catalogue."
+  - target: rule/mordheim/outlaws-of-stirwood-forest/band--bow-discipline/mechanic.bow-discipline
+    digest: cc36b20e3237414b0bf2dc25c5d5900e26129490865e22b66567fb164be1f53a
+  interpretation: Bow Discipline limits each warrior to one missile weapon; the obligation to carry a bow and
+    the crossbow exclusion are kept as a construction contract outside the 1v1 catalogue.
   cases:
   - id: one-missile-limit
-    roles: [grant, compiled, consumer, boundary]
+    roles:
+    - grant
+    - compiled
+    - consumer
+    - boundary
     operation: missile_capacity
-    attacker: {band_id: outlaws-of-stirwood-forest, profile_id: bandit-leader}
-    expect: {result.limit: 1}
+    attacker:
+      band_id: outlaws-of-stirwood-forest
+      profile_id: bandit-leader
+    expect:
+      result.limit: 1
   mutations:
-  - {id: restore-default-limit, path: attacker.missile_weapon_limit, value: 2, cases: [one-missile-limit]}
-
+  - id: restore-default-limit
+    path: attacker.missile_weapon_limit
+    value: 2
+    cases:
+    - one-missile-limit
 - id: nuln-proud-to-a-fault
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/gunnery-school-of-nuln/band--proud-to-a-fault/compiler.proud-to-a-fault, digest: 77bf646a93355bb550ac8d2d244636b8144540976299ff8c7eaebda0daae4ed1}
-  interpretation: "The prohibition of non-blackpowder missile weapons is recorded in the build; those weapons do not belong to the executable close-combat catalogue."
+  - target: rule/mordheim/gunnery-school-of-nuln/band--proud-to-a-fault/compiler.proud-to-a-fault
+    digest: 1655e5b8451795f21d4631f4d08e008f986ef8fd30379f620a69a2b2ab335be4
+  interpretation: The prohibition of non-blackpowder missile weapons is recorded in the build; those weapons
+    do not belong to the executable close-combat catalogue.
   cases:
   - id: contract-present
-    roles: [grant, compiled, consumer, boundary]
+    roles:
+    - grant
+    - compiled
+    - consumer
+    - boundary
     operation: construction_tag_presence
-    attacker: {band_id: gunnery-school-of-nuln, profile_id: senior-gunnery-officer}
-    context: {tag: compiler.proud-to-a-fault}
-    expect: {result.present: true}
+    attacker:
+      band_id: gunnery-school-of-nuln
+      profile_id: senior-gunnery-officer
+    context:
+      tag: compiler.proud-to-a-fault
+    expect:
+      result.present: true
   mutations:
-  - {id: remove-pride-contract, path: attacker.construction_tags, value: [], cases: [contract-present]}
+  - id: remove-pride-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract-present

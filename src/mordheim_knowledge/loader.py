@@ -242,6 +242,22 @@ def load_skills(ruleset: str, root: Path | None = None):
 
 
 @lru_cache(maxsize=None)
+def load_racial_maximums(ruleset: str, root: Path | None = None):
+    """Racial characteristic maximums of ``catalog/rules/racial-maximums.yaml``."""
+    document = read_yaml((root or knowledge_root()) / "catalog/rules/racial-maximums.yaml")
+    if document.get("ruleset") != ruleset:
+        raise ValueError(f"racial maximums do not describe {ruleset}")
+    rows = tuple(document.get("racial_maximums") or ())
+    ids = [str(row.get("id") or "") for row in rows]
+    profiles = [str(row.get("profile") or "") for row in rows]
+    if any(not value for value in ids) or len(ids) != len(set(ids)):
+        raise ValueError("racial maximums have missing or duplicate IDs")
+    if any(not value for value in profiles) or len(profiles) != len(set(profiles)):
+        raise ValueError("racial maximums have missing or duplicate profiles")
+    return rows
+
+
+@lru_cache(maxsize=None)
 def load_runtime_scope(ruleset: str, root: Path | None = None):
     document=read_yaml((root or knowledge_root())/"registry/runtime-scope.yaml")
     if document.get("ruleset") != ruleset:raise ValueError(f"runtime scope does not describe {ruleset}")

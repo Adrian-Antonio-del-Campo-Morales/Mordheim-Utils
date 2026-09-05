@@ -6,8 +6,9 @@ status: published
 # advances already gained by a miniature of a concrete campaign.
 # awards: id, recipient, trigger, amount, source_refs
 # advancement_tables: id, applies_to, resolution (dice + branches), source_refs.
-# Experience thresholds belong to the roster; this table only resolves the
-# 2D6 result once the threshold is reached.
+# advance_thresholds: the accumulated XP at which a warrior earns an Advance
+#   roll (canonical ladder of the game; the *accumulated* experience of a
+#   concrete warrior still belongs to the roster / campaign state, not here).
 # Racial characteristic maximums live in the shared catalogue
 # catalog/rules/racial-maximums.yaml (ids campaign.limit.racial-maximum.*).
 awards:
@@ -205,6 +206,35 @@ advancement_tables:
     which has already been increased (or is at its racial maximum), roll again
     until an unincreased characteristic is rolled. All warriors in the group
     gain the same advance.
+advance_thresholds:
+  id: campaign.experience.advance-thresholds
+  hero:
+  - 20
+  - 40
+  - 65
+  - 90
+  - 120
+  - 150
+  - 180
+  - 210
+  - 240
+  - 270
+  henchman:
+  - 8
+  - 16
+  - 25
+  - 35
+  - 46
+  - 58
+  - 71
+  - 85
+  - 100
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Campaigns / Experience / Experience Advances (roster sheet boxes)
+    url: https://mordheimer.net/docs/campaigns/experience
+
 effect_ids:
 - campaign.experience.gain
 - campaign.experience.prevent-gain

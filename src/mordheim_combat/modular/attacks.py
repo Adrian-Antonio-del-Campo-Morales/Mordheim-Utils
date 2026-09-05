@@ -35,23 +35,55 @@ from mordheim_core.models import CompiledFighter
 from mordheim_core.models import EffectSet
 
 
-def resolve_reference_attack(
+def resolve_reference_attack(attacker, defender, attacker_state, defender_state, weapon, dice, **options):
+    """Resolve an attack, including an optional Rapier Barrage sequence."""
+    base_key = options['key']
+    initial_stun = defender_state.condition == Condition.STUNNED
+    penalty = 0
+    any_hit = False
+    while True:
+        secondary_outcomes = []
+        result = _resolve_reference_attack_once(attacker, defender, attacker_state,
+            defender_state, weapon, dice, barrage_penalty=penalty,
+            secondary_outcomes=secondary_outcomes, **options)
+        secondary_damage = sum(outcome.damage for outcome in secondary_outcomes)
+        if secondary_outcomes:
+            result = replace(result, damage=result.damage + secondary_damage,
+                damage_already_reacted=secondary_damage,
+                wounded=result.wounded or any(outcome.wounded for outcome in secondary_outcomes))
+        any_hit = any_hit or result.hit
+        policy = options.get('decisions')
+        if (not result.barrage_available or not result.attacker.active or not result.defender.active
+                or policy is not None and not policy.choose(f"{options['key']}.barrage", result)):
+            return replace(result, hit=any_hit, barrage_available=False)
+        penalty += 1
+        attacker_state, defender_state = result.attacker, result.defender
+        options = {**options, 'key': f'{base_key}.barrage.{penalty}',
+            'prepared_hit': None, 'defences_resolved': False, 'stunned_at_start': initial_stun}
+
+
+def _resolve_reference_attack_once(
     attacker: CompiledFighter, defender: CompiledFighter,
     attacker_state: FighterState, defender_state: FighterState,
     weapon: EffectSet, dice: DiceSource, *, key: str,
     first_round: bool = False, charging: bool = False,
     helpless_at_start: bool = False,
+    stunned_at_start: bool | None = None,
+    melee_attack: bool = True,
     hit_only: bool = False,
     prepared_hit: object | None = None,
     defences_resolved: bool = False,
     defences_only: bool = False,
     parry_allowed: bool = True,
     decisions: DecisionPolicy | None = None,
+    barrage_penalty: int = 0,
+    secondary_outcomes: list[AttackOutcome] | None = None,
 ) -> AttackOutcome:
     """Resolve one attack and return new immutable fighter states."""
     if not attacker_state.active or not defender_state.active:
         return AttackOutcome(attacker_state, defender_state)
-    if defender_state.condition == Condition.STUNNED:
+    if melee_attack and (stunned_at_start if stunned_at_start is not None else
+                         defender_state.condition == Condition.STUNNED and prepared_hit is None):
         return AttackOutcome(attacker_state, replace(defender_state, condition=Condition.OUT))
     weapon = weapon_against_opponent(attacker, defender, weapon)
     effect = _combined_effect(attacker, weapon)
@@ -70,6 +102,7 @@ def resolve_reference_attack(
         first_round=first_round, charging=charging,
         helpless_at_start=helpless_at_start, key=f"{key}.hit",
     )
+    hit_context = replace(hit_context, modifier=hit_context.modifier - barrage_penalty)
     reroll = _hit_reroll(attacker, defender, weapon, effect, first_round, charging)
     luck_available = phases.has_tag(effect, "skill.luck") and "luck" not in attacker_state.resources_spent and not reroll
     if prepared_hit is not None:
@@ -119,6 +152,14 @@ def resolve_reference_attack(
         if parry.attempted:
             defender_state = replace(defender_state, parries_remaining=defender_state.parries_remaining - 1)
         if parry.blocked:
+            if (any(phases.has_tag(candidate, "weapon.sword-breaker") for candidate in
+                    (defender.main_weapon, defender.off_hand or EffectSet()))
+                    and any(tag.startswith('weapon.') and tag not in ('weapon.fist', 'weapon.natural-attacks')
+                            for tag in weapon.tags)):
+                if dice.roll(RollRequest(f"{key}.trap-blade")) >= 4:
+                    hand = attacker.main_hand_slot if attacker.main_hand_slot not in attacker_state.broken_hands and any(
+                        tag in attacker.main_weapon.tags for tag in weapon.tags if tag.startswith('weapon.')) else attacker.off_hand_slot
+                    attacker_state = replace(attacker_state, broken_hands=attacker_state.broken_hands | {hand})
             if phases.has_tag(defender.global_effects, "mechanic.spider-infested"):
                 attacker_state = replace(
                     attacker_state,
@@ -151,7 +192,12 @@ def resolve_reference_attack(
             hit_target=hit.target, trace=trace,
         )
     if phases.has_tag(weapon, "weapon.kusara-kama") and hit.roll >= 5:
-        defender_state = replace(defender_state, attack_penalty=defender_state.attack_penalty + 1)
+        hand = defender.main_hand_slot
+        if (defender.off_hand_attacks and defender.off_hand is not None and decisions is not None
+                and not decisions.choose(f"{key}.kusara-main-hand", defender)):
+            hand = defender.off_hand_slot
+        defender_state = replace(defender_state, attack_penalty=defender_state.attack_penalty + 1,
+            hampered_hands=(*defender_state.hampered_hands, hand))
     if phases.has_tag(weapon, "weapon.chained-squig"):
         defender_state = replace(defender_state, entangled=True)
     ignition = (
@@ -161,25 +207,44 @@ def resolve_reference_attack(
     if ignition <= 6 and dice.roll(RollRequest(f"{key}.ignition")) >= ignition:
         defender_state = replace(defender_state, on_fire=True)
     poison_blocked = defender.global_effects.poison_immunity or phases.has_tag(defender.global_effects, "poison_immune")
-    wound = phases.resolve_wound(prepare_wound_context(
+    if (phases.has_tag(weapon, "weapon.disease-dagger") and hit.roll == 6
+            and not phases.has_tag(defender.global_effects, "undead_or_possessed")
+            and not phases._characteristic_test(defender_state.toughness, dice, f"{key}.infection")):
+        # Infection is an additional automatic wound, not a second dagger hit.
+        # The source grants no armour-denial exception; retain ordinary saves.
+        infection = EffectSet(tags=("effect.automatic-wound", "effect.no-critical"),
+            automatic_hit=True, cannot_be_parried=True, fixed_strength=3)
+        extra = resolve_reference_attack(attacker, defender, attacker_state, defender_state,
+            infection, dice, key=f"{key}.infection-wound", melee_attack=False,
+            defences_resolved=True, decisions=decisions)
+        from mordheim_combat.modular.aftermath import _react_to_wound
+        extra = _react_to_wound(attacker, defender, extra, dice, f"{key}.infection-wound")
+        if secondary_outcomes is not None:
+            secondary_outcomes.append(extra)
+        attacker_state, defender_state = extra.attacker, extra.defender
+        if not attacker_state.active or not defender_state.active:
+            return AttackOutcome(attacker_state, defender_state, hit=True, reactions_resolved=True)
+    if (phases.has_tag(effect, "poison.spider-spittle") and not poison_blocked
+            and defender_state.condition == Condition.STANDING
+            and not phases._characteristic_test(
+                defender_state.toughness, dice, f"{key}.spider-spittle",
+                reroll=phases.has_tag(defender.global_effects, "skill.blessed-sight"))):
+        defender_state = replace(defender_state, condition=Condition.PARALYZED)
+    wound_context = prepare_wound_context(
         attacker, defender, attacker_state, defender_state, weapon, effect,
         hit_roll=hit.roll, first_round=first_round, charging=charging, key=f"{key}.wound",
-    ), dice)
+    )
+    if (hit.roll == 6 and phases.has_tag(effect, "poison.black-lotus") and not poison_blocked
+            and decisions is not None and not decisions.choose(f"{key}.lotus-critical", wound_context)):
+        wound_context = replace(wound_context, automatic=True)
+    wound = phases.resolve_wound(wound_context, dice)
     trace += (Phase.WOUND,)
     if not wound.success and phases.has_tag(attacker.global_effects, "mechanic.mark-of-the-old-ones") and "mark-of-the-old-ones" not in attacker_state.resources_spent:
         attacker_state = attacker_state.spend("mark-of-the-old-ones")
         wound = replace(wound, success=True, roll=wound.target, critical=False)
     if not wound.success:
-        if phases.has_tag(weapon, "weapon.rapier"):
-            extra_target = min(6, hit.target + 1)
-            extra_hit = dice.roll(RollRequest(f"{key}.rapier.hit")) >= extra_target
-            extra_wound = extra_hit and dice.roll(RollRequest(f"{key}.rapier.wound")) >= wound.target
-            if extra_hit and extra_wound:
-                wound = replace(wound, success=True)
-            else:
-                return AttackOutcome(attacker_state, defender_state, hit=True, trace=trace)
-        else:
-            return AttackOutcome(attacker_state, defender_state, hit=True, trace=trace)
+        return AttackOutcome(attacker_state, defender_state, hit=True, trace=trace,
+            barrage_available=phases.has_tag(weapon, "weapon.rapier"))
     if phases.has_tag(effect, "poison.manbane") and not poison_blocked and wound.roll == 1:
         return AttackOutcome(attacker_state, defender_state, hit=True, trace=trace)
     if wound.critical:
@@ -189,10 +254,16 @@ def resolve_reference_attack(
             wound = replace(wound, critical=False)
         else:
             attacker_state = replace(attacker_state, critical_available=False)
-    armour = phases.resolve_armour(prepare_armour_context(
+    critical = phases.CriticalResult()
+    if wound.critical:
+        critical = phases.resolve_critical(dice, key=f"{key}.critical",
+            modifier=effect.critical_injury_bonus + int(phases.has_tag(effect, "skill.web-of-steel")))
+    armour_context = prepare_armour_context(
         attacker, defender, attacker_state, defender_state, weapon, effect,
         first_round=first_round, charging=charging, key=f"{key}.armour",
-    ), dice)
+    )
+    armour = phases.resolve_armour(replace(armour_context,
+        ignore_armour=armour_context.ignore_armour or critical.ignore_armour), dice)
     trace += (Phase.ARMOUR,)
     if armour.saved:
         return AttackOutcome(attacker_state, defender_state, True, wounded=True, saved=True, critical=wound.critical, trace=trace)
@@ -204,19 +275,12 @@ def resolve_reference_attack(
         return AttackOutcome(attacker_state, defender_state, True, wounded=True, saved=True, critical=wound.critical, trace=trace)
     if defender.injury_profile == 2 or helpless_at_start:
         return AttackOutcome(attacker_state, replace(defender_state, condition=Condition.OUT), True, wounded=True, damage=1, critical=wound.critical, trace=trace)
-    damage = max(1, effect.damage) * (2 if phases.has_tag(defender.global_effects, "flammable") and phases.has_tag(effect, "attack.fire") else 1)
+    weapon_damage = (dice.roll(RollRequest(f"{key}.damage", effect.damage_die_sides))
+                     if effect.damage_die_sides else effect.damage)
+    damage = max(1, weapon_damage, critical.damage) * (2 if phases.has_tag(defender.global_effects, "flammable") and phases.has_tag(effect, "attack.fire") else 1)
     remaining = defender_state.wounds - damage
     if phases.has_tag(effect, "poison.nightshade") and not poison_blocked:
         defender_state = replace(defender_state, initiative_penalty=defender_state.initiative_penalty + 1)
-    if (
-        phases.has_tag(effect, "poison.spider-spittle") and not poison_blocked
-        and defender_state.condition == Condition.STANDING
-        and not phases._characteristic_test(
-            defender_state.toughness, dice, f"{key}.spider-spittle",
-            reroll=phases.has_tag(defender.global_effects, "skill.blessed-sight"),
-        )
-    ):
-        defender_state = replace(defender_state, condition=Condition.PARALYZED)
     if remaining > 0:
         defender_state = replace(defender_state, wounds=remaining)
         return AttackOutcome(attacker_state, defender_state, True, wounded=True, damage=damage, critical=wound.critical, trace=trace)
@@ -229,9 +293,7 @@ def resolve_reference_attack(
     if wound.critical:
         injury_context = replace(
             injury_context,
-            modifier=injury_context.modifier + 2
-            + int(phases.has_tag(effect, "skill.web-of-steel"))
-            + effect.critical_injury_bonus,
+            modifier=injury_context.modifier + critical.injury_modifier,
         )
     injury_count = max(1, damage - max(0, defender_state.wounds - 1))
     injuries = []

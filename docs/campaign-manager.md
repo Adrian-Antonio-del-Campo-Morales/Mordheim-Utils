@@ -4,6 +4,63 @@ This prototype explores a **campaign-timeline-first** desktop interface for Mord
 The campaign is the product: immutable warband states are connected by Battles and
 Post-Battle transitions.
 
+## New in this iteration: KB read side and dynamic hiring eligibility
+
+The application layer now consumes the published campaign catalogues through
+`KnowledgePort` (`post_battle_sequence()`, `campaign_catalog()`,
+`hireling_catalogue()`, `warband_groups()`):
+
+- **Dynamic hire eligibility** (`application/hire_eligibility.py`): the 18
+  roster-dependent `*.rule.campaign-eligibility` rules of `catalog/hirelings/**`
+  (task 4 of the ingestion report) are evaluated against the warband context —
+  band groups from the registry, member and employed-Hired-Sword profile ids,
+  optional Mercenary variant. The race/alignment/nature facts the rules read
+  (elf, dwarf, human, undead, ogre, evil, spellcaster, priest, fear-causing)
+  are declared in `catalog/hirelings/traits.yaml` and loaded via
+  `KnowledgePort.hireling_traits()`; only the warband-side heuristics (band
+  groups and band-member profile keywords) stay in the application. Every rule
+  id is a reviewed key in the module, and ambiguous contexts produce explicit
+  `needs_variant`/`unknown` decisions rather than guesses. Hired Swords and
+  Dramatis offers that are rejected by a rule are not shown; conditional ones
+  surface the acceptance roll in the UI.
+- **KB-backed post-battle resolution** (`application/post_battle_resolution.py`):
+  serious injuries (hero D66 and henchman D6 charts, including printed row-major
+  ranges and follow-up subtables), exploration dice (shards by total plus the
+  matching-dice special results) and the rare-item 2D6 rarity test read the
+  validated catalogue rows — nothing is canned text.
+- **Post-battle catalogue** (`application/post_battle_catalogue.py`): Trading Post
+  common/rare offers with warband-level restrictions and the confirmed
+  `price_override` market exceptions, hiring offers with fee/upkeep resource
+  labels, and the KB provenance (sequence step ids, resolved catalogues) of each
+  of the eight actions.
+
+The outcomes are now **applied to the campaign** (`application/post_battle_engine.py`):
+injuries mutate the roster, XP and purchases/trades move the projected treasury and
+stash, exploration and the once-per-sequence wyrdstone sale move the shard hoard,
+and **COMMIT STATE** appends the next immutable state with rating derived from the
+final roster. Working totals live on the persisted post-battle record, so a
+mid-sequence save/load resumes exactly where the player was.
+
+The eligibility context is now complete: **variant-capable warbands pick their
+Mercenary variant** (Reikland/Middenheim/Marienburg/Ostermark) from a selector in
+the Campaign header — it persists in the `.mordheim` file and re-evaluates every
+variant-dependent offer (e.g. Maximilian the Mad and the Warrior Priest of Sigmar
+become eligible outside Middenheim and disappear for Middenheimers). **Employed
+Hired Swords are tracked by the roster** (hirelings are warriors with `hireling.*`
+profile ids), so the mutual-exclusion rules fire: hiring a Highwayman immediately
+makes the Roadwarden offer ineligible, and vice versa.
+
+**Battles are recorded from the table**: the timeline's ＋ RECORD BATTLE node opens
+a dialog fed by the KB scenario catalogue (1v1 first); opponent, result (Victory /
+Defeat / Draw), XP granted, the warriors recorded Out of Action (a checklist) and
+opponent rating become a real Battle node with its pending Post-Battle — no more
+example narrative. The casualties count is derived from the checklist, and
+Recovery (post-battle step 1) offers injury cards only for the recorded warriors;
+battles recorded before this feature (or with none marked) offer every warrior.
+Derived numbers (rating, models) snapshot the current state automatically,
+recording is blocked while a post-battle is pending, and the participants tab
+lists the roster with current conditions instead of hardcoded demo status.
+
 ## New in this iteration: KB-backed warbands and campaign files
 
 The warband picker in **Create Campaign** now lists every canonical warband of the
@@ -45,7 +102,6 @@ The campaign name in the Campaign header is a selector. Its menu contains:
 - **Open campaign example** — opens the longer timeline demo;
 - **Manage Campaigns…** — visual placeholder for the future campaign library.
 
-
 ## Post-Battle sequence redesign
 
 Post-Battle starts **after** the Battle timeline node. The interface exposes eight
@@ -71,8 +127,13 @@ revealed.
 
 ## Run
 
+The prototype ships inside the monorepo — no separate script exists.
+
 ```bash
-python run_prototype.py
+python -m mordheim_campaign
+# equivalent entries:
+mordheim-campaign-manager
+python tools/mordheim-utils.py warband-manager
 ```
 
 Python 3.11+ and Tkinter are sufficient.
@@ -82,10 +143,15 @@ Python 3.11+ and Tkinter are sufficient.
 This remains interface-first. Warband and profile data arrive as view models through
 `AppController` from `KnowledgePort` (which wraps the `mordheim_knowledge` loaders), so
 Tk widgets never read YAML or know where the KB lives. Campaign persistence is JSON
-with a stable schema and does not serialize rules. Equipment/skill editing per warrior,
-rule validation of post-battle steps and campaign-rule resolution are still future use
-cases: they will reuse the same IDs (`band_id`, `profile_id`, `item_id`) already stored
-in the campaign state.
+with a stable schema and does not serialize rules. Post-battle resolutions mutate the
+campaign state (roster, treasury, equipment, advances), battles are recorded from real
+table facts and the per-warrior equipment editor works at any moment; out-of-sequence
+purchases and resource corrections remain future use cases that will reuse the same
+IDs (`band_id`, `profile_id`, `item_id`) already stored in the campaign state.
+
+Deleted pre-timeline code: `roster_view.py`, `post_battle_view.py` and the
+`battle_history` / `campaign_overview` / `warband_status` panels were unreachable
+prototype shells; removal left no dangling references.
 
 ## Searches and Equipment usability pass
 
@@ -97,4 +163,30 @@ This iteration makes two post-battle phases more action-oriented:
 - the default **Stash** tab shows every owned item, current holders, unassigned quantity and contextual **Assign / Sell** actions;
 - **By Warrior** remains available as a secondary way to inspect the same equipment state.
 
-The prototype is still visual-first: these controls demonstrate placement and workflow, not final campaign rules or persistence.
+The Searches and Equipment steps are now **actionable end to end**: offer lists come
+from the KB, the dice cards resolve live against the KB tables, and every contextual
+action — **Buy** (rare and common), **Hire** (Hired Swords and Dramatis Personae,
+with conditional acceptance rolls), **Assign / Sell** and the equipment purchases —
+mutates the campaign through `post_battle_engine` (treasury, stash, roster). The
+wyrdstone sale uses the KB pricing table (fragments × warband size) and is
+one-shot per sequence. Each of the eight actions still prints its KB provenance.
+
+What is still missing: nothing in the loop between recording a battle and committing
+its state. **Advances are fully live**: the
+Experience step seeds a pending advance per crossed XP threshold (KB ladder),
+resolves the 2D6 roll (with D6 sub-rolls for rows 6/8/9) against the KB
+advancement tables, and commits the pick — characteristic increases respect the
+KB racial maximums and the henchman +1-over-starting cap, skills are chosen from
+the warrior's KB skill tables, and spells from the wizard's lore
+(`SkillChoiceDialog`). **The Lad's Got Talent is applied** (henchman row 10):
+one member splits off as a Hero keeping type, experience and characteristic
+increases, picks 2 skills from the warband's hero tables via the promotion-mode
+skill dialog, the remaining group stays a henchman row and its advance resets
+for a reroll (the promotion itself is excluded), and the promotion bypasses the
+static hero limit while pending. All of it is persisted mid-sequence (resumable)
+and applied to the roster.
+
+**Equipment is editable per warrior**: the state moment's EQUIPMENT action (and
+the inventory's BY WARRIOR MANAGE buttons) open the `EquipmentEditorDialog` —
+roster blocks with RETURN and a stash column with ASSIGN — legal at any campaign
+moment, keeping the inventory ledger (owned/equipped/stash) consistent.

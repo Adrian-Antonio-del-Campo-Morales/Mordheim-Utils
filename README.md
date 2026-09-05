@@ -22,7 +22,7 @@ mordheim_combat        phases, modular engine (oracle), vectorized engine, kerne
 mordheim_ui            shared Tkinter theme and generic widgets
 ```
 
-The knowledge base lives once in `sources/knowledge/` (371 YAML files: warbands,
+The knowledge base lives once in `sources/knowledge/` (377 YAML files: warbands,
 catalogues, mechanics and registry). The verification corpus — the structural
 contract and the semantic scenarios — is test material and lives in
 `tests/specs/`.
@@ -96,8 +96,9 @@ figure copied here, is the source of the current status.
 `parity` certifies the vectorized and native engines against the modular
 oracle — deterministic checks plus, with `--statistical`/`--deep`/`--truncations`,
 six-sigma samples over aggregate rates, the archetype matrix and round-truncation
-horizons. `benchmark` measures engines with baselines and
-improvement/regression gates. `test-report` writes the human CSVs of parity and
+horizons. Deep and truncation runs accept `--pair-set fast` (30 coverage-oriented
+pairs for the short loop) or `--pair-set full` (all 42 pairs, the default).
+`benchmark` measures engines with baselines and improvement/regression gates. `test-report` writes the human CSVs of parity and
 technical tests into `outputs/test-report/`. `coverage-gate` checks the
 committed deterministic-coverage drift budget, and `tools/mutate-engine.py`
 runs the engine-mutation catalogue (kill/survive) against staged copies.

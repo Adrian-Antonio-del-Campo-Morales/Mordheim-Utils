@@ -164,7 +164,7 @@ def test_reference_spines_acid_blood_and_contagious_are_real_reactions():
         ConstantDice(6), key="acid-trigger",
     )
     reacted = _react_to_wound(attacker, acid, outcome, ConstantDice(6), "acid-trigger")
-    assert outcome.damage == 1 and reacted.attacker.wounds == 1
+    assert outcome.damage == 2 and reacted.attacker.wounds == 0
 
     contagious = replace(fighter(), global_effects=EffectSet(tags=("contagious",)))
     a, d = states(attacker, contagious)

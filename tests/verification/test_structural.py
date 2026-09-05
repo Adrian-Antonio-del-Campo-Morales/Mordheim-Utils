@@ -26,7 +26,8 @@ def test_structural_audit_covers_the_current_implemented_catalogue_snapshot():
     assert report.observable_canonical_bindings == 171
     assert report.evidenced_complex_sequences == 13
     assert report.modular_tag_consumers == 74
-    assert report.modular_operator_fields == 54
+    # Includes damage_die_sides, consumed by the modular post-save damage roll.
+    assert report.modular_operator_fields == 55
     assert report.modular_execution_mechanics == 193
     assert report.implemented_rule_records == 394
     assert report.canonical_bindings == 171

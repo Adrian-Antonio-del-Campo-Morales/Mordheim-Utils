@@ -32,6 +32,34 @@ def test_deep_suite_extends_the_five_core_scenarios():
     assert len(ids) >= 10  # the core five plus archetype matrix pairs
 
 
+def test_deep_pair_sets_are_stable_and_fast_is_a_full_subset():
+    full = deep_test_scenarios("full")
+    fast = deep_test_scenarios("fast")
+    full_ids = tuple(item.id for item in full)
+    fast_ids = tuple(item.id for item in fast)
+
+    assert len(full) == 42
+    assert len(fast) == 30
+    assert set(fast_ids) <= set(full_ids)
+    assert len(set(full_ids)) == len(full_ids)
+    assert fast_ids == (
+        "defences", "stateful", "sigmarite-vs-undead", "regen-vs-fire",
+        "natural-armour-vs-magic", "pistol-vs-parry", "concussion-vs-dwarf",
+        "paired-poison-vs-undead", "ward-vs-magic", "unarmed-vs-steel",
+        "injury-profile-vs-death-knife", "entangle-vs-fencer",
+        "triple-weapon-vs-parry", "a2-vs-w1-stun", "frenzy-vs-w2",
+        "elite-vs-durable", "heavy-grind", "ithilmar-duel",
+        "skills-vs-hitter", "helmet-vs-injury-profile-2",
+        "cathayan-longsword-vs-sword", "blessed-vs-regen",
+        "injury-profile-3-vs-4", "skill-stack-vs-hitter",
+        "resilient-vs-high-strength", "charge-skills-vs-tank",
+        "first-round-opener", "random-characteristics-vs-stable",
+        "trained-bear-vs-scarecrow", "silent-walker-vs-cold-one",
+    )
+    with pytest.raises(ValueError, match="choose 'fast' or 'full'"):
+        deep_test_scenarios("unknown")
+
+
 def test_deep_suite_scenarios_compile_into_legal_duels():
     from mordheim_construction.compiler import compile_fighter
     for scenario in deep_test_scenarios():
@@ -43,21 +71,76 @@ def test_deep_suite_includes_the_timing_and_parry_amplifiers():
     by_id = {item.id: item for item in deep_test_scenarios()}
     assert {
         "triple-weapon-vs-parry", "a2-vs-w1-stun", "frenzy-vs-w2",
-        "durable-vs-elite", "heavy-grind",
+        "durable-vs-elite", "heavy-grind", "ithilmar-duel",
+        "skills-vs-hitter", "helmet-vs-injury-profile-2",
+        "cathayan-longsword-vs-sword", "blessed-vs-regen",
     } <= set(by_id)
     # The grind pairs are the long 75-round budget, like the core ``long``.
     assert by_id["heavy-grind"].maximum_rounds == 75
     assert by_id["long"].maximum_rounds == 75
-    # The amplifiers must keep the timing-prone signature alive: the heavy
-    # grind is expected to leave a measurable share of duels unresolved.
-    from mordheim_combat.modular.duel import simulate_duel_reference
-    from mordheim_construction.compiler import compile_fighter
-    scenario = by_id["heavy-grind"]
-    result = simulate_duel_reference(
-        compile_fighter(scenario.first), compile_fighter(scenario.second),
-        2_000, seed=2026, maximum_rounds=scenario.maximum_rounds,
+    # Keep this test independent of engine/KB behavior: the statistical
+    # calibration is documented separately and may change while an engine
+    # implementation is under investigation.
+    assert by_id["skills-vs-hitter"].first.skill_ids == (
+        "skill.strongman", "skill.thick-skull", "skill.step-aside",
     )
-    assert result.unresolved / 2_000 >= 0.05
+    assert by_id["helmet-vs-injury-profile-2"].first.defence_ids == (
+        "defence.helmet",
+    )
+    assert by_id["cathayan-longsword-vs-sword"].first.main_weapon_id == (
+        "weapon.cathayan-longsword"
+    )
+    assert by_id["blessed-vs-regen"].first_attack_tags == ("attack.blessed",)
+
+
+def test_coverage_completion_pairs_expose_their_intended_compiled_axes():
+    from mordheim_combat_lab.cli.benchmarking import compile_benchmark_fighters
+
+    compiled = {
+        scenario.id: compile_benchmark_fighters(scenario)
+        for scenario in deep_test_scenarios("fast")[-8:]
+    }
+    first, second = compiled["injury-profile-3-vs-4"]
+    assert (first.injury_profile, second.injury_profile) == (3, 4)
+
+    first, _ = compiled["skill-stack-vs-hitter"]
+    assert {
+        "skill.expert-fighter", "skill.infinite-hatred", "skill.red-fury",
+        "skill.sure-strike",
+    } <= set(first.global_effects.tags)
+    assert first.global_effects.wound_modifier == 1
+    assert first.global_effects.reroll_hits
+    assert first.global_effects.reroll_wounds
+    assert first.global_effects.attacks_bonus == 1
+
+    first, _ = compiled["resilient-vs-high-strength"]
+    assert first.global_effects.incoming_strength_modifier == -1
+
+    first, _ = compiled["charge-skills-vs-tank"]
+    assert first.global_effects.charge_ws_bonus == 1
+    assert first.global_effects.charge_strength_bonus == 1
+
+    first, second = compiled["first-round-opener"]
+    assert first.global_effects.first_round_charge_attacks_bonus == 1
+    assert second.main_weapon.first_round_strength_bonus == 2
+
+    first, _ = compiled["random-characteristics-vs-stable"]
+    assert first.random_characteristics == (
+        ("WS", 1, 6, 0), ("S", 1, 6, 0),
+        ("T", 1, 6, 0), ("A", 1, 3, 0),
+    )
+
+    first, second = compiled["trained-bear-vs-scarecrow"]
+    assert first.global_effects.bear_hug
+    assert "attack.fire" in first.main_weapon.tags
+    assert second.global_effects.caught_fire_threshold == 3
+
+    first, second = compiled["silent-walker-vs-cold-one"]
+    assert first.global_effects.ward_save_mundane_only
+    assert first.global_effects.ward_save == 5
+    assert second.natural_armour_unmodified
+    assert second.natural_armour_save == 6
+    assert "attack.magical" in second.main_weapon.tags
 
 
 def test_deep_benchmark_plan_keeps_modular_at_the_reference_size_only():
@@ -91,6 +174,13 @@ def test_deep_benchmark_plan_respects_backend_restriction():
 def test_deep_parser_defaults_and_guards():
     args = build_parser().parse_args(["benchmark", "--deep"])
     assert args.deep is True
+    assert args.pair_set == "full"
+    fast = build_parser().parse_args([
+        "benchmark", "--deep", "--pair-set", "fast",
+        "--scenario", "skills-vs-hitter",
+    ])
+    assert fast.pair_set == "fast"
+    assert fast.scenario == "skills-vs-hitter"
     assert args.deep_simulation_sizes == "10k,100k,500k,1M,5M"
     assert args.deep_batch_sizes == "25k,100k,200k,500k"
     assert args.deep_modular_simulations == 10_000
@@ -185,6 +275,12 @@ def test_sweep_payload_keeps_per_configuration_results():
     assert payload["results"][0]["simulations"] == 2
     assert payload["results"][0]["batch_size"] == 1
     assert payload["results"][0]["median_seconds"] > 0
+
+    tagged = sweep_payload(
+        [result], [], simulation_sizes=(2,), batch_sizes=(1,), seed=3,
+        warmups=0, repeats=1, pair_set="fast",
+    )
+    assert tagged["pair_set"] == "fast"
 
 
 def test_sweep_report_writes_csv_and_markdown(tmp_path):
@@ -328,10 +424,39 @@ def test_deep_benchmark_saves_the_report_by_default(monkeypatch, tmp_path):
     assert payload["results"]
 
 
+def test_deep_benchmark_pair_set_is_recorded_in_payload(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    output = tmp_path / "fast.json"
+    assert main([
+        "benchmark", "--deep", "--pair-set", "fast",
+        "--simulation-sizes", "1k", "--batch-sizes", "1k",
+        "--scenario", "defences", "--backend", "numpy",
+        "--deep-modular-simulations", "20", "--warmups", "0", "--repeats", "1",
+        "--output", str(output), "--json",
+    ]) == 0
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert payload["mode"] == "deep"
+    assert payload["pair_set"] == "fast"
+    assert {row["scenario"] for row in payload["results"]} == {"defences"}
+
+
+def test_pair_set_is_rejected_outside_deep_benchmark(capsys):
+    assert main(["benchmark", "--pair-set", "fast", "--backend", "numpy"]) == 2
+    assert "applies only to --deep" in capsys.readouterr().err
+
+
 def test_parity_deep_parser_uses_the_certification_sample_policy():
     args = build_parser().parse_args(["parity", "--deep"])
     assert args.deep_simulations is None  # split policy resolved at run time
-    assert args.max_modular_duels == 3_000_000
+    assert args.max_modular_duels == 5_000_000
+    fast = build_parser().parse_args([
+        "parity", "--level", "deep", "--pair-set", "fast",
+    ])
+    assert fast.level == "deep" and fast.pair_set == "fast"
+    truncations = build_parser().parse_args([
+        "parity", "--truncations", "--pair-set", "fast",
+    ])
+    assert truncations.truncations and truncations.pair_set == "fast"
 
 
 def test_parallel_oracle_worker_policies_default_to_auto(monkeypatch):

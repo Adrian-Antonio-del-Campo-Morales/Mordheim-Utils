@@ -37,6 +37,7 @@ from mordheim_core.models import EffectSet
 
 
 from .attacks import resolve_reference_attack
+from .equipment import whipcrack_weapon
 
 def _weapon_for_attack(fighter: CompiledFighter, index: int, count: int, first_round: bool) -> EffectSet:
     if not fighter.off_hand_attacks or fighter.off_hand is None:
@@ -68,7 +69,7 @@ def allocate_attack_weapons(
 def _prepared_hit(prepared: AttackOutcome):
     from mordheim_combat.phases import HitResult
 
-    return HitResult(prepared.hit_target or 0, prepared.hit_roll or 1, prepared.hit)
+    return HitResult(prepared.hit_target or 0, prepared.hit_roll if prepared.hit_roll is not None else 0, prepared.hit)
 
 
 def _resolve_prepared_defences(
@@ -103,7 +104,7 @@ def _resolve_prepared_defences(
         outcome = resolve_reference_attack(
             attacker, defender, attacker_state, defender_state, weapon, dice,
             key=keys[index], first_round=first_round, charging=charging,
-            helpless_at_start=helpless, prepared_hit=_prepared_hit(prepared),
+            helpless_at_start=helpless, stunned_at_start=False, prepared_hit=_prepared_hit(prepared),
             defences_only=True, parry_allowed=False,
         )
         attacker_state, defender_state = outcome.attacker, outcome.defender
@@ -122,10 +123,16 @@ def _resolve_prepared_defences(
         if defender_state.parries_remaining <= 0 or not attacker_state.active:
             break
         weapon, prepared = prepared_attacks[index]
+        if (prepared.hit_roll == 6 and not phases.has_tag(
+                defender.global_effects, "rule.blood-dragon-sword-master")):
+            # The highest natural six defeats the parry, rather than exposing
+            # a lower die to a second attempt by this same defender.
+            defender_state = replace(defender_state, parries_remaining=0)
+            break
         outcome = resolve_reference_attack(
             attacker, defender, attacker_state, defender_state, weapon, dice,
             key=keys[index], first_round=first_round, charging=charging,
-            helpless_at_start=helpless, prepared_hit=_prepared_hit(prepared),
+            helpless_at_start=helpless, stunned_at_start=False, prepared_hit=_prepared_hit(prepared),
             defences_only=True,
         )
         attacker_state, defender_state = outcome.attacker, outcome.defender
@@ -143,11 +150,19 @@ def _resolve_attack_pool(
     attacker_state: FighterState, defender_state: FighterState,
     count: int, dice: DiceSource, *, key: str, first_round: bool, charging: bool,
     decisions: DecisionPolicy,
+    defender_condition_at_start: Condition | None = None,
+    minimum_attacks: int = 1,
 ) -> tuple[FighterState, FighterState, tuple[AttackOutcome, ...]]:
     outcomes: list[AttackOutcome] = []
     if count <= 0 or attacker_state.condition != Condition.STANDING:
         return attacker_state, defender_state, ()
-    helpless = defender_state.condition in (Condition.KNOCKED_DOWN, Condition.PARALYZED)
+    initial_condition = defender_state.condition if defender_condition_at_start is None else defender_condition_at_start
+    if initial_condition == Condition.STUNNED:
+        result = resolve_reference_attack(attacker, defender, attacker_state, defender_state,
+            attacker.main_weapon, dice, key=f"{key}.finish", stunned_at_start=True)
+        result = _react_to_wound(attacker, defender, result, dice, f"{key}.finish")
+        return result.attacker, result.defender, (result,)
+    helpless = initial_condition == Condition.KNOCKED_DOWN
     use_bull_charge = (
         first_round and charging
         and phases.has_tag(attacker.global_effects, "mechanic.bull-charge")
@@ -158,7 +173,7 @@ def _resolve_attack_pool(
         result = resolve_reference_attack(
             attacker, defender, attacker_state, defender_state, bull, dice,
             key=f"{key}.bull-charge", first_round=True, charging=True,
-            helpless_at_start=helpless, decisions=decisions,
+            helpless_at_start=helpless, stunned_at_start=False, decisions=decisions,
         )
         if result.hit and not result.parried and result.defender.condition == Condition.STANDING:
             result = replace(result, defender=replace(result.defender, condition=Condition.KNOCKED_DOWN))
@@ -173,9 +188,27 @@ def _resolve_attack_pool(
     if use_body_slam:
         weapons = (EffectSet(tags=("mechanic.body-slam",), strength_bonus=1, hit_modifier=1),)
     else:
-        weapons = allocate_attack_weapons(attacker, count, first_round, decisions, key=key)
+        whip = whipcrack_weapon(attacker) if first_round and charging else None
+        weapons = allocate_attack_weapons(attacker, count - int(whip is not None), first_round, decisions, key=key)
+        if whip is not None:
+            weapons += (whip,)
     weapons += tuple(weapon for weapon in attacker.extra_attacks
                      if charging or not phases.has_tag(weapon, "rule.horned-one"))
+    if attacker_state.attack_penalty:
+        # Kusara Kama chooses the affected hand after hitting, before the
+        # opponent's reply is resolved. Remove that hand's attack, retaining
+        # the published minimum of one attack for the warrior.
+        remaining = list(weapons)
+        hands = attacker_state.hampered_hands or (attacker.main_hand_slot,) * attacker_state.attack_penalty
+        pending_hands = list(hands)
+        for hand in hands:
+            target = attacker.main_weapon if hand == attacker.main_hand_slot else attacker.off_hand
+            if len(remaining) > minimum_attacks and target is not None and target in remaining:
+                remaining.remove(target)
+                pending_hands.remove(hand)
+        attacker_state = replace(attacker_state, attack_penalty=len(pending_hands),
+            hampered_hands=tuple(pending_hands))
+        weapons = tuple(remaining)
     weapons = tuple(weapon_against_opponent(attacker, defender, weapon) for weapon in weapons)
     if weapons and phases.has_tag(attacker.global_effects, "mechanic.unpredictable-attack"):
         weapons = (merge_effects(weapons[0], EffectSet(cannot_be_parried=True)), *weapons[1:])
@@ -186,7 +219,7 @@ def _resolve_attack_pool(
         prepared = resolve_reference_attack(
             attacker, defender, attacker_state, defender_state, weapon, dice,
             key=attack_keys[index], first_round=first_round,
-            charging=charging, helpless_at_start=helpless, hit_only=True,
+            charging=charging, helpless_at_start=helpless, stunned_at_start=False, hit_only=True,
         )
         attacker_state = prepared.attacker
         prepared_attacks.append((weapon, prepared))
@@ -219,7 +252,7 @@ def _resolve_attack_pool(
                 result = resolve_reference_attack(
                     attacker, defender, attacker_state, defender_state, automatic, dice,
                     key=f"{key}.bear-hug.result", first_round=first_round,
-                    charging=charging, helpless_at_start=helpless,
+                    charging=charging, helpless_at_start=helpless, stunned_at_start=False,
                     decisions=decisions,
                 )
                 result = _react_to_wound(attacker, defender, result, dice, f"{key}.bear-hug.result")
@@ -232,7 +265,7 @@ def _resolve_attack_pool(
                 result = resolve_reference_attack(
                     attacker, defender, attacker_state, defender_state, weapon, dice,
                     key=attack_keys[index], first_round=first_round,
-                    charging=charging, helpless_at_start=helpless,
+                    charging=charging, helpless_at_start=helpless, stunned_at_start=False,
                     prepared_hit=_prepared_hit(prepared_tuple[index][1]),
                     defences_resolved=True, decisions=decisions,
                 )
@@ -254,7 +287,7 @@ def _resolve_attack_pool(
             result = resolve_reference_attack(
                 attacker, defender, attacker_state, defender_state, weapon, dice,
                 key=attack_keys[index], first_round=first_round,
-                charging=charging, helpless_at_start=helpless,
+                charging=charging, helpless_at_start=helpless, stunned_at_start=False,
                 prepared_hit=_prepared_hit(prepared), defences_resolved=True,
                 decisions=decisions,
             )
@@ -280,7 +313,7 @@ def _resolve_attack_pool(
         result = resolve_reference_attack(
             attacker, defender, attacker_state, defender_state, weapon, dice,
             key=f"{key}.attack.{index}", first_round=first_round,
-            charging=charging, helpless_at_start=helpless,
+            charging=charging, helpless_at_start=helpless, stunned_at_start=False,
             prepared_hit=_prepared_hit(prepared), defences_resolved=True,
             decisions=decisions,
         )
@@ -301,7 +334,7 @@ def _resolve_attack_pool(
                     attacker, defender, attacker_state, defender_state, repeated, dice,
                     key=f"{key}.attack.{index}.anvil.{repeat_index}",
                     first_round=first_round, charging=charging,
-                    helpless_at_start=helpless, decisions=decisions,
+                    helpless_at_start=helpless, stunned_at_start=False, decisions=decisions,
                 )
                 extra = _react_to_wound(
                     attacker, defender, extra, dice,

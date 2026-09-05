@@ -22,7 +22,7 @@ def merge_effects(left: EffectSet, right: EffectSet) -> EffectSet:
         if field.name == "tags": values[field.name] = tuple(dict.fromkeys((*a,*b)))
         elif isinstance(a, bool): values[field.name] = a or b
         elif field.name in {"ward_save","regeneration_save","maximum_wound_target","armour_save_floor","ignition_threshold","caught_fire_threshold"}: values[field.name] = min(a, b)
-        elif field.name in {"damage","out_of_action_threshold"}: values[field.name] = max(a, b)
+        elif field.name in {"damage","damage_die_sides","out_of_action_threshold"}: values[field.name] = max(a, b)
         elif field.name == "priority":
             # Zero is the neutral value.  A plain material/global effect must
             # not erase a weapon's Strike Last modifier, while an explicit

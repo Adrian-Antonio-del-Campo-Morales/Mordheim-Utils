@@ -136,7 +136,7 @@ class InventoryWorkspace(tk.Frame):
             top.pack(fill="x")
             tk.Label(top, text=warrior.name, bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 11)).pack(side="left")
             tk.Label(top, text=f"{len(warrior.equipment)} items", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(side="left", padx=10)
-            ttk.Button(top, text="MANAGE", style="Mini.TButton", command=lambda: _placeholder(self)).pack(side="right")
+            ttk.Button(top, text="MANAGE", style="Mini.TButton", command=self._open_editor).pack(side="right")
             tk.Label(
                 body,
                 text="   •   ".join(warrior.equipment) if warrior.equipment else "No equipment",
@@ -151,6 +151,11 @@ class InventoryWorkspace(tk.Frame):
         stash_items = [f"{item.name} ×{item.stash}" for item in self.controller.state.campaign.inventory if item.stash]
         tk.Label(body, text="   •   ".join(stash_items), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8), anchor="w", justify="left").pack(fill="x", pady=(7, 0))
         return frame
+
+    def _open_editor(self) -> None:
+        from mordheim_campaign.ui.dialogs.equipment_editor import EquipmentEditorDialog
+
+        EquipmentEditorDialog(self.winfo_toplevel(), self.controller)
 
     def _show_item(self, name: str) -> None:
         item = next((entry for entry in self.controller.state.campaign.inventory if entry.name == name), None)

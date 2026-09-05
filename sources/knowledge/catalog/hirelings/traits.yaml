@@ -1,0 +1,83 @@
+# Intrinsic traits of the hireling profiles.
+#
+# Canonical, reviewable declaration of the race/alignment/nature facts the
+# campaign-eligibility rules reason about (registry file of this catalogue:
+# one row per profile that carries at least one trait). The application's
+# dynamic eligibility rules read these traits instead of maintaining their
+# own curated sets; every profile_id resolves against catalog/hirelings/**.
+#
+# Traits are the *stable semantic facts* of the warrior (race, fear-causing,
+# evil, spellcaster, priest). Availability, fees and static eligibility stay
+# in catalog/campaign/hired-swords-and-dramatis.yaml; the campaign-eligibility
+# rules stay in the profiles' `rules` (evaluated by the application).
+schema_version: 2
+ruleset: mordheim
+catalog: hirelings-traits
+status: published
+traits:
+- profile_id: hireling.hired-sword.elf-ranger
+  traits: [elf]
+- profile_id: hireling.hired-sword.elf-mage
+  traits: [elf, spellcaster]
+- profile_id: hireling.hired-sword.wood-elf-hunter
+  traits: [elf]
+- profile_id: hireling.hired-sword.shadow-warrior
+  traits: [elf]
+- profile_id: hireling.hired-sword.dark-elf-assassin
+  traits: [elf, evil]
+- profile_id: hireling.hired-sword.dark-mage
+  traits: [spellcaster, evil, fear-causing]
+- profile_id: hireling.hired-sword.dwarf-troll-slayer
+  traits: [dwarf]
+- profile_id: hireling.hired-sword.dwarf-treasure-hunter
+  traits: [dwarf]
+- profile_id: hireling.hired-sword.dwarf-pathfinder
+  traits: [dwarf]
+- profile_id: hireling.hired-sword.dwarf-slayer-pirate
+  traits: [dwarf]
+- profile_id: hireling.hired-sword.runesmith-journeyman
+  traits: [dwarf]
+- profile_id: hireling.hired-sword.highwayman
+  traits: [human]
+- profile_id: hireling.hired-sword.roadwarden
+  traits: [human]
+- profile_id: hireling.hired-sword.warrior-priest-of-sigmar
+  traits: [human, priest]
+- profile_id: hireling.hired-sword.ogre-bodyguard
+  traits: [ogre, fear-causing]
+- profile_id: hireling.hired-sword.ogre-slave-master
+  traits: [ogre, fear-causing]
+- profile_id: hireling.hired-sword.bone-goliath
+  traits: [ogre, fear-causing]
+- profile_id: hireling.hired-sword.grave-robber
+  traits: [undead, fear-causing, evil]
+- profile_id: hireling.hired-sword.gravesman
+  traits: [undead, fear-causing, evil]
+- profile_id: hireling.hired-sword.chaos-fury
+  traits: [fear-causing, evil, spellcaster]
+- profile_id: hireling.hired-sword.emissary-of-chaos
+  traits: [fear-causing, evil]
+- profile_id: hireling.hired-sword.chaos-centaur
+  traits: [fear-causing, evil]
+- profile_id: hireling.hired-sword.the-fallen-sister
+  traits: [evil]
+- profile_id: hireling.hired-sword.ninja-gnoblar
+  traits: [evil]
+- profile_id: hireling.hired-sword.goblin-lantern-bearer
+  traits: [evil]
+- profile_id: hireling.hired-sword.slaver
+  traits: [evil]
+- profile_id: hireling.hired-sword.thief
+  traits: [evil]
+- profile_id: hireling.hired-sword.beggar
+  traits: [evil]
+- profile_id: hireling.hired-sword.warlock
+  traits: [spellcaster]
+- profile_id: hireling.hired-sword.witch
+  traits: [spellcaster]
+- profile_id: hireling.hired-sword.norse-shaman
+  traits: [spellcaster]
+- profile_id: hireling.hired-sword.priest-of-morr
+  traits: [priest]
+- profile_id: hireling.hired-sword.wolf-priest-of-ulric
+  traits: [priest]

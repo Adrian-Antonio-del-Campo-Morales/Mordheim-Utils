@@ -50,7 +50,7 @@ def ignores_unarmed_penalties(effect: EffectSet) -> bool:
 def to_hit_target(attacker_ws: int, defender_ws: int) -> int:
     if min(attacker_ws, defender_ws) < 0:
         raise ValueError("Weapon Skill cannot be negative")
-    return 2 if defender_ws == 0 else 3 if attacker_ws > defender_ws else 5 if defender_ws > 2 * attacker_ws else 4
+    return 0 if defender_ws == 0 else 3 if attacker_ws > defender_ws else 5 if defender_ws > 2 * attacker_ws else 4
 
 
 def wound_target(strength: int, toughness: int, maximum: int = 7) -> int:
@@ -115,7 +115,9 @@ def first_acts_before(first: PriorityResult, second: PriorityResult,
 def resolve_priority(context: PriorityContext) -> PriorityResult:
     fighter, opponent = context.fighter, context.opponent
     weapon_priority = fighter.main_weapon.priority
-    if fighter.global_effects.strongman and fighter.main_weapon.two_handed and weapon_priority < 0:
+    if fighter.global_effects.strongman and weapon_priority < 0 and (
+        fighter.main_weapon.two_handed or has_tag(fighter.main_weapon, "weapon.broadsword")
+    ):
         weapon_priority = 0
     if has_tag(fighter.main_weapon, "weapon.long-boat-hook") and not context.first_round:
         weapon_priority = 0
@@ -130,19 +132,14 @@ def resolve_priority(context: PriorityContext) -> PriorityResult:
     if has_tag(fighter.global_effects, "mechanic.strike-first-vs-skinks-always") and has_tag(opponent.global_effects, "species.skink"):
         value = 20
     if context.first_round:
-        value = max(value, int(context.charging))
+        # A charge does not override an explicit Strike Last weapon.
+        if weapon_priority >= 0:
+            value = max(value, int(context.charging))
         if has_tag(fighter.global_effects, "mechanic.strike-first-vs-skinks-first-round") and has_tag(opponent.global_effects, "species.skink"):
             value = 20
         if has_tag(fighter.global_effects, "skill.lightning-reflexes") and context.charged:
             value = max(value, 1)
-        # Spear: strikes first in the first turn of close combat, even if
-        # charged (mordheimer.net, close-combat weapons / Strike First), so
-        # it outranks the charger's own strike-first tier.  An opponent with
-        # Always Strikes First keeps its unconditional priority and the pair
-        # resolves by Initiative instead.
-        if (has_tag(fighter.main_weapon, "weapon.spear") and context.charged
-                and not has_tag(opponent.global_effects, "skill.always-strikes-first")):
-            value = max(value, 2)
+        # Spears and chargers share Strike First; the FAQ resolves ties by I.
     # Lost Innocence explicitly retains strike-first when standing up.
     if context.stood_up and not has_tag(fighter.global_effects, "skill.always-strikes-first"):
         value = -1
@@ -219,6 +216,8 @@ def build_attacks(context: AttackPoolContext) -> AttackPoolResult:
     # Core combat: the one attack from a second weapon is added after other
     # modifiers; frenzy must not duplicate that extra attack.
     attacks += extra_weapon_attack
+    if has_tag(fighter.main_weapon, "weapon.fist") and not ignores_unarmed_penalties(effect):
+        attacks = min(attacks, 1)
     if has_tag(fighter.main_weapon, "weapon.vomit-attack"):
         attacks = 1
     if has_tag(effect, "skill.sweep") and fighter.main_weapon.two_handed:
@@ -229,7 +228,9 @@ def build_attacks(context: AttackPoolContext) -> AttackPoolResult:
     ))
     if main_pistol:
         if context.first_round:
-            if not fighter.off_hand_attacks:
+            if off_pistol:
+                attacks = 2
+            elif not fighter.off_hand_attacks:
                 attacks = 1
         elif fighter.off_hand_attacks:
             attacks = max(0, attacks - 1)
@@ -247,6 +248,8 @@ def build_attacks(context: AttackPoolContext) -> AttackPoolResult:
         has_tag(fighter.main_weapon, tag) for tag in ("weapon.fist", "weapon.natural-attacks")
     ):
         attacks = max(0, attacks - effect.energy_focus_attacks)
+    if has_tag(fighter.main_weapon, "effect.serpent-staff-power"):
+        attacks = 1
     return AttackPoolResult(max(0, attacks - context.attack_penalty))
 
 
@@ -269,9 +272,12 @@ class HitResult:
 
 
 def resolve_hit(context: HitContext, dice: DiceSource) -> HitResult:
+    if context.defender_ws == 0:
+        # An automatic hit has no natural die face for poison/other triggers.
+        return HitResult(0, 0, True)
     target = max(2, min(6, to_hit_target(context.attacker_ws, context.defender_ws) - context.modifier))
     if context.automatic:
-        return HitResult(target, 6, True)
+        return HitResult(target, 0, True)
     roll = dice.roll(RollRequest(context.key))
     success = roll >= target
     rerolled = False
@@ -390,6 +396,20 @@ class ArmourContext:
 
 
 @dataclass(frozen=True, slots=True)
+class CriticalResult:
+    damage: int = 1
+    ignore_armour: bool = False
+    injury_modifier: int = 0
+
+
+def resolve_critical(dice: DiceSource, *, key: str, modifier: int = 0) -> CriticalResult:
+    """Basic Mordheim table; optional weapon-family charts are a separate ruleset."""
+    result = dice.roll(RollRequest(key)) + modifier
+    return CriticalResult(damage=2, ignore_armour=result >= 3,
+                          injury_modifier=2 if result >= 5 else 0)
+
+
+@dataclass(frozen=True, slots=True)
 class ArmourResult:
     target: int
     eligible: bool
@@ -409,7 +429,7 @@ def armour_target(context: ArmourContext) -> int:
     target = min(armour, natural)
     if context.ignore_armour:
         target = context.armour_save_floor if context.armour_cannot_be_ignored and not context.magical_attack else 7
-    if context.armour_save_floor <= 6:
+    if context.armour_save_floor <= 6 and not (context.ignore_armour and context.magical_attack):
         target = min(target, context.armour_save_floor)
     return target
 
@@ -692,7 +712,7 @@ def resolve_strike_sequence(context: RoundContext, dice: DiceSource) -> RoundRes
 
 
 def _characteristic_test(
-    value: int, dice: DiceSource, key: str, *, six_fails: bool = False,
+    value: int, dice: DiceSource, key: str, *, six_fails: bool = True,
     reroll: bool = False,
 ) -> bool:
     roll = dice.roll(RollRequest(key))

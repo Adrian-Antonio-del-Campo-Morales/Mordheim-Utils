@@ -27,7 +27,6 @@ rules are outside the current duel runtime and are classified as such (see
 ```text
 sources/knowledge/
 ├── README.md                     KB overview + commands
-├── CAMPAIGN INGESTION RESULTS.md ingestion report of the campaign catalogue
 ├── registry/                     collections, rulesets, sources, aliases,
 │                                 warband groups, runtime classification schema
 ├── bands/                        per-warband editorial data, by collection
@@ -183,7 +182,7 @@ Shared skills are the reference target of many band rules, e.g.
 | `conditions.yaml` | Conditions shared by rules. |
 | `special-rules.yaml` | Cross-band special rules. Kept empty (`rules: []`) — promoted here only **after** an equivalence review. |
 | `racial-maximums.yaml` | The only source of racial characteristic maximums (`campaign.limit.racial-maximum.*`); warband rules reference them by id instead of embedding statlines. |
-| `implemented-canonical-families.yaml` / `pending-canonical-families.yaml` | Trackers of mechanic families by implementation state. |
+| `implemented-canonical-families.yaml` | Tracker of the shared mechanic families that already have executable bindings (`compiler`/`mechanic`/`trait`); update it when bindings evolve. The former `pending-canonical-families.yaml` design-only snapshot was retired: every scope-`YES` effect is bound and verified (see TODO.md §1). |
 
 ### mechanics/
 

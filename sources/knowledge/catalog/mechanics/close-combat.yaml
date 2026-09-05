@@ -185,7 +185,7 @@ weapons:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
 - id: weapon.rapier
   name: Rapier
-  summary: May parry; attacks at -1 Strength and a failed wound grants one extra attack at -1 to hit.
+  summary: May parry; uses the wielder's Strength and grants +1 enemy armour save. Barrage allows further attacks after a hit fails to wound, each at -1 to hit, capped at needing 6.
   hands: 1
   paired: false
   main_hand: true
@@ -334,7 +334,7 @@ weapons:
 - id: weapon.sword-breaker
   name: Sword breaker
   summary: 'Range: Close Combat Strength: As user Special Rules Parry: The sword breaker allows the wielder to parry the attacks
-    of his opponents in close combat. When your opponent scores a hit roll a D6.'
+    of his opponents in close combat. Beat the highest hit roll. After a successful parry, Trap Blade breaks the attacking weapon on 4+; use another weapon or fight unarmed.'
   hands: 1
   paired: false
   main_hand: true
@@ -426,7 +426,7 @@ weapons:
 - id: weapon.brass-knuckles
   name: Brass knuckles
   summary: 'Range: Close Combat Strength: As user +1 Special Rules Pair: Brass knuckles are used in pairs and the warrior
-    fighting with them gains an extra Attack. He may not use any other weapons or items in his hands while doing this however.'
+    fighting with them gains an extra Attack. He may not use any other weapons or items in his hands while doing this however. Cumbersome imposes -2 Initiative in close combat.'
   hands: 1
   paired: true
   main_hand: true
@@ -526,7 +526,7 @@ weapons:
   name: Steel whip
   summary: 'Range: Close Combat Strength: As user Special Rules Cannot be parried: The steel whip is a flexible weapon and
     the Priestesses use it with great expertise. Attempts to parry its strikes are futile. A model attacked by a steel whip
-    may not make parries with swords or bucklers.'
+    may not make parries with swords or bucklers. Whipcrack grants one bonus attack when charging or charged; only that bonus strikes first when charged, and two whips do not double it.'
   hands: 1
   paired: false
   main_hand: true
@@ -588,7 +588,7 @@ weapons:
   name: Serpent staff
   summary: 'Range: Close Combat Strength: As user Special Rules Parry: The staff is used with two hands and may be used to
     Parry. However, the Liche Priest may forgo all his normal attacks and parries in a round to use the power contained within
-    the staff.'
+    the staff. The animated staff makes one WS4 S4 attack that strikes first, replacing all normal attacks and parries for that round.'
   hands: 2
   paired: false
   main_hand: true
@@ -638,7 +638,7 @@ weapons:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
 - id: weapon.kusara-kama
   name: Kusara Kama
-  summary: Two-handed, adds -1 to armour saves, and a hit roll of 5+ removes one enemy attack next phase.
+  summary: Two-handed with an extra -1 armour modifier. A hit of 5+ hampers the chosen enemy weapon and removes one attack, to a minimum of one, until the start of the wielder's next close-combat phase.
   hands: 2
   paired: false
   main_hand: true
@@ -673,7 +673,7 @@ weapons:
 - id: weapon.pirate-scourge
   name: Pirate scourge
   summary: 'Range: Close Combat Strength: As user Special Rules Cannot be parried: Like the Steel Whips of the Sisterhood,
-    Cats cannot be parried by swords or bucklers.'
+    Cats cannot be parried by swords or bucklers. Weak grants +1 enemy armour save, including 6+ if unarmoured. Whipcrack grants one bonus attack when charging or charged; only that bonus strikes first when charged.'
   hands: 1
   paired: false
   main_hand: true
@@ -729,7 +729,7 @@ weapons:
   name: Beastlash
   summary: 'Range: Close Combat Strength: As user -1 Special Rules Beastbane: The Beastmaster wielding a Beastlash causes
     Fear in animals, any animal charged or wishing to charge a Beastmaster with one of these weapons must first take a Fear
-    test as mentioned in the psychology section of the Mordheim rules.'
+    test as mentioned in the psychology section of the Mordheim rules. Cannot be parried. Whipcrack grants one bonus attack when charging or charged; only that bonus strikes first when charged, and two whips do not double it.'
   hands: 1
   paired: false
   main_hand: true
@@ -834,7 +834,7 @@ weapons:
   name: Disease dagger
   summary: 'Range: Close Combat Strength: As user Special Rules +1 Enemy Armour Save: Daggers are not the best weapons to
     use for penetrating an enemy model''s armour. An enemy wounded by a dagger gains a +1 bonus to his armour save, and a
-    6+ armour save if he has none normally.'
+    6+ armour save if he has none normally. Infecting requires a Toughness test on a natural hit 6; failure causes an additional automatic wound. Undead and Possessed are immune.'
   hands: 1
   paired: false
   main_hand: true
@@ -864,7 +864,7 @@ weapons:
   name: Ball and chain
   summary: 'Range: Close Combat Strength: As user +2 Special Rules Incredible Force: Because the Ball and Chain is so heavy,
     normal armour does very little to protect against it. No armour saves are allowed against wounds caused by a Ball and
-    Chain.'
+    Chain. Successful wounds inflict D3 damage. Enemies suffer -1 to hit the wielder in close combat.'
   hands: 2
   paired: false
   main_hand: true
@@ -1262,7 +1262,7 @@ materials:
   source_refs: []
 - id: material.dark-elf-blade
   name: Dark Elf blade
-  summary: +1 on Injury rolls caused by the upgraded blade.
+  summary: Adds +1 to the critical hit table and treats Injury results of 2-4 as stunned; retains the underlying weapon's properties.
   engine_option: Dark Elf blade
   engine_code: 5
   source_refs:
@@ -1305,7 +1305,7 @@ preparations:
 poisons:
 - id: poison.black-lotus
   name: Black Lotus
-  summary: A natural 6 to hit wounds automatically.
+  summary: A natural 6 to hit guarantees a wound; an optional wound die can score a critical on 6, otherwise the wound remains normal. Normal critical eligibility and saves apply.
   engine_option: Black Lotus
   engine_code: 1
   source_refs: []
@@ -1355,7 +1355,7 @@ poisons:
   source_refs: []
 - id: poison.spider-spittle
   name: Spider Spittle
-  summary: to the hit, the opponent cheques R or is paralized.
+  summary: An undefended hit immediately causes a Toughness test; failure paralyses the target, preventing attacks and granting automatic hits until it passes a test in its own Recovery phase.
   engine_option: Spider Spittle
   engine_code: 9
   source_refs: []

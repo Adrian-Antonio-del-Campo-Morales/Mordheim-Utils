@@ -4,30 +4,60 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: mechanic/weapon.serpent-staff, digest: dc3e7a6e3c209409d2cc6a405bc7f5724596d7d9f8e56c91ef5542c63544a018}
-  interpretation: "In the isolated duel, Serpent Staff uses the bearer's Strength, occupies both hands and grants a normal parry. Its alternative power is not specified in the incorporated source and is not inferred."
+  - target: mechanic/weapon.serpent-staff
+    digest: a7fa790952b4ad81460da7309ed330b59ea67e07959c2b8fcfa6b771a5c0f5e6
+  interpretation: Ordinary mode uses user Strength, two hands and parry. The complete source also offers one
+    WS4/S4 strike-first attack replacing normal attacks and parries; the old incorporated text was truncated.
+    See M27 and the round regression test.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    defender: {main_weapon_id: weapon.serpent-staff}
-    expect: {defender.main_weapon.parry: true, defender.main_weapon.two_handed: true, defender.main_weapon.strength_bonus: 0}
+    defender:
+      main_weapon_id: weapon.serpent-staff
+    expect:
+      defender.main_weapon.parry: true
+      defender.main_weapon.two_handed: true
+      defender.main_weapon.strength_bonus: 0
   - id: parry-faces
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: parry
-    defender: {main_weapon_id: weapon.serpent-staff}
-    context: {hit_roll: 4}
-    distribution: {observable: result.blocked, max_rolls: 1, expected: {'true': 1/3, 'false': 2/3}}
+    defender:
+      main_weapon_id: weapon.serpent-staff
+    context:
+      hit_roll: 4
+    distribution:
+      observable: result.blocked
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
   - id: cannot-use-off-hand
-    roles: [rejected]
+    roles:
+    - rejected
     operation: compile
-    defender: {main_weapon_id: weapon.serpent-staff, off_hand_id: weapon.dagger}
+    defender:
+      main_weapon_id: weapon.serpent-staff
+      off_hand_id: weapon.dagger
     reject: main weapon occupies both hands
   - id: six-cannot-be-parried
-    roles: [inactive]
+    roles:
+    - inactive
     operation: parry
-    defender: {main_weapon_id: weapon.serpent-staff}
-    context: {hit_roll: 6}
-    expect: {result.attempted: false, result.blocked: false}
+    defender:
+      main_weapon_id: weapon.serpent-staff
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
   mutations:
-  - {id: remove-staff-parry, path: defender.main_weapon.parry, value: false, cases: [parry-faces]}
+  - id: remove-staff-parry
+    path: defender.main_weapon.parry
+    value: false
+    cases:
+    - parry-faces

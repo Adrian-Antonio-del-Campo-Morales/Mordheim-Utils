@@ -210,7 +210,7 @@ specifications:
   bindings:
   - '{"id": "combat-order", "kind": "core", "parameters": {}}'
   - '{"id": "weapon.double-handed-weapon", "kind": "mechanic", "parameters": {}}'
-  interpretation: A double-handed weapon strikes last unless charging in the first round.
+  interpretation: Double-handed weapons strike last even when charging; Strongman is a separate exception.
   cases:
   - id: composition
     roles:
@@ -229,7 +229,7 @@ specifications:
       first_round: true
       charging: true
     expect:
-      result.first_acts: true
+      result.first_acts: false
   mutations:
   - id: remove-composed-priority
     path: attacker.main_weapon.priority
@@ -247,8 +247,8 @@ specifications:
   bindings:
   - '{"id": "skill.always-strikes-first", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.lightning-reflexes", "kind": "mechanic", "parameters": {}}'
-  interpretation: Both grant strike-first; only one priority tier applies, and an opponent with the same
-    tier falls to the tie die.
+  interpretation: Both grant strike-first; only one priority tier applies, and an opponent with the same tier
+    falls to the tie die.
   cases:
   - id: composition
     roles:
@@ -442,9 +442,6 @@ specifications:
       first_round: true
     expect:
       result.first_acts: false
-    rolls:
-    - key: priority-tie
-      value: 1
   mutations:
   - id: remove-composed-priority
     path: attacker.global_effects.tags

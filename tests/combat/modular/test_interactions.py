@@ -53,7 +53,8 @@ def test_ignore_armour_and_non_ignorable_floor_have_explicit_precedence():
     )
     assert not ordinary.eligible
     assert protected.saved and protected.target == 6
-    assert magical.saved and magical.target == 6
+    # Untiring's explicit protection against denial is non-magical only.
+    assert not magical.saved and magical.target == 7
 
 
 def test_ward_then_regeneration_and_blockers_are_non_commutative_by_ruling():

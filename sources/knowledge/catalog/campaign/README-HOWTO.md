@@ -214,11 +214,11 @@ warband-market price rule (`price_override`) for the Trading Post offers of
 its post-battle screens (`PostBattleCatalogue` in
 `mordheim_campaign/application/post_battle_catalogue.py`), without the GUI
 touching YAML. The mercenary catalogue (`hired-swords-and-dramatis.yaml`, 98
-entries, see `CAMPAIGN INGESTION RESULTS.md`) is integrated with schema v2
+entries, see `../hirelings/README.md`) is integrated with schema v2
 and published; the 18 dynamic eligibility rules (dependent on roster,
 mercenary variant or conditional roll) are declared in `catalog/hirelings/**`
 and are evaluated by the application, like the 4 out-of-scope Dramatis and
-the 74 pending intrinsic references of the profile catalogues (they do not
+the 59 pending intrinsic references of the profile catalogues (they do not
 block cost or eligibility).
 
 The Campaign Manager consumes the KB for warbands, profiles and campaign

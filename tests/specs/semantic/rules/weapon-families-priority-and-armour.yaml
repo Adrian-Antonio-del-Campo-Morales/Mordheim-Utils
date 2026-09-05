@@ -4,231 +4,593 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: mechanic/weapon.spear, digest: 0301d1faf3f964f27d8501dff6d816f75af1e640b9dfb8e6734d42d67e092fa5}
-  - {target: mechanic/weapon.pike, digest: a94e427053bdfd430879d26c56a0cc3e2913092c497a3ff126fa8cc6f0869881}
-  - {target: mechanic/weapon.ankus, digest: 2cd0c699b9a8aacdf6cbc1e035b91fd192436b34b701fe080bfbb30360d1af26}
-  interpretation: "Spear, Pike and Ankus occupy the strike-first layer in the first round; the Spear's strike-first applies only in the first turn of combat, after which it follows ordinary order. Pike uses two hands without modifying Strength; Ankus additionally keeps Concussion."
+  - target: mechanic/weapon.spear
+    digest: 0301d1faf3f964f27d8501dff6d816f75af1e640b9dfb8e6734d42d67e092fa5
+  - target: mechanic/weapon.pike
+    digest: a94e427053bdfd430879d26c56a0cc3e2913092c497a3ff126fa8cc6f0869881
+  - target: mechanic/weapon.ankus
+    digest: 2cd0c699b9a8aacdf6cbc1e035b91fd192436b34b701fe080bfbb30360d1af26
+  interpretation: 'Spear, Pike and Ankus occupy the strike-first layer in the first round; the Spear''s strike-first
+    applies only in the first turn of combat, after which it follows ordinary order. Pike uses two hands without
+    modifying Strength; Ankus additionally keeps Concussion. A charging enemy shares the first-strike tier:
+    compare Initiative, not a special spear tier.'
   cases:
   - id: spear-compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {main_weapon_id: weapon.spear}
-    expect: {attacker.main_weapon.priority: 1, attacker.main_weapon.two_handed: false}
+    attacker:
+      main_weapon_id: weapon.spear
+    expect:
+      attacker.main_weapon.priority: 1
+      attacker.main_weapon.two_handed: false
   - id: spear-first-despite-initiative
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: acting_order
-    attacker: {main_weapon_id: weapon.spear, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
-    context: {first_round: true}
-    expect: {result.first_acts: true}
+    attacker:
+      main_weapon_id: weapon.spear
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    context:
+      first_round: true
+    expect:
+      result.first_acts: true
   - id: spear-ordinary-after-first-round
-    roles: [inactive, consumer, boundary]
+    roles:
+    - inactive
+    - consumer
+    - boundary
     operation: acting_order
-    attacker: {main_weapon_id: weapon.spear, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
-    context: {first_round: false}
-    expect: {result.first_acts: false}
+    attacker:
+      main_weapon_id: weapon.spear
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    context:
+      first_round: false
+    expect:
+      result.first_acts: false
   - id: spear-first-when-charged
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: acting_order
-    attacker: {main_weapon_id: weapon.spear, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
-    context: {first_round: true, charging: false, charged: true}
-    opponent_context: {first_round: true, charging: true}
-    expect: {result.first_acts: true}
+    attacker:
+      main_weapon_id: weapon.spear
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    context:
+      first_round: true
+      charging: false
+      charged: true
+    opponent_context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: false
   - id: ordinary-low-initiative-acts-second
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: acting_order
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
-    expect: {result.first_acts: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    expect:
+      result.first_acts: false
   - id: pike-compiled-and-strength
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.pike}
-    expect: {attacker.main_weapon.priority: 1, attacker.main_weapon.two_handed: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.pike
+    expect:
+      attacker.main_weapon.priority: 1
+      attacker.main_weapon.two_handed: true
+      result.wound: 3
+      result.armour: 3
   - id: pike-rejects-offhand
-    roles: [rejected]
+    roles:
+    - rejected
     operation: compile
-    attacker: {main_weapon_id: weapon.pike, off_hand_id: weapon.dagger}
+    attacker:
+      main_weapon_id: weapon.pike
+      off_hand_id: weapon.dagger
     reject: main weapon occupies both hands
   - id: ankus-concussion
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: injury
-    attacker: {main_weapon_id: weapon.ankus}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {attacker.main_weapon.priority: 1, attacker.main_weapon.concussion: true, result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.ankus
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      attacker.main_weapon.priority: 1
+      attacker.main_weapon.concussion: true
+      result.condition: STUNNED
+  - id: charged-spear-wins-by-initiative
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: acting_order
+    attacker:
+      main_weapon_id: weapon.spear
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    context:
+      first_round: true
+      charging: false
+      charged: true
+    opponent_context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: true
   mutations:
-  - {id: remove-spear-priority, path: attacker.main_weapon.priority, value: 0, cases: [spear-first-despite-initiative]}
-  - {id: remove-spear-strike-first-when-charged, path: attacker.main_weapon.tags, value: [], cases: [spear-first-when-charged]}
-  - {id: remove-spear-first-round-scope, path: attacker.main_weapon.tags, value: [], cases: [spear-ordinary-after-first-round]}
-  - {id: add-pike-strength, path: attacker.main_weapon.strength_bonus, value: 1, cases: [pike-compiled-and-strength]}
-  - {id: remove-ankus-concussion, path: attacker.main_weapon.concussion, value: false, cases: [ankus-concussion]}
-
+  - id: remove-spear-priority
+    path: attacker.main_weapon.priority
+    value: 0
+    cases:
+    - spear-first-despite-initiative
+  - id: remove-spear-strike-first-when-charged
+    path: attacker.main_weapon.priority
+    value: 0
+    cases:
+    - charged-spear-wins-by-initiative
+  - id: remove-spear-first-round-scope
+    path: attacker.main_weapon.tags
+    value: []
+    cases:
+    - spear-ordinary-after-first-round
+  - id: add-pike-strength
+    path: attacker.main_weapon.strength_bonus
+    value: 1
+    cases:
+    - pike-compiled-and-strength
+  - id: remove-ankus-concussion
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - ankus-concussion
 - id: weapon.heavy-blade-family
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: mechanic/weapon.elven-greatsword, digest: 86b2cb7a3eb1685d9c3ef731d02518296209304e232f5c3f62743b3d9738ee9b}
-  - {target: mechanic/weapon.great-scimitar, digest: 12d78624c23d31ccd7e4a69f79454831ed8d5012fb870a31a97cbdab0a65d7c0}
-  interpretation: "Both weapons use two hands, add two to Strength and strike last. The Elven Greatsword allows parrying; the Great Scimitar contributes one extra penetration point."
+  - target: mechanic/weapon.elven-greatsword
+    digest: 86b2cb7a3eb1685d9c3ef731d02518296209304e232f5c3f62743b3d9738ee9b
+  - target: mechanic/weapon.great-scimitar
+    digest: 12d78624c23d31ccd7e4a69f79454831ed8d5012fb870a31a97cbdab0a65d7c0
+  interpretation: Both weapons use two hands, add two to Strength and strike last. The Elven Greatsword allows
+    parrying; the Great Scimitar contributes one extra penetration point.
   cases:
   - id: elven-strength
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.elven-greatsword}
-    expect: {attacker.main_weapon.strength_bonus: 2, attacker.main_weapon.two_handed: true, attacker.main_weapon.parry: true, result.wound: 5, result.armour: 5}
+    attacker:
+      main_weapon_id: weapon.elven-greatsword
+    expect:
+      attacker.main_weapon.strength_bonus: 2
+      attacker.main_weapon.two_handed: true
+      attacker.main_weapon.parry: true
+      result.wound: 5
+      result.armour: 5
   - id: elven-strikes-last
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: acting_order
-    attacker: {main_weapon_id: weapon.elven-greatsword, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
-    expect: {result.first_acts: false}
+    attacker:
+      main_weapon_id: weapon.elven-greatsword
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    expect:
+      result.first_acts: false
   - id: elven-parry
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: parry
-    defender: {main_weapon_id: weapon.elven-greatsword}
-    context: {hit_roll: 4}
-    rolls: [{key: test.parry, value: 5}]
-    expect: {result.blocked: true}
+    defender:
+      main_weapon_id: weapon.elven-greatsword
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      result.blocked: true
   - id: great-scimitar-strength
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.great-scimitar}
-    expect: {attacker.main_weapon.strength_bonus: 2, attacker.main_weapon.armour_penetration: 1, attacker.main_weapon.priority: -1, result.wound: 5, result.armour: 5}
+    attacker:
+      main_weapon_id: weapon.great-scimitar
+    expect:
+      attacker.main_weapon.strength_bonus: 2
+      attacker.main_weapon.armour_penetration: 1
+      attacker.main_weapon.priority: -1
+      result.wound: 5
+      result.armour: 5
   - id: great-scimitar-armour
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.great-scimitar}
-    defender: {armour_id: armour.gromril-armour}
-    expect: {result.target: 7, result.eligible: false}
+    attacker:
+      main_weapon_id: weapon.great-scimitar
+    defender:
+      armour_id: armour.gromril-armour
+    expect:
+      result.target: 7
+      result.eligible: false
   - id: ordinary-heavy-without-parry
-    roles: [inactive]
+    roles:
+    - inactive
     operation: parry
-    defender: {main_weapon_id: weapon.double-handed-weapon}
-    context: {hit_roll: 4}
-    expect: {result.attempted: false}
+    defender:
+      main_weapon_id: weapon.double-handed-weapon
+    context:
+      hit_roll: 4
+    expect:
+      result.attempted: false
   mutations:
-  - {id: remove-elven-parry, path: defender.main_weapon.parry, value: false, cases: [elven-parry]}
-  - {id: remove-elven-last, path: attacker.main_weapon.priority, value: 0, cases: [elven-strikes-last]}
-  - {id: remove-great-scimitar-strength, path: attacker.main_weapon.strength_bonus, value: 0, cases: [great-scimitar-strength]}
-  - {id: remove-great-scimitar-penetration, path: attacker.main_weapon.armour_penetration, value: 0, cases: [great-scimitar-armour]}
-
+  - id: remove-elven-parry
+    path: defender.main_weapon.parry
+    value: false
+    cases:
+    - elven-parry
+  - id: remove-elven-last
+    path: attacker.main_weapon.priority
+    value: 0
+    cases:
+    - elven-strikes-last
+  - id: remove-great-scimitar-strength
+    path: attacker.main_weapon.strength_bonus
+    value: 0
+    cases:
+    - great-scimitar-strength
+  - id: remove-great-scimitar-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - great-scimitar-armour
 - id: weapon.penetrating-family
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: mechanic/weapon.scythe, digest: 45ca20e90fe68073db8d1787f6dbb931b15579596864e9f212cdeae1af18cb17}
-  - {target: mechanic/weapon.scimitar, digest: fe8af663b22a8712af86466fff221e3ad4b1082fe28c5e0cfb5f5201796affbd}
-  - {target: mechanic/weapon.bagh-nakh, digest: 70cda067f0c2a7fb2358355ae0befd1d968638d0217bdf3683371667911101d6}
-  interpretation: "The three weapons add one penetration point. Scythe uses two hands, Scimitar allows parrying and Bagh Nakh is paired and adds one to Strength."
+  - target: mechanic/weapon.scythe
+    digest: 45ca20e90fe68073db8d1787f6dbb931b15579596864e9f212cdeae1af18cb17
+  - target: mechanic/weapon.scimitar
+    digest: fe8af663b22a8712af86466fff221e3ad4b1082fe28c5e0cfb5f5201796affbd
+  - target: mechanic/weapon.bagh-nakh
+    digest: 70cda067f0c2a7fb2358355ae0befd1d968638d0217bdf3683371667911101d6
+  interpretation: The three weapons add one penetration point. Scythe uses two hands, Scimitar allows parrying
+    and Bagh Nakh is paired and adds one to Strength.
   cases:
   - id: scythe-armour
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.scythe}
-    defender: {armour_id: armour.gromril-armour}
-    rolls: [{key: armour, value: 5}]
-    expect: {attacker.main_weapon.two_handed: true, attacker.main_weapon.armour_penetration: 1, result.target: 5, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.scythe
+    defender:
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      attacker.main_weapon.two_handed: true
+      attacker.main_weapon.armour_penetration: 1
+      result.target: 5
+      result.saved: true
   - id: scythe-no-strength
-    roles: [inactive]
+    roles:
+    - inactive
     operation: strength
-    attacker: {main_weapon_id: weapon.scythe}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.scythe
+    expect:
+      result.wound: 3
+      result.armour: 3
   - id: scimitar-parry
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: parry
-    defender: {main_weapon_id: weapon.scimitar}
-    context: {hit_roll: 4}
-    rolls: [{key: test.parry, value: 5}]
-    expect: {defender.main_weapon.armour_penetration: 1, defender.main_weapon.parry: true, result.blocked: true}
+    defender:
+      main_weapon_id: weapon.scimitar
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      defender.main_weapon.armour_penetration: 1
+      defender.main_weapon.parry: true
+      result.blocked: true
   - id: scimitar-armour
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.scimitar}
-    defender: {armour_id: armour.gromril-armour}
-    rolls: [{key: armour, value: 4}]
-    expect: {result.target: 5, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.scimitar
+    defender:
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 5
+      result.saved: false
   - id: bagh-nakh-strength
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.bagh-nakh}
-    expect: {attacker.main_weapon.paired: true, attacker.main_weapon.strength_bonus: 1, attacker.main_weapon.armour_penetration: 1, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.bagh-nakh
+    expect:
+      attacker.main_weapon.paired: true
+      attacker.main_weapon.strength_bonus: 1
+      attacker.main_weapon.armour_penetration: 1
+      result.wound: 4
+      result.armour: 4
   - id: bagh-nakh-extra-attack
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: attacks
-    attacker: {main_weapon_id: weapon.bagh-nakh}
-    expect: {result.attacks: 2}
+    attacker:
+      main_weapon_id: weapon.bagh-nakh
+    expect:
+      result.attacks: 2
   mutations:
-  - {id: remove-scythe-penetration, path: attacker.main_weapon.armour_penetration, value: 0, cases: [scythe-armour]}
-  - {id: remove-scimitar-parry, path: defender.main_weapon.parry, value: false, cases: [scimitar-parry]}
-  - {id: remove-scimitar-penetration, path: attacker.main_weapon.armour_penetration, value: 0, cases: [scimitar-armour]}
-  - {id: remove-bagh-strength, path: attacker.main_weapon.strength_bonus, value: 0, cases: [bagh-nakh-strength]}
-  - {id: remove-bagh-paired, path: attacker.main_weapon.paired, value: false, cases: [bagh-nakh-extra-attack]}
-
+  - id: remove-scythe-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - scythe-armour
+  - id: remove-scimitar-parry
+    path: defender.main_weapon.parry
+    value: false
+    cases:
+    - scimitar-parry
+  - id: remove-scimitar-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - scimitar-armour
+  - id: remove-bagh-strength
+    path: attacker.main_weapon.strength_bonus
+    value: 0
+    cases:
+    - bagh-nakh-strength
+  - id: remove-bagh-paired
+    path: attacker.main_weapon.paired
+    value: false
+    cases:
+    - bagh-nakh-extra-attack
 - id: weapon.sword-breaker
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: mechanic/weapon.sword-breaker, digest: c7d7fb2893b5660c18ab794fc203cefbb07f72cb0c36990edd5613af79914168}
-  interpretation: "Sword Breaker grants an ordinary parry; it must beat the to-hit roll and cannot parry a natural 6."
+  - target: mechanic/weapon.sword-breaker
+    digest: e92af815e6610b1e5c9e0f21abbf3f3d3c2a05eac06e4f3f913d08f3964e19c2
+  interpretation: Sword Breaker grants an ordinary parry; it must beat the to-hit roll and cannot parry a natural
+    6.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    defender: {main_weapon_id: weapon.sword-breaker}
-    expect: {defender.main_weapon.parry: true}
+    defender:
+      main_weapon_id: weapon.sword-breaker
+    expect:
+      defender.main_weapon.parry: true
   - id: successful-parry
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: parry
-    defender: {main_weapon_id: weapon.sword-breaker}
-    context: {hit_roll: 4}
-    rolls: [{key: test.parry, value: 5}]
-    expect: {result.attempted: true, result.blocked: true}
+    defender:
+      main_weapon_id: weapon.sword-breaker
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      result.attempted: true
+      result.blocked: true
   - id: equal-roll-fails
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: parry
-    defender: {main_weapon_id: weapon.sword-breaker}
-    context: {hit_roll: 4}
-    rolls: [{key: test.parry, value: 4}]
-    expect: {result.blocked: false}
+    defender:
+      main_weapon_id: weapon.sword-breaker
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 4
+    expect:
+      result.blocked: false
   - id: natural-six-cannot-be-parried
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: parry
-    defender: {main_weapon_id: weapon.sword-breaker}
-    context: {hit_roll: 6}
-    expect: {result.attempted: false, result.blocked: false}
+    defender:
+      main_weapon_id: weapon.sword-breaker
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
   mutations:
-  - {id: remove-parry, path: defender.main_weapon.parry, value: false, cases: [successful-parry]}
-
+  - id: remove-parry
+    path: defender.main_weapon.parry
+    value: false
+    cases:
+    - successful-parry
 - id: weapon.morning-star
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
-  - {target: mechanic/weapon.morning-star, digest: c2058c4f463f8f3234e344473b1dccc83b9f2ffc9db025321f90469c7e33971d}
-  interpretation: "Morning Star adds one to Strength only during the first round and accepts no other weapon in the off hand."
+  - target: mechanic/weapon.morning-star
+    digest: c2058c4f463f8f3234e344473b1dccc83b9f2ffc9db025321f90469c7e33971d
+  interpretation: Morning Star adds one to Strength only during the first round and accepts no other weapon
+    in the off hand.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {main_weapon_id: weapon.morning-star}
-    expect: {attacker.main_weapon.first_round_strength_bonus: 1, attacker.main_weapon.strength_bonus: 0}
+    attacker:
+      main_weapon_id: weapon.morning-star
+    expect:
+      attacker.main_weapon.first_round_strength_bonus: 1
+      attacker.main_weapon.strength_bonus: 0
   - id: first-round-strength
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.morning-star}
-    context: {first_round: true}
-    expect: {result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.morning-star
+    context:
+      first_round: true
+    expect:
+      result.wound: 4
+      result.armour: 4
   - id: later-round-strength
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.morning-star}
-    context: {first_round: false}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.morning-star
+    context:
+      first_round: false
+    expect:
+      result.wound: 3
+      result.armour: 3
   - id: rejects-offhand
-    roles: [rejected]
+    roles:
+    - rejected
     operation: compile
-    attacker: {main_weapon_id: weapon.morning-star, off_hand_id: weapon.dagger}
+    attacker:
+      main_weapon_id: weapon.morning-star
+      off_hand_id: weapon.dagger
     reject: weapon.morning-star cannot be combined with weapon.dagger
   mutations:
-  - {id: remove-first-round-strength, path: attacker.main_weapon.first_round_strength_bonus, value: 0, cases: [first-round-strength]}
+  - id: remove-first-round-strength
+    path: attacker.main_weapon.first_round_strength_bonus
+    value: 0
+    cases:
+    - first-round-strength

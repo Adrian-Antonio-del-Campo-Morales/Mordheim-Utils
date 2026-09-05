@@ -47,7 +47,7 @@ would let the campaign runtime consume the published catalogues.
 | Shared canonical families (executable) | 66 families / 101 rules (41 compiler, 20 mechanic, 5 trait) |
 | In-scope obligations (`audit` CSV / `verify` gate) | 617/617 verified — **0 missing contracts, 0 pending** |
 | Interaction matrix (complete) | 217/217 required covered; 0 required pending (207 pair specs + 10 `illegal` overrides); parity-clean |
-| `pending-canonical-families.yaml` summary | 222 rules / **0 families** — stale design-only note, superseded by §1 |
+| `pending-canonical-families.yaml` | retired 2026-09-05 (deleted; superseded by §1 — the live tracker is `implemented-canonical-families.yaml`) |
 | Item records in `catalog/items/` | 335 (123 `combat_status: implemented`, 212 `out_of_scope`) |
 | `simulation-mappings.yaml` entries | 172 (95 implemented, 77 out of scope) |
 | Mechanics excluded from duel scope (`runtime-scope.yaml`) | 27 (each with a reason) |
@@ -55,10 +55,11 @@ would let the campaign runtime consume the published catalogues.
 | Hireling intrinsic references pending canonicalization | 59 (documented) |
 | Dynamic campaign-eligibility rules (application-side) | 18 (documented) |
 
-Sources of truth for the pending work: `CAMPAIGN INGESTION RESULTS.md`,
-`catalog/campaign/README.md` (price-collation TODO), the `runtime` blocks
-themselves and the per-rule audit CSV `outputs/audit/rules-audit.csv`
-(regenerate with `python tools/mordheim-utils.py audit`).
+Sources of truth for the pending work: `catalog/hirelings/README.md` (the
+59 pending hireling references), `catalog/campaign/README.md` (price-collation
+TODO), the `runtime` blocks themselves and the per-rule audit CSV
+`outputs/audit/rules-audit.csv` (regenerate with `python
+tools/mordheim-utils.py audit`).
 
 ---
 
@@ -97,11 +98,12 @@ Real remaining in-scope debt, by size:
       real vectorized-engine divergence this corpus exposed (an extra dice
       draw for automatic wounds shifting ward rolls). Design rationale and
       per-cluster case patterns: [Interaction matrix](docs/interaction-matrix.md).
-- [ ] **Retire or rewrite `catalog/rules/pending-canonical-families.yaml`** —
-      its summary (222 audited rules, 97 scope-`YES`, 0 families) is a
-      design-only snapshot that no longer matches the inventory (every
-      scope-`YES` effect is bound and verified). Replace it with a pointer to
-      this section or delete it.
+- [x] **Retire or rewrite `catalog/rules/pending-canonical-families.yaml`** —
+      closed 2026-09-05: the design-only snapshot (222 audited rules, 97
+      scope-`YES`, 0 families) was deleted; the executable audit supersedes it
+      (every scope-`YES` effect is bound and verified). The two tracker tests
+      (`tests/combat/vectorized/test_rule_families_a.py`/`b.py`) now read
+      `implemented-canonical-families.yaml` only.
 - [ ] **Replace the 41 transitional `compiler` families** with shared
       `mechanic`/`trait` bindings (schema invariant in `runtime-schema.yaml`);
       candidates already collected in `implemented-canonical-families.yaml`
@@ -153,7 +155,7 @@ otherwise keep these as non-goals so the duel engine scope stays honest.
 
 ## 4. Canonical catalogues that do not exist yet (hireling gap)
 
-`CAMPAIGN INGESTION RESULTS.md` documents **59 pending intrinsic references**
+`catalog/hirelings/README.md` documents **59 pending intrinsic references**
 in the hireling profiles that could not be canonicalized because the target
 catalogues/schemas do not exist. These are KB-data tasks, not application
 tasks:
@@ -183,8 +185,9 @@ tasks:
 ## 5. Campaign catalogue → runtime integration (loaders done, consumers are not)
 
 The KB campaign data is published and the shared loaders now exist; the
-campaign-application consumers do not. Documented in `CAMPAIGN INGESTION
-RESULTS.md` and `catalog/campaign/README.md`:
+campaign-application consumers have started (the pending post-battle screens
+already read them) but no full use case closes the loop yet. Documented in
+`catalog/hirelings/README.md` and `catalog/campaign/README.md`:
 
 - [x] `load_campaign_catalog(...)` and `load_post_battle_sequence(...)` in
       `mordheim_knowledge/campaign.py` (task `campaign.runtime-loaders`, closed
@@ -202,9 +205,17 @@ RESULTS.md` and `catalog/campaign/README.md`:
 - [x] Load `registry/warband-groups.yaml` and resolve `warband-group.*` used
       by hireling eligibility (task 3): `load_warband_groups(...)` validates
       the 24 registry groups and all campaign group references.
-- [ ] Implement the **18 dynamic campaign-eligibility rules** (roster /
+- [x] Implement the **18 dynamic campaign-eligibility rules** (roster /
       current-hireling / variant / conditional-acceptance dependent) in the
-      campaign application (task 4; full id list in the ingestion report).
+      campaign application (task 4; full id list in the ingestion report):
+      `mordheim_campaign/application/hire_eligibility.py` evaluates all 18
+      `*.rule.campaign-eligibility` rules keyed by canonical rule id over a
+      small hire context (warband groups, member and employed Hired Sword
+      profile ids, optional Mercenary variant) and returns explicit
+      `allowed/rejected/conditional/needs_variant` decisions instead of
+      guessing; `post_battle_catalogue.py` merges them with each hiring
+      entry's static eligibility. Covered by
+      `tests/campaign/test_hire_eligibility.py` (every rule id pinned).
 - [ ] Confirm canonical handling of hireling cost resources (`gold_crowns`,
       `wyrdstone_fragments`, `treasures`, `campaign_points` — task 5).
 - [x] **Price collation against the Trading Post** (first run; see
@@ -221,8 +232,35 @@ RESULTS.md` and `catalog/campaign/README.md`:
       is verified; the Trollheim/Lustria/Khemri rows have no recorded source
       URL yet.
 - [ ] Build the first campaign use case (roster + match results) that consumes
-      the loaded catalogues. The loading contract is reusable: KnowledgePort
-      exposes `post_battle_sequence()`, `campaign_catalog()`,
+      the loaded catalogues end to end. Partial (2026-09-05): the pending
+      post-battle screens already consume them — dice resolution
+      (`post_battle_resolution.py`: serious injuries, exploration, rarity,
+      wyrdstone sale table), offer content (`post_battle_catalogue.py`:
+      Trading Post with warband restrictions and confirmed `price_override`
+      exceptions, hiring offers with dynamic eligibility) and the write side
+      (`post_battle_engine.py`: injuries/XP/treasury/stash/hires applied,
+      COMMIT STATE appends the next State; covered by
+      `tests/campaign/test_post_battle_engine.py`). Mercenary variant
+      selection and employed-Hired-Sword tracking are in place, so the 18
+      dynamic eligibility rules fire fully. **Advancements are applied**:
+      crossed thresholds seed pending advances (KB ladder), the 2D6 roll and
+      D6 sub-rolls resolve against the KB tables, and the pick is committed —
+      stats with racial maximum + henchman +1 cap, skills from the warrior's
+      tables, spells from the wizard lore (covered by
+      `tests/campaign/test_post_battle_advancements.py`). The Lad's Got
+      Talent is applied: one member promotes to Hero (preserving type,
+      experience and stat advances) with 2 picks from the warband hero skill
+      tables, the remaining group's advance resets for a reroll, and the
+      pending promotion bypasses the hero limit. **Battles are recorded from
+      the table**: `AppController.record_battle` validates the scenario
+      against the KB catalogue, snapshots the pre-battle rating/models, and
+      opens the pending post-battle (`tests/campaign/test_battle_creation.py`);
+      the timeline offers the ＋ RECORD BATTLE node. The per-warrior
+      equipment editor is applied (`EquipmentEditorDialog`): roster↔stash
+      reassignment is legal outside the post-battle sequence too, and the
+      ledger stays consistent. What remains: per-warrior skill editing
+      outside advances and scenario-progression rolls. The loading contract is reusable: KnowledgePort exposes
+      `post_battle_sequence()`, `campaign_catalog()`,
       `hireling_catalogue()` and `warband_groups()` (tests in
       `tests/campaign/test_knowledge_port.py`).
 
@@ -240,15 +278,35 @@ items have no engine option), but it is not documented per record.
 
 ## 7. Housekeeping and drift
 
-- [ ] `sources/knowledge/README.md` says the KB is “371 YAML files”; the
-      current count is 376. Update the sentence the next time the README is
-      touched.
-- [ ] Decide the i18n policy: almost every `name_i18n.es` is `null` across
-      the KB (canonical English only). Either document single-locale as the
-      convention or schedule translation fills.
+- [x] Stale KB YAML count — closed 2026-09-05: the sentence lives in the root
+      `README.md` (not the KB README) and now says “377 YAML files”
+      (`find sources/knowledge -name '*.yaml' | wc -l`); recount whenever the
+      KB or that sentence is touched.
+- [x] **i18n policy decided** — single-locale (canonical English) is the
+      convention, documented as “Locale policy” in
+      `sources/knowledge/README.md`: the `name_i18n`/`effect_i18n` blocks stay
+      for forward compatibility with non-English fields `null`; a translation
+      pass would be a dedicated, reviewed project.
+- [x] **Spanish translation prepared** (2026-09-05): the KB read side
+      (`mordheim_knowledge.i18n`: `set_locale`/`display_name`/`display_effect`,
+      wired through the Campaign Manager `KnowledgePort`) and the interface
+      side (`mordheim_ui.i18n`: `STRINGS` catalogue + `tr()`, seeded with the
+      post-battle navigator, both apps select the locale via
+      `MORDHEIM_LOCALE` at startup) are in place. Filling a reviewed `es`
+      field in the KB, or a key in `STRINGS`, now surfaces without code
+      changes; the pre-existing Bretonnian Spanish strings already resolve.
+      **KB pilot complete** (2026-09-05): every rule of
+      `bands/mordheim/bretonnian-knights` carries a reviewed `name_i18n.es` /
+      `effect_i18n.es` (the 7 remaining `null` fields filled against the same
+      printed source, reusing the in-file glossary: Caballero Andante,
+      Caballero Novel, chequeo, 1D6); `verify --require-complete` stays green
+      (617/617, 0 pending) and the pinned `virtue-of-valour` spec was untouched.
+      Pending: translate the remaining UI keys (~370, concentrated in
+      `mordheim_campaign/ui`) and review-fill `name_i18n.es` for the other 80
+      warbands.
 - [ ] The 4 deliberately out-of-scope Dramatis Personae profiles (composite
       riders, multi-persona and multi-profile entities) are tracked in
-      `CAMPAIGN INGESTION RESULTS.md`; keep them visible until a schema for
+      `catalog/hirelings/README.md`; keep them visible until a schema for
       composite entities exists.
 
 ---

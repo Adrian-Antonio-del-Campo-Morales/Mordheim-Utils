@@ -65,7 +65,7 @@ def fighter(**changes):
 
 @pytest.mark.parametrize(
     ("attacker_ws", "defender_ws", "expected"),
-    ((3, 0, 2), (4, 3, 3), (3, 3, 4), (2, 5, 5), (3, 6, 4)),
+    ((3, 0, 0), (4, 3, 3), (3, 3, 4), (2, 5, 5), (3, 6, 4)),
 )
 def test_to_hit_table_is_a_pure_exhaustive_threshold(attacker_ws, defender_ws, expected):
     assert to_hit_target(attacker_ws, defender_ws) == expected
@@ -75,7 +75,7 @@ def test_to_hit_table_is_a_pure_exhaustive_threshold(attacker_ws, defender_ws, e
             HitContext(attacker_ws, defender_ws), ScriptedDice(rolls)
         ).success,
     )
-    assert outcomes[True] == Fraction(7 - expected, 6)
+    assert outcomes[True] == (Fraction(1) if expected == 0 else Fraction(7 - expected, 6))
 
 
 def test_hit_modifier_and_reroll_are_local_composable_operators():
@@ -249,7 +249,7 @@ def test_production_attack_orchestrator_aggregates_bear_hug_across_two_attacks()
     defender_state=_new_state(defender,1,np.random.default_rng(2))
     resolve_attacks(
         attacker,defender,np.array([0]),np.array([2]),np.array([False]),
-        attacker_state,defender_state,VectorTape(6,6,3,4,1,5,5),False,AlwaysAccept(),
+        attacker_state,defender_state,VectorTape(6,6,3,4,5),False,AlwaysAccept(),
     )
     # Strength 4 + 3 ties Strength 3 + 4, so the Bear wins. The two normal
     # hits are replaced by one automatic wound and no armour roll is consumed.

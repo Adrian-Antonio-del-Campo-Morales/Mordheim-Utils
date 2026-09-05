@@ -151,7 +151,7 @@ def test_acid_blood_retaliates_once_per_wound_lost():
     attacker_state=_new_state(attacker,1,np.random.default_rng(1))
     defender_state=_new_state(defender,1,np.random.default_rng(2))
     _resolve_weapon(attacker,defender,attacker.main_weapon,np.array([0]),np.zeros(1,dtype=bool),
-                    attacker_state,defender_state,FixedRng(2,1,6,1),False)
+                    attacker_state,defender_state,FixedRng(2,6),False)
     assert defender_state.wounds[0]==1
     assert attacker_state.wounds[0]==2
 
@@ -362,7 +362,7 @@ def test_skink_hunter_priority_distinguishes_first_round_from_always():
     assert priority(always,skink,False,flags,flags,flags)[0]==20
 
 
-def test_master_of_blades_rerolls_only_with_two_dwarf_axes():
+def test_two_dwarf_axes_reroll_independently_of_master_of_blades():
     from mordheim_combat.vectorized import _new_state
     from mordheim_combat.vectorized import _parry_hits
     axe=EffectSet(tags=("weapon.dwarf-axe",),parry=True)
@@ -370,9 +370,9 @@ def test_master_of_blades_rerolls_only_with_two_dwarf_axes():
     master=replace(core,global_effects=EffectSet(tags=("skill.unbeatable-warrior","skill.sword-master")))
     core_state=_new_state(core,1,np.random.default_rng(1))
     master_state=_new_state(master,1,np.random.default_rng(1))
-    remaining,_,_=_parry_hits(core,axe,np.array([0]),np.array([4]),np.array([3]),core_state,FixedRng(3))
+    remaining,_,_=_parry_hits(core,axe,np.array([0]),np.array([4]),np.array([3]),core_state,FixedRng(3,6))
     rerolled,_,_=_parry_hits(master,axe,np.array([0]),np.array([4]),np.array([3]),master_state,FixedRng(3,6))
-    assert remaining.tolist()==[0]
+    assert remaining.size==0
     assert rerolled.size==0
 
 

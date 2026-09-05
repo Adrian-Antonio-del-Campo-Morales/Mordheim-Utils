@@ -89,14 +89,19 @@ def _vector_priority(case: dict, root: Path) -> None:
 
 class _RollVectorRng:
     """Minimal NumPy RNG facade fed by a semantic case's declared rolls."""
-    def __init__(self, case: dict):
+    def __init__(self, case: dict, *, strict: bool = False):
         self.values = [int(item["value"]) for item in case.get("rolls", ())]
+        self.strict = strict
 
     def integers(self, low, high=None, size=None, dtype=None):
         high = high if high is not None else low
         low = low if high is not None else 0
         count = int(np.prod(size)) if isinstance(size, tuple) else (1 if size is None else int(size))
+        if self.strict and count > len(self.values):
+            raise AssertionError(f"unexpected vector dice request: {count} D{high - 1}; {len(self.values)} declared remain")
         values = [self.values.pop(0) if self.values else high - 1 for _ in range(count)]
+        if self.strict and any(value < low or value >= high for value in values):
+            raise AssertionError(f"declared vector dice outside [{low}, {high}): {values}")
         result = np.asarray(values, dtype=dtype or np.int64)
         if size is None:
             return result[0]
@@ -104,6 +109,10 @@ class _RollVectorRng:
 
     def random(self, size=None):
         return np.zeros(size if size is not None else ())
+
+    def finish(self):
+        if self.values:
+            raise AssertionError(f"unused vector dice: {self.values}")
 
 def _vector_strength(case: dict, root: Path) -> None:
     modular = execute_case(case, root, StrictDice(case.get("rolls", ())))
@@ -560,6 +569,9 @@ def _plain_initial_vector_state(state: vectorized.CombatState) -> dict[str, obje
         "toughness": int(state.toughness[0]),
         "initiative": int(state.initiative[0] + state.crimson_initiative[0]),
         "attacks": int(state.attacks[0]),
+        "broken_hands": [name for bit, name in ((1, "main"), (2, "off"))
+                         if int(state.broken_hands[0]) & bit],
+        "hampered_hands": ['main'] * int(state.hampered_main[0]) + ['off'] * int(state.hampered_off[0]),
     }
 
 def _vector_initialize(case: dict, root: Path) -> None:
@@ -607,6 +619,11 @@ def _apply_vector_state_overrides(state: vectorized.CombatState, values: dict) -
             getattr(state, target)[:] = values[source]
     if "condition" in values:
         state.condition[:] = int(phases.Condition[values["condition"]])
+    if "hampered_hands" in values:
+        state.hampered_main[:] = values['hampered_hands'].count('main')
+        state.hampered_off[:] = values['hampered_hands'].count('off')
+    if "broken_hands" in values:
+        state.broken_hands[:] = sum(bit for bit, name in ((1, 'main'), (2, 'off')) if name in values['broken_hands'])
     if "critical_available" in values:
         state.critical_used[:] = not bool(values["critical_available"])
     resources = set(values.get("resources_spent", ()))
@@ -640,7 +657,7 @@ def _run_vector_attack(case: dict, root: Path, rolls: tuple[int, ...] | None = N
         scripted = {**case, "rolls": tuple(
             item for item in declared if item not in outer_injuries
         ) + tuple(outer_injuries)}
-    rng = _RollVectorRng(scripted)
+    rng = _RollVectorRng(scripted, strict=True)
     attacker_state = vectorized._new_state(attacker, 1, rng)
     defender_state = vectorized._new_state(defender, 1, rng)
     _apply_vector_state_overrides(attacker_state, case.get("attacker_state", {}))
@@ -670,6 +687,8 @@ def _run_vector_attack(case: dict, root: Path, rolls: tuple[int, ...] | None = N
             defences_resolved=bool(context.get("defences_resolved", False)),
             observation=observation,
         )
+    if rolls is None:
+        rng.finish()
     return {"result": {
         "attacker": _plain_vector_attack_state(attacker_state),
         "defender": _plain_vector_attack_state(defender_state),
