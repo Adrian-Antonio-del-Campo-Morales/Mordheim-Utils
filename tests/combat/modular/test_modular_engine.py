@@ -46,11 +46,13 @@ def test_reference_attack_transfers_a_wound_through_every_scalar_phase():
         ScriptedDice({
             "strike.hit": 6,
             "strike.wound": 6,
+            "strike.critical": 1,
             "strike.injury.0": 5,
+            "strike.injury.1": 1,
         }),
         key="strike",
     )
-    assert result.hit and result.wounded and result.damage == 1
+    assert result.hit and result.wounded and result.damage == 2
     assert result.defender.condition == Condition.OUT
 
 

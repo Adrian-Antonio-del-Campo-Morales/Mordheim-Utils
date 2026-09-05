@@ -4,264 +4,573 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/battle-monks-of-cathay/band--strictures/compiler.strictures, digest: 3c4751f072ab63a668b836c1da66b7e6e704e96e19f93569196681dec9c9ac96}
-  interpretation: >-
-    Battle Monks / Strictures forbids any armour to Dragon Monks and Warrior Monks. No Armour is
-    accepted, Light Armour is specifically rejected by Strictures and the Officer serves as a
-    non-recipient control.
+  - target: rule/mordheim/battle-monks-of-cathay/band--strictures/compiler.strictures
+    digest: 3c4751f072ab63a668b836c1da66b7e6e704e96e19f93569196681dec9c9ac96
+  interpretation: Battle Monks / Strictures forbids any armour to Dragon Monks and Warrior Monks. No Armour
+    is accepted, Light Armour is specifically rejected by Strictures and the Officer serves as a non-recipient
+    control.
   cases:
   - id: recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: battle-monks-of-cathay, profile_id: dragon-monks}
-    context: {rule_id: band--strictures}
-    expect: {result.recipients: [dragon-monks, emissary, officer, raging-peasants, soldiers, warrior-monks]}
+    defender:
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+    context:
+      rule_id: band--strictures
+    expect:
+      result.recipients:
+      - dragon-monks
+      - emissary
+      - officer
+      - raging-peasants
+      - soldiers
+      - warrior-monks
   - id: dragon-choices
-    roles: [accepted, rejected]
+    roles:
+    - accepted
+    - rejected
     operation: equipment_choices
-    attacker: {band_id: battle-monks-of-cathay, profile_id: dragon-monks}
-    context: {choices: {unarmoured: {}, light: {armour_id: armour.light-armour}}}
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+    context:
+      choices:
+        unarmoured: {}
+        light:
+          armour_id: armour.light-armour
     expect:
-      result.accepted: [unarmoured]
-      result.rejected: {light: Dragon Monks and Warrior Monks may never wear armour}
+      result.accepted:
+      - unarmoured
+      result.rejected:
+        light: Dragon Monks and Warrior Monks may never wear armour
   - id: warrior-choices
-    roles: [accepted, rejected]
+    roles:
+    - accepted
+    - rejected
     operation: equipment_choices
-    attacker: {band_id: battle-monks-of-cathay, profile_id: warrior-monks}
-    context: {choices: {unarmoured: {}, light: {armour_id: armour.light-armour}}}
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: warrior-monks
+    context:
+      choices:
+        unarmoured: {}
+        light:
+          armour_id: armour.light-armour
     expect:
-      result.accepted: [unarmoured]
-      result.rejected: {light: Dragon Monks and Warrior Monks may never wear armour}
+      result.accepted:
+      - unarmoured
+      result.rejected:
+        light: Dragon Monks and Warrior Monks may never wear armour
   - id: officer-control
-    roles: [accepted]
+    roles:
+    - accepted
     operation: equipment_choices
-    attacker: {band_id: battle-monks-of-cathay, profile_id: officer}
-    context: {choices: {light: {armour_id: armour.light-armour}}}
-    expect: {result.accepted: [light], result.rejected: {}}
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: officer
+    context:
+      choices:
+        light:
+          armour_id: armour.light-armour
+    expect:
+      result.accepted:
+      - light
+      result.rejected: {}
   mutations:
-  - {id: omit-strictures, runtime_fault: suppress-category-prohibitions, cases: [dragon-choices, warrior-choices]}
+  - id: omit-strictures
+    runtime_fault: suppress-category-prohibitions
+    cases:
+    - dragon-choices
+    - warrior-choices
 - id: averlander-promoted-halfling-no-strength
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access, digest: 6964505259300e192a85b7d5fb54552e8ecda23f3b43476746c173337d0309ed}
-  interpretation: >-
-    Averlanders / Halfling Scouts / Promotion forbids choosing Strength for the promoted Halfling. In
-    a henchman build, selecting a skill represents its promoted profile: Mighty Blow is rejected and a
-    permitted skill from its own access is accepted. Captain does not inherit the rule.
-  pending: >-
-    Incomplete implementation: the build does not represent the two skill lists acquired by Lad's Got
-    Talent. The current rejection happens through the henchman's original access before consuming the
-    promotion contract, so it does not constitute evidence for this rule.
+  - target: rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access
+    digest: 6964505259300e192a85b7d5fb54552e8ecda23f3b43476746c173337d0309ed
+  interpretation: 'Averlanders / Halfling Scouts / Promotion forbids choosing Strength for the promoted Halfling.
+    In a henchman build, selecting a skill represents its promoted profile: Mighty Blow is rejected and a permitted
+    skill from its own access is accepted. Captain does not inherit the rule.'
+  pending: 'Incomplete implementation: the build does not represent the two skill lists acquired by Lad''s
+    Got Talent. The current rejection happens through the henchman''s original access before consuming the
+    promotion contract, so it does not constitute evidence for this rule.'
   cases:
   - id: recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: averlanders, profile_id: halflings-scouts}
-    context: {rule_id: halflings-scouts--promotion}
-    expect: {result.recipients: [halflings-scouts]}
+    defender:
+      band_id: averlanders
+      profile_id: halflings-scouts
+    context:
+      rule_id: halflings-scouts--promotion
+    expect:
+      result.recipients:
+      - halflings-scouts
   - id: promoted-choices
-    roles: [accepted, rejected]
+    roles:
+    - accepted
+    - rejected
     operation: selection_choices
-    attacker: {band_id: averlanders, profile_id: halflings-scouts}
+    attacker:
+      band_id: averlanders
+      profile_id: halflings-scouts
     context:
       choices:
         no-skill: {}
-        strength: {skill_ids: [skill.mighty-blow]}
+        strength:
+          skill_ids:
+          - skill.mighty-blow
     expect:
-      result.accepted: [no-skill]
-      result.rejected: {strength: "Strength skills are forbidden for averlanders/halflings-scouts: ['skill.mighty-blow']"}
+      result.accepted:
+      - no-skill
+      result.rejected:
+        strength: 'Strength skills are forbidden for averlanders/halflings-scouts: [''skill.mighty-blow'']'
   - id: captain-control
-    roles: [accepted]
+    roles:
+    - accepted
     operation: selection_choices
-    attacker: {band_id: averlanders, profile_id: captain}
-    context: {choices: {strength: {skill_ids: [skill.mighty-blow]}}}
-    expect: {result.accepted: [strength], result.rejected: {}}
+    attacker:
+      band_id: averlanders
+      profile_id: captain
+    context:
+      choices:
+        strength:
+          skill_ids:
+          - skill.mighty-blow
+    expect:
+      result.accepted:
+      - strength
+      result.rejected: {}
   mutations: []
 - id: savage-tracker-master-of-throwing-weapons
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons, digest: d354dce337dbf3ae538ac384d3fbf49236f3ff50e0148ce428c09441031bfe37}
-  interpretation: >-
-    Lustria p.105 / Master of Throwing Weapons is only for Trackers and raises the missile weapon
-    limit from two to five. The exact recipient, the compiled value five and the ordinary control two
-    without selecting are checked.
+  - target: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons
+    digest: d354dce337dbf3ae538ac384d3fbf49236f3ff50e0148ce428c09441031bfe37
+  interpretation: Lustria p.105 / Master of Throwing Weapons is only for Trackers and raises the missile weapon
+    limit from two to five. The exact recipient, the compiled value five and the ordinary control two without
+    selecting are checked.
   cases:
   - id: recipients
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: trackers}
-    context: {rule_id: band--savage-goblin-special-skills-master-of-throwing-weapons}
-    expect: {result.recipients: [trackers]}
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+    context:
+      rule_id: band--savage-goblin-special-skills-master-of-throwing-weapons
+    expect:
+      result.recipients:
+      - trackers
   - id: selected-limit
-    roles: [accepted]
+    roles:
+    - accepted
     operation: missile_capacity
-    attacker: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: trackers, special_rule_ids: [band--savage-goblin-special-skills-master-of-throwing-weapons]}
-    expect: {result.limit: 5}
+    attacker:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      special_rule_ids:
+      - band--savage-goblin-special-skills-master-of-throwing-weapons
+    expect:
+      result.limit: 5
   - id: ordinary-limit
-    roles: [rejected]
+    roles:
+    - rejected
     operation: missile_capacity
-    attacker: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: trackers}
-    expect: {result.limit: 2}
+    attacker:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+    expect:
+      result.limit: 2
   mutations:
-  - {id: retain-ordinary-limit, path: attacker.missile_weapon_limit, value: 2, cases: [selected-limit]}
+  - id: retain-ordinary-limit
+    path: attacker.missile_weapon_limit
+    value: 2
+    cases:
+    - selected-limit
 - id: mordheim-lizardmen-band-scaly-skin
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/mordheim/lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin, digest: 63872437c9414676cf25b03e20f2eb02453197cd0832565cfcb43f786ab1e656}
-  interpretation: >-
-    Mordheim Lizardmen / Scaly Skin grants 6+ to Skinks, 5+ to Saurus and keeps the Kroxigor's own 4+.
-    The natural contribution is never worsened from 6+ by Strength, stacks with Light Armour and
-    Shield, and an attack that ignores armour nullifies it.
+  - target: rule/mordheim/lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+    digest: 384601073a8348bc7b5f83196e60dbdfa4324a2eda5a45d854fee4ebc02c5129
+  interpretation: Mordheim Lizardmen / Scaly Skin grants 6+ to Skinks, 5+ to Saurus and keeps the Kroxigor's
+    own 4+. The natural contribution is never worsened from 6+ by Strength, stacks with Light Armour and Shield,
+    and an attack that ignores armour nullifies it.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {band_id: lizardmen, profile_id: skink-priest}
-    context: {rule_id: band--scaly-skin}
-    expect: {result.recipients: [kroxigor, saurus-braves, saurus-totem-warrior, skink-braves, skink-great-crests, skink-priest]}
+    defender:
+      band_id: lizardmen
+      profile_id: skink-priest
+    context:
+      rule_id: band--scaly-skin
+    expect:
+      result.recipients:
+      - kroxigor
+      - saurus-braves
+      - saurus-totem-warrior
+      - skink-braves
+      - skink-great-crests
+      - skink-priest
   - id: skink-base
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: lizardmen, profile_id: skink-priest}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.target: 6, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: lizardmen
+      profile_id: skink-priest
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.saved: true
   - id: saurus-base
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: lizardmen, profile_id: saurus-braves}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.target: 5, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: lizardmen
+      profile_id: saurus-braves
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.saved: true
   - id: strength-floor
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
-    defender: {band_id: lizardmen, profile_id: saurus-braves}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.target: 6, result.saved: true}
+    attacker:
+      characteristics:
+        weapon_skill: 3
+        strength: 6
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      band_id: lizardmen
+      profile_id: saurus-braves
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.saved: true
   - id: stacks-armour-shield
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: lizardmen, profile_id: saurus-totem-warrior, armour_id: armour.light-armour, off_hand_id: defence.shield}
-    rolls: [{key: armour, value: 3}]
-    expect: {result.target: 3, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: lizardmen
+      profile_id: saurus-totem-warrior
+      armour_id: armour.light-armour
+      off_hand_id: defence.shield
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 3
+      result.saved: true
   - id: denial
-    roles: [inactive]
+    roles:
+    - inactive
     operation: armour
-    attacker: {main_weapon_id: weapon.vomit-attack}
-    defender: {band_id: lizardmen, profile_id: saurus-braves}
-    expect: {result.eligible: false}
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      band_id: lizardmen
+      profile_id: saurus-braves
+    expect:
+      result.eligible: false
   mutations:
   - id: remove-scaly-skin
-    changes: [{path: defender.armour_save, value: 7}, {path: defender.natural_armour_save, value: 7}, {path: defender.natural_armour_worst_save, value: 7}]
-    cases: [skink-base, saurus-base, strength-floor]
+    changes:
+    - path: defender.armour_save
+      value: 7
+    - path: defender.natural_armour_save
+      value: 7
+    - path: defender.natural_armour_worst_save
+      value: 7
+    cases:
+    - skink-base
+    - saurus-base
+    - strength-floor
 - id: lustria-lizardmen-band-scaly-skin
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin, digest: 936a982831c1599dc14b35a3725b2b796552592f45b9c149c0710f6343e879a5}
-  interpretation: >-
-    Lustria pp.54-56 / Scaly Skin keeps the natural saves, their 6+ floor, the combination with
-    ordinary armour and the total negation when the attack does not allow armour. Hardened Leather
-    adds no extra bonus.
+  - target: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
+    digest: 936a982831c1599dc14b35a3725b2b796552592f45b9c149c0710f6343e879a5
+  interpretation: Lustria pp.54-56 / Scaly Skin keeps the natural saves, their 6+ floor, the combination with
+    ordinary armour and the total negation when the attack does not allow armour. Hardened Leather adds no
+    extra bonus.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest}
-    context: {rule_id: band--scaly-skin}
-    expect: {result.recipients: [kroxigor, saurus-braves, saurus-totem-warrior, skink-braves, skink-great-crests, skink-priest]}
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+    context:
+      rule_id: band--scaly-skin
+    expect:
+      result.recipients:
+      - kroxigor
+      - saurus-braves
+      - saurus-totem-warrior
+      - skink-braves
+      - skink-great-crests
+      - skink-priest
   - id: skink-base
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.target: 6, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.saved: true
   - id: strength-floor
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-braves}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.target: 6, result.saved: true}
+    attacker:
+      characteristics:
+        weapon_skill: 3
+        strength: 6
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-braves
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.saved: true
   - id: ordinary-armour-stacks
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-totem-warrior, armour_id: armour.light-armour}
-    rolls: [{key: armour, value: 4}]
-    expect: {result.target: 4, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
+      armour_id: armour.light-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.saved: true
   - id: hardened-leather-no-additional-bonus
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
+    attacker:
+      main_weapon_id: weapon.mace
     defender:
       armour_id: armour.toughened-leathers
-      trait_overrides: {natural_armour_save: 6, natural_armour_stacks: true, natural_armour_worst_save: 6}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.target: 6, result.saved: true}
+      trait_overrides:
+        natural_armour_save: 6
+        natural_armour_stacks: true
+        natural_armour_worst_save: 6
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.saved: true
   - id: denial
-    roles: [inactive]
+    roles:
+    - inactive
     operation: armour
-    attacker: {main_weapon_id: weapon.vomit-attack}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-braves}
-    expect: {result.eligible: false}
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-braves
+    expect:
+      result.eligible: false
   mutations:
   - id: remove-scaly-skin
-    changes: [{path: defender.armour_save, value: 7}, {path: defender.natural_armour_save, value: 7}, {path: defender.natural_armour_worst_save, value: 7}]
-    cases: [skink-base, strength-floor]
+    changes:
+    - path: defender.armour_save
+      value: 7
+    - path: defender.natural_armour_save
+      value: 7
+    - path: defender.natural_armour_worst_save
+      value: 7
+    cases:
+    - skink-base
+    - strength-floor
 - id: condemned-inconsistency-random-characteristics
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: rule/mordheim/marauders-of-chaos/condemned--inconsistency/profile.random-characteristics, digest: ed8d1b8df3a3a3ad1a7e66156c8b78f8ea1395e2f5d604dfed6deda29b9207a5}
-  interpretation: >-
-    Marauders of Chaos / Condemned / Inconsistency rolls D6 per turn for WS, S and T, and D3 for A.
-    The modular initialisation consumes exactly those four rolls, keeps I 4 and applies both minima
+  - target: rule/mordheim/marauders-of-chaos/condemned--inconsistency/profile.random-characteristics
+    digest: ed8d1b8df3a3a3ad1a7e66156c8b78f8ea1395e2f5d604dfed6deda29b9207a5
+  interpretation: Marauders of Chaos / Condemned / Inconsistency rolls D6 per turn for WS, S and T, and D3
+    for A. The modular initialisation consumes exactly those four rolls, keeps I 4 and applies both minima
     and maxima.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: marauders-of-chaos, profile_id: condemned}
-    context: {rule_id: condemned--inconsistency}
-    expect: {result.recipients: [condemned]}
-  - id: compiled-dice-contract
-    roles: [compiled]
-    operation: compile
-    attacker: {band_id: marauders-of-chaos, profile_id: condemned}
+    defender:
+      band_id: marauders-of-chaos
+      profile_id: condemned
+    context:
+      rule_id: condemned--inconsistency
     expect:
-      attacker.random_characteristics: [[WS, 1, 6, 0], [S, 1, 6, 0], [T, 1, 6, 0], [A, 1, 3, 0]]
+      result.recipients:
+      - condemned
+  - id: compiled-dice-contract
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      band_id: marauders-of-chaos
+      profile_id: condemned
+    expect:
+      attacker.random_characteristics:
+      - - WS
+        - 1
+        - 6
+        - 0
+      - - S
+        - 1
+        - 6
+        - 0
+      - - T
+        - 1
+        - 6
+        - 0
+      - - A
+        - 1
+        - 3
+        - 0
   - id: minimum-values
-    roles: [active, sequence, consumption]
+    roles:
+    - active
+    - sequence
+    - consumption
     operation: initialize
-    attacker: {band_id: marauders-of-chaos, profile_id: condemned}
+    attacker:
+      band_id: marauders-of-chaos
+      profile_id: condemned
     rolls:
-    - {key: a.characteristic.WS.0, sides: 6, value: 1}
-    - {key: a.characteristic.S.0, sides: 6, value: 1}
-    - {key: a.characteristic.T.0, sides: 6, value: 1}
-    - {key: a.characteristic.A.0, sides: 3, value: 1}
-    expect: {result.attacker.weapon_skill: 1, result.attacker.strength: 1, result.attacker.toughness: 1, result.attacker.initiative: 4, result.attacker.attacks: 1}
+    - key: a.characteristic.WS.0
+      sides: 6
+      value: 1
+    - key: a.characteristic.S.0
+      sides: 6
+      value: 1
+    - key: a.characteristic.T.0
+      sides: 6
+      value: 1
+    - key: a.characteristic.A.0
+      sides: 3
+      value: 1
+    expect:
+      result.attacker.weapon_skill: 1
+      result.attacker.strength: 1
+      result.attacker.toughness: 1
+      result.attacker.initiative: 4
+      result.attacker.attacks: 1
   - id: maximum-values
-    roles: [boundary]
+    roles:
+    - boundary
     operation: initialize
-    attacker: {band_id: marauders-of-chaos, profile_id: condemned}
+    attacker:
+      band_id: marauders-of-chaos
+      profile_id: condemned
     rolls:
-    - {key: a.characteristic.WS.0, sides: 6, value: 6}
-    - {key: a.characteristic.S.0, sides: 6, value: 6}
-    - {key: a.characteristic.T.0, sides: 6, value: 6}
-    - {key: a.characteristic.A.0, sides: 3, value: 3}
-    expect: {result.attacker.weapon_skill: 6, result.attacker.strength: 6, result.attacker.toughness: 6, result.attacker.initiative: 4, result.attacker.attacks: 3}
+    - key: a.characteristic.WS.0
+      sides: 6
+      value: 6
+    - key: a.characteristic.S.0
+      sides: 6
+      value: 6
+    - key: a.characteristic.T.0
+      sides: 6
+      value: 6
+    - key: a.characteristic.A.0
+      sides: 3
+      value: 3
+    expect:
+      result.attacker.weapon_skill: 6
+      result.attacker.strength: 6
+      result.attacker.toughness: 6
+      result.attacker.initiative: 4
+      result.attacker.attacks: 3
   - id: ordinary-profile-inactive
-    roles: [inactive]
+    roles:
+    - inactive
     operation: initialize
-    attacker: {main_weapon_id: weapon.mace}
-    expect: {result.attacker.weapon_skill: 3, result.attacker.strength: 3, result.attacker.toughness: 3, result.attacker.initiative: 3, result.attacker.attacks: 1}
+    attacker:
+      main_weapon_id: weapon.mace
+    expect:
+      result.attacker.weapon_skill: 3
+      result.attacker.strength: 3
+      result.attacker.toughness: 3
+      result.attacker.initiative: 3
+      result.attacker.attacks: 1
   mutations:
-  - {id: remove-random-characteristics, path: attacker.random_characteristics, value: [], cases: [minimum-values, maximum-values]}
+  - id: remove-random-characteristics
+    path: attacker.random_characteristics
+    value: []
+    cases:
+    - minimum-values
+    - maximum-values

@@ -36,6 +36,23 @@ def test_hero_serious_injury_rows_are_kb_rows():
     assert madness.follow_up is not None
 
 
+def test_advance_thresholds_rating_and_racial_maximums_come_from_the_kb():
+    """The app-owned looking-glass values are read from the KB, not constants."""
+    resolver = _resolver()
+    # experience-and-advances.yaml "advance_thresholds" block.
+    assert resolver.advance_thresholds("hero")
+    assert resolver.advance_thresholds("hero")[:4] == (20, 40, 65, 90)
+    assert resolver.advance_thresholds("henchman")[:4] == (8, 16, 25, 35)
+    # warband-rating.yaml: 5 per model + 1 per XP.
+    assert resolver.warband_rating(models=8, experience=85) == 125
+    # catalog/rules/racial-maximums.yaml: caps keyed by race.
+    maximums = resolver.racial_maximums()
+    assert maximums["human"]["WS"] == 6
+    assert maximums["human"]["S"] == 4
+    assert maximums["elf"]["M"] == 5
+    assert maximums["elf"]["I"] == 9
+
+
 def test_hero_d66_chart_regions_follow_row_major_order():
     resolver = _resolver()
     # Row 16-21 covers the corner rolls 16 and 21 (nothing sits between them

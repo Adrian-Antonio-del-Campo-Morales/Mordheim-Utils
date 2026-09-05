@@ -45,7 +45,9 @@ def _native_buildable() -> bool:
     try:
         from distutils.ccompiler import new_compiler
 
-        new_compiler().initialize()
+        requested = os.environ.get("COMBAT_NATIVE_COMPILER")
+        compiler = new_compiler(compiler=requested) if requested else new_compiler()
+        compiler.initialize()
         return True
     except (Exception, SystemExit):
         return False

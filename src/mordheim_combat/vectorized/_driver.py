@@ -9,6 +9,7 @@ from mordheim_core.models import CompiledFighter, DuelRequest, DuelResult, Effec
 from mordheim_combat.vectorized._types import CombatState, KNOCKED_DOWN, OUT, PARALYZED, STANDING, STUNNED, VectorBatchObservation, _parry_capacity, has
 from mordheim_combat.vectorized._operators import _characteristic_test, attack_count, effective_initiative, priority
 from mordheim_combat.vectorized._attacks import _optional_phase_plan, _prepare_weapon_attack, _resolve_weapon, resolve_attacks
+from mordheim_combat.vectorized._equipment import phase_equipment, staff_power
 
 def _new_state(fighter: CompiledFighter, count: int, rng: np.random.Generator) -> CombatState:
     wounds = fighter.characteristics.wounds + int(has(fighter.global_effects, "skill.monstrous"))
@@ -34,7 +35,8 @@ def _new_state(fighter: CompiledFighter, count: int, rng: np.random.Generator) -
                        np.zeros(count,dtype=np.int8),np.zeros(count,dtype=bool),np.zeros(count,dtype=bool),np.zeros(count,dtype=bool),
                        characteristic_values["WS"],characteristic_values["S"],
                        characteristic_values["T"],characteristic_values["I"],
-                       characteristic_values["A"])
+                       characteristic_values["A"], np.zeros(count, dtype=np.uint8),
+                       np.zeros(count, dtype=np.int16), np.zeros(count, dtype=np.int16))
     if has(fighter.global_effects,"mechanic.disability"):
         state.disability[:]=rng.integers(1,7,count,dtype=np.int8)
         state.initiative[state.disability==1]=np.maximum(1,state.initiative[state.disability==1]-1)
@@ -52,15 +54,15 @@ def _resolve_spines(first: CompiledFighter, second: CompiledFighter,
         tags=("rule.spines", "effect.no-critical"), fixed_strength=1,
         automatic_hit=True, cannot_be_parried=True)
     prepared1=(
-        _prepare_weapon_attack(first,second,spines,rows,charge1,state1,state2,rng,False)
+        _prepare_weapon_attack(first,second,spines,rows,charge1,state1,state2,rng,False,melee_attack=False)
         if has(first.global_effects,"spines") else None)
     prepared2=(
-        _prepare_weapon_attack(second,first,spines,rows,charge2,state2,state1,rng,False)
+        _prepare_weapon_attack(second,first,spines,rows,charge2,state2,state1,rng,False,melee_attack=False)
         if has(second.global_effects,"spines") else None)
     if prepared1 is not None:
-        _resolve_weapon(first,second,spines,rows,charge1,state1,state2,rng,False,prepared=prepared1)
+        _resolve_weapon(first,second,spines,rows,charge1,state1,state2,rng,False,prepared=prepared1,melee_attack=False)
     if prepared2 is not None:
-        _resolve_weapon(second,first,spines,rows,charge2,state2,state1,rng,False,prepared=prepared2)
+        _resolve_weapon(second,first,spines,rows,charge2,state2,state1,rng,False,prepared=prepared2,melee_attack=False)
 
 def _rescue_force_of_will(fighter: CompiledFighter, state: CombatState,
                           rows: np.ndarray, rng: np.random.Generator) -> None:
@@ -87,7 +89,7 @@ def _sustain_force_of_will(fighter: CompiledFighter, state: CombatState,
     if active.size==0:return
     state.force_of_will_penalty[active]+=1
     target=np.maximum(0,state.toughness[active]-state.force_of_will_penalty[active])
-    failed=rng.integers(1,7,active.size)>target
+    failed=~_characteristic_test(fighter,target,rng)
     removed=active[failed]
     state.condition[removed]=OUT
     state.force_of_will_active[removed]=False
@@ -102,7 +104,8 @@ def _black_hunger_backlash(fighter: CompiledFighter, state: CombatState,
                        automatic_hit=True,cannot_be_parried=True,ignore_armour=True)
     for index in range(3):
         hit_rows=active[hits>index]
-        _resolve_weapon(fighter,fighter,backlash,hit_rows,np.zeros(state.wounds.size,dtype=bool),state,state,rng,False)
+        _resolve_weapon(fighter,fighter,backlash,hit_rows,np.zeros(state.wounds.size,dtype=bool),state,state,rng,False,
+            melee_attack=False)
         _rescue_force_of_will(fighter,state,hit_rows,rng)
 
 def _resolve_fire(victim: CompiledFighter, opponent: CompiledFighter,
@@ -122,7 +125,7 @@ def _resolve_fire(victim: CompiledFighter, opponent: CompiledFighter,
                    automatic_hit=True,cannot_be_parried=True)
     source=replace(opponent,main_weapon=fire,off_hand=None,global_effects=EffectSet(),extra_attacks=())
     _resolve_weapon(source,victim,fire,still_burning,np.zeros(victim_state.wounds.size,dtype=bool),
-                    opponent_state,victim_state,rng,False)
+                    opponent_state,victim_state,rng,False,melee_attack=False)
 
 def _resolve_netter_charge(netter: CompiledFighter, target: CompiledFighter,
                            rows: np.ndarray, netter_state: CombatState,
@@ -151,6 +154,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
                          *, observe: bool = False
                          ) -> tuple[int, int, int] | VectorBatchObservation:
     state1, state2 = _new_state(first,count,rng), _new_state(second,count,rng)
+    original_first, original_second = first, second
     first_charges = rng.random(count) < .5
     rounds = np.zeros(count, dtype=np.int16) if observe else None
     optional = _optional_phase_plan(first, second)
@@ -159,6 +163,9 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         if optional.first_entangle or optional.second_entangle else None
     )
     for round_index in range(maximum_rounds):
+        first = phase_equipment(original_first, first_round=round_index == 0)
+        second = phase_equipment(original_second, first_round=round_index == 0)
+        first_player_turn = first_charges if round_index % 2 == 0 else ~first_charges
         unresolved = (state1.condition != OUT) & (state2.condition != OUT)
         if not unresolved.any():
             break
@@ -169,9 +176,9 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             if optional.second_force_of_will:
                 _sustain_force_of_will(second,state2,rng,active_rows)
             if optional.first_can_burn:
-                _resolve_fire(first,second,state1,state2,rng,active_rows)
+                _resolve_fire(first,second,state1,state2,rng,np.flatnonzero(unresolved & first_player_turn))
             if optional.second_can_burn:
-                _resolve_fire(second,first,state2,state1,rng,active_rows)
+                _resolve_fire(second,first,state2,state1,rng,np.flatnonzero(unresolved & ~first_player_turn))
             if optional.first_force_of_will:
                 _rescue_force_of_will(first, state1, active_rows, rng)
             if optional.second_force_of_will:
@@ -186,15 +193,21 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         state1.parry_remaining[:] = _parry_capacity(first)
         state2.parry_remaining[:] = _parry_capacity(second)
         state1.critical_used[:] = False; state2.critical_used[:] = False
+        state1.attack_penalty[:] = 0; state2.attack_penalty[:] = 0
+        state1.hampered_main[:] = 0; state2.hampered_main[:] = 0
+        state1.hampered_off[:] = 0; state2.hampered_off[:] = 0
         if has(first.global_effects,"mechanic.spawn-special-attacks"):
             state1.attacks[:]=rng.integers(1,7,count,dtype=np.int16)+1
         if has(second.global_effects,"mechanic.spawn-special-attacks"):
             state2.attacks[:]=rng.integers(1,7,count,dtype=np.int16)+1
-        stunned1, stunned2 = state1.condition == STUNNED, state2.condition == STUNNED
-        stood1, stood2 = state1.condition == KNOCKED_DOWN, state2.condition == KNOCKED_DOWN
+        stunned1 = (state1.condition == STUNNED) & first_player_turn
+        stunned2 = (state2.condition == STUNNED) & ~first_player_turn
+        stood1 = (state1.condition == KNOCKED_DOWN) & first_player_turn
+        stood2 = (state2.condition == KNOCKED_DOWN) & ~first_player_turn
         state1.condition[stunned1] = KNOCKED_DOWN; state2.condition[stunned2] = KNOCKED_DOWN
         state1.condition[stood1 & ~stunned1] = STANDING; state2.condition[stood2 & ~stunned2] = STANDING
-        paralyzed1, paralyzed2 = state1.condition == PARALYZED, state2.condition == PARALYZED
+        paralyzed1 = (state1.condition == PARALYZED) & first_player_turn
+        paralyzed2 = (state2.condition == PARALYZED) & ~first_player_turn
         paralyzed_rows1=np.flatnonzero(paralyzed1)
         paralyzed_rows2=np.flatnonzero(paralyzed2)
         if paralyzed_rows1.size:
@@ -226,6 +239,12 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             entangled2=np.flatnonzero(state2.entangled&(state1.condition==STANDING)&unresolved)
             _resolve_weapon(first,second,entangle_effect,entangled2,charge1,state1,state2,rng,False)
         charged1, charged2 = charge2, charge1
+        first = staff_power(first, decisions, f'round.{round_index}.first')
+        second = staff_power(second, decisions, f'round.{round_index}.second')
+        if has(first.main_weapon, 'effect.serpent-staff-power'):
+            state1.parry_remaining[:] = 0
+        if has(second.main_weapon, 'effect.serpent-staff-power'):
+            state2.parry_remaining[:] = 0
         attacks1=attack_count(first,charge1,first_round,state1.frenzy,charged1,state1.attack_penalty,state1.wounds<first.characteristics.wounds,state1.attacks)
         attacks2=attack_count(second,charge2,first_round,state2.frenzy,charged2,state2.attack_penalty,state2.wounds<second.characteristics.wounds,state2.attacks)
         attacks1=np.where(attacks1>0,np.maximum(1,attacks1+second.global_effects.incoming_attacks_modifier),0)
@@ -316,7 +335,9 @@ def available_backends() -> tuple[str, ...]:
         from mordheim_combat import _combat_native
     except ImportError:
         return ("numpy",)
-    return ("native", "numpy") if hasattr(_combat_native, "simulate_duel") else ("numpy",)
+    from mordheim_combat.kernel import EFFECT_VALUE_FIELDS
+    compatible = getattr(_combat_native, 'N_EFFECT_FIELDS', None) == len(EFFECT_VALUE_FIELDS)
+    return ("native", "numpy") if hasattr(_combat_native, "simulate_duel") and compatible else ("numpy",)
 
 # Per-batch stream derivation for the NumPy driver.
 #
@@ -448,6 +469,9 @@ def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
         raise RuntimeError("native combat backend is not available") from error
     if not hasattr(_combat_native, "simulate_duel"):
         raise RuntimeError("native combat backend is not available")
+    from mordheim_combat.kernel import EFFECT_VALUE_FIELDS
+    if getattr(_combat_native, 'N_EFFECT_FIELDS', None) != len(EFFECT_VALUE_FIELDS):
+        raise RuntimeError("native combat effect layout is stale; rebuild with tools/mordheim-utils.py build-native")
     from mordheim_combat.kernel import compile_duel_plan
 
     plan = compile_duel_plan(request.first, request.second)

@@ -5,14 +5,15 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-critical-hits
-    digest: 8a9bed002edfdc8ec9a74dc676d919cedaf2e50bb6c96d600c72d78e9dca2e69
+    digest: 48dc55dfd8d28ad2179d97ee7eee28475be4430d2430a6c0f491712b5bd7062c
   - target: core/combat-injury-states
     digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
   bindings:
   - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
   - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
-  interpretation: A natural 6 to wound is critical and adds +2 to the Injury roll; the composed injury
-    modifier and the critical bonus both shift the table result.
+  interpretation: The basic critical table is rolled independently. This composition chooses Master Strike
+    (5), two wounds with armour ignored and +2 Injury. The boundary is an ordinary wound. See docs/modular-remediation.md,
+    M01.
   cases:
   - id: composition
     roles:
@@ -33,7 +34,11 @@ specifications:
       value: 4
     - key: test.wound
       value: 6
+    - key: test.critical
+      value: 5
     - key: test.injury.0
+      value: 1
+    - key: test.injury.1
       value: 1
     expect:
       result.critical: true
@@ -65,14 +70,15 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-critical-hits
-    digest: 8a9bed002edfdc8ec9a74dc676d919cedaf2e50bb6c96d600c72d78e9dca2e69
+    digest: 48dc55dfd8d28ad2179d97ee7eee28475be4430d2430a6c0f491712b5bd7062c
   - target: mechanic/material.dark-elf-blade
-    digest: 104e6c588d3587239b1e356846b55410dd9f6a407a6bf33f9d57b94213463a8e
+    digest: 45c17cab9d066c1c695301eb5348962d1fc49678d29abd731841fcdce9027ece
   bindings:
   - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
   - '{"id": "material.dark-elf-blade", "kind": "mechanic", "parameters": {}}'
-  interpretation: A natural 6 to wound is critical and adds +2 to the Injury roll; the composed injury
-    modifier and the critical bonus both shift the table result.
+  interpretation: The basic critical table is rolled independently. This composition chooses Master Strike
+    (5), two wounds with armour ignored and +2 Injury. The boundary is an ordinary wound. See docs/modular-remediation.md,
+    M01.
   cases:
   - id: composition
     roles:
@@ -94,7 +100,11 @@ specifications:
       value: 4
     - key: test.wound
       value: 6
+    - key: test.critical
+      value: 5
     - key: test.injury.0
+      value: 1
+    - key: test.injury.1
       value: 1
     expect:
       result.critical: true
@@ -126,14 +136,15 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-critical-hits
-    digest: 8a9bed002edfdc8ec9a74dc676d919cedaf2e50bb6c96d600c72d78e9dca2e69
+    digest: 48dc55dfd8d28ad2179d97ee7eee28475be4430d2430a6c0f491712b5bd7062c
   - target: mechanic/skill.hard-to-kill
     digest: b66c185a5a58b1f030ef4dc30f29ae0054d249281805410af7521c982cc88cd4
   bindings:
   - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
   - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
-  interpretation: A natural 6 to wound is critical and adds +2 to the Injury roll; the composed injury
-    modifier and the critical bonus both shift the table result.
+  interpretation: The basic critical table is rolled independently. This composition chooses Master Strike
+    (5), two wounds with armour ignored and +2 Injury. The boundary is an ordinary wound. See docs/modular-remediation.md,
+    M01.
   cases:
   - id: composition
     roles:
@@ -156,7 +167,11 @@ specifications:
       value: 4
     - key: test.wound
       value: 6
+    - key: test.critical
+      value: 5
     - key: test.injury.0
+      value: 1
+    - key: test.injury.1
       value: 1
     expect:
       result.critical: true
@@ -188,14 +203,15 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-critical-hits
-    digest: 8a9bed002edfdc8ec9a74dc676d919cedaf2e50bb6c96d600c72d78e9dca2e69
+    digest: 48dc55dfd8d28ad2179d97ee7eee28475be4430d2430a6c0f491712b5bd7062c
   - target: mechanic/skill.knife-fighting
     digest: 60308d94edbededdb6b6375947e281e9bdc7c1a48b337f4d2697037f792aa5fc
   bindings:
   - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
   - '{"id": "skill.knife-fighting", "kind": "mechanic", "parameters": {}}'
-  interpretation: A natural 6 to wound is critical and adds +2 to the Injury roll; the composed injury
-    modifier and the critical bonus both shift the table result.
+  interpretation: The basic critical table is rolled independently. This composition chooses Master Strike
+    (5), two wounds with armour ignored and +2 Injury. The boundary is an ordinary wound. See docs/modular-remediation.md,
+    M01.
   cases:
   - id: composition
     roles:
@@ -218,9 +234,11 @@ specifications:
       value: 4
     - key: test.wound
       value: 6
-    - key: test.armour
+    - key: test.critical
       value: 5
     - key: test.injury.0
+      value: 1
+    - key: test.injury.1
       value: 1
     expect:
       result.critical: true
@@ -254,14 +272,15 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-critical-hits
-    digest: 8a9bed002edfdc8ec9a74dc676d919cedaf2e50bb6c96d600c72d78e9dca2e69
+    digest: 48dc55dfd8d28ad2179d97ee7eee28475be4430d2430a6c0f491712b5bd7062c
   - target: mechanic/skill.strike-to-injure
     digest: 2b4caf05f463a41260f0e7d62ee217070f60f7707f86f8d8476c820dcf472a98
   bindings:
   - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
   - '{"id": "skill.strike-to-injure", "kind": "mechanic", "parameters": {}}'
-  interpretation: A natural 6 to wound is critical and adds +2 to the Injury roll; the composed injury
-    modifier and the critical bonus both shift the table result.
+  interpretation: The basic critical table is rolled independently. This composition chooses Master Strike
+    (5), two wounds with armour ignored and +2 Injury. The boundary is an ordinary wound. See docs/modular-remediation.md,
+    M01.
   cases:
   - id: composition
     roles:
@@ -284,7 +303,11 @@ specifications:
       value: 4
     - key: test.wound
       value: 6
+    - key: test.critical
+      value: 5
     - key: test.injury.0
+      value: 1
+    - key: test.injury.1
       value: 1
     expect:
       result.critical: true
@@ -316,14 +339,15 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-critical-hits
-    digest: 8a9bed002edfdc8ec9a74dc676d919cedaf2e50bb6c96d600c72d78e9dca2e69
+    digest: 48dc55dfd8d28ad2179d97ee7eee28475be4430d2430a6c0f491712b5bd7062c
   - target: mechanic/weapon.mace
     digest: 8bd3ca5bc3d4418757c689510280b1a6f351b3c4565f11497f181c94fa3fc2ee
   bindings:
   - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
   - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
-  interpretation: A natural 6 to wound is critical and adds +2 to the Injury roll; the composed injury
-    modifier and the critical bonus both shift the table result.
+  interpretation: The basic critical table is rolled independently. This composition chooses Master Strike
+    (5), two wounds with armour ignored and +2 Injury. The boundary is an ordinary wound. See docs/modular-remediation.md,
+    M01.
   cases:
   - id: composition
     roles:
@@ -344,7 +368,11 @@ specifications:
       value: 4
     - key: test.wound
       value: 6
+    - key: test.critical
+      value: 5
     - key: test.injury.0
+      value: 1
+    - key: test.injury.1
       value: 1
     expect:
       result.critical: true
@@ -376,14 +404,15 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-critical-hits
-    digest: 8a9bed002edfdc8ec9a74dc676d919cedaf2e50bb6c96d600c72d78e9dca2e69
+    digest: 48dc55dfd8d28ad2179d97ee7eee28475be4430d2430a6c0f491712b5bd7062c
   - target: mechanic/weapon.stone-axe
     digest: 7daa278411e8b8a29584d7de1f261673ab11dc0eeda71c990529d76b648c499d
   bindings:
   - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
   - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
-  interpretation: A natural 6 to wound is critical and adds +2 to the Injury roll; the composed injury
-    modifier and the critical bonus both shift the table result.
+  interpretation: The basic critical table is rolled independently. This composition chooses Master Strike
+    (5), two wounds with armour ignored and +2 Injury. The boundary is an ordinary wound. See docs/modular-remediation.md,
+    M01.
   cases:
   - id: composition
     roles:
@@ -404,7 +433,11 @@ specifications:
       value: 4
     - key: test.wound
       value: 6
+    - key: test.critical
+      value: 5
     - key: test.injury.0
+      value: 1
+    - key: test.injury.1
       value: 1
     expect:
       result.critical: true
@@ -442,8 +475,8 @@ specifications:
   bindings:
   - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
   - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
-  interpretation: A Stunned result from the Injury table can be converted to Knocked Down by the cooking
-    pot helmet's unmodified 5+; the reaction consumes exactly one die.
+  interpretation: A Stunned result from the Injury table can be converted to Knocked Down by the cooking pot
+    helmet's unmodified 5+; the reaction consumes exactly one die.
   cases:
   - id: composition
     roles:
@@ -490,8 +523,8 @@ specifications:
   bindings:
   - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
   - '{"id": "defence.helmet", "kind": "mechanic", "parameters": {}}'
-  interpretation: A Helmet converts a Stunned Injury result to Knocked Down on 4+ after the Injury table;
-    the reaction consumes exactly one die.
+  interpretation: A Helmet converts a Stunned Injury result to Knocked Down on 4+ after the Injury table; the
+    reaction consumes exactly one die.
   cases:
   - id: composition
     roles:
@@ -534,11 +567,12 @@ specifications:
   - target: core/combat-injury-states
     digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
   - target: mechanic/material.dark-elf-blade
-    digest: 104e6c588d3587239b1e356846b55410dd9f6a407a6bf33f9d57b94213463a8e
+    digest: 45c17cab9d066c1c695301eb5348962d1fc49678d29abd731841fcdce9027ece
   bindings:
   - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
   - '{"id": "material.dark-elf-blade", "kind": "mechanic", "parameters": {}}'
-  interpretation: Dark Elf blade adds +1 to Injury rolls; the composed total shifts the face.
+  interpretation: Wicked Edge changes the stun boundary rather than adding an Injury modifier. Other Injury
+    modifiers and Hard to Kill retain their own thresholds. Source review M14.
   cases:
   - id: composition
     roles:
@@ -563,9 +597,9 @@ specifications:
     expect:
       result.condition: OUT
   mutations:
-  - id: remove-injury-bonus
-    path: attacker.main_weapon.injury_modifier
-    value: 0
+  - id: remove-wicked-edge
+    path: attacker.main_weapon.concussion
+    value: false
     cases:
     - composition
 - id: interaction-combat-injury-states--skill.hard-to-kill
@@ -625,8 +659,7 @@ specifications:
   bindings:
   - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
   - '{"id": "skill.head-crusher", "kind": "mechanic", "parameters": {}}'
-  interpretation: Head Crusher promotes the attacker's Knocked Down results to Stunned after the Injury
-    table.
+  interpretation: Head Crusher promotes the attacker's Knocked Down results to Stunned after the Injury table.
   cases:
   - id: composition
     roles:
@@ -712,8 +745,8 @@ specifications:
   bindings:
   - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
   - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
-  interpretation: Jump Up ignores ordinary Knocked Down Injury results; a Stunned result still applies
-    and no reaction die is requested.
+  interpretation: Jump Up ignores ordinary Knocked Down Injury results; a Stunned result still applies and
+    no reaction die is requested.
   cases:
   - id: composition
     roles:
@@ -918,8 +951,8 @@ specifications:
   bindings:
   - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
   - '{"id": "defence.helmet", "kind": "mechanic", "parameters": {}}'
-  interpretation: With both helmets worn the better 4+ reaction applies; the threshold reveals that the
-    cooking pot's 5+ was never used.
+  interpretation: With both helmets worn the better 4+ reaction applies; the threshold reveals that the cooking
+    pot's 5+ was never used.
   cases:
   - id: composition
     roles:
@@ -1017,8 +1050,8 @@ specifications:
   bindings:
   - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.head-crusher", "kind": "mechanic", "parameters": {}}'
-  interpretation: Head Crusher promotes the Knocked Down face to Stunned; the cooking pot helmet then
-    reacts on 5+.
+  interpretation: Head Crusher promotes the Knocked Down face to Stunned; the cooking pot helmet then reacts
+    on 5+.
   cases:
   - id: composition
     roles:
@@ -1114,8 +1147,8 @@ specifications:
   bindings:
   - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
-  interpretation: Jump Up handles the ordinary Knocked Down face first; a face the cooking pot helmet
-    converts to Knocked Down stays down.
+  interpretation: Jump Up handles the ordinary Knocked Down face first; a face the cooking pot helmet converts
+    to Knocked Down stays down.
   cases:
   - id: composition
     roles:
@@ -1160,8 +1193,8 @@ specifications:
   bindings:
   - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.thick-skull", "kind": "mechanic", "parameters": {}}'
-  interpretation: Thick Skull replaces the cooking pot helmet's reaction with its own 3+ threshold; the
-    pot's 5+ is never rolled.
+  interpretation: Thick Skull replaces the cooking pot helmet's reaction with its own 3+ threshold; the pot's
+    5+ is never rolled.
   cases:
   - id: composition
     roles:
@@ -1209,8 +1242,8 @@ specifications:
   bindings:
   - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
-  interpretation: Mace Concussion turns face 2 into Stunned; the cooking pot helmet may then convert it
-    on 5+.
+  interpretation: Mace Concussion turns face 2 into Stunned; the cooking pot helmet may then convert it on
+    5+.
   cases:
   - id: composition
     roles:
@@ -1259,8 +1292,8 @@ specifications:
   bindings:
   - '{"id": "defence.cooking-pot-helmet", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
-  interpretation: Stone Axe Concussion turns face 2 into Stunned; the cooking pot helmet may then convert
-    it on 5+.
+  interpretation: Stone Axe Concussion turns face 2 into Stunned; the cooking pot helmet may then convert it
+    on 5+.
   cases:
   - id: composition
     roles:
@@ -1360,8 +1393,7 @@ specifications:
   bindings:
   - '{"id": "defence.helmet", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.head-crusher", "kind": "mechanic", "parameters": {}}'
-  interpretation: Head Crusher promotes the Knocked Down face to Stunned; the helmet then converts it
-    on 4+.
+  interpretation: Head Crusher promotes the Knocked Down face to Stunned; the helmet then converts it on 4+.
   cases:
   - id: composition
     roles:
@@ -1412,8 +1444,8 @@ specifications:
   bindings:
   - '{"id": "defence.helmet", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
-  interpretation: Ignore Pain converts the Stunned face to Knocked Down before any helmet reaction, so
-    the helmet requests no die.
+  interpretation: Ignore Pain converts the Stunned face to Knocked Down before any helmet reaction, so the
+    helmet requests no die.
   cases:
   - id: composition
     roles:
@@ -1595,13 +1627,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/material.dark-elf-blade
-    digest: 104e6c588d3587239b1e356846b55410dd9f6a407a6bf33f9d57b94213463a8e
+    digest: 45c17cab9d066c1c695301eb5348962d1fc49678d29abd731841fcdce9027ece
   - target: mechanic/skill.hard-to-kill
     digest: b66c185a5a58b1f030ef4dc30f29ae0054d249281805410af7521c982cc88cd4
   bindings:
   - '{"id": "material.dark-elf-blade", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
-  interpretation: Dark Elf blade's +1 Injury shifts total 5 to 6, which Hard to Kill makes Out.
+  interpretation: Wicked Edge changes the stun boundary rather than adding an Injury modifier. Other Injury
+    modifiers and Hard to Kill retain their own thresholds. Source review M14.
   cases:
   - id: composition
     roles:
@@ -1615,7 +1648,7 @@ specifications:
       - skill.hard-to-kill
     rolls:
     - key: test.injury
-      value: 3
+      value: 2
     expect:
       result.condition: STUNNED
   - id: boundary
@@ -1628,26 +1661,26 @@ specifications:
     - key: test.injury
       value: 5
     expect:
-      result.condition: OUT
+      result.condition: STUNNED
   mutations:
-  - id: remove-injury-bonus
-    path: attacker.main_weapon.injury_modifier
-    value: 0
+  - id: remove-wicked-edge
+    path: attacker.main_weapon.concussion
+    value: false
     cases:
-    - boundary
+    - composition
 - id: interaction-material.dark-elf-blade--skill.knife-fighting
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: interaction
   sources:
   - target: mechanic/material.dark-elf-blade
-    digest: 104e6c588d3587239b1e356846b55410dd9f6a407a6bf33f9d57b94213463a8e
+    digest: 45c17cab9d066c1c695301eb5348962d1fc49678d29abd731841fcdce9027ece
   - target: mechanic/skill.knife-fighting
     digest: 60308d94edbededdb6b6375947e281e9bdc7c1a48b337f4d2697037f792aa5fc
   bindings:
   - '{"id": "material.dark-elf-blade", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.knife-fighting", "kind": "mechanic", "parameters": {}}'
-  interpretation: Dark Elf blade and Knife Fighting each add +1 to dagger injuries, composing to a +2
-    total.
+  interpretation: Wicked Edge changes the stun boundary rather than adding an Injury modifier. Other Injury
+    modifiers and Hard to Kill retain their own thresholds. Source review M14.
   cases:
   - id: composition
     roles:
@@ -1686,13 +1719,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/material.dark-elf-blade
-    digest: 104e6c588d3587239b1e356846b55410dd9f6a407a6bf33f9d57b94213463a8e
+    digest: 45c17cab9d066c1c695301eb5348962d1fc49678d29abd731841fcdce9027ece
   - target: mechanic/skill.strike-to-injure
     digest: 2b4caf05f463a41260f0e7d62ee217070f60f7707f86f8d8476c820dcf472a98
   bindings:
   - '{"id": "material.dark-elf-blade", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.strike-to-injure", "kind": "mechanic", "parameters": {}}'
-  interpretation: Dark Elf blade and Strike to Injure each add +1 to Injury rolls.
+  interpretation: Wicked Edge changes the stun boundary rather than adding an Injury modifier. Other Injury
+    modifiers and Hard to Kill retain their own thresholds. Source review M14.
   cases:
   - id: composition
     roles:
@@ -1731,14 +1765,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/material.dark-elf-blade
-    digest: 104e6c588d3587239b1e356846b55410dd9f6a407a6bf33f9d57b94213463a8e
+    digest: 45c17cab9d066c1c695301eb5348962d1fc49678d29abd731841fcdce9027ece
   - target: mechanic/weapon.mace
     digest: 8bd3ca5bc3d4418757c689510280b1a6f351b3c4565f11497f181c94fa3fc2ee
   bindings:
   - '{"id": "material.dark-elf-blade", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
-  interpretation: Dark Elf blade's +1 pushes face 1 to total 2, which Mace Concussion then turns into
-    Stunned.
+  interpretation: Wicked Edge changes the stun boundary rather than adding an Injury modifier. Other Injury
+    modifiers and Hard to Kill retain their own thresholds. Source review M14.
   cases:
   - id: composition
     roles:
@@ -1750,7 +1784,7 @@ specifications:
     defender: {}
     rolls:
     - key: test.injury
-      value: 1
+      value: 2
     expect:
       result.condition: STUNNED
   - id: boundary
@@ -1765,9 +1799,9 @@ specifications:
     expect:
       result.condition: OUT
   mutations:
-  - id: remove-injury-bonus
-    path: attacker.main_weapon.injury_modifier
-    value: 0
+  - id: remove-composed-concussion
+    path: attacker.main_weapon.concussion
+    value: false
     cases:
     - composition
 - id: interaction-material.dark-elf-blade--weapon.stone-axe
@@ -1775,14 +1809,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/material.dark-elf-blade
-    digest: 104e6c588d3587239b1e356846b55410dd9f6a407a6bf33f9d57b94213463a8e
+    digest: 45c17cab9d066c1c695301eb5348962d1fc49678d29abd731841fcdce9027ece
   - target: mechanic/weapon.stone-axe
     digest: 7daa278411e8b8a29584d7de1f261673ab11dc0eeda71c990529d76b648c499d
   bindings:
   - '{"id": "material.dark-elf-blade", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
-  interpretation: Dark Elf blade's +1 pushes face 1 to total 2, which Stone Axe Concussion turns into
-    Stunned.
+  interpretation: Wicked Edge changes the stun boundary rather than adding an Injury modifier. Other Injury
+    modifiers and Hard to Kill retain their own thresholds. Source review M14.
   cases:
   - id: composition
     roles:
@@ -1794,7 +1828,7 @@ specifications:
     defender: {}
     rolls:
     - key: test.injury
-      value: 1
+      value: 2
     expect:
       result.condition: STUNNED
   - id: boundary
@@ -1809,9 +1843,9 @@ specifications:
     expect:
       result.condition: OUT
   mutations:
-  - id: remove-injury-bonus
-    path: attacker.main_weapon.injury_modifier
-    value: 0
+  - id: remove-composed-concussion
+    path: attacker.main_weapon.concussion
+    value: false
     cases:
     - composition
 - id: interaction-skill.hard-to-kill--skill.head-crusher
@@ -1825,8 +1859,8 @@ specifications:
   bindings:
   - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.head-crusher", "kind": "mechanic", "parameters": {}}'
-  interpretation: Under Hard to Kill face 1-2 is Knocked Down; Head Crusher then promotes it to Stunned.
-    Face 6 stays Out.
+  interpretation: Under Hard to Kill face 1-2 is Knocked Down; Head Crusher then promotes it to Stunned. Face
+    6 stays Out.
   cases:
   - id: composition
     roles:
@@ -2010,8 +2044,8 @@ specifications:
   bindings:
   - '{"id": "skill.head-crusher", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
-  interpretation: Head Crusher promotes Knocked Down to Stunned; Ignore Pain then converts it back to
-    Knocked Down. Face 5-6 stays Out.
+  interpretation: Head Crusher promotes Knocked Down to Stunned; Ignore Pain then converts it back to Knocked
+    Down. Face 5-6 stays Out.
   cases:
   - id: composition
     roles:
@@ -2190,8 +2224,7 @@ specifications:
   bindings:
   - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
-  interpretation: Stone Axe Concussion turns face 2 into Stunned; Ignore Pain then converts it to Knocked
-    Down.
+  interpretation: Stone Axe Concussion turns face 2 into Stunned; Ignore Pain then converts it to Knocked Down.
   cases:
   - id: composition
     roles:
@@ -2371,8 +2404,8 @@ specifications:
   bindings:
   - '{"id": "skill.knife-fighting", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
-  interpretation: Knife Fighting adds +1 to the dagger's injuries; the off-hand Stone Axe keeps its own
-    Concussion table.
+  interpretation: Knife Fighting adds +1 to the dagger's injuries; the off-hand Stone Axe keeps its own Concussion
+    table.
   cases:
   - id: composition
     roles:
@@ -2461,8 +2494,7 @@ specifications:
   bindings:
   - '{"id": "skill.strike-to-injure", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
-  interpretation: Strike to Injure's +1 pushes face 1 to total 2, which Stone Axe Concussion turns into
-    Stunned.
+  interpretation: Strike to Injure's +1 pushes face 1 to total 2, which Stone Axe Concussion turns into Stunned.
   cases:
   - id: composition
     roles:
@@ -2506,8 +2538,8 @@ specifications:
   bindings:
   - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.stone-axe", "kind": "mechanic", "parameters": {}}'
-  interpretation: 'Mace and Stone Axe both use the club table: every attack carrying either weapon turns
-    Injury faces 2-4 into Stunned.'
+  interpretation: 'Mace and Stone Axe both use the club table: every attack carrying either weapon turns Injury
+    faces 2-4 into Stunned.'
   cases:
   - id: composition
     roles:

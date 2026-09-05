@@ -29,5 +29,5 @@ def test_backend_selection_rejects_unknown_or_unavailable_backends():
     with pytest.raises(ValueError, match="unknown combat backend"):
         simulate_duel(request(), backend="gpu")
     if "native" not in available_backends():
-        with pytest.raises(RuntimeError, match="not available"):
+        with pytest.raises(RuntimeError, match="not available|layout is stale"):
             simulate_duel(request(), backend="native")

@@ -205,3 +205,84 @@ def test_catalogue_hides_ineligible_and_annotates_conditional_offers():
     by_name = {offer.profile_id.split(".")[-1]: offer for offer in reikland.hired_swords()}
     assert "wolf-priest-of-ulric" not in by_name
     assert "warrior-priest-of-sigmar" in by_name
+
+
+def test_variant_dependent_dramatis_offer_follows_the_selected_variant():
+    port = _port()
+    plain = PostBattleCatalogue(port, "mordheim", "mercenaries")
+    maximilian = next(o for o in plain.dramatis_personae() if "maximilian" in o.profile_id)
+    assert maximilian.eligibility == "variant"
+
+    reikland = PostBattleCatalogue(port, "mordheim", "mercenaries", variant="reikland")
+    maximilian_ok = next(o for o in reikland.dramatis_personae() if "maximilian" in o.profile_id)
+    assert maximilian_ok.eligibility == "eligible"
+
+    middenheim = PostBattleCatalogue(port, "mordheim", "mercenaries", variant="middenheim")
+    assert all("maximilian" not in o.profile_id for o in middenheim.dramatis_personae())
+
+
+def test_employed_hired_sword_blocks_the_incompatible_counterpart():
+    port = _port()
+    plain = PostBattleCatalogue(port, "mordheim", "mercenaries")
+    assert any(o.profile_id == "hireling.hired-sword.highwayman" for o in plain.hired_swords())
+    assert any(o.profile_id == "hireling.hired-sword.roadwarden" for o in plain.hired_swords())
+
+    with_highwayman = PostBattleCatalogue(
+        port, "mordheim", "mercenaries",
+        hired_sword_profile_ids=frozenset({"hireling.hired-sword.highwayman"}),
+    )
+    assert not any(o.profile_id == "hireling.hired-sword.roadwarden" for o in with_highwayman.hired_swords())
+    # …and the Highwayman himself is still hireable (no Roadwarden on the roster).
+    assert any(o.profile_id == "hireling.hired-sword.highwayman" for o in with_highwayman.hired_swords())
+
+
+def test_controller_variant_flows_into_post_battle_content():
+    from mordheim_campaign.application.controller import AppController
+
+    controller = AppController()
+    controller.new_campaign("Mercs", "mercenaries")
+    assert controller.variant_options()  # variant-capable band
+    controller.set_mercenary_variant("middenheim")
+    assert controller.state.campaign.mercenary_variant == "middenheim"
+    assert not any(
+        "maximilian" in o.profile_id
+        for o in controller.post_battle_content().dramatis_personae()
+    )
+
+    controller.new_campaign("Sisters", "sisters-of-sigmar")
+    assert controller.variant_options() == ()
+    assert controller.state.campaign.mercenary_variant is None
+
+
+def test_rule_facts_come_from_the_kb_trait_registry():
+    """The race/alignment/nature facts the rules read are declared in
+    ``catalog/hirelings/traits.yaml`` — no curated Python sets."""
+    port = _port()
+    traits = port.hireling_traits()
+    assert "elf" in traits["hireling.hired-sword.elf-mage"]
+    assert "dwarf" in traits["hireling.hired-sword.dwarf-troll-slayer"]
+    assert "human" in traits["hireling.hired-sword.highwayman"]
+    assert "undead" in traits["hireling.hired-sword.grave-robber"]
+    assert "spellcaster" in traits["hireling.hired-sword.warlock"]
+    assert "spellcaster" in traits["hireling.hired-sword.elf-mage"]
+    assert "priest" in traits["hireling.hired-sword.warrior-priest-of-sigmar"]
+    assert "priest" in traits["hireling.hired-sword.priest-of-morr"]
+    assert "priest" in traits["hireling.hired-sword.wolf-priest-of-ulric"]
+    assert "evil" in traits["hireling.hired-sword.dark-elf-assassin"]
+    assert "evil" in traits["hireling.hired-sword.ninja-gnoblar"]
+    assert "fear-causing" in traits["hireling.hired-sword.ogre-bodyguard"]
+    assert "fear-causing" in traits["hireling.hired-sword.dark-mage"]
+
+
+def test_mercenary_variant_survives_save_load(tmp_path):
+    from mordheim_campaign.application.controller import AppController
+    from mordheim_campaign.persistence import load_campaign, save_campaign
+
+    controller = AppController()
+    controller.new_campaign("Mercs", "mercenaries")
+    controller.set_mercenary_variant("marienburg")
+    path = save_campaign(tmp_path / "variant.mordheim", controller.state)
+    reloaded = load_campaign(path)
+    assert reloaded.campaign.mercenary_variant == "marienburg"
+    reloaded.campaign.mercenary_variant = None
+    assert load_campaign(save_campaign(tmp_path / "cleared.mordheim", reloaded)).campaign.mercenary_variant is None

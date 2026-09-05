@@ -4,34 +4,52 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/gunnery-school-of-nuln/pistoliers--crack-shot/skill.crack-shot, digest: 20638ea0e2edff716001d8c31eafd196019e378dddc037a88c5a36df20fd5ca8}
-  depends_on: [mechanic/skill.crack-shot]
-  interpretation: Crack Shot is an automatic profile rule belonging only to Pistoliers. Equipping that profile with
-    a legal pistol exposes the canonical first-round close-combat reroll.
+  - target: rule/mordheim/gunnery-school-of-nuln/pistoliers--crack-shot/skill.crack-shot
+    digest: 47c4c6d914e6fa9d4f015962a22d8d1de3bafc10c302d918cf8f17b61e4a5e5b
+  depends_on:
+  - mechanic/skill.crack-shot
+  interpretation: Crack Shot is an automatic profile rule belonging only to Pistoliers. Equipping that profile
+    with a legal pistol exposes the canonical first-round close-combat reroll.
   cases:
   - id: only-pistoliers-receive-rule
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: gunnery-school-of-nuln, profile_id: pistoliers}
-    context: {rule_id: pistoliers--crack-shot}
-    expect: {result.recipients: [pistoliers]}
+    defender:
+      collection: mordheim
+      band_id: gunnery-school-of-nuln
+      profile_id: pistoliers
+    context:
+      rule_id: pistoliers--crack-shot
+    expect:
+      result.recipients:
+      - pistoliers
     expect_contains:
-      defender.global_effects.tags: [skill.crack-shot]
+      defender.global_effects.tags:
+      - skill.crack-shot
   - id: granted-consumer
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: hit
     attacker:
       collection: mordheim
       band_id: gunnery-school-of-nuln
       profile_id: pistoliers
       main_weapon_id: weapon.pistol
-    context: {first_round: true}
+    context:
+      first_round: true
     distribution:
       observable: result.success
       max_rolls: 2
-      expected: {'true': 8/9, 'false': 1/9}
+      expected:
+        'true': 8/9
+        'false': 1/9
   mutations:
   - id: remove-profile-crack-shot
     path: attacker.global_effects.tags
     value: []
-    cases: [granted-consumer]
+    cases:
+    - granted-consumer

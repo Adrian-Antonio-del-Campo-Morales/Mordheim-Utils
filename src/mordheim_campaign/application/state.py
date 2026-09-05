@@ -24,6 +24,10 @@ class WarriorVM:
     equipment_cost: int = 0
     stat_modifiers: dict[str, int] = field(default_factory=dict)
     skill_access: list[str] = field(default_factory=list)
+    #: Characteristic points gained from post-battle advance rolls, by display
+    #: key (``WS``, ``S``…). Distinct from ``stat_modifiers`` (injury effects):
+    #: advances are bought by experience and count towards henchman limits.
+    stat_advances: dict[str, int] = field(default_factory=dict)
     #: Canonical KB profile id (bands/<collection>/<band>/profiles.yaml).
     profile_id: str = ""
 
@@ -46,6 +50,11 @@ class BattleVM:
     models_after: int
     notes: str = ""
     opponent_rating: int | None = None
+    #: Warrior ids recorded Out of Action at the end of the battle. Table
+    #: facts recorded at creation; Recovery (post-battle step 1) resolves
+    #: their injury rolls. ``None`` = not recorded (legacy files): the UI
+    #: then offers every warrior.
+    out_of_action_ids: list[str] | None = None
 
 
 @dataclass(slots=True)
@@ -82,10 +91,32 @@ class WarbandStateVM:
 @dataclass(slots=True)
 class PostBattleVM:
     battle_number: int
-    complete: bool
+    complete: bool = False
     active_step: int = 0
     completed_steps: set[int] = field(default_factory=set)
     review_open: bool = False
+    #: Working totals of the pending sequence, persisted so a mid-sequence
+    #: save/load resumes exactly where the player was. Roster and inventory
+    #: mutations live directly on the campaign; only the numeric deltas are
+    #: owned here.
+    gold_delta: int = 0
+    wyrdstone_delta: int = 0
+    wyrdstone_sold: int = 0
+    sale_resolved: bool = False
+    veteran_pool: int = 0
+    #: Pending advance rolls of this sequence, persisted so a mid-sequence
+    #: save/load resumes. One row per warrior that crossed a threshold:
+    #:
+    #: - ``roll_total``/``subroll``: dice as rolled (``None`` until resolved);
+    #: - ``committed``: the pick is applied to the roster;
+    #: - ``table``: hero | henchman (the KB advancement table that resolves it).
+    pending_advances: list[dict] = field(default_factory=list)
+
+    def pending_advance_for(self, warrior_id: str) -> dict | None:
+        """The advance row being worked on: the first uncommitted row of the
+        warrior, falling back to its first (already committed) row."""
+        rows = [row for row in self.pending_advances if str(row.get("warrior_id")) == warrior_id]
+        return next((row for row in rows if not row.get("committed")), rows[0] if rows else None)
 
     @property
     def node_id(self) -> str:
@@ -120,6 +151,10 @@ class CampaignVM:
     collection: str = ""
     band_id: str = ""
     ruleset: str = "mordheim"
+    #: Mercenary variant chosen by variant-capable warbands (reikland /
+    #: middenheim / marienburg / ostermark); ``None`` elsewhere or before
+    #: selection. Drives the variant-dependent hire-eligibility rules.
+    mercenary_variant: str | None = None
 
     def state(self, number: int) -> WarbandStateVM:
         return next(item for item in self.states if item.number == number)

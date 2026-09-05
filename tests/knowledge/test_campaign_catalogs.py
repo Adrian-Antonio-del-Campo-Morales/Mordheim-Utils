@@ -706,7 +706,7 @@ def test_hired_swords_campaign_catalog_state():
     assert all(entry.get("availability") for entry in entries)
     assert all(entry.get("source_refs") for entry in entries)
     # 4 Dramatis Personae were deliberately left out of scope (composite or
-    # random profile), documented in CAMPAIGN INGESTION RESULTS.md.
+    # random profile), documented in catalog/hirelings/README.md.
 
 
 def test_hired_swords_profile_ids_resolve_against_hirelings_catalog():

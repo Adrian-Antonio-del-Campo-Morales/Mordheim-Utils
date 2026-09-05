@@ -59,6 +59,9 @@ class CampaignTimeline(tk.Frame):
                     if state:
                         self._connector()
                         self._state_node(state, current=state.number == c.current_state_number)
+            if not c.pending_post_battle:
+                self._connector()
+                self._record_battle_node()
 
         footer = tk.Frame(self, bg=COLORS["panel_deep"], padx=12, pady=9)
         footer.pack(fill="x")
@@ -67,8 +70,8 @@ class CampaignTimeline(tk.Frame):
             tone = COLORS["accent"]
         else:
             pending = c.pending_post_battle
-            text = f"NEXT STATE PENDING · finish Post-Battle #{pending.battle_number}" if pending else "READY FOR THE NEXT BATTLE"
-            tone = COLORS["accent"] if pending else COLORS["muted"]
+            text = f"NEXT STATE PENDING · finish Post-Battle #{pending.battle_number}" if pending else "NEXT · RECORD BATTLE"
+            tone = COLORS["accent"] if pending else COLORS["accent"]
         tk.Label(footer, text=text, bg=COLORS["panel_deep"], fg=tone, font=("Segoe UI Semibold", 7)).pack(anchor="w")
         self.after_idle(self._reveal_selection)
 
@@ -154,6 +157,26 @@ class CampaignTimeline(tk.Frame):
         subtitle = f"{battle.scenario} vs. {battle.opponent}"
         row = self._base_node(f"battle:{battle.number}", "⚔", title, subtitle, major=False, tone=result_tone)
         self._bind(row, lambda n=battle.number: self.controller.select_battle(n))
+
+    def _record_battle_node(self) -> None:
+        """Dashed future node opening the Record Battle dialog."""
+        row = tk.Frame(self.inner, bg=COLORS["panel_deep"], padx=3)
+        row.pack(fill="x")
+        icon_wrap = tk.Frame(row, bg=COLORS["panel_deep"], width=48, height=36)
+        icon_wrap.pack(side="left")
+        icon_wrap.pack_propagate(False)
+        tk.Label(icon_wrap, text="＋", bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Segoe UI Symbol", 10)).pack(expand=True)
+        text = tk.Frame(row, bg=COLORS["panel_deep"], pady=4)
+        text.pack(side="left", fill="x", expand=True)
+        tk.Label(text, text="RECORD BATTLE", bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8), anchor="w", cursor="hand2").pack(fill="x")
+        tk.Label(text, text="Scenario · opponent · result · XP and casualties", bg=COLORS["panel_deep"], fg=COLORS["muted_dark"], font=("Segoe UI", 7), anchor="w").pack(fill="x", pady=(1, 0))
+        for widget in (row, icon_wrap, text, *text.winfo_children(), icon_wrap.winfo_children()):
+            widget.bind("<Button-1>", lambda _e: self._open_record_dialog())
+
+    def _open_record_dialog(self) -> None:
+        from mordheim_campaign.ui.dialogs.record_battle import RecordBattleDialog
+
+        RecordBattleDialog(self.winfo_toplevel(), self.controller)
 
     def _post_node(self, post) -> None:
         if post.complete:

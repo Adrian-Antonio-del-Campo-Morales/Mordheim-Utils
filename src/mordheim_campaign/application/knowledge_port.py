@@ -15,6 +15,7 @@ from mordheim_knowledge.campaign import CampaignCatalog
 from mordheim_knowledge.campaign import HirelingCatalogue
 from mordheim_knowledge.campaign import PostBattleSequence
 from mordheim_knowledge.campaign import load_campaign_catalog
+from mordheim_knowledge.campaign import load_hireling_traits
 from mordheim_knowledge.campaign import load_hirelings
 from mordheim_knowledge.campaign import load_post_battle_sequence
 from mordheim_knowledge.campaign import load_warband_groups
@@ -22,7 +23,10 @@ from mordheim_knowledge.loader import BandPackage
 from mordheim_knowledge.loader import load_bands
 from mordheim_knowledge.loader import load_collections
 from mordheim_knowledge.loader import load_items
+from mordheim_knowledge.loader import load_racial_maximums
 from mordheim_knowledge.loader import load_skills
+from mordheim_knowledge.i18n import display_name as kb_display_name
+from mordheim_knowledge.i18n import resolved_name as kb_resolved_name
 
 
 CHARACTERISTIC_KEYS = ("M", "WS", "BS", "S", "T", "W", "I", "A", "Ld")
@@ -185,12 +189,13 @@ class KnowledgePort:
             for row in load_skills(ruleset)
         }
         self._profiles_cache: dict[tuple[str, str], tuple[WarbandProfile, ...]] = {}
+        self._hireling_traits_cache: dict[str, frozenset[str]] | None = None
 
     # ------------------------------------------------------------------ bands
 
     def collections(self) -> tuple[tuple[str, str], ...]:
         """Active collections for this ruleset: (id, name)."""
-        return tuple((str(row["id"]), str(row.get("name") or row["id"])) for row in self._collections)
+        return tuple((str(row["id"]), kb_resolved_name(row, row["id"])) for row in self._collections)
 
     def options(self, collection: str | None = None) -> tuple[WarbandOption, ...]:
         """All selectable warbands, ordered by name."""
@@ -205,7 +210,7 @@ class KnowledgePort:
             options.append(WarbandOption(
                 collection=package_collection,
                 band_id=band_id,
-                name=str(band.get("name") or band_id),
+                name=kb_resolved_name(band, band_id),
                 source_label=str(source_label),
                 categories=tuple(str(value) for value in band.get("categories") or ()),
                 grade=str(band.get("grade") or ""),
@@ -284,7 +289,7 @@ class KnowledgePort:
             inherent = self._inherent_rules(package, str(profile["id"]))
             starting = tuple(
                 name for skill_id, name in (
-                    (str(value), self._skills.get(str(value), {}).get("name"))
+                    (str(value), kb_display_name(self._skills.get(str(value))))
                     for value in (profile.get("combat_traits") or {}).get("starting_skills") or ()
                 )
                 if name and not any(existing == name for existing in inherent)
@@ -295,7 +300,7 @@ class KnowledgePort:
                 collection=collection,
                 band_id=band_id,
                 profile_id=str(profile["id"]),
-                name=_title(str(profile.get("name") or profile["id"])),
+                name=_title(kb_resolved_name(profile, profile["id"])),
                 kind=kind,
                 cost=int(profile.get("cost") or 0),
                 experience=int(profile.get("experience") or 0),
@@ -312,7 +317,7 @@ class KnowledgePort:
                 group_maximum=group_size.get("maximum"),
                 equipment_list_ids=tuple(str(value) for value in profile.get("equipment_lists") or ()),
                 fixed_equipment=tuple(
-                    str(self._items.get(str(value), {}).get("name") or value)
+                    kb_resolved_name(self._items.get(str(value)), value)
                     for value in profile.get("fixed_equipment") or ()
                 ),
             ))
@@ -328,7 +333,7 @@ class KnowledgePort:
                 continue
             if (rule.get("runtime") or {}).get("grant") != "profile":
                 continue
-            name = str(rule.get("name") or rule.get("id") or "")
+            name = str(rule.get("name") or rule.get("id") or "")  # editorial rules keep their canonical name
             if name and not any(existing == name for existing in names):
                 names.append(name)
         return tuple(names)
@@ -344,7 +349,7 @@ class KnowledgePort:
             for item in equipment_list.get("items") or ():
                 item_id = str(item.get("item_id") or "")
                 item_row = self._items.get(item_id)
-                name = str(item_row.get("name") or item_id) if item_row else item_id
+                name = kb_display_name(item_row, item_id) if item_row else item_id
                 cost = item.get("cost")
                 offers.append(EquipmentOffer(
                     list_id=str(equipment_list["id"]),
@@ -357,8 +362,9 @@ class KnowledgePort:
         return tuple(sorted(offers, key=lambda offer: (offer.name.casefold(), offer.item_id)))
 
     def item_name(self, item_id: str) -> str | None:
+        """Display name of one item (KB locale policy), ``None`` if unknown."""
         row = self._items.get(item_id)
-        return str(row["name"]) if row else None
+        return kb_display_name(row, item_id) or None if row else None
 
     def price_override(self, collection: str, band_id: str, item_id: str) -> int | None:
         """Flat Trading Post price exception a warband pays for an item.
@@ -420,3 +426,67 @@ class KnowledgePort:
     def warband_groups(self) -> tuple[dict, ...]:
         """Reusable ``warband-group.*`` band sets from the registry (validated)."""
         return load_warband_groups(self.ruleset)
+
+    def hireling_traits(self) -> dict[str, frozenset[str]]:
+        """Intrinsic traits of hireling profiles (``catalog/hirelings/traits.yaml``),
+        keyed by profile id; validated to resolve against the hireling catalogue.
+
+        Read model for the roster-dependent eligibility rules (race,
+        fear-causing, evil, spellcaster, priest), so the application does not
+        keep its own curated trait sets."""
+        if self._hireling_traits_cache is None:
+            self._hireling_traits_cache = {
+                str(row["profile_id"]): frozenset(str(trait) for trait in row.get("traits") or ())
+                for row in load_hireling_traits(self.ruleset)
+            }
+        return self._hireling_traits_cache
+
+    def scenario_options(self) -> tuple[tuple[str, str, str], ...]:
+        """Playable scenarios: (id, name, player_mode) from ``scenarios.yaml``."""
+        document = self.campaign_catalog().catalogue("scenarios")
+        return tuple(
+            (str(row.get("id") or ""), str(row.get("name") or ""), str(row.get("player_mode") or ""))
+            for row in document.get("scenarios") or ()
+            if row.get("id")
+        )
+
+    def skills(self) -> tuple[dict, ...]:
+        """Canonical skill catalogue rows (``catalog/skills/*.yaml``)."""
+        return tuple(self._skills.values())
+
+    def skill_by_name(self, name: str) -> dict | None:
+        """One skill row by its canonical display name (``Acrobat``)."""
+        wanted = name.strip().casefold()
+        return next((row for row in self._skills.values() if str(row.get("name")).casefold() == wanted), None)
+
+    def skill_table_label(self, skill_id_or_row) -> str:
+        """Human table label (``Combat``) of one skill row or id."""
+        row = skill_id_or_row if isinstance(skill_id_or_row, dict) else self._skills.get(str(skill_id_or_row), {})
+        return SKILL_TABLE_LABELS.get(str(row.get("category") or ""), str(row.get("category") or "").title())
+
+    def wizard_lore(self, profile_id: str, band_id: str) -> str | None:
+        """Lore id assigned to a wizard profile (``magic.yaml``), else ``None``.
+
+        A profile is a wizard exactly when the KB assigns it a lore; the
+        band must match for band profiles (hirelings have ``band: null``).
+        """
+        magic = self.campaign_catalog().catalogue("magic")
+        for row in magic.get("lore_assignments", {}).get("rows") or ():
+            if str(row.get("profile_id") or "") != profile_id:
+                continue
+            row_band = row.get("band")
+            if row_band is None or str(row_band) == band_id:
+                return str(row.get("lore") or "") or None
+        return None
+
+    def lore_spells(self, lore_id: str) -> tuple[dict, ...]:
+        """Spell rows of one lore (``magic.yaml`` ``lores[].spells``)."""
+        magic = self.campaign_catalog().catalogue("magic")
+        for lore in magic.get("lores") or ():
+            if str(lore.get("id") or "") == lore_id:
+                return tuple(lore.get("spells") or ())
+        return ()
+
+    def racial_maximums(self) -> tuple[dict, ...]:
+        """Racial characteristic maximums of ``catalog/rules/racial-maximums.yaml``."""
+        return load_racial_maximums(self.ruleset)

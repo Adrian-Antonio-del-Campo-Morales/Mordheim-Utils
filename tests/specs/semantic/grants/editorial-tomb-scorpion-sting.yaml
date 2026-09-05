@@ -4,73 +4,159 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/mordheim/tomb-guardians/tomb-scorpions--scorpion-sting/poison.black-lotus, digest: 628763db8caf46260d8a44f370c276127105840292e8a0b66a14d9cddd7a2677}
-  depends_on: [mechanic/poison.black-lotus]
-  interpretation: "The Tomb Scorpion's natural attack receives Black Lotus; a natural 6 to hit wounds automatically unless the target is immune to poison."
+  - target: rule/mordheim/tomb-guardians/tomb-scorpions--scorpion-sting/poison.black-lotus
+    digest: 628763db8caf46260d8a44f370c276127105840292e8a0b66a14d9cddd7a2677
+  depends_on:
+  - mechanic/poison.black-lotus
+  interpretation: The Tomb Scorpion's natural attack receives Black Lotus; a natural 6 to hit wounds automatically
+    unless the target is immune to poison.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-scorpions}
-    context: {rule_id: tomb-scorpions--scorpion-sting}
-    expect: {result.recipients: [tomb-scorpions]}
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-scorpions
+    context:
+      rule_id: tomb-scorpions--scorpion-sting
+    expect:
+      result.recipients:
+      - tomb-scorpions
   - id: hit-six-automatic-wound
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: wound
-    attacker: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-scorpions}
-    context: {hit_roll: 6}
-    expect: {context.automatic: true, result.success: true, result.critical: false}
-    expect_contains: {attacker.main_weapon.tags: [poison.black-lotus]}
+    attacker:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-scorpions
+    context:
+      hit_roll: 6
+    expect:
+      context.automatic: false
+      result.success: true
+      result.critical: false
+      context.failure_still_wounds: true
+    expect_contains:
+      attacker.main_weapon.tags:
+      - poison.black-lotus
+    rolls:
+    - key: wound
+      value: 1
   - id: hit-five-is-ordinary
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: wound
-    attacker: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-scorpions}
-    context: {hit_roll: 5}
-    rolls: [{key: wound, value: 1}]
-    expect: {context.automatic: false, result.success: false}
+    attacker:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-scorpions
+    context:
+      hit_roll: 5
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      context.automatic: false
+      result.success: false
   - id: immunity-cancels-sting
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: wound
-    attacker: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-scorpions}
-    defender: {preparation_ids: [preparation.tears-of-shallaya]}
-    context: {hit_roll: 6}
-    rolls: [{key: wound, value: 1}]
-    expect: {context.automatic: false, result.success: false}
+    attacker:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-scorpions
+    defender:
+      preparation_ids:
+      - preparation.tears-of-shallaya
+    context:
+      hit_roll: 6
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      context.automatic: false
+      result.success: false
   mutations:
   - id: remove-sting
     path: attacker.main_weapon.tags
     value: []
-    cases: [hit-six-automatic-wound]
+    cases:
+    - hit-six-automatic-wound
 - id: editorial-khemri-tomb-scorpion-sting
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/trollheim/khemri-tomb-guardians/tomb-scorpions--scorpion-sting/poison.black-lotus, digest: d60daf99ca57b3523fecc0167ce64b73ec5741641e966a513cada8a838cfadb5}
-  depends_on: [mechanic/poison.black-lotus]
-  interpretation: "The Khemri version grants the natural attack exactly the same Black Lotus mechanism."
+  - target: rule/trollheim/khemri-tomb-guardians/tomb-scorpions--scorpion-sting/poison.black-lotus
+    digest: d60daf99ca57b3523fecc0167ce64b73ec5741641e966a513cada8a838cfadb5
+  depends_on:
+  - mechanic/poison.black-lotus
+  interpretation: The Khemri version grants the natural attack exactly the same Black Lotus mechanism.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-scorpions}
-    context: {rule_id: tomb-scorpions--scorpion-sting}
-    expect: {result.recipients: [tomb-scorpions]}
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-scorpions
+    context:
+      rule_id: tomb-scorpions--scorpion-sting
+    expect:
+      result.recipients:
+      - tomb-scorpions
   - id: hit-six-automatic-wound
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-scorpions}
-    context: {hit_roll: 6}
-    expect: {context.automatic: true, result.success: true, result.critical: false}
-    expect_contains: {attacker.main_weapon.tags: [poison.black-lotus]}
+    attacker:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-scorpions
+    context:
+      hit_roll: 6
+    expect:
+      context.automatic: false
+      result.success: true
+      result.critical: false
+      context.failure_still_wounds: true
+    expect_contains:
+      attacker.main_weapon.tags:
+      - poison.black-lotus
+    rolls:
+    - key: wound
+      value: 1
   - id: hit-five-is-ordinary
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-scorpions}
-    context: {hit_roll: 5}
-    rolls: [{key: wound, value: 1}]
-    expect: {result.success: false}
+    attacker:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-scorpions
+    context:
+      hit_roll: 5
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.success: false
   mutations:
   - id: remove-sting
     path: attacker.main_weapon.tags
     value: []
-    cases: [hit-six-automatic-wound]
+    cases:
+    - hit-six-automatic-wound

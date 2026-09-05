@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import ttk
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.ui.panels import InventoryWorkspace, WarriorCard
@@ -29,7 +29,7 @@ class WarbandStateMoment(tk.Frame):
         if not current:
             tk.Label(top, text="HISTORICAL · READ ONLY", bg=COLORS["panel_deep"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7), padx=8, pady=4).pack(side="left", padx=10)
         else:
-            ttk.Button(top, text="EDIT WARBAND", command=self._placeholder).pack(side="right")
+            ttk.Button(top, text="EQUIPMENT", style="Accent.TButton", command=self._open_equipment_editor).pack(side="right")
 
         subtitle = "Campaign starting point" if number == 0 else f"After Battle #{number} · {state.date}"
         tk.Label(self, text=subtitle, bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI", 9)).grid(row=1, column=0, sticky="w", pady=(0, 8))
@@ -89,11 +89,11 @@ class WarbandStateMoment(tk.Frame):
                 battle = self.controller.state.campaign.battle(pending.battle_number)
                 tk.Label(xb, text=f"Battle #{battle.number} is complete", bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 12)).pack(anchor="w", pady=(10, 3))
                 tk.Label(xb, text=f"{battle.scenario} vs. {battle.opponent} · {battle.result}", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9)).pack(anchor="w")
-                tk.Label(xb, text=f"Post-battle is at step {pending.active_step + 1}/7. State #{pending.battle_number} does not exist yet.", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9), wraplength=430, justify="left").pack(anchor="w", pady=(8, 12))
+                tk.Label(xb, text=f"Post-battle is at step {pending.active_step + 1}/8. State #{pending.battle_number} does not exist yet.", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9), wraplength=430, justify="left").pack(anchor="w", pady=(8, 12))
                 tk.Label(xb, text="Select the Post-Battle #8 node in the timeline, or use the Resume action above.", bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8), wraplength=430, justify="left").pack(anchor="w")
             else:
                 tk.Label(xb, text="No pending actions.", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9)).pack(anchor="w", pady=(10, 12))
-                ttk.Button(xb, text="+ NEW BATTLE", style="Accent.TButton", command=self._placeholder).pack(anchor="w")
+                ttk.Button(xb, text="+ NEW BATTLE", style="Accent.TButton", command=self._open_record_battle).pack(anchor="w")
         else:
             tk.Label(xb, text="THIS STATE IN THE TIMELINE", bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w")
             text = "This is the immutable starting point from which the campaign begins." if state.number == 0 else f"This snapshot was created when Post-Battle #{state.number} was committed. Open the adjacent transition nodes to see why the warband changed."
@@ -106,9 +106,32 @@ class WarbandStateMoment(tk.Frame):
         frame = tk.Frame(self, bg=COLORS["bg"])
         frame.columnconfigure(0, weight=1); frame.rowconfigure(0, weight=1)
         scroll = ScrollableFrame(frame, background=COLORS["bg"]); scroll.grid(row=0, column=0, sticky="nsew")
+        if not read_only:
+            bar = tk.Frame(scroll.inner, bg=COLORS["bg"])
+            bar.pack(fill="x", pady=(0, 7))
+            tk.Label(
+                bar,
+                text="Reassign equipment between the roster and the stash with the EQUIPMENT action above.",
+                bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI", 8),
+            ).pack(side="left")
         for warrior in self.controller.state.campaign.warriors:
-            WarriorCard(scroll.inner, warrior, on_edit=(None if read_only else self._placeholder)).pack(fill="x", pady=(0, 7))
+            WarriorCard(scroll.inner, warrior, on_edit=(self._open_equipment_editor if not read_only else None)).pack(fill="x", pady=(0, 7))
         return frame
 
-    def _placeholder(self) -> None:
-        messagebox.showinfo("Prototype", "This control is intentionally visual-only in the timeline-first prototype.", parent=self)
+    def _open_equipment_editor(self, warrior_id: str | None = None) -> None:
+        from mordheim_campaign.ui.dialogs.equipment_editor import EquipmentEditorDialog
+
+        dialog = EquipmentEditorDialog(self, self.controller)
+        self.wait_window(dialog)
+        self.notify_rebuild()
+
+    def notify_rebuild(self) -> None:
+        # The editor edits the live campaign; refresh the moment on return.
+        self.controller.notify()
+
+    def _open_record_battle(self) -> None:
+        from mordheim_campaign.ui.dialogs.record_battle import RecordBattleDialog
+
+        dialog = RecordBattleDialog(self, self.controller)
+        self.wait_window(dialog)
+        self.controller.notify()

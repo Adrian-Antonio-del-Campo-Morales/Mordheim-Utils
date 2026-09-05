@@ -146,8 +146,12 @@ def verify_command(args) -> int:
 def _deep_benchmark_command(args, scenarios, installed) -> int:
     """Deep benchmark: modular as a small reference, optimized engines swept
     over large sizes and batch sizes (see deep_benchmark_plan for the policy)."""
+    pair_set = getattr(args, "pair_set", "full")
     if not args.output:
-        args.output = "outputs/benchmarks/deep.json"
+        args.output = (
+            "outputs/benchmarks/deep-fast.json"
+            if pair_set == "fast" else "outputs/benchmarks/deep.json"
+        )
     from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
     from mordheim_combat_lab.cli.benchmarking import deep_benchmark_plan
     from mordheim_combat_lab.cli.benchmarking import print_deep_benchmark_header
@@ -193,7 +197,7 @@ def _deep_benchmark_command(args, scenarios, installed) -> int:
     payload = sweep_payload(
         results, unavailable, simulation_sizes=vector_sizes,
         batch_sizes=batch_sizes, seed=args.seed, warmups=args.warmups,
-        repeats=args.repeats,
+        repeats=args.repeats, pair_set=pair_set,
     )
     payload["mode"] = "deep"
     payload["modular_reference_simulations"] = plan.modular_simulations
@@ -202,7 +206,7 @@ def _deep_benchmark_command(args, scenarios, installed) -> int:
     if args.json:
         print(json.dumps(payload, ensure_ascii=True, indent=2))
     else:
-        print_deep_benchmark_header(plan)
+        print_deep_benchmark_header(plan, pair_set=pair_set)
         print_sweep_table(
             results, unavailable, simulation_sizes=vector_sizes,
             batch_sizes=batch_sizes, seed=args.seed, repeats=args.repeats,
@@ -239,6 +243,11 @@ def benchmark_command(args) -> int:
               "the modular oracle is included only as a small reference point",
               file=sys.stderr)
         return 2
+    pair_set = getattr(args, "pair_set", "full")
+    if pair_set != "full" and not args.deep:
+        print("Benchmark configuration error: --pair-set applies only to --deep",
+              file=sys.stderr)
+        return 2
     sweep = args.simulation_sizes is not None or args.batch_sizes is not None
     if sweep and not args.deep and (args.baseline or args.save_baseline or args.require_improvement):
         print("Benchmark configuration error: --baseline/--save-baseline and "
@@ -251,8 +260,19 @@ def benchmark_command(args) -> int:
         return 2
 
     scenarios = benchmark_scenarios()
+    if args.deep:
+        from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
+        scenarios = deep_test_scenarios(pair_set)
     if args.scenario != "all":
         scenarios = tuple(item for item in scenarios if item.id == args.scenario)
+    if not scenarios:
+        scope = f"the {pair_set} deep pair set" if args.deep else "the standard benchmark suite"
+        print(
+            f"Benchmark configuration error: scenario {args.scenario!r} is not "
+            f"available in {scope}",
+            file=sys.stderr,
+        )
+        return 2
     installed = available_backends()
     if args.deep:
         return _deep_benchmark_command(args, scenarios, installed)
@@ -361,19 +381,36 @@ def benchmark_command(args) -> int:
 
 def parity_command(args) -> int:
     apply_parity_level(args)
+    pair_set = getattr(args, "pair_set", "full")
+    if pair_set != "full" and not (args.deep or args.truncations):
+        print(
+            "Parity configuration error: --pair-set applies to --deep or "
+            "--truncations; no pair set is run by the deterministic/statistical "
+            "presets.",
+            file=sys.stderr,
+        )
+        return 2
     if args.deep and not args.output:
-        args.output = "outputs/parity/deep.json"
+        args.output = (
+            "outputs/parity/deep-fast.json"
+            if pair_set == "fast" else "outputs/parity/deep.json"
+        )
     started = time.perf_counter()
     from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
     from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
+    from mordheim_combat_lab.cli.benchmarking import compile_benchmark_fighters
     from mordheim_combat_lab.cli.benchmarking import deep_test_scenarios
-    from mordheim_construction.compiler import compile_fighter
     from mordheim_combat_lab.verification.parity import compare_statistical_parity
     from mordheim_combat_lab.verification.parity import compare_truncation_parity
     from mordheim_combat_lab.verification.parity import parity_report_markdown
     from mordheim_combat_lab.verification.parity import parity_report_payload
     from mordheim_combat_lab.verification.parity import verify_vectorized_parity
     from mordheim_combat_lab.verification.parity import verify_specification_parity
+
+    deep_scenarios = (
+        deep_test_scenarios(pair_set)
+        if args.deep or args.truncations else ()
+    )
 
     report = verify_vectorized_parity()
     specification_report = verify_specification_parity()
@@ -387,9 +424,7 @@ def parity_command(args) -> int:
         progress = None if args.json else BenchmarkProgress(len(benchmark_scenarios()))
         samples: list = []
         for scenario in benchmark_scenarios():
-            first, second = (
-                compile_fighter(scenario.first), compile_fighter(scenario.second),
-            )
+            first, second = compile_benchmark_fighters(scenario)
             # One modular oracle sample certifies every optimized candidate;
             # `backend` records which engine produced each comparison.
             oracle_started = time.perf_counter()
@@ -442,8 +477,7 @@ def parity_command(args) -> int:
         pairs = tuple(
             DeepPair(
                 scenario.id,
-                compile_fighter(scenario.first),
-                compile_fighter(scenario.second),
+                *compile_benchmark_fighters(scenario),
                 scenario.maximum_rounds,
                 simulations=(
                     args.deep_simulations
@@ -451,14 +485,23 @@ def parity_command(args) -> int:
                     else (25_000 if scenario.maximum_rounds > 50 else 100_000)
                 ),
             )
-            for scenario in deep_test_scenarios()
+            for scenario in deep_scenarios
         )
         requested_duels = sum(pair.simulations for pair in pairs)
-        breakdown = (
-            f"{len(pairs)} pairs x {args.deep_simulations:,}"
-            if args.deep_simulations is not None
-            else "100k per pair, 25k for the long 75-round pair"
-        )
+        if args.deep_simulations is not None:
+            breakdown = (
+                f"{pair_set} set: {len(pairs)} pairs x "
+                f"{args.deep_simulations:,}"
+            )
+        else:
+            regular = sum(pair.simulations == 100_000 for pair in pairs)
+            long_pairs = sum(pair.simulations != 100_000 for pair in pairs)
+            parts = []
+            if regular:
+                parts.append(f"{regular} pairs at 100k")
+            if long_pairs:
+                parts.append(f"{long_pairs} long pair(s) at 25k")
+            breakdown = f"{pair_set} set: " + ", ".join(parts)
         if requested_duels > args.max_modular_duels:
             print(
                 "Parity configuration error: --deep would need "
@@ -490,13 +533,11 @@ def parity_command(args) -> int:
     if args.truncations:
         from mordheim_combat_lab.verification.parity import TRUNCATION_HORIZONS
         truncation_progress = None if args.json else BenchmarkProgress(
-            len(deep_test_scenarios()) * len(TRUNCATION_HORIZONS)
+            len(deep_scenarios) * len(TRUNCATION_HORIZONS)
         )
         rows: list = []
-        for scenario in deep_test_scenarios():
-            first, second = (
-                compile_fighter(scenario.first), compile_fighter(scenario.second),
-            )
+        for scenario in deep_scenarios:
+            first, second = compile_benchmark_fighters(scenario)
             for row in compare_truncation_parity(
                 scenario.id, first, second,
                 args.truncation_simulations, seed=args.seed,
@@ -520,6 +561,8 @@ def parity_command(args) -> int:
     payload = parity_report_payload(
         report, statistical, specification_report, deep=deep_samples,
         truncations=truncation_samples, elapsed_seconds=elapsed,
+        deep_pair_set=pair_set if args.deep else None,
+        truncation_pair_set=pair_set if args.truncations else None,
     )
     if args.output:
         output = Path(args.output).resolve()
@@ -560,13 +603,15 @@ def parity_command(args) -> int:
             if deep_native_installed:
                 print(
                     f"DEEP: modular oracle {modular_duels:,} duels across the "
-                    f"archetype matrix; cross-backend samples at "
+                    f"{pair_set} archetype set ({len(deep_scenarios)} pairs); "
+                    f"cross-backend samples at "
                     f"{args.deep_cross_simulations:,} duels/engine"
                 )
             else:
                 print(
                     f"DEEP: modular oracle {modular_duels:,} duels across the "
-                    "archetype matrix; cross-backend certification skipped "
+                    f"{pair_set} archetype set ({len(deep_scenarios)} pairs); "
+                    "cross-backend certification skipped "
                     "(native backend is not compiled in this environment)"
                 )
             escalated = {
@@ -803,7 +848,10 @@ def _apply_help_policy(parser: ArgumentParser, *, advanced: bool) -> None:
 
 
 def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = False) -> ArgumentParser:
+    from mordheim_combat_lab.cli.benchmarking import DEEP_SCENARIOS
+
     parser = ArgumentParser(prog=prog, formatter_class=_HelpFormatter)
+    deep_scenario_ids = tuple(item.id for item in DEEP_SCENARIOS)
     commands = parser.add_subparsers(dest="command")
     commands.add_parser("ui", help="open the graphical interface",
                         formatter_class=_HelpFormatter).set_defaults(handler=ui_command)
@@ -916,8 +964,9 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
     )
     run_options.add_argument(
         "--scenario",
-        choices=("all", "basic", "multiattack", "defences", "stateful", "long"),
-        default="all", help="scenario family to measure (default: all five)",
+        choices=("all", *deep_scenario_ids),
+        default="all", help="scenario/pair id to measure; defaults to all five "
+                             "standard scenarios, or all selected pairs in --deep",
     )
     run_options.add_argument(
         "--warmups", type=_warmups, default=1, metavar="N",
@@ -938,6 +987,12 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
              "sizes while measuring the modular oracle only at a small reference size",
     )
     deep_options.add_argument(
+        "--pair-set", choices=("fast", "full"), default="full", metavar="SET",
+        help="pair set for --deep: fast is the 30-pair coverage-oriented set "
+             "for a roughly 10-15 minute pooled profile; full is the 42-pair "
+             "matrix (default)",
+    )
+    deep_options.add_argument(
         "--deep-simulation-sizes", default="10k,100k,500k,1M,5M", metavar="SIZES",
         help="simulation counts for the optimized engines in --deep mode "
              "(comma/space separated); overridable with --simulation-sizes",
@@ -956,7 +1011,7 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
                                 help="print the machine-readable report as JSON")
     report_options.add_argument("--output", metavar="PATH",
                                 help="save this run as a report (.json, or .csv/.md in sweep mode; "
-                                     "--deep defaults to outputs/benchmarks/deep.json)")
+                                     "--deep defaults to deep.json or deep-fast.json by pair set)")
     report_options.add_argument("--save-baseline", metavar="PATH",
                                 help="save this single-configuration run as a JSON baseline")
     report_options.add_argument("--baseline", metavar="PATH",
@@ -989,9 +1044,15 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
         default="deterministic", metavar="LEVEL",
         help="preset: deterministic (default) runs the exact checks only; "
              "statistical adds the aggregate six-sigma samples on the five "
-             "standard scenarios; deep runs the full archetype matrix plus "
-             "the numpy<->native cross at scale (equivalent to the historical "
-             "--statistical / --deep flags)",
+             "standard scenarios; deep runs the selected archetype pair set "
+             "(fast or full) plus the numpy<->native cross at scale "
+             "(equivalent to the historical --statistical / --deep flags)",
+    )
+    parity_samples.add_argument(
+        "--pair-set", choices=("fast", "full"), default="full", metavar="SET",
+        help="pair set for --deep/--truncations: fast is the 30-pair "
+             "coverage-oriented set for a roughly 10-15 minute pooled run; "
+             "full is the 42-pair deep matrix (default)",
     )
     parity_samples.add_argument("--statistical", action="store_true",
                                 help="add aggregate six-sigma statistical certification samples")
@@ -1000,9 +1061,9 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
                                 help="duels per engine and scenario for --statistical")
     parity_samples.add_argument(
         "--deep", action="store_true",
-        help="deep certification: six-sigma samples over the archetype matrix plus "
-             "numpy<->native cross-certification at scale; the modular oracle stays "
-             "within --max-modular-duels",
+        help="deep certification: six-sigma samples over the selected fast/full "
+             "archetype pair set plus numpy<->native cross-certification at scale; "
+             "the modular oracle stays within --max-modular-duels",
     )
     parity_samples.add_argument(
         "--deep-simulations", type=_positive, default=None, metavar="DUELS",
@@ -1017,10 +1078,10 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
                                 metavar="DUELS",
                                 help="duels per pair for the numpy<->native "
                                      "cross-certification (never touches the modular engine)")
-    parity_samples.add_argument("--max-modular-duels", type=_positive, default=3_000_000,
+    parity_samples.add_argument("--max-modular-duels", type=_positive, default=5_000_000,
                                 metavar="DUELS",
-                                help="ceiling for the total modular-oracle duels a --deep "
-                                     "run may ask for (the default split needs 2 850 000, plus any "
+                           help="ceiling for the total modular-oracle duels a --deep "
+                                "run may ask for (the default full split needs 4 050 000, plus any "
              "adaptive escalation within the same ceiling)")
     parity_samples.add_argument(
         "--truncations", action="store_true",
@@ -1050,8 +1111,8 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
     parity_output.add_argument("--require-complete", action="store_true",
                                help="fail unless the certificate is complete")
     parity_output.add_argument("--output", metavar="PATH",
-                               help="save the report as .json or .md (defaults to "
-                                    "outputs/parity/deep.json in the deep preset)")
+                               help="save the report as .json or .md (deep defaults to "
+                                    "deep.json for full or deep-fast.json for fast)")
     parity_output.add_argument("--help-all", action="store_true",
                                help="also document the advanced sample-tuning options")
     parity.set_defaults(handler=parity_command)

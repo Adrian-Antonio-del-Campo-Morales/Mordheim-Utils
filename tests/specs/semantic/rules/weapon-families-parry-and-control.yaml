@@ -4,276 +4,712 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
-  - {target: mechanic/weapon.dwarf-axe, digest: 116c7e0ffbb1a9a1b4222fade2cbe6c446c832a646e6692b75b04a820a44f6de}
-  - {target: mechanic/weapon.trident, digest: 70ccf5d6d111475b3ce0dd89e5abf79482cb2ec36e7a6ff513bf306ea024e7f2}
-  - {target: mechanic/weapon.spiked-gauntlet, digest: 937041a345dd4c6e1f40788fa6f4f3015d3af264dba84be1c37b2ee8723aaeeb}
-  interpretation: "The three weapons allow an ordinary parry. Dwarf Axe adds penetration 1; Trident strikes first only when its bearer has received a charge; Spiked Gauntlet adds no other modifiers."
+  - target: mechanic/weapon.dwarf-axe
+    digest: 116c7e0ffbb1a9a1b4222fade2cbe6c446c832a646e6692b75b04a820a44f6de
+  - target: mechanic/weapon.trident
+    digest: 70ccf5d6d111475b3ce0dd89e5abf79482cb2ec36e7a6ff513bf306ea024e7f2
+  - target: mechanic/weapon.spiked-gauntlet
+    digest: 937041a345dd4c6e1f40788fa6f4f3015d3af264dba84be1c37b2ee8723aaeeb
+  interpretation: The three weapons allow an ordinary parry. Dwarf Axe adds penetration 1; Trident strikes
+    first only when its bearer has received a charge; Spiked Gauntlet adds no other modifiers.
   cases:
   - id: dwarf-axe-parry
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: parry
-    defender: {main_weapon_id: weapon.dwarf-axe}
-    context: {hit_roll: 4}
-    rolls: [{key: test.parry, value: 5}]
-    expect: {defender.main_weapon.parry: true, defender.main_weapon.armour_penetration: 1, result.blocked: true}
+    defender:
+      main_weapon_id: weapon.dwarf-axe
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      defender.main_weapon.parry: true
+      defender.main_weapon.armour_penetration: 1
+      result.blocked: true
   - id: dwarf-axe-armour
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.dwarf-axe}
-    defender: {armour_id: armour.gromril-armour}
-    rolls: [{key: armour, value: 4}]
-    expect: {result.target: 5, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.dwarf-axe
+    defender:
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 5
+      result.saved: false
   - id: trident-parry
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: parry
-    defender: {main_weapon_id: weapon.trident}
-    context: {hit_roll: 4}
-    rolls: [{key: test.parry, value: 5}]
-    expect: {defender.main_weapon.parry: true, result.blocked: true}
+    defender:
+      main_weapon_id: weapon.trident
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      defender.main_weapon.parry: true
+      result.blocked: true
   - id: trident-first-when-charged
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: acting_order
-    attacker: {main_weapon_id: weapon.trident, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
-    context: {charged: true}
-    expect: {result.first_acts: true}
+    attacker:
+      main_weapon_id: weapon.trident
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    context:
+      charged: true
+    expect:
+      result.first_acts: true
   - id: trident-without-charge-uses-initiative
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: acting_order
-    attacker: {main_weapon_id: weapon.trident, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
-    context: {charged: false}
-    expect: {result.first_acts: false}
+    attacker:
+      main_weapon_id: weapon.trident
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    context:
+      charged: false
+    expect:
+      result.first_acts: false
   - id: spiked-gauntlet-parry
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: parry
-    defender: {main_weapon_id: weapon.spiked-gauntlet}
-    context: {hit_roll: 4}
-    rolls: [{key: test.parry, value: 5}]
-    expect: {defender.main_weapon.parry: true, defender.main_weapon.strength_bonus: 0, result.blocked: true}
+    defender:
+      main_weapon_id: weapon.spiked-gauntlet
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      defender.main_weapon.parry: true
+      defender.main_weapon.strength_bonus: 0
+      result.blocked: true
   mutations:
-  - {id: remove-dwarf-penetration, path: attacker.main_weapon.armour_penetration, value: 0, cases: [dwarf-axe-armour]}
-  - {id: remove-dwarf-parry, path: defender.main_weapon.parry, value: false, cases: [dwarf-axe-parry]}
-  - {id: remove-trident-tag, path: attacker.main_weapon.tags, value: [], cases: [trident-first-when-charged]}
-  - {id: remove-spiked-parry, path: defender.main_weapon.parry, value: false, cases: [spiked-gauntlet-parry]}
-
+  - id: remove-dwarf-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 0
+    cases:
+    - dwarf-axe-armour
+  - id: remove-dwarf-parry
+    path: defender.main_weapon.parry
+    value: false
+    cases:
+    - dwarf-axe-parry
+  - id: remove-trident-tag
+    path: attacker.main_weapon.tags
+    value: []
+    cases:
+    - trident-first-when-charged
+  - id: remove-spiked-parry
+    path: defender.main_weapon.parry
+    value: false
+    cases:
+    - spiked-gauntlet-parry
 - id: weapon.contextual-strength-family
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
-  - {target: mechanic/weapon.sigmarite-hammer, digest: f74237d3dd01f663717012b1809f19f7336447eac05e4bc289e7531288a08bce}
-  - {target: mechanic/weapon.choppa, digest: 0b064c7f4cb666f718f7892daa9590d805f780acca46e37fd3f08353cb88d096}
-  - {target: mechanic/weapon.witch-sword, digest: faabdc3109cdfc3c58c5a117a5ddbf20e94c5c63b7b583c9999dd80b4aca9cbe}
-  interpretation: "Sigmarite Hammer has Strength +1, Concussion and +1 To Wound against Undead/Possessed. Choppa and Witch Sword gain Strength +1 only in the first round; Choppa adds penetration and Witch Sword a parry."
+  - target: mechanic/weapon.sigmarite-hammer
+    digest: f74237d3dd01f663717012b1809f19f7336447eac05e4bc289e7531288a08bce
+  - target: mechanic/weapon.choppa
+    digest: 0b064c7f4cb666f718f7892daa9590d805f780acca46e37fd3f08353cb88d096
+  - target: mechanic/weapon.witch-sword
+    digest: faabdc3109cdfc3c58c5a117a5ddbf20e94c5c63b7b583c9999dd80b4aca9cbe
+  interpretation: Sigmarite Hammer has Strength +1, Concussion and +1 To Wound against Undead/Possessed. Choppa
+    and Witch Sword gain Strength +1 only in the first round; Choppa adds penetration and Witch Sword a parry.
   cases:
   - id: sigmarite-strength
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.sigmarite-hammer}
-    expect: {attacker.main_weapon.strength_bonus: 1, attacker.main_weapon.concussion: true, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.sigmarite-hammer
+    expect:
+      attacker.main_weapon.strength_bonus: 1
+      attacker.main_weapon.concussion: true
+      result.wound: 4
+      result.armour: 4
   - id: sigmarite-undead-wound-bonus
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: wound
-    attacker: {main_weapon_id: weapon.sigmarite-hammer}
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: liche-priest}
-    rolls: [{key: wound, value: 2}]
-    expect: {context.modifier: 1, result.target: 2, result.success: true}
+    attacker:
+      main_weapon_id: weapon.sigmarite-hammer
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: liche-priest
+    rolls:
+    - key: wound
+      value: 2
+    expect:
+      context.modifier: 1
+      result.target: 2
+      result.success: true
   - id: sigmarite-ordinary-opponent
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: wound
-    attacker: {main_weapon_id: weapon.sigmarite-hammer}
-    rolls: [{key: wound, value: 2}]
-    expect: {context.modifier: 0, result.target: 3, result.success: false}
+    attacker:
+      main_weapon_id: weapon.sigmarite-hammer
+    rolls:
+    - key: wound
+      value: 2
+    expect:
+      context.modifier: 0
+      result.target: 3
+      result.success: false
   - id: sigmarite-concussion
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: injury
-    attacker: {main_weapon_id: weapon.sigmarite-hammer}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.sigmarite-hammer
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
   - id: choppa-first-round
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.choppa}
-    context: {first_round: true}
-    expect: {attacker.main_weapon.first_round_strength_bonus: 1, attacker.main_weapon.armour_penetration: 1, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.choppa
+    context:
+      first_round: true
+    expect:
+      attacker.main_weapon.first_round_strength_bonus: 1
+      attacker.main_weapon.armour_penetration: 1
+      result.wound: 4
+      result.armour: 4
   - id: choppa-later-round
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.choppa}
-    context: {first_round: false}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.choppa
+    context:
+      first_round: false
+    expect:
+      result.wound: 3
+      result.armour: 3
   - id: witch-sword-first-round
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.witch-sword}
-    context: {first_round: true}
-    expect: {attacker.main_weapon.first_round_strength_bonus: 1, attacker.main_weapon.parry: true, result.wound: 4}
+    attacker:
+      main_weapon_id: weapon.witch-sword
+    context:
+      first_round: true
+    expect:
+      attacker.main_weapon.first_round_strength_bonus: 1
+      attacker.main_weapon.parry: true
+      result.wound: 4
   - id: witch-sword-later-round
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.witch-sword}
-    context: {first_round: false}
-    expect: {result.wound: 3}
+    attacker:
+      main_weapon_id: weapon.witch-sword
+    context:
+      first_round: false
+    expect:
+      result.wound: 3
   - id: witch-sword-parry
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: parry
-    defender: {main_weapon_id: weapon.witch-sword}
-    context: {hit_roll: 4}
-    rolls: [{key: test.parry, value: 5}]
-    expect: {result.blocked: true}
+    defender:
+      main_weapon_id: weapon.witch-sword
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      result.blocked: true
   mutations:
-  - {id: remove-sigmarite-undead-bonus, path: attacker.main_weapon.tags, value: [], cases: [sigmarite-undead-wound-bonus]}
-  - {id: remove-sigmarite-concussion, path: attacker.main_weapon.concussion, value: false, cases: [sigmarite-concussion]}
-  - {id: remove-choppa-first-strength, path: attacker.main_weapon.first_round_strength_bonus, value: 0, cases: [choppa-first-round]}
-  - {id: remove-witch-first-strength, path: attacker.main_weapon.first_round_strength_bonus, value: 0, cases: [witch-sword-first-round]}
-  - {id: remove-witch-parry, path: defender.main_weapon.parry, value: false, cases: [witch-sword-parry]}
-
+  - id: remove-sigmarite-undead-bonus
+    path: attacker.main_weapon.tags
+    value: []
+    cases:
+    - sigmarite-undead-wound-bonus
+  - id: remove-sigmarite-concussion
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - sigmarite-concussion
+  - id: remove-choppa-first-strength
+    path: attacker.main_weapon.first_round_strength_bonus
+    value: 0
+    cases:
+    - choppa-first-round
+  - id: remove-witch-first-strength
+    path: attacker.main_weapon.first_round_strength_bonus
+    value: 0
+    cases:
+    - witch-sword-first-round
+  - id: remove-witch-parry
+    path: defender.main_weapon.parry
+    value: false
+    cases:
+    - witch-sword-parry
 - id: weapon.unparryable-flexible-family
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: mechanic/weapon.steel-whip, digest: edc66f3b64f8ba5e3468b9a3af5dabc23b5a10bb5e65ab7fe8bc33d8bd15b24f}
-  - {target: mechanic/weapon.pirate-scourge, digest: 2fce438d373b750360ebf719c6ca577574328fe01775c4d4935c8d74818d4938}
-  interpretation: "Both attacks ignore parries completely. They modify neither Strength, damage nor the to-wound roll."
+  - target: mechanic/weapon.steel-whip
+    digest: 373a75d8ce32e1cee4a86a81da53ec9469d2eab28a25540bc58550e3385e5963
+  - target: mechanic/weapon.pirate-scourge
+    digest: 1b3ea100db7a0d4dd6779e32f7c5fd4b41aa12d4943cb401b3a21fb25a3a13e7
+  interpretation: Both attacks ignore parries completely. They modify neither Strength, damage nor the to-wound
+    roll.
   cases:
   - id: steel-whip-compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {main_weapon_id: weapon.steel-whip}
-    expect: {attacker.main_weapon.cannot_be_parried: true, attacker.main_weapon.strength_bonus: 0}
+    attacker:
+      main_weapon_id: weapon.steel-whip
+    expect:
+      attacker.main_weapon.cannot_be_parried: true
+      attacker.main_weapon.strength_bonus: 0
   - id: steel-whip-skips-parry
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: attack
-    attacker: {main_weapon_id: weapon.steel-whip}
-    defender: {main_weapon_id: weapon.sword}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}]
-    expect: {result.parried: false, result.wounded: true}
+    attacker:
+      main_weapon_id: weapon.steel-whip
+    defender:
+      main_weapon_id: weapon.sword
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.parried: false
+      result.wounded: true
   - id: pirate-scourge-compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {main_weapon_id: weapon.pirate-scourge}
-    expect: {attacker.main_weapon.cannot_be_parried: true}
+    attacker:
+      main_weapon_id: weapon.pirate-scourge
+    expect:
+      attacker.main_weapon.cannot_be_parried: true
   - id: pirate-scourge-skips-parry
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: attack
-    attacker: {main_weapon_id: weapon.pirate-scourge}
-    defender: {main_weapon_id: weapon.sword}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}]
-    expect: {result.parried: false, result.wounded: true}
+    attacker:
+      main_weapon_id: weapon.pirate-scourge
+    defender:
+      main_weapon_id: weapon.sword
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.armour
+      value: 1
+    expect:
+      result.parried: false
+      result.wounded: true
   - id: ordinary-weapon-can-be-parried
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attack
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {main_weapon_id: weapon.sword}
-    rolls: [{key: test.hit, value: 4}, {key: test.parry, value: 5}]
-    expect: {result.parried: true, result.wounded: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.sword
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.parry
+      value: 5
+    expect:
+      result.parried: true
+      result.wounded: false
   mutations:
-  - {id: allow-steel-whip-parry, path: attacker.main_weapon.cannot_be_parried, value: false, cases: [steel-whip-skips-parry]}
-  - {id: allow-pirate-scourge-parry, path: attacker.main_weapon.cannot_be_parried, value: false, cases: [pirate-scourge-skips-parry]}
-
+  - id: allow-steel-whip-parry
+    path: attacker.main_weapon.cannot_be_parried
+    value: false
+    cases:
+    - steel-whip-skips-parry
+  - id: allow-pirate-scourge-parry
+    path: attacker.main_weapon.cannot_be_parried
+    value: false
+    cases:
+    - pirate-scourge-skips-parry
 - id: weapon.paired-skaven-family
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: mechanic/weapon.fighting-claws, digest: badfc295b3fd18a017f45e627d77255e97582770c20c9865ba60d57dc552fbfa}
-  - {target: mechanic/weapon.weeping-blades, digest: 556cdfe9883b9ec36ae95a276affb2c9489f75b654a790e7e1208b6b03bf96bb}
-  depends_on: [mechanic/poison.black-lotus]
-  interpretation: "Both paired weapons grant one extra attack and one parry. Weeping Blades carries Black Lotus; Fighting Claws does not modify wounds in the duel."
+  - target: mechanic/weapon.fighting-claws
+    digest: badfc295b3fd18a017f45e627d77255e97582770c20c9865ba60d57dc552fbfa
+  - target: mechanic/weapon.weeping-blades
+    digest: 556cdfe9883b9ec36ae95a276affb2c9489f75b654a790e7e1208b6b03bf96bb
+  depends_on:
+  - mechanic/poison.black-lotus
+  interpretation: Both paired weapons grant one extra attack and one parry. Weeping Blades carries Black Lotus;
+    Fighting Claws does not modify wounds in the duel.
   cases:
   - id: fighting-claws-pair
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: attacks
-    attacker: {main_weapon_id: weapon.fighting-claws}
-    expect: {attacker.main_weapon.paired: true, attacker.main_weapon.parry: true, result.attacks: 2}
+    attacker:
+      main_weapon_id: weapon.fighting-claws
+    expect:
+      attacker.main_weapon.paired: true
+      attacker.main_weapon.parry: true
+      result.attacks: 2
   - id: fighting-claws-parry
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: parry
-    defender: {main_weapon_id: weapon.fighting-claws}
-    context: {hit_roll: 4}
-    rolls: [{key: test.parry, value: 5}]
-    expect: {result.blocked: true}
+    defender:
+      main_weapon_id: weapon.fighting-claws
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 5
+    expect:
+      result.blocked: true
   - id: weeping-blades-pair
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: attacks
-    attacker: {main_weapon_id: weapon.weeping-blades}
-    expect: {attacker.main_weapon.paired: true, attacker.main_weapon.parry: true, result.attacks: 2}
-    expect_contains: {attacker.main_weapon.tags: [poison.black-lotus]}
+    attacker:
+      main_weapon_id: weapon.weeping-blades
+    expect:
+      attacker.main_weapon.paired: true
+      attacker.main_weapon.parry: true
+      result.attacks: 2
+    expect_contains:
+      attacker.main_weapon.tags:
+      - poison.black-lotus
   - id: weeping-blades-hit-six-auto-wounds
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: wound
-    attacker: {main_weapon_id: weapon.weeping-blades}
-    context: {hit_roll: 6}
-    expect: {context.automatic: true, result.success: true, result.critical: false}
+    attacker:
+      main_weapon_id: weapon.weeping-blades
+    context:
+      hit_roll: 6
+    expect:
+      context.automatic: false
+      result.success: true
+      result.critical: false
+      context.failure_still_wounds: true
+    rolls:
+    - key: wound
+      value: 1
   - id: fighting-claws-hit-six-still-rolls-wound
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: wound
-    attacker: {main_weapon_id: weapon.fighting-claws}
-    context: {hit_roll: 6}
-    rolls: [{key: wound, value: 1}]
-    expect: {context.automatic: false, result.success: false}
+    attacker:
+      main_weapon_id: weapon.fighting-claws
+    context:
+      hit_roll: 6
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      context.automatic: false
+      result.success: false
   mutations:
-  - {id: remove-claws-pair, path: attacker.main_weapon.paired, value: false, cases: [fighting-claws-pair]}
-  - {id: remove-claws-parry, path: defender.main_weapon.parry, value: false, cases: [fighting-claws-parry]}
-  - {id: remove-weeping-pair, path: attacker.main_weapon.paired, value: false, cases: [weeping-blades-pair]}
-  - {id: remove-weeping-poison, path: attacker.main_weapon.tags, value: [weapon.weeping-blades], cases: [weeping-blades-hit-six-auto-wounds]}
-
+  - id: remove-claws-pair
+    path: attacker.main_weapon.paired
+    value: false
+    cases:
+    - fighting-claws-pair
+  - id: remove-claws-parry
+    path: defender.main_weapon.parry
+    value: false
+    cases:
+    - fighting-claws-parry
+  - id: remove-weeping-pair
+    path: attacker.main_weapon.paired
+    value: false
+    cases:
+    - weeping-blades-pair
+  - id: remove-weeping-poison
+    path: attacker.main_weapon.tags
+    value:
+    - weapon.weeping-blades
+    cases:
+    - weeping-blades-hit-six-auto-wounds
 - id: weapon.control-and-priority-family
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: mechanic/weapon.chained-squig, digest: 817ff1c23ef63752313acddd7825ed019f1f6e2583d4c58f57d8127be482f769}
-  - {target: mechanic/weapon.squig-prodder, digest: d482ff414389cfdf4d2a252f320a0ae2cb51d663870dd4b514d56a2790b1d2e7}
-  - {target: mechanic/weapon.kusara-kama, digest: bb0af301dd0d716d9d1f89c64ea7cebf605449f851c2449efe10f8163d1aeda5}
-  - {target: mechanic/weapon.long-boat-hook, digest: 5bc7e178d8f8395a3ea3515ae58f3a4761beafe19215d8a622800627a56d2161}
-  interpretation: "Chained Squig fixes Strength 3, strikes first, cannot be parried and entangles on a hit. Squig Prodder strikes first. Kusara-kama removes one attack after a 5+ hit. Long Boat Hook has Strength -1 and priority only in the first round."
+  - target: mechanic/weapon.chained-squig
+    digest: 817ff1c23ef63752313acddd7825ed019f1f6e2583d4c58f57d8127be482f769
+  - target: mechanic/weapon.squig-prodder
+    digest: d482ff414389cfdf4d2a252f320a0ae2cb51d663870dd4b514d56a2790b1d2e7
+  - target: mechanic/weapon.kusara-kama
+    digest: a8f3cba5f1bb5abec57e8d36002df51b7425326df08d336f513f3d3206ebe582
+  - target: mechanic/weapon.long-boat-hook
+    digest: 5bc7e178d8f8395a3ea3515ae58f3a4761beafe19215d8a622800627a56d2161
+  interpretation: Chained Squig fixes Strength 3, strikes first, cannot be parried and entangles on a hit.
+    Squig Prodder strikes first. Kusara-kama removes one attack after a 5+ hit. Long Boat Hook has Strength
+    -1 and priority only in the first round.
   cases:
   - id: chained-squig-entangles-on-hit
-    roles: [compiled, active, consumer, sequence, consumption, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - sequence
+    - consumption
+    - boundary
     operation: attack
-    attacker: {main_weapon_id: weapon.chained-squig}
-    defender: {main_weapon_id: weapon.sword}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 1}]
-    expect: {attacker.main_weapon.fixed_strength: 3, attacker.main_weapon.priority: 1, attacker.main_weapon.cannot_be_parried: true, result.defender.entangled: true, result.wounded: false}
+    attacker:
+      main_weapon_id: weapon.chained-squig
+    defender:
+      main_weapon_id: weapon.sword
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 1
+    expect:
+      attacker.main_weapon.fixed_strength: 3
+      attacker.main_weapon.priority: 1
+      attacker.main_weapon.cannot_be_parried: true
+      result.defender.entangled: true
+      result.wounded: false
   - id: chained-squig-miss-does-not-entangle
-    roles: [inactive, boundary, sequence]
+    roles:
+    - inactive
+    - boundary
+    - sequence
     operation: attack
-    attacker: {main_weapon_id: weapon.chained-squig}
-    rolls: [{key: test.hit, value: 1}]
-    expect: {result.defender.entangled: false}
+    attacker:
+      main_weapon_id: weapon.chained-squig
+    rolls:
+    - key: test.hit
+      value: 1
+    expect:
+      result.defender.entangled: false
   - id: squig-prodder-first
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: acting_order
-    attacker: {main_weapon_id: weapon.squig-prodder, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
-    expect: {attacker.main_weapon.priority: 1, result.first_acts: true}
+    attacker:
+      main_weapon_id: weapon.squig-prodder
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    expect:
+      attacker.main_weapon.priority: 1
+      result.first_acts: true
   - id: kusara-hit-five-removes-attack
-    roles: [compiled, active, consumer, sequence, consumption, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - sequence
+    - consumption
+    - boundary
     operation: attack
-    attacker: {main_weapon_id: weapon.kusara-kama}
-    rolls: [{key: test.hit, value: 5}, {key: test.wound, value: 1}]
-    expect: {attacker.main_weapon.two_handed: true, attacker.main_weapon.armour_penetration: 1, result.defender.attack_penalty: 1}
+    attacker:
+      main_weapon_id: weapon.kusara-kama
+    rolls:
+    - key: test.hit
+      value: 5
+    - key: test.wound
+      value: 1
+    expect:
+      attacker.main_weapon.two_handed: true
+      attacker.main_weapon.armour_penetration: 1
+      result.defender.attack_penalty: 1
   - id: kusara-hit-four-does-not-remove-attack
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attack
-    attacker: {main_weapon_id: weapon.kusara-kama}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 1}]
-    expect: {result.defender.attack_penalty: 0}
+    attacker:
+      main_weapon_id: weapon.kusara-kama
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 1
+    expect:
+      result.defender.attack_penalty: 0
   - id: long-hook-first-round-priority
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: acting_order
-    attacker: {main_weapon_id: weapon.long-boat-hook, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
-    context: {first_round: true}
-    expect: {attacker.main_weapon.strength_bonus: -1, attacker.main_weapon.two_handed: true, result.first_acts: true}
+    attacker:
+      main_weapon_id: weapon.long-boat-hook
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    context:
+      first_round: true
+    expect:
+      attacker.main_weapon.strength_bonus: -1
+      attacker.main_weapon.two_handed: true
+      result.first_acts: true
   - id: long-hook-later-uses-initiative
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: acting_order
-    attacker: {main_weapon_id: weapon.long-boat-hook, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
-    context: {first_round: false}
-    expect: {result.first_acts: false}
+    attacker:
+      main_weapon_id: weapon.long-boat-hook
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    context:
+      first_round: false
+    expect:
+      result.first_acts: false
   mutations:
-  - {id: remove-chained-entangle, path: attacker.main_weapon.tags, value: [], cases: [chained-squig-entangles-on-hit]}
-  - {id: remove-prodder-priority, path: attacker.main_weapon.priority, value: 0, cases: [squig-prodder-first]}
-  - {id: remove-kusara-control, path: attacker.main_weapon.tags, value: [], cases: [kusara-hit-five-removes-attack]}
-  - {id: make-long-hook-always-first, path: attacker.main_weapon.tags, value: [], cases: [long-hook-later-uses-initiative]}
+  - id: remove-chained-entangle
+    path: attacker.main_weapon.tags
+    value: []
+    cases:
+    - chained-squig-entangles-on-hit
+  - id: remove-prodder-priority
+    path: attacker.main_weapon.priority
+    value: 0
+    cases:
+    - squig-prodder-first
+  - id: remove-kusara-control
+    path: attacker.main_weapon.tags
+    value: []
+    cases:
+    - kusara-hit-five-removes-attack
+  - id: make-long-hook-always-first
+    path: attacker.main_weapon.tags
+    value: []
+    cases:
+    - long-hook-later-uses-initiative

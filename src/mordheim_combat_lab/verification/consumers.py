@@ -82,6 +82,7 @@ MODULAR_FIELD_CONSUMERS = {
     "charge_ws_bonus": "hit", "first_round_attacks_bonus": "attacks",
     "incoming_strength_modifier": "wound", "armour_strength_modifier": "armour",
     "weapon_skill_bonus": "hit", "critical_injury_bonus": "injury",
+    "damage_die_sides": "wound",
     "energy_focus_attacks": "attacks-wound", "incoming_attacks_modifier": "attacks",
     "incoming_hit_modifier": "hit", "armour_save_bonus": "construction-armour",
     "ward_save": "special-save", "priority": "priority", "parry": "parry",

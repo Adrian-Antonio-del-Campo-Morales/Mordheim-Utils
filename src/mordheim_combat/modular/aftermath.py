@@ -22,8 +22,13 @@ def _react_to_wound(
     attacker: CompiledFighter, defender: CompiledFighter,
     outcome: AttackOutcome, dice: DiceSource, key: str,
 ) -> AttackOutcome:
-    attacker_state, defender_state = outcome.attacker, outcome.defender
-    if outcome.damage and phases.has_tag(defender.global_effects, "acid_blood"):
+    if outcome.reactions_resolved:
+        return outcome
+    attacker_state = outcome.attacker
+    # Rescue is an immediate response to OOA, before the next prepared hit.
+    defender_state = _force_of_will(defender, outcome.defender, dice, f"{key}.force-of-will")
+    reactive_damage = outcome.damage - outcome.damage_already_reacted
+    if reactive_damage and phases.has_tag(defender.global_effects, "acid_blood"):
         acid = EffectSet(
             tags=("rule.acid-blood", "effect.no-critical"), fixed_strength=3,
             automatic_hit=True, cannot_be_parried=True,
@@ -32,10 +37,10 @@ def _react_to_wound(
             defender_state, condition=Condition.STANDING,
             wounds=max(1, defender_state.wounds),
         )
-        for index in range(outcome.damage):
+        for index in range(reactive_damage):
             reaction = resolve_reference_attack(
                 defender, attacker, reaction_source, attacker_state, acid, dice,
-                key=f"{key}.acid-blood.{index}",
+                key=f"{key}.acid-blood.{index}", melee_attack=False,
             )
             attacker_state = reaction.defender
     if (
@@ -52,19 +57,20 @@ def _react_to_wound(
             wounds=attacker_state.wounds - 1,
             condition=(Condition.OUT if attacker_state.wounds <= 1 else attacker_state.condition),
         )
-    return replace(outcome, attacker=attacker_state, defender=defender_state)
+    return replace(outcome, attacker=attacker_state, defender=defender_state,
+        damage_already_reacted=outcome.damage, reactions_resolved=True)
 
 
-def _start_round_state(fighter: CompiledFighter, state: FighterState) -> tuple[FighterState, bool]:
-    stood = state.condition == Condition.KNOCKED_DOWN
+def _start_round_state(fighter: CompiledFighter, state: FighterState, *, recover: bool = True) -> tuple[FighterState, bool]:
+    stood = recover and state.condition == Condition.KNOCKED_DOWN
     condition = (
-        Condition.KNOCKED_DOWN if state.condition == Condition.STUNNED
+        Condition.KNOCKED_DOWN if recover and state.condition == Condition.STUNNED
         else Condition.STANDING if stood
         else state.condition
     )
     return replace(
         state, condition=condition, parries_remaining=_parry_capacity(fighter),
-        critical_available=True, attack_penalty=0,
+        critical_available=True, attack_penalty=0, hampered_hands=(),
     ), stood
 
 
@@ -107,10 +113,15 @@ def _fire_recovery(
         tags=("attack.fire", "effect.no-critical"), fixed_strength=4,
         automatic_hit=True, cannot_be_parried=True,
     )
+    # Burning is an independent S4 hit, not another attack by the opponent.
+    fire_source = replace(opponent, global_effects=EffectSet())
     result = resolve_reference_attack(
-        opponent, victim, opponent_state, victim_state, fire, dice,
-        key=f"{key}.hit",
+        fire_source, victim, opponent_state, victim_state, fire, dice,
+        key=f"{key}.hit", melee_attack=False,
     )
+    result = replace(result, defender=_force_of_will(
+        victim, result.defender, dice, f"{key}.hit.force-of-will",
+    ))
     return result.defender, result.attacker, (result,)
 
 
@@ -144,7 +155,7 @@ def _spines(
         automatic_hit=True, cannot_be_parried=True,
     )
     result = resolve_reference_attack(
-        owner, target, owner_state, target_state, effect, dice, key=key,
+        owner, target, owner_state, target_state, effect, dice, key=key, melee_attack=False,
     )
     return result.attacker, result.defender, (result,)
 
@@ -162,7 +173,7 @@ def _black_hunger(
     outcomes = []
     for index in range(count):
         result = resolve_reference_attack(
-            fighter, fighter, state, state, effect, dice, key=f"{key}.hit.{index}",
+            fighter, fighter, state, state, effect, dice, key=f"{key}.hit.{index}", melee_attack=False,
         )
         state = result.defender
         outcomes.append(replace(result, attacker=state, defender=state))

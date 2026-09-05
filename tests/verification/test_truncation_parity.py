@@ -87,8 +87,11 @@ def test_truncation_rows_flow_into_payload_and_markdown():
     )
     report = ParityReport(complete=True, obligations=(), verified=(),
                           pending=(), divergences=(), exact_checks=())
-    payload = parity_report_payload(report, truncations=rows)
+    payload = parity_report_payload(
+        report, truncations=rows, truncation_pair_set="fast",
+    )
     truncations = payload["truncations"]
+    assert truncations["pair_set"] == "fast"
     assert isinstance(truncations, dict)
     assert truncations["complete"]
     assert len(truncations["samples"]) == 2

@@ -5,14 +5,14 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-critical-hits
-    digest: 8a9bed002edfdc8ec9a74dc676d919cedaf2e50bb6c96d600c72d78e9dca2e69
+    digest: 48dc55dfd8d28ad2179d97ee7eee28475be4430d2430a6c0f491712b5bd7062c
   - target: mechanic/poison.devil-s-toxin
     digest: 1d60b4b208bcdaef2a755fd9e9f63668e79b94e1453f4efed437d6c987840275
   bindings:
   - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
   - '{"id": "poison.devil-s-toxin", "kind": "mechanic", "parameters": {}}'
-  interpretation: Devil's Toxin rerolls failed wound rolls, and the reroll cannot cause a critical hit;
-    an unrerolled natural 6 still crits.
+  interpretation: Devil's Toxin rerolls failed wound rolls, and the reroll cannot cause a critical hit; an
+    unrerolled natural 6 still crits.
   cases:
   - id: composition
     roles:
@@ -53,14 +53,14 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-critical-hits
-    digest: 8a9bed002edfdc8ec9a74dc676d919cedaf2e50bb6c96d600c72d78e9dca2e69
+    digest: 48dc55dfd8d28ad2179d97ee7eee28475be4430d2430a6c0f491712b5bd7062c
   - target: mechanic/poison.wolfsbane
     digest: 38c26725d6eb0e2dcf7859c71c57c2a98b555f670abe51574ac9ff2cebc5f765
   bindings:
   - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
   - '{"id": "poison.wolfsbane", "kind": "mechanic", "parameters": {}}'
-  interpretation: Wolfsbane causes critical hits on a wound roll of 5-6; the same roll is merely a wound
-    without the poison.
+  interpretation: Wolfsbane causes critical hits on a wound roll of 5-6; the same roll is merely a wound without
+    the poison.
   cases:
   - id: composition
     roles:
@@ -101,12 +101,12 @@ specifications:
   - target: mechanic/material.dark-steel
     digest: 8d728f140afba7fe68d83eafebfe5b51c1688d5252cee6f3c50969272b668133
   - target: mechanic/poison.black-lotus
-    digest: c8d33654afbd1137e21cb298daa9a1fd3e793cf042889f16305fda5934172ccc
+    digest: b62d3687e6b97ea58a394f55566d5ac9c38309ebf3e938c87b53c6cf425f9c7c
   bindings:
   - '{"id": "material.dark-steel", "kind": "mechanic", "parameters": {}}'
   - '{"id": "poison.black-lotus", "kind": "mechanic", "parameters": {}}'
-  interpretation: Black Lotus wounds automatically on a natural 6 to hit; Dark Steel rerolls failed wound
-    rolls on ordinary hits.
+  interpretation: Black Lotus wounds automatically on a natural 6 to hit; Dark Steel rerolls failed wound rolls
+    on ordinary hits. The optional Lotus critical attempt cannot fail the wound and is not rerolled.
   cases:
   - id: composition
     roles:
@@ -121,7 +121,11 @@ specifications:
     expect:
       result.success: true
       result.critical: false
-      result.roll: 0
+      result.roll: 1
+      context.failure_still_wounds: true
+    rolls:
+    - key: wound
+      value: 1
   - id: boundary-reroll
     roles:
     - boundary
@@ -150,14 +154,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/poison.black-lotus
-    digest: c8d33654afbd1137e21cb298daa9a1fd3e793cf042889f16305fda5934172ccc
+    digest: b62d3687e6b97ea58a394f55566d5ac9c38309ebf3e938c87b53c6cf425f9c7c
   - target: mechanic/skill.sure-strike
     digest: ca1bb0a4961fa059e1c59165d4113d473e86420c9c975d899fa02b0870a8c509
   bindings:
   - '{"id": "poison.black-lotus", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.sure-strike", "kind": "mechanic", "parameters": {}}'
   interpretation: Black Lotus wounds automatically on a natural 6 to hit; Sure Strike rerolls failed wound
-    rolls on ordinary hits.
+    rolls on ordinary hits. The optional Lotus critical attempt cannot fail the wound and is not rerolled.
   cases:
   - id: composition
     roles:
@@ -173,7 +177,11 @@ specifications:
     expect:
       result.success: true
       result.critical: false
-      result.roll: 0
+      result.roll: 1
+      context.failure_still_wounds: true
+    rolls:
+    - key: wound
+      value: 1
   - id: boundary-reroll
     roles:
     - boundary
@@ -231,8 +239,12 @@ specifications:
       value: 5
     - key: test.attack.1.wound
       value: 5
+    - key: test.attack.1.critical
+      value: 1
     - key: test.attack.1.armour
       value: 5
+    - key: test.attack.1.injury.0
+      value: 1
     expect:
       result.attacks.0.critical: false
       result.attacks.1.critical: true
@@ -251,10 +263,14 @@ specifications:
       value: 4
     - key: test.attack.0.wound
       value: 6
+    - key: test.attack.0.critical
+      value: 1
     - key: test.attack.1.wound
       value: 5
     - key: test.attack.1.armour
       value: 5
+    - key: test.attack.1.injury.0
+      value: 1
     expect:
       result.attacks.0.critical: true
       result.attacks.1.critical: false

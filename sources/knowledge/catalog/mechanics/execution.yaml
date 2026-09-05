@@ -102,7 +102,7 @@ mechanics:
     tags:
     - weapon.rapier
     parry: true
-    strength_bonus: -1
+    target_armour_bonus: 1
   trigger: attack
   application: attack
   stacking: stack
@@ -224,7 +224,7 @@ mechanics:
     - weapon.pistol
     fixed_strength: 4
     first_round_attacks_bonus: 0
-    armour_penetration: 2
+    armour_penetration: 1
   trigger: attack
   application: attack
   stacking: stack
@@ -234,7 +234,7 @@ mechanics:
     tags:
     - weapon.duelling-pistol
     fixed_strength: 4
-    armour_penetration: 2
+    armour_penetration: 1
     hit_modifier: 1
   trigger: attack
   application: attack
@@ -276,6 +276,7 @@ mechanics:
     tags:
     - weapon.brass-knuckles
     strength_bonus: 1
+    initiative_bonus: -2
   trigger: attack
   application: attack
   stacking: stack
@@ -449,6 +450,7 @@ mechanics:
     tags:
     - weapon.pirate-scourge
     cannot_be_parried: true
+    target_armour_bonus: 1
   trigger: attack
   application: attack
   stacking: stack
@@ -490,6 +492,7 @@ mechanics:
     tags:
     - weapon.beastlash
     strength_bonus: -1
+    cannot_be_parried: true
   trigger: attack
   application: attack
   stacking: stack
@@ -605,6 +608,7 @@ mechanics:
     two_handed: true
     ignore_armour: true
     strength_bonus: 2
+    damage_die_sides: 3
   trigger: attack
   application: attack
   stacking: stack
@@ -945,7 +949,8 @@ mechanics:
   parameters:
     tags:
     - material.dark-elf-blade
-    injury_modifier: 1
+    critical_injury_bonus: 1
+    concussion: true
   trigger: attack
   application: attack
   stacking: stack

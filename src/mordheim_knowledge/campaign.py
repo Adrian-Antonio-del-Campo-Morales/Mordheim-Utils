@@ -1,7 +1,9 @@
 """knowledge.campaign: runtime loaders for the published campaign catalogues.
 
 Implements the loading contract tracked as ``campaign.runtime-loaders`` in
-``sources/knowledge/CAMPAIGN INGESTION RESULTS.md`` and TODO.md section 5.
+TODO.md section 5 (the ingestion that produced ``catalog/hirelings/**`` and
+``catalog/campaign/hired-swords-and-dramatis.yaml`` is documented in
+``catalog/hirelings/README.md``).
 The KB campaign data under ``catalog/campaign/**`` is published and inert;
 these loaders are the authorised runtime read path and validate, at load
 time, the integrity a consumer can rely on:
@@ -527,6 +529,40 @@ def load_hirelings(
                 )
 
     return HirelingCatalogue(tuple(profiles), tuple(top_rules))
+
+
+@lru_cache(maxsize=None)
+def load_hireling_traits(
+    ruleset: str = "mordheim", root: Path | None = None
+) -> tuple[dict, ...]:
+    """Canonical intrinsic traits of the hireling profiles (``traits.yaml``).
+
+    Every ``profile_id`` must resolve against ``catalog/hirelings/**`` so the
+    registry cannot drift from the profiles it describes.
+    """
+    base = (root or knowledge_root()) / HIRELING_CATALOGUE_DIR
+    path = base / "traits.yaml"
+    document = read_yaml(path)
+    _check_header(
+        document, path, ruleset,
+        require_catalog=False, require_status=False,
+    )
+    rows = tuple(document.get("traits") or ())
+    profile_ids = [str(row.get("profile_id") or "") for row in rows]
+    if any(not profile_id for profile_id in profile_ids):
+        raise ValueError(f"hireling traits has a row without profile_id: {path}")
+    if len(profile_ids) != len(set(profile_ids)):
+        raise ValueError(f"hireling traits has duplicate profile ids: {path}")
+    known = {
+        str(row.get("id") or "") for row in load_hirelings(ruleset, root).profiles
+    }
+    missing = sorted(set(profile_ids) - known)
+    if missing:
+        raise ValueError(
+            "hireling traits reference unknown profiles: "
+            + ", ".join(missing[:8])
+        )
+    return rows
 
 
 # --------------------------------------------------------------------------- #

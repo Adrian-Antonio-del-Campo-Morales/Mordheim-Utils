@@ -6,8 +6,8 @@ specifications:
   sources:
   - target: mechanic/poison.devil-s-toxin
     digest: 1d60b4b208bcdaef2a755fd9e9f63668e79b94e1453f4efed437d6c987840275
-  interpretation: Reroll failed wounds once, but that reroll cannot cause a critical. Original natural sixes still
-    cause criticals unless six was required.
+  interpretation: Reroll failed wounds once, but that reroll cannot cause a critical. Original natural sixes
+    still cause criticals unless six was required.
   interaction_contract:
     reads:
     - defender.poison_immunity
@@ -472,8 +472,8 @@ specifications:
   sources:
   - target: mechanic/poison.reptile-venom
     digest: e942ef4e90104e285b62d63d7832a8d041ab5e6bd0a7c8c7a95c74797735dc4e
-  interpretation: The poison increases only Strength used to wound by one. It does not increase Strength used for
-    armour penetration.
+  interpretation: The poison increases only Strength used to wound by one. It does not increase Strength used
+    for armour penetration.
   interaction_contract:
     reads:
     - defender.poison_immunity
@@ -983,9 +983,10 @@ specifications:
   category: local
   sources:
   - target: mechanic/poison.black-lotus
-    digest: c8d33654afbd1137e21cb298daa9a1fd3e793cf042889f16305fda5934172ccc
-  interpretation: A natural hit roll of six wounds automatically. No wound die is requested and no automatic critical
-    is invented; armour remains available.
+    digest: b62d3687e6b97ea58a394f55566d5ac9c38309ebf3e938c87b53c6cf425f9c7c
+  interpretation: A natural hit six guarantees a wound and optionally rolls for a critical. A non-six attempt
+    retains the wound; it is not a failed wound eligible for a reroll. General critical eligibility and the
+    basic critical table still apply; declining skips the attempt.
   interaction_contract:
     reads:
     - defender.poison_immunity
@@ -1005,9 +1006,13 @@ specifications:
     context:
       hit_roll: 6
     expect:
-      context.automatic: true
+      context.automatic: false
       result.success: true
       result.critical: false
+      context.failure_still_wounds: true
+    rolls:
+    - key: wound
+      value: 1
   - id: unmodified-five-does-not-trigger
     roles:
     - inactive
@@ -1034,6 +1039,8 @@ specifications:
     rolls:
     - key: test.hit
       value: 6
+    - key: test.wound
+      value: 1
     - key: test.armour
       value: 4
     expect:
@@ -1067,6 +1074,10 @@ specifications:
     expect:
       result.success: true
       result.critical: false
+      context.failure_still_wounds: true
+    rolls:
+    - key: wound
+      value: 1
   - id: ordinary-face-1
     roles:
     - inactive
@@ -1163,6 +1174,46 @@ specifications:
     expect:
       result.success: true
       result.critical: true
+  - id: decline-critical-attempt
+    roles:
+    - boundary
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+    defender:
+      armour_id: armour.gromril-armour
+    rolls:
+    - key: test.hit
+      value: 6
+    - key: test.armour
+      value: 4
+    expect:
+      result.wounded: true
+      result.saved: true
+      result.defender.wounds: 3
+    decisions:
+    - key: test.lotus-critical
+      value: false
+  - id: optional-six-is-critical
+    roles:
+    - compiled
+    - active
+    - consumer
+    operation: wound
+    attacker:
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+    context:
+      hit_roll: 6
+    expect:
+      context.automatic: false
+      result.success: true
+      result.critical: true
+      context.failure_still_wounds: true
+    rolls:
+    - key: wound
+      value: 6
   mutations:
   - id: remove-automatic-wound
     path: attacker.main_weapon.tags
@@ -1176,8 +1227,8 @@ specifications:
   sources:
   - target: mechanic/poison.bloodroot
     digest: 3134964907d78b26d1da2eec50d04cf0a89261efa3764ebd5dc80c364181feb5
-  interpretation: An unsaved ordinary wound causes two wounds. At one remaining Wound, roll twice for injury and
-    apply the worse result. Armour prevents the wound before doubling.
+  interpretation: An unsaved ordinary wound causes two wounds. At one remaining Wound, roll twice for injury
+    and apply the worse result. Armour prevents the wound before doubling.
   interaction_contract:
     reads:
     - defender.poison_immunity

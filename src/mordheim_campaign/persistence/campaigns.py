@@ -159,6 +159,7 @@ def _campaign_from_payload(payload: dict) -> CampaignVM:
         collection=str(payload.get("collection") or ""),
         band_id=str(payload.get("band_id") or ""),
         ruleset=str(payload.get("ruleset") or "mordheim"),
+        mercenary_variant=str(payload.get("mercenary_variant") or "") or None,
     )
     if not campaign.band_id:
         raise ValueError("the campaign payload does not identify its KB warband (band_id missing)")
@@ -183,6 +184,7 @@ def _warrior_from_payload(row: dict) -> WarriorVM:
         equipment_cost=int(row.get("equipment_cost") or 0),
         stat_modifiers={str(key): int(value) for key, value in dict(row.get("stat_modifiers") or {}).items()},
         skill_access=[str(item) for item in row.get("skill_access") or ()],
+        stat_advances={str(key): int(value) for key, value in dict(row.get("stat_advances") or {}).items()},
         profile_id=str(row.get("profile_id") or ""),
     )
 
@@ -205,6 +207,7 @@ def _battle_from_payload(row: dict) -> BattleVM:
         models_after=int(row.get("models_after") or 0),
         notes=str(row.get("notes") or ""),
         opponent_rating=int(row["opponent_rating"]) if row.get("opponent_rating") is not None else None,
+        out_of_action_ids=[str(value) for value in row.get("out_of_action_ids") or ()] or None,
     )
 
 
@@ -231,6 +234,14 @@ def _post_from_payload(row: dict) -> PostBattleVM:
         active_step=int(row.get("active_step") or 0),
         completed_steps={int(value) for value in row.get("completed_steps") or ()},
         review_open=bool(row.get("review_open") or False),
+        # Working totals of a pending sequence; absent in files saved before
+        # the write side existed, so they default to zero.
+        gold_delta=int(row.get("gold_delta") or 0),
+        wyrdstone_delta=int(row.get("wyrdstone_delta") or 0),
+        wyrdstone_sold=int(row.get("wyrdstone_sold") or 0),
+        sale_resolved=bool(row.get("sale_resolved") or False),
+        veteran_pool=int(row.get("veteran_pool") or 0),
+        pending_advances=[dict(item) for item in row.get("pending_advances") or ()],
     )
 
 

@@ -106,7 +106,7 @@ def _parry_context(
     defender: CompiledFighter, defender_state: FighterState,
     effect: EffectSet, strength: int, hit_roll: int, key: str,
 ) -> ParryContext | None:
-    if defender_state.parries_remaining <= 0:
+    if defender_state.parries_remaining <= 0 or defender_state.condition != phases.Condition.STANDING:
         return None
     native_parry = defender.main_weapon.parry or bool(defender.off_hand and defender.off_hand.parry)
     match_allowed = any(phases.has_tag(defender.global_effects, tag) for tag in (
@@ -136,7 +136,8 @@ def _parry_context(
     sword_master_reroll = phases.has_tag(defender.global_effects, "skill.sword-master") and (
         not phases.has_tag(defender.global_effects, "rule.dwarf-axe-parry-reroll") or dwarf_axes
     )
-    reroll = reroll or sword_and_buckler or sword_master_reroll
+    reroll = (reroll or sword_and_buckler or sword_master_reroll or dwarf_axes
+              or phases.has_tag(defender.main_weapon, "weapon.fighting-claws"))
     reroll = reroll or phases.has_tag(defender.main_weapon, "weapon.double-bladed-sword")
     return ParryContext(
         hit_roll, strength, defender_state.strength,
@@ -190,11 +191,14 @@ def prepare_hit_context(
     if first_round and charging:
         ws += effect.charge_ws_bonus
     modifier = effect.hit_modifier + defender.global_effects.incoming_hit_modifier
+    modifier -= int(phases.has_tag(defender.main_weapon, "weapon.ball-and-chain"))
     if phases.has_tag(defender.global_effects, "rule.putrid-stench") and phases.has_tag(attacker.global_effects, "undead_or_possessed"):
         modifier += 1
     ws += int(phases.has_tag(effect, "skill.knife-fighting") and any(
         phases.has_tag(weapon, tag) for tag in ("weapon.dagger", "weapon.yambiya")
     ))
+    if phases.has_tag(weapon, "effect.serpent-staff-power"):
+        ws = 4
     modifier += int(charging and phases.has_tag(effect, "skill.berserker"))
     modifier -= int(first_round and charging and phases.has_tag(effect, "skill.ferocious-charge"))
     modifier -= int(first_round and phases.has_tag(defender.global_effects, "skill.bellowing-battle-roar"))
@@ -203,7 +207,7 @@ def prepare_hit_context(
     luck = phases.has_tag(effect, "skill.luck") and "luck" not in attacker_state.resources_spent
     return HitContext(
         ws, defender_state.weapon_skill, modifier,
-        automatic=effect.automatic_hit or helpless_at_start,
+        automatic=effect.automatic_hit or helpless_at_start or defender_state.condition == phases.Condition.PARALYZED,
         reroll=reroll or luck, key=key,
     )
 
@@ -235,10 +239,10 @@ def prepare_wound_context(
 ) -> WoundContext:
     strength, _ = _attack_strength(attacker, defender, attacker_state, weapon, effect, first_round, charging)
     poison_blocked = defender.global_effects.poison_immunity or phases.has_tag(defender.global_effects, "poison_immune")
-    automatic = phases.has_tag(effect, "effect.automatic-wound") or (
-        hit_roll == 6 and phases.has_tag(effect, "poison.black-lotus") and not poison_blocked
-    )
-    failure_still_wounds = hit_roll == 6 and phases.has_tag(effect, "wight_blades")
+    automatic = phases.has_tag(effect, "effect.automatic-wound")
+    failure_still_wounds = hit_roll == 6 and (
+        phases.has_tag(effect, "wight_blades")
+        or phases.has_tag(effect, "poison.black-lotus") and not poison_blocked)
     maximum = min(effect.maximum_wound_target, 4) if phases.has_tag(effect, "skill.monster-slayer") else effect.maximum_wound_target
     modifier = effect.wound_modifier + int(
         phases.has_tag(weapon, "weapon.sigmarite-hammer") and phases.has_tag(defender.global_effects, "undead_or_possessed")
@@ -252,7 +256,11 @@ def prepare_wound_context(
     ) else 6
     return WoundContext(
         strength, defender_state.toughness, modifier, maximum_target=maximum,
-        automatic=automatic, reroll=effect.reroll_wounds,
+        # Lotus already wounds: its optional critical attempt is not a failed
+        # wound eligible for Dark Steel/Sure Strike rerolls.
+        automatic=automatic, reroll=effect.reroll_wounds and not (
+            hit_roll == 6 and phases.has_tag(effect, "poison.black-lotus") and not poison_blocked
+        ),
         critical_threshold=critical_threshold,
         critical_available=attacker_state.critical_available and not phases.has_tag(effect, "effect.no-critical"),
         critical_on_reroll=poison_blocked or not phases.has_tag(effect, "poison.devil-s-toxin"),

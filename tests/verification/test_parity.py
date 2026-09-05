@@ -36,9 +36,9 @@ def test_parity_inventory_covers_fields_tags_and_complex_sequences():
 
 def test_semantic_specs_are_reused_as_a_case_level_parity_inventory():
     report = verify_specification_parity()
-    assert len(report.cases) == 3731
+    assert len(report.cases) == 3736
     assert report.divergences == ()
-    assert len(report.passed) == 3728
+    assert len(report.passed) == 3733
     assert len(report.pending) == 3
     assert report.out_of_scope == ()
     assert {item.status for item in report.cases} <= {
@@ -105,15 +105,17 @@ def test_deep_payload_rows_expose_per_engine_wall_times():
     payload = parity_report_payload(
         ParityReport(complete=True, obligations=(), verified=(),
                      pending=(), divergences=(), exact_checks=()),
-        deep=samples,
+        deep=samples, deep_pair_set="fast",
     )
     rows = payload["deep"]["samples"]
+    assert payload["deep"]["pair_set"] == "fast"
     assert all("reference_seconds" in row and "candidate_seconds" in row
                for row in rows)
     assert rows[0]["reference_seconds"] > 0
     assert rows[0]["candidate_seconds"] > 0
     markdown = parity_report_markdown(payload)
     assert "Time (ref/cand, s)" in markdown
+    assert "- Pair set: `fast`" in markdown
 
 
 def test_report_distinguishes_smoke_samples_from_certification_samples():

@@ -5,10 +5,19 @@ from datetime import date
 from pathlib import Path
 
 from mordheim_campaign.application.knowledge_port import KnowledgePort, WarbandProfile
-from .state import AppState, WarbandStateVM, make_draft_state, make_example_state, warrior_vm
+from .state import AppState, BattleVM, PostBattleVM, WarbandStateVM, make_draft_state, make_example_state, warrior_vm
 
 
 _ROMAN = ((10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I"))
+
+#: Mercenary variants (Reikland/Middenheim/Marienburg/Ostermark) selectable by
+#: variant-capable warbands, as (stable id, label).
+VARIANT_CHOICES = (
+    ("reikland", "Reikland"),
+    ("middenheim", "Middenheim"),
+    ("marienburg", "Marienburg"),
+    ("ostermark", "Ostermark"),
+)
 
 
 def _roman(number: int) -> str:
@@ -144,6 +153,97 @@ class AppController:
         if pending is not None:
             self.select_post_battle(pending.battle_number)
 
+    # --------------------------------------------------------------- battles
+
+    def scenario_options(self):
+        """(id, name, player_mode) triples of the KB scenario catalogue."""
+        return self.port.scenario_options()
+
+    # ------------------------------------------------- equipment moves (any time)
+
+    def assign_stash_item(self, item_id: str, warrior_id: str) -> tuple[bool, str]:
+        """Assign one stash copy to a warrior (legal outside post-battle too)."""
+        from mordheim_campaign.application.post_battle_engine import PostBattleEngine
+
+        engine = PostBattleEngine(self.port, self.state.campaign, self.state.campaign.pending_post_battle)
+        return engine.move_stash_to_warrior(item_id, warrior_id)
+
+    def return_equipped_item(self, item_id: str, warrior_id: str) -> tuple[bool, str]:
+        """Return one equipped copy to the stash (legal outside post-battle too)."""
+        from mordheim_campaign.application.post_battle_engine import PostBattleEngine
+
+        engine = PostBattleEngine(self.port, self.state.campaign, self.state.campaign.pending_post_battle)
+        return engine.return_warrior_to_stash(item_id, warrior_id)
+
+    def record_battle(
+        self,
+        *,
+        scenario_id: str,
+        scenario_name: str,
+        opponent: str,
+        result: str,
+        xp_delta: int,
+        casualties: int,
+        gold_delta: int = 0,
+        wyrdstone: int = 0,
+        opponent_rating: int | None = None,
+        notes: str = "",
+        out_of_action_ids: list[str] | None = None,
+    ) -> tuple[bool, str]:
+        """Record a played battle and open its pending post-battle.
+
+        Table facts only: the scenario comes from the KB catalogue and the
+        derived numbers (rating, models) snapshot the warband *before* the
+        post-battle mutations. The resulting ``PostBattleVM`` is the node the
+        eight-step sequence then transforms into the next immutable state.
+        """
+        campaign = self.state.campaign
+        if campaign.is_draft:
+            return False, "Commit the initial warband before recording battles."
+        if campaign.pending_post_battle is not None:
+            return False, (
+                f"Post-Battle #{campaign.pending_post_battle.battle_number} is still pending; "
+                "commit it before recording the next battle."
+            )
+        known = {scenario_id for scenario_id, _name, _mode in self.port.scenario_options()}
+        if scenario_id not in known:
+            return False, f"Unknown scenario: {scenario_id}"
+        result = result.strip().casefold().capitalize()
+        if result not in ("Victory", "Defeat", "Draw"):
+            return False, "Result must be Victory, Defeat or Draw."
+        number = campaign.next_battle_number
+        base = campaign.current_state
+        battle = BattleVM(
+            number=number,
+            date=date.today().strftime("%d %b %Y"),
+            scenario=scenario_name or scenario_id,
+            opponent=opponent.strip() or "Unknown opponent",
+            result=result,
+            gold_delta=int(gold_delta),
+            wyrdstone=max(0, int(wyrdstone)),
+            xp_delta=max(0, int(xp_delta)),
+            casualties=max(0, int(casualties)),
+            advances=0,
+            rating_before=base.rating,
+            rating_after=base.rating,
+            models_before=base.models,
+            models_after=base.models,
+            notes=notes.strip(),
+            opponent_rating=opponent_rating,
+            out_of_action_ids=list(out_of_action_ids) if out_of_action_ids else None,
+        )
+        if battle.out_of_action_ids is not None:
+            battle.casualties = len(battle.out_of_action_ids)
+        campaign.battles.append(battle)
+        campaign.post_battles.append(PostBattleVM(battle_number=number, complete=False))
+        self.select_battle(number)
+        return True, f"Battle #{number} recorded · {battle.scenario} vs. {battle.opponent} ({result})."
+
+    def latest_battle_number(self) -> int | None:
+        """Number of the most recent battle (the one a dialog may extend)."""
+        battles = self.state.campaign.battles
+        return battles[-1].number if battles else None
+
     def go_to_current_state(self) -> None:
         if self.state.campaign.is_draft:
             self.select_draft()
@@ -155,6 +255,24 @@ class AppController:
     def warband_options(self):
         """Canonical selectable warbands (read-only DTOs)."""
         return self.port.options()
+
+    # ------------------------------------------------------- mercenary variant
+
+    def variant_options(self):
+        """(variant id, label) pairs when the warband may pick a variant."""
+        from mordheim_campaign.application.hire_eligibility import VARIANT_CAPABLE_BANDS
+
+        if self._campaign().band_id not in VARIANT_CAPABLE_BANDS:
+            return ()
+        return VARIANT_CHOICES
+
+    def set_mercenary_variant(self, variant: str | None) -> None:
+        """Stores the warband's Mercenary variant (``None`` clears it)."""
+        variant = variant.strip().casefold() if variant else None
+        if variant is not None and variant not in {identifier for identifier, _ in VARIANT_CHOICES}:
+            return
+        self._campaign().mercenary_variant = variant
+        self.notify()
 
     def new_campaign(self, campaign_name: str, band_id: str) -> None:
         self.persist_path = None
@@ -207,6 +325,27 @@ class AppController:
             self._resolver = PostBattleResolver(self.port)
         return self._resolver
 
+    def post_battle_engine(self):
+        """Write side of the pending post-battle, bound to the live campaign.
+
+        Returns an engine whose post may be None when no sequence is pending;
+        engine actions guard on that.
+        """
+        from mordheim_campaign.application.post_battle_engine import PostBattleEngine
+
+        campaign = self._campaign()
+        return PostBattleEngine(self.port, campaign, campaign.pending_post_battle)
+
+    def commit_post_battle(self) -> tuple[bool, str]:
+        """Commits the pending post-battle and navigates to its new State."""
+        engine = self.post_battle_engine()
+        ok, message = engine.commit()
+        if ok:
+            self.select_state(engine.post.battle_number)
+            return True, message
+        self.notify()
+        return False, message
+
     def post_battle_content(self):
         """KB-fed offers and provenance for the pending post-battle screens."""
         from mordheim_campaign.application.post_battle_catalogue import PostBattleCatalogue
@@ -220,6 +359,14 @@ class AppController:
             member_profile_ids=frozenset(
                 row.profile_id for row in campaign.warriors if row.profile_id
             ),
+            # Employed Hired Swords/Dramatis are roster members whose canonical
+            # profile ids live under ``hireling.*``; the mutual-exclusion rules
+            # (Highwayman/Roadwarden, Shadow Warrior, …) read them from here.
+            hired_sword_profile_ids=frozenset(
+                row.profile_id for row in campaign.warriors
+                if row.profile_id and row.profile_id.startswith("hireling.")
+            ),
+            variant=campaign.mercenary_variant,
         )
 
     def addable_profiles(self, kind: str) -> tuple[WarbandProfile, ...]:
