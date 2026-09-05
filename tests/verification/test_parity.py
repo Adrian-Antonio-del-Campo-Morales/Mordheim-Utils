@@ -36,9 +36,9 @@ def test_parity_inventory_covers_fields_tags_and_complex_sequences():
 
 def test_semantic_specs_are_reused_as_a_case_level_parity_inventory():
     report = verify_specification_parity()
-    assert len(report.cases) == 3730
+    assert len(report.cases) == 3731
     assert report.divergences == ()
-    assert len(report.passed) == 3727
+    assert len(report.passed) == 3728
     assert len(report.pending) == 3
     assert report.out_of_scope == ()
     assert {item.status for item in report.cases} <= {

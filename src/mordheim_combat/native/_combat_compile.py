@@ -425,6 +425,8 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
         # priority scalars
         "weapon_priority": int(main.priority),
         "priority_global": int(g.priority),
+        "spear": has(main, "weapon.spear"),
+        "opponent_always_first": has(foe.global_effects, "skill.always-strikes-first"),
         "initiative_bonus_total": int(
             g.initiative_bonus + main.initiative_bonus
             + (off.initiative_bonus if off else 0)

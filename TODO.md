@@ -180,35 +180,51 @@ tasks:
       profiles' `unresolved_references` and update the 59-count in the
       ingestion report.
 
-## 5. Campaign catalogue → runtime integration (data is ready, code is not)
+## 5. Campaign catalogue → runtime integration (loaders done, consumers are not)
 
-The KB campaign data is published; the loaders and consumers are not.
-Documented in `CAMPAIGN INGESTION RESULTS.md` and
-`catalog/campaign/README.md`:
+The KB campaign data is published and the shared loaders now exist; the
+campaign-application consumers do not. Documented in `CAMPAIGN INGESTION
+RESULTS.md` and `catalog/campaign/README.md`:
 
-- [ ] `load_campaign_catalog(...)` and `load_post_battle_sequence(...)` in
-      `mordheim_knowledge` (task `campaign.runtime-loaders`, not started):
-      validate `schema_version`, per-document id uniqueness, and reference
-      resolution (`item_id`, `profile_id`, `lore_id`, `band_id`,
-      `warband-group.*`) across `catalog/campaign/**`.
-- [ ] Profile resolution across `catalog/hirelings/**` in the shared loaders
-      (task 2 of the ingestion report).
-- [ ] Load `registry/warband-groups.yaml` and resolve `warband-group.*` used
-      by hireling eligibility (task 3).
+- [x] `load_campaign_catalog(...)` and `load_post_battle_sequence(...)` in
+      `mordheim_knowledge/campaign.py` (task `campaign.runtime-loaders`, closed
+      2026-09-05): validate `schema_version`, headers, per-document id
+      uniqueness, and reference resolution (`item_id`, `profile_id`,
+      `lore`/lore ids, `band_id`, `warband-group.*`) across
+      `catalog/campaign/**`, plus the catalogue-to-catalogue links of the
+      sequence, scenarios, magic, serious-injuries and rarity documents.
+      Covered by `tests/knowledge/test_campaign_loaders.py`.
+- [x] Profile resolution across `catalog/hirelings/**` in the shared loaders
+      (task 2 of the ingestion report): `load_hirelings(...)` validates the
+      catalogue (102 profiles, rule and item references) and the campaign
+      catalogues resolve every `profile_id` against band profiles and the
+      hireling pool.
+- [x] Load `registry/warband-groups.yaml` and resolve `warband-group.*` used
+      by hireling eligibility (task 3): `load_warband_groups(...)` validates
+      the 24 registry groups and all campaign group references.
 - [ ] Implement the **18 dynamic campaign-eligibility rules** (roster /
       current-hireling / variant / conditional-acceptance dependent) in the
       campaign application (task 4; full id list in the ingestion report).
 - [ ] Confirm canonical handling of hireling cost resources (`gold_crowns`,
       `wyrdstone_fragments`, `treasures`, `campaign_points` — task 5).
-- [ ] **Price collation against the Trading Post** (open TODO in
-      `catalog/campaign/README.md`): compare every `cost` in every band
-      `equipment-access.yaml` with `trading-post.yaml`; convert published
-      exceptions into explicit `price_override` entries with `source_refs` and
-      keep discrepancies as historical evidence only. Review by `item_id`,
-      never by name matching.
+- [x] **Price collation against the Trading Post** (first run; see
+      `catalog/campaign/README.md` and `docs/knowledge/price-collation.md`):
+      `tools/kb/price-collation.py` compares every `cost` in every band
+      `equipment-access.yaml` with `trading-post.yaml` (2,152 rows across 81
+      warbands). Published exceptions confirmed by the warband sources are
+      recorded as explicit `price_override` entries — Nuln black-powder
+      weapons (*Impeccable Care*, 16 rows), Hochland Duelist pistol
+      (*Powder's Expensive!*) and Lizardmen light armour (*Armour*) — 18
+      rows total. The 133 remaining differing rows keep their list `cost` as
+      historical evidence (creation prices; the Trading Post prevails at the
+      market) and stay listed in the review queue until each printed source
+      is verified; the Trollheim/Lustria/Khemri rows have no recorded source
+      URL yet.
 - [ ] Build the first campaign use case (roster + match results) that consumes
-      the loaded catalogues, with a loading contract reusable by
-      `mordheim_campaign.application.knowledge_port`.
+      the loaded catalogues. The loading contract is reusable: KnowledgePort
+      exposes `post_battle_sequence()`, `campaign_catalog()`,
+      `hireling_catalogue()` and `warband_groups()` (tests in
+      `tests/campaign/test_knowledge_port.py`).
 
 ## 6. Item/mechanic mapping coverage — make the intent explicit
 

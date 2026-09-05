@@ -6,9 +6,10 @@ examples, canonical counts, reference resolution (items, warbands, groups,
 conditions, skills, wizard profiles) and table invariants.
 
 The KB declares rules and tables, never their outcome. These tests only
-validate that the data is correctly ingested and referenced; rule execution
-belongs to the future loaders/runtime (``load_campaign_catalog``,
-``load_post_battle_sequence``), not yet implemented.
+validate that the data is correctly ingested and referenced; the runtime
+read path and its load-time validation live in ``mordheim_knowledge/campaign.py``
+(``load_campaign_catalog``, ``load_post_battle_sequence``, ``load_hirelings``,
+``load_warband_groups``), covered by ``tests/knowledge/test_campaign_loaders.py``.
 """
 from __future__ import annotations
 

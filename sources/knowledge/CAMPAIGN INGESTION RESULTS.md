@@ -18,7 +18,7 @@ This document summarizes the final state of the **Hired Swords** and **Dramatis 
 - **Dynamic/conditional rules the application must evaluate:** 18
 - **Shared KB originally modified:** Yes — v2 catalogue integrated and published; profiles/groups already live in `sources/knowledge`
 
-The functional ingestion of Hired Swords and Dramatis Personae is considered **complete**. The **integration into the shared Mordheim-Utils KB is done**: `sources/knowledge/catalog/campaign/hired-swords-and-dramatis.yaml` is schema v2 with `status: published`, its 98 entries resolve against `catalog/hirelings/**` and `registry/warband-groups.yaml`, and the invariants are covered in `tests/knowledge/test_campaign_catalogs.py` (Mercenaries section). The following TODOs 2–5 are loader/runtime work in the applications, outside the scope of the KB data.
+The functional ingestion of Hired Swords and Dramatis Personae is considered **complete**. The **integration into the shared Mordheim-Utils KB is done**: `sources/knowledge/catalog/campaign/hired-swords-and-dramatis.yaml` is schema v2 with `status: published`, its 98 entries resolve against `catalog/hirelings/**` and `registry/warband-groups.yaml`, and the invariants are covered in `tests/knowledge/test_campaign_catalogs.py` (Mercenaries section). The runtime read path is implemented in `mordheim_knowledge/campaign.py` (schema-v2 consumers, profile resolution across `catalog/hirelings/**`, and `registry/warband-groups.yaml` loading — TODOs 2, 3 and 6 below). The remaining TODOs 4–5 are application/data work: the 18 dynamic eligibility rules and the resource-handling confirmation.
 
 ## Where each piece of information lives in the KB
 
@@ -90,17 +90,21 @@ Includes:
 
 > Pending only in the applications: updating the consumers that expect schema_version 1 (loaders/runtime), never in the KB data.
 
-### 2. hirelings.integration.profile-resolution
+### 2. hirelings.integration.profile-resolution — COMPLETED
 
 **Target:** `shared loaders/validators`
 
 Resolve profile_id references against catalog/hirelings/** as well as existing band profile locations.
 
-### 3. hirelings.integration.warband-groups
+Implemented in `mordheim_knowledge/campaign.py`: `load_hirelings(...)` validates and exposes the hireling catalogue (102 profiles, declared rules with cross-file rule-reference and item resolution), and the campaign catalogues resolve every `profile_id` against band profiles **and** the hireling pool.
+
+### 3. hirelings.integration.warband-groups — COMPLETED
 
 **Target:** `shared loaders/validators and campaign evaluator`
 
 Load registry/warband-groups.yaml and resolve warband-group.* references used by eligibility.
+
+Implemented in `mordheim_knowledge/campaign.py`: `load_warband_groups(...)` validates the 24 registry groups (id uniqueness, kind, band membership) and every eligibility/restriction `warband-group.*` reference of the campaign catalogues resolves against it.
 
 ### 4. hirelings.integration.application-rules
 
@@ -140,22 +144,36 @@ Resources affected:
 - `treasures`
 - `campaign_points`
 
-### 6. campaign.runtime-loaders — PENDING (not started)
+### 6. campaign.runtime-loaders — COMPLETED
 
 **Target:** `mordheim_knowledge` (application runtime; outside the data scope)
 
-Implement the campaign loaders requested for the next milestone, **without touching the KB**
-or the vectorized engine:
-- `load_campaign_catalog(...)` — load the catalogues from `catalog/campaign/**`
-  (scenarios, post-battle-sequence, experience-and-advances, serious-injuries,
-  trading-post, magic, mutations, hired-swords-and-dramatis, …), validating
-  `schema_version`, per-document ID uniqueness and reference resolution
-  (item_ids, profile_ids, lore_ids, band_ids, warband-group.*).
+The campaign loaders requested for the next milestone are implemented in
+`mordheim_knowledge/campaign.py`, **without touching the KB** or the vectorized
+engine:
+- `load_campaign_catalog(...)` — loads every catalogue from `catalog/campaign/**`
+  (all 12 published documents), validating `schema_version`, headers,
+  per-document ID uniqueness and reference resolution across the KB:
+  `item_id` (`catalog/items`), `profile_id` (band profiles and
+  `catalog/hirelings/**`), `condition_id`, `skill_id`, `lore`
+  (`catalog/campaign/magic.yaml`), band references and `warband-group.*`
+  (`registry/warband-groups.yaml`), plus the catalogue-to-catalogue links
+  (sequence `resolves`, scenario selection/progression, magic assignments,
+  serious-injury table rerolls, rarity market catalogue).
 - `load_post_battle_sequence(...)` — specific loader for the
-  `post-battle-sequence.yaml` catalogue with the same validation.
-- Start from a use case that receives campaign state (roster + match results)
-  and consumes the loaded catalogues; the loading contract must be reusable
-  by `mordheim_campaign.application.knowledge_port`.
+  `post-battle-sequence.yaml` catalogue with the same validation contract
+  (normative order, `resolves` targets, repeatability).
+- The loading contract is reusable by `mordheim_campaign.application.knowledge_port`,
+  which now exposes `post_battle_sequence()`, `campaign_catalog()`,
+  `hireling_catalogue()` and `warband_groups()`.
+
+Covered by `tests/knowledge/test_campaign_loaders.py` (contract counts and
+negative validation cases) and the KnowledgePort tests in
+`tests/campaign/test_knowledge_port.py`.
+
+> Remaining app-side work (unchanged): the first campaign use case that
+> receives campaign state (roster + match results) and consumes the loaded
+> catalogues (TODO.md §5).
 
 ## Non-blocking KB tracking for hiring
 
@@ -337,7 +355,9 @@ There are **59 pending intrinsic references**:
 - **dynamic application rule ids:** 18
 - **in scope unresolved intrinsic references:** 59
 
-> This validation does not replace future loader/runtime integration tests in the shared KB projects.
+> Loader/runtime integration tests of the shared KB live in
+> `tests/knowledge/test_campaign_loaders.py` (contract + negative validation) and
+> `tests/campaign/test_knowledge_port.py` (application reuse of the contract).
 
 ## Final baseline
 

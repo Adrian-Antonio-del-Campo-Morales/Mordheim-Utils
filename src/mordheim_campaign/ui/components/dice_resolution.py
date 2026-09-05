@@ -30,13 +30,22 @@ class DiceResolutionCard(tk.Frame):
         choices: Sequence[str] | None = None,
         outcome_tone: str = "accent",
         outcome_actions: Sequence[tuple[str, Callable[[], None], str]] | None = None,
+        on_resolved: Callable[[list[int]], tuple[str, str, str]] | None = None,
         **kwargs,
     ) -> None:
+        """
+        ``on_resolved`` receives the actual dice values once a roll happens
+        (in-app or manual) and returns ``(title, detail, tone)`` to render;
+        it lets post-battle cards resolve the roll through an application
+        use case instead of showing a fixed preview. The static ``outcome_*``
+        fields remain the preview shown before any roll.
+        """
         super().__init__(master, bg=COLORS["panel_alt"], highlightthickness=1, highlightbackground=COLORS["border_soft"], **kwargs)
         self.notation = notation
         self.dice_count = dice_count
         self.demo_dice = list(demo_dice)
         self.combine = combine
+        self.on_resolved = on_resolved
         self.outcome_title = outcome_title
         self.outcome_detail = outcome_detail
         self.choices = list(choices or [])
@@ -121,12 +130,15 @@ class DiceResolutionCard(tk.Frame):
         result = tk.Frame(self.body, bg=COLORS["panel_alt"])
         result.pack(fill="x", pady=(8, 4))
         tk.Label(result, text=f"{self.notation}  {self._format_value(dice)}", bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Georgia", 14), padx=12, pady=6).pack(side="left")
-        if self.outcome_title:
+        resolved_title, resolved_detail, resolved_tone = self.outcome_title, self.outcome_detail, self.outcome_tone
+        if self.on_resolved is not None:
+            resolved_title, resolved_detail, resolved_tone = self.on_resolved(list(dice))
+        if resolved_title:
             outcome = tk.Frame(result, bg=COLORS["panel_alt"])
             outcome.pack(side="left", padx=(12, 0))
-            tk.Label(outcome, text=self.outcome_title.upper(), bg=COLORS["panel_alt"], fg=COLORS.get(self.outcome_tone, COLORS["accent"]), font=("Segoe UI Semibold", 9)).pack(anchor="w")
-            if self.outcome_detail:
-                tk.Label(outcome, text=self.outcome_detail, bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w", pady=(2, 0))
+            tk.Label(outcome, text=str(resolved_title).upper(), bg=COLORS["panel_alt"], fg=COLORS.get(resolved_tone, COLORS["accent"]), font=("Segoe UI Semibold", 9)).pack(anchor="w")
+            if resolved_detail:
+                tk.Label(outcome, text=str(resolved_detail), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w", pady=(2, 0))
 
         if self.choices:
             tk.Label(self.body, text="CHOOSE THE RESULT", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(anchor="w", pady=(8, 5))

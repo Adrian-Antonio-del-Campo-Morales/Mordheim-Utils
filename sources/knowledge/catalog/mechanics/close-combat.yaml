@@ -141,7 +141,7 @@ weapons:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
 - id: weapon.spear
   name: Spear
-  summary: Strikes first and may only be combined with a shield or buckler.
+  summary: Strikes first in the first round of close combat, even if charged; may only be combined with a shield or buckler.
   hands: 1
   paired: false
   main_hand: true
@@ -1610,7 +1610,7 @@ skills:
 - id: skill.miniath
   name: Miniath
   category: special
-  summary: May parry with any weapon and re-rolls one failed parry.
+  summary: May parry with any weapon; when using a weapon that normally allows parrying, re-rolls one failed parry.
   kind: warband
   engine_option: Miniath
   source_refs: []
@@ -1975,7 +1975,7 @@ skills:
 - id: mechanic.disability
   name: Disability
   category: special
-  summary: Resolves the Cripple group's permanent D6 disability in each independent simulation row.
+  summary: 'Simulation convention: rolls the Cripple group''s permanent D6 disability once per independent simulation row instead of fixing a single result at group creation.'
   kind: profile
   engine_option: Disability
   source_refs: []
@@ -1989,14 +1989,14 @@ skills:
 - id: mechanic.mark-of-the-old-ones
   name: Mark of the Old Ones
   category: special
-  summary: Converts the first failed combat roll into a successful result once per duel.
+  summary: Converts the first failed To Hit or To Wound roll into a successful result once per duel.
   kind: warband
   engine_option: Mark of the Old Ones
   source_refs: []
 - id: mechanic.netter
   name: Netter
   category: special
-  summary: Resolves a net charge before the first close-combat phase and knocks down a target that fails to escape.
+  summary: 'Resolves a net charge before the first close-combat phase and knocks down a target that fails to escape. Simulation convention: on a miss or a successful escape the goblin attacks normally, as the failed-charge consequence has no representation in the 1-vs-1 model.'
   kind: warband
   engine_option: Netter
   source_refs: []

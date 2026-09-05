@@ -33,6 +33,7 @@ class AppController:
         self.state = state if state is not None else make_draft_state(self.port, "sisters-of-sigmar")
         self.persist_path: Path | None = None
         self._listeners: list[Callable[[], None]] = []
+        self._resolver = None
 
     def subscribe(self, listener: Callable[[], None]) -> None:
         self._listeners.append(listener)
@@ -197,6 +198,29 @@ class AppController:
 
     def _campaign(self):
         return self.state.campaign
+
+    def post_battle_resolver(self):
+        """KB-backed post-battle dice resolution (cached per controller)."""
+        from mordheim_campaign.application.post_battle_resolution import PostBattleResolver
+
+        if self._resolver is None:
+            self._resolver = PostBattleResolver(self.port)
+        return self._resolver
+
+    def post_battle_content(self):
+        """KB-fed offers and provenance for the pending post-battle screens."""
+        from mordheim_campaign.application.post_battle_catalogue import PostBattleCatalogue
+
+        campaign = self._campaign()
+        return PostBattleCatalogue(
+            self.port,
+            campaign.collection,
+            campaign.band_id,
+            ruleset=campaign.ruleset,
+            member_profile_ids=frozenset(
+                row.profile_id for row in campaign.warriors if row.profile_id
+            ),
+        )
 
     def addable_profiles(self, kind: str) -> tuple[WarbandProfile, ...]:
         """Profiles that can still be added to the draft (within the roster)."""
