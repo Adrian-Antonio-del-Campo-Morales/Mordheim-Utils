@@ -4,10 +4,10 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: mechanic/weapon.spear, digest: 0dd3155ca6aa1f4c3d639010264934f906d8ef6a60acb55cf040847674d37820}
+  - {target: mechanic/weapon.spear, digest: 0301d1faf3f964f27d8501dff6d816f75af1e640b9dfb8e6734d42d67e092fa5}
   - {target: mechanic/weapon.pike, digest: a94e427053bdfd430879d26c56a0cc3e2913092c497a3ff126fa8cc6f0869881}
   - {target: mechanic/weapon.ankus, digest: 2cd0c699b9a8aacdf6cbc1e035b91fd192436b34b701fe080bfbb30360d1af26}
-  interpretation: "Spear, Pike and Ankus occupy the strike-first layer. Pike uses two hands without modifying Strength; Ankus additionally keeps Concussion."
+  interpretation: "Spear, Pike and Ankus occupy the strike-first layer in the first round; the Spear's strike-first applies only in the first turn of combat, after which it follows ordinary order. Pike uses two hands without modifying Strength; Ankus additionally keeps Concussion."
   cases:
   - id: spear-compiled
     roles: [compiled]
@@ -19,6 +19,22 @@ specifications:
     operation: acting_order
     attacker: {main_weapon_id: weapon.spear, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
     defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
+    context: {first_round: true}
+    expect: {result.first_acts: true}
+  - id: spear-ordinary-after-first-round
+    roles: [inactive, consumer, boundary]
+    operation: acting_order
+    attacker: {main_weapon_id: weapon.spear, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
+    context: {first_round: false}
+    expect: {result.first_acts: false}
+  - id: spear-first-when-charged
+    roles: [active, consumer, boundary]
+    operation: acting_order
+    attacker: {main_weapon_id: weapon.spear, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
+    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 6, attacks: 1}}
+    context: {first_round: true, charging: false, charged: true}
+    opponent_context: {first_round: true, charging: true}
     expect: {result.first_acts: true}
   - id: ordinary-low-initiative-acts-second
     roles: [inactive, boundary]
@@ -44,6 +60,8 @@ specifications:
     expect: {attacker.main_weapon.priority: 1, attacker.main_weapon.concussion: true, result.condition: STUNNED}
   mutations:
   - {id: remove-spear-priority, path: attacker.main_weapon.priority, value: 0, cases: [spear-first-despite-initiative]}
+  - {id: remove-spear-strike-first-when-charged, path: attacker.main_weapon.tags, value: [], cases: [spear-first-when-charged]}
+  - {id: remove-spear-first-round-scope, path: attacker.main_weapon.tags, value: [], cases: [spear-ordinary-after-first-round]}
   - {id: add-pike-strength, path: attacker.main_weapon.strength_bonus, value: 1, cases: [pike-compiled-and-strength]}
   - {id: remove-ankus-concussion, path: attacker.main_weapon.concussion, value: false, cases: [ankus-concussion]}
 

@@ -104,6 +104,15 @@ runs the engine-mutation catalogue (kill/survive) against staged copies.
 How the layers fit together is documented in the
 [testing strategy](docs/testing-strategy.md).
 
+> **Warning — long-running certification.** The `--deep`/`--truncations`
+> parity tiers, the full `test-report`, `coverage-gate` and
+> `tools/mutate-engine.py` take minutes to hours by design. They are point
+> runs — after large modifications or before a release — not the
+> per-change loop. To verify a small change use their trimmed versions
+> (smaller `--deep-simulations` / `--truncation-simulations`, targeted
+> `pytest` files); see *Runtime budget* in the
+> [testing strategy](docs/testing-strategy.md).
+
 ### Campaign Manager
 
 ```powershell

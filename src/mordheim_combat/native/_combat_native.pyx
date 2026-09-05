@@ -299,6 +299,8 @@ cdef struct FighterC:
     bint strongman
     bint long_boat_hook
     bint trident
+    bint spear
+    bint opponent_always_first
     # attack-count scalars
     int attacks_bonus_total
     int extra_weapon_attack
@@ -541,6 +543,8 @@ cdef void fill_fighter(object d, FighterC* out, object sources, object reactions
     out.strongman = _flag(d, "strongman")
     out.long_boat_hook = _flag(d, "long_boat_hook")
     out.trident = _flag(d, "trident")
+    out.spear = _flag(d, "spear")
+    out.opponent_always_first = _flag(d, "opponent_always_first")
     out.attacks_bonus_total = _int(d, "attacks_bonus_total")
     out.extra_weapon_attack = _int(d, "extra_weapon_attack")
     out.fist_penalized = _flag(d, "fist_penalized")
@@ -1127,15 +1131,21 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
         if src.chained:
             for i in range(n):
                 s_def.entangled[hit_rows[i]] = 1
-        # Anvil-head: replicate each hit 1-3 times (full-array draw, then expand).
-        if src.anvil:
+        # Anvil-head: a charging Necromantic Abomination replicates each hit
+        # 1-3 times; outside a charge the rule is inert (Khemri, Necromantic
+        # Modification / Anvil Head). Dice are drawn only for charging rows so
+        # the RNG stream stays aligned with the NumPy backend.
+        if src.anvil and first_round:
             repeats = <int*>malloc(n * sizeof(int))
             if repeats == NULL:
                 rc = -1
                 return rc
             total = 0
             for i in range(n):
-                repeats[i] = rng_draw_safe(rng, 1, 3)
+                if charging[hit_rows[i]]:
+                    repeats[i] = rng_draw_safe(rng, 1, 3)
+                else:
+                    repeats[i] = 1
                 total += repeats[i]
             hv2 = <int8_t*>malloc(total * sizeof(int8_t))
             sh2 = <int16_t*>malloc(total * sizeof(int16_t))
@@ -2447,6 +2457,10 @@ cdef inline int priority_row_c(FighterC* f, bint first_round, int charging_row,
         value = f.priority_global
     if f.long_boat_hook and not first_round:
         value = f.priority_global
+    # The spear's Strike First only applies in the first turn of hand-to-hand
+    # combat, mirroring the long-boat-hook's first-round scope.
+    if f.spear and not first_round:
+        value = f.priority_global
     if f.strike_skinks_always:
         value = 20
     if f.trident and charged_row and value < 1:
@@ -2458,6 +2472,12 @@ cdef inline int priority_row_c(FighterC* f, bint first_round, int charging_row,
             value = 20
         if f.lightning_reflexes and charged_row and value < 1:
             value = 1
+        # Spear: strikes first in the first turn of close combat, even if
+        # charged, outranking the charger's own strike-first tier.  An
+        # opponent with Always Strikes First keeps its unconditional priority
+        # and the pair resolves by Initiative instead.
+        if f.spear and charged_row and not f.opponent_always_first and value < 2:
+            value = 2
     if not f.always_strikes_first and stood_row:
         value = -1
     return value

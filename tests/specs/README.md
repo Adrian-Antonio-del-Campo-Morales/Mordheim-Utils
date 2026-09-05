@@ -44,8 +44,8 @@ reports `semantic_complete=True`, **217/217 required interactions covered,
   [`docs/interaction-matrix.md`](../../docs/interaction-matrix.md).
 - On the vectorized/native side the same corpus runs through `parity`:
   every case operation is adapted to the vectorized engine and compared
-  against the modular execution of the identical case (0 divergences, 3724
-  rows PASS as of 2026-09-04). A new spec whose operation has no adapter
+  against the modular execution of the identical case (0 divergences, 3728
+  rows PASS as of 2026-09-05). A new spec whose operation has no adapter
   would surface as `PENDING_ADAPTER` and must be reviewed before the rule
   enters a new execution path.
 
