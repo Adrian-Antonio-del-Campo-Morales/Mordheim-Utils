@@ -13,9 +13,9 @@ def to_hit(attacker_ws: int, defender_ws: int) -> int:
 def hit_targets(attacker_ws: np.ndarray, defender_ws: np.ndarray) -> np.ndarray:
     # The three cases are mutually exclusive, so the table collapses to one
     # arithmetic expression: 4 minus (attacker stronger) plus (defender much
-    # stronger), with defender WS 0 always hitting on 2+.
+    # stronger), with zero marking an automatic hit against defender WS 0.
     target = 4 + (defender_ws > 2 * attacker_ws) - (attacker_ws > defender_ws)
-    return np.where(defender_ws == 0, 2, target).astype(np.int8)
+    return np.where(defender_ws == 0, 0, target).astype(np.int8)
 
 def wound_targets(strength: np.ndarray, toughness: int | np.ndarray,
                   maximum: int = 7) -> np.ndarray:
@@ -104,7 +104,7 @@ def wound_outcomes(context, rolls: np.ndarray,
     return targets, rolls, success, critical, rerolled
 
 def characteristic_test_outcomes(targets: np.ndarray, rolls: np.ndarray, *,
-                                 six_fails: bool = False,
+                                 six_fails: bool = True,
                                  rerolls: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray]:
     """Pure vector form of a characteristic test, including an optional reroll."""
     targets = np.asarray(targets, dtype=np.int16)
@@ -171,6 +171,8 @@ def recover_round_state(fighter: CompiledFighter, state: CombatState) -> np.ndar
     state.parry_remaining[:] = _parry_capacity(fighter)
     state.critical_used[:] = False
     state.attack_penalty[:] = 0
+    state.hampered_main[:] = 0
+    state.hampered_off[:] = 0
     return stood
 
 def armour_targets(defender: CompiledFighter, strength: np.ndarray,
@@ -199,7 +201,8 @@ def armour_targets(defender: CompiledFighter, strength: np.ndarray,
         )
         target[ignored] = replacement
     if defender.global_effects.armour_save_floor <= 6:
-        target = np.minimum(target, defender.global_effects.armour_save_floor)
+        protected = ~(ignored & magical_attack)
+        target[protected] = np.minimum(target[protected], defender.global_effects.armour_save_floor)
     return target
 
 def effective_initiative(fighter: CompiledFighter, state: CombatState) -> np.ndarray:
@@ -215,7 +218,7 @@ def effective_initiative(fighter: CompiledFighter, state: CombatState) -> np.nda
     )
 
 def _characteristic_test(fighter: CompiledFighter, target: np.ndarray,
-                         rng: np.random.Generator, *, six_always_fails: bool = False) -> np.ndarray:
+                         rng: np.random.Generator, *, six_always_fails: bool = True) -> np.ndarray:
     """Resolve a D6 characteristic test, including Blessed Sight's one reroll."""
     rolls = rng.integers(1, 7, target.size)
     passed = rolls <= target
@@ -269,6 +272,8 @@ def attack_count(fighter: CompiledFighter, charging: np.ndarray, first_round: bo
         if has(effect, "skill.ferocious-charge"):
             result[charging] *= 2
     result += extra_weapon_attack
+    if has(fighter.main_weapon, "weapon.fist") and not ignores_unarmed_penalties(effect):
+        result[:] = 1
     if has(fighter.main_weapon, "weapon.vomit-attack"):
         result[:] = 1
     if has(effect, "skill.sweep") and fighter.main_weapon.two_handed:
@@ -281,7 +286,9 @@ def attack_count(fighter: CompiledFighter, charging: np.ndarray, first_round: bo
     ))
     if main_pistol:
         if first_round:
-            if not fighter.off_hand_attacks:
+            if off_pistol and fighter.off_hand_attacks:
+                result[:] = 2
+            elif not fighter.off_hand_attacks:
                 result[:] = 1
         elif fighter.off_hand_attacks:
             result = np.maximum(0, result - 1)
@@ -299,6 +306,8 @@ def attack_count(fighter: CompiledFighter, charging: np.ndarray, first_round: bo
         has(fighter.main_weapon, tag) for tag in ("weapon.fist", "weapon.natural-attacks")
     ):
         result = np.maximum(0, result - effect.energy_focus_attacks)
+    if has(fighter.main_weapon, "effect.serpent-staff-power"):
+        result[:] = 1
     if attack_penalty is not None:result=np.maximum(0,result-attack_penalty)
     return result
 
@@ -309,7 +318,8 @@ def round_weapon_attack_count(attacker: CompiledFighter, defender: CompiledFight
     result = np.asarray(count, dtype=np.int16).copy()
     if not first_round:
         return result
-    if has(attacker.main_weapon, "weapon.serpent-whip"):
+    if any(has(weapon, tag) for weapon in (attacker.main_weapon, attacker.off_hand or EffectSet())
+           for tag in ("weapon.serpent-whip", "weapon.steel-whip", "weapon.beastlash", "weapon.pirate-scourge")):
         result += (charging | charged).astype(np.int16)
     if has(defender.main_weapon, "weapon.boar-spear"):
         affected = charging & (result > 0)
@@ -366,7 +376,9 @@ def allocate_attack_weapons(fighter: CompiledFighter, count: int, *, first_round
 def priority(fighter: CompiledFighter, opponent: CompiledFighter, first_round: bool,
              charging: np.ndarray, charged: np.ndarray, stood: np.ndarray) -> np.ndarray:
     weapon_priority = fighter.main_weapon.priority
-    if fighter.global_effects.strongman and fighter.main_weapon.two_handed and weapon_priority < 0:
+    if fighter.global_effects.strongman and weapon_priority < 0 and (
+        fighter.main_weapon.two_handed or has(fighter.main_weapon, "weapon.broadsword")
+    ):
         weapon_priority = 0
     if has(fighter.main_weapon, "weapon.long-boat-hook") and not first_round:
         weapon_priority = 0
@@ -381,20 +393,12 @@ def priority(fighter: CompiledFighter, opponent: CompiledFighter, first_round: b
     if has(fighter.main_weapon, "weapon.trident"):
         value[charged] = np.maximum(value[charged], 1)
     if first_round:
-        value = np.maximum(value, charging.astype(np.int8))
+        if weapon_priority >= 0:
+            value = np.maximum(value, charging.astype(np.int8))
         if has(fighter.global_effects,"mechanic.strike-first-vs-skinks-first-round") and has(opponent.global_effects,"species.skink"):
             value[:] = 20
         if has(fighter.global_effects, "skill.lightning-reflexes"):
             value[charged] = np.maximum(value[charged], 1)
-        # Spear: strikes first in the first turn of close combat, even if
-        # charged (mordheimer.net, close-combat weapons / Strike First), so
-        # it outranks the charger's own strike-first tier.  An opponent with
-        # Always Strikes First keeps its unconditional priority and the pair
-        # resolves by Initiative instead.
-        if has(fighter.main_weapon, "weapon.spear") and not has(
-            opponent.global_effects, "skill.always-strikes-first"
-        ):
-            value[charged] = np.maximum(value[charged], 2)
     if not has(fighter.global_effects, "skill.always-strikes-first"):
         value[stood] = -1
     return value

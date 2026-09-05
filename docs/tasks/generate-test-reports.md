@@ -157,18 +157,33 @@ acceptable). Both keep the modular engine on a short leash on purpose:
 ### `parity --deep` — deep certification
 
 ```powershell
-python tools/mordheim-utils.py parity --deep
+# Short coverage-oriented set (recommended development certification)
+python tools/mordheim-utils.py parity --deep --pair-set fast
+
+# Complete matrix (point certification after substantial changes/release)
+python tools/mordheim-utils.py parity --deep --pair-set full
 ```
 
-> **Warning — long-running.** The full deep certification needs ≈2 850 000
-> modular duels plus the numpy→native cross at 1 000 000 duels/pair (≈50–70
-> min sequential, ≈10–15 min with `--workers auto`). It is a *point run*:
-> after large modifications or before a release, never for small changes.
-> For a small check, trim it — `--deep-simulations 10 000
-> --deep-cross-simulations 100 000` brings the run to a few minutes (the
-> CLI warns when the cross layer still dominates).
+> **Warning — long-running.** The complete set needs ≈4 050 000 modular
+> duels plus the numpy→native cross at 1 000 000 duels/pair (typically tens of
+> minutes sequential, or substantially less with `--workers auto`). It is a
+> *point run*: after large modifications or before a release, never for small
+> changes. The coverage-oriented `fast` set is 30 pairs and needs ≈2 925 000
+> modular duels; it is the target for a 10–15 minute pooled development
+> certification. For a small check, use trimmed matrix and cross sample sizes.
+> For a small check, use `--pair-set fast --deep-simulations 10000
+> --deep-cross-simulations 100000` (and scale both layers, because the cross
+> sample otherwise keeps its 1 000 000 default).
 
-Runs the six-sigma certification over the **archetype matrix** (30 pairs:
+`--pair-set full` is the default and runs the complete 42-pair matrix. Use
+`--pair-set fast` for the smaller 30-pair coverage-oriented set; both commands
+execute the same deterministic checks first, and the pair set only changes the
+optional matrix/truncation samples. The current static reachability snapshot
+covers 54/54 compiled effect axes (≈100%) in both sets; see the pair-set
+coverage estimate in the [testing strategy](../testing-strategy.md) for the
+synthetic-probe caveats and the distinction from line coverage.
+
+Runs the six-sigma certification over the **archetype matrix** (42 pairs:
 the five standard scenarios, profile/equipment archetypes covering glass
 cannons, brutes, elite fighters, tanks, dual weapons, parry duels and
 Ithilmar armour, twelve mechanic-coverage pairs added 2026-09-04 for
@@ -177,8 +192,11 @@ concussion vs dwarfs, frenzy/always-strikes-first, paired poisoned blades,
 two-handed weapons, ward saves, unarmed combat, fragile injury profiles
 and entangle, and five timing/parry amplifiers added 2026-09-05:
 `triple-weapon-vs-parry`, `a2-vs-w1-stun`, `frenzy-vs-w2`,
-`durable-vs-elite` and the 75-round `heavy-grind`) and, when the native
-backend is compiled, the **numpy→native cross-certification at scale**:
+`durable-vs-elite` and the 75-round `heavy-grind`), four rule-family
+coverage pairs (`skills-vs-hitter`, `helmet-vs-injury-profile-2`,
+`cathayan-longsword-vs-sword` and the benchmark-only
+`blessed-vs-regen`) and, when the native backend is compiled, the
+**numpy→native cross-certification at scale**:
 
 - `--deep-simulations` (default 100 000 per pair, 25 000 for the long
   75-round pair): duels per matrix pair and engine; the modular sample is
@@ -190,9 +208,10 @@ backend is compiled, the **numpy→native cross-certification at scale**:
   about this when it happens).
 - `--deep-cross-simulations` (default 1 000 000): duels per pair for the
   numpy→native comparison; never touches the modular engine.
-- `--max-modular-duels` (default 3 000 000): ceiling on the total modular
-  duels a single run may request (the default split needs 2 850 000 — 28
-  pairs at 100k plus the two 75-round pairs at 25k; the adaptive
+- `--max-modular-duels` (default 4 000 000): ceiling on the total modular
+  duels a single run may request (the full default split needs 4 050 000 — 40
+  regular pairs at 100k plus the two 75-round pairs at 25k; the fast split
+  needs 2 925 000 — 29 regular pairs plus the 75-round `heavy-grind`; the adaptive
   escalation below stays within the same ceiling). A plan above the
   ceiling exits with code 2 before running anything.
 - **Adaptive escalation**: pairs whose first pass comes back suspicious
@@ -201,15 +220,17 @@ backend is compiled, the **numpy→native cross-certification at scale**:
   `--max-modular-duels`. Escalated rows carry `"escalated": true` in the
   certificate and the console prints a `DEEP: escalated N pair(s)…`
   summary line.
-- Default run cost: roughly 2 850 000 modular duels (≈ 50–70 minutes
-  sequentially, or ≈ 10–15 minutes with the parallel oracle enabled; see
-  below) plus the cross layer when native is present; escalation may raise
-  the oracle total toward the ceiling.
+- Default run cost: roughly 4 050 000 modular duels for `full` (typically tens
+  of minutes sequentially, or substantially less with the parallel oracle enabled;
+  see below) plus the cross layer when native is present. `fast` starts at
+  roughly 2 925 000 modular duels and is the intended 10–15 minute pooled
+  loop; adaptive escalation may raise either oracle total toward the ceiling.
 - Progress: `parity --deep` (and `parity --statistical`) render a live
   progress bar; pass `--json` to suppress it. `benchmark --deep` shows the
   same bar for every grid cell.
 - Output: `parity --deep` saves the certificate to
-  `outputs/parity/deep.json` by default (`.json`, or `.md` via `--output`);
+  `outputs/parity/deep.json` for `full` or `outputs/parity/deep-fast.json` for
+  `fast` by default (`.json`, or `.md` via `--output`);
   the report gains a `deep` block with one sample per
   pair (`reference_rates` vs `candidate_rates`, tolerances, pass) and, per
   engine, the sample's wall time (`reference_seconds`, `candidate_seconds`);
@@ -237,7 +258,7 @@ The top-level `elapsed_seconds` in the certificate is the total wall time
 of the whole `parity` run (deterministic checks + samples + report
 writing); `test-report` prints the same total on its console summary.
 
-Current status of the shipped matrix (2026-09-04): a full certification
+Current status of the shipped matrix (2026-09-05): a full certification
 run at 100k duels/pair exposed **six** drifting archetype pairs
 (`brute-vs-fencer` ~15 pp, `axes-vs-light`, `two-weapons-vs-parry`,
 `glass-vs-tank`, `stateful`, `elite-vs-durable`). Triage traced them to a
@@ -248,10 +269,23 @@ The fix landed in both the NumPy driver and the native Cython port
 (2026-09-04) and `brute-vs-fencer` converges to ≈0 pp at 30k duels; a
 fresh full certification is the authoritative confirmation.
 
-The matrix was then extended from 13 to 25 pairs with twelve
-mechanic-targeted pairs. A 10k-duel smoke shows NumPy matching the oracle
-on **all** of them (max gap ≈ 0.9 pp), but the native port still drifts
-5–9 pp on six mechanics it previously never exercised: `regen-vs-fire`,
+The matrix was extended from 13 to 25 pairs with twelve
+mechanic-targeted pairs, then to 30 with the timing/parry amplifiers, then to
+34 with four rule-family boundaries, and now to 42 with eight
+coverage-completion probes: injury profiles 3/4, composite skill consumers,
+resilience and charge bonuses, first-round bonuses, random characteristics,
+bear hug/fire threshold, and mundane-only ward/unmodified natural armour.
+Some probes use benchmark-only trait or attack tags because the current
+executable catalogue has no selectable legal producer; they do not modify the
+KB or engines. Statistical results from these probes should be treated as
+diagnostic while the simulator is being changed in parallel.
+
+A 10k-duel smoke shows NumPy matching the oracle on the existing matrix within
+the expected sampling tolerance; the native port's known drift remains a
+separate engine-debugging concern. A fresh full certification is authoritative
+once the parallel engine work settles.
+
+The previously observed native gaps include `regen-vs-fire`,
 `natural-armour-vs-magic`, `concussion-vs-dwarf`, `paired-poison-vs-undead`,
 `great-weapon-vs-tank` and `entangle-vs-fencer` (plus ≈5 pp on
 `frenzy-vs-heavy`). Those native gaps are the next triage targets; NumPy
@@ -259,27 +293,33 @@ rows of the same pairs are already clean.
 
 ### Round-truncation samples (`--truncations`)
 
-> **Warning — long-running.** The truncation sweep now covers the whole
-> 30-pair deep matrix, so the default 10 000 duels/horizon is itself a long
-> run (≈20–40 min sequential, ≈5–10 min pooled). It is part of the
-> certification tiers — run it after orchestration-level modifications, not
-> per small change. For a small check, trim it with
-> `--truncation-simulations 2 000` (a few minutes) or run the horizons for
-> one pair through the API.
+> **Warning — long-running.** The complete truncation sweep covers the whole
+> 42-pair matrix, so the default 10 000 duels/horizon is itself a long run
+> (≈28–55 min sequential, ≈8–15 min pooled). The `fast` sweep covers 30 pairs
+> (roughly ≈14–30 min sequential, ≈4–8 min pooled). These are certification
+> tiers: run them after orchestration-level modifications, not per small
+> change. For a small check, use `parity --truncations --pair-set fast --truncation-simulations 2000`
+> or run the horizons for one pair through the API.
 
 The aggregate gate compares only the duel *end state*; orchestration defects
 — wrong acting order, a suppressed reply phase, a stateful recovery resolved
 at the wrong moment — shift *when* duels resolve without necessarily moving
 the final winner rates past the gate. `parity --truncations` re-applies the
 six-sigma gate at every horizon (2, 4, 6, 8, 10, 12, 15, 20 rounds) on
-**every deep-matrix pair** (30 scenarios, previously only the five standard
+**every deep-matrix pair** (42 scenarios, previously only the five standard
 ones): both engines run each pair truncated to `h` rounds and rows are
 labelled `<scenario>@rounds=<h>` so a failing horizon names the round where
 the divergence starts.
 
 ```powershell
-python -m mordheim_combat_lab parity --truncations
-python -m mordheim_combat_lab parity --truncations --truncation-simulations 50000 --workers auto
+# Coverage-oriented truncation sweep
+python -m mordheim_combat_lab parity --truncations --pair-set fast
+
+# Complete truncation sweep
+python -m mordheim_combat_lab parity --truncations --pair-set full
+
+# Small development check
+python -m mordheim_combat_lab parity --truncations --pair-set fast --truncation-simulations 2000
 ```
 
 | Option | Use |
@@ -322,8 +362,17 @@ so they may be pooled freely.
 ### `benchmark --deep` — deep performance characterization
 
 ```powershell
-python tools/mordheim-utils.py benchmark --deep
+# Coverage-oriented subset (recommended for the short development loop)
+python tools/mordheim-utils.py benchmark --deep --pair-set fast
+
+# Complete pair matrix (deep performance characterization)
+python tools/mordheim-utils.py benchmark --deep --pair-set full
 ```
+
+`--pair-set fast` runs the 30-pair coverage-oriented subset; `--pair-set full`
+(the default) runs all 42 pairs. `--scenario` can further restrict either set
+to one pair, which is useful for a focused performance measurement. The chosen
+set is recorded in the benchmark report as `pair_set`.
 
 Sweeps the optimized engines (NumPy and, when compiled, native) over large
 simulation counts and batch sizes while measuring the modular engine **only
@@ -342,8 +391,9 @@ at a small reference size**:
 - When native is not compiled it is reported as unavailable and skipped;
   the report payload marks `"mode": "deep"` and records the modular
   reference size.
-- `--deep` saves the report to `outputs/benchmarks/deep.json` by default;
-  pass `--output` to choose another path or format (.json, .csv or .md).
+- `--deep` saves the report to `outputs/benchmarks/deep.json` for `full` or
+  `outputs/benchmarks/deep-fast.json` for `fast` by default; pass `--output`
+  to choose another path or format (.json, .csv or .md).
 - Runtime scales with the largest simulation size: keep the top size and
   the number of batch sizes proportional to the question you are answering.
   The modular contribution stays negligible.

@@ -4,101 +4,198 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: mechanic/weapon.serpent-whip, digest: 16306218de1cb76cdc2d45581ac58b77e3f58974437846e1d1494bd7bd9b559d}
-  interpretation: >-
-    The Serpent Whip cannot be parried, carries Black Lotus and adds exactly one strike-first attack
-    in the first round when either combatant has charged.
+  - target: mechanic/weapon.serpent-whip
+    digest: 16306218de1cb76cdc2d45581ac58b77e3f58974437846e1d1494bd7bd9b559d
+  interpretation: The Serpent Whip cannot be parried, carries Black Lotus and adds exactly one strike-first
+    attack in the first round when either combatant has charged.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {main_weapon_id: weapon.serpent-whip}
-    expect: {attacker.main_weapon.cannot_be_parried: true, attacker.main_weapon.priority: 1}
-    expect_contains: {attacker.main_weapon.tags: [weapon.serpent-whip, poison.black-lotus]}
+    attacker:
+      main_weapon_id: weapon.serpent-whip
+    expect:
+      attacker.main_weapon.cannot_be_parried: true
+      attacker.main_weapon.priority: 1
+    expect_contains:
+      attacker.main_weapon.tags:
+      - weapon.serpent-whip
+      - poison.black-lotus
   - id: charged-extra-attack
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: weapon_attack_count
-    attacker: {main_weapon_id: weapon.serpent-whip}
-    context: {first_round: true, charged: true}
-    expect: {result.attacks: 2}
+    attacker:
+      main_weapon_id: weapon.serpent-whip
+    context:
+      first_round: true
+      charged: true
+    expect:
+      result.attacks: 2
   - id: later-round
-    roles: [inactive]
+    roles:
+    - inactive
     operation: weapon_attack_count
-    attacker: {main_weapon_id: weapon.serpent-whip}
-    context: {first_round: false, charged: true}
-    expect: {result.attacks: 1}
+    attacker:
+      main_weapon_id: weapon.serpent-whip
+    context:
+      first_round: false
+      charged: true
+    expect:
+      result.attacks: 1
   - id: lotus-six-auto-wounds
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: wound
-    attacker: {main_weapon_id: weapon.serpent-whip}
-    context: {hit_roll: 6}
-    expect: {result.success: true, result.roll: 0}
+    attacker:
+      main_weapon_id: weapon.serpent-whip
+    context:
+      hit_roll: 6
+    expect:
+      result.success: true
+      result.roll: 1
+      context.failure_still_wounds: true
+    rolls:
+    - key: wound
+      value: 1
   mutations:
-  - {id: remove-whip-tag, path: attacker.main_weapon.tags, value: [], cases: [charged-extra-attack, lotus-six-auto-wounds]}
-
+  - id: remove-whip-tag
+    path: attacker.main_weapon.tags
+    value: []
+    cases:
+    - charged-extra-attack
+    - lotus-six-auto-wounds
 - id: boar-spear
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
-  - {target: mechanic/weapon.boar-spear, digest: 18e81a3669b3f109216e1b7183fb6c7fd45da2f085422f310d78a84a94b7626b}
-  interpretation: >-
-    Boar Spear has strike-first, adds one to Strength when charging mounted and removes one attack,
+  - target: mechanic/weapon.boar-spear
+    digest: 18e81a3669b3f109216e1b7183fb6c7fd45da2f085422f310d78a84a94b7626b
+  interpretation: Boar Spear has strike-first, adds one to Strength when charging mounted and removes one attack,
     down to a minimum of one, from the enemy charging against its bearer.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {main_weapon_id: weapon.boar-spear, off_hand_id: defence.shield}
-    expect: {attacker.main_weapon.priority: 1, attacker.main_weapon.charge_strength_bonus: 1}
+    attacker:
+      main_weapon_id: weapon.boar-spear
+      off_hand_id: defence.shield
+    expect:
+      attacker.main_weapon.priority: 1
+      attacker.main_weapon.charge_strength_bonus: 1
   - id: mounted-charge
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.boar-spear, off_hand_id: defence.shield, mounted: true}
-    context: {first_round: true, charging: true}
-    expect: {result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.boar-spear
+      off_hand_id: defence.shield
+      mounted: true
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.wound: 4
+      result.armour: 4
   - id: unmounted-charge
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.boar-spear, off_hand_id: defence.shield}
-    context: {first_round: true, charging: true}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.boar-spear
+      off_hand_id: defence.shield
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.wound: 3
+      result.armour: 3
   - id: charging-enemy-loses-one
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: weapon_attack_count
-    attacker: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 3}}
-    defender: {main_weapon_id: weapon.boar-spear, off_hand_id: defence.shield}
-    context: {first_round: true, charging: true}
-    expect: {result.attacks: 2}
+    attacker:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 3
+    defender:
+      main_weapon_id: weapon.boar-spear
+      off_hand_id: defence.shield
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.attacks: 2
   - id: minimum-one
-    roles: [boundary]
+    roles:
+    - boundary
     operation: weapon_attack_count
-    defender: {main_weapon_id: weapon.boar-spear, off_hand_id: defence.shield}
-    context: {first_round: true, charging: true}
-    expect: {result.attacks: 1}
+    defender:
+      main_weapon_id: weapon.boar-spear
+      off_hand_id: defence.shield
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.attacks: 1
   mutations:
   - id: remove-boar-effects
     changes:
-    - {path: attacker.main_weapon.charge_strength_bonus, value: 0}
-    cases: [mounted-charge]
-
+    - path: attacker.main_weapon.charge_strength_bonus
+      value: 0
+    cases:
+    - mounted-charge
 - id: head-splitter-mushrooms
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: mechanic/preparation.head-splitter-mushrooms, digest: 590c6331db2f1928193ee503fa95749ac8602c595538cb64cd7c5c73961ef0f7}
-  interpretation: "Head-splitter Mushrooms grants Frenzy and doubles the base attacks; the editorial authorisation of Ball and Chain is validated in construction."
+  - target: mechanic/preparation.head-splitter-mushrooms
+    digest: 590c6331db2f1928193ee503fa95749ac8602c595538cb64cd7c5c73961ef0f7
+  interpretation: Head-splitter Mushrooms grants Frenzy and doubles the base attacks; the editorial authorisation
+    of Ball and Chain is validated in construction.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {preparation_ids: [preparation.head-splitter-mushrooms]}
-    expect: {attacker.global_effects.frenzy: true}
+    attacker:
+      preparation_ids:
+      - preparation.head-splitter-mushrooms
+    expect:
+      attacker.global_effects.frenzy: true
   - id: frenzy-consumed
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: attacks
     attacker:
-      preparation_ids: [preparation.head-splitter-mushrooms]
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 2}
-    expect: {result.attacks: 4}
+      preparation_ids:
+      - preparation.head-splitter-mushrooms
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 2
+    expect:
+      result.attacks: 4
   mutations:
-  - {id: remove-frenzy, path: attacker.global_effects.frenzy, value: false, cases: [frenzy-consumed]}
+  - id: remove-frenzy
+    path: attacker.global_effects.frenzy
+    value: false
+    cases:
+    - frenzy-consumed

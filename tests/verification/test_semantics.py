@@ -302,7 +302,7 @@ def test_rapier_failed_extra_hit_omits_extra_wound_roll():
                 "attacker": {"main_weapon_id": "weapon.rapier"},
                 "rolls": [{"key": "test.hit", "value": 4},
                           {"key": "test.wound", "value": 1},
-                          {"key": "test.rapier.hit", "value": 1}],
+                          {"key": "test.barrage.1.hit", "value": 1}],
                 "expect": {"result.hit": True, "result.wounded": False,
                            "result.defender.wounds": 3}}, knowledge_root())
 

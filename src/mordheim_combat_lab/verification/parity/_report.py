@@ -72,12 +72,16 @@ def parity_report_payload(
     deep: Iterable[StatisticalParityResult] = (),
     truncations: Iterable[StatisticalParityResult] = (),
     elapsed_seconds: float | None = None,
+    deep_pair_set: str | None = None,
+    truncation_pair_set: str | None = None,
 ) -> dict[str, object]:
     """Return a serializable, self-describing parity certificate.
 
     ``elapsed_seconds`` is the total wall time of the run that produced the
     certificate (measured by the caller around the whole command); ``None``
-    when a payload is assembled from already-computed samples.
+    when a payload is assembled from already-computed samples. ``deep_pair_set``
+    and ``truncation_pair_set`` identify which maintained scenario collection
+    produced each optional section.
     """
     samples = tuple(statistical)
     statistical_passed = all(item.passed for item in samples)
@@ -122,6 +126,7 @@ def parity_report_payload(
             "candidate_seconds": item.candidate_seconds,
         } for item in samples),
         "deep": None if not deep_samples else {
+            "pair_set": deep_pair_set or "full",
             "complete": deep_passed,
             "samples": tuple({
                 "scenario": item.scenario,
@@ -137,6 +142,7 @@ def parity_report_payload(
             } for item in deep_samples),
         },
         "truncations": None if not truncation_samples else {
+            "pair_set": truncation_pair_set or "full",
             "complete": truncations_passed,
             "samples": tuple({
                 "scenario": item.scenario,
@@ -221,6 +227,7 @@ def parity_report_markdown(payload: dict[str, object]) -> str:
         deep_rows = deep["samples"]
         lines.extend((
             "", "## Deep certification samples", "",
+            f"- Pair set: `{deep.get('pair_set', 'full')}`",
             "| Scenario | Candidate | Duels/engine | Reference W/L/U | Candidate W/L/U | Pass | Time (ref/cand, s) |",
             "|---|---:|---|---|---|---|---|",
         ))
@@ -237,6 +244,7 @@ def parity_report_markdown(payload: dict[str, object]) -> str:
     if isinstance(truncations, dict):
         lines.extend((
             "", "## Round-truncation parity samples", "",
+            f"- Pair set: `{truncations.get('pair_set', 'full')}`",
             "| Horizon | Candidate | Duels/engine | Modular W/L/U | Candidate W/L/U | Pass | Time (oracle/cand, s) |",
             "|---|---:|---|---|---|---|---|",
         ))

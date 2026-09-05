@@ -45,6 +45,11 @@ class CombatLabApp(tk.Tk):
 
     def __init__(self):
         super().__init__()
+        # Display locale of KB names and interface strings (MORDHEIM_LOCALE).
+        from mordheim_knowledge.i18n import set_locale as set_kb_locale
+        from mordheim_ui.i18n import set_locale as set_ui_locale
+        set_kb_locale()
+        set_ui_locale()
         apply_theme(self)
         self.title("Mordheim Combat Lab")
         self.minsize(900, 700)

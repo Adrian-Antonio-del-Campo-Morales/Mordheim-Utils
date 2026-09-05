@@ -281,7 +281,8 @@ def _parry_flags(me: CompiledFighter) -> dict:
         "can_parry_six": has(g, "rule.blood-dragon-sword-master"),
         "dwarf_axes": dwarf_axes,
         "parry_reroll": bool(
-            miniath_reroll or sword_and_buckler or sword_master_reroll
+            miniath_reroll or sword_and_buckler or sword_master_reroll or dwarf_axes
+            or has(main, "weapon.fighting-claws")
             or has(main, "weapon.double-bladed-sword")
         ),
     }
@@ -379,7 +380,7 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
         ),
         "lightning_reflexes": has(g, "skill.lightning-reflexes"),
         "always_strikes_first": has(g, "skill.always-strikes-first"),
-        "strongman": bool(g.strongman and main.two_handed and main.priority < 0),
+        "strongman": bool(g.strongman and (main.two_handed or has(main, "weapon.broadsword")) and main.priority < 0),
         "long_boat_hook": has(main, "weapon.long-boat-hook"),
         "trident": has(main, "weapon.trident"),
         # attack-count scalars

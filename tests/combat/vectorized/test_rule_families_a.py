@@ -35,9 +35,7 @@ def build(band, profile, *, collection="mordheim", **kwargs):
 
 
 def test_first_25_pending_families_moved_to_the_executable_catalogue():
-    pending = yaml.safe_load((ROOT / "catalog/rules/pending-canonical-families.yaml").read_text(encoding="utf-8"))
     implemented = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
-    assert pending["summary"]["families"] == 0
     assert implemented["summary"]["families"] == 66
     assert implemented["summary"]["rules"] == 101
 

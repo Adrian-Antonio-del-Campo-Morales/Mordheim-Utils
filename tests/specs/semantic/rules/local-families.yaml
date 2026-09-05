@@ -6,8 +6,8 @@ specifications:
   sources:
   - target: mechanic/skill.iron-sinews
     digest: 335e5c79c86a19609693d1fdf74bf830bfb91870cee8809db4171177620ff3af
-  interpretation: The written +1 Strength applies when wounding and calculating armour penetration. A Strength 3
-    wielder becomes Strength 4 and wounds Toughness 3 on 3+.
+  interpretation: The written +1 Strength applies when wounding and calculating armour penetration. A Strength
+    3 wielder becomes Strength 4 and wounds Toughness 3 on 3+.
   cases:
   - id: compiled
     roles:
@@ -81,8 +81,8 @@ specifications:
   sources:
   - target: mechanic/material.obsidian
     digest: 7b7903dd36cabe0fe0b2bef36fa7481a4b77d31f69849fedb5db42ddf1ecda82
-  interpretation: The written +1 Strength applies when wounding and calculating armour penetration. A Strength 3
-    wielder becomes Strength 4 and wounds Toughness 3 on 3+.
+  interpretation: The written +1 Strength applies when wounding and calculating armour penetration. A Strength
+    3 wielder becomes Strength 4 and wounds Toughness 3 on 3+.
   cases:
   - id: compiled
     roles:
@@ -152,8 +152,8 @@ specifications:
   sources:
   - target: mechanic/poison.black-venom
     digest: b7e264f4e5af9e2da9889fd91855e0b820afb43f38ac34b7482ba124db8dc204
-  interpretation: The written +1 Strength applies when wounding and calculating armour penetration. A Strength 3
-    wielder becomes Strength 4 and wounds Toughness 3 on 3+.
+  interpretation: The written +1 Strength applies when wounding and calculating armour penetration. A Strength
+    3 wielder becomes Strength 4 and wounds Toughness 3 on 3+.
   cases:
   - id: compiled
     roles:
@@ -494,7 +494,8 @@ specifications:
   sources:
   - target: mechanic/skill.step-aside
     digest: 7d543001fc0b5b9a9361518b4ddeaf5a0f31d89b9ef071e6f5f7732590893d36
-  interpretation: The written special save succeeds on 5+ independently of armour. Its absence grants no such save.
+  interpretation: The written special save succeeds on 5+ independently of armour. Its absence grants no such
+    save.
   cases:
   - id: compiled
     roles:
@@ -545,7 +546,8 @@ specifications:
   sources:
   - target: mechanic/skill.regeneration
     digest: e62b1af731034d359dddd60508897a38dcb86fe9d387a19b23d1c2cb308a4a3b
-  interpretation: The written special save succeeds on 4+ independently of armour. Its absence grants no such save.
+  interpretation: The written special save succeeds on 4+ independently of armour. Its absence grants no such
+    save.
   cases:
   - id: compiled
     roles:
@@ -596,7 +598,8 @@ specifications:
   sources:
   - target: mechanic/defence.enchanted-skins
     digest: 3d08915534aaa2db55aa808792d27ae4a50f51d807ad70e4fdacec786919ec67
-  interpretation: The written special save succeeds on 6+ independently of armour. Its absence grants no such save.
+  interpretation: The written special save succeeds on 6+ independently of armour. Its absence grants no such
+    save.
   cases:
   - id: compiled
     roles:
@@ -895,8 +898,8 @@ specifications:
   sources:
   - target: mechanic/skill.hard-to-kill
     digest: b66c185a5a58b1f030ef4dc30f29ae0054d249281805410af7521c982cc88cd4
-  interpretation: Dwarf Treasure Hunters / Special Rules / Hard to Kill explicitly states 1-2 Knocked Down, 3-5
-    Stunned, 6 Out of Action. The normalized catalogue previously mistranscribed face 3.
+  interpretation: Dwarf Treasure Hunters / Special Rules / Hard to Kill explicitly states 1-2 Knocked Down,
+    3-5 Stunned, 6 Out of Action. The normalized catalogue previously mistranscribed face 3.
   cases:
   - id: compiled
     roles:
@@ -1160,8 +1163,9 @@ specifications:
   sources:
   - target: mechanic/skill.head-crusher
     digest: 1cd6a6960dc58bd81cda4ad81081d49240052ad3ba0597687056d72474da1e83
-  interpretation: The independently transcribed injury outcomes for natural D6 faces 1 through 6 are STUNNED, STUNNED,
-    STUNNED, STUNNED, OUT, OUT. The input die is controlled; injury conversion is tested without a duel.
+  interpretation: The independently transcribed injury outcomes for natural D6 faces 1 through 6 are STUNNED,
+    STUNNED, STUNNED, STUNNED, OUT, OUT. The input die is controlled; injury conversion is tested without a
+    duel.
   cases:
   - id: compiled
     roles:
@@ -1423,9 +1427,9 @@ specifications:
   category: local
   sources:
   - target: mechanic/material.dark-elf-blade
-    digest: 104e6c588d3587239b1e356846b55410dd9f6a407a6bf33f9d57b94213463a8e
-  interpretation: The independently transcribed injury outcomes for natural D6 faces 1 through 6 are KNOCKED_DOWN,
-    STUNNED, STUNNED, OUT, OUT, OUT. The input die is controlled; injury conversion is tested without a duel.
+    digest: 45c17cab9d066c1c695301eb5348962d1fc49678d29abd731841fcdce9027ece
+  interpretation: 'Wicked Edge stuns on Injury 2-4 without a flat Injury bonus. Critical Damage instead adds
+    one to the separate critical table. Source: Dark Elves / Dark Elf Blade; reviewed in M14.'
   cases:
   - id: compiled
     roles:
@@ -1435,7 +1439,9 @@ specifications:
       main_weapon_id: weapon.dagger
       main_material_id: material.dark-elf-blade
     expect:
-      attacker.main_weapon.injury_modifier: 1
+      attacker.main_weapon.injury_modifier: 0
+      attacker.main_weapon.concussion: true
+      attacker.main_weapon.critical_injury_bonus: 1
   - id: face-1
     roles:
     - active
@@ -1495,7 +1501,7 @@ specifications:
     - key: test.injury
       value: 4
     expect:
-      result.condition: OUT
+      result.condition: STUNNED
   - id: face-5
     roles:
     - active
@@ -1527,16 +1533,11 @@ specifications:
     expect:
       result.condition: OUT
   mutations:
-  - id: remove-injury-rule
-    path: attacker.main_weapon.injury_modifier
-    value: 0
+  - id: remove-wicked-edge
+    path: attacker.main_weapon.concussion
+    value: false
     cases:
-    - face-1
     - face-2
-    - face-3
-    - face-4
-    - face-5
-    - face-6
   interaction_contract:
     reads:
     - injury.roll

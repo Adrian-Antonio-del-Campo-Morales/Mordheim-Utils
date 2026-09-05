@@ -43,6 +43,9 @@ class CombatState:
     toughness: np.ndarray
     initiative: np.ndarray
     attacks: np.ndarray
+    broken_hands: np.ndarray
+    hampered_main: np.ndarray
+    hampered_off: np.ndarray
 
 @dataclass(slots=True)
 class PreparedAttack:

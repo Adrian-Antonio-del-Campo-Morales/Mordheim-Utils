@@ -18,6 +18,7 @@ from dataclasses import dataclass
 
 from mordheim_campaign.application.hire_eligibility import DecisionKind, WarbandHireContext, context_from_roster, dynamic_rules_for_profile, evaluate_rule
 from mordheim_campaign.application.knowledge_port import KnowledgePort
+from mordheim_knowledge.i18n import resolved_name as kb_resolved_name
 
 
 #: Trading-post restriction kinds that limit whole warbands.
@@ -63,6 +64,7 @@ class TradingPostOffer:
     kind: str  # "common" | "rare"
     rarity: int | None
     price_label: str
+    price_gc: int | None  # flat price the write side can apply; None = variable/multiplier
     source: str  # trading-post entry id
 
 
@@ -82,6 +84,12 @@ class HirelingOffer:
     #: or "ineligible". Ineligible offers are not returned.
     eligibility: str = "eligible"
     eligibility_note: str = ""
+    #: Flat hiring fee in gc the write side can apply; None = not in gold or
+    #: variable (e.g. treasures/campaign points), hire then unsupported.
+    fee_gc: int | None = None
+    #: Acceptance roll for ``eligibility == "conditional"``: succeed on D6
+    #: >= ``roll_ge``. None when the entry is unconditional.
+    roll_ge: int | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -118,6 +126,33 @@ def _price_label(price: dict | None) -> str | None:
     return " + ".join(parts) if parts else None
 
 
+def _price_gc(price: dict | None, override: int | None) -> int | None:
+    """Flat price in gc the write side can apply, when the entry has one.
+
+    A confirmed ``price_override`` replaces the catalogue base price; entries
+    paid with ``multiplier`` or ``optional_variable_cost`` (or both) have no
+    flat price and return None.
+    """
+    if override is not None:
+        return override
+    if not isinstance(price, dict) or "base_gc" not in price:
+        return None
+    if price.get("multiplier") or price.get("optional_variable_cost"):
+        return None
+    return int(price["base_gc"])
+
+
+def _gold_fee(resources: dict | None) -> int | None:
+    """Flat gold-crowns hiring fee, when the entry declares one."""
+    for name, amount in (resources or {}).items():
+        if name != "gold_crowns" or not isinstance(amount, dict):
+            continue
+        cost = amount.get("cost")
+        if isinstance(cost, int) and not amount.get("dice"):
+            return cost
+    return None
+
+
 def _resource_label(resources: dict) -> str | None:
     if not resources:
         return None
@@ -141,6 +176,7 @@ class PostBattleCatalogue:
         *,
         ruleset: str = "mordheim",
         member_profile_ids: frozenset[str] = frozenset(),
+        hired_sword_profile_ids: frozenset[str] = frozenset(),
         variant: str | None = None,
     ) -> None:
         self.port = port
@@ -148,13 +184,16 @@ class PostBattleCatalogue:
         self.band_id = band_id
         self.ruleset = ruleset
         #: Roster facts the dynamic eligibility rules read. ``member_profile_ids``
-        #: are the warband members; hired Hired Swords are not tracked by the
-        #: prototype state yet, so they default to none.
+        #: are the warband members; ``hired_sword_profile_ids`` are the Hired
+        #: Swords/Dramatis already employed (also roster members), so the
+        #: mutual-exclusion rules fire. ``variant`` is the Mercenary variant
+        #: chosen at campaign level for variant-capable warbands.
         self._hire_context: WarbandHireContext = context_from_roster(
             port,
             collection=collection,
             band_id=band_id,
             member_profile_ids=frozenset(member_profile_ids),
+            hired_sword_profile_ids=frozenset(hired_sword_profile_ids),
             variant=variant,
         )
 
@@ -278,6 +317,7 @@ class PostBattleCatalogue:
                 kind=kind,
                 rarity=availability.get("rarity"),
                 price_label=price_label,
+                price_gc=_price_gc(entry.get("price"), override),
                 source=str(entry.get("id") or ""),
             ))
         ordering = (lambda offer: (offer.rarity or 0, offer.name.casefold())) if kind == "rare" \
@@ -299,7 +339,7 @@ class PostBattleCatalogue:
         document = self.port.campaign_catalog().catalogue("hired-swords-and-dramatis.yaml")
         entries = document.get("hired_swords") if kind == "hired-sword" else document.get("dramatis_personae")
         hireling_names = {
-            str(row.get("id") or ""): str(row.get("name") or row.get("id") or "")
+            str(row.get("id") or ""): kb_resolved_name(row, row.get("id"))
             for row in self.port.hireling_catalogue().profiles
         }
         offers = []
@@ -319,6 +359,12 @@ class PostBattleCatalogue:
                 decision.note for decision in decisions
                 if decision.kind in (DecisionKind.CONDITIONAL, DecisionKind.NEEDS_VARIANT)
             )
+            fee_gc = _gold_fee((entry.get("hiring_fee") or {}).get("resources"))
+            roll_ge = next(
+                (decision.roll_ge for decision in decisions
+                 if decision.kind == DecisionKind.CONDITIONAL and decision.roll_ge is not None),
+                None,
+            )
             offers.append(HirelingOffer(
                 entry_id=str(entry.get("id") or ""),
                 profile_id=profile_id,
@@ -329,6 +375,8 @@ class PostBattleCatalogue:
                 upkeep_label=_resource_label((entry.get("upkeep") or {}).get("resources")),
                 eligibility=eligibility,
                 eligibility_note=note.strip(),
+                fee_gc=fee_gc,
+                roll_ge=roll_ge,
             ))
         return tuple(sorted(offers, key=lambda offer: (offer.eligibility != "eligible", offer.name.casefold())))
 

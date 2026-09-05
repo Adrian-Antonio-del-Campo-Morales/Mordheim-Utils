@@ -63,11 +63,9 @@ def _parry_hits(defender: CompiledFighter, effect: EffectSet, hit_rows: np.ndarr
     if not parry or hit_rows.size == 0:
         return hit_rows,np.empty(0,dtype=np.int64),np.ones(hit_rows.size,dtype=bool)
     can_parry_six = has(defender.global_effects, "rule.blood-dragon-sword-master")
-    # Mirror the modular oracle: parry candidates are offered from the highest
-    # hit roll downwards, and a hit that can never be parried (a natural 6
-    # without can_parry_six, or strength >= 2x the defender's strength) is
-    # skipped *without consuming* parry capacity, so the parry is spent on the
-    # best parryable hit instead of being wasted on an unparryable one.
+    # A natural six in the eligible pool prevents substituting a lower hit.
+    if not can_parry_six:
+        defender_state.parry_remaining[np.unique(hit_rows[hit_values == 6])] = 0
     eligible = ((defender_state.condition[hit_rows] == STANDING)
                 & (defender_state.parry_remaining[hit_rows] > 0)
                 & (hit_strength < 2 * defender_state.strength[hit_rows])
@@ -113,6 +111,7 @@ def _parry_hits(defender: CompiledFighter, effect: EffectSet, hit_rows: np.ndarr
         not has(defender.global_effects,"rule.dwarf-axe-parry-reroll") or dwarf_axes
     )
     reroll = (miniath_reroll or sword_and_buckler or sword_master_reroll
+              or dwarf_axes or has(defender.main_weapon, "weapon.fighting-claws")
               or has(defender.main_weapon,"weapon.double-bladed-sword"))
     if reroll and (~blocked).any():
         second = rng.integers(1, 7, hit_rows.size)
@@ -156,12 +155,13 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
                            active: np.ndarray, charging: np.ndarray,
                            attacker_state: CombatState, defender_state: CombatState,
                            rng: np.random.Generator,
-    first_round: bool) -> PreparedAttack | None:
+    first_round: bool, *, melee_attack: bool = True) -> PreparedAttack | None:
     if active.size == 0:
         return None
     weapon, effect, unarmed_adjustment = _compiled_attack_effect(attacker, defender, weapon)
-    stunned = active[defender_state.condition[active] == STUNNED]
-    defender_state.condition[stunned] = OUT
+    if melee_attack:
+        stunned = active[defender_state.condition[active] == STUNNED]
+        defender_state.condition[stunned] = OUT
     active = active[defender_state.condition[active] != OUT]
     if active.size == 0:
         return None
@@ -205,8 +205,11 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
         attacker_ws_values = attacker_ws + charge_rows.astype(np.int8) * effect.charge_ws_bonus
     else:
         attacker_ws_values = attacker_ws
+    if has(weapon, "effect.serpent-staff-power"):
+        attacker_ws_values = np.full(active.size, 4, dtype=np.int16)
     hit_target = hit_targets(attacker_ws_values, defender_state.weapon_skill[active])
     modifier = effect.hit_modifier + defender.global_effects.incoming_hit_modifier
+    modifier -= int(has(defender.main_weapon, "weapon.ball-and-chain"))
     if has(defender.global_effects, "rule.putrid-stench") and has(
         attacker.global_effects, "undead_or_possessed"
     ):
@@ -224,12 +227,17 @@ def _prepare_weapon_attack(attacker: CompiledFighter, defender: CompiledFighter,
         failed_tests = ~_characteristic_test(defender, defender_state.initiative[active], rng)
         rolls=np.where(failed_tests,6,1).astype(np.int8);successful=failed_tests
     else:
-        rolls = np.full(active.size, 6, dtype=np.int8) if effect.automatic_hit else rng.integers(1, 7, active.size, dtype=np.int8)
-        successful = rolls >= hit_target
+        automatic = (defender_state.weapon_skill[active] == 0) | effect.automatic_hit
+        automatic |= np.isin(defender_state.condition[active], (KNOCKED_DOWN, PARALYZED))
+        rolls = np.zeros(active.size, dtype=np.int8)
+        if (~automatic).any():
+            rolls[~automatic] = rng.integers(1, 7, int((~automatic).sum()), dtype=np.int8)
+        successful = automatic | (rolls >= hit_target)
+        hit_target[defender_state.weapon_skill[active] == 0] = 0
     helpless_cond = defender_state.condition[active]
     helpless = (helpless_cond == KNOCKED_DOWN) | (helpless_cond == PARALYZED)
     successful |= helpless
-    rolls[helpless] = 1
+    rolls[helpless] = 0
     reroll = np.full(active.size, effect.reroll_hits, dtype=bool)
     if effect.charge_reroll_hits:
         reroll |= charge_rows
@@ -348,14 +356,47 @@ def _apply_hit_defences(
 def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon: EffectSet,
                     active: np.ndarray, charging: np.ndarray, attacker_state: CombatState,
                     defender_state: CombatState, rng: np.random.Generator, first_round: bool,
+                    **options) -> None:
+    """Resolve complete weapon attacks, including repeated Rapier Barrage."""
+    original = weapon
+    penalty = 0
+    any_hit = False
+    while active.size:
+        continuation = []
+        _resolve_weapon_once(attacker, defender, weapon, active, charging,
+            attacker_state, defender_state, rng, first_round,
+            barrage_rows=continuation, **options)
+        from ._driver import _rescue_force_of_will
+        _rescue_force_of_will(defender, defender_state, active, rng)
+        _rescue_force_of_will(attacker, attacker_state, active, rng)
+        observation = options.get('observation')
+        if observation is not None:
+            any_hit |= observation.hit
+            observation.hit = any_hit
+        if not continuation:
+            return
+        active = np.concatenate(continuation)
+        active = active[(attacker_state.condition[active] != OUT) & (defender_state.condition[active] != OUT)]
+        penalty += 1
+        weapon = replace(original, hit_modifier=original.hit_modifier - penalty)
+        options = {**options, 'prepared': None, 'parry_rows': None,
+                   'defences_resolved': False, 'hit_positions': None}
+
+
+def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, weapon: EffectSet,
+                    active: np.ndarray, charging: np.ndarray, attacker_state: CombatState,
+                    defender_state: CombatState, rng: np.random.Generator, first_round: bool,
                     prepared: PreparedAttack | None = None,
                     parry_rows: np.ndarray | None = None,
                     defender_phase_condition: np.ndarray | None = None,
                     decisions: DecisionPolicy | None = None,
                     defences_resolved: bool = False,
                     hit_positions: np.ndarray | None = None,
-                    observation: VectorAttackObservation | None = None) -> None:
-    prepared = prepared or _prepare_weapon_attack(attacker,defender,weapon,active,charging,attacker_state,defender_state,rng,first_round)
+                    observation: VectorAttackObservation | None = None,
+                    barrage_rows: list[np.ndarray] | None = None,
+                    key: str = "test", melee_attack: bool = True) -> None:
+    prepared = prepared or _prepare_weapon_attack(attacker,defender,weapon,active,charging,attacker_state,defender_state,rng,first_round,
+        melee_attack=melee_attack)
     if prepared is None:
         return
     weapon,effect,active,strength,armour_strength,hit_target,rolls,hit_rows = (
@@ -384,7 +425,13 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
         hit_positions = np.searchsorted(active, hit_rows)
     hit_values = rolls[hit_positions]
     if has(weapon,"weapon.kusara-kama"):
-        penalized=hit_rows[hit_values>=5];np.add.at(defender_state.attack_penalty,penalized,1)
+        penalized=hit_rows[hit_values>=5]
+        np.add.at(defender_state.attack_penalty,penalized,1)
+        for row in penalized:
+            main = (not defender.off_hand_attacks or defender.off_hand is None or decisions is None
+                    or decisions.choose(f'{key}.kusara-main-hand', defender))
+            target = defender_state.hampered_main if main else defender_state.hampered_off
+            target[row] += 1
     if has(weapon,"weapon.chained-squig"):
         defender_state.entangled[hit_rows]=True
     # Anvil Head replaces charge attacks only: the D3 wound expansion is
@@ -407,13 +454,18 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
         ignited=rng.integers(1,7,hit_rows.size)>=ignition_target
         defender_state.on_fire[hit_rows[ignited]]=True
     poison_blocked = defender.global_effects.poison_immunity or has(defender.global_effects, "poison_immune")
-    automatic_wound = (
-        np.ones(hit_rows.size,dtype=bool)
-        if has(effect,"effect.automatic-wound")
-        else (hit_values == 6)
-        if ((has(effect,"poison.black-lotus") and not poison_blocked) or has(effect,"wight_blades"))
-        else np.zeros(hit_rows.size,dtype=bool)
+    if has(effect, "poison.spider-spittle") and not poison_blocked:
+        candidates = hit_rows[defender_state.condition[hit_rows] == STANDING]
+        failed_tests = ~_characteristic_test(defender, defender_state.toughness[candidates], rng)
+        defender_state.condition[candidates[failed_tests]] = PARALYZED
+    automatic_wound = np.full(hit_rows.size, has(effect, "effect.automatic-wound"), dtype=bool)
+    guaranteed_wound = (hit_values == 6) & (
+        (has(effect, "poison.black-lotus") and not poison_blocked) or has(effect, "wight_blades")
     )
+    if has(effect, "poison.black-lotus") and not poison_blocked and decisions is not None:
+        for position in np.flatnonzero(guaranteed_wound):
+            if not decisions.choose(f"{key}.lotus-critical", int(hit_rows[position])):
+                automatic_wound[position] = True
     strength_hits = strength[hit_positions]
     armour_strength_hits = armour_strength[hit_positions]
     toughness = defender_state.toughness[hit_rows]
@@ -433,11 +485,7 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
     if not automatic_wound.all():
         wound_rolls[~automatic_wound] = rng.integers(1, 7, int((~automatic_wound).sum()))
     critical_rolls = wound_rolls.copy()
-    wounded = automatic_wound | (wound_rolls >= targets)
-    if has(weapon,"weapon.rapier") and (~wounded).any():
-        failed=np.flatnonzero(~wounded);extra_hits=rng.integers(1,7,failed.size)>=np.minimum(6,hit_target[hit_positions[failed]]+1)
-        extra_wounds=rng.integers(1,7,failed.size)>=targets[failed]
-        wounded[failed]=extra_hits&extra_wounds
+    wounded = automatic_wound | guaranteed_wound | (wound_rolls >= targets)
     if has(effect, "poison.manbane") and not poison_blocked:
         wounded &= wound_rolls != 1
     if effect.reroll_wounds and (~wounded).any():
@@ -445,6 +493,8 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
         rerolls = rng.integers(1, 7, failed.size)
         wounded[failed] = rerolls >= targets[failed]
         wound_rolls[failed] = rerolls
+        if poison_blocked or not has(effect, "poison.devil-s-toxin"):
+            critical_rolls[failed] = rerolls
     if has(attacker.global_effects,"mechanic.mark-of-the-old-ones"):
         available=(~wounded)&(~attacker_state.mark_of_old_ones_used[hit_rows])
         chosen=np.flatnonzero(available)
@@ -452,6 +502,8 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
             wounded[chosen]=True
             wound_rolls[chosen]=targets[chosen]
             attacker_state.mark_of_old_ones_used[hit_rows[chosen]]=True
+    if has(weapon, "weapon.rapier") and (~wounded).any() and barrage_rows is not None:
+        barrage_rows.append(hit_rows[~wounded])
     wound_rows = hit_rows[wounded]
     if observation is not None:
         observation.wounded = bool(wound_rows.size)
@@ -476,20 +528,28 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
         attacker_state,
     )
     if has(defender.global_effects,"skill.hardy-constitution") and critical.any():
-        critical &= rng.integers(1,7,critical.size)<5
+        positions = np.flatnonzero(critical)
+        cancelled = positions[rng.integers(1, 7, positions.size) >= 5]
+        critical[cancelled] = False
+        attacker_state.critical_used[wound_rows[cancelled]] = False
+    critical_results = np.zeros(wound_rows.size, dtype=np.int16)
+    if critical.any():
+        critical_results[critical] = (rng.integers(1, 7, int(critical.sum()))
+            + effect.critical_injury_bonus + int(has(effect, "skill.web-of-steel")))
     magical_attack = has(effect,"attack.magical")
-    hug_wounds = np.zeros(wound_rows.size,dtype=bool)
     save_target = armour_targets(
-        defender, wound_strength, effect, magical_attack, hug_wounds,
+        defender, wound_strength, effect, magical_attack, critical_results >= 3,
     )
     saved = np.zeros(wound_rows.size, dtype=bool)
     eligible = save_target <= 6
-    saved[eligible] = rng.integers(1, 7, int(eligible.sum())) >= np.maximum(2, save_target[eligible])
+    if eligible.any():
+        saved[eligible] = rng.integers(1, 7, int(eligible.sum())) >= np.maximum(2, save_target[eligible])
     if observation is not None and saved.any():
         observation.saved = True
         observation.critical = bool(critical[saved].any())
     wound_rows = wound_rows[~saved]
     critical = critical[~saved]
+    critical_results = critical_results[~saved]
     if wound_rows.size == 0:
         return
     ward, regeneration = special_save_targets(defender, effect)
@@ -499,11 +559,13 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
             observation.saved = True
         wound_rows = wound_rows[~protected]
         critical = critical[~protected]
+        critical_results = critical_results[~protected]
     if regeneration<=6 and wound_rows.size:
         regenerated=rng.integers(1,7,wound_rows.size)>=regeneration
         if observation is not None and regenerated.any():
             observation.saved = True
         wound_rows=wound_rows[~regenerated];critical=critical[~regenerated]
+        critical_results = critical_results[~regenerated]
     if wound_rows.size == 0:
         return
     if defender.injury_profile==2:
@@ -517,19 +579,20 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
         if defender_phase_condition is not None
         else defender_state.condition[wound_rows]
     )
-    helpless_wounds = ((condition_for_helpless == KNOCKED_DOWN)
-                       | (condition_for_helpless == PARALYZED))
+    helpless_wounds = (condition_for_helpless == KNOCKED_DOWN) & melee_attack
     defender_state.condition[wound_rows[helpless_wounds]] = OUT
-    damage = max(1, effect.damage)
+    damage = (rng.integers(1, effect.damage_die_sides + 1, wound_rows.size)
+              if effect.damage_die_sides else np.full(wound_rows.size, max(1, effect.damage)))
+    damage = np.maximum(damage, np.where(critical, 2, 1))
     if has(defender.global_effects,"flammable") and has(effect,"attack.fire"):
         damage *= 2
     if observation is not None:
-        observation.damage = damage
+        observation.damage = int(damage[0])
         observation.critical = bool(critical.any())
     affected_rows = wound_rows[_run_starts(wound_rows)]
     wounds_before = defender_state.wounds[affected_rows].copy()
     damage_rows = np.repeat(wound_rows, damage)
-    damage_critical = np.repeat(critical, damage)
+    damage_critical_bonus = np.repeat(np.where(critical_results >= 5, 2, 0), damage)
     damage_helpless = np.repeat(helpless_wounds, damage)
     np.subtract.at(defender_state.wounds, damage_rows, 1)
     if has(defender.global_effects, "acid_blood"):
@@ -546,13 +609,10 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
                 defender, attacker, reactive, reactive_rows,
                 np.zeros(attacker_state.wounds.size, dtype=bool),
                 defender_state, attacker_state, rng, False,
+                melee_attack=False,
             )
     if has(effect, "poison.nightshade") and not poison_blocked:
         np.add.at(defender_state.initiative_penalty, wound_rows, 1)
-    if has(effect, "poison.spider-spittle") and not poison_blocked:
-        failed_tests = ~_characteristic_test(defender, defender_state.toughness[wound_rows], rng)
-        paralyzed = wound_rows[failed_tests & (defender_state.condition[wound_rows] == STANDING)]
-        defender_state.condition[paralyzed] = PARALYZED
     # Damage rows are ordered by duel row. The ordinal within each row tells
     # us which damage instance reaches zero wounds and therefore creates an
     # injury roll, without grouping each simulated duel in Python.
@@ -569,15 +629,9 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
     if defender.injury_profile == 4:
         defender_state.condition[injury_rows[_run_starts(injury_rows)]] = OUT
         return
-    injury_criticals = damage_critical[injury_mask]
     injury_rolls = rng.integers(1, 7, injury_rows.size) + effect.injury_modifier + int(knife_fighting)
-    critical_bonus=2+int(has(effect,"skill.web-of-steel"))+effect.critical_injury_bonus
-    injury_rolls += injury_criticals.astype(np.int16) * critical_bonus
+    injury_rolls += damage_critical_bonus[injury_mask]
     threshold = defender.global_effects.out_of_action_threshold
-    if has(defender.global_effects,"injury_reroll_out") and not has(effect,"attack.fire"):
-        out_threshold = 6 if has(defender.global_effects,"skill.hard-to-kill") or has(defender.global_effects,"skill.tough-as-steel") else threshold
-        reroll = injury_rolls >= out_threshold
-        injury_rolls[reroll] = rng.integers(1, 7, int(reroll.sum()))
     injury_context=InjuryContext(
         out_threshold=threshold,
         injury_profile=defender.injury_profile,
@@ -598,19 +652,28 @@ def _resolve_weapon(attacker: CompiledFighter, defender: CompiledFighter, weapon
         np.arange(lowest, highest_roll + 1, dtype=np.int16), injury_context,
     )
     injury = injury_table[injury_rolls - lowest]
-    if defender.global_effects.thick_skull:
-        stunned = injury == STUNNED
-        threshold_roll = 2 if defender.helmet_save <= 4 else 3
-        recovery = rng.integers(1, 7, injury_rows.size) >= threshold_roll
-        injury[stunned & recovery] = KNOCKED_DOWN
-    if defender.helmet_save <= 6 and not defender.global_effects.thick_skull:
-        stunned = injury == STUNNED
-        recovery = rng.integers(1, 7, injury_rows.size) >= defender.helmet_save
-        injury[stunned & recovery] = KNOCKED_DOWN
+    if has(defender.global_effects, "injury_reroll_out") and not has(effect, "attack.fire"):
+        reroll = injury == OUT
+        if decisions is not None:
+            ordinals = {}
+            for position, row in enumerate(injury_rows):
+                index = ordinals.get(int(row), 0)
+                ordinals[int(row)] = index + 1
+                reroll[position] = decisions.choose(f"{key}.injury.{index}.reroll-choice", int(injury[position]))
+        if reroll.any():
+            totals = (rng.integers(1, 7, int(reroll.sum())) + effect.injury_modifier
+                      + int(knife_fighting) + damage_critical_bonus[injury_mask][reroll])
+            injury[reroll] = injury_conditions(totals, injury_context)
     injured = injury_rows[_run_starts(injury_rows)]
     highest_by_row = np.full(defender_state.condition.size, STANDING, dtype=np.int8)
     np.maximum.at(highest_by_row, injury_rows, injury)
     highest = highest_by_row[injured]
+    stunned = highest == STUNNED
+    if stunned.any() and (defender.global_effects.thick_skull or defender.helmet_save <= 6):
+        threshold_roll = ((2 if defender.helmet_save <= 4 else 3)
+                          if defender.global_effects.thick_skull else defender.helmet_save)
+        converted = np.flatnonzero(stunned)[rng.integers(1, 7, int(stunned.sum())) >= threshold_roll]
+        highest[converted] = KNOCKED_DOWN
     defender_state.condition[injured] = np.maximum(defender_state.condition[injured], highest)
     defender_state.frenzy[injured] &= highest == STANDING
     contagious_rows=injured[(highest==OUT)]
@@ -679,21 +742,32 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
         prepared=_prepare_weapon_attack(attacker,defender,body,body_rows,charging,attacker_state,defender_state,rng,first_round)
         if prepared is not None:prepared_attacks.append(prepared)
         rows=rows[~np.isin(rows,body_rows)]
+    offhand = attacker.off_hand_attacks and attacker.off_hand is not None
+    main_pistol = any(has(attacker.main_weapon, tag) for tag in ('weapon.pistol', 'weapon.duelling-pistol'))
+    off_pistol = bool(attacker.off_hand and any(has(attacker.off_hand, tag) for tag in ('weapon.pistol', 'weapon.duelling-pistol')))
+    off_counts = np.where(attacks > 1, 1, 0) if offhand else np.zeros_like(attacks)
+    if main_pistol and offhand:
+        off_counts = np.maximum(0, attacks - 1) if first_round else attacks.copy()
+    if off_pistol and not first_round:
+        off_counts[:] = 0
+    main_counts = attacks - off_counts
+    if (offhand and attacker.main_weapon != attacker.off_hand and not main_pistol and not off_pistol
+            and (attacks[rows] > 2).any() and decisions is not None
+            and not decisions.choose(f"{decision_prefix + '.' if decision_prefix else ''}main-weapon-majority", attacker)):
+        main_counts, off_counts = off_counts, main_counts
+    original_main, original_off = main_counts.copy(), off_counts.copy()
+    main_penalty = np.where(attacker_state.hampered_main + attacker_state.hampered_off > 0,
+                            attacker_state.hampered_main, attacker_state.attack_penalty)
+    main_counts = np.maximum(0, main_counts - main_penalty)
+    off_counts = np.maximum(0, off_counts - attacker_state.hampered_off)
+    minimum = (main_counts + off_counts == 0) & (attacks > 0)
+    main_counts[minimum & (original_main > 0)] = 1
+    off_counts[minimum & (original_main == 0) & (original_off > 0)] = 1
     for index in range(maximum):
-        active = rows[(attacks[rows] > index) & (defender_state.condition[rows] != OUT)]
+        active = rows[(main_counts[rows] + off_counts[rows] > index) & (defender_state.condition[rows] != OUT)]
         if active.size == 0:
             continue
-        offhand = attacker.off_hand_attacks and attacker.off_hand is not None
-        main_pistol = has(attacker.main_weapon,"weapon.pistol") or has(attacker.main_weapon,"weapon.duelling-pistol")
-        off_pistol = bool(attacker.off_hand and (
-            has(attacker.off_hand,"weapon.pistol") or has(attacker.off_hand,"weapon.duelling-pistol")
-        ))
-        if main_pistol:
-            use_off = np.full(active.size, bool(offhand and (not first_round or index > 0)))
-        else:
-            use_off = offhand & (index == attacks[active] - 1)
-            if off_pistol and not first_round:
-                use_off = np.zeros(active.size, dtype=bool)
+        use_off = index >= main_counts[active]
         main_weapon=(
             attacker.main_weapon_without_poison
             if (defender.global_effects.poison_immunity
@@ -727,10 +801,8 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
         positions=np.searchsorted(prepared.active,prepared.hit_rows)
         positions_by_attack.append(positions)
         values=prepared.rolls[positions]
-        # Mirror the modular oracle's offer-from-the-highest-downwards: hits
-        # that can never be parried (natural 6 without can_parry_six,
-        # cannot_be_parried effects, strength >= 2x the defender's strength)
-        # never own a parry slot, so the slot lands on the best parryable hit.
+        if not can_parry_six:
+            defender_state.parry_remaining[prepared.hit_rows[values == 6]] = 0
         competing=np.where(
             ((values != 6) | can_parry_six)
             & (not prepared.effect.cannot_be_parried)
@@ -823,21 +895,8 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
                         observations.append(hug_observation)
         defences_resolved=True
     for attack_index,(prepared,parry_rows) in enumerate(zip(prepared_attacks,selected)):
-        # Mirror the modular oracle's per-attack rule: a defender that is
-        # STUNNED when an attack begins (stunned by an earlier attack of this
-        # same pool) is taken out instantly - no further hit, wound or injury
-        # rolls.  Preparation rolls every attack of the pool upfront, so the
-        # STUNNED check cannot live at prepare time; it must run here between
-        # resolutions.  Only a *landed* follow-up hit triggers it: the oracle
-        # skips the attack entirely when the pre-rolled hit missed
-        # (``if not prepared.hit: continue``), leaving the stunned defender
-        # in place until round recovery.
-        if attack_index:
-            stunned_mask = defender_state.condition == STUNNED
-            if stunned_mask.any():
-                follow_up_hits = np.zeros(defender_state.condition.size, dtype=bool)
-                follow_up_hits[prepared.hit_rows] = True
-                defender_state.condition[stunned_mask & follow_up_hits] = OUT
+        # Earlier attacks by this same warrior cannot create an automatic
+        # finisher. Wound resolution keeps the phase-start condition snapshot.
         observation = VectorAttackObservation() if observations is not None else None
         _resolve_weapon(attacker,defender,prepared.weapon,prepared.active,charging,
                         attacker_state,defender_state,rng,first_round,

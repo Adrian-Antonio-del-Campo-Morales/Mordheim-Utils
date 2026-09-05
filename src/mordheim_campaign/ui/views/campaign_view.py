@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import ttk
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.ui.dialogs import NewCampaignDialog
@@ -69,6 +69,19 @@ class CampaignView(tk.Frame):
 
         compact = tk.Frame(frame, bg=COLORS["bg"])
         compact.pack(side="right", padx=(12, 0))
+        variants = self.controller.variant_options()
+        if variants:
+            vbox = tk.Frame(compact, bg=COLORS["bg"])
+            vbox.pack(side="left", padx=(0, 12))
+            tk.Label(vbox, text="MERCENARY VARIANT", bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(anchor="w")
+            labels = [label for _, label in variants]
+            current = next((label for identifier, label in variants if identifier == c.mercenary_variant), None)
+            variant_var = tk.StringVar(value=current or "—")
+            box = ttk.Combobox(vbox, textvariable=variant_var, values=("—", *labels), state="readonly", width=11)
+            box.pack(anchor="w", pady=(2, 0))
+            box.bind("<<ComboboxSelected>>", lambda _e: self.controller.set_mercenary_variant(
+                None if variant_var.get() == "—" else next(identifier for identifier, label in variants if label == variant_var.get())
+            ))
         if c.is_draft:
             tk.Label(
                 compact,
@@ -90,7 +103,7 @@ class CampaignView(tk.Frame):
             if pending:
                 ttk.Button(compact, text=f"RESUME POST-BATTLE #{pending.battle_number}", style="Accent.TButton", command=self.controller.resume_pending_post_battle).pack(side="left")
             else:
-                ttk.Button(compact, text="+ NEW BATTLE", style="Accent.TButton", command=self._placeholder).pack(side="left")
+                ttk.Button(compact, text="+ NEW BATTLE", style="Accent.TButton", command=self._new_battle).pack(side="left")
         return frame
 
     def _timeline(self) -> tk.Frame:
@@ -121,5 +134,7 @@ class CampaignView(tk.Frame):
     def _new_campaign(self) -> None:
         NewCampaignDialog(self, self.controller)
 
-    def _placeholder(self) -> None:
-        messagebox.showinfo("Prototype", "This control is intentionally visual-only in the timeline-first prototype.", parent=self)
+    def _new_battle(self) -> None:
+        from mordheim_campaign.ui.dialogs.record_battle import RecordBattleDialog
+
+        RecordBattleDialog(self, self.controller)

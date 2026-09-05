@@ -3,6 +3,7 @@ from __future__ import annotations
 import tkinter as tk
 from collections.abc import Callable, Sequence
 
+from mordheim_ui.i18n import tr
 from mordheim_ui.theme import COLORS
 
 
@@ -51,7 +52,7 @@ class PostBattleSequence(tk.Frame):
             **kwargs,
         )
         self.steps = list(steps)
-        self.groups = [(title, tuple(indices)) for title, indices in groups]
+        self.groups = [(tr(title), tuple(indices)) for title, indices in groups]
         self.active_index = active_index
         self.completed = completed or set()
         self.on_select = on_select
@@ -69,14 +70,14 @@ class PostBattleSequence(tk.Frame):
         head = tk.Frame(self, bg=COLORS["panel_deep"], padx=14, pady=9)
         head.pack(fill="x")
         if self.review_active:
-            kicker = "SEQUENCE COMPLETE"
-            title = "FINAL REVIEW"
-            status = "8 / 8 ACTIONS COMPLETE"
+            kicker = tr("SEQUENCE COMPLETE")
+            title = tr("FINAL REVIEW")
+            status = tr("8 / 8 ACTIONS COMPLETE")
         else:
-            kicker = f"STEP {self.active_index + 1} OF {len(self.steps)}"
-            title = self.steps[self.active_index].upper()
+            kicker = tr("STEP {} OF {}").format(self.active_index + 1, len(self.steps))
+            title = tr(self.steps[self.active_index]).upper()
             remaining = len(self.steps) - self.active_index - 1
-            status = "FINAL ACTION" if remaining == 0 else f"{remaining} ACTIONS REMAIN"
+            status = tr("FINAL ACTION") if remaining == 0 else tr("{} ACTIONS REMAIN").format(remaining)
         left = tk.Frame(head, bg=COLORS["panel_deep"])
         left.pack(side="left", fill="x", expand=True)
         tk.Label(left, text=kicker, bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w")
@@ -109,9 +110,9 @@ class PostBattleSequence(tk.Frame):
             title_fg = COLORS["accent"] if is_active_group else (COLORS["success"] if all_done else COLORS["muted"])
             tk.Label(title_row, text=group_title, bg=COLORS["panel_deep"], fg=title_fg, font=("Segoe UI Semibold", 7)).pack(side="left")
             if all_done:
-                tk.Label(title_row, text="DONE", bg=COLORS["panel_deep"], fg=COLORS["success"], font=("Segoe UI Semibold", 6)).pack(side="right")
+                tk.Label(title_row, text=tr("DONE"), bg=COLORS["panel_deep"], fg=COLORS["success"], font=("Segoe UI Semibold", 6)).pack(side="right")
             elif is_active_group:
-                tk.Label(title_row, text="CURRENT", bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Segoe UI Semibold", 6)).pack(side="right")
+                tk.Label(title_row, text=tr("CURRENT"), bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Segoe UI Semibold", 6)).pack(side="right")
 
             for index in indices:
                 state = self._step_state(index)
@@ -125,15 +126,15 @@ class PostBattleSequence(tk.Frame):
                 text = tk.Frame(row, bg=COLORS["panel_deep"])
                 text.pack(side="left", fill="x", expand=True, padx=(6, 0))
                 fg = COLORS["success"] if state == "complete" else (COLORS["accent"] if state == "active" else COLORS["muted_dark"])
-                tk.Label(text, text=self.steps[index].upper(), bg=COLORS["panel_deep"], fg=fg, font=("Segoe UI Semibold", 7), anchor="w").pack(fill="x")
+                tk.Label(text, text=tr(self.steps[index]).upper(), bg=COLORS["panel_deep"], fg=fg, font=("Segoe UI Semibold", 7), anchor="w").pack(fill="x")
                 if state == "complete":
-                    status_text = "COMPLETE"
+                    status_text = tr("COMPLETE")
                 elif state == "active":
-                    status_text = "IN PROGRESS"
+                    status_text = tr("IN PROGRESS")
                 elif index == self.active_index + 1 and not self.review_active:
-                    status_text = "NEXT"
+                    status_text = tr("NEXT")
                 else:
-                    status_text = "LOCKED"
+                    status_text = tr("LOCKED")
                 tk.Label(text, text=status_text, bg=COLORS["panel_deep"], fg=COLORS["muted_dark"], font=("Segoe UI", 6), anchor="w").pack(fill="x")
                 if state in {"complete", "active"} and self.on_select:
                     self._bind_all(row, lambda i=index: self.on_select(i))
@@ -155,7 +156,7 @@ class PostBattleSequence(tk.Frame):
             review.pack(fill="x", pady=(0, 9))
             tk.Label(
                 review,
-                text="✓  FINAL REVIEW IS AN APP CONFIRMATION, NOT AN ADDITIONAL POST-BATTLE RULE STEP",
+                text="✓  " + tr("FINAL REVIEW IS AN APP CONFIRMATION, NOT AN ADDITIONAL POST-BATTLE RULE STEP"),
                 bg=COLORS["panel_deep"], fg=COLORS["success"], font=("Segoe UI Semibold", 7),
             ).pack(anchor="center")
 

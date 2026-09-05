@@ -3,9 +3,10 @@ modular oracle budget.
 
 ``parity --deep`` extends the standard certification in two directions:
 
-- **Matrix samples** — every archetype pair of ``deep_test_scenarios()`` is
-  compared statistically (same six-sigma gate as ``--statistical``) between
-  the modular oracle and each optimized backend. The oracle sample per pair
+- **Matrix samples** — every archetype pair of ``deep_test_scenarios("full")``
+  (or the smaller ``"fast"`` set) is compared statistically (same six-sigma
+  gate as ``--statistical``) between the modular oracle and each optimized
+  backend. The oracle sample per pair
   is deliberately bounded (``simulations``, default 100,000, or 25,000 for
   the long 75-round pair): statistical resolution is capped by the smaller
   sample, so running millions of duels on the modular engine would buy no
@@ -193,17 +194,19 @@ def certify_deep(
                 on_progress()
             # Cross-backend certification at scale: NumPy is the reference for
             # the native candidate. Both engines are fast, so the sample can
-            # be large; the modular engine is not involved.
-            cross_started = time.perf_counter()
-            numpy_reference = vectorized.simulate_duel(
-                DuelRequest(
-                    pair.first, pair.second, cross_simulations, seed=seed,
-                    maximum_rounds=pair.maximum_rounds,
-                ),
-                backend="numpy",
-            )
-            cross_seconds = time.perf_counter() - cross_started
+            # be large; the modular engine is not involved. There is no useful
+            # cross row when native is unavailable, so do not pay for a NumPy
+            # sample that cannot be compared.
             if native_installed:
+                cross_started = time.perf_counter()
+                numpy_reference = vectorized.simulate_duel(
+                    DuelRequest(
+                        pair.first, pair.second, cross_simulations, seed=seed,
+                        maximum_rounds=pair.maximum_rounds,
+                    ),
+                    backend="numpy",
+                )
+                cross_seconds = time.perf_counter() - cross_started
                 samples.append(_backend_sample(
                     f"cross:{label}", pair, cross_simulations, seed, "native",
                     reference=numpy_reference, reference_seconds=cross_seconds,

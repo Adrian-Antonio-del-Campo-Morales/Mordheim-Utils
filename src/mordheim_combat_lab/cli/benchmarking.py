@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from dataclasses import asdict
 from dataclasses import dataclass
+from dataclasses import replace
 from datetime import datetime, timezone
 import csv
 import json
@@ -25,6 +26,7 @@ from mordheim_combat.modular.duel import simulate_duel as simulate_modular_duel
 from mordheim_combat.vectorized import simulate_duel
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics
+from mordheim_core.models import CompiledFighter
 from mordheim_core.models import DuelRequest
 from mordheim_core.models import FighterBuild
 
@@ -35,6 +37,11 @@ class BenchmarkScenario:
     first: FighterBuild
     second: FighterBuild
     maximum_rounds: int = 50
+    # Benchmark-only attack tags let the matrix exercise a consumer whose
+    # catalogue currently has no selectable producer (notably blessed
+    # attacks), without changing the construction or combat implementations.
+    first_attack_tags: tuple[str, ...] = ()
+    second_attack_tags: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -124,7 +131,9 @@ def benchmark_scenarios() -> tuple[BenchmarkScenario, ...]:
 def _build(*, characteristics=None, main_weapon_id: str = "weapon.dagger",
            off_hand_id: str | None = None, armour_id: str = "armour.no-armour",
            defence_ids: tuple[str, ...] = (), band_id: str | None = None,
-           profile_id: str | None = None, special_rule_ids: tuple[str, ...] = ()) -> FighterBuild:
+           profile_id: str | None = None, special_rule_ids: tuple[str, ...] = (),
+           skill_ids: tuple[str, ...] = (), trait_overrides: dict[str, object] | None = None,
+           collection: str = "mordheim") -> FighterBuild:
     """Build a FighterBuild for the deep scenario matrix with explicit knobs.
 
     ``characteristics`` and the ``band_id``/``profile_id`` pair are mutually
@@ -137,8 +146,35 @@ def _build(*, characteristics=None, main_weapon_id: str = "weapon.dagger",
     return FighterBuild(
         "mordheim", characteristics, band_id=band_id, profile_id=profile_id,
         main_weapon_id=main_weapon_id, off_hand_id=off_hand_id, armour_id=armour_id,
-        defence_ids=defence_ids, special_rule_ids=special_rule_ids,
+        defence_ids=defence_ids,        special_rule_ids=special_rule_ids,
+        skill_ids=skill_ids, trait_overrides=trait_overrides or {}, collection=collection,
     )
+
+
+
+def compile_benchmark_fighters(
+    scenario: BenchmarkScenario,
+) -> tuple[CompiledFighter, CompiledFighter]:
+    """Compile a matrix scenario, applying only its benchmark attack tags.
+
+    The tags are deliberately applied after normal construction.  This keeps
+    synthetic coverage probes out of the engine and KB while still sending
+    the exact resulting ``EffectSet`` through modular, NumPy and native.
+    """
+    compiled = []
+    for build, tags in (
+        (scenario.first, scenario.first_attack_tags),
+        (scenario.second, scenario.second_attack_tags),
+    ):
+        fighter = compile_fighter(build)
+        if tags:
+            weapon = replace(
+                fighter.main_weapon,
+                tags=tuple(dict.fromkeys((*fighter.main_weapon.tags, *tags))),
+            )
+            fighter = replace(fighter, main_weapon=weapon)
+        compiled.append(fighter)
+    return compiled[0], compiled[1]
 
 
 DEEP_SCENARIOS: tuple[BenchmarkScenario, ...] = (
@@ -229,8 +265,9 @@ DEEP_SCENARIOS: tuple[BenchmarkScenario, ...] = (
     # Mechanic-coverage extension (2026-09-04): each pair targets an engine
     # behaviour family the profile/equipment archetypes above never exercise.
     # They were selected with a coverage fingerprint (distinct effect axes)
-    # against the catalogue; together they lift the matrix from 29 to ~100
-    # distinct axes.  NumPy matches the modular oracle on every pair at 10k
+    # against the catalogue; together they cover the distinct executable
+    # effect axes represented by the current runtime scope. NumPy matches the
+    # modular oracle on every pair at 10k
     # duels; the native port still lags on several (see
     # docs/tasks/generate-test-reports.md, "Current status").
     # 1. Undead family: sigmarite hammer bonus vs undead_or_possessed,
@@ -388,23 +425,221 @@ DEEP_SCENARIOS: tuple[BenchmarkScenario, ...] = (
                armour_id="armour.heavy-armour", off_hand_id="defence.shield"),
         maximum_rounds=75,
     ),
+    # 18. Three independent skill consumers in one durable fighter:
+    #     Strongman changes two-handed priority, Thick Skull changes stunned
+    #     reactions, and Step Aside supplies a post-armour special save.
+    #     Modular calibration (seed 2026, 10k duels): 79.710% / 20.290% /
+    #     0.000% first wins / second wins / unresolved.
+    BenchmarkScenario(
+        "skills-vs-hitter",
+        _build(characteristics=Characteristics(4, 4, 4, 2, 4, 2),
+               main_weapon_id="weapon.double-handed-weapon",
+               skill_ids=("skill.strongman", "skill.thick-skull", "skill.step-aside")),
+        _build(characteristics=Characteristics(4, 5, 4, 2, 3, 2),
+               main_weapon_id="weapon.axe"),
+    ),
+    # 19. Helmet protection is exercised on one side while the opposing
+    #     W1 Raging Peasant uses injury profile 2 (out on any unsaved wound).
+    #     Modular calibration (seed 2026, 10k duels): 91.140% / 8.860% /
+    #     0.000% first wins / second wins / unresolved.
+    BenchmarkScenario(
+        "helmet-vs-injury-profile-2",
+        _build(characteristics=Characteristics(4, 4, 3, 2, 4, 1),
+               main_weapon_id="weapon.sword", defence_ids=("defence.helmet",)),
+        _build(band_id="battle-monks-of-cathay", profile_id="raging-peasants"),
+    ),
+    # 20. The Cathayan Longsword's +1 WS/+1 Initiative face the same profile
+    #     with an ordinary sword. Its armour-penetration field is retained by
+    #     the current normalized combat entry as a separate engine axis.
+    #     Modular calibration (seed 2026, 10k duels): 66.190% / 33.810% /
+    #     0.000% first wins / second wins / unresolved.
+    BenchmarkScenario(
+        "cathayan-longsword-vs-sword",
+        _build(characteristics=Characteristics(4, 4, 3, 2, 4, 2),
+               main_weapon_id="weapon.cathayan-longsword"),
+        _build(characteristics=Characteristics(4, 4, 3, 2, 4, 2),
+               main_weapon_id="weapon.sword"),
+    ),
+    # 21. The runtime has a blessed-regeneration consumer but no selectable
+    #     blessed weapon in the current KB.  The attack tag is therefore a
+    #     benchmark-only synthetic input; construction and engine code stay
+    #     untouched while the Strigoi regeneration blocker is exercised.
+    #     Modular calibration (seed 2026, 10k duels): 23.720% / 76.280% /
+    #     0.000% first wins / second wins / unresolved.
+    BenchmarkScenario(
+        "blessed-vs-regen",
+        _build(characteristics=Characteristics(4, 4, 4, 2, 4, 2),
+               main_weapon_id="weapon.sword"),
+        _build(
+            band_id="chaos-streets-undead-bloodlines", profile_id="strigoi-vampire",
+            collection="trollheim",
+            special_rule_ids=("band--strigoi-power-curse-of-the-reborn",),
+        ),
+        first_attack_tags=("attack.blessed",),
+    ),
+    # Coverage-completion tranche (2026-09-05). These probes are deliberately
+    # narrow: they add the remaining reachable effect axes without adding
+    # broad matchup variants. Synthetic trait/skill combinations are confined
+    # to this benchmark matrix and do not alter the KB or combat engines.
+    # 22. Khemri's fragile profile 3 against the last-wound profile 4.
+    BenchmarkScenario(
+        "injury-profile-3-vs-4",
+        _build(characteristics=Characteristics(4, 4, 4, 2, 4, 2),
+               main_weapon_id="weapon.sword",
+               trait_overrides={"injury_profile": 3}),
+        _build(characteristics=Characteristics(4, 4, 4, 2, 4, 2),
+               main_weapon_id="weapon.axe",
+               trait_overrides={"injury_profile": 4}),
+    ),
+    # 23. Composite consumers for wound modifiers, hit re-rolls, extra
+    # attacks and wound re-rolls, against a plain high-strength hitter.
+    BenchmarkScenario(
+        "skill-stack-vs-hitter",
+        _build(characteristics=Characteristics(4, 4, 4, 2, 4, 2),
+               main_weapon_id="weapon.sword",
+               skill_ids=("skill.expert-fighter", "skill.infinite-hatred",
+                          "skill.red-fury", "skill.sure-strike")),
+        _build(characteristics=Characteristics(4, 5, 4, 2, 3, 2),
+               main_weapon_id="weapon.axe"),
+    ),
+    # 24. Resilient modifies incoming strength without modifying armour
+    # saves; the opposing double-handed weapon makes the boundary frequent.
+    BenchmarkScenario(
+        "resilient-vs-high-strength",
+        _build(characteristics=Characteristics(4, 4, 5, 2, 4, 2),
+               main_weapon_id="weapon.sword", skill_ids=("skill.resilient",)),
+        _build(characteristics=Characteristics(4, 5, 4, 2, 3, 2),
+               main_weapon_id="weapon.double-handed-weapon"),
+    ),
+    # 25. Charging WS and charging Strength bonuses on the same attacker.
+    BenchmarkScenario(
+        "charge-skills-vs-tank",
+        _build(characteristics=Characteristics(4, 4, 4, 2, 5, 2),
+               main_weapon_id="weapon.sword",
+               skill_ids=("skill.unstoppable-charge", "skill.strength-of-steel")),
+        _build(characteristics=DURABLE, main_weapon_id="weapon.axe",
+               armour_id="armour.gromril-armour", off_hand_id="defence.shield"),
+    ),
+    # 26. Synthetic opener combining the first-round attack bonus from
+    # Chain-Sticks, the profile/charge attack bonus, and first-round weapon
+    # strength; Strength of Steel adds the charge-strength branch. This is
+    # intentionally benchmark-only because no single legal profile combines
+    # these equipment families.
+    BenchmarkScenario(
+        "first-round-opener",
+        _build(characteristics=Characteristics(4, 4, 4, 2, 5, 2),
+               main_weapon_id="weapon.chain-sticks",
+               trait_overrides={"first_round_charge_attack_bonus": True}),
+        _build(characteristics=Characteristics(4, 4, 4, 2, 4, 2),
+               main_weapon_id="weapon.flail",
+               skill_ids=("skill.strength-of-steel",)),
+    ),
+    # 27. Condemned's per-duel random WS/S/T/A values versus a stable profile.
+    BenchmarkScenario(
+        "random-characteristics-vs-stable",
+        _build(band_id="marauders-of-chaos", profile_id="condemned",
+               main_weapon_id="weapon.natural-attacks"),
+        _build(characteristics=VETERAN, main_weapon_id="weapon.sword"),
+    ),
+    # 28. Bear Hug needs two successful hits; the benchmark-only fire tag also
+    # makes the Scarecrow's caught-fire threshold observable in normal hits.
+    BenchmarkScenario(
+        "trained-bear-vs-scarecrow",
+        _build(band_id="kislevites", profile_id="trained-bear"),
+        _build(band_id="restless-dead", profile_id="scarecrows"),
+        first_attack_tags=("attack.fire",),
+    ),
+    # 29. Silent Walker supplies a 5+ mundane-only ward; Cold One Beasthounds
+    # supply unmodified natural armour. The magical attack tag intentionally
+    # covers the ward-negation branch; the mundane ward branch remains a
+    # documented follow-up because this is one pair, not two variants.
+    BenchmarkScenario(
+        "silent-walker-vs-cold-one",
+        _build(band_id="lustria-pygmies", profile_id="silent-walker",
+               main_weapon_id="weapon.dagger", collection="trollheim"),
+        _build(band_id="dark-elves", profile_id="cold-one-beasthounds",
+               main_weapon_id="weapon.natural-attacks"),
+        second_attack_tags=("attack.magical",),
+    ),
 
 )
 
 
-def deep_test_scenarios() -> tuple[BenchmarkScenario, ...]:
-    """Return the deep-testing scenario matrix (standard + archetype pairs).
+# The full matrix remains the default and is intentionally stable: several
+# triage tools and historical regression probes refer to these ids directly.
+FULL_DEEP_SCENARIO_IDS: tuple[str, ...] = tuple(
+    scenario.id for scenario in DEEP_SCENARIOS
+)
 
-    Every pair is a complete legal duel construction (compile-time checked);
-    together they sweep profiles (glass cannon, brute, elite, tank, undead,
-    dwarfs, trolls, lizardmen, daemons, goblins, monks), weapon families
-    (single, dual, paired, parrying, two-handed, unarmed, pistols, whips,
-    entangling), defence mechanics (parry, shields, ward, helmets, natural
-    armour, regeneration, poison immunity) and stateful skills
-    (force-of-will, frenzy, always-strikes-first, hard-to-kill,
-    concussion immunity, ignore-pain).
+# Fast certification keeps one representative of every currently covered
+# mechanic family, while dropping pure baselines, mirrors and stronger/weaker
+# duplicates.  It also keeps the three known orchestration amplifiers, the
+# long-round timing/Ithilmar representatives and the four recently added
+# coverage boundaries.  The set is deliberately expressed as ids rather than
+# a second copy of the scenario definitions.
+FAST_DEEP_SCENARIO_IDS: tuple[str, ...] = (
+    "defences",
+    "stateful",
+    "sigmarite-vs-undead",
+    "regen-vs-fire",
+    "natural-armour-vs-magic",
+    "pistol-vs-parry",
+    "concussion-vs-dwarf",
+    "paired-poison-vs-undead",
+    "ward-vs-magic",
+    "unarmed-vs-steel",
+    "injury-profile-vs-death-knife",
+    "entangle-vs-fencer",
+    "triple-weapon-vs-parry",
+    "a2-vs-w1-stun",
+    "frenzy-vs-w2",
+    "elite-vs-durable",
+    "heavy-grind",
+    "ithilmar-duel",
+    "skills-vs-hitter",
+    "helmet-vs-injury-profile-2",
+    "cathayan-longsword-vs-sword",
+    "blessed-vs-regen",
+    "injury-profile-3-vs-4",
+    "skill-stack-vs-hitter",
+    "resilient-vs-high-strength",
+    "charge-skills-vs-tank",
+    "first-round-opener",
+    "random-characteristics-vs-stable",
+    "trained-bear-vs-scarecrow",
+    "silent-walker-vs-cold-one",
+)
+
+DEEP_SCENARIO_SET_IDS: dict[str, tuple[str, ...]] = {
+    "fast": FAST_DEEP_SCENARIO_IDS,
+    "full": FULL_DEEP_SCENARIO_IDS,
+}
+
+
+def deep_test_scenarios(pair_set: str = "full") -> tuple[BenchmarkScenario, ...]:
+    """Return one of the maintained deep-testing pair sets.
+
+    ``full`` is the maintained 42-pair matrix. ``fast`` is a 30-pair
+    coverage-oriented subset: it retains every distinct non-default compiled
+    effect axis represented by the current full matrix (including the
+    synthetic blessed boundary), the long-round timing representative, the
+    high-value orchestration amplifiers and every newly added rule-family
+    boundary, while omitting redundant baselines and mirrors. It deliberately
+    keeps ``heavy-grind`` and ``ithilmar-duel`` because they add the only
+    long-round and Ithilmar axes otherwise lost from the fast set.
+
+    The set selection is benchmark metadata only. It does not alter fighter
+    construction or any combat/KB implementation. ``blessed-vs-regen`` still
+    uses the benchmark-only ``attack.blessed`` tag described above.
     """
-    return DEEP_SCENARIOS
+    try:
+        selected_ids = DEEP_SCENARIO_SET_IDS[pair_set]
+    except KeyError as error:
+        raise ValueError(
+            f"unknown deep pair set {pair_set!r}; choose 'fast' or 'full'"
+        ) from error
+    by_id = {scenario.id: scenario for scenario in DEEP_SCENARIOS}
+    return tuple(by_id[scenario_id] for scenario_id in selected_ids)
 
 
 @dataclass(frozen=True, slots=True)
@@ -460,13 +695,17 @@ def deep_benchmark_plan(
     )
 
 
-def print_deep_benchmark_header(plan: DeepBenchmarkPlan) -> None:
+def print_deep_benchmark_header(
+    plan: DeepBenchmarkPlan, *, pair_set: str | None = None,
+) -> None:
+    label = f"{pair_set} pair set; " if pair_set else ""
     print(
-        "Deep benchmark: modular reference at "
+        "Deep benchmark: " + label + "modular reference at "
         f"{plan.modular_simulations:,} duels/scenario; "
         f"{', '.join(plan.vector_backends)} swept over sizes "
         f"{', '.join(f'{size:,}' for size in plan.vector_sizes)} x batches "
-        f"{', '.join(f'{size:,}' for size in plan.batch_sizes)}."
+        f"{', '.join(f'{size:,}' for size in plan.batch_sizes)} "
+        f"across {sum(run[1] == 'modular' for run in plan.runs):,} scenarios."
     )
 
 
@@ -505,7 +744,7 @@ def run_benchmark(
 ) -> BenchmarkResult:
     if backend not in {"modular", "numpy", "native"}:
         raise ValueError(f"unknown benchmark backend: {backend}")
-    first, second = compile_fighter(scenario.first), compile_fighter(scenario.second)
+    first, second = compile_benchmark_fighters(scenario)
     request = DuelRequest(
         first, second, simulations, seed=seed, batch_size=batch_size,
         maximum_rounds=scenario.maximum_rounds,
@@ -559,9 +798,14 @@ def sweep_payload(
     unavailable: tuple[dict[str, str], ...] | list[dict[str, str]], *,
     simulation_sizes: tuple[int, ...], batch_sizes: tuple[int, ...],
     seed: int, warmups: int, repeats: int,
+    pair_set: str | None = None,
 ) -> dict[str, object]:
-    """Build a durable multi-configuration sweep artifact."""
-    return {
+    """Build a durable multi-configuration sweep artifact.
+
+    ``pair_set`` is recorded only for the deep pair-matrix profile; ordinary
+    five-scenario benchmark sweeps keep the historical payload shape.
+    """
+    payload = {
         "schema": SWEEP_SCHEMA,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "environment": _environment(),
@@ -573,6 +817,9 @@ def sweep_payload(
         "results": [asdict(item) for item in results],
         "unavailable": list(unavailable),
     }
+    if pair_set is not None:
+        payload["pair_set"] = pair_set
+    return payload
 
 
 def _environment() -> dict[str, str]:
@@ -638,6 +885,8 @@ def _markdown_report(payload: dict[str, object]) -> str:
     )
     lines.append(f"- configuration: {json.dumps(configuration)}")
     lines.append("")
+    if payload.get("pair_set") is not None:
+        lines.append(f"- pair set: {payload['pair_set']}")
     if payload.get("comparison") is not None:
         comparison = payload["comparison"]
         lines.append(f"## Gate: {'PASS' if comparison['passed'] else 'FAIL'}")

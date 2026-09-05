@@ -45,11 +45,21 @@ class BattleMoment(tk.Frame):
     def _participants(self, battle) -> BorderedFrame:
         box = BorderedFrame(self, background=COLORS["panel"], padding=1); body = box.body; body.configure(padx=18, pady=16)
         tk.Label(body, text="PARTICIPANTS", bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 8))
+        tk.Label(
+            body,
+            text=f"{battle.models_before} models deployed · {battle.casualties} Out of Action. Which warriors went Out of Action is resolved in Recovery (post-battle step 1).",
+            bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8), wraplength=760, justify="left",
+        ).pack(anchor="w", pady=(0, 8))
         for warrior in self.controller.state.campaign.warriors:
             row = tk.Frame(body, bg=COLORS["panel"], pady=5); row.pack(fill="x")
-            tk.Label(row, text=warrior.name, bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 9)).pack(side="left")
-            status = "Out of Action" if warrior.id == "marta" and battle.number in (7, 8) else "Participated"
-            tk.Label(row, text=status, bg=COLORS["panel"], fg=COLORS["danger"] if status == "Out of Action" else COLORS["muted"], font=("Segoe UI", 8)).pack(side="right")
+            label = warrior.name + (f"  ·  ×{warrior.quantity}" if warrior.quantity > 1 else "")
+            tk.Label(row, text=label, bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 9)).pack(side="left")
+            status = "Participated"
+            tone = COLORS["muted"]
+            if warrior.condition:
+                status = f"{warrior.condition} ({warrior.condition_detail})" if warrior.condition_detail else warrior.condition
+                tone = COLORS["danger"]
+            tk.Label(row, text=status, bg=COLORS["panel"], fg=tone, font=("Segoe UI", 8)).pack(side="right")
         return box
 
     def _notes(self, battle) -> BorderedFrame:

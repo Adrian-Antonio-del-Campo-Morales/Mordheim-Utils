@@ -4,200 +4,531 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
-  - {target: mechanic/preparation.crimson-shade, digest: 78d02c317f76fe0eb45b319809cadceebd9559426b242abee9053d39039e12cf}
-  interpretation: "Crimson Shade grants +1 Strength for the whole combat and adds a single D3 roll to Initiative when initialising the fighter."
+  - target: mechanic/preparation.crimson-shade
+    digest: 78d02c317f76fe0eb45b319809cadceebd9559426b242abee9053d39039e12cf
+  interpretation: Crimson Shade grants +1 Strength for the whole combat and adds a single D3 roll to Initiative
+    when initialising the fighter.
   cases:
   - id: compiled-and-strength
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, preparation_ids: [preparation.crimson-shade]}
-    rolls: [{key: a.crimson-shade, sides: 3, value: 1}]
-    expect: {attacker.global_effects.strength_bonus: 1, result.wound: 4, result.armour: 4}
-    expect_contains: {attacker.global_effects.tags: [preparation.crimson-shade]}
+    attacker:
+      main_weapon_id: weapon.mace
+      preparation_ids:
+      - preparation.crimson-shade
+    rolls:
+    - key: a.crimson-shade
+      sides: 3
+      value: 1
+    expect:
+      attacker.global_effects.strength_bonus: 1
+      result.wound: 4
+      result.armour: 4
+    expect_contains:
+      attacker.global_effects.tags:
+      - preparation.crimson-shade
   - id: initiative-minimum
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: initialize
-    attacker: {main_weapon_id: weapon.mace, preparation_ids: [preparation.crimson-shade]}
-    rolls: [{key: a.crimson-shade, sides: 3, value: 1}]
-    expect: {result.attacker.initiative: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      preparation_ids:
+      - preparation.crimson-shade
+    rolls:
+    - key: a.crimson-shade
+      sides: 3
+      value: 1
+    expect:
+      result.attacker.initiative: 4
   - id: initiative-maximum
-    roles: [boundary]
+    roles:
+    - boundary
     operation: initialize
-    attacker: {main_weapon_id: weapon.mace, preparation_ids: [preparation.crimson-shade]}
-    rolls: [{key: a.crimson-shade, sides: 3, value: 3}]
-    expect: {result.attacker.initiative: 6}
+    attacker:
+      main_weapon_id: weapon.mace
+      preparation_ids:
+      - preparation.crimson-shade
+    rolls:
+    - key: a.crimson-shade
+      sides: 3
+      value: 3
+    expect:
+      result.attacker.initiative: 6
   - id: absent
-    roles: [inactive]
+    roles:
+    - inactive
     operation: initialize
-    attacker: {main_weapon_id: weapon.mace}
-    expect: {result.attacker.initiative: 3, result.attacker.strength: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+    expect:
+      result.attacker.initiative: 3
+      result.attacker.strength: 3
   mutations:
-  - {id: remove-strength, path: attacker.global_effects.strength_bonus, value: 0, cases: [compiled-and-strength]}
-  - {id: remove-initiative, path: attacker.global_effects.tags, value: [], cases: [initiative-minimum, initiative-maximum]}
-
+  - id: remove-strength
+    path: attacker.global_effects.strength_bonus
+    value: 0
+    cases:
+    - compiled-and-strength
+  - id: remove-initiative
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - initiative-minimum
+    - initiative-maximum
 - id: poison-nightshade
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: mechanic/poison.nightshade, digest: 48573b826e479034d0c4198b1a3ad8e95e0362289a2855f8e753af35e95650a5}
-  interpretation: "Each unsaved wound with Nightshade reduces the defender's Initiative by one; poison immunity prevents the reduction."
+  - target: mechanic/poison.nightshade
+    digest: 48573b826e479034d0c4198b1a3ad8e95e0362289a2855f8e753af35e95650a5
+  interpretation: Each unsaved wound with Nightshade reduces the defender's Initiative by one; poison immunity
+    prevents the reduction.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.nightshade}
-    expect: {attacker.main_weapon.strength_bonus: 0}
-    expect_contains: {attacker.main_weapon.tags: [poison.nightshade]}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+    expect:
+      attacker.main_weapon.strength_bonus: 0
+    expect_contains:
+      attacker.main_weapon.tags:
+      - poison.nightshade
   - id: unsaved-wound
-    roles: [active, sequence, consumption, boundary]
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
     operation: attack
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.nightshade}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}]
-    expect: {result.wounded: true, result.defender.initiative_penalty: 1, result.defender.wounds: 2}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.wounded: true
+      result.defender.initiative_penalty: 1
+      result.defender.wounds: 2
   - id: failed-wound
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attack
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.nightshade}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 1}]
-    expect: {result.wounded: false, result.defender.initiative_penalty: 0}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 1
+    expect:
+      result.wounded: false
+      result.defender.initiative_penalty: 0
   - id: poison-immunity
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attack
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.nightshade}
-    defender: {preparation_ids: [preparation.tears-of-shallaya]}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}]
-    expect: {result.wounded: true, result.defender.initiative_penalty: 0, result.defender.wounds: 2}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+    defender:
+      preparation_ids:
+      - preparation.tears-of-shallaya
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.wounded: true
+      result.defender.initiative_penalty: 0
+      result.defender.wounds: 2
   mutations:
-  - {id: remove-nightshade, path: attacker.main_weapon.tags, value: [weapon.mace], cases: [unsaved-wound]}
-
+  - id: remove-nightshade
+    path: attacker.main_weapon.tags
+    value:
+    - weapon.mace
+    cases:
+    - unsaved-wound
 - id: poison-spider-spittle
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: mechanic/poison.spider-spittle, digest: 70ca6ec307d804651e269fbff2bdf18bdcb266a63f6f178c942f7349b2cfff0d}
-  interpretation: "After an unsaved wound, Spider Spittle paralyses if the defender fails a Toughness check; poison immunity skips the check."
+  - target: mechanic/poison.spider-spittle
+    digest: f978179813b2fca65da90be10cec7db180d76bfb5038370ebd0fd2aad25e205e
+  interpretation: An undefended hit immediately triggers a Toughness test before wounding or saves. A failed
+    test paralyses; immunity prevents the test. Paralysis grants automatic hits, not automatic elimination.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.spider-spittle}
-    expect: {attacker.main_weapon.strength_bonus: 0}
-    expect_contains: {attacker.main_weapon.tags: [poison.spider-spittle]}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.spider-spittle
+    expect:
+      attacker.main_weapon.strength_bonus: 0
+    expect_contains:
+      attacker.main_weapon.tags:
+      - poison.spider-spittle
   - id: failed-toughness-test
-    roles: [active, sequence, consumption, boundary]
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
     operation: attack
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.spider-spittle}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}, {key: test.spider-spittle, value: 4}]
-    expect: {result.wounded: true, result.defender.condition: PARALYZED, result.defender.wounds: 2}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.spider-spittle
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.spider-spittle
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.wounded: true
+      result.defender.condition: PARALYZED
+      result.defender.wounds: 2
   - id: passed-toughness-test
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attack
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.spider-spittle}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}, {key: test.spider-spittle, value: 3}]
-    expect: {result.defender.condition: STANDING, result.defender.wounds: 2}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.spider-spittle
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.spider-spittle
+      value: 3
+    - key: test.wound
+      value: 4
+    expect:
+      result.defender.condition: STANDING
+      result.defender.wounds: 2
   - id: poison-immunity
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attack
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.spider-spittle}
-    defender: {preparation_ids: [preparation.tears-of-shallaya]}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}]
-    expect: {result.defender.condition: STANDING, result.defender.wounds: 2}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.spider-spittle
+    defender:
+      preparation_ids:
+      - preparation.tears-of-shallaya
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.defender.condition: STANDING
+      result.defender.wounds: 2
+  - id: failed-wound-still-paralyses
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.spider-spittle
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.spider-spittle
+      value: 4
+    - key: test.wound
+      value: 1
+    expect:
+      result.wounded: false
+      result.defender.condition: PARALYZED
+      result.defender.wounds: 3
   mutations:
-  - {id: remove-spittle, path: attacker.main_weapon.tags, value: [weapon.mace], cases: [failed-toughness-test]}
-
+  - id: remove-spittle
+    path: attacker.main_weapon.tags
+    value:
+    - weapon.mace
+    cases:
+    - failed-toughness-test
 - id: mechanic-disability
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: mechanic/mechanic.disability, digest: 6d6c4d98b05f71c90d9e8d1f55712665047e01035b447d9f3a1076bce808735f}
-  interpretation: "The simulation rolls the Disability D6 once per row and applies the representable combat effects of each face, keeping the consumed face in the state."
+  - target: mechanic/mechanic.disability
+    digest: 6d6c4d98b05f71c90d9e8d1f55712665047e01035b447d9f3a1076bce808735f
+  interpretation: The simulation rolls the Disability D6 once per row and applies the representable combat
+    effects of each face, keeping the consumed face in the state.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: cripples}
-    expect: {attacker.characteristics.weapon_skill: 2}
-    expect_contains: {attacker.global_effects.tags: [mechanic.disability]}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+    expect:
+      attacker.characteristics.weapon_skill: 2
+    expect_contains:
+      attacker.global_effects.tags:
+      - mechanic.disability
   - id: lame
-    roles: [active, sequence, consumption, boundary]
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
     operation: initialize
-    attacker: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: cripples}
-    rolls: [{key: a.disability, value: 1}]
-    expect: {result.attacker.initiative: 2, result.attacker.weapon_skill: 2, result.attacker.resources_spent: [disability.1]}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+    rolls:
+    - key: a.disability
+      value: 1
+    expect:
+      result.attacker.initiative: 2
+      result.attacker.weapon_skill: 2
+      result.attacker.resources_spent:
+      - disability.1
   - id: parkinsons
-    roles: [boundary]
+    roles:
+    - boundary
     operation: initialize
-    attacker: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: cripples}
-    rolls: [{key: a.disability, value: 2}]
-    expect: {result.attacker.weapon_skill: 1, result.attacker.resources_spent: [disability.2]}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+    rolls:
+    - key: a.disability
+      value: 2
+    expect:
+      result.attacker.weapon_skill: 1
+      result.attacker.resources_spent:
+      - disability.2
   - id: poor-eyesight
-    roles: [boundary]
+    roles:
+    - boundary
     operation: initialize
-    attacker: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: cripples}
-    rolls: [{key: a.disability, value: 3}]
-    expect: {result.attacker.resources_spent: [disability.3]}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+    rolls:
+    - key: a.disability
+      value: 3
+    expect:
+      result.attacker.resources_spent:
+      - disability.3
   - id: sickly
-    roles: [boundary]
+    roles:
+    - boundary
     operation: initialize
-    attacker: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: cripples}
-    rolls: [{key: a.disability, value: 4}]
-    expect: {result.attacker.toughness: 2, result.attacker.resources_spent: [disability.4]}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+    rolls:
+    - key: a.disability
+      value: 4
+    expect:
+      result.attacker.toughness: 2
+      result.attacker.resources_spent:
+      - disability.4
   - id: weakness
-    roles: [boundary]
+    roles:
+    - boundary
     operation: initialize
-    attacker: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: cripples}
-    rolls: [{key: a.disability, value: 5}]
-    expect: {result.attacker.strength: 2, result.attacker.resources_spent: [disability.5]}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+    rolls:
+    - key: a.disability
+      value: 5
+    expect:
+      result.attacker.strength: 2
+      result.attacker.resources_spent:
+      - disability.5
   - id: head-injury
-    roles: [boundary]
+    roles:
+    - boundary
     operation: initialize
-    attacker: {collection: trollheim, band_id: chaos-streets-mordheim-inhabitants, profile_id: cripples}
-    rolls: [{key: a.disability, value: 6}]
-    expect: {result.attacker.resources_spent: [disability.6]}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: cripples
+    rolls:
+    - key: a.disability
+      value: 6
+    expect:
+      result.attacker.resources_spent:
+      - disability.6
   - id: ordinary-profile
-    roles: [inactive]
+    roles:
+    - inactive
     operation: initialize
-    attacker: {main_weapon_id: weapon.mace}
-    expect: {result.attacker.weapon_skill: 3, result.attacker.resources_spent: []}
+    attacker:
+      main_weapon_id: weapon.mace
+    expect:
+      result.attacker.weapon_skill: 3
+      result.attacker.resources_spent: []
   mutations:
-  - {id: remove-disability, path: attacker.global_effects.tags, value: [], cases: [lame, parkinsons, sickly, weakness]}
-
+  - id: remove-disability
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - lame
+    - parkinsons
+    - sickly
+    - weakness
 - id: mechanic-mark-of-the-old-ones
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: mechanic/mechanic.mark-of-the-old-ones, digest: ab063adb5b01f001ac994bf7ab4cd22c2e77b53ea092c8c8ef27ec7474cdcfaa}
-  interpretation: "Mark of the Old Ones turns the first failed to-hit or to-wound roll into a success and is then consumed for the rest of the duel."
+  - target: mechanic/mechanic.mark-of-the-old-ones
+    digest: ab063adb5b01f001ac994bf7ab4cd22c2e77b53ea092c8c8ef27ec7474cdcfaa
+  interpretation: Mark of the Old Ones turns the first failed to-hit or to-wound roll into a success and is
+    then consumed for the rest of the duel.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest, special_rule_ids: [band--sacred-mark-of-the-old-ones]}
-    expect: {attacker.characteristics.weapon_skill: 3}
-    expect_contains: {attacker.global_effects.tags: [mechanic.mark-of-the-old-ones]}
+    attacker:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+      special_rule_ids:
+      - band--sacred-mark-of-the-old-ones
+    expect:
+      attacker.characteristics.weapon_skill: 3
+    expect_contains:
+      attacker.global_effects.tags:
+      - mechanic.mark-of-the-old-ones
   - id: failed-hit-converted
-    roles: [active, sequence, consumption, boundary]
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
     operation: attack
-    attacker: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest, special_rule_ids: [band--sacred-mark-of-the-old-ones]}
-    context: {hit_only: true}
-    rolls: [{key: test.hit, value: 1}]
-    expect: {result.hit: true, result.attacker.resources_spent: [mark-of-the-old-ones]}
+    attacker:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+      special_rule_ids:
+      - band--sacred-mark-of-the-old-ones
+    context:
+      hit_only: true
+    rolls:
+    - key: test.hit
+      value: 1
+    expect:
+      result.hit: true
+      result.attacker.resources_spent:
+      - mark-of-the-old-ones
   - id: already-consumed
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attack
-    attacker: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest, special_rule_ids: [band--sacred-mark-of-the-old-ones]}
-    attacker_state: {resources_spent: [mark-of-the-old-ones]}
-    context: {hit_only: true}
-    rolls: [{key: test.hit, value: 1}]
-    expect: {result.hit: false, result.attacker.resources_spent: [mark-of-the-old-ones]}
+    attacker:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+      special_rule_ids:
+      - band--sacred-mark-of-the-old-ones
+    attacker_state:
+      resources_spent:
+      - mark-of-the-old-ones
+    context:
+      hit_only: true
+    rolls:
+    - key: test.hit
+      value: 1
+    expect:
+      result.hit: false
+      result.attacker.resources_spent:
+      - mark-of-the-old-ones
   - id: failed-wound-converted
-    roles: [active, sequence, consumption]
+    roles:
+    - active
+    - sequence
+    - consumption
     operation: attack
-    attacker: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest, special_rule_ids: [band--sacred-mark-of-the-old-ones]}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 1}, {key: test.armour, value: 1}]
-    expect: {result.wounded: true, result.defender.wounds: 2, result.attacker.resources_spent: [mark-of-the-old-ones]}
+    attacker:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+      special_rule_ids:
+      - band--sacred-mark-of-the-old-ones
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 1
+    - key: test.armour
+      value: 1
+    expect:
+      result.wounded: true
+      result.defender.wounds: 2
+      result.attacker.resources_spent:
+      - mark-of-the-old-ones
   mutations:
-  - {id: remove-mark, path: attacker.global_effects.tags, value: [], cases: [failed-hit-converted, failed-wound-converted]}
+  - id: remove-mark
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - failed-hit-converted
+    - failed-wound-converted

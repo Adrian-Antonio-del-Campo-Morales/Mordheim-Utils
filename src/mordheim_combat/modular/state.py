@@ -34,6 +34,8 @@ class FighterState:
     toughness: int = 0
     initiative: int = 0
     attacks: int = 0
+    broken_hands: frozenset[str] = frozenset()
+    hampered_hands: tuple[str, ...] = ()
 
     @property
     def active(self) -> bool:
@@ -51,6 +53,11 @@ class DuelState:
     first_charged: bool = True
     trace: tuple[Phase, ...] = ()
 
+    @property
+    def first_player_turn(self) -> bool:
+        """Each iteration is one combat phase in an alternating player turn."""
+        return self.first_charged == (self.round_index % 2 == 0)
+
 
 @dataclass(frozen=True, slots=True)
 class AttackOutcome:
@@ -65,6 +72,9 @@ class AttackOutcome:
     damage: int = 0
     critical: bool = False
     trace: tuple[Phase, ...] = ()
+    barrage_available: bool = False
+    damage_already_reacted: int = 0
+    reactions_resolved: bool = False
 
 
 @dataclass(frozen=True, slots=True)

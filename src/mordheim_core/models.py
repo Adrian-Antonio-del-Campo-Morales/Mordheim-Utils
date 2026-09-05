@@ -32,6 +32,7 @@ class FighterBuild:
     special_rule_ids: tuple[str, ...] = ()
     energy_focus_attacks: int = 0
     mounted: bool = False
+
     variant_ids: tuple[str, ...] = ()
     extra_hand_id: str | None = None
     main_poison_id: str | None = None; off_poison_id: str | None = None
@@ -70,6 +71,7 @@ class EffectSet:
     bear_hug: bool = False
     poison_immunity: bool = False; frenzy: bool = False
     damage: int = 1; regeneration_save: int = 7; out_of_action_threshold: int = 5
+    damage_die_sides: int = 0
     maximum_wound_target: int = 7
     armour_save_floor: int = 7
     armour_cannot_be_ignored: bool = False
@@ -101,6 +103,9 @@ class CompiledFighter:
     main_weapon_without_poison: EffectSet | None = None
     off_hand_without_poison: EffectSet | None = None
     mounted: bool = False
+    unarmed_weapon: EffectSet | None = None
+    main_hand_slot: str = 'main'
+    off_hand_slot: str = 'off'
 
 
 @dataclass(frozen=True, slots=True)

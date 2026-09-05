@@ -2,7 +2,7 @@ schema_version: 2
 ruleset: mordheim
 scope: close-combat-only
 to_hit:
-  defender_ws_zero: 2
+  defender_ws_zero: 0 # Automatic hit; no die is rolled.
   attacker_ws_greater: 3
   defender_ws_more_than_double: 5
   otherwise: 4
@@ -32,6 +32,12 @@ injury:
 critical_hit:
   trigger: natural_6_to_wound_when_6_not_required
   maximum_per_attacker_per_phase: 1
+  table: basic
+  results:
+  - {rolls: 1-2, wounds: 2, armour: before_doubling, injury_modifier: 0}
+  - {rolls: 3-4, wounds: 2, armour: ignored, injury_modifier: 0}
+  - {rolls: 5-6, wounds: 2, armour: ignored, injury_modifier: 2}
+  multiple_wounds: use_highest_not_product
 parry:
   success: parry_roll_strictly_greater_than_highest_hit_roll
   natural_6_to_hit_cannot_be_parried: true
