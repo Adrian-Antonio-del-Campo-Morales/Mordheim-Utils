@@ -4,111 +4,293 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-rotten-body/trait.poison-immune, digest: 198c0429d4388eb43905de6eb2c0c25c7386eed7d7863872f27eed028681240a}
-  depends_on: [mechanic/preparation.tears-of-shallaya]
-  interpretation: "Clan Pestilens Special Skills / Rotten Body (Mordheimer and Lustria p.80). Poison immunity upon choosing the skill, not innate to all Pestilens. The campaign recovery of the censer is outside scope. The nine-poison matrix shares the immunity consumer already tested by Tears of Shallaya; that preparation is not granted to the hero."
+  - target: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-rotten-body/trait.poison-immune
+    digest: 08ce5d3780c564eb3af0d94743d5798286734a2c1fd3c6766c3f475f398c7519
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: Clan Pestilens Special Skills / Rotten Body (Mordheimer and Lustria p.80). Poison immunity
+    upon choosing the skill, not innate to all Pestilens. The campaign recovery of the censer is outside
+    scope. The nine-poison matrix shares the immunity consumer already tested by Tears of Shallaya; that
+    preparation is not granted to the hero.
   cases:
   - id: exact-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: skaven-clan-pestilens, profile_id: plague-priest}
-    context: {rule_id: band--clan-pestilens-special-skills-rotten-body}
-    expect: {result.recipients: [monk-initiates, pestilens-sorcerer, plague-monks, plague-priest]}
+    defender:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-priest
+    context:
+      rule_id: band--clan-pestilens-special-skills-rotten-body
+    expect:
+      result.recipients:
+      - monk-initiates
+      - pestilens-sorcerer
+      - plague-monks
+      - plague-priest
   - id: monk-initiates-venom-cancelled
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: mordheim, band_id: skaven-clan-pestilens, profile_id: monk-initiates, special_rule_ids: [band--clan-pestilens-special-skills-rotten-body]}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: monk-initiates
+      special_rule_ids:
+      - band--clan-pestilens-special-skills-rotten-body
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: pestilens-sorcerer-venom-cancelled
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: mordheim, band_id: skaven-clan-pestilens, profile_id: pestilens-sorcerer, special_rule_ids: [band--clan-pestilens-special-skills-rotten-body]}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: pestilens-sorcerer
+      special_rule_ids:
+      - band--clan-pestilens-special-skills-rotten-body
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: plague-monks-venom-cancelled
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: mordheim, band_id: skaven-clan-pestilens, profile_id: plague-monks, special_rule_ids: [band--clan-pestilens-special-skills-rotten-body]}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-monks
+      special_rule_ids:
+      - band--clan-pestilens-special-skills-rotten-body
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: plague-priest-venom-cancelled
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: mordheim, band_id: skaven-clan-pestilens, profile_id: plague-priest, special_rule_ids: [band--clan-pestilens-special-skills-rotten-body]}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids:
+      - band--clan-pestilens-special-skills-rotten-body
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: without-selection-venom-applies
-    roles: [inactive]
+    roles:
+    - inactive
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: mordheim, band_id: skaven-clan-pestilens, profile_id: plague-priest}
-    expect: {defender.global_effects.poison_immunity: false, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-priest
+    expect:
+      defender.global_effects.poison_immunity: false
+      result.wound: 4
+      result.armour: 4
   - id: no-poison-ordinary-strength
-    roles: [boundary]
+    roles:
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: skaven-clan-pestilens, profile_id: plague-priest, special_rule_ids: [band--clan-pestilens-special-skills-rotten-body]}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: skaven-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids:
+      - band--clan-pestilens-special-skills-rotten-body
+    expect:
+      result.wound: 3
+      result.armour: 3
   mutations:
   - id: remove-selected-immunity
     changes:
-    - {path: defender.global_effects.poison_immunity, value: false}
-    - {path: defender.global_effects.tags, value: []}
-    cases: [plague-priest-venom-cancelled, plague-monks-venom-cancelled, pestilens-sorcerer-venom-cancelled, monk-initiates-venom-cancelled]
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - plague-priest-venom-cancelled
+    - plague-monks-venom-cancelled
+    - pestilens-sorcerer-venom-cancelled
+    - monk-initiates-venom-cancelled
 - id: rotten-body-trollheim
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-rotten-body/trait.poison-immune, digest: 4cd9f109078ff438e4ea3cbb08c7da25161c3a83f102d9b2270961bdbee4b957}
-  depends_on: [mechanic/preparation.tears-of-shallaya]
-  interpretation: "Clan Pestilens Special Skills / Rotten Body (Mordheimer and Lustria p.80). Poison immunity upon choosing the skill, not innate to all Pestilens. The campaign recovery of the censer is outside scope. The nine-poison matrix shares the immunity consumer already tested by Tears of Shallaya; that preparation is not granted to the hero."
+  - target: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-rotten-body/trait.poison-immune
+    digest: e3fc0f92a68f5e3eb606959d5531fd333f6ba956f915f2a29f31cbe26e3df829
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: Clan Pestilens Special Skills / Rotten Body (Mordheimer and Lustria p.80). Poison immunity
+    upon choosing the skill, not innate to all Pestilens. The campaign recovery of the censer is outside
+    scope. The nine-poison matrix shares the immunity consumer already tested by Tears of Shallaya; that
+    preparation is not granted to the hero.
   cases:
   - id: exact-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: lustria-clan-pestilens, profile_id: plague-priest}
-    context: {rule_id: band--clan-pestilens-special-skills-rotten-body}
-    expect: {result.recipients: [monk-initiates, pestilens-sorcerer, plague-monks, plague-priest]}
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+    context:
+      rule_id: band--clan-pestilens-special-skills-rotten-body
+    expect:
+      result.recipients:
+      - monk-initiates
+      - pestilens-sorcerer
+      - plague-monks
+      - plague-priest
   - id: monk-initiates-venom-cancelled
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: lustria-clan-pestilens, profile_id: monk-initiates, special_rule_ids: [band--clan-pestilens-special-skills-rotten-body]}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: monk-initiates
+      special_rule_ids:
+      - band--clan-pestilens-special-skills-rotten-body
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: pestilens-sorcerer-venom-cancelled
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: lustria-clan-pestilens, profile_id: pestilens-sorcerer, special_rule_ids: [band--clan-pestilens-special-skills-rotten-body]}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: pestilens-sorcerer
+      special_rule_ids:
+      - band--clan-pestilens-special-skills-rotten-body
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: plague-monks-venom-cancelled
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: lustria-clan-pestilens, profile_id: plague-monks, special_rule_ids: [band--clan-pestilens-special-skills-rotten-body]}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-monks
+      special_rule_ids:
+      - band--clan-pestilens-special-skills-rotten-body
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: plague-priest-venom-cancelled
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: lustria-clan-pestilens, profile_id: plague-priest, special_rule_ids: [band--clan-pestilens-special-skills-rotten-body]}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids:
+      - band--clan-pestilens-special-skills-rotten-body
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: without-selection-venom-applies
-    roles: [inactive]
+    roles:
+    - inactive
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: lustria-clan-pestilens, profile_id: plague-priest}
-    expect: {defender.global_effects.poison_immunity: false, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+    expect:
+      defender.global_effects.poison_immunity: false
+      result.wound: 4
+      result.armour: 4
   - id: no-poison-ordinary-strength
-    roles: [boundary]
+    roles:
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-clan-pestilens, profile_id: plague-priest, special_rule_ids: [band--clan-pestilens-special-skills-rotten-body]}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+      special_rule_ids:
+      - band--clan-pestilens-special-skills-rotten-body
+    expect:
+      result.wound: 3
+      result.armour: 3
   mutations:
   - id: remove-selected-immunity
     changes:
-    - {path: defender.global_effects.poison_immunity, value: false}
-    - {path: defender.global_effects.tags, value: []}
-    cases: [plague-priest-venom-cancelled, plague-monks-venom-cancelled, pestilens-sorcerer-venom-cancelled, monk-initiates-venom-cancelled]
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - plague-priest-venom-cancelled
+    - plague-monks-venom-cancelled
+    - pestilens-sorcerer-venom-cancelled
+    - monk-initiates-venom-cancelled

@@ -11,10 +11,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: The Tomb Lord is the warband's Leader and follows all the rules for Leaders.
-    es: null
+    es: El Señor de la Tumba es el Líder de la banda y sigue todas las reglas de los Líderes.
   applies_to:
     profile_ids:
     - tomb-lord
@@ -37,10 +37,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Undead
-    es: null
+    es: Muerto viviente
   effect_i18n:
     en: The Tomb Lord is undead and follows all rules for the Undead.
-    es: null
+    es: El Señor de la Tumba es un muerto viviente y sigue todas las reglas de los Muertos Vivientes.
   applies_to:
     profile_ids:
     - tomb-lord
@@ -75,17 +75,17 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Flammable
-    es: null
+    es: Inflamable
   effect_i18n:
     en: A fire-based attack that hits the Tomb Lord causes double the normal number of Wounds.
-    es: null
+    es: Un ataque de base fuego que impacte al Señor de la Tumba causa el doble del número normal de Heridas.
   applies_to:
     profile_ids:
     - tomb-lord
 - id: liche-priest--wizard
   name: Wizard
-  effect: The Liche Priest is a Wizard and uses Mortuary Cult scrolls. The scroll/spell list itself is intentionally not modelled
-    in this file.
+  effect: The Liche Priest is a Wizard and uses Mortuary Cult scrolls. The scroll/spell list itself is
+    intentionally not modelled in this file.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -93,11 +93,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Wizard
-    es: null
+    es: Mago
   effect_i18n:
-    en: The Liche Priest is a Wizard and uses Mortuary Cult scrolls. The scroll/spell list itself is intentionally not modelled
-      in this file.
-    es: null
+    en: The Liche Priest is a Wizard and uses Mortuary Cult scrolls. The scroll/spell list itself is intentionally
+      not modelled in this file.
+    es: El Sacerdote liche es un Mago y usa pergaminos del Culto Mortuorio. La propia lista de pergaminos/hechizos
+      no está modelada intencionadamente en este fichero.
   applies_to:
     profile_ids:
     - liche-priest
@@ -120,10 +121,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Undead
-    es: null
+    es: Muerto viviente
   effect_i18n:
     en: The Liche Priest is undead and follows all rules for the Undead.
-    es: null
+    es: El Sacerdote liche es un muerto viviente y sigue todas las reglas de los Muertos Vivientes.
   applies_to:
     profile_ids:
     - liche-priest
@@ -146,10 +147,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Undead
-    es: null
+    es: Muerto viviente
   effect_i18n:
     en: Acolytes are undead and follow all rules for the Undead.
-    es: null
+    es: Los Acólitos son muertos vivientes y siguen todas las reglas de los Muertos Vivientes.
   applies_to:
     profile_ids:
     - acolytes
@@ -172,10 +173,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Undead
-    es: null
+    es: Muerto viviente
   effect_i18n:
     en: Skeletons are undead and follow all rules for the Undead.
-    es: null
+    es: Los Esqueletos son muertos vivientes y siguen todas las reglas de los Muertos Vivientes.
   applies_to:
     profile_ids:
     - skeleton-warriors
@@ -198,10 +199,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Undead
-    es: null
+    es: Muerto viviente
   effect_i18n:
     en: The Tomb Guards are undead and follow all rules for the Undead.
-    es: null
+    es: Los Guardianes de la Tumba son muertos vivientes y siguen todas las reglas de los Muertos Vivientes.
   applies_to:
     profile_ids:
     - tomb-guardians
@@ -216,8 +217,8 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: tomb-guardians--experience
   name: Experience
-  effect: Tomb Guardians gain Experience. Mordheimer recommends using the Tomb Lord racial maximum characteristics for Tomb
-    Guardians when they advance.
+  effect: Tomb Guardians gain Experience. Mordheimer recommends using the Tomb Lord racial maximum characteristics
+    for Tomb Guardians when they advance.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -225,11 +226,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Experience
-    es: null
+    es: Experiencia
   effect_i18n:
-    en: Tomb Guardians gain Experience. Mordheimer recommends using the Tomb Lord racial maximum characteristics for Tomb
-      Guardians when they advance.
-    es: null
+    en: Tomb Guardians gain Experience. Mordheimer recommends using the Tomb Lord racial maximum characteristics
+      for Tomb Guardians when they advance.
+    es: Los Guardianes de la Tumba ganan Experiencia. Mordheimer recomienda usar las características máximas
+      raciales del Señor de la Tumba para los Guardianes de la Tumba cuando progresan.
   applies_to:
     profile_ids:
     - tomb-guardians
@@ -241,10 +243,13 @@ rules:
     - id: unimplemented.tomb-guardians.tomb-guardians.experience
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: tomb-scorpions--living
   name: Living
-  effect: Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not need water.
+  effect: Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not
+    need water.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -252,10 +257,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Living
-    es: null
+    es: Viviente
   effect_i18n:
-    en: Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not need water.
-    es: null
+    en: Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not need
+      water.
+    es: Los Escorpiones de la Tumba son criaturas vivientes y se ven afectados por la Psicología con normalidad,
+      pero no necesitan agua.
   applies_to:
     profile_ids:
     - tomb-scorpions
@@ -278,10 +285,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Animal
-    es: null
+    es: Animal
   effect_i18n:
     en: Tomb Scorpions are animals and never gain Experience.
-    es: null
+    es: Los Escorpiones de la Tumba son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - tomb-scorpions
@@ -306,8 +313,9 @@ rules:
         kind: mechanic
         id: poison.black-lotus
   name: Scorpion's Sting
-  effect: The Tomb Scorpion attacks with its poisonous sting. The source resolves this as an attack treated as if using Black
-    Lotus; the underlying poison-item mechanics are intentionally not duplicated in this file.
+  effect: The Tomb Scorpion attacks with its poisonous sting. The source resolves this as an attack treated
+    as if using Black Lotus; the underlying poison-item mechanics are intentionally not duplicated in
+    this file.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -315,11 +323,14 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Scorpion's Sting
-    es: null
+    es: Aguijón de escorpión
   effect_i18n:
-    en: The Tomb Scorpion attacks with its poisonous sting. The source resolves this as an attack treated as if using Black
-      Lotus; the underlying poison-item mechanics are intentionally not duplicated in this file.
-    es: null
+    en: The Tomb Scorpion attacks with its poisonous sting. The source resolves this as an attack treated
+      as if using Black Lotus; the underlying poison-item mechanics are intentionally not duplicated in
+      this file.
+    es: El Escorpión de la Tumba ataca con su aguijón venenoso. La fuente lo resuelve como un ataque tratado
+      como si usara Loto Negro; las mecánicas subyacentes del objeto veneno no están duplicadas intencionadamente
+      en este fichero.
   applies_to:
     profile_ids:
     - tomb-scorpions
@@ -333,10 +344,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Cause Fear
-    es: null
+    es: Provocar miedo
   effect_i18n:
     en: All warriors with the Undead special rule cause Fear.
-    es: null
+    es: Todos los guerreros con la regla especial Muerto viviente provocan Miedo.
   applies_to:
     band: true
   runtime:
@@ -350,7 +361,8 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--immune-to-psychology
   name: Immune to Psychology
-  effect: All warriors with the Undead special rule are immune to Psychology and never leave combat because of Psychology.
+  effect: All warriors with the Undead special rule are immune to Psychology and never leave combat because
+    of Psychology.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -358,10 +370,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Immune to Psychology
-    es: null
+    es: Inmune a la psicología
   effect_i18n:
-    en: All warriors with the Undead special rule are immune to Psychology and never leave combat because of Psychology.
-    es: null
+    en: All warriors with the Undead special rule are immune to Psychology and never leave combat because
+      of Psychology.
+    es: Todos los guerreros con la regla especial Muerto viviente son inmunes a la Psicología y nunca
+      abandonan el combate a causa de la Psicología.
   applies_to:
     band: true
   runtime:
@@ -399,10 +413,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: No Pain
-    es: null
+    es: Sin dolor
   effect_i18n:
     en: All warriors with the Undead special rule treat a Stunned result as Knocked Down.
-    es: null
+    es: Todos los guerreros con la regla especial Muerto viviente tratan un resultado de Aturdido como
+      Derribado.
   applies_to:
     band: true
 - id: band--may-not-run
@@ -415,10 +430,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: May Not Run
-    es: null
+    es: No pueden correr
   effect_i18n:
     en: Warriors with the Undead special rule may not run, but may charge normally.
-    es: null
+    es: Los guerreros con la regla especial Muerto viviente no pueden correr, pero pueden cargar normalmente.
   applies_to:
     band: true
   runtime:
@@ -431,7 +446,12 @@ rules:
       binding: null
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--immune-to-poison
-  eligibility: [acolytes, liche-priest, skeleton-warriors, tomb-guardians, tomb-lord]
+  eligibility:
+  - acolytes
+  - liche-priest
+  - skeleton-warriors
+  - tomb-guardians
+  - tomb-lord
   runtime:
     scope: 'YES'
     implemented: 'YES'
@@ -453,15 +473,16 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Immune to Poison
-    es: null
+    es: Inmune al veneno
   effect_i18n:
     en: Warriors with the Undead special rule are unaffected by poison.
-    es: null
+    es: Los guerreros con la regla especial Muerto viviente no se ven afectados por el veneno.
   applies_to:
     band: true
 - id: band--no-brain
   name: No Brain
-  effect: Skeleton Warriors never gain Experience. This rule does not prevent Tomb Guardians from gaining Experience.
+  effect: Skeleton Warriors never gain Experience. This rule does not prevent Tomb Guardians from gaining
+    Experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -469,10 +490,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: No Brain
-    es: null
+    es: Sin cerebro
   effect_i18n:
-    en: Skeleton Warriors never gain Experience. This rule does not prevent Tomb Guardians from gaining Experience.
-    es: null
+    en: Skeleton Warriors never gain Experience. This rule does not prevent Tomb Guardians from gaining
+      Experience.
+    es: Los Guerreros esqueleto nunca ganan Experiencia. Esta regla no impide que los Guardianes de la
+      Tumba ganen Experiencia.
   applies_to:
     band: true
   runtime:
@@ -486,8 +509,8 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--tomb-lord-skill-memory
   name: Tomb Lord Skill Memory
-  effect: When a Tomb Lord gains a new skill, it represents remembering knowledge from life rather than learning something
-    new; mechanically it follows the normal skill-advance process.
+  effect: When a Tomb Lord gains a new skill, it represents remembering knowledge from life rather than
+    learning something new; mechanically it follows the normal skill-advance process.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -495,11 +518,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Tomb Lord Skill Memory
-    es: null
+    es: Memoria de habilidades del Señor de la Tumba
   effect_i18n:
-    en: When a Tomb Lord gains a new skill, it represents remembering knowledge from life rather than learning something new;
-      mechanically it follows the normal skill-advance process.
-    es: null
+    en: When a Tomb Lord gains a new skill, it represents remembering knowledge from life rather than
+      learning something new; mechanically it follows the normal skill-advance process.
+    es: Cuando un Señor de la Tumba gana una nueva habilidad, representa recordar conocimiento de su vida
+      en lugar de aprender algo nuevo; mecánicamente sigue el proceso normal de progreso de habilidades.
   applies_to:
     band: true
   runtime:
@@ -513,8 +537,8 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--do-not-drink
   name: Do Not Drink
-  effect: Undead models do not need food or water. Living animals accompanying the warband follow any applicable water rules
-    normally.
+  effect: Undead models do not need food or water. Living animals accompanying the warband follow any
+    applicable water rules normally.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -522,11 +546,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Do Not Drink
-    es: null
+    es: No beben
   effect_i18n:
-    en: Undead models do not need food or water. Living animals accompanying the warband follow any applicable water rules
-      normally.
-    es: null
+    en: Undead models do not need food or water. Living animals accompanying the warband follow any applicable
+      water rules normally.
+    es: Las miniaturas muertas vivientes no necesitan comida ni agua. Los animales vivientes que acompañan
+      a la banda siguen con normalidad cualquier regla de agua aplicable.
   applies_to:
     band: true
   runtime:
@@ -548,10 +573,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Home Ground
-    es: null
+    es: Terreno propio
   effect_i18n:
     en: A Tomb Guardian warband always rolls one extra die in the Exploration phase.
-    es: null
+    es: Una banda de Guardianes de la Tumba siempre tira un dado extra en la fase de Exploración.
   applies_to:
     band: true
   runtime:
@@ -565,8 +590,9 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--drive-chariot
   name: Drive Chariot
-  effect: A warrior needs this Academic skill to drive a Skeleton Chariot effectively in combat; without it, the charioteer
-    cannot charge. The Skeleton Chariot itself is special equipment and is intentionally not modelled in this file.
+  effect: A warrior needs this Academic skill to drive a Skeleton Chariot effectively in combat; without
+    it, the charioteer cannot charge. The Skeleton Chariot itself is special equipment and is intentionally
+    not modelled in this file.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -574,27 +600,31 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Drive Chariot
-    es: null
+    es: Conducir carro
   effect_i18n:
-    en: A warrior needs this Academic skill to drive a Skeleton Chariot effectively in combat; without it, the charioteer
-      cannot charge. The Skeleton Chariot itself is special equipment and is intentionally not modelled in this file.
-    es: null
+    en: A warrior needs this Academic skill to drive a Skeleton Chariot effectively in combat; without
+      it, the charioteer cannot charge. The Skeleton Chariot itself is special equipment and is intentionally
+      not modelled in this file.
+    es: Un guerrero necesita esta habilidad Académica para conducir un Carro Esqueleto con eficacia en
+      combate; sin ella, el auriga no puede cargar. El propio Carro Esqueleto es un equipo especial y
+      no está modelado intencionadamente en este fichero.
   skill_category: academic
   applies_to:
     band: true
   runtime:
-    scope: 'LATER'
+    scope: LATER
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.tomb-guardians.band.drive-chariot
-      scope: 'LATER'
+      scope: LATER
       binding: null
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--tomb-guardian-experience-clarification
   name: Tomb Guardian Experience Clarification
-  effect: The Town Cryer text is inconsistent about 'No Brain'. Mordheimer notes that the original Khemri material specifically
-    states that Tomb Guardians do gain Experience, and recommends using the Tomb Lord maximum characteristic profile (campaign.limit.racial-maximum.tomb-lord) for them.
+  effect: The Town Cryer text is inconsistent about 'No Brain'. Mordheimer notes that the original Khemri
+    material specifically states that Tomb Guardians do gain Experience, and recommends using the Tomb
+    Lord maximum characteristic profile (campaign.limit.racial-maximum.tomb-lord) for them.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -602,12 +632,15 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
   name_i18n:
     en: Tomb Guardian Experience Clarification
-    es: null
+    es: Aclaración de experiencia del Guardián de la Tumba
   effect_i18n:
-    en: The Town Cryer text is inconsistent about 'No Brain'. Mordheimer notes that the original Khemri material specifically
-      states that Tomb Guardians do gain Experience, and recommends using the Tomb Lord maximum characteristic profile
-      (campaign.limit.racial-maximum.tomb-lord) for them.
-    es: null
+    en: The Town Cryer text is inconsistent about 'No Brain'. Mordheimer notes that the original Khemri
+      material specifically states that Tomb Guardians do gain Experience, and recommends using the Tomb
+      Lord maximum characteristic profile (campaign.limit.racial-maximum.tomb-lord) for them.
+    es: El texto de Town Cryer es incoherente respecto a 'Sin cerebro'. Mordheimer señala que el material
+      original de Khemri establece específicamente que los Guardianes de la Tumba sí ganan Experiencia,
+      y recomienda usar el perfil de características máximas del Señor de la Tumba (campaign.limit.racial-maximum.tomb-lord)
+      para ellos.
   applies_to:
     band: true
   runtime:
@@ -618,13 +651,14 @@ rules:
     - id: unimplemented.tomb-guardians.band.tomb-guardian-experience-clarification
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--tomb-guardian-maximum-characteristics
   name: Tomb Guardian Maximum Characteristics
-  effect: 'Tomb Lords use the Tomb Lord racial maximum profile (campaign.limit.racial-maximum.tomb-lord).
+  effect: Tomb Lords use the Tomb Lord racial maximum profile (campaign.limit.racial-maximum.tomb-lord).
     Liche Priests and Acolytes use the Liche Priest racial maximum profile (campaign.limit.racial-maximum.liche-priest).
-    For advancing Tomb Guardians, Mordheimer recommends using the Tomb Lord racial maximum profile
-    (campaign.limit.racial-maximum.tomb-lord).'
+    For advancing Tomb Guardians, Mordheimer recommends using the Tomb Lord racial maximum profile (campaign.limit.racial-maximum.tomb-lord).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -632,13 +666,15 @@ rules:
     url: https://mordheimer.net/docs/campaigns/experience
   name_i18n:
     en: Tomb Guardian Maximum Characteristics
-    es: null
+    es: Características máximas del Guardián de la Tumba
   effect_i18n:
-    en: 'Tomb Lords use the Tomb Lord racial maximum profile (campaign.limit.racial-maximum.tomb-lord).
+    en: Tomb Lords use the Tomb Lord racial maximum profile (campaign.limit.racial-maximum.tomb-lord).
       Liche Priests and Acolytes use the Liche Priest racial maximum profile (campaign.limit.racial-maximum.liche-priest).
-      For advancing Tomb Guardians, Mordheimer recommends using the Tomb Lord racial maximum profile
-      (campaign.limit.racial-maximum.tomb-lord).'
-    es: null
+      For advancing Tomb Guardians, Mordheimer recommends using the Tomb Lord racial maximum profile (campaign.limit.racial-maximum.tomb-lord).
+    es: Los Señores de la Tumba usan el perfil racial máximo del Señor de la Tumba (campaign.limit.racial-maximum.tomb-lord).
+      Los Sacerdotes liche y los Acólitos usan el perfil racial máximo del Sacerdote liche (campaign.limit.racial-maximum.liche-priest).
+      Para los Guardianes de la Tumba que progresan, Mordheimer recomienda usar el perfil racial máximo
+      del Señor de la Tumba (campaign.limit.racial-maximum.tomb-lord).
   applies_to:
     band: true
   runtime:
@@ -649,4 +685,6 @@ rules:
     - id: unimplemented.tomb-guardians.band.tomb-guardian-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.

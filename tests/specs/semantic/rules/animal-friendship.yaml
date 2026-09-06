@@ -4,30 +4,68 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
-  - {target: rule/mordheim/horned-hunters/band--horned-hunter-special-skills-animal-friendship/trait.animal-friendship, digest: ccf588475182be72aa552f5626c1eb0fd32c30192e979863ec548d20fcc9df09}
-  interpretation: >-
-    The three heroes with access to Horned Hunter skills may choose Animal Friendship. A normal animal
-    does not make attacks against the bearer; the rule does not prevent attacking enemies without the
-    animal classification.
+  - target: rule/mordheim/horned-hunters/band--horned-hunter-special-skills-animal-friendship/trait.animal-friendship
+    digest: 62a829bb5577f5db1298248e5dd0ad11f7c3de58abf801c22d361b4d15d0565d
+  interpretation: The three heroes with access to Horned Hunter skills may choose Animal Friendship. A
+    normal animal does not make attacks against the bearer; the rule does not prevent attacking enemies
+    without the animal classification.
   cases:
   - id: recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {band_id: horned-hunters, profile_id: horned-hunter}
-    context: {rule_id: band--horned-hunter-special-skills-animal-friendship}
-    expect: {result.recipients: [horned-hunter, initiates, priest-of-taal]}
+    defender:
+      band_id: horned-hunters
+      profile_id: horned-hunter
+    context:
+      rule_id: band--horned-hunter-special-skills-animal-friendship
+    expect:
+      result.recipients:
+      - horned-hunter
+      - initiates
+      - priest-of-taal
   - id: animal-refuses
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: opposed_attacks
-    attacker: {band_id: witch-hunters, profile_id: war-hounds}
-    defender: {band_id: horned-hunters, profile_id: horned-hunter, special_rule_ids: [band--horned-hunter-special-skills-animal-friendship]}
-    expect: {result.attacks: 0}
-    expect_contains: {defender.global_effects.tags: [animal_friendship]}
+    attacker:
+      band_id: witch-hunters
+      profile_id: war-hounds
+    defender:
+      band_id: horned-hunters
+      profile_id: horned-hunter
+      special_rule_ids:
+      - band--horned-hunter-special-skills-animal-friendship
+    expect:
+      result.attacks: 0
+    expect_contains:
+      defender.global_effects.tags:
+      - animal_friendship
   - id: ordinary-warrior-attacks
-    roles: [inactive]
+    roles:
+    - inactive
     operation: opposed_attacks
-    attacker: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 2}}
-    defender: {band_id: horned-hunters, profile_id: horned-hunter, special_rule_ids: [band--horned-hunter-special-skills-animal-friendship]}
-    expect: {result.attacks: 2}
+    attacker:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 2
+    defender:
+      band_id: horned-hunters
+      profile_id: horned-hunter
+      special_rule_ids:
+      - band--horned-hunter-special-skills-animal-friendship
+    expect:
+      result.attacks: 2
   mutations:
-  - {id: remove-friendship, path: defender.global_effects.tags, value: [], cases: [animal-refuses]}
+  - id: remove-friendship
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - animal-refuses

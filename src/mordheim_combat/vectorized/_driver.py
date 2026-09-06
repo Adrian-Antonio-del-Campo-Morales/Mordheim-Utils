@@ -45,6 +45,27 @@ def _new_state(fighter: CompiledFighter, count: int, rng: np.random.Generator) -
         state.strength[state.disability==5]=np.maximum(1,state.strength[state.disability==5]-1)
     return state
 
+def _refresh_random_characteristics(
+    fighter: CompiledFighter, state: CombatState, rows: np.ndarray,
+    rng: np.random.Generator,
+) -> None:
+    """Refresh Condemned/Inconsistency characteristics at turn start."""
+    random_stats = {characteristic for characteristic, *_ in fighter.random_characteristics}
+    if not {"WS", "S", "T", "A"}.issubset(random_stats):
+        return
+    values: dict[str, np.ndarray] = {}
+    count = rows.size
+    for characteristic, dice, sides, bonus in fighter.random_characteristics:
+        rolls = np.zeros(count, dtype=np.int16)
+        for _ in range(dice):
+            rolls += rng.integers(1, sides + 1, count, dtype=np.int16)
+        values[characteristic] = rolls + bonus
+    state.weapon_skill[rows] = values["WS"]
+    state.strength[rows] = values["S"]
+    state.toughness[rows] = values["T"] + fighter.global_effects.toughness_bonus
+    state.attacks[rows] = values["A"]
+
+
 def _resolve_spines(first: CompiledFighter, second: CompiledFighter,
                     rows: np.ndarray, charge1: np.ndarray, charge2: np.ndarray,
                     state1: CombatState, state2: CombatState,
@@ -163,14 +184,17 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         if optional.first_entangle or optional.second_entangle else None
     )
     for round_index in range(maximum_rounds):
-        first = phase_equipment(original_first, first_round=round_index == 0)
-        second = phase_equipment(original_second, first_round=round_index == 0)
-        first_player_turn = first_charges if round_index % 2 == 0 else ~first_charges
         unresolved = (state1.condition != OUT) & (state2.condition != OUT)
         if not unresolved.any():
             break
         if round_index:
             active_rows = np.flatnonzero(unresolved)
+            _refresh_random_characteristics(original_first, state1, active_rows, rng)
+            _refresh_random_characteristics(original_second, state2, active_rows, rng)
+        first = phase_equipment(original_first, first_round=round_index == 0)
+        second = phase_equipment(original_second, first_round=round_index == 0)
+        first_player_turn = first_charges if round_index % 2 == 0 else ~first_charges
+        if round_index:
             if optional.first_force_of_will:
                 _sustain_force_of_will(first,state1,rng,active_rows)
             if optional.second_force_of_will:
@@ -245,8 +269,8 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             state1.parry_remaining[:] = 0
         if has(second.main_weapon, 'effect.serpent-staff-power'):
             state2.parry_remaining[:] = 0
-        attacks1=attack_count(first,charge1,first_round,state1.frenzy,charged1,state1.attack_penalty,state1.wounds<first.characteristics.wounds,state1.attacks)
-        attacks2=attack_count(second,charge2,first_round,state2.frenzy,charged2,state2.attack_penalty,state2.wounds<second.characteristics.wounds,state2.attacks)
+        attacks1=attack_count(first,charge1,first_round,state1.frenzy,charged1,state1.attack_penalty,state1.wounds<first.characteristics.wounds,state1.attacks,player_turn=first_player_turn)
+        attacks2=attack_count(second,charge2,first_round,state2.frenzy,charged2,state2.attack_penalty,state2.wounds<second.characteristics.wounds,state2.attacks,player_turn=~first_player_turn)
         attacks1=np.where(attacks1>0,np.maximum(1,attacks1+second.global_effects.incoming_attacks_modifier),0)
         attacks2=np.where(attacks2>0,np.maximum(1,attacks2+first.global_effects.incoming_attacks_modifier),0)
         attacks1[state1.on_fire]=0;attacks2[state2.on_fire]=0

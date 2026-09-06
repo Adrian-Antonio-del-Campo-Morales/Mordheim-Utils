@@ -3,17 +3,19 @@ band_id: lustria-dark-elves
 rules:
 - id: dark-prince--leader
   name: Leader
-  effect: Any warband model within 6" of the Dark Prince may use his Leadership when taking Leadership tests.
+  effect: Any warband model within 6" of the Dark Prince may use his Leadership when taking Leadership
+    tests.
   source:
     manual: lustria
     printed_page: 61
     section: Heroes / 1 Dark Prince / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: Any warband model within 6" of the Dark Prince may use his Leadership when taking Leadership tests.
-    es: null
+    es: Cualquier modelo de la banda a 6" del Príncipe oscuro puede usar su Liderazgo al realizar chequeos
+      de Liderazgo.
   applies_to:
     profile_ids:
     - dark-prince
@@ -35,10 +37,10 @@ rules:
     section: Heroes / 0-2 Darkblades / Close Combat Specialists
   name_i18n:
     en: Close Combat Specialists
-    es: null
+    es: Especialistas en combate cuerpo a cuerpo
   effect_i18n:
     en: Darkblades may never use missile weapons of any kind.
-    es: null
+    es: Las Hojas oscuras nunca pueden usar armas de misil de ningún tipo.
   applies_to:
     profile_ids:
     - darkblades
@@ -61,10 +63,10 @@ rules:
     section: Heroes / 0-1 Beastmaster / Cold Ones
   name_i18n:
     en: Cold One Handler
-    es: null
+    es: Domador de Gélidos
   effect_i18n:
     en: A Beastmaster allows the warband to recruit up to two Cold Ones as Henchmen.
-    es: null
+    es: Un Maestro de bestias permite a la banda reclutar hasta dos Gélidos como Soldados.
   applies_to:
     profile_ids:
     - beastmaster
@@ -79,19 +81,21 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: dark-elf-sorceress--spellcaster
   name: Spellcaster
-  effect: The Dark Elf Sorceress is a spellcaster who uses Dark Magic. This warband section does not specify an initial spell
-    count; spell lists and effects are intentionally not modelled here.
+  effect: The Dark Elf Sorceress is a spellcaster who uses Dark Magic. This warband section does not specify
+    an initial spell count; spell lists and effects are intentionally not modelled here.
   source:
     manual: lustria
     printed_page: 62
     section: Heroes / 0-1 Dark Elf Sorceress / Spellcaster
   name_i18n:
     en: Spellcaster
-    es: null
+    es: Lanzadora de hechizos
   effect_i18n:
-    en: The Dark Elf Sorceress is a spellcaster who uses Dark Magic. This warband section does not specify an initial spell
-      count; spell lists and effects are intentionally not modelled here.
-    es: null
+    en: The Dark Elf Sorceress is a spellcaster who uses Dark Magic. This warband section does not specify
+      an initial spell count; spell lists and effects are intentionally not modelled here.
+    es: La Hechicera elfa oscura es una lanzadora de hechizos que usa la Magia oscura. Esta sección de
+      banda no especifica cuántos hechizos iniciales tiene; las listas de hechizos y sus efectos no se
+      modelan intencionadamente aquí.
   applies_to:
     profile_ids:
     - dark-elf-sorceress
@@ -106,17 +110,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: shadows--natural-stealth
   name: Natural Stealth
-  effect: While a Shadow is Hidden, enemy models suffer -1 Initiative when determining whether they can detect it.
+  effect: While a Shadow is Hidden, enemy models suffer -1 Initiative when determining whether they can
+    detect it.
   source:
     manual: lustria
     printed_page: 63
     section: Henchmen / 0-5 Shadows / Natural Stealth
   name_i18n:
     en: Natural Stealth
-    es: null
+    es: Sigilo natural
   effect_i18n:
-    en: While a Shadow is Hidden, enemy models suffer -1 Initiative when determining whether they can detect it.
-    es: null
+    en: While a Shadow is Hidden, enemy models suffer -1 Initiative when determining whether they can
+      detect it.
+    es: Mientras una Sombra esté Oculta, los modelos enemigos sufren -1 de Iniciativa al determinar si
+      pueden detectarla.
   applies_to:
     profile_ids:
     - shadows
@@ -138,10 +145,10 @@ rules:
     section: Henchmen / 0-2 Cold Ones / Animal
   name_i18n:
     en: Animal
-    es: null
+    es: Animal
   effect_i18n:
     en: Cold Ones are animals and never gain Experience.
-    es: null
+    es: Los Gélidos son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - cold-ones
@@ -156,19 +163,23 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: cold-ones--beastmaster-dependency
   name: Beastmaster Dependency
-  effect: If the Beastmaster is killed, the Cold Ones immediately escape and are removed from the warband roster. If the Beastmaster
-    cannot participate in a battle for any reason, the Cold Ones may not participate either.
+  effect: If the Beastmaster is killed, the Cold Ones immediately escape and are removed from the warband
+    roster. If the Beastmaster cannot participate in a battle for any reason, the Cold Ones may not participate
+    either.
   source:
     manual: lustria
     printed_page: 64
     section: Henchmen / 0-2 Cold Ones / Beastmaster
   name_i18n:
     en: Beastmaster Dependency
-    es: null
+    es: Dependencia del Maestro de bestias
   effect_i18n:
-    en: If the Beastmaster is killed, the Cold Ones immediately escape and are removed from the warband roster. If the Beastmaster
-      cannot participate in a battle for any reason, the Cold Ones may not participate either.
-    es: null
+    en: If the Beastmaster is killed, the Cold Ones immediately escape and are removed from the warband
+      roster. If the Beastmaster cannot participate in a battle for any reason, the Cold Ones may not
+      participate either.
+    es: Si el Maestro de bestias muere, los Gélidos escapan inmediatamente y se retiran de la lista de
+      la banda. Si el Maestro de bestias no puede participar en una batalla por cualquier motivo, los
+      Gélidos tampoco pueden participar.
   applies_to:
     profile_ids:
     - cold-ones
@@ -183,21 +194,24 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: cold-ones--stupidity
   name: Stupidity
-  effect: A Cold One may use the Beastmaster's own Leadership if it is within 6" of him. It may never use the warband leader's
-    Leadership, directly or indirectly; if the Beastmaster is himself within the leader's 6" Leadership range, the Cold One
-    may not benefit from that leader-derived value.
+  effect: A Cold One may use the Beastmaster's own Leadership if it is within 6" of him. It may never
+    use the warband leader's Leadership, directly or indirectly; if the Beastmaster is himself within
+    the leader's 6" Leadership range, the Cold One may not benefit from that leader-derived value.
   source:
     manual: lustria
     printed_page: 64
     section: Henchmen / 0-2 Cold Ones / Stupidity
   name_i18n:
     en: Stupidity
-    es: null
+    es: Estupidez
   effect_i18n:
-    en: A Cold One may use the Beastmaster's own Leadership if it is within 6" of him. It may never use the warband leader's
-      Leadership, directly or indirectly; if the Beastmaster is himself within the leader's 6" Leadership range, the Cold
-      One may not benefit from that leader-derived value.
-    es: null
+    en: A Cold One may use the Beastmaster's own Leadership if it is within 6" of him. It may never use
+      the warband leader's Leadership, directly or indirectly; if the Beastmaster is himself within the
+      leader's 6" Leadership range, the Cold One may not benefit from that leader-derived value.
+    es: Un Gélido puede usar el Liderazgo del propio Maestro de bestias si está a 6" de él. Nunca puede
+      usar el Liderazgo del líder de la banda, directa ni indirectamente; si el propio Maestro de bestias
+      está dentro del rango de Liderazgo de 6" del líder, el Gélido no puede beneficiarse de ese valor
+      derivado del líder.
   applies_to:
     profile_ids:
     - cold-ones
@@ -231,10 +245,10 @@ rules:
     section: Henchmen / 0-2 Cold Ones / Scaly Skin
   name_i18n:
     en: Scaly Skin
-    es: null
+    es: Piel escamosa
   effect_i18n:
     en: Cold Ones have a natural 6+ armour save.
-    es: null
+    es: Los Gélidos tienen una tirada de salvación por armadura natural de 6+.
   applies_to:
     profile_ids:
     - cold-ones
@@ -247,10 +261,10 @@ rules:
     section: Henchmen / 0-2 Cold Ones / Fear
   name_i18n:
     en: Fear
-    es: null
+    es: Miedo
   effect_i18n:
     en: Cold Ones cause Fear.
-    es: null
+    es: Los Gélidos causan Miedo.
   applies_to:
     profile_ids:
     - cold-ones
@@ -265,17 +279,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--hatred-high-elves
   name: Hatred of High Elves
-  effect: All Dark Elves are subject to Hatred against High Elf warriors, including High Elves serving as Hired Swords.
+  effect: All Dark Elves are subject to Hatred against High Elf warriors, including High Elves serving
+    as Hired Swords.
   source:
     manual: lustria
     printed_page: 59
     section: Dark Elf Special Rules / Hatred of High Elves
   name_i18n:
     en: Hatred of High Elves
-    es: null
+    es: Odio a los altos elfos
   effect_i18n:
-    en: All Dark Elves are subject to Hatred against High Elf warriors, including High Elves serving as Hired Swords.
-    es: null
+    en: All Dark Elves are subject to Hatred against High Elf warriors, including High Elves serving as
+      Hired Swords.
+    es: Todos los elfos oscuros están sujetos a Odio contra los guerreros altos elfos, incluidos los altos
+      elfos que sirvan como Espadas contratadas.
   applies_to:
     band: true
   runtime:
@@ -289,19 +306,21 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--excellent-sight
   name: Excellent Sight
-  effect: Dark Elves detect Hidden enemies at twice the normal detection distance. The Spanish source parenthetically expresses
-    this as twice the warrior's Initiative characteristic in centimetres.
+  effect: Dark Elves detect Hidden enemies at twice the normal detection distance. The Spanish source
+    parenthetically expresses this as twice the warrior's Initiative characteristic in centimetres.
   source:
     manual: lustria
     printed_page: 59
     section: Dark Elf Special Rules / Excellent Sight
   name_i18n:
     en: Excellent Sight
-    es: null
+    es: Vista excepcional
   effect_i18n:
-    en: Dark Elves detect Hidden enemies at twice the normal detection distance. The Spanish source parenthetically expresses
-      this as twice the warrior's Initiative characteristic in centimetres.
-    es: null
+    en: Dark Elves detect Hidden enemies at twice the normal detection distance. The Spanish source parenthetically
+      expresses this as twice the warrior's Initiative characteristic in centimetres.
+    es: Los elfos oscuros detectan enemigos Ocultos al doble de la distancia normal de detección. La fuente
+      en español lo expresa entre paréntesis como el doble de la característica de Iniciativa del guerrero
+      en centímetros.
   applies_to:
     band: true
   runtime:
@@ -322,10 +341,10 @@ rules:
     section: Dark Elf Special Rules / Ancestral Customs
   name_i18n:
     en: Ancestral Customs
-    es: null
+    es: Costumbres ancestrales
   effect_i18n:
     en: Dark Elves may never use blackpowder weapons.
-    es: null
+    es: Los elfos oscuros nunca pueden usar armas de pólvora.
   applies_to:
     band: true
   runtime:
@@ -347,10 +366,10 @@ rules:
     section: Choice of Warriors / Cold Ones
   name_i18n:
     en: Cold One Requirement
-    es: null
+    es: Requisito de Gélidos
   effect_i18n:
     en: The warband may include up to two Cold Ones only if it also includes a Beastmaster.
-    es: null
+    es: La banda puede incluir hasta dos Gélidos solo si también incluye un Maestro de bestias.
   applies_to:
     band: true
   runtime:
@@ -365,17 +384,20 @@ rules:
 - id: band--dark-elf-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
-  effect: The Hero may deploy anywhere on the table at least 12" from every enemy model and must begin the battle Hidden.
+  effect: The Hero may deploy anywhere on the table at least 12" from every enemy model and must begin
+    the battle Hidden.
   source:
     manual: lustria
     printed_page: 65
     section: Dark Elf Special Skills / Infiltration
   name_i18n:
     en: Infiltration
-    es: null
+    es: Infiltración
   effect_i18n:
-    en: The Hero may deploy anywhere on the table at least 12" from every enemy model and must begin the battle Hidden.
-    es: null
+    en: The Hero may deploy anywhere on the table at least 12" from every enemy model and must begin the
+      battle Hidden.
+    es: El Héroe puede desplegarse en cualquier punto de la mesa a al menos 12" de cada modelo enemigo
+      y debe comenzar la batalla Oculto.
   eligibility:
   - dark-prince
   - darkblades
@@ -395,21 +417,24 @@ rules:
 - id: band--dark-elf-special-skills-fury-of-khaine
   kind: warband_skill
   name: Fury of Khaine
-  effect: If the Hero takes all current close-combat opponents Out of Action, the Hero may move up to 4". If this move brings
-    the Hero into contact with another enemy, a new combat begins; that combat is resolved in the following turn and the move
-    counts as a charge.
+  effect: If the Hero takes all current close-combat opponents Out of Action, the Hero may move up to
+    4". If this move brings the Hero into contact with another enemy, a new combat begins; that combat
+    is resolved in the following turn and the move counts as a charge.
   source:
     manual: lustria
     printed_page: 65
     section: Dark Elf Special Skills / Fury of Khaine
   name_i18n:
     en: Fury of Khaine
-    es: null
+    es: Furia de Khaine
   effect_i18n:
-    en: If the Hero takes all current close-combat opponents Out of Action, the Hero may move up to 4". If this move brings
-      the Hero into contact with another enemy, a new combat begins; that combat is resolved in the following turn and the
-      move counts as a charge.
-    es: null
+    en: If the Hero takes all current close-combat opponents Out of Action, the Hero may move up to 4".
+      If this move brings the Hero into contact with another enemy, a new combat begins; that combat is
+      resolved in the following turn and the move counts as a charge.
+    es: Si el Héroe saca de Combate a todos sus oponentes actuales en combate cuerpo a cuerpo, el Héroe
+      puede moverse hasta 4". Si este movimiento lleva al Héroe a contacto con otro enemigo, comienza
+      un nuevo combate; ese combate se resuelve en el turno siguiente y el movimiento cuenta como una
+      carga.
   eligibility:
   - dark-prince
   - darkblades
@@ -429,19 +454,20 @@ rules:
 - id: band--dark-elf-special-skills-strong-constitution
   kind: warband_skill
   name: Strong Constitution
-  effect: The Hero gains access to Strength skills. A Dark Elf Sorceress may never take this skill, and no more than two warriors
-    in the warband may have it at the same time.
+  effect: The Hero gains access to Strength skills. A Dark Elf Sorceress may never take this skill, and
+    no more than two warriors in the warband may have it at the same time.
   source:
     manual: lustria
     printed_page: 65
     section: Dark Elf Special Skills / Strong Constitution
   name_i18n:
     en: Strong Constitution
-    es: null
+    es: Constitución fuerte
   effect_i18n:
-    en: The Hero gains access to Strength skills. A Dark Elf Sorceress may never take this skill, and no more than two warriors
-      in the warband may have it at the same time.
-    es: null
+    en: The Hero gains access to Strength skills. A Dark Elf Sorceress may never take this skill, and
+      no more than two warriors in the warband may have it at the same time.
+    es: El Héroe obtiene acceso a las habilidades de Fuerza. Una Hechicera elfa oscura nunca puede llevar
+      esta habilidad, y no más de dos guerreros de la banda pueden tenerla al mismo tiempo.
   eligibility:
   - dark-prince
   - darkblades
@@ -477,19 +503,23 @@ rules:
         kind: mechanic
         id: skill.elven-agility
   name: Elven Agility
-  effect: The Hero has a 6+ special save against close-combat and missile attacks. If the Hero also has Dodge or Step Aside,
-    the relevant save improves to 4+ and Elven Agility no longer applies to that attack type.
+  effect: The Hero has a 6+ special save against close-combat and missile attacks. If the Hero also has
+    Dodge or Step Aside, the relevant save improves to 4+ and Elven Agility no longer applies to that
+    attack type.
   source:
     manual: lustria
     printed_page: 65
     section: Dark Elf Special Skills / Elven Agility
   name_i18n:
     en: Elven Agility
-    es: null
+    es: Agilidad élfica
   effect_i18n:
-    en: The Hero has a 6+ special save against close-combat and missile attacks. If the Hero also has Dodge or Step Aside,
-      the relevant save improves to 4+ and Elven Agility no longer applies to that attack type.
-    es: null
+    en: The Hero has a 6+ special save against close-combat and missile attacks. If the Hero also has
+      Dodge or Step Aside, the relevant save improves to 4+ and Elven Agility no longer applies to that
+      attack type.
+    es: El Héroe tiene una tirada de salvación especial de 6+ contra ataques de combate cuerpo a cuerpo
+      y de misil. Si el Héroe también tiene Esquivar o Apartarse, la salvación pertinente mejora a 4+
+      y la Agilidad élfica deja de aplicarse a ese tipo de ataque.
   eligibility:
   - dark-prince
   - darkblades
@@ -500,21 +530,23 @@ rules:
 - id: band--dark-elf-special-skills-poison-expert
   kind: warband_skill
   name: Poison Expert
-  effect: If the Hero does not search for Rare items after a battle, the Hero may prepare 1D3-1 doses of Black Venom. These
-    doses must be used in the next battle and may not be traded or sold. The internal poison effect of Black Venom is intentionally
-    not modelled here.
+  effect: If the Hero does not search for Rare items after a battle, the Hero may prepare 1D3-1 doses
+    of Black Venom. These doses must be used in the next battle and may not be traded or sold. The internal
+    poison effect of Black Venom is intentionally not modelled here.
   source:
     manual: lustria
     printed_page: 65
     section: Dark Elf Special Skills / Poison Expert
   name_i18n:
     en: Poison Expert
-    es: null
+    es: Experto en venenos
   effect_i18n:
-    en: If the Hero does not search for Rare items after a battle, the Hero may prepare 1D3-1 doses of Black Venom. These
-      doses must be used in the next battle and may not be traded or sold. The internal poison effect of Black Venom is intentionally
-      not modelled here.
-    es: null
+    en: If the Hero does not search for Rare items after a battle, the Hero may prepare 1D3-1 doses of
+      Black Venom. These doses must be used in the next battle and may not be traded or sold. The internal
+      poison effect of Black Venom is intentionally not modelled here.
+    es: Si el Héroe no busca objetos Raros tras una batalla, puede preparar 1D3-1 dosis de Ponzoña negra.
+      Estas dosis deben usarse en la siguiente batalla y no pueden intercambiarse ni venderse. El efecto
+      interno de veneno de la Ponzoña negra no se modela intencionadamente aquí.
   eligibility:
   - dark-prince
   - darkblades

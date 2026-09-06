@@ -3,26 +3,48 @@ ruleset: mordheim
 rules:
 - id: combat-order
   name: Combat order
-  effect: Charge and other strike-first effects resolve before normal Initiative order; a warrior who stood up in the Recovery
-    phase strikes last.
+  effect: Charge and other strike-first effects resolve before normal Initiative order; a warrior who
+    stood up in the Recovery phase strikes last. This standing-up penalty applies only to the turn in
+    which the warrior stood up.
   source_url: https://mordheimer.net/docs/rules/close-combat
+  name_i18n:
+    en: Combat order
+    es: Orden de combate
 - id: combat-two-weapons
   name: Fighting with two weapons
-  effect: Two one-handed weapons grant one additional Attack after other modifiers. When weapons differ, choose one for a
-    single attack and use the other for all remaining attacks.
+  effect: Two one-handed weapons grant one additional Attack after other modifiers. When weapons differ,
+    choose one for a single attack and use the other for all remaining attacks.
   source_url: https://mordheimer.net/docs/rules/close-combat
+  name_i18n:
+    en: Fighting with two weapons
+    es: Combate con dos armas
 - id: combat-parry
   name: Parry
-  effect: A sword or buckler can parry one hit by beating the attacker's hit roll; a natural 6 cannot be parried. Sword plus
-    buckler rerolls a failed parry, but two swords do not grant two attempts.
+  effect: A sword or buckler can parry one hit by beating the attacker's hit roll, provided the attacker's
+    Strength is less than double the defender's. A natural 6 cannot be parried. Sword plus buckler rerolls
+    a failed parry, but two swords do not grant two attempts (one attempt per phase regardless of the
+    number of parrying weapons).
   source_url: https://mordheimer.net/docs/rules/close-combat
+  name_i18n:
+    en: Parry
+    es: Estocada
 - id: combat-critical-hits
   name: Critical hits
-  effect: A natural 6 to wound is critical unless a 6 was required. A warrior causes at most one critical hit per close-combat
-    phase. Resolve the basic critical table on D6 with critical-table modifiers; all results cause two wounds, 3+ ignores armour, and 5+ adds two to Injury. For 1-2 save before doubling. Use the higher damage instead of multiplying another multiple-wound effect.
+  effect: A natural 6 to wound is critical unless a 6 was required. A warrior causes at most one critical
+    hit per close-combat phase. Resolve the basic critical table on D6 with critical-table modifiers;
+    all results cause two wounds, 3+ ignores armour, and 5+ adds two to Injury. For 1-2 save before doubling.
+    Use the higher damage instead of multiplying another multiple-wound effect.
   source_url: https://mordheimer.net/docs/rules/close-combat
+  name_i18n:
+    en: Critical hits
+    es: Golpes críticos
 - id: combat-injury-states
   name: Injury states
-  effect: 'At zero Wounds, resolve each injury and apply the highest result: 1-2 knocked down, 3-4 stunned, 5-6 out of action.
-    A knocked-down warrior that stands up strikes last that turn.'
+  effect: 'At zero Wounds, resolve each injury and apply the highest result: 1-2 knocked down, 3-4 stunned,
+    5-6 out of action. The same highest-result rule applies when several unsaved wounds force more than
+    one injury roll. A knocked-down warrior that stands up strikes last only on the turn it stood up (see
+    Combat order).'
   source_url: https://mordheimer.net/docs/rules/wounds-and-injuries
+  name_i18n:
+    en: Injury states
+    es: Estados de herida

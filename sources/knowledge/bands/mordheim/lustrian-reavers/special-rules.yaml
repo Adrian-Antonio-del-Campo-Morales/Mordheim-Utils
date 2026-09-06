@@ -3,23 +3,22 @@ band_id: lustrian-reavers
 rules:
 - id: conqueror--survivor
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
     - id: trait.survivor
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.survivor
         parameters:
           value: true
   name: Survivor
-  effect: 'Cannot be taken out of Action unless the model is already Knocked Down or Stunned. Treat Out of Action as Stunned
-    if the Conqueror is standing when receiving the Wound.
-
-    In addition, the first time a Conqueror suffers a Dead result on the Serious Injury Chart, treat it as Multiple Injuries
-    instead. This ability can save the Conqueror only one time.'
+  effect: Cannot be taken out of Action unless the model is already Knocked Down or Stunned. Treat Out
+    of Action as Stunned if the Conqueror is standing when receiving the Wound. In addition, the first
+    time a Conqueror suffers a Dead result on the Serious Injury Chart, treat it as Multiple Injuries
+    instead. This ability can save the Conqueror only one time.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -27,31 +26,34 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Survivor
-    es: null
+    es: Superviviente
   effect_i18n:
-    en: 'Cannot be taken out of Action unless the model is already Knocked Down or Stunned. Treat Out of Action as Stunned
-      if the Conqueror is standing when receiving the Wound.
+    en: 'Cannot be taken out of Action unless the model is already Knocked Down or Stunned. Treat Out
+      of Action as Stunned if the Conqueror is standing when receiving the Wound.
 
-      In addition, the first time a Conqueror suffers a Dead result on the Serious Injury Chart, treat it as Multiple Injuries
-      instead. This ability can save the Conqueror only one time.'
-    es: null
+      In addition, the first time a Conqueror suffers a Dead result on the Serious Injury Chart, treat
+      it as Multiple Injuries instead. This ability can save the Conqueror only one time.'
+    es: No puede ser puesto Fuera de combate salvo que el modelo ya esté Derribado o Aturdido. Trata Fuera
+      de combate como Aturdido si el Conquistador está de pie cuando recibe la Herida. Además, la primera
+      vez que un Conquistador sufre un resultado Muerto en la tabla de Heridas Graves, trátalo como Heridas
+      Múltiples en su lugar. Esta habilidad puede salvar al Conquistador solo una vez.
   applies_to:
     profile_ids:
     - conqueror
 - id: saurus-slayer--duellist
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
     - id: skill.duellist
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: mechanic
         id: skill.duellist
   name: Duellist
-  effect: If the Saurus Slayer is engaged with only a single opponent in melee, he may re-roll missed hits in the first round
-    whether he charged or was charged.
+  effect: If the Saurus Slayer is engaged with only a single opponent in melee, he may re-roll missed
+    hits in the first round whether he charged or was charged.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -59,28 +61,29 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Duellist
-    es: null
+    es: Duelista
   effect_i18n:
-    en: If the Saurus Slayer is engaged with only a single opponent in melee, he may re-roll missed hits in the first round
-      whether he charged or was charged.
-    es: null
+    en: If the Saurus Slayer is engaged with only a single opponent in melee, he may re-roll missed hits
+      in the first round whether he charged or was charged.
+    es: Si el Matareaus está empeñado con un único oponente en melé, puede repetir los impactos fallados
+      en el primer asalto, ya sea que haya cargado o sido cargado.
   applies_to:
     profile_ids:
     - saurus-slayer
 - id: reaver-beastmaster--war-beasts
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lustrian-reavers.reaver-beastmaster.war-beasts
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: War Beasts
-  effect: If the warband includes a Reaver Beastmaster, it may include up to 2 War Beasts in total. They count towards the
-    warband's maximum size, must initially be bought with the Beastmaster, may be replaced if killed, and may use the Beastmaster's
-    Leadership while within 6 inches.
+  effect: If the warband includes a Reaver Beastmaster, it may include up to 2 War Beasts in total. They
+    count towards the warband's maximum size, must initially be bought with the Beastmaster, may be replaced
+    if killed, and may use the Beastmaster's Leadership while within 6 inches.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -88,23 +91,26 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: War Beasts
-    es: null
+    es: Bestias de guerra
   effect_i18n:
-    en: If the warband includes a Reaver Beastmaster, it may include up to 2 War Beasts in total. They count towards the warband's
-      maximum size, must initially be bought with the Beastmaster, may be replaced if killed, and may use the Beastmaster's
-      Leadership while within 6 inches.
-    es: null
+    en: If the warband includes a Reaver Beastmaster, it may include up to 2 War Beasts in total. They
+      count towards the warband's maximum size, must initially be bought with the Beastmaster, may be
+      replaced if killed, and may use the Beastmaster's Leadership while within 6 inches.
+    es: Si la banda incluye un Maestro de Bestias Asaltante, puede incluir hasta 2 Bestias de Guerra en
+      total. Cuentan para el tamaño máximo de la banda, deben comprarse inicialmente junto al Maestro
+      de Bestias, pueden reemplazarse si mueren, y pueden usar el Liderazgo del Maestro de Bestias mientras
+      estén a 6 pulgadas.
   applies_to:
     profile_ids:
     - reaver-beastmaster
 - id: estalian-warhound--armoured
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
     - id: trait.natural-armour-save
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.natural-armour-save
@@ -119,25 +125,27 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: 5+ Armour Save
-    es: null
+    es: Salvación por armadura 5+
   effect_i18n:
     en: The Estalian Warhound has a 5+ armour save from its padded armour and iron collar.
-    es: null
+    es: El Sabueso de Guerra Estaliano tiene una salvación por armadura de 5+ gracias a su armadura acolchada
+      y collar de hierro.
   applies_to:
     profile_ids:
     - estalian-warhound
 - id: estalian-warhound--animal
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lustrian-reavers.estalian-warhound.animal
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: injuries."
+      reason: 'Out of scope: injuries.'
   name: Animal
-  effect: The Warhound is an Animal, may not gain Experience, and if taken Out of Action is dead on a D6 roll of 1–2.
+  effect: The Warhound is an Animal, may not gain Experience, and if taken Out of Action is dead on a
+    D6 roll of 1–2.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -145,23 +153,25 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Animal
-    es: null
+    es: Animal
   effect_i18n:
-    en: The Warhound is an Animal, may not gain Experience, and if taken Out of Action is dead on a D6 roll of 1–2.
-    es: null
+    en: The Warhound is an Animal, may not gain Experience, and if taken Out of Action is dead on a D6
+      roll of 1–2.
+    es: El Sabueso es un Animal, no puede ganar Experiencia, y si es puesto Fuera de combate muere con
+      una tirada de 1-2 en 1D6.
   applies_to:
     profile_ids:
     - estalian-warhound
 - id: estalian-warhound--beastmaster-leadership
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lustrian-reavers.estalian-warhound.beastmaster-leadership
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Beastmaster Leadership
   effect: If within 6 inches of the Reaver Beastmaster, the Warhound may use the Beastmaster's Leadership.
   source:
@@ -171,30 +181,31 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Beastmaster Leadership
-    es: null
+    es: Liderazgo del Maestro de Bestias
   effect_i18n:
     en: If within 6 inches of the Reaver Beastmaster, the Warhound may use the Beastmaster's Leadership.
-    es: null
+    es: Si está a 6 pulgadas del Maestro de Bestias Asaltante, el Sabueso puede usar el Liderazgo del
+      Maestro de Bestias.
   applies_to:
     profile_ids:
     - estalian-warhound
 - id: barbary-monkey--nimble
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
     - id: trait.ward-save
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.ward-save
         parameters:
           value: 5
   name: Nimble
-  effect: The Barbary Monkey automatically climbs sheer surfaces without Initiative tests, may re-roll failed Diving Charge
-    tests, may enter buildings despite being an Animal, and has a 5+ Ward save against wounds from melee, shooting, magic,
-    or falling.
+  effect: The Barbary Monkey automatically climbs sheer surfaces without Initiative tests, may re-roll
+    failed Diving Charge tests, may enter buildings despite being an Animal, and has a 5+ Ward save against
+    wounds from melee, shooting, magic, or falling.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -202,27 +213,30 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Nimble
-    es: null
+    es: Ágil
   effect_i18n:
-    en: The Barbary Monkey automatically climbs sheer surfaces without Initiative tests, may re-roll failed Diving Charge
-      tests, may enter buildings despite being an Animal, and has a 5+ Ward save against wounds from melee, shooting, magic,
-      or falling.
-    es: null
+    en: The Barbary Monkey automatically climbs sheer surfaces without Initiative tests, may re-roll failed
+      Diving Charge tests, may enter buildings despite being an Animal, and has a 5+ Ward save against
+      wounds from melee, shooting, magic, or falling.
+    es: El Mono de Berbería trepa automáticamente superficies escarpadas sin chequeos de Iniciativa, puede
+      repetir los chequeos de Carga en picado fallados, puede entrar en edificios a pesar de ser un Animal,
+      y tiene una salvación de Guardia de 5+ contra heridas de melé, disparo, magia o caídas.
   applies_to:
     profile_ids:
     - barbary-monkey
 - id: barbary-monkey--animal
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lustrian-reavers.barbary-monkey.animal
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: injuries."
+      reason: 'Out of scope: injuries.'
   name: Animal
-  effect: The Barbary Monkey is an Animal, may not gain Experience, and if taken Out of Action is dead on a D6 roll of 1–2.
+  effect: The Barbary Monkey is an Animal, may not gain Experience, and if taken Out of Action is dead
+    on a D6 roll of 1–2.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -230,23 +244,25 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Animal
-    es: null
+    es: Animal
   effect_i18n:
-    en: The Barbary Monkey is an Animal, may not gain Experience, and if taken Out of Action is dead on a D6 roll of 1–2.
-    es: null
+    en: The Barbary Monkey is an Animal, may not gain Experience, and if taken Out of Action is dead on
+      a D6 roll of 1–2.
+    es: El Mono de Berbería es un Animal, no puede ganar Experiencia, y si es puesto Fuera de combate
+      muere con una tirada de 1-2 en 1D6.
   applies_to:
     profile_ids:
     - barbary-monkey
 - id: barbary-monkey--beastmaster-leadership
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lustrian-reavers.barbary-monkey.beastmaster-leadership
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Beastmaster Leadership
   effect: If within 6 inches of the Reaver Beastmaster, the Monkey may use the Beastmaster's Leadership.
   source:
@@ -256,26 +272,27 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Beastmaster Leadership
-    es: null
+    es: Liderazgo del Maestro de Bestias
   effect_i18n:
     en: If within 6 inches of the Reaver Beastmaster, the Monkey may use the Beastmaster's Leadership.
-    es: null
+    es: Si está a 6 pulgadas del Maestro de Bestias Asaltante, el Mono puede usar el Liderazgo del Maestro
+      de Bestias.
   applies_to:
     profile_ids:
     - barbary-monkey
 - id: jungle-shadow--silent-hunter
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lustrian-reavers.jungle-shadow.silent-hunter
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: shooting."
+      reason: 'Out of scope: shooting.'
   name: Silent Hunter
-  effect: Jungle Shadow is always considered to be Hidden if the model is touching any piece of terrain of 1" high. Shooting
-    does not reveal Jungle Shadow's position, though spellcasting does.
+  effect: Jungle Shadow is always considered to be Hidden if the model is touching any piece of terrain
+    of 1" high. Shooting does not reveal Jungle Shadow's position, though spellcasting does.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -283,27 +300,29 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Silent Hunter
-    es: null
+    es: Cazador silencioso
   effect_i18n:
-    en: Jungle Shadow is always considered to be Hidden if the model is touching any piece of terrain of 1" high. Shooting
-      does not reveal Jungle Shadow's position, though spellcasting does.
-    es: null
+    en: Jungle Shadow is always considered to be Hidden if the model is touching any piece of terrain
+      of 1" high. Shooting does not reveal Jungle Shadow's position, though spellcasting does.
+    es: La Sombra de la Selva siempre se considera Oculta si el modelo toca cualquier pieza de terreno
+      de 1" de alto. Disparar no revela la posición de la Sombra de la Selva, aunque lanzar hechizos sí
+      lo hace.
   applies_to:
     profile_ids:
     - jungle-shadow
 - id: jungle-shadow--surprise-attack
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lustrian-reavers.jungle-shadow.surprise-attack
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: shooting."
+      reason: 'Out of scope: shooting.'
   name: Surprise attack
-  effect: If the Shadow attacks an enemy that has its back turned to the Jungle Shadow (i.e. the shot is coming from 180 degree
-    angle from behind its facing), the Shadow can re-roll missed to hit rolls.
+  effect: If the Shadow attacks an enemy that has its back turned to the Jungle Shadow (i.e. the shot
+    is coming from 180 degree angle from behind its facing), the Shadow can re-roll missed to hit rolls.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -311,24 +330,26 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Surprise attack
-    es: null
+    es: Ataque sorpresa
   effect_i18n:
-    en: If the Shadow attacks an enemy that has its back turned to the Jungle Shadow (i.e. the shot is coming from 180 degree
-      angle from behind its facing), the Shadow can re-roll missed to hit rolls.
-    es: null
+    en: If the Shadow attacks an enemy that has its back turned to the Jungle Shadow (i.e. the shot is
+      coming from 180 degree angle from behind its facing), the Shadow can re-roll missed to hit rolls.
+    es: Si la Sombra ataca a un enemigo que tiene la espalda girada hacia la Sombra de la Selva (es decir,
+      el ataque viene desde un ángulo de 180 grados desde atrás de su frente), la Sombra puede repetir
+      las tiradas de impactar falladas.
   applies_to:
     profile_ids:
     - jungle-shadow
 - id: jungle-shadow--canopy-walker
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lustrian-reavers.jungle-shadow.canopy-walker
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: movement."
+      reason: 'Out of scope: movement.'
   name: Canopy Walker
   effect: Jungle Shadow automatically passes all climbing , jumping and falling off ledges tests.
   source:
@@ -338,23 +359,24 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Canopy Walker
-    es: null
+    es: Caminante de las copas
   effect_i18n:
     en: Jungle Shadow automatically passes all climbing , jumping and falling off ledges tests.
-    es: null
+    es: La Sombra de la Selva supera automáticamente todos los chequeos de trepar, saltar y caer desde
+      cornisas.
   applies_to:
     profile_ids:
     - jungle-shadow
 - id: trapmaster--deadeye
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lustrian-reavers.trapmaster.deadeye
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: shooting."
+      reason: 'Out of scope: shooting.'
   name: Deadeye
   effect: Trapmaster suffers no penalties for shooting at long range.
   source:
@@ -364,10 +386,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Deadeye
-    es: null
+    es: Ojo certero
   effect_i18n:
     en: Trapmaster suffers no penalties for shooting at long range.
-    es: null
+    es: El Maestro de Trampas no sufre penalizaciones por disparar a larga distancia.
   applies_to:
     profile_ids:
     - trapmaster
@@ -380,13 +402,16 @@ rules:
     - id: unimplemented.lustrian-reavers.trapmaster.traps
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
   name: Traps
-  effect: The Trapmaster starts each game with 1 Trap and can buy up to 5 further of the following Traps before the start of
-    the game at the cost of 5 GC each. Each trap is one use only. Traps are used in the Shooting Phase instead of shooting,
-    1 trap at a time, and cannot be used in Melee combat. When you use a trap, put 2 1" diameter Trap counters (one false, one
-    real) anywhere within 3" of the Trapmaster, but at least 3" away from any other models. Any model that moves within 2" of
-    the counter must flip it over. If it is a false one, nothing happens. If it is a real one, the model suffers D3 S5 Hits
+  effect: The Trapmaster starts each game with 1 Trap and can buy up to 5 further of the following Traps
+    before the start of the game at the cost of 5 GC each. Each trap is one use only. Traps are used in
+    the Shooting Phase instead of shooting, 1 trap at a time, and cannot be used in Melee combat. When
+    you use a trap, put 2 1" diameter Trap counters (one false, one real) anywhere within 3" of the Trapmaster,
+    but at least 3" away from any other models. Any model that moves within 2" of the counter must flip
+    it over. If it is a false one, nothing happens. If it is a real one, the model suffers D3 S5 Hits
     immediately. Traps do not cause Criticals. Remove the counters when the trap is sprung.
   source:
     manual: mordheimer.net
@@ -395,31 +420,40 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Traps
-    es: null
+    es: Trampas
   effect_i18n:
-    en: The Trapmaster starts each game with 1 Trap and can buy up to 5 further of the following Traps before the start of
-      the game at the cost of 5 GC each. Each trap is one use only. Traps are used in the Shooting Phase instead of shooting,
-      1 trap at a time, and cannot be used in Melee combat. When you use a trap, put 2 1" diameter Trap counters (one false,
-      one real) anywhere within 3" of the Trapmaster, but at least 3" away from any other models. Any model that moves within
-      2" of the counter must flip it over. If it is a false one, nothing happens. If it is a real one, the model suffers D3
-      S5 Hits immediately. Traps do not cause Criticals. Remove the counters when the trap is sprung.
-    es: null
+    en: The Trapmaster starts each game with 1 Trap and can buy up to 5 further of the following Traps
+      before the start of the game at the cost of 5 GC each. Each trap is one use only. Traps are used
+      in the Shooting Phase instead of shooting, 1 trap at a time, and cannot be used in Melee combat.
+      When you use a trap, put 2 1" diameter Trap counters (one false, one real) anywhere within 3" of
+      the Trapmaster, but at least 3" away from any other models. Any model that moves within 2" of the
+      counter must flip it over. If it is a false one, nothing happens. If it is a real one, the model
+      suffers D3 S5 Hits immediately. Traps do not cause Criticals. Remove the counters when the trap
+      is sprung.
+    es: El Maestro de Trampas comienza cada partida con 1 Trampa y puede comprar hasta 5 trampas adicionales
+      de las siguientes antes del inicio de la partida a un coste de 5 coronas cada una. Cada trampa es
+      de un solo uso. Las trampas se usan en la fase de Disparo en lugar de disparar, de 1 en 1, y no
+      pueden usarse en combate de melé. Cuando uses una trampa, coloca 2 contadores de Trampa de 1" de
+      diámetro (uno falso, uno real) en cualquier punto a 3" del Maestro de Trampas, pero al menos a 3"
+      de cualquier otro modelo. Cualquier modelo que se mueva a 2" del contador debe darle la vuelta.
+      Si es falso, no sucede nada. Si es real, el modelo sufre inmediatamente D3 impactos de F5. Las trampas
+      no causan críticos. Retira los contadores cuando la trampa se accione.
   applies_to:
     profile_ids:
     - trapmaster
 - id: prospects--promotion-only
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.lustrian-reavers.prospects.promotion-only
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Promotion Only
-  effect: Re-roll any Lad's Got Talent results on Henchmen Advancement table. When promoted, you can then hire a new Prospect
-    as the model no longer counts as one of them.
+  effect: Re-roll any Lad's Got Talent results on Henchmen Advancement table. When promoted, you can then
+    hire a new Prospect as the model no longer counts as one of them.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -427,27 +461,29 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Promotion Only
-    es: null
+    es: Solo ascenso
   effect_i18n:
-    en: Re-roll any Lad's Got Talent results on Henchmen Advancement table. When promoted, you can then hire a new Prospect
-      as the model no longer counts as one of them.
-    es: null
+    en: Re-roll any Lad's Got Talent results on Henchmen Advancement table. When promoted, you can then
+      hire a new Prospect as the model no longer counts as one of them.
+    es: Repite cualquier resultado de 'El mozo tiene talento' en la tabla de Mejoras de Secuaces. Cuando
+      lo asciendas, puedes contratar entonces un nuevo Aspirante, pues el modelo ya no cuenta como uno
+      de ellos.
   applies_to:
     profile_ids:
     - prospects
 - id: band--rare-heroes
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.lustrian-reavers.band.rare-heroes
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Rare Heroes
-  effect: During the lifetime of the warband, each named Hero type may only ever be bought once. A lost Hero cannot simply
-    be rehired.
+  effect: During the lifetime of the warband, each named Hero type may only ever be bought once. A lost
+    Hero cannot simply be rehired.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -455,11 +491,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Rare Heroes
-    es: null
+    es: Héroes raros
   effect_i18n:
-    en: During the lifetime of the warband, each named Hero type may only ever be bought once. A lost Hero cannot simply be
-      rehired.
-    es: null
+    en: During the lifetime of the warband, each named Hero type may only ever be bought once. A lost
+      Hero cannot simply be rehired.
+    es: Durante la vida de la banda, cada tipo de Héroe con nombre solo puede comprarse una vez. Un Héroe
+      perdido no puede simplemente volver a contratarse.
   applies_to:
     band: true
 - id: band--promotions
@@ -471,12 +508,15 @@ rules:
     - id: compiler.promotions
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: replacing a fallen Hero, transferring recovered equipment and advancing a Prospect require roster and campaign history.'
+      reason: >-
+        Out of scope: replacing a fallen Hero, transferring recovered equipment and advancing a
+        Prospect require roster and campaign history.
   name: Promotions
-  effect: When a Hero is lost, a new copy cannot be bought. Instead, a Prospect may be promoted into that Hero position. The
-    promoted Prospect becomes that warrior type, gains its special rules and wargear access, chooses any two skill lists available
-    to the warband's Heroes, and immediately makes one roll on the Heroes Advance table. The fallen Hero's recovered equipment
-    is transferred to the promoted Hero. If no Prospect is currently present, the next Prospect hired may be promoted.
+  effect: When a Hero is lost, a new copy cannot be bought. Instead, a Prospect may be promoted into that
+    Hero position. The promoted Prospect becomes that warrior type, gains its special rules and wargear
+    access, chooses any two skill lists available to the warband's Heroes, and immediately makes one roll
+    on the Heroes Advance table. The fallen Hero's recovered equipment is transferred to the promoted
+    Hero. If no Prospect is currently present, the next Prospect hired may be promoted.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -484,13 +524,19 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Promotions
-    es: null
+    es: Ascensos
   effect_i18n:
-    en: When a Hero is lost, a new copy cannot be bought. Instead, a Prospect may be promoted into that Hero position. The
-      promoted Prospect becomes that warrior type, gains its special rules and wargear access, chooses any two skill lists
-      available to the warband's Heroes, and immediately makes one roll on the Heroes Advance table. The fallen Hero's recovered
-      equipment is transferred to the promoted Hero. If no Prospect is currently present, the next Prospect hired may be promoted.
-    es: null
+    en: When a Hero is lost, a new copy cannot be bought. Instead, a Prospect may be promoted into that
+      Hero position. The promoted Prospect becomes that warrior type, gains its special rules and wargear
+      access, chooses any two skill lists available to the warband's Heroes, and immediately makes one
+      roll on the Heroes Advance table. The fallen Hero's recovered equipment is transferred to the promoted
+      Hero. If no Prospect is currently present, the next Prospect hired may be promoted.
+    es: Cuando se pierde un Héroe, no puede comprarse una copia nueva. En su lugar, un Aspirante puede
+      ser ascendido a esa posición de Héroe. El Aspirante ascendido se convierte en ese tipo de guerrero,
+      gana sus reglas especiales y acceso a pertrechos, elige dos listas de habilidades cualesquiera disponibles
+      para los Héroes de la banda, e inmediatamente hace una tirada en la tabla de Mejoras de Héroes.
+      El equipo recuperado del Héroe caído se transfiere al Héroe ascendido. Si no hay ningún Aspirante
+      presente actualmente, el siguiente Aspirante contratado puede ser ascendido.
   applies_to:
     band: true
 - id: band--hired-swords
@@ -502,9 +548,12 @@ rules:
     - id: unimplemented.lustrian-reavers.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
   name: Hired Swords
-  effect: The warband may hire only an Ogre Bodyguard, Dwarf Trollslayer, Tilean Marksman, or Big Game Hunter.
+  effect: The warband may hire only an Ogre Bodyguard, Dwarf Trollslayer, Tilean Marksman, or Big Game
+    Hunter.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -512,25 +561,26 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Hired Swords
-    es: null
+    es: Espadas a Sueldo
   effect_i18n:
     en: The warband may hire only an Ogre Bodyguard, Dwarf Trollslayer, Tilean Marksman, or Big Game Hunter.
-    es: null
+    es: La banda solo puede contratar un Guardaespaldas Ogro, Asesatrolls Enano, Tirador Tíleo o Cazador
+      de Caza Mayor.
   applies_to:
     band: true
 - id: band--hero-required
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.lustrian-reavers.band.hero-required
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Hero Required
-  effect: The warband must include at least one Hero. Any Hero in the warband may be chosen as the Leader and then uses the
-    normal Leader rules.
+  effect: The warband must include at least one Hero. Any Hero in the warband may be chosen as the Leader
+    and then uses the normal Leader rules.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -538,10 +588,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
   name_i18n:
     en: Hero Required
-    es: null
+    es: Héroe requerido
   effect_i18n:
-    en: The warband must include at least one Hero. Any Hero in the warband may be chosen as the Leader and then uses the
-      normal Leader rules.
-    es: null
+    en: The warband must include at least one Hero. Any Hero in the warband may be chosen as the Leader
+      and then uses the normal Leader rules.
+    es: La banda debe incluir al menos un Héroe. Cualquier Héroe de la banda puede ser elegido como Líder
+      y entonces usa las reglas normales de Líder.
   applies_to:
     band: true

@@ -5,9 +5,9 @@ specifications:
   category: stateful
   sources:
   - target: mechanic/weapon.rapier
-    digest: 8214e169ebe3b7b126ff69cfb75f6d8fdfec7736c36d9e25529c639677730f58
-  interpretation: Rapier uses user Strength, parries and grants the enemy +1 armour. After each failed wound
-    Barrage may continue with a cumulative -1 hit penalty, capped at 6 to hit.
+    digest: 58631cdc655d0cee862ba7e174211f6b9c9e36ce1bc62e226fc79e2c7b344fb5
+  interpretation: Rapier uses user Strength, parries and grants the enemy +1 armour. After each failed
+    wound Barrage may continue with a cumulative -1 hit penalty, capped at 6 to hit.
   cases:
   - id: compiled-strength
     roles:
@@ -134,7 +134,7 @@ specifications:
   category: stateful
   sources:
   - target: mechanic/weapon.cutlass
-    digest: 1bab536df4175c3938cfcd5acebdc39a4c2e99debcff5f1bd328851c3f8b7a43
+    digest: 55cbb4f41cbba42e65a323dc875edb4006a067d482b6f7ab2420ef25531cfb11
   interpretation: A successful parry with Cutlass cancels the hit and immediately triggers a normal riposte.
     A failed parry creates no riposte.
   cases:
@@ -209,11 +209,11 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/weapon.pistol
-    digest: fe4825b3dd5d0437a2a7838ff6b8fa22ffb0f5bf375533e3014b30db14486bc7
+    digest: c02ed0e5077a7533b720f84b63452a07d4cb883e83f1882528fb77b984131cd2
   - target: mechanic/weapon.duelling-pistol
-    digest: 74dac5d22400cc7d2bee05c3f4d2cf34536660c7bc4b1e91d6a5ddd4f135c23d
-  interpretation: Pistols fire at Strength 4 with one additional penetration point (total armour modifier -2).
-    Their shot is limited to the first combat turn; Duelling Pistols add +1 to hit.
+    digest: f151573db54ef70c804cd7b47370df81937af44c61e02bcdc7ceb1020e12a089
+  interpretation: Pistols fire at Strength 4 with one additional penetration point (total armour modifier
+    -2). Their shot is limited to the first combat turn; Duelling Pistols add +1 to hit.
   cases:
   - id: pistol-compiled-strength
     roles:
@@ -329,12 +329,12 @@ specifications:
   category: local
   sources:
   - target: mechanic/weapon.natural-attacks
-    digest: a437e6db926d3e94c576689c022f9fe42933bb353bbd5bc92ccdd71e86e2ca7d
+    digest: 70e06e5275219e3099a8eaf430dce2737492c5d5989e0e3c40b29a4a7a3915d1
   - target: mechanic/weapon.fist
-    digest: 023f168db270d61c348a3e35ae900ff112024a4d1792b1eaa148454c8c10582e
-  interpretation: Natural Attacks uses the profile's Strength and number of attacks without penalty or off
-    hand. Fist limits to one attack, applies Strength -1 and improves the target's save by one, creating 6+
-    if it had no armour.
+    digest: 361dde1c6030df509c50a3cc97867a4d4a20afd8209c226f2a1692460ed630e0
+  interpretation: Natural Attacks uses the profile's Strength and number of attacks without penalty or
+    off hand. Fist limits to one attack, applies Strength -1 and improves the target's save by one, creating
+    6+ if it had no armour.
   cases:
   - id: natural-profile-strength
     roles:
@@ -466,13 +466,13 @@ specifications:
   category: stateful
   sources:
   - target: mechanic/weapon.brazier-iron
-    digest: 51e5dff6eb24ecd7147dc823fdb9cdebbde4cf57d8dbdd65917d1936a396567d
+    digest: bf539c7fd2a610b98bdbec9492020e03057f45911166f2b8febfb617ce4127ca
   - target: mechanic/weapon.brass-knuckles
-    digest: 40b90dc585b612612fbc9cf6b897c3c86ed48346b64b3b44c91c78f9443532e0
+    digest: 2940ef4a1cf060ec51838d5eb518c4884e87e65b7e4585c7a97df9205f295d04
   - target: mechanic/weapon.war-maul
-    digest: 4f8613ba343d61145ddc374ede547f8d2197c41275760a691da4d93fa5d2466d
+    digest: 4f2a0b7379bc60173b56d6d89448709f5548aa755b6b2da584af2838270549b8
   - target: mechanic/weapon.double-bladed-sword
-    digest: c14bade074dde7ad8fbe986e5d73178967c53ea35c1a1694f0965af3ae069454
+    digest: 05847de2b7387a26feb59cdb63474205577abf3a4288400ff40d6346bdf470b4
   interpretation: The Brazier's 5+ fire and Strength +1, the paired set of Brass Knuckles, the heavy unparriable
     package of the War Maul, and the repeated attack/parry of the Double-bladed Sword are verified separately.
   cases:

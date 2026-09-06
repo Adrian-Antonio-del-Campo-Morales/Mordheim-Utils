@@ -4,56 +4,130 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/trollheim/lustria-savage-goblins/zomblintua--blunt-attacks/weapon.mace, digest: 38613188483d0a18e26306ea7c617fe99ffe4678083a99cd8ca7d99ea24d89c7}
-  depends_on: [mechanic/weapon.mace]
-  interpretation: "Lustria p.104, Zomblintua / Blunt Attacks. All its attacks count as blunt; Concussion changes Injury 2 to Stunned. It keeps the profile's S4 and A2; it does not modify the wounds received."
+  - target: rule/trollheim/lustria-savage-goblins/zomblintua--blunt-attacks/weapon.mace
+    digest: a6e63ca96815a80f9ad3b8fea55de48c74d7ea62f37b4ad47e9e31cf85d17913
+  depends_on:
+  - mechanic/weapon.mace
+  interpretation: Lustria p.104, Zomblintua / Blunt Attacks. All its attacks count as blunt; Concussion
+    changes Injury 2 to Stunned. It keeps the profile's S4 and A2; it does not modify the wounds received.
   cases:
   - id: recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
-    context: {rule_id: zomblintua--blunt-attacks}
-    expect: {result.recipients: [zomblintua]}
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+    context:
+      rule_id: zomblintua--blunt-attacks
+    expect:
+      result.recipients:
+      - zomblintua
   - id: profile-strength
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
-    expect: {attacker.main_weapon.concussion: true, result.wound: 4, result.armour: 4}
+    attacker:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+    expect:
+      attacker.main_weapon.concussion: true
+      result.wound: 4
+      result.armour: 4
   - id: profile-attacks
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: attacks
-    attacker: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
-    expect: {result.attacks: 2}
+    attacker:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+    expect:
+      result.attacks: 2
   - id: injury-distribution
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: injury
-    attacker: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
-    distribution: {observable: result.condition, max_rolls: 1, expected: {KNOCKED_DOWN: 1/6, STUNNED: 1/2, OUT: 1/3}}
+    attacker:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+    distribution:
+      observable: result.condition
+      max_rolls: 1
+      expected:
+        KNOCKED_DOWN: 1/6
+        STUNNED: 1/2
+        OUT: 1/3
   - id: ordinary-attacker-two-knocks-down
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: injury
-    attacker: {main_weapon_id: weapon.sword}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN}
-  - id: incoming-not-concussion
-    roles: [inactive, boundary]
-    operation: injury
-    attacker: {main_weapon_id: weapon.sword}
-    defender: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {context.concussion: false, result.condition: KNOCKED_DOWN}
-  - id: two-attacks-both-blunt
-    roles: [active, consumer, boundary]
-    operation: pool
-    attacker: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
-    defender_state: {wounds: 2}
-    context: {count: 2}
+    attacker:
+      main_weapon_id: weapon.sword
     rolls:
-    - {key: test.attack.0.hit, value: 4}
-    - {key: test.attack.1.hit, value: 4}
-    - {key: test.attack.0.wound, value: 3}
-    - {key: test.attack.1.wound, value: 3}
-    - {key: test.attack.1.injury.0, value: 2}
-    expect: {result.attacks.0.damage: 1, result.attacks.1.damage: 1, result.defender.condition: STUNNED}
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+  - id: incoming-not-concussion
+    roles:
+    - inactive
+    - boundary
+    operation: injury
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      context.concussion: false
+      result.condition: KNOCKED_DOWN
+  - id: two-attacks-both-blunt
+    roles:
+    - active
+    - consumer
+    - boundary
+    operation: pool
+    attacker:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+    defender_state:
+      wounds: 2
+    context:
+      count: 2
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 4
+    - key: test.attack.0.wound
+      value: 3
+    - key: test.attack.1.wound
+      value: 3
+    - key: test.attack.1.injury.0
+      value: 2
+    expect:
+      result.attacks.0.damage: 1
+      result.attacks.1.damage: 1
+      result.defender.condition: STUNNED
   mutations:
-  - {id: remove-concussion, path: attacker.main_weapon.concussion, value: false, cases: [injury-distribution, two-attacks-both-blunt]}
+  - id: remove-concussion
+    path: attacker.main_weapon.concussion
+    value: false
+    cases:
+    - injury-distribution
+    - two-attacks-both-blunt

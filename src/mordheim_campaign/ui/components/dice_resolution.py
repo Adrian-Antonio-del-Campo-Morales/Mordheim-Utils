@@ -5,6 +5,7 @@ from tkinter import ttk
 from collections.abc import Callable, Sequence
 
 from mordheim_ui.theme import COLORS
+from mordheim_ui.i18n import tr
 
 
 class DiceResolutionCard(tk.Frame):
@@ -74,17 +75,17 @@ class DiceResolutionCard(tk.Frame):
         self._clear_body()
         tk.Label(
             self.body,
-            text="HOW DO YOU WANT TO RESOLVE THIS ROLL?",
+            text=tr('HOW DO YOU WANT TO RESOLVE THIS ROLL?'),
             bg=COLORS["panel_alt"], fg=COLORS["muted"],
             font=("Segoe UI Semibold", 7),
         ).pack(anchor="w", pady=(0, 8))
         actions = tk.Frame(self.body, bg=COLORS["panel_alt"])
         actions.pack(anchor="w")
-        ttk.Button(actions, text="🎲  ROLL IN APP", style="Accent.TButton", command=self._roll_in_app).pack(side="left", padx=(0, 8))
-        ttk.Button(actions, text="ENTER MANUALLY", command=self._show_manual_entry).pack(side="left")
+        ttk.Button(actions, text=tr('🎲  ROLL IN APP'), style="Accent.TButton", command=self._roll_in_app).pack(side="left", padx=(0, 8))
+        ttk.Button(actions, text=tr('ENTER MANUALLY'), command=self._show_manual_entry).pack(side="left")
         tk.Label(
             self.body,
-            text="You can use physical dice at the table and enter exactly what you rolled.",
+            text=tr('You can use physical dice at the table and enter exactly what you rolled.'),
             bg=COLORS["panel_alt"], fg=COLORS["muted_dark"], font=("Segoe UI", 7),
         ).pack(anchor="w", pady=(8, 0))
 
@@ -92,8 +93,8 @@ class DiceResolutionCard(tk.Frame):
         self._clear_body()
         top = tk.Frame(self.body, bg=COLORS["panel_alt"])
         top.pack(fill="x")
-        tk.Label(top, text=f"ENTER {self.notation} RESULT", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI Semibold", 8)).pack(side="left")
-        ttk.Button(top, text="CHANGE METHOD", style="Mini.TButton", command=self._show_method_choice).pack(side="right")
+        tk.Label(top, text=tr('ENTER {} RESULT').format(self.notation), bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI Semibold", 8)).pack(side="left")
+        ttk.Button(top, text=tr('CHANGE METHOD'), style="Mini.TButton", command=self._show_method_choice).pack(side="right")
 
         dice = tk.Frame(self.body, bg=COLORS["panel_alt"])
         dice.pack(anchor="w", pady=(10, 10))
@@ -101,17 +102,17 @@ class DiceResolutionCard(tk.Frame):
             field = tk.Frame(dice, bg=COLORS["panel_alt"])
             field.pack(side="left", padx=(0, 8))
             if self.dice_count > 1:
-                tk.Label(field, text=f"DIE {index}", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 6)).pack(anchor="w")
+                tk.Label(field, text=tr('DIE {}').format(index), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 6)).pack(anchor="w")
             ttk.Spinbox(field, from_=1, to=6, width=4, textvariable=variable).pack(anchor="w", pady=(2, 0))
-        ttk.Button(dice, text="USE RESULT", style="Accent.TButton", command=self._accept_manual).pack(side="left", padx=(6, 0), pady=(12 if self.dice_count > 1 else 0, 0))
+        ttk.Button(dice, text=tr('USE RESULT'), style="Accent.TButton", command=self._accept_manual).pack(side="left", padx=(6, 0), pady=(12 if self.dice_count > 1 else 0, 0))
 
     def _roll_in_app(self) -> None:
         # Deterministic demo values keep screenshots/reviews reproducible. The
         # real implementation will swap this for the campaign dice service.
-        self._show_result(self.demo_dice, source="Rolled in app")
+        self._show_result(self.demo_dice, source=tr('Rolled in app'))
 
     def _accept_manual(self) -> None:
-        self._show_result([max(1, min(6, int(var.get()))) for var in self.manual_vars], source="Entered manually")
+        self._show_result([max(1, min(6, int(var.get()))) for var in self.manual_vars], source=tr('Entered manually'))
 
     def _format_value(self, dice: Sequence[int]) -> str:
         if self.combine == "d66":
@@ -125,7 +126,7 @@ class DiceResolutionCard(tk.Frame):
         header = tk.Frame(self.body, bg=COLORS["panel_alt"])
         header.pack(fill="x")
         tk.Label(header, text=source.upper(), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(side="left")
-        ttk.Button(header, text="ROLL AGAIN / EDIT", style="Mini.TButton", command=self._show_method_choice).pack(side="right")
+        ttk.Button(header, text=tr('ROLL AGAIN / EDIT'), style="Mini.TButton", command=self._show_method_choice).pack(side="right")
 
         result = tk.Frame(self.body, bg=COLORS["panel_alt"])
         result.pack(fill="x", pady=(8, 4))
@@ -141,7 +142,7 @@ class DiceResolutionCard(tk.Frame):
                 tk.Label(outcome, text=str(resolved_detail), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w", pady=(2, 0))
 
         if self.choices:
-            tk.Label(self.body, text="CHOOSE THE RESULT", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(anchor="w", pady=(8, 5))
+            tk.Label(self.body, text=tr('CHOOSE THE RESULT'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(anchor="w", pady=(8, 5))
             row = tk.Frame(self.body, bg=COLORS["panel_alt"])
             row.pack(anchor="w")
             for label in self.choices:
@@ -150,6 +151,6 @@ class DiceResolutionCard(tk.Frame):
         if self.outcome_actions:
             actions = tk.Frame(self.body, bg=COLORS["panel_alt"])
             actions.pack(fill="x", pady=(10, 0))
-            tk.Label(actions, text="AVAILABLE ACTION", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(side="left")
+            tk.Label(actions, text=tr('AVAILABLE ACTION'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(side="left")
             for label, callback, style in reversed(self.outcome_actions):
                 ttk.Button(actions, text=label, style=style, command=callback).pack(side="right", padx=(6, 0))

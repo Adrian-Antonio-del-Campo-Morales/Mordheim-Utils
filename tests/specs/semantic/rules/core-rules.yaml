@@ -5,7 +5,7 @@ specifications:
   category: contextual
   sources:
   - target: core/combat-two-weapons
-    digest: e290594d3c6ecf49bf33cc116ac8663f5f8e293bfb69699379c899634097c87b
+    digest: 832210a6bfeb88a0e7ca15cf0eac755c4592633b9d088b4f13d5a5700c45803a
   interpretation: One off-hand attack is added AFTER other attack modifiers, including frenzy. With distinct
     melee weapons the decision selects the weapon for all but one attack.
   interaction_contract:
@@ -137,10 +137,10 @@ specifications:
   category: stateful
   sources:
   - target: core/combat-critical-hits
-    digest: 48dc55dfd8d28ad2179d97ee7eee28475be4430d2430a6c0f491712b5bd7062c
-  interpretation: 'A natural 6 to wound is critical unless it was required. The attacker spends the sole critical
-    allowance on the first critical wound in the combat phase. Resolve the separate D6 basic chart: double
-    damage and result-dependent armour denial/Injury modifiers.'
+    digest: 84d8554a2ea5ebdaf00dd1c8aec00d2770a793317c302514e9334e5b5a10d6b7
+  interpretation: 'A natural 6 to wound is critical unless it was required. The attacker spends the sole
+    critical allowance on the first critical wound in the combat phase. Resolve the separate D6 basic
+    chart: double damage and result-dependent armour denial/Injury modifiers.'
   interaction_contract:
     reads:
     - wound.roll
@@ -255,9 +255,10 @@ specifications:
   category: stateful
   sources:
   - target: core/combat-parry
-    digest: 68a462cce29f54af24fc6165eae8f85d39c185965a399bb295d1f4ed95e586c9
-  interpretation: Beat the hit roll; a natural 6 is not parryable. One attempt per phase, not one per sword.
-    Sword plus buckler permits one re-roll. Eligible impacts are considered in descending hit-roll order.
+    digest: f9d794736441b911878c20348e1f7dfac785fdca80dcc47b5eaa625514dcc9f3
+  interpretation: Beat the hit roll; a natural 6 is not parryable. One attempt per phase, not one per
+    sword. Sword plus buckler permits one re-roll. Eligible impacts are considered in descending hit-roll
+    order.
   interaction_contract:
     reads:
     - hit.roll
@@ -374,7 +375,7 @@ specifications:
   category: priority
   sources:
   - target: core/combat-order
-    digest: 0d22d9fffb278f0dbee553ccac5afd7cca3b8018f1f652af103da3b28bfbdc22
+    digest: dd5e6ea0c016682d5489f91e9ffe82580d50875966d2f3e7519681afd5d29892
   interpretation: Charge precedes normal Initiative. A warrior who stood up strikes last even if otherwise
     fast. Within equal priority the higher Initiative acts first, with unbiased resolution of exact ties.
   interaction_contract:
@@ -492,9 +493,9 @@ specifications:
   category: stateful
   sources:
   - target: core/combat-injury-states
-    digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
-  interpretation: 'At zero wounds the highest rolled injury applies: 1-2 Knocked Down, 3-4 Stunned, 5-6 Out.
-    Recovery advances Stunned to Knocked Down, then standing; standing up is recorded for priority.'
+    digest: c3a7c3b49b566dfb68119985694de4c046ecb9212b63155a7b5fb78d8afcdcd1
+  interpretation: 'At zero wounds the highest rolled injury applies: 1-2 Knocked Down, 3-4 Stunned, 5-6
+    Out. Recovery advances Stunned to Knocked Down, then standing; standing up is recorded for priority.'
   interaction_contract:
     reads:
     - damage.unsaved

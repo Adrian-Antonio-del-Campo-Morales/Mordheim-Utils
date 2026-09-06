@@ -11,10 +11,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: Any warrior within 6" of the Plague Priest may use his Leadership instead of its own.
-    es: null
+    es: Cualquier guerrero a 6" del Sacerdote de la Peste puede usar su Liderazgo en lugar del suyo propio.
   applies_to:
     profile_ids:
     - plague-priest
@@ -29,8 +29,8 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: pestilens-sorcerer--spellcaster
   name: Spellcaster
-  effect: The Pestilens Sorcerer is a spellcaster and may cast spells from Magic of the Horned Rat. The spell list itself
-    is not modelled in this file.
+  effect: The Pestilens Sorcerer is a spellcaster and may cast spells from Magic of the Horned Rat. The
+    spell list itself is not modelled in this file.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -38,11 +38,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     en: Spellcaster
-    es: null
+    es: Lanzador de hechizos
   effect_i18n:
-    en: The Pestilens Sorcerer is a spellcaster and may cast spells from Magic of the Horned Rat. The spell list itself is
-      not modelled in this file.
-    es: null
+    en: The Pestilens Sorcerer is a spellcaster and may cast spells from Magic of the Horned Rat. The
+      spell list itself is not modelled in this file.
+    es: El Hechicero de Pestilens es un lanzador de hechizos y puede lanzar hechizos de la Magia de la
+      Rata Cornuda. La propia lista de hechizos no está modelada en este fichero.
   applies_to:
     profile_ids:
     - pestilens-sorcerer
@@ -65,10 +66,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     en: Animal
-    es: null
+    es: Animal
   effect_i18n:
     en: Giant Rats are animals and never gain Experience.
-    es: null
+    es: Las Ratas gigantes son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - giant-rats
@@ -91,10 +92,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     en: Fear
-    es: null
+    es: Miedo
   effect_i18n:
     en: The Rat Ogre causes Fear.
-    es: null
+    es: El Ogro rata provoca Miedo.
   applies_to:
     profile_ids:
     - rat-ogre
@@ -117,10 +118,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     en: Stupidity
-    es: null
+    es: Estupidez
   effect_i18n:
     en: The Rat Ogre is subject to Stupidity unless a Skaven Hero is within 6".
-    es: null
+    es: El Ogro rata está sujeto a Estupidez a menos que haya un Héroe skaven a 6" de él.
   applies_to:
     profile_ids:
     - rat-ogre
@@ -143,10 +144,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     en: Experience
-    es: null
+    es: Experiencia
   effect_i18n:
     en: The Rat Ogre never gains Experience.
-    es: null
+    es: El Ogro rata nunca gana Experiencia.
   applies_to:
     profile_ids:
     - rat-ogre
@@ -169,10 +170,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     en: Large Target
-    es: null
+    es: Objetivo grande
   effect_i18n:
     en: The Rat Ogre is a Large Target.
-    es: null
+    es: El Ogro rata es un Objetivo Grande.
   applies_to:
     profile_ids:
     - rat-ogre
@@ -187,7 +188,7 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--clan-pestilens-maximum-characteristics
   name: Clan Pestilens Maximum Characteristics
-  effect: 'Clan Pestilens Skaven use their own racial maximum profile (campaign.limit.racial-maximum.skaven-clan-pestilens).'
+  effect: Clan Pestilens Skaven use their own racial maximum profile (campaign.limit.racial-maximum.skaven-clan-pestilens).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -195,10 +196,10 @@ rules:
     url: https://mordheimer.net/docs/campaigns/experience
   name_i18n:
     en: Clan Pestilens Maximum Characteristics
-    es: null
+    es: Características máximas del Clan Pestilens
   effect_i18n:
-    en: 'Clan Pestilens Skaven use their own racial maximum profile (campaign.limit.racial-maximum.skaven-clan-pestilens).'
-    es: null
+    en: Clan Pestilens Skaven use their own racial maximum profile (campaign.limit.racial-maximum.skaven-clan-pestilens).
+    es: Los skaven del Clan Pestilens usan su propio perfil racial máximo (campaign.limit.racial-maximum.skaven-clan-pestilens).
   applies_to:
     band: true
   runtime:
@@ -209,12 +210,15 @@ rules:
     - id: unimplemented.skaven-clan-pestilens.band.clan-pestilens-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--clan-pestilens-special-skills-black-hunger
   kind: warband_skill
   name: Black Hunger
-  effect: At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack and +D3" to his
-    total Movement, then suffers D3 Strength 3 hits with no armour save at the end of the turn.
+  effect: At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack
+    and +D3" to his total Movement, then suffers D3 Strength 3 hits with no armour save at the end of
+    the turn.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -222,11 +226,14 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     en: Black Hunger
-    es: null
+    es: Hambre negra
   effect_i18n:
-    en: At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack and +D3" to his total
-      Movement, then suffers D3 Strength 3 hits with no armour save at the end of the turn.
-    es: null
+    en: At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack
+      and +D3" to his total Movement, then suffers D3 Strength 3 hits with no armour save at the end of
+      the turn.
+    es: Al comienzo de su turno, el Héroe puede invocar el Hambre negra. Durante ese turno gana +1 Ataque
+      y +D3" a su Movimiento total, y luego sufre D3 impactos de Fuerza 3 sin salvación por armadura al
+      final del turno.
   eligibility:
   - plague-priest
   - pestilens-sorcerer
@@ -255,10 +262,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     en: Censer Bearer
-    es: null
+    es: Portador de incensario
   effect_i18n:
     en: Requires Black Hunger. The Hero gains Frenzy and may use only a Censer as a close-combat weapon.
-    es: null
+    es: Requiere Hambre negra. El Héroe gana Frenesí y solo puede usar un Incensario como arma de combate
+      cuerpo a cuerpo.
   eligibility:
   - plague-priest
   - pestilens-sorcerer
@@ -279,8 +287,8 @@ rules:
 - id: band--clan-pestilens-special-skills-rotten-body
   kind: warband_skill
   name: Rotten Body
-  effect: The Hero is immune to poisons and diseases. If taken Out of Action because of a failed Censer-related test, he automatically
-    recovers after the battle and does not roll for injury.
+  effect: The Hero is immune to poisons and diseases. If taken Out of Action because of a failed Censer-related
+    test, he automatically recovers after the battle and does not roll for injury.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -288,11 +296,13 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     en: Rotten Body
-    es: null
+    es: Inmune al veneno
   effect_i18n:
-    en: The Hero is immune to poisons and diseases. If taken Out of Action because of a failed Censer-related test, he automatically
-      recovers after the battle and does not roll for injury.
-    es: null
+    en: The Hero is immune to poisons and diseases. If taken Out of Action because of a failed Censer-related
+      test, he automatically recovers after the battle and does not roll for injury.
+    es: El Héroe es inmune a los venenos y a las enfermedades. Si es puesto Fuera de combate debido a
+      un chequeo fallido relacionado con el Incensario, se recupera automáticamente tras la batalla y
+      no tira para la herida.
   eligibility:
   - plague-priest
   - pestilens-sorcerer
@@ -319,9 +329,9 @@ rules:
 - id: band--clan-pestilens-special-skills-contagious
   kind: warband_skill
   name: Contagious
-  effect: Requires Rotten Body. A model that inflicts the close-combat injury which takes this Hero Out of Action must take
-    a Toughness test. If the D6 result is higher than its Toughness it suffers one automatic Wound; a 6 always causes a Wound.
-    Undead and Possessed are immune to this test.
+  effect: Requires Rotten Body. A model that inflicts the close-combat injury which takes this Hero Out
+    of Action must take a Toughness test. If the D6 result is higher than its Toughness it suffers one
+    automatic Wound; a 6 always causes a Wound. Undead and Possessed are immune to this test.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -329,12 +339,15 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     en: Contagious
-    es: null
+    es: Contagioso
   effect_i18n:
-    en: Requires Rotten Body. A model that inflicts the close-combat injury which takes this Hero Out of Action must take
-      a Toughness test. If the D6 result is higher than its Toughness it suffers one automatic Wound; a 6 always causes a
-      Wound. Undead and Possessed are immune to this test.
-    es: null
+    en: Requires Rotten Body. A model that inflicts the close-combat injury which takes this Hero Out
+      of Action must take a Toughness test. If the D6 result is higher than its Toughness it suffers one
+      automatic Wound; a 6 always causes a Wound. Undead and Possessed are immune to this test.
+    es: Requiere Cuerpo podrido. Una miniatura que inflinja la herida de combate cuerpo a cuerpo que pone
+      a este Héroe Fuera de combate debe superar un chequeo de Resistencia. Si el resultado del D6 es
+      mayor que su Resistencia, sufre una Herida automática; un 6 siempre causa una Herida. Los Muertos
+      Vivientes y los Poseídos son inmunes a este chequeo.
   eligibility:
   - plague-priest
   - pestilens-sorcerer
@@ -362,10 +375,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
     en: Ignore Pain
-    es: null
+    es: Ignorar el dolor
   effect_i18n:
     en: Requires the Resilient Strength skill. The Hero treats Stunned injury results as Knocked Down.
-    es: null
+    es: Requiere la habilidad Fuerza Resistente. El Héroe trata los resultados de herida de Aturdido como
+      Derribado.
   eligibility:
   - plague-priest
   - pestilens-sorcerer

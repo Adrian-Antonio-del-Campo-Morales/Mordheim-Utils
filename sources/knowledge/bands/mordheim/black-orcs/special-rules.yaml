@@ -3,18 +3,17 @@ band_id: black-orcs
 rules:
 - id: black-orc-boss--leader
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.black-orc-boss.leader
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Leader
-  effect: 'Any warrior within 6" of the Boss may use his
-
-    Leadership characteristic when taking Leadership tests.'
+  effect: Any warrior within 6" of the Boss may use his Leadership characteristic when taking Leadership
+    tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -22,38 +21,39 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: 'Any warrior within 6" of the Boss may use his
 
       Leadership characteristic when taking Leadership tests.'
-    es: null
+    es: Cualquier guerrero a 6" del Jefe puede usar su característica de Liderazgo cuando realice chequeos
+      de Liderazgo.
   applies_to:
     profile_ids:
     - black-orc-boss
 - id: black-orc-boss--black-orc
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
     - id: trait.natural-armour-save
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.natural-armour-save
         parameters:
           value: 6
     - id: trait.natural-armour-stacks
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.natural-armour-stacks
         parameters:
           value: true
   name: Black Orc
-  effect: Model starts with a natural 6+ Armour Black Orc Save. This save may be combined with other equipment to improve
-    it.
+  effect: Model starts with a natural 6+ Armour Black Orc Save. This save may be combined with other equipment
+    to improve it.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -61,51 +61,33 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Black Orc
-    es: null
+    es: Orco Negro
   effect_i18n:
-    en: Model starts with a natural 6+ Armour Black Orc Save. This save may be combined with other equipment to improve it.
-    es: null
+    en: Model starts with a natural 6+ Armour Black Orc Save. This save may be combined with other equipment
+      to improve it.
+    es: El modelo empieza con una tirada de salvación de Orco Negro natural de 6+. Esta salvación puede
+      combinarse con otro equipo para mejorarla.
   applies_to:
     profile_ids:
     - black-orc-boss
 - id: black-orc-boss--oi-behave
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.black-orc-boss.oi-behave
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Oi Behave!
-  effect: 'If any Henchman fails his Animosity test
-
-    within 6” of the Boss, the player may opt to have the
-
-    boss stamp his authority (and clenched fist) on the
-
-    situation.
-
-    The misbehaving Henchman will receive an automatic
-
-    hit at the strength of the Orc player’s choosing. If the
-
-    Henchman is still on his feet after his slap, he may
-
-    add a number equal to the strength of the slap to his
-
-    subsequent roll to determine the effects of Animosity.
-
-    E.g. The player decides that the Boss will hit a
-
-    misbehaving Henchman with a S2 slap. If the slap fails
-
-    to Knock Down, Stun or Out of Action the
-
-    Henchman, then he adds +2 to the Animosity Effect
-
-    roll.'
+  effect: If any Henchman fails his Animosity test within 6” of the Boss, the player may opt to have the
+    boss stamp his authority (and clenched fist) on the situation. The misbehaving Henchman will receive
+    an automatic hit at the strength of the Orc player’s choosing. If the Henchman is still on his feet
+    after his slap, he may add a number equal to the strength of the slap to his subsequent roll to determine
+    the effects of Animosity. E.g. The player decides that the Boss will hit a misbehaving Henchman with
+    a S2 slap. If the slap fails to Knock Down, Stun or Out of Action the Henchman, then he adds +2 to
+    the Animosity Effect roll.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -113,7 +95,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Oi Behave!
-    es: null
+    es: ¡Pórtate bien! (Oi Behave!)
   effect_i18n:
     en: 'If any Henchman fails his Animosity test
 
@@ -142,33 +124,39 @@ rules:
       Henchman, then he adds +2 to the Animosity Effect
 
       roll.'
-    es: null
+    es: 'Si algún secuaz falla su chequeo de Rencor a 6" del Jefe, el jugador puede optar por que el jefe
+      imponga su autoridad (y su puño cerrado) en la situación. El secuaz que se porta mal recibirá un
+      impacto automático con la Fuerza que elija el jugador orco. Si el secuaz sigue en pie tras el bofetón,
+      puede sumar una cantidad igual a la Fuerza del bofetón a su tirada posterior para determinar los
+      efectos del Rencor. Por ejemplo: el jugador decide que el Jefe golpee a un secuaz que se porta mal
+      con un bofetón de F2. Si el bofetón no logra Derribar, Aturdir ni poner Fuera de combate al secuaz,
+      este suma +2 a la tirada de Efecto de Rencor.'
   applies_to:
     profile_ids:
     - black-orc-boss
 - id: black-orcs--black-orc
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
     - id: trait.natural-armour-save
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.natural-armour-save
         parameters:
           value: 6
     - id: trait.natural-armour-stacks
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.natural-armour-stacks
         parameters:
           value: true
   name: Black Orc
-  effect: Model starts with a natural 6+ Armour Black Orc Save. This save may be combined with other equipment to improve
-    it.
+  effect: Model starts with a natural 6+ Armour Black Orc Save. This save may be combined with other equipment
+    to improve it.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -176,31 +164,28 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Black Orc
-    es: null
+    es: Orco Negro
   effect_i18n:
-    en: Model starts with a natural 6+ Armour Black Orc Save. This save may be combined with other equipment to improve it.
-    es: null
+    en: Model starts with a natural 6+ Armour Black Orc Save. This save may be combined with other equipment
+      to improve it.
+    es: El modelo empieza con una tirada de salvación de Orco Negro natural de 6+. Esta salvación puede
+      combinarse con otro equipo para mejorarla.
   applies_to:
     profile_ids:
     - black-orcs
 - id: younguns--black-orc-blood
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.younguns.black-orc-blood
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Black Orc Blood
-  effect: 'One Young’un may be upgraded to
-
-    a Black Orc Young’un for 10gc. This upgrade allows
-
-    him to take the ‘Proven Warrior’ skill upgrade, thus
-
-    making him a fully-fledged Black Orc Warrior.'
+  effect: One Young’un may be upgraded to a Black Orc Young’un for 10gc. This upgrade allows him to take
+    the ‘Proven Warrior’ skill upgrade, thus making him a fully-fledged Black Orc Warrior.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -208,7 +193,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Black Orc Blood
-    es: null
+    es: Sangre de Orco Negro
   effect_i18n:
     en: 'One Young’un may be upgraded to
 
@@ -217,23 +202,25 @@ rules:
       him to take the ‘Proven Warrior’ skill upgrade, thus
 
       making him a fully-fledged Black Orc Warrior.'
-    es: null
+    es: Un Jóven puede ascendido a Jóven Orco Negro por 10 coronas. Esta mejora le permite escoger la
+      mejora de habilidad 'Guerrero probado', convirtiéndose así en un guerrero Orco Negro plenamente
+      consolidado.
   applies_to:
     profile_ids:
     - younguns
 - id: orc-boyz--animosity
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.orc-boyz.animosity
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Animosity
-  effect: Subject to the warband's Animosity rule. At the start of the Orc player's turn, roll a D6 for this Orc Henchman
-    if it is not in hand-to-hand combat; on a 1, roll on the Animosity result table.
+  effect: Subject to the warband's Animosity rule. At the start of the Orc player's turn, roll a D6 for
+    this Orc Henchman if it is not in hand-to-hand combat; on a 1, roll on the Animosity result table.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -241,27 +228,29 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Animosity
-    es: null
+    es: Rencor (Animosity)
   effect_i18n:
-    en: Subject to the warband's Animosity rule. At the start of the Orc player's turn, roll a D6 for this Orc Henchman if
-      it is not in hand-to-hand combat; on a 1, roll on the Animosity result table.
-    es: null
+    en: Subject to the warband's Animosity rule. At the start of the Orc player's turn, roll a D6 for
+      this Orc Henchman if it is not in hand-to-hand combat; on a 1, roll on the Animosity result table.
+    es: Sujeto a la regla especial Rencor de la banda. Al inicio del turno del jugador orco, tira 1D6
+      por este secuaz orco si no está en combate cuerpo a cuerpo; con un 1, tira en la tabla de resultados
+      de Rencor.
   applies_to:
     profile_ids:
     - orc-boyz
 - id: orc-shootaz--animosity
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.orc-shootaz.animosity
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Animosity
-  effect: Subject to the warband's Animosity rule. At the start of the Orc player's turn, roll a D6 for this Orc Henchman
-    if it is not in hand-to-hand combat; on a 1, roll on the Animosity result table.
+  effect: Subject to the warband's Animosity rule. At the start of the Orc player's turn, roll a D6 for
+    this Orc Henchman if it is not in hand-to-hand combat; on a 1, roll on the Animosity result table.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -269,11 +258,13 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Animosity
-    es: null
+    es: Rencor (Animosity)
   effect_i18n:
-    en: Subject to the warband's Animosity rule. At the start of the Orc player's turn, roll a D6 for this Orc Henchman if
-      it is not in hand-to-hand combat; on a 1, roll on the Animosity result table.
-    es: null
+    en: Subject to the warband's Animosity rule. At the start of the Orc player's turn, roll a D6 for
+      this Orc Henchman if it is not in hand-to-hand combat; on a 1, roll on the Animosity result table.
+    es: Sujeto a la regla especial Rencor de la banda. Al inicio del turno del jugador orco, tira 1D6
+      por este secuaz orco si no está en combate cuerpo a cuerpo; con un 1, tira en la tabla de resultados
+      de Rencor.
   applies_to:
     profile_ids:
     - orc-shootaz
@@ -286,10 +277,12 @@ rules:
     - id: unimplemented.black-orcs.orc-shootaz.uncommon
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
   name: Uncommon
-  effect: A warband may not hire more Shootaz than they have Boyz. If a boy dies and the Shootaz outnumber the Boyz, the next
-    hire must be a boy so that the balance is restored.
+  effect: A warband may not hire more Shootaz than they have Boyz. If a boy dies and the Shootaz outnumber
+    the Boyz, the next hire must be a boy so that the balance is restored.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -297,7 +290,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Uncommon
-    es: null
+    es: Poco común
   effect_i18n:
     en: 'A warband may not
 
@@ -312,26 +305,24 @@ rules:
       a boy so that the balance
 
       is restored.'
-    es: null
+    es: Una banda no puede contratar más Disparadores que Chicos tenga. Si un chico muere y los Disparadores
+      superan en número a los Chicos, la próxima contratación debe ser un chico para restablecer el equilibrio.
   applies_to:
     profile_ids:
     - orc-shootaz
 - id: orc-nuttaz--unstable
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.orc-nuttaz.unstable
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Unstable
-  effect: 'These Orcs are not quite all there. They do
-
-    not suffer from Animosity, but instead have a host of
-
-    their own issues to deal with.'
+  effect: These Orcs are not quite all there. They do not suffer from Animosity, but instead have a host
+    of their own issues to deal with.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -339,37 +330,32 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Unstable
-    es: null
+    es: Inestable
   effect_i18n:
     en: 'These Orcs are not quite all there. They do
 
       not suffer from Animosity, but instead have a host of
 
       their own issues to deal with.'
-    es: null
+    es: Estos orcos no están del todo bien de la cabeza. No sufren Rencor, pero tienen infinidad de problemas
+      propios con los que lidiar.
   applies_to:
     profile_ids:
     - orc-nuttaz
 - id: orc-nuttaz--crazy
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.orc-nuttaz.crazy
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Crazy
-  effect: 'Nuttaz always pass any Leadership-based Tests
-
-    they have to take. A side effect of this is that their
-
-    minds are too far-gone and they may never learn
-
-    Academic Skills should they become a Hero on an
-
-    Advance Roll.'
+  effect: Nuttaz always pass any Leadership-based Tests they have to take. A side effect of this is that
+    their minds are too far-gone and they may never learn Academic Skills should they become a Hero on
+    an Advance Roll.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -377,7 +363,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Crazy
-    es: null
+    es: Chalado
   effect_i18n:
     en: 'Nuttaz always pass any Leadership-based Tests
 
@@ -388,64 +374,47 @@ rules:
       Academic Skills should they become a Hero on an
 
       Advance Roll.'
-    es: null
+    es: Los Chalados superan siempre cualquier chequeo basado en Liderazgo que deban realizar. Un efecto
+      secundario de esto es que sus mentes están demasiado trastornadas y jamás podrán aprender Habilidades
+      Académicas si se convierten en héroes mediante una tirada de mejora.
   applies_to:
     profile_ids:
     - orc-nuttaz
 - id: orc-nuttaz--savage
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
     - id: skill.extra-attack
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: mechanic
         id: skill.extra-attack
     - id: profile.equipment-restrictions
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: profile
         id: profile.equipment-restrictions
         parameters:
-          forbids: [armour, ranged-weapons]
+          forbids:
+          - armour
+          - ranged-weapons
     - id: movement.compulsory-charge
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Movement is outside the duel runtime."
+      reason: Movement is outside the duel runtime.
     - id: psychology.leadership-restrictions
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Psychology is deferred."
+      reason: Psychology is deferred.
   name: Savage
-  effect: 'Nuttaz must always run or charge their
-
-    maximum distance towards the nearest opponent
-
-    they can see. Friendly models do not block line of
-
-    sight. Additionally they fight with an extra attack
-
-    whilst in combat. This does not appear on their
-
-    profile nor does it count towards the racial maximum.
-
-    If no enemy is visible they are moved under the
-
-    player’s control. They can never use any form of
-
-    armour or ranged weapons. Nuttaz
-
-    are also too unstable for other Boyz and
-
-    can never have the Leader ability or
-
-    use their Ld stat for rout tests, excepting
-
-    them as being the only models left on
-
-    the board.'
+  effect: Nuttaz must always run or charge their maximum distance towards the nearest opponent they can
+    see. Friendly models do not block line of sight. Additionally they fight with an extra attack whilst
+    in combat. This does not appear on their profile nor does it count towards the racial maximum. If
+    no enemy is visible they are moved under the player’s control. They can never use any form of armour
+    or ranged weapons. Nuttaz are also too unstable for other Boyz and can never have the Leader ability
+    or use their Ld stat for rout tests, excepting them as being the only models left on the board.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -453,7 +422,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Savage
-    es: null
+    es: Salvaje
   effect_i18n:
     en: 'Nuttaz must always run or charge their
 
@@ -482,20 +451,26 @@ rules:
       them as being the only models left on
 
       the board.'
-    es: null
+    es: Los Chalados deben correr o cargar siempre su distancia máxima hacia el oponente visible más cercano.
+      Los modelos amigos no bloquean la línea de visión. Además, luchan con un ataque extra mientras estén
+      en combate. Esto no aparece en su perfil ni cuenta para el máximo racial. Si no hay enemigos visibles
+      se mueven bajo el control del jugador. Nunca pueden usar armadura de ningún tipo ni armas a distancia.
+      Los Chalados también son demasiado inestables para los demás Chicos y jamás pueden tener la capacidad
+      de Líder ni usar su Ld para chequeos de huida, salvo que sean los únicos modelos que quedan en la
+      mesa.
   applies_to:
     profile_ids:
     - orc-nuttaz
 - id: troll--fear
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.troll.fear
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Fear
   effect: Trolls are frightening monsters which cause fear.
   source:
@@ -505,23 +480,23 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Fear
-    es: null
+    es: Miedo
   effect_i18n:
     en: Trolls are frightening monsters which cause fear.
-    es: null
+    es: Los trolls son monstruos aterradores que causan miedo.
   applies_to:
     profile_ids:
     - troll
 - id: troll--stupidity
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.troll.stupidity
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Stupidity
   effect: A Troll is subject to the rules for stupidity.
   source:
@@ -531,33 +506,34 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Stupidity
-    es: null
+    es: Estupidez
   effect_i18n:
     en: A Troll is subject to the rules for stupidity.
-    es: null
+    es: Un troll está sujeto a las reglas de estupidez.
   applies_to:
     profile_ids:
     - troll
 - id: troll--regeneration
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
     - id: skill.regeneration
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: mechanic
         id: skill.regeneration
     - id: campaign.post-battle-injury
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Post-battle injury is a campaign state."
+      reason: Post-battle injury is a campaign state.
   name: Regeneration
-  effect: Trolls have a unique physiology that allows them to regenerate wounds. Whenever an enemy successfully inflicts a
-    wound on a Troll roll a D6, on a result of 4 or more the wound is ignored and the Troll is unhurt. Trolls may not regenerate
-    wounds caused by fire or fire-based magic. Trolls never roll for Injury after a battle, unless they were taken Out of
-    Action by a Flaming weapon or spell. Then they roll after the battle as a normal Henchman.
+  effect: Trolls have a unique physiology that allows them to regenerate wounds. Whenever an enemy successfully
+    inflicts a wound on a Troll roll a D6, on a result of 4 or more the wound is ignored and the Troll
+    is unhurt. Trolls may not regenerate wounds caused by fire or fire-based magic. Trolls never roll
+    for Injury after a battle, unless they were taken Out of Action by a Flaming weapon or spell. Then
+    they roll after the battle as a normal Henchman.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -565,30 +541,33 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Regeneration
-    es: null
+    es: Regeneración
   effect_i18n:
-    en: Trolls have a unique physiology that allows them to regenerate wounds. Whenever an enemy successfully inflicts a wound
-      on a Troll roll a D6, on a result of 4 or more the wound is ignored and the Troll is unhurt. Trolls may not regenerate
-      wounds caused by fire or fire-based magic. Trolls never roll for Injury after a battle, unless they were taken Out of
-      Action by a Flaming weapon or spell. Then they roll after the battle as a normal Henchman.
-    es: null
+    en: Trolls have a unique physiology that allows them to regenerate wounds. Whenever an enemy successfully
+      inflicts a wound on a Troll roll a D6, on a result of 4 or more the wound is ignored and the Troll
+      is unhurt. Trolls may not regenerate wounds caused by fire or fire-based magic. Trolls never roll
+      for Injury after a battle, unless they were taken Out of Action by a Flaming weapon or spell. Then
+      they roll after the battle as a normal Henchman.
+    es: 'Los trolls tienen una fisiología única que les permite regenerar heridas. Siempre que un enemigo
+      inflija con éxito una herida a un troll, tira 1D6: con un resultado de 4 o más la herida se ignora
+      y el troll queda ileso. Los trolls no pueden regenerar heridas causadas por fuego o magia de fuego.
+      Los trolls nunca tiran por heridas tras una batalla, salvo que hayan sido puestos Fuera de combate
+      por un arma o hechizo ígneo; entonces tiran tras la batalla como un secuaz normal.'
   applies_to:
     profile_ids:
     - troll
 - id: troll--dumb-monster
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.troll.dumb-monster
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: psychology."
+      reason: 'Out of scope: psychology.'
   name: Dumb Monster
-  effect: 'A Troll is far too stupid to ever learn any
-
-    new skills. Trolls do not gain experience.'
+  effect: A Troll is far too stupid to ever learn any new skills. Trolls do not gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -596,30 +575,31 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Dumb Monster
-    es: null
+    es: Monstruo tarugo
   effect_i18n:
     en: 'A Troll is far too stupid to ever learn any
 
       new skills. Trolls do not gain experience.'
-    es: null
+    es: Un troll es demasiado estúpido para aprender nuevas habilidades. Los trolls no ganan experiencia.
   applies_to:
     profile_ids:
     - troll
 - id: troll--always-hungry
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.troll.always-hungry
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Always Hungry
-  effect: A Troll requires an upkeep cost. This upkeep represents the copious amounts of food that must be fed to the Troll
-    in order to keep him loyal to the warband. The warband must pay 20 gold crowns after every game in order to keep the Troll.
-    If a warband lacks the gold to pay the upkeep, the Boss has the option to let him count as 2 members, letting the Troll
-    cost only 5 crowns. However this does effectively drop your maximum warband size down to 11 models.
+  effect: A Troll requires an upkeep cost. This upkeep represents the copious amounts of food that must
+    be fed to the Troll in order to keep him loyal to the warband. The warband must pay 20 gold crowns
+    after every game in order to keep the Troll. If a warband lacks the gold to pay the upkeep, the Boss
+    has the option to let him count as 2 members, letting the Troll cost only 5 crowns. However this does
+    effectively drop your maximum warband size down to 11 models.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -627,31 +607,37 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Always Hungry
-    es: null
+    es: Siempre hambriento
   effect_i18n:
-    en: A Troll requires an upkeep cost. This upkeep represents the copious amounts of food that must be fed to the Troll
-      in order to keep him loyal to the warband. The warband must pay 20 gold crowns after every game in order to keep the
-      Troll. If a warband lacks the gold to pay the upkeep, the Boss has the option to let him count as 2 members, letting
-      the Troll cost only 5 crowns. However this does effectively drop your maximum warband size down to 11 models.
-    es: null
+    en: A Troll requires an upkeep cost. This upkeep represents the copious amounts of food that must
+      be fed to the Troll in order to keep him loyal to the warband. The warband must pay 20 gold crowns
+      after every game in order to keep the Troll. If a warband lacks the gold to pay the upkeep, the
+      Boss has the option to let him count as 2 members, letting the Troll cost only 5 crowns. However
+      this does effectively drop your maximum warband size down to 11 models.
+    es: Un troll requiere un coste de manutención. Este coste representa las cantidades copiosas de comida
+      que hay que darle al troll para mantenerlo leal a la banda. La banda debe pagar 20 coronas de oro
+      tras cada partida para conservar al troll. Si la banda carece de oro para pagar la manutención,
+      el Jefe tiene la opción de que cuente como 2 miembros, de modo que el troll solo cueste 5 coronas.
+      Sin embargo, esto reduce efectivamente el tamaño máximo de tu banda a 11 modelos.
   applies_to:
     profile_ids:
     - troll
 - id: troll--vomit-attack
   kind: profile_ability
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
     - id: weapon.vomit-attack
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: mechanic
         id: weapon.vomit-attack
   name: Vomit Attack
-  effect: Instead of his normal attacks, a Troll can regurgitate its highly corrosive digestive juices on an unfortunate hand-to-hand
-    combat opponent. This is a single attack that automatically hits with a Strength of 5 and ignores armour saves.
+  effect: Instead of his normal attacks, a Troll can regurgitate its highly corrosive digestive juices
+    on an unfortunate hand-to-hand combat opponent. This is a single attack that automatically hits with
+    a Strength of 5 and ignores armour saves.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -659,24 +645,27 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Vomit Attack
-    es: null
+    es: Ataque de vómito
   effect_i18n:
-    en: Instead of his normal attacks, a Troll can regurgitate its highly corrosive digestive juices on an unfortunate hand-to-hand
-      combat opponent. This is a single attack that automatically hits with a Strength of 5 and ignores armour saves.
-    es: null
+    en: Instead of his normal attacks, a Troll can regurgitate its highly corrosive digestive juices on
+      an unfortunate hand-to-hand combat opponent. This is a single attack that automatically hits with
+      a Strength of 5 and ignores armour saves.
+    es: En lugar de sus ataques normales, un troll puede regurgitar sus jugos digestivos, altamente corrosivos,
+      sobre un desdichado oponente en combate cuerpo a cuerpo. Es un ataque único que impacta automáticamente
+      con una Fuerza de 5 e ignora las tiradas de salvación por armadura.
   applies_to:
     profile_ids:
     - troll
 - id: troll--large-target
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.troll.large-target
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: shooting."
+      reason: 'Out of scope: shooting.'
   name: Large Target
   effect: Trolls are Large Targets as defined in the shooting rules.
   source:
@@ -686,26 +675,26 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Large Target
-    es: null
+    es: Objetivo grande
   effect_i18n:
     en: Trolls are Large Targets as defined in the shooting rules.
-    es: null
+    es: Los trolls son Objetivos Grandes tal como se define en las reglas de disparo.
   applies_to:
     profile_ids:
     - troll
 - id: band--let-the-goons-do-the-work
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.black-orcs.band.let-the-goons-do-the-work
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: mounts."
+      reason: 'Deferred subsystem: mounts.'
   name: Let the goons do the work
-  effect: Black Orcs do not ride mounts of any kind. Only normal Orcs in the warband may ride a boar or another permitted
-    mount.
+  effect: Black Orcs do not ride mounts of any kind. Only normal Orcs in the warband may ride a boar or
+    another permitted mount.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -713,25 +702,27 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Let the goons do the work
-    es: null
+    es: Que trabajen los matones
   effect_i18n:
-    en: Black Orcs do not ride mounts of any kind. Only normal Orcs in the warband may ride a boar or another permitted mount.
-    es: null
+    en: Black Orcs do not ride mounts of any kind. Only normal Orcs in the warband may ride a boar or
+      another permitted mount.
+    es: Los Orcos Negros no montan monturas de ningún tipo. Solo los orcos normales de la banda pueden
+      montar un jabalí u otra montura permitida.
   applies_to:
     band: true
 - id: band--da-boss-is-dead
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.black-orcs.band.da-boss-is-dead
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Da Boss is Dead!
-  effect: If the Boss is killed, a Black Orc takes over leadership before any other warrior regardless of relative experience,
-    and the replacement automatically gains "Oi Behave!".
+  effect: If the Boss is killed, a Black Orc takes over leadership before any other warrior regardless
+    of relative experience, and the replacement automatically gains "Oi Behave!".
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -739,31 +730,34 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Da Boss is Dead!
-    es: null
+    es: ¡El Jefe ha muerto!
   effect_i18n:
-    en: If the Boss is killed, a Black Orc takes over leadership before any other warrior regardless of relative experience,
-      and the replacement automatically gains "Oi Behave!".
-    es: null
+    en: If the Boss is killed, a Black Orc takes over leadership before any other warrior regardless of
+      relative experience, and the replacement automatically gains "Oi Behave!".
+    es: Si el Jefe muere, un Orco Negro asume el liderazgo antes que cualquier otro guerrero independientemente
+      de su experiencia relativa, y el sustituto gana automáticamente '¡Pórtate bien! (Oi Behave!)'.
   applies_to:
     band: true
 - id: band--animosity
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.black-orcs.band.animosity
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Animosity
-  effect: 'At the start of the Orc player''s turn, roll a D6 for each Orc or Goblin Henchman not engaged in hand-to-hand combat.
-    On a 1, roll another D6: 1 = attack the nearest eligible friendly Orc/Goblin Henchman or Hired Sword if possible (charge
-    and fight one round; otherwise shoot the nearest eligible friendly model if armed with a missile weapon); if no valid
-    target exists, treat as 2-5. 2-5 = the warrior may do nothing else that turn, but may defend itself if attacked. 6 = immediately
-    make an extra move as quickly as possible toward the nearest visible enemy, charging if possible; if no enemy is visible,
-    make a normal move. If the extra move puts an enemy in charge range, the warrior must charge during its normal Movement
-    phase.'
+  effect: >-
+    At the start of the Orc player's turn, roll a D6 for each Orc or Goblin Henchman not engaged in
+    hand-to-hand combat. On a 1, roll another D6: 1 = attack the nearest eligible friendly
+    Orc/Goblin Henchman or Hired Sword if possible (charge and fight one round; otherwise shoot the
+    nearest eligible friendly model if armed with a missile weapon); if no valid target exists,
+    treat as 2-5. 2-5 = the warrior may do nothing else that turn, but may defend itself if
+    attacked. 6 = immediately make an extra move as quickly as possible toward the nearest visible
+    enemy, charging if possible; if no enemy is visible, make a normal move. If the extra move puts
+    an enemy in charge range, the warrior must charge during its normal Movement phase.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -771,33 +765,42 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Animosity
-    es: null
+    es: Rencor (Animosity)
   effect_i18n:
-    en: 'At the start of the Orc player''s turn, roll a D6 for each Orc or Goblin Henchman not engaged in hand-to-hand combat.
-      On a 1, roll another D6: 1 = attack the nearest eligible friendly Orc/Goblin Henchman or Hired Sword if possible (charge
-      and fight one round; otherwise shoot the nearest eligible friendly model if armed with a missile weapon); if no valid
-      target exists, treat as 2-5. 2-5 = the warrior may do nothing else that turn, but may defend itself if attacked. 6 =
-      immediately make an extra move as quickly as possible toward the nearest visible enemy, charging if possible; if no
-      enemy is visible, make a normal move. If the extra move puts an enemy in charge range, the warrior must charge during
-      its normal Movement phase.'
-    es: null
+    en: 'At the start of the Orc player''s turn, roll a D6 for each Orc or Goblin Henchman not engaged
+      in hand-to-hand combat. On a 1, roll another D6: 1 = attack the nearest eligible friendly Orc/Goblin
+      Henchman or Hired Sword if possible (charge and fight one round; otherwise shoot the nearest eligible
+      friendly model if armed with a missile weapon); if no valid target exists, treat as 2-5. 2-5 = the
+      warrior may do nothing else that turn, but may defend itself if attacked. 6 = immediately make an
+      extra move as quickly as possible toward the nearest visible enemy, charging if possible; if no
+      enemy is visible, make a normal move. If the extra move puts an enemy in charge range, the warrior
+      must charge during its normal Movement phase.'
+    es: 'Al inicio del turno del jugador orco, tira 1D6 por cada secuaz orco o goblin que no esté en combate
+      cuerpo a cuerpo. Con un 1, tira otro 1D6: 1 = ataca al secuaz orco/goblin amigo u Espada a Sueldo
+      elegible más cercano si es posible (carga y lucha un asalto; de lo contrario, dispara al modelo
+      amigo elegible más cercano si está armado con un arma de misil); si no existe objetivo válido, trátalo
+      como 2-5. 2-5 = el guerrero no puede hacer nada más ese asalto, pero puede defenderse si lo atacan.
+      6 = haz inmediatamente un movimiento extra lo más rápido posible hacia el enemigo visible más cercano,
+      cargando si es posible; si no hay enemigo visible, realiza un movimiento normal. Si el movimiento
+      extra pone a un enemigo en alcance de carga, el guerrero debe cargar durante su fase normal de Movimiento.'
   applies_to:
     band: true
 - id: band--black-orc-special-skills
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
     - id: profile.skill-access
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: profile
         id: profile.skill-access
         parameters:
           category: special
   name: Black Orc Special Skills
-  effect: Black Orc Heroes may use the following Skill list instead of the standard skill lists available to them.
+  effect: Black Orc Heroes may use the following Skill list instead of the standard skill lists available
+    to them.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -805,10 +808,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: Black Orc Special Skills
-    es: null
+    es: Habilidades especiales de los Orcos Negros
   effect_i18n:
-    en: Black Orc Heroes may use the following Skill list instead of the standard skill lists available to them.
-    es: null
+    en: Black Orc Heroes may use the following Skill list instead of the standard skill lists available
+      to them.
+    es: Los héroes orcos negros pueden usar la siguiente lista de habilidades en lugar de las listas de
+      habilidades estándar disponibles para ellos.
   applies_to:
     band: true
 - id: band--black-orc-special-skills-proven-warrior
@@ -824,10 +829,11 @@ rules:
         kind: compiler
         id: compiler.proven-warrior
   name: proven warrior
-  effect: This young warrior has proven himself worthy of his Black Orc heritage. This skill may only be taken by a Young’un
-    with the Black Orc blood ability and 25 experience. Once he gains this skill, the model is now considered a full Black Orc
-    Warrior (yet still retains the title of Young’un). He follows all the rules for Black Orcs and uses their equipment list
-    and has access to the same skill lists as a Black Orc.
+  effect: This young warrior has proven himself worthy of his Black Orc heritage. This skill may only
+    be taken by a Young’un with the Black Orc blood ability and 25 experience. Once he gains this skill,
+    the model is now considered a full Black Orc Warrior (yet still retains the title of Young’un). He
+    follows all the rules for Black Orcs and uses their equipment list and has access to the same skill
+    lists as a Black Orc.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -835,7 +841,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: proven warrior
-    es: null
+    es: Guerrero probado
   effect_i18n:
     en: 'This young warrior has proven himself worthy of his
 
@@ -852,25 +858,29 @@ rules:
       Black Orcs and uses their equipment list and has
 
       access to the same skill lists as a Black Orc.'
-    es: null
+    es: Este joven guerrero ha demostrado ser digno de su herencia de Orco Negro. Esta habilidad solo
+      puede ser elegida por un Jóven con la capacidad Sangre de Orco Negro y 25 puntos de experiencia.
+      Una vez que obtiene esta habilidad, el modelo se considera un guerrero Orco Negro plenamente consolidado
+      (aunque aún conserva el título de Jóven). Sigue todas las reglas de los Orcos Negros, usa su lista
+      de equipo y tiene acceso a las mismas listas de habilidades que un Orco Negro.
   applies_to:
     band: true
 - id: band--black-orc-special-skills-ard-ead
   kind: warband_skill
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
     - id: skill.thick-skull
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: mechanic
         id: skill.thick-skull
   name: ’ard ead
-  effect: The warrior has a thick skull even for an Orc. He has a special 3+ save on a D6 to avoid being stunned. If the save
-    is made, treat a stunned result as knocked down instead. If the Orc also wears a helmet, this save is 2+ instead of 3+
-    (this takes the place of the normal helmet special rule).
+  effect: The warrior has a thick skull even for an Orc. He has a special 3+ save on a D6 to avoid being
+    stunned. If the save is made, treat a stunned result as knocked down instead. If the Orc also wears
+    a helmet, this save is 2+ instead of 3+ (this takes the place of the normal helmet special rule).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -878,28 +888,31 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: ’ard ead
-    es: null
+    es: Cráneo grueso
   effect_i18n:
-    en: The warrior has a thick skull even for an Orc. He has a special 3+ save on a D6 to avoid being stunned. If the save
-      is made, treat a stunned result as knocked down instead. If the Orc also wears a helmet, this save is 2+ instead of
-      3+ (this takes the place of the normal helmet special rule).
-    es: null
+    en: The warrior has a thick skull even for an Orc. He has a special 3+ save on a D6 to avoid being
+      stunned. If the save is made, treat a stunned result as knocked down instead. If the Orc also wears
+      a helmet, this save is 2+ instead of 3+ (this takes the place of the normal helmet special rule).
+    es: El guerrero tiene el cráneo grueso incluso para ser un orco. Tiene una salvación especial de 3+
+      con 1D6 para evitar ser aturdido. Si supera la salvación, trata un resultado de aturdido como derribado.
+      Si el orco además lleva yelmo, esta salvación es de 2+ en lugar de 3+ (esto sustituye a la regla
+      especial normal del yelmo).
   applies_to:
     band: true
 - id: band--black-orc-special-skills-waaagh
   kind: warband_skill
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.black-orcs.band.black-orc-special-skills-waaagh
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: attacks."
+      reason: 'Out of scope: attacks.'
   name: waaagh!
-  effect: Orcs are aggressive creatures and some are experts at bulldozing charges. The warrior may add +D3" to his charge
-    range.
+  effect: Orcs are aggressive creatures and some are experts at bulldozing charges. The warrior may add
+    +D3" to his charge range.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -907,27 +920,27 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: waaagh!
-    es: null
+    es: ¡WAAAGH!
   effect_i18n:
-    en: Orcs are aggressive creatures and some are experts at bulldozing charges. The warrior may add +D3" to his charge range.
-    es: null
+    en: Orcs are aggressive creatures and some are experts at bulldozing charges. The warrior may add
+      +D3" to his charge range.
+    es: Los orcos son criaturas agresivas y algunos son expertos en cargas arrolladoras. El guerrero puede
+      sumar +D3" a su alcance de carga.
   applies_to:
     band: true
 - id: band--black-orc-special-skills-ere-we-go
   kind: warband_skill
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.black-orcs.band.black-orc-special-skills-ere-we-go
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: ’ere we go!
-  effect: 'Orcs often charge even the most fearsome opponents. The
-
-    model may ignore fear tests when charging.'
+  effect: Orcs often charge even the most fearsome opponents. The model may ignore fear tests when charging.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -935,12 +948,13 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: ’ere we go!
-    es: null
+    es: ¡Allá vamos! ('Ere we go!)
   effect_i18n:
     en: 'Orcs often charge even the most fearsome opponents. The
 
       model may ignore fear tests when charging.'
-    es: null
+    es: Los orcos suelen cargar contra los oponentes más temibles. El modelo puede ignorar los chequeos
+      de miedo cuando carga.
   applies_to:
     band: true
 - id: band--black-orc-special-skills-da-cunnin-plan
@@ -953,10 +967,12 @@ rules:
     - id: unimplemented.black-orcs.band.black-orc-special-skills-da-cunnin-plan
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
   name: da cunnin’ plan
-  effect: Only the Boss may have this skill. The warband may re-roll any failed Rout tests as long as the Boss is not out of
-    action.
+  effect: Only the Boss may have this skill. The warband may re-roll any failed Rout tests as long as
+    the Boss is not out of action.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -964,29 +980,31 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: da cunnin’ plan
-    es: null
+    es: El plan listo (da cunnin' plan)
   effect_i18n:
     en: 'Only the Boss may have this skill. The warband may re-roll
 
       any failed Rout tests as long as the Boss is not out of action.'
-    es: null
+    es: Solo el Jefe puede tener esta habilidad. La banda puede repetir cualquier chequeo de huida fallido
+      mientras el Jefe no esté Fuera de combate.
   applies_to:
     band: true
 - id: band--black-orc-special-skills-eadbasher
   kind: warband_skill
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
     - id: skill.head-crusher
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: mechanic
         id: skill.head-crusher
   name: ’eadbasher
-  effect: Orcs have massive physical strength and some of them even learn to aim their blows at the heads of their opponents,
-    with obvious results. Any knocked down results which the Orc causes in hand-to-hand count as stunned results instead.
+  effect: Orcs have massive physical strength and some of them even learn to aim their blows at the heads
+    of their opponents, with obvious results. Any knocked down results which the Orc causes in hand-to-hand
+    count as stunned results instead.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -994,10 +1012,13 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
   name_i18n:
     en: ’eadbasher
-    es: null
+    es: Machacacráneos
   effect_i18n:
-    en: Orcs have massive physical strength and some of them even learn to aim their blows at the heads of their opponents,
-      with obvious results. Any knocked down results which the Orc causes in hand-to-hand count as stunned results instead.
-    es: null
+    en: Orcs have massive physical strength and some of them even learn to aim their blows at the heads
+      of their opponents, with obvious results. Any knocked down results which the Orc causes in hand-to-hand
+      count as stunned results instead.
+    es: Los orcos tienen una fuerza física masiva y algunos incluso aprenden a dirigir sus golpes contra
+      las cabezas de sus oponentes, con resultados obvios. Cualquier resultado de derribado que el orco
+      cause en el cuerpo a cuerpo cuenta como resultado de aturdido.
   applies_to:
     band: true

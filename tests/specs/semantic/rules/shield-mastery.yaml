@@ -5,62 +5,124 @@ specifications:
   category: local
   sources:
   - target: mechanic/skill.shield-mastery
-    digest: 0e5b9977b9143371eeb178aa51d6dc46b843d88a3a58a317c6bac08789903306
-  interpretation: Shield Mastery allows one ordinary parry while a shield occupies the off hand. The parry must beat
-    the hit roll and does not replace or consume the shield's normal +1 armour save. Without a shield it has no effect.
+    digest: 9cb8e7421815d344f358097fa978c95b2839eeb5facfbec2ed7e022a6b22a79f
+  interpretation: Shield Mastery allows one ordinary parry while a shield occupies the off hand. The parry
+    must beat the hit roll and does not replace or consume the shield's normal +1 armour save. Without
+    a shield it has no effect.
   interaction_contract:
-    reads: [build.offhand, weapon.kind, hit.roll, state.parries]
-    writes: [state.parries]
+    reads:
+    - build.offhand
+    - weapon.kind
+    - hit.roll
+    - state.parries
+    writes:
+    - state.parries
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    defender: {skill_ids: [skill.shield-mastery], main_weapon_id: weapon.axe, off_hand_id: defence.shield}
-    expect: {defender.armour_save: 6}
+    defender:
+      skill_ids:
+      - skill.shield-mastery
+      main_weapon_id: weapon.axe
+      off_hand_id: defence.shield
+    expect:
+      defender.armour_save: 6
     expect_contains:
-      defender.global_effects.tags: [skill.shield-mastery]
+      defender.global_effects.tags:
+      - skill.shield-mastery
   - id: shield-can-parry
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: parry
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {skill_ids: [skill.shield-mastery], main_weapon_id: weapon.axe, off_hand_id: defence.shield}
-    context: {hit_roll: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.shield-mastery
+      main_weapon_id: weapon.axe
+      off_hand_id: defence.shield
+    context:
+      hit_roll: 4
     distribution:
       observable: result.blocked
       max_rolls: 1
-      expected: {'true': 1/3, 'false': 2/3}
+      expected:
+        'true': 1/3
+        'false': 2/3
   - id: shield-retains-armour-save
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {skill_ids: [skill.shield-mastery], main_weapon_id: weapon.axe, off_hand_id: defence.shield}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.shield-mastery
+      main_weapon_id: weapon.axe
+      off_hand_id: defence.shield
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/6, 'false': 5/6}
+      expected:
+        'true': 1/6
+        'false': 5/6
   - id: shield-without-skill-cannot-parry
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: parry
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {main_weapon_id: weapon.axe, off_hand_id: defence.shield}
-    context: {hit_roll: 4}
-    expect: {result.attempted: false, result.blocked: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.axe
+      off_hand_id: defence.shield
+    context:
+      hit_roll: 4
+    expect:
+      result.attempted: false
+      result.blocked: false
   - id: skill-without-shield-cannot-parry
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: parry
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {skill_ids: [skill.shield-mastery], main_weapon_id: weapon.axe}
-    context: {hit_roll: 4}
-    expect: {result.attempted: false, result.blocked: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.shield-mastery
+      main_weapon_id: weapon.axe
+    context:
+      hit_roll: 4
+    expect:
+      result.attempted: false
+      result.blocked: false
   - id: natural-six-remains-unparryable
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: parry
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {skill_ids: [skill.shield-mastery], main_weapon_id: weapon.axe, off_hand_id: defence.shield}
-    context: {hit_roll: 6}
-    expect: {result.attempted: false, result.blocked: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.shield-mastery
+      main_weapon_id: weapon.axe
+      off_hand_id: defence.shield
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
   mutations:
   - id: remove-shield-mastery
     path: defender.global_effects.tags
     value: []
-    cases: [shield-can-parry]
+    cases:
+    - shield-can-parry

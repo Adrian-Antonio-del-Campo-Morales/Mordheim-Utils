@@ -40,9 +40,21 @@ class TapeDice:
         return value
 
 
-def fighter(*, ws=3, strength=3, toughness=3, wounds=1, initiative=3, attacks=1):
+class RecordingTurnDice:
+    def __init__(self):
+        self.keys = []
+
+    def roll(self, request: RollRequest):
+        self.keys.append(request.key)
+        if request.key.startswith("round.1.first.characteristic."):
+            return min(6, request.sides)
+        return 1
+
+
+def fighter(*, ws=3, strength=3, toughness=3, wounds=1, initiative=3, attacks=1, **options):
     return compile_fighter(FighterBuild(
         "mordheim", Characteristics(ws, strength, toughness, wounds, initiative, attacks),
+        **options,
     ))
 
 
@@ -66,6 +78,42 @@ def test_reference_luck_and_mark_are_persistent_consumable_resources():
     assert mark.hit and "mark-of-the-old-ones" in mark.attacker.resources_spent
 
 
+def test_reference_luck_can_reroll_a_failed_armour_save_once():
+    attacker = fighter()
+    defender = fighter(armour_id="armour.light-armour", skill_ids=("skill.luck",))
+    a, d = states(attacker, defender)
+    result = resolve_reference_attack(
+        attacker, defender, a, d, attacker.main_weapon,
+        TapeDice(4, 4, 1, 6), key="luck-armour",
+    )
+    assert result.saved and "luck" in result.defender.resources_spent
+
+
+def test_reference_mark_can_convert_a_failed_armour_save_once():
+    attacker = fighter()
+    defender = fighter(armour_id="armour.light-armour",
+                       skill_ids=("mechanic.mark-of-the-old-ones",))
+    a, d = states(attacker, defender)
+    result = resolve_reference_attack(
+        attacker, defender, a, d, attacker.main_weapon,
+        TapeDice(4, 4, 1), key="mark-armour",
+    )
+    assert result.saved and "mark-of-the-old-ones" in result.defender.resources_spent
+
+
+def test_reference_luck_can_reroll_a_failed_wound_once():
+    attacker = replace(fighter(), global_effects=EffectSet(tags=("skill.luck",)))
+    defender = fighter(wounds=3)
+    a, d = states(attacker, defender)
+    result = resolve_reference_attack(
+        attacker, defender, a, d, attacker.main_weapon,
+        TapeDice(4, 1, 4, 1), key="luck-wound",
+    )
+    assert result.wounded and result.damage == 1
+    assert "luck" in result.attacker.resources_spent
+
+
+
 def test_reference_parry_and_critical_capacity_are_consumed_in_state():
     attacker = fighter(ws=6, strength=4)
     defender = fighter(wounds=3)
@@ -84,6 +132,84 @@ def test_reference_parry_and_critical_capacity_are_consumed_in_state():
         TapeDice(6, 6, 6), key="critical",
     )
     assert not critical.attacker.critical_available
+
+
+def test_condemned_rerolls_variable_characteristics_each_new_turn():
+    condemned = compile_fighter(FighterBuild(
+        "mordheim", band_id="marauders-of-chaos", profile_id="condemned",
+    ))
+    opponent = fighter()
+    dice = RecordingTurnDice()
+    state = DuelState(
+        initialize_fighter(condemned, dice, "first"),
+        initialize_fighter(opponent, dice, "second"),
+        first_charged=True,
+    )
+
+    state = resolve_round(condemned, opponent, state, dice).state
+    assert state.first.weapon_skill == 1
+    assert state.first.strength == 1
+    assert state.first.toughness == 1
+    assert state.first.attacks == 1
+
+    state = resolve_round(condemned, opponent, state, dice).state
+    assert state.first.weapon_skill == 6
+    assert state.first.strength == 6
+    assert state.first.toughness == 6
+    assert state.first.attacks == 3
+    assert [key for key in dice.keys if ".characteristic." in key] == [
+        "first.characteristic.WS.0",
+        "first.characteristic.S.0",
+        "first.characteristic.T.0",
+        "first.characteristic.A.0",
+        "round.1.first.characteristic.WS.0",
+        "round.1.first.characteristic.S.0",
+        "round.1.first.characteristic.T.0",
+        "round.1.first.characteristic.A.0",
+    ]
+
+
+def test_double_bladed_sword_initializes_two_parry_attempts():
+    defender = compile_fighter(FighterBuild(
+        "mordheim", characteristics=Characteristics(3, 3, 3, 3, 3, 1),
+        main_weapon_id="weapon.double-bladed-sword",
+    ))
+    assert initialize_fighter(defender, ConstantDice(1), "defender").parries_remaining == 2
+
+
+def test_double_bladed_sword_can_parry_two_hits_in_one_pool():
+    attacker = fighter(attacks=2)
+    defender = compile_fighter(FighterBuild(
+        "mordheim", characteristics=Characteristics(3, 3, 3, 3, 3, 1),
+        main_weapon_id="weapon.double-bladed-sword",
+    ))
+    a, d = states(attacker, defender)
+    _, final_defender, outcomes = _resolve_attack_pool(
+        attacker, defender, a, d, 2, TapeDice(4, 4, 5, 5),
+        key="double-bladed", first_round=False, charging=False,
+        decisions=AlwaysAccept(),
+    )
+    assert [outcome.parried for outcome in outcomes] == [True, True]
+    assert final_defender.parries_remaining == 0
+
+
+
+def test_unbeatable_warrior_keeps_second_parry_after_natural_six():
+    attacker = fighter(attacks=2)
+    defender = compile_fighter(FighterBuild(
+        "mordheim", characteristics=Characteristics(3, 3, 3, 3, 3, 1),
+        main_weapon_id="weapon.sword", off_hand_id="weapon.sword",
+        skill_ids=("skill.unbeatable-warrior",),
+    ))
+    a, d = states(attacker, defender)
+    _, final_defender, outcomes = _resolve_attack_pool(
+        attacker, defender, a, d, 2,
+        TapeDice(6, 4, 4, 1), key="two-parries-six",
+        first_round=False, charging=False, decisions=AlwaysAccept(),
+    )
+    assert outcomes[0].hit_roll == 6 and not outcomes[0].parried
+    assert outcomes[1].parried
+    assert final_defender.parries_remaining == 1
 
 
 def test_attack_pool_parries_the_highest_hit_roll_not_the_first_hit():
@@ -117,6 +243,20 @@ def test_lucky_charm_save_releases_parry_for_next_highest_hit():
     assert outcomes[0].saved
     assert outcomes[1].parried
     assert final_defender.parries_remaining == 0
+
+
+def test_bull_charge_does_not_knock_down_a_hit_stopped_by_lucky_charm():
+    attacker = replace(fighter(), global_effects=EffectSet(tags=("mechanic.bull-charge",)))
+    defender = replace(fighter(), global_effects=EffectSet(tags=("defence.lucky-charm",)))
+    a, d = states(attacker, defender)
+    _, final_defender, outcomes = _resolve_attack_pool(
+        attacker, defender, a, d, 1, TapeDice(3, 4),
+        key="bull-charm", first_round=True, charging=True,
+        decisions=AlwaysAccept(),
+    )
+    assert outcomes[0].hit and outcomes[0].saved
+    assert final_defender.condition == Condition.STANDING
+
 
 
 def test_reference_force_of_will_rescues_once_and_sustains_per_round():

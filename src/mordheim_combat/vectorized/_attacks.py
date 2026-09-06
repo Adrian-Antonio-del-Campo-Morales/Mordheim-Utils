@@ -64,7 +64,7 @@ def _parry_hits(defender: CompiledFighter, effect: EffectSet, hit_rows: np.ndarr
         return hit_rows,np.empty(0,dtype=np.int64),np.ones(hit_rows.size,dtype=bool)
     can_parry_six = has(defender.global_effects, "rule.blood-dragon-sword-master")
     # A natural six in the eligible pool prevents substituting a lower hit.
-    if not can_parry_six:
+    if not can_parry_six and _parry_capacity(defender) < 2:
         defender_state.parry_remaining[np.unique(hit_rows[hit_values == 6])] = 0
     eligible = ((defender_state.condition[hit_rows] == STANDING)
                 & (defender_state.parry_remaining[hit_rows] > 0)
@@ -120,7 +120,7 @@ def _parry_hits(defender: CompiledFighter, effect: EffectSet, hit_rows: np.ndarr
         )
         blocked |= eligible & blockable_roll & second_success
     defender_state.parry_used[hit_rows[eligible]] = True
-    defender_state.parry_remaining[hit_rows[eligible]] -= 1
+    np.add.at(defender_state.parry_remaining, hit_rows[eligible], -1)
     return hit_rows[~blocked],hit_rows[blocked],~blocked
 
 @lru_cache(maxsize=1024)
@@ -454,6 +454,33 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
         ignited=rng.integers(1,7,hit_rows.size)>=ignition_target
         defender_state.on_fire[hit_rows[ignited]]=True
     poison_blocked = defender.global_effects.poison_immunity or has(defender.global_effects, "poison_immune")
+    # Disease Dagger adds one ordinary automatic wound on a natural-six hit.
+    # Immunity blocks only this additional wound; the ordinary dagger wound
+    # continues through the normal pipeline.
+    if has(weapon, "weapon.disease-dagger") and not poison_blocked and not has(
+        defender.global_effects, "undead_or_possessed"
+    ):
+        candidates = hit_rows[hit_values == 6]
+        if candidates.size:
+            infection_passed = _characteristic_test(
+                defender, defender_state.toughness[candidates], rng,
+            )
+            infected = candidates[~infection_passed]
+            if infected.size:
+                infection = EffectSet(
+                    tags=("effect.automatic-wound", "effect.no-critical"),
+                    fixed_strength=3, automatic_hit=True,
+                    cannot_be_parried=True,
+                )
+                _resolve_weapon(
+                    attacker, defender, infection, infected,
+                    np.zeros(charging.size, dtype=bool), attacker_state,
+                    defender_state, rng, False, melee_attack=False,
+                )
+                alive = defender_state.condition[hit_rows] != OUT
+                hit_rows = hit_rows[alive]
+                hit_positions = hit_positions[alive]
+                hit_values = hit_values[alive]
     if has(effect, "poison.spider-spittle") and not poison_blocked:
         candidates = hit_rows[defender_state.condition[hit_rows] == STANDING]
         failed_tests = ~_characteristic_test(defender, defender_state.toughness[candidates], rng)
@@ -544,6 +571,17 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
     eligible = save_target <= 6
     if eligible.any():
         saved[eligible] = rng.integers(1, 7, int(eligible.sum())) >= np.maximum(2, save_target[eligible])
+    if has(defender.global_effects, "skill.luck"):
+        rerolled = eligible & ~saved & ~defender_state.luck_used[wound_rows]
+        if rerolled.any():
+            rerolls = rng.integers(1, 7, int(rerolled.sum()))
+            saved[rerolled] = rerolls >= np.maximum(2, save_target[rerolled])
+            defender_state.luck_used[wound_rows[rerolled]] = True
+    if has(defender.global_effects, "mechanic.mark-of-the-old-ones"):
+        converted = eligible & ~saved & ~defender_state.mark_of_old_ones_used[wound_rows]
+        if converted.any():
+            saved[converted] = True
+            defender_state.mark_of_old_ones_used[wound_rows[converted]] = True
     if observation is not None and saved.any():
         observation.saved = True
         observation.critical = bool(critical[saved].any())
@@ -612,7 +650,7 @@ def _resolve_weapon_once(attacker: CompiledFighter, defender: CompiledFighter, w
                 melee_attack=False,
             )
     if has(effect, "poison.nightshade") and not poison_blocked:
-        np.add.at(defender_state.initiative_penalty, wound_rows, 1)
+        np.add.at(defender_state.initiative_penalty, damage_rows, 1)
     # Damage rows are ordered by duel row. The ordinal within each row tells
     # us which damage instance reaches zero wounds and therefore creates an
     # injury roll, without grouping each simulated duel in Python.
@@ -801,7 +839,7 @@ def resolve_attacks(attacker: CompiledFighter, defender: CompiledFighter, rows: 
         positions=np.searchsorted(prepared.active,prepared.hit_rows)
         positions_by_attack.append(positions)
         values=prepared.rolls[positions]
-        if not can_parry_six:
+        if not can_parry_six and not two_parries:
             defender_state.parry_remaining[prepared.hit_rows[values == 6]] = 0
         competing=np.where(
             ((values != 6) | can_parry_six)

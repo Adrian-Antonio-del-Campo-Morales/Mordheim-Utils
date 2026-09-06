@@ -5,7 +5,7 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/preparation.crimson-shade
-    digest: 78d02c317f76fe0eb45b319809cadceebd9559426b242abee9053d39039e12cf
+    digest: 4b35e04352deb89051f7541cbc9e2399cb391d38e6ed8f46ef02cc6293c80ea8
   interpretation: Crimson Shade grants +1 Strength for the whole combat and adds a single D3 roll to Initiative
     when initialising the fighter.
   cases:
@@ -85,9 +85,9 @@ specifications:
   category: stateful
   sources:
   - target: mechanic/poison.nightshade
-    digest: 48573b826e479034d0c4198b1a3ad8e95e0362289a2855f8e753af35e95650a5
-  interpretation: Each unsaved wound with Nightshade reduces the defender's Initiative by one; poison immunity
-    prevents the reduction.
+    digest: ab5ed5a96a4272ed60b7483bbfadbaed5cc7cdfab08ae234f48eae8831c21a8e
+  interpretation: Each unsaved wound with Nightshade reduces the defender's Initiative by one; poison
+    immunity prevents the reduction.
   cases:
   - id: compiled
     roles:
@@ -128,6 +128,35 @@ specifications:
       result.wounded: true
       result.defender.initiative_penalty: 1
       result.defender.wounds: 2
+  - id: critical-two-wounds
+    roles:
+    - active
+    - consumer
+    - sequence
+    - consumption
+    - boundary
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 4
+        initiative: 4
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 6
+    - key: test.critical
+      value: 1
+    expect:
+      result.damage: 2
+      result.defender.initiative_penalty: 2
   - id: failed-wound
     roles:
     - inactive
@@ -175,9 +204,10 @@ specifications:
   category: stateful
   sources:
   - target: mechanic/poison.spider-spittle
-    digest: f978179813b2fca65da90be10cec7db180d76bfb5038370ebd0fd2aad25e205e
-  interpretation: An undefended hit immediately triggers a Toughness test before wounding or saves. A failed
-    test paralyses; immunity prevents the test. Paralysis grants automatic hits, not automatic elimination.
+    digest: d44d4b58958f5ee3b8a59aee02d7241f1b11292b010e202af879595c9755a60c
+  interpretation: An undefended hit immediately triggers a Toughness test before wounding or saves. A
+    failed test paralyses; immunity prevents the test. Paralysis grants automatic hits, not automatic
+    elimination.
   cases:
   - id: compiled
     roles:
@@ -297,7 +327,7 @@ specifications:
   category: stateful
   sources:
   - target: mechanic/mechanic.disability
-    digest: 6d6c4d98b05f71c90d9e8d1f55712665047e01035b447d9f3a1076bce808735f
+    digest: b85e9a28ffb97469fef81d0e3e6b057057b58c5e5551d4f71b9b0d927fe81c80
   interpretation: The simulation rolls the Disability D6 once per row and applies the representable combat
     effects of each face, keeping the consumed face in the state.
   cases:
@@ -429,9 +459,9 @@ specifications:
   category: stateful
   sources:
   - target: mechanic/mechanic.mark-of-the-old-ones
-    digest: ab063adb5b01f001ac994bf7ab4cd22c2e77b53ea092c8c8ef27ec7474cdcfaa
-  interpretation: Mark of the Old Ones turns the first failed to-hit or to-wound roll into a success and is
-    then consumed for the rest of the duel.
+    digest: 0f1613a1add314c842416822062dab5e9977c66e70e1ec145780faf0f1fc76e6
+  interpretation: Mark of the Old Ones turns the first failed own roll, including an armour save, into
+    a success and is then consumed for the rest of the duel.
   cases:
   - id: compiled
     roles:
@@ -525,6 +555,30 @@ specifications:
       result.defender.wounds: 2
       result.attacker.resources_spent:
       - mark-of-the-old-ones
+  - id: failed-armour-save-converted
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
+    operation: attack
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      armour_id: armour.light-armour
+      skill_ids:
+      - mechanic.mark-of-the-old-ones
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.armour
+      value: 1
+    expect:
+      result.saved: true
+      result.defender.resources_spent:
+      - mark-of-the-old-ones
   mutations:
   - id: remove-mark
     path: attacker.global_effects.tags
@@ -532,3 +586,8 @@ specifications:
     cases:
     - failed-hit-converted
     - failed-wound-converted
+  - id: remove-mark-from-defender
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - failed-armour-save-converted

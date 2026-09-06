@@ -5,126 +5,370 @@ specifications:
   category: stateful
   sources:
   - target: rule/mordheim/tomb-guardians/tomb-lord--flammable/trait.flammable
-    digest: 38665b8920e393a683d0c173c86fb9857e1650ef906df38cdcaafd60f50bb349
+    digest: e4390979f366877037ea512b9711f8405c0310b2326f428b9a902468222b41c1
   interpretation: Flammable doubles Wounds caused by fire, not the number of hits. The Mordheim wording
-    'hits' identifies fire attacks but does not replace the normal wound roll; doubling zero wounds still gives zero.
-    The Khemri wording explicitly says 'wounds'. Normal attacks remain one damage. Overkill creates the normal
-    number of Injury rolls, with the Tomb Lord's No Pain still applied.
+    'hits' identifies fire attacks but does not replace the normal wound roll; doubling zero wounds still
+    gives zero. The Khemri wording explicitly says 'wounds'. Normal attacks remain one damage. Overkill
+    creates the normal number of Injury rolls, with the Tomb Lord's No Pain still applied.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-lord}
-    context: {rule_id: tomb-lord--flammable}
-    expect: {result.recipients: [tomb-lord]}
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-lord
+    context:
+      rule_id: tomb-lord--flammable
+    expect:
+      result.recipients:
+      - tomb-lord
   - id: fire-wound
-    roles: [active, consumer, sequence, consumption]
+    roles:
+    - active
+    - consumer
+    - sequence
+    - consumption
     operation: attack
-    attacker: {main_weapon_id: weapon.brazier-iron, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-lord}
-    rolls: [{key: test.hit, value: 5}, {key: test.ignition, value: 1}, {key: test.wound, value: 5}]
-    expect: {result.damage: 2, result.defender.wounds: 1, result.defender.condition: STANDING}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-lord
+    rolls:
+    - key: test.hit
+      value: 5
+    - key: test.ignition
+      value: 1
+    - key: test.wound
+      value: 5
+    expect:
+      result.damage: 2
+      result.defender.wounds: 1
+      result.defender.condition: STANDING
     expect_contains:
-      defender.global_effects.tags: [flammable]
+      defender.global_effects.tags:
+      - flammable
   - id: normal-wound
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attack
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-lord}
-    rolls: [{key: test.hit, value: 5}, {key: test.wound, value: 5}]
-    expect: {result.damage: 1, result.defender.wounds: 2, result.defender.condition: STANDING}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-lord
+    rolls:
+    - key: test.hit
+      value: 5
+    - key: test.wound
+      value: 5
+    expect:
+      result.damage: 1
+      result.defender.wounds: 2
+      result.defender.condition: STANDING
   - id: fire-misses
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attack
-    attacker: {main_weapon_id: weapon.brazier-iron, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-lord}
-    rolls: [{key: test.hit, value: 1}]
-    expect: {result.damage: 0, result.defender.wounds: 3}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-lord
+    rolls:
+    - key: test.hit
+      value: 1
+    expect:
+      result.damage: 0
+      result.defender.wounds: 3
   - id: fire-fails-to-wound
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attack
-    attacker: {main_weapon_id: weapon.brazier-iron, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-lord}
-    rolls: [{key: test.hit, value: 5}, {key: test.ignition, value: 1}, {key: test.wound, value: 1}]
-    expect: {result.damage: 0, result.defender.wounds: 3}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-lord
+    rolls:
+    - key: test.hit
+      value: 5
+    - key: test.ignition
+      value: 1
+    - key: test.wound
+      value: 1
+    expect:
+      result.damage: 0
+      result.defender.wounds: 3
   - id: fire-overkill
-    roles: [boundary, sequence, consumption]
+    roles:
+    - boundary
+    - sequence
+    - consumption
     operation: attack
-    attacker: {main_weapon_id: weapon.brazier-iron, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-lord}
-    defender_state: {wounds: 1}
-    rolls: [{key: test.hit, value: 5}, {key: test.ignition, value: 1}, {key: test.wound, value: 5}, {key: test.injury.0, value: 1}, {key: test.injury.1, value: 3}]
-    expect: {result.damage: 2, result.defender.wounds: -1, result.defender.condition: KNOCKED_DOWN}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-lord
+    defender_state:
+      wounds: 1
+    rolls:
+    - key: test.hit
+      value: 5
+    - key: test.ignition
+      value: 1
+    - key: test.wound
+      value: 5
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 3
+    expect:
+      result.damage: 2
+      result.defender.wounds: -1
+      result.defender.condition: KNOCKED_DOWN
   mutations:
   - id: remove-flammable
     path: defender.global_effects.tags
-    value: [skill.ignore-pain]
-    cases: [fire-wound, fire-overkill]
+    value:
+    - skill.ignore-pain
+    cases:
+    - fire-wound
+    - fire-overkill
   - id: remove-fire-tag
     path: attacker.main_weapon.tags
-    value: [weapon.brazier-iron]
-    cases: [fire-wound]
+    value:
+    - weapon.brazier-iron
+    cases:
+    - fire-wound
 - id: editorial-tomb-lord-flammable-khemri-tomb-guardians
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
   - target: rule/trollheim/khemri-tomb-guardians/tomb-lord--flammable/trait.flammable
-    digest: 267125c3cc15b03e076491f88e97ea085171582d5b0dde6dcab811faed9b01ba
+    digest: ae65515ec6a7894989ebafb57acd48b35c665873c3f33c2b439b359605ccfa54
   interpretation: Flammable doubles Wounds caused by fire, not the number of hits. The Mordheim wording
-    'hits' identifies fire attacks but does not replace the normal wound roll; doubling zero wounds still gives zero.
-    The Khemri wording explicitly says 'wounds'. Normal attacks remain one damage. Overkill creates the normal
-    number of Injury rolls, with the Tomb Lord's No Pain still applied.
+    'hits' identifies fire attacks but does not replace the normal wound roll; doubling zero wounds still
+    gives zero. The Khemri wording explicitly says 'wounds'. Normal attacks remain one damage. Overkill
+    creates the normal number of Injury rolls, with the Tomb Lord's No Pain still applied.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-lord}
-    context: {rule_id: tomb-lord--flammable}
-    expect: {result.recipients: [tomb-lord]}
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-lord
+    context:
+      rule_id: tomb-lord--flammable
+    expect:
+      result.recipients:
+      - tomb-lord
   - id: fire-wound
-    roles: [active, consumer, sequence, consumption]
+    roles:
+    - active
+    - consumer
+    - sequence
+    - consumption
     operation: attack
-    attacker: {main_weapon_id: weapon.brazier-iron, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-lord}
-    rolls: [{key: test.hit, value: 5}, {key: test.ignition, value: 1}, {key: test.wound, value: 5}, {key: test.injury.0, value: 1}]
-    expect: {result.damage: 2, result.defender.wounds: 0, result.defender.condition: KNOCKED_DOWN}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-lord
+    rolls:
+    - key: test.hit
+      value: 5
+    - key: test.ignition
+      value: 1
+    - key: test.wound
+      value: 5
+    - key: test.injury.0
+      value: 1
+    expect:
+      result.damage: 2
+      result.defender.wounds: 0
+      result.defender.condition: KNOCKED_DOWN
     expect_contains:
-      defender.global_effects.tags: [flammable]
+      defender.global_effects.tags:
+      - flammable
   - id: normal-wound
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attack
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-lord}
-    rolls: [{key: test.hit, value: 5}, {key: test.wound, value: 5}]
-    expect: {result.damage: 1, result.defender.wounds: 1, result.defender.condition: STANDING}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-lord
+    rolls:
+    - key: test.hit
+      value: 5
+    - key: test.wound
+      value: 5
+    expect:
+      result.damage: 1
+      result.defender.wounds: 1
+      result.defender.condition: STANDING
   - id: fire-misses
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attack
-    attacker: {main_weapon_id: weapon.brazier-iron, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-lord}
-    rolls: [{key: test.hit, value: 1}]
-    expect: {result.damage: 0, result.defender.wounds: 2}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-lord
+    rolls:
+    - key: test.hit
+      value: 1
+    expect:
+      result.damage: 0
+      result.defender.wounds: 2
   - id: fire-fails-to-wound
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attack
-    attacker: {main_weapon_id: weapon.brazier-iron, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-lord}
-    rolls: [{key: test.hit, value: 5}, {key: test.ignition, value: 1}, {key: test.wound, value: 1}]
-    expect: {result.damage: 0, result.defender.wounds: 2}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-lord
+    rolls:
+    - key: test.hit
+      value: 5
+    - key: test.ignition
+      value: 1
+    - key: test.wound
+      value: 1
+    expect:
+      result.damage: 0
+      result.defender.wounds: 2
   - id: fire-overkill
-    roles: [boundary, sequence, consumption]
+    roles:
+    - boundary
+    - sequence
+    - consumption
     operation: attack
-    attacker: {main_weapon_id: weapon.brazier-iron, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-lord}
-    defender_state: {wounds: 1}
-    rolls: [{key: test.hit, value: 5}, {key: test.ignition, value: 1}, {key: test.wound, value: 5}, {key: test.injury.0, value: 1}, {key: test.injury.1, value: 3}]
-    expect: {result.damage: 2, result.defender.wounds: -1, result.defender.condition: KNOCKED_DOWN}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-lord
+    defender_state:
+      wounds: 1
+    rolls:
+    - key: test.hit
+      value: 5
+    - key: test.ignition
+      value: 1
+    - key: test.wound
+      value: 5
+    - key: test.injury.0
+      value: 1
+    - key: test.injury.1
+      value: 3
+    expect:
+      result.damage: 2
+      result.defender.wounds: -1
+      result.defender.condition: KNOCKED_DOWN
   mutations:
   - id: remove-flammable
     path: defender.global_effects.tags
-    value: [skill.ignore-pain]
-    cases: [fire-wound, fire-overkill]
+    value:
+    - skill.ignore-pain
+    cases:
+    - fire-wound
+    - fire-overkill
   - id: remove-fire-tag
     path: attacker.main_weapon.tags
-    value: [weapon.brazier-iron]
-    cases: [fire-wound]
+    value:
+    - weapon.brazier-iron
+    cases:
+    - fire-wound

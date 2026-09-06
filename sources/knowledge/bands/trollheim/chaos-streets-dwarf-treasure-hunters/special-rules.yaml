@@ -3,17 +3,20 @@ band_id: chaos-streets-dwarf-treasure-hunters
 rules:
 - id: dwarf-noble--leader
   name: Leader
-  effect: Any warband model within 15 cm of the Dwarf Noble may use his Leadership when taking Leadership tests.
+  effect: Any warband model within 15 cm of the Dwarf Noble may use his Leadership when taking Leadership
+    tests.
   source:
     manual: chaos-in-the-streets
     printed_page: 114
     section: Heroes / 1 Dwarf Noble / Special Rules / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
-    en: Any warband model within 15 cm of the Dwarf Noble may use his Leadership when taking Leadership tests.
-    es: null
+    en: Any warband model within 15 cm of the Dwarf Noble may use his Leadership when taking Leadership
+      tests.
+    es: Cualquier modelo de la banda a 15 cm del Noble Enano puede usar su Liderazgo cuando realice chequeos
+      de Liderazgo.
   applies_to:
     profile_ids:
     - dwarf-noble
@@ -28,19 +31,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: dwarf-engineer--expert-armourer
   name: Expert Armourer
-  effect: While the Dwarf Engineer remains in the warband, all missile weapons used by the warband increase their range by
-    15 cm. The modifications require the Engineer's constant maintenance.
+  effect: While the Dwarf Engineer remains in the warband, all missile weapons used by the warband increase
+    their range by 15 cm. The modifications require the Engineer's constant maintenance.
   source:
     manual: chaos-in-the-streets
     printed_page: 114
     section: Heroes / 0-1 Dwarf Engineer / Special Rules / Expert Armourer
   name_i18n:
     en: Expert Armourer
-    es: null
+    es: Armero experto
   effect_i18n:
-    en: While the Dwarf Engineer remains in the warband, all missile weapons used by the warband increase their range by 15
-      cm. The modifications require the Engineer's constant maintenance.
-    es: null
+    en: While the Dwarf Engineer remains in the warband, all missile weapons used by the warband increase
+      their range by 15 cm. The modifications require the Engineer's constant maintenance.
+    es: Mientras el Ingeniero Enano permanezca en la banda, todas las armas de misil usadas por la banda
+      aumentan su alcance en 15 cm. Las modificaciones requieren el mantenimiento constante del Ingeniero.
   applies_to:
     profile_ids:
     - dwarf-engineer
@@ -55,17 +59,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: dwarf-troll-slayers--death-oath
   name: Death Oath
-  effect: Dwarf Troll Slayers are completely immune to all Psychology and do not need to take tests for fighting alone.
+  effect: Dwarf Troll Slayers are completely immune to all Psychology and do not need to take tests for
+    fighting alone.
   source:
     manual: chaos-in-the-streets
     printed_page: 114
     section: Heroes / 0-2 Dwarf Troll Slayers / Special Rules / Death Oath
   name_i18n:
     en: Death Oath
-    es: null
+    es: Juramento de muerte
   effect_i18n:
-    en: Dwarf Troll Slayers are completely immune to all Psychology and do not need to take tests for fighting alone.
-    es: null
+    en: Dwarf Troll Slayers are completely immune to all Psychology and do not need to take tests for
+      fighting alone.
+    es: Los Asesatrolls Enanos son completamente inmunes a toda la Psicología y no necesitan hacer chequeos
+      por luchar solos.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
@@ -80,19 +87,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: dwarf-troll-slayers--slayer-skills
   name: Slayer Skills
-  effect: When gaining a new skill, a Dwarf Troll Slayer may choose from the Troll Slayer Special Skills. He may also choose
-    from the Dwarf Treasure Hunter Special Skills.
+  effect: When gaining a new skill, a Dwarf Troll Slayer may choose from the Troll Slayer Special Skills.
+    He may also choose from the Dwarf Treasure Hunter Special Skills.
   source:
     manual: chaos-in-the-streets
     printed_page: 113
     section: Troll Slayer Special Skills
   name_i18n:
     en: Slayer Skills
-    es: null
+    es: Habilidades de Asesatroll
   effect_i18n:
-    en: When gaining a new skill, a Dwarf Troll Slayer may choose from the Troll Slayer Special Skills. He may also choose
-      from the Dwarf Treasure Hunter Special Skills.
-    es: null
+    en: When gaining a new skill, a Dwarf Troll Slayer may choose from the Troll Slayer Special Skills.
+      He may also choose from the Dwarf Treasure Hunter Special Skills.
+    es: Al ganar una nueva habilidad, un Asesatroll Enano puede elegir de entre las Habilidades Especiales
+      de Asesatroll. También puede elegir de entre las Habilidades Especiales de Cazatesoros Enanos.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
@@ -121,32 +129,37 @@ rules:
         kind: mechanic
         id: skill.hard-to-kill
   name: Hard to Kill
-  effect: Dwarfs are taken Out of Action only on a 6 on the Injury chart; 1-2 is Knocked Down and 3-5 is Stunned.
+  effect: Dwarfs are taken Out of Action only on a 6 on the Injury chart; 1-2 is Knocked Down and 3-5
+    is Stunned.
   source:
     manual: chaos-in-the-streets
     printed_page: 111
     section: Special Rules / Hard to Kill
   name_i18n:
     en: Hard to Kill
-    es: null
+    es: Difíciles de matar
   effect_i18n:
-    en: Dwarfs are taken Out of Action only on a 6 on the Injury chart; 1-2 is Knocked Down and 3-5 is Stunned.
-    es: null
+    en: Dwarfs are taken Out of Action only on a 6 on the Injury chart; 1-2 is Knocked Down and 3-5 is
+      Stunned.
+    es: Los enanos solo son puestos Fuera de combate con un 6 en la tabla de Heridas; 1-2 es Derribado
+      y 3-5 es Aturdido.
   applies_to:
     band: true
 - id: band--hard-head
   name: Hard Head
-  effect: Dwarfs ignore the special rules of maces, clubs and similar weapons that would make them easier to Stun.
+  effect: Dwarfs ignore the special rules of maces, clubs and similar weapons that would make them easier
+    to Stun.
   source:
     manual: chaos-in-the-streets
     printed_page: 111
     section: Special Rules / Hard Head
   name_i18n:
     en: Hard Head
-    es: null
+    es: Cráneo grueso
   effect_i18n:
-    en: Dwarfs ignore the special rules of maces, clubs and similar weapons that would make them easier to Stun.
-    es: null
+    en: Dwarfs ignore the special rules of maces, clubs and similar weapons that would make them easier
+      to Stun.
+    es: Los enanos ignoran las reglas especiales de mazas, porras y armas similares que facilitarían Aturdirlos.
   applies_to:
     band: true
   runtime:
@@ -170,10 +183,10 @@ rules:
     section: Special Rules / Armour
   name_i18n:
     en: Armour
-    es: null
+    es: Armadura
   effect_i18n:
     en: Dwarfs never suffer a Movement penalty for wearing armour.
-    es: null
+    es: Los enanos nunca sufren penalización de Movimiento por llevar armadura.
   applies_to:
     band: true
   runtime:
@@ -184,7 +197,9 @@ rules:
     - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.armour
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--hate-orcs-and-goblins
   name: Hate Orcs and Goblins
   effect: All Dwarfs are subject to Hatred against Orcs and Goblins.
@@ -194,10 +209,10 @@ rules:
     section: Special Rules / Hate Orcs and Goblins
   name_i18n:
     en: Hate Orcs and Goblins
-    es: null
+    es: Odio a orcos y goblins
   effect_i18n:
     en: All Dwarfs are subject to Hatred against Orcs and Goblins.
-    es: null
+    es: Todos los enanos están sujetos a Odio contra Orcos y Goblins.
   applies_to:
     band: true
   runtime:
@@ -218,10 +233,10 @@ rules:
     section: Special Rules / Ancestral Grudge
   name_i18n:
     en: Grudgebearers
-    es: null
+    es: Rencorosos
   effect_i18n:
     en: A Dwarf Treasure Hunter warband may never hire an Elven Hired Sword.
-    es: null
+    es: Una banda de Cazatesoros Enanos jamás puede contratar una Espada a Sueldo Elfa.
   applies_to:
     band: true
   runtime:
@@ -232,7 +247,9 @@ rules:
     - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.grudgebearers
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--incomparable-miners
   name: Incomparable Miners
   effect: When determining how much wyrdstone the warband finds, add +1 to the number of shards found.
@@ -242,10 +259,10 @@ rules:
     section: Special Rules / Excellent Miners
   name_i18n:
     en: Incomparable Miners
-    es: null
+    es: Mineros incomparables
   effect_i18n:
     en: When determining how much wyrdstone the warband finds, add +1 to the number of shards found.
-    es: null
+    es: Al determinar cuánta piedra bruja encuentra la banda, suma +1 al número de fragmentos encontrados.
   applies_to:
     band: true
   runtime:
@@ -275,21 +292,26 @@ rules:
         kind: mechanic
         id: skill.sword-master
   name: Master of Blades
-  effect: When using a weapon with the Parry special rule, this Hero parries successfully if his roll equals or exceeds the
-    opponent's highest To Hit roll. If using two weapons with Parry, he may attempt two parries against the two highest attack
-    rolls. If using two Dwarf Axes, he may also re-roll failed parries.
+  effect: When using a weapon with the Parry special rule, this Hero parries successfully if his roll
+    equals or exceeds the opponent's highest To Hit roll. If using two weapons with Parry, he may attempt
+    two parries against the two highest attack rolls. If using two Dwarf Axes, he may also re-roll failed
+    parries.
   source:
     manual: chaos-in-the-streets
     printed_page: 113
     section: Dwarf Treasure Hunter Special Skills / Master of Blades
   name_i18n:
     en: Master of Blades
-    es: null
+    es: Maestro de las hojas
   effect_i18n:
-    en: When using a weapon with the Parry special rule, this Hero parries successfully if his roll equals or exceeds the
-      opponent's highest To Hit roll. If using two weapons with Parry, he may attempt two parries against the two highest
-      attack rolls. If using two Dwarf Axes, he may also re-roll failed parries.
-    es: null
+    en: When using a weapon with the Parry special rule, this Hero parries successfully if his roll equals
+      or exceeds the opponent's highest To Hit roll. If using two weapons with Parry, he may attempt two
+      parries against the two highest attack rolls. If using two Dwarf Axes, he may also re-roll failed
+      parries.
+    es: Al usar un arma con la regla especial Emparañar, este Héroe emparaña con éxito si su tirada iguala
+      o supera la tirada de impactar más alta del oponente. Si usa dos armas con Emparañar, puede intentar
+      dos paradas contra las dos tiradas de ataque más altas. Si usa dos Hachas Enanas, también puede
+      repetir las paradas falladas.
   eligibility:
   - dwarf-noble
   - dwarf-engineer
@@ -299,19 +321,20 @@ rules:
 - id: band--dwarf-special-skills-extra-tough
   kind: warband_skill
   name: Extra Tough
-  effect: After a battle in which this Hero was taken Out of Action, he may re-roll his result on the Heroes Serious Injury
-    table once. The second result must be accepted even if it is worse.
+  effect: After a battle in which this Hero was taken Out of Action, he may re-roll his result on the
+    Heroes Serious Injury table once. The second result must be accepted even if it is worse.
   source:
     manual: chaos-in-the-streets
     printed_page: 113
     section: Dwarf Treasure Hunter Special Skills / Extra Tough
   name_i18n:
     en: Extra Tough
-    es: null
+    es: Extra resistente
   effect_i18n:
-    en: After a battle in which this Hero was taken Out of Action, he may re-roll his result on the Heroes Serious Injury
-      table once. The second result must be accepted even if it is worse.
-    es: null
+    en: After a battle in which this Hero was taken Out of Action, he may re-roll his result on the Heroes
+      Serious Injury table once. The second result must be accepted even if it is worse.
+    es: Tras una batalla en la que este Héroe fue puesto Fuera de combate, puede repetir una vez su resultado
+      en la tabla de Heridas Graves de Héroes. El segundo resultado debe aceptarse incluso si es peor.
   eligibility:
   - dwarf-noble
   - dwarf-engineer
@@ -337,10 +360,11 @@ rules:
     section: Dwarf Treasure Hunter Special Skills / Resource Hunter
   name_i18n:
     en: Resource Hunter
-    es: null
+    es: Cazador de recursos
   effect_i18n:
     en: During post-battle Exploration, this Hero may modify one die result by +1 or -1.
-    es: null
+    es: Durante la Exploración posbatalla, este Héroe puede modificar el resultado de un dado en +1 o
+      -1.
   eligibility:
   - dwarf-noble
   - dwarf-engineer
@@ -376,10 +400,11 @@ rules:
     section: Dwarf Treasure Hunter Special Skills / True Grit
   name_i18n:
     en: True Grit
-    es: null
+    es: Entereza
   effect_i18n:
     en: For this Hero, Injury chart results are 1-3 Knocked Down, 4-5 Stunned, and 6 Out of Action.
-    es: null
+    es: Para este Héroe, los resultados de la tabla de Heridas son 1-3 Derribado, 4-5 Aturdido y 6 Fuera
+      de combate.
   eligibility:
   - dwarf-noble
   - dwarf-engineer
@@ -399,19 +424,21 @@ rules:
         kind: mechanic
         id: skill.thick-skull
   name: Thick Skull
-  effect: Whenever this Hero would be Stunned, he may make a 3+ save to be Knocked Down instead. If he is wearing a Helmet,
-    this save becomes 2+ and replaces the Helmet's normal special rule.
+  effect: Whenever this Hero would be Stunned, he may make a 3+ save to be Knocked Down instead. If he
+    is wearing a Helmet, this save becomes 2+ and replaces the Helmet's normal special rule.
   source:
     manual: chaos-in-the-streets
     printed_page: 113
     section: Dwarf Treasure Hunter Special Skills / Thick Skull
   name_i18n:
     en: Thick Skull
-    es: null
+    es: Cráneo grueso
   effect_i18n:
-    en: Whenever this Hero would be Stunned, he may make a 3+ save to be Knocked Down instead. If he is wearing a Helmet,
-      this save becomes 2+ and replaces the Helmet's normal special rule.
-    es: null
+    en: Whenever this Hero would be Stunned, he may make a 3+ save to be Knocked Down instead. If he is
+      wearing a Helmet, this save becomes 2+ and replaces the Helmet's normal special rule.
+    es: Siempre que este Héroe vaya a ser Aturdido, puede hacer una salvación de 3+ para quedar Derribado
+      en su lugar. Si lleva Yelmo, esta salvación pasa a ser de 2+ y sustituye a la regla especial normal
+      del Yelmo.
   eligibility:
   - dwarf-noble
   - dwarf-engineer
@@ -431,19 +458,20 @@ rules:
         kind: mechanic
         id: skill.monster-slayer
   name: Monster Slayer
-  effect: The Slayer always wounds an opponent on a 4+ regardless of Toughness, unless his modified Strength would normally
-    allow him to wound on a lower result.
+  effect: The Slayer always wounds an opponent on a 4+ regardless of Toughness, unless his modified Strength
+    would normally allow him to wound on a lower result.
   source:
     manual: chaos-in-the-streets
     printed_page: 113
     section: Troll Slayer Special Skills / Monster Slayer
   name_i18n:
     en: Monster Slayer
-    es: null
+    es: Matamostro
   effect_i18n:
-    en: The Slayer always wounds an opponent on a 4+ regardless of Toughness, unless his modified Strength would normally
-      allow him to wound on a lower result.
-    es: null
+    en: The Slayer always wounds an opponent on a 4+ regardless of Toughness, unless his modified Strength
+      would normally allow him to wound on a lower result.
+    es: El Asesatroll siempre hiere a un oponente con un 4+ independientemente de su Resistencia, salvo
+      que su Fuerza modificada le permita normalmente herir con un resultado menor.
   eligibility:
   - dwarf-troll-slayers
   applies_to:
@@ -461,17 +489,19 @@ rules:
         kind: mechanic
         id: skill.ferocious-charge
   name: Ferocious Charge
-  effect: The Slayer may double his Attacks on the turn he charges, but suffers -1 To Hit during that turn.
+  effect: The Slayer may double his Attacks on the turn he charges, but suffers -1 To Hit during that
+    turn.
   source:
     manual: chaos-in-the-streets
     printed_page: 113
     section: Troll Slayer Special Skills / Ferocious Charge
   name_i18n:
     en: Ferocious Charge
-    es: null
+    es: Carga feroz
   effect_i18n:
     en: The Slayer may double his Attacks on the turn he charges, but suffers -1 To Hit during that turn.
-    es: null
+    es: El Asesatroll puede doblar sus Ataques en el asalto en el que carga, pero sufre -1 para impactar
+      durante ese asalto.
   eligibility:
   - dwarf-troll-slayers
   applies_to:
@@ -496,10 +526,10 @@ rules:
     section: Troll Slayer Special Skills / Berserker
   name_i18n:
     en: Berserker
-    es: null
+    es: Berserker
   effect_i18n:
     en: The Slayer gains +1 To Hit during the turn in which he charges.
-    es: null
+    es: El Asesatroll gana +1 para impactar durante el asalto en el que carga.
   eligibility:
   - dwarf-troll-slayers
   applies_to:

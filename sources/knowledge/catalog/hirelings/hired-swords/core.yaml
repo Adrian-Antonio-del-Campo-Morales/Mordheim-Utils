@@ -10,7 +10,7 @@ profiles:
   name: Dwarf Troll Slayer
   name_i18n:
     en: Dwarf Troll Slayer
-    es: null
+    es: Matatrolles enano
   characteristics:
     M: 3
     WS: 4
@@ -64,7 +64,7 @@ profiles:
   name: Elf Ranger
   name_i18n:
     en: Elf Ranger
-    es: null
+    es: Guardabosques élfico
   characteristics:
     M: 5
     WS: 4
@@ -117,7 +117,7 @@ profiles:
   name: Freelancer
   name_i18n:
     en: Freelancer
-    es: null
+    es: Mercenario libre
   characteristics:
     M: 4
     WS: 4
@@ -176,7 +176,7 @@ profiles:
   name: Halfling Scout
   name_i18n:
     en: Halfling Scout
-    es: null
+    es: Explorador halfling
   characteristics:
     M: 4
     WS: 2
@@ -207,6 +207,9 @@ profiles:
       counts_as:
         item_id: helmet
         context: rules
+      name_i18n:
+        en: Cooking Pot
+        es: Olla
   skill_access:
   - speed
   - shooting
@@ -227,7 +230,7 @@ profiles:
   name: Ogre Bodyguard
   name_i18n:
     en: Ogre Bodyguard
-    es: null
+    es: Ogro guardaespaldas
   characteristics:
     M: 6
     WS: 3
@@ -282,7 +285,7 @@ profiles:
   name: Pit Fighter
   name_i18n:
     en: Pit Fighter
-    es: null
+    es: Luchador de foso
   characteristics:
     M: 4
     WS: 4
@@ -331,7 +334,7 @@ profiles:
   name: Warlock
   name_i18n:
     en: Warlock
-    es: null
+    es: Hechicero
   characteristics:
     M: 4
     WS: 2
@@ -373,6 +376,9 @@ rules:
     printed_page: 0
     section: Hired Swords / Dwarf Troll Slayer / Special Rules / Deathwish
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  name_i18n:
+    en: Deathwish
+    es: Deseo de muerte
 - id: hireling.hired-sword.dwarf-troll-slayer.rule.hard-to-kill
   name: Hard to Kill
   effect: On the Injury chart the Troll Slayer is taken Out of Action only on a 6; a 5 is Stunned.
@@ -381,6 +387,9 @@ rules:
     printed_page: 0
     section: Hired Swords / Dwarf Troll Slayer / Special Rules / Hard to Kill
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  name_i18n:
+    en: Hard to Kill
+    es: Difíciles de matar
 - id: hireling.hired-sword.dwarf-troll-slayer.rule.hard-head
   name: Hard Head
   effect: The Troll Slayer ignores the special concussion-style rules of maces and clubs.
@@ -389,6 +398,9 @@ rules:
     printed_page: 0
     section: Hired Swords / Dwarf Troll Slayer / Special Rules / Hard Head
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  name_i18n:
+    en: Hard Head
+    es: Cabeza dura
 - id: hireling.hired-sword.dwarf-troll-slayer.skill.ferocious-charge
   name: Ferocious Charge
   kind: special-skill-option
@@ -398,15 +410,22 @@ rules:
     printed_page: 0
     section: Hired Swords / Dwarf Troll Slayer / Troll Slayer Skills / Ferocious Charge
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  name_i18n:
+    en: Ferocious Charge
+    es: Carga feroz
 - id: hireling.hired-sword.dwarf-troll-slayer.skill.monster-slayer
   name: Monster Slayer
   kind: special-skill-option
-  effect: The Slayer wounds on 4+ regardless of Toughness unless his modified Strength would require a lower roll.
+  effect: The Slayer wounds on 4+ regardless of Toughness unless his modified Strength would require a
+    lower roll.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Hired Swords / Dwarf Troll Slayer / Troll Slayer Skills / Monster Slayer
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  name_i18n:
+    en: Monster Slayer
+    es: Matamostro
 - id: hireling.hired-sword.dwarf-troll-slayer.skill.berserker
   name: Berserker
   kind: special-skill-option
@@ -416,6 +435,9 @@ rules:
     printed_page: 0
     section: Hired Swords / Dwarf Troll Slayer / Troll Slayer Skills / Berserker
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  name_i18n:
+    en: Berserker
+    es: Berserker
 - id: hireling.hired-sword.elf-ranger.rule.seeker
   name: Seeker
   effect: During Exploration the Elf Ranger allows one exploration die to be modified by +1 or -1.
@@ -424,6 +446,9 @@ rules:
     printed_page: 0
     section: Hired Swords / Elf Ranger / Special Rules / Seeker
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  name_i18n:
+    en: Seeker
+    es: Buscador
 - id: hireling.hired-sword.elf-ranger.rule.excellent-sight
   name: Excellent Sight
   effect: The Elf Ranger detects Hidden enemies at twice the normal Initiative-based distance.
@@ -432,6 +457,9 @@ rules:
     printed_page: 0
     section: Hired Swords / Elf Ranger / Special Rules / Excellent Sight
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  name_i18n:
+    en: Excellent Sight
+    es: Vista excepcional
 - id: hireling.hired-sword.elf-ranger.skill.fey
   name: Fey
   kind: special-skill-option
@@ -441,6 +469,9 @@ rules:
     printed_page: 0
     section: Hired Swords / Elf Ranger / Elven Skills / Fey
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  name_i18n:
+    en: Fey
+    es: Hada
 - id: hireling.hired-sword.elf-ranger.skill.luck
   name: Luck
   kind: special-skill-option
@@ -450,14 +481,21 @@ rules:
     printed_page: 0
     section: Hired Swords / Elf Ranger / Elven Skills / Luck
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  name_i18n:
+    en: Luck
+    es: Suerte
 - id: hireling.hired-sword.halfling-scout.rule.cook
   name: Cook
-  effect: While the Halfling Scout is employed, the warband's maximum size increases by 1 without increasing its Hero limit.
+  effect: While the Halfling Scout is employed, the warband's maximum size increases by 1 without increasing
+    its Hero limit.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Hired Swords / Halfling Scout / Special Rules / Cook
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  name_i18n:
+    en: Cook
+    es: Cocinero
 - id: hireling.hired-sword.ogre-bodyguard.rule.fear
   name: Fear
   effect: The Ogre Bodyguard causes fear.
@@ -466,6 +504,9 @@ rules:
     printed_page: 0
     section: Hired Swords / Ogre Bodyguard / Special Rules / Fear
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  name_i18n:
+    en: Fear
+    es: Miedo
 - id: hireling.hired-sword.ogre-bodyguard.rule.large-target
   name: Large Target
   effect: The Ogre Bodyguard counts as a Large Target.
@@ -474,6 +515,9 @@ rules:
     printed_page: 0
     section: Hired Swords / Ogre Bodyguard / Special Rules / Large Target
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  name_i18n:
+    en: Large Target
+    es: Objetivo grande
 - id: hireling.hired-sword.warlock.rule.wizard
   name: Wizard
   effect: The Warlock begins with two randomly generated Lesser Magic spells.
@@ -482,3 +526,6 @@ rules:
     printed_page: 0
     section: Hired Swords / Warlock / Special Rules / Wizard
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  name_i18n:
+    en: Wizard
+    es: Mago

@@ -5,9 +5,9 @@ specifications:
   category: local
   sources:
   - target: mechanic/weapon.mace
-    digest: 8bd3ca5bc3d4418757c689510280b1a6f351b3c4565f11497f181c94fa3fc2ee
-  interpretation: Concussion changes injury face 2 from Knocked Down to Stunned; faces 3-4 remain Stunned, and 5-6
-    Out.
+    digest: a5e9577524929d6890599159efe7efc12b8531f931dfe75c7e18732910900676
+  interpretation: Concussion changes injury face 2 from Knocked Down to Stunned; faces 3-4 remain Stunned,
+    and 5-6 Out.
   interaction_contract:
     reads:
     - injury.total
@@ -106,9 +106,9 @@ specifications:
   category: local
   sources:
   - target: mechanic/weapon.stone-axe
-    digest: 7daa278411e8b8a29584d7de1f261673ab11dc0eeda71c990529d76b648c499d
-  interpretation: Concussion changes injury face 2 from Knocked Down to Stunned; faces 3-4 remain Stunned, and 5-6
-    Out.
+    digest: 0fd2d226d107b84dd4ab006b6e6b79a5e78fb374b7f534700912eb363e05777a
+  interpretation: Concussion changes injury face 2 from Knocked Down to Stunned; faces 3-4 remain Stunned,
+    and 5-6 Out.
   interaction_contract:
     reads:
     - injury.total
@@ -207,9 +207,9 @@ specifications:
   category: permanent
   sources:
   - target: mechanic/weapon.axe
-    digest: 331fe535d241616ebe9c23e0b6084bf29105b5799abb42da5217032862efec81
-  interpretation: One additional armour-save penalty worsens a 4+ save to 5+ at Strength 3. It does not increase
-    attacking Strength.
+    digest: 39a7e23760e24bd0748fdb320540268c9475faab3360cc719afee5e691960e2f
+  interpretation: One additional armour-save penalty worsens a 4+ save to 5+ at Strength 3. It does not
+    increase attacking Strength.
   interaction_contract:
     reads:
     - armour.target
@@ -272,9 +272,9 @@ specifications:
   category: permanent
   sources:
   - target: mechanic/material.gromril
-    digest: e7dd5d61e2f8e547890471309390d16ddbb8346753e64efc6241fcaba00aa5c4
-  interpretation: One additional armour-save penalty worsens a 4+ save to 5+ at Strength 3. It does not increase
-    attacking Strength.
+    digest: fb76925bf64e3fd3a034d779fc3fecdf8ac17dfac866662c00d87b46d488904c
+  interpretation: One additional armour-save penalty worsens a 4+ save to 5+ at Strength 3. It does not
+    increase attacking Strength.
   interaction_contract:
     reads:
     - armour.target
@@ -341,9 +341,9 @@ specifications:
   category: permanent
   sources:
   - target: mechanic/weapon.katar
-    digest: f29fd952be27eff95e8595a27bd1e17d814b7684bb3c6382443d183543dbfdb9
-  interpretation: One additional armour-save penalty worsens a 4+ save to 5+ at Strength 3. It does not increase
-    attacking Strength.
+    digest: d4f6ee0e6feffb2696b7d468d8b3066a3716f29fcecfee746a8060748b2421bd
+  interpretation: One additional armour-save penalty worsens a 4+ save to 5+ at Strength 3. It does not
+    increase attacking Strength.
   interaction_contract:
     reads:
     - armour.target
@@ -406,9 +406,9 @@ specifications:
   category: permanent
   sources:
   - target: mechanic/weapon.dagger
-    digest: da875a2d1f4c5cfe74dc4c74a0191eff6b4af9a8f88194088a47ce7be79b5046
-  interpretation: The target receives +1 to its armour save, including a 6+ save if normally unarmoured. Attacking
-    Strength is unchanged.
+    digest: 8dcc616016ae0983de98b0b76a3696c607e3ee38f1ddece8a1f27fa8113d42a7
+  interpretation: The target receives +1 to its armour save, including a 6+ save if normally unarmoured.
+    Attacking Strength is unchanged.
   interaction_contract:
     reads:
     - armour.target
@@ -472,9 +472,9 @@ specifications:
   category: permanent
   sources:
   - target: mechanic/weapon.yambiya
-    digest: 3ea6ae8dd67f08bb811eef6ba0e2506ef14c5df892c7069078d219999606418d
-  interpretation: The target receives +1 to its armour save, including a 6+ save if normally unarmoured. Attacking
-    Strength is unchanged.
+    digest: 2c85cec509f11c3a1454ff9257de7a1b66f0a0dbd4e9e788ece0696b52abc6f8
+  interpretation: The target receives +1 to its armour save, including a 6+ save if normally unarmoured.
+    Attacking Strength is unchanged.
   interaction_contract:
     reads:
     - armour.target
@@ -538,7 +538,7 @@ specifications:
   category: permanent
   sources:
   - target: mechanic/weapon.halberd
-    digest: 7cae0d6b4c940cb65505831f5ad6b9e8974a8d8a22c1af4532ccebe5db8c1543
+    digest: 37ac2203b4e00c920dacc65c9a872a57d96d135625d8f843b0608486da3b2ee9
   interpretation: 'Two-handed: no simultaneous off-hand equipment. +1 Strength on every attack.'
   interaction_contract:
     reads:
@@ -609,8 +609,9 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/weapon.flail
-    digest: 29048acd50dfc0325940a2789714643811bbf762588889795b315ba2c927378b
-  interpretation: 'Two-handed: no simultaneous off-hand equipment. +2 Strength in the first combat round only.'
+    digest: 36c5b4567bfa6c85d999f965a561bf9f1321d407f31aa05da98ee74e381dc27b
+  interpretation: 'Two-handed: no simultaneous off-hand equipment. +2 Strength in the first combat round
+    only.'
   interaction_contract:
     reads:
     - fighter.strength
@@ -680,9 +681,9 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/weapon.double-handed-weapon
-    digest: 8e54d9ce13baf2f879cf316a31fd36830786ba558db7c5a122fa6c574863789f
-  interpretation: +2 Strength; occupies both hands; strikes last regardless of Initiative unless Strongman removes
-    that penalty.
+    digest: 3420fa94ce021ed6fd4429dd5af9d7eb60a916f9e93710ce9ac55607feaea33e
+  interpretation: +2 Strength; occupies both hands; strikes last regardless of Initiative unless Strongman
+    removes that penalty.
   interaction_contract:
     reads:
     - fighter.strength
@@ -787,8 +788,9 @@ specifications:
   category: local
   sources:
   - target: mechanic/weapon.sword
-    digest: b0269721d63c45f8e54c648b250807896035778ea2cbc482cbc3f54bc6e46c18
-  interpretation: The sword grants one eligible parry, governed by the independently tested core parry operator.
+    digest: 3719920894c6534a97dbb194edf31d4cc8dbc073d796ee96bbf527309bc895d8
+  interpretation: The sword grants one eligible parry, governed by the independently tested core parry
+    operator.
   interaction_contract:
     reads:
     - hit.roll
@@ -850,7 +852,7 @@ specifications:
   category: permanent
   sources:
   - target: mechanic/armour.no-armour
-    digest: ec03523647acce576db9b07c4f7e92942ce4d77a0755e931647d3a386b6350ea
+    digest: cd0e2dfd03fe910ac5198941494c6e4e9ae09a0c4f3d23aabd747dd1d1f7cfa0
   interpretation: No body armour grants no armour roll. An independent special save remains available.
   interaction_contract:
     reads:

@@ -5,19 +5,31 @@ specifications:
   category: priority
   sources:
   - target: rule/mordheim/carnival-of-chaos/brutes--unnatural-strength/skill.strongman
-    digest: 3691a91d6b53d7f19a0081d4e0b09f38285819fe586cdba7aad53b82f1b51114
-  depends_on: [mechanic/skill.strongman]
-  interpretation: The profile starts with Strongman. A double-handed weapon no longer imposes strike last, but the
-    fighter retains its printed Initiative and is still subject to recovery penalties. This is not strike first.
+    digest: 5e2c547b8a2d4112bc911d83468e7363c39e41391b01cda246a28ae33a2d578f
+  depends_on:
+  - mechanic/skill.strongman
+  interpretation: The profile starts with Strongman. A double-handed weapon no longer imposes strike last,
+    but the fighter retains its printed Initiative and is still subject to recovery penalties. This is
+    not strike first.
   cases:
   - id: recipient
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {band_id: carnival-of-chaos, profile_id: brutes}
-    context: {rule_id: brutes--unnatural-strength}
-    expect: {result.recipients: [brutes]}
+    defender:
+      band_id: carnival-of-chaos
+      profile_id: brutes
+    context:
+      rule_id: brutes--unnatural-strength
+    expect:
+      result.recipients:
+      - brutes
   - id: normal-priority-restored
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: priority
     attacker:
       band_id: carnival-of-chaos
@@ -28,37 +40,55 @@ specifications:
       result.priority: 0
       result.initiative: 2
   - id: recovery-still-last
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: priority
     attacker:
       band_id: carnival-of-chaos
       profile_id: brutes
       main_weapon_id: weapon.double-handed-weapon
-    context: {stood_up: true}
-    expect: {result.priority: -1, result.initiative: 2}
+    context:
+      stood_up: true
+    expect:
+      result.priority: -1
+      result.initiative: 2
   mutations:
   - id: remove-strongman
     path: attacker.global_effects.strongman
     value: false
-    cases: [normal-priority-restored]
+    cases:
+    - normal-priority-restored
 - id: editorial-blackguards-strongman
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: priority
   sources:
   - target: rule/mordheim/merchant-caravans/blackguards--strongman/skill.strongman
-    digest: a1d2827130609f686c729d02afdc8ff013e7d57557a9427eae0fb3f3340ee995
-  depends_on: [mechanic/skill.strongman]
-  interpretation: The profile starts with Strongman. A double-handed weapon no longer imposes strike last, but the
-    fighter retains its printed Initiative and is still subject to recovery penalties. This is not strike first.
+    digest: 8c9fc6271e790f2e96bf390b49e218053883503b7f4ff34c96fa2978343c1335
+  depends_on:
+  - mechanic/skill.strongman
+  interpretation: The profile starts with Strongman. A double-handed weapon no longer imposes strike last,
+    but the fighter retains its printed Initiative and is still subject to recovery penalties. This is
+    not strike first.
   cases:
   - id: recipient
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {band_id: merchant-caravans, profile_id: blackguards}
-    context: {rule_id: blackguards--strongman}
-    expect: {result.recipients: [blackguards]}
+    defender:
+      band_id: merchant-caravans
+      profile_id: blackguards
+    context:
+      rule_id: blackguards--strongman
+    expect:
+      result.recipients:
+      - blackguards
   - id: normal-priority-restored
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: priority
     attacker:
       band_id: merchant-caravans
@@ -69,53 +99,80 @@ specifications:
       result.priority: 0
       result.initiative: 3
   - id: recovery-still-last
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: priority
     attacker:
       band_id: merchant-caravans
       profile_id: blackguards
       main_weapon_id: weapon.double-handed-weapon
-    context: {stood_up: true}
-    expect: {result.priority: -1, result.initiative: 3}
+    context:
+      stood_up: true
+    expect:
+      result.priority: -1
+      result.initiative: 3
   mutations:
   - id: remove-strongman
     path: attacker.global_effects.strongman
     value: false
-    cases: [normal-priority-restored]
+    cases:
+    - normal-priority-restored
 - id: editorial-ogre-flesh
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
   - target: rule/trollheim/khemri-necromancers/band--necromantic-modification-ogre-flesh/skill.monstrous
-    digest: 05f8e9f274a7e3ee624c7ee8d5c5c6f5117c2217fe9960b829ff2573117dd7c1
-  depends_on: [mechanic/skill.monstrous]
-  interpretation: Ogre Flesh grants the Necromantic Abomination one additional Wound, taking its initial duel state
-    from three to four. The acquisition roll and gold cost belong to campaign management, not this duel test.
+    digest: b776fb3da81acbfcd71829eeb3707f55f4a524957c462b2e5701dda69d25927b
+  depends_on:
+  - mechanic/skill.monstrous
+  interpretation: Ogre Flesh grants the Necromantic Abomination one additional Wound, taking its initial
+    duel state from three to four. The acquisition roll and gold cost belong to campaign management, not
+    this duel test.
   cases:
   - id: recipient
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: necromantic-abomination}
-    context: {rule_id: band--necromantic-modification-ogre-flesh}
-    expect: {result.recipients: [necromantic-abomination]}
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+    context:
+      rule_id: band--necromantic-modification-ogre-flesh
+    expect:
+      result.recipients:
+      - necromantic-abomination
   - id: four-initial-wounds
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: initialize
     attacker:
       collection: trollheim
       band_id: khemri-necromancers
       profile_id: necromantic-abomination
-      special_rule_ids: [band--necromantic-modification-ogre-flesh]
-    expect: {result.attacker.wounds: 4}
+      special_rule_ids:
+      - band--necromantic-modification-ogre-flesh
+    expect:
+      result.attacker.wounds: 4
     expect_contains:
-      attacker.global_effects.tags: [skill.monstrous]
+      attacker.global_effects.tags:
+      - skill.monstrous
   - id: three-without-modification
-    roles: [boundary]
+    roles:
+    - boundary
     operation: initialize
-    attacker: {collection: trollheim, band_id: khemri-necromancers, profile_id: necromantic-abomination}
-    expect: {result.attacker.wounds: 3}
+    attacker:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+    expect:
+      result.attacker.wounds: 3
   mutations:
   - id: remove-extra-wound
     path: attacker.global_effects.tags
     value: []
-    cases: [four-initial-wounds]
+    cases:
+    - four-initial-wounds

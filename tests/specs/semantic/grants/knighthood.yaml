@@ -4,42 +4,89 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/bretonnian-chapel-guard/squires--knighthood/compiler.knighthood, digest: 9c3217ae3cb563511934af4b19e85c563bceb744d7a532e49e6b674d3e00f700}
-  interpretation: >-
-    On promotion, the Squire chooses to remain a Squire or become a Knight Errant. Both branches
-    accept at most two ordinary lists; the second uses Knight Equipment, adds Special and receives
+  - target: rule/mordheim/bretonnian-chapel-guard/squires--knighthood/compiler.knighthood
+    digest: 33eec816809d947dddbeaeb67914792f4f138a88463989939a10957bdfa07dfc
+  interpretation: On promotion, the Squire chooses to remain a Squire or become a Knight Errant. Both
+    branches accept at most two ordinary lists; the second uses Knight Equipment, adds Special and receives
     Knight, Vain and Impetuous.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: bretonnian-chapel-guard, profile_id: squires}
-    context: {rule_id: squires--knighthood}
-    expect: {result.recipients: [squires]}
-  - id: branch-equipment
-    roles: [accepted, rejected]
-    operation: equipment_choices
-    attacker: {band_id: bretonnian-chapel-guard, profile_id: squires, variant_ids: [promotion.knight-errant]}
-    context: {choices: {knight-flail: {main_weapon_id: weapon.flail}, squire-halberd: {main_weapon_id: weapon.halberd}}}
+    defender:
+      band_id: bretonnian-chapel-guard
+      profile_id: squires
+    context:
+      rule_id: squires--knighthood
     expect:
-      result.accepted: [knight-flail]
-      result.rejected: {squire-halberd: "equipment is not available to bretonnian-chapel-guard/squires: ['weapon.halberd']"}
-  - id: knight-rules-compiled
-    operation: trait_presence
-    attacker: {band_id: bretonnian-chapel-guard, profile_id: squires, variant_ids: [promotion.knight-errant]}
-    context: {tag: rule.knight}
-    expect: {result.present: true}
-    expect_contains: {attacker.global_effects.tags: [promotion.knight-errant, rule.vain, rule.impetuous]}
-  - id: at-most-two-lists
-    roles: [rejected]
-    operation: selection_choices
-    attacker: {band_id: bretonnian-chapel-guard, profile_id: squires, variant_ids: [promotion.squire]}
+      result.recipients:
+      - squires
+  - id: branch-equipment
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: squires
+      variant_ids:
+      - promotion.knight-errant
     context:
       choices:
-        two: {skill_ids: [skill.expert-swordsman, skill.mighty-blow]}
-        three: {skill_ids: [skill.expert-swordsman, skill.mighty-blow, skill.acrobat]}
+        knight-flail:
+          main_weapon_id: weapon.flail
+        squire-halberd:
+          main_weapon_id: weapon.halberd
     expect:
-      result.accepted: [two]
-      result.rejected: {three: a promoted Squire may use at most two ordinary skill lists}
+      result.accepted:
+      - knight-flail
+      result.rejected:
+        squire-halberd: 'equipment is not available to bretonnian-chapel-guard/squires: [''weapon.halberd'']'
+  - id: knight-rules-compiled
+    operation: trait_presence
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: squires
+      variant_ids:
+      - promotion.knight-errant
+    context:
+      tag: rule.knight
+    expect:
+      result.present: true
+    expect_contains:
+      attacker.global_effects.tags:
+      - promotion.knight-errant
+      - rule.vain
+      - rule.impetuous
+  - id: at-most-two-lists
+    roles:
+    - rejected
+    operation: selection_choices
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: squires
+      variant_ids:
+      - promotion.squire
+    context:
+      choices:
+        two:
+          skill_ids:
+          - skill.expert-swordsman
+          - skill.mighty-blow
+        three:
+          skill_ids:
+          - skill.expert-swordsman
+          - skill.mighty-blow
+          - skill.acrobat
+    expect:
+      result.accepted:
+      - two
+      result.rejected:
+        three: a promoted Squire may use at most two ordinary skill lists
   mutations:
-  - {id: remove-knight-rules, path: attacker.global_effects.tags, value: [], cases: [knight-rules-compiled]}
+  - id: remove-knight-rules
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - knight-rules-compiled

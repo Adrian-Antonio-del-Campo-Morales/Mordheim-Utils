@@ -1,4 +1,4 @@
-# Knowledge base guide
+# Knowledge base
 
 A single canonical **knowledge base (KB)** lives in `sources/knowledge/` and is
 the source of both applications: shared catalogues, warbands, profiles,
@@ -19,14 +19,13 @@ Three ideas define the KB, and everything else follows from them:
 
 Runtime scope today is **one-against-one close combat** (`close-combat-only`):
 shooting, movement, psychology, mounts, magic progression and post-battle
-rules are outside the current duel runtime and are classified as such (see
-[Runtime scope](#runtime-scope)).
+rules are outside the current duel runtime and are classified as such.
 
 ## Layout at a glance
 
 ```text
 sources/knowledge/
-├── README.md                     KB overview + commands
+├── README.md                     locale policy + validation commands
 ├── registry/                     collections, rulesets, sources, aliases,
 │                                 warband groups, runtime classification schema
 ├── bands/                        per-warband editorial data, by collection
@@ -38,13 +37,11 @@ sources/knowledge/
 │   ├── rules/                    core combat rules, resolution tables, conditions,
 │   │                             racial maximums, family trackers
 │   ├── mechanics/                engine-facing mechanics + execution contracts
-│   ├── hirelings/                Hired Swords and Dramatis Personae
-│   └── campaign/                 campaign tables for the future campaign runtime
+│   ├── hirelings/                Hired Swords and Dramatis Personae (see its README)
+│   └── campaign/                 campaign tables for the campaign runtime (see its README)
 ```
 
 ## registry/ — the lookup and constraint layer
-
-The registry holds the small files that give the rest of the KB its shape:
 
 | File | Content |
 | --- | --- |
@@ -55,6 +52,11 @@ The registry holds the small files that give the rest of the KB its shape:
 | `warband-groups.yaml` | Cross-band groups by race/alignment/faction (e.g. `warband-group.orc`, `warband-group.chaotic`, `warband-group.good-aligned`) used by access and restriction logic. |
 | `runtime-schema.yaml` | **The classification contract.** Defines `scope`, `implemented`, `grant`, `effects`, binding kinds and the invariants every rule must satisfy. |
 | `runtime-scope.yaml` | Scope policy of the runtime: `close-combat-only`, plus a list of mechanics excluded with a reason (mounted lances, missile skills, psychology, movement…). |
+
+Group IDs are namespaced `warband-group.<slug>`; eligibility and restriction
+blocks of the campaign catalogues reference them exactly by that id
+(`mordheim_knowledge.campaign.load_warband_groups` validates all references;
+tests in `tests/knowledge/test_campaign_loaders.py`).
 
 ### Runtime classification (`runtime-schema.yaml`)
 
@@ -104,7 +106,7 @@ A band directory is typically four files:
 | --- | --- |
 | `band.yaml` | Canonical band: id, name, publication, sources, roster (min/max models, starting gold, members per profile with per-group sizes) and the band's `rule_ids`. |
 | `profiles.yaml` | Each profile: id, name, type (`hero`/henchmen), cost, starting experience, characteristics (`M WS BS S T W I A Ld`), `equipment_lists`, `equipment_restrictions`, `skill_access`, inherent `rule_ids` and `combat_traits`. |
-| `equipment-access.yaml` | The equipment lists each profile may buy from. |
+| `equipment-access.yaml` | The equipment lists each profile may buy from (creation prices; the Trading Post is the market price — see below). |
 | `special-rules.yaml` | The editorial special rules of the band. |
 
 Example — `bands/mordheim/orc-mob/band.yaml` declares the Orc Mob (Town
@@ -182,7 +184,7 @@ Shared skills are the reference target of many band rules, e.g.
 | `conditions.yaml` | Conditions shared by rules. |
 | `special-rules.yaml` | Cross-band special rules. Kept empty (`rules: []`) — promoted here only **after** an equivalence review. |
 | `racial-maximums.yaml` | The only source of racial characteristic maximums (`campaign.limit.racial-maximum.*`); warband rules reference them by id instead of embedding statlines. |
-| `implemented-canonical-families.yaml` | Tracker of the shared mechanic families that already have executable bindings (`compiler`/`mechanic`/`trait`); update it when bindings evolve. The former `pending-canonical-families.yaml` design-only snapshot was retired: every scope-`YES` effect is bound and verified (see TODO.md §1). |
+| `implemented-canonical-families.yaml` | Tracker of the shared mechanic families that already have executable bindings; update it when bindings evolve. |
 
 ### mechanics/
 
@@ -206,24 +208,100 @@ So the layers of the same weapon are: item record (`items/`, snake_case id)
 
 ### hirelings/ and campaign/
 
-- `hirelings/` — `hired-swords/` and `dramatis-personae/` catalogues.
+- `hirelings/` — `hired-swords/` and `dramatis-personae/` catalogues
+  (102 profiles), with their own README covering id conventions, the trait
+  registry, out-of-scope entities and the 59 pending intrinsic references.
 - `campaign/` — the persistent campaign rules: post-battle sequence, trading
   post (338 entries), serious injuries, experience and advances, exploration
   and income, recruitment and veterans, warband rating, trading and rarity,
   98 scenarios, magic (45 lore↔wizard assignments, 31 lores, 188 spells),
   mutations and hired swords. These documents are **published data for the
-  future campaign runtime**; no YAML of this catalogue may be loaded as rule
-  implementation yet (the loaders are runtime-integration work). Campaign
-  entries use namespaced kebab ids (`campaign.<family>.<detail>`) and
-  reference items by canonical `item_id` without copying them.
+  campaign runtime**; their README covers data ownership, the price-collation
+  policy and the loader contract, and its HOWTO explains how to query the
+  catalogue from application code. Campaign entries use namespaced kebab ids
+  (`campaign.<family>.<detail>`) and reference items by canonical `item_id`
+  without copying them.
+
+## Locale policy
+
+The KB is **canonical English only** by convention: every record carries a
+`name_i18n` / `effect_i18n` block for forward compatibility, but the
+non-English fields (e.g. `name_i18n.es`) stay `null`. Do not fill them
+casually — a translation pass would be a dedicated, reviewed project (and the
+few existing Spanish strings in the Bretonnian band are historical exceptions,
+not the convention).
+
+The KB is nevertheless **prepared for a Spanish translation**:
+`mordheim_knowledge.i18n` is the single sanctioned reader of the i18n blocks
+(`set_locale` / `display_name` / `display_effect`, canonical-English-first,
+locale fallback); it is already wired into the Campaign Manager's read model
+(`KnowledgePort` band/profile/skill/item/hireling names). Filling an
+`es` field is therefore a data-only change that surfaces immediately in the
+applications, and reviewed entries (such as the Bretonnian ones) take effect
+without any code change. Until a reviewed pass fills the fields, the display
+locale renders the canonical English names.
+
+The **pilot band** for the reviewed Spanish pass is `bands/mordheim/bretonnian-knights`:
+all ten of its rules carry complete `name_i18n.es` / `effect_i18n.es` entries
+reviewed against the same printed source as the English text. New bands should
+follow its in-file glossary (Caballero Andante = Questing Knight, Caballero
+Novel = Knight Errant, chequeo = test, 1D6 = D6) so translations stay
+consistent across the KB.
+
+### Binding-based name consistency
+
+A rule's `binding` (`kind` + `id`, plus optional `parameters`) declares
+semantic identity for the engines: two rules bound to the same mechanic are
+simulated identically. The binding does **not** constrain the display name —
+`name_i18n` is never read by the engine, and different source rules may
+legitimately carry different English names for the same mechanic (e.g.
+`mechanic/skill.tough-as-steel` appears as "True Grit", "Extra Tough" and
+"Hard as Steel").
+
+Spanish translation policy therefore follows the English source: a shared
+Spanish name is required only when both the binding **and** the English name
+match. When rules share a binding but their English names differ, each rule
+translates its own English name directly. This mirrors the `trait.*`
+exception (the trait is shared but the flavour rule name is band-specific).
+`tests/knowledge/test_band_translation_parity.py`
+(`test_equivalent_rules_share_the_same_spanish_name`) enforces exactly this:
+consistency gated on `(binding kind, binding id, English name)`.
+
+Canonical glossary terms and the edge cases resolved so far live in
+`sources/knowledge/catalog/translation-glossary.md`.
+
+## YAML formatting policy
+
+Maintained YAML uses UTF-8, LF line endings, two-space indentation, no trailing
+whitespace, and a target line width of **100 characters**. Lines up to **120
+characters** are accepted. URLs and unavoidable long identifiers are the only
+expected exceptions.
+
+Descriptive fields such as `effect`, `summary`, `description`, `notes`, and
+`reason` use folded blocks (`>-`) when they need wrapping. This keeps source
+text readable while loading it as one logical line. Literal blocks (`|`) remain
+reserved for text where line breaks are meaningful. Formatting must preserve
+key order, anchors, aliases, IDs, URLs, scalar types, and parsed values.
+
+Use the repository formatter after changing maintained YAML:
+
+```powershell
+python tools/format_yaml.py --check sources/knowledge
+python tools/format_yaml.py --write sources/knowledge
+python tools/format_yaml.py --check sources/knowledge
+```
+
+`--check` parses every file and verifies semantic equivalence after formatting;
+`--write` changes only formatting. Review its diff before committing. It does
+not format `tests/specs/`, `outputs/`, generated files, or engine code. Do not
+run combat tests, parity, or benchmarks for a formatting-only change.
 
 ## Where is the evidence?
 
-The KB has no `verification/` area of its own (a previous empty placeholder
-was removed): the verification corpus — the structural contract
-(`tests/specs/structural/phase-verification.yaml`) and the semantic scenarios
-(`tests/specs/semantic/`, ~160 files) — lives in `tests/`. It is test
-material and is never distributed with the applications.
+The KB has no `verification/` area of its own: the verification corpus — the
+structural contract (`tests/specs/structural/phase-verification.yaml`) and the
+semantic scenarios (`tests/specs/semantic/`, ~160 files) — lives in `tests/`.
+It is test material and is never distributed with the applications.
 
 Semantic scenarios reference KB targets by canonical path and **content
 digest**, so the corpus breaks loudly when the referenced rule changes:
@@ -238,7 +316,7 @@ Each case fixes the source, interpretation, category, initial status, dice,
 decisions, expectations and mutations; dice and decision sources are strict
 (unexpected or unconsumed requests fail), and probabilities are exact
 fractions. The modular engine is the system under test — its output is never
-used to generate the expected value.
+used to generate the expected value. See [Verification](verification.md).
 
 ## Path of a rule: from YAML to the engines
 
@@ -309,8 +387,8 @@ For items the same path holds with the extra indirection step: band
   reviewed against the written sources. The engine's output is never used to
   generate expected values.
 - **Campaign catalogue ≠ runtime.** `catalog/campaign/` is published data for
-  the future campaign runtime; do not load it as rule implementation. The
-  open migration (documented in its README): collate every `cost` in
+  the campaign runtime; do not load it as duel-rule implementation. The open
+  migration (documented in its README): collate every `cost` in
   `equipment-access.yaml` against the Trading Post and convert real
   exceptions to explicit `price_override` entries.
 
@@ -326,14 +404,6 @@ python tools/mordheim-utils.py audit         # per-rule status CSV in outputs/au
 python tools/mordheim-utils.py combine-kb    # flatten directories for a review pass
 ```
 
-`verify` is green (`semantic_complete=True`, 217/217 required interactions
-covered, 0 pending) and `parity` reports 0 divergences since the interaction
-matrix implementation (2026-09-04); both are part of the evidence a KB change
-must keep green. Every required interaction pair is covered either by a pair
-spec under `tests/specs/semantic/interactions/` or by an `illegal` override in
-`tests/specs/interaction-policy.yaml` — see the [interaction
-matrix](interaction-matrix.md).
-
-See also [Modify the knowledge base](tasks/modify-kb.md), [Verify
-rules](tasks/verify-rules.md), and "Where a change lands" in
-[structure.md](structure.md).
+See also [Modify the knowledge base](../guides/modify-knowledge-base.md),
+[Implement and verify rules](../guides/implement-and-verify-rules.md), and
+"Where a change lands" in [Architecture](architecture.md).

@@ -10,6 +10,7 @@ from mordheim_campaign.ui.views.campaign_statistics import CampaignStatistics
 from mordheim_campaign.ui.views.moments import BattleMoment, InitialWarbandDraftMoment, PostBattleMoment, WarbandStateMoment
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import SegmentedTabs
+from mordheim_ui.i18n import tr
 
 
 class CampaignView(tk.Frame):
@@ -25,7 +26,7 @@ class CampaignView(tk.Frame):
 
         mode_bar = tk.Frame(self, bg=COLORS["bg"])
         mode_bar.grid(row=1, column=0, sticky="ew", pady=(0, 8))
-        modes = (("timeline", "TIMELINE"),) if c.is_draft else (("timeline", "TIMELINE"), ("statistics", "STATISTICS"))
+        modes = (("timeline", tr('TIMELINE')),) if c.is_draft else (("timeline", tr('TIMELINE')), ("statistics", tr('STATISTICS')))
         SegmentedTabs(mode_bar, modes, "timeline" if c.is_draft else controller.state.campaign_mode, controller.set_campaign_mode).pack(side="left")
 
         if not c.is_draft and controller.state.campaign_mode == "statistics":
@@ -57,14 +58,14 @@ class CampaignView(tk.Frame):
         menu = tk.Menu(selector, tearoff=False, bg=COLORS["panel"], fg=COLORS["text"], activebackground=COLORS["panel_soft"], activeforeground=COLORS["text"])
         menu.add_command(label=f"✓  {c.campaign_name}", state="disabled")
         menu.add_separator()
-        menu.add_command(label="New Campaign…", command=self._new_campaign)
-        menu.add_command(label="Open creation example", command=self.controller.open_creation_example)
-        menu.add_command(label="Open campaign example", command=self.controller.open_campaign_example)
+        menu.add_command(label=tr('New Campaign…'), command=self._new_campaign)
+        menu.add_command(label=tr('Open creation example'), command=self.controller.open_creation_example)
+        menu.add_command(label=tr('Open campaign example'), command=self.controller.open_campaign_example)
         menu.add_separator()
-        menu.add_command(label="Manage Campaigns…", command=self._placeholder)
+        menu.add_command(label=tr('Manage Campaigns…'), command=self._placeholder)
         selector.configure(menu=menu)
 
-        phase = "Initial warband draft" if c.is_draft else f"{c.warband_name}  ·  {c.warband_type}  ·  started {c.started}"
+        phase = tr('Initial warband draft') if c.is_draft else tr('{}  ·  {}  ·  started {}').format(c.warband_name, c.warband_type, c.started)
         tk.Label(text, text=phase, bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI", 9)).pack(anchor="w", pady=(3, 0))
 
         compact = tk.Frame(frame, bg=COLORS["bg"])
@@ -73,7 +74,7 @@ class CampaignView(tk.Frame):
         if variants:
             vbox = tk.Frame(compact, bg=COLORS["bg"])
             vbox.pack(side="left", padx=(0, 12))
-            tk.Label(vbox, text="MERCENARY VARIANT", bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(anchor="w")
+            tk.Label(vbox, text=tr('MERCENARY VARIANT'), bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(anchor="w")
             labels = [label for _, label in variants]
             current = next((label for identifier, label in variants if identifier == c.mercenary_variant), None)
             variant_var = tk.StringVar(value=current or "—")
@@ -85,10 +86,10 @@ class CampaignView(tk.Frame):
         if c.is_draft:
             tk.Label(
                 compact,
-                text=f"DRAFT  ·  {c.draft_treasury} gc  ·  Rating {c.draft_rating}  ·  {c.draft_model_count}/{c.maximum_models} models",
+                text=tr('DRAFT  ·  {} gc  ·  Rating {}  ·  {}/{} models').format(c.draft_treasury, c.draft_rating, c.draft_model_count, c.maximum_models),
                 bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8),
             ).pack(side="left", padx=(0, 12))
-            start = ttk.Button(compact, text="START CAMPAIGN", style="Accent.TButton", command=self.controller.commit_initial_warband)
+            start = ttk.Button(compact, text=tr('START CAMPAIGN'), style="Accent.TButton", command=self.controller.commit_initial_warband)
             start.pack(side="left")
             if not c.draft_is_legal:
                 start.state(["disabled"])
@@ -96,14 +97,14 @@ class CampaignView(tk.Frame):
             current = c.current_state
             tk.Label(
                 compact,
-                text=f"CURRENT  ·  Rating {current.rating}  ·  {current.models}/{current.max_models} models  ·  {current.gold} gc",
+                text=tr('CURRENT  ·  Rating {}  ·  {}/{} models  ·  {} gc').format(current.rating, current.models, current.max_models, current.gold),
                 bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8),
             ).pack(side="left", padx=(0, 12))
             pending = c.pending_post_battle
             if pending:
-                ttk.Button(compact, text=f"RESUME POST-BATTLE #{pending.battle_number}", style="Accent.TButton", command=self.controller.resume_pending_post_battle).pack(side="left")
+                ttk.Button(compact, text=tr('RESUME POST-BATTLE #{}').format(pending.battle_number), style="Accent.TButton", command=self.controller.resume_pending_post_battle).pack(side="left")
             else:
-                ttk.Button(compact, text="+ NEW BATTLE", style="Accent.TButton", command=self._new_battle).pack(side="left")
+                ttk.Button(compact, text=tr('+ NEW BATTLE'), style="Accent.TButton", command=self._new_battle).pack(side="left")
         return frame
 
     def _timeline(self) -> tk.Frame:

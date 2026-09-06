@@ -3,17 +3,20 @@ band_id: chaos-streets-sons-of-nagarythe
 rules:
 - id: shadow-master--leader
   name: Leader
-  effect: Any warband model within 6" of the Shadow Master may use his Leadership when taking Leadership tests.
+  effect: Any warband model within 6" of the Shadow Master may use his Leadership when taking Leadership
+    tests.
   source:
     manual: chaos-in-the-streets
     printed_page: 140
     section: Heroes / 1 Shadow Master / Special Rules / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
-    en: Any warband model within 6" of the Shadow Master may use his Leadership when taking Leadership tests.
-    es: null
+    en: Any warband model within 6" of the Shadow Master may use his Leadership when taking Leadership
+      tests.
+    es: Cualquier modelo de la banda a 6" del Maestro de las Sombras puede usar su Liderazgo cuando realice
+      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - shadow-master
@@ -28,19 +31,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: shadow-weaver--wizard
   name: Wizard
-  effect: The Shadow Weaver is a Wizard and may use Shadow Magic. The spell list itself is intentionally not modelled in this
-    file.
+  effect: The Shadow Weaver is a Wizard and may use Shadow Magic. The spell list itself is intentionally
+    not modelled in this file.
   source:
     manual: chaos-in-the-streets
     printed_page: 140
     section: Heroes / 0-1 Shadow Weaver / Special Rules / Wizard
   name_i18n:
     en: Wizard
-    es: null
+    es: Hechicero
   effect_i18n:
-    en: The Shadow Weaver is a Wizard and may use Shadow Magic. The spell list itself is intentionally not modelled in this
-      file.
-    es: null
+    en: The Shadow Weaver is a Wizard and may use Shadow Magic. The spell list itself is intentionally
+      not modelled in this file.
+    es: El Tejedor de Sombras es un hechicero y puede usar la Magia de las Sombras. La lista de hechizos
+      en sí no está modelada intencionadamente en este archivo.
   applies_to:
     profile_ids:
     - shadow-weaver
@@ -62,10 +66,11 @@ rules:
     section: Special Rules / Hate Dark Elves
   name_i18n:
     en: Hate Dark Elves
-    es: null
+    es: Odio a los Elfos Oscuros
   effect_i18n:
     en: All Sons of Nagarythe warriors, excluding Hired Swords, are subject to Hatred against Dark Elves.
-    es: null
+    es: Todos los guerreros Hijos de Nagarythe, excluyendo las Espadas a Sueldo, están sujetos a Odio
+      contra los Elfos Oscuros.
   applies_to:
     band: true
   runtime:
@@ -86,10 +91,10 @@ rules:
     section: Special Rules / Excellent Sight
   name_i18n:
     en: Excellent Sight
-    es: null
+    es: Vista excepcional
   effect_i18n:
     en: All Elves in the warband spot Hidden enemies at twice the normal distance.
-    es: null
+    es: Todos los elfos de la banda detectan enemigos Ocultos al doble de la distancia normal.
   applies_to:
     band: true
   runtime:
@@ -110,10 +115,10 @@ rules:
     section: Special Rules / Honourable
   name_i18n:
     en: Honourable
-    es: null
+    es: Honorables
   effect_i18n:
     en: Warriors in the warband may not use poisons or drugs of any kind.
-    es: null
+    es: Los guerreros de la banda no pueden usar venenos ni drogas de ningún tipo.
   applies_to:
     band: true
   runtime:
@@ -132,19 +137,20 @@ rules:
           - drug
 - id: band--unforgiving
   name: Unforgiving
-  effect: In multiplayer games, the warband may never form an alliance with a Chaotic warband, including Possessed, Skaven,
-    Beastmen and Dark Elves.
+  effect: In multiplayer games, the warband may never form an alliance with a Chaotic warband, including
+    Possessed, Skaven, Beastmen and Dark Elves.
   source:
     manual: chaos-in-the-streets
     printed_page: 137
     section: Special Rules / Unforgiving
   name_i18n:
     en: Unforgiving
-    es: null
+    es: Implacables
   effect_i18n:
-    en: In multiplayer games, the warband may never form an alliance with a Chaotic warband, including Possessed, Skaven,
-      Beastmen and Dark Elves.
-    es: null
+    en: In multiplayer games, the warband may never form an alliance with a Chaotic warband, including
+      Possessed, Skaven, Beastmen and Dark Elves.
+    es: En partidas multijugador, la banda jamás puede formar una alianza con una banda Caótica, incluidos
+      Poseídos, Skaven, Beastmen y Elfos Oscuros.
   applies_to:
     band: true
   runtime:
@@ -158,19 +164,23 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--tolerant
   name: Tolerant
-  effect: The warband may hire Hired Swords provided they are not Chaotic or evil. The source explicitly excludes Skaven,
-    Possessed, Beastmen, Dark Elves and Undead, and also forbids specialists in poison such as Assassins.
+  effect: The warband may hire Hired Swords provided they are not Chaotic or evil. The source explicitly
+    excludes Skaven, Possessed, Beastmen, Dark Elves and Undead, and also forbids specialists in poison
+    such as Assassins.
   source:
     manual: chaos-in-the-streets
     printed_page: 137
     section: Special Rules / Tolerant
   name_i18n:
     en: Tolerant
-    es: null
+    es: Tolerantes
   effect_i18n:
-    en: The warband may hire Hired Swords provided they are not Chaotic or evil. The source explicitly excludes Skaven, Possessed,
-      Beastmen, Dark Elves and Undead, and also forbids specialists in poison such as Assassins.
-    es: null
+    en: The warband may hire Hired Swords provided they are not Chaotic or evil. The source explicitly
+      excludes Skaven, Possessed, Beastmen, Dark Elves and Undead, and also forbids specialists in poison
+      such as Assassins.
+    es: La banda puede contratar Espadas a Sueldo siempre que no sean Caóticas ni malvadas. La fuente
+      excluye explícitamente a Skaven, Poseídos, Beastmen, Elfos Oscuros y No-muertos, y también prohíbe
+      a los especialistas en veneno, como los Asesinos.
   applies_to:
     band: true
   runtime:
@@ -181,23 +191,27 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.tolerant
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--shadow-warrior-special-skills-see-in-shadows
   kind: warband_skill
   name: See in Shadows
-  effect: If the warrior has enough Movement to reach an unseen opponent, he may re-roll the test made to charge that opponent;
-    the source contrasts this with the normal 4" limit.
+  effect: If the warrior has enough Movement to reach an unseen opponent, he may re-roll the test made
+    to charge that opponent; the source contrasts this with the normal 4" limit.
   source:
     manual: chaos-in-the-streets
     printed_page: 142
     section: Sons of Nagarythe Special Skills / See in Shadows
   name_i18n:
     en: See in Shadows
-    es: null
+    es: Ver en las sombras
   effect_i18n:
-    en: If the warrior has enough Movement to reach an unseen opponent, he may re-roll the test made to charge that opponent;
-      the source contrasts this with the normal 4" limit.
-    es: null
+    en: If the warrior has enough Movement to reach an unseen opponent, he may re-roll the test made to
+      charge that opponent; the source contrasts this with the normal 4" limit.
+    es: Si el guerrero tiene Movimiento suficiente para alcanzar a un oponente que no ve, puede repetir
+      el chequeo hecho para cargar contra ese oponente; la fuente lo contrasta con el límite normal de
+      4".
   eligibility:
   - shadow-master
   - shadow-weaver
@@ -216,25 +230,31 @@ rules:
 - id: band--shadow-warrior-special-skills-master-of-runes
   kind: warband_skill
   name: Master of Runes
-  effect: When using Elven Runestones, the warrior gains +1 to the roll to dispel a spell. The warrior may also inscribe Elven
-    runes on a warband member's weapon or armour; once during that battle, that model may re-roll one failed armour save or
-    one failed parry, as appropriate. The rune loses its power after the battle. The Spanish source labels this skill 'Only
-    Loremaster'; because the warband has no Loremaster profile, this restriction is mapped to the Shadow Weaver, the warband's
-    wizard profile.
+  effect: When using Elven Runestones, the warrior gains +1 to the roll to dispel a spell. The warrior
+    may also inscribe Elven runes on a warband member's weapon or armour; once during that battle, that
+    model may re-roll one failed armour save or one failed parry, as appropriate. The rune loses its power
+    after the battle. The Spanish source labels this skill 'Only Loremaster'; because the warband has
+    no Loremaster profile, this restriction is mapped to the Shadow Weaver, the warband's wizard profile.
   source:
     manual: chaos-in-the-streets
     printed_page: 142
     section: Sons of Nagarythe Special Skills / Master of Runes
   name_i18n:
     en: Master of Runes
-    es: null
+    es: Maestro de runas
   effect_i18n:
-    en: When using Elven Runestones, the warrior gains +1 to the roll to dispel a spell. The warrior may also inscribe Elven
-      runes on a warband member's weapon or armour; once during that battle, that model may re-roll one failed armour save
-      or one failed parry, as appropriate. The rune loses its power after the battle. The Spanish source labels this skill
-      'Only Loremaster'; because the warband has no Loremaster profile, this restriction is mapped to the Shadow Weaver, the
-      warband's wizard profile.
-    es: null
+    en: When using Elven Runestones, the warrior gains +1 to the roll to dispel a spell. The warrior may
+      also inscribe Elven runes on a warband member's weapon or armour; once during that battle, that
+      model may re-roll one failed armour save or one failed parry, as appropriate. The rune loses its
+      power after the battle. The Spanish source labels this skill 'Only Loremaster'; because the warband
+      has no Loremaster profile, this restriction is mapped to the Shadow Weaver, the warband's wizard
+      profile.
+    es: Al usar Piedras Rúnicas Elfas, el guerrero gana +1 en la tirada para dispersar un hechizo. El
+      guerrero también puede inscribir runas élficas en el arma o la armadura de un miembro de la banda;
+      una vez durante esa batalla, ese modelo puede repetir una salvación por armadura fallada o una parada
+      fallada, según corresponda. La runa pierde su poder tras la batalla. La fuente española etiqueta
+      esta habilidad 'Solo Estudioso del Loremaster'; como la banda no tiene perfil de Loremaster, esta
+      restricción se asigna al Tejedor de Sombras, el perfil de hechicero de la banda.
   eligibility:
   - shadow-weaver
   applies_to:
@@ -247,7 +267,9 @@ rules:
     - id: unimplemented.chaos-streets-sons-of-nagarythe.band.shadow-warrior-special-skills-master-of-runes
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--shadow-warrior-special-skills-elven-agility
   kind: warband_skill
   runtime:
@@ -261,19 +283,20 @@ rules:
         kind: mechanic
         id: skill.elven-agility
   name: Elven Agility
-  effect: The Elf avoids close-combat and missile attacks on a 6+. If he also has Dodge or Step Aside, the corresponding save
-    improves to 4+ for the attack type covered by that skill.
+  effect: The Elf avoids close-combat and missile attacks on a 6+. If he also has Dodge or Step Aside,
+    the corresponding save improves to 4+ for the attack type covered by that skill.
   source:
     manual: chaos-in-the-streets
     printed_page: 142
     section: Sons of Nagarythe Special Skills / Elven Agility
   name_i18n:
     en: Elven Agility
-    es: null
+    es: Agilidad élfica
   effect_i18n:
-    en: The Elf avoids close-combat and missile attacks on a 6+. If he also has Dodge or Step Aside, the corresponding save
-      improves to 4+ for the attack type covered by that skill.
-    es: null
+    en: The Elf avoids close-combat and missile attacks on a 6+. If he also has Dodge or Step Aside, the
+      corresponding save improves to 4+ for the attack type covered by that skill.
+    es: El elfo evita ataques cuerpo a cuerpo y de misil con un 6+. Si además tiene Esquiva o Apartarse,
+      la salvación correspondiente mejora a 4+ para el tipo de ataque que cubre esa habilidad.
   eligibility:
   - shadow-master
   - shadow-weaver
@@ -283,19 +306,21 @@ rules:
 - id: band--shadow-warrior-special-skills-powerful-build
   kind: warband_skill
   name: Powerful Build
-  effect: The warrior may choose skills from the Strength skill list. A Shadow Weaver may never take this skill, and no more
-    than two warriors in the warband may have it at the same time.
+  effect: The warrior may choose skills from the Strength skill list. A Shadow Weaver may never take this
+    skill, and no more than two warriors in the warband may have it at the same time.
   source:
     manual: chaos-in-the-streets
     printed_page: 142
     section: Sons of Nagarythe Special Skills / Powerful Build
   name_i18n:
     en: Powerful Build
-    es: null
+    es: Complexión poderosa
   effect_i18n:
-    en: The warrior may choose skills from the Strength skill list. A Shadow Weaver may never take this skill, and no more
-      than two warriors in the warband may have it at the same time.
-    es: null
+    en: The warrior may choose skills from the Strength skill list. A Shadow Weaver may never take this
+      skill, and no more than two warriors in the warband may have it at the same time.
+    es: El guerrero puede elegir habilidades de la lista de habilidades de Fuerza. Un Tejedor de Sombras
+      jamás puede tomar esta habilidad, y no más de dos guerreros de la banda pueden tenerla al mismo
+      tiempo.
   eligibility:
   - shadow-master
   - shadow-walker
@@ -320,19 +345,23 @@ rules:
 - id: band--shadow-warrior-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
-  effect: The warrior deploys after the opposing warband and may be placed anywhere outside enemy line of sight and more than
-    12" from every enemy model. If both players have infiltrating models, roll D6 for each; the lowest roll deploys first.
+  effect: The warrior deploys after the opposing warband and may be placed anywhere outside enemy line
+    of sight and more than 12" from every enemy model. If both players have infiltrating models, roll
+    D6 for each; the lowest roll deploys first.
   source:
     manual: chaos-in-the-streets
     printed_page: 142
     section: Sons of Nagarythe Special Skills / Infiltration
   name_i18n:
     en: Infiltration
-    es: null
+    es: Infiltración
   effect_i18n:
-    en: The warrior deploys after the opposing warband and may be placed anywhere outside enemy line of sight and more than
-      12" from every enemy model. If both players have infiltrating models, roll D6 for each; the lowest roll deploys first.
-    es: null
+    en: The warrior deploys after the opposing warband and may be placed anywhere outside enemy line of
+      sight and more than 12" from every enemy model. If both players have infiltrating models, roll D6
+      for each; the lowest roll deploys first.
+    es: El guerrero se despliega después de la banda rival y puede colocarse en cualquier punto fuera
+      de la línea de visión enemiga y a más de 12" de cada modelo enemigo. Si ambos jugadores tienen modelos
+      que se infiltran, tira D6 por cada uno; el de la tirada más baja se despliega primero.
   eligibility:
   - shadow-master
   - shadow-weaver
@@ -358,10 +387,10 @@ rules:
     section: Sons of Nagarythe Special Skills / Sniper
   name_i18n:
     en: Sniper
-    es: null
+    es: Francotirador
   effect_i18n:
     en: If Hidden, the warrior may shoot or cast spells and remain Hidden.
-    es: null
+    es: Si está Oculto, el guerrero puede disparar o lanzar hechizos y seguir Oculto.
   eligibility:
   - shadow-master
   - shadow-weaver
@@ -380,17 +409,20 @@ rules:
 - id: band--shadow-warrior-special-skills-hide-in-shadows
   kind: warband_skill
   name: Hide in Shadows
-  effect: An enemy attempting to detect this Hidden warrior halves its Initiative before measuring the detection distance.
+  effect: An enemy attempting to detect this Hidden warrior halves its Initiative before measuring the
+    detection distance.
   source:
     manual: chaos-in-the-streets
     printed_page: 142
     section: Sons of Nagarythe Special Skills / Hide in Shadows
   name_i18n:
     en: Hide in Shadows
-    es: null
+    es: Ocultarse en las sombras
   effect_i18n:
-    en: An enemy attempting to detect this Hidden warrior halves its Initiative before measuring the detection distance.
-    es: null
+    en: An enemy attempting to detect this Hidden warrior halves its Initiative before measuring the detection
+      distance.
+    es: Un enemigo que intente detectar a este guerrero Oculto divide a la mitad su Iniciativa antes de
+      medir la distancia de detección.
   eligibility:
   - shadow-master
   - shadow-weaver

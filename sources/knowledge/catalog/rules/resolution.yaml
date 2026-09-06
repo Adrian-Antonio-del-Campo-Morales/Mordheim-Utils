@@ -29,10 +29,19 @@ injury:
   state: stunned
 - rolls: 5-6
   state: out_of_action
+  # combat-injury-states: when several unsaved wounds force more than one
+  # injury roll, each is resolved on this table and the highest (worst)
+  # resulting state is the one applied.
+  aggregation: highest_state_across_injury_rolls
 critical_hit:
   trigger: natural_6_to_wound_when_6_not_required
   maximum_per_attacker_per_phase: 1
   table: basic
+  # combat-critical-hits: "resolve the basic critical table on D6 with
+  # critical-table modifiers". In this close-combat-only scope no modifier
+  # source exists (the mounted-lance modifier is out of scope), so the table
+  # is always resolved unmodified.
+  modifiers: none_in_close_combat_only_scope
   results:
   - {rolls: 1-2, wounds: 2, armour: before_doubling, injury_modifier: 0}
   - {rolls: 3-4, wounds: 2, armour: ignored, injury_modifier: 0}
@@ -42,3 +51,18 @@ parry:
   success: parry_roll_strictly_greater_than_highest_hit_roll
   natural_6_to_hit_cannot_be_parried: true
   strength_limit: attack_strength_must_be_less_than_double_defender_strength
+  attempts: one_per_defender_per_phase
+  attempts_note: >-
+    Carrying two parrying weapons does not grant two attempts; the only ways to
+    exceed one attempt are specific skills or weapons (e.g. Unbeatable
+    Warrior, double-bladed sword).
+  reroll:
+    sword_and_buckler: one_reroll_of_failed_parry
+    two_swords: no_reroll
+  skill_nuances:
+    skill.miniath: >-
+      Grants a parry attempt with any weapon, but only a natively parrying
+      weapon (main or off-hand with parry) gains the failed-parry reroll.
+    skill.sword-master: >-
+      Changes the success condition from strictly greater to equal-or-greater
+      (equality matches); it grants no reroll of its own.

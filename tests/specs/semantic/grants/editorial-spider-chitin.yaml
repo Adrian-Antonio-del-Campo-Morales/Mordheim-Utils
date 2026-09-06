@@ -4,27 +4,55 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/mordheim/forest-goblins/gigantic-spider--chitin-armour/trait.natural-armour-save, digest: ba892cdb565b14ac018bf7c14d99b21e888214c4ac1178f6ea032337b41bde88}
-  ruling: "Spider Chitin Armour is an intrinsic rule of the Gigantic Spider that grants natural armour of 4+, not selectable equipment."
-  interpretation: "The profile's automatic grant compiles natural_armour_save=4 and the armour resolver consumes that save."
+  - target: rule/mordheim/forest-goblins/gigantic-spider--chitin-armour/trait.natural-armour-save
+    digest: beb19a2ae9c97c007b59220a71af9957cf242be1013008c01f8fc0e42002c5fd
+  ruling: Spider Chitin Armour is an intrinsic rule of the Gigantic Spider that grants natural armour
+    of 4+, not selectable equipment.
+  interpretation: The profile's automatic grant compiles natural_armour_save=4 and the armour resolver
+    consumes that save.
   cases:
   - id: profile-grant
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {band_id: forest-goblins, profile_id: gigantic-spider}
-    context: {rule_id: gigantic-spider--chitin-armour}
-    expect: {result.recipients: [gigantic-spider]}
+    defender:
+      band_id: forest-goblins
+      profile_id: gigantic-spider
+    context:
+      rule_id: gigantic-spider--chitin-armour
+    expect:
+      result.recipients:
+      - gigantic-spider
   - id: natural-four-plus
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: forest-goblins, profile_id: gigantic-spider}
-    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/2, 'false': 1/2}}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: forest-goblins
+      profile_id: gigantic-spider
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: ordinary-fighter-control
-    roles: [inactive]
+    roles:
+    - inactive
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
+    attacker:
+      main_weapon_id: weapon.mace
     defender: {}
-    expect: {result.eligible: false}
+    expect:
+      result.eligible: false
   mutations:
-  - {id: remove-chitin-save, path: defender.natural_armour_save, value: 7, cases: [natural-four-plus]}
+  - id: remove-chitin-save
+    path: defender.natural_armour_save
+    value: 7
+    cases:
+    - natural-four-plus

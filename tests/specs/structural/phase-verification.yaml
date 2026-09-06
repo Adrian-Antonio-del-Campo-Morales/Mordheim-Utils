@@ -154,12 +154,12 @@ complex_rules:
     scenario: reference-force-of-will-rescues-once-and-sustains-per-round
   mechanic.mark-of-the-old-ones:
     category: consumable
-    phases: [hit, wound]
+    phases: [hit, wound, armour]
     engine: scalar-reference
     scenario: reference-luck-and-mark-are-persistent-consumable-resources
   skill.luck:
     category: consumable
-    phases: [hit]
+    phases: [hit, wound, armour]
     engine: scalar-reference
     scenario: reference-luck-and-mark-are-persistent-consumable-resources
   acid_blood:

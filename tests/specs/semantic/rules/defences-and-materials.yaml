@@ -4,162 +4,362 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: mechanic/defence.shield, digest: 43d3529b96ece2d932e95a8116a0100e4273112ca47a5759d0b294800bf3a23e}
-  interpretation: "Shield grants one save point and occupies the off hand. At Strength 3 it produces 6+ without armour and turns a 4+ armour save into 3+."
+  - target: mechanic/defence.shield
+    digest: bad7a6cc281a2b0ef7782dff61fb81dd8765a905236513210a3476e8f55fb8fa
+  interpretation: Shield grants one save point and occupies the off hand. At Strength 3 it produces 6+
+    without armour and turns a 4+ armour save into 3+.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    defender: {off_hand_id: defence.shield}
-    expect: {defender.armour_save: 6, defender.off_hand_attacks: false}
+    defender:
+      off_hand_id: defence.shield
+    expect:
+      defender.armour_save: 6
+      defender.off_hand_attacks: false
   - id: unarmoured-faces
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {off_hand_id: defence.shield}
-    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/6, 'false': 5/6}}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      off_hand_id: defence.shield
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 1/6
+        'false': 5/6
   - id: combines-with-body-armour
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {off_hand_id: defence.shield, armour_id: armour.gromril-armour}
-    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 2/3, 'false': 1/3}}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      off_hand_id: defence.shield
+      armour_id: armour.gromril-armour
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 2/3
+        'false': 1/3
   - id: no-shield-no-save
-    roles: [inactive]
+    roles:
+    - inactive
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    expect: {result.eligible: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    expect:
+      result.eligible: false
   - id: not-an-extra-attack
-    roles: [boundary]
+    roles:
+    - boundary
     operation: attacks
-    attacker: {main_weapon_id: weapon.mace, off_hand_id: defence.shield}
-    expect: {result.attacks: 1}
+    attacker:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+    expect:
+      result.attacks: 1
   - id: hand-held-defence-slot-rejected
-    roles: [rejected]
+    roles:
+    - rejected
     operation: compile
-    attacker: {defence_ids: [defence.shield]}
+    attacker:
+      defence_ids:
+      - defence.shield
     reject: hand-held defences belong in off_hand_id
   mutations:
-  - {id: remove-shield-save, path: defender.armour_save, value: 7, cases: [unarmoured-faces]}
-
+  - id: remove-shield-save
+    path: defender.armour_save
+    value: 7
+    cases:
+    - unarmoured-faces
 - id: defence.buckler
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: mechanic/defence.buckler, digest: 9306ebd03cc785ace9b33e055b0aa42925fc5c2f29fb33366a49864090484729}
-  interpretation: "Buckler allows a parry that must beat the hit and does not improve armour. The ability is consumed with the attempt even if it fails; sword plus buckler re-rolls a failed parry."
+  - target: mechanic/defence.buckler
+    digest: ce2958bbfe865cc0bf48f9cc5e6598008da8e9a06233bf9f90f9c63969016802
+  interpretation: Buckler allows a parry that must beat the hit and does not improve armour. The ability
+    is consumed with the attempt even if it fails; sword plus buckler re-rolls a failed parry.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: initialize
-    defender: {main_weapon_id: weapon.mace, off_hand_id: defence.buckler}
-    expect: {defender.armour_save: 7, defender.global_effects.parry: true, result.defender.parries_remaining: 1}
+    defender:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+    expect:
+      defender.armour_save: 7
+      defender.global_effects.parry: true
+      result.defender.parries_remaining: 1
   - id: parry-faces
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: parry
-    defender: {main_weapon_id: weapon.mace, off_hand_id: defence.buckler}
-    context: {hit_roll: 4}
-    distribution: {observable: result.blocked, max_rolls: 1, expected: {'true': 1/3, 'false': 2/3}}
+    defender:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+    context:
+      hit_roll: 4
+    distribution:
+      observable: result.blocked
+      max_rolls: 1
+      expected:
+        'true': 1/3
+        'false': 2/3
   - id: natural-six
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: parry
-    defender: {main_weapon_id: weapon.mace, off_hand_id: defence.buckler}
-    context: {hit_roll: 6}
-    expect: {result.attempted: false}
+    defender:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
   - id: failed-attempt-consumed
-    roles: [active, consumer, sequence, consumption]
+    roles:
+    - active
+    - consumer
+    - sequence
+    - consumption
     operation: attack
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {main_weapon_id: weapon.mace, off_hand_id: defence.buckler}
-    rolls: [{key: test.hit, value: 4}, {key: test.parry, value: 4}, {key: test.wound, value: 1}]
-    expect: {result.defender.parries_remaining: 0, result.parried: false, result.wounded: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.parry
+      value: 4
+    - key: test.wound
+      value: 1
+    expect:
+      result.defender.parries_remaining: 0
+      result.parried: false
+      result.wounded: false
   - id: depleted-capacity
-    roles: [inactive, consumption]
+    roles:
+    - inactive
+    - consumption
     operation: attack
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {main_weapon_id: weapon.mace, off_hand_id: defence.buckler}
-    defender_state: {parries_remaining: 0}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 1}]
-    expect: {result.defender.parries_remaining: 0, result.parried: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+    defender_state:
+      parries_remaining: 0
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 1
+    expect:
+      result.defender.parries_remaining: 0
+      result.parried: false
   - id: sword-buckler-reroll-faces
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: parry
-    defender: {main_weapon_id: weapon.sword, off_hand_id: defence.buckler}
-    context: {hit_roll: 4}
-    distribution: {observable: result.blocked, max_rolls: 2, expected: {'true': 5/9, 'false': 4/9}}
+    defender:
+      main_weapon_id: weapon.sword
+      off_hand_id: defence.buckler
+    context:
+      hit_roll: 4
+    distribution:
+      observable: result.blocked
+      max_rolls: 2
+      expected:
+        'true': 5/9
+        'false': 4/9
   mutations:
-  - {id: remove-buckler-parry, path: defender.global_effects.parry, value: false, cases: [parry-faces, failed-attempt-consumed]}
-  - {id: remove-buckler-combination, path: defender.global_effects.tags, value: [], cases: [sword-buckler-reroll-faces]}
-
+  - id: remove-buckler-parry
+    path: defender.global_effects.parry
+    value: false
+    cases:
+    - parry-faces
+    - failed-attempt-consumed
+  - id: remove-buckler-combination
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - sword-buckler-reroll-faces
 - id: material.normal
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: mechanic/material.normal, digest: cdd0357700ba0c315ef350831731da8dad5bfe38c23c06dbafb4d5b94944452c}
-  interpretation: "Normal represents the absence of a material improvement. It keeps the Strength, Initiative, saves and effects of the chosen weapon."
+  - target: mechanic/material.normal
+    digest: dbb62fcd13a951a2055f609edf52398a906c58524138feee794812b2818a9e7d
+  interpretation: Normal represents the absence of a material improvement. It keeps the Strength, Initiative,
+    saves and effects of the chosen weapon.
   cases:
   - id: no-strength-modifier
-    roles: [compiled, consumer]
+    roles:
+    - compiled
+    - consumer
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_material_id: material.normal}
-    expect: {attacker.main_weapon.strength_bonus: 0, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.normal
+    expect:
+      attacker.main_weapon.strength_bonus: 0
+      result.wound: 3
+      result.armour: 3
   - id: no-initiative-modifier
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: priority
-    attacker: {main_weapon_id: weapon.mace, main_material_id: material.normal}
-    expect: {result.initiative: 3, result.priority: 0}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.normal
+    expect:
+      result.initiative: 3
+      result.priority: 0
   - id: no-penetration
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, main_material_id: material.normal}
-    defender: {armour_id: armour.gromril-armour}
-    distribution: {observable: result.saved, max_rolls: 1, expected: {'true': 1/2, 'false': 1/2}}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.normal
+    defender:
+      armour_id: armour.gromril-armour
+    distribution:
+      observable: result.saved
+      max_rolls: 1
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: preserves-weapon-concussion
-    roles: [consumer]
+    roles:
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace, main_material_id: material.normal}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.normal
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
   mutations:
-  - {id: invent-strength, path: attacker.main_weapon.strength_bonus, value: 1, cases: [no-strength-modifier]}
-  - {id: invent-initiative, path: attacker.main_weapon.initiative_bonus, value: 1, cases: [no-initiative-modifier]}
-  - {id: invent-penetration, path: attacker.main_weapon.armour_penetration, value: 1, cases: [no-penetration]}
-
+  - id: invent-strength
+    path: attacker.main_weapon.strength_bonus
+    value: 1
+    cases:
+    - no-strength-modifier
+  - id: invent-initiative
+    path: attacker.main_weapon.initiative_bonus
+    value: 1
+    cases:
+    - no-initiative-modifier
+  - id: invent-penetration
+    path: attacker.main_weapon.armour_penetration
+    value: 1
+    cases:
+    - no-penetration
 - id: material.ithilmar
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: mechanic/material.ithilmar, digest: d5fffe8ff567f82d3276ee1da5970b90ed93c4ed7a90eab9a30f391c85881eb1}
-  interpretation: "Ithilmar grants +1 Initiative while the weapon is equipped; it does not grant striking first nor modify Strength. The off hand is also the fighter's equipment."
+  - target: mechanic/material.ithilmar
+    digest: cff62e6f3ba279581a44f151d47449bf6c37197957f7da7f7c1cc1823e354c0b
+  interpretation: Ithilmar grants +1 Initiative while the weapon is equipped; it does not grant striking
+    first nor modify Strength. The off hand is also the fighter's equipment.
   cases:
   - id: main-hand-initiative
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: priority
-    attacker: {main_weapon_id: weapon.mace, main_material_id: material.ithilmar}
-    expect: {attacker.main_weapon.initiative_bonus: 1, result.initiative: 4, result.priority: 0}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.ithilmar
+    expect:
+      attacker.main_weapon.initiative_bonus: 1
+      result.initiative: 4
+      result.priority: 0
   - id: off-hand-initiative
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: priority
-    attacker: {main_weapon_id: weapon.mace, off_hand_id: weapon.sword, off_material_id: material.ithilmar}
-    expect: {attacker.off_hand.initiative_bonus: 1, result.initiative: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.sword
+      off_material_id: material.ithilmar
+    expect:
+      attacker.off_hand.initiative_bonus: 1
+      result.initiative: 4
   - id: no-strength-bonus
-    roles: [inactive]
+    roles:
+    - inactive
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_material_id: material.ithilmar}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.ithilmar
+    expect:
+      result.wound: 3
+      result.armour: 3
   - id: off-hand-breaks-base-initiative-tie
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: acting_order
-    attacker: {main_weapon_id: weapon.mace, off_hand_id: weapon.sword, off_material_id: material.ithilmar}
-    expect: {result.first_acts: true}
+    attacker:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.sword
+      off_material_id: material.ithilmar
+    expect:
+      result.first_acts: true
   - id: cannot-beat-strike-first
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: acting_order
-    attacker: {main_weapon_id: weapon.mace, main_material_id: material.ithilmar}
-    defender: {main_weapon_id: weapon.spear}
-    context: {first_round: true}
-    opponent_context: {first_round: true}
-    expect: {result.first_acts: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_material_id: material.ithilmar
+    defender:
+      main_weapon_id: weapon.spear
+    context:
+      first_round: true
+    opponent_context:
+      first_round: true
+    expect:
+      result.first_acts: false
   mutations:
-  - {id: remove-main-initiative, path: attacker.main_weapon.initiative_bonus, value: 0, cases: [main-hand-initiative]}
-  - {id: remove-off-initiative, path: attacker.off_hand.initiative_bonus, value: 0, cases: [off-hand-initiative, off-hand-breaks-base-initiative-tie]}
+  - id: remove-main-initiative
+    path: attacker.main_weapon.initiative_bonus
+    value: 0
+    cases:
+    - main-hand-initiative
+  - id: remove-off-initiative
+    path: attacker.off_hand.initiative_bonus
+    value: 0
+    cases:
+    - off-hand-initiative
+    - off-hand-breaks-base-initiative-tie

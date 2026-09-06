@@ -1,10 +1,24 @@
 # Knowledge base
 
-Single source of rules and runtime data: shared catalogues, warbands, profiles, accesses and the registry. Its editorial rules keep their own identity and link through bindings to stable executable mechanics.
+Single source of rules and runtime data: shared catalogues, warbands, profiles,
+accesses and the registry. Its editorial rules keep their own identity and link
+through bindings to stable executable mechanics.
 
-The `runtime` block is validated against `registry/runtime-schema.yaml`. `scope` indicates whether the effect belongs to the duel; `implemented` whether it has an implementation; `grant` how it is granted. An absent classification does not mean out of scope.
+The `runtime` block is validated against `registry/runtime-schema.yaml`. `scope`
+indicates whether the effect belongs to the duel; `implemented` whether it has
+an implementation; `grant` how it is granted. An absent classification does not
+mean out of scope.
 
-The KB carries no evidence of correctness. The structural contract and the semantic scenarios live in `tests/specs/`, so that the runtime does not depend on its own tests. See [Modify the KB](../../docs/tasks/modify-kb.md) and [Verify rules](../../docs/tasks/verify-rules.md).
+The KB carries no evidence of correctness. The structural contract and the
+semantic scenarios live in `tests/specs/`, so that the runtime does not depend
+on its own tests.
+
+Full layout, classification contract, path of a rule, YAML formatting policy
+and golden rules: [the KB guide](../../../docs/reference/knowledge-base.md).
+Directory-level detail: [`registry/README.md`](registry/README.md),
+[`catalog/hirelings/README.md`](catalog/hirelings/README.md) and
+[`catalog/campaign/README.md`](catalog/campaign/README.md) (+ its HOWTO and
+modelling conventions).
 
 ## Locale policy
 

@@ -5,10 +5,11 @@ specifications:
   category: local
   sources:
   - target: mechanic/skill.thick-skull
-    digest: 4819600fd8bc2849d0a915b323b8729882c37119a23174442c005e3978ff635f
+    digest: 30869012f644e7bece0bb9c28a79f423c027db6ced91319b827c2809eb9694ee
   interpretation: Thick Skull replaces a Stunned result with Knocked Down on 3+. With a Helmet the replacement
-    succeeds on 2+ and is used instead of the Helmet's ordinary 4+ reaction. Results other than Stunned request no
-    reaction die. These thresholds are transcribed from the three cited skill texts in the canonical catalogue.
+    succeeds on 2+ and is used instead of the Helmet's ordinary 4+ reaction. Results other than Stunned
+    request no reaction die. These thresholds are transcribed from the three cited skill texts in the
+    canonical catalogue.
   interaction_contract:
     reads:
     - injury.condition
@@ -16,139 +17,225 @@ specifications:
     - injury.condition
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
     defender:
-      skill_ids: [skill.thick-skull]
+      skill_ids:
+      - skill.thick-skull
     expect:
       defender.global_effects.thick_skull: true
   - id: knocked-down-omits-reaction
-    roles: [inactive, boundary, consumer]
+    roles:
+    - inactive
+    - boundary
+    - consumer
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
+      skill_ids:
+      - skill.thick-skull
     context:
       condition: KNOCKED_DOWN
     expect:
       result.condition: KNOCKED_DOWN
       result.attempted: false
   - id: without-skill-omits-reaction
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: stun_reaction
     expect:
       result.condition: STUNNED
       result.attempted: false
   - id: no-helmet-face-1
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
-    rolls: [{key: test.thick-skull, value: 1}]
+      skill_ids:
+      - skill.thick-skull
+    rolls:
+    - key: test.thick-skull
+      value: 1
     expect:
       result.condition: STUNNED
       result.threshold: 3
   - id: no-helmet-face-2
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
-    rolls: [{key: test.thick-skull, value: 2}]
+      skill_ids:
+      - skill.thick-skull
+    rolls:
+    - key: test.thick-skull
+      value: 2
     expect:
       result.condition: STUNNED
       result.threshold: 3
   - id: no-helmet-face-3
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
-    rolls: [{key: test.thick-skull, value: 3}]
+      skill_ids:
+      - skill.thick-skull
+    rolls:
+    - key: test.thick-skull
+      value: 3
     expect:
       result.condition: KNOCKED_DOWN
       result.threshold: 3
   - id: no-helmet-face-4
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
-    rolls: [{key: test.thick-skull, value: 4}]
+      skill_ids:
+      - skill.thick-skull
+    rolls:
+    - key: test.thick-skull
+      value: 4
     expect:
       result.condition: KNOCKED_DOWN
       result.threshold: 3
   - id: no-helmet-face-5
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
-    rolls: [{key: test.thick-skull, value: 5}]
+      skill_ids:
+      - skill.thick-skull
+    rolls:
+    - key: test.thick-skull
+      value: 5
     expect:
       result.condition: KNOCKED_DOWN
       result.threshold: 3
   - id: no-helmet-face-6
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
-    rolls: [{key: test.thick-skull, value: 6}]
+      skill_ids:
+      - skill.thick-skull
+    rolls:
+    - key: test.thick-skull
+      value: 6
     expect:
       result.condition: KNOCKED_DOWN
       result.threshold: 3
   - id: helmet-face-1
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
-      defence_ids: [defence.helmet]
-    rolls: [{key: test.thick-skull, value: 1}]
+      skill_ids:
+      - skill.thick-skull
+      defence_ids:
+      - defence.helmet
+    rolls:
+    - key: test.thick-skull
+      value: 1
     expect:
       result.condition: STUNNED
       result.threshold: 2
   - id: helmet-face-2
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
-      defence_ids: [defence.helmet]
-    rolls: [{key: test.thick-skull, value: 2}]
+      skill_ids:
+      - skill.thick-skull
+      defence_ids:
+      - defence.helmet
+    rolls:
+    - key: test.thick-skull
+      value: 2
     expect:
       result.condition: KNOCKED_DOWN
       result.threshold: 2
   - id: helmet-face-3
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
-      defence_ids: [defence.helmet]
-    rolls: [{key: test.thick-skull, value: 3}]
+      skill_ids:
+      - skill.thick-skull
+      defence_ids:
+      - defence.helmet
+    rolls:
+    - key: test.thick-skull
+      value: 3
     expect:
       result.condition: KNOCKED_DOWN
       result.threshold: 2
   - id: helmet-face-4
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
-      defence_ids: [defence.helmet]
-    rolls: [{key: test.thick-skull, value: 4}]
+      skill_ids:
+      - skill.thick-skull
+      defence_ids:
+      - defence.helmet
+    rolls:
+    - key: test.thick-skull
+      value: 4
     expect:
       result.condition: KNOCKED_DOWN
       result.threshold: 2
   - id: helmet-face-5
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
-      defence_ids: [defence.helmet]
-    rolls: [{key: test.thick-skull, value: 5}]
+      skill_ids:
+      - skill.thick-skull
+      defence_ids:
+      - defence.helmet
+    rolls:
+    - key: test.thick-skull
+      value: 5
     expect:
       result.condition: KNOCKED_DOWN
       result.threshold: 2
   - id: helmet-face-6
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
-      defence_ids: [defence.helmet]
-    rolls: [{key: test.thick-skull, value: 6}]
+      skill_ids:
+      - skill.thick-skull
+      defence_ids:
+      - defence.helmet
+    rolls:
+    - key: test.thick-skull
+      value: 6
     expect:
       result.condition: KNOCKED_DOWN
       result.threshold: 2

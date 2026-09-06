@@ -165,6 +165,7 @@ class AttackPoolContext:
     wounded: bool = False
     attack_penalty: int = 0
     base_attacks: int | None = None
+    player_turn: bool = True
 
 
 @dataclass(frozen=True, slots=True)
@@ -204,7 +205,7 @@ def build_attacks(context: AttackPoolContext) -> AttackPoolResult:
         for tag in ("weapon.fist", "weapon.fighting-claws")
     ):
         attacks += 1
-    if has_tag(effect, "skill.inspiring-sermon"):
+    if context.player_turn and has_tag(effect, "skill.inspiring-sermon"):
         attacks += 1
     if context.first_round:
         attacks += fighter.main_weapon.first_round_attacks_bonus

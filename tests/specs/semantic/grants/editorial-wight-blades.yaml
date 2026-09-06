@@ -4,48 +4,132 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/mordheim/restless-dead/grave-guards--wight-blades/trait.wight-blades, digest: 1e5b254b37487cb6e3893335543bc07450d58f5b36bb1eb28529c0dfa1f39301}
-  interpretation: "A natural 6 to hit guarantees the wound but does not skip the to-wound roll; that roll is kept to determine the critical. Failing that roll still causes a wound."
+  - target: rule/mordheim/restless-dead/grave-guards--wight-blades/trait.wight-blades
+    digest: e530e5d16109f1e234971b7f8239ad37dc0f53402291b520f65f4257df518657
+  interpretation: A natural 6 to hit guarantees the wound but does not skip the to-wound roll; that roll
+    is kept to determine the critical. Failing that roll still causes a wound.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: restless-dead, profile_id: grave-guards}
-    context: {rule_id: grave-guards--wight-blades}
-    expect: {result.recipients: [grave-guards]}
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: grave-guards
+    context:
+      rule_id: grave-guards--wight-blades
+    expect:
+      result.recipients:
+      - grave-guards
   - id: hit-six-failed-wound-still-wounds
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: wound
-    attacker: {collection: mordheim, band_id: restless-dead, profile_id: grave-guards}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 3, attacks: 1}}
-    context: {hit_roll: 6}
-    rolls: [{key: wound, value: 1}]
-    expect: {context.automatic: false, context.failure_still_wounds: true, result.roll: 1, result.success: true, result.critical: false}
-    expect_contains: {attacker.global_effects.tags: [wight_blades]}
+    attacker:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: grave-guards
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 6
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      hit_roll: 6
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      context.automatic: false
+      context.failure_still_wounds: true
+      result.roll: 1
+      result.success: true
+      result.critical: false
+    expect_contains:
+      attacker.global_effects.tags:
+      - wight_blades
   - id: hit-six-can-critical
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: wound
-    attacker: {collection: mordheim, band_id: restless-dead, profile_id: grave-guards}
-    context: {hit_roll: 6}
-    rolls: [{key: wound, value: 6}]
-    expect: {result.success: true, result.critical: true}
+    attacker:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: grave-guards
+    context:
+      hit_roll: 6
+    rolls:
+    - key: wound
+      value: 6
+    expect:
+      result.success: true
+      result.critical: true
   - id: ordinary-hit-does-not-guarantee-wound
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: wound
-    attacker: {collection: mordheim, band_id: restless-dead, profile_id: grave-guards}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 3, attacks: 1}}
-    context: {hit_roll: 5}
-    rolls: [{key: wound, value: 1}]
-    expect: {context.failure_still_wounds: false, result.success: false}
+    attacker:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: grave-guards
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 6
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      hit_roll: 5
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      context.failure_still_wounds: false
+      result.success: false
   - id: complete-attack-consumes-wound-roll
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: attack
-    attacker: {collection: mordheim, band_id: restless-dead, profile_id: grave-guards}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 3, attacks: 1}}
-    rolls: [{key: test.hit, value: 6}, {key: test.wound, value: 1}, {key: test.armour, value: 1}]
-    expect: {result.wounded: true, result.damage: 1, result.critical: false, result.defender.wounds: 2}
+    attacker:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: grave-guards
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 6
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 6
+    - key: test.wound
+      value: 1
+    - key: test.armour
+      value: 1
+    expect:
+      result.wounded: true
+      result.damage: 1
+      result.critical: false
+      result.defender.wounds: 2
   mutations:
   - id: remove-wight-blades
     path: attacker.global_effects.tags
     value: []
-    cases: [hit-six-failed-wound-still-wounds, complete-attack-consumes-wound-roll]
+    cases:
+    - hit-six-failed-wound-still-wounds
+    - complete-attack-consumes-wound-roll

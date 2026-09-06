@@ -18,6 +18,15 @@ the linking points for its handlers and for warband persistence.
 The order of `post-battle-sequence.yaml` is normative; the other documents
 describe the data that each step resolves.
 
+Companion documents in this directory:
+
+- [`README-HOWTO.md`](README-HOWTO.md) — how to query and extend the
+  catalogue from application code (responsibility boundary, data-ownership
+  table, loader contract, scenario-reward schema).
+- [`MODELING-CONVENTIONS.md`](MODELING-CONVENTIONS.md) — YAML shapes for
+  typed effects, advancement results, rarity tests and exploration
+  procedures.
+
 ## ID convention
 
 The real entries of this catalogue use namespaced IDs with kebab-case
@@ -38,51 +47,57 @@ equipment and rules of each profile. `bands/*/band.yaml` holds the
 composition and limits of the warband. `catalog/items/` holds the record of
 each item. `trading-post.yaml` is the canonical source of market price,
 rarity and post-battle availability. `catalog/rules/racial-maximums.yaml` is
-the only source of racial characteristic maximums: warband rules and campaign
-advancement reference its entries (`campaign.limit.racial-maximum.*`) by ID
-and do not embed the statline. The campaign catalogue only defines
+the only source of racial characteristic maximums (29 entries
+`campaign.limit.racial-maximum.*`): warband rules and campaign advancement
+reference its entries by ID and do not embed the statline, so there are no
+two copies that could drift apart. The campaign catalogue only defines
 procedures, campaign tables and ID links; for example, a hiring entry refers
 a `profile_id` and never copies the profile record.
 
-The `cost` values already present in `equipment-access.yaml` are kept as
-evidence of the printed lists during the migration. They are not a market
-price: when an amount is a real exception it must be declared explicitly as
-`price_override`, with its source; otherwise the Trading Post prevails.
-Multi-unit purchases — for example, pairs — are modelled in
-`purchase_options`, not as another price of the same `item_id`.
+## Price and equipment rules
 
-## Collation of warband-list prices (first run)
+1. Consult first the price and availability in `trading-post.yaml`.
+2. Use `equipment-access.yaml` only to know whether that profile may select
+   the item.
+3. Apply `price_override` only if it exists, is referenced and its source
+   confirms an exception.
+4. Represent pairs, discounts and variable costs with `purchase_options` and
+   the structured Trading Post price; not with new `item_id` values or
+   implicit alternative prices.
+
+### Collation of warband-list prices (first run)
 
 The collation tool `tools/kb/price-collation.py` compares every `cost` value
 of every `equipment-access.yaml` with the Trading Post (2,152 rows across 81
-warbands) and regenerates `docs/knowledge/price-collation.md` (+ CSV). A
-warband list is the creation/recruitment price list of its source; the
-Trading Post is the market price for post-battle purchases. A difference is
-therefore not itself an exception: per the review rules below, an amount is
-recorded as a `price_override` only when the warband's own source confirms
-that the warband pays that amount as a market price too.
+warbands) and regenerates the report into `outputs/knowledge/` (git-ignored;
+run `python tools/kb/price-collation.py`). A warband list is the creation/recruitment price list of its source;
+the Trading Post is the market price for post-battle purchases. A difference
+is therefore not itself an exception: an amount is recorded as a
+`price_override` only when the warband's own source confirms that the warband
+pays that amount as a market price too.
 
-First-run result: 18 rows carry a `price_override`, all source-confirmed; 14 differing rows are page-verified as plain creation prices (`docs/knowledge/price-collation-resolutions.csv`), and 119 rows remain in the review queue:
+First-run result: 18 rows carry a `price_override`, all source-confirmed; 14
+differing rows are page-verified as plain creation prices (the committed
+sidecar `tools/kb/price-collation-resolutions.csv`), and 119 rows remain in
+the review queue:
 
 - `gunnery-school-of-nuln` — the black-powder weapons of both lists
-  (Impeccable Care: “always use the reduced … costs listed in its starting
-  Equipment Lists”); the `superior_blackpowder` accessory is not a weapon
+  (Impeccable Care: "always use the reduced … costs listed in its starting
+  Equipment Lists"); the `superior_blackpowder` accessory is not a weapon
   and keeps the Trading Post price;
 - `hochland-bandits` — the Duelist list pistol (Powder's Expensive!: bandit
-  heroes “always pay the higher black-powder weapon costs shown in its
-  equipment lists”);
-- `lizardmen` — light armour (Armour rule: “always costs 50 gc for
-  Lizardmen, including when bought from the Equipment chart”).
+  heroes "always pay the higher black-powder weapon costs shown in its
+  equipment lists");
+- `lizardmen` — light armour (Armour rule: "always costs 50 gc for
+  Lizardmen, including when bought from the Equipment chart").
 
 Each `price_override` equals the list `cost` it encodes (the exception amount
 is the printed list amount); the warband page in `source` is its
 verification. Rows that were checked against their page and shown to be
-creation prices are recorded in the resolutions sidecar
-(`docs/knowledge/price-collation-resolutions.csv`, outcome
-`creation-price`) and leave the queue: the list price is what a recruit pays,
-and the Trading Post prevails at the market. The remaining rows keep their
-`cost` only as historical evidence and stay listed in the review queue until
-each printed source is verified (the Trollheim/Lustria/Khemri rows have no
+creation prices are recorded in the resolutions sidecar (outcome
+`creation-price`) and leave the queue. The remaining rows keep their `cost`
+only as historical evidence and stay listed in the review queue until each
+printed source is verified (the Trollheim/Lustria/Khemri rows have no
 recorded source URL in the files yet). Review by `item_id`, equipment list,
 profile and purchase option — never by name matching.
 
@@ -102,7 +117,7 @@ ingestion in the main block of each file.
 | `post-battle-sequence.yaml` | The 10 post-battle steps in normative order | published |
 | `trading-post.yaml` | 338 entries: base price/variable cost, availability (77 common, 183 rare, 78 not sold) and restrictions | published |
 | `serious-injuries.yaml` | D66 hero (20 results) and D6 mercenary (2) tables with typed effects | published |
-| `experience-and-advances.yaml` | 3 XP awards, underdog bonus and 2 advancement tables | published |
+| `experience-and-advances.yaml` | 3 XP awards, underdog bonus, 2 advancement tables and the `advance_thresholds` ladder | published |
 | `exploration-and-income.yaml` | Dice allocation, exploration result table, wyrdstone selling and magic artefacts | published |
 | `recruitment-and-veterans.yaml` | 3 recruitment policies and veteran availability | published |
 | `warband-rating.yaml` | Rating formula with components and exclusions | published |
@@ -111,13 +126,6 @@ ingestion in the main block of each file.
 | `magic.yaml` | Casting rules, 45 lore↔wizard assignments and 31 lores with 188 spells | published |
 | `mutations.yaml` | Purchase rules and 9 mutations with typed effects | published |
 | `hired-swords-and-dramatis.yaml` | Schema v2: 98 entries (72 Hired Swords + 26 Dramatis Personae) with per-resource fee/upkeep, search procedure and static eligibility + 18 dynamic rules | published |
-
-The racial characteristic maximums live outside this directory, in the shared
-catalogue `catalog/rules/racial-maximums.yaml` (29 entries
-`campaign.limit.racial-maximum.*` with `source_refs`). The warband rules in
-`bands/*/special-rules.yaml` that describe advancement reference them by ID in
-the text (`effect`/`effect_i18n.en`) instead of embedding the numeric
-statline, so there are no two copies that could drift apart.
 
 The KB declares rules and tables, never their result: the accumulated
 experience, crowns, wyrdstone, stash, rolls made and purchases of a concrete
@@ -129,19 +137,24 @@ Each scenario has its own page on mordheimer.net
 the warband's progression in those scenarios: experience awards (referencing
 the canonical `campaign.experience.award.*` entries when they match),
 wyrdstone obtained, treasure/items and income in crowns, under the
-`progression:` key of each entry (see the HOWTO). On-table game mechanics
-(terrain, deployment, victory conditions, monsters, table special rules) are
-not modelled by scope decision. Full coverage: all 98 catalogue scenarios
-(rulebook, Town Cryer, Fanatic Magazine, Fanatic Online, Archive Pestilen and
-Rynn Tyrr) have `progression:` transcribed from their individual page. Some
-Archive Pestilen sources do not declare progression rewards (zombie invasions
-like Romero's Pride, The Restless Dead or The Battle At Koleshire Keep): in
-those cases the absence is documented in `progression.notes`. Point doubts
-about a source are documented in the `progression.notes` of the entry.
-No YAML of this catalogue is loaded as rule implementation: the runtime read
-path lives in `mordheim_knowledge/campaign.py` — `load_campaign_catalog`,
-`load_post_battle_sequence`, `load_hirelings` and `load_warband_groups` — whose
-load-time validation (schema_version, per-document id uniqueness and reference
-resolution) is covered by `tests/knowledge/test_campaign_loaders.py`. The
-remaining runtime work is application-side (rule resolution, price
-collation), not KB data.
+`progression:` key of each entry (schema in the HOWTO). On-table game
+mechanics (terrain, deployment, victory conditions, monsters, table special
+rules) are not modelled by scope decision. Some Archive Pestilen sources do
+not declare progression rewards (zombie invasions like Romero's Pride, The
+Restless Dead or The Battle At Koleshire Keep): in those cases the absence is
+documented in `progression.notes`. Point doubts about a source are documented
+in the `progression.notes` of the entry.
+
+## Runtime read path
+
+No YAML of this catalogue is loaded as duel-rule implementation: the runtime
+read path lives in `mordheim_knowledge/campaign.py` — `load_campaign_catalog`,
+`load_post_battle_sequence`, `load_hirelings` and `load_warband_groups` —
+whose load-time validation (schema_version, per-document id uniqueness and
+reference resolution) is covered by `tests/knowledge/test_campaign_loaders.py`.
+The Campaign Manager consumes them through its `KnowledgePort`
+(`mordheim_campaign/application/knowledge_port.py`) without the GUI touching
+YAML; its post-battle screens and engines are the current consumers (see
+[the Campaign Manager reference](../../../../docs/reference/campaign-manager.md)).
+The remaining runtime work is application-side (rule resolution, price
+collation review), not KB data.

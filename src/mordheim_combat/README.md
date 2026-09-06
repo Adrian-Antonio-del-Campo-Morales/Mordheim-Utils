@@ -1,7 +1,8 @@
 # Combat
 
 Phases, modular and vectorized engines. Consumes compiled fighters and never
-loads YAML. See [Architecture](../../../docs/architecture.md).
+loads YAML. See [Architecture](../../../docs/reference/architecture.md) and
+[Verification](../../../docs/reference/verification.md).
 
 ## Parity between engines
 
@@ -32,5 +33,5 @@ complete duel engine): its certification lives in the per-scenario statistical
 rows and in `parity --statistical`, where it shares the modular-oracle sample
 with NumPy and must pass the same six-sigma gate.
 
-The full guide of options and statuses is in
-[Generate test and parity reports](../../../docs/tasks/generate-test-reports.md).
+Full options and status meanings:
+[Develop and release](../../../docs/guides/develop-and-release.md).

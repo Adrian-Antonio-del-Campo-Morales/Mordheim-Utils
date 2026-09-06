@@ -4,328 +4,713 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/trollheim/lustria-lizardmen/skink-priest--scaly-skin-6plus/trait.natural-armour-save, digest: addf6b23556f98b2061af0fe0d60a49217d7cefb574aa979057c8250bcb11e79}
-  - {target: rule/trollheim/lustria-lizardmen/skink-priest--scaly-skin-6plus/trait.natural-armour-stacks, digest: addf6b23556f98b2061af0fe0d60a49217d7cefb574aa979057c8250bcb11e79}
-  - {target: rule/trollheim/lustria-lizardmen/skink-priest--scaly-skin-6plus/trait.natural-armour-worst-save, digest: addf6b23556f98b2061af0fe0d60a49217d7cefb574aa979057c8250bcb11e79}
-  interpretation: "Lustria pp.54-56 grants scaly skin 6+. It combines with ordinary armour, receives Strength modifiers, but the natural contribution never worsens from 6+. Ignoring armour still nullifies the whole save."
+  - target: rule/trollheim/lustria-lizardmen/skink-priest--scaly-skin-6plus/trait.natural-armour-save
+    digest: 2decfaddfd9def765fbada17f7ad312ce389ef829bc30d1cf6feb688960b7409
+  - target: rule/trollheim/lustria-lizardmen/skink-priest--scaly-skin-6plus/trait.natural-armour-stacks
+    digest: 2decfaddfd9def765fbada17f7ad312ce389ef829bc30d1cf6feb688960b7409
+  - target: rule/trollheim/lustria-lizardmen/skink-priest--scaly-skin-6plus/trait.natural-armour-worst-save
+    digest: 2decfaddfd9def765fbada17f7ad312ce389ef829bc30d1cf6feb688960b7409
+  interpretation: Lustria pp.54-56 grants scaly skin 6+. It combines with ordinary armour, receives Strength
+    modifiers, but the natural contribution never worsens from 6+. Ignoring armour still nullifies the
+    whole save.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest}
-    context: {rule_id: skink-priest--scaly-skin-6plus}
-    expect: {result.recipients: [skink-priest]}
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+    context:
+      rule_id: skink-priest--scaly-skin-6plus
+    expect:
+      result.recipients:
+      - skink-priest
   - id: base-distribution
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.sword}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest}
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/6, 'false': 5/6}
+      expected:
+        'true': 1/6
+        'false': 5/6
   - id: strength-six-retains-six
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest}
-    rolls: [{key: armour, value: 6}]
-    expect: {defender.natural_armour_worst_save: 6, result.target: 6, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 6
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      defender.natural_armour_worst_save: 6
+      result.target: 6
+      result.saved: true
   - id: stacks-with-light-armour
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest, armour_id: armour.light-armour}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.target: 5, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+      armour_id: armour.light-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.saved: true
   - id: armour-denial
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.vomit-attack}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest, armour_id: armour.light-armour}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+      armour_id: armour.light-armour
+    expect:
+      result.eligible: false
+      result.saved: false
   mutations:
   - id: remove-skin
     changes:
-    - {path: defender.natural_armour_save, value: 7}
-    - {path: defender.armour_save, value: 7}
-    - {path: defender.natural_armour_worst_save, value: 7}
-    cases: [base-distribution]
+    - path: defender.natural_armour_save
+      value: 7
+    - path: defender.armour_save
+      value: 7
+    - path: defender.natural_armour_worst_save
+      value: 7
+    cases:
+    - base-distribution
   - id: remove-worst-save
     path: defender.natural_armour_worst_save
     value: 7
-    cases: [strength-six-retains-six]
+    cases:
+    - strength-six-retains-six
 - id: lustria-scaly-skin-totem
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/trollheim/lustria-lizardmen/saurus-totem-warrior--scaly-skin-5plus/trait.natural-armour-save, digest: a5921efbb92ec4ed4b772926c17b053bcb271eb5511df2257383063eb2bf9a3f}
-  - {target: rule/trollheim/lustria-lizardmen/saurus-totem-warrior--scaly-skin-5plus/trait.natural-armour-stacks, digest: a5921efbb92ec4ed4b772926c17b053bcb271eb5511df2257383063eb2bf9a3f}
-  - {target: rule/trollheim/lustria-lizardmen/saurus-totem-warrior--scaly-skin-5plus/trait.natural-armour-worst-save, digest: a5921efbb92ec4ed4b772926c17b053bcb271eb5511df2257383063eb2bf9a3f}
-  interpretation: "Lustria pp.54-56 grants scaly skin 5+. It combines with ordinary armour, receives Strength modifiers, but the natural contribution never worsens from 6+. Ignoring armour still nullifies the whole save."
+  - target: rule/trollheim/lustria-lizardmen/saurus-totem-warrior--scaly-skin-5plus/trait.natural-armour-save
+    digest: 73fe4746edb06c5a6053c4e05dcc90ec447269e03af21ff9549fe58e841772ec
+  - target: rule/trollheim/lustria-lizardmen/saurus-totem-warrior--scaly-skin-5plus/trait.natural-armour-stacks
+    digest: 73fe4746edb06c5a6053c4e05dcc90ec447269e03af21ff9549fe58e841772ec
+  - target: rule/trollheim/lustria-lizardmen/saurus-totem-warrior--scaly-skin-5plus/trait.natural-armour-worst-save
+    digest: 73fe4746edb06c5a6053c4e05dcc90ec447269e03af21ff9549fe58e841772ec
+  interpretation: Lustria pp.54-56 grants scaly skin 5+. It combines with ordinary armour, receives Strength
+    modifiers, but the natural contribution never worsens from 6+. Ignoring armour still nullifies the
+    whole save.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-totem-warrior}
-    context: {rule_id: saurus-totem-warrior--scaly-skin-5plus}
-    expect: {result.recipients: [saurus-totem-warrior]}
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
+    context:
+      rule_id: saurus-totem-warrior--scaly-skin-5plus
+    expect:
+      result.recipients:
+      - saurus-totem-warrior
   - id: base-distribution
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.sword}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-totem-warrior}
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 2/6, 'false': 4/6}
+      expected:
+        'true': 2/6
+        'false': 4/6
   - id: strength-six-retains-six
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-totem-warrior}
-    rolls: [{key: armour, value: 6}]
-    expect: {defender.natural_armour_worst_save: 6, result.target: 6, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 6
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      defender.natural_armour_worst_save: 6
+      result.target: 6
+      result.saved: true
   - id: stacks-with-light-armour
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-totem-warrior, armour_id: armour.light-armour}
-    rolls: [{key: armour, value: 4}]
-    expect: {result.target: 4, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
+      armour_id: armour.light-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.saved: true
   - id: armour-denial
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.vomit-attack}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-totem-warrior, armour_id: armour.light-armour}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
+      armour_id: armour.light-armour
+    expect:
+      result.eligible: false
+      result.saved: false
   mutations:
   - id: remove-skin
     changes:
-    - {path: defender.natural_armour_save, value: 7}
-    - {path: defender.armour_save, value: 7}
-    - {path: defender.natural_armour_worst_save, value: 7}
-    cases: [base-distribution]
+    - path: defender.natural_armour_save
+      value: 7
+    - path: defender.armour_save
+      value: 7
+    - path: defender.natural_armour_worst_save
+      value: 7
+    cases:
+    - base-distribution
   - id: remove-worst-save
     path: defender.natural_armour_worst_save
     value: 7
-    cases: [strength-six-retains-six]
+    cases:
+    - strength-six-retains-six
 - id: lustria-scaly-skin-great-crests
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/trollheim/lustria-lizardmen/skink-great-crests--scaly-skin-6plus/trait.natural-armour-save, digest: c659de5356be4bd8a13c4087ecb5de3ae66e81f03c4c441bd3430437f3e37d6c}
-  - {target: rule/trollheim/lustria-lizardmen/skink-great-crests--scaly-skin-6plus/trait.natural-armour-stacks, digest: c659de5356be4bd8a13c4087ecb5de3ae66e81f03c4c441bd3430437f3e37d6c}
-  - {target: rule/trollheim/lustria-lizardmen/skink-great-crests--scaly-skin-6plus/trait.natural-armour-worst-save, digest: c659de5356be4bd8a13c4087ecb5de3ae66e81f03c4c441bd3430437f3e37d6c}
-  interpretation: "Lustria pp.54-56 grants scaly skin 6+. It combines with ordinary armour, receives Strength modifiers, but the natural contribution never worsens from 6+. Ignoring armour still nullifies the whole save."
+  - target: rule/trollheim/lustria-lizardmen/skink-great-crests--scaly-skin-6plus/trait.natural-armour-save
+    digest: db462a8d662b514aec7fe9d558402407ee15c8678fc0f4d6b014ae8d43ab3f0c
+  - target: rule/trollheim/lustria-lizardmen/skink-great-crests--scaly-skin-6plus/trait.natural-armour-stacks
+    digest: db462a8d662b514aec7fe9d558402407ee15c8678fc0f4d6b014ae8d43ab3f0c
+  - target: rule/trollheim/lustria-lizardmen/skink-great-crests--scaly-skin-6plus/trait.natural-armour-worst-save
+    digest: db462a8d662b514aec7fe9d558402407ee15c8678fc0f4d6b014ae8d43ab3f0c
+  interpretation: Lustria pp.54-56 grants scaly skin 6+. It combines with ordinary armour, receives Strength
+    modifiers, but the natural contribution never worsens from 6+. Ignoring armour still nullifies the
+    whole save.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-great-crests}
-    context: {rule_id: skink-great-crests--scaly-skin-6plus}
-    expect: {result.recipients: [skink-great-crests]}
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-great-crests
+    context:
+      rule_id: skink-great-crests--scaly-skin-6plus
+    expect:
+      result.recipients:
+      - skink-great-crests
   - id: base-distribution
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.sword}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-great-crests}
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-great-crests
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/6, 'false': 5/6}
+      expected:
+        'true': 1/6
+        'false': 5/6
   - id: strength-six-retains-six
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-great-crests}
-    rolls: [{key: armour, value: 6}]
-    expect: {defender.natural_armour_worst_save: 6, result.target: 6, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 6
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-great-crests
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      defender.natural_armour_worst_save: 6
+      result.target: 6
+      result.saved: true
   - id: stacks-with-light-armour
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-great-crests, armour_id: armour.light-armour}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.target: 5, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-great-crests
+      armour_id: armour.light-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.saved: true
   - id: armour-denial
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.vomit-attack}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-great-crests, armour_id: armour.light-armour}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-great-crests
+      armour_id: armour.light-armour
+    expect:
+      result.eligible: false
+      result.saved: false
   mutations:
   - id: remove-skin
     changes:
-    - {path: defender.natural_armour_save, value: 7}
-    - {path: defender.armour_save, value: 7}
-    - {path: defender.natural_armour_worst_save, value: 7}
-    cases: [base-distribution]
+    - path: defender.natural_armour_save
+      value: 7
+    - path: defender.armour_save
+      value: 7
+    - path: defender.natural_armour_worst_save
+      value: 7
+    cases:
+    - base-distribution
   - id: remove-worst-save
     path: defender.natural_armour_worst_save
     value: 7
-    cases: [strength-six-retains-six]
+    cases:
+    - strength-six-retains-six
 - id: lustria-scaly-skin-skink-braves
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/trollheim/lustria-lizardmen/skink-braves--scaly-skin-6plus/trait.natural-armour-save, digest: 00c06cff33acedc511ba49272774c77c4d2baa1bcb0891dbe0929821ef031d8e}
-  - {target: rule/trollheim/lustria-lizardmen/skink-braves--scaly-skin-6plus/trait.natural-armour-stacks, digest: 00c06cff33acedc511ba49272774c77c4d2baa1bcb0891dbe0929821ef031d8e}
-  - {target: rule/trollheim/lustria-lizardmen/skink-braves--scaly-skin-6plus/trait.natural-armour-worst-save, digest: 00c06cff33acedc511ba49272774c77c4d2baa1bcb0891dbe0929821ef031d8e}
-  interpretation: "Lustria pp.54-56 grants scaly skin 6+. It combines with ordinary armour, receives Strength modifiers, but the natural contribution never worsens from 6+. Ignoring armour still nullifies the whole save."
+  - target: rule/trollheim/lustria-lizardmen/skink-braves--scaly-skin-6plus/trait.natural-armour-save
+    digest: a8afeb06ffdabb74dec7a5a42b47fe4bd785d16fbc8b810cf04c2d1a357c75e7
+  - target: rule/trollheim/lustria-lizardmen/skink-braves--scaly-skin-6plus/trait.natural-armour-stacks
+    digest: a8afeb06ffdabb74dec7a5a42b47fe4bd785d16fbc8b810cf04c2d1a357c75e7
+  - target: rule/trollheim/lustria-lizardmen/skink-braves--scaly-skin-6plus/trait.natural-armour-worst-save
+    digest: a8afeb06ffdabb74dec7a5a42b47fe4bd785d16fbc8b810cf04c2d1a357c75e7
+  interpretation: Lustria pp.54-56 grants scaly skin 6+. It combines with ordinary armour, receives Strength
+    modifiers, but the natural contribution never worsens from 6+. Ignoring armour still nullifies the
+    whole save.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-braves}
-    context: {rule_id: skink-braves--scaly-skin-6plus}
-    expect: {result.recipients: [skink-braves]}
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-braves
+    context:
+      rule_id: skink-braves--scaly-skin-6plus
+    expect:
+      result.recipients:
+      - skink-braves
   - id: base-distribution
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.sword}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-braves}
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-braves
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/6, 'false': 5/6}
+      expected:
+        'true': 1/6
+        'false': 5/6
   - id: strength-six-retains-six
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-braves}
-    rolls: [{key: armour, value: 6}]
-    expect: {defender.natural_armour_worst_save: 6, result.target: 6, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 6
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-braves
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      defender.natural_armour_worst_save: 6
+      result.target: 6
+      result.saved: true
   - id: stacks-with-light-armour
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-braves, armour_id: armour.light-armour}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.target: 5, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-braves
+      armour_id: armour.light-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.saved: true
   - id: armour-denial
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.vomit-attack}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-braves, armour_id: armour.light-armour}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-braves
+      armour_id: armour.light-armour
+    expect:
+      result.eligible: false
+      result.saved: false
   mutations:
   - id: remove-skin
     changes:
-    - {path: defender.natural_armour_save, value: 7}
-    - {path: defender.armour_save, value: 7}
-    - {path: defender.natural_armour_worst_save, value: 7}
-    cases: [base-distribution]
+    - path: defender.natural_armour_save
+      value: 7
+    - path: defender.armour_save
+      value: 7
+    - path: defender.natural_armour_worst_save
+      value: 7
+    cases:
+    - base-distribution
   - id: remove-worst-save
     path: defender.natural_armour_worst_save
     value: 7
-    cases: [strength-six-retains-six]
+    cases:
+    - strength-six-retains-six
 - id: lustria-scaly-skin-saurus-braves
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/trollheim/lustria-lizardmen/saurus-braves--scaly-skin-5plus/trait.natural-armour-save, digest: edfbeeb279f2419091e7e6a14615635e741bd1072d9decfe6127c0633722896f}
-  - {target: rule/trollheim/lustria-lizardmen/saurus-braves--scaly-skin-5plus/trait.natural-armour-stacks, digest: edfbeeb279f2419091e7e6a14615635e741bd1072d9decfe6127c0633722896f}
-  - {target: rule/trollheim/lustria-lizardmen/saurus-braves--scaly-skin-5plus/trait.natural-armour-worst-save, digest: edfbeeb279f2419091e7e6a14615635e741bd1072d9decfe6127c0633722896f}
-  interpretation: "Lustria pp.54-56 grants scaly skin 5+. It combines with ordinary armour, receives Strength modifiers, but the natural contribution never worsens from 6+. Ignoring armour still nullifies the whole save."
+  - target: rule/trollheim/lustria-lizardmen/saurus-braves--scaly-skin-5plus/trait.natural-armour-save
+    digest: 1fbd80ca6348240b83ed1aee369dda5e093fd4cc8e5bcc919388f0066612799a
+  - target: rule/trollheim/lustria-lizardmen/saurus-braves--scaly-skin-5plus/trait.natural-armour-stacks
+    digest: 1fbd80ca6348240b83ed1aee369dda5e093fd4cc8e5bcc919388f0066612799a
+  - target: rule/trollheim/lustria-lizardmen/saurus-braves--scaly-skin-5plus/trait.natural-armour-worst-save
+    digest: 1fbd80ca6348240b83ed1aee369dda5e093fd4cc8e5bcc919388f0066612799a
+  interpretation: Lustria pp.54-56 grants scaly skin 5+. It combines with ordinary armour, receives Strength
+    modifiers, but the natural contribution never worsens from 6+. Ignoring armour still nullifies the
+    whole save.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-braves}
-    context: {rule_id: saurus-braves--scaly-skin-5plus}
-    expect: {result.recipients: [saurus-braves]}
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-braves
+    context:
+      rule_id: saurus-braves--scaly-skin-5plus
+    expect:
+      result.recipients:
+      - saurus-braves
   - id: base-distribution
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.sword}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-braves}
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-braves
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 2/6, 'false': 4/6}
+      expected:
+        'true': 2/6
+        'false': 4/6
   - id: strength-six-retains-six
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-braves}
-    rolls: [{key: armour, value: 6}]
-    expect: {defender.natural_armour_worst_save: 6, result.target: 6, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 6
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-braves
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      defender.natural_armour_worst_save: 6
+      result.target: 6
+      result.saved: true
   - id: stacks-with-light-armour
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-braves, armour_id: armour.light-armour}
-    rolls: [{key: armour, value: 4}]
-    expect: {result.target: 4, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-braves
+      armour_id: armour.light-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 4
+      result.saved: true
   - id: armour-denial
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.vomit-attack}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-braves, armour_id: armour.light-armour}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-braves
+      armour_id: armour.light-armour
+    expect:
+      result.eligible: false
+      result.saved: false
   mutations:
   - id: remove-skin
     changes:
-    - {path: defender.natural_armour_save, value: 7}
-    - {path: defender.armour_save, value: 7}
-    - {path: defender.natural_armour_worst_save, value: 7}
-    cases: [base-distribution]
+    - path: defender.natural_armour_save
+      value: 7
+    - path: defender.armour_save
+      value: 7
+    - path: defender.natural_armour_worst_save
+      value: 7
+    cases:
+    - base-distribution
   - id: remove-worst-save
     path: defender.natural_armour_worst_save
     value: 7
-    cases: [strength-six-retains-six]
+    cases:
+    - strength-six-retains-six
 - id: lustria-scaly-skin-kroxigor
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/trollheim/lustria-lizardmen/kroxigor--scaly-skin-4plus/trait.natural-armour-save, digest: cc267930b4e47a5a924c5c781741756b09c110e3216651915f6411badae8e68b}
-  - {target: rule/trollheim/lustria-lizardmen/kroxigor--scaly-skin-4plus/trait.natural-armour-stacks, digest: cc267930b4e47a5a924c5c781741756b09c110e3216651915f6411badae8e68b}
-  - {target: rule/trollheim/lustria-lizardmen/kroxigor--scaly-skin-4plus/trait.natural-armour-worst-save, digest: cc267930b4e47a5a924c5c781741756b09c110e3216651915f6411badae8e68b}
-  interpretation: "Lustria pp.54-56 grants scaly skin 4+. It combines with ordinary armour, receives Strength modifiers, but the natural contribution never worsens from 6+. Ignoring armour still nullifies the whole save."
+  - target: rule/trollheim/lustria-lizardmen/kroxigor--scaly-skin-4plus/trait.natural-armour-save
+    digest: 9bef2cc4a8f998299a5ea4f2354e3c3dbc3ed2a4d40a51b6e27ead1413ab9954
+  - target: rule/trollheim/lustria-lizardmen/kroxigor--scaly-skin-4plus/trait.natural-armour-stacks
+    digest: 9bef2cc4a8f998299a5ea4f2354e3c3dbc3ed2a4d40a51b6e27ead1413ab9954
+  - target: rule/trollheim/lustria-lizardmen/kroxigor--scaly-skin-4plus/trait.natural-armour-worst-save
+    digest: 9bef2cc4a8f998299a5ea4f2354e3c3dbc3ed2a4d40a51b6e27ead1413ab9954
+  interpretation: Lustria pp.54-56 grants scaly skin 4+. It combines with ordinary armour, receives Strength
+    modifiers, but the natural contribution never worsens from 6+. Ignoring armour still nullifies the
+    whole save.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: kroxigor}
-    context: {rule_id: kroxigor--scaly-skin-4plus}
-    expect: {result.recipients: [kroxigor]}
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: kroxigor
+    context:
+      rule_id: kroxigor--scaly-skin-4plus
+    expect:
+      result.recipients:
+      - kroxigor
   - id: base-distribution
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.sword}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: kroxigor}
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: kroxigor
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 3/6, 'false': 3/6}
+      expected:
+        'true': 3/6
+        'false': 3/6
   - id: strength-six-retains-six
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: kroxigor}
-    rolls: [{key: armour, value: 6}]
-    expect: {defender.natural_armour_worst_save: 6, result.target: 6, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 6
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: kroxigor
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      defender.natural_armour_worst_save: 6
+      result.target: 6
+      result.saved: true
   - id: stacking-contract-compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: kroxigor}
-    expect: {defender.armour_save: 4}
-    expect_contains: {defender.global_effects.tags: [natural_armour_stacks]}
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: kroxigor
+    expect:
+      defender.armour_save: 4
+    expect_contains:
+      defender.global_effects.tags:
+      - natural_armour_stacks
   - id: armour-denial
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.vomit-attack}
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: kroxigor}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: kroxigor
+    expect:
+      result.eligible: false
+      result.saved: false
   mutations:
   - id: remove-skin
     changes:
-    - {path: defender.natural_armour_save, value: 7}
-    - {path: defender.armour_save, value: 7}
-    - {path: defender.natural_armour_worst_save, value: 7}
-    cases: [base-distribution]
+    - path: defender.natural_armour_save
+      value: 7
+    - path: defender.armour_save
+      value: 7
+    - path: defender.natural_armour_worst_save
+      value: 7
+    cases:
+    - base-distribution
   - id: remove-worst-save
     path: defender.natural_armour_worst_save
     value: 7
-    cases: [strength-six-retains-six]
+    cases:
+    - strength-six-retains-six

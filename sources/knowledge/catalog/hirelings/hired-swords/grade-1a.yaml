@@ -10,7 +10,7 @@ profiles:
   name: Arabian Merchant
   name_i18n:
     en: Arabian Merchant
-    es: null
+    es: Mercader de Araby
   normalization_status: normalized
   characteristics:
     M: 4
@@ -40,9 +40,15 @@ profiles:
   - id: hireling.hired-sword.arabian-merchant.rule.pawnbroker
     name: Pawnbroker
     effect: Improves proceeds when the warband sells items, subject to the source conditions.
+    name_i18n:
+      en: Pawnbroker
+      es: Prestamista
   - id: hireling.hired-sword.arabian-merchant.rule.marketeer
     name: Marketeer
     effect: May search one of the special merchant markets after a battle if eligible.
+    name_i18n:
+      en: Marketeer
+      es: Comerciante
   source_notes:
   - The source calls the weapon a Scimitar and explicitly states that it counts as a Sword.
   source_refs:
@@ -57,7 +63,7 @@ profiles:
   name: Beast Hunter
   name_i18n:
     en: Beast Hunter
-    es: null
+    es: Cazador de bestias
   normalization_status: normalized
   characteristics:
     M: 4
@@ -99,12 +105,21 @@ profiles:
   - id: hireling.hired-sword.beast-hunter.rule.beastmen-vengeance
     name: Beastmen Vengeance
     effect: Has a source-defined hatred/vengeance interaction against Beastmen.
+    name_i18n:
+      en: Beastmen Vengeance
+      es: Venganza de los hombres bestia
   - id: hireling.hired-sword.beast-hunter.rule.skull-rack
     name: Skull Rack
     effect: Uses trophies from slain beasts according to the source rule.
+    name_i18n:
+      en: Skull Rack
+      es: Atril de cráneos
   - id: hireling.hired-sword.beast-hunter.rule.predator
     name: Predator
     effect: Has the source-defined hunting/predator ability.
+    name_i18n:
+      en: Predator
+      es: Depredador
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -117,7 +132,7 @@ profiles:
   name: Highwayman
   name_i18n:
     en: Highwayman
-    es: null
+    es: Salteador
   normalization_status: normalized
   characteristics:
     M: 4
@@ -157,6 +172,9 @@ profiles:
       counts_as:
         item_id: buckler
         context: rules
+      name_i18n:
+        en: Highwayman's Cloak
+        es: Capa de salteador
   skill_access:
   - combat
   - shooting
@@ -168,12 +186,22 @@ profiles:
   - id: hireling.hired-sword.highwayman.rule.expert-rider
     name: Expert Rider
     effect: Uses the source mounted expert-rider rule.
+    name_i18n:
+      en: Expert Rider
+      es: Jinete experto
   - id: hireling.hired-sword.highwayman.rule.unscrupulous
     name: Unscrupulous
     effect: Uses the source post-battle/behaviour rule.
+    name_i18n:
+      en: Unscrupulous
+      es: Sin escrúpulos
   - id: hireling.hired-sword.highwayman.rule.campaign-eligibility
     name: Dynamic hiring eligibility — Roadwarden incompatibility
-    effect: The Highwayman cannot be hired by, or remain with, a warband whose current roster contains a Roadwarden, according to the source incompatibility rule.
+    effect: The Highwayman cannot be hired by, or remain with, a warband whose current roster contains
+      a Roadwarden, according to the source incompatibility rule.
+    name_i18n:
+      en: Dynamic hiring eligibility — Roadwarden incompatibility
+      es: Elegibilidad de contratación dinámica — incompatibilidad con Guardiacaminos
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -186,7 +214,7 @@ profiles:
   name: Imperial Assassin
   name_i18n:
     en: Imperial Assassin
-    es: null
+    es: Asesino imperial
   normalization_status: normalized
   characteristics:
     M: 4
@@ -230,15 +258,27 @@ profiles:
   - id: hireling.hired-sword.imperial-assassin.rule.poisoner
     name: Poisoner
     effect: Uses poisons according to the source rule.
+    name_i18n:
+      en: Poisoner
+      es: Envenenador
   - id: hireling.hired-sword.imperial-assassin.rule.weapons-master
     name: Weapons Master
     effect: Uses the source weapon-mastery rule.
+    name_i18n:
+      en: Weapons Master
+      es: Maestro de armas
   - id: hireling.hired-sword.imperial-assassin.rule.backstabber
     name: Backstabber
     effect: Uses the source backstab rule.
+    name_i18n:
+      en: Backstabber
+      es: Puñalada lamerona
   - id: hireling.hired-sword.imperial-assassin.rule.hide-in-shadows
     name: Hide in Shadows
     effect: Uses the source concealment rule.
+    name_i18n:
+      en: Hide in Shadows
+      es: Ocultarse en las sombras
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -251,7 +291,7 @@ profiles:
   name: Roadwarden
   name_i18n:
     en: Roadwarden
-    es: null
+    es: Guardiacaminos
   normalization_status: normalized
   characteristics:
     M: 4
@@ -284,6 +324,9 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.roadwarden.item.horsemans-hammer
       name: Horseman's Hammer
+      name_i18n:
+        en: Horseman's Hammer
+        es: Martillo de jinete
   skill_access:
   - combat
   - shooting
@@ -294,15 +337,27 @@ profiles:
   - id: hireling.hired-sword.roadwarden.rule.expert-rider
     name: Expert Rider
     effect: Uses the source mounted expert-rider rule.
+    name_i18n:
+      en: Expert Rider
+      es: Jinete experto
   - id: hireling.hired-sword.roadwarden.rule.lethal-marksman
     name: Lethal Marksman
     effect: Uses the source lethal marksman rule.
+    name_i18n:
+      en: Lethal Marksman
+      es: Tirador letal
   - id: hireling.hired-sword.roadwarden.rule.stern
     name: Stern
     effect: Uses the source stern/leadership rule.
+    name_i18n:
+      en: Stern
+      es: Severo
   - id: hireling.hired-sword.roadwarden.rule.campaign-eligibility
     name: Dynamic hiring eligibility — Highwayman incompatibility
     effect: The Roadwarden cannot be hired by a warband whose current roster contains a Highwayman.
+    name_i18n:
+      en: Dynamic hiring eligibility — Highwayman incompatibility
+      es: Elegibilidad de contratación dinámica — incompatibilidad con Salteador
   unresolved_references:
   - kind: equipment_mapping
     source_name: three Torches
@@ -318,7 +373,7 @@ profiles:
   name: Tilean Marksman
   name_i18n:
     en: Tilean Marksman
-    es: null
+    es: Tirador tileano
   normalization_status: normalized
   characteristics:
     M: 4
@@ -359,9 +414,15 @@ profiles:
   - id: hireling.hired-sword.tilean-marksman.rule.steady-hands
     name: Steady Hands
     effect: Uses the source steady-hands rule.
+    name_i18n:
+      en: Steady Hands
+      es: Manos firmes
   - id: hireling.hired-sword.tilean-marksman.rule.dead-eye-shot
     name: Dead Eye Shot
     effect: Uses the source dead-eye-shot rule.
+    name_i18n:
+      en: Dead Eye Shot
+      es: Disparo de ojo muerto
   source_refs:
   - manual: mordheimer.net
     printed_page: 0

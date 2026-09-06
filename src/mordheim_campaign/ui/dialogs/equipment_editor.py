@@ -6,6 +6,7 @@ from tkinter import ttk
 from mordheim_campaign.application.controller import AppController
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import BorderedFrame, ScrollableFrame
+from mordheim_ui.i18n import tr
 
 
 class EquipmentEditorDialog(tk.Toplevel):
@@ -20,7 +21,7 @@ class EquipmentEditorDialog(tk.Toplevel):
         super().__init__(parent)
         self.controller = controller
         self.configure(bg=COLORS["bg"])
-        self.title("Equipment Editor")
+        self.title(tr('Equipment Editor'))
         self.resizable(False, False)
         self.transient(parent.winfo_toplevel())
         self.grab_set()
@@ -30,10 +31,10 @@ class EquipmentEditorDialog(tk.Toplevel):
         body = outer.body
         body.configure(padx=16, pady=16)
 
-        tk.Label(body, text="EQUIPMENT", bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 15)).pack(anchor="w")
+        tk.Label(body, text=tr('EQUIPMENT'), bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 15)).pack(anchor="w")
         tk.Label(
             body,
-            text="Reassign equipment between the roster and the stash. Nothing is bought or sold here; the warband total stays the same.",
+            text=tr('Reassign equipment between the roster and the stash. Nothing is bought or sold here; the warband total stays the same.'),
             bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9), wraplength=560, justify="left",
         ).pack(anchor="w", pady=(4, 10))
 
@@ -46,7 +47,7 @@ class EquipmentEditorDialog(tk.Toplevel):
         roster.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
         rb = roster.body
         rb.configure(padx=10, pady=10)
-        tk.Label(rb, text="CARRIED BY THE WARBAND", bg=COLORS["panel_alt"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 6))
+        tk.Label(rb, text=tr('CARRIED BY THE WARBAND'), bg=COLORS["panel_alt"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 6))
         scroll = ScrollableFrame(rb, background=COLORS["panel_alt"], height=330)
         scroll.pack(fill="both", expand=True)
         self._scroll = scroll
@@ -57,7 +58,7 @@ class EquipmentEditorDialog(tk.Toplevel):
         stash.grid(row=0, column=1, sticky="nsew")
         sb = stash.body
         sb.configure(padx=10, pady=10)
-        tk.Label(sb, text="STASH (UNASSIGNED)", bg=COLORS["panel_alt"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 6))
+        tk.Label(sb, text=tr('STASH (UNASSIGNED)'), bg=COLORS["panel_alt"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 6))
         self._stash_box = tk.Frame(sb, bg=COLORS["panel_alt"])
         self._stash_box.pack(fill="both", expand=True)
 
@@ -65,7 +66,7 @@ class EquipmentEditorDialog(tk.Toplevel):
         actions.pack(fill="x", pady=(12, 0))
         self._status = tk.StringVar(value="")
         tk.Label(actions, textvariable=self._status, bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8), wraplength=380, justify="left").pack(side="left")
-        ttk.Button(actions, text="Done", command=self.destroy).pack(side="right")
+        ttk.Button(actions, text=tr('Done'), command=self.destroy).pack(side="right")
 
         self._refresh()
         self.bind("<Escape>", lambda _e: self.destroy())
@@ -90,28 +91,28 @@ class EquipmentEditorDialog(tk.Toplevel):
                 ttk.Button(row, text="RETURN", style="Mini.TButton", width=8,
                            command=lambda i=item_id, w=warrior: self._move(self.controller.return_equipped_item, i, w.id)).pack(side="right")
         else:
-            tk.Label(block, text="No equipment", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
+            tk.Label(block, text=tr('No equipment'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
 
     def _stash_rows(self, parent: tk.Misc) -> None:
         stash_rows = [item for item in self.controller.state.campaign.inventory if item.stash > 0]
         if not stash_rows:
-            tk.Label(parent, text="The stash is empty.", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
+            tk.Label(parent, text=tr('The stash is empty.'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
             return
         for item in stash_rows:
             row = tk.Frame(parent, bg=COLORS["panel_alt"], pady=4)
             row.pack(fill="x")
             tk.Label(row, text=f"{item.name} ×{item.stash}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI Semibold", 8), anchor="w").pack(side="left", fill="x", expand=True)
-            ttk.Button(row, text="ASSIGN…", style="Mini.TButton", width=9,
+            ttk.Button(row, text=tr('ASSIGN…'), style="Mini.TButton", width=9,
                        command=lambda i=item.id: self._assign_pick(i)).pack(side="right")
 
     def _assign_pick(self, item_id: str) -> None:
         """Pick the warrior receiving the stash item."""
         warriors = self.controller.state.campaign.warriors
         dialog = tk.Toplevel(self)
-        dialog.title("Assign to…")
+        dialog.title(tr('Assign to…'))
         dialog.transient(self)
         dialog.grab_set()
-        tk.Label(dialog, text="Assign to which warrior?", bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 9)).pack(padx=16, pady=(12, 6))
+        tk.Label(dialog, text=tr('Assign to which warrior?'), bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 9)).pack(padx=16, pady=(12, 6))
         listbox = tk.Listbox(dialog, height=min(10, len(warriors)), width=34, bg=COLORS["entry"], fg=COLORS["text"],
                              selectbackground=COLORS["accent"], selectforeground=COLORS["black"], bd=0, font=("Segoe UI", 9), activestyle="none")
         listbox.pack(padx=16, pady=4)
@@ -129,7 +130,7 @@ class EquipmentEditorDialog(tk.Toplevel):
             dialog.destroy()
             self._move(self.controller.assign_stash_item, item_id, warrior.id)
 
-        ttk.Button(dialog, text="ASSIGN", style="Accent.TButton", command=_confirm).pack(pady=(4, 12))
+        ttk.Button(dialog, text=tr('ASSIGN'), style="Accent.TButton", command=_confirm).pack(pady=(4, 12))
         dialog.bind("<Return>", lambda _e: _confirm())
         dialog.bind("<Escape>", lambda _e: dialog.destroy())
 
@@ -145,7 +146,7 @@ class EquipmentEditorDialog(tk.Toplevel):
 
     def _move(self, action, item_id: str, warrior_id: str) -> None:
         if item_id.startswith("name:"):
-            self._status.set("This item is not in the inventory ledger; only ledger items can move.")
+            self._status.set(tr('This item is not in the inventory ledger; only ledger items can move.'))
             return
         ok, message = action(item_id, warrior_id)
         self._status.set(("✓ " if ok else "⚠ ") + message)

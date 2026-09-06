@@ -4,70 +4,149 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access, digest: 6964505259300e192a85b7d5fb54552e8ecda23f3b43476746c173337d0309ed}
-  interpretation: "The promoted Halfling may choose up to two general lists, except Strength."
+  - target: rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access
+    digest: 1d19b840e581ce6b6e6447110895580edca70b0936274c942557777dadcd09bd
+  interpretation: The promoted Halfling may choose up to two general lists, except Strength.
   cases:
   - id: combat-speed
-    roles: [grant, accepted]
+    roles:
+    - grant
+    - accepted
     operation: general_skill_access
-    attacker: {band_id: averlanders, profile_id: halflings-scouts, variant_ids: [skill-list.combat, skill-list.speed]}
-    expect: {result.skills: [skill.expert-swordsman, skill.jump-up, skill.lightning-reflexes, skill.step-aside, skill.strike-to-injure, skill.web-of-steel]}
+    attacker:
+      band_id: averlanders
+      profile_id: halflings-scouts
+      variant_ids:
+      - skill-list.combat
+      - skill-list.speed
+    expect:
+      result.skills:
+      - skill.expert-swordsman
+      - skill.jump-up
+      - skill.lightning-reflexes
+      - skill.step-aside
+      - skill.strike-to-injure
+      - skill.web-of-steel
   - id: strength-rejected
-    roles: [rejected]
+    roles:
+    - rejected
     operation: compile
-    attacker: {band_id: averlanders, profile_id: halflings-scouts, variant_ids: [skill-list.strength]}
+    attacker:
+      band_id: averlanders
+      profile_id: halflings-scouts
+      variant_ids:
+      - skill-list.strength
     reject: Strength skill list is forbidden
   - id: contract
     operation: construction_tag_presence
-    attacker: {band_id: averlanders, profile_id: halflings-scouts}
-    context: {tag: compiler.promoted-hero-no-strength-access}
-    expect: {result.present: true}
+    attacker:
+      band_id: averlanders
+      profile_id: halflings-scouts
+    context:
+      tag: compiler.promoted-hero-no-strength-access
+    expect:
+      result.present: true
   mutations:
-  - {id: remove-promotion-contract, path: attacker.construction_tags, value: [], cases: [contract]}
-
+  - id: remove-promotion-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract
 - id: dwarf-rangers-no-arcane-lore
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/dwarf-rangers/band--no-arcane-lore/compiler.no-arcane-lore, digest: df4697065327717a303025eb7f6b9debfe277761546096f1aab624e5709555b6}
-  interpretation: "No Dwarf Ranger may acquire Arcane Lore or Sorcery; the control without those choices remains legal."
+  - target: rule/mordheim/dwarf-rangers/band--no-arcane-lore/compiler.no-arcane-lore
+    digest: 49f8377c10948e828239afb389172e0883c18246709a0b8b27df2c7fc5695400
+  interpretation: No Dwarf Ranger may acquire Arcane Lore or Sorcery; the control without those choices
+    remains legal.
   cases:
   - id: ordinary
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selection_choices
-    attacker: {band_id: dwarf-rangers, profile_id: runesmith}
-    context: {choices: {ordinary: {}, arcane: {skill_ids: [skill.arcane-lore]}}}
-    expect: {result.accepted: [ordinary], result.rejected: {arcane: "Arcane Lore is forbidden for dwarf-rangers/runesmith: ['skill.arcane-lore']"}}
+    attacker:
+      band_id: dwarf-rangers
+      profile_id: runesmith
+    context:
+      choices:
+        ordinary: {}
+        arcane:
+          skill_ids:
+          - skill.arcane-lore
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        arcane: 'Arcane Lore is forbidden for dwarf-rangers/runesmith: [''skill.arcane-lore'']'
   - id: sorcery-rejected
     roles: []
     operation: compile
-    attacker: {band_id: dwarf-rangers, profile_id: apprentice-runesmith, skill_ids: [skill.sorcery]}
+    attacker:
+      band_id: dwarf-rangers
+      profile_id: apprentice-runesmith
+      skill_ids:
+      - skill.sorcery
     reject: Arcane Lore is forbidden
   - id: contract
     operation: construction_tag_presence
-    attacker: {band_id: dwarf-rangers, profile_id: runesmith}
-    context: {tag: compiler.no-arcane-lore}
-    expect: {result.present: true}
+    attacker:
+      band_id: dwarf-rangers
+      profile_id: runesmith
+    context:
+      tag: compiler.no-arcane-lore
+    expect:
+      result.present: true
   mutations:
-  - {id: remove-no-arcane-contract, path: attacker.construction_tags, value: [], cases: [contract]}
-
+  - id: remove-no-arcane-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract
 - id: blood-dragon-warriors-code
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/trollheim/chaos-streets-undead-bloodlines/blood-dragon-vampire--warriors-code/compiler.warrior-s-code, digest: 67c3f04cccbc25d09f2504b023cdc56c906e6ac683e110f1b57a00cb49b6f94d}
-  interpretation: "The Blood Dragon Vampire cannot acquire magic skills; a build without them remains legal."
+  - target: rule/trollheim/chaos-streets-undead-bloodlines/blood-dragon-vampire--warriors-code/compiler.warrior-s-code
+    digest: bdeec5b9b6a0704e51cd614516eb82c42fd67a7851be899f70dce0bcb2b6eb43
+  interpretation: The Blood Dragon Vampire cannot acquire magic skills; a build without them remains legal.
   cases:
   - id: ordinary
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selection_choices
-    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: blood-dragon-vampire}
-    context: {choices: {ordinary: {}, arcane: {skill_ids: [skill.arcane-lore]}}}
-    expect: {result.accepted: [ordinary], result.rejected: {arcane: "magic is forbidden by the Warrior's Code: ['skill.arcane-lore']"}}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+    context:
+      choices:
+        ordinary: {}
+        arcane:
+          skill_ids:
+          - skill.arcane-lore
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        arcane: 'magic is forbidden by the Warrior''s Code: [''skill.arcane-lore'']'
   - id: contract
     operation: construction_tag_presence
-    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: blood-dragon-vampire}
-    context: {tag: compiler.warrior-s-code}
-    expect: {result.present: true}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+    context:
+      tag: compiler.warrior-s-code
+    expect:
+      result.present: true
   mutations:
-  - {id: remove-warrior-code, path: attacker.construction_tags, value: [], cases: [contract]}
+  - id: remove-warrior-code
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract

@@ -5,14 +5,14 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-critical-hits
-    digest: 48dc55dfd8d28ad2179d97ee7eee28475be4430d2430a6c0f491712b5bd7062c
+    digest: 84d8554a2ea5ebdaf00dd1c8aec00d2770a793317c302514e9334e5b5a10d6b7
   - target: mechanic/poison.devil-s-toxin
-    digest: 1d60b4b208bcdaef2a755fd9e9f63668e79b94e1453f4efed437d6c987840275
+    digest: ca23dcb51e8538b1a1ec7f68768e694ff95b82db256b9c2e35b78d763ff1f9c2
   bindings:
   - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
   - '{"id": "poison.devil-s-toxin", "kind": "mechanic", "parameters": {}}'
-  interpretation: Devil's Toxin rerolls failed wound rolls, and the reroll cannot cause a critical hit; an
-    unrerolled natural 6 still crits.
+  interpretation: Devil's Toxin rerolls failed wound rolls, and the reroll cannot cause a critical hit;
+    an unrerolled natural 6 still crits.
   cases:
   - id: composition
     roles:
@@ -53,14 +53,14 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-critical-hits
-    digest: 48dc55dfd8d28ad2179d97ee7eee28475be4430d2430a6c0f491712b5bd7062c
+    digest: 84d8554a2ea5ebdaf00dd1c8aec00d2770a793317c302514e9334e5b5a10d6b7
   - target: mechanic/poison.wolfsbane
-    digest: 38c26725d6eb0e2dcf7859c71c57c2a98b555f670abe51574ac9ff2cebc5f765
+    digest: 6646b7e61ebedcf2c3877f06a0c146cac2e5afde8a7108c179ff6462f454445d
   bindings:
   - '{"id": "combat-critical-hits", "kind": "core", "parameters": {}}'
   - '{"id": "poison.wolfsbane", "kind": "mechanic", "parameters": {}}'
-  interpretation: Wolfsbane causes critical hits on a wound roll of 5-6; the same roll is merely a wound without
-    the poison.
+  interpretation: Wolfsbane causes critical hits on a wound roll of 5-6; the same roll is merely a wound
+    without the poison.
   cases:
   - id: composition
     roles:
@@ -99,14 +99,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/material.dark-steel
-    digest: 8d728f140afba7fe68d83eafebfe5b51c1688d5252cee6f3c50969272b668133
+    digest: 8649233b514c302ffc1364cbeca0322d48d3ed4e7fd401c223f032a73349986a
   - target: mechanic/poison.black-lotus
-    digest: b62d3687e6b97ea58a394f55566d5ac9c38309ebf3e938c87b53c6cf425f9c7c
+    digest: 8bccbbfd6a1850b77807d9f424e9d1033c65e12f6a620400806dd7ecb26e1795
   bindings:
   - '{"id": "material.dark-steel", "kind": "mechanic", "parameters": {}}'
   - '{"id": "poison.black-lotus", "kind": "mechanic", "parameters": {}}'
-  interpretation: Black Lotus wounds automatically on a natural 6 to hit; Dark Steel rerolls failed wound rolls
-    on ordinary hits. The optional Lotus critical attempt cannot fail the wound and is not rerolled.
+  interpretation: Black Lotus wounds automatically on a natural 6 to hit; Dark Steel rerolls failed wound
+    rolls on ordinary hits. The optional Lotus critical attempt cannot fail the wound and is not rerolled.
   cases:
   - id: composition
     roles:
@@ -154,9 +154,9 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/poison.black-lotus
-    digest: b62d3687e6b97ea58a394f55566d5ac9c38309ebf3e938c87b53c6cf425f9c7c
+    digest: 8bccbbfd6a1850b77807d9f424e9d1033c65e12f6a620400806dd7ecb26e1795
   - target: mechanic/skill.sure-strike
-    digest: ca1bb0a4961fa059e1c59165d4113d473e86420c9c975d899fa02b0870a8c509
+    digest: 989d7d72be44744758e7c2c3a73eac1aeb651d11ee1f6c93720c54141e48ce75
   bindings:
   - '{"id": "poison.black-lotus", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.sure-strike", "kind": "mechanic", "parameters": {}}'
@@ -208,9 +208,9 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/poison.devil-s-toxin
-    digest: 1d60b4b208bcdaef2a755fd9e9f63668e79b94e1453f4efed437d6c987840275
+    digest: ca23dcb51e8538b1a1ec7f68768e694ff95b82db256b9c2e35b78d763ff1f9c2
   - target: mechanic/poison.wolfsbane
-    digest: 38c26725d6eb0e2dcf7859c71c57c2a98b555f670abe51574ac9ff2cebc5f765
+    digest: 6646b7e61ebedcf2c3877f06a0c146cac2e5afde8a7108c179ff6462f454445d
   bindings:
   - '{"id": "poison.devil-s-toxin", "kind": "mechanic", "parameters": {}}'
   - '{"id": "poison.wolfsbane", "kind": "mechanic", "parameters": {}}'

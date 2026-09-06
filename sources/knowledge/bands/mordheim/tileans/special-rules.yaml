@@ -3,9 +3,8 @@ band_id: tileans
 rules:
 - id: captain--leader
   name: Leader
-  effect: 'Any warrior within 6" of the Captain may use his Leadership characteristic when
-
-    taking Leadership tests.'
+  effect: Any warrior within 6" of the Captain may use his Leadership characteristic when taking Leadership
+    tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -13,12 +12,13 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: 'Any warrior within 6" of the Captain may use his Leadership characteristic when
 
       taking Leadership tests.'
-    es: null
+    es: Cualquier guerrero a 6" del Capitán puede usar su característica de Liderazgo al realizar chequeos
+      de Liderazgo.
   applies_to:
     profile_ids:
     - captain
@@ -53,16 +53,17 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
     en: Cloak & Dagger
-    es: null
+    es: Capa y daga
   effect_i18n:
     en: A Duellist counts as using a buckler in close combat because of the defensive use of the cloak.
-    es: null
+    es: Un Duelista cuenta como si usara una rodela en combate cuerpo a cuerpo debido al uso defensivo
+      de la capa.
   applies_to:
     profile_ids:
     - duelists
 - id: band--human-maximum-characteristics
   name: Human Maximum Characteristics
-  effect: 'Tileans use the Human racial maximum profile (campaign.limit.racial-maximum.human).'
+  effect: Tileans use the Human racial maximum profile (campaign.limit.racial-maximum.human).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -70,10 +71,10 @@ rules:
     url: https://mordheimer.net/docs/campaigns/experience
   name_i18n:
     en: Human Maximum Characteristics
-    es: null
+    es: Características máximas humanas
   effect_i18n:
-    en: 'Tileans use the Human racial maximum profile (campaign.limit.racial-maximum.human).'
-    es: null
+    en: Tileans use the Human racial maximum profile (campaign.limit.racial-maximum.human).
+    es: Los Tileanos usan el perfil racial máximo humano (campaign.limit.racial-maximum.human).
   applies_to:
     band: true
   runtime:
@@ -84,7 +85,9 @@ rules:
     - id: unimplemented.tileans.band.human-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--miraglean-crossbow-mastery
   name: Miraglean — Crossbow Mastery
   effect: Miraglean Heroes gain +1 to hit when using crossbows. The bonus applies only to crossbows.
@@ -95,10 +98,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
     en: Miraglean — Crossbow Mastery
-    es: null
+    es: Miragleo — Maestría con la ballesta
   effect_i18n:
     en: Miraglean Heroes gain +1 to hit when using crossbows. The bonus applies only to crossbows.
-    es: null
+    es: Los Héroes miragleos obtienen +1 para impactar al usar ballestas. El bonus solo aplica a ballestas.
   applies_to:
     band: true
   runtime:
@@ -120,10 +123,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
     en: Miraglean — Marksman Accuracy
-    es: null
+    es: Miragleo — Precisión de tirador
   effect_i18n:
     en: Miraglean Marksmen gain +1 to hit with any missile weapon they use.
-    es: null
+    es: Los Tiradores miragleos obtienen +1 para impactar con cualquier arma arrojadiza que usen.
   applies_to:
     band: true
   runtime:
@@ -137,7 +140,8 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--miraglean-hatred-skaven
   name: Miraglean — Hatred of Skaven
-  effect: All Miraglean warband members are subject to Hatred against Skaven. Hired Swords do not gain this Hatred.
+  effect: All Miraglean warband members are subject to Hatred against Skaven. Hired Swords do not gain
+    this Hatred.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -145,10 +149,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
     en: Miraglean — Hatred of Skaven
-    es: null
+    es: Miragleo — Odio a los skaven
   effect_i18n:
-    en: All Miraglean warband members are subject to Hatred against Skaven. Hired Swords do not gain this Hatred.
-    es: null
+    en: All Miraglean warband members are subject to Hatred against Skaven. Hired Swords do not gain this
+      Hatred.
+    es: Todos los miembros de una banda miraglea están sujetos a Odio contra los skaven. Las Espadas a
+      sueldo no ganan este Odio.
   applies_to:
     band: true
   runtime:
@@ -170,10 +176,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
     en: Miraglean — Hired Sword Restriction
-    es: null
+    es: Miragleo — Restricción de Espadas a sueldo
   effect_i18n:
     en: A Miraglean warband may not hire Skaven Hired Swords.
-    es: null
+    es: Una banda miraglea no puede contratar Espadas a sueldo skaven.
   applies_to:
     band: true
   runtime:
@@ -184,11 +190,13 @@ rules:
     - id: unimplemented.tileans.band.miraglean-hired-sword-restriction
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--remasen-dark-elf-rout
   name: Remasen — Defiance Against Dark Elves
-  effect: When fighting a Dark Elf warband, a Remasen warband may re-roll one failed Rout test. The second result must be
-    accepted.
+  effect: When fighting a Dark Elf warband, a Remasen warband may re-roll one failed Rout test. The second
+    result must be accepted.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -196,10 +204,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
     en: Remasen — Defiance Against Dark Elves
-    es: null
+    es: Remasén — Desafío contra los elfos oscuros
   effect_i18n:
-    en: When fighting a Dark Elf warband, a Remasen warband may re-roll one failed Rout test. The second result must be accepted.
-    es: null
+    en: When fighting a Dark Elf warband, a Remasen warband may re-roll one failed Rout test. The second
+      result must be accepted.
+    es: Al luchar contra una banda de elfos oscuros, una banda remasén puede repetir un chequeo de Huida
+      fallido. El segundo resultado debe aceptarse.
   applies_to:
     band: true
   runtime:
@@ -221,10 +231,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
     en: Remasen — Steadfast Officers
-    es: null
+    es: Remasén — Oficiales firmes
   effect_i18n:
     en: The Captain, Champions and Youngbloods in a Remasen warband have +1 Leadership at all times.
-    es: null
+    es: El Capitán, los Campeones y los Jóvenes Promesas de una banda remasén tienen +1 de Liderazgo en
+      todo momento.
   applies_to:
     band: true
   runtime:
@@ -246,10 +257,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
     en: Remasen — Hired Sword Restriction
-    es: null
+    es: Remasén — Restricción de Espadas a sueldo
   effect_i18n:
     en: A Remasen warband may not hire Dark Elf Hired Swords.
-    es: null
+    es: Una banda remasén no puede contratar Espadas a sueldo elfos oscuros.
   applies_to:
     band: true
   runtime:
@@ -260,11 +271,13 @@ rules:
     - id: unimplemented.tileans.band.remasen-hired-sword-restriction
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--trantio-wealth
   name: Trantio — Wealth and Experience
-  effect: A Trantio warband starts a one-off match with an extra 100 gc. In a Lustrian campaign it starts with 20% more gold
-    crowns, which is 600 gc when the normal starting amount is 500 gc.
+  effect: A Trantio warband starts a one-off match with an extra 100 gc. In a Lustrian campaign it starts
+    with 20% more gold crowns, which is 600 gc when the normal starting amount is 500 gc.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -272,11 +285,13 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
     en: Trantio — Wealth and Experience
-    es: null
+    es: Trantio — Riqueza y experiencia
   effect_i18n:
-    en: A Trantio warband starts a one-off match with an extra 100 gc. In a Lustrian campaign it starts with 20% more gold
-      crowns, which is 600 gc when the normal starting amount is 500 gc.
-    es: null
+    en: A Trantio warband starts a one-off match with an extra 100 gc. In a Lustrian campaign it starts
+      with 20% more gold crowns, which is 600 gc when the normal starting amount is 500 gc.
+    es: Una banda trantina comienza un enfrentamiento puntual con 100 coronas extra. En una campaña de
+      Lustria comienza con un 20% más de coronas de oro, es decir, 600 coronas cuando la cantidad inicial
+      normal es de 500 coronas.
   applies_to:
     band: true
   runtime:

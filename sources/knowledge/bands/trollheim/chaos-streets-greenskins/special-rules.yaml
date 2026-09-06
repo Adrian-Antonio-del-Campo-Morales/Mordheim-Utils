@@ -10,10 +10,11 @@ rules:
     section: Heroes / 1 Orc Boss / Special Rules / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: Any warband model within 6" of the Orc Boss may use his Leadership when taking Leadership tests.
-    es: null
+    es: Cualquier modelo de la banda a 6" del Jefe Orco puede usar su Liderazgo cuando realice chequeos
+      de Liderazgo.
   applies_to:
     profile_ids:
     - orc-boss
@@ -28,17 +29,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: orc-shaman--wizard
   name: Wizard
-  effect: The Orc Shaman is a Wizard and uses Waaagh! Magic. The spell list itself is intentionally not modelled in this file.
+  effect: The Orc Shaman is a Wizard and uses Waaagh! Magic. The spell list itself is intentionally not
+    modelled in this file.
   source:
     manual: chaos-in-the-streets
     printed_page: 132
     section: Heroes / 0-1 Orc Shaman / Special Rules / Wizard
   name_i18n:
     en: Wizard
-    es: null
+    es: Hechicero
   effect_i18n:
-    en: The Orc Shaman is a Wizard and uses Waaagh! Magic. The spell list itself is intentionally not modelled in this file.
-    es: null
+    en: The Orc Shaman is a Wizard and uses Waaagh! Magic. The spell list itself is intentionally not
+      modelled in this file.
+    es: El Chamán Orco es un hechicero y usa la Magia ¡WAAAGH!. La lista de hechizos en sí no está modelada
+      intencionadamente en este archivo.
   applies_to:
     profile_ids:
     - orc-shaman
@@ -60,10 +64,10 @@ rules:
     section: Henchmen / Orc Boyz / Animosity
   name_i18n:
     en: Animosity
-    es: null
+    es: Rencor (Animosity)
   effect_i18n:
     en: Orc Boyz are subject to the warband's Animosity rule.
-    es: null
+    es: Los Chicos Orco están sujetos a la regla de Rencor de la banda.
   applies_to:
     profile_ids:
     - orc-boyz
@@ -78,19 +82,22 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: goblin-warriors--animosity
   name: Animosity
-  effect: Goblin Warriors are subject to the warband's Animosity rule. If a Goblin rolls a 1 on the second Animosity roll,
-    it will never charge an Orc Henchman, although it may shoot at one if otherwise eligible.
+  effect: Goblin Warriors are subject to the warband's Animosity rule. If a Goblin rolls a 1 on the second
+    Animosity roll, it will never charge an Orc Henchman, although it may shoot at one if otherwise eligible.
   source:
     manual: chaos-in-the-streets
     printed_page: 133
     section: Henchmen / Goblin Warriors / Animosity
   name_i18n:
     en: Animosity
-    es: null
+    es: Rencor (Animosity)
   effect_i18n:
-    en: Goblin Warriors are subject to the warband's Animosity rule. If a Goblin rolls a 1 on the second Animosity roll, it
-      will never charge an Orc Henchman, although it may shoot at one if otherwise eligible.
-    es: null
+    en: Goblin Warriors are subject to the warband's Animosity rule. If a Goblin rolls a 1 on the second
+      Animosity roll, it will never charge an Orc Henchman, although it may shoot at one if otherwise
+      eligible.
+    es: Los Guerreros Goblin están sujetos a la regla de Rencor de la banda. Si un goblin saca un 1 en
+      la segunda tirada de Rencor, jamás cargará contra un secuaz orco, aunque puede dispararle si por
+      lo demás es elegible.
   applies_to:
     profile_ids:
     - goblin-warriors
@@ -105,17 +112,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: goblin-warriors--not-orcs
   name: Not Orcs
-  effect: For Rout-test casualty calculations, each Goblin Warrior or Cave Squig taken Out of Action counts as half a model.
+  effect: For Rout-test casualty calculations, each Goblin Warrior or Cave Squig taken Out of Action counts
+    as half a model.
   source:
     manual: chaos-in-the-streets
     printed_page: 133
     section: Henchmen / Goblin Warriors / Not Orcs
   name_i18n:
     en: Not Orcs
-    es: null
+    es: No son orcos
   effect_i18n:
-    en: For Rout-test casualty calculations, each Goblin Warrior or Cave Squig taken Out of Action counts as half a model.
-    es: null
+    en: For Rout-test casualty calculations, each Goblin Warrior or Cave Squig taken Out of Action counts
+      as half a model.
+    es: Para el cálculo de bajas de los chequeos de huida, cada Guerrero Goblin o Squig de Cueva puesto
+      Fuera de combate cuenta como medio modelo.
   applies_to:
     profile_ids:
     - goblin-warriors
@@ -130,19 +140,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: goblin-warriors--useless-runts
   name: Useless Runts
-  effect: Goblin Warriors gain Experience normally, but if a Henchman group rolls The Lad's Got Talent, remove one Goblin
-    from the group instead of promoting it to a Hero.
+  effect: Goblin Warriors gain Experience normally, but if a Henchman group rolls The Lad's Got Talent,
+    remove one Goblin from the group instead of promoting it to a Hero.
   source:
     manual: chaos-in-the-streets
     printed_page: 133
     section: Henchmen / Goblin Warriors / Useless Runts
   name_i18n:
     en: Useless Runts
-    es: null
+    es: Mocosos inútiles
   effect_i18n:
-    en: Goblin Warriors gain Experience normally, but if a Henchman group rolls The Lad's Got Talent, remove one Goblin from
-      the group instead of promoting it to a Hero.
-    es: null
+    en: Goblin Warriors gain Experience normally, but if a Henchman group rolls The Lad's Got Talent,
+      remove one Goblin from the group instead of promoting it to a Hero.
+    es: Los Guerreros Goblin ganan Experiencia con normalidad, pero si un grupo de secuaces saca 'El mozo
+      tiene talento', retira un goblin del grupo en lugar de ascenderlo a Héroe.
   applies_to:
     profile_ids:
     - goblin-warriors
@@ -164,10 +175,10 @@ rules:
     section: Henchmen / Goblin Warriors / Fear Elves
   name_i18n:
     en: Fear Elves
-    es: null
+    es: Miedo a los elfos
   effect_i18n:
     en: Goblin Warriors are subject to Fear against Elves.
-    es: null
+    es: Los Guerreros Goblin están sujetos a Miedo contra los Elfos.
   applies_to:
     profile_ids:
     - goblin-warriors
@@ -182,21 +193,23 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: cave-squigs--squig-movement
   name: Movement
-  effect: A Cave Squig moves 2D6" instead of using a fixed Movement value. It never runs and never declares charges. If its
-    normal movement brings it into contact with an enemy, it counts as having charged and attacks as such in the following
-    close-combat phase.
+  effect: A Cave Squig moves 2D6" instead of using a fixed Movement value. It never runs and never declares
+    charges. If its normal movement brings it into contact with an enemy, it counts as having charged
+    and attacks as such in the following close-combat phase.
   source:
     manual: chaos-in-the-streets
     printed_page: 134
     section: Henchmen / 0-5 Cave Squigs / Movement
   name_i18n:
     en: Movement
-    es: null
+    es: Movimiento de squig
   effect_i18n:
-    en: A Cave Squig moves 2D6" instead of using a fixed Movement value. It never runs and never declares charges. If its
-      normal movement brings it into contact with an enemy, it counts as having charged and attacks as such in the following
-      close-combat phase.
-    es: null
+    en: A Cave Squig moves 2D6" instead of using a fixed Movement value. It never runs and never declares
+      charges. If its normal movement brings it into contact with an enemy, it counts as having charged
+      and attacks as such in the following close-combat phase.
+    es: Un Squig de Cueva se mueve 2D6" en lugar de usar un valor de Movimiento fijo. Nunca corre y nunca
+      declara cargas. Si su movimiento normal lo pone en contacto con un enemigo, cuenta como que ha cargado
+      y ataca como tal en la siguiente fase de combate cuerpo a cuerpo.
   applies_to:
     profile_ids:
     - cave-squigs
@@ -211,21 +224,26 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: cave-squigs--squig-keepers
   name: Keepers
-  effect: Each Cave Squig must remain within 6" of a Goblin Warrior. If no Goblin Warrior is within 6" at the start of the
-    Squig's Movement phase, it goes out of control. From then on it moves 2D6" in a random direction during each Movement
-    phase and attacks any model, friend or foe, that it contacts. It remains uncontrolled for the rest of the battle.
+  effect: Each Cave Squig must remain within 6" of a Goblin Warrior. If no Goblin Warrior is within 6"
+    at the start of the Squig's Movement phase, it goes out of control. From then on it moves 2D6" in
+    a random direction during each Movement phase and attacks any model, friend or foe, that it contacts.
+    It remains uncontrolled for the rest of the battle.
   source:
     manual: chaos-in-the-streets
     printed_page: 134
     section: Henchmen / 0-5 Cave Squigs / Keepers
   name_i18n:
     en: Keepers
-    es: null
+    es: Cuidadores de squigs
   effect_i18n:
-    en: Each Cave Squig must remain within 6" of a Goblin Warrior. If no Goblin Warrior is within 6" at the start of the Squig's
-      Movement phase, it goes out of control. From then on it moves 2D6" in a random direction during each Movement phase
-      and attacks any model, friend or foe, that it contacts. It remains uncontrolled for the rest of the battle.
-    es: null
+    en: Each Cave Squig must remain within 6" of a Goblin Warrior. If no Goblin Warrior is within 6" at
+      the start of the Squig's Movement phase, it goes out of control. From then on it moves 2D6" in a
+      random direction during each Movement phase and attacks any model, friend or foe, that it contacts.
+      It remains uncontrolled for the rest of the battle.
+    es: Cada Squig de Cueva debe permanecer a 6" de un Guerrero Goblin. Si no hay ningún Guerrero Goblin
+      a 6" al inicio de la fase de Movimiento del Squig, se descontrola. A partir de entonces se mueve
+      2D6" en una dirección aleatoria durante cada fase de Movimiento y ataca a cualquier modelo, amigo
+      o enemigo, con el que entre en contacto. Sigue descontrolado durante el resto de la batalla.
   applies_to:
     profile_ids:
     - cave-squigs
@@ -247,10 +265,11 @@ rules:
     section: Henchmen / 0-5 Cave Squigs / Not Orcs
   name_i18n:
     en: Not Orcs
-    es: null
+    es: No son orcos
   effect_i18n:
     en: For Rout-test casualty calculations, each Cave Squig taken Out of Action counts as half a model.
-    es: null
+    es: Para el cálculo de bajas de los chequeos de huida, cada Squig de Cueva puesto Fuera de combate
+      cuenta como medio modelo.
   applies_to:
     profile_ids:
     - cave-squigs
@@ -272,10 +291,10 @@ rules:
     section: Henchmen / 0-5 Cave Squigs / Animal
   name_i18n:
     en: Animal
-    es: null
+    es: Animal
   effect_i18n:
     en: Cave Squigs are animals and never gain Experience.
-    es: null
+    es: Los Squigs de Cueva son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - cave-squigs
@@ -297,10 +316,10 @@ rules:
     section: Henchmen / 0-1 Troll / Fear
   name_i18n:
     en: Fear
-    es: null
+    es: Miedo
   effect_i18n:
     en: The Troll causes Fear.
-    es: null
+    es: El Troll causa Miedo.
   applies_to:
     profile_ids:
     - troll
@@ -322,10 +341,10 @@ rules:
     section: Henchmen / 0-1 Troll / Stupidity
   name_i18n:
     en: Stupidity
-    es: null
+    es: Estupidez
   effect_i18n:
     en: The Troll is subject to Stupidity.
-    es: null
+    es: El Troll está sujeto a Estupidez.
   applies_to:
     profile_ids:
     - troll
@@ -351,19 +370,21 @@ rules:
         kind: mechanic
         id: skill.regeneration
   name: Regeneration
-  effect: Whenever the Troll suffers a Wound, roll D6; on 4+ the Wound is ignored. Wounds caused by fire or fire-based magic
-    cannot be regenerated. The Troll never rolls for Serious Injury after a battle.
+  effect: Whenever the Troll suffers a Wound, roll D6; on 4+ the Wound is ignored. Wounds caused by fire
+    or fire-based magic cannot be regenerated. The Troll never rolls for Serious Injury after a battle.
   source:
     manual: chaos-in-the-streets
     printed_page: 135
     section: Henchmen / 0-1 Troll / Regeneration
   name_i18n:
     en: Regeneration
-    es: null
+    es: Regeneración
   effect_i18n:
-    en: Whenever the Troll suffers a Wound, roll D6; on 4+ the Wound is ignored. Wounds caused by fire or fire-based magic
-      cannot be regenerated. The Troll never rolls for Serious Injury after a battle.
-    es: null
+    en: Whenever the Troll suffers a Wound, roll D6; on 4+ the Wound is ignored. Wounds caused by fire
+      or fire-based magic cannot be regenerated. The Troll never rolls for Serious Injury after a battle.
+    es: Siempre que el Troll sufra una Herida, tira D6; con un 4+ la Herida se ignora. Las heridas causadas
+      por fuego o magia de fuego no pueden regenerarse. El Troll nunca tira por Heridas Graves tras una
+      batalla.
   applies_to:
     profile_ids:
     - troll
@@ -376,10 +397,10 @@ rules:
     section: Henchmen / 0-1 Troll / Stupid Monster
   name_i18n:
     en: Stupid Monster
-    es: null
+    es: Monstruo tarugo
   effect_i18n:
     en: The Troll never gains Experience and can never learn skills.
-    es: null
+    es: El Troll nunca gana Experiencia y jamás puede aprender habilidades.
   applies_to:
     profile_ids:
     - troll
@@ -394,19 +415,23 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: troll--always-hungry
   name: Always Hungry
-  effect: After each battle, the warband must pay 15 gc to keep the Troll. Instead, the Orc Boss may sacrifice one Goblin
-    Warrior or Cave Squig to feed it. If neither the upkeep nor a sacrifice is provided, the Troll leaves the warband.
+  effect: After each battle, the warband must pay 15 gc to keep the Troll. Instead, the Orc Boss may sacrifice
+    one Goblin Warrior or Cave Squig to feed it. If neither the upkeep nor a sacrifice is provided, the
+    Troll leaves the warband.
   source:
     manual: chaos-in-the-streets
     printed_page: 135
     section: Henchmen / 0-1 Troll / Always Hungry
   name_i18n:
     en: Always Hungry
-    es: null
+    es: Siempre hambriento
   effect_i18n:
-    en: After each battle, the warband must pay 15 gc to keep the Troll. Instead, the Orc Boss may sacrifice one Goblin Warrior
-      or Cave Squig to feed it. If neither the upkeep nor a sacrifice is provided, the Troll leaves the warband.
-    es: null
+    en: After each battle, the warband must pay 15 gc to keep the Troll. Instead, the Orc Boss may sacrifice
+      one Goblin Warrior or Cave Squig to feed it. If neither the upkeep nor a sacrifice is provided,
+      the Troll leaves the warband.
+    es: Tras cada batalla, la banda debe pagar 15 coronas para mantener al Troll. En su lugar, el Jefe
+      Orco puede sacrificar un Guerrero Goblin o Squig de Cueva para alimentarlo. Si no se aporta ni la
+      manutención ni un sacrificio, el Troll abandona la banda.
   applies_to:
     profile_ids:
     - troll
@@ -432,37 +457,39 @@ rules:
         kind: mechanic
         id: weapon.vomit-attack
   name: Vomit
-  effect: Instead of attacking normally, the Troll may make one close-combat attack that hits automatically at Strength 5
-    and ignores armour saves.
+  effect: Instead of attacking normally, the Troll may make one close-combat attack that hits automatically
+    at Strength 5 and ignores armour saves.
   source:
     manual: chaos-in-the-streets
     printed_page: 135
     section: Henchmen / 0-1 Troll / Vomit
   name_i18n:
     en: Vomit
-    es: null
+    es: Ataque de vómito
   effect_i18n:
-    en: Instead of attacking normally, the Troll may make one close-combat attack that hits automatically at Strength 5 and
-      ignores armour saves.
-    es: null
+    en: Instead of attacking normally, the Troll may make one close-combat attack that hits automatically
+      at Strength 5 and ignores armour saves.
+    es: En lugar de atacar con normalidad, el Troll puede realizar un único ataque cuerpo a cuerpo que
+      impacta automáticamente a Fuerza 5 e ignora las salvaciones por armadura.
   applies_to:
     profile_ids:
     - troll
 - id: troll--large-target
   name: Large Target
-  effect: The Troll may be selected as a shooting target even if it is not the closest target, and missile attacks against
-    it gain +1 To Hit.
+  effect: The Troll may be selected as a shooting target even if it is not the closest target, and missile
+    attacks against it gain +1 To Hit.
   source:
     manual: chaos-in-the-streets
     printed_page: 135
     section: Henchmen / 0-1 Troll / Large Target
   name_i18n:
     en: Large Target
-    es: null
+    es: Objetivo grande
   effect_i18n:
-    en: The Troll may be selected as a shooting target even if it is not the closest target, and missile attacks against it
-      gain +1 To Hit.
-    es: null
+    en: The Troll may be selected as a shooting target even if it is not the closest target, and missile
+      attacks against it gain +1 To Hit.
+    es: El Troll puede ser seleccionado como objetivo de disparo incluso si no es el objetivo más cercano,
+      y los ataques de misil contra él obtienen +1 para impactar.
   applies_to:
     profile_ids:
     - troll
@@ -477,19 +504,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--distasteful-company
   name: Distasteful Company
-  effect: The warband may hire Pit Fighters and Warlocks. It may also hire Greenskin, Ogre, evil Wizard, or any Chaotic Hired
-    Swords allowed by the source.
+  effect: The warband may hire Pit Fighters and Warlocks. It may also hire Greenskin, Ogre, evil Wizard,
+    or any Chaotic Hired Swords allowed by the source.
   source:
     manual: chaos-in-the-streets
     printed_page: 127
     section: Special Rules / Distasteful Company
   name_i18n:
     en: Distasteful Company
-    es: null
+    es: Compañía desagradable
   effect_i18n:
-    en: The warband may hire Pit Fighters and Warlocks. It may also hire Greenskin, Ogre, evil Wizard, or any Chaotic Hired
-      Swords allowed by the source.
-    es: null
+    en: The warband may hire Pit Fighters and Warlocks. It may also hire Greenskin, Ogre, evil Wizard,
+      or any Chaotic Hired Swords allowed by the source.
+    es: La banda puede contratar Luchadores de Foso y Brujos. También puede contratar Espadas a Sueldo
+      de pielesverdes, ogros, brujos malvados o caóticos permitidas por la fuente.
   applies_to:
     band: true
   runtime:
@@ -500,38 +528,58 @@ rules:
     - id: unimplemented.chaos-streets-greenskins.band.distasteful-company
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--animosity
   name: Animosity
-  effect: 'At the start of each Orc player''s turn, roll D6 for every Orc or Goblin Henchman not already engaged in close
-    combat. On 2-6 the warrior acts normally. On 1, roll another D6: 1 = the warrior immediately attacks the nearest eligible
-    friendly Orc/Goblin Henchman or Hired Sword. If one is within charge range, it charges immediately and fights one round
-    of close combat; afterwards the models separate by 1". If no eligible target can be charged and the warrior has a missile
-    weapon, it shoots the nearest eligible friendly target instead. If neither is possible, or the nearest Orc is a Hero,
-    use the 2-5 result instead. The warrior does nothing else that turn except defend itself. 2-5 = the warrior spends the
-    whole turn insulting the nearest companion and does nothing else except defend itself. 6 = the warrior immediately moves
-    as quickly as possible toward the nearest visible enemy, charging if possible. If no enemy is visible it immediately makes
-    a normal move. This is additional to its normal Movement-phase move, and if the extra move brings an enemy into charge
-    range the warrior must charge during its normal Movement phase.'
+  effect: >-
+    At the start of each Orc player's turn, roll D6 for every Orc or Goblin Henchman not already
+    engaged in close combat. On 2-6 the warrior acts normally. On 1, roll another D6: 1 = the
+    warrior immediately attacks the nearest eligible friendly Orc/Goblin Henchman or Hired Sword. If
+    one is within charge range, it charges immediately and fights one round of close combat;
+    afterwards the models separate by 1". If no eligible target can be charged and the warrior has a
+    missile weapon, it shoots the nearest eligible friendly target instead. If neither is possible,
+    or the nearest Orc is a Hero, use the 2-5 result instead. The warrior does nothing else that
+    turn except defend itself. 2-5 = the warrior spends the whole turn insulting the nearest
+    companion and does nothing else except defend itself. 6 = the warrior immediately moves as
+    quickly as possible toward the nearest visible enemy, charging if possible. If no enemy is
+    visible it immediately makes a normal move. This is additional to its normal Movement-phase
+    move, and if the extra move brings an enemy into charge range the warrior must charge during its
+    normal Movement phase.
   source:
     manual: chaos-in-the-streets
     printed_page: 127
     section: Special Rules / Animosity
   name_i18n:
     en: Animosity
-    es: null
+    es: Rencor (Animosity)
   effect_i18n:
-    en: 'At the start of each Orc player''s turn, roll D6 for every Orc or Goblin Henchman not already engaged in close combat.
-      On 2-6 the warrior acts normally. On 1, roll another D6: 1 = the warrior immediately attacks the nearest eligible friendly
-      Orc/Goblin Henchman or Hired Sword. If one is within charge range, it charges immediately and fights one round of close
-      combat; afterwards the models separate by 1". If no eligible target can be charged and the warrior has a missile weapon,
-      it shoots the nearest eligible friendly target instead. If neither is possible, or the nearest Orc is a Hero, use the
-      2-5 result instead. The warrior does nothing else that turn except defend itself. 2-5 = the warrior spends the whole
-      turn insulting the nearest companion and does nothing else except defend itself. 6 = the warrior immediately moves as
-      quickly as possible toward the nearest visible enemy, charging if possible. If no enemy is visible it immediately makes
-      a normal move. This is additional to its normal Movement-phase move, and if the extra move brings an enemy into charge
+    en: 'At the start of each Orc player''s turn, roll D6 for every Orc or Goblin Henchman not already
+      engaged in close combat. On 2-6 the warrior acts normally. On 1, roll another D6: 1 = the warrior
+      immediately attacks the nearest eligible friendly Orc/Goblin Henchman or Hired Sword. If one is
+      within charge range, it charges immediately and fights one round of close combat; afterwards the
+      models separate by 1". If no eligible target can be charged and the warrior has a missile weapon,
+      it shoots the nearest eligible friendly target instead. If neither is possible, or the nearest Orc
+      is a Hero, use the 2-5 result instead. The warrior does nothing else that turn except defend itself.
+      2-5 = the warrior spends the whole turn insulting the nearest companion and does nothing else except
+      defend itself. 6 = the warrior immediately moves as quickly as possible toward the nearest visible
+      enemy, charging if possible. If no enemy is visible it immediately makes a normal move. This is
+      additional to its normal Movement-phase move, and if the extra move brings an enemy into charge
       range the warrior must charge during its normal Movement phase.'
-    es: null
+    es: 'Al inicio de cada turno del jugador orco, tira D6 por cada secuaz orco o goblin que aún no esté
+      empeñado en combate cuerpo a cuerpo. Con un 2-6 el guerrero actúa con normalidad. Con un 1, tira
+      otro D6: 1 = el guerrero ataca inmediatamente al secuaz orco/goblin amigo u Espada a Sueldo elegible
+      más cercano. Si alguno está a alcance de carga, carga inmediatamente y lucha un asalto de combate
+      cuerpo a cuerpo; después los modelos se separan 1". Si no puede cargarse ningún objetivo elegible
+      y el guerrero tiene un arma de misil, dispara en su lugar al objetivo amigo elegible más cercano.
+      Si tampoco es posible, o el orco más cercano es un Héroe, usa el resultado 2-5. El guerrero no hace
+      nada más ese asalto salvo defenderse. 2-5 = el guerrero pasa todo el asalto insultando al compañero
+      más cercano y no hace nada más salvo defenderse. 6 = el guerrero se mueve inmediatamente lo más
+      rápido posible hacia el enemigo visible más cercano, cargando si es posible. Si no hay ningún enemigo
+      visible hace inmediatamente un movimiento normal. Esto es adicional a su movimiento normal de la
+      fase de Movimiento, y si el movimiento extra pone a un enemigo a alcance de carga, el guerrero debe
+      cargar durante su fase normal de Movimiento.'
   applies_to:
     band: true
   runtime:
@@ -545,17 +593,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--goblin-ratio
   name: Goblin Limit
-  effect: The warband may never include more than two Goblin Warriors for each Orc in the warband, including Orc Heroes.
+  effect: The warband may never include more than two Goblin Warriors for each Orc in the warband, including
+    Orc Heroes.
   source:
     manual: chaos-in-the-streets
     printed_page: 126
     section: Choice of Warriors / Goblin Warriors
   name_i18n:
     en: Goblin Limit
-    es: null
+    es: Proporción de goblins
   effect_i18n:
-    en: The warband may never include more than two Goblin Warriors for each Orc in the warband, including Orc Heroes.
-    es: null
+    en: The warband may never include more than two Goblin Warriors for each Orc in the warband, including
+      Orc Heroes.
+    es: La banda jamás puede incluir más de dos Guerreros Goblin por cada orco de la banda, incluidos
+      los Héroes Orcos.
   applies_to:
     band: true
   runtime:
@@ -569,17 +620,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--cave-squig-ratio
   name: Cave Squig Limit
-  effect: The warband may never include more Cave Squigs than Goblin Warriors, and may never include more than five Cave Squigs.
+  effect: The warband may never include more Cave Squigs than Goblin Warriors, and may never include more
+    than five Cave Squigs.
   source:
     manual: chaos-in-the-streets
     printed_page: 126
     section: Choice of Warriors / Cave Squigs
   name_i18n:
     en: Cave Squig Limit
-    es: null
+    es: Proporción de squigs de cueva
   effect_i18n:
-    en: The warband may never include more Cave Squigs than Goblin Warriors, and may never include more than five Cave Squigs.
-    es: null
+    en: The warband may never include more Cave Squigs than Goblin Warriors, and may never include more
+      than five Cave Squigs.
+    es: La banda jamás puede incluir más Squigs de Cueva que Guerreros Goblin, y jamás puede incluir más
+      de cinco Squigs de Cueva.
   applies_to:
     band: true
   runtime:
@@ -594,19 +648,20 @@ rules:
 - id: band--orc-special-skills-ard-ead
   kind: warband_skill
   name: '''Ard ''Ead'
-  effect: The Orc has a special 3+ save to turn a Stunned result into Knocked Down. If wearing a Helmet this save becomes
-    2+ and replaces the Helmet's normal special rule.
+  effect: The Orc has a special 3+ save to turn a Stunned result into Knocked Down. If wearing a Helmet
+    this save becomes 2+ and replaces the Helmet's normal special rule.
   source:
     manual: chaos-in-the-streets
     printed_page: 130
     section: Greenskin Special Skills / 'Ard 'Ead
   name_i18n:
     en: '''Ard ''Ead'
-    es: null
+    es: Cráneo grueso
   effect_i18n:
-    en: The Orc has a special 3+ save to turn a Stunned result into Knocked Down. If wearing a Helmet this save becomes 2+
-      and replaces the Helmet's normal special rule.
-    es: null
+    en: The Orc has a special 3+ save to turn a Stunned result into Knocked Down. If wearing a Helmet
+      this save becomes 2+ and replaces the Helmet's normal special rule.
+    es: El orco tiene una salvación especial de 3+ para convertir un resultado de Aturdido en Derribado.
+      Si lleva Yelmo, esta salvación pasa a ser de 2+ y sustituye a la regla especial normal del Yelmo.
   eligibility:
   - orc-boss
   - orc-shaman
@@ -626,19 +681,20 @@ rules:
 - id: band--orc-special-skills-waaagh
   kind: warband_skill
   name: Waaagh!
-  effect: The Orc adds 1D6 × 0.4" + 1" to its charge movement. This is the direct inch conversion of the source's +1D6+2 cm
-    rule.
+  effect: The Orc adds 1D6 × 0.4" + 1" to its charge movement. This is the direct inch conversion of the
+    source's +1D6+2 cm rule.
   source:
     manual: chaos-in-the-streets
     printed_page: 130
     section: Greenskin Special Skills / Waaagh!
   name_i18n:
     en: Waaagh!
-    es: null
+    es: ¡WAAAGH!
   effect_i18n:
-    en: The Orc adds 1D6 × 0.4" + 1" to its charge movement. This is the direct inch conversion of the source's +1D6+2 cm
-      rule.
-    es: null
+    en: The Orc adds 1D6 × 0.4" + 1" to its charge movement. This is the direct inch conversion of the
+      source's +1D6+2 cm rule.
+    es: El orco suma 1D6 × 0,4" + 1" a su movimiento de carga. Esta es la conversión directa en pulgadas
+      de la regla +1D6+2 cm de la fuente.
   eligibility:
   - orc-boss
   - orc-shaman
@@ -664,10 +720,10 @@ rules:
     section: Greenskin Special Skills / 'Ere We Go!
   name_i18n:
     en: '''Ere We Go!'
-    es: null
+    es: ¡Allá vamos! ('Ere we go!)
   effect_i18n:
     en: The Orc may ignore Fear and Terror tests when charging.
-    es: null
+    es: El orco puede ignorar los chequeos de Miedo y Terror cuando carga.
   eligibility:
   - orc-boss
   - orc-shaman
@@ -686,19 +742,20 @@ rules:
 - id: band--orc-special-skills-da-cunnin-plan
   kind: warband_skill
   name: Da Cunnin' Plan
-  effect: Only the Orc Boss may take this skill. The warband may re-roll one failed Rout test as long as the Boss has not
-    been taken Out of Action.
+  effect: Only the Orc Boss may take this skill. The warband may re-roll one failed Rout test as long
+    as the Boss has not been taken Out of Action.
   source:
     manual: chaos-in-the-streets
     printed_page: 130
     section: Greenskin Special Skills / Da Cunnin' Plan
   name_i18n:
     en: Da Cunnin' Plan
-    es: null
+    es: El plan listo (da cunnin' plan)
   effect_i18n:
-    en: Only the Orc Boss may take this skill. The warband may re-roll one failed Rout test as long as the Boss has not been
-      taken Out of Action.
-    es: null
+    en: Only the Orc Boss may take this skill. The warband may re-roll one failed Rout test as long as
+      the Boss has not been taken Out of Action.
+    es: Solo el Jefe Orco puede tomar esta habilidad. La banda puede repetir un chequeo de huida fallido
+      mientras el Jefe no haya sido puesto Fuera de combate.
   eligibility:
   - orc-boss
   applies_to:
@@ -733,10 +790,10 @@ rules:
     section: Greenskin Special Skills / Well 'Ard
   name_i18n:
     en: Well 'Ard
-    es: null
+    es: Muy duro
   effect_i18n:
     en: The Orc gains +1 to its armour saving throws.
-    es: null
+    es: El orco gana +1 en sus tiradas de salvación por armadura.
   eligibility:
   - orc-boss
   - orc-shaman
@@ -763,10 +820,11 @@ rules:
     section: Greenskin Special Skills / 'Eadbasher
   name_i18n:
     en: '''Eadbasher'
-    es: null
+    es: Machacacráneos
   effect_i18n:
     en: Any Knocked Down result caused by this Orc in close combat is treated as Stunned instead.
-    es: null
+    es: Cualquier resultado de Derribado causado por este orco en el combate cuerpo a cuerpo se trata
+      en su lugar como Aturdido.
   eligibility:
   - orc-boss
   - orc-shaman

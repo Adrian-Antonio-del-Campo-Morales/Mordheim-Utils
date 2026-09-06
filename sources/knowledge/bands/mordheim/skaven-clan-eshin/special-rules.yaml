@@ -11,10 +11,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: Any warrior within 6" of the Assassin Adept may use his Leadership instead of his own.
-    es: null
+    es: Cualquier guerrero a 6" del Adepto asesino puede usar su Liderazgo en lugar del suyo propio.
   applies_to:
     profile_ids:
     - assassin-adept
@@ -29,8 +29,8 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: assassin-adept--perfect-killer
   name: Perfect Killer
-  effect: Wounds inflicted by the Assassin Adept, whether in shooting or close combat, impose an additional -1 modifier to
-    the enemy's armour save.
+  effect: Wounds inflicted by the Assassin Adept, whether in shooting or close combat, impose an additional
+    -1 modifier to the enemy's armour save.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -38,11 +38,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     en: Perfect Killer
-    es: null
+    es: Asesino perfecto
   effect_i18n:
-    en: Wounds inflicted by the Assassin Adept, whether in shooting or close combat, impose an additional -1 modifier to the
-      enemy's armour save.
-    es: null
+    en: Wounds inflicted by the Assassin Adept, whether in shooting or close combat, impose an additional
+      -1 modifier to the enemy's armour save.
+    es: Las heridas infligidas por el Adepto asesino, ya sea en disparo o en combate cuerpo a cuerpo,
+      imponen un modificador adicional de -1 a la salvación por armadura del enemigo.
   applies_to:
     profile_ids:
     - assassin-adept
@@ -60,8 +61,9 @@ rules:
           value: true
 - id: eshin-sorcerer--magic-user
   name: Magic User
-  effect: The Eshin Sorcerer is a magic user and begins with one randomly generated spell from Magic of the Horned Rat. When
-    gaining a new skill, the Sorcerer may instead learn a new spell. The spell list itself is not modelled here.
+  effect: The Eshin Sorcerer is a magic user and begins with one randomly generated spell from Magic of
+    the Horned Rat. When gaining a new skill, the Sorcerer may instead learn a new spell. The spell list
+    itself is not modelled here.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -69,11 +71,14 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     en: Magic User
-    es: null
+    es: Usuario de magia
   effect_i18n:
-    en: The Eshin Sorcerer is a magic user and begins with one randomly generated spell from Magic of the Horned Rat. When
-      gaining a new skill, the Sorcerer may instead learn a new spell. The spell list itself is not modelled here.
-    es: null
+    en: The Eshin Sorcerer is a magic user and begins with one randomly generated spell from Magic of
+      the Horned Rat. When gaining a new skill, the Sorcerer may instead learn a new spell. The spell
+      list itself is not modelled here.
+    es: El Hechicero de Eshin es un usuario de magia y comienza con un hechizo generado aleatoriamente
+      de la Magia de la Rata Cornuda. Al ganar una nueva habilidad, el Hechicero puede en su lugar aprender
+      un nuevo hechizo. La propia lista de hechizos no está modelada aquí.
   applies_to:
     profile_ids:
     - eshin-sorcerer
@@ -85,7 +90,9 @@ rules:
     - id: unimplemented.skaven-clan-eshin.eshin-sorcerer.magic-user
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: giant-rats--pack-size
   name: Pack Size
   effect: The warband may recruit any number of Giant Rats, subject only to the overall warband maximum.
@@ -96,10 +103,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     en: Pack Size
-    es: null
+    es: Tamaño de la manada
   effect_i18n:
     en: The warband may recruit any number of Giant Rats, subject only to the overall warband maximum.
-    es: null
+    es: La banda puede reclutar cualquier número de Ratas gigantes, sujeto únicamente al máximo total
+      de la banda.
   applies_to:
     profile_ids:
     - giant-rats
@@ -122,10 +130,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     en: Animal
-    es: null
+    es: Animal
   effect_i18n:
     en: Giant Rats are animals and never gain Experience.
-    es: null
+    es: Las Ratas gigantes son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - giant-rats
@@ -148,10 +156,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     en: Fear
-    es: null
+    es: Miedo
   effect_i18n:
     en: The Rat Ogre causes Fear.
-    es: null
+    es: El Ogro rata provoca Miedo.
   applies_to:
     profile_ids:
     - rat-ogre
@@ -174,10 +182,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     en: Stupidity
-    es: null
+    es: Estupidez
   effect_i18n:
     en: The Rat Ogre is subject to Stupidity unless a Skaven Hero is within 6".
-    es: null
+    es: El Ogro rata está sujeto a Estupidez a menos que haya un Héroe skaven a 6" de él.
   applies_to:
     profile_ids:
     - rat-ogre
@@ -200,10 +208,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     en: Experience
-    es: null
+    es: Experiencia
   effect_i18n:
     en: The Rat Ogre never gains Experience.
-    es: null
+    es: El Ogro rata nunca gana Experiencia.
   applies_to:
     profile_ids:
     - rat-ogre
@@ -226,10 +234,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     en: Large Target
-    es: null
+    es: Objetivo grande
   effect_i18n:
     en: The Rat Ogre is a Large Target.
-    es: null
+    es: El Ogro rata es un Objetivo Grande.
   applies_to:
     profile_ids:
     - rat-ogre
@@ -244,7 +252,7 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--skaven-maximum-characteristics
   name: Skaven Maximum Characteristics
-  effect: 'Clan Eshin Skaven use the Skaven racial maximum profile (campaign.limit.racial-maximum.skaven).'
+  effect: Clan Eshin Skaven use the Skaven racial maximum profile (campaign.limit.racial-maximum.skaven).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -252,10 +260,10 @@ rules:
     url: https://mordheimer.net/docs/campaigns/experience
   name_i18n:
     en: Skaven Maximum Characteristics
-    es: null
+    es: Características máximas skaven
   effect_i18n:
-    en: 'Clan Eshin Skaven use the Skaven racial maximum profile (campaign.limit.racial-maximum.skaven).'
-    es: null
+    en: Clan Eshin Skaven use the Skaven racial maximum profile (campaign.limit.racial-maximum.skaven).
+    es: Los skaven del Clan Eshin usan el perfil racial máximo skaven (campaign.limit.racial-maximum.skaven).
   applies_to:
     band: true
   runtime:
@@ -266,12 +274,15 @@ rules:
     - id: unimplemented.skaven-clan-eshin.band.skaven-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--skaven-special-skills-black-hunger
   kind: warband_skill
   name: Black Hunger
-  effect: At the start of his turn, the Skaven Hero may invoke Black Hunger. For that turn he gains +1 Attack and +D3 inches
-    to his total Movement, then suffers D3 Strength 3 hits with no armour save at the end of the turn.
+  effect: At the start of his turn, the Skaven Hero may invoke Black Hunger. For that turn he gains +1
+    Attack and +D3 inches to his total Movement, then suffers D3 Strength 3 hits with no armour save at
+    the end of the turn.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -279,11 +290,14 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     en: Black Hunger
-    es: null
+    es: Hambre negra
   effect_i18n:
-    en: At the start of his turn, the Skaven Hero may invoke Black Hunger. For that turn he gains +1 Attack and +D3 inches
-      to his total Movement, then suffers D3 Strength 3 hits with no armour save at the end of the turn.
-    es: null
+    en: At the start of his turn, the Skaven Hero may invoke Black Hunger. For that turn he gains +1 Attack
+      and +D3 inches to his total Movement, then suffers D3 Strength 3 hits with no armour save at the
+      end of the turn.
+    es: Al comienzo de su turno, el Héroe skaven puede invocar el Hambre negra. Durante ese turno gana
+      +1 Ataque y +D3 pulgadas a su Movimiento total, y luego sufre D3 impactos de Fuerza 3 sin salvación
+      por armadura al final del turno.
   eligibility:
   - assassin-adept
   - black-skaven
@@ -315,8 +329,8 @@ rules:
         id: special-rule.band--skaven-special-skills-tail-fighting
   runtime_selectable: true
   name: Tail Fighting
-  effect: The Skaven may wield a shield, knife or sword with his tail. A weapon grants one additional attack with that weapon;
-    a shield grants +1 to the model's armour save.
+  effect: The Skaven may wield a shield, knife or sword with his tail. A weapon grants one additional
+    attack with that weapon; a shield grants +1 to the model's armour save.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -324,11 +338,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     en: Tail Fighting
-    es: null
+    es: Combate con la cola
   effect_i18n:
-    en: The Skaven may wield a shield, knife or sword with his tail. A weapon grants one additional attack with that weapon;
-      a shield grants +1 to the model's armour save.
-    es: null
+    en: The Skaven may wield a shield, knife or sword with his tail. A weapon grants one additional attack
+      with that weapon; a shield grants +1 to the model's armour save.
+    es: El skaven puede empuñar un escudo, cuchillo o espada con su cola. Un arma concede un ataque adicional
+      con esa arma; un escudo concede +1 a la salvación por armadura de la miniatura.
   eligibility:
   - assassin-adept
   - black-skaven
@@ -347,10 +362,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     en: Wall Runner
-    es: null
+    es: Corredor de muros
   effect_i18n:
     en: The Skaven automatically passes Initiative tests required to climb walls and other sheer surfaces.
-    es: null
+    es: El skaven supera automáticamente los chequeos de Iniciativa necesarios para trepar por muros y
+      otras superficies verticales.
   eligibility:
   - assassin-adept
   - black-skaven
@@ -370,8 +386,9 @@ rules:
 - id: band--skaven-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
-  effect: The Skaven deploys after the opposing warband and may be placed anywhere out of enemy sight and more than 12" from
-    every enemy model. If both players have infiltrators, roll a D6 for each; the lowest roll deploys first.
+  effect: The Skaven deploys after the opposing warband and may be placed anywhere out of enemy sight
+    and more than 12" from every enemy model. If both players have infiltrators, roll a D6 for each; the
+    lowest roll deploys first.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -379,11 +396,14 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     en: Infiltration
-    es: null
+    es: Infiltración
   effect_i18n:
-    en: The Skaven deploys after the opposing warband and may be placed anywhere out of enemy sight and more than 12" from
-      every enemy model. If both players have infiltrators, roll a D6 for each; the lowest roll deploys first.
-    es: null
+    en: The Skaven deploys after the opposing warband and may be placed anywhere out of enemy sight and
+      more than 12" from every enemy model. If both players have infiltrators, roll a D6 for each; the
+      lowest roll deploys first.
+    es: El skaven se despliega después de la banda contraria y puede situarse en cualquier lugar fuera
+      de la vista enemiga y a más de 12" de cada miniatura enemiga. Si ambos jugadores tienen infiltradores,
+      tira un D6 por cada uno; la tirada más baja despliega primero.
   eligibility:
   - assassin-adept
   - black-skaven
@@ -413,9 +433,9 @@ rules:
         kind: mechanic
         id: skill.art-of-silent-death
   name: Art of Silent Death
-  effect: The Skaven may fight unarmed without penalties and counts as using two weapons, gaining +1 Attack. He scores a critical
-    hit on a To Wound roll of 5-6 instead of only 6. When used with Eshin Fighting Claws, this grants +2 Attacks instead of
-    +1.
+  effect: The Skaven may fight unarmed without penalties and counts as using two weapons, gaining +1 Attack.
+    He scores a critical hit on a To Wound roll of 5-6 instead of only 6. When used with Eshin Fighting
+    Claws, this grants +2 Attacks instead of +1.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -423,12 +443,14 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/skaven-eshin
   name_i18n:
     en: Art of Silent Death
-    es: null
+    es: Arte de la muerte silenciosa
   effect_i18n:
-    en: The Skaven may fight unarmed without penalties and counts as using two weapons, gaining +1 Attack. He scores a critical
-      hit on a To Wound roll of 5-6 instead of only 6. When used with Eshin Fighting Claws, this grants +2 Attacks instead
-      of +1.
-    es: null
+    en: The Skaven may fight unarmed without penalties and counts as using two weapons, gaining +1 Attack.
+      He scores a critical hit on a To Wound roll of 5-6 instead of only 6. When used with Eshin Fighting
+      Claws, this grants +2 Attacks instead of +1.
+    es: El skaven puede luchar desarmado sin penalizaciones y cuenta como si usara dos armas, ganando
+      +1 Ataque. Obtiene un golpe crítico con una tirada de Herir de 5-6 en lugar de solo 6. Cuando se
+      usa con las Garras de combate de Eshin, concede +2 Ataques en lugar de +1.
   eligibility:
   - assassin-adept
   - black-skaven

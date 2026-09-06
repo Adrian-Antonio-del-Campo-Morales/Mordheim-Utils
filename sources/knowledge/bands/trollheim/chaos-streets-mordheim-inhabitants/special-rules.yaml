@@ -10,10 +10,11 @@ rules:
     section: Heroes / 1 Prophet / Special Rules / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: Any warband model within 6" of the Prophet may use his Leadership when taking Leadership tests.
-    es: null
+    es: Cualquier modelo de la banda a 6" del Profeta puede usar su Liderazgo cuando realice chequeos
+      de Liderazgo.
   applies_to:
     profile_ids:
     - prophet
@@ -35,10 +36,10 @@ rules:
     section: Heroes / 1 Prophet / Special Rules / Fanatic
   name_i18n:
     en: Fanatic
-    es: null
+    es: Fanático
   effect_i18n:
     en: The Prophet automatically passes every test based on Leadership.
-    es: null
+    es: El Profeta supera automáticamente todos los chequeos basados en Liderazgo.
   applies_to:
     profile_ids:
     - prophet
@@ -53,19 +54,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: prophet--orator
   name: Orator
-  effect: The Prophet begins with one randomly generated Revival Sermon. The individual sermon list and sermon effects are
-    intentionally not modelled in this file.
+  effect: The Prophet begins with one randomly generated Revival Sermon. The individual sermon list and
+    sermon effects are intentionally not modelled in this file.
   source:
     manual: chaos-in-the-streets
     printed_page: 147
     section: Heroes / 1 Prophet / Special Rules / Orator
   name_i18n:
     en: Orator
-    es: null
+    es: Orador
   effect_i18n:
-    en: The Prophet begins with one randomly generated Revival Sermon. The individual sermon list and sermon effects are intentionally
-      not modelled in this file.
-    es: null
+    en: The Prophet begins with one randomly generated Revival Sermon. The individual sermon list and
+      sermon effects are intentionally not modelled in this file.
+    es: El Profeta comienza con un Sermón de Resurrección generado aleatoriamente. La lista individual
+      de sermones y los efectos de los sermones no están modelados intencionadamente en este archivo.
   applies_to:
     profile_ids:
     - prophet
@@ -87,10 +89,10 @@ rules:
     section: Heroes / 0-1 Desolate Soul / Special Rules / Fanatic
   name_i18n:
     en: Fanatic
-    es: null
+    es: Fanático
   effect_i18n:
     en: The Desolate Soul automatically passes every test based on Leadership.
-    es: null
+    es: El Alma Desolada supera automáticamente todos los chequeos basados en Liderazgo.
   applies_to:
     profile_ids:
     - desolate-soul
@@ -105,19 +107,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: desolate-soul--death-wish
   name: Death Wish
-  effect: The Desolate Soul must always move toward the nearest visible enemy model. It does not have to run or charge, but
-    it must move at least 1" during its Movement phase.
+  effect: The Desolate Soul must always move toward the nearest visible enemy model. It does not have
+    to run or charge, but it must move at least 1" during its Movement phase.
   source:
     manual: chaos-in-the-streets
     printed_page: 148
     section: Heroes / 0-1 Desolate Soul / Special Rules / Death Wish
   name_i18n:
     en: Death Wish
-    es: null
+    es: Deseo de muerte
   effect_i18n:
-    en: The Desolate Soul must always move toward the nearest visible enemy model. It does not have to run or charge, but
-      it must move at least 1" during its Movement phase.
-    es: null
+    en: The Desolate Soul must always move toward the nearest visible enemy model. It does not have to
+      run or charge, but it must move at least 1" during its Movement phase.
+    es: El Alma Desolada debe moverse siempre hacia el modelo enemigo visible más cercano. No tiene que
+      correr ni cargar, pero debe moverse al menos 1" durante su fase de Movimiento.
   applies_to:
     profile_ids:
     - desolate-soul
@@ -132,17 +135,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: desolate-soul--profound-hatred
   name: Profound Hatred
-  effect: The Desolate Soul is subject to Hatred against warriors from every opposing warband except the Sisters of Sigmar.
+  effect: The Desolate Soul is subject to Hatred against warriors from every opposing warband except the
+    Sisters of Sigmar.
   source:
     manual: chaos-in-the-streets
     printed_page: 148
     section: Heroes / 0-1 Desolate Soul / Special Rules / Profound Hatred
   name_i18n:
     en: Profound Hatred
-    es: null
+    es: Odio profundo
   effect_i18n:
-    en: The Desolate Soul is subject to Hatred against warriors from every opposing warband except the Sisters of Sigmar.
-    es: null
+    en: The Desolate Soul is subject to Hatred against warriors from every opposing warband except the
+      Sisters of Sigmar.
+    es: El Alma Desolada está sujeta a Odio contra los guerreros de cualquier banda rival, excepto las
+      Hermanas de Sigmar.
   applies_to:
     profile_ids:
     - desolate-soul
@@ -176,32 +182,39 @@ rules:
     section: Heroes / 0-2 Lunatics / Special Rules / Frenzy
   name_i18n:
     en: Frenzy
-    es: null
+    es: Frenesí
   effect_i18n:
     en: Lunatics are subject to Frenzy.
-    es: null
+    es: Los Dementes están sujetos a Frenesí.
   applies_to:
     profile_ids:
     - lunatics
 - id: cripples--disability
   name: Disability
-  effect: 'When a Cripple Henchman group is created, roll D6 once and apply that result permanently to the entire group: 1
-    Lame and Arthritic — reduce Movement and Initiative by 1; 2 Parkinson''s — reduce Weapon Skill by 1 and the models may
-    not use two weapons or a weapon and shield; 3 Poor Eyesight — reduce Ballistic Skill by 1; 4 Sickly — reduce Toughness
-    by 1; 5 Weakness — reduce Strength by 1; 6 Head Injury — the group is subject to Stupidity unless within 6" of a Hero.'
+  effect: >-
+    When a Cripple Henchman group is created, roll D6 once and apply that result permanently to the
+    entire group: 1 Lame and Arthritic — reduce Movement and Initiative by 1; 2 Parkinson's — reduce
+    Weapon Skill by 1 and the models may not use two weapons or a weapon and shield; 3 Poor Eyesight
+    — reduce Ballistic Skill by 1; 4 Sickly — reduce Toughness by 1; 5 Weakness — reduce Strength by
+    1; 6 Head Injury — the group is subject to Stupidity unless within 6" of a Hero.
   source:
     manual: chaos-in-the-streets
     printed_page: 149
     section: Henchmen / Cripples / Special Rules / Disability
   name_i18n:
     en: Disability
-    es: null
+    es: Discapacidad
   effect_i18n:
-    en: 'When a Cripple Henchman group is created, roll D6 once and apply that result permanently to the entire group: 1 Lame
-      and Arthritic — reduce Movement and Initiative by 1; 2 Parkinson''s — reduce Weapon Skill by 1 and the models may not
-      use two weapons or a weapon and shield; 3 Poor Eyesight — reduce Ballistic Skill by 1; 4 Sickly — reduce Toughness by
-      1; 5 Weakness — reduce Strength by 1; 6 Head Injury — the group is subject to Stupidity unless within 6" of a Hero.'
-    es: null
+    en: 'When a Cripple Henchman group is created, roll D6 once and apply that result permanently to the
+      entire group: 1 Lame and Arthritic — reduce Movement and Initiative by 1; 2 Parkinson''s — reduce
+      Weapon Skill by 1 and the models may not use two weapons or a weapon and shield; 3 Poor Eyesight
+      — reduce Ballistic Skill by 1; 4 Sickly — reduce Toughness by 1; 5 Weakness — reduce Strength by
+      1; 6 Head Injury — the group is subject to Stupidity unless within 6" of a Hero.'
+    es: 'Cuando se crea un grupo de secuaces Lisiados, tira 1D6 una vez y aplica ese resultado permanentemente
+      a todo el grupo: 1 Cojo y artrítico: reduce Movimiento e Iniciativa en 1; 2 Mal de Parkinson: reduce
+      Habilidad de Armas en 1 y los modelos no pueden usar dos armas o un arma y un escudo; 3 Mala vista:
+      reduce Habilidad de Disparo en 1; 4 Enfermizo: reduce Resistencia en 1; 5 Debilidad: reduce Fuerza
+      en 1; 6 Lesión craneal: el grupo está sujeto a Estupidez salvo que esté a 6" de un Héroe.'
   applies_to:
     profile_ids:
     - cripples
@@ -224,10 +237,10 @@ rules:
     section: Henchmen / 0-5 Street Dogs / Special Rules / Animals
   name_i18n:
     en: Animal
-    es: null
+    es: Animales
   effect_i18n:
     en: Street Dogs are animals and never gain Experience.
-    es: null
+    es: Los Perros Callejeros son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - street-dogs
@@ -242,17 +255,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--mordheim-natives
   name: Mordheim Natives
-  effect: During a campaign set in Mordheim, the warband may modify one die by +1 or -1 on every Exploration roll.
+  effect: During a campaign set in Mordheim, the warband may modify one die by +1 or -1 on every Exploration
+    roll.
   source:
     manual: chaos-in-the-streets
     printed_page: 145
     section: Special Rules / Mordheim Natives
   name_i18n:
     en: Mordheim Natives
-    es: null
+    es: Nativos de Mordheim
   effect_i18n:
-    en: During a campaign set in Mordheim, the warband may modify one die by +1 or -1 on every Exploration roll.
-    es: null
+    en: During a campaign set in Mordheim, the warband may modify one die by +1 or -1 on every Exploration
+      roll.
+    es: Durante una campaña ambientada en Mordheim, la banda puede modificar un dado en +1 o -1 en cada
+      tirada de Exploración.
   applies_to:
     band: true
   runtime:
@@ -266,19 +282,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--wanderers
   name: Wanderers
-  effect: While the Prophet remains alive, during a campaign set in Mordheim the warband may re-roll one die during each Exploration
-    phase.
+  effect: While the Prophet remains alive, during a campaign set in Mordheim the warband may re-roll one
+    die during each Exploration phase.
   source:
     manual: chaos-in-the-streets
     printed_page: 145
     section: Special Rules / Wanderers
   name_i18n:
     en: Wanderers
-    es: null
+    es: Errantes
   effect_i18n:
-    en: While the Prophet remains alive, during a campaign set in Mordheim the warband may re-roll one die during each Exploration
-      phase.
-    es: null
+    en: While the Prophet remains alive, during a campaign set in Mordheim the warband may re-roll one
+      die during each Exploration phase.
+    es: Mientras el Profeta siga con vida, durante una campaña ambientada en Mordheim la banda puede repetir
+      un dado durante cada fase de Exploración.
   applies_to:
     band: true
   runtime:
@@ -292,17 +309,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--look-after-their-own
   name: Look After Their Own
-  effect: If the warband rolls a double 4 during Exploration, it gains one new Henchman for any existing Henchman group.
+  effect: If the warband rolls a double 4 during Exploration, it gains one new Henchman for any existing
+    Henchman group.
   source:
     manual: chaos-in-the-streets
     printed_page: 145
     section: Special Rules / Look After Their Own
   name_i18n:
     en: Look After Their Own
-    es: null
+    es: Los suyos cuidan a los suyos
   effect_i18n:
-    en: If the warband rolls a double 4 during Exploration, it gains one new Henchman for any existing Henchman group.
-    es: null
+    en: If the warband rolls a double 4 during Exploration, it gains one new Henchman for any existing
+      Henchman group.
+    es: Si la banda saca un doble 4 durante la Exploración, gana un nuevo secuaz para cualquier grupo
+      de secuaces existente.
   applies_to:
     band: true
   runtime:
@@ -316,19 +336,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--hired-swords
   name: Hired Swords
-  effect: The warband may hire Hired Swords available to Mercenary warbands and any Hired Sword explicitly willing to work
-    for any warband.
+  effect: The warband may hire Hired Swords available to Mercenary warbands and any Hired Sword explicitly
+    willing to work for any warband.
   source:
     manual: chaos-in-the-streets
     printed_page: 145
     section: Special Rules / Hired Swords
   name_i18n:
     en: Hired Swords
-    es: null
+    es: Espadas a Sueldo
   effect_i18n:
-    en: The warband may hire Hired Swords available to Mercenary warbands and any Hired Sword explicitly willing to work for
-      any warband.
-    es: null
+    en: The warband may hire Hired Swords available to Mercenary warbands and any Hired Sword explicitly
+      willing to work for any warband.
+    es: La banda puede contratar Espadas a Sueldo disponibles para las bandas Mercenarias y cualquier
+      Espada a Sueldo explícitamente dispuesta a trabajar para cualquier banda.
   applies_to:
     band: true
   runtime:
@@ -339,34 +360,50 @@ rules:
     - id: unimplemented.chaos-streets-mordheim-inhabitants.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--revival-sermons
   name: Revival Sermons
-  effect: Revival Sermons are not magical and affect only members of the Mordheim Inhabitants warband; they never affect enemy
-    or allied warbands, and Hired Swords in the Prophet's employ do not benefit from them. When the Prophet gains a new skill,
-    he may instead learn a random new Revival Sermon or reduce the Difficulty of one sermon he already knows by 1. Psychological
-    effects created by sermons affect the warband even when a model is normally immune to external Psychology. A sermon's
-    range equals the Prophet's Leader range, initially 6", and increases if that range increases. A sermon remains active
-    until the Prophet suffers a Wound or ends it. Only one sermon may be active at a time. Unless a sermon states otherwise,
-    it is delivered using the same casting procedure as spells. The Prophet may wear armour while delivering sermons. The
-    individual sermon list and sermon effects are intentionally not modelled in this file.
+  effect: Revival Sermons are not magical and affect only members of the Mordheim Inhabitants warband;
+    they never affect enemy or allied warbands, and Hired Swords in the Prophet's employ do not benefit
+    from them. When the Prophet gains a new skill, he may instead learn a random new Revival Sermon or
+    reduce the Difficulty of one sermon he already knows by 1. Psychological effects created by sermons
+    affect the warband even when a model is normally immune to external Psychology. A sermon's range equals
+    the Prophet's Leader range, initially 6", and increases if that range increases. A sermon remains
+    active until the Prophet suffers a Wound or ends it. Only one sermon may be active at a time. Unless
+    a sermon states otherwise, it is delivered using the same casting procedure as spells. The Prophet
+    may wear armour while delivering sermons. The individual sermon list and sermon effects are intentionally
+    not modelled in this file.
   source:
     manual: chaos-in-the-streets
     printed_page: 145
     section: Special Rules / Revival Sermons
   name_i18n:
     en: Revival Sermons
-    es: null
+    es: Sermones de Resurrección
   effect_i18n:
-    en: Revival Sermons are not magical and affect only members of the Mordheim Inhabitants warband; they never affect enemy
-      or allied warbands, and Hired Swords in the Prophet's employ do not benefit from them. When the Prophet gains a new
-      skill, he may instead learn a random new Revival Sermon or reduce the Difficulty of one sermon he already knows by 1.
-      Psychological effects created by sermons affect the warband even when a model is normally immune to external Psychology.
-      A sermon's range equals the Prophet's Leader range, initially 6", and increases if that range increases. A sermon remains
-      active until the Prophet suffers a Wound or ends it. Only one sermon may be active at a time. Unless a sermon states
-      otherwise, it is delivered using the same casting procedure as spells. The Prophet may wear armour while delivering
-      sermons. The individual sermon list and sermon effects are intentionally not modelled in this file.
-    es: null
+    en: Revival Sermons are not magical and affect only members of the Mordheim Inhabitants warband; they
+      never affect enemy or allied warbands, and Hired Swords in the Prophet's employ do not benefit from
+      them. When the Prophet gains a new skill, he may instead learn a random new Revival Sermon or reduce
+      the Difficulty of one sermon he already knows by 1. Psychological effects created by sermons affect
+      the warband even when a model is normally immune to external Psychology. A sermon's range equals
+      the Prophet's Leader range, initially 6", and increases if that range increases. A sermon remains
+      active until the Prophet suffers a Wound or ends it. Only one sermon may be active at a time. Unless
+      a sermon states otherwise, it is delivered using the same casting procedure as spells. The Prophet
+      may wear armour while delivering sermons. The individual sermon list and sermon effects are intentionally
+      not modelled in this file.
+    es: Los Sermones de Resurrección no son mágicos y solo afectan a los miembros de la banda de Habitantes
+      de Mordheim; jamás afectan a bandas enemigas o aliadas, y las Espadas a Sueldo al servicio del Profeta
+      no se benefician de ellos. Cuando el Profeta gana una nueva habilidad, puede en su lugar aprender
+      un nuevo Sermón de Resurrección aleatorio o reducir en 1 la Dificultad de un sermón que ya conozca.
+      Los efectos psicológicos creados por los sermones afectan a la banda incluso cuando un modelo es
+      normalmente inmune a la Psicología externa. El alcance de un sermón es igual al alcance de Líder
+      del Profeta, inicialmente 6", y aumenta si ese alcance aumenta. Un sermón permanece activo hasta
+      que el Profeta sufre una Herida o lo finaliza. Solo puede haber un sermón activo a la vez. Salvo
+      que un sermón indique lo contrario, se pronuncia usando el mismo procedimiento de lanzamiento que
+      los hechizos. El Profeta puede llevar armadura mientras pronuncia sermones. La lista individual
+      de sermones y los efectos de los sermones no están modelados intencionadamente en este archivo.
   applies_to:
     band: true
   runtime:

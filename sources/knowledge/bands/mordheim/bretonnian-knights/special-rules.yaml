@@ -3,20 +3,17 @@ band_id: bretonnian-knights
 rules:
 - id: questing-knight--leader
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.bretonnian-knights.questing-knight.leader
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Leader
-  effect: 'Any warrior within 6" of the Questing Knight may
-
-    use his Leadership characteristic when taking Leadership
-
-    tests.'
+  effect: Any warrior within 6" of the Questing Knight may use his Leadership characteristic when taking
+    Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -26,34 +23,26 @@ rules:
     en: Leader
     es: Líder
   effect_i18n:
-    en: 'Any warrior within 6" of the Questing Knight may
-
-      use his Leadership characteristic when taking Leadership
-
-      tests.'
-    es: 'Cualquier guerrero a 6" del Caballero Andante puede usar su
-      característica de Liderazgo cuando realice chequeos de Liderazgo.'
+    en: Any warrior within 6" of the Questing Knight may use his Leadership characteristic when taking
+      Leadership tests.
+    es: Cualquier guerrero a 6" del Caballero Andante puede usar su característica de Liderazgo cuando
+      realice chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - questing-knight
 - id: questing-knight--knights-virtue
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.bretonnian-knights.questing-knight.knights-virtue
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Knights Virtue
-  effect: 'A Questing Knight is a chivalrous warrior
-
-    who is superior to ordinary warriors. He will never panic and
-
-    break from combat and so does not have to pass a Leadership
-
-    test for being all alone.'
+  effect: A Questing Knight is a chivalrous warrior who is superior to ordinary warriors. He will never
+    panic and break from combat and so does not have to pass a Leadership test for being all alone.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -63,37 +52,27 @@ rules:
     en: Knights Virtue
     es: Virtud del Caballero
   effect_i18n:
-    en: 'A Questing Knight is a chivalrous warrior
-
-      who is superior to ordinary warriors. He will never panic and
-
-      break from combat and so does not have to pass a Leadership
-
-      test for being all alone.'
-    es: 'El Caballero Andante es un guerrero caballeroso, superior a los
-      guerreros corrientes: nunca entra en pánico ni huye del combate, por lo
-      que no necesita superar un chequeo de Liderazgo por estar solo.'
+    en: A Questing Knight is a chivalrous warrior who is superior to ordinary warriors. He will never
+      panic and break from combat and so does not have to pass a Leadership test for being all alone.
+    es: 'El Caballero Andante es un guerrero caballeroso, superior a los guerreros corrientes: nunca entra
+      en pánico ni huye del combate, por lo que no necesita superar un chequeo de Liderazgo por estar
+      solo.'
   applies_to:
     profile_ids:
     - questing-knight
 - id: knights-errant--knights-virtue
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.bretonnian-knights.knights-errant.knights-virtue
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Knights Virtue
-  effect: 'A Knight Errant is a chivalrous warrior who
-
-    is superior to ordinary warriors. He will never panic and
-
-    break from combat and so does not have to pass a Leadership
-
-    test for being all alone.'
+  effect: A Knight Errant is a chivalrous warrior who is superior to ordinary warriors. He will never
+    panic and break from combat and so does not have to pass a Leadership test for being all alone.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -103,69 +82,36 @@ rules:
     en: Knights Virtue
     es: Virtud del Caballero
   effect_i18n:
-    en: 'A Knight Errant is a chivalrous warrior who
-
-      is superior to ordinary warriors. He will never panic and
-
-      break from combat and so does not have to pass a Leadership
-
-      test for being all alone.'
-    es: 'El Caballero Novel es un guerrero caballeroso, superior a los guerreros
-      corrientes: nunca entra en pánico ni huye del combate, por lo que no
-      necesita superar un chequeo de Liderazgo por estar solo.'
+    en: A Knight Errant is a chivalrous warrior who is superior to ordinary warriors. He will never panic
+      and break from combat and so does not have to pass a Leadership test for being all alone.
+    es: 'El Caballero Novel es un guerrero caballeroso, superior a los guerreros corrientes: nunca entra
+      en pánico ni huye del combate, por lo que no necesita superar un chequeo de Liderazgo por estar
+      solo.'
   applies_to:
     profile_ids:
     - knights-errant
 - id: band--lady-of-the-lake-blessing
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.bretonnian-knights.band.lady-of-the-lake-blessing
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: shooting."
+      reason: 'Out of scope: shooting.'
   name: Lady of the Lake's Blessing
-  effect: 'Before heading into battle Bretonnian Knights kneel and pray
-
-    to the Lady of the Lake, avowing to fight to the death for
-
-    honour and justice.
-
-    Before playing a game of Mordheim
-
-    make a Leadership test against the Leadership characteristic
-
-    of the warbands leader. If the test is successful the Lady of
-
-    the Lake has bestowed her blessing on the warband. The
-
-    blessing takes the form of a powerful curse upon the enemies
-
-    of chivalry, and in particular upon those that make use of the
-
-    foul and dishonourable weapons of mass destruction. Any
-
-    model in the opposing warband who wishes to fire a black
-
-    powder weapon must roll a D6 and score 4+ to overcome the
-
-    curse, otherwise they may not fire the weapon. The opposing
-
-    player must test each time they wish to fire such a weapon.
-
-    Models armed with other shooting weapons, such as bows
-
-    and crossbows, do not have to test unless they dare raise their
-
-    weapons against the gallant Knights of Bretonnia. If any
-
-    enemy model wishes to shoot at a Bretonnian Knight
-
-    (Questing Knights and Errants only), then they must first roll
-
-    a 4+ on a D6 to overcome the curse.'
+  effect: Before heading into battle Bretonnian Knights kneel and pray to the Lady of the Lake, avowing
+    to fight to the death for honour and justice. Before playing a game of Mordheim make a Leadership
+    test against the Leadership characteristic of the warbands leader. If the test is successful the Lady
+    of the Lake has bestowed her blessing on the warband. The blessing takes the form of a powerful curse
+    upon the enemies of chivalry, and in particular upon those that make use of the foul and dishonourable
+    weapons of mass destruction. Any model in the opposing warband who wishes to fire a black powder weapon
+    must roll a D6 and score 4+ to overcome the curse, otherwise they may not fire the weapon. The opposing
+    player must test each time they wish to fire such a weapon. Models armed with other shooting weapons,
+    such as bows and crossbows, do not have to test unless they dare raise their weapons against the gallant
+    Knights of Bretonnia. If any enemy model wishes to shoot at a Bretonnian Knight (Questing Knights
+    and Errants only), then they must first roll a 4+ on a D6 to overcome the curse.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -175,97 +121,44 @@ rules:
     en: Lady of the Lake's Blessing
     es: Bendición de la Dama del Lago
   effect_i18n:
-    en: 'Before heading into battle Bretonnian Knights kneel and pray
-
-      to the Lady of the Lake, avowing to fight to the death for
-
-      honour and justice.
-
-      Before playing a game of Mordheim
-
-      make a Leadership test against the Leadership characteristic
-
-      of the warbands leader. If the test is successful the Lady of
-
-      the Lake has bestowed her blessing on the warband. The
-
-      blessing takes the form of a powerful curse upon the enemies
-
-      of chivalry, and in particular upon those that make use of the
-
-      foul and dishonourable weapons of mass destruction. Any
-
-      model in the opposing warband who wishes to fire a black
-
-      powder weapon must roll a D6 and score 4+ to overcome the
-
-      curse, otherwise they may not fire the weapon. The opposing
-
-      player must test each time they wish to fire such a weapon.
-
-      Models armed with other shooting weapons, such as bows
-
-      and crossbows, do not have to test unless they dare raise their
-
-      weapons against the gallant Knights of Bretonnia. If any
-
-      enemy model wishes to shoot at a Bretonnian Knight
-
-      (Questing Knights and Errants only), then they must first roll
-
-      a 4+ on a D6 to overcome the curse.'
-    es: 'Antes de entrar en batalla, los Caballeros de Bretonia se arrodillan y
-
-      rezan a la Dama del Lago, prometiendo luchar hasta la muerte por el honor
-
-      y la justicia.
-
-      Antes de jugar una partida de Mordheim, haz un chequeo de Liderazgo
-
-      contra la característica de Liderazgo del líder de la banda. Si el
-
-      chequeo tiene éxito, la Dama del Lago ha otorgado su bendición a la
-
-      banda. La bendición adopta la forma de una poderosa maldición sobre los
-
-      enemigos de la caballería, en particular sobre quienes emplean las viles
-
-      y deshonorables armas de destrucción masiva. Cualquier modelo de la
-
-      banda rival que desee disparar un arma de pólvora negra debe tirar 1D6 y
-
-      obtener un resultado de 4+ para vencer la maldición; de lo contrario, no
-
-      podrá disparar el arma. El jugador rival debe hacer el chequeo cada vez
-
-      que desee disparar tal arma.
-
-      Los modelos armados con otras armas de proyectiles, como arcos y
-
-      ballestas, no necesitan hacer el chequeo a menos que se atrevan a alzar
-
-      sus armas contra los gallardos Caballeros de Bretonia. Si cualquier
-
-      modelo enemigo desea disparar contra un Caballero de Bretonia (solo
-
-      Caballeros Andantes y Noveles), primero debe tirar un 4+ en 1D6 para
-
-      vencer la maldición.'
+    en: Before heading into battle Bretonnian Knights kneel and pray to the Lady of the Lake, avowing
+      to fight to the death for honour and justice. Before playing a game of Mordheim make a Leadership
+      test against the Leadership characteristic of the warbands leader. If the test is successful the
+      Lady of the Lake has bestowed her blessing on the warband. The blessing takes the form of a powerful
+      curse upon the enemies of chivalry, and in particular upon those that make use of the foul and dishonourable
+      weapons of mass destruction. Any model in the opposing warband who wishes to fire a black powder
+      weapon must roll a D6 and score 4+ to overcome the curse, otherwise they may not fire the weapon.
+      The opposing player must test each time they wish to fire such a weapon. Models armed with other
+      shooting weapons, such as bows and crossbows, do not have to test unless they dare raise their weapons
+      against the gallant Knights of Bretonnia. If any enemy model wishes to shoot at a Bretonnian Knight
+      (Questing Knights and Errants only), then they must first roll a 4+ on a D6 to overcome the curse.
+    es: Antes de entrar en batalla, los Caballeros de Bretonia se arrodillan y rezan a la Dama del Lago,
+      prometiendo luchar hasta la muerte por el honor y la justicia. Antes de jugar una partida de Mordheim,
+      haz un chequeo de Liderazgo contra la característica de Liderazgo del líder de la banda. Si el chequeo
+      tiene éxito, la Dama del Lago ha otorgado su bendición a la banda. La bendición adopta la forma
+      de una poderosa maldición sobre los enemigos de la caballería, en particular sobre quienes emplean
+      las viles y deshonorables armas de destrucción masiva. Cualquier modelo de la banda rival que desee
+      disparar un arma de pólvora negra debe tirar 1D6 y obtener un resultado de 4+ para vencer la maldición;
+      de lo contrario, no podrá disparar el arma. El jugador rival debe hacer el chequeo cada vez que
+      desee disparar tal arma. Los modelos armados con otras armas de proyectiles, como arcos y ballestas,
+      no necesitan hacer el chequeo a menos que se atrevan a alzar sus armas contra los gallardos Caballeros
+      de Bretonia. Si cualquier modelo enemigo desea disparar contra un Caballero de Bretonia (solo Caballeros
+      Andantes y Noveles), primero debe tirar un 4+ en 1D6 para vencer la maldición.
   applies_to:
     band: true
 - id: band--squire-retinue-limit
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.bretonnian-knights.band.squire-retinue-limit
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Squire Retinue Limit
-  effect: The warband may not include more Squires than Knights. For this limit, Knights are the Questing Knight plus all
-    Knights Errant in the warband.
+  effect: The warband may not include more Squires than Knights. For this limit, Knights are the Questing
+    Knight plus all Knights Errant in the warband.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -275,23 +168,23 @@ rules:
     en: Squire Retinue Limit
     es: Límite de Escuderos
   effect_i18n:
-    en: The warband may not include more Squires than Knights. For this limit, Knights are the Questing Knight plus all Knights
-      Errant in the warband.
-    es: La banda no puede incluir más Escuderos que Caballeros. Para este límite cuentan el Caballero Andante y todos los
-      Caballeros Noveles de la banda.
+    en: The warband may not include more Squires than Knights. For this limit, Knights are the Questing
+      Knight plus all Knights Errant in the warband.
+    es: La banda no puede incluir más Escuderos que Caballeros. Para este límite cuentan el Caballero
+      Andante y todos los Caballeros Noveles de la banda.
   applies_to:
     band: true
 - id: band--virtue-of-purity
   kind: virtue
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.bretonnian-knights.band.virtue-of-purity
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: magic."
+      reason: 'Out of scope: magic.'
   name: Virtue of Purity
   effect: Any spell cast against the warrior is dispelled on a D6 roll of 4+.
   source:
@@ -310,17 +203,18 @@ rules:
 - id: band--virtue-of-valour
   kind: virtue
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
     - id: skill.virtue-of-valour
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: mechanic
         id: skill.virtue-of-valour
   name: Virtue of Valour
-  effect: When fighting a model with a higher Strength characteristic, the warrior may re-roll failed hand-to-hand hit rolls.
+  effect: When fighting a model with a higher Strength characteristic, the warrior may re-roll failed
+    hand-to-hand hit rolls.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -330,25 +224,26 @@ rules:
     en: Virtue of Valour
     es: Virtud del Valor
   effect_i18n:
-    en: When fighting a model with a higher Strength characteristic, the warrior may re-roll failed hand-to-hand hit rolls.
-    es: Cuando combate contra un modelo con una característica de Fuerza superior, el guerrero puede repetir las tiradas para
-      impactar fallidas en combate cuerpo a cuerpo.
+    en: When fighting a model with a higher Strength characteristic, the warrior may re-roll failed hand-to-hand
+      hit rolls.
+    es: Cuando combate contra un modelo con una característica de Fuerza superior, el guerrero puede repetir
+      las tiradas para impactar fallidas en combate cuerpo a cuerpo.
   applies_to:
     band: true
 - id: band--virtue-of-discipline
   kind: virtue
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.bretonnian-knights.band.virtue-of-discipline
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Virtue of Discipline
-  effect: Once per game, if the warrior is not out of action, stunned or knocked down, the warband may re-roll a failed Rout
-    test.
+  effect: Once per game, if the warrior is not out of action, stunned or knocked down, the warband may
+    re-roll a failed Rout test.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -358,23 +253,23 @@ rules:
     en: Virtue of Discipline
     es: Virtud de la Disciplina
   effect_i18n:
-    en: Once per game, if the warrior is not out of action, stunned or knocked down, the warband may re-roll a failed Rout
-      test.
-    es: Una vez por partida, si el guerrero no está fuera de combate, aturdido ni derribado, la banda puede repetir un chequeo
-      de retirada fallido.
+    en: Once per game, if the warrior is not out of action, stunned or knocked down, the warband may re-roll
+      a failed Rout test.
+    es: Una vez por partida, si el guerrero no está fuera de combate, aturdido ni derribado, la banda
+      puede repetir un chequeo de retirada fallido.
   applies_to:
     band: true
 - id: band--virtue-of-noble-disdain
   kind: virtue
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.bretonnian-knights.band.virtue-of-noble-disdain
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Virtue of Noble Disdain
   effect: The warrior is subject to Hatred of all enemies armed with shooting weapons.
   source:
@@ -393,16 +288,17 @@ rules:
 - id: band--virtue-of-impetuous
   kind: virtue
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.bretonnian-knights.band.virtue-of-impetuous
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: attacks."
+      reason: 'Out of scope: attacks.'
   name: Virtue of Impetuous
-  effect: The warrior may add +D3" to a charge move. Roll the D3 each time a charge is declared and before moving the model.
+  effect: The warrior may add +D3" to a charge move. Roll the D3 each time a charge is declared and before
+    moving the model.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -412,8 +308,9 @@ rules:
     en: Virtue of Impetuous
     es: Virtud del Caballero Impetuoso
   effect_i18n:
-    en: The warrior may add +D3" to a charge move. Roll the D3 each time a charge is declared and before moving the model.
-    es: El guerrero puede añadir +1D3" a un movimiento de carga. Tira el 1D3 cada vez que declare una carga y antes de mover
-      el modelo.
+    en: The warrior may add +D3" to a charge move. Roll the D3 each time a charge is declared and before
+      moving the model.
+    es: El guerrero puede añadir +1D3" a un movimiento de carga. Tira el 1D3 cada vez que declare una
+      carga y antes de mover el modelo.
   applies_to:
     band: true

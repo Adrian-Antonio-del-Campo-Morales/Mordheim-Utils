@@ -4,151 +4,295 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/beastmen-raiders/warhounds-of-chaos--natural-weapons/profile.natural-attacks, digest: 324cb141c7199e456730a15098964ba730fba0f0620c940194749a9d68705f98}
-  interpretation: "The profile fights with teeth and claws without the Fist's -1 Strength penalty. It keeps exactly its 1 profile attacks and each attack is assigned to the natural weapon."
+  - target: rule/mordheim/beastmen-raiders/warhounds-of-chaos--natural-weapons/profile.natural-attacks
+    digest: 6dfb9db8f0a7205ee75d187798eecbd8e675f4c015c0ebf097777fa6bf4d9906
+  interpretation: The profile fights with teeth and claws without the Fist's -1 Strength penalty. It keeps
+    exactly its 1 profile attacks and each attack is assigned to the natural weapon.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: mordheim, band_id: beastmen-raiders, profile_id: warhounds-of-chaos}
-    context: {rule_id: warhounds-of-chaos--natural-weapons}
-    expect: {result.recipients: [warhounds-of-chaos]}
+    defender:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: warhounds-of-chaos
+    context:
+      rule_id: warhounds-of-chaos--natural-weapons
+    expect:
+      result.recipients:
+      - warhounds-of-chaos
   - id: compiled-strength
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {collection: mordheim, band_id: beastmen-raiders, profile_id: warhounds-of-chaos}
-    expect: {result.wound: 4, result.armour: 4}
+    attacker:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: warhounds-of-chaos
+    expect:
+      result.wound: 4
+      result.armour: 4
   - id: attack-count
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: attacks
-    attacker: {collection: mordheim, band_id: beastmen-raiders, profile_id: warhounds-of-chaos}
-    expect: {result.attacks: 1}
+    attacker:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: warhounds-of-chaos
+    expect:
+      result.attacks: 1
   - id: natural-allocation
-    roles: [consumer]
+    roles:
+    - consumer
     operation: allocate
-    attacker: {collection: mordheim, band_id: beastmen-raiders, profile_id: warhounds-of-chaos}
-    expect: {result.count: 1, result.weapons.0.tags: [weapon.natural-attacks, material.normal]}
+    attacker:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: warhounds-of-chaos
+    expect:
+      result.count: 1
+      result.weapons.0.tags:
+      - weapon.natural-attacks
+      - material.normal
   - id: untrained-fist-control
-    roles: [inactive]
+    roles:
+    - inactive
     operation: strength
-    attacker: {main_weapon_id: weapon.fist}
-    expect: {result.wound: 2, result.armour: 2}
+    attacker:
+      main_weapon_id: weapon.fist
+    expect:
+      result.wound: 2
+      result.armour: 2
   mutations:
   - id: remove-natural-weapon
     path: attacker.main_weapon.strength_bonus
     value: -1
-    cases: [compiled-strength]
+    cases:
+    - compiled-strength
 - id: natural-attacks-marauders
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/marauders-of-chaos/warhounds-of-chaos--natural-weapons/profile.natural-attacks, digest: 2e25ab929fbe19f0b3a63df6ab5d30cf10c3d33c7295c8ab4a8c3c808bb040ff}
-  interpretation: "The profile fights with teeth and claws without the Fist's -1 Strength penalty. It keeps exactly its 1 profile attacks and each attack is assigned to the natural weapon."
+  - target: rule/mordheim/marauders-of-chaos/warhounds-of-chaos--natural-weapons/profile.natural-attacks
+    digest: 84b2fc7a8a3dc8afbf174280490bf9c42f3866b88c8d76c26ae41825216afb32
+  interpretation: The profile fights with teeth and claws without the Fist's -1 Strength penalty. It keeps
+    exactly its 1 profile attacks and each attack is assigned to the natural weapon.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: mordheim, band_id: marauders-of-chaos, profile_id: warhounds-of-chaos}
-    context: {rule_id: warhounds-of-chaos--natural-weapons}
-    expect: {result.recipients: [warhounds-of-chaos]}
+    defender:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: warhounds-of-chaos
+    context:
+      rule_id: warhounds-of-chaos--natural-weapons
+    expect:
+      result.recipients:
+      - warhounds-of-chaos
   - id: compiled-strength
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {collection: mordheim, band_id: marauders-of-chaos, profile_id: warhounds-of-chaos}
-    expect: {result.wound: 4, result.armour: 4}
+    attacker:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: warhounds-of-chaos
+    expect:
+      result.wound: 4
+      result.armour: 4
   - id: attack-count
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: attacks
-    attacker: {collection: mordheim, band_id: marauders-of-chaos, profile_id: warhounds-of-chaos}
-    expect: {result.attacks: 1}
+    attacker:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: warhounds-of-chaos
+    expect:
+      result.attacks: 1
   - id: natural-allocation
-    roles: [consumer]
+    roles:
+    - consumer
     operation: allocate
-    attacker: {collection: mordheim, band_id: marauders-of-chaos, profile_id: warhounds-of-chaos}
-    expect: {result.count: 1, result.weapons.0.tags: [weapon.natural-attacks, material.normal]}
+    attacker:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: warhounds-of-chaos
+    expect:
+      result.count: 1
+      result.weapons.0.tags:
+      - weapon.natural-attacks
+      - material.normal
   - id: untrained-fist-control
-    roles: [inactive]
+    roles:
+    - inactive
     operation: strength
-    attacker: {main_weapon_id: weapon.fist}
-    expect: {result.wound: 2, result.armour: 2}
+    attacker:
+      main_weapon_id: weapon.fist
+    expect:
+      result.wound: 2
+      result.armour: 2
   mutations:
   - id: remove-natural-weapon
     path: attacker.main_weapon.strength_bonus
     value: -1
-    cases: [compiled-strength]
+    cases:
+    - compiled-strength
 - id: natural-attacks-wulfen-btb
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/norse-explorers-btb/wulfen--natural-weapons/profile.natural-attacks, digest: 61dd97c110f01a62b1360bc5738c7afd353ee8c56548f5e4b5f22fb889c3754b}
-  interpretation: "The profile fights with teeth and claws without the Fist's -1 Strength penalty. It keeps exactly its 2 profile attacks and each attack is assigned to the natural weapon."
+  - target: rule/mordheim/norse-explorers-btb/wulfen--natural-weapons/profile.natural-attacks
+    digest: 6b7202e64ddea36eb64cf6313dcb96b35ea6eab23c3f6a10f0c16e2fe8aa9078
+  interpretation: The profile fights with teeth and claws without the Fist's -1 Strength penalty. It keeps
+    exactly its 2 profile attacks and each attack is assigned to the natural weapon.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: mordheim, band_id: norse-explorers-btb, profile_id: wulfen}
-    context: {rule_id: wulfen--natural-weapons}
-    expect: {result.recipients: [wulfen]}
+    defender:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: wulfen
+    context:
+      rule_id: wulfen--natural-weapons
+    expect:
+      result.recipients:
+      - wulfen
   - id: compiled-strength
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {collection: mordheim, band_id: norse-explorers-btb, profile_id: wulfen}
-    expect: {result.wound: 4, result.armour: 4}
+    attacker:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: wulfen
+    expect:
+      result.wound: 4
+      result.armour: 4
   - id: attack-count
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: attacks
-    attacker: {collection: mordheim, band_id: norse-explorers-btb, profile_id: wulfen}
-    expect: {result.attacks: 2}
+    attacker:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: wulfen
+    expect:
+      result.attacks: 2
   - id: natural-allocation
-    roles: [consumer]
+    roles:
+    - consumer
     operation: allocate
-    attacker: {collection: mordheim, band_id: norse-explorers-btb, profile_id: wulfen}
-    expect: {result.count: 2, result.weapons.0.tags: [weapon.natural-attacks, material.normal]}
+    attacker:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: wulfen
+    expect:
+      result.count: 2
+      result.weapons.0.tags:
+      - weapon.natural-attacks
+      - material.normal
   - id: untrained-fist-control
-    roles: [inactive]
+    roles:
+    - inactive
     operation: strength
-    attacker: {main_weapon_id: weapon.fist}
-    expect: {result.wound: 2, result.armour: 2}
+    attacker:
+      main_weapon_id: weapon.fist
+    expect:
+      result.wound: 2
+      result.armour: 2
   mutations:
   - id: remove-natural-weapon
     path: attacker.main_weapon.strength_bonus
     value: -1
-    cases: [compiled-strength]
+    cases:
+    - compiled-strength
 - id: natural-attacks-wulfen-lustria
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/norse-explorers-lustria/wulfen--natural-weapons/profile.natural-attacks, digest: 4a7cd9dc6770524e97024ebe013b6f2ef398eff68708d1a1edc5cf5db3c34f5e}
-  interpretation: "The profile fights with teeth and claws without the Fist's -1 Strength penalty. It keeps exactly its 2 profile attacks and each attack is assigned to the natural weapon."
+  - target: rule/mordheim/norse-explorers-lustria/wulfen--natural-weapons/profile.natural-attacks
+    digest: 72272ee73940e063ff6b67531eea6edcdbaa3215d38b091cb41f67a7271c92fd
+  interpretation: The profile fights with teeth and claws without the Fist's -1 Strength penalty. It keeps
+    exactly its 2 profile attacks and each attack is assigned to the natural weapon.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: mordheim, band_id: norse-explorers-lustria, profile_id: wulfen}
-    context: {rule_id: wulfen--natural-weapons}
-    expect: {result.recipients: [wulfen]}
+    defender:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: wulfen
+    context:
+      rule_id: wulfen--natural-weapons
+    expect:
+      result.recipients:
+      - wulfen
   - id: compiled-strength
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: strength
-    attacker: {collection: mordheim, band_id: norse-explorers-lustria, profile_id: wulfen}
-    expect: {result.wound: 4, result.armour: 4}
+    attacker:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: wulfen
+    expect:
+      result.wound: 4
+      result.armour: 4
   - id: attack-count
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: attacks
-    attacker: {collection: mordheim, band_id: norse-explorers-lustria, profile_id: wulfen}
-    expect: {result.attacks: 2}
+    attacker:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: wulfen
+    expect:
+      result.attacks: 2
   - id: natural-allocation
-    roles: [consumer]
+    roles:
+    - consumer
     operation: allocate
-    attacker: {collection: mordheim, band_id: norse-explorers-lustria, profile_id: wulfen}
-    expect: {result.count: 2, result.weapons.0.tags: [weapon.natural-attacks, material.normal]}
+    attacker:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: wulfen
+    expect:
+      result.count: 2
+      result.weapons.0.tags:
+      - weapon.natural-attacks
+      - material.normal
   - id: untrained-fist-control
-    roles: [inactive]
+    roles:
+    - inactive
     operation: strength
-    attacker: {main_weapon_id: weapon.fist}
-    expect: {result.wound: 2, result.armour: 2}
+    attacker:
+      main_weapon_id: weapon.fist
+    expect:
+      result.wound: 2
+      result.armour: 2
   mutations:
   - id: remove-natural-weapon
     path: attacker.main_weapon.strength_bonus
     value: -1
-    cases: [compiled-strength]
+    cases:
+    - compiled-strength

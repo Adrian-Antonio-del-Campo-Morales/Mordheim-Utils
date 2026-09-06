@@ -10,10 +10,11 @@ rules:
     section: Heroes / 1 Priestess / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: Any warband model within 6" of the Priestess may use her Leadership when taking Leadership tests.
-    es: null
+    es: Cualquier modelo de la banda a 6" de la Sacerdotisa puede usar su Liderazgo al realizar chequeos
+      de Liderazgo.
   applies_to:
     profile_ids:
     - amazon-priestess
@@ -28,19 +29,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: amazon-priestess--wizard
   name: Wizard
-  effect: The Priestess is a spellcaster and may use Ritual Chants. She begins with one randomly generated ritual. The ritual
-    list and ritual effects are intentionally not modelled in this file.
+  effect: The Priestess is a spellcaster and may use Ritual Chants. She begins with one randomly generated
+    ritual. The ritual list and ritual effects are intentionally not modelled in this file.
   source:
     manual: lustria
     printed_page: 70
     section: Heroes / 1 Priestess / Wizard
   name_i18n:
     en: Wizard
-    es: null
+    es: Hechicera
   effect_i18n:
-    en: The Priestess is a spellcaster and may use Ritual Chants. She begins with one randomly generated ritual. The ritual
-      list and ritual effects are intentionally not modelled in this file.
-    es: null
+    en: The Priestess is a spellcaster and may use Ritual Chants. She begins with one randomly generated
+      ritual. The ritual list and ritual effects are intentionally not modelled in this file.
+    es: La Sacerdotisa es una lanzadora de hechizos y puede usar Cantos rituales. Comienza con un ritual
+      generado al azar. La lista de rituales y sus efectos no se modelan intencionadamente en este archivo.
   applies_to:
     profile_ids:
     - amazon-priestess
@@ -74,28 +76,29 @@ rules:
     section: Heroes / 0-2 Totem Warriors / Frenzy
   name_i18n:
     en: Frenzy
-    es: null
+    es: Frenesí
   effect_i18n:
     en: Totem Warriors are subject to the Frenzy rules.
-    es: null
+    es: Los Guerreros tótem están sujetos a las reglas de Frenesí.
   applies_to:
     profile_ids:
     - amazon-totem-warriors
 - id: amazon-scouts--silent
   name: Silent
-  effect: Scouts may deploy at twice the normal deployment distance allowed to the rest of the warband and may begin the battle
-    Hidden.
+  effect: Scouts may deploy at twice the normal deployment distance allowed to the rest of the warband
+    and may begin the battle Hidden.
   source:
     manual: lustria
     printed_page: 71
     section: Henchmen / 0-3 Scouts / Silent
   name_i18n:
     en: Silent
-    es: null
+    es: Silenciosas
   effect_i18n:
-    en: Scouts may deploy at twice the normal deployment distance allowed to the rest of the warband and may begin the battle
-      Hidden.
-    es: null
+    en: Scouts may deploy at twice the normal deployment distance allowed to the rest of the warband and
+      may begin the battle Hidden.
+    es: Las Exploradoras pueden desplegarse al doble de la distancia normal de despliegue permitida al
+      resto de la banda y pueden comenzar la batalla Ocultas.
   applies_to:
     profile_ids:
     - amazon-scouts
@@ -110,19 +113,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: amazon-scouts--animal-companion
   name: Animal Companion
-  effect: Each Scout allows the warband to acquire one Great Cat. That Great Cat must deploy alongside its Scout at the start
-    of the battle.
+  effect: Each Scout allows the warband to acquire one Great Cat. That Great Cat must deploy alongside
+    its Scout at the start of the battle.
   source:
     manual: lustria
     printed_page: 71
     section: Henchmen / 0-3 Scouts / Animal Companion
   name_i18n:
     en: Animal Companion
-    es: null
+    es: Compañero animal
   effect_i18n:
-    en: Each Scout allows the warband to acquire one Great Cat. That Great Cat must deploy alongside its Scout at the start
-      of the battle.
-    es: null
+    en: Each Scout allows the warband to acquire one Great Cat. That Great Cat must deploy alongside its
+      Scout at the start of the battle.
+    es: Cada Exploradora permite a la banda adquirir un Gran felino. Ese Gran felino debe desplegarse
+      junto a su Exploradora al comienzo de la batalla.
   applies_to:
     profile_ids:
     - amazon-scouts
@@ -144,10 +148,10 @@ rules:
     section: Henchmen / 0-3 Great Cats / Animal
   name_i18n:
     en: Animal
-    es: null
+    es: Animal
   effect_i18n:
     en: Great Cats are animals and never gain Experience.
-    es: null
+    es: Los Grandes felinos son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - great-cats
@@ -162,17 +166,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: great-cats--natural-stealth
   name: Natural Stealth
-  effect: While a Great Cat is Hidden, enemy models suffer -1 Initiative when determining whether they can detect it.
+  effect: While a Great Cat is Hidden, enemy models suffer -1 Initiative when determining whether they
+    can detect it.
   source:
     manual: lustria
     printed_page: 71
     section: Henchmen / 0-3 Great Cats / Natural Stealth
   name_i18n:
     en: Natural Stealth
-    es: null
+    es: Sigilo natural
   effect_i18n:
-    en: While a Great Cat is Hidden, enemy models suffer -1 Initiative when determining whether they can detect it.
-    es: null
+    en: While a Great Cat is Hidden, enemy models suffer -1 Initiative when determining whether they can
+      detect it.
+    es: Mientras un Gran felino esté Oculto, los modelos enemigos sufren -1 de Iniciativa al determinar
+      si pueden detectarlo.
   applies_to:
     profile_ids:
     - great-cats
@@ -187,21 +194,23 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: great-cats--animal-companion
   name: Animal Companion
-  effect: A Great Cat must deploy alongside its Scout at the start of the battle. If that Scout is taken Out of Action during
-    the battle, the Great Cat is subject to Frenzy until the end of the battle. If that Scout dies or is dismissed from the
-    warband, the Great Cat also leaves the warband.
+  effect: A Great Cat must deploy alongside its Scout at the start of the battle. If that Scout is taken
+    Out of Action during the battle, the Great Cat is subject to Frenzy until the end of the battle. If
+    that Scout dies or is dismissed from the warband, the Great Cat also leaves the warband.
   source:
     manual: lustria
     printed_page: 71
     section: Henchmen / 0-3 Great Cats / Animal Companion
   name_i18n:
     en: Animal Companion
-    es: null
+    es: Compañero animal
   effect_i18n:
-    en: A Great Cat must deploy alongside its Scout at the start of the battle. If that Scout is taken Out of Action during
-      the battle, the Great Cat is subject to Frenzy until the end of the battle. If that Scout dies or is dismissed from
-      the warband, the Great Cat also leaves the warband.
-    es: null
+    en: A Great Cat must deploy alongside its Scout at the start of the battle. If that Scout is taken
+      Out of Action during the battle, the Great Cat is subject to Frenzy until the end of the battle.
+      If that Scout dies or is dismissed from the warband, the Great Cat also leaves the warband.
+    es: Un Gran felino debe desplegarse junto a su Exploradora al comienzo de la batalla. Si esa Exploradora
+      sale de Combate durante la batalla, el Gran felino está sujeto a Frenesí hasta el final de la batalla.
+      Si esa Exploradora muere o es despedida de la banda, el Gran felino también abandona la banda.
   applies_to:
     profile_ids:
     - great-cats
@@ -216,19 +225,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--sacrifice
   name: Sacrifice
-  effect: Whenever the Amazons capture or find a captive after a battle, that captive must be sacrificed. The Priestess gains
-    +1 Experience.
+  effect: Whenever the Amazons capture or find a captive after a battle, that captive must be sacrificed.
+    The Priestess gains +1 Experience.
   source:
     manual: lustria
     printed_page: 67
     section: Amazon Special Rules / Sacrifice
   name_i18n:
     en: Sacrifice
-    es: null
+    es: Sacrificio
   effect_i18n:
-    en: Whenever the Amazons capture or find a captive after a battle, that captive must be sacrificed. The Priestess gains
-      +1 Experience.
-    es: null
+    en: Whenever the Amazons capture or find a captive after a battle, that captive must be sacrificed.
+      The Priestess gains +1 Experience.
+    es: Siempre que las Amazonas capturen o encuentren un cautivo tras una batalla, ese cautivo debe ser
+      sacrificado. La Sacerdotisa gana +1 Experiencia.
   applies_to:
     band: true
   runtime:
@@ -242,19 +252,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: band--not-one-of-us
   name: Not One of Us
-  effect: The Amazons may not ally with any other warband and may not hire Hired Swords or Dramatis Personae unless those
-    warriors are also Amazons.
+  effect: The Amazons may not ally with any other warband and may not hire Hired Swords or Dramatis Personae
+    unless those warriors are also Amazons.
   source:
     manual: lustria
     printed_page: 67
     section: Amazon Special Rules / Not One of Us
   name_i18n:
     en: Not One of Us
-    es: null
+    es: No somos de los suyos
   effect_i18n:
-    en: The Amazons may not ally with any other warband and may not hire Hired Swords or Dramatis Personae unless those warriors
-      are also Amazons.
-    es: null
+    en: The Amazons may not ally with any other warband and may not hire Hired Swords or Dramatis Personae
+      unless those warriors are also Amazons.
+    es: Las Amazonas no pueden aliarse con ninguna otra banda ni contratar Espadas contratadas ni Personajes
+      dramáticos salvo que esos guerreros sean también Amazonas.
   applies_to:
     band: true
   runtime:
@@ -265,7 +276,8 @@ rules:
     - id: unimplemented.lustria-amazons.band.not-one-of-us
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.'
 - id: band--isolationists
   name: Isolationists
   effect: All Amazons are subject to Hatred against Norse and Lizardmen.
@@ -275,10 +287,10 @@ rules:
     section: Amazon Special Rules / Isolationists
   name_i18n:
     en: Isolationists
-    es: null
+    es: Aislacionistas
   effect_i18n:
     en: All Amazons are subject to Hatred against Norse and Lizardmen.
-    es: null
+    es: Todas las Amazonas están sujetas a Odio contra los Norse y los Hombres lagarto.
   applies_to:
     band: true
   runtime:
@@ -292,17 +304,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--norse-enmity
   name: Norse Enmity
-  effect: When fighting a Norse warband, the Amazons may re-roll their first failed Rout test and may never voluntarily Rout.
+  effect: When fighting a Norse warband, the Amazons may re-roll their first failed Rout test and may
+    never voluntarily Rout.
   source:
     manual: lustria
     printed_page: 67
     section: Amazon Special Rules / Norse Enmity
   name_i18n:
     en: Norse Enmity
-    es: null
+    es: Enemistad con los Norse
   effect_i18n:
-    en: When fighting a Norse warband, the Amazons may re-roll their first failed Rout test and may never voluntarily Rout.
-    es: null
+    en: When fighting a Norse warband, the Amazons may re-roll their first failed Rout test and may never
+      voluntarily Rout.
+    es: Al combatir contra una banda Norse, las Amazonas pueden repetir su primer chequeo de Retirada
+      fallado y nunca pueden retirarse voluntariamente.
   applies_to:
     band: true
   runtime:
@@ -323,10 +338,11 @@ rules:
     section: Choice of Warriors / Great Cats
   name_i18n:
     en: Great Cat Limit
-    es: null
+    es: Límite de Grandes felinos
   effect_i18n:
     en: The warband may include no more than one Great Cat for each Scout currently in the warband.
-    es: null
+    es: La banda no puede incluir más de un Gran felino por cada Exploradora presente actualmente en la
+      banda.
   applies_to:
     band: true
   runtime:
@@ -341,19 +357,20 @@ rules:
 - id: band--amazon-special-skills-lizard-hunter
   kind: warband_skill
   name: Lizard Hunter
-  effect: The Hero always strikes first in close combat when fighting any type of Skink, regardless of the weapon used or
-    which model charged.
+  effect: The Hero always strikes first in close combat when fighting any type of Skink, regardless of
+    the weapon used or which model charged.
   source:
     manual: lustria
     printed_page: 72
     section: Amazon Special Skills / Lizard Hunter
   name_i18n:
     en: Lizard Hunter
-    es: null
+    es: Cazadora de lagartos
   effect_i18n:
-    en: The Hero always strikes first in close combat when fighting any type of Skink, regardless of the weapon used or which
-      model charged.
-    es: null
+    en: The Hero always strikes first in close combat when fighting any type of Skink, regardless of the
+      weapon used or which model charged.
+    es: La Héroe siempre golpea primero en combate cuerpo a cuerpo al combatir contra cualquier tipo de
+      Skink, sin importar el arma empleada ni qué modelo cargó.
   eligibility:
   - amazon-priestess
   - amazon-champions
@@ -373,19 +390,20 @@ rules:
 - id: band--amazon-special-skills-concealment
   kind: warband_skill
   name: Concealment
-  effect: When the Hero is Hidden in jungle terrain or vegetation, enemy models halve their Initiative when determining whether
-    they can detect her.
+  effect: When the Hero is Hidden in jungle terrain or vegetation, enemy models halve their Initiative
+    when determining whether they can detect her.
   source:
     manual: lustria
     printed_page: 72
     section: Amazon Special Skills / Concealment
   name_i18n:
     en: Concealment
-    es: null
+    es: Ocultamiento
   effect_i18n:
-    en: When the Hero is Hidden in jungle terrain or vegetation, enemy models halve their Initiative when determining whether
-      they can detect her.
-    es: null
+    en: When the Hero is Hidden in jungle terrain or vegetation, enemy models halve their Initiative when
+      determining whether they can detect her.
+    es: Cuando la Héroe esté Oculta en terreno de selva o vegetación, los modelos enemigos dividen su
+      Iniciativa a la mitad al determinar si pueden detectarla.
   eligibility:
   - amazon-priestess
   - amazon-champions
@@ -404,19 +422,23 @@ rules:
 - id: band--amazon-special-skills-hypnotic-dance
   kind: warband_skill
   name: Hypnotic Dance
-  effect: At the start of the Combat phase, any enemy model that wants to attack the Hero must pass a Leadership test. If
-    it fails, it may not attack that phase but may defend itself normally. Undead and Lizardmen are unaffected.
+  effect: At the start of the Combat phase, any enemy model that wants to attack the Hero must pass a
+    Leadership test. If it fails, it may not attack that phase but may defend itself normally. Undead
+    and Lizardmen are unaffected.
   source:
     manual: lustria
     printed_page: 72
     section: Amazon Special Skills / Hypnotic Dance
   name_i18n:
     en: Hypnotic Dance
-    es: null
+    es: Danza hipnótica
   effect_i18n:
-    en: At the start of the Combat phase, any enemy model that wants to attack the Hero must pass a Leadership test. If it
-      fails, it may not attack that phase but may defend itself normally. Undead and Lizardmen are unaffected.
-    es: null
+    en: At the start of the Combat phase, any enemy model that wants to attack the Hero must pass a Leadership
+      test. If it fails, it may not attack that phase but may defend itself normally. Undead and Lizardmen
+      are unaffected.
+    es: Al comienzo de la fase de Combate, cualquier modelo enemigo que quiera atacar a la Héroe debe
+      superar un chequeo de Liderazgo. Si falla, no puede atacar esa fase, pero puede defenderse con normalidad.
+      Los No muertos y los Hombres lagarto no se ven afectados.
   eligibility:
   - amazon-priestess
   - amazon-champions
@@ -435,17 +457,20 @@ rules:
 - id: band--amazon-special-skills-animal-fury
   kind: warband_skill
   name: Animal Fury
-  effect: The Hero is immune to Fear and All Alone tests and gains +1 Attack during a turn in which she charges.
+  effect: The Hero is immune to Fear and All Alone tests and gains +1 Attack during a turn in which she
+    charges.
   source:
     manual: lustria
     printed_page: 72
     section: Amazon Special Skills / Animal Fury
   name_i18n:
     en: Animal Fury
-    es: null
+    es: Furia animal
   effect_i18n:
-    en: The Hero is immune to Fear and All Alone tests and gains +1 Attack during a turn in which she charges.
-    es: null
+    en: The Hero is immune to Fear and All Alone tests and gains +1 Attack during a turn in which she
+      charges.
+    es: La Héroe es inmune al Miedo y a los chequeos de Completamente solo, y gana +1 Ataque durante un
+      turno en el que cargue.
   eligibility:
   - amazon-priestess
   - amazon-champions
@@ -464,17 +489,20 @@ rules:
 - id: band--amazon-special-skills-elixir-of-life
   kind: warband_skill
   name: Elixir of Life
-  effect: After a battle, the Hero may re-roll her Injury roll once and must accept the second result even if it is worse.
+  effect: After a battle, the Hero may re-roll her Injury roll once and must accept the second result
+    even if it is worse.
   source:
     manual: lustria
     printed_page: 72
     section: Amazon Special Skills / Elixir of Life
   name_i18n:
     en: Elixir of Life
-    es: null
+    es: Elixir de vida
   effect_i18n:
-    en: After a battle, the Hero may re-roll her Injury roll once and must accept the second result even if it is worse.
-    es: null
+    en: After a battle, the Hero may re-roll her Injury roll once and must accept the second result even
+      if it is worse.
+    es: Tras una batalla, la Héroe puede repetir una vez su tirada de Heridas y debe aceptar el segundo
+      resultado aunque sea peor.
   eligibility:
   - amazon-priestess
   - amazon-champions
