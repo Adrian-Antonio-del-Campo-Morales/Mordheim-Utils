@@ -2,8 +2,6 @@ schema_version: 1
 ruleset: mordheim
 catalog: campaign-post-battle-sequence
 status: published
-# Defines the resolution order; it never records which steps or rolls an
-# individual campaign has completed.
 sequence:
   id: campaign.post-battle
   name: Post-battle sequence
@@ -23,6 +21,9 @@ sequence:
       printed_page: 0
       section: Tools / Post-battle / Injuries
       url: https://mordheimer.net/docs/tools
+    name_i18n:
+      en: Serious injuries
+      es: Heridas graves
   - order: 2
     id: campaign.step.experience
     name: Allocate experience
@@ -33,6 +34,9 @@ sequence:
       printed_page: 0
       section: Tools / Post-battle / Allocate experience
       url: https://mordheimer.net/docs/tools
+    name_i18n:
+      en: Allocate experience
+      es: Repartir experiencia
   - order: 3
     id: campaign.step.exploration
     name: Roll on the Exploration chart
@@ -43,6 +47,9 @@ sequence:
       printed_page: 0
       section: Tools / Post-battle / Roll on the Exploration chart
       url: https://mordheimer.net/docs/tools
+    name_i18n:
+      en: Roll on the Exploration chart
+      es: Tirar en la tabla de Exploración
   - order: 4
     id: campaign.step.sell-wyrdstone
     name: Sell Wyrdstone
@@ -53,6 +60,9 @@ sequence:
       printed_page: 0
       section: Tools / Post-battle / Sell Wyrdstone
       url: https://mordheimer.net/docs/tools
+    name_i18n:
+      en: Sell Wyrdstone
+      es: Vender piedra bruja
   - order: 5
     id: campaign.step.veterans
     name: Check available veterans
@@ -63,6 +73,9 @@ sequence:
       printed_page: 0
       section: Tools / Post-battle / Check available veterans
       url: https://mordheimer.net/docs/tools
+    name_i18n:
+      en: Check available veterans
+      es: Consultar veteranos disponibles
   - order: 6
     id: campaign.step.rare-items
     name: Make rarity rolls and buy rare items
@@ -73,6 +86,9 @@ sequence:
       printed_page: 0
       section: Tools / Post-battle / Make rarity rolls and buy rare items
       url: https://mordheimer.net/docs/tools
+    name_i18n:
+      en: Make rarity rolls and buy rare items
+      es: Hacer tiradas de rareza y comprar objetos raros
   - order: 7
     id: campaign.step.dramatis-personae
     name: Look for Dramatis Personae
@@ -83,6 +99,9 @@ sequence:
       printed_page: 0
       section: Tools / Post-battle / Look for Dramatis Personae
       url: https://mordheimer.net/docs/tools
+    name_i18n:
+      en: Look for Dramatis Personae
+      es: Buscar Personajes dramáticos
   - order: 8
     id: campaign.step.recruit-and-buy-common
     name: Hire recruits and buy common items
@@ -93,6 +112,9 @@ sequence:
       printed_page: 0
       section: Tools / Post-battle / Hire new recruits & buy common items
       url: https://mordheimer.net/docs/tools
+    name_i18n:
+      en: Hire recruits and buy common items
+      es: Contratar reclutas y comprar objetos comunes
   - order: 9
     id: campaign.step.reallocate-equipment
     name: Reallocate equipment
@@ -103,6 +125,9 @@ sequence:
       printed_page: 0
       section: Tools / Post-battle / Reallocate equipment
       url: https://mordheimer.net/docs/tools
+    name_i18n:
+      en: Reallocate equipment
+      es: Reasignar equipo
   - order: 10
     id: campaign.step.update-rating
     name: Update warband rating
@@ -113,3 +138,9 @@ sequence:
       printed_page: 0
       section: Tools / Post-battle / Update your warband rating
       url: https://mordheimer.net/docs/tools
+    name_i18n:
+      en: Update warband rating
+      es: Actualizar la valoración de la banda
+  name_i18n:
+    en: Post-battle sequence
+    es: Secuencia tras la batalla

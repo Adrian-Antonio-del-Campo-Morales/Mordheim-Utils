@@ -5,11 +5,11 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/weapon.dwarf-axe
-    digest: 116c7e0ffbb1a9a1b4222fade2cbe6c446c832a646e6692b75b04a820a44f6de
+    digest: 2cb5249b5c88eaaa94169a084a451339f2ac9ec6d9cb9c0f1ecadee53afd6020
   - target: mechanic/weapon.trident
-    digest: 70ccf5d6d111475b3ce0dd89e5abf79482cb2ec36e7a6ff513bf306ea024e7f2
+    digest: e0ae3acd652618326b9547e2f15fd720ab437c44a8ca5ad064596a04edc30ac0
   - target: mechanic/weapon.spiked-gauntlet
-    digest: 937041a345dd4c6e1f40788fa6f4f3015d3af264dba84be1c37b2ee8723aaeeb
+    digest: deba3f6d2c4380063983a3f9eae910ccfe8fa7a0e3705d750baf5d035c4c7bd5
   interpretation: The three weapons allow an ordinary parry. Dwarf Axe adds penetration 1; Trident strikes
     first only when its bearer has received a charge; Spiked Gauntlet adds no other modifiers.
   cases:
@@ -158,13 +158,14 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/weapon.sigmarite-hammer
-    digest: f74237d3dd01f663717012b1809f19f7336447eac05e4bc289e7531288a08bce
+    digest: 830bf65a9160921fb330d899e236b6f60d7a78ab6d649045ead88ca5348dc409
   - target: mechanic/weapon.choppa
-    digest: 0b064c7f4cb666f718f7892daa9590d805f780acca46e37fd3f08353cb88d096
+    digest: e908892cc763cd47214abf2a585eb990ec6b51b79c03282cbc7daddac96001f5
   - target: mechanic/weapon.witch-sword
-    digest: faabdc3109cdfc3c58c5a117a5ddbf20e94c5c63b7b583c9999dd80b4aca9cbe
-  interpretation: Sigmarite Hammer has Strength +1, Concussion and +1 To Wound against Undead/Possessed. Choppa
-    and Witch Sword gain Strength +1 only in the first round; Choppa adds penetration and Witch Sword a parry.
+    digest: 096a2792f91f4da9a2440492d30ab3687933260961bc749dea07116da4207de0
+  interpretation: Sigmarite Hammer has Strength +1, Concussion and +1 To Wound against Undead/Possessed.
+    Choppa and Witch Sword gain Strength +1 only in the first round; Choppa adds penetration and Witch
+    Sword a parry.
   cases:
   - id: sigmarite-strength
     roles:
@@ -323,11 +324,11 @@ specifications:
   category: local
   sources:
   - target: mechanic/weapon.steel-whip
-    digest: 373a75d8ce32e1cee4a86a81da53ec9469d2eab28a25540bc58550e3385e5963
+    digest: 82bbfe9599f03ef3877f7b2b224ec89b56de6f394d788ef0feee521c1079c10a
   - target: mechanic/weapon.pirate-scourge
-    digest: 1b3ea100db7a0d4dd6779e32f7c5fd4b41aa12d4943cb401b3a21fb25a3a13e7
-  interpretation: Both attacks ignore parries completely. They modify neither Strength, damage nor the to-wound
-    roll.
+    digest: 37815c4f4d4e1fcd8b3a57abd47344821832b641bef7f712138c96aa17f7d43e
+  interpretation: Both attacks ignore parries completely. They modify neither Strength, damage nor the
+    to-wound roll.
   cases:
   - id: steel-whip-compiled
     roles:
@@ -417,13 +418,13 @@ specifications:
   category: local
   sources:
   - target: mechanic/weapon.fighting-claws
-    digest: badfc295b3fd18a017f45e627d77255e97582770c20c9865ba60d57dc552fbfa
+    digest: c8d3c3268b91fb859956b614900edca59716cbf685fb60bc18504bfa816269ca
   - target: mechanic/weapon.weeping-blades
-    digest: 556cdfe9883b9ec36ae95a276affb2c9489f75b654a790e7e1208b6b03bf96bb
+    digest: 8f2e963aa826bd145a58cca57dfe884e8ecdd7e62025fe0d23ca357886593269
   depends_on:
   - mechanic/poison.black-lotus
-  interpretation: Both paired weapons grant one extra attack and one parry. Weeping Blades carries Black Lotus;
-    Fighting Claws does not modify wounds in the duel.
+  interpretation: Both paired weapons grant one extra attack and one parry. Weeping Blades carries Black
+    Lotus; Fighting Claws does not modify wounds in the duel.
   cases:
   - id: fighting-claws-pair
     roles:
@@ -527,16 +528,16 @@ specifications:
   category: stateful
   sources:
   - target: mechanic/weapon.chained-squig
-    digest: 817ff1c23ef63752313acddd7825ed019f1f6e2583d4c58f57d8127be482f769
+    digest: 7c60f1208acfec16301018db46056418727a2d1de237ef7f132347f1ae527c1b
   - target: mechanic/weapon.squig-prodder
-    digest: d482ff414389cfdf4d2a252f320a0ae2cb51d663870dd4b514d56a2790b1d2e7
+    digest: f74d3423df221f5a28ec7a0372c709608eb147fed9b9fa31f38d3e6b4e4a832d
   - target: mechanic/weapon.kusara-kama
-    digest: a8f3cba5f1bb5abec57e8d36002df51b7425326df08d336f513f3d3206ebe582
+    digest: 99f437d62e903c419e07c2e567ff67dcffd5d5cc04d9912eeff1aac3c2fab901
   - target: mechanic/weapon.long-boat-hook
-    digest: 5bc7e178d8f8395a3ea3515ae58f3a4761beafe19215d8a622800627a56d2161
-  interpretation: Chained Squig fixes Strength 3, strikes first, cannot be parried and entangles on a hit.
-    Squig Prodder strikes first. Kusara-kama removes one attack after a 5+ hit. Long Boat Hook has Strength
-    -1 and priority only in the first round.
+    digest: b5d1d6ecd6c4f0dc3e43217b441938545a4499d30c6e68e40428a8a4396f3305
+  interpretation: Chained Squig fixes Strength 3, strikes first, cannot be parried and entangles on a
+    hit. Squig Prodder strikes first. Kusara-kama removes one attack after a 5+ hit. Long Boat Hook has
+    Strength -1 and priority only in the first round.
   cases:
   - id: chained-squig-entangles-on-hit
     roles:

@@ -39,12 +39,19 @@ Output
 - ``<outdir>/price-collation.csv`` — the full machine-readable comparison of
   every cost row.
 
+``<outdir>`` defaults to ``outputs/knowledge`` (git-ignored): these reports are
+always regenerated, never committed. The page-verified verdicts live in a
+committed sidecar next to this script, ``price-collation-resolutions.csv``,
+which ``load_resolutions`` reads from the outdir when present — copy it there
+or pass ``--outdir`` accordingly; without it the reports simply list every
+differing row as pending.
+
 The tool never edits YAML: recording ``price_override`` is an editorial step
 performed after source verification (see the HOWTO).
 
 Usage
 -----
-    python tools/kb/price-collation.py [--outdir docs/knowledge] [--collection mordheim]
+    python tools/kb/price-collation.py [--outdir outputs/knowledge] [--collection mordheim]
 """
 from __future__ import annotations
 
@@ -57,7 +64,7 @@ from mordheim_knowledge.campaign import load_campaign_catalog
 from mordheim_knowledge.loader import BandPackage, load_bands, load_collections, load_items
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_OUTDIR = ROOT / "docs" / "knowledge"
+DEFAULT_OUTDIR = ROOT / "outputs" / "knowledge"
 
 #: TP availability kinds that mean the market row carries no sellable price.
 NOT_SOLD_KINDS = frozenset({"not_sold"})
@@ -202,13 +209,18 @@ def load_resolutions(outdir: Path) -> dict[tuple[str, str], tuple[str, str]]:
 
     Outcomes: ``creation-price`` (the printed list price is a creation price;
     the Trading Post prevails at the market) or ``override`` (recorded as
-    ``price_override``). Maintained next to the generated report so manual
-    page verdicts survive regeneration.
+    ``price_override``). Verdicts live in the committed sidecar next to this
+    script; the copy in the output directory, when present, takes precedence
+    so page verdicts survive report regeneration.
     """
-    path = outdir / "price-collation-resolutions.csv"
+    sidecar = Path(__file__).resolve().parent / "price-collation-resolutions.csv"
+    for candidate in (outdir / "price-collation-resolutions.csv", sidecar):
+        if candidate.exists():
+            path = candidate
+            break
+    else:
+        return {}
     result: dict[tuple[str, str], tuple[str, str]] = {}
-    if not path.exists():
-        return result
     with path.open(encoding="utf-8", newline="") as handle:
         for row in csv.DictReader(handle):
             key = (str(row.get("band_id") or ""), str(row.get("item_id") or ""))
@@ -346,7 +358,7 @@ def write_csv(rows: list[dict], target: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--outdir", type=Path, default=DEFAULT_OUTDIR, help="report directory (default: docs/knowledge)")
+    parser.add_argument("--outdir", type=Path, default=DEFAULT_OUTDIR, help="report directory (default: outputs/knowledge)")
     parser.add_argument("--ruleset", default="mordheim")
     args = parser.parse_args()
 

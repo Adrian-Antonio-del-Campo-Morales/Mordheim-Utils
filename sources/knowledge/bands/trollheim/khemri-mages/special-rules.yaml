@@ -10,10 +10,10 @@ rules:
     section: Heroes / 1 Archmage / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: Any warband model within 6" of the Archmage may use his Leadership instead of its own.
-    es: null
+    es: Cualquier modelo de la banda a 6" del Arquimago puede usar su Liderazgo en lugar del suyo propio.
   applies_to:
     profile_ids:
     - archmage
@@ -28,19 +28,23 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: archmage--spellcaster
   name: Spellcaster
-  effect: The Archmage is a spellcaster and begins with two randomly generated spells. Choose two different Elemental Magic
-    lores and generate one spell from each. Spell lists and spell effects are intentionally not modelled in this file.
+  effect: The Archmage is a spellcaster and begins with two randomly generated spells. Choose two different
+    Elemental Magic lores and generate one spell from each. Spell lists and spell effects are intentionally
+    not modelled in this file.
   source:
     manual: khemri
     printed_page: 62
     section: Heroes / 1 Archmage / Spellcaster
   name_i18n:
     en: Spellcaster
-    es: null
+    es: Lanzador de hechizos
   effect_i18n:
-    en: The Archmage is a spellcaster and begins with two randomly generated spells. Choose two different Elemental Magic
-      lores and generate one spell from each. Spell lists and spell effects are intentionally not modelled in this file.
-    es: null
+    en: The Archmage is a spellcaster and begins with two randomly generated spells. Choose two different
+      Elemental Magic lores and generate one spell from each. Spell lists and spell effects are intentionally
+      not modelled in this file.
+    es: El Arquimago es un lanzador de hechizos y comienza con dos hechizos generados aleatoriamente.
+      Elige dos tradiciones diferentes de Magia Elemental y genera un hechizo de cada una. Las listas
+      de hechizos y los efectos de los hechizos no están modelados intencionadamente en este archivo.
   applies_to:
     profile_ids:
     - archmage
@@ -55,21 +59,24 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: mage--spellcaster
   name: Spellcaster
-  effect: When recruited, a Mage chooses one Elemental Magic lore and generates one random spell from it. Every later spell
-    learned by that Mage must come from the same chosen lore. Spell lists and spell effects are intentionally not modelled
-    in this file.
+  effect: When recruited, a Mage chooses one Elemental Magic lore and generates one random spell from
+    it. Every later spell learned by that Mage must come from the same chosen lore. Spell lists and spell
+    effects are intentionally not modelled in this file.
   source:
     manual: khemri
     printed_page: 62
     section: Heroes / 0-2 Mages / Spellcaster
   name_i18n:
     en: Spellcaster
-    es: null
+    es: Lanzador de hechizos
   effect_i18n:
-    en: When recruited, a Mage chooses one Elemental Magic lore and generates one random spell from it. Every later spell
-      learned by that Mage must come from the same chosen lore. Spell lists and spell effects are intentionally not modelled
-      in this file.
-    es: null
+    en: When recruited, a Mage chooses one Elemental Magic lore and generates one random spell from it.
+      Every later spell learned by that Mage must come from the same chosen lore. Spell lists and spell
+      effects are intentionally not modelled in this file.
+    es: Al ser reclutado, un Mago elige una tradición de Magia Elemental y genera un hechizo aleatorio
+      de ella. Todo hechizo posterior que aprenda ese Mago debe provenir de la misma tradición elegida.
+      Las listas de hechizos y los efectos de los hechizos no están modelados intencionadamente en este
+      archivo.
   applies_to:
     profile_ids:
     - mage
@@ -84,19 +91,21 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: witch--spellcaster
   name: Spellcaster
-  effect: The Witch is a spellcaster and begins with two randomly generated Lesser Magic spells. Spell lists and spell effects
-    are intentionally not modelled in this file.
+  effect: The Witch is a spellcaster and begins with two randomly generated Lesser Magic spells. Spell
+    lists and spell effects are intentionally not modelled in this file.
   source:
     manual: khemri
     printed_page: 62
     section: Heroes / 0-1 Witch / Spellcaster
   name_i18n:
     en: Spellcaster
-    es: null
+    es: Lanzador de hechizos
   effect_i18n:
-    en: The Witch is a spellcaster and begins with two randomly generated Lesser Magic spells. Spell lists and spell effects
-      are intentionally not modelled in this file.
-    es: null
+    en: The Witch is a spellcaster and begins with two randomly generated Lesser Magic spells. Spell lists
+      and spell effects are intentionally not modelled in this file.
+    es: La Bruja es una lanzadora de hechizos y comienza con dos hechizos de Magia Menor generados aleatoriamente.
+      Las listas de hechizos y los efectos de los hechizos no están modelados intencionadamente en este
+      archivo.
   applies_to:
     profile_ids:
     - witch
@@ -111,19 +120,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: pupil--minor-trick
   name: Minor Trick
-  effect: Minor Trick is the only magic a Pupil may use before becoming a Hero. Its spell mechanics are intentionally not
-    modelled in this file.
+  effect: Minor Trick is the only magic a Pupil may use before becoming a Hero. Its spell mechanics are
+    intentionally not modelled in this file.
   source:
     manual: khemri
     printed_page: 63
     section: Henchmen / Pupils / Minor Trick
   name_i18n:
     en: Minor Trick
-    es: null
+    es: Truco menor
   effect_i18n:
-    en: Minor Trick is the only magic a Pupil may use before becoming a Hero. Its spell mechanics are intentionally not modelled
-      in this file.
-    es: null
+    en: Minor Trick is the only magic a Pupil may use before becoming a Hero. Its spell mechanics are
+      intentionally not modelled in this file.
+    es: Truco menor es la única magia que un Aprendiz puede usar antes de convertirse en Héroe. Sus mecánicas
+      de hechizo no están modeladas intencionadamente en este archivo.
   applies_to:
     profile_ids:
     - pupil
@@ -138,19 +148,21 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: pupil--experience
   name: Experience
-  effect: When a Pupil becomes a Hero, choose one Elemental Magic lore or Lesser Magic and generate one random spell. Every
-    later spell learned by that Hero must come from the same chosen lore.
+  effect: When a Pupil becomes a Hero, choose one Elemental Magic lore or Lesser Magic and generate one
+    random spell. Every later spell learned by that Hero must come from the same chosen lore.
   source:
     manual: khemri
     printed_page: 63
     section: Henchmen / Pupils / Experience
   name_i18n:
     en: Experience
-    es: null
+    es: Experiencia
   effect_i18n:
-    en: When a Pupil becomes a Hero, choose one Elemental Magic lore or Lesser Magic and generate one random spell. Every
-      later spell learned by that Hero must come from the same chosen lore.
-    es: null
+    en: When a Pupil becomes a Hero, choose one Elemental Magic lore or Lesser Magic and generate one
+      random spell. Every later spell learned by that Hero must come from the same chosen lore.
+    es: Cuando un Aprendiz se convierte en Héroe, elige una tradición de Magia Elemental o Magia Menor
+      y genera un hechizo aleatorio. Todo hechizo posterior que aprenda ese Héroe debe provenir de la
+      misma tradición elegida.
   applies_to:
     profile_ids:
     - pupil
@@ -184,10 +196,10 @@ rules:
     section: Henchmen / 0-5 Mechanical Beasts / Weapons and Armour
   name_i18n:
     en: Mechanical Armour
-    es: null
+    es: Armadura mecánica
   effect_i18n:
     en: Mechanical Beasts have a 5+ armour save.
-    es: null
+    es: Las Bestias Mecánicas tienen una salvación por armadura de 5+.
   applies_to:
     profile_ids:
     - mechanical-beast
@@ -200,10 +212,11 @@ rules:
     section: Henchmen / 0-5 Mechanical Beasts / Immune to Psychology
   name_i18n:
     en: Immune to Psychology
-    es: null
+    es: Inmune a la psicología
   effect_i18n:
     en: Mechanical Beasts are immune to Psychology and never leave combat because of Psychology.
-    es: null
+    es: Las Bestias Mecánicas son inmunes a la Psicología y nunca abandonan el combate por causa de la
+      Psicología.
   applies_to:
     profile_ids:
     - mechanical-beast
@@ -237,10 +250,10 @@ rules:
     section: Henchmen / 0-5 Mechanical Beasts / Immune to Poison
   name_i18n:
     en: Immune to Poison
-    es: null
+    es: Inmune al veneno
   effect_i18n:
     en: Mechanical Beasts are immune to poison.
-    es: null
+    es: Las Bestias Mecánicas son inmunes al veneno.
   applies_to:
     profile_ids:
     - mechanical-beast
@@ -253,10 +266,10 @@ rules:
     section: Henchmen / 0-5 Mechanical Beasts / Brainless
   name_i18n:
     en: Brainless
-    es: null
+    es: Descerebradas
   effect_i18n:
     en: Mechanical Beasts never gain Experience.
-    es: null
+    es: Las Bestias Mecánicas nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - mechanical-beast
@@ -278,10 +291,10 @@ rules:
     section: Henchmen / 0-5 Mechanical Beasts / Do Not Eat
   name_i18n:
     en: Do Not Eat
-    es: null
+    es: No comen
   effect_i18n:
     en: Mechanical Beasts do not need water.
-    es: null
+    es: Las Bestias Mecánicas no necesitan agua.
   applies_to:
     profile_ids:
     - mechanical-beast
@@ -303,10 +316,10 @@ rules:
     section: Henchmen / 0-5 Mechanical Beasts / May Not Run
   name_i18n:
     en: May Not Run
-    es: null
+    es: No pueden correr
   effect_i18n:
     en: Mechanical Beasts may not run, but may charge normally.
-    es: null
+    es: Las Bestias Mecánicas no pueden correr, pero pueden cargar con normalidad.
   applies_to:
     profile_ids:
     - mechanical-beast
@@ -321,19 +334,23 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: band--pupil-limit
   name: Pupil Limit
-  effect: The warband may include no more than three Pupils per Mage and no more than six Pupils in total. If a Mage dies,
-    it must be replaced as soon as possible. A Pupil that has advanced to Hero counts as a Mage for this rule.
+  effect: The warband may include no more than three Pupils per Mage and no more than six Pupils in total.
+    If a Mage dies, it must be replaced as soon as possible. A Pupil that has advanced to Hero counts
+    as a Mage for this rule.
   source:
     manual: khemri
     printed_page: 63
     section: Henchmen / Pupils / Apprentices
   name_i18n:
     en: Pupil Limit
-    es: null
+    es: Límite de aprendices
   effect_i18n:
-    en: The warband may include no more than three Pupils per Mage and no more than six Pupils in total. If a Mage dies, it
-      must be replaced as soon as possible. A Pupil that has advanced to Hero counts as a Mage for this rule.
-    es: null
+    en: The warband may include no more than three Pupils per Mage and no more than six Pupils in total.
+      If a Mage dies, it must be replaced as soon as possible. A Pupil that has advanced to Hero counts
+      as a Mage for this rule.
+    es: La banda no puede incluir más de tres Aprendices por Mago ni más de seis Aprendices en total.
+      Si un Mago muere, debe reemplazarse lo antes posible. Un Aprendiz que haya ascendido a Héroe cuenta
+      como Mago para esta regla.
   applies_to:
     band: true
   runtime:
@@ -348,19 +365,23 @@ rules:
 - id: band--mage-special-skills-dispel-magic
   kind: warband_skill
   name: Dispel Magic
-  effect: Whenever an opponent successfully casts a spell, this Hero may attempt to dispel it by rolling 2D6 and exceeding
-    the opponent's successful casting result. For example, a casting result of 10 requires an 11 or 12 to dispel.
+  effect: Whenever an opponent successfully casts a spell, this Hero may attempt to dispel it by rolling
+    2D6 and exceeding the opponent's successful casting result. For example, a casting result of 10 requires
+    an 11 or 12 to dispel.
   source:
     manual: khemri
     printed_page: 60
     section: Mage Special Skills / Dispel Magic
   name_i18n:
     en: Dispel Magic
-    es: null
+    es: Dispersar magia
   effect_i18n:
-    en: Whenever an opponent successfully casts a spell, this Hero may attempt to dispel it by rolling 2D6 and exceeding the
-      opponent's successful casting result. For example, a casting result of 10 requires an 11 or 12 to dispel.
-    es: null
+    en: Whenever an opponent successfully casts a spell, this Hero may attempt to dispel it by rolling
+      2D6 and exceeding the opponent's successful casting result. For example, a casting result of 10
+      requires an 11 or 12 to dispel.
+    es: Siempre que un oponente lance con éxito un hechizo, este Héroe puede intentar dispersarlo tirando
+      2D6 y superando el resultado exitoso de lanzamiento del oponente. Por ejemplo, un resultado de lanzamiento
+      de 10 requiere un 11 o 12 para dispersar.
   eligibility:
   - archmage
   - mage
@@ -379,21 +400,24 @@ rules:
 - id: band--mage-special-skills-store-spell
   kind: warband_skill
   name: Store Spell
-  effect: Requires a Staff. Before the battle, the Hero may store one chosen spell in the Staff and decide when to use it
-    during the game. Resolve the stored spell with the source's additional +3 casting difficulty; if the casting roll is a
-    double, the stored spell is lost.
+  effect: Requires a Staff. Before the battle, the Hero may store one chosen spell in the Staff and decide
+    when to use it during the game. Resolve the stored spell with the source's additional +3 casting difficulty;
+    if the casting roll is a double, the stored spell is lost.
   source:
     manual: khemri
     printed_page: 60
     section: Mage Special Skills / Store Spell
   name_i18n:
     en: Store Spell
-    es: null
+    es: Almacenar hechizo
   effect_i18n:
-    en: Requires a Staff. Before the battle, the Hero may store one chosen spell in the Staff and decide when to use it during
-      the game. Resolve the stored spell with the source's additional +3 casting difficulty; if the casting roll is a double,
-      the stored spell is lost.
-    es: null
+    en: Requires a Staff. Before the battle, the Hero may store one chosen spell in the Staff and decide
+      when to use it during the game. Resolve the stored spell with the source's additional +3 casting
+      difficulty; if the casting roll is a double, the stored spell is lost.
+    es: Requiere un Bastón. Antes de la batalla, el Héroe puede almacenar un hechizo elegido en el Bastón
+      y decidir cuándo usarlo durante la partida. Resuelve el hechizo almacenado con la dificultad adicional
+      de lanzamiento de +3 de la fuente; si la tirada de lanzamiento es un doble, el hechizo almacenado
+      se pierde.
   eligibility:
   - archmage
   - mage
@@ -412,19 +436,23 @@ rules:
 - id: band--mage-special-skills-mechanic
   kind: warband_skill
   name: Mechanic
-  effect: The Hero may improve Mechanical Beasts by paying 5 gc to increase either WS by +1 or Movement by +1". The maximum
-    improvement is +2 WS or +2" Movement respectively, and the whole Mechanical Beast group must be upgraded together.
+  effect: The Hero may improve Mechanical Beasts by paying 5 gc to increase either WS by +1 or Movement
+    by +1". The maximum improvement is +2 WS or +2" Movement respectively, and the whole Mechanical Beast
+    group must be upgraded together.
   source:
     manual: khemri
     printed_page: 60
     section: Mage Special Skills / Mechanic
   name_i18n:
     en: Mechanic
-    es: null
+    es: Mecánico
   effect_i18n:
-    en: The Hero may improve Mechanical Beasts by paying 5 gc to increase either WS by +1 or Movement by +1". The maximum
-      improvement is +2 WS or +2" Movement respectively, and the whole Mechanical Beast group must be upgraded together.
-    es: null
+    en: The Hero may improve Mechanical Beasts by paying 5 gc to increase either WS by +1 or Movement
+      by +1". The maximum improvement is +2 WS or +2" Movement respectively, and the whole Mechanical
+      Beast group must be upgraded together.
+    es: El Héroe puede mejorar las Bestias Mecánicas pagando 5 coronas para aumentar o bien +1 la HA o
+      bien +1" el Movimiento. La mejora máxima es +2 HA o +2" de Movimiento respectivamente, y todo el
+      grupo de Bestias Mecánicas debe mejorarse junto.
   eligibility:
   - archmage
   - mage

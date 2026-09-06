@@ -3,8 +3,8 @@ band_id: sisters-of-sigmar
 rules:
 - id: sigmarite-matriarch--leader
   name: Leader
-  effect: Any warband member within 6" of the Sigmarite Matriarch may use her Leadership characteristic when taking any Leadership
-    tests.
+  effect: Any warband member within 6" of the Sigmarite Matriarch may use her Leadership characteristic
+    when taking any Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -12,11 +12,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
-    en: Any warband member within 6" of the Sigmarite Matriarch may use her Leadership characteristic when taking any Leadership
-      tests.
-    es: null
+    en: Any warband member within 6" of the Sigmarite Matriarch may use her Leadership characteristic
+      when taking any Leadership tests.
+    es: Cualquier miembro de la banda a 6" de la Matriarca sigmarita puede usar su característica de Liderazgo
+      cuando realice cualquier chequeo de Liderazgo.
   applies_to:
     profile_ids:
     - sigmarite-matriarch
@@ -31,8 +32,9 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: sigmarite-matriarch--prayers-of-sigmar
   name: Prayers of Sigmar
-  effect: The Sigmarite Matriarch may use the Prayers of Sigmar and begins with one randomly generated prayer. She may learn
-    a new Prayer instead of a new skill. Prayer effects are intentionally not modelled in this file.
+  effect: The Sigmarite Matriarch may use the Prayers of Sigmar and begins with one randomly generated
+    prayer. She may learn a new Prayer instead of a new skill. Prayer effects are intentionally not modelled
+    in this file.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -40,11 +42,14 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
   name_i18n:
     en: Prayers of Sigmar
-    es: null
+    es: Plegarias de Sigmar
   effect_i18n:
-    en: The Sigmarite Matriarch may use the Prayers of Sigmar and begins with one randomly generated prayer. She may learn
-      a new Prayer instead of a new skill. Prayer effects are intentionally not modelled in this file.
-    es: null
+    en: The Sigmarite Matriarch may use the Prayers of Sigmar and begins with one randomly generated prayer.
+      She may learn a new Prayer instead of a new skill. Prayer effects are intentionally not modelled
+      in this file.
+    es: La Matriarca sigmarita puede usar las Plegarias de Sigmar y comienza con una plegaria generada
+      al azar. Puede aprender una nueva Plegaria en lugar de una nueva habilidad. Los efectos de las plegarias
+      no se modelan deliberadamente en este fichero.
   applies_to:
     profile_ids:
     - sigmarite-matriarch
@@ -56,7 +61,8 @@ rules:
     - id: unimplemented.sisters-of-sigmar.sigmarite-matriarch.prayers-of-sigmar
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.'
 - id: augur--blessed-sight
   runtime:
     scope: 'YES'
@@ -69,9 +75,9 @@ rules:
         kind: mechanic
         id: skill.blessed-sight
   name: Blessed Sight
-  effect: The Augur may re-roll failed characteristic tests and failed rolls to hit in close combat or shooting; the second
-    result must be accepted. If she was not taken Out of Action, she rolls two dice for her contribution during Exploration
-    and may choose either die as the result.
+  effect: The Augur may re-roll failed characteristic tests and failed rolls to hit in close combat or
+    shooting; the second result must be accepted. If she was not taken Out of Action, she rolls two dice
+    for her contribution during Exploration and may choose either die as the result.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -79,18 +85,21 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
   name_i18n:
     en: Blessed Sight
-    es: null
+    es: Vista bendecida
   effect_i18n:
-    en: The Augur may re-roll failed characteristic tests and failed rolls to hit in close combat or shooting; the second
-      result must be accepted. If she was not taken Out of Action, she rolls two dice for her contribution during Exploration
-      and may choose either die as the result.
-    es: null
+    en: The Augur may re-roll failed characteristic tests and failed rolls to hit in close combat or shooting;
+      the second result must be accepted. If she was not taken Out of Action, she rolls two dice for her
+      contribution during Exploration and may choose either die as the result.
+    es: La Augur puede repetir los chequeos de característica fallidos y las tiradas para impactar fallidas
+      en combate cuerpo a cuerpo o con disparos; debe aceptarse el segundo resultado. Si no quedó Fuera
+      de combate, tira dos dados por su contribución durante la Exploración y puede elegir cualquiera
+      de los dos como resultado.
   applies_to:
     profile_ids:
     - augur
 - id: band--human-maximum-characteristics
   name: Human Maximum Characteristics
-  effect: 'Sisters of Sigmar are Humans and use the Human racial maximum profile (campaign.limit.racial-maximum.human).'
+  effect: Sisters of Sigmar are Humans and use the Human racial maximum profile (campaign.limit.racial-maximum.human).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -98,10 +107,10 @@ rules:
     url: https://mordheimer.net/docs/campaigns/experience
   name_i18n:
     en: Human Maximum Characteristics
-    es: null
+    es: Máximos de características humanos
   effect_i18n:
-    en: 'Sisters of Sigmar are Humans and use the Human racial maximum profile (campaign.limit.racial-maximum.human).'
-    es: null
+    en: Sisters of Sigmar are Humans and use the Human racial maximum profile (campaign.limit.racial-maximum.human).
+    es: Las Hermanas de Sigmar son Humanas y usan el perfil máximo racial humano (campaign.limit.racial-maximum.human).
   applies_to:
     band: true
   runtime:
@@ -112,12 +121,13 @@ rules:
     - id: unimplemented.sisters-of-sigmar.band.human-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.'
 - id: band--special-skills-sign-of-sigmar
   kind: warband_skill
   name: Sign of Sigmar
-  effect: The Sister is favoured by the great god Sigmar. Possessed or Undead opponents lose their first attack against the
-    Priestess in the first round of hand-to-hand combat (down to a minimum of 1).
+  effect: The Sister is favoured by the great god Sigmar. Possessed or Undead opponents lose their first
+    attack against the Priestess in the first round of hand-to-hand combat (down to a minimum of 1).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -125,11 +135,13 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
   name_i18n:
     en: Sign of Sigmar
-    es: null
+    es: Signo de Sigmar
   effect_i18n:
-    en: The Sister is favoured by the great god Sigmar. Possessed or Undead opponents lose their first attack against the
-      Priestess in the first round of hand-to-hand combat (down to a minimum of 1).
-    es: null
+    en: The Sister is favoured by the great god Sigmar. Possessed or Undead opponents lose their first
+      attack against the Priestess in the first round of hand-to-hand combat (down to a minimum of 1).
+    es: La Hermana es favorecida por el gran dios Sigmar. Los oponentes Posesos o No-muertos pierden su
+      primer ataque contra la Sacerdotisa en la primera ronda de combate cuerpo a cuerpo (hasta un mínimo
+      de 1).
   eligibility:
   - sigmarite-matriarch
   - sister-superior
@@ -148,8 +160,8 @@ rules:
 - id: band--special-skills-protection-of-sigmar
   kind: warband_skill
   name: Protection of Sigmar
-  effect: The Sister has been blessed by the High Matriarch. Any spell which would affect her is nullified on a D6 roll of
-    4+. Note that if the spell is nullified it will not affect any other models either.
+  effect: The Sister has been blessed by the High Matriarch. Any spell which would affect her is nullified
+    on a D6 roll of 4+. Note that if the spell is nullified it will not affect any other models either.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -157,11 +169,13 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
   name_i18n:
     en: Protection of Sigmar
-    es: null
+    es: Protección de Sigmar
   effect_i18n:
-    en: The Sister has been blessed by the High Matriarch. Any spell which would affect her is nullified on a D6 roll of 4+.
-      Note that if the spell is nullified it will not affect any other models either.
-    es: null
+    en: The Sister has been blessed by the High Matriarch. Any spell which would affect her is nullified
+      on a D6 roll of 4+. Note that if the spell is nullified it will not affect any other models either.
+    es: La Hermana ha sido bendecida por la Gran Matriarca. Cualquier conjuro que pudiera afectarla se
+      anula con un resultado de 4+ en 1D6. Ten en cuenta que, si el conjuro se anula, tampoco afectará
+      a ningún otro modelo.
   eligibility:
   - sigmarite-matriarch
   - sister-superior
@@ -188,10 +202,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
   name_i18n:
     en: Utter Determination
-    es: null
+    es: Determinación absoluta
   effect_i18n:
     en: Only the Matriarch may have this skill, which allows her to re-roll any failed Rout tests.
-    es: null
+    es: Solo la Matriarca puede tener esta habilidad, que le permite repetir cualquier chequeo de huida
+      fallido.
   eligibility:
   - sigmarite-matriarch
   applies_to:
@@ -204,12 +219,13 @@ rules:
     - id: unimplemented.sisters-of-sigmar.band.special-skills-utter-determination
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.'
 - id: band--special-skills-righteous-fury
   kind: warband_skill
   name: Righteous Fury
-  effect: The Sister hates all Skaven, Undead, Possessed, Beastmen, Dark Elves, and other warbands classed as evil. Non-Chaos
-    human warbands whose members are merely killers or looters are not included.
+  effect: The Sister hates all Skaven, Undead, Possessed, Beastmen, Dark Elves, and other warbands classed
+    as evil. Non-Chaos human warbands whose members are merely killers or looters are not included.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -217,11 +233,13 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
   name_i18n:
     en: Righteous Fury
-    es: null
+    es: Ira justa
   effect_i18n:
-    en: The Sister hates all Skaven, Undead, Possessed, Beastmen, Dark Elves, and other warbands classed as evil. Non-Chaos
-      human warbands whose members are merely killers or looters are not included.
-    es: null
+    en: The Sister hates all Skaven, Undead, Possessed, Beastmen, Dark Elves, and other warbands classed
+      as evil. Non-Chaos human warbands whose members are merely killers or looters are not included.
+    es: La Hermana odia a todos los Skaven, No-muertos, Posesos, Bestias del Caos, Elfos Oscuros y demás
+      bandas clasificadas como malvadas. Las bandas humanas que no son del Caos, cuyos miembros son solo
+      asesinos o saqueadores, no están incluidas.
   eligibility:
   - sigmarite-matriarch
   - sister-superior
@@ -240,8 +258,8 @@ rules:
 - id: band--special-skills-absolute-faith
   kind: warband_skill
   name: Absolute Faith
-  effect: The Sister puts her faith in Sigmar, and faces dangers unflinchingly. She may re-roll any fear tests and does not
-    have to test if she is fighting alone against several opponents.
+  effect: The Sister puts her faith in Sigmar, and faces dangers unflinchingly. She may re-roll any fear
+    tests and does not have to test if she is fighting alone against several opponents.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -249,11 +267,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
   name_i18n:
     en: Absolute Faith
-    es: null
+    es: Fe absoluta
   effect_i18n:
-    en: The Sister puts her faith in Sigmar, and faces dangers unflinchingly. She may re-roll any fear tests and does not
-      have to test if she is fighting alone against several opponents.
-    es: null
+    en: The Sister puts her faith in Sigmar, and faces dangers unflinchingly. She may re-roll any fear
+      tests and does not have to test if she is fighting alone against several opponents.
+    es: La Hermana deposita su fe en Sigmar y afronta los peligros sin flaquear. Puede repetir cualquier
+      chequeo de miedo y no tiene que superarlo si lucha sola contra varios oponentes.
   eligibility:
   - sigmarite-matriarch
   - sister-superior

@@ -3,16 +3,17 @@ band_id: hochland-bandits
 rules:
 - id: bandit-prince--leader
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.hochland-bandits.bandit-prince.leader
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Leader
-  effect: Any warrior within 6" of the Bandit Prince may use his Leadership characteristic when taking any Leadership tests.
+  effect: Any warrior within 6" of the Bandit Prince may use his Leadership characteristic when taking
+    any Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -20,28 +21,31 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
-    en: Any warrior within 6" of the Bandit Prince may use his Leadership characteristic when taking any Leadership tests.
-    es: null
+    en: Any warrior within 6" of the Bandit Prince may use his Leadership characteristic when taking any
+      Leadership tests.
+    es: Cualquier guerrero a 6" del Príncipe Bandido puede usar su característica de Liderazgo cuando
+      realice cualquier chequeo de Liderazgo.
   applies_to:
     profile_ids:
     - bandit-prince
 - id: footpads--concealment
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.hochland-bandits.footpads.concealment
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: movement."
+      reason: 'Out of scope: movement.'
   name: Concealment
-  effect: Enemy warriors often find it difficult to detect a Footpad until he strikes. If an enemy warrior wishes to charge
-    a Footpad that he cannot see (but was not declared as Hidden), he must subtract 1 from his Initiative before making his
-    Initiative test. Note that a roll of ‘6’ always fails when rolling to charge a Footpad that the warrior cannot see. Also,
-    models halve their Initiative when checking the range to see if they can detect a Footpad who has been declared as Hiding.
+  effect: Enemy warriors often find it difficult to detect a Footpad until he strikes. If an enemy warrior
+    wishes to charge a Footpad that he cannot see (but was not declared as Hidden), he must subtract 1
+    from his Initiative before making his Initiative test. Note that a roll of ‘6’ always fails when rolling
+    to charge a Footpad that the warrior cannot see. Also, models halve their Initiative when checking
+    the range to see if they can detect a Footpad who has been declared as Hiding.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -49,32 +53,38 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Concealment
-    es: null
+    es: Ocultación
   effect_i18n:
-    en: Enemy warriors often find it difficult to detect a Footpad until he strikes. If an enemy warrior wishes to charge
-      a Footpad that he cannot see (but was not declared as Hidden), he must subtract 1 from his Initiative before making
-      his Initiative test. Note that a roll of ‘6’ always fails when rolling to charge a Footpad that the warrior cannot see.
-      Also, models halve their Initiative when checking the range to see if they can detect a Footpad who has been declared
-      as Hiding.
-    es: null
+    en: Enemy warriors often find it difficult to detect a Footpad until he strikes. If an enemy warrior
+      wishes to charge a Footpad that he cannot see (but was not declared as Hidden), he must subtract
+      1 from his Initiative before making his Initiative test. Note that a roll of ‘6’ always fails when
+      rolling to charge a Footpad that the warrior cannot see. Also, models halve their Initiative when
+      checking the range to see if they can detect a Footpad who has been declared as Hiding.
+    es: Los guerreros enemigos a menudo encuentran difícil detectar a un Ratero hasta que este golpea.
+      Si un guerrero enemigo desea cargar contra un Ratero que no puede ver (pero que no fue declarado
+      como Oculto), debe restar 1 de su Iniciativa antes de hacer su chequeo de Iniciativa. Ten en cuenta
+      que un resultado de '6' siempre falla al tirar para cargar contra un Ratero que el guerrero no puede
+      ver. Además, los modelos dividen a la mitad su Iniciativa al comprobar el alcance para ver si pueden
+      detectar a un Ratero que haya sido declarado como Oculto.
   applies_to:
     profile_ids:
     - footpads
 - id: duelist--swordmaster
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
     - id: skill.swordmaster
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: mechanic
         id: skill.swordmaster
   name: Swordmaster
-  effect: In order to remain alive, a Duelist picks up swordfighting techniques that few others master. The Duelist successfully
-    parries an enemy blow on a roll equal to or over the roll to hit, not just over the roll as with normal parries. Obviously
-    a Duelist must first be armed with a weapon or armour that allows him to Parry in order to use this rule.
+  effect: In order to remain alive, a Duelist picks up swordfighting techniques that few others master.
+    The Duelist successfully parries an enemy blow on a roll equal to or over the roll to hit, not just
+    over the roll as with normal parries. Obviously a Duelist must first be armed with a weapon or armour
+    that allows him to Parry in order to use this rule.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -82,12 +92,16 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Swordmaster
-    es: null
+    es: Maestro de la espada
   effect_i18n:
-    en: In order to remain alive, a Duelist picks up swordfighting techniques that few others master. The Duelist successfully
-      parries an enemy blow on a roll equal to or over the roll to hit, not just over the roll as with normal parries. Obviously
-      a Duelist must first be armed with a weapon or armour that allows him to Parry in order to use this rule.
-    es: null
+    en: In order to remain alive, a Duelist picks up swordfighting techniques that few others master.
+      The Duelist successfully parries an enemy blow on a roll equal to or over the roll to hit, not just
+      over the roll as with normal parries. Obviously a Duelist must first be armed with a weapon or armour
+      that allows him to Parry in order to use this rule.
+    es: Para seguir con vida, un Duelista aprende técnicas de esgrima que pocos dominan. El Duelista emparanza
+      con éxito un golpe enemigo con una tirada igual o superior a la tirada para impactar, no solo superior
+      a la tirada como en las paradas normales. Obviamente, el Duelista debe estar armado primero con
+      un arma o armadura que le permita Emparañar para usar esta regla.
   applies_to:
     profile_ids:
     - duelist
@@ -103,9 +117,10 @@ rules:
         kind: compiler
         id: compiler.weapon-knowledge
   name: Weapon Knowledge
-  effect: A Duelist must be prepared to fight an opponent with any weapon at any time, so a working knowledge of even exotic
-    weapons is critical for his survival. The weapons in the Bandit equipment chart merely represent the weapons a Duelist may
-    start with. A Duelist may use any close combat or missile weapon that the warband members can get hold of.
+  effect: A Duelist must be prepared to fight an opponent with any weapon at any time, so a working knowledge
+    of even exotic weapons is critical for his survival. The weapons in the Bandit equipment chart merely
+    represent the weapons a Duelist may start with. A Duelist may use any close combat or missile weapon
+    that the warband members can get hold of.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -113,44 +128,37 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Weapon Knowledge
-    es: null
+    es: Conocimiento de armas
   effect_i18n:
-    en: A Duelist must be prepared to fight an opponent with any weapon at any time, so a working knowledge of even exotic
-      weapons is critical for his survival. The weapons in the Bandit equipment chart merely represent the weapons a Duelist
-      may start with. A Duelist may use any close combat or missile weapon that the warband members can get hold of.
-    es: null
+    en: A Duelist must be prepared to fight an opponent with any weapon at any time, so a working knowledge
+      of even exotic weapons is critical for his survival. The weapons in the Bandit equipment chart merely
+      represent the weapons a Duelist may start with. A Duelist may use any close combat or missile weapon
+      that the warband members can get hold of.
+    es: Un Duelista debe estar preparado para luchar contra un oponente con cualquier arma en cualquier
+      momento, de modo que un conocimiento práctico incluso de armas exóticas es crítico para su supervivencia.
+      Las armas de la tabla de equipo de Bandido solo representan las armas con las que puede comenzar
+      un Duelista. Un Duelista puede usar cualquier arma cuerpo a cuerpo o de misil que los miembros de
+      la banda puedan conseguir.
   applies_to:
     profile_ids:
     - duelist
 - id: huckster--convincing-manner
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.hochland-bandits.huckster.convincing-manner
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Convincing Manner
-  effect: 'Hucksters specialize in convincing strangers of their benevolent intentions. When an enemy warrior attempts to
-    charge a member of the
-
-    huckster''s warband within 12” of the huckster, the
-
-    enemy must first pass a successful Leadership test. If
-
-    the warrior fails the test he may not charge and remains
-
-    stationary for the turn (treat as a failed charge), exactly
-
-    as if he had failed a test to charge a Fear-causing
-
-    enemy. Note that individuals subject to stupidity and
-
-    animals are immune to this effect (they are too stupid
-
-    to understand what the huckster is saying).'
+  effect: Hucksters specialize in convincing strangers of their benevolent intentions. When an enemy warrior
+    attempts to charge a member of the huckster's warband within 12” of the huckster, the enemy must first
+    pass a successful Leadership test. If the warrior fails the test he may not charge and remains stationary
+    for the turn (treat as a failed charge), exactly as if he had failed a test to charge a Fear-causing
+    enemy. Note that individuals subject to stupidity and animals are immune to this effect (they are
+    too stupid to understand what the huckster is saying).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -158,10 +166,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Convincing Manner
-    es: null
+    es: Manera convincente
   effect_i18n:
-    en: 'Hucksters specialize in convincing strangers of their benevolent intentions. When an enemy warrior attempts to charge
-      a member of the
+    en: 'Hucksters specialize in convincing strangers of their benevolent intentions. When an enemy warrior
+      attempts to charge a member of the
 
       huckster''s warband within 12” of the huckster, the
 
@@ -178,34 +186,32 @@ rules:
       animals are immune to this effect (they are too stupid
 
       to understand what the huckster is saying).'
-    es: null
+    es: Los Trapaceros se especializan en convencer a los extraños de sus benévolas intenciones. Cuando
+      un guerrero enemigo intenta cargar contra un miembro de la banda del trapacero que esté a 12" del
+      trapacero, el enemigo debe superar primero un chequeo de Liderazgo. Si el guerrero falla el chequeo,
+      no puede cargar y permanece inmóvil durante el asalto (trátalo como una carga fallida), exactamente
+      como si hubiera fallado un chequeo para cargar contra un enemigo que cause Miedo. Ten en cuenta
+      que los individuos sujetos a estupidez y los animales son inmunes a este efecto (son demasiado estúpidos
+      para entender lo que dice el trapacero).
   applies_to:
     profile_ids:
     - huckster
 - id: huckster--slick-operator
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.hochland-bandits.huckster.slick-operator
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Slick Operator
-  effect: 'In between games the player may choose to have the huckster run a con on the local
-
-    inhabitants of the region. Roll a D6: On a result of 2-6,
-
-    the con is successful and the warband gains 2D6 gold
-
-    (the huckster keeps the rest). However, on a result of 1
-
-    the huckster''s con has backfired and he is on the run
-
-    (he misses the next game and no gold is received by
-
-    the warband).'
+  effect: >-
+    In between games the player may choose to have the huckster run a con on the local inhabitants
+    of the region. Roll a D6: On a result of 2-6, the con is successful and the warband gains 2D6
+    gold (the huckster keeps the rest). However, on a result of 1 the huckster's con has backfired
+    and he is on the run (he misses the next game and no gold is received by the warband).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -213,7 +219,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Slick Operator
-    es: null
+    es: Operador astuto
   effect_i18n:
     en: 'In between games the player may choose to have the huckster run a con on the local
 
@@ -228,34 +234,35 @@ rules:
       (he misses the next game and no gold is received by
 
       the warband).'
-    es: null
+    es: 'Entre partidas, el jugador puede optar por que el trapacero haga un timo a los habitantes locales
+      de la región. Tira 1D6: con un resultado de 2-6, el timo tiene éxito y la banda gana 2D6 coronas
+      de oro (el trapacero se queda con el resto). Sin embargo, con un resultado de 1, el timo del trapacero
+      le ha salido el rabo y está huyendo (se pierde la siguiente partida y la banda no recibe oro).'
   applies_to:
     profile_ids:
     - huckster
 - id: looters--looting-the-dead
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.hochland-bandits.looters.looting-the-dead
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: injuries."
+      reason: 'Out of scope: injuries.'
   name: Looting the Dead
-  effect: 'Normally when a warrior is killed or his wounds cause him to leave the warband and he is taken off the warband''s
-    roster, all of his equipment is lost. However, some unscrupulous individuals will stoop to robbing a dead or incapacitated
-    warrior, thereby gaining his equipment for themselves. When rolling for warriors who were taken Out of Action at the end
-    of a battle, the Bandit player may roll a D6 for any warriors who are to be removed from their warband''s roster. On a
-    roll of 4+ the looter has taken all of the warrior’s equipment — it is the Bandit player’s to keep. Failure indicates
-    that the Looter either didn''t notice the warrior going down, or he didn''t get the opportunity to rob the body. Obviously
-    any warrior can only be
-
-    looted once, but multiple Looters allow the Bandit player multiple chances that his warband members got the equipment
-    off of each downed warrior. Note also
-
-    that warriors to be looted can be from any warband participating in the game, including the Bandit warband — Bandits are
-    certainly not above looting their own dead!'
+  effect: Normally when a warrior is killed or his wounds cause him to leave the warband and he is taken
+    off the warband's roster, all of his equipment is lost. However, some unscrupulous individuals will
+    stoop to robbing a dead or incapacitated warrior, thereby gaining his equipment for themselves. When
+    rolling for warriors who were taken Out of Action at the end of a battle, the Bandit player may roll
+    a D6 for any warriors who are to be removed from their warband's roster. On a roll of 4+ the looter
+    has taken all of the warrior’s equipment — it is the Bandit player’s to keep. Failure indicates that
+    the Looter either didn't notice the warrior going down, or he didn't get the opportunity to rob the
+    body. Obviously any warrior can only be looted once, but multiple Looters allow the Bandit player
+    multiple chances that his warband members got the equipment off of each downed warrior. Note also
+    that warriors to be looted can be from any warband participating in the game, including the Bandit
+    warband — Bandits are certainly not above looting their own dead!
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -263,39 +270,52 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Looting the Dead
-    es: null
+    es: Saquear a los muertos
   effect_i18n:
-    en: 'Normally when a warrior is killed or his wounds cause him to leave the warband and he is taken off the warband''s
-      roster, all of his equipment is lost. However, some unscrupulous individuals will stoop to robbing a dead or incapacitated
-      warrior, thereby gaining his equipment for themselves. When rolling for warriors who were taken Out of Action at the
-      end of a battle, the Bandit player may roll a D6 for any warriors who are to be removed from their warband''s roster.
-      On a roll of 4+ the looter has taken all of the warrior’s equipment — it is the Bandit player’s to keep. Failure indicates
-      that the Looter either didn''t notice the warrior going down, or he didn''t get the opportunity to rob the body. Obviously
-      any warrior can only be
+    en: 'Normally when a warrior is killed or his wounds cause him to leave the warband and he is taken
+      off the warband''s roster, all of his equipment is lost. However, some unscrupulous individuals
+      will stoop to robbing a dead or incapacitated warrior, thereby gaining his equipment for themselves.
+      When rolling for warriors who were taken Out of Action at the end of a battle, the Bandit player
+      may roll a D6 for any warriors who are to be removed from their warband''s roster. On a roll of
+      4+ the looter has taken all of the warrior’s equipment — it is the Bandit player’s to keep. Failure
+      indicates that the Looter either didn''t notice the warrior going down, or he didn''t get the opportunity
+      to rob the body. Obviously any warrior can only be
 
-      looted once, but multiple Looters allow the Bandit player multiple chances that his warband members got the equipment
-      off of each downed warrior. Note also
+      looted once, but multiple Looters allow the Bandit player multiple chances that his warband members
+      got the equipment off of each downed warrior. Note also
 
-      that warriors to be looted can be from any warband participating in the game, including the Bandit warband — Bandits
-      are certainly not above looting their own dead!'
-    es: null
+      that warriors to be looted can be from any warband participating in the game, including the Bandit
+      warband — Bandits are certainly not above looting their own dead!'
+    es: 'Normalmente, cuando un guerrero muere o sus heridas hacen que abandone la banda y se le retira
+      de la lista de la banda, todo su equipo se pierde. Sin embargo, algunos individuos sin escrúpulos
+      se rebajarán a robar a un guerrero muerto o incapacitado, ganando así su equipo para sí mismos.
+      Al tirar por los guerreros que fueron puestos Fuera de combate al final de una batalla, el jugador
+      Bandido puede tirar 1D6 por cualquier guerrero que vaya a ser retirado de la lista de su banda.
+      Con un resultado de 4+, el saqueador se ha llevado todo el equipo del guerrero: es del jugador Bandido.
+      Un fallo indica que el Saqueador no notó que el guerrero cayó, o que no tuvo la oportunidad de robar
+      el cuerpo. Obviamente, un guerrero solo puede ser saqueado una vez, pero varios Saqueadores permiten
+      al jugador Bandido múltiples posibilidades de que sus miembros de banda consigan el equipo de cada
+      guerrero caído. Ten en cuenta también que los guerreros saqueados pueden ser de cualquier banda
+      que participe en la partida, incluida la banda Bandida: los Bandidos ciertamente no se avergüenzan
+      de saquear a sus propios muertos.'
   applies_to:
     profile_ids:
     - looters
 - id: blackhearts--hardened
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.hochland-bandits.blackhearts.hardened
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Hardened
-  effect: Blackhearts are not as put off by the evils of the world when they come across them… in fact persons of this nature
-    are often more uncomfortable around situations where warmth and love are in abundance! Blackhearts are immune to Fear,
-    and never have to take All-Alone tests (they prefer to work alone anyway…).
+  effect: Blackhearts are not as put off by the evils of the world when they come across them… in fact
+    persons of this nature are often more uncomfortable around situations where warmth and love are in
+    abundance! Blackhearts are immune to Fear, and never have to take All-Alone tests (they prefer to
+    work alone anyway…).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -303,29 +323,33 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Hardened
-    es: null
+    es: Endurecido
   effect_i18n:
-    en: Blackhearts are not as put off by the evils of the world when they come across them… in fact persons of this nature
-      are often more uncomfortable around situations where warmth and love are in abundance! Blackhearts are immune to Fear,
-      and never have to take All-Alone tests (they prefer to work alone anyway…).
-    es: null
+    en: Blackhearts are not as put off by the evils of the world when they come across them… in fact persons
+      of this nature are often more uncomfortable around situations where warmth and love are in abundance!
+      Blackhearts are immune to Fear, and never have to take All-Alone tests (they prefer to work alone
+      anyway…).
+    es: Los Corazones Negros no se ven tan afectados por los males del mundo cuando los encuentran...
+      de hecho, las personas de esta naturaleza a menudo se sienten más incómodas en situaciones donde
+      la calidez y el amor abundan. Los Corazones Negros son inmunes al Miedo y jamás tienen que hacer
+      chequeos de Estar Solo (de todos modos, prefieren trabajar solos).
   applies_to:
     profile_ids:
     - blackhearts
 - id: poachers--trailblazers
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.hochland-bandits.poachers.trailblazers
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Trailblazers
-  effect: Poachers are experts at finding new game or safe campsites for the warband. In the game this is represented by allowing
-    the warband to reroll one D6 for each Poacher in the Exploration phase. Poachers are not as good as Elf Rangers for scouting,
-    but they are often darned close!
+  effect: Poachers are experts at finding new game or safe campsites for the warband. In the game this
+    is represented by allowing the warband to reroll one D6 for each Poacher in the Exploration phase.
+    Poachers are not as good as Elf Rangers for scouting, but they are often darned close!
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -333,28 +357,31 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Trailblazers
-    es: null
+    es: Abrecaminos
   effect_i18n:
-    en: Poachers are experts at finding new game or safe campsites for the warband. In the game this is represented by allowing
-      the warband to reroll one D6 for each Poacher in the Exploration phase. Poachers are not as good as Elf Rangers for
-      scouting, but they are often darned close!
-    es: null
+    en: Poachers are experts at finding new game or safe campsites for the warband. In the game this is
+      represented by allowing the warband to reroll one D6 for each Poacher in the Exploration phase.
+      Poachers are not as good as Elf Rangers for scouting, but they are often darned close!
+    es: Los Furtivos son expertos en encontrar nuevas presas o campamentos seguros para la banda. En el
+      juego esto se representa permitiendo a la banda repetir 1D6 por cada Furtivo en la fase de Exploración.
+      Los Furtivos no son tan buenos como los Guardabosques Elfos para explorar, pero a menudo están malditamente
+      cerca.
   applies_to:
     profile_ids:
     - poachers
 - id: gutterscum--utterly-inept
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.hochland-bandits.gutterscum.utterly-inept
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Utterly Inept
-  effect: Gutterscum have turned to a life of crime because they lack the ability to fit into normal society. They lack both
-    the ambition and the capacity for self-improvement. Gutterscum do not gain experience.
+  effect: Gutterscum have turned to a life of crime because they lack the ability to fit into normal society.
+    They lack both the ambition and the capacity for self-improvement. Gutterscum do not gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -362,11 +389,13 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Utterly Inept
-    es: null
+    es: Completamente inepto
   effect_i18n:
-    en: Gutterscum have turned to a life of crime because they lack the ability to fit into normal society. They lack both
-      the ambition and the capacity for self-improvement. Gutterscum do not gain experience.
-    es: null
+    en: Gutterscum have turned to a life of crime because they lack the ability to fit into normal society.
+      They lack both the ambition and the capacity for self-improvement. Gutterscum do not gain experience.
+    es: Los Hez del Arrabal han caído en una vida de crimen porque carecen de la capacidad de encajar
+      en la sociedad normal. Les falta tanto la ambición como la capacidad de superación. Los Hez del
+      Arrabal no ganan experiencia.
   applies_to:
     profile_ids:
     - gutterscum
@@ -379,7 +408,9 @@ rules:
     - id: unimplemented.hochland-bandits.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
   name: Hired Swords
   effect: The warband may hire any Hired Sword available to a Human Mercenary warband.
   source:
@@ -389,10 +420,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Hired Swords
-    es: null
+    es: Espadas a Sueldo
   effect_i18n:
     en: The warband may hire any Hired Sword available to a Human Mercenary warband.
-    es: null
+    es: La banda puede contratar cualquier Espada a Sueldo disponible para una banda Mercenaria Humana.
   applies_to:
     band: true
 - id: band--powders-expensive
@@ -407,8 +438,9 @@ rules:
         kind: compiler
         id: compiler.powder-s-expensive
   name: Powder's Expensive!
-  effect: Bandit Henchmen may not purchase black powder weapons. Bandit Heroes may use them where their equipment access allows,
-    but the warband uses the higher black-powder weapon costs shown in its equipment lists.
+  effect: Bandit Henchmen may not purchase black powder weapons. Bandit Heroes may use them where their
+    equipment access allows, but the warband uses the higher black-powder weapon costs shown in its equipment
+    lists.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -416,26 +448,29 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Powder's Expensive!
-    es: null
+    es: La pólvora es cara
   effect_i18n:
-    en: Bandit Henchmen may not purchase black powder weapons. Bandit Heroes may use them where their equipment access allows,
-      but the warband uses the higher black-powder weapon costs shown in its equipment lists.
-    es: null
+    en: Bandit Henchmen may not purchase black powder weapons. Bandit Heroes may use them where their
+      equipment access allows, but the warband uses the higher black-powder weapon costs shown in its
+      equipment lists.
+    es: Los secuaces Bandidos no pueden comprar armas de pólvora. Los héroes Bandidos pueden usarlas donde
+      su acceso a equipo lo permita, pero la banda usa los costes más altos de armas de pólvora mostrados
+      en sus listas de equipo.
   applies_to:
     band: true
 - id: band--foragers
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.hochland-bandits.band.foragers
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Foragers
-  effect: When determining Income, use the next lower warband-size category than the warband's actual size. A warband of 1-3
-    members still uses the first category.
+  effect: When determining Income, use the next lower warband-size category than the warband's actual
+    size. A warband of 1-3 members still uses the first category.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -443,26 +478,27 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Foragers
-    es: null
+    es: Recolectores
   effect_i18n:
-    en: When determining Income, use the next lower warband-size category than the warband's actual size. A warband of 1-3
-      members still uses the first category.
-    es: null
+    en: When determining Income, use the next lower warband-size category than the warband's actual size.
+      A warband of 1-3 members still uses the first category.
+    es: Al determinar los Ingresos, usa la categoría de tamaño de banda inmediatamente inferior al tamaño
+      real de la banda. Una banda de 1-3 miembros sigue usando la primera categoría.
   applies_to:
     band: true
 - id: band--know-who-to-sell-to
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.hochland-bandits.band.know-who-to-sell-to
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Know Who To Sell To
-  effect: When selling equipment, the warband receives half of any random component of the item's cost in addition to the
-    normal half of its basic cost.
+  effect: When selling equipment, the warband receives half of any random component of the item's cost
+    in addition to the normal half of its basic cost.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -470,52 +506,34 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Know Who To Sell To
-    es: null
+    es: Saber a quién vender
   effect_i18n:
-    en: When selling equipment, the warband receives half of any random component of the item's cost in addition to the normal
-      half of its basic cost.
-    es: null
+    en: When selling equipment, the warband receives half of any random component of the item's cost in
+      addition to the normal half of its basic cost.
+    es: Al vender equipo, la banda recibe la mitad de cualquier componente aleatorio del coste del objeto,
+      además de la mitad normal de su coste básico.
   applies_to:
     band: true
 - id: band--bandit-special-skills-banditry
   kind: warband_skill
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.hochland-bandits.band.bandit-special-skills-banditry
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Banditry
-  effect: 'Between missions, the bandit goes off and robs
-
-    travelers or other innocent victims. Instead of searching
-
-    for Rare equipment, the hero may engage in banditry -
-
-    roll a D6, on a result of 2-6, the banditry is successful
-
-    and the hero adds D6+1 gold to the warband''s stash.
-
-    However, on a result of 1, the attempted robbery has
-
-    somehow gone wrong - roll on the Serious Injury table
-
-    for the bandit, as if he had been taken Out of Action in
-
-    the last game. If several heroes have this skill, it is quite
-
-    possible that some are successful and some not in their
-
-    Banditry attempt between games...that is the nature of
-
-    thieves'' honor - if a man falls behind, he is usually on
-
-    his own! This skill may not be combined with the
-
-    Huckster''s Slick Operator special ability.'
+  effect: Between missions, the bandit goes off and robs travelers or other innocent victims. Instead
+    of searching for Rare equipment, the hero may engage in banditry - roll a D6, on a result of 2-6,
+    the banditry is successful and the hero adds D6+1 gold to the warband's stash. However, on a result
+    of 1, the attempted robbery has somehow gone wrong - roll on the Serious Injury table for the bandit,
+    as if he had been taken Out of Action in the last game. If several heroes have this skill, it is quite
+    possible that some are successful and some not in their Banditry attempt between games...that is the
+    nature of thieves' honor - if a man falls behind, he is usually on his own! This skill may not be
+    combined with the Huckster's Slick Operator special ability.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -523,7 +541,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Banditry
-    es: null
+    es: Bandolerismo
   effect_i18n:
     en: 'Between missions, the bandit goes off and robs
 
@@ -552,30 +570,32 @@ rules:
       his own! This skill may not be combined with the
 
       Huckster''s Slick Operator special ability.'
-    es: null
+    es: 'Entre misiones, el bandido sale y roba a viajeros u otras víctimas inocentes. En lugar de buscar
+      equipo Raro, el héroe puede dedicarse al bandolerismo: tira 1D6; con un resultado de 2-6, el bandolerismo
+      tiene éxito y el héroe añade D6+1 coronas de oro a la reserva de la banda. Sin embargo, con un resultado
+      de 1, el intento de robo ha salido mal de alguna manera: tira en la tabla de Heridas Graves para
+      el bandido, como si hubiera sido puesto Fuera de combate en la última partida. Si varios héroes
+      tienen esta habilidad, es bastante posible que algunos tengan éxito y otros no en su intento de
+      Bandolerismo entre partidas... esa es la naturaleza del honor de los ladrones: si un hombre se queda
+      atrás, normalmente va por su cuenta. Esta habilidad no puede combinarse con la habilidad especial
+      Operador astuto del Trapacero.'
   applies_to:
     band: true
 - id: band--bandit-special-skills-hide-in-shadows
   kind: warband_skill
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.hochland-bandits.band.bandit-special-skills-hide-in-shadows
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: movement."
+      reason: 'Out of scope: movement.'
   name: Hide In Shadows
-  effect: 'The Bandit has become an expert at concealing himself
-
-    from his enemies (and potential victims!). An enemy
-
-    warrior attempting to detect this warrior when he is
-
-    Hidden must halve his Initiative (round up) before
-
-    measuring the distance.'
+  effect: The Bandit has become an expert at concealing himself from his enemies (and potential victims!).
+    An enemy warrior attempting to detect this warrior when he is Hidden must halve his Initiative (round
+    up) before measuring the distance.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -583,7 +603,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Hide In Shadows
-    es: null
+    es: Ocultarse en las sombras
   effect_i18n:
     en: 'The Bandit has become an expert at concealing himself
 
@@ -594,7 +614,9 @@ rules:
       Hidden must halve his Initiative (round up) before
 
       measuring the distance.'
-    es: null
+    es: El Bandido se ha convertido en un experto ocultándose de sus enemigos (¡y de sus potenciales víctimas!).
+      Un guerrero enemigo que intente detectar a este guerrero cuando esté Oculto debe dividir a la mitad
+      su Iniciativa (redondeando hacia arriba) antes de medir la distancia.
   applies_to:
     band: true
 - id: band--bandit-special-skills-jump-back
@@ -607,14 +629,17 @@ rules:
     - id: unimplemented.hochland-bandits.band.bandit-special-skills-jump-back
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
   name: Jump Back
-  effect: This warrior is an expert at getting himself out of sticky situations. If the warrior is in close combat with an enemy
-    warrior (and not Knocked Down or Stunned) at the start of his Movement Phase, he may attempt to jump out of combat. To attempt
-    to do so, the warrior must make an Initiative test. If he fails the test, the warrior will automatically strike last in
-    that round of combat. However, if he passes, immediately move him 1" away from the enemy warrior (this does not count against
-    his movement for that Movement Phase); he may then move and otherwise act normally for the test of that that turn (even
-    charging back into combat if he chooses!).
+  effect: This warrior is an expert at getting himself out of sticky situations. If the warrior is in
+    close combat with an enemy warrior (and not Knocked Down or Stunned) at the start of his Movement
+    Phase, he may attempt to jump out of combat. To attempt to do so, the warrior must make an Initiative
+    test. If he fails the test, the warrior will automatically strike last in that round of combat. However,
+    if he passes, immediately move him 1" away from the enemy warrior (this does not count against his
+    movement for that Movement Phase); he may then move and otherwise act normally for the test of that
+    that turn (even charging back into combat if he chooses!).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -622,11 +647,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Jump Back
-    es: null
+    es: Salto atrás
   effect_i18n:
     en: 'This warrior is an expert at getting himself out of sticky
 
-      situations. If the warrior is in close combat with an enemy warrior (and not Knocked Down or Stunned) at
+      situations. If the warrior is in close combat with an enemy warrior (and not Knocked Down or Stunned)
+      at
 
       the start of his Movement Phase, he may attempt to
 
@@ -647,7 +673,13 @@ rules:
       of that that turn (even charging back into combat if he
 
       chooses!).'
-    es: null
+    es: Este guerrero es un experto en salir de situaciones comprometidas. Si el guerrero está en combate
+      cuerpo a cuerpo con un guerrero enemigo (y no está Derribado ni Aturdido) al inicio de su fase de
+      Movimiento, puede intentar saltar fuera del combate. Para intentarlo, el guerrero debe superar un
+      chequeo de Iniciativa. Si falla el chequeo, el guerrero golpeará automáticamente el último en ese
+      asalto de combate. Sin embargo, si lo supera, muévelo inmediatamente 1" lejos del guerrero enemigo
+      (esto no cuenta contra su movimiento para esa fase de Movimiento); puede entonces moverse y actuar
+      con normalidad durante el resto de ese asalto (¡incluso volver a cargar al combate si lo desea!).
   applies_to:
     band: true
 - id: band--bandit-special-skills-sniper
@@ -660,10 +692,13 @@ rules:
     - id: unimplemented.hochland-bandits.band.bandit-special-skills-sniper
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
   name: Sniper
-  effect: The bandit is an expert at shooting his victims from the comfort of cover. When Hiding, the warrior may cast spells
-    or shoot and still remain Hidden. Note that the bandit may not use this skill if he is shooting a Blackpowder weapon!
+  effect: The bandit is an expert at shooting his victims from the comfort of cover. When Hiding, the
+    warrior may cast spells or shoot and still remain Hidden. Note that the bandit may not use this skill
+    if he is shooting a Blackpowder weapon!
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -671,7 +706,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Sniper
-    es: null
+    es: Francotirador
   effect_i18n:
     en: 'The bandit is an expert at shooting his victims from the
 
@@ -682,34 +717,27 @@ rules:
       bandit may not use this skill if he is shooting a
 
       Blackpowder weapon!'
-    es: null
+    es: El bandido es un experto disparando a sus víctimas desde la comodidad de la cobertura. Cuando
+      esté Oculto, el guerrero puede lanzar hechizos o disparar y seguir Oculto. Ten en cuenta que el
+      bandido no puede usar esta habilidad si está disparando un arma de pólvora.
   applies_to:
     band: true
 - id: band--bandit-special-skills-throw-voice
   kind: warband_skill
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.hochland-bandits.band.bandit-special-skills-throw-voice
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: movement."
+      reason: 'Out of scope: movement.'
   name: Throw Voice
-  effect: 'This rogue has mastered the art of misdirecting
-
-    enemies who get too close by making them hear noises
-
-    or voices some distance from his location. If an
-
-    enemy warrior is attempting to detect the bandit
-
-    while he is Hidden, roll a D6 - on a result of
-
-    4 or better, the bandit is undetected and
-
-    remains Hidden.'
+  effect: This rogue has mastered the art of misdirecting enemies who get too close by making them hear
+    noises or voices some distance from his location. If an enemy warrior is attempting to detect the
+    bandit while he is Hidden, roll a D6 - on a result of 4 or better, the bandit is undetected and remains
+    Hidden.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -717,7 +745,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/hochland-bandits
   name_i18n:
     en: Throw Voice
-    es: null
+    es: Lanzar la voz
   effect_i18n:
     en: 'This rogue has mastered the art of misdirecting
 
@@ -732,6 +760,9 @@ rules:
       4 or better, the bandit is undetected and
 
       remains Hidden.'
-    es: null
+    es: 'Este bellaco ha dominado el arte de despistar a los enemigos que se acercan demasiado haciéndoles
+      oír ruidos o voces a cierta distancia de su posición. Si un guerrero enemigo intenta detectar al
+      bandido mientras está Oculto, tira 1D6: con un resultado de 4 o mejor, el bandido no es detectado
+      y permanece Oculto.'
   applies_to:
     band: true

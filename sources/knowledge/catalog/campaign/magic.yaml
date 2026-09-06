@@ -2,24 +2,19 @@ schema_version: 1
 ruleset: mordheim
 catalog: campaign-magic
 status: published
-# Defines the casting rules and the spell lists per lore. The spells known by a
-# concrete wizard and the rolls performed are campaign state, outside the KB.
 casting_rules:
   id: campaign.magic.casting
-  summary: Spells are cast in the shooting phase and may be used even if the
-    caster is in hand-to-hand combat. To use a spell, the wizard rolls equal to
-    or greater than the spell's Difficulty on 2D6. If he fails, he may not cast
-    a spell that turn. A wizard may cast one spell per turn and may not use
-    missile weapons if he wants to cast a spell; he may run. A wizard may not
-    use magic if he is wearing armour or has a shield or buckler; the only
-    exception is the Prayers of Sigmar.
-  damage: Spells that cause direct damage are resolved the same way as damage
-    from shooting or blows in hand-to-hand combat. Spells do not cause critical
-    hits. Models always receive armour saves against wounds caused by spells
-    unless noted otherwise.
-  starting_spells: Each wizard starts with one randomly determined spell, but
-    may gain more. Roll a D6 and consult the appropriate chart. If the same
-    spell is rolled twice, roll again or lower the spell's difficulty by 1.
+  summary: Spells are cast in the shooting phase and may be used even if the caster is in hand-to-hand
+    combat. To use a spell, the wizard rolls equal to or greater than the spell's Difficulty on 2D6. If
+    he fails, he may not cast a spell that turn. A wizard may cast one spell per turn and may not use
+    missile weapons if he wants to cast a spell; he may run. A wizard may not use magic if he is wearing
+    armour or has a shield or buckler; the only exception is the Prayers of Sigmar.
+  damage: Spells that cause direct damage are resolved the same way as damage from shooting or blows in
+    hand-to-hand combat. Spells do not cause critical hits. Models always receive armour saves against
+    wounds caused by spells unless noted otherwise.
+  starting_spells: Each wizard starts with one randomly determined spell, but may gain more. Roll a D6
+    and consult the appropriate chart. If the same spell is rolled twice, roll again or lower the spell's
+    difficulty by 1.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -221,49 +216,66 @@ lores:
     roll: '1'
     name: Fires of U'Zhul
     difficulty: 7
-    summary: The fireball has a range of 18" and causes one Strength 4 hit. It
-      strikes the first model in its path. Armour saves are taken as normal
-      (ie, with -1 modifier).
+    summary: The fireball has a range of 18" and causes one Strength 4 hit. It strikes the first model
+      in its path. Armour saves are taken as normal (ie, with -1 modifier).
+    name_i18n:
+      en: Fires of U'Zhul
+      es: Fuegos de U'Zhul
   - id: spell.lesser-magic.flight-of-zimmeran
     roll: '2'
     name: Flight of Zimmeran
     difficulty: 7
-    summary: The wizard may immediately move anywhere within 12", including
-      into base contact with an enemy, in which case he counts as charging. If
-      he engages a fleeing enemy he will score 1 automatic hit and then his
-      opponent will flee again (if he survives).
+    summary: The wizard may immediately move anywhere within 12", including into base contact with an
+      enemy, in which case he counts as charging. If he engages a fleeing enemy he will score 1 automatic
+      hit and then his opponent will flee again (if he survives).
+    name_i18n:
+      en: Flight of Zimmeran
+      es: Vuelo de Zimmeran
   - id: spell.lesser-magic.dread-of-aramar
     roll: '3'
     name: Dread of Aramar
     difficulty: 7
-    summary: A single model within 12" must pass a Leadership test or flee 2D6"
-      directly away from him. Does not affect Undead or any model immune to fear.
+    summary: A single model within 12" must pass a Leadership test or flee 2D6" directly away from him.
+      Does not affect Undead or any model immune to fear.
+    name_i18n:
+      en: Dread of Aramar
+      es: Pavor de Aramar
   - id: spell.lesser-magic.silver-arrows-of-arha
     roll: '4'
     name: Silver Arrows of Arha
     difficulty: 7
-    summary: Cannot be cast in hand-to-hand combat. Summons D6+2 arrows which
-      may be shot against one enemy model at a range of 24". Use the wizard's
-      Ballistic Skill, ignoring movement, range and cover penalties. Each arrow
-      causes one S3 hit.
+    summary: Cannot be cast in hand-to-hand combat. Summons D6+2 arrows which may be shot against one
+      enemy model at a range of 24". Use the wizard's Ballistic Skill, ignoring movement, range and cover
+      penalties. Each arrow causes one S3 hit.
+    name_i18n:
+      en: Silver Arrows of Arha
+      es: Flechas de plata de Arha
   - id: spell.lesser-magic.luck-of-shemtek
     roll: '5'
     name: Luck of Shemtek
     difficulty: 6
-    summary: The wizard may re-roll all his failed dice rolls; the second
-      results stand. The effect lasts until the beginning of his own next turn.
+    summary: The wizard may re-roll all his failed dice rolls; the second results stand. The effect lasts
+      until the beginning of his own next turn.
+    name_i18n:
+      en: Luck of Shemtek
+      es: Suerte de Shemtek
   - id: spell.lesser-magic.sword-of-rezhebel
     roll: '6'
     name: Sword of Rezhebel
     difficulty: 8
-    summary: The sword gives the wizard +1 Attack, +2 Strength and +2 Weapon
-      Skill. Take a Leadership test at the beginning of each of the wizard's own
-      turns; if the test fails, the sword disappears.
+    summary: The sword gives the wizard +1 Attack, +2 Strength and +2 Weapon Skill. Take a Leadership
+      test at the beginning of each of the wizard's own turns; if the test fails, the sword disappears.
+    name_i18n:
+      en: Sword of Rezhebel
+      es: Espada de Rezhebel
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Lesser Magic
     url: https://mordheimer.net/docs/magic/lesser-magic
+  name_i18n:
+    en: Lesser Magic
+    es: Magia menor
 - id: lore.necromancy
   name: Necromancy
   note: Used by the Undead Necromancer.
@@ -272,49 +284,67 @@ lores:
     roll: '1'
     name: Lifestealer
     difficulty: 10
-    summary: Choose a single model within 6". The target suffers a wound (no
-      save allowed) and the Necromancer gains an extra wound for the duration of
-      the battle. Will not affect the Possessed or any Undead models.
+    summary: Choose a single model within 6". The target suffers a wound (no save allowed) and the Necromancer
+      gains an extra wound for the duration of the battle. Will not affect the Possessed or any Undead
+      models.
+    name_i18n:
+      en: Lifestealer
+      es: Robavidas
   - id: spell.necromancy.re-animation
     roll: '2'
     name: Re-Animation
     difficulty: 5
-    summary: One Zombie that went out of action during the last hand-to-hand
-      combat or shooting phase immediately returns to the battle, placed within
-      6" of the Necromancer and not straight into hand-to-hand combat.
+    summary: One Zombie that went out of action during the last hand-to-hand combat or shooting phase
+      immediately returns to the battle, placed within 6" of the Necromancer and not straight into hand-to-hand
+      combat.
+    name_i18n:
+      en: Re-Animation
+      es: Reanimación
   - id: spell.necromancy.death-vision
     roll: '3'
     name: Death vision
     difficulty: 6
     summary: The Necromancer causes fear in his enemies for the duration of the battle.
+    name_i18n:
+      en: Death vision
+      es: Visión de la muerte
   - id: spell.necromancy.spell-of-doom
     roll: '4'
     name: Spell of Doom
     difficulty: 9
-    summary: Choose one enemy model within 12". The model must roll equal to or
-      less than his Strength on a D6 or be struck; if he fails, roll on the
-      Injury table.
+    summary: Choose one enemy model within 12". The model must roll equal to or less than his Strength
+      on a D6 or be struck; if he fails, roll on the Injury table.
+    name_i18n:
+      en: Spell of Doom
+      es: Hechizo de perdición
   - id: spell.necromancy.call-of-vanhel
     roll: '5'
     name: Call of Vanhel
     difficulty: 6
-    summary: A single Zombie or Dire Wolf within 6" may immediately move again
-      up to its maximum Movement distance. If this moves them into base contact
-      with an enemy model, they count as charging.
+    summary: A single Zombie or Dire Wolf within 6" may immediately move again up to its maximum Movement
+      distance. If this moves them into base contact with an enemy model, they count as charging.
+    name_i18n:
+      en: Call of Vanhel
+      es: Llamado de Vanhel
   - id: spell.necromancy.spell-of-awakening
     roll: '6'
     name: Spell of Awakening
     difficulty: auto
-    summary: If an enemy Hero is killed (11-15 on the Serious Injury chart), the
-      Necromancer may raise him to fight as a Zombie. The dead Hero retains his
-      characteristics and weapons and armour but may not use other equipment or
-      skills, may not run, counts as a Henchman group on his own, and may not
+    summary: If an enemy Hero is killed (11-15 on the Serious Injury chart), the Necromancer may raise
+      him to fight as a Zombie. The dead Hero retains his characteristics and weapons and armour but may
+      not use other equipment or skills, may not run, counts as a Henchman group on his own, and may not
       gain further experience. Always succeeds.
+    name_i18n:
+      en: Spell of Awakening
+      es: Hechizo de Despertar
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Necromancy
     url: https://mordheimer.net/docs/magic/necromancy
+  name_i18n:
+    en: Necromancy
+    es: Nigromancia
 - id: lore.charms-and-hexes
   name: Charms & Hexes
   note: Used by Witches.
@@ -323,41 +353,66 @@ lores:
     roll: '1'
     name: Scry
     difficulty: 6
-    summary: For the duration of the turn one hero or henchman may re-roll D3
-      dice rolls and add +1 or -1 to the result.
+    summary: For the duration of the turn one hero or henchman may re-roll D3 dice rolls and add +1 or
+      -1 to the result.
+    name_i18n:
+      en: Scry
+      es: Adivinar
   - id: spell.charms-and-hexes.curse
     roll: '2'
     name: Curse
     difficulty: 6
-    summary: One enemy model within 12" must re-roll all successful dice rolls
-      for the duration of this and their next turn.
+    summary: One enemy model within 12" must re-roll all successful dice rolls for the duration of this
+      and their next turn.
+    name_i18n:
+      en: Curse
+      es: Maldición
   - id: spell.charms-and-hexes.dust-of-the-blind
     roll: '3'
     name: Dust of the Blind
     difficulty: 9
-    summary: "One enemy model within 16\" is struck blind: may not shoot, charge\n      or run, fights at half Weapon Skill and moves in a random direction at the\n      start of its turn. Lasts until the Witch casts another spell or moves."
+    summary: "One enemy model within 16\" is struck blind: may not shoot, charge\n      or run, fights\
+      \ at half Weapon Skill and moves in a random direction at the\n      start of its turn. Lasts until\
+      \ the Witch casts another spell or moves."
+    name_i18n:
+      en: Dust of the Blind
+      es: Polvo de los ciegos
   - id: spell.charms-and-hexes.age-of-stone
     roll: '4'
     name: Age of Stone
     difficulty: 8
-    summary: One enemy model within 12" has all of its characteristics reduced
-      by -1 for the duration of this and their next turn.
+    summary: One enemy model within 12" has all of its characteristics reduced by -1 for the duration
+      of this and their next turn.
+    name_i18n:
+      en: Age of Stone
+      es: Era de piedra
   - id: spell.charms-and-hexes.warriors-bane
     roll: '5'
     name: Warrior's Bane
     difficulty: 7
-    summary: "One enemy model within 18\" cannot use any weapons: unable to\n      shoot and counts as fighting with fists in hand-to-hand combat. Lasts\n      for the duration of this and their next turn."
+    summary: "One enemy model within 18\" cannot use any weapons: unable to\n      shoot and counts as\
+      \ fighting with fists in hand-to-hand combat. Lasts\n      for the duration of this and their next\
+      \ turn."
+    name_i18n:
+      en: Warrior's Bane
+      es: Flaqueza del guerrero
   - id: spell.charms-and-hexes.cure
     roll: '6'
     name: Cure
     difficulty: 6
-    summary: All friendly models within 6" have a single wound healed; stunned
-      or knocked down models may immediately stand up.
+    summary: All friendly models within 6" have a single wound healed; stunned or knocked down models
+      may immediately stand up.
+    name_i18n:
+      en: Cure
+      es: Curar
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Charms & Hexes
     url: https://mordheimer.net/docs/magic/charms-and-hexes
+  name_i18n:
+    en: Charms & Hexes
+    es: Encantamientos y maldiciones
 - id: lore.arabian-elemental-magic
   name: Arabian Elemental Magic
   note: Used by Arabian Mystics and Khar-mel The Djinn.
@@ -366,204 +421,280 @@ lores:
     roll: '1'
     name: Riding the Wind
     difficulty: 6
-    summary: Cast at the beginning of the Movement phase. The caster may move up
-      to 12+D6" anywhere, ignoring intervening terrain. May not move into base
-      contact with an enemy; may shoot as normal with a -1 penalty.
+    summary: Cast at the beginning of the Movement phase. The caster may move up to 12+D6" anywhere, ignoring
+      intervening terrain. May not move into base contact with an enemy; may shoot as normal with a -1
+      penalty.
+    name_i18n:
+      en: Riding the Wind
+      es: Cabalgando el viento
   - id: spell.arabian-elemental-magic.skin-of-stone
     roll: '2'
     name: Skin of Stone
     difficulty: 7
-    summary: Cast on any friendly warrior within 6". The target gains +2 to his
-      armour save but suffers -1 Initiative. May be maintained each turn while
-      within 6" of the caster and the caster passes a Difficulty test.
+    summary: Cast on any friendly warrior within 6". The target gains +2 to his armour save but suffers
+      -1 Initiative. May be maintained each turn while within 6" of the caster and the caster passes a
+      Difficulty test.
+    name_i18n:
+      en: Skin of Stone
+      es: Piel de piedra
   - id: spell.arabian-elemental-magic.burning-hand
     roll: '3'
     name: Burning Hand
     difficulty: 8
-    summary: Cast at the beginning of the Combat phase. The caster may sacrifice
-      all normal attacks to make one hand-to-hand attack at Strength 5 causing 2
-      wounds. On a 4+ the target is set on fire. Lasts one round only.
+    summary: Cast at the beginning of the Combat phase. The caster may sacrifice all normal attacks to
+      make one hand-to-hand attack at Strength 5 causing 2 wounds. On a 4+ the target is set on fire.
+      Lasts one round only.
+    name_i18n:
+      en: Burning Hand
+      es: Mano ardiente
   - id: spell.arabian-elemental-magic.quicksand
     roll: '4'
     name: Quicksand
     difficulty: 6
-    summary: Cast at any warrior within 6". Water floods a 3" area around the
-      target until the beginning of the caster's next Recovery phase. All
-      warriors within the quicksand must pass a Strength test or be unable to
-      move; warriors in combat cannot attack but may defend.
+    summary: Cast at any warrior within 6". Water floods a 3" area around the target until the beginning
+      of the caster's next Recovery phase. All warriors within the quicksand must pass a Strength test
+      or be unable to move; warriors in combat cannot attack but may defend.
+    name_i18n:
+      en: Quicksand
+      es: Arenas movedizas
   - id: spell.arabian-elemental-magic.storm-of-magic
     roll: '5'
     name: Storm of Magic
     difficulty: 9
-    summary: Target any warrior within 12". The target takes one S5 hit. Armour
-      saves may be taken as normal.
+    summary: Target any warrior within 12". The target takes one S5 hit. Armour saves may be taken as
+      normal.
+    name_i18n:
+      en: Storm of Magic
+      es: Tormenta de magia
   - id: spell.arabian-elemental-magic.blessing-of-the-elements
     roll: '6'
     name: Blessing of the Elements
     difficulty: 6
-    summary: In the post-battle sequence, the player may re-roll any one dice or
-      modify one dice by +1/-1. If the caster was taken out of action, this
-      spell may not be cast.
+    summary: In the post-battle sequence, the player may re-roll any one dice or modify one dice by +1/-1.
+      If the caster was taken out of action, this spell may not be cast.
+    name_i18n:
+      en: Blessing of the Elements
+      es: Bendición de los elementos
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Arabian Elemental Magic
     url: https://mordheimer.net/docs/magic/arabian-elemental-magic
+  name_i18n:
+    en: Arabian Elemental Magic
+    es: Magia elemental de Araby
 - id: lore.prayers-of-sigmar
   name: Prayers of Sigmar
-  note: Used by Witch Hunter Warrior Priests and Sigmarite Matriarchs. A warrior
-    may use the divine power of Sigmar while wearing armour. Prayers of Sigmar
-    are not regarded as spells, so any special protection against spells does not
-    affect them.
+  note: Used by Witch Hunter Warrior Priests and Sigmarite Matriarchs. A warrior may use the divine power
+    of Sigmar while wearing armour. Prayers of Sigmar are not regarded as spells, so any special protection
+    against spells does not affect them.
   spells:
   - id: spell.prayers-of-sigmar.the-hammer-of-sigmar
     roll: '1'
     name: The Hammer of Sigmar
     difficulty: 7
-    summary: The wielder gains +2 Strength in hand-to-hand combat and all hits
-      he inflicts cause double damage. The Priest must test each shooting phase
-      he wants to use the Hammer.
+    summary: The wielder gains +2 Strength in hand-to-hand combat and all hits he inflicts cause double
+      damage. The Priest must test each shooting phase he wants to use the Hammer.
+    name_i18n:
+      en: The Hammer of Sigmar
+      es: El Martillo de Sigmar
   - id: spell.prayers-of-sigmar.hearts-of-steel
     roll: '2'
     name: Hearts of Steel
     difficulty: 8
-    summary: Allied warriors within 8" become immune to fear and all alone
-      tests; the whole warband gains +1 to any Rout tests. Lasts until the
-      caster is knocked down, stunned or put out of action. Not cumulative.
+    summary: Allied warriors within 8" become immune to fear and all alone tests; the whole warband gains
+      +1 to any Rout tests. Lasts until the caster is knocked down, stunned or put out of action. Not
+      cumulative.
+    name_i18n:
+      en: Hearts of Steel
+      es: Corações de acero
   - id: spell.prayers-of-sigmar.soulfire
     roll: '3'
     name: Soulfire
     difficulty: 9
-    summary: All enemy models within 4" suffer a Strength 3 hit with no armour
-      saves. Undead and Possessed models in range suffer a Strength 5 hit instead.
+    summary: All enemy models within 4" suffer a Strength 3 hit with no armour saves. Undead and Possessed
+      models in range suffer a Strength 5 hit instead.
+    name_i18n:
+      en: Soulfire
+      es: Fuego de almas
   - id: spell.prayers-of-sigmar.shield-of-faith
     roll: '4'
     name: Shield of Faith
     difficulty: 6
-    summary: The Priest is immune to all spells. Roll at the beginning of each
-      turn in the recovery phase; on a roll of 1 or 2 the shield disappears.
+    summary: The Priest is immune to all spells. Roll at the beginning of each turn in the recovery phase;
+      on a roll of 1 or 2 the shield disappears.
+    name_i18n:
+      en: Shield of Faith
+      es: Escudo de fe
   - id: spell.prayers-of-sigmar.healing-hand
     roll: '5'
     name: Healing Hand
     difficulty: 5
-    summary: Any one model within 2" (including himself) is restored to its full
-      quota of Wounds; stunned or knocked down friendly models within 2" stand up.
+    summary: Any one model within 2" (including himself) is restored to its full quota of Wounds; stunned
+      or knocked down friendly models within 2" stand up.
+    name_i18n:
+      en: Healing Hand
+      es: Mano sanadora
   - id: spell.prayers-of-sigmar.armour-of-righteousness
     roll: '6'
     name: Armour of Righteousness
     difficulty: 9
-    summary: The Priest has an armour save of 2+ which replaces his normal save,
-      causes fear and is immune to fear. Lasts until the beginning of the
-      Priest's next Shooting phase.
+    summary: The Priest has an armour save of 2+ which replaces his normal save, causes fear and is immune
+      to fear. Lasts until the beginning of the Priest's next Shooting phase.
+    name_i18n:
+      en: Armour of Righteousness
+      es: Armadura de la rectitud
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Prayers of Sigmar
     url: https://mordheimer.net/docs/magic/prayers-of-sigmar
+  name_i18n:
+    en: Prayers of Sigmar
+    es: Plegarias de Sigmar
 - id: lore.prayers-of-ulric
   name: Prayers of Ulric
-  note: Used by the Wolf Priest of Ulric. Wolf Priests may use a wolf cloak and
-    still chant these prayers. They are prayers, not spells, so special
-    protection against spells does not affect them.
+  note: Used by the Wolf Priest of Ulric. Wolf Priests may use a wolf cloak and still chant these prayers.
+    They are prayers, not spells, so special protection against spells does not affect them.
   spells:
   - id: spell.prayers-of-ulric.snow-squall
     roll: '1'
     name: Snow Squall
     difficulty: 6
-    summary: All enemy models in hand-to-hand combat with the priest are at -1
-      to hit. Lasts for the duration of the hand-to-hand combat.
+    summary: All enemy models in hand-to-hand combat with the priest are at -1 to hit. Lasts for the duration
+      of the hand-to-hand combat.
+    name_i18n:
+      en: Snow Squall
+      es: Chubasco de nieve
   - id: spell.prayers-of-ulric.hammerschlag
     roll: '2'
     name: Hammerschlag
     difficulty: 10
-    summary: The Wolf Priest calls down a hammer blow from Ulric on any model
-      within 6". That model suffers an S4 attack from an enormous ethereal
-      hammer, including the concussion special rule.
+    summary: The Wolf Priest calls down a hammer blow from Ulric on any model within 6". That model suffers
+      an S4 attack from an enormous ethereal hammer, including the concussion special rule.
+    name_i18n:
+      en: Hammerschlag
+      es: Golpe de martillo
   - id: spell.prayers-of-ulric.bloodlust
     roll: '3'
     name: Bloodlust
     difficulty: 7
-    summary: All attacks are at S+2 and he scores a critical hit on a 5-6. The
-      Wolf Priest must test each turn to see if the prayer remains in effect.
+    summary: All attacks are at S+2 and he scores a critical hit on a 5-6. The Wolf Priest must test each
+      turn to see if the prayer remains in effect.
+    name_i18n:
+      en: Bloodlust
+      es: Sed de sangre
   - id: spell.prayers-of-ulric.wolfs-hunger
     roll: '4'
     name: Wolf's Hunger
     difficulty: 7
     summary: One member of the warband (priest's choice) is thrown into a Frenzy.
+    name_i18n:
+      en: Wolf's Hunger
+      es: Hambre del lobo
   - id: spell.prayers-of-ulric.ulrics-howl
     roll: '5'
     name: Ulric's Howl
     difficulty: 10
-    summary: For the duration of the battle, all members of the priest's warband
-      are immune to Fear and all alone tests; all Rout tests are at +1.
+    summary: For the duration of the battle, all members of the priest's warband are immune to Fear and
+      all alone tests; all Rout tests are at +1.
+    name_i18n:
+      en: Ulric's Howl
+      es: Aullido de Ulric
   - id: spell.prayers-of-ulric.call-of-ulric
     roll: '6'
     name: Call of Ulric
     difficulty: 10
-    summary: The Wolf Priest's body re-shapes into a huge wolf (M6 WS4 BS0 S4 T4
-      W1 I5 A2 Ld6). While in wolf form he may only attack as a wolf. Each
-      shooting phase he may test Leadership to regain human form; if still in
-      wolf form at the end of the battle he gets one last chance, otherwise he
-      remains a wolf forever (still a Hero, skills only from the Speed Table
-      except Scale Sheer Surfaces; maximums M7 WS6 BS0 S4 T4 W3 I7 A3 Ld7).
+    summary: The Wolf Priest's body re-shapes into a huge wolf (M6 WS4 BS0 S4 T4 W1 I5 A2 Ld6). While
+      in wolf form he may only attack as a wolf. Each shooting phase he may test Leadership to regain
+      human form; if still in wolf form at the end of the battle he gets one last chance, otherwise he
+      remains a wolf forever (still a Hero, skills only from the Speed Table except Scale Sheer Surfaces;
+      maximums M7 WS6 BS0 S4 T4 W3 I7 A3 Ld7).
+    name_i18n:
+      en: Call of Ulric
+      es: Llamado de Ulric
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Prayers of Ulric
     url: https://mordheimer.net/docs/magic/prayers-of-ulric
+  name_i18n:
+    en: Prayers of Ulric
+    es: Plegarias de Ulric
 - id: lore.chaos-rituals
   name: Chaos Rituals
-  note: Used by Magisters of the Cult of the Possessed, Daemons, Beastmen, and
-    Marauders of Chaos seers with the Mark of Chaos Undivided.
+  note: Used by Magisters of the Cult of the Possessed, Daemons, Beastmen, and Marauders of Chaos seers
+    with the Mark of Chaos Undivided.
   spells:
   - id: spell.chaos-rituals.vision-of-torment
     roll: '1'
     name: Vision of Torment
     difficulty: 10
-    summary: Range 6", must be cast on the closest enemy model (or one in base
-      contact in hand-to-hand combat). The affected model is immediately
-      stunned; if it cannot be stunned it is knocked down instead.
+    summary: Range 6", must be cast on the closest enemy model (or one in base contact in hand-to-hand
+      combat). The affected model is immediately stunned; if it cannot be stunned it is knocked down instead.
+    name_i18n:
+      en: Vision of Torment
+      es: Visión de tormento
   - id: spell.chaos-rituals.eye-of-god
     roll: '2'
     name: Eye of God
     difficulty: 7
-    summary: |-
-      Usable successfully only once per battle. Choose any single model
+    summary: 'Usable successfully only once per battle. Choose any single model
+
       within 6", friend or foe, and roll a D6: 1 = taken out of action (no
+
       Serious Injury roll); 2-5 = +1 to any one characteristic for this battle;
-      6 = +1 to all characteristics for the duration of the battle.
+
+      6 = +1 to all characteristics for the duration of the battle.'
+    name_i18n:
+      en: Eye of God
+      es: Ojo de Dios
   - id: spell.chaos-rituals.dark-blood
     roll: '3'
     name: Dark Blood
     difficulty: 8
-    summary: Range 8", causes D3 S5 hits and strikes the first model in its
-      path. After using this spell the Chaos Mage rolls on the Injury table for
-      himself, treating the out of action result as stunned instead.
+    summary: Range 8", causes D3 S5 hits and strikes the first model in its path. After using this spell
+      the Chaos Mage rolls on the Injury table for himself, treating the out of action result as stunned
+      instead.
+    name_i18n:
+      en: Dark Blood
+      es: Sangre oscura
   - id: spell.chaos-rituals.lure-of-chaos
     roll: '4'
     name: Lure of Chaos
     difficulty: 9
-    summary: Range 12", must be cast on the closest enemy model. Roll a D6 and
-      add the Chaos Mage's Leadership; then roll a D6 and add the target's
-      Leadership. If the Chaos Mage beats the target, he gains control of the
-      model until it passes a Leadership test in its own recovery phase.
+    summary: Range 12", must be cast on the closest enemy model. Roll a D6 and add the Chaos Mage's Leadership;
+      then roll a D6 and add the target's Leadership. If the Chaos Mage beats the target, he gains control
+      of the model until it passes a Leadership test in its own recovery phase.
+    name_i18n:
+      en: Lure of Chaos
+      es: Llamado del caos
   - id: spell.chaos-rituals.wings-of-darkness
     roll: '5'
     name: Wings of Darkness
     difficulty: 7
-    summary: The Chaos Mage may immediately move anywhere within 12", including
-      into base contact with an enemy, in which case he counts as charging.
+    summary: The Chaos Mage may immediately move anywhere within 12", including into base contact with
+      an enemy, in which case he counts as charging.
+    name_i18n:
+      en: Wings of Darkness
+      es: Alas de oscuridad
   - id: spell.chaos-rituals.word-of-pain
     roll: '6'
     name: Word of Pain
     difficulty: 7
-    summary: All models within 3" of the Chaos Mage, friend or foe, suffer one
-      S3 hit with no armour saves allowed.
+    summary: All models within 3" of the Chaos Mage, friend or foe, suffer one S3 hit with no armour saves
+      allowed.
+    name_i18n:
+      en: Word of Pain
+      es: Palabra de dolor
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Chaos Rituals
     url: https://mordheimer.net/docs/magic/chaos-rituals
+  name_i18n:
+    en: Chaos Rituals
+    es: Rituales del Caos
 - id: lore.norse-runes
   name: Norse Runes
   note: Used by Norse Shamans.
@@ -572,46 +703,64 @@ lores:
     roll: '1'
     name: Howl of the North
     difficulty: 9
-    summary: The Shaman is immune to all missile fire. Roll a dice in the
-      Shaman's recovery phase; on a 1 or 2 the winds dissipate.
+    summary: The Shaman is immune to all missile fire. Roll a dice in the Shaman's recovery phase; on
+      a 1 or 2 the winds dissipate.
+    name_i18n:
+      en: Howl of the North
+      es: Aullido del norte
   - id: spell.norse-runes.angvars-fury
     roll: '2'
     name: Angvar's Fury
     difficulty: 7
-    summary: All warriors within 8" of the Shaman gain +1 to hit in hand-to-hand
-      combat against the opposing warband. Lasts till the start of the Norse
-      player's next turn.
+    summary: All warriors within 8" of the Shaman gain +1 to hit in hand-to-hand combat against the opposing
+      warband. Lasts till the start of the Norse player's next turn.
+    name_i18n:
+      en: Angvar's Fury
+      es: Furia de Angvar
   - id: spell.norse-runes.elviks-cold-spear
     roll: '3'
     name: Elvek's Cold Spear
     difficulty: 7
-    summary: A razor sharp icicle with a range of 18" causes one S4 hit and
-      strikes the first model in its path. Normal armour saves apply.
+    summary: A razor sharp icicle with a range of 18" causes one S4 hit and strikes the first model in
+      its path. Normal armour saves apply.
+    name_i18n:
+      en: Elvek's Cold Spear
+      es: Lanza gélida de Elvek
   - id: spell.norse-runes.gift-of-the-fates
     roll: '4'
     name: Gift of the Fates
     difficulty: 7
-    summary: The Shaman may adjust one die roll by +1/-1 between a successful
-      casting of this rune and his next recovery phase. A 'to wound' roll
-      adjusted to or from 6 will not cause a critical.
+    summary: The Shaman may adjust one die roll by +1/-1 between a successful casting of this rune and
+      his next recovery phase. A 'to wound' roll adjusted to or from 6 will not cause a critical.
+    name_i18n:
+      en: Gift of the Fates
+      es: Don de las Parcas
   - id: spell.norse-runes.kiss-of-frost
     roll: '5'
     name: Kiss of Frost
     difficulty: 6
     summary: A single model within 12" must pass an Initiative test or be knocked down.
+    name_i18n:
+      en: Kiss of Frost
+      es: Beso de escarcha
   - id: spell.norse-runes.bears-might
     roll: '6'
     name: Bear's Might
     difficulty: 9
-    summary: The Shaman gains +1 Attack, +2 Strength, +2 Toughness and -2
-      Initiative (minimum 1). Take a Leadership test at the beginning of each
-      turn; if it fails, Bear's Might drains away. Can only be cast successfully
-      once per game.
+    summary: The Shaman gains +1 Attack, +2 Strength, +2 Toughness and -2 Initiative (minimum 1). Take
+      a Leadership test at the beginning of each turn; if it fails, Bear's Might drains away. Can only
+      be cast successfully once per game.
+    name_i18n:
+      en: Bear's Might
+      es: Poder del oso
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Norse Runes
     url: https://mordheimer.net/docs/magic/norse-runes
+  name_i18n:
+    en: Norse Runes
+    es: Runas norse
 - id: lore.magic-of-the-horned-rat
   name: Magic of the Horned Rat
   note: Used by Skaven Sorcerers (Clan Eshin and Clan Pestilens).
@@ -620,46 +769,63 @@ lores:
     roll: '1'
     name: Warpfire
     difficulty: 8
-    summary: Range 8", hitting the first model in its path. Causes D3 Strength 4
-      hits on its target and one Strength 3 hit on each model within 2" of the target.
+    summary: Range 8", hitting the first model in its path. Causes D3 Strength 4 hits on its target and
+      one Strength 3 hit on each model within 2" of the target.
+    name_i18n:
+      en: Warpfire
+      es: Fuego de disformidad
   - id: spell.magic-of-the-horned-rat.children-of-the-horned-rat
     roll: '2'
     name: Children of the Horned Rat
     difficulty: auto
-    summary: Must be used before the game and only once. Summons D3 Giant Rats
-      placed within 6" of the Sorcerer. The rats disappear after the battle and
-      do not count towards the maximum size of the warband.
+    summary: Must be used before the game and only once. Summons D3 Giant Rats placed within 6" of the
+      Sorcerer. The rats disappear after the battle and do not count towards the maximum size of the warband.
+    name_i18n:
+      en: Children of the Horned Rat
+      es: Hijos del Rata Cuernudo
   - id: spell.magic-of-the-horned-rat.gnawdoom
     roll: '3'
     name: Gnawdoom
     difficulty: 7
     summary: Causes 2D6 Strength 1 hits on a single model within 8" of the caster.
+    name_i18n:
+      en: Gnawdoom
+      es: Gnawdoom
   - id: spell.magic-of-the-horned-rat.black-fury
     roll: '4'
     name: Black Fury
     difficulty: 8
-    summary: The Sorcerer may immediately charge any enemy model within 12"
-      (ignoring terrain and interposing models) and gains 2 extra Attacks and +1
-      Strength during this turn's hand-to-hand combat phase only.
+    summary: The Sorcerer may immediately charge any enemy model within 12" (ignoring terrain and interposing
+      models) and gains 2 extra Attacks and +1 Strength during this turn's hand-to-hand combat phase only.
+    name_i18n:
+      en: Black Fury
+      es: Furia negra
   - id: spell.magic-of-the-horned-rat.eye-of-the-warp
     roll: '5'
     name: Eye of the Warp
     difficulty: 8
-    summary: All standing models in base contact with the Sorcerer must take an
-      immediate Leadership test. On failure each suffers a Strength 3 hit and
-      runs 2D6" directly away from the Sorcerer.
+    summary: All standing models in base contact with the Sorcerer must take an immediate Leadership test.
+      On failure each suffers a Strength 3 hit and runs 2D6" directly away from the Sorcerer.
+    name_i18n:
+      en: Eye of the Warp
+      es: Ojo de la disformidad
   - id: spell.magic-of-the-horned-rat.sorcerers-curse
     roll: '6'
     name: Sorcerer's Curse
     difficulty: 6
-    summary: Range 12". The target must re-roll any successful armour saves and
-      to hit rolls during the Skaven hand-to-hand phase and his own next shooting
-      and hand-to-hand combat phases.
+    summary: Range 12". The target must re-roll any successful armour saves and to hit rolls during the
+      Skaven hand-to-hand phase and his own next shooting and hand-to-hand combat phases.
+    name_i18n:
+      en: Sorcerer's Curse
+      es: Maldición del hechicero
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Magic of the Horned Rat
     url: https://mordheimer.net/docs/magic/magic-of-the-horned-rat
+  name_i18n:
+    en: Magic of the Horned Rat
+    es: Magia del Rata Cuernudo
 - id: lore.lore-of-darkness
   name: Lore of Darkness
   note: Used by the Dark Emissary.
@@ -668,54 +834,68 @@ lores:
     roll: '1'
     name: Bolt of Dark Light
     difficulty: 7
-    summary: The Dark Emissary conjures a bolt of malign power. The bolt has a
-      range of 12" and causes a single Strength 5 hit against the first model
-      in its path.
+    summary: The Dark Emissary conjures a bolt of malign power. The bolt has a range of 12" and causes
+      a single Strength 5 hit against the first model in its path.
+    name_i18n:
+      en: Bolt of Dark Light
+      es: Rayo de luz oscura
   - id: spell.lore-of-darkness.betrayal-in-death
     roll: '2'
     name: Betrayal in Death
     difficulty: 8
-    summary: Affects all enemy models slain in the shooting phase or close
-      combat, lasting until the start of the caster's next turn. The slain
-      reanimate and attack their comrades; if not in combat the model shoots if
-      able, or charges if it has no missile weapons; if in combat it makes only
-      a single attack, then falls dead once more.
+    summary: Affects all enemy models slain in the shooting phase or close combat, lasting until the start
+      of the caster's next turn. The slain reanimate and attack their comrades; if not in combat the model
+      shoots if able, or charges if it has no missile weapons; if in combat it makes only a single attack,
+      then falls dead once more.
+    name_i18n:
+      en: Betrayal in Death
+      es: Traición en la muerte
   - id: spell.lore-of-darkness.nightmare
     roll: '3'
     name: Nightmare
     difficulty: 7
-    summary: Cast on an enemy model within 18". The model takes an immediate
-      fear test as if charged by a fear-causing enemy; if failed it flees 2D6"
-      away from the Dark Emissary.
+    summary: Cast on an enemy model within 18". The model takes an immediate fear test as if charged by
+      a fear-causing enemy; if failed it flees 2D6" away from the Dark Emissary.
+    name_i18n:
+      en: Nightmare
+      es: Pesadilla
   - id: spell.lore-of-darkness.curse-of-the-dark-master
     roll: '4'
     name: Curse of the Dark Master
     difficulty: 8
-    summary: Cast on a single model within 24". All of that model's rolls to hit
-      for both shooting and combat are reduced by -1 until the start of the
-      caster's next turn.
+    summary: Cast on a single model within 24". All of that model's rolls to hit for both shooting and
+      combat are reduced by -1 until the start of the caster's next turn.
+    name_i18n:
+      en: Curse of the Dark Master
+      es: Maldición del Señor Oscuro
   - id: spell.lore-of-darkness.fog-of-death
     roll: '5'
     name: Fog of Death
     difficulty: 10
-    summary: A deep and impenetrable fog cloaks the entire battlefield. Affects
-      every model on the board except the Dark Emissary; enemies are affected
-      on a roll of
-      4+, friendly models on a 6+, all suffering a Strength 2 hit. The fog
-      lasts until the start of the caster's next turn and reduces line of sight
+    summary: A deep and impenetrable fog cloaks the entire battlefield. Affects every model on the board
+      except the Dark Emissary; enemies are affected on a roll of 4+, friendly models on a 6+, all suffering
+      a Strength 2 hit. The fog lasts until the start of the caster's next turn and reduces line of sight
       to 3D6" for all warriors, affecting shooting, charging and so on.
+    name_i18n:
+      en: Fog of Death
+      es: Niebla de muerte
   - id: spell.lore-of-darkness.coils-of-the-serpent
     roll: '6'
     name: Coils of the Serpent
     difficulty: 10
-    summary: Cast on a single enemy model within 6". The model takes an
-      immediate toughness test; if failed it is crushed to death and out of
-      action. No saves of any kind protect against this magic.
+    summary: Cast on a single enemy model within 6". The model takes an immediate toughness test; if failed
+      it is crushed to death and out of action. No saves of any kind protect against this magic.
+    name_i18n:
+      en: Coils of the Serpent
+      es: Espiras de la serpiente
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Lore of Darkness
     url: https://mordheimer.net/docs/magic/lore-of-darkness
+  name_i18n:
+    en: Lore of Darkness
+    es: Sabiduría de la oscuridad
 - id: lore.lore-of-light
   name: Lore of Light
   note: Used by the Truthsayer.
@@ -724,166 +904,216 @@ lores:
     roll: '1'
     name: Wings of Fate
     difficulty: 6
-    summary: Conjures a flock of birds to sweep down and attack the enemy. The
-      flock has a range of 18" and may attack any model within this range of
-      the Truthsayer; the enemy model suffers D3 Strength 2 hits.
+    summary: Conjures a flock of birds to sweep down and attack the enemy. The flock has a range of 18"
+      and may attack any model within this range of the Truthsayer; the enemy model suffers D3 Strength
+      2 hits.
+    name_i18n:
+      en: Wings of Fate
+      es: Alas del destino
   - id: spell.lore-of-light.light-of-battle
     roll: '2'
     name: Light of Battle
     difficulty: 6
-    summary: Cast on a friendly model within 12". The model has an additional
-      save of 5+ against all attacks until the start of the Truthsayer's next
-      turn.
+    summary: Cast on a friendly model within 12". The model has an additional save of 5+ against all attacks
+      until the start of the Truthsayer's next turn.
+    name_i18n:
+      en: Light of Battle
+      es: Luz de batalla
   - id: spell.lore-of-light.gift-of-life
     roll: '3'
     name: Gift of Life
     difficulty: 9
-    summary: Cast on a friendly model slain in the previous enemy turn. The
-      model is immediately restored to 1 wound remaining and placed as
-      accurately as possible where it fell.
+    summary: Cast on a friendly model slain in the previous enemy turn. The model is immediately restored
+      to 1 wound remaining and placed as accurately as possible where it fell.
+    name_i18n:
+      en: Gift of Life
+      es: Don de vida
   - id: spell.lore-of-light.blessing-of-valour
     roll: '4'
     name: Blessing of Valour
     difficulty: 8
-    summary: Cast on a single friendly model within 24". The model gains +1 to
-      all hit rolls in close combat for the duration of the turn.
+    summary: Cast on a single friendly model within 24". The model gains +1 to all hit rolls in close
+      combat for the duration of the turn.
+    name_i18n:
+      en: Blessing of Valour
+      es: Bendición de valentía
   - id: spell.lore-of-light.boon-of-courage
     roll: '5'
     name: Boon of Courage
     difficulty: 8
-    summary: Affects all friendly models within 12". The models are completely
-      immune to the effects of psychology and all alone tests until the end of
-      the Truthsayer's next turn.
+    summary: Affects all friendly models within 12". The models are completely immune to the effects of
+      psychology and all alone tests until the end of the Truthsayer's next turn.
+    name_i18n:
+      en: Boon of Courage
+      es: Don de coraje
   - id: spell.lore-of-light.voice-of-command
     roll: '6'
     name: Voice of Command
     difficulty: 9
-    summary: Affects one model within 24" of the Truthsayer. The model may do
-      nothing in its next turn other than defend itself in combat; it may not
-      move, shoot, attack or perform any other action.
+    summary: Affects one model within 24" of the Truthsayer. The model may do nothing in its next turn
+      other than defend itself in combat; it may not move, shoot, attack or perform any other action.
+    name_i18n:
+      en: Voice of Command
+      es: Voz de mando
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Lore of Light
     url: https://mordheimer.net/docs/magic/lore-of-light
+  name_i18n:
+    en: Lore of Light
+    es: Sabiduría de la luz
 - id: lore.rituals-of-hashut
   name: Rituals of Hashut
-  note: Used by Black Dwarfs Sorcerers. The Sorcerer starts with the Sacrificial
-    Ritual (roll 0); all other rituals are determined by a D6 roll.
+  note: Used by Black Dwarfs Sorcerers. The Sorcerer starts with the Sacrificial Ritual (roll 0); all
+    other rituals are determined by a D6 roll.
   spells:
   - id: spell.rituals-of-hashut.sacrificial-ritual
     roll: '0'
     name: Sacrificial Ritual
     difficulty: 10
-    summary: The Sorcerer must be in contact with an Engine of Chaos to cast.
-      He removes one captive model from the Engine of Chaos and its starting
-      warband roster. He may sacrifice additional captives before rolling to
-      lower the difficulty by 1 per sacrifice. The Sorcerer gains +D3
-      Experience.
+    summary: The Sorcerer must be in contact with an Engine of Chaos to cast. He removes one captive model
+      from the Engine of Chaos and its starting warband roster. He may sacrifice additional captives before
+      rolling to lower the difficulty by 1 per sacrifice. The Sorcerer gains +D3 Experience.
+    name_i18n:
+      en: Sacrificial Ritual
+      es: Ritual de sacrificio
   - id: spell.rituals-of-hashut.spirit-of-hashut
     roll: '1'
     name: Spirit of Hashut
     difficulty: 9
-    summary: The player draws a line 18" from the Sorcerer. All models crossed
-      by the line suffer one S4 hit.
+    summary: The player draws a line 18" from the Sorcerer. All models crossed by the line suffer one
+      S4 hit.
+    name_i18n:
+      en: Spirit of Hashut
+      es: Espíritu de Hashut
   - id: spell.rituals-of-hashut.bellow-of-doom
     roll: '2'
     name: Bellow of Doom
     difficulty: 8
-    summary: All models engaged in base contact with the Sorcerer must make an
-      immediate Leadership test or break from combat and run.
+    summary: All models engaged in base contact with the Sorcerer must make an immediate Leadership test
+      or break from combat and run.
+    name_i18n:
+      en: Bellow of Doom
+      es: Bramido de perdición
   - id: spell.rituals-of-hashut.fumes-of-azgorh
     roll: '3'
     name: Fumes of Azgorh
     difficulty: 7
-    summary: The spell has a range of 8", hitting all models in its path on a
-      D6 score of 4+. Any model hit suffers a S4 hit, rolling to wound as
-      normal. No armour saves are allowed.
+    summary: The spell has a range of 8", hitting all models in its path on a D6 score of 4+. Any model
+      hit suffers a S4 hit, rolling to wound as normal. No armour saves are allowed.
+    name_i18n:
+      en: Fumes of Azgorh
+      es: Vapores de Azgorh
   - id: spell.rituals-of-hashut.flickering-hide
     roll: '4'
     name: Flickering Hide
     difficulty: 10
-    summary: The Sorcerer may cast this spell upon himself or any one model
-      within 6". The flaming hide negates any one wound suffered on a D6 roll of
-      4+. In hand-to-hand combat any model that hits the flaming hide suffers
-      one S3 hit for each hit scored. The flaming hide lasts until the
-      beginning of the Sorcerer's next shooting phase.
+    summary: The Sorcerer may cast this spell upon himself or any one model within 6". The flaming hide
+      negates any one wound suffered on a D6 roll of 4+. In hand-to-hand combat any model that hits the
+      flaming hide suffers one S3 hit for each hit scored. The flaming hide lasts until the beginning
+      of the Sorcerer's next shooting phase.
+    name_i18n:
+      en: Flickering Hide
+      es: Piel parpadeante
   - id: spell.rituals-of-hashut.lava-flow
     roll: '5'
     name: Lava Flow
     difficulty: 7
-    summary: The Sorcerer may move 12" in any direction, even into combat,
-      counting as a charge. Due to the nature of the spell he may only reappear
-      on or below the ground.
+    summary: The Sorcerer may move 12" in any direction, even into combat, counting as a charge. Due to
+      the nature of the spell he may only reappear on or below the ground.
+    name_i18n:
+      en: Lava Flow
+      es: Corriente de lava
   - id: spell.rituals-of-hashut.earthquake
     roll: '6'
     name: Earthquake
     difficulty: 9
-    summary: All models within 3" of the Sorcerer, friend or foe alike, must
-      roll equal to or under their Initiative or suffer D3 S4 hits.
+    summary: All models within 3" of the Sorcerer, friend or foe alike, must roll equal to or under their
+      Initiative or suffer D3 S4 hits.
+    name_i18n:
+      en: Earthquake
+      es: Terremoto
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Rituals of Hashut
     url: https://mordheimer.net/docs/magic/rituals-of-hashut
+  name_i18n:
+    en: Rituals of Hashut
+    es: Rituales de Hashut
 - id: lore.ladys-prayers
   name: Lady's Prayers
-  note: Used by the Bretonnian Chapel Guard Damsel. Prayers are not regarded as
-    spells, so any special protection against spells does not affect them.
+  note: Used by the Bretonnian Chapel Guard Damsel. Prayers are not regarded as spells, so any special
+    protection against spells does not affect them.
   spells:
   - id: spell.ladys-prayers.ladys-favors
     roll: '1'
     name: Lady's Favors
     difficulty: auto
-    summary: All your heroes count as having Lucky Charms for this battle and
-      ignore the first hit against them on a D6 roll of 4+. If they already own
-      Lucky Charms, they may reroll a failed Lucky Charm save, accepting the
-      second result.
+    summary: All your heroes count as having Lucky Charms for this battle and ignore the first hit against
+      them on a D6 roll of 4+. If they already own Lucky Charms, they may reroll a failed Lucky Charm
+      save, accepting the second result.
+    name_i18n:
+      en: Lady's Favors
+      es: Favores de la Dama
   - id: spell.ladys-prayers.blessed-protection
     roll: '2'
     name: Blessed Protection
     difficulty: 8
-    summary: The Damsel and any Bretonnians within 6" of her gain an unmodified
-      ward save of 4+ against the effects of spells or prayers. Test each
-      shooting phase; on a roll of 1 or 2 the spell dissipates.
+    summary: The Damsel and any Bretonnians within 6" of her gain an unmodified ward save of 4+ against
+      the effects of spells or prayers. Test each shooting phase; on a roll of 1 or 2 the spell dissipates.
+    name_i18n:
+      en: Blessed Protection
+      es: Protección bendecida
   - id: spell.ladys-prayers.swiftstride
     roll: '3'
     name: Swiftstride
     difficulty: 7
-    summary: The Damsel may pick a friendly hero or henchman within 12" that
-      charged or failed a charge this turn. That warrior gains +1 to hit on all
-      attacks until the end of the turn. If not in combat, they may make an
-      additional move of D6" towards an enemy; moving into base contact with an
-      enemy counts as a charge.
+    summary: The Damsel may pick a friendly hero or henchman within 12" that charged or failed a charge
+      this turn. That warrior gains +1 to hit on all attacks until the end of the turn. If not in combat,
+      they may make an additional move of D6" towards an enemy; moving into base contact with an enemy
+      counts as a charge.
+    name_i18n:
+      en: Swiftstride
+      es: Zancada veloz
   - id: spell.ladys-prayers.ladys-scorn
     roll: '4'
     name: Lady's Scorn
     difficulty: 5
-    summary: Anyone attempting to shoot at the Damsel must first pass a
-      Leadership test or they are unable to fire this turn. This includes
-      Silver Arrows, Crossbow Pistols, Hand-to-Hand Pistols and template shot
-      weapons that she is within the path of. The spell lasts until the end of
-      the game.
+    summary: Anyone attempting to shoot at the Damsel must first pass a Leadership test or they are unable
+      to fire this turn. This includes Silver Arrows, Crossbow Pistols, Hand-to-Hand Pistols and template
+      shot weapons that she is within the path of. The spell lasts until the end of the game.
+    name_i18n:
+      en: Lady's Scorn
+      es: Desdén de la Dama
   - id: spell.ladys-prayers.elixir-of-life
     roll: '5'
     name: Elixir of Life
     difficulty: 7
-    summary: Any one model within 4" of the Damsel, including herself, is
-      restored to its full quota of Wounds. Any friendly models within 4" that
-      are stunned or knocked down immediately come to their senses, stand up
-      and continue fighting as normal.
+    summary: Any one model within 4" of the Damsel, including herself, is restored to its full quota of
+      Wounds. Any friendly models within 4" that are stunned or knocked down immediately come to their
+      senses, stand up and continue fighting as normal.
+    name_i18n:
+      en: Elixir of Life
+      es: Elixir de vida
   - id: spell.ladys-prayers.guiding-vision
     roll: '6'
     name: Guiding Vision
     difficulty: 6
-    summary: The Damsel picks a friendly hero or henchman within 8". Until the
-      start of her next shooting phase, that warrior may reroll one die roll
-      they make and add +1 or -1 to the result.
+    summary: The Damsel picks a friendly hero or henchman within 8". Until the start of her next shooting
+      phase, that warrior may reroll one die roll they make and add +1 or -1 to the result.
+    name_i18n:
+      en: Guiding Vision
+      es: Visión guía
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Lady's Prayers
     url: https://mordheimer.net/docs/magic/ladys-prayers
+  name_i18n:
+    en: Lady's Prayers
+    es: Plegarias de la Dama
 - id: lore.nurgle-rituals
   name: Nurgle Rituals
   note: Used by the Carnival of Chaos Carnival Master.
@@ -892,47 +1122,63 @@ lores:
     roll: '1'
     name: Daemonic Vigour
     difficulty: 8
-    summary: Any Plague Bearers or Nurglings within 8" of the Master increase
-      their Daemonic Aura save from 5+ to 4+ until the beginning of their next
-      turn.
+    summary: Any Plague Bearers or Nurglings within 8" of the Master increase their Daemonic Aura save
+      from 5+ to 4+ until the beginning of their next turn.
+    name_i18n:
+      en: Daemonic Vigour
+      es: Vigor demoníaco
   - id: spell.nurgle-rituals.buboes
     roll: '2'
     name: Buboes
     difficulty: 7
-    summary: The spell has a range of 8" and affects a single enemy warrior.
-      The warrior must pass a Toughness test or lose a Wound. No armour saves
-      are allowed.
+    summary: The spell has a range of 8" and affects a single enemy warrior. The warrior must pass a Toughness
+      test or lose a Wound. No armour saves are allowed.
+    name_i18n:
+      en: Buboes
+      es: Bubones
   - id: spell.nurgle-rituals.stench-of-nurgle
     roll: '3'
     name: Stench of Nurgle
     difficulty: 8
-    summary: The spell has a range of 6" and affects all living creatures,
-      friend or foe. Each enemy warrior in range must pass a Toughness test or
-      lose an Attack until their next turn.
+    summary: The spell has a range of 6" and affects all living creatures, friend or foe. Each enemy warrior
+      in range must pass a Toughness test or lose an Attack until their next turn.
+    name_i18n:
+      en: Stench of Nurgle
+      es: Hedor de Nurgle
   - id: spell.nurgle-rituals.pestilence
     roll: '4'
     name: Pestilence
     difficulty: 10
-    summary: All enemy models within 12" of the Master suffer a Strength 3 hit.
-      No armour saves are allowed.
+    summary: All enemy models within 12" of the Master suffer a Strength 3 hit. No armour saves are allowed.
+    name_i18n:
+      en: Pestilence
+      es: Pestilencia
   - id: spell.nurgle-rituals.scabrous-hide
     roll: '5'
     name: Scabrous Hide
     difficulty: 8
-    summary: The Master's skin becomes tough and leathery. He has an armour
-      save of 2+ which replaces any normal armour save. The scabrous hide
-      lasts until the beginning of his next shooting phase.
+    summary: The Master's skin becomes tough and leathery. He has an armour save of 2+ which replaces
+      any normal armour save. The scabrous hide lasts until the beginning of his next shooting phase.
+    name_i18n:
+      en: Scabrous Hide
+      es: Piel costrosa
   - id: spell.nurgle-rituals.nurgles-rot
     roll: '6'
     name: Nurgle's Rot
     difficulty: 9
-    summary: All enemy models in base contact with the Master must immediately
-      test against their Toughness or contract Nurgle's Rot.
+    summary: All enemy models in base contact with the Master must immediately test against their Toughness
+      or contract Nurgle's Rot.
+    name_i18n:
+      en: Nurgle's Rot
+      es: Podredumbre de Nurgle
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Nurgle Rituals
     url: https://mordheimer.net/docs/magic/nurgle-rituals
+  name_i18n:
+    en: Nurgle Rituals
+    es: Rituales de Nurgle
 - id: lore.dark-elf-magic
   name: Dark Elf Magic
   note: Used by Dark Elf Sorceresses.
@@ -941,113 +1187,142 @@ lores:
     roll: '1'
     name: Doombolt
     difficulty: 9
-    summary: The bolt may be targeted at any enemy model in line of sight. It
-      has an 18" range and causes a Strength 5 hit. If the target is wounded,
-      the next closest model within 6" is also hit on a 4+, at -1 Strength to
-      the previous hit. The bolt keeps leaping until there are no more targets
-      within range or its Strength drops to one. Each model can only be hit
-      once per turn. Take armour saves as normal.
+    summary: The bolt may be targeted at any enemy model in line of sight. It has an 18" range and causes
+      a Strength 5 hit. If the target is wounded, the next closest model within 6" is also hit on a 4+,
+      at -1 Strength to the previous hit. The bolt keeps leaping until there are no more targets within
+      range or its Strength drops to one. Each model can only be hit once per turn. Take armour saves
+      as normal.
+    name_i18n:
+      en: Doombolt
+      es: Rayo de perdición
   - id: spell.dark-elf-magic.word-of-pain
     roll: '2'
     name: Word of Pain
     difficulty: 8
-    summary: The spell may be cast at an enemy model within 12". The victim
-      must reroll all successful hand-to-hand or missile attacks and all to
-      wound rolls. To charge, the victim must first pass a successful
-      Leadership test. The spell lasts until the beginning of the next Dark Elf
-      turn.
+    summary: The spell may be cast at an enemy model within 12". The victim must reroll all successful
+      hand-to-hand or missile attacks and all to wound rolls. To charge, the victim must first pass a
+      successful Leadership test. The spell lasts until the beginning of the next Dark Elf turn.
+    name_i18n:
+      en: Word of Pain
+      es: Palabra de dolor
   - id: spell.dark-elf-magic.soul-stealer
     roll: '3'
     name: Soul Stealer
     difficulty: 9
-    summary: The Sorceress makes a to hit roll against a model in base contact.
-      If the attack is successful and her opponent is struck, he suffers a
-      wound with no armour save possible. The Sorceress adds one wound to her
-      profile. She can never have more than one extra wound from this spell and
-      the extra wound is lost at the end of the battle.
+    summary: The Sorceress makes a to hit roll against a model in base contact. If the attack is successful
+      and her opponent is struck, he suffers a wound with no armour save possible. The Sorceress adds
+      one wound to her profile. She can never have more than one extra wound from this spell and the extra
+      wound is lost at the end of the battle.
+    name_i18n:
+      en: Soul Stealer
+      es: Ladronalmas
   - id: spell.dark-elf-magic.flamesword
     roll: '4'
     name: Flamesword
     difficulty: 8
-    summary: The Sorceress may choose the hand-to-hand combat weapon of a
-      member of her warband within 6" to be engulfed in flames. A weapon with
-      these flames acts as a normal weapon of its type, but adds a +2 bonus to
-      the user's Strength. Hits inflicted from the weapon ignore armour saves.
-      Lasts until the Sorceress' next shooting phase.
+    summary: The Sorceress may choose the hand-to-hand combat weapon of a member of her warband within
+      6" to be engulfed in flames. A weapon with these flames acts as a normal weapon of its type, but
+      adds a +2 bonus to the user's Strength. Hits inflicted from the weapon ignore armour saves. Lasts
+      until the Sorceress' next shooting phase.
+    name_i18n:
+      en: Flamesword
+      es: Espada llameante
   - id: spell.dark-elf-magic.deathspasm
     roll: '5'
     name: Deathspasm
     difficulty: 10
-    summary: The Deathspasm has a range of 6" and must be cast on the closest
-      enemy model. The affected model must roll on the injury chart. If
-      successfully cast, the casting Sorceress is immediately knocked down.
+    summary: The Deathspasm has a range of 6" and must be cast on the closest enemy model. The affected
+      model must roll on the injury chart. If successfully cast, the casting Sorceress is immediately
+      knocked down.
+    name_i18n:
+      en: Deathspasm
+      es: Espasmo mortal
   - id: spell.dark-elf-magic.witch-flight
     roll: '6'
     name: Witch Flight
     difficulty: 7
-    summary: The Sorceress may immediately move anywhere within 12" and may
-      count as charging. If she engages a fleeing enemy in the close combat
-      phase she will score one automatic hit and then the opponent will flee
-      again.
+    summary: The Sorceress may immediately move anywhere within 12" and may count as charging. If she
+      engages a fleeing enemy in the close combat phase she will score one automatic hit and then the
+      opponent will flee again.
+    name_i18n:
+      en: Witch Flight
+      es: Vuelo de bruja
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Dark Elf Magic
     url: https://mordheimer.net/docs/magic/dark-elf-magic
+  name_i18n:
+    en: Dark Elf Magic
+    es: Magia de los elfos oscuros
 - id: lore.onogal-rituals
   name: Onogal Rituals
-  note: Modified Nurgle rituals used by Marauders of Chaos Seers with the Mark
-    of Onogal the Crow.
+  note: Modified Nurgle rituals used by Marauders of Chaos Seers with the Mark of Onogal the Crow.
   spells:
   - id: spell.onogal-rituals.touch-of-onogal
     roll: '1'
     name: Touch of Onogal
     difficulty: 10
-    summary: This spell can be used against one of the Seer's close combat
-      opponents. If he takes the model out of action in the following
-      hand-to-hand combat phase, the player rolls for Serious Injuries
-      immediately. If the model dies permanently, replace it with a Nurgle
-      Plague Bearer for the rest of the game under the Seer's control. If the
-      Seer is stunned or taken out of action the Plague Bearer disappears into
-      the Realm of Chaos. Only one Plague Bearer can be created at a time.
+    summary: This spell can be used against one of the Seer's close combat opponents. If he takes the
+      model out of action in the following hand-to-hand combat phase, the player rolls for Serious Injuries
+      immediately. If the model dies permanently, replace it with a Nurgle Plague Bearer for the rest
+      of the game under the Seer's control. If the Seer is stunned or taken out of action the Plague Bearer
+      disappears into the Realm of Chaos. Only one Plague Bearer can be created at a time.
+    name_i18n:
+      en: Touch of Onogal
+      es: Toque de Onogal
   - id: spell.onogal-rituals.buboes
     roll: '2'
     name: Buboes
     difficulty: 7
-    summary: The spell has a range of 8" and affects a single enemy warrior.
-      The warrior must pass a Toughness test or lose a Wound. No armour saves
-      are allowed.
+    summary: The spell has a range of 8" and affects a single enemy warrior. The warrior must pass a Toughness
+      test or lose a Wound. No armour saves are allowed.
+    name_i18n:
+      en: Buboes
+      es: Bubones
   - id: spell.onogal-rituals.stench-of-nurgle
     roll: '3'
     name: Stench of Nurgle
     difficulty: 8
-    summary: The spell has a range of 6" and affects all living creatures,
-      friend or foe. Each enemy warrior in range must pass a Toughness test or
-      lose an Attack until their next turn.
+    summary: The spell has a range of 6" and affects all living creatures, friend or foe. Each enemy warrior
+      in range must pass a Toughness test or lose an Attack until their next turn.
+    name_i18n:
+      en: Stench of Nurgle
+      es: Hedor de Nurgle
   - id: spell.onogal-rituals.pestilence
     roll: '4'
     name: Pestilence
     difficulty: 10
-    summary: All enemy models within 12" of the Seer suffer a Strength 3 hit.
-      No armour saves are allowed.
+    summary: All enemy models within 12" of the Seer suffer a Strength 3 hit. No armour saves are allowed.
+    name_i18n:
+      en: Pestilence
+      es: Pestilencia
   - id: spell.onogal-rituals.scabrous-hide
     roll: '5'
     name: Scabrous Hide
     difficulty: 8
-    summary: The Seer has an armour save of 2+ which replaces any normal armour
-      save. The scabrous hide lasts until the beginning of his next shooting
-      phase.
+    summary: The Seer has an armour save of 2+ which replaces any normal armour save. The scabrous hide
+      lasts until the beginning of his next shooting phase.
+    name_i18n:
+      en: Scabrous Hide
+      es: Piel costrosa
   - id: spell.onogal-rituals.nurgles-rot
     roll: '6'
     name: Nurgle's Rot
     difficulty: 9
-    summary: All enemy models in base contact with the Seer must immediately
-      test against their Toughness or contract Nurgle's Rot.
+    summary: All enemy models in base contact with the Seer must immediately test against their Toughness
+      or contract Nurgle's Rot.
+    name_i18n:
+      en: Nurgle's Rot
+      es: Podredumbre de Nurgle
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Onogal Rituals
     url: https://mordheimer.net/docs/magic/onogal-rituals
+  name_i18n:
+    en: Onogal Rituals
+    es: Rituales de Onogal
 - id: lore.shornaal-rituals
   name: Shornaal Rituals
   note: Used by Marauders of Chaos Seers with the Mark of Shornaal the Serpent.
@@ -1056,56 +1331,71 @@ lores:
     roll: '1'
     name: Delicious Suffering
     difficulty: 8
-    summary: All models, friend and foe except the Seer, within 3" must pass a
-      Leadership test or are knocked down.
+    summary: All models, friend and foe except the Seer, within 3" must pass a Leadership test or are
+      knocked down.
+    name_i18n:
+      en: Delicious Suffering
+      es: Sufrimiento delicioso
   - id: spell.shornaal-rituals.dance-of-the-serpent
     roll: '2'
     name: Dance of the Serpent
     difficulty: 8
-    summary: All enemy models that are not immune to psychology suffer a -1 to
-      hit against him in close combat. The dance lasts until the beginning of
-      the Seer's next shooting phase.
+    summary: All enemy models that are not immune to psychology suffer a -1 to hit against him in close
+      combat. The dance lasts until the beginning of the Seer's next shooting phase.
+    name_i18n:
+      en: Dance of the Serpent
+      es: Danza de la serpiente
   - id: spell.shornaal-rituals.endless-torment
     roll: '3'
     name: Endless Torment
     difficulty: 9
-    summary: Choose one enemy model within 8". From now on the model must roll
-      for injury at -1 after its recovery phase. For the duration of the
-      torment the Seer can do nothing else; he may end the spell at the
-      beginning of his turn, and if attacked in close combat he is hit
-      automatically and the spell breaks.
+    summary: Choose one enemy model within 8". From now on the model must roll for injury at -1 after
+      its recovery phase. For the duration of the torment the Seer can do nothing else; he may end the
+      spell at the beginning of his turn, and if attacked in close combat he is hit automatically and
+      the spell breaks.
+    name_i18n:
+      en: Endless Torment
+      es: Tormento infinito
   - id: spell.shornaal-rituals.mystify
     roll: '4'
     name: Mystify
     difficulty: 8
-    summary: A target enemy model within 8" has its Initiative reduced to 1 and
-      always strikes last in close combat, even if it charges or is armed with
-      a spear or pike. The spell lasts until the target passes a Leadership
-      test during the recovery phase.
+    summary: A target enemy model within 8" has its Initiative reduced to 1 and always strikes last in
+      close combat, even if it charges or is armed with a spear or pike. The spell lasts until the target
+      passes a Leadership test during the recovery phase.
+    name_i18n:
+      en: Mystify
+      es: Desconcertar
   - id: spell.shornaal-rituals.a-thousand-voices
     roll: '5'
     name: A Thousand Voices
     difficulty: 8
-    summary: Choose one enemy model within 12". For the duration of the spell
-      the model reduces its Leadership by D3 +1, to a minimum of 2, if it is
-      not immune to psychology. The model must pass a Leadership test at the
-      beginning of its turn to end the spell. The spell also breaks when the
-      Seer loses a wound. Only one model can be enchanted at a time.
+    summary: Choose one enemy model within 12". For the duration of the spell the model reduces its Leadership
+      by D3 +1, to a minimum of 2, if it is not immune to psychology. The model must pass a Leadership
+      test at the beginning of its turn to end the spell. The spell also breaks when the Seer loses a
+      wound. Only one model can be enchanted at a time.
+    name_i18n:
+      en: A Thousand Voices
+      es: Mil voces
   - id: spell.shornaal-rituals.shornaals-temptation
     roll: '6'
     name: Shornaal's Temptation
     difficulty: 7
-    summary: Choose one enemy model within 8" that is not immune to psychology.
-      The model must pass a Leadership test or the Seer gains control over it.
-      The player may attempt to regain control at the beginning of his turn by
-      passing a Leadership test. Only one model can be enchanted at a time. If
-      the Seer is hit, by a missile or in close combat, he must pass a
-      Leadership test or the spell ends.
+    summary: Choose one enemy model within 8" that is not immune to psychology. The model must pass a
+      Leadership test or the Seer gains control over it. The player may attempt to regain control at the
+      beginning of his turn by passing a Leadership test. Only one model can be enchanted at a time. If
+      the Seer is hit, by a missile or in close combat, he must pass a Leadership test or the spell ends.
+    name_i18n:
+      en: Shornaal's Temptation
+      es: Tentación de Shornaal
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Shornaal Rituals
     url: https://mordheimer.net/docs/magic/shornaal-rituals
+  name_i18n:
+    en: Shornaal Rituals
+    es: Rituales de Shornaal
 - id: lore.tchar-rituals
   name: Tchar Rituals
   note: Used by Marauders of Chaos Seers with the Mark of Tchar the Eagle.
@@ -1114,52 +1404,69 @@ lores:
     roll: '1'
     name: Tchar's Blessing
     difficulty: auto
-    summary: This spell must be used before the game and may only be used once.
-      The Seer may not cast spells in the following battle. After the game he
-      gains D3 Experience points if he was not taken out of action.
+    summary: This spell must be used before the game and may only be used once. The Seer may not cast
+      spells in the following battle. After the game he gains D3 Experience points if he was not taken
+      out of action.
+    name_i18n:
+      en: Tchar's Blessing
+      es: Bendición de Tchar
   - id: spell.tchar-rituals.dispel-magic
     roll: '2'
     name: Dispel Magic
     difficulty: 7
     summary: The Seer ends all effects of currently active spells.
+    name_i18n:
+      en: Dispel Magic
+      es: Disipar magia
   - id: spell.tchar-rituals.foresight
     roll: '3'
     name: Foresight
     difficulty: 10
-    summary: This spell must be used before the game and may only be used once.
-      Choose a warband. One randomly determined Hero of that warband must miss
-      the following game. Models that are capable of casting spells or prayers
-      are immune to this effect.
+    summary: This spell must be used before the game and may only be used once. Choose a warband. One
+      randomly determined Hero of that warband must miss the following game. Models that are capable of
+      casting spells or prayers are immune to this effect.
+    name_i18n:
+      en: Foresight
+      es: Previsión
   - id: spell.tchar-rituals.wrath-of-the-great-eagle
     roll: '4'
     name: Wrath of the Great Eagle
     difficulty: 9
-    summary: Choose one enemy model within 12". The model is hit with a Strength
-      equal to the difference between the Seer's Experience points and the
-      model's Experience, to a maximum of 10. Armour saves are taken as normal.
-      If the victim has more Experience than the Seer, the Seer is hit instead.
+    summary: Choose one enemy model within 12". The model is hit with a Strength equal to the difference
+      between the Seer's Experience points and the model's Experience, to a maximum of 10. Armour saves
+      are taken as normal. If the victim has more Experience than the Seer, the Seer is hit instead.
+    name_i18n:
+      en: Wrath of the Great Eagle
+      es: Ira del Gran Águila
   - id: spell.tchar-rituals.tchars-reward
     roll: '5'
     name: Tchar's Reward
     difficulty: 8
-    summary: The Seer gets +1 on any one stat per 10 Experience points he has.
-      Each stat may be increased only once through this spell. The power lasts
-      until the end of the Seer's next shooting phase and can be re-cast in
-      that phase.
+    summary: The Seer gets +1 on any one stat per 10 Experience points he has. Each stat may be increased
+      only once through this spell. The power lasts until the end of the Seer's next shooting phase and
+      can be re-cast in that phase.
+    name_i18n:
+      en: Tchar's Reward
+      es: Recompensa de Tchar
   - id: spell.tchar-rituals.slave-to-chaos
     roll: '6'
     name: Slave to Chaos
     difficulty: 9
-    summary: This spell has a range of 12" and causes one Strength 2 hit with no
-      armour save. If the model is taken out of action, roll for Serious
-      Injuries immediately. If it dies, replace the killed warrior with a
-      Horror of Tzeentch until the end of the game. If the Seer is stunned or
-      taken out of action the Horror disappears into the Realm of Chaos.
+    summary: This spell has a range of 12" and causes one Strength 2 hit with no armour save. If the model
+      is taken out of action, roll for Serious Injuries immediately. If it dies, replace the killed warrior
+      with a Horror of Tzeentch until the end of the game. If the Seer is stunned or taken out of action
+      the Horror disappears into the Realm of Chaos.
+    name_i18n:
+      en: Slave to Chaos
+      es: Esclavo del caos
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Tchar Rituals
     url: https://mordheimer.net/docs/magic/tchar-rituals
+  name_i18n:
+    en: Tchar Rituals
+    es: Rituales de Tchar
 - id: lore.goblin-magic
   name: Goblin Magic
   note: Used by Night Goblins (web) Shamans.
@@ -1168,47 +1475,63 @@ lores:
     roll: '1'
     name: Wind of Gork
     difficulty: 6
-    summary: Range 12". The first model in its path must roll under its
-      Toughness or take a Strength 2 hit and be knocked down automatically.
+    summary: Range 12". The first model in its path must roll under its Toughness or take a Strength 2
+      hit and be knocked down automatically.
+    name_i18n:
+      en: Wind of Gork
+      es: Viento de Gork
   - id: spell.goblin-magic.gaze-of-mork
     roll: '2'
     name: Gaze of Mork
     difficulty: 8
     summary: Range 12". D3 Strength 3 hits strike the first model in their path.
+    name_i18n:
+      en: Gaze of Mork
+      es: Mirada de Mork
   - id: spell.goblin-magic.eadbanger
     roll: '3'
     name: ’Eadbanger
     difficulty: 8
-    summary: Range 6". Fire bolts equal to the number of the Shaman's Base
-      Attacks, resolved with Strength equal to the Shaman's Toughness at the
-      first model in their path. After the bolts effects are resolved, roll a
-      die. On a 1 the Shaman has drawn upon too much power, collapses and goes
-      out of action.
+    summary: Range 6". Fire bolts equal to the number of the Shaman's Base Attacks, resolved with Strength
+      equal to the Shaman's Toughness at the first model in their path. After the bolts effects are resolved,
+      roll a die. On a 1 the Shaman has drawn upon too much power, collapses and goes out of action.
+    name_i18n:
+      en: ’Eadbanger
+      es: Rompecabezas
   - id: spell.goblin-magic.leap-of-waaagh
     roll: '4'
     name: Leap of Waaagh!
     difficulty: 7
-    summary: The Shaman or any other Goblin within 3" may be moved up to 12",
-      ignoring terrain. If this move brings them into close combat, they count
-      as charging in the close combat phase.
+    summary: The Shaman or any other Goblin within 3" may be moved up to 12", ignoring terrain. If this
+      move brings them into close combat, they count as charging in the close combat phase.
+    name_i18n:
+      en: Leap of Waaagh!
+      es: Salto ¡Waaagh!
   - id: spell.goblin-magic.idol-of-gork
     roll: '5'
     name: Idol of Gork
     difficulty: 8
-    summary: The Shaman gains +1 WS, +1 S and +1 A. This enhancement lasts until
-      the Shaman takes a wound.
+    summary: The Shaman gains +1 WS, +1 S and +1 A. This enhancement lasts until the Shaman takes a wound.
+    name_i18n:
+      en: Idol of Gork
+      es: Ídolo de Gork
   - id: spell.goblin-magic.ere-we-go
     roll: '6'
     name: ’Ere we go!
     difficulty: 8
-    summary: All friendly models within 6" of the Shaman treat stunned results
-      on the injury table as knocked down instead. The effects last until the
-      Shaman takes a wound.
+    summary: All friendly models within 6" of the Shaman treat stunned results on the injury table as
+      knocked down instead. The effects last until the Shaman takes a wound.
+    name_i18n:
+      en: ’Ere we go!
+      es: ¡Marchando!
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Goblin Magic
     url: https://mordheimer.net/docs/magic/goblin-magic
+  name_i18n:
+    en: Goblin Magic
+    es: Magia goblin
 - id: lore.spells-of-the-djedhi
   name: Spells of the Djed'hi
   note: Used by the Elf Mage.
@@ -1217,56 +1540,70 @@ lores:
     roll: '1'
     name: Divination of Shirath
     difficulty: 6
-    summary: The Mage may reroll all his failed dice rolls, though the second
-      result stands. The effect lasts until the beginning of the Mage's next
-      turn.
+    summary: The Mage may reroll all his failed dice rolls, though the second result stands. The effect
+      lasts until the beginning of the Mage's next turn.
+    name_i18n:
+      en: Divination of Shirath
+      es: Adivinación de Shirath
   - id: spell.spells-of-the-djedhi.shimmering-shield
     roll: '2'
     name: Shimmering Shield
     difficulty: 7
-    summary: This spell gives the Mage an additional unmodified 5+ save against
-      all attacks. The effect lasts until the beginning of the Mage's next
-      turn.
+    summary: This spell gives the Mage an additional unmodified 5+ save against all attacks. The effect
+      lasts until the beginning of the Mage's next turn.
+    name_i18n:
+      en: Shimmering Shield
+      es: Escudo refulgente
   - id: spell.spells-of-the-djedhi.statue-of-light
     roll: '3'
     name: Statue of Light
     difficulty: 7
-    summary: The Mage chooses a single enemy model he can see. That model may
-      not move as long as the Mage remains both static and alive. The Mage and
-      the target may cast spells normally, but fight in close combat at -2 WS,
-      minimum of 1.
+    summary: The Mage chooses a single enemy model he can see. That model may not move as long as the
+      Mage remains both static and alive. The Mage and the target may cast spells normally, but fight
+      in close combat at -2 WS, minimum of 1.
+    name_i18n:
+      en: Statue of Light
+      es: Estatua de luz
   - id: spell.spells-of-the-djedhi.fleeting-shadows
     roll: '4'
     name: Fleeting Shadows
     difficulty: 8
-    summary: The first time the Mage is hit in close combat or shooting, the hit
-      is ignored. Move the Mage 2" from his current position in a random
-      direction, not off a cliff or similar. The spell remains in play until it
-      saves the Mage from a hit, whereupon it is dispelled. It may not be cast
-      again whilst it is in play.
+    summary: The first time the Mage is hit in close combat or shooting, the hit is ignored. Move the
+      Mage 2" from his current position in a random direction, not off a cliff or similar. The spell remains
+      in play until it saves the Mage from a hit, whereupon it is dispelled. It may not be cast again
+      whilst it is in play.
+    name_i18n:
+      en: Fleeting Shadows
+      es: Sombras fugaces
   - id: spell.spells-of-the-djedhi.hunters-fury
     roll: '5'
     name: Hunter's Fury
     difficulty: 9
-    summary: The spell summons D3 +1 arrows which the Mage can use to shoot
-      against one enemy model following the rules for normal shooting. The
-      arrows have a range of 36". Use the Mage's own Ballistic Skill to
-      determine hits, but ignore movement, range and cover penalties. Each
-      arrow causes one S3 hit.
+    summary: The spell summons D3 +1 arrows which the Mage can use to shoot against one enemy model following
+      the rules for normal shooting. The arrows have a range of 36". Use the Mage's own Ballistic Skill
+      to determine hits, but ignore movement, range and cover penalties. Each arrow causes one S3 hit.
+    name_i18n:
+      en: Hunter's Fury
+      es: Furia del cazador
   - id: spell.spells-of-the-djedhi.silent-guardian
     roll: '6'
     name: Silent Guardian
     difficulty: 9
-    summary: If the Mage is attacked in close combat, the guardian fights first
-      with WS5, S3, making one attack per turn against each enemy that attacks
-      the Mage. The guardian will not leave the Mage's side and can only be
-      dispelled if the Mage casts another spell or dies. The guardian cannot be
-      attacked in return.
+    summary: If the Mage is attacked in close combat, the guardian fights first with WS5, S3, making one
+      attack per turn against each enemy that attacks the Mage. The guardian will not leave the Mage's
+      side and can only be dispelled if the Mage casts another spell or dies. The guardian cannot be attacked
+      in return.
+    name_i18n:
+      en: Silent Guardian
+      es: Guardián silencioso
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Spells of the Djed'hi
     url: https://mordheimer.net/docs/magic/spells-of-the-djedhi
+  name_i18n:
+    en: Spells of the Djed'hi
+    es: Hechizos de los Djed'hi
 - id: lore.forest-goblin-magic
   name: Forest Goblin Magic
   note: Used by Forest Goblin Shamans.
@@ -1275,107 +1612,137 @@ lores:
     roll: '1'
     name: Wind of Gork
     difficulty: 6
-    summary: Range 12". The first model in its path must roll under its
-      Toughness or take a S2 hit and be knocked down automatically.
+    summary: Range 12". The first model in its path must roll under its Toughness or take a S2 hit and
+      be knocked down automatically.
+    name_i18n:
+      en: Wind of Gork
+      es: Viento de Gork
   - id: spell.forest-goblin-magic.gaze-of-mork
     roll: '2'
     name: Gaze of Mork
     difficulty: 8
     summary: Range 12". D3 S3 hits strike the first model in their path.
+    name_i18n:
+      en: Gaze of Mork
+      es: Mirada de Mork
   - id: spell.forest-goblin-magic.eadbanger
     roll: '3'
     name: ’Eadbanger
     difficulty: 8
-    summary: Range 6". Fire bolts equal to the number of the Shaman's Attacks,
-      resolved with Strength equal to the Shaman's Toughness at the first model
-      in their path. After the bolts effects are resolved, roll a die. On a 1
-      the Shaman has drawn upon too much power, collapses and goes out of
-      action.
+    summary: Range 6". Fire bolts equal to the number of the Shaman's Attacks, resolved with Strength
+      equal to the Shaman's Toughness at the first model in their path. After the bolts effects are resolved,
+      roll a die. On a 1 the Shaman has drawn upon too much power, collapses and goes out of action.
+    name_i18n:
+      en: ’Eadbanger
+      es: Rompecabezas
   - id: spell.forest-goblin-magic.leap-of-waaagh
     roll: '4'
     name: Leap of Waaagh!
     difficulty: 7
-    summary: The Shaman or any other Goblin within 3" may be moved up to 12". If
-      this move brings them into close combat, they count as charging in the
-      close combat phase.
+    summary: The Shaman or any other Goblin within 3" may be moved up to 12". If this move brings them
+      into close combat, they count as charging in the close combat phase.
+    name_i18n:
+      en: Leap of Waaagh!
+      es: Salto ¡Waaagh!
   - id: spell.forest-goblin-magic.idol-of-gork
     roll: '5'
     name: Idol of Gork
     difficulty: 8
-    summary: The Shaman gains +1 WS, +1 S and +1 A. This enhancement lasts until
-      the Shaman takes a wound.
+    summary: The Shaman gains +1 WS, +1 S and +1 A. This enhancement lasts until the Shaman takes a wound.
+    name_i18n:
+      en: Idol of Gork
+      es: Ídolo de Gork
   - id: spell.forest-goblin-magic.ere-we-go
     roll: '6'
     name: ’Ere we go
     difficulty: 8
-    summary: All friendly models within 6" of the Shaman treat stunned results
-      on the injury table as knocked down instead. The effects last until the
-      Shaman takes a wound.
+    summary: All friendly models within 6" of the Shaman treat stunned results on the injury table as
+      knocked down instead. The effects last until the Shaman takes a wound.
+    name_i18n:
+      en: ’Ere we go
+      es: Marchando
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Forest Goblin Magic
     url: https://mordheimer.net/docs/magic/forest-goblin-magic
+  name_i18n:
+    en: Forest Goblin Magic
+    es: Magia de los goblins del bosque
 - id: lore.prayers-of-taal
   name: Prayers of Taal
-  note: Used by the Ostlander Mercenaries Priest of Taal and the Horned Hunters
-    Priest of Taal. Prayers of Taal work like Prayers of Sigmar; the Taal Priest
-    never wears armour (clarified as heavy armour only, so Light Armour,
-    Helmets and Shields are allowed).
+  note: Used by the Ostlander Mercenaries Priest of Taal and the Horned Hunters Priest of Taal. Prayers
+    of Taal work like Prayers of Sigmar; the Taal Priest never wears armour (clarified as heavy armour
+    only, so Light Armour, Helmets and Shields are allowed).
   spells:
   - id: spell.prayers-of-taal.stags-leap
     roll: '1'
     name: Stag's Leap
     difficulty: 7
-    summary: The Priest of Taal may immediately move anywhere within 9",
-      including into base contact with the enemy, in which case he counts as
-      charging and gains +1 Strength to his first round of attacks. If he
-      engages a fleeing enemy, in the close combat phase he scores one
-      automatic hit at +1 Strength and then his opponent will flee again, if he
-      survives.
+    summary: The Priest of Taal may immediately move anywhere within 9", including into base contact with
+      the enemy, in which case he counts as charging and gains +1 Strength to his first round of attacks.
+      If he engages a fleeing enemy, in the close combat phase he scores one automatic hit at +1 Strength
+      and then his opponent will flee again, if he survives.
+    name_i18n:
+      en: Stag's Leap
+      es: Salto del ciervo
   - id: spell.prayers-of-taal.blessed-ale
     roll: '2'
     name: Blessed Ale
     difficulty: 5
-    summary: Drinking a flask of Taal-blessed ale may heal any one model within
-      2" of the Priest, including himself. The warrior is restored to his full
-      quota of Wounds. Any living enemy models, not Undead or Possessed, within
-      2" of the Priest lose 1 Attack during the next round of combat due to the
-      fumes of the ale.
+    summary: Drinking a flask of Taal-blessed ale may heal any one model within 2" of the Priest, including
+      himself. The warrior is restored to his full quota of Wounds. Any living enemy models, not Undead
+      or Possessed, within 2" of the Priest lose 1 Attack during the next round of combat due to the fumes
+      of the ale.
+    name_i18n:
+      en: Blessed Ale
+      es: Cerveza bendecida
   - id: spell.prayers-of-taal.bears-paw
     roll: '3'
     name: Bear's Paw
     difficulty: 7
-    summary: The Priest invokes the blessing of Taal on himself or a single
-      friendly model within 6". The target receives a bonus of +2 to his
-      Strength until the Priest's next turn.
+    summary: The Priest invokes the blessing of Taal on himself or a single friendly model within 6".
+      The target receives a bonus of +2 to his Strength until the Priest's next turn.
+    name_i18n:
+      en: Bear's Paw
+      es: Garra de oso
   - id: spell.prayers-of-taal.earthshudder
     roll: '4'
     name: Earthshudder
     difficulty: 9
-    summary: The spell is cast on a single building within 4". Any enemy models
-      touching the building suffer a single S3 hit. In addition the building
-      collapses and any models on it count as having fallen to the ground.
-      Remove the terrain feature from the board for the rest of the game.
+    summary: The spell is cast on a single building within 4". Any enemy models touching the building
+      suffer a single S3 hit. In addition the building collapses and any models on it count as having
+      fallen to the ground. Remove the terrain feature from the board for the rest of the game.
+    name_i18n:
+      en: Earthshudder
+      es: Sacudida telúrica
   - id: spell.prayers-of-taal.tanglefoot
     roll: '5'
     name: Tanglefoot
     difficulty: 8
-    summary: Plants, vines and small trees burst forth from the earth. All
-      models, friend as well as foe, with the exception of Ostlander Jaegers
-      and friendly Horned Hunter Zealots, within 12" of the Priest can only
-      move at half speed until the next shooting phase.
+    summary: Plants, vines and small trees burst forth from the earth. All models, friend as well as foe,
+      with the exception of Ostlander Jaegers and friendly Horned Hunter Zealots, within 12" of the Priest
+      can only move at half speed until the next shooting phase.
+    name_i18n:
+      en: Tanglefoot
+      es: Pies atados
   - id: spell.prayers-of-taal.summon-squirrels
     roll: '6'
     name: Summon Squirrels
     difficulty: 7
-    summary: The furious rodents assault one enemy within 12" of the Priest.
-      The target suffers 2D6 Strength 1 hits. No armour saves are allowed.
+    summary: The furious rodents assault one enemy within 12" of the Priest. The target suffers 2D6 Strength
+      1 hits. No armour saves are allowed.
+    name_i18n:
+      en: Summon Squirrels
+      es: Invocar ardillas
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Prayers of Taal
     url: https://mordheimer.net/docs/magic/prayers-of-taal
+  name_i18n:
+    en: Prayers of Taal
+    es: Plegarias de Taal
 - id: lore.funerary-rites
   name: Funerary Rites
   note: Used by the Priest of Morr.
@@ -1384,247 +1751,307 @@ lores:
     roll: '1'
     name: Morr's Protection
     difficulty: 6
-    summary: Any magical attacks made by a Necromancer, a Magister or Daemons
-      that would be considered a direct attack on the priest are negated if
-      this rite is successful.
+    summary: Any magical attacks made by a Necromancer, a Magister or Daemons that would be considered
+      a direct attack on the priest are negated if this rite is successful.
+    name_i18n:
+      en: Morr's Protection
+      es: Protección de Morr
   - id: spell.funerary-rites.death-holds-no-fear
     roll: '2'
     name: Death Holds No Fear
     difficulty: auto
     summary: The Priest of Morr is fearless for the remainder of the game.
+    name_i18n:
+      en: Death Holds No Fear
+      es: La muerte no da miedo
   - id: spell.funerary-rites.sanctity-of-the-fallen
     roll: '3'
     name: Sanctity of the Fallen
     difficulty: 7
-    summary: The Priest of Morr may perform the Rite of Sanctity on a model,
-      friend or foe, that has been taken out of action, provided he is within
-      6" of it. If successful, the model may not be raised up by a Necromancer.
+    summary: The Priest of Morr may perform the Rite of Sanctity on a model, friend or foe, that has been
+      taken out of action, provided he is within 6" of it. If successful, the model may not be raised
+      up by a Necromancer.
+    name_i18n:
+      en: Sanctity of the Fallen
+      es: Santidad de los caídos
   - id: spell.funerary-rites.hand-of-morr
     roll: '4'
     name: Hand of Morr
     difficulty: 9
-    summary: The Priest of Morr must be in base-to-base contact with an Undead
-      model. Before hand-to-hand combat occurs he may use the Hand of Morr. If
-      successful the foe immediately goes out of action, affecting Zombies,
-      Dire Wolves and Vampires. Ghouls and Possessed affected flee their full
-      Move away from the Priest of Morr.
+    summary: The Priest of Morr must be in base-to-base contact with an Undead model. Before hand-to-hand
+      combat occurs he may use the Hand of Morr. If successful the foe immediately goes out of action,
+      affecting Zombies, Dire Wolves and Vampires. Ghouls and Possessed affected flee their full Move
+      away from the Priest of Morr.
+    name_i18n:
+      en: Hand of Morr
+      es: Mano de Morr
   - id: spell.funerary-rites.do-you-know-who-i-am
     roll: '5'
     name: Do you know who I am?
     difficulty: 7
-    summary: This rite has a range of 6" and must be directed at the closest
-      Undead model first, or if no Undead are within range, at the next closest
-      human servant of the Undead, or finally at any model. If successful, that
-      model is immediately Stunned. If the model cannot be Stunned, it is
-      Knocked Down instead.
+    summary: This rite has a range of 6" and must be directed at the closest Undead model first, or if
+      no Undead are within range, at the next closest human servant of the Undead, or finally at any model.
+      If successful, that model is immediately Stunned. If the model cannot be Stunned, it is Knocked
+      Down instead.
+    name_i18n:
+      en: Do you know who I am?
+      es: ¿Sabes quién soy?
   - id: spell.funerary-rites.i-am-death
     roll: '6'
     name: I am death!
     difficulty: 8
-    summary: This spell gives the Priest of Morr a 6+ armour save and increases
-      his WS by either +1 or to 4, whichever is greater.
+    summary: This spell gives the Priest of Morr a 6+ armour save and increases his WS by either +1 or
+      to 4, whichever is greater.
+    name_i18n:
+      en: I am death!
+      es: ¡Yo soy la muerte!
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Funerary Rites
     url: https://mordheimer.net/docs/magic/funerary-rites
+  name_i18n:
+    en: Funerary Rites
+    es: Ritos funerarios
 - id: lore.shadow-warrior-magic
   name: Shadow Warrior Magic
-  note: Used by the Shadow Warriors Shadow Weaver. Several of these spells
-    require the target to be within a certain distance of a wall; this may
-    include any piece of terrain that could cast a man-sized shadow.
+  note: Used by the Shadow Warriors Shadow Weaver. Several of these spells require the target to be within
+    a certain distance of a wall; this may include any piece of terrain that could cast a man-sized shadow.
   spells:
   - id: spell.shadow-warrior-magic.pool-of-shadow
     roll: '1'
     name: Pool of Shadow
     difficulty: 7
-    summary: The mage and all allies within 6" may Hide, exactly as if there
-      were a wall or other obstruction between them and their enemies, even
-      after marching. The hiding is disrupted if any enemy enters the area of
-      effect. In addition, all affected count as being in cover against enemy
-      shooting. The spell lasts until the start of the Shadow Weaver's next
-      turn.
+    summary: The mage and all allies within 6" may Hide, exactly as if there were a wall or other obstruction
+      between them and their enemies, even after marching. The hiding is disrupted if any enemy enters
+      the area of effect. In addition, all affected count as being in cover against enemy shooting. The
+      spell lasts until the start of the Shadow Weaver's next turn.
+    name_i18n:
+      en: Pool of Shadow
+      es: Charco de sombra
   - id: spell.shadow-warrior-magic.the-living-shadows
     roll: '2'
     name: The Living Shadows
     difficulty: 7
-    summary: The Shadow Weaver may cast this spell at any enemy model within 12"
-      of him and within 2" of a wall. The target suffers a single Strength 4 hit
-      with no armour saves.
+    summary: The Shadow Weaver may cast this spell at any enemy model within 12" of him and within 2"
+      of a wall. The target suffers a single Strength 4 hit with no armour saves.
+    name_i18n:
+      en: The Living Shadows
+      es: Las Sombras vivientes
   - id: spell.shadow-warrior-magic.wings-of-night
     roll: '3'
     name: Wings of Night
     difficulty: 6
-    summary: This spell may only be cast if the Shadow Weaver is within 2" of a
-      wall. He is instantly moved up to 12" to a place that is also within 2"
-      of a wall. If moved into contact with an enemy model, the Shadow Weaver
-      counts as charging in the first round.
+    summary: This spell may only be cast if the Shadow Weaver is within 2" of a wall. He is instantly
+      moved up to 12" to a place that is also within 2" of a wall. If moved into contact with an enemy
+      model, the Shadow Weaver counts as charging in the first round.
+    name_i18n:
+      en: Wings of Night
+      es: Alas de la noche
   - id: spell.shadow-warrior-magic.cloak-of-darkness
     roll: '4'
     name: Cloak of Darkness
     difficulty: 7
-    summary: The Shadow Weaver is effectively concealed from enemy sight. As
-      long as he does not attack any enemy models, he may not be attacked. He
-      may intercept as normal if his controller wishes. The spell lasts until
-      the Shadow Weaver attacks an enemy model. A model engaged in close combat
-      with an enemy may never choose to not attack.
+    summary: The Shadow Weaver is effectively concealed from enemy sight. As long as he does not attack
+      any enemy models, he may not be attacked. He may intercept as normal if his controller wishes. The
+      spell lasts until the Shadow Weaver attacks an enemy model. A model engaged in close combat with
+      an enemy may never choose to not attack.
+    name_i18n:
+      en: Cloak of Darkness
+      es: Capa de oscuridad
   - id: spell.shadow-warrior-magic.shadowbind
     roll: '5'
     name: Shadowbind
     difficulty: 9
-    summary: The Shadow Weaver may cast this spell at any enemy model within 24"
-      of him and within 2" of a wall. The target may not move unless it first
-      passes a Strength test on 1D6 +1 at the start of its turn, before the
-      recovery phase. The spell lasts until the Shadow Weaver suffers a wound
-      or attempts to cast another spell. If attacked while affected, treat the
-      target exactly as if he were Stunned.
+    summary: The Shadow Weaver may cast this spell at any enemy model within 24" of him and within 2"
+      of a wall. The target may not move unless it first passes a Strength test on 1D6 +1 at the start
+      of its turn, before the recovery phase. The spell lasts until the Shadow Weaver suffers a wound
+      or attempts to cast another spell. If attacked while affected, treat the target exactly as if he
+      were Stunned.
+    name_i18n:
+      en: Shadowbind
+      es: Vínculo de sombra
   - id: spell.shadow-warrior-magic.shield-of-shadow
     roll: '6'
     name: Shield of Shadow
     difficulty: 7
-    summary: The Shadow Weaver may cast this spell on himself or a member of his
-      warband within 12". The target receives an armour save of 5+ that is not
-      modified by the attacker's Strength. The spell lasts until the start of
-      the Shadow Weaver's next turn.
+    summary: The Shadow Weaver may cast this spell on himself or a member of his warband within 12". The
+      target receives an armour save of 5+ that is not modified by the attacker's Strength. The spell
+      lasts until the start of the Shadow Weaver's next turn.
+    name_i18n:
+      en: Shield of Shadow
+      es: Escudo de sombra
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Shadow Warrior Magic
     url: https://mordheimer.net/docs/magic/shadow-warrior-magic
+  name_i18n:
+    en: Shadow Warrior Magic
+    es: Magia de los guerreros de las sombras
 - id: lore.amazon-rituals
   name: Amazon Rituals
-  note: Used by the Amazons (Lustria) Serpent Priestess and the Amazons
-    (Mordheim) Priestess.
+  note: Used by the Amazons (Lustria) Serpent Priestess and the Amazons (Mordheim) Priestess.
   spells:
   - id: spell.amazon-rituals.singing-wind
     roll: '1'
     name: Singing Wind
     difficulty: 8
-    summary: Singing motes and dancing lights entrance and hold any model within
-      10" until the start of the Amazon player's next turn. The model cannot
-      move, shoot or cast spells, but may defend itself in hand-to-hand combat.
-      Affected models automatically go last in combat.
+    summary: Singing motes and dancing lights entrance and hold any model within 10" until the start of
+      the Amazon player's next turn. The model cannot move, shoot or cast spells, but may defend itself
+      in hand-to-hand combat. Affected models automatically go last in combat.
+    name_i18n:
+      en: Singing Wind
+      es: Viento cantante
   - id: spell.amazon-rituals.serpents-strength
     roll: '2'
     name: Serpent's Strength
     difficulty: 9
-    summary: Any model within 8" of the Priestess, including herself, adds +1 to
-      their Strength until the end of their next turn. The ritual cannot be
-      cast if the Priestess is in close combat during her shooting phase.
+    summary: Any model within 8" of the Priestess, including herself, adds +1 to their Strength until
+      the end of their next turn. The ritual cannot be cast if the Priestess is in close combat during
+      her shooting phase.
+    name_i18n:
+      en: Serpent's Strength
+      es: Fuerza de la serpiente
   - id: spell.amazon-rituals.wendalas-maelstrom
     roll: '3'
     name: Wendala's Maelstrom
     difficulty: 7
-    summary: The storm extends out from the Priestess 18". All attempts to shoot
-      missile weapons by the enemy are at -1 to hit. The ritual lasts until the
-      start of the Amazon player's next turn.
+    summary: The storm extends out from the Priestess 18". All attempts to shoot missile weapons by the
+      enemy are at -1 to hit. The ritual lasts until the start of the Amazon player's next turn.
+    name_i18n:
+      en: Wendala's Maelstrom
+      es: Maelstrom de Wendala
   - id: spell.amazon-rituals.shield-of-thorns
     roll: '4'
     name: Shield of Thorns
     difficulty: 7
-    summary: The ritual produces a cocoon of thorns about the Priestess, making
-      her immune to ranged or magical attacks. Any models wishing to charge the
-      Priestess may do so, but the thorns negate any strikes by the Priestess
-      and her enemies in the first round of combat. The Priestess cannot cast
+    summary: The ritual produces a cocoon of thorns about the Priestess, making her immune to ranged or
+      magical attacks. Any models wishing to charge the Priestess may do so, but the thorns negate any
+      strikes by the Priestess and her enemies in the first round of combat. The Priestess cannot cast
       this ritual while in hand-to-hand combat.
+    name_i18n:
+      en: Shield of Thorns
+      es: Escudo de espinas
   - id: spell.amazon-rituals.the-living-jungle
     roll: '5'
     name: The Living Jungle
     difficulty: 6
-    summary: Pick one model within 12". The model is swarmed by a savage mix of
-      snakes, spiders and insects, most of them poisonous. The afflicted model
-      takes 1D6 Strength 2 hits with no armour saves allowed apart from ward
-      saves. A dodge save cannot be used against a swarm.
+    summary: Pick one model within 12". The model is swarmed by a savage mix of snakes, spiders and insects,
+      most of them poisonous. The afflicted model takes 1D6 Strength 2 hits with no armour saves allowed
+      apart from ward saves. A dodge save cannot be used against a swarm.
+    name_i18n:
+      en: The Living Jungle
+      es: La Selva viviente
   - id: spell.amazon-rituals.sirens-dreams
     roll: '6'
     name: Siren's Dreams
     difficulty: 7
-    summary: The song momentarily distracts the Amazons' enemies within 12", so
-      all Leadership tests for the opposing warband are made at -1 until the
-      end of the opposing player's next turn. Lizardmen and Undead are immune
-      to the effects of this ritual.
+    summary: The song momentarily distracts the Amazons' enemies within 12", so all Leadership tests for
+      the opposing warband are made at -1 until the end of the opposing player's next turn. Lizardmen
+      and Undead are immune to the effects of this ritual.
+    name_i18n:
+      en: Siren's Dreams
+      es: Sueños de sirena
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Amazon Rituals
     url: https://mordheimer.net/docs/magic/amazon-rituals
+  name_i18n:
+    en: Amazon Rituals
+    es: Rituales de las amazonas
 - id: lore.necromancy-restless-dead
   name: Necromancy (The Restless Dead)
-  note: 'Used by The Restless Dead Liche and Necromancer. Similar to the
-    original Necromancy list, but revised for a Restless Dead warband. Roll 6
-    covers two spells: Deathly Visage (Necromancers only) and Living Horror
-    (Liche only).'
+  note: 'Used by The Restless Dead Liche and Necromancer. Similar to the original Necromancy list, but
+    revised for a Restless Dead warband. Roll 6 covers two spells: Deathly Visage (Necromancers only)
+    and Living Horror (Liche only).'
   spells:
   - id: spell.necromancy-restless-dead.spell-of-awakening
     roll: '1'
     name: Spell of Awakening
     difficulty: auto
-    summary: If an enemy Hero is killed, i.e. the opponent rolls 11-15 on the
-      serious injury chart after the battle, the Sorcerer may raise him to
-      fight as a Zombie in his servitude. The dead Hero retains his
-      characteristics and all his weapons and armour but may not use any
-      equipment or skills. He may no longer run, counts as a Henchmen group on
-      his own and does not gain additional experience.
+    summary: If an enemy Hero is killed, i.e. the opponent rolls 11-15 on the serious injury chart after
+      the battle, the Sorcerer may raise him to fight as a Zombie in his servitude. The dead Hero retains
+      his characteristics and all his weapons and armour but may not use any equipment or skills. He may
+      no longer run, counts as a Henchmen group on his own and does not gain additional experience.
+    name_i18n:
+      en: Spell of Awakening
+      es: Hechizo de Despertar
   - id: spell.necromancy-restless-dead.lifestealer
     roll: '2'
     name: Lifestealer
     difficulty: 10
-    summary: Choose a single model within 6". The target suffers a wound with no
-      saves allowed and the Sorcerer gains an extra wound for the duration of
-      the battle. This may take the Wounds of a Necromancer above their
-      original maximum, but a Liche may only restore lost wounds. This spell
-      will not affect the Possessed or any Undead models.
+    summary: Choose a single model within 6". The target suffers a wound with no saves allowed and the
+      Sorcerer gains an extra wound for the duration of the battle. This may take the Wounds of a Necromancer
+      above their original maximum, but a Liche may only restore lost wounds. This spell will not affect
+      the Possessed or any Undead models.
+    name_i18n:
+      en: Lifestealer
+      es: Robavidas
   - id: spell.necromancy-restless-dead.reanimation
     roll: '3'
     name: Reanimation
     difficulty: 5
-    summary: One Zombie that went out of action during the last hand-to-hand
-      combat phase immediately returns to battle, placed within 6" of the
-      Sorcerer and not straight into hand-to-hand combat. The spell can be used
-      on Grave Guards and Wights to restore 1 lost wound. It cannot bring
-      Scarecrows, Grave Guards, Wights or Skeletons back to life as it does
-      Zombies.
+    summary: One Zombie that went out of action during the last hand-to-hand combat phase immediately
+      returns to battle, placed within 6" of the Sorcerer and not straight into hand-to-hand combat. The
+      spell can be used on Grave Guards and Wights to restore 1 lost wound. It cannot bring Scarecrows,
+      Grave Guards, Wights or Skeletons back to life as it does Zombies.
+    name_i18n:
+      en: Reanimation
+      es: Reanimación
   - id: spell.necromancy-restless-dead.spell-of-doom
     roll: '4'
     name: Spell of Doom
     difficulty: 9
-    summary: Choose one enemy model within 12". The model must roll equal to or
-      less than his Strength on a D6 or the dead emerging from the earth will
-      rend him with supernatural power. If he fails, you may roll on the injury
-      table to see what happens to him.
+    summary: Choose one enemy model within 12". The model must roll equal to or less than his Strength
+      on a D6 or the dead emerging from the earth will rend him with supernatural power. If he fails,
+      you may roll on the injury table to see what happens to him.
+    name_i18n:
+      en: Spell of Doom
+      es: Hechizo de perdición
   - id: spell.necromancy-restless-dead.call-of-vanhel
     roll: '5'
     name: Call of Vanhel
     difficulty: 6
-    summary: A single Zombie, Skeleton, Wight or Grave Guard within 6" of the
-      caster may immediately move again up to its maximum movement distance. If
-      this moves it into base contact with an enemy model it counts as
-      charging. The target automatically passes Initiative tests needed during
-      this extra movement.
+    summary: A single Zombie, Skeleton, Wight or Grave Guard within 6" of the caster may immediately move
+      again up to its maximum movement distance. If this moves it into base contact with an enemy model
+      it counts as charging. The target automatically passes Initiative tests needed during this extra
+      movement.
+    name_i18n:
+      en: Call of Vanhel
+      es: Llamado de Vanhel
   - id: spell.necromancy-restless-dead.deathly-visage
     roll: '6'
     name: Deathly Visage
     difficulty: 6
-    summary: Necromancers only. The Necromancer causes fear in his enemies for
-      the duration of the battle and is likewise immune to fear. This is the
-      one exception to the Apprentice rule Necromancers must usually follow in
-      a Liche warband; a Necromancer may choose this spell if the Liche has the
-      spell Horror.
+    summary: Necromancers only. The Necromancer causes fear in his enemies for the duration of the battle
+      and is likewise immune to fear. This is the one exception to the Apprentice rule Necromancers must
+      usually follow in a Liche warband; a Necromancer may choose this spell if the Liche has the spell
+      Horror.
+    name_i18n:
+      en: Deathly Visage
+      es: Rostro mortecino
   - id: spell.necromancy-restless-dead.living-horror
     roll: '6'
     name: Living Horror
     difficulty: 8
-    summary: Liche only. Choose one model within 8" of the Liche and roll D6 +3.
-      If the score is equal to or greater than the Leadership of the target,
-      that model suffers a wound with no armour saves allowed. If this wounds
-      the target and it still has wounds remaining, it may not move, shoot or
-      cast spells during its next turn unless it passes a Leadership test. This
-      spell will not affect the Possessed, Undead or any model immune to fear.
+    summary: Liche only. Choose one model within 8" of the Liche and roll D6 +3. If the score is equal
+      to or greater than the Leadership of the target, that model suffers a wound with no armour saves
+      allowed. If this wounds the target and it still has wounds remaining, it may not move, shoot or
+      cast spells during its next turn unless it passes a Leadership test. This spell will not affect
+      the Possessed, Undead or any model immune to fear.
+    name_i18n:
+      en: Living Horror
+      es: Horror viviente
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Necromancy (The Restless Dead)
     url: https://mordheimer.net/docs/magic/necromancy-restless-dead
+  name_i18n:
+    en: Necromancy (The Restless Dead)
+    es: Nigromancia (Los Muertos Inquietos)
 - id: lore.chaos-dwarfs-magic
   name: Chaos Dwarfs Magic
   note: Used by The Sons of Hashut Apprentice Sorcerer.
@@ -1633,52 +2060,69 @@ lores:
     roll: '1'
     name: Spectre of Hashut
     difficulty: 9
-    summary: A spectral apparition hits the enemy miniature closest to the
-      Sorcerer within 10". That miniature is automatically stunned.
+    summary: A spectral apparition hits the enemy miniature closest to the Sorcerer within 10". That miniature
+      is automatically stunned.
+    name_i18n:
+      en: Spectre of Hashut
+      es: Espectro de Hashut
   - id: spell.chaos-dwarfs-magic.stone-statue
     roll: '2'
     name: Stone Statue
     difficulty: 9
-    summary: Choose an enemy miniature within 12" and in line of sight. For the
-      rest of the turn and the following turn the miniature cannot do anything.
-      If attacked in melee it suffers an automatic hit; if it is shot, the
-      shooter gets a +1 bonus to hit.
+    summary: Choose an enemy miniature within 12" and in line of sight. For the rest of the turn and the
+      following turn the miniature cannot do anything. If attacked in melee it suffers an automatic hit;
+      if it is shot, the shooter gets a +1 bonus to hit.
+    name_i18n:
+      en: Stone Statue
+      es: Estatua de piedra
   - id: spell.chaos-dwarfs-magic.fireball
     roll: '3'
     name: Fireball
     difficulty: 7
-    summary: This spell has a range of 16" and requires line of sight. The
-      target receives an automatic hit of Strength 4.
+    summary: This spell has a range of 16" and requires line of sight. The target receives an automatic
+      hit of Strength 4.
+    name_i18n:
+      en: Fireball
+      es: Bola de fuego
   - id: spell.chaos-dwarfs-magic.vanish
     roll: '4'
     name: Vanish
     difficulty: 7
-    summary: The Sorcerer may immediately make a move of up to 6" in any
-      direction and may enter or leave combat without penalty. If he enters
-      combat, he is considered to be making a charge move.
+    summary: The Sorcerer may immediately make a move of up to 6" in any direction and may enter or leave
+      combat without penalty. If he enters combat, he is considered to be making a charge move.
+    name_i18n:
+      en: Vanish
+      es: Desvanecerse
   - id: spell.chaos-dwarfs-magic.eruption
     roll: '5'
     name: Eruption
     difficulty: 8
-    summary: All miniatures within a distance of up to 4", friend or foe,
-      suffer an automatic hit of Strength 4. After resolving the effects, the
-      Sorcerer cannot cast any more spells until the next turn and suffers -1
-      to his Toughness attribute.
+    summary: All miniatures within a distance of up to 4", friend or foe, suffer an automatic hit of Strength
+      4. After resolving the effects, the Sorcerer cannot cast any more spells until the next turn and
+      suffers -1 to his Toughness attribute.
+    name_i18n:
+      en: Eruption
+      es: Erupción
   - id: spell.chaos-dwarfs-magic.eye-of-hashut
     roll: '6'
     name: Eye of Hashut
     difficulty: 6
-    summary: Choose a friendly miniature within 12" and roll 1D6, Hobgoblins
-      always subtract 1 from the result. On 1 the miniature is immediately out
-      of action, although it will not roll on the serious injury table. On 2-5
-      the miniature adds +1 to one of its attributes for the rest of the game.
-      On 6 it adds +1 to all attributes for the rest of the game. The Eye of
-      Hashut can be used successfully only once per battle.
+    summary: Choose a friendly miniature within 12" and roll 1D6, Hobgoblins always subtract 1 from the
+      result. On 1 the miniature is immediately out of action, although it will not roll on the serious
+      injury table. On 2-5 the miniature adds +1 to one of its attributes for the rest of the game. On
+      6 it adds +1 to all attributes for the rest of the game. The Eye of Hashut can be used successfully
+      only once per battle.
+    name_i18n:
+      en: Eye of Hashut
+      es: Ojo de Hashut
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Chaos Dwarfs Magic
     url: https://mordheimer.net/docs/magic/chaos-dwarfs-magic
+  name_i18n:
+    en: Chaos Dwarfs Magic
+    es: Magia de los enanos del caos
 - id: lore.mortuary-cult-scrolls
   name: Mortuary Cult Scrolls
   note: Used by the Tomb Guardians Liche Priest.
@@ -1687,55 +2131,70 @@ lores:
     roll: '1'
     name: Menkare's scroll of Urgency
     difficulty: 6
-    summary: A single Skeleton Soldier within 6" may immediately move again up
-      to its maximum Movement distance, ie 4". If this takes the model into base
-      contact with an enemy model, it counts as charging.
+    summary: A single Skeleton Soldier within 6" may immediately move again up to its maximum Movement
+      distance, ie 4". If this takes the model into base contact with an enemy model, it counts as charging.
+    name_i18n:
+      en: Menkare's scroll of Urgency
+      es: Pergamino de Urgencia de Menkare
   - id: spell.mortuary-cult-scrolls.horrebes-curse-of-the-mummy
     roll: '2'
     name: Horrebe's Curse of the Mummy
     difficulty: 8
-    summary: The target must be in base-to-base contact with a Mummy and within
-      18" of the Liche Priest. The enemy model has a -1 penalty on all to hit
-      and to wound rolls and on all armour saves. This lasts until the start of
-      the next Tomb Guardians shooting phase.
+    summary: The target must be in base-to-base contact with a Mummy and within 18" of the Liche Priest.
+      The enemy model has a -1 penalty on all to hit and to wound rolls and on all armour saves. This
+      lasts until the start of the next Tomb Guardians shooting phase.
+    name_i18n:
+      en: Horrebe's Curse of the Mummy
+      es: Maldición de la momia de Horrebe
   - id: spell.mortuary-cult-scrolls.tawosrets-scroll-of-tomb-dust
     roll: '3'
     name: Tawosret's Scroll of Tomb Dust
     difficulty: 7
-    summary: The Liche Priest commands the sand around him to assault a single
-      warrior within 12". The warrior is automatically knocked down as he chokes
-      on the sand. This spell only affects a living model.
+    summary: The Liche Priest commands the sand around him to assault a single warrior within 12". The
+      warrior is automatically knocked down as he chokes on the sand. This spell only affects a living
+      model.
+    name_i18n:
+      en: Tawosret's Scroll of Tomb Dust
+      es: Pergamino de Polvo de Tumba de Tawosret
   - id: spell.mortuary-cult-scrolls.neferres-scroll-of-quaking-horror
     roll: '4'
     name: Neferre's Scroll of Quaking Horror
     difficulty: 7
-    summary: The model within 12" must pass a Leadership test or flee 2D6"
-      directly away from the Liche Priest, continuing to flee in each movement
-      phase until it makes a successful Rally test in the recovery phase. This
-      spell has no effect on Undead models or models immune to psychology.
+    summary: The model within 12" must pass a Leadership test or flee 2D6" directly away from the Liche
+      Priest, continuing to flee in each movement phase until it makes a successful Rally test in the
+      recovery phase. This spell has no effect on Undead models or models immune to psychology.
+    name_i18n:
+      en: Neferre's Scroll of Quaking Horror
+      es: Pergamino de Horror Tembloroso de Neferre
   - id: spell.mortuary-cult-scrolls.merneptahs-scroll-of-the-scarab-song
     roll: '5'
     name: Merneptah's Scroll of the Scarab Song
     difficulty: 7
-    summary: A single model within 8" of the Liche Priest suffers 2D6 Strength 1
-      hits. In addition, that model may not be shot at for the rest of the Tomb
-      Guardians shooting phase, nor fight or be fought in hand-to-hand combat.
-      If already in hand-to-hand combat, move it 1" away. Unless it suffers an
-      actual injury, the warrior counts as having just stood up in the next
-      turn.
+    summary: A single model within 8" of the Liche Priest suffers 2D6 Strength 1 hits. In addition, that
+      model may not be shot at for the rest of the Tomb Guardians shooting phase, nor fight or be fought
+      in hand-to-hand combat. If already in hand-to-hand combat, move it 1" away. Unless it suffers an
+      actual injury, the warrior counts as having just stood up in the next turn.
+    name_i18n:
+      en: Merneptah's Scroll of the Scarab Song
+      es: Pergamino del Canto del Escarabajo de Merneptah
   - id: spell.mortuary-cult-scrolls.djedres-summonation-of-the-vengeful-dead
     roll: '6'
     name: Djedre's summonation of the Vengeful Dead
     difficulty: 5
-    summary: The Liche Priest may re-animate a Skeleton Soldier that went out of
-      action during the last turn. Place the model anywhere within 6" of the
-      Liche Priest, but not straight into hand-to-hand combat with an enemy
-      model.
+    summary: The Liche Priest may re-animate a Skeleton Soldier that went out of action during the last
+      turn. Place the model anywhere within 6" of the Liche Priest, but not straight into hand-to-hand
+      combat with an enemy model.
+    name_i18n:
+      en: Djedre's summonation of the Vengeful Dead
+      es: Invocación de Djedre de los Muertos Vengativos
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Mortuary Cult Scrolls
     url: https://mordheimer.net/docs/magic/mortuary-cult-scrolls
+  name_i18n:
+    en: Mortuary Cult Scrolls
+    es: Pergaminos del culto funerario
 - id: lore.waaagh-magic
   name: Waaaagh! Magic
   note: Used by the Orc Mob Shaman and the Night Goblins Shaman.
@@ -1744,158 +2203,207 @@ lores:
     roll: '1'
     name: Led'z go
     difficulty: 9
-    summary: Any Orc or Goblin within 4" of the Shaman automatically strikes
-      first in hand-to-hand combat regardless of other circumstances. The spell
-      lasts until the caster is knocked down, stunned or taken out of action.
+    summary: Any Orc or Goblin within 4" of the Shaman automatically strikes first in hand-to-hand combat
+      regardless of other circumstances. The spell lasts until the caster is knocked down, stunned or
+      taken out of action.
+    name_i18n:
+      en: Led'z go
+      es: ¡Marchando!
   - id: spell.waaagh-magic.oi-gerroff
     roll: '2'
     name: Oi! Gerroff!
     difficulty: 7
-    summary: Range 8". Moves any enemy model within range D6" directly away from
-      the Shaman. If the target collides with another model or a building, both
-      suffer 1 S3 hit. May not be cast on models in hand-to-hand combat.
+    summary: Range 8". Moves any enemy model within range D6" directly away from the Shaman. If the target
+      collides with another model or a building, both suffer 1 S3 hit. May not be cast on models in hand-to-hand
+      combat.
+    name_i18n:
+      en: Oi! Gerroff!
+      es: ¡Oye! ¡Suéltalo!
   - id: spell.waaagh-magic.zzap
     roll: '3'
     name: Zzap!
     difficulty: 9
-    summary: Range 12". Causes D3 S4 hits on the closest enemy target, with no
-      armour saves allowed.
+    summary: Range 12". Causes D3 S4 hits on the closest enemy target, with no armour saves allowed.
+    name_i18n:
+      en: Zzap!
+      es: ¡Zas!
   - id: spell.waaagh-magic.fooled-ya
     roll: '4'
     name: Fooled Ya!
     difficulty: 6
-    summary: No enemy may charge the Shaman during their next turn. If the
-      Shaman is engaged in hand-to-hand combat he may immediately move 4" away.
+    summary: No enemy may charge the Shaman during their next turn. If the Shaman is engaged in hand-to-hand
+      combat he may immediately move 4" away.
+    name_i18n:
+      en: Fooled Ya!
+      es: ¡Te engañé!
   - id: spell.waaagh-magic.clubba
     roll: '5'
     name: Clubba
     difficulty: 7
-    summary: The ectoplasmic club counts as a normal club with a +2 Strength
-      bonus and gives the Shaman +1 attack as well. The spell lasts until the
-      Shaman suffers a wound.
+    summary: The ectoplasmic club counts as a normal club with a +2 Strength bonus and gives the Shaman
+      +1 attack as well. The spell lasts until the Shaman suffers a wound.
+    name_i18n:
+      en: Clubba
+      es: Porra
   - id: spell.waaagh-magic.fire-of-gork
     roll: '6'
     name: Fire of Gork
     difficulty: 8
-    summary: Range 12". Each of the two bolts causes D3 S3 hits; the bolts can be
-      fired both at the closest enemy target or split between the two closest
-      enemy targets.
+    summary: Range 12". Each of the two bolts causes D3 S3 hits; the bolts can be fired both at the closest
+      enemy target or split between the two closest enemy targets.
+    name_i18n:
+      en: Fire of Gork
+      es: Fuego de Gork
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Waaaagh! Magic
     url: https://mordheimer.net/docs/magic/waaaagh
+  name_i18n:
+    en: Waaaagh! Magic
+    es: Magia ¡Waaagh!
 - id: lore.lizardman-magic
   name: Lizardman Magic
-  note: Used by the Lizardmen Skink Priest. Lizardmen spells work like the
-    Prayers of Sigmar and may be used even if the Skink Priest is wearing
-    armour.
+  note: Used by the Lizardmen Skink Priest. Lizardmen spells work like the Prayers of Sigmar and may be
+    used even if the Skink Priest is wearing armour.
   spells:
   - id: spell.lizardman-magic.chotecs-wrath
     roll: '1'
     name: Chotec's Wrath
     difficulty: 8
-    summary: A lightning bolt strikes the closest enemy model within 10" of the
-      Skink Priest, causing a single Strength 5 hit. Add +1 to the Strength and
-      +1 to the roll on the injury table if the model is wearing armour.
+    summary: A lightning bolt strikes the closest enemy model within 10" of the Skink Priest, causing
+      a single Strength 5 hit. Add +1 to the Strength and +1 to the roll on the injury table if the model
+      is wearing armour.
+    name_i18n:
+      en: Chotec's Wrath
+      es: Ira de Chotec
   - id: spell.lizardman-magic.sotecs-blessing
     roll: '2'
     name: Sotec's Blessing
     difficulty: 7
-    summary: This spell may be cast on a single model within 6" of the Skink
-      Priest or on himself. Roll a D6; on 1-2 the target gains +1 BS or +1 to
-      hit in close combat, on 3-4 Toughness +1, on 5-6 Movement and Initiative
-      +1. The effects remain in play until the Priest or the model is stunned
-      or taken out of action. Only a single model may be affected at any given
-      time.
+    summary: This spell may be cast on a single model within 6" of the Skink Priest or on himself. Roll
+      a D6; on 1-2 the target gains +1 BS or +1 to hit in close combat, on 3-4 Toughness +1, on 5-6 Movement
+      and Initiative +1. The effects remain in play until the Priest or the model is stunned or taken
+      out of action. Only a single model may be affected at any given time.
+    name_i18n:
+      en: Sotec's Blessing
+      es: Bendición de Sotec
   - id: spell.lizardman-magic.huanchis-stealth
     roll: '3'
     name: Huanchi's Stealth
     difficulty: 7
-    summary: The spell affects all Skinks within 6" of the Skink Priest,
-      including himself, and allows any model in cover to immediately go into
-      hiding. A model may go into hiding even if it ran in the movement phase
-      or has already shot with a missile weapon.
+    summary: The spell affects all Skinks within 6" of the Skink Priest, including himself, and allows
+      any model in cover to immediately go into hiding. A model may go into hiding even if it ran in the
+      movement phase or has already shot with a missile weapon.
+    name_i18n:
+      en: Huanchi's Stealth
+      es: Sigilo de Huanchi
   - id: spell.lizardman-magic.the-old-ones-protection
     roll: '4'
     name: The Old Ones' Protection
     difficulty: 6
-    summary: The Skink Priest and any Lizardmen within 4" of him gain a save of
-      4+ against the effects of spells or prayers. The spell remains in play
-      until the Skink Priest is taken out of action.
+    summary: The Skink Priest and any Lizardmen within 4" of him gain a save of 4+ against the effects
+      of spells or prayers. The spell remains in play until the Skink Priest is taken out of action.
+    name_i18n:
+      en: The Old Ones' Protection
+      es: La Protección de los Antiguos
   - id: spell.lizardman-magic.tincis-rage
     roll: '5'
     name: Tinci's Rage
     difficulty: 8
-    summary: A single Lizardman within 6" of the Skink Priest, or the Priest
-      himself, is overtaken by rage, follows the rules for Frenzy and gains +1
-      Strength. The spell remains in play until the Priest or the model is
-      stunned or taken out of action; at the beginning of the turn the Skink
-      Priest must pass a Leadership roll to keep it going. Only a single model
-      may be affected at any given time.
+    summary: A single Lizardman within 6" of the Skink Priest, or the Priest himself, is overtaken by
+      rage, follows the rules for Frenzy and gains +1 Strength. The spell remains in play until the Priest
+      or the model is stunned or taken out of action; at the beginning of the turn the Skink Priest must
+      pass a Leadership roll to keep it going. Only a single model may be affected at any given time.
+    name_i18n:
+      en: Tinci's Rage
+      es: Ira de Tinci
   - id: spell.lizardman-magic.itzls-speed
     roll: '6'
     name: Itzl's Speed
     difficulty: 7
-    summary: A single Lizardman within 6" of the Skink Priest, or the Priest
-      himself, may make an additional sprint of up to 4". This counts as running
-      and a model may not move if it has already fired a missile weapon. It may
-      not charge with this extra move.
+    summary: A single Lizardman within 6" of the Skink Priest, or the Priest himself, may make an additional
+      sprint of up to 4". This counts as running and a model may not move if it has already fired a missile
+      weapon. It may not charge with this extra move.
+    name_i18n:
+      en: Itzl's Speed
+      es: Velocidad de Itzl
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Magic / Lizardman Magic
     url: https://mordheimer.net/docs/magic/lizardmen-magic
+  name_i18n:
+    en: Lizardman Magic
+    es: Magia de los hombres lagarto
 - id: lore.dark-magic
   name: Dark Magic
-  note: Used by the Dark Mage hired sword. Not indexed in the site's magic
-    section; transcribed from the Dark Mage entry (Letters of the Damned 6).
+  note: Used by the Dark Mage hired sword. Not indexed in the site's magic section; transcribed from the
+    Dark Mage entry (Letters of the Damned 6).
   spells:
   - id: spell.dark-magic.banishment
     roll: '1'
     name: Banishment
     difficulty: 8
-    summary: All Undead within 4\" of the Dark Mage must take an unmodified
-      Leadership test or suffer a Strength 4 hit.
+    summary: All Undead within 4\" of the Dark Mage must take an unmodified Leadership test or suffer
+      a Strength 4 hit.
+    name_i18n:
+      en: Banishment
+      es: Destierro
   - id: spell.dark-magic.soul-render
     roll: '2'
     name: Soul Render
     difficulty: 8
-    summary: Soul Render is a magic missile spell with a range of 18 inches. If
-      successfully cast, the spell causes D3 Strength 3 hits.
+    summary: Soul Render is a magic missile spell with a range of 18 inches. If successfully cast, the
+      spell causes D3 Strength 3 hits.
+    name_i18n:
+      en: Soul Render
+      es: Desgarrador de almas
   - id: spell.dark-magic.shade-mount
     roll: '3'
     name: Shade Mount
     difficulty: 8
-    summary: May be cast on the wizard himself or a Hero within 8 inches. Upon a
-      successful casting the model may immediately fly up to 12 inches; moving
-      into base-to-base contact counts as a charge.
+    summary: May be cast on the wizard himself or a Hero within 8 inches. Upon a successful casting the
+      model may immediately fly up to 12 inches; moving into base-to-base contact counts as a charge.
+    name_i18n:
+      en: Shade Mount
+      es: Montura de sombra
   - id: spell.dark-magic.jozuns-decay
     roll: '4'
     name: Jozun's Decay
     difficulty: 9
-    summary: Range 12 inches. The target must pass a Leadership test or suffer a
-      one-point reduction to its Toughness. Each Recovery phase the model must
-      pass a Leadership test or lose a further point; at Toughness 0 it is
-      removed from the game. A model may not be targeted more than once per game.
+    summary: Range 12 inches. The target must pass a Leadership test or suffer a one-point reduction to
+      its Toughness. Each Recovery phase the model must pass a Leadership test or lose a further point;
+      at Toughness 0 it is removed from the game. A model may not be targeted more than once per game.
+    name_i18n:
+      en: Jozun's Decay
+      es: Decadencia de Jozun
   - id: spell.dark-magic.cowel-of-pain
     roll: '5'
     name: Cowel of Pain
     difficulty: 6
-    summary: Until the wizard's next magic phase he cannot be Stunned; treat
-      3-4 results as Knocked Down instead.
+    summary: Until the wizard's next magic phase he cannot be Stunned; treat 3-4 results as Knocked Down
+      instead.
+    name_i18n:
+      en: Cowel of Pain
+      es: Capucha del dolor
   - id: spell.dark-magic.doom-and-dark
     roll: '6'
     name: Doom & Dark
     difficulty: 7
-    summary: Any model within 2 inches of the Dark Mage must take an immediate
-      All Alone test, even if in close combat. Should a model flee from close
-      combat, free strikes occur as normal.
+    summary: Any model within 2 inches of the Dark Mage must take an immediate All Alone test, even if
+      in close combat. Should a model flee from close combat, free strikes occur as normal.
+    name_i18n:
+      en: Doom & Dark
+      es: Perdición y oscuridad
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Hired Swords / Grade 2A / Dark Mage (Dark Magic spell list)
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  name_i18n:
+    en: Dark Magic
+    es: Magia oscura
 pending_lores: []
 effect_ids:
 - campaign.magic.cast

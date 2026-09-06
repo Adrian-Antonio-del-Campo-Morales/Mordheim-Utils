@@ -5,394 +5,694 @@ specifications:
   category: contextual
   sources:
   - target: rule/mordheim/black-orcs/troll--regeneration/skill.regeneration
-    digest: 8bac6865c3ba4a71ca2d30ee75202a6b4278751982a9f60c5e2d423b8f0e2aee
-  depends_on: [mechanic/skill.regeneration]
+    digest: c1545c550f8984961bcde05154b3768cbc5d98e298b9f9f8f12b23a227597d86
+  depends_on:
+  - mechanic/skill.regeneration
   interpretation: The Troll alone receives this inherent regeneration. It ignores a wound on 4, 5 or 6,
     but cannot regenerate fire wounds. A blocked save must not request a die. Post-battle injury rules
     are outside this combat specification.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: black-orcs, profile_id: troll}
-    context: {rule_id: troll--regeneration}
-    expect: {result.recipients: [troll]}
+    defender:
+      band_id: black-orcs
+      profile_id: troll
+    context:
+      rule_id: troll--regeneration
+    expect:
+      result.recipients:
+      - troll
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    defender: {band_id: black-orcs, profile_id: troll}
+    defender:
+      band_id: black-orcs
+      profile_id: troll
     expect:
       defender.global_effects.regeneration_save: 4
       defender.global_effects.regeneration_blocked_by_fire: true
   - id: all-faces
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: special_save
-    defender: {band_id: black-orcs, profile_id: troll}
+    defender:
+      band_id: black-orcs
+      profile_id: troll
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: three-fails
-    roles: [boundary]
+    roles:
+    - boundary
     operation: special_save
-    defender: {band_id: black-orcs, profile_id: troll}
-    rolls: [{key: special.regeneration, value: 3}]
-    expect: {result.saved: false, result.ward_roll: null, result.regeneration_roll: 3}
+    defender:
+      band_id: black-orcs
+      profile_id: troll
+    rolls:
+    - key: special.regeneration
+      value: 3
+    expect:
+      result.saved: false
+      result.ward_roll: null
+      result.regeneration_roll: 3
   - id: four-saves
-    roles: [boundary]
+    roles:
+    - boundary
     operation: special_save
-    defender: {band_id: black-orcs, profile_id: troll}
-    rolls: [{key: special.regeneration, value: 4}]
-    expect: {result.saved: true, result.source: regeneration, result.ward_roll: null, result.regeneration_roll: 4}
+    defender:
+      band_id: black-orcs
+      profile_id: troll
+    rolls:
+    - key: special.regeneration
+      value: 4
+    expect:
+      result.saved: true
+      result.source: regeneration
+      result.ward_roll: null
+      result.regeneration_roll: 4
   - id: fire-omits-roll
-    roles: [inactive]
+    roles:
+    - inactive
     operation: special_save
-    attacker: {main_weapon_id: weapon.brazier-iron}
-    defender: {band_id: black-orcs, profile_id: troll}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+    defender:
+      band_id: black-orcs
+      profile_id: troll
     rolls: []
-    expect: {context.regeneration_blocked: true, result.saved: false, result.regeneration_roll: null}
+    expect:
+      context.regeneration_blocked: true
+      result.saved: false
+      result.regeneration_roll: null
   mutations:
   - id: remove-regeneration
     path: defender.global_effects.regeneration_save
     value: 7
-    cases: [all-faces]
+    cases:
+    - all-faces
   - id: worsen-threshold
     path: defender.global_effects.regeneration_save
     value: 5
-    cases: [all-faces, four-saves]
+    cases:
+    - all-faces
+    - four-saves
   - id: allow-fire-regeneration
     path: defender.global_effects.regeneration_blocked_by_fire
     value: false
-    cases: [fire-omits-roll]
+    cases:
+    - fire-omits-roll
 - id: editorial-troll-regeneration-night-goblins-mic
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
   - target: rule/mordheim/night-goblins-mic/troll--regeneration/skill.regeneration
-    digest: 51e55e1011e6b6c09df221ffac67b629c9282c6148637d0332eaec160529c9ba
-  depends_on: [mechanic/skill.regeneration]
+    digest: dd323c2aba323e61e4ee61384d8a53d1c2c76a52e5df4516e93306c60f270c85
+  depends_on:
+  - mechanic/skill.regeneration
   interpretation: The Troll alone receives this inherent regeneration. It ignores a wound on 4, 5 or 6,
     but cannot regenerate fire wounds. A blocked save must not request a die. Post-battle injury rules
     are outside this combat specification.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: night-goblins-mic, profile_id: troll}
-    context: {rule_id: troll--regeneration}
-    expect: {result.recipients: [troll]}
+    defender:
+      band_id: night-goblins-mic
+      profile_id: troll
+    context:
+      rule_id: troll--regeneration
+    expect:
+      result.recipients:
+      - troll
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    defender: {band_id: night-goblins-mic, profile_id: troll}
+    defender:
+      band_id: night-goblins-mic
+      profile_id: troll
     expect:
       defender.global_effects.regeneration_save: 4
       defender.global_effects.regeneration_blocked_by_fire: true
   - id: all-faces
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: special_save
-    defender: {band_id: night-goblins-mic, profile_id: troll}
+    defender:
+      band_id: night-goblins-mic
+      profile_id: troll
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: three-fails
-    roles: [boundary]
+    roles:
+    - boundary
     operation: special_save
-    defender: {band_id: night-goblins-mic, profile_id: troll}
-    rolls: [{key: special.regeneration, value: 3}]
-    expect: {result.saved: false, result.ward_roll: null, result.regeneration_roll: 3}
+    defender:
+      band_id: night-goblins-mic
+      profile_id: troll
+    rolls:
+    - key: special.regeneration
+      value: 3
+    expect:
+      result.saved: false
+      result.ward_roll: null
+      result.regeneration_roll: 3
   - id: four-saves
-    roles: [boundary]
+    roles:
+    - boundary
     operation: special_save
-    defender: {band_id: night-goblins-mic, profile_id: troll}
-    rolls: [{key: special.regeneration, value: 4}]
-    expect: {result.saved: true, result.source: regeneration, result.ward_roll: null, result.regeneration_roll: 4}
+    defender:
+      band_id: night-goblins-mic
+      profile_id: troll
+    rolls:
+    - key: special.regeneration
+      value: 4
+    expect:
+      result.saved: true
+      result.source: regeneration
+      result.ward_roll: null
+      result.regeneration_roll: 4
   - id: fire-omits-roll
-    roles: [inactive]
+    roles:
+    - inactive
     operation: special_save
-    attacker: {main_weapon_id: weapon.brazier-iron}
-    defender: {band_id: night-goblins-mic, profile_id: troll}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+    defender:
+      band_id: night-goblins-mic
+      profile_id: troll
     rolls: []
-    expect: {context.regeneration_blocked: true, result.saved: false, result.regeneration_roll: null}
+    expect:
+      context.regeneration_blocked: true
+      result.saved: false
+      result.regeneration_roll: null
   mutations:
   - id: remove-regeneration
     path: defender.global_effects.regeneration_save
     value: 7
-    cases: [all-faces]
+    cases:
+    - all-faces
   - id: worsen-threshold
     path: defender.global_effects.regeneration_save
     value: 5
-    cases: [all-faces, four-saves]
+    cases:
+    - all-faces
+    - four-saves
   - id: allow-fire-regeneration
     path: defender.global_effects.regeneration_blocked_by_fire
     value: false
-    cases: [fire-omits-roll]
+    cases:
+    - fire-omits-roll
 - id: editorial-troll-regeneration-night-goblins-web
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
   - target: rule/mordheim/night-goblins-web/troll--regeneration/skill.regeneration
-    digest: 5e565a8d6b75b00947b709d3faed8a583adf27b3b1a712dafb22c7a7274b495c
-  depends_on: [mechanic/skill.regeneration]
+    digest: aa861638e766f8a60c2d75c83958bba94fb070b2afb79da23a9d7dc10e7d9d8a
+  depends_on:
+  - mechanic/skill.regeneration
   interpretation: The Troll alone receives this inherent regeneration. It ignores a wound on 4, 5 or 6,
     but cannot regenerate fire wounds. A blocked save must not request a die. Post-battle injury rules
     are outside this combat specification.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: night-goblins-web, profile_id: troll}
-    context: {rule_id: troll--regeneration}
-    expect: {result.recipients: [troll]}
+    defender:
+      band_id: night-goblins-web
+      profile_id: troll
+    context:
+      rule_id: troll--regeneration
+    expect:
+      result.recipients:
+      - troll
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    defender: {band_id: night-goblins-web, profile_id: troll}
+    defender:
+      band_id: night-goblins-web
+      profile_id: troll
     expect:
       defender.global_effects.regeneration_save: 4
       defender.global_effects.regeneration_blocked_by_fire: true
   - id: all-faces
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: special_save
-    defender: {band_id: night-goblins-web, profile_id: troll}
+    defender:
+      band_id: night-goblins-web
+      profile_id: troll
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: three-fails
-    roles: [boundary]
+    roles:
+    - boundary
     operation: special_save
-    defender: {band_id: night-goblins-web, profile_id: troll}
-    rolls: [{key: special.regeneration, value: 3}]
-    expect: {result.saved: false, result.ward_roll: null, result.regeneration_roll: 3}
+    defender:
+      band_id: night-goblins-web
+      profile_id: troll
+    rolls:
+    - key: special.regeneration
+      value: 3
+    expect:
+      result.saved: false
+      result.ward_roll: null
+      result.regeneration_roll: 3
   - id: four-saves
-    roles: [boundary]
+    roles:
+    - boundary
     operation: special_save
-    defender: {band_id: night-goblins-web, profile_id: troll}
-    rolls: [{key: special.regeneration, value: 4}]
-    expect: {result.saved: true, result.source: regeneration, result.ward_roll: null, result.regeneration_roll: 4}
+    defender:
+      band_id: night-goblins-web
+      profile_id: troll
+    rolls:
+    - key: special.regeneration
+      value: 4
+    expect:
+      result.saved: true
+      result.source: regeneration
+      result.ward_roll: null
+      result.regeneration_roll: 4
   - id: fire-omits-roll
-    roles: [inactive]
+    roles:
+    - inactive
     operation: special_save
-    attacker: {main_weapon_id: weapon.brazier-iron}
-    defender: {band_id: night-goblins-web, profile_id: troll}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+    defender:
+      band_id: night-goblins-web
+      profile_id: troll
     rolls: []
-    expect: {context.regeneration_blocked: true, result.saved: false, result.regeneration_roll: null}
+    expect:
+      context.regeneration_blocked: true
+      result.saved: false
+      result.regeneration_roll: null
   mutations:
   - id: remove-regeneration
     path: defender.global_effects.regeneration_save
     value: 7
-    cases: [all-faces]
+    cases:
+    - all-faces
   - id: worsen-threshold
     path: defender.global_effects.regeneration_save
     value: 5
-    cases: [all-faces, four-saves]
+    cases:
+    - all-faces
+    - four-saves
   - id: allow-fire-regeneration
     path: defender.global_effects.regeneration_blocked_by_fire
     value: false
-    cases: [fire-omits-roll]
+    cases:
+    - fire-omits-roll
 - id: editorial-troll-regeneration-orc-mob
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
   - target: rule/mordheim/orc-mob/troll--regeneration/skill.regeneration
-    digest: c6a3a9ba53485dcbffe98a9101b07fc8ad708db4ca973c0e93ab49f322b93657
-  depends_on: [mechanic/skill.regeneration]
+    digest: b0538be0cee888d3a5744080d9f1d14d0c05b837fe6f41f4b8078d60ffbf1a50
+  depends_on:
+  - mechanic/skill.regeneration
   interpretation: This profile has an inherent 4+ regeneration save. Fire wounds cannot be regenerated
     and must not request a regeneration die. Post-battle injury exemptions are outside this combat specification.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: mordheim, band_id: orc-mob, profile_id: troll}
-    context: {rule_id: troll--regeneration}
-    expect: {result.recipients: [troll]}
+    defender:
+      collection: mordheim
+      band_id: orc-mob
+      profile_id: troll
+    context:
+      rule_id: troll--regeneration
+    expect:
+      result.recipients:
+      - troll
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    defender: {collection: mordheim, band_id: orc-mob, profile_id: troll}
+    defender:
+      collection: mordheim
+      band_id: orc-mob
+      profile_id: troll
     expect:
       defender.global_effects.regeneration_save: 4
       defender.global_effects.regeneration_blocked_by_fire: true
   - id: all-faces
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: special_save
-    defender: {collection: mordheim, band_id: orc-mob, profile_id: troll}
+    defender:
+      collection: mordheim
+      band_id: orc-mob
+      profile_id: troll
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: below-threshold
-    roles: [boundary]
+    roles:
+    - boundary
     operation: special_save
-    defender: {collection: mordheim, band_id: orc-mob, profile_id: troll}
-    rolls: [{key: special.regeneration, value: 3}]
-    expect: {result.saved: false, result.ward_roll: null, result.regeneration_roll: 3}
+    defender:
+      collection: mordheim
+      band_id: orc-mob
+      profile_id: troll
+    rolls:
+    - key: special.regeneration
+      value: 3
+    expect:
+      result.saved: false
+      result.ward_roll: null
+      result.regeneration_roll: 3
   - id: at-threshold
-    roles: [boundary]
+    roles:
+    - boundary
     operation: special_save
-    defender: {collection: mordheim, band_id: orc-mob, profile_id: troll}
-    rolls: [{key: special.regeneration, value: 4}]
-    expect: {result.saved: true, result.source: regeneration, result.regeneration_roll: 4}
+    defender:
+      collection: mordheim
+      band_id: orc-mob
+      profile_id: troll
+    rolls:
+    - key: special.regeneration
+      value: 4
+    expect:
+      result.saved: true
+      result.source: regeneration
+      result.regeneration_roll: 4
   - id: fire-omits-roll
-    roles: [inactive]
+    roles:
+    - inactive
     operation: special_save
-    attacker: {main_weapon_id: weapon.brazier-iron}
-    defender: {collection: mordheim, band_id: orc-mob, profile_id: troll}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+    defender:
+      collection: mordheim
+      band_id: orc-mob
+      profile_id: troll
     rolls: []
-    expect: {context.regeneration_blocked: true, result.saved: false, result.regeneration_roll: null}
+    expect:
+      context.regeneration_blocked: true
+      result.saved: false
+      result.regeneration_roll: null
   - id: inherent-not-selectable
-    roles: [rejected]
+    roles:
+    - rejected
     operation: compile
-    attacker: {collection: mordheim, band_id: orc-mob, profile_id: troll, special_rule_ids: [troll--regeneration]}
+    attacker:
+      collection: mordheim
+      band_id: orc-mob
+      profile_id: troll
+      special_rule_ids:
+      - troll--regeneration
     reject: special rule is not selectable
   mutations:
   - id: remove-regeneration
     path: defender.global_effects.regeneration_save
     value: 7
-    cases: [all-faces]
+    cases:
+    - all-faces
   - id: wrong-threshold
     path: defender.global_effects.regeneration_save
     value: 5
-    cases: [all-faces]
+    cases:
+    - all-faces
   - id: allow-fire-regeneration
     path: defender.global_effects.regeneration_blocked_by_fire
     value: false
-    cases: [fire-omits-roll]
+    cases:
+    - fire-omits-roll
 - id: editorial-troll-regeneration-chaos-streets-greenskins
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
   - target: rule/trollheim/chaos-streets-greenskins/troll--regeneration/skill.regeneration
-    digest: 61d67b6c14bd3ef008fa1e39989e403823f650606dce83296652423bbc08993e
-  depends_on: [mechanic/skill.regeneration]
+    digest: 845500d9c3c02a24241bc87dece0be756f431c01b94f390d18c0aeacb7eeeffe
+  depends_on:
+  - mechanic/skill.regeneration
   interpretation: This profile has an inherent 4+ regeneration save. Fire wounds cannot be regenerated
     and must not request a regeneration die. Post-battle injury exemptions are outside this combat specification.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: troll}
-    context: {rule_id: troll--regeneration}
-    expect: {result.recipients: [troll]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: troll
+    context:
+      rule_id: troll--regeneration
+    expect:
+      result.recipients:
+      - troll
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    defender: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: troll}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: troll
     expect:
       defender.global_effects.regeneration_save: 4
       defender.global_effects.regeneration_blocked_by_fire: true
   - id: all-faces
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: special_save
-    defender: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: troll}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: troll
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: below-threshold
-    roles: [boundary]
+    roles:
+    - boundary
     operation: special_save
-    defender: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: troll}
-    rolls: [{key: special.regeneration, value: 3}]
-    expect: {result.saved: false, result.ward_roll: null, result.regeneration_roll: 3}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: troll
+    rolls:
+    - key: special.regeneration
+      value: 3
+    expect:
+      result.saved: false
+      result.ward_roll: null
+      result.regeneration_roll: 3
   - id: at-threshold
-    roles: [boundary]
+    roles:
+    - boundary
     operation: special_save
-    defender: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: troll}
-    rolls: [{key: special.regeneration, value: 4}]
-    expect: {result.saved: true, result.source: regeneration, result.regeneration_roll: 4}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: troll
+    rolls:
+    - key: special.regeneration
+      value: 4
+    expect:
+      result.saved: true
+      result.source: regeneration
+      result.regeneration_roll: 4
   - id: fire-omits-roll
-    roles: [inactive]
+    roles:
+    - inactive
     operation: special_save
-    attacker: {main_weapon_id: weapon.brazier-iron}
-    defender: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: troll}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: troll
     rolls: []
-    expect: {context.regeneration_blocked: true, result.saved: false, result.regeneration_roll: null}
+    expect:
+      context.regeneration_blocked: true
+      result.saved: false
+      result.regeneration_roll: null
   - id: inherent-not-selectable
-    roles: [rejected]
+    roles:
+    - rejected
     operation: compile
-    attacker: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: troll, special_rule_ids: [troll--regeneration]}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: troll
+      special_rule_ids:
+      - troll--regeneration
     reject: special rule is not selectable
   mutations:
   - id: remove-regeneration
     path: defender.global_effects.regeneration_save
     value: 7
-    cases: [all-faces]
+    cases:
+    - all-faces
   - id: wrong-threshold
     path: defender.global_effects.regeneration_save
     value: 5
-    cases: [all-faces]
+    cases:
+    - all-faces
   - id: allow-fire-regeneration
     path: defender.global_effects.regeneration_blocked_by_fire
     value: false
-    cases: [fire-omits-roll]
+    cases:
+    - fire-omits-roll
 - id: editorial-troll-regeneration-lustria-savage-goblins
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
   - target: rule/trollheim/lustria-savage-goblins/zomblintua--regeneration/skill.regeneration-5-plus
-    digest: aedfa16d4f40f9ddb6571a07cd9bd84cecb7ca399d873267bb7c9bfee725edd2
-  depends_on: [mechanic/skill.regeneration-5-plus]
+    digest: 9925232bff24d535afaf9f011d59e76d9de69cbbc2b63935f124e8c67023f191
+  depends_on:
+  - mechanic/skill.regeneration-5-plus
   interpretation: This profile has an inherent 5+ regeneration save. Fire wounds cannot be regenerated
     and must not request a regeneration die. Post-battle injury exemptions are outside this combat specification.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
-    context: {rule_id: zomblintua--regeneration}
-    expect: {result.recipients: [zomblintua]}
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+    context:
+      rule_id: zomblintua--regeneration
+    expect:
+      result.recipients:
+      - zomblintua
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    defender: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
     expect:
       defender.global_effects.regeneration_save: 5
       defender.global_effects.regeneration_blocked_by_fire: true
   - id: all-faces
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: special_save
-    defender: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/3, 'false': 2/3}
+      expected:
+        'true': 1/3
+        'false': 2/3
   - id: below-threshold
-    roles: [boundary]
+    roles:
+    - boundary
     operation: special_save
-    defender: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
-    rolls: [{key: special.regeneration, value: 4}]
-    expect: {result.saved: false, result.ward_roll: null, result.regeneration_roll: 4}
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+    rolls:
+    - key: special.regeneration
+      value: 4
+    expect:
+      result.saved: false
+      result.ward_roll: null
+      result.regeneration_roll: 4
   - id: at-threshold
-    roles: [boundary]
+    roles:
+    - boundary
     operation: special_save
-    defender: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
-    rolls: [{key: special.regeneration, value: 5}]
-    expect: {result.saved: true, result.source: regeneration, result.regeneration_roll: 5}
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+    rolls:
+    - key: special.regeneration
+      value: 5
+    expect:
+      result.saved: true
+      result.source: regeneration
+      result.regeneration_roll: 5
   - id: fire-omits-roll
-    roles: [inactive]
+    roles:
+    - inactive
     operation: special_save
-    attacker: {main_weapon_id: weapon.brazier-iron}
-    defender: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+    defender:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
     rolls: []
-    expect: {context.regeneration_blocked: true, result.saved: false, result.regeneration_roll: null}
+    expect:
+      context.regeneration_blocked: true
+      result.saved: false
+      result.regeneration_roll: null
   - id: inherent-not-selectable
-    roles: [rejected]
+    roles:
+    - rejected
     operation: compile
-    attacker: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua, special_rule_ids: [zomblintua--regeneration]}
+    attacker:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: zomblintua
+      special_rule_ids:
+      - zomblintua--regeneration
     reject: special rule is not selectable
   mutations:
   - id: remove-regeneration
     path: defender.global_effects.regeneration_save
     value: 7
-    cases: [all-faces]
+    cases:
+    - all-faces
   - id: wrong-threshold
     path: defender.global_effects.regeneration_save
     value: 4
-    cases: [all-faces]
+    cases:
+    - all-faces
   - id: allow-fire-regeneration
     path: defender.global_effects.regeneration_blocked_by_fire
     value: false
-    cases: [fire-omits-roll]
+    cases:
+    - fire-omits-roll

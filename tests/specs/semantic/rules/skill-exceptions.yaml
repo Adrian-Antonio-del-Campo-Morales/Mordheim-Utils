@@ -5,9 +5,10 @@ specifications:
   category: local
   sources:
   - target: mechanic/skill.jump-up
-    digest: 0ddeeeffb0d9b1435c8b575dca91af2981daedcbc841bd875c240ecb9ccf7ccd
-  interpretation: 'Reviewed Skills / Jump Up (Mordheimer, 2026-08-30): ordinary injury knockdown is ignored; conversion
-    from No Pain or a successful helmet save is not. Raw 1-2 still recovers immediately when No Pain is present.'
+    digest: bd0549a145021fce8abf6155da85b25ee905d7aeee2aed09bb371fdf1ef51ea2
+  interpretation: 'Reviewed Skills / Jump Up (Mordheimer, 2026-08-30): ordinary injury knockdown is ignored;
+    conversion from No Pain or a successful helmet save is not. Raw 1-2 still recovers immediately when
+    No Pain is present.'
   interaction_contract:
     reads:
     - injury.condition
@@ -415,9 +416,9 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.unarmed-fighting
-    digest: 77aada4c9ef7f29eb24d66be287b8d43174fbe1b6ea976c76b91b51299bba8b1
-  interpretation: Fists use full Strength, retain the fighter's Attacks and add one, and grant no armour bonus when
-    trained. The printed bonus applies only while unarmed.
+    digest: d472654f57e85c03ed09ecd39c2acee52e35ddc1ff01e3ccd431b7529ec93150
+  interpretation: Fists use full Strength, retain the fighter's Attacks and add one, and grant no armour
+    bonus when trained. The printed bonus applies only while unarmed.
   interaction_contract:
     reads:
     - weapon.kind
@@ -634,9 +635,9 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.expert-swordsman
-    digest: 417d4a1cc3519510be69e893d00de9bcfa6c662769bdca0945b4d46a284157dd
-  interpretation: Normal swords and weeping blades reroll missed charge attacks. Other weapons and later rounds
-    do not qualify; a reroll cannot itself be rerolled.
+    digest: 539ea94192052d75a0a3cbfbf51f478e833f1f922b4934e5b7d2c525fe7262be
+  interpretation: Normal swords and weeping blades reroll missed charge attacks. Other weapons and later
+    rounds do not qualify; a reroll cannot itself be rerolled.
   interaction_contract:
     reads:
     - weapon.kind
@@ -792,9 +793,9 @@ specifications:
   category: priority
   sources:
   - target: mechanic/skill.strongman
-    digest: 0361c3c9a96d2c31adb49189e2d9d8e6a0e77ee6972008715533bf490a5a5e6f
-  interpretation: Strongman removes the two-handed weapon's strike-last penalty. Ordinary Initiative, charging,
-    and recovery restrictions still apply.
+    digest: 660c870171a285ed42aa421568e1ca44d51752c56dfb108d276ebd7faf2599c5
+  interpretation: Strongman removes the two-handed weapon's strike-last penalty. Ordinary Initiative,
+    charging, and recovery restrictions still apply.
   interaction_contract:
     reads:
     - weapon.kind

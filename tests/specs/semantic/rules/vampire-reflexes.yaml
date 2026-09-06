@@ -4,114 +4,263 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: mechanic/skill.vampire-reflexes, digest: aff74901140a8d543bbb2a442679ce1a68bdbe9f760b6c70e2db8a28f11e816d}
-  - {target: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-vampire-reflexes/skill.vampire-reflexes, digest: 5c4b539b71d5afbede44d3faad24a55cfd2d36585e495016e18e53f4c8cef925}
+  - target: mechanic/skill.vampire-reflexes
+    digest: d629522331824dfa9932b313cfb0326b18b5e78d9475e78788aa941a8ca693b4
+  - target: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-vampire-reflexes/skill.vampire-reflexes
+    digest: 2631632f90b603a63baeedd7d360a1fc126be4938f6c71bfe166e409f1ee5b04
   interpretation: Khemri p.90 / Vampire Reflexes grants an unmodifiable 6+ save before multiplying Wounds.
-    In melee Step Aside combines with it into one 4+ save, not two attempts. Dodge's shooting use is outside scope.
-    The multi-wound sequence uses a generic trained fighter so poison immunity does not mask the damage multiplier.
+    In melee Step Aside combines with it into one 4+ save, not two attempts. Dodge's shooting use is outside
+    scope. The multi-wound sequence uses a generic trained fighter so poison immunity does not mask the
+    damage multiplier.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lahmian-vampire}
-    context: {rule_id: band--lahmian-special-skills-vampire-reflexes}
-    expect: {result.recipients: [lahmian-vampire]}
+    defender:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: lahmian-vampire
+    context:
+      rule_id: band--lahmian-special-skills-vampire-reflexes
+    expect:
+      result.recipients:
+      - lahmian-vampire
   - id: face-1
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: special_save
-    defender: {skill_ids: [skill.vampire-reflexes]}
-    rolls: [{key: special.ward, value: 1}]
-    expect: {defender.global_effects.ward_save: 6, result.saved: false, result.regeneration_roll: null}
+    defender:
+      skill_ids:
+      - skill.vampire-reflexes
+    rolls:
+    - key: special.ward
+      value: 1
+    expect:
+      defender.global_effects.ward_save: 6
+      result.saved: false
+      result.regeneration_roll: null
   - id: face-2
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: special_save
-    defender: {skill_ids: [skill.vampire-reflexes]}
-    rolls: [{key: special.ward, value: 2}]
-    expect: {defender.global_effects.ward_save: 6, result.saved: false, result.regeneration_roll: null}
+    defender:
+      skill_ids:
+      - skill.vampire-reflexes
+    rolls:
+    - key: special.ward
+      value: 2
+    expect:
+      defender.global_effects.ward_save: 6
+      result.saved: false
+      result.regeneration_roll: null
   - id: face-3
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: special_save
-    defender: {skill_ids: [skill.vampire-reflexes]}
-    rolls: [{key: special.ward, value: 3}]
-    expect: {defender.global_effects.ward_save: 6, result.saved: false, result.regeneration_roll: null}
+    defender:
+      skill_ids:
+      - skill.vampire-reflexes
+    rolls:
+    - key: special.ward
+      value: 3
+    expect:
+      defender.global_effects.ward_save: 6
+      result.saved: false
+      result.regeneration_roll: null
   - id: face-4
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: special_save
-    defender: {skill_ids: [skill.vampire-reflexes]}
-    rolls: [{key: special.ward, value: 4}]
-    expect: {defender.global_effects.ward_save: 6, result.saved: false, result.regeneration_roll: null}
+    defender:
+      skill_ids:
+      - skill.vampire-reflexes
+    rolls:
+    - key: special.ward
+      value: 4
+    expect:
+      defender.global_effects.ward_save: 6
+      result.saved: false
+      result.regeneration_roll: null
   - id: face-5
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: special_save
-    defender: {skill_ids: [skill.vampire-reflexes]}
-    rolls: [{key: special.ward, value: 5}]
-    expect: {defender.global_effects.ward_save: 6, result.saved: false, result.regeneration_roll: null}
+    defender:
+      skill_ids:
+      - skill.vampire-reflexes
+    rolls:
+    - key: special.ward
+      value: 5
+    expect:
+      defender.global_effects.ward_save: 6
+      result.saved: false
+      result.regeneration_roll: null
   - id: face-6
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: special_save
-    defender: {skill_ids: [skill.vampire-reflexes]}
-    rolls: [{key: special.ward, value: 6}]
-    expect: {defender.global_effects.ward_save: 6, result.saved: true, result.regeneration_roll: null}
+    defender:
+      skill_ids:
+      - skill.vampire-reflexes
+    rolls:
+    - key: special.ward
+      value: 6
+    expect:
+      defender.global_effects.ward_save: 6
+      result.saved: true
+      result.regeneration_roll: null
   - id: lahmian-combined-false
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: special_save
     defender:
       collection: trollheim
       band_id: khemri-lahmian-brotherhood
       profile_id: lahmian-vampire
-      special_rule_ids: [band--lahmian-special-skills-vampire-reflexes]
+      special_rule_ids:
+      - band--lahmian-special-skills-vampire-reflexes
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/6, 'false': 5/6}
+      expected:
+        'true': 1/6
+        'false': 5/6
   - id: lahmian-combined-true
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: special_save
     defender:
       collection: trollheim
       band_id: khemri-lahmian-brotherhood
       profile_id: lahmian-vampire
-      special_rule_ids: [band--lahmian-special-skills-vampire-reflexes]
-      skill_ids: [skill.step-aside]
+      special_rule_ids:
+      - band--lahmian-special-skills-vampire-reflexes
+      skill_ids:
+      - skill.step-aside
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: unmodifiable-high-strength
-    roles: [boundary]
+    roles:
+    - boundary
     operation: special_save
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 10, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {skill_ids: [skill.vampire-reflexes]}
-    rolls: [{key: special.ward, value: 6}]
-    expect: {result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 10
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      skill_ids:
+      - skill.vampire-reflexes
+    rolls:
+    - key: special.ward
+      value: 6
+    expect:
+      result.saved: true
   - id: no-reflexes
-    roles: [inactive]
+    roles:
+    - inactive
     operation: special_save
-    expect: {result.saved: false, result.ward_roll: null}
+    expect:
+      result.saved: false
+      result.ward_roll: null
   - id: multiple-wounds-save-5
-    roles: [sequence, consumption, boundary, consumer]
+    roles:
+    - sequence
+    - consumption
+    - boundary
+    - consumer
     operation: attack
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.bloodroot}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.bloodroot
     defender:
-      skill_ids: [skill.vampire-reflexes]
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 1}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}, {key: test.special.ward, value: 5}]
-    expect: {result.saved: false, result.damage: 2, result.defender.wounds: 1}
+      skill_ids:
+      - skill.vampire-reflexes
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 5
+    expect:
+      result.saved: false
+      result.damage: 2
+      result.defender.wounds: 1
   - id: multiple-wounds-save-6
-    roles: [sequence, consumption, boundary, consumer]
+    roles:
+    - sequence
+    - consumption
+    - boundary
+    - consumer
     operation: attack
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.bloodroot}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.bloodroot
     defender:
-      skill_ids: [skill.vampire-reflexes]
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 1}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}, {key: test.special.ward, value: 6}]
-    expect: {result.saved: true, result.damage: 0, result.defender.wounds: 3}
+      skill_ids:
+      - skill.vampire-reflexes
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.special.ward
+      value: 6
+    expect:
+      result.saved: true
+      result.damage: 0
+      result.defender.wounds: 3
   mutations:
   - id: remove-reflexes
     path: defender.global_effects.ward_save
     value: 7
-    cases: [face-6, multiple-wounds-save-6, lahmian-combined-false]
+    cases:
+    - face-6
+    - multiple-wounds-save-6
+    - lahmian-combined-false
   - id: lose-combination
     path: defender.global_effects.tags
     value: []
-    cases: [lahmian-combined-true]
+    cases:
+    - lahmian-combined-true

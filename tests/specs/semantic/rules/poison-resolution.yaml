@@ -5,9 +5,9 @@ specifications:
   category: local
   sources:
   - target: mechanic/poison.devil-s-toxin
-    digest: 1d60b4b208bcdaef2a755fd9e9f63668e79b94e1453f4efed437d6c987840275
-  interpretation: Reroll failed wounds once, but that reroll cannot cause a critical. Original natural sixes
-    still cause criticals unless six was required.
+    digest: ca23dcb51e8538b1a1ec7f68768e694ff95b82db256b9c2e35b78d763ff1f9c2
+  interpretation: Reroll failed wounds once, but that reroll cannot cause a critical. Original natural
+    sixes still cause criticals unless six was required.
   interaction_contract:
     reads:
     - defender.poison_immunity
@@ -471,9 +471,9 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/poison.reptile-venom
-    digest: e942ef4e90104e285b62d63d7832a8d041ab5e6bd0a7c8c7a95c74797735dc4e
-  interpretation: The poison increases only Strength used to wound by one. It does not increase Strength used
-    for armour penetration.
+    digest: da8f1053e181ccd72df2692f83d007325de9cc47de010beb5cb6d5f2d0d66939
+  interpretation: The poison increases only Strength used to wound by one. It does not increase Strength
+    used for armour penetration.
   interaction_contract:
     reads:
     - defender.poison_immunity
@@ -568,8 +568,9 @@ specifications:
   category: local
   sources:
   - target: mechanic/poison.manbane
-    digest: 110da7ca0a12b44f9e8a5324a17ff906a668acb36217e58dcb796d99d118d143
-  interpretation: Add one to wound rolls; a natural one still fails. No Strength or armour modifier is granted.
+    digest: 245d8a89218e60d9292598ab8e4db561eb047db17a4d1c04d38f50930bbfa0f4
+  interpretation: Add one to wound rolls; a natural one still fails. No Strength or armour modifier is
+    granted.
   interaction_contract:
     reads:
     - defender.poison_immunity
@@ -722,7 +723,7 @@ specifications:
   category: local
   sources:
   - target: mechanic/poison.wolfsbane
-    digest: 38c26725d6eb0e2dcf7859c71c57c2a98b555f670abe51574ac9ff2cebc5f765
+    digest: 6646b7e61ebedcf2c3877f06a0c146cac2e5afde8a7108c179ff6462f454445d
   interpretation: Criticals occur on natural wound rolls of five or six, except when only six can wound.
   interaction_contract:
     reads:
@@ -983,10 +984,10 @@ specifications:
   category: local
   sources:
   - target: mechanic/poison.black-lotus
-    digest: b62d3687e6b97ea58a394f55566d5ac9c38309ebf3e938c87b53c6cf425f9c7c
-  interpretation: A natural hit six guarantees a wound and optionally rolls for a critical. A non-six attempt
-    retains the wound; it is not a failed wound eligible for a reroll. General critical eligibility and the
-    basic critical table still apply; declining skips the attempt.
+    digest: 8bccbbfd6a1850b77807d9f424e9d1033c65e12f6a620400806dd7ecb26e1795
+  interpretation: A natural hit six guarantees a wound and optionally rolls for a critical. A non-six
+    attempt retains the wound; it is not a failed wound eligible for a reroll. General critical eligibility
+    and the basic critical table still apply; declining skips the attempt.
   interaction_contract:
     reads:
     - defender.poison_immunity
@@ -1226,9 +1227,9 @@ specifications:
   category: local
   sources:
   - target: mechanic/poison.bloodroot
-    digest: 3134964907d78b26d1da2eec50d04cf0a89261efa3764ebd5dc80c364181feb5
-  interpretation: An unsaved ordinary wound causes two wounds. At one remaining Wound, roll twice for injury
-    and apply the worse result. Armour prevents the wound before doubling.
+    digest: c6d0eba9f14a15a23a88a38b6f92265b7c564ab5841fe34b26e69f612c459a1f
+  interpretation: An unsaved ordinary wound causes two wounds. At one remaining Wound, roll twice for
+    injury and apply the worse result. Armour prevents the wound before doubling.
   interaction_contract:
     reads:
     - defender.poison_immunity

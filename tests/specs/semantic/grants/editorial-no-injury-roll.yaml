@@ -5,93 +5,200 @@ specifications:
   category: stateful
   sources:
   - target: rule/mordheim/battle-monks-of-cathay/raging-peasants--downtrodden/trait.injury-profile
-    digest: 032631ea351435e27a53f3f29140c706809b4d56f7fd7d7768a50ecdab52d704
-  interpretation: Downtrodden removes a Raging Peasant on suffering a wound, without an Injury roll. A miss or failed wound does not activate it.
-    These mini-sequences use non-critical wounds and no armour; no injury dice may be consumed.
+    digest: 94ce626fccdc21403deafe866ad220c7523aab395d75d838e206ab1e9635a6f9
+  interpretation: Downtrodden removes a Raging Peasant on suffering a wound, without an Injury roll. A
+    miss or failed wound does not activate it. These mini-sequences use non-critical wounds and no armour;
+    no injury dice may be consumed.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: raging-peasants}
-    context: {rule_id: raging-peasants--downtrodden}
-    expect: {result.recipients: [raging-peasants]}
+    defender:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+    context:
+      rule_id: raging-peasants--downtrodden
+    expect:
+      result.recipients:
+      - raging-peasants
   - id: missed
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attack
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: raging-peasants}
-    rolls: [{key: test.hit, value: 1}]
-    expect: {result.hit: false, result.defender.condition: STANDING}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+    rolls:
+    - key: test.hit
+      value: 1
+    expect:
+      result.hit: false
+      result.defender.condition: STANDING
   - id: failed-wound
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attack
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: raging-peasants}
-    rolls: [{key: test.hit, value: 5}, {key: test.wound, value: 1}]
-    expect: {result.wounded: false, result.defender.condition: STANDING}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+    rolls:
+    - key: test.hit
+      value: 5
+    - key: test.wound
+      value: 1
+    expect:
+      result.wounded: false
+      result.defender.condition: STANDING
   - id: last-wound
-    roles: [active, consumer, boundary, sequence, consumption]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
     operation: attack
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: raging-peasants}
-    defender_state: {wounds: 1}
-    rolls: [{key: test.hit, value: 5}, {key: test.wound, value: 5}]
-    expect: {result.damage: 1, result.defender.condition: OUT}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: raging-peasants
+    defender_state:
+      wounds: 1
+    rolls:
+    - key: test.hit
+      value: 5
+    - key: test.wound
+      value: 5
+    expect:
+      result.damage: 1
+      result.defender.condition: OUT
   mutations:
   - id: restore-injury-roll
     path: defender.injury_profile
     value: 0
-    cases: [last-wound]
+    cases:
+    - last-wound
 - id: editorial-no-injury-roll-vampire-bat
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
   - target: rule/trollheim/chaos-streets-undead-bloodlines/vampire-bat--summoned-creature/trait.injury-profile
-    digest: 48b46fbdda5f0a2eaa917e1ee69df20922bf67acd204e873cb57105bb3bcb33e
-  interpretation: Chaos in the Streets p.181 / Summoned Creature removes the bat without an Injury roll only after the last Wound is lost. Its printed W2 must absorb the first wound.
-    These mini-sequences use non-critical wounds and no armour; no injury dice may be consumed.
+    digest: b2565da44496a80c276f91db5a242d61060be8a67c429f02ceaed19930e21853
+  interpretation: Chaos in the Streets p.181 / Summoned Creature removes the bat without an Injury roll
+    only after the last Wound is lost. Its printed W2 must absorb the first wound. These mini-sequences
+    use non-critical wounds and no armour; no injury dice may be consumed.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: vampire-bat}
-    context: {rule_id: vampire-bat--summoned-creature}
-    expect: {result.recipients: [vampire-bat]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: vampire-bat
+    context:
+      rule_id: vampire-bat--summoned-creature
+    expect:
+      result.recipients:
+      - vampire-bat
   - id: missed
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attack
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: vampire-bat}
-    rolls: [{key: test.hit, value: 1}]
-    expect: {result.hit: false, result.defender.condition: STANDING}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: vampire-bat
+    rolls:
+    - key: test.hit
+      value: 1
+    expect:
+      result.hit: false
+      result.defender.condition: STANDING
   - id: failed-wound
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attack
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: vampire-bat}
-    rolls: [{key: test.hit, value: 5}, {key: test.wound, value: 1}]
-    expect: {result.wounded: false, result.defender.condition: STANDING}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: vampire-bat
+    rolls:
+    - key: test.hit
+      value: 5
+    - key: test.wound
+      value: 1
+    expect:
+      result.wounded: false
+      result.defender.condition: STANDING
   - id: last-wound
-    roles: [active, consumer, boundary, sequence, consumption]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - sequence
+    - consumption
     operation: attack
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: vampire-bat}
-    defender_state: {wounds: 1}
-    rolls: [{key: test.hit, value: 5}, {key: test.wound, value: 5}]
-    expect: {result.damage: 1, result.defender.condition: OUT}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: vampire-bat
+    defender_state:
+      wounds: 1
+    rolls:
+    - key: test.hit
+      value: 5
+    - key: test.wound
+      value: 5
+    expect:
+      result.damage: 1
+      result.defender.condition: OUT
   - id: first-wound-survived
-    roles: [inactive, boundary, consumer]
+    roles:
+    - inactive
+    - boundary
+    - consumer
     operation: attack
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: vampire-bat}
-    rolls: [{key: test.hit, value: 5}, {key: test.wound, value: 5}]
-    expect: {result.damage: 1, result.defender.wounds: 1, result.defender.condition: STANDING}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: vampire-bat
+    rolls:
+    - key: test.hit
+      value: 5
+    - key: test.wound
+      value: 5
+    expect:
+      result.damage: 1
+      result.defender.wounds: 1
+      result.defender.condition: STANDING
   mutations:
   - id: restore-injury-roll
     path: defender.injury_profile
     value: 0
-    cases: [last-wound]
+    cases:
+    - last-wound
   - id: kill-before-last-wound
     path: defender.injury_profile
     value: 2
-    cases: [first-wound-survived]
+    cases:
+    - first-wound-survived

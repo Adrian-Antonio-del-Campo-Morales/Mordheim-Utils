@@ -5,43 +5,58 @@ specifications:
   category: contextual
   sources:
   - target: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-strength-of-steel/skill.strength-of-steel
-    digest: 468119a6ea54efc7483420a909054d7a70a56012c9841318ed0fae5575d946e9
-  depends_on: [mechanic/skill.strength-of-steel]
-  interpretation: Strength of Steel is selectable only by the Blood Dragon Vampire. It adds one point to the effective
-    Strength used for wounding and armour modification during a charge, without changing the permanent characteristic.
+    digest: 21445d4f9f424cda6e3343174d6b75ce9cd18eb78073cae15837088267ae9394
+  depends_on:
+  - mechanic/skill.strength-of-steel
+  interpretation: Strength of Steel is selectable only by the Blood Dragon Vampire. It adds one point
+    to the effective Strength used for wounding and armour modification during a charge, without changing
+    the permanent characteristic.
   cases:
   - id: only-blood-dragon-vampire
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
     defender:
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
       profile_id: blood-dragon-vampire
-    context: {rule_id: band--blood-dragon-power-strength-of-steel}
-    expect: {result.recipients: [blood-dragon-vampire]}
+    context:
+      rule_id: band--blood-dragon-power-strength-of-steel
+    expect:
+      result.recipients:
+      - blood-dragon-vampire
   - id: granted-on-charge
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: strength
     attacker:
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
       profile_id: blood-dragon-vampire
-      special_rule_ids: [band--blood-dragon-power-strength-of-steel]
+      special_rule_ids:
+      - band--blood-dragon-power-strength-of-steel
       main_weapon_id: weapon.dagger
-    context: {first_round: true, charging: true}
+    context:
+      first_round: true
+      charging: true
     expect:
       attacker.characteristics.strength: 4
       attacker.global_effects.charge_strength_bonus: 1
       result.wound: 5
       result.armour: 5
   - id: granted-outside-charge
-    roles: [inactive]
+    roles:
+    - inactive
     operation: strength
     attacker:
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
       profile_id: blood-dragon-vampire
-      special_rule_ids: [band--blood-dragon-power-strength-of-steel]
+      special_rule_ids:
+      - band--blood-dragon-power-strength-of-steel
       main_weapon_id: weapon.dagger
     expect:
       attacker.characteristics.strength: 4
@@ -51,4 +66,5 @@ specifications:
   - id: remove-charge-strength
     path: attacker.global_effects.charge_strength_bonus
     value: 0
-    cases: [granted-on-charge]
+    cases:
+    - granted-on-charge

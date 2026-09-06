@@ -7,6 +7,7 @@ from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.ui.file_actions import export_campaign_markdown, load_campaign_file, save_current_campaign
 from mordheim_campaign.ui.views import CampaignView, RulesView, SettingsView
 from mordheim_ui.theme import COLORS
+from mordheim_ui.i18n import tr
 
 
 VIEWS = {
@@ -16,9 +17,9 @@ VIEWS = {
 }
 
 NAV = [
-    ("campaign", "CAMPAIGN"),
-    ("rules", "RULES"),
-    ("settings", "SETTINGS"),
+    ("campaign", tr('CAMPAIGN')),
+    ("rules", tr('RULES')),
+    ("settings", tr('SETTINGS')),
 ]
 
 
@@ -47,8 +48,8 @@ class AppShell(tk.Frame):
 
         title = tk.Frame(header, bg=COLORS["bg"], padx=15)
         title.pack(side="left", fill="y")
-        tk.Label(title, text="MORDHEIM CAMPAIGN MANAGER", bg=COLORS["bg"], fg=COLORS["text"], font=("Georgia", 14)).pack(anchor="w", pady=(9, 0))
-        tk.Label(title, text="A WARBAND THROUGH TIME", bg=COLORS["bg"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(2, 0))
+        tk.Label(title, text=tr('MORDHEIM CAMPAIGN MANAGER'), bg=COLORS["bg"], fg=COLORS["text"], font=("Georgia", 14)).pack(anchor="w", pady=(9, 0))
+        tk.Label(title, text=tr('A WARBAND THROUGH TIME'), bg=COLORS["bg"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(2, 0))
 
         nav = tk.Frame(header, bg=COLORS["bg"])
         nav.pack(side="left", fill="y", padx=(22, 0))

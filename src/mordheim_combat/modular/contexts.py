@@ -83,7 +83,7 @@ def _hit_reroll(
             phases.has_tag(weapon, tag) for tag in ("weapon.axe", "weapon.dwarf-axe")
         )
         or charging and first_round and phases.has_tag(effect, "skill.expert-swordsman") and any(
-            phases.has_tag(weapon, tag) for tag in ("weapon.sword", "weapon.scimitar", "weapon.weeping-blades")
+            phases.has_tag(weapon, tag) for tag in ("weapon.sword", "weapon.weeping-blades")
         )
         or first_round and phases.has_tag(effect, "skill.crack-shot") and any(
             phases.has_tag(weapon, tag) for tag in ("weapon.pistol", "weapon.duelling-pistol")
@@ -240,6 +240,11 @@ def prepare_wound_context(
     strength, _ = _attack_strength(attacker, defender, attacker_state, weapon, effect, first_round, charging)
     poison_blocked = defender.global_effects.poison_immunity or phases.has_tag(defender.global_effects, "poison_immune")
     automatic = phases.has_tag(effect, "effect.automatic-wound")
+    luck = (
+        phases.has_tag(effect, "skill.luck")
+        and "luck" not in attacker_state.resources_spent
+        and not effect.reroll_wounds
+    )
     failure_still_wounds = hit_roll == 6 and (
         phases.has_tag(effect, "wight_blades")
         or phases.has_tag(effect, "poison.black-lotus") and not poison_blocked)
@@ -258,7 +263,7 @@ def prepare_wound_context(
         strength, defender_state.toughness, modifier, maximum_target=maximum,
         # Lotus already wounds: its optional critical attempt is not a failed
         # wound eligible for Dark Steel/Sure Strike rerolls.
-        automatic=automatic, reroll=effect.reroll_wounds and not (
+        automatic=automatic, reroll=(effect.reroll_wounds or luck) and not (
             hit_roll == 6 and phases.has_tag(effect, "poison.black-lotus") and not poison_blocked
         ),
         critical_threshold=critical_threshold,

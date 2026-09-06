@@ -1,4 +1,5 @@
-"""Source-derived regressions; research and rulings: docs/modular-remediation.md."""
+"""Source-derived regressions; permanent rulings: docs/decisions/design-rulings.md.
+"""
 from dataclasses import replace
 
 import pytest
@@ -284,6 +285,17 @@ def test_basic_critical_table_doubles_damage_without_an_injury_roll_at_three_wou
     assert not result.attacker.critical_available
 
 
+def test_nightshade_applies_one_initiative_penalty_per_unsaved_wound():
+    attacker = fighter(main_poison_id='poison.nightshade')
+    defender = fighter(wounds=4, initiative=4)
+    result = resolve_reference_attack(attacker, defender, state(attacker), state(defender),
+        attacker.main_weapon,
+        ScriptedDice({'a.hit': 4, 'a.wound': 6, 'a.critical': 1}), key='a')
+    assert result.damage == 2
+    assert result.defender.initiative_penalty == 2
+
+
+
 @pytest.mark.parametrize('roll,armour_save', [(1, True), (2, True), (3, False), (4, False), (5, False), (6, False)])
 def test_basic_critical_table_controls_armour_before_damage(roll, armour_save):
     a, b = fighter(), fighter(armour_id='armour.heavy-armour')
@@ -416,6 +428,25 @@ def test_ball_and_chain_damage_is_a_die_not_a_fixed_wound(damage):
     assert result.damage == damage and result.defender.wounds == 5 - damage
 
 
+def test_rousing_sermon_attack_bonus_expires_after_owners_turn():
+    priest = fighter(initiative=6, skill_ids=('skill.inspiring-sermon',))
+    opponent = fighter(initiative=1)
+    current = DuelState(state(priest), state(opponent), first_charged=True)
+
+    first_turn = resolve_round(priest, opponent, current, ScriptedDice({
+        'round.0.first.attack.0.hit': 1,
+        'round.0.first.attack.1.hit': 1,
+        'round.0.second.attack.0.hit': 1,
+    }))
+    assert len(first_turn.attacks) == 3
+
+    second_turn = resolve_round(priest, opponent, first_turn.state, ScriptedDice({
+        'round.1.first.attack.0.hit': 1,
+        'round.1.second.attack.0.hit': 1,
+    }))
+    assert len(second_turn.attacks) == 2
+
+
 def test_brace_of_pistols_is_two_attacks_even_for_a_three_attack_profile():
     a = fighter(attacks=3, main_weapon_id='weapon.pistol', off_hand_id='weapon.pistol')
     assert phases.build_attacks(phases.AttackPoolContext(a, first_round=True)).attacks == 2
@@ -442,6 +473,22 @@ def test_m09_pistol_allocation_and_next_turn_fallback(attacks, off_hand):
     result = resolve_round(a, b, current, dice)
     dice.finish()
     assert len(result.attacks) == remaining + 1
+
+
+def test_disease_dagger_respects_rotten_body_but_keeps_ordinary_wound():
+    attacker = fighter(main_weapon_id='weapon.disease-dagger')
+    defender = compile_fighter(FighterBuild(
+        'mordheim', band_id='skaven-clan-pestilens', profile_id='monk-initiates',
+        main_weapon_id='weapon.mace',
+        special_rule_ids=('band--clan-pestilens-special-skills-rotten-body',),
+    ))
+    result = resolve_reference_attack(
+        attacker, defender, state(attacker), state(defender), attacker.main_weapon,
+        ScriptedDice({'a.hit': 6, 'a.wound': 1}), key='a',
+    )
+    assert not result.wounded
+    assert result.damage == 0
+    assert result.defender.wounds == defender.characteristics.wounds
 
 
 def test_disease_dagger_infects_even_if_the_ordinary_wound_fails():

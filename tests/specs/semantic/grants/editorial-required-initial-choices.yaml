@@ -5,75 +5,131 @@ specifications:
   category: construction
   sources:
   - target: rule/mordheim/cult-of-the-possessed/mutants--mutations/compiler.mutant-requires-mutation-at-recruitment
-    digest: ee2dcf2e1421980515875ca33cbbf508f51c97923bc3f089100bcf4b4c288432
-  interpretation: >-
-    Cult of the Possessed, Heroes / Mutants / Mutations requires one or more mutations when building a
-    Mutant. Zero is rejected; one and two are accepted. The grant corresponds exactly to Mutants, not
-    to Magister. This obligation specifies neither prices nor progression; mutation-purchase is an
+    digest: f81a3cecd4bcf9a7ad2eb1253956d5a2db4dd9b4edc9043aa5f6c626742748e9
+  interpretation: Cult of the Possessed, Heroes / Mutants / Mutations requires one or more mutations when
+    building a Mutant. Zero is rejected; one and two are accepted. The grant corresponds exactly to Mutants,
+    not to Magister. This obligation specifies neither prices nor progression; mutation-purchase is an
     independent obligation.
   cases:
   - id: recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: cult-of-the-possessed, profile_id: mutants, special_rule_ids: [band--mutations-spines]}
-    context: {rule_id: mutants--mutations}
-    expect: {result.recipients: [mutants]}
+    defender:
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
+    context:
+      rule_id: mutants--mutations
+    expect:
+      result.recipients:
+      - mutants
   - id: choices
-    roles: [accepted, rejected, boundary]
+    roles:
+    - accepted
+    - rejected
+    - boundary
     operation: selection_choices
-    attacker: {band_id: cult-of-the-possessed, profile_id: mutants, special_rule_ids: [band--mutations-spines]}
+    attacker:
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-spines
     context:
       choices:
-        zero: {special_rule_ids: []}
-        one: {special_rule_ids: [band--mutations-spines]}
-        two: {special_rule_ids: [band--mutations-spines, band--mutations-blackblood]}
+        zero:
+          special_rule_ids: []
+        one:
+          special_rule_ids:
+          - band--mutations-spines
+        two:
+          special_rule_ids:
+          - band--mutations-spines
+          - band--mutations-blackblood
     expect:
-      result.accepted: [one, two]
-      result.rejected: {zero: 'at least one mutation is required for cult-of-the-possessed/mutants'}
+      result.accepted:
+      - one
+      - two
+      result.rejected:
+        zero: at least one mutation is required for cult-of-the-possessed/mutants
   - id: magister-does-not-require-mutation
-    roles: [accepted]
+    roles:
+    - accepted
     operation: compile
-    attacker: {band_id: cult-of-the-possessed, profile_id: magister}
-    expect: {attacker.fighter_id: 'cult-of-the-possessed:magister'}
+    attacker:
+      band_id: cult-of-the-possessed
+      profile_id: magister
+    expect:
+      attacker.fighter_id: cult-of-the-possessed:magister
   mutations:
   - id: admit-mutant-without-mutation
     runtime_fault: suppress-required-initial-choices
-    cases: [choices]
+    cases:
+    - choices
 - id: initial-choice-tainted-ones
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
   - target: rule/mordheim/carnival-of-chaos/tainted-ones--nurgles-blessings/compiler.nurgle-s-blessings
-    digest: 129c487c64d73292262f754e0fd3aaa0daae6b23fef2f9554f1e7df24db0aa09
-  interpretation: >-
-    Carnival of Chaos, Heroes / Tainted Ones / Nurgle's Blessings requires one or more blessings. Zero
-    is rejected; one or two are accepted. The requirement is granted only to Tainted Ones, not to the
-    Carnival Master.
+    digest: 21e08923870d60ac57dc3c744331a78f187c3f0e9a168b69685f423f84740fe3
+  interpretation: Carnival of Chaos, Heroes / Tainted Ones / Nurgle's Blessings requires one or more blessings.
+    Zero is rejected; one or two are accepted. The requirement is granted only to Tainted Ones, not to
+    the Carnival Master.
   cases:
   - id: recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: carnival-of-chaos, profile_id: tainted-ones, special_rule_ids: [band--blessings-of-nurgle-cloud-of-flies]}
-    context: {rule_id: tainted-ones--nurgles-blessings}
-    expect: {result.recipients: [tainted-ones]}
+    defender:
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-cloud-of-flies
+    context:
+      rule_id: tainted-ones--nurgles-blessings
+    expect:
+      result.recipients:
+      - tainted-ones
   - id: choices
-    roles: [accepted, rejected, boundary]
+    roles:
+    - accepted
+    - rejected
+    - boundary
     operation: selection_choices
-    attacker: {band_id: carnival-of-chaos, profile_id: tainted-ones, special_rule_ids: [band--blessings-of-nurgle-cloud-of-flies]}
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-cloud-of-flies
     context:
       choices:
-        zero: {special_rule_ids: []}
-        one: {special_rule_ids: [band--blessings-of-nurgle-cloud-of-flies]}
-        two: {special_rule_ids: [band--blessings-of-nurgle-cloud-of-flies, band--blessings-of-nurgle-mark-of-nurgle]}
+        zero:
+          special_rule_ids: []
+        one:
+          special_rule_ids:
+          - band--blessings-of-nurgle-cloud-of-flies
+        two:
+          special_rule_ids:
+          - band--blessings-of-nurgle-cloud-of-flies
+          - band--blessings-of-nurgle-mark-of-nurgle
     expect:
-      result.accepted: [one, two]
-      result.rejected: {zero: Tainted Ones require at least one Blessing of Nurgle}
+      result.accepted:
+      - one
+      - two
+      result.rejected:
+        zero: Tainted Ones require at least one Blessing of Nurgle
   - id: master-does-not-require-blessing
-    roles: [accepted]
+    roles:
+    - accepted
     operation: compile
-    attacker: {band_id: carnival-of-chaos, profile_id: carnival-master}
-    expect: {attacker.fighter_id: 'carnival-of-chaos:carnival-master'}
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: carnival-master
+    expect:
+      attacker.fighter_id: carnival-of-chaos:carnival-master
   mutations:
   - id: admit-tainted-one-without-blessing
     runtime_fault: suppress-required-initial-choices
-    cases: [choices]
+    cases:
+    - choices

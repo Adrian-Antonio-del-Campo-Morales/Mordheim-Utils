@@ -3,17 +3,17 @@ band_id: gunnery-school-of-nuln
 rules:
 - id: senior-gunnery-officer--leader
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.gunnery-school-of-nuln.senior-gunnery-officer.leader
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Leader
-  effect: Any models in the warband within 12” of the Senior Gunnery Officer may use his Leadership value when using Leadership
-    tests.
+  effect: Any models in the warband within 12” of the Senior Gunnery Officer may use his Leadership value
+    when using Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -21,24 +21,25 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
-    en: Any models in the warband within 12” of the Senior Gunnery Officer may use his Leadership value when using Leadership
-      tests.
-    es: null
+    en: Any models in the warband within 12” of the Senior Gunnery Officer may use his Leadership value
+      when using Leadership tests.
+    es: Todas las miniaturas de la banda a 12” del Oficial de Artillería Superior pueden usar su valor
+      de Liderazgo al realizar chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - senior-gunnery-officer
 - id: senior-gunnery-officer--hunter
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.gunnery-school-of-nuln.senior-gunnery-officer.hunter
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: shooting."
+      reason: 'Out of scope: shooting.'
   name: Hunter
   effect: See Shooting Skills.
   source:
@@ -48,29 +49,27 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
   name_i18n:
     en: Hunter
-    es: null
+    es: Cazador
   effect_i18n:
     en: See Shooting Skills.
-    es: null
+    es: Ver Habilidades de Disparo.
   applies_to:
     profile_ids:
     - senior-gunnery-officer
 - id: instructor--expert-weaponsmith
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.gunnery-school-of-nuln.instructor.expert-weaponsmith
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: shooting."
+      reason: 'Out of scope: shooting.'
   name: Expert Weaponsmith
-  effect: 'The Instructors know every trick in the book when it comes to working with black
-
-    powder weapons. While there is an Instructor in the warband all Pistol weapons receive a +3” range
-
-    bonus and all other black powder weapons receive a +6” range bonus.'
+  effect: The Instructors know every trick in the book when it comes to working with black powder weapons.
+    While there is an Instructor in the warband all Pistol weapons receive a +3” range bonus and all other
+    black powder weapons receive a +6” range bonus.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -78,14 +77,16 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
   name_i18n:
     en: Expert Weaponsmith
-    es: null
+    es: Armero experto
   effect_i18n:
     en: 'The Instructors know every trick in the book when it comes to working with black
 
       powder weapons. While there is an Instructor in the warband all Pistol weapons receive a +3” range
 
       bonus and all other black powder weapons receive a +6” range bonus.'
-    es: null
+    es: Los Instructores conocen todos los trucos del oficio en lo relativo a las armas de pólvora negra.
+      Mientras haya un Instructor en la banda, todas las armas de pistola reciben un bonus de alcance
+      de +3” y todas las demás armas de pólvora negra reciben un bonus de alcance de +6”.
   applies_to:
     profile_ids:
     - instructor
@@ -101,9 +102,10 @@ rules:
         kind: compiler
         id: compiler.quick-reload
   name: Quick Reload
-  effect: Marksmen trained at the Gunnery School are forced to practice many drills day after day, including those that teach
-    them to load their weapons for speed under high-pressure conditions. Marksmen have the Hunter skill from the Mordheim rulebook.
-    A Marksman who becomes a Hero gains no further effect from taking the Hunter skill in addition to this.
+  effect: Marksmen trained at the Gunnery School are forced to practice many drills day after day, including
+    those that teach them to load their weapons for speed under high-pressure conditions. Marksmen have
+    the Hunter skill from the Mordheim rulebook. A Marksman who becomes a Hero gains no further effect
+    from taking the Hunter skill in addition to this.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -111,7 +113,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
   name_i18n:
     en: Quick Reload
-    es: null
+    es: Recarga rápida
   effect_i18n:
     en: 'Marksmen trained at the Gunnery School are forced to practice many drills day after
 
@@ -121,28 +123,30 @@ rules:
 
       Marksmen have the Hunter skill from the Mordheim
 
-      rulebook. A Marksman who becomes a Hero gains no further effect from taking the Hunter skill in addition to this.'
-    es: null
+      rulebook. A Marksman who becomes a Hero gains no further effect from taking the Hunter skill in
+      addition to this.'
+    es: Los Tiradores entrenados en la Escuela de Artillería están obligados a practicar muchos ejercicios
+      día tras día, incluidos los que les enseñan a cargar sus armas con rapidez bajo condiciones de presión.
+      Los Tiradores tienen la habilidad Cazador del libro de reglas de Mordheim. Un Tirador que se convierta
+      en Héroe no obtiene ningún efecto adicional por tomar la habilidad Cazador además de esta.
   applies_to:
     profile_ids:
     - marksmen
 - id: pistoliers--crack-shot
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
     - id: skill.crack-shot
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: mechanic
         id: skill.crack-shot
   name: Crack Shot
-  effect: 'Experts with pistols in close quarters; they have an uncanny ability to turn what should have
-
-    missed its target into a success. When using pistols in close combat, they may re-roll any missed to-hit rolls
-
-    with the pistol in the first round of combat.'
+  effect: Experts with pistols in close quarters; they have an uncanny ability to turn what should have
+    missed its target into a success. When using pistols in close combat, they may re-roll any missed
+    to-hit rolls with the pistol in the first round of combat.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -150,30 +154,33 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
   name_i18n:
     en: Crack Shot
-    es: null
+    es: Tirador consumado
   effect_i18n:
     en: 'Experts with pistols in close quarters; they have an uncanny ability to turn what should have
 
-      missed its target into a success. When using pistols in close combat, they may re-roll any missed to-hit rolls
+      missed its target into a success. When using pistols in close combat, they may re-roll any missed
+      to-hit rolls
 
       with the pistol in the first round of combat.'
-    es: null
+    es: Expertos con las pistolas en espacios reducidos; tienen una capacidad asombrosa de convertir en
+      acierto lo que debería haber fallado su objetivo. Al usar pistolas en combate cuerpo a cuerpo, pueden
+      repetir cualquier tirada de impacto fallida con la pistola en la primera ronda de combate.
   applies_to:
     profile_ids:
     - pistoliers
 - id: band--impeccable-care
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.gunnery-school-of-nuln.band.impeccable-care
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Impeccable Care
-  effect: The warband may always use the reduced black-powder weapon costs listed in its starting Equipment Lists and gains
-    +2 on rarity rolls to find black-powder weapons.
+  effect: The warband may always use the reduced black-powder weapon costs listed in its starting Equipment
+    Lists and gains +2 on rarity rolls to find black-powder weapons.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -181,26 +188,29 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
   name_i18n:
     en: Impeccable Care
-    es: null
+    es: Cuidado impecable
   effect_i18n:
-    en: The warband may always use the reduced black-powder weapon costs listed in its starting Equipment Lists and gains
-      +2 on rarity rolls to find black-powder weapons.
-    es: null
+    en: The warband may always use the reduced black-powder weapon costs listed in its starting Equipment
+      Lists and gains +2 on rarity rolls to find black-powder weapons.
+    es: La banda siempre puede usar los costes reducidos de las armas de pólvora negra indicados en sus
+      listas de equipo iniciales y obtiene +2 en las tiradas de rareza para encontrar armas de pólvora
+      negra.
   applies_to:
     band: true
 - id: band--properly-used
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.gunnery-school-of-nuln.band.properly-used
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: shooting."
+      reason: 'Out of scope: shooting.'
   name: Properly Used
-  effect: 'When using the optional Misfire rules, if a 1 is rolled, roll another D6. On a 3+ the misfire is ignored: the shot
-    still misses, but the weapon does not explode.'
+  effect: >-
+    When using the optional Misfire rules, if a 1 is rolled, roll another D6. On a 3+ the misfire is
+    ignored: the shot still misses, but the weapon does not explode.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -208,11 +218,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
   name_i18n:
     en: Properly Used
-    es: null
+    es: Uso correcto
   effect_i18n:
-    en: 'When using the optional Misfire rules, if a 1 is rolled, roll another D6. On a 3+ the misfire is ignored: the shot
-      still misses, but the weapon does not explode.'
-    es: null
+    en: 'When using the optional Misfire rules, if a 1 is rolled, roll another D6. On a 3+ the misfire
+      is ignored: the shot still misses, but the weapon does not explode.'
+    es: 'Al usar las reglas opcionales de Falla el disparo (Misfire), si se saca un 1, tira otro D6. Con
+      un 3+ se ignora la falla: el disparo sigue fallando, pero el arma no explota.'
   applies_to:
     band: true
 - id: band--proud-to-a-fault
@@ -227,8 +238,8 @@ rules:
         kind: compiler
         id: compiler.proud-to-a-fault
   name: Proud To A Fault!
-  effect: Members of the Gunnery School warband may never use non-black-powder ranged weapons. This restriction does not apply
-    to Hired Swords or Dramatis Personae.
+  effect: Members of the Gunnery School warband may never use non-black-powder ranged weapons. This restriction
+    does not apply to Hired Swords or Dramatis Personae.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -236,10 +247,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/gunnery-school-of-nuln
   name_i18n:
     en: Proud To A Fault!
-    es: null
+    es: ¡Orgullosos hasta el error!
   effect_i18n:
-    en: Members of the Gunnery School warband may never use non-black-powder ranged weapons. This restriction does not apply
-      to Hired Swords or Dramatis Personae.
-    es: null
+    en: Members of the Gunnery School warband may never use non-black-powder ranged weapons. This restriction
+      does not apply to Hired Swords or Dramatis Personae.
+    es: Los miembros de la banda de la Escuela de Artillería nunca pueden usar armas a distancia que no
+      sean de pólvora negra. Esta restricción no aplica a las Espadas a sueldo ni a los Dramatis Personae.
   applies_to:
     band: true

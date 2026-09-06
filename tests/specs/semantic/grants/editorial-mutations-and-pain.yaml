@@ -4,182 +4,412 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/bretonnian-chapel-guard/band--untiring/mechanic.untiring, digest: c1c749bdc2169d347fccd5adb7c0f6af449ac26438d39b3f65bf9a320be27679}
-  depends_on: [mechanic/mechanic.untiring]
-  interpretation: "Untiring can only be selected for Questing Knight and Knights Errant; selecting it grants exactly the already verified Untiring mechanism."
+  - target: rule/mordheim/bretonnian-chapel-guard/band--untiring/mechanic.untiring
+    digest: 34444e975a70dd82964b0d5a3830816d1eaf8da95ae8ed475af54ce52bbb08b2
+  depends_on:
+  - mechanic/mechanic.untiring
+  interpretation: Untiring can only be selected for Questing Knight and Knights Errant; selecting it grants
+    exactly the already verified Untiring mechanism.
   cases:
   - id: recipients
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {band_id: bretonnian-chapel-guard, profile_id: questing-knight}
-    context: {rule_id: band--untiring}
-    expect: {result.recipients: [knights-errant, questing-knight]}
+    defender:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+    context:
+      rule_id: band--untiring
+    expect:
+      result.recipients:
+      - knights-errant
+      - questing-knight
   - id: selected
-    roles: [accepted]
+    roles:
+    - accepted
     operation: armour
-    attacker: {main_weapon_id: weapon.vomit-attack}
-    defender: {band_id: bretonnian-chapel-guard, profile_id: questing-knight, special_rule_ids: [band--untiring]}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.eligible: true, result.target: 5, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      special_rule_ids:
+      - band--untiring
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.eligible: true
+      result.target: 5
+      result.saved: true
   mutations:
   - id: omit-grant
     changes:
-    - {path: defender.global_effects.armour_save_floor, value: 7}
-    - {path: defender.global_effects.armour_cannot_be_ignored, value: false}
-    cases: [selected]
-
+    - path: defender.global_effects.armour_save_floor
+      value: 7
+    - path: defender.global_effects.armour_cannot_be_ignored
+      value: false
+    cases:
+    - selected
 - id: editorial-great-claw-mordheim-and-trollheim
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/mordheim/cult-of-the-possessed/band--mutations-great-claw/special-rule.band--mutations-great-claw, digest: 14e6ddd209b6912e04b3bccd2fae8041cd8a8a00d06177dbf39f6716d4deb22f}
-  - {target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-great-claw/special-rule.band--mutations-great-claw, digest: 676b847b1033a24dc9ff3f44bca71dd772ee7681911a3bc362c122fb9deffcfe}
-  interpretation: "Great Claw is selectable only by Mutants and Possessed and adds a separate attack at Strength +1 in both collections."
+  - target: rule/mordheim/cult-of-the-possessed/band--mutations-great-claw/special-rule.band--mutations-great-claw
+    digest: 782f630135d6d4d2849c6894d937d38b25db7a01726c148862a7cc426d693efb
+  - target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-great-claw/special-rule.band--mutations-great-claw
+    digest: 45293b7ddf604a12b7e6784e17651306fea7f61fa78407658bd020c3a2c5bb19
+  interpretation: Great Claw is selectable only by Mutants and Possessed and adds a separate attack at
+    Strength +1 in both collections.
   cases:
   - id: mordheim-recipients
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {band_id: cult-of-the-possessed, profile_id: darksouls}
-    context: {rule_id: band--mutations-great-claw}
-    expect: {result.recipients: [mutants, the-possessed]}
+    defender:
+      band_id: cult-of-the-possessed
+      profile_id: darksouls
+    context:
+      rule_id: band--mutations-great-claw
+    expect:
+      result.recipients:
+      - mutants
+      - the-possessed
   - id: trollheim-recipients
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: trollheim-cult-of-the-possessed, profile_id: darksouls}
-    context: {rule_id: band--mutations-great-claw}
-    expect: {result.recipients: [mutants, the-possessed]}
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: darksouls
+    context:
+      rule_id: band--mutations-great-claw
+    expect:
+      result.recipients:
+      - mutants
+      - the-possessed
   - id: claw-attack
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: extra_attack
-    attacker: {band_id: cult-of-the-possessed, profile_id: mutants, special_rule_ids: [band--mutations-great-claw]}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 3, initiative: 3, attacks: 1}}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}]
-    expect: {attacker.extra_attacks.0.strength_bonus: 1, result.wounded: true, result.defender.wounds: 2}
-    expect_contains: {attacker.extra_attacks.0.tags: [rule.great-claw]}
+    attacker:
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-great-claw
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      attacker.extra_attacks.0.strength_bonus: 1
+      result.wounded: true
+      result.defender.wounds: 2
+    expect_contains:
+      attacker.extra_attacks.0.tags:
+      - rule.great-claw
   - id: no-claw
     roles: []
     operation: compile
-    attacker: {band_id: cult-of-the-possessed, profile_id: darksouls}
-    expect: {attacker.extra_attacks: []}
+    attacker:
+      band_id: cult-of-the-possessed
+      profile_id: darksouls
+    expect:
+      attacker.extra_attacks: []
   - id: ordinary-attack
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attacks
-    attacker: {band_id: cult-of-the-possessed, profile_id: darksouls}
-    expect: {result.attacks: 1}
+    attacker:
+      band_id: cult-of-the-possessed
+      profile_id: darksouls
+    expect:
+      result.attacks: 1
   mutations:
-  - {id: remove-strength, path: attacker.extra_attacks.0.strength_bonus, value: 0, cases: [claw-attack]}
-
+  - id: remove-strength
+    path: attacker.extra_attacks.0.strength_bonus
+    value: 0
+    cases:
+    - claw-attack
 - id: editorial-tentacle-mordheim-and-trollheim
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/mordheim/cult-of-the-possessed/band--mutations-tentacle/special-rule.band--mutations-tentacle, digest: fd8475a0607f59950dacd4609169d87dc4fb7431c8f3b112bcfdc3a2c18f53bd}
-  - {target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-tentacle/special-rule.band--mutations-tentacle, digest: 951bdb0f51e502194381c0f4dc911c790364438ced0933229d698b90b7c68bea}
-  interpretation: "Tentacle is selectable by Mutants and Possessed and removes one attack from the opponent without reducing it below one."
+  - target: rule/mordheim/cult-of-the-possessed/band--mutations-tentacle/special-rule.band--mutations-tentacle
+    digest: bbde69789d86575a6704386ad8582f1c9c84c49942b520bc0062da91ee3c1002
+  - target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-tentacle/special-rule.band--mutations-tentacle
+    digest: 5666a79484c95444374dc725797b92523acfccd6c9470dccda1644d64aeacecd
+  interpretation: Tentacle is selectable by Mutants and Possessed and removes one attack from the opponent
+    without reducing it below one.
   cases:
   - id: mordheim-recipients
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {band_id: cult-of-the-possessed, profile_id: darksouls}
-    context: {rule_id: band--mutations-tentacle}
-    expect: {result.recipients: [mutants, the-possessed]}
+    defender:
+      band_id: cult-of-the-possessed
+      profile_id: darksouls
+    context:
+      rule_id: band--mutations-tentacle
+    expect:
+      result.recipients:
+      - mutants
+      - the-possessed
   - id: trollheim-recipients
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: trollheim-cult-of-the-possessed, profile_id: darksouls}
-    context: {rule_id: band--mutations-tentacle}
-    expect: {result.recipients: [mutants, the-possessed]}
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: darksouls
+    context:
+      rule_id: band--mutations-tentacle
+    expect:
+      result.recipients:
+      - mutants
+      - the-possessed
   - id: reduces-three-to-two
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: opposed_attacks
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 3}}
-    defender: {band_id: cult-of-the-possessed, profile_id: mutants, special_rule_ids: [band--mutations-tentacle]}
-    expect: {defender.global_effects.incoming_attacks_modifier: -1, result.attacks: 2}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 3
+    defender:
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-tentacle
+    expect:
+      defender.global_effects.incoming_attacks_modifier: -1
+      result.attacks: 2
   - id: minimum-one
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: opposed_attacks
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: trollheim-cult-of-the-possessed, profile_id: mutants, special_rule_ids: [band--mutations-tentacle]}
-    expect: {result.attacks: 1}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-tentacle
+    expect:
+      result.attacks: 1
   - id: absent
-    roles: [inactive]
+    roles:
+    - inactive
     operation: opposed_attacks
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 3}}
-    expect: {result.attacks: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 3
+    expect:
+      result.attacks: 3
   mutations:
-  - {id: remove-tentacle, path: defender.global_effects.incoming_attacks_modifier, value: 0, cases: [reduces-three-to-two]}
-
+  - id: remove-tentacle
+    path: defender.global_effects.incoming_attacks_modifier
+    value: 0
+    cases:
+    - reduces-three-to-two
 - id: editorial-extra-arm-mordheim-and-trollheim
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/mordheim/cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm, digest: 15064642e29aadccad119766b2be9d5f436d2a61b52486d9fa8493d446b74020}
-  - {target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm, digest: c1ffb749816664eb15d839ca598e160061e7dd0651bcdc5d336ba804cc04857b}
-  interpretation: "Extra Arm accepts a one-handed weapon, Shield or Buckler for Mutants and Possessed; the weapon creates a separate attack and the shield additionally keeps the Possessed's natural attack."
+  - target: rule/mordheim/cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
+    digest: da9aa260906e2c174ec790e1bada0d19e9a52482bbb6b6a12cca46bea061b03c
+  - target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-extra-arm/special-rule.band--mutations-extra-arm
+    digest: ac4bad0a8a711e246538bb24d65f2b502abbb819b26068191dc571dc7eecf356
+  interpretation: Extra Arm accepts a one-handed weapon, Shield or Buckler for Mutants and Possessed;
+    the weapon creates a separate attack and the shield additionally keeps the Possessed's natural attack.
   cases:
   - id: mordheim-recipients
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {band_id: cult-of-the-possessed, profile_id: darksouls}
-    context: {rule_id: band--mutations-extra-arm}
-    expect: {result.recipients: [mutants, the-possessed]}
+    defender:
+      band_id: cult-of-the-possessed
+      profile_id: darksouls
+    context:
+      rule_id: band--mutations-extra-arm
+    expect:
+      result.recipients:
+      - mutants
+      - the-possessed
   - id: trollheim-recipients
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: trollheim-cult-of-the-possessed, profile_id: darksouls}
-    context: {rule_id: band--mutations-extra-arm}
-    expect: {result.recipients: [mutants, the-possessed]}
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: darksouls
+    context:
+      rule_id: band--mutations-extra-arm
+    expect:
+      result.recipients:
+      - mutants
+      - the-possessed
   - id: weapon-extra-attack
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: extra_attack
-    attacker: {band_id: cult-of-the-possessed, profile_id: mutants, special_rule_ids: [band--mutations-extra-arm], extra_hand_id: weapon.mace}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}]
-    expect: {result.wounded: true, result.defender.wounds: 2}
-    expect_contains: {attacker.extra_attacks.0.tags: [weapon.mace]}
+    attacker:
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-extra-arm
+      extra_hand_id: weapon.mace
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.wounded: true
+      result.defender.wounds: 2
+    expect_contains:
+      attacker.extra_attacks.0.tags:
+      - weapon.mace
   - id: shield-and-possessed-attack
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {collection: trollheim, band_id: trollheim-cult-of-the-possessed, profile_id: the-possessed, special_rule_ids: [band--mutations-extra-arm], extra_hand_id: defence.shield}
-    expect: {attacker.armour_save: 5}
-    expect_contains: {attacker.extra_attacks.0.tags: [weapon.natural-attacks]}
+    attacker:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: the-possessed
+      special_rule_ids:
+      - band--mutations-extra-arm
+      extra_hand_id: defence.shield
+    expect:
+      attacker.armour_save: 5
+    expect_contains:
+      attacker.extra_attacks.0.tags:
+      - weapon.natural-attacks
   - id: no-extra-arm
     roles: []
     operation: compile
-    attacker: {band_id: cult-of-the-possessed, profile_id: darksouls}
-    expect: {attacker.extra_attacks: []}
+    attacker:
+      band_id: cult-of-the-possessed
+      profile_id: darksouls
+    expect:
+      attacker.extra_attacks: []
   - id: ordinary-attack
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attacks
-    attacker: {band_id: cult-of-the-possessed, profile_id: darksouls}
-    expect: {result.attacks: 1}
+    attacker:
+      band_id: cult-of-the-possessed
+      profile_id: darksouls
+    expect:
+      result.attacks: 1
   mutations:
-  - {id: weaken-extra-weapon, path: attacker.extra_attacks.0.strength_bonus, value: -2, cases: [weapon-extra-attack]}
-
+  - id: weaken-extra-weapon
+    path: attacker.extra_attacks.0.strength_bonus
+    value: -2
+    cases:
+    - weapon-extra-attack
 - id: editorial-maddened-with-pain
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
-  - {target: rule/mordheim/cursed-cavalcade/great-bear--maddened-with-pain/trait.maddened-with-pain, digest: 527dec24fe181a5af4fa608b961fa420b317944e5505f33babc6ae83e8e1ecd7}
-  interpretation: "Only the Great Bear receives Maddened With Pain and gains exactly one attack after having lost at least one Wound."
+  - target: rule/mordheim/cursed-cavalcade/great-bear--maddened-with-pain/trait.maddened-with-pain
+    digest: 61eb8c81d99d3c8429a5c7e369e432ea24dffee0d804ffa1560df9ee20def93a
+  interpretation: Only the Great Bear receives Maddened With Pain and gains exactly one attack after having
+    lost at least one Wound.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: cursed-cavalcade, profile_id: great-bear}
-    context: {rule_id: great-bear--maddened-with-pain}
-    expect: {result.recipients: [great-bear]}
+    defender:
+      band_id: cursed-cavalcade
+      profile_id: great-bear
+    context:
+      rule_id: great-bear--maddened-with-pain
+    expect:
+      result.recipients:
+      - great-bear
   - id: wounded
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: attacks
-    attacker: {band_id: cursed-cavalcade, profile_id: great-bear}
-    context: {wounded: true}
-    expect: {result.attacks: 3}
-    expect_contains: {attacker.global_effects.tags: [maddened_with_pain]}
+    attacker:
+      band_id: cursed-cavalcade
+      profile_id: great-bear
+    context:
+      wounded: true
+    expect:
+      result.attacks: 3
+    expect_contains:
+      attacker.global_effects.tags:
+      - maddened_with_pain
   - id: unwounded
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attacks
-    attacker: {band_id: cursed-cavalcade, profile_id: great-bear}
-    context: {wounded: false}
-    expect: {result.attacks: 2}
+    attacker:
+      band_id: cursed-cavalcade
+      profile_id: great-bear
+    context:
+      wounded: false
+    expect:
+      result.attacks: 2
   mutations:
-  - {id: remove-pain, path: attacker.global_effects.tags, value: [], cases: [wounded]}
+  - id: remove-pain
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - wounded

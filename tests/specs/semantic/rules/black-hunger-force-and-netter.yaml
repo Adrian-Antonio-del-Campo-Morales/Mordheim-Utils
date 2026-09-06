@@ -4,211 +4,501 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: mechanic/mechanic.black-hunger, digest: 2322961242e3ac4dc563c46834b5c753176b5ca2cbb290fe3e35eb5ed9e9bb30}
-  interpretation: "Black Hunger adds an attack while active and, at the end, causes D3 automatic Strength 3 hits that ignore armour."
+  - target: mechanic/mechanic.black-hunger
+    digest: 8aac7f3497bccc6abe7b65c8e1a067722480feb7fde2824620c06bc9b3aafcde
+  interpretation: Black Hunger adds an attack while active and, at the end, causes D3 automatic Strength
+    3 hits that ignore armour.
   cases:
   - id: attack-bonus
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: attacks
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.black-hunger]}
-    expect: {attacker.global_effects.attacks_bonus: 1, result.attacks: 2}
-    expect_contains: {attacker.global_effects.tags: [mechanic.black-hunger]}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.black-hunger
+    expect:
+      attacker.global_effects.attacks_bonus: 1
+      result.attacks: 2
+    expect_contains:
+      attacker.global_effects.tags:
+      - mechanic.black-hunger
   - id: one-backlash-hit
-    roles: [active, sequence, consumption, boundary]
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
     operation: black_hunger
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.black-hunger]}
-    rolls: [{key: test.black-hunger.hits, sides: 3, value: 1}, {key: test.black-hunger.hit.0.wound, value: 4}]
-    expect: {result.attacker.wounds: 2, result.attacks.0.wounded: true}
-  - id: three-failed-wounds
-    roles: [boundary, sequence, consumption]
-    operation: black_hunger
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.black-hunger]}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.black-hunger
     rolls:
-    - {key: test.black-hunger.hits, sides: 3, value: 3}
-    - {key: test.black-hunger.hit.0.wound, value: 1}
-    - {key: test.black-hunger.hit.1.wound, value: 1}
-    - {key: test.black-hunger.hit.2.wound, value: 1}
-    expect: {result.attacker.wounds: 3, result.attacks.0.wounded: false, result.attacks.1.wounded: false, result.attacks.2.wounded: false}
-  - id: inactive-fighter
-    roles: [inactive]
+    - key: test.black-hunger.hits
+      sides: 3
+      value: 1
+    - key: test.black-hunger.hit.0.wound
+      value: 4
+    expect:
+      result.attacker.wounds: 2
+      result.attacks.0.wounded: true
+  - id: three-failed-wounds
+    roles:
+    - boundary
+    - sequence
+    - consumption
     operation: black_hunger
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.black-hunger]}
-    attacker_state: {condition: OUT}
-    expect: {result.attacker.wounds: 3, result.attacks: []}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.black-hunger
+    rolls:
+    - key: test.black-hunger.hits
+      sides: 3
+      value: 3
+    - key: test.black-hunger.hit.0.wound
+      value: 1
+    - key: test.black-hunger.hit.1.wound
+      value: 1
+    - key: test.black-hunger.hit.2.wound
+      value: 1
+    expect:
+      result.attacker.wounds: 3
+      result.attacks.0.wounded: false
+      result.attacks.1.wounded: false
+      result.attacks.2.wounded: false
+  - id: inactive-fighter
+    roles:
+    - inactive
+    operation: black_hunger
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.black-hunger
+    attacker_state:
+      condition: OUT
+    expect:
+      result.attacker.wounds: 3
+      result.attacks: []
   mutations:
-  - {id: remove-black-hunger, path: attacker.global_effects.tags, value: [], cases: [one-backlash-hit]}
-
+  - id: remove-black-hunger
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - one-backlash-hit
 - id: mechanic-force-of-will
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: mechanic/mechanic.force-of-will, digest: a4d3209047c07c7fcd3601e5228809632291e7a1953f27be1d1d77781ce13bee}
-  interpretation: "Force of Will attempts to rescue the first Out of Action once with Toughness and afterwards requires cumulative checks with an extra -1 per round."
+  - target: mechanic/mechanic.force-of-will
+    digest: e9cf47deee38a9af355caf541591fa1663623c57572f0b70d929913419dea70b
+  interpretation: Force of Will attempts to rescue the first Out of Action once with Toughness and afterwards
+    requires cumulative checks with an extra -1 per round.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.force-of-will]}
-    expect: {attacker.global_effects.strength_bonus: 0}
-    expect_contains: {attacker.global_effects.tags: [mechanic.force-of-will]}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.force-of-will
+    expect:
+      attacker.global_effects.strength_bonus: 0
+    expect_contains:
+      attacker.global_effects.tags:
+      - mechanic.force-of-will
   - id: rescue-success
-    roles: [active, sequence, consumption, boundary]
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
     operation: force_of_will
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.force-of-will]}
-    attacker_state: {condition: OUT, wounds: 0}
-    rolls: [{key: test.force.rescue, value: 3}]
-    expect: {result.condition: STANDING, result.wounds: 1, result.force_of_will_active: true, result.resources_spent: [force-of-will]}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.force-of-will
+    attacker_state:
+      condition: OUT
+      wounds: 0
+    rolls:
+    - key: test.force.rescue
+      value: 3
+    expect:
+      result.condition: STANDING
+      result.wounds: 1
+      result.force_of_will_active: true
+      result.resources_spent:
+      - force-of-will
   - id: rescue-failure
-    roles: [boundary, consumption]
+    roles:
+    - boundary
+    - consumption
     operation: force_of_will
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.force-of-will]}
-    attacker_state: {condition: OUT, wounds: 0}
-    rolls: [{key: test.force.rescue, value: 4}]
-    expect: {result.condition: OUT, result.force_of_will_active: false, result.resources_spent: [force-of-will]}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.force-of-will
+    attacker_state:
+      condition: OUT
+      wounds: 0
+    rolls:
+    - key: test.force.rescue
+      value: 4
+    expect:
+      result.condition: OUT
+      result.force_of_will_active: false
+      result.resources_spent:
+      - force-of-will
   - id: sustain-success
-    roles: [active, sequence, boundary]
+    roles:
+    - active
+    - sequence
+    - boundary
     operation: force_of_will
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.force-of-will]}
-    attacker_state: {force_of_will_active: true, force_of_will_penalty: 0, resources_spent: [force-of-will]}
-    context: {sustain: true}
-    rolls: [{key: test.force.sustain, value: 2}]
-    expect: {result.condition: STANDING, result.force_of_will_active: true, result.force_of_will_penalty: 1}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.force-of-will
+    attacker_state:
+      force_of_will_active: true
+      force_of_will_penalty: 0
+      resources_spent:
+      - force-of-will
+    context:
+      sustain: true
+    rolls:
+    - key: test.force.sustain
+      value: 2
+    expect:
+      result.condition: STANDING
+      result.force_of_will_active: true
+      result.force_of_will_penalty: 1
   - id: ordinary-inactive
-    roles: [inactive]
+    roles:
+    - inactive
     operation: force_of_will
-    attacker: {main_weapon_id: weapon.mace}
-    attacker_state: {condition: OUT, wounds: 0}
-    expect: {result.condition: OUT, result.resources_spent: []}
+    attacker:
+      main_weapon_id: weapon.mace
+    attacker_state:
+      condition: OUT
+      wounds: 0
+    expect:
+      result.condition: OUT
+      result.resources_spent: []
   mutations:
-  - {id: remove-force, path: attacker.global_effects.tags, value: [], cases: [rescue-success, rescue-failure]}
-
+  - id: remove-force
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - rescue-success
+    - rescue-failure
 - id: mechanic-netter
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: mechanic/mechanic.netter, digest: 5db43bc4b0f07e5c4b4176eb8b563a71a24d3e294a2e9a2fe505f3b0120b680a}
-  interpretation: "Netter rolls to hit with BS before combat and knocks down the target only if the hit lands and it fails its Strength check to escape."
+  - target: mechanic/mechanic.netter
+    digest: a77aad3b01eb239b588a6e7fb40d3919ea35fb1d97835d29d11b169386f052c9
+  interpretation: Netter rolls to hit with BS before combat and knocks down the target only if the hit
+    lands and it fails its Strength check to escape.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {band_id: night-goblins-mic, profile_id: big-boss, special_rule_ids: [band--night-goblin-special-skills-netter]}
-    expect: {attacker.ballistic_skill: 3}
-    expect_contains: {attacker.global_effects.tags: [mechanic.netter]}
+    attacker:
+      band_id: night-goblins-mic
+      profile_id: big-boss
+      special_rule_ids:
+      - band--night-goblin-special-skills-netter
+    expect:
+      attacker.ballistic_skill: 3
+    expect_contains:
+      attacker.global_effects.tags:
+      - mechanic.netter
   - id: caught
-    roles: [active, sequence, consumption, boundary]
+    roles:
+    - active
+    - sequence
+    - consumption
+    - boundary
     operation: netter
-    attacker: {band_id: night-goblins-mic, profile_id: big-boss, special_rule_ids: [band--night-goblin-special-skills-netter]}
-    rolls: [{key: test.netter.hit, value: 4}, {key: test.netter.escape, value: 4}]
-    expect: {result.condition: KNOCKED_DOWN}
+    attacker:
+      band_id: night-goblins-mic
+      profile_id: big-boss
+      special_rule_ids:
+      - band--night-goblin-special-skills-netter
+    rolls:
+    - key: test.netter.hit
+      value: 4
+    - key: test.netter.escape
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
   - id: net-misses
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: netter
-    attacker: {band_id: night-goblins-mic, profile_id: big-boss, special_rule_ids: [band--night-goblin-special-skills-netter]}
-    rolls: [{key: test.netter.hit, value: 3}]
-    expect: {result.condition: STANDING}
+    attacker:
+      band_id: night-goblins-mic
+      profile_id: big-boss
+      special_rule_ids:
+      - band--night-goblin-special-skills-netter
+    rolls:
+    - key: test.netter.hit
+      value: 3
+    expect:
+      result.condition: STANDING
   - id: target-escapes
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: netter
-    attacker: {band_id: night-goblins-mic, profile_id: big-boss, special_rule_ids: [band--night-goblin-special-skills-netter]}
-    rolls: [{key: test.netter.hit, value: 4}, {key: test.netter.escape, value: 3}]
-    expect: {result.condition: STANDING}
+    attacker:
+      band_id: night-goblins-mic
+      profile_id: big-boss
+      special_rule_ids:
+      - band--night-goblin-special-skills-netter
+    rolls:
+    - key: test.netter.hit
+      value: 4
+    - key: test.netter.escape
+      value: 3
+    expect:
+      result.condition: STANDING
   mutations:
-  - {id: remove-netter, path: attacker.global_effects.tags, value: [], cases: [caught]}
-
+  - id: remove-netter
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - caught
 - id: editorial-black-hunger-variants
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/skaven-clan-eshin/band--skaven-special-skills-black-hunger/mechanic.black-hunger, digest: dd57f3035255f41906171338aac2a1d24e15e8cf8168c55db6f164621939aa0a}
-  - {target: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger, digest: 405431f1a320b41573ff5094af57c760e9acf072787855176717ba3f83a4c681}
-  - {target: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger, digest: 80c0c6a2b9fda34ed3805f3b1c1c1c9ab4f386d56e5d7e3ac4e385dbaebda338}
-  - {target: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-black-hunger/mechanic.black-hunger, digest: f0f109a4d74b35f15e95f9706d9a33e93956efbb9c3745fd12d11471b388fab9}
-  depends_on: [mechanic/mechanic.black-hunger]
-  interpretation: "The four rules grant Black Hunger to their exact Hero lists; the editorial Movement differences stay outside the duel and share the same combat effect."
+  - target: rule/mordheim/skaven-clan-eshin/band--skaven-special-skills-black-hunger/mechanic.black-hunger
+    digest: 1c33997c72f8c39ac2bf1296541e29043e6a517ddda93b392eb0d31a7a2c3d68
+  - target: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger
+    digest: d535340adeddc10d280c9a881b0d1c537ee9b9eaa4f2404f5cc917504cd34195
+  - target: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger
+    digest: fe1d952fdf2e33d184400178f2fd079ac20cafac7d6201be524afa23b8acb0c9
+  - target: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-black-hunger/mechanic.black-hunger
+    digest: 7d93818b979b41171b04497574937e2505705f9f2b8eaba0130575f1d8397eb0
+  depends_on:
+  - mechanic/mechanic.black-hunger
+  interpretation: The four rules grant Black Hunger to their exact Hero lists; the editorial Movement
+    differences stay outside the duel and share the same combat effect.
   cases:
   - id: eshin-mordheim
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {band_id: skaven-clan-eshin, profile_id: assassin-adept}
-    context: {rule_id: band--skaven-special-skills-black-hunger}
-    expect: {result.recipients: [assassin-adept, black-skaven, eshin-sorcerer, night-runners]}
+    defender:
+      band_id: skaven-clan-eshin
+      profile_id: assassin-adept
+    context:
+      rule_id: band--skaven-special-skills-black-hunger
+    expect:
+      result.recipients:
+      - assassin-adept
+      - black-skaven
+      - eshin-sorcerer
+      - night-runners
   - id: pestilens-mordheim
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {band_id: skaven-clan-pestilens, profile_id: plague-priest}
-    context: {rule_id: band--clan-pestilens-special-skills-black-hunger}
-    expect: {result.recipients: [monk-initiates, pestilens-sorcerer, plague-monks, plague-priest]}
+    defender:
+      band_id: skaven-clan-pestilens
+      profile_id: plague-priest
+    context:
+      rule_id: band--clan-pestilens-special-skills-black-hunger
+    expect:
+      result.recipients:
+      - monk-initiates
+      - pestilens-sorcerer
+      - plague-monks
+      - plague-priest
   - id: pestilens-lustria
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: lustria-clan-pestilens, profile_id: plague-priest}
-    context: {rule_id: band--clan-pestilens-special-skills-black-hunger}
-    expect: {result.recipients: [monk-initiates, pestilens-sorcerer, plague-monks, plague-priest]}
+    defender:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
+    context:
+      rule_id: band--clan-pestilens-special-skills-black-hunger
+    expect:
+      result.recipients:
+      - monk-initiates
+      - pestilens-sorcerer
+      - plague-monks
+      - plague-priest
   - id: eshin-trollheim
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: trollheim-skaven-clan-eshin, profile_id: assassin-adept}
-    context: {rule_id: band--skaven-special-skills-black-hunger}
-    expect: {result.recipients: [assassin-adept, black-skaven, eshin-sorcerer, night-runners]}
+    defender:
+      collection: trollheim
+      band_id: trollheim-skaven-clan-eshin
+      profile_id: assassin-adept
+    context:
+      rule_id: band--skaven-special-skills-black-hunger
+    expect:
+      result.recipients:
+      - assassin-adept
+      - black-skaven
+      - eshin-sorcerer
+      - night-runners
   - id: selected-effect
-    roles: [accepted]
+    roles:
+    - accepted
     operation: attacks
-    attacker: {band_id: skaven-clan-eshin, profile_id: assassin-adept, special_rule_ids: [band--skaven-special-skills-black-hunger]}
-    expect: {attacker.global_effects.attacks_bonus: 1, result.attacks: 2}
+    attacker:
+      band_id: skaven-clan-eshin
+      profile_id: assassin-adept
+      special_rule_ids:
+      - band--skaven-special-skills-black-hunger
+    expect:
+      attacker.global_effects.attacks_bonus: 1
+      result.attacks: 2
   mutations:
-  - {id: omit-black-hunger, path: attacker.global_effects.attacks_bonus, value: 0, cases: [selected-effect]}
-
+  - id: omit-black-hunger
+    path: attacker.global_effects.attacks_bonus
+    value: 0
+    cases:
+    - selected-effect
 - id: editorial-force-of-will-variants
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will, digest: 7dc92f8c015737a1dea6fed33d96f911f7b6d0a422cf6bff80fb9ea4a36d17aa}
-  - {target: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will, digest: 09ef760ee98d7ded7659143be4af787211c214fe8639ad3c24a69370038f59b1}
-  depends_on: [mechanic/mechanic.force-of-will]
-  interpretation: "Both editions grant Force of Will exclusively to Dwarf Troll Slayer, Pit King and Pit Veterans and consume the same canonical rescue."
+  - target: rule/mordheim/pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will
+    digest: 6421035c490784bb314d3f871e185048cb8a983e8b3f72663af8dab65e714373
+  - target: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-force-of-will/mechanic.force-of-will
+    digest: 1a52972255b35605894898bdf680e0aec3dcdd3a16e554630bc8e65b6e9a4548
+  depends_on:
+  - mechanic/mechanic.force-of-will
+  interpretation: Both editions grant Force of Will exclusively to Dwarf Troll Slayer, Pit King and Pit
+    Veterans and consume the same canonical rescue.
   cases:
   - id: mordheim-recipients
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {band_id: pit-fighters, profile_id: pit-king}
-    context: {rule_id: band--pit-fighter-skill-force-of-will}
-    expect: {result.recipients: [dwarf-troll-slayer, pit-king, pit-veterans]}
+    defender:
+      band_id: pit-fighters
+      profile_id: pit-king
+    context:
+      rule_id: band--pit-fighter-skill-force-of-will
+    expect:
+      result.recipients:
+      - dwarf-troll-slayer
+      - pit-king
+      - pit-veterans
   - id: trollheim-recipients
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: pit-king}
-    context: {rule_id: band--pit-fighter-skill-force-of-will}
-    expect: {result.recipients: [dwarf-troll-slayer, pit-king, pit-veterans]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: pit-king
+    context:
+      rule_id: band--pit-fighter-skill-force-of-will
+    expect:
+      result.recipients:
+      - dwarf-troll-slayer
+      - pit-king
+      - pit-veterans
   - id: selected-rescue
-    roles: [accepted]
+    roles:
+    - accepted
     operation: force_of_will
-    attacker: {band_id: pit-fighters, profile_id: pit-king, special_rule_ids: [band--pit-fighter-skill-force-of-will]}
-    attacker_state: {condition: OUT, wounds: 0}
-    rolls: [{key: test.force.rescue, value: 3}]
-    expect: {result.condition: STANDING, result.resources_spent: [force-of-will]}
+    attacker:
+      band_id: pit-fighters
+      profile_id: pit-king
+      special_rule_ids:
+      - band--pit-fighter-skill-force-of-will
+    attacker_state:
+      condition: OUT
+      wounds: 0
+    rolls:
+    - key: test.force.rescue
+      value: 3
+    expect:
+      result.condition: STANDING
+      result.resources_spent:
+      - force-of-will
   mutations:
-  - {id: omit-force, path: attacker.global_effects.tags, value: [], cases: [selected-rescue]}
-
+  - id: omit-force
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - selected-rescue
 - id: editorial-netter
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/night-goblins-mic/band--night-goblin-special-skills-netter/mechanic.netter, digest: a7d8a2871be4f52a0c4ad10bb4fb40a6bcba2ebcc59acb360e47b105e14bd427}
-  depends_on: [mechanic/mechanic.netter]
-  interpretation: "Netter can only be selected for Big Boss and Bosses and projects the pre-combat throwing mechanism."
+  - target: rule/mordheim/night-goblins-mic/band--night-goblin-special-skills-netter/mechanic.netter
+    digest: 85d8967b2f7ef4f6bf7cac7bbb0afbe1f2e0383fcf8f134bfaff816c0f23a1db
+  depends_on:
+  - mechanic/mechanic.netter
+  interpretation: Netter can only be selected for Big Boss and Bosses and projects the pre-combat throwing
+    mechanism.
   cases:
   - id: recipients
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selectable_grant
-    defender: {band_id: night-goblins-mic, profile_id: big-boss}
-    context: {rule_id: band--night-goblin-special-skills-netter}
-    expect: {result.recipients: [big-boss, bosses]}
+    defender:
+      band_id: night-goblins-mic
+      profile_id: big-boss
+    context:
+      rule_id: band--night-goblin-special-skills-netter
+    expect:
+      result.recipients:
+      - big-boss
+      - bosses
   - id: selected
-    roles: [accepted]
+    roles:
+    - accepted
     operation: netter
-    attacker: {band_id: night-goblins-mic, profile_id: big-boss, special_rule_ids: [band--night-goblin-special-skills-netter]}
-    rolls: [{key: test.netter.hit, value: 4}, {key: test.netter.escape, value: 4}]
-    expect: {result.condition: KNOCKED_DOWN}
+    attacker:
+      band_id: night-goblins-mic
+      profile_id: big-boss
+      special_rule_ids:
+      - band--night-goblin-special-skills-netter
+    rolls:
+    - key: test.netter.hit
+      value: 4
+    - key: test.netter.escape
+      value: 4
+    expect:
+      result.condition: KNOCKED_DOWN
   mutations:
-  - {id: omit-netter, path: attacker.global_effects.tags, value: [], cases: [selected]}
+  - id: omit-netter
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - selected

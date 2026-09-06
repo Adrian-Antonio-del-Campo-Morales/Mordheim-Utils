@@ -948,7 +948,7 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
                     "configuration, a size sweep, or a --deep large-scale profile.",
         epilog="Sweep/deep shapes and timing options are accepted but hidden from this "
                "help -- run `benchmark --help-all` or see "
-               "docs/tasks/generate-test-reports.md.",
+               "docs/guides/develop-and-release.md.",
         formatter_class=_HelpFormatter)
     run_options = benchmark.add_argument_group("run configuration")
     run_options.add_argument("-n", "--simulations", type=_positive, default=100_000,
@@ -1036,7 +1036,7 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
         epilog="Sample presets are selected with --level; the advanced sample-tuning "
                "options (historical --statistical/--deep flags and the "
                "--*-simulations sizes) are accepted but hidden from this help -- "
-               "run `parity --help-all` or see docs/tasks/generate-test-reports.md.",
+               "run `parity --help-all` or see docs/guides/develop-and-release.md.",
         formatter_class=_HelpFormatter)
     parity_samples = parity.add_argument_group("certification samples")
     parity_samples.add_argument(

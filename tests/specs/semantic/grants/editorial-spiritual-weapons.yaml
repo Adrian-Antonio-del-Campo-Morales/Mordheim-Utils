@@ -4,43 +4,97 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/trollheim/khemri-lahmian-brotherhood/spirits--spiritual-weapons/trait.spiritual-weapons, digest: 074749be42538367f857ee7c9e9848d9d886f474fa64d419a949e75cd1b51b4e}
-  interpretation: "All of the Spirit's weapons use a natural 5+ critical threshold. The rule does not turn an insufficient to-wound result into a wound."
+  - target: rule/trollheim/khemri-lahmian-brotherhood/spirits--spiritual-weapons/trait.spiritual-weapons
+    digest: abdc6f237901a1d0857d426a5c58602c9878557974bdd2d88260b1ec703d7ef1
+  interpretation: All of the Spirit's weapons use a natural 5+ critical threshold. The rule does not turn
+    an insufficient to-wound result into a wound.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: spirits}
-    context: {rule_id: spirits--spiritual-weapons}
-    expect: {result.recipients: [spirits]}
+    defender:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: spirits
+    context:
+      rule_id: spirits--spiritual-weapons
+    expect:
+      result.recipients:
+      - spirits
   - id: natural-five-is-critical
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: spirits}
-    rolls: [{key: wound, value: 5}]
-    expect: {context.critical_threshold: 5, result.success: true, result.critical: true}
-    expect_contains: {attacker.global_effects.tags: [spiritual_weapons]}
+    attacker:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: spirits
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      context.critical_threshold: 5
+      result.success: true
+      result.critical: true
+    expect_contains:
+      attacker.global_effects.tags:
+      - spiritual_weapons
   - id: natural-four-is-not-critical
-    roles: [boundary]
+    roles:
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: spirits}
-    rolls: [{key: wound, value: 4}]
-    expect: {result.success: true, result.critical: false}
+    attacker:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: spirits
+    rolls:
+    - key: wound
+      value: 4
+    expect:
+      result.success: true
+      result.critical: false
   - id: five-cannot-overcome-six-required
-    roles: [boundary]
+    roles:
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: spirits}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 3, attacks: 1}}
-    rolls: [{key: wound, value: 5}]
-    expect: {result.success: false, result.critical: false}
+    attacker:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: spirits
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 6
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      result.success: false
+      result.critical: false
   - id: ordinary-fighter-five-is-not-critical
-    roles: [inactive]
+    roles:
+    - inactive
     operation: wound
-    attacker: {main_weapon_id: weapon.sword}
-    rolls: [{key: wound, value: 5}]
-    expect: {context.critical_threshold: 6, result.success: true, result.critical: false}
+    attacker:
+      main_weapon_id: weapon.sword
+    rolls:
+    - key: wound
+      value: 5
+    expect:
+      context.critical_threshold: 6
+      result.success: true
+      result.critical: false
   mutations:
   - id: remove-spiritual-weapons
     path: attacker.global_effects.tags
     value: []
-    cases: [natural-five-is-critical]
+    cases:
+    - natural-five-is-critical

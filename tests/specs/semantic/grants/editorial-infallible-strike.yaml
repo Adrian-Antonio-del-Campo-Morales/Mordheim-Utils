@@ -5,32 +5,46 @@ specifications:
   category: permanent
   sources:
   - target: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-infallible-strike/skill.sure-strike
-    digest: 81c461eda2df5777895d5667a64bbd78c450751a6c635e69dda766618465be07
-  depends_on: [mechanic/skill.sure-strike]
-  interpretation: Infallible Strike is a selectable High Elf skill for Loremasters, Sword Guardians and Explorers.
-    Selecting it compiles the canonical permission to reroll one failed To Wound roll.
+    digest: 97fd3968a45d0f38c27a0afc743b63cf16ee4d0457149a5dab9ab54c08956354
+  depends_on:
+  - mechanic/skill.sure-strike
+  interpretation: Infallible Strike is a selectable High Elf skill for Loremasters, Sword Guardians and
+    Explorers. Selecting it compiles the canonical permission to reroll one failed To Wound roll.
   cases:
   - id: exact-high-elf-heroes
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
     defender:
       collection: trollheim
       band_id: lustria-high-elves
       profile_id: loremaster
-    context: {rule_id: band--high-elf-special-skills-infallible-strike}
-    expect: {result.recipients: [explorers, loremaster, sword-guardians]}
+    context:
+      rule_id: band--high-elf-special-skills-infallible-strike
+    expect:
+      result.recipients:
+      - explorers
+      - loremaster
+      - sword-guardians
   - id: granted-consumer
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: wound
     attacker:
       collection: trollheim
       band_id: lustria-high-elves
       profile_id: loremaster
-      special_rule_ids: [band--high-elf-special-skills-infallible-strike]
+      special_rule_ids:
+      - band--high-elf-special-skills-infallible-strike
       main_weapon_id: weapon.dagger
     rolls:
-    - {key: wound, value: 1}
-    - {key: wound.reroll, value: 6}
+    - key: wound
+      value: 1
+    - key: wound.reroll
+      value: 6
     expect:
       attacker.global_effects.reroll_wounds: true
       result.success: true
@@ -40,4 +54,5 @@ specifications:
   - id: remove-granted-reroll
     path: attacker.global_effects.reroll_wounds
     value: false
-    cases: [granted-consumer]
+    cases:
+    - granted-consumer

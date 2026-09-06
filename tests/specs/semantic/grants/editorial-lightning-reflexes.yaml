@@ -5,22 +5,32 @@ specifications:
   category: permanent
   sources:
   - target: rule/mordheim/merchant-caravans/knights-vanguard--lightning-reflexes/skill.lightning-reflexes
-    digest: 5297913771ff670e566723648f5caa1358e34d3ccdc7e94d697522f4945f37b3
-  depends_on: [mechanic/skill.lightning-reflexes]
-  interpretation: Every Knights Vanguard has Lightning Reflexes as an inherent profile rule. No other Merchant Caravan
-    profile receives it. When charged, its strike-first tier is resolved against the charger's tier by Initiative.
+    digest: 537ac851375cd7df89d27ab703da9273a74684f6decd724236c3d0d945ea5db6
+  depends_on:
+  - mechanic/skill.lightning-reflexes
+  interpretation: Every Knights Vanguard has Lightning Reflexes as an inherent profile rule. No other
+    Merchant Caravan profile receives it. When charged, its strike-first tier is resolved against the
+    charger's tier by Initiative.
   cases:
   - id: only-knights-vanguard
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
     defender:
       collection: mordheim
       band_id: merchant-caravans
       profile_id: knights-vanguard
-    context: {rule_id: knights-vanguard--lightning-reflexes}
-    expect: {result.recipients: [knights-vanguard]}
+    context:
+      rule_id: knights-vanguard--lightning-reflexes
+    expect:
+      result.recipients:
+      - knights-vanguard
   - id: inherent-priority-consumer
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: acting_order
     attacker:
       collection: mordheim
@@ -35,13 +45,20 @@ specifications:
         wounds: 3
         initiative: 3
         attacks: 1
-    context: {first_round: true, charged: true}
-    opponent_context: {first_round: true, charging: true}
-    expect: {result.first_acts: true}
+    context:
+      first_round: true
+      charged: true
+    opponent_context:
+      first_round: true
+      charging: true
+    expect:
+      result.first_acts: true
     expect_contains:
-      attacker.global_effects.tags: [skill.lightning-reflexes]
+      attacker.global_effects.tags:
+      - skill.lightning-reflexes
   mutations:
   - id: remove-inherent-lightning-reflexes
     path: attacker.global_effects.tags
     value: []
-    cases: [inherent-priority-consumer]
+    cases:
+    - inherent-priority-consumer

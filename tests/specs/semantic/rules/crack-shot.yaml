@@ -5,65 +5,122 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.crack-shot
-    digest: 9f328d7b850439e017bdc370b7e4dd69bae4044422f8be396b807e29b0208639
-  interpretation: Crack Shot rerolls each failed close-combat To Hit roll made with a pistol or duelling pistol during
-    the first combat round. A successful first roll consumes no reroll. It does not affect other weapons or later rounds.
+    digest: f02bbc9bb50f13b2cd41b625dbf2a4c1ed7233b6415124c2823c47322d0d5b88
+  interpretation: Crack Shot rerolls each failed close-combat To Hit roll made with a pistol or duelling
+    pistol during the first combat round. A successful first roll consumes no reroll. It does not affect
+    other weapons or later rounds.
   interaction_contract:
-    reads: [round.first, weapon.kind, hit.target]
-    writes: [hit.reroll]
+    reads:
+    - round.first
+    - weapon.kind
+    - hit.target
+    writes:
+    - hit.reroll
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {skill_ids: [skill.crack-shot], main_weapon_id: weapon.pistol}
-    expect: {attacker.main_weapon.fixed_strength: 4}
+    attacker:
+      skill_ids:
+      - skill.crack-shot
+      main_weapon_id: weapon.pistol
+    expect:
+      attacker.main_weapon.fixed_strength: 4
     expect_contains:
-      attacker.global_effects.tags: [skill.crack-shot]
+      attacker.global_effects.tags:
+      - skill.crack-shot
   - id: pistol-first-round-rerolls
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: hit
-    attacker: {skill_ids: [skill.crack-shot], main_weapon_id: weapon.pistol}
-    context: {first_round: true}
+    attacker:
+      skill_ids:
+      - skill.crack-shot
+      main_weapon_id: weapon.pistol
+    context:
+      first_round: true
     distribution:
       observable: result.success
       max_rolls: 2
-      expected: {'true': 3/4, 'false': 1/4}
+      expected:
+        'true': 3/4
+        'false': 1/4
   - id: duelling-pistol-keeps-own-hit-bonus
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: hit
-    attacker: {skill_ids: [skill.crack-shot], main_weapon_id: weapon.duelling-pistol}
-    context: {first_round: true}
+    attacker:
+      skill_ids:
+      - skill.crack-shot
+      main_weapon_id: weapon.duelling-pistol
+    context:
+      first_round: true
     distribution:
       observable: result.success
       max_rolls: 2
-      expected: {'true': 8/9, 'false': 1/9}
+      expected:
+        'true': 8/9
+        'false': 1/9
   - id: initial-success-omits-reroll
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: hit
-    attacker: {skill_ids: [skill.crack-shot], main_weapon_id: weapon.pistol}
-    context: {first_round: true}
-    rolls: [{key: hit, value: 4}]
-    expect: {result.success: true, result.rerolled: false}
+    attacker:
+      skill_ids:
+      - skill.crack-shot
+      main_weapon_id: weapon.pistol
+    context:
+      first_round: true
+    rolls:
+    - key: hit
+      value: 4
+    expect:
+      result.success: true
+      result.rerolled: false
   - id: pistol-later-round-does-not-reroll
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: hit
-    attacker: {skill_ids: [skill.crack-shot], main_weapon_id: weapon.pistol}
-    context: {first_round: false}
+    attacker:
+      skill_ids:
+      - skill.crack-shot
+      main_weapon_id: weapon.pistol
+    context:
+      first_round: false
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: wrong-weapon-does-not-reroll
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: hit
-    attacker: {skill_ids: [skill.crack-shot], main_weapon_id: weapon.mace}
-    context: {first_round: true}
+    attacker:
+      skill_ids:
+      - skill.crack-shot
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   mutations:
   - id: remove-crack-shot
     path: attacker.global_effects.tags
     value: []
-    cases: [pistol-first-round-rerolls, duelling-pistol-keeps-own-hit-bonus]
+    cases:
+    - pistol-first-round-rerolls
+    - duelling-pistol-keeps-own-hit-bonus

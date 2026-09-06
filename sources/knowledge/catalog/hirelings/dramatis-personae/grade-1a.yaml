@@ -10,7 +10,7 @@ profiles:
   name: Countess Marianna Chevaux, Vampire Assassin
   name_i18n:
     en: Countess Marianna Chevaux, Vampire Assassin
-    es: null
+    es: Condesa Marianna Chevaux, asesina vampira
   normalization_status: normalized
   characteristics:
     M: 6
@@ -57,24 +57,45 @@ profiles:
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.immune-to-psychology
     name: Immune to Psychology
     effect: Immune to psychology.
+    name_i18n:
+      en: Immune to Psychology
+      es: Inmune a la Psicología
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.immune-to-poison
     name: Immune to Poison
     effect: Immune to poison.
+    name_i18n:
+      en: Immune to Poison
+      es: Inmune al veneno
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.no-pain
     name: No Pain
     effect: Ignores Knocked Down/Stunned per source.
+    name_i18n:
+      en: No Pain
+      es: Sin dolor
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.causes-fear
     name: Causes Fear
     effect: Causes fear.
+    name_i18n:
+      en: Causes Fear
+      es: Causa Miedo
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.serutat
     name: Serutat
     effect: Uses the source minion/retainer rule.
+    name_i18n:
+      en: Serutat
+      es: Serutat
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.fighting-undead
     name: Fighting Undead
     effect: Uses the source anti-Undead rule.
+    name_i18n:
+      en: Fighting Undead
+      es: Combatir contra No muertos
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.noctu
     name: Noctu
     effect: Applies the source shooting penalty.
+    name_i18n:
+      en: Noctu
+      es: Noctu
   unresolved_references:
   - kind: equipment_modifier
     source_name: garlic coating acting as Black Lotus against Vampires
@@ -90,7 +111,7 @@ profiles:
   name: Nicodemus, the cursed pilgrim
   name_i18n:
     en: Nicodemus, the cursed pilgrim
-    es: null
+    es: Nicodemo, el peregrino maldito
   normalization_status: normalized
   characteristics:
     M: 4
@@ -109,6 +130,9 @@ profiles:
     unique_equipment:
     - id: hireling.dramatis.nicodemus-the-cursed-pilgrim.item.wizards-staff
       name: Enormous Wizard's Staff
+      name_i18n:
+        en: Enormous Wizard's Staff
+        es: Bastón de mago enorme
   skill_access: []
   starting_skill_ids:
   - skill.sorcery
@@ -117,12 +141,21 @@ profiles:
   - id: hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.cursed
     name: Cursed
     effect: Requires the source wyrdstone payment when joining and after battles.
+    name_i18n:
+      en: Cursed
+      es: Maldito
   - id: hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.wizard-s-staff
     name: Wizard's Staff
     effect: Uses source staff modes.
+    name_i18n:
+      en: Wizard's Staff
+      es: Bastón de mago
   - id: hireling.dramatis.nicodemus-the-cursed-pilgrim.rule.master-of-lesser-magic
     name: Master of Lesser Magic
     effect: Knows all six Lesser Magic spells.
+    name_i18n:
+      en: Master of Lesser Magic
+      es: Maestro de la Magia menor
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -135,7 +168,7 @@ profiles:
   name: Ulli & Marquand
   name_i18n:
     en: Ulli & Marquand
-    es: null
+    es: Ulli y Marquand
   normalization_status: out_of_scope
   warband_rating:
     kind: fixed
@@ -146,17 +179,28 @@ profiles:
   - id: hireling.dramatis.ulli-and-marquand.rule.wanderers
     name: Wanderers
     effect: Use the source one-battle/wanderer rule.
+    name_i18n:
+      en: Wanderers
+      es: Errantes
   - id: hireling.dramatis.ulli-and-marquand.rule.a-fistful-of-crowns
     name: A Fistful of Crowns
     effect: Uses source payment/behaviour rule.
+    name_i18n:
+      en: A Fistful of Crowns
+      es: Un puñado de coronas
   - id: hireling.dramatis.ulli-and-marquand.rule.where-s-the-money
     name: Where's the Money
     effect: Uses source post-battle rule.
+    name_i18n:
+      en: Where's the Money
+      es: ¿Dónde está el dinero?
   unresolved_references:
   - kind: multi_profile_entity
-    source_name: Marquand profile M4 WS5 BS4 S3 T3 W2 I5 A2 Ld8; Sword, Light Armour, Throwing Knives; Step Aside, Knife Fighter, Lightning Reflexes
+    source_name: Marquand profile M4 WS5 BS4 S3 T3 W2 I5 A2 Ld8; Sword, Light Armour, Throwing Knives;
+      Step Aside, Knife Fighter, Lightning Reflexes
   - kind: multi_profile_entity
-    source_name: Ulli profile M4 WS4 BS4 S4 T3 W2 I4 A2 Ld7; two-handed warhammer, Light Armour; Strongman, Unstoppable Charge, Combat Master
+    source_name: Ulli profile M4 WS4 BS4 S4 T3 W2 I4 A2 Ld7; two-handed warhammer, Light Armour; Strongman,
+      Unstoppable Charge, Combat Master
   source_refs:
   - manual: mordheimer.net
     printed_page: 0

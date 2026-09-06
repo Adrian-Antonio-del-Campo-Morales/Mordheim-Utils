@@ -80,6 +80,7 @@ from mordheim_combat.vectorized._attacks import (
 from mordheim_combat.vectorized._driver import (
     _black_hunger_backlash,
     _new_state,
+    _refresh_random_characteristics,
     _rescue_force_of_will,
     _resolve_fire,
     _resolve_netter_charge,

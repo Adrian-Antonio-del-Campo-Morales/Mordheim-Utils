@@ -3,17 +3,20 @@ band_id: chaos-streets-deathbringers
 rules:
 - id: shadow-blade--leader
   name: Leader
-  effect: Any warband model within 6" of the Shadow Blade may use his Leadership when taking Leadership tests.
+  effect: Any warband model within 6" of the Shadow Blade may use his Leadership when taking Leadership
+    tests.
   source:
     manual: chaos-in-the-streets
     printed_page: 162
     section: Heroes / 1 Shadow Blade / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
-    en: Any warband model within 6" of the Shadow Blade may use his Leadership when taking Leadership tests.
-    es: null
+    en: Any warband model within 6" of the Shadow Blade may use his Leadership when taking Leadership
+      tests.
+    es: Cualquier modelo de la banda a 6" de la Hoja de Sombra puede usar su Liderazgo cuando realice
+      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - shadow-blade
@@ -28,19 +31,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: shadow-blade--consummate-fighter
   name: Consummate Fighter
-  effect: Wounds inflicted by the Shadow Blade, whether in shooting or close combat, impose an additional -1 modifier to the
-    enemy's armour save.
+  effect: Wounds inflicted by the Shadow Blade, whether in shooting or close combat, impose an additional
+    -1 modifier to the enemy's armour save.
   source:
     manual: chaos-in-the-streets
     printed_page: 162
     section: Heroes / 1 Shadow Blade / Consummate Fighter
   name_i18n:
     en: Consummate Fighter
-    es: null
+    es: Luchador consumado
   effect_i18n:
-    en: Wounds inflicted by the Shadow Blade, whether in shooting or close combat, impose an additional -1 modifier to the
-      enemy's armour save.
-    es: null
+    en: Wounds inflicted by the Shadow Blade, whether in shooting or close combat, impose an additional
+      -1 modifier to the enemy's armour save.
+    es: Las heridas infligidas por la Hoja de Sombra, ya sea en disparo o en combate cuerpo a cuerpo,
+      imponen un modificador adicional de -1 a la salvación por armadura del enemigo.
   applies_to:
     profile_ids:
     - shadow-blade
@@ -65,10 +69,10 @@ rules:
     section: Heroes / 1 Shadow Blade / Fear
   name_i18n:
     en: Fear
-    es: null
+    es: Miedo
   effect_i18n:
     en: The Shadow Blade causes Fear.
-    es: null
+    es: La Hoja de Sombra causa Miedo.
   applies_to:
     profile_ids:
     - shadow-blade
@@ -83,21 +87,23 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: shadow-blade--fade-into-shadows
   name: Fade into the Shadows
-  effect: At the beginning of a close-combat round, the Shadow Blade may declare a voluntary Rout for the warband provided
-    the warband has already suffered the minimum casualties required to Rout. This decision may therefore be made during the
-    turn rather than only at its beginning.
+  effect: At the beginning of a close-combat round, the Shadow Blade may declare a voluntary Rout for
+    the warband provided the warband has already suffered the minimum casualties required to Rout. This
+    decision may therefore be made during the turn rather than only at its beginning.
   source:
     manual: chaos-in-the-streets
     printed_page: 162
     section: Heroes / 1 Shadow Blade / Fade into the Shadows
   name_i18n:
     en: Fade into the Shadows
-    es: null
+    es: Desvanecerse en las sombras
   effect_i18n:
-    en: At the beginning of a close-combat round, the Shadow Blade may declare a voluntary Rout for the warband provided the
-      warband has already suffered the minimum casualties required to Rout. This decision may therefore be made during the
-      turn rather than only at its beginning.
-    es: null
+    en: At the beginning of a close-combat round, the Shadow Blade may declare a voluntary Rout for the
+      warband provided the warband has already suffered the minimum casualties required to Rout. This
+      decision may therefore be made during the turn rather than only at its beginning.
+    es: Al comienzo de un asalto de combate cuerpo a cuerpo, la Hoja de Sombra puede declarar una huida
+      voluntaria para la banda siempre que la banda ya haya sufrido las bajas mínimas necesarias para
+      huir. Esta decisión puede por tanto tomarse durante el asalto en lugar de solo en su inicio.
   applies_to:
     profile_ids:
     - shadow-blade
@@ -109,22 +115,28 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.shadow-blade.fade-into-shadows
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: silent-hunter--infiltration
   name: Infiltration
-  effect: The Silent Hunter deploys after the opposing warband and may be placed anywhere outside enemy line of sight and
-    more than 12" from every enemy model. If both players have infiltrators, roll D6 for each; the lowest roll deploys first.
+  effect: The Silent Hunter deploys after the opposing warband and may be placed anywhere outside enemy
+    line of sight and more than 12" from every enemy model. If both players have infiltrators, roll D6
+    for each; the lowest roll deploys first.
   source:
     manual: chaos-in-the-streets
     printed_page: 163
     section: Heroes / 0-1 Silent Hunter / Infiltration
   name_i18n:
     en: Infiltration
-    es: null
+    es: Infiltración
   effect_i18n:
-    en: The Silent Hunter deploys after the opposing warband and may be placed anywhere outside enemy line of sight and more
-      than 12" from every enemy model. If both players have infiltrators, roll D6 for each; the lowest roll deploys first.
-    es: null
+    en: The Silent Hunter deploys after the opposing warband and may be placed anywhere outside enemy
+      line of sight and more than 12" from every enemy model. If both players have infiltrators, roll
+      D6 for each; the lowest roll deploys first.
+    es: El Cazador Silencioso se despliega después de la banda rival y puede colocarse en cualquier punto
+      fuera de la línea de visión enemiga y a más de 12" de cada modelo enemigo. Si ambos jugadores tienen
+      infiltrados, tira D6 por cada uno; el de la tirada más baja se despliega primero.
   applies_to:
     profile_ids:
     - silent-hunter
@@ -146,10 +158,10 @@ rules:
     section: Heroes / 0-1 Silent Hunter / Loner
   name_i18n:
     en: Loner
-    es: null
+    es: Solitario
   effect_i18n:
     en: The Silent Hunter is immune to All Alone tests.
-    es: null
+    es: El Cazador Silencioso es inmune a los chequeos de Estar Solo.
   applies_to:
     profile_ids:
     - silent-hunter
@@ -171,10 +183,11 @@ rules:
     section: Henchmen / 0-3 Snipers / Concealed Shot
   name_i18n:
     en: Concealed Shot
-    es: null
+    es: Disparo oculto
   effect_i18n:
     en: A Sniper may shoot while Hidden. If the shot hits its target, roll D6; on 3+ the Sniper is revealed.
-    es: null
+    es: Un Francotirador puede disparar mientras está Oculto. Si el disparo impacta a su objetivo, tira
+      1D6; con un 3+ el Francotirador es revelado.
   applies_to:
     profile_ids:
     - snipers
@@ -208,28 +221,30 @@ rules:
     section: Henchmen / Knives / Dagger Master
   name_i18n:
     en: Dagger Master
-    es: null
+    es: Maestro de la daga
   effect_i18n:
     en: During a turn in which a Knife charges, it may re-roll failed To Hit rolls made with daggers.
-    es: null
+    es: Durante un asalto en el que un Cuchillo carga, puede repetir las tiradas de impactar falladas
+      hechas con dagas.
   applies_to:
     profile_ids:
     - knives
 - id: band--look-behind-you
   name: Look Behind You!
-  effect: Any model attempting to spot a Hidden Deathbringer reduces its Initiative by 1, to a minimum of 1, for that detection
-    attempt.
+  effect: Any model attempting to spot a Hidden Deathbringer reduces its Initiative by 1, to a minimum
+    of 1, for that detection attempt.
   source:
     manual: chaos-in-the-streets
     printed_page: 157
     section: Special Rules / Look Behind You!
   name_i18n:
     en: Look Behind You!
-    es: null
+    es: ¡Mira detrás de ti!
   effect_i18n:
-    en: Any model attempting to spot a Hidden Deathbringer reduces its Initiative by 1, to a minimum of 1, for that detection
-      attempt.
-    es: null
+    en: Any model attempting to spot a Hidden Deathbringer reduces its Initiative by 1, to a minimum of
+      1, for that detection attempt.
+    es: Cualquier modelo que intente detectar a un Portador de Muerte Oculto reduce su Iniciativa en 1,
+      hasta un mínimo de 1, para ese intento de detección.
   applies_to:
     band: true
   runtime:
@@ -250,10 +265,10 @@ rules:
     section: Special Rules / No Noise!
   name_i18n:
     en: No Noise!
-    es: null
+    es: ¡Silencio!
   effect_i18n:
     en: No member of the warband may use blackpowder weapons.
-    es: null
+    es: Ningún miembro de la banda puede usar armas de pólvora.
   applies_to:
     band: true
   runtime:
@@ -268,23 +283,29 @@ rules:
         id: compiler.no-blackpowder-weapons
 - id: band--leader-death
   name: Death of the Boss
-  effect: The warband leader should cause Fear whenever possible. If the leader dies, first choose a successor among Heroes
-    with Horrible Scars, the Fearsome skill, or another rule that causes Fear. If no such Hero exists, choose a successor
-    normally; that new Boss must select Fearsome at the next skill advance for which it is eligible, as soon as possible.
-    Heroes without access to Strength skills are automatically disqualified from becoming the successor.
+  effect: The warband leader should cause Fear whenever possible. If the leader dies, first choose a successor
+    among Heroes with Horrible Scars, the Fearsome skill, or another rule that causes Fear. If no such
+    Hero exists, choose a successor normally; that new Boss must select Fearsome at the next skill advance
+    for which it is eligible, as soon as possible. Heroes without access to Strength skills are automatically
+    disqualified from becoming the successor.
   source:
     manual: chaos-in-the-streets
     printed_page: 157
     section: Special Rules / Death of the Boss
   name_i18n:
     en: Death of the Boss
-    es: null
+    es: Muerte del Jefe
   effect_i18n:
-    en: The warband leader should cause Fear whenever possible. If the leader dies, first choose a successor among Heroes
-      with Horrible Scars, the Fearsome skill, or another rule that causes Fear. If no such Hero exists, choose a successor
-      normally; that new Boss must select Fearsome at the next skill advance for which it is eligible, as soon as possible.
-      Heroes without access to Strength skills are automatically disqualified from becoming the successor.
-    es: null
+    en: The warband leader should cause Fear whenever possible. If the leader dies, first choose a successor
+      among Heroes with Horrible Scars, the Fearsome skill, or another rule that causes Fear. If no such
+      Hero exists, choose a successor normally; that new Boss must select Fearsome at the next skill advance
+      for which it is eligible, as soon as possible. Heroes without access to Strength skills are automatically
+      disqualified from becoming the successor.
+    es: El líder de la banda debería causar Miedo siempre que sea posible. Si el líder muere, elige primero
+      un sucesor entre los Héroes con Cicatrices Horribles, la habilidad Temible u otra regla que cause
+      Miedo. Si no existe tal Héroe, elige un sucesor con normalidad; ese nuevo Jefe debe elegir Temible
+      en la siguiente mejora de habilidad para la que sea elegible, lo antes posible. Los héroes sin acceso
+      a habilidades de Fuerza quedan automáticamente descalificados para convertirse en el sucesor.
   applies_to:
     band: true
   runtime:
@@ -295,27 +316,33 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.band.leader-death
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--deathbringer-special-skills-hit-and-fade
   kind: warband_skill
   name: Hit and Fade
-  effect: After charging and resolving attacks normally, if the Hero is neither Knocked Down nor Stunned, roll D6. On 5+ the
-    Hero may leave combat and Hide without suffering hits for escaping combat. The Hero must have enough Movement remaining
-    after the charge to reach a valid hiding position; otherwise this skill cannot be used. On a failed roll the Hero remains
-    engaged.
+  effect: After charging and resolving attacks normally, if the Hero is neither Knocked Down nor Stunned,
+    roll D6. On 5+ the Hero may leave combat and Hide without suffering hits for escaping combat. The
+    Hero must have enough Movement remaining after the charge to reach a valid hiding position; otherwise
+    this skill cannot be used. On a failed roll the Hero remains engaged.
   source:
     manual: chaos-in-the-streets
     printed_page: 165
     section: Deathbringer Special Skills / Hit and Fade
   name_i18n:
     en: Hit and Fade
-    es: null
+    es: Golpear y desvanecerse
   effect_i18n:
-    en: After charging and resolving attacks normally, if the Hero is neither Knocked Down nor Stunned, roll D6. On 5+ the
-      Hero may leave combat and Hide without suffering hits for escaping combat. The Hero must have enough Movement remaining
-      after the charge to reach a valid hiding position; otherwise this skill cannot be used. On a failed roll the Hero remains
-      engaged.
-    es: null
+    en: After charging and resolving attacks normally, if the Hero is neither Knocked Down nor Stunned,
+      roll D6. On 5+ the Hero may leave combat and Hide without suffering hits for escaping combat. The
+      Hero must have enough Movement remaining after the charge to reach a valid hiding position; otherwise
+      this skill cannot be used. On a failed roll the Hero remains engaged.
+    es: Tras cargar y resolver los ataques con normalidad, si el Héroe no está Derribado ni Aturdido,
+      tira 1D6. Con un 5+ el Héroe puede abandonar el combate y Ocultarse sin sufrir impactos por escapar
+      del combate. El Héroe debe tener Movimiento suficiente restante tras la carga para alcanzar una
+      posición de ocultación válida; de lo contrario no puede usarse esta habilidad. Con una tirada fallida
+      el Héroe sigue empeñado.
   eligibility:
   - shadow-blade
   - silent-hunter
@@ -331,23 +358,26 @@ rules:
     - id: unimplemented.chaos-streets-deathbringers.band.deathbringer-special-skills-hit-and-fade
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--deathbringer-special-skills-death-blow
   kind: warband_skill
   name: Death Blow
-  effect: If the Hero has at least 2 Attacks on its profile, it may replace all of its attacks with a single attack resolved
-    at +1 To Hit, +1 To Wound and +1 on the Injury roll.
+  effect: If the Hero has at least 2 Attacks on its profile, it may replace all of its attacks with a
+    single attack resolved at +1 To Hit, +1 To Wound and +1 on the Injury roll.
   source:
     manual: chaos-in-the-streets
     printed_page: 165
     section: Deathbringer Special Skills / Death Blow
   name_i18n:
     en: Death Blow
-    es: null
+    es: Golpe mortal
   effect_i18n:
-    en: If the Hero has at least 2 Attacks on its profile, it may replace all of its attacks with a single attack resolved
-      at +1 To Hit, +1 To Wound and +1 on the Injury roll.
-    es: null
+    en: If the Hero has at least 2 Attacks on its profile, it may replace all of its attacks with a single
+      attack resolved at +1 To Hit, +1 To Wound and +1 on the Injury roll.
+    es: Si el Héroe tiene al menos 2 Ataques en su perfil, puede sustituir todos sus ataques por un único
+      ataque resuelto a +1 para impactar, +1 para herir y +1 en la tirada de heridas.
   eligibility:
   - shadow-blade
   - silent-hunter
@@ -368,19 +398,20 @@ rules:
 - id: band--deathbringer-special-skills-poison-master
   kind: warband_skill
   name: Poison Master
-  effect: If the Hero does not search for rare items after a battle, it may prepare 1D3-1 doses of Black Venom. The doses
-    must be used in the next battle and may not be traded or sold to other warbands.
+  effect: If the Hero does not search for rare items after a battle, it may prepare 1D3-1 doses of Black
+    Venom. The doses must be used in the next battle and may not be traded or sold to other warbands.
   source:
     manual: chaos-in-the-streets
     printed_page: 165
     section: Deathbringer Special Skills / Poison Master
   name_i18n:
     en: Poison Master
-    es: null
+    es: Maestro de venenos
   effect_i18n:
-    en: If the Hero does not search for rare items after a battle, it may prepare 1D3-1 doses of Black Venom. The doses must
-      be used in the next battle and may not be traded or sold to other warbands.
-    es: null
+    en: If the Hero does not search for rare items after a battle, it may prepare 1D3-1 doses of Black
+      Venom. The doses must be used in the next battle and may not be traded or sold to other warbands.
+    es: Si el Héroe no busca objetos raros tras una batalla, puede preparar D3-1 dosis de Ponzoña Negra.
+      Las dosis deben usarse en la siguiente batalla y no pueden comerciarse ni venderse a otras bandas.
   eligibility:
   - shadow-blade
   - silent-hunter
@@ -410,19 +441,20 @@ rules:
         kind: mechanic
         id: skill.defensive-stance
   name: Defensive Stance
-  effect: The Hero may parry with any weapon it carries. If that weapon already has the Parry rule, the Hero may successfully
-    parry by equalling the attack roll instead of having to exceed it.
+  effect: The Hero may parry with any weapon it carries. If that weapon already has the Parry rule, the
+    Hero may successfully parry by equalling the attack roll instead of having to exceed it.
   source:
     manual: chaos-in-the-streets
     printed_page: 165
     section: Deathbringer Special Skills / Defensive Stance
   name_i18n:
     en: Defensive Stance
-    es: null
+    es: Postura defensiva
   effect_i18n:
-    en: The Hero may parry with any weapon it carries. If that weapon already has the Parry rule, the Hero may successfully
-      parry by equalling the attack roll instead of having to exceed it.
-    es: null
+    en: The Hero may parry with any weapon it carries. If that weapon already has the Parry rule, the
+      Hero may successfully parry by equalling the attack roll instead of having to exceed it.
+    es: El Héroe puede emparañar con cualquier arma que lleve. Si esa arma ya tiene la regla Emparañar,
+      el Héroe puede emparañar con éxito igualando la tirada de ataque en lugar de tener que superarla.
   eligibility:
   - shadow-blade
   - silent-hunter
@@ -443,21 +475,24 @@ rules:
         kind: mechanic
         id: skill.art-of-silent-death
   name: Art of Unarmed Combat
-  effect: The Hero may fight with bare claws without penalty and counts as using two close-combat weapons, gaining +1 Attack.
-    In close combat, it scores a critical hit on a 'to wound' roll of 5-6 instead of only 6. When combined with Eshin Fighting
-    Claws, this grants +2 Attacks instead of +1.
+  effect: The Hero may fight with bare claws without penalty and counts as using two close-combat weapons,
+    gaining +1 Attack. In close combat, it scores a critical hit on a 'to wound' roll of 5-6 instead of
+    only 6. When combined with Eshin Fighting Claws, this grants +2 Attacks instead of +1.
   source:
     manual: chaos-in-the-streets
     printed_page: 165
     section: Deathbringer Special Skills / Art of Unarmed Combat
   name_i18n:
     en: Art of Unarmed Combat
-    es: null
+    es: Arte del combate desarmado
   effect_i18n:
-    en: The Hero may fight with bare claws without penalty and counts as using two close-combat weapons, gaining +1 Attack.
-      In close combat, it scores a critical hit on a 'to wound' roll of 5-6 instead of only 6. When combined with Eshin Fighting
-      Claws, this grants +2 Attacks instead of +1.
-    es: null
+    en: The Hero may fight with bare claws without penalty and counts as using two close-combat weapons,
+      gaining +1 Attack. In close combat, it scores a critical hit on a 'to wound' roll of 5-6 instead
+      of only 6. When combined with Eshin Fighting Claws, this grants +2 Attacks instead of +1.
+    es: El Héroe puede luchar con las garras desnudas sin penalización y cuenta como usando dos armas
+      cuerpo a cuerpo, ganando +1 Ataque. En el combate cuerpo a cuerpo, causa un impacto crítico con
+      una tirada de herir de 5-6 en lugar de solo 6. Combinado con las Garras de Combate de Eshin, esto
+      otorga +2 Ataques en lugar de +1.
   eligibility:
   - shadow-blade
   - silent-hunter
@@ -468,19 +503,21 @@ rules:
 - id: band--deathbringer-special-skills-feign-death
   kind: warband_skill
   name: Feign Death
-  effect: When the Hero is wounded while not in base contact with an enemy model, it may feign death and is treated as Knocked
-    Down. Enemy models may not charge or shoot at it while it is feigning death.
+  effect: When the Hero is wounded while not in base contact with an enemy model, it may feign death and
+    is treated as Knocked Down. Enemy models may not charge or shoot at it while it is feigning death.
   source:
     manual: chaos-in-the-streets
     printed_page: 165
     section: Deathbringer Special Skills / Feign Death
   name_i18n:
     en: Feign Death
-    es: null
+    es: Fingir la muerte
   effect_i18n:
-    en: When the Hero is wounded while not in base contact with an enemy model, it may feign death and is treated as Knocked
-      Down. Enemy models may not charge or shoot at it while it is feigning death.
-    es: null
+    en: When the Hero is wounded while not in base contact with an enemy model, it may feign death and
+      is treated as Knocked Down. Enemy models may not charge or shoot at it while it is feigning death.
+    es: Cuando el Héroe resulta herido sin estar en contacto de peana con ningún modelo enemigo, puede
+      fingir la muerte y se le trata como Derribado. Los modelos enemigos no pueden cargar ni dispararle
+      mientras finja la muerte.
   eligibility:
   - shadow-blade
   - silent-hunter
@@ -500,19 +537,23 @@ rules:
 - id: band--deathbringer-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
-  effect: The Hero deploys after the opposing warband and may be placed anywhere outside enemy line of sight and more than
-    12" from every enemy model. If both players have infiltrators, roll D6 for each; the lowest roll deploys first.
+  effect: The Hero deploys after the opposing warband and may be placed anywhere outside enemy line of
+    sight and more than 12" from every enemy model. If both players have infiltrators, roll D6 for each;
+    the lowest roll deploys first.
   source:
     manual: chaos-in-the-streets
     printed_page: 165
     section: Deathbringer Special Skills / Infiltration
   name_i18n:
     en: Infiltration
-    es: null
+    es: Infiltración
   effect_i18n:
-    en: The Hero deploys after the opposing warband and may be placed anywhere outside enemy line of sight and more than 12"
-      from every enemy model. If both players have infiltrators, roll D6 for each; the lowest roll deploys first.
-    es: null
+    en: The Hero deploys after the opposing warband and may be placed anywhere outside enemy line of sight
+      and more than 12" from every enemy model. If both players have infiltrators, roll D6 for each; the
+      lowest roll deploys first.
+    es: El Héroe se despliega después de la banda rival y puede colocarse en cualquier punto fuera de
+      la línea de visión enemiga y a más de 12" de cada modelo enemigo. Si ambos jugadores tienen infiltrados,
+      tira D6 por cada uno; el de la tirada más baja se despliega primero.
   eligibility:
   - shadow-blade
   - silent-hunter

@@ -4,99 +4,232 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: mechanic/mechanic.death-blow, digest: 5ebe1d8a50492a93d2e9c4b872c621a3877617a52e7693fa59919f8fcfc94d18}
-  - {target: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-death-blow/mechanic.death-blow, digest: 2983a6587010ee2e441a7b6715040049f7cde4b54ed3b55bfe7ad5429383d336}
-  interpretation: >-
-    With at least two profile Attacks, Death Blow offers replacing the whole set with one attack. Only
-    upon accepting are +1 To Hit, +1 To Wound and +1 Injury applied. Declining keeps all ordinary
-    attacks; with A1 the decision is not asked nor the bonuses applied.
+  - target: mechanic/mechanic.death-blow
+    digest: 0f5625584c56195402c95cc28db3c18f63f7e294bb585c0f4e441fcbe4fe7d82
+  - target: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-death-blow/mechanic.death-blow
+    digest: 9705f539272f892872177ede5eef28e5e543f310cda90b1d93d7f16ba82c2141
+  interpretation: With at least two profile Attacks, Death Blow offers replacing the whole set with one
+    attack. Only upon accepting are +1 To Hit, +1 To Wound and +1 Injury applied. Declining keeps all
+    ordinary attacks; with A1 the decision is not asked nor the bonuses applied.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.death-blow], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 3}}
-    expect: {attacker.global_effects.hit_modifier: 1, attacker.global_effects.wound_modifier: 1, attacker.global_effects.injury_modifier: 1}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.death-blow
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 3
+    expect:
+      attacker.global_effects.hit_modifier: 1
+      attacker.global_effects.wound_modifier: 1
+      attacker.global_effects.injury_modifier: 1
   - id: recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: shadow-blade}
-    context: {rule_id: band--deathbringer-special-skills-death-blow}
-    expect: {result.recipients: [black-knives, shadow-blade, silent-hunter, young-claw]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: shadow-blade
+    context:
+      rule_id: band--deathbringer-special-skills-death-blow
+    expect:
+      result.recipients:
+      - black-knives
+      - shadow-blade
+      - silent-hunter
+      - young-claw
   - id: accepted-death-blow
-    roles: [active, boundary, sequence, consumption]
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
     operation: replacement_pool
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.death-blow], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 3}}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    context: {first_round: true, charging: false}
-    decisions: [{key: test.death-blow, value: true}]
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.death-blow
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 3
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    context:
+      first_round: true
+      charging: false
+    decisions:
+    - key: test.death-blow
+      value: true
     rolls:
-    - {key: test.attack.0.hit, value: 3}
-    - {key: test.attack.0.wound, value: 3}
-    - {key: test.attack.0.injury.0, value: 4}
+    - key: test.attack.0.hit
+      value: 3
+    - key: test.attack.0.wound
+      value: 3
+    - key: test.attack.0.injury.0
+      value: 4
     expect:
       result.count: 1
       result.attacks.0.hit_target: 3
       result.attacks.0.wounded: true
       result.attacks.0.defender.condition: OUT
   - id: rejected-keeps-pool
-    roles: [inactive, boundary, sequence, consumption]
+    roles:
+    - inactive
+    - boundary
+    - sequence
+    - consumption
     operation: replacement_pool
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.death-blow], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 3}}
-    attacker_state: {condition: OUT}
-    context: {first_round: true, charging: false}
-    decisions: [{key: test.death-blow, value: false}]
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.death-blow
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 3
+    attacker_state:
+      condition: OUT
+    context:
+      first_round: true
+      charging: false
+    decisions:
+    - key: test.death-blow
+      value: false
     expect:
       result.count: 3
   - id: one-attack-ineligible
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: replacement_pool
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.death-blow], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    attacker_state: {condition: OUT}
-    context: {first_round: true, charging: false}
-    expect: {result.count: 1}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.death-blow
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    attacker_state:
+      condition: OUT
+    context:
+      first_round: true
+      charging: false
+    expect:
+      result.count: 1
   mutations:
   - id: remove-death-blow
     path: attacker.global_effects.tags
     value: []
-    cases: [accepted-death-blow]
-
+    cases:
+    - accepted-death-blow
 - id: mechanic-and-editorial-anvil-head
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: mechanic/mechanic.anvil-head, digest: 057278430144a4fe5576ed4d97a06621fdf0d0537af116c573a2ab99957a8122}
-  - {target: rule/trollheim/khemri-necromancers/band--necromantic-modification-anvil-head/compiler.anvil-head, digest: 28f217dafdac1fa0b6f0382c7425353bf6ce98e0241417fdd4e176d4fa8da5ee}
-  interpretation: >-
-    When charging, Anvil Head offers replacing all attacks with one. If that attack hits, the total
-    number of to-wound rolls is D3. Declining the option keeps the normal set and outside a charge it
-    is not asked; the D3 expansion only ever applies to a charging Necromantic Abomination in the
-    first round, never to later rounds or when the fighter was charged.
+  - target: mechanic/mechanic.anvil-head
+    digest: 61508cd2d78709c2081885697abea535cc88dcec7a9bdaab3a1939f73a56d691
+  - target: rule/trollheim/khemri-necromancers/band--necromantic-modification-anvil-head/compiler.anvil-head
+    digest: b4ef50a528c149817015405b960fcf15a5af7c3574cb55163d239233a693d73c
+  interpretation: When charging, Anvil Head offers replacing all attacks with one. If that attack hits,
+    the total number of to-wound rolls is D3. Declining the option keeps the normal set and outside a
+    charge it is not asked; the D3 expansion only ever applies to a charging Necromantic Abomination in
+    the first round, never to later rounds or when the fighter was charged.
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {skill_ids: [mechanic.anvil-head]}
-    expect_contains: {attacker.global_effects.tags: [mechanic.anvil-head]}
-    expect: {attacker.fighter_id: 'custom:custom'}
+    attacker:
+      skill_ids:
+      - mechanic.anvil-head
+    expect_contains:
+      attacker.global_effects.tags:
+      - mechanic.anvil-head
+    expect:
+      attacker.fighter_id: custom:custom
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: necromantic-abomination}
-    context: {rule_id: band--necromantic-modification-anvil-head}
-    expect: {result.recipients: [necromantic-abomination]}
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+    context:
+      rule_id: band--necromantic-modification-anvil-head
+    expect:
+      result.recipients:
+      - necromantic-abomination
   - id: accepted-three-wound-rolls
-    roles: [active, boundary, sequence, consumption]
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
     operation: replacement_pool
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.anvil-head], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 3}}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 4, initiative: 3, attacks: 1}}
-    context: {first_round: true, charging: true}
-    decisions: [{key: test.anvil-head, value: true}]
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.anvil-head
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 3
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 4
+        initiative: 3
+        attacks: 1
+    context:
+      first_round: true
+      charging: true
+    decisions:
+    - key: test.anvil-head
+      value: true
     rolls:
-    - {key: test.attack.0.hit, value: 4}
-    - {key: test.attack.0.wound, value: 4}
-    - {key: test.attack.0.anvil-hits, sides: 3, value: 3}
-    - {key: test.attack.0.anvil.0.wound, value: 4}
-    - {key: test.attack.0.anvil.1.wound, value: 4}
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.0.wound
+      value: 4
+    - key: test.attack.0.anvil-hits
+      sides: 3
+      value: 3
+    - key: test.attack.0.anvil.0.wound
+      value: 4
+    - key: test.attack.0.anvil.1.wound
+      value: 4
     expect:
       result.count: 1
       result.attacks.0.wounded: true
@@ -104,46 +237,135 @@ specifications:
       result.attacks.2.wounded: true
       result.defender.wounds: 1
   - id: rejected-keeps-pool
-    roles: [inactive, boundary, sequence, consumption]
+    roles:
+    - inactive
+    - boundary
+    - sequence
+    - consumption
     operation: replacement_pool
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.anvil-head], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 3}}
-    attacker_state: {condition: OUT}
-    context: {first_round: true, charging: true}
-    decisions: [{key: test.anvil-head, value: false}]
-    expect: {result.count: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.anvil-head
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 3
+    attacker_state:
+      condition: OUT
+    context:
+      first_round: true
+      charging: true
+    decisions:
+    - key: test.anvil-head
+      value: false
+    expect:
+      result.count: 3
   - id: not-charging
-    roles: [inactive]
+    roles:
+    - inactive
     operation: replacement_pool
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.anvil-head], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 3}}
-    attacker_state: {condition: OUT}
-    context: {first_round: true, charging: false}
-    expect: {result.count: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.anvil-head
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 3
+    attacker_state:
+      condition: OUT
+    context:
+      first_round: true
+      charging: false
+    expect:
+      result.count: 3
   - id: not-charging-no-d3
-    roles: [active, boundary, sequence, consumption]
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
     operation: replacement_pool
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.anvil-head], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 3}}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 4, initiative: 3, attacks: 1}}
-    context: {first_round: true, charging: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.anvil-head
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 3
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 4
+        initiative: 3
+        attacks: 1
+    context:
+      first_round: true
+      charging: false
     rolls:
-    - {key: test.attack.0.hit, value: 4}
-    - {key: test.attack.1.hit, value: 1}
-    - {key: test.attack.2.hit, value: 1}
-    - {key: test.attack.0.wound, value: 4}
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 1
+    - key: test.attack.2.hit
+      value: 1
+    - key: test.attack.0.wound
+      value: 4
     expect:
       result.count: 3
       result.attacks.0.wounded: true
       result.defender.wounds: 3
   - id: later-round-no-d3
-    roles: [active, boundary, sequence, consumption]
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
     operation: replacement_pool
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [mechanic.anvil-head], characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 3}}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 4, initiative: 3, attacks: 1}}
-    context: {first_round: false, charging: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - mechanic.anvil-head
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 3
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 4
+        initiative: 3
+        attacks: 1
+    context:
+      first_round: false
+      charging: false
     rolls:
-    - {key: test.attack.0.hit, value: 4}
-    - {key: test.attack.1.hit, value: 1}
-    - {key: test.attack.2.hit, value: 1}
-    - {key: test.attack.0.wound, value: 4}
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 1
+    - key: test.attack.2.hit
+      value: 1
+    - key: test.attack.0.wound
+      value: 4
     expect:
       result.count: 3
       result.attacks.0.wounded: true
@@ -152,4 +374,5 @@ specifications:
   - id: remove-anvil-head
     path: attacker.global_effects.tags
     value: []
-    cases: [accepted-three-wound-rolls]
+    cases:
+    - accepted-three-wound-rolls

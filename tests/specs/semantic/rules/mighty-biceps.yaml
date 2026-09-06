@@ -4,98 +4,222 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
-  - {target: mechanic/skill.mighty-biceps, digest: f0fc7e68e8d94aa9e594e1c8b63498b120f48d52c69e8c763d9e9d3416a0f3c7}
-  - {target: rule/mordheim/pit-fighters/band--pit-fighter-skill-bulging-biceps/skill.mighty-biceps, digest: fb0da4996e80f49d861beaf9d919e90db4881c1b4c184ea2f744a3a1a7dd3743}
-  - {target: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-bulging-biceps/skill.mighty-biceps, digest: 5e706877a005a7b6ce43cde34b81139ed5c350c5b8e756a375458f045ad93fcc}
+  - target: mechanic/skill.mighty-biceps
+    digest: 3be23e76c79c6ed6da60193fdf32547728dbe2ca84740694641e47bcf5072bea
+  - target: rule/mordheim/pit-fighters/band--pit-fighter-skill-bulging-biceps/skill.mighty-biceps
+    digest: 1ab33516294d9b5ac8834a98a2f88f76147e1062ecf1dd1eb63021876ed7d8f8
+  - target: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-bulging-biceps/skill.mighty-biceps
+    digest: 6ce86aff97bb8a164a3114834ac7a918e3c11e39cc53410d1eb2b054cd891fa6
   interpretation: Pit Fighter Skills / Bulging Biceps keeps the Heavy weapon Strength bonus in every round.
-    Flail grants +2 and Morning Star +1. It neither adds Strength to a sword nor removes Strike Last
-    from a double-handed weapon; this is not Strongman. Only the three Hero profiles have special skill access.
+    Flail grants +2 and Morning Star +1. It neither adds Strength to a sword nor removes Strike Last from
+    a double-handed weapon; this is not Strongman. Only the three Hero profiles have special skill access.
   cases:
   - id: flail-first-false
-    roles: [active, consumer, boundary, compiled]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - compiled
     operation: strength
-    attacker: {main_weapon_id: weapon.flail, skill_ids: [skill.mighty-biceps]}
-    context: {first_round: false}
-    expect: {result.wound: 5, result.armour: 5}
+    attacker:
+      main_weapon_id: weapon.flail
+      skill_ids:
+      - skill.mighty-biceps
+    context:
+      first_round: false
+    expect:
+      result.wound: 5
+      result.armour: 5
     expect_contains:
-      attacker.global_effects.tags: [skill.mighty-biceps]
+      attacker.global_effects.tags:
+      - skill.mighty-biceps
   - id: flail-first-true
-    roles: [active, consumer, boundary, compiled]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - compiled
     operation: strength
-    attacker: {main_weapon_id: weapon.flail, skill_ids: [skill.mighty-biceps]}
-    context: {first_round: true}
-    expect: {result.wound: 5, result.armour: 5}
+    attacker:
+      main_weapon_id: weapon.flail
+      skill_ids:
+      - skill.mighty-biceps
+    context:
+      first_round: true
+    expect:
+      result.wound: 5
+      result.armour: 5
     expect_contains:
-      attacker.global_effects.tags: [skill.mighty-biceps]
+      attacker.global_effects.tags:
+      - skill.mighty-biceps
   - id: morning-star-first-false
-    roles: [active, consumer, boundary, compiled]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - compiled
     operation: strength
-    attacker: {main_weapon_id: weapon.morning-star, skill_ids: [skill.mighty-biceps]}
-    context: {first_round: false}
-    expect: {result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.morning-star
+      skill_ids:
+      - skill.mighty-biceps
+    context:
+      first_round: false
+    expect:
+      result.wound: 4
+      result.armour: 4
     expect_contains:
-      attacker.global_effects.tags: [skill.mighty-biceps]
+      attacker.global_effects.tags:
+      - skill.mighty-biceps
   - id: morning-star-first-true
-    roles: [active, consumer, boundary, compiled]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - compiled
     operation: strength
-    attacker: {main_weapon_id: weapon.morning-star, skill_ids: [skill.mighty-biceps]}
-    context: {first_round: true}
-    expect: {result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.morning-star
+      skill_ids:
+      - skill.mighty-biceps
+    context:
+      first_round: true
+    expect:
+      result.wound: 4
+      result.armour: 4
     expect_contains:
-      attacker.global_effects.tags: [skill.mighty-biceps]
+      attacker.global_effects.tags:
+      - skill.mighty-biceps
   - id: sword-first-false
-    roles: [active, consumer, boundary, compiled]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - compiled
     operation: strength
-    attacker: {main_weapon_id: weapon.sword, skill_ids: [skill.mighty-biceps]}
-    context: {first_round: false}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.mighty-biceps
+    context:
+      first_round: false
+    expect:
+      result.wound: 3
+      result.armour: 3
     expect_contains:
-      attacker.global_effects.tags: [skill.mighty-biceps]
+      attacker.global_effects.tags:
+      - skill.mighty-biceps
   - id: sword-first-true
-    roles: [active, consumer, boundary, compiled]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - compiled
     operation: strength
-    attacker: {main_weapon_id: weapon.sword, skill_ids: [skill.mighty-biceps]}
-    context: {first_round: true}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.sword
+      skill_ids:
+      - skill.mighty-biceps
+    context:
+      first_round: true
+    expect:
+      result.wound: 3
+      result.armour: 3
     expect_contains:
-      attacker.global_effects.tags: [skill.mighty-biceps]
+      attacker.global_effects.tags:
+      - skill.mighty-biceps
   - id: unselected-late-flail
-    roles: [inactive]
+    roles:
+    - inactive
     operation: strength
-    attacker: {main_weapon_id: weapon.flail}
-    context: {first_round: false}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.flail
+    context:
+      first_round: false
+    expect:
+      result.wound: 3
+      result.armour: 3
   - id: not-strongman
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: priority
-    attacker: {main_weapon_id: weapon.double-handed-weapon, skill_ids: [skill.mighty-biceps]}
-    expect: {result.priority: -1}
+    attacker:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids:
+      - skill.mighty-biceps
+    expect:
+      result.priority: -1
   - id: pit-fighters-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: pit-fighters, profile_id: pit-king}
-    context: {rule_id: band--pit-fighter-skill-bulging-biceps}
-    expect: {result.recipients: [dwarf-troll-slayer, pit-king, pit-veterans]}
+    defender:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: pit-king
+    context:
+      rule_id: band--pit-fighter-skill-bulging-biceps
+    expect:
+      result.recipients:
+      - dwarf-troll-slayer
+      - pit-king
+      - pit-veterans
   - id: pit-fighters-late-flail
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: strength
-    attacker: {collection: mordheim, band_id: pit-fighters, profile_id: pit-king, main_weapon_id: weapon.flail, special_rule_ids: [band--pit-fighter-skill-bulging-biceps]}
-    context: {first_round: false}
-    expect: {result.wound: 6, result.armour: 6}
+    attacker:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: pit-king
+      main_weapon_id: weapon.flail
+      special_rule_ids:
+      - band--pit-fighter-skill-bulging-biceps
+    context:
+      first_round: false
+    expect:
+      result.wound: 6
+      result.armour: 6
   - id: chaos-streets-pit-fighters-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: pit-king}
-    context: {rule_id: band--pit-fighter-skill-bulging-biceps}
-    expect: {result.recipients: [dwarf-troll-slayer, pit-king, pit-veterans]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: pit-king
+    context:
+      rule_id: band--pit-fighter-skill-bulging-biceps
+    expect:
+      result.recipients:
+      - dwarf-troll-slayer
+      - pit-king
+      - pit-veterans
   - id: chaos-streets-pit-fighters-late-flail
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: strength
-    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: pit-king, main_weapon_id: weapon.flail, special_rule_ids: [band--pit-fighter-skill-bulging-biceps]}
-    context: {first_round: false}
-    expect: {result.wound: 6, result.armour: 6}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: pit-king
+      main_weapon_id: weapon.flail
+      special_rule_ids:
+      - band--pit-fighter-skill-bulging-biceps
+    context:
+      first_round: false
+    expect:
+      result.wound: 6
+      result.armour: 6
   mutations:
   - id: lose-persistent-bonus
     path: attacker.global_effects.tags
     value: []
-    cases: [flail-first-false, morning-star-first-false, pit-fighters-late-flail, chaos-streets-pit-fighters-late-flail]
+    cases:
+    - flail-first-false
+    - morning-star-first-false
+    - pit-fighters-late-flail
+    - chaos-streets-pit-fighters-late-flail

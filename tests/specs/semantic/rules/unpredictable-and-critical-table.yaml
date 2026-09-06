@@ -5,11 +5,11 @@ specifications:
   category: stateful
   sources:
   - target: mechanic/mechanic.unpredictable-attack
-    digest: 9db950a6bc077f3d96bf67d54b23296e1ebc711e8915c21ffd2f5ac615789061
-  interpretation: The canonical convention allows a single attack per phase to be unparriable. With two attacks,
-    the first of the pool receives the declaration and the second keeps the ordinary resolution. The parry
-    capability is not consumed by skipping the unpredictable attack; it is consumed when attempting to parry
-    the next one. With a single attack it applies to that attack.
+    digest: 93278ae4f8c04bac011115c9d3b31d3aa7561b071dd8b2710272af35ff3e236d
+  interpretation: The canonical convention allows a single attack per phase to be unparriable. With two
+    attacks, the first of the pool receives the declaration and the second keeps the ordinary resolution.
+    The parry capability is not consumed by skipping the unpredictable attack; it is consumed when attempting
+    to parry the next one. With a single attack it applies to that attack.
   cases:
   - id: compiled
     roles:
@@ -110,7 +110,7 @@ specifications:
   category: stateful
   sources:
   - target: rule/trollheim/khemri-hobgoblin-raiders/sneaky--unpredictable/mechanic.unpredictable-attack
-    digest: 062303fd273859da1a71b84dd3282e6c5e7a13057093ef2212b3cfcb372e4ba9
+    digest: 058ccfb49a42e51708dbc8362d2f10ebae0ebceaac07b9f76c35b0c20dd7723e
   depends_on:
   - mechanic/mechanic.unpredictable-attack
   interpretation: Khemri p.80 / Sneaky / Unpredictable grants the mechanism to the Sneaky profile automatically.
@@ -188,12 +188,12 @@ specifications:
   category: stateful
   sources:
   - target: rule/trollheim/khemri-hobgoblin-raiders/band--hobgoblin-special-skills-unpredictable/mechanic.unpredictable-attack
-    digest: 659650cc976d5caf96c0b726306b207420c8a99ee3b0e19963580e380c24137f
+    digest: 7103bc1ed64a9f3512835c8f561220d7e0f694e2b07cd3f203d03582e41c7b1a
   depends_on:
   - mechanic/mechanic.unpredictable-attack
-  interpretation: Khemri p.79 / Hobgoblin Special Skills / Unpredictable is available exactly to Khann, Hobgoblin
-    Shaman, Scouts and Sneaky. Once chosen, an attack avoids the parry; without choosing it, the same attack
-    consumes the parry.
+  interpretation: Khemri p.79 / Hobgoblin Special Skills / Unpredictable is available exactly to Khann,
+    Hobgoblin Shaman, Scouts and Sneaky. Once chosen, an attack avoids the parry; without choosing it,
+    the same attack consumes the parry.
   cases:
   - id: recipients
     roles:
@@ -271,12 +271,12 @@ specifications:
   category: stateful
   sources:
   - target: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-unpredictable/mechanic.unpredictable-attack
-    digest: 42b0a6ac546d4692d9cd3fbb43888729b933f0004e64697a9d980ee1bddc8ec0
+    digest: 46137f85d52ffdcbb2470f20a37417b96936b1101982ee13244ec6417e880464
   depends_on:
   - mechanic/mechanic.unpredictable-attack
-  interpretation: Lustria p.105 / Savage Goblin Special Skills / Unpredictable is available exactly to Witch
-    Doctor, Big Boss, Red Teeth and Trackers. The phase consumes the parry without the skill and skips it when
-    selected.
+  interpretation: Lustria p.105 / Savage Goblin Special Skills / Unpredictable is available exactly to
+    Witch Doctor, Big Boss, Red Teeth and Trackers. The phase consumes the parry without the skill and
+    skips it when selected.
   cases:
   - id: recipients
     roles:
@@ -354,10 +354,10 @@ specifications:
   category: local
   sources:
   - target: mechanic/skill.web-of-steel
-    digest: 67f2804e617e539e1567fa6252f5b9d0f36b7456b75b6b0d489a6e31b8969f43
+    digest: 7fa88fb115d4fb43e088ce335e649b1e7ad5be07b42d3c31b2ffba8abc488064
   interpretation: Web of Steel adds one to the basic critical result. A table roll 4 becomes Master Strike
-    (5), causing two wounds with +2 Injury; without the skill it has no Injury bonus. The historical flat +3
-    Injury interpretation is superseded by the source review M01.
+    (5), causing two wounds with +2 Injury; without the skill it has no Injury bonus. The historical flat
+    +3 Injury interpretation is superseded by the source review M01.
   cases:
   - id: compiled
     roles:

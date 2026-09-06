@@ -4,277 +4,727 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/tomb-guardians/band--immune-to-poison/trait.poison-immune, digest: f7297b0c27c13cb631e79e3bb02ad66bead90e8587748ead0674b661922620f6}
-  depends_on: [mechanic/preparation.tears-of-shallaya]
-  interpretation: "Immune to Poison, undead general rules (Mordheimer or Khemri pp.43,53,85). Only profiles with the Undead trait receive this grant. The living members of the band do not inherit it. Stone Golem has its own immunity, not this grant. The full poison matrix reuses the consumer verified with Tears of Shallaya, without granting that preparation."
+  - target: rule/mordheim/tomb-guardians/band--immune-to-poison/trait.poison-immune
+    digest: 742e7a1c98c596ac720676136957a069646e8c979c76729cb5a2a607740c3d54
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: Immune to Poison, undead general rules (Mordheimer or Khemri pp.43,53,85). Only profiles
+    with the Undead trait receive this grant. The living members of the band do not inherit it. Stone
+    Golem has its own immunity, not this grant. The full poison matrix reuses the consumer verified with
+    Tears of Shallaya, without granting that preparation.
   cases:
   - id: exact-undead-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: acolytes}
-    context: {rule_id: band--immune-to-poison}
-    expect: {result.recipients: [acolytes, liche-priest, skeleton-warriors, tomb-guardians, tomb-lord]}
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: acolytes
+    context:
+      rule_id: band--immune-to-poison
+    expect:
+      result.recipients:
+      - acolytes
+      - liche-priest
+      - skeleton-warriors
+      - tomb-guardians
+      - tomb-lord
   - id: acolytes-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: acolytes}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: acolytes
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: liche-priest-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: liche-priest}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: liche-priest
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: skeleton-warriors-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: skeleton-warriors}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: skeleton-warriors
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: tomb-guardians-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-guardians}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-guardians
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: tomb-lord-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-lord}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-lord
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: tomb-scorpions-living-control
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: tomb-scorpions}
-    expect: {defender.global_effects.poison_immunity: false, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: tomb-scorpions
+    expect:
+      defender.global_effects.poison_immunity: false
+      result.wound: 4
+      result.armour: 4
   - id: no-poison-no-change
-    roles: [boundary]
+    roles:
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: tomb-guardians, profile_id: acolytes}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: tomb-guardians
+      profile_id: acolytes
+    expect:
+      result.wound: 3
+      result.armour: 3
   mutations:
   - id: remove-undead-immunity
     changes:
-    - {path: defender.global_effects.poison_immunity, value: false}
-    - {path: defender.global_effects.tags, value: []}
-    cases: [acolytes-immune, liche-priest-immune, skeleton-warriors-immune, tomb-guardians-immune, tomb-lord-immune]
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - acolytes-immune
+    - liche-priest-immune
+    - skeleton-warriors-immune
+    - tomb-guardians-immune
+    - tomb-lord-immune
 - id: undead-band-poison-trollheim-khemri-lahmian-brotherhood
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/trollheim/khemri-lahmian-brotherhood/band--immune-to-poison/trait.poison-immune, digest: d300ce3bdf64cad732842d9cd908cc7e586751cb1aa9dd7877ef79d16c14b947}
-  depends_on: [mechanic/preparation.tears-of-shallaya]
-  interpretation: "Immune to Poison, undead general rules (Mordheimer or Khemri pp.43,53,85). Only profiles with the Undead trait receive this grant. The living members of the band do not inherit it. Stone Golem has its own immunity, not this grant. The full poison matrix reuses the consumer verified with Tears of Shallaya, without granting that preparation."
+  - target: rule/trollheim/khemri-lahmian-brotherhood/band--immune-to-poison/trait.poison-immune
+    digest: c958f3231d8afbe2062f01e5e8d916207b9eb15cc0d5440d69210964ae21f513
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: Immune to Poison, undead general rules (Mordheimer or Khemri pp.43,53,85). Only profiles
+    with the Undead trait receive this grant. The living members of the band do not inherit it. Stone
+    Golem has its own immunity, not this grant. The full poison matrix reuses the consumer verified with
+    Tears of Shallaya, without granting that preparation.
   cases:
   - id: exact-undead-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lahmian-vampire}
-    context: {rule_id: band--immune-to-poison}
-    expect: {result.recipients: [lahmian-vampire, skeleton-warriors, spirits]}
+    defender:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: lahmian-vampire
+    context:
+      rule_id: band--immune-to-poison
+    expect:
+      result.recipients:
+      - lahmian-vampire
+      - skeleton-warriors
+      - spirits
   - id: lahmian-vampire-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lahmian-vampire}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: lahmian-vampire
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: skeleton-warriors-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: skeleton-warriors}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: skeleton-warriors
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: spirits-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: spirits}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: spirits
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: necromancer-living-control
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: necromancer}
-    expect: {defender.global_effects.poison_immunity: false, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: necromancer
+    expect:
+      defender.global_effects.poison_immunity: false
+      result.wound: 4
+      result.armour: 4
   - id: beloved-living-control
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: beloved}
-    expect: {defender.global_effects.poison_immunity: false, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: beloved
+    expect:
+      defender.global_effects.poison_immunity: false
+      result.wound: 4
+      result.armour: 4
   - id: blood-sister-living-control
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: blood-sister}
-    expect: {defender.global_effects.poison_immunity: false, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: blood-sister
+    expect:
+      defender.global_effects.poison_immunity: false
+      result.wound: 4
+      result.armour: 4
   - id: lackeys-living-control
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lackeys}
-    expect: {defender.global_effects.poison_immunity: false, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: lackeys
+    expect:
+      defender.global_effects.poison_immunity: false
+      result.wound: 4
+      result.armour: 4
   - id: blood-slaves-living-control
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: blood-slaves}
-    expect: {defender.global_effects.poison_immunity: false, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: blood-slaves
+    expect:
+      defender.global_effects.poison_immunity: false
+      result.wound: 4
+      result.armour: 4
   - id: black-hounds-living-control
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: black-hounds}
-    expect: {defender.global_effects.poison_immunity: false, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: black-hounds
+    expect:
+      defender.global_effects.poison_immunity: false
+      result.wound: 4
+      result.armour: 4
   - id: jackals-living-control
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: jackals}
-    expect: {defender.global_effects.poison_immunity: false, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: jackals
+    expect:
+      defender.global_effects.poison_immunity: false
+      result.wound: 4
+      result.armour: 4
   - id: no-poison-no-change
-    roles: [boundary]
+    roles:
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lahmian-vampire}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: lahmian-vampire
+    expect:
+      result.wound: 3
+      result.armour: 3
   mutations:
   - id: remove-undead-immunity
     changes:
-    - {path: defender.global_effects.poison_immunity, value: false}
-    - {path: defender.global_effects.tags, value: []}
-    cases: [lahmian-vampire-immune, skeleton-warriors-immune, spirits-immune]
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - lahmian-vampire-immune
+    - skeleton-warriors-immune
+    - spirits-immune
 - id: undead-band-poison-trollheim-khemri-necromancers
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/trollheim/khemri-necromancers/band--immune-to-poison/trait.poison-immune, digest: a7074b07357d8e811df66e94e9aba7c0ea214d67214cd563e672ff12f05bb75b}
-  depends_on: [mechanic/preparation.tears-of-shallaya]
-  interpretation: "Immune to Poison, undead general rules (Mordheimer or Khemri pp.43,53,85). Only profiles with the Undead trait receive this grant. The living members of the band do not inherit it. Stone Golem has its own immunity, not this grant. The full poison matrix reuses the consumer verified with Tears of Shallaya, without granting that preparation."
+  - target: rule/trollheim/khemri-necromancers/band--immune-to-poison/trait.poison-immune
+    digest: 2912e88cca7c29cacfdd013db7f4a62b6866dc056c86f66de595cbb945746df8
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: Immune to Poison, undead general rules (Mordheimer or Khemri pp.43,53,85). Only profiles
+    with the Undead trait receive this grant. The living members of the band do not inherit it. Stone
+    Golem has its own immunity, not this grant. The full poison matrix reuses the consumer verified with
+    Tears of Shallaya, without granting that preparation.
   cases:
   - id: exact-undead-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: necromantic-abomination}
-    context: {rule_id: band--immune-to-poison}
-    expect: {result.recipients: [necromantic-abomination, nehekharan-vultures, skeleton-warriors]}
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+    context:
+      rule_id: band--immune-to-poison
+    expect:
+      result.recipients:
+      - necromantic-abomination
+      - nehekharan-vultures
+      - skeleton-warriors
   - id: necromantic-abomination-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: necromantic-abomination}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: nehekharan-vultures-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: nehekharan-vultures}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: nehekharan-vultures
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: skeleton-warriors-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: skeleton-warriors}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: skeleton-warriors
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: necromancer-living-control
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: necromancer}
-    expect: {defender.global_effects.poison_immunity: false, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromancer
+    expect:
+      defender.global_effects.poison_immunity: false
+      result.wound: 4
+      result.armour: 4
   - id: apprentice-living-control
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: apprentice}
-    expect: {defender.global_effects.poison_immunity: false, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: apprentice
+    expect:
+      defender.global_effects.poison_immunity: false
+      result.wound: 4
+      result.armour: 4
   - id: tomb-robbers-living-control
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: tomb-robbers}
-    expect: {defender.global_effects.poison_immunity: false, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: tomb-robbers
+    expect:
+      defender.global_effects.poison_immunity: false
+      result.wound: 4
+      result.armour: 4
   - id: no-poison-no-change
-    roles: [boundary]
+    roles:
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: necromantic-abomination}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+    expect:
+      result.wound: 3
+      result.armour: 3
   mutations:
   - id: remove-undead-immunity
     changes:
-    - {path: defender.global_effects.poison_immunity, value: false}
-    - {path: defender.global_effects.tags, value: []}
-    cases: [necromantic-abomination-immune, nehekharan-vultures-immune, skeleton-warriors-immune]
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - necromantic-abomination-immune
+    - nehekharan-vultures-immune
+    - skeleton-warriors-immune
 - id: undead-band-poison-trollheim-khemri-tomb-guardians
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/trollheim/khemri-tomb-guardians/band--immune-to-poison/trait.poison-immune, digest: c3e81d13deed7f0069fe675e32b68ff46a5178a799ca0536738f4a087b4fe53d}
-  depends_on: [mechanic/preparation.tears-of-shallaya]
-  interpretation: "Immune to Poison, undead general rules (Mordheimer or Khemri pp.43,53,85). Only profiles with the Undead trait receive this grant. The living members of the band do not inherit it. Stone Golem has its own immunity, not this grant. The full poison matrix reuses the consumer verified with Tears of Shallaya, without granting that preparation."
+  - target: rule/trollheim/khemri-tomb-guardians/band--immune-to-poison/trait.poison-immune
+    digest: 168ba12827aa5b3b5d6098b9d6136423d6bc7a56dd9b944fcf32bb16e8c80a5c
+  depends_on:
+  - mechanic/preparation.tears-of-shallaya
+  interpretation: Immune to Poison, undead general rules (Mordheimer or Khemri pp.43,53,85). Only profiles
+    with the Undead trait receive this grant. The living members of the band do not inherit it. Stone
+    Golem has its own immunity, not this grant. The full poison matrix reuses the consumer verified with
+    Tears of Shallaya, without granting that preparation.
   cases:
   - id: exact-undead-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: mortuary-acolytes}
-    context: {rule_id: band--immune-to-poison}
-    expect: {result.recipients: [mortuary-acolytes, mortuary-priest, necrotect, skeleton-warriors, tomb-guardians, tomb-lord]}
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: mortuary-acolytes
+    context:
+      rule_id: band--immune-to-poison
+    expect:
+      result.recipients:
+      - mortuary-acolytes
+      - mortuary-priest
+      - necrotect
+      - skeleton-warriors
+      - tomb-guardians
+      - tomb-lord
   - id: mortuary-acolytes-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: mortuary-acolytes}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: mortuary-acolytes
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: mortuary-priest-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: mortuary-priest}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: mortuary-priest
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: necrotect-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: necrotect}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: necrotect
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: skeleton-warriors-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: skeleton-warriors}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: skeleton-warriors
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: tomb-guardians-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-guardians}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-guardians
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: tomb-lord-immune
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-lord}
-    expect: {defender.global_effects.poison_immunity: true, result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-lord
+    expect:
+      defender.global_effects.poison_immunity: true
+      result.wound: 3
+      result.armour: 3
   - id: tomb-scorpions-living-control
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-venom}
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-scorpions}
-    expect: {defender.global_effects.poison_immunity: false, result.wound: 4, result.armour: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-venom
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-scorpions
+    expect:
+      defender.global_effects.poison_immunity: false
+      result.wound: 4
+      result.armour: 4
   - id: no-poison-no-change
-    roles: [boundary]
+    roles:
+    - boundary
     operation: strength
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: mortuary-acolytes}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: mortuary-acolytes
+    expect:
+      result.wound: 3
+      result.armour: 3
   mutations:
   - id: remove-undead-immunity
     changes:
-    - {path: defender.global_effects.poison_immunity, value: false}
-    - {path: defender.global_effects.tags, value: []}
-    cases: [mortuary-acolytes-immune, mortuary-priest-immune, necrotect-immune, skeleton-warriors-immune, tomb-guardians-immune, tomb-lord-immune]
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - mortuary-acolytes-immune
+    - mortuary-priest-immune
+    - necrotect-immune
+    - skeleton-warriors-immune
+    - tomb-guardians-immune
+    - tomb-lord-immune

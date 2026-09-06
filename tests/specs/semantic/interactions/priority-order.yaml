@@ -5,9 +5,9 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-injury-states
-    digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
+    digest: c3a7c3b49b566dfb68119985694de4c046ecb9212b63155a7b5fb78d8afcdcd1
   - target: core/combat-order
-    digest: 0d22d9fffb278f0dbee553ccac5afd7cca3b8018f1f652af103da3b28bfbdc22
+    digest: dd5e6ea0c016682d5489f91e9ffe82580d50875966d2f3e7519681afd5d29892
   bindings:
   - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
   - '{"id": "combat-order", "kind": "core", "parameters": {}}'
@@ -40,9 +40,9 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-injury-states
-    digest: 64a57c5ff255e05697f2ec654d8d510bb11fd8cadf1fcbb870df5c7028ab88ed
+    digest: c3a7c3b49b566dfb68119985694de4c046ecb9212b63155a7b5fb78d8afcdcd1
   - target: mechanic/skill.strongman
-    digest: 0361c3c9a96d2c31adb49189e2d9d8e6a0e77ee6972008715533bf490a5a5e6f
+    digest: 660c870171a285ed42aa421568e1ca44d51752c56dfb108d276ebd7faf2599c5
   bindings:
   - '{"id": "combat-injury-states", "kind": "core", "parameters": {}}'
   - '{"id": "skill.strongman", "kind": "mechanic", "parameters": {}}'
@@ -80,9 +80,9 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-order
-    digest: 0d22d9fffb278f0dbee553ccac5afd7cca3b8018f1f652af103da3b28bfbdc22
+    digest: dd5e6ea0c016682d5489f91e9ffe82580d50875966d2f3e7519681afd5d29892
   - target: mechanic/skill.always-strikes-first
-    digest: 3c5bc14ee8ba7c3552b52d5bf42e6c2f8e7162597829cc42517aa162a2659b6d
+    digest: 75d336e91842036ad1bc8414979ec7cf67e52b9a2b1c5aee1b12533eacc4431e
   bindings:
   - '{"id": "combat-order", "kind": "core", "parameters": {}}'
   - '{"id": "skill.always-strikes-first", "kind": "mechanic", "parameters": {}}'
@@ -121,9 +121,9 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-order
-    digest: 0d22d9fffb278f0dbee553ccac5afd7cca3b8018f1f652af103da3b28bfbdc22
+    digest: dd5e6ea0c016682d5489f91e9ffe82580d50875966d2f3e7519681afd5d29892
   - target: mechanic/skill.lightning-reflexes
-    digest: a14b1677ce99a62c6eb607f2f83bc8a0b4f7066a827d0e56bda8e7cc08ef40be
+    digest: bd4eacedd324d08e59e884cc347f0c2ca8a7ddb018174a30e16091d809bfeac5
   bindings:
   - '{"id": "combat-order", "kind": "core", "parameters": {}}'
   - '{"id": "skill.lightning-reflexes", "kind": "mechanic", "parameters": {}}'
@@ -162,9 +162,9 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-order
-    digest: 0d22d9fffb278f0dbee553ccac5afd7cca3b8018f1f652af103da3b28bfbdc22
+    digest: dd5e6ea0c016682d5489f91e9ffe82580d50875966d2f3e7519681afd5d29892
   - target: mechanic/skill.strongman
-    digest: 0361c3c9a96d2c31adb49189e2d9d8e6a0e77ee6972008715533bf490a5a5e6f
+    digest: 660c870171a285ed42aa421568e1ca44d51752c56dfb108d276ebd7faf2599c5
   bindings:
   - '{"id": "combat-order", "kind": "core", "parameters": {}}'
   - '{"id": "skill.strongman", "kind": "mechanic", "parameters": {}}'
@@ -204,9 +204,9 @@ specifications:
   category: interaction
   sources:
   - target: core/combat-order
-    digest: 0d22d9fffb278f0dbee553ccac5afd7cca3b8018f1f652af103da3b28bfbdc22
+    digest: dd5e6ea0c016682d5489f91e9ffe82580d50875966d2f3e7519681afd5d29892
   - target: mechanic/weapon.double-handed-weapon
-    digest: 8e54d9ce13baf2f879cf316a31fd36830786ba558db7c5a122fa6c574863789f
+    digest: 3420fa94ce021ed6fd4429dd5af9d7eb60a916f9e93710ce9ac55607feaea33e
   bindings:
   - '{"id": "combat-order", "kind": "core", "parameters": {}}'
   - '{"id": "weapon.double-handed-weapon", "kind": "mechanic", "parameters": {}}'
@@ -241,14 +241,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.always-strikes-first
-    digest: 3c5bc14ee8ba7c3552b52d5bf42e6c2f8e7162597829cc42517aa162a2659b6d
+    digest: 75d336e91842036ad1bc8414979ec7cf67e52b9a2b1c5aee1b12533eacc4431e
   - target: mechanic/skill.lightning-reflexes
-    digest: a14b1677ce99a62c6eb607f2f83bc8a0b4f7066a827d0e56bda8e7cc08ef40be
+    digest: bd4eacedd324d08e59e884cc347f0c2ca8a7ddb018174a30e16091d809bfeac5
   bindings:
   - '{"id": "skill.always-strikes-first", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.lightning-reflexes", "kind": "mechanic", "parameters": {}}'
-  interpretation: Both grant strike-first; only one priority tier applies, and an opponent with the same tier
-    falls to the tie die.
+  interpretation: Both grant strike-first; only one priority tier applies, and an opponent with the same
+    tier falls to the tie die.
   cases:
   - id: composition
     roles:
@@ -284,9 +284,9 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.always-strikes-first
-    digest: 3c5bc14ee8ba7c3552b52d5bf42e6c2f8e7162597829cc42517aa162a2659b6d
+    digest: 75d336e91842036ad1bc8414979ec7cf67e52b9a2b1c5aee1b12533eacc4431e
   - target: mechanic/skill.strongman
-    digest: 0361c3c9a96d2c31adb49189e2d9d8e6a0e77ee6972008715533bf490a5a5e6f
+    digest: 660c870171a285ed42aa421568e1ca44d51752c56dfb108d276ebd7faf2599c5
   bindings:
   - '{"id": "skill.always-strikes-first", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.strongman", "kind": "mechanic", "parameters": {}}'
@@ -327,9 +327,9 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.always-strikes-first
-    digest: 3c5bc14ee8ba7c3552b52d5bf42e6c2f8e7162597829cc42517aa162a2659b6d
+    digest: 75d336e91842036ad1bc8414979ec7cf67e52b9a2b1c5aee1b12533eacc4431e
   - target: mechanic/weapon.double-handed-weapon
-    digest: 8e54d9ce13baf2f879cf316a31fd36830786ba558db7c5a122fa6c574863789f
+    digest: 3420fa94ce021ed6fd4429dd5af9d7eb60a916f9e93710ce9ac55607feaea33e
   bindings:
   - '{"id": "skill.always-strikes-first", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.double-handed-weapon", "kind": "mechanic", "parameters": {}}'
@@ -369,9 +369,9 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.lightning-reflexes
-    digest: a14b1677ce99a62c6eb607f2f83bc8a0b4f7066a827d0e56bda8e7cc08ef40be
+    digest: bd4eacedd324d08e59e884cc347f0c2ca8a7ddb018174a30e16091d809bfeac5
   - target: mechanic/skill.strongman
-    digest: 0361c3c9a96d2c31adb49189e2d9d8e6a0e77ee6972008715533bf490a5a5e6f
+    digest: 660c870171a285ed42aa421568e1ca44d51752c56dfb108d276ebd7faf2599c5
   bindings:
   - '{"id": "skill.lightning-reflexes", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.strongman", "kind": "mechanic", "parameters": {}}'
@@ -412,9 +412,9 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.lightning-reflexes
-    digest: a14b1677ce99a62c6eb607f2f83bc8a0b4f7066a827d0e56bda8e7cc08ef40be
+    digest: bd4eacedd324d08e59e884cc347f0c2ca8a7ddb018174a30e16091d809bfeac5
   - target: mechanic/weapon.double-handed-weapon
-    digest: 8e54d9ce13baf2f879cf316a31fd36830786ba558db7c5a122fa6c574863789f
+    digest: 3420fa94ce021ed6fd4429dd5af9d7eb60a916f9e93710ce9ac55607feaea33e
   bindings:
   - '{"id": "skill.lightning-reflexes", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.double-handed-weapon", "kind": "mechanic", "parameters": {}}'
@@ -453,9 +453,9 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.strongman
-    digest: 0361c3c9a96d2c31adb49189e2d9d8e6a0e77ee6972008715533bf490a5a5e6f
+    digest: 660c870171a285ed42aa421568e1ca44d51752c56dfb108d276ebd7faf2599c5
   - target: mechanic/weapon.double-handed-weapon
-    digest: 8e54d9ce13baf2f879cf316a31fd36830786ba558db7c5a122fa6c574863789f
+    digest: 3420fa94ce021ed6fd4429dd5af9d7eb60a916f9e93710ce9ac55607feaea33e
   bindings:
   - '{"id": "skill.strongman", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.double-handed-weapon", "kind": "mechanic", "parameters": {}}'

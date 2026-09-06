@@ -77,7 +77,7 @@ def compile_source(attacker: CompiledFighter, defender: CompiledFighter,
     dg = defender.global_effects
     poison_blocked = dg.poison_immunity or has(dg, "poison_immune")
     axe_group = ("weapon.axe", "weapon.dwarf-axe", "weapon.double-handed-weapon")
-    sword_group = ("weapon.sword", "weapon.scimitar", "weapon.weeping-blades")
+    sword_group = ("weapon.sword", "weapon.weeping-blades")
 
     knife_fighting = bool(
         has(effect, "skill.knife-fighting")
@@ -199,6 +199,8 @@ def compile_source(attacker: CompiledFighter, defender: CompiledFighter,
         "nightshade": bool(
             has(effect, "poison.nightshade") and not poison_blocked
         ),
+        "disease_dagger": has(weapon_c, "weapon.disease-dagger"),
+        "luck_wound": has(effect, "skill.luck"),
         "spider_spittle": bool(
             has(effect, "poison.spider-spittle") and not poison_blocked
         ),
@@ -321,6 +323,8 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
         "out_of_action_threshold": int(g.out_of_action_threshold),
         "caught_fire_threshold": int(g.caught_fire_threshold),
         "poison_immune": bool(g.poison_immunity or has(g, "poison_immune")),
+        "luck": has(g, "skill.luck"),
+        "infection_immune": bool(g.poison_immunity or has(g, "poison_immune") or has(g, "undead_or_possessed")),
         "incoming_strength_modifier": int(g.incoming_strength_modifier),
         "incoming_attacks_modifier": int(g.incoming_attacks_modifier),
         "thick_skull": bool(g.thick_skull),
@@ -521,6 +525,10 @@ def compile_duel(first: CompiledFighter, second: CompiledFighter) -> dict:
             "hug": compile_source(me, foe, hug_effect),
             "acid": compile_source(me, foe, acid_effect),
             "counter": compile_source(me, foe, counter_effect),
+            "infection": compile_source(me, foe, _constructed(
+                ("effect.automatic-wound", "effect.no-critical"),
+                fixed_strength=3, automatic_hit=True, cannot_be_parried=True,
+            )),
         }
 
     first_ctx = _compile_fighter(first, second)

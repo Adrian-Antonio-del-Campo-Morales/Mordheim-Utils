@@ -3,17 +3,17 @@ band_id: cursed-cavalcade
 rules:
 - id: aristocrat--leader
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.cursed-cavalcade.aristocrat.leader
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Leader
-  effect: Any warrior of the Cavalcade Warband within 6" of the Aristocrat may use his Leadership value when taking Leadership
-    tests.
+  effect: Any warrior of the Cavalcade Warband within 6" of the Aristocrat may use his Leadership value
+    when taking Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -21,24 +21,25 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
-    en: Any warrior of the Cavalcade Warband within 6" of the Aristocrat may use his Leadership value when taking Leadership
-      tests.
-    es: null
+    en: Any warrior of the Cavalcade Warband within 6" of the Aristocrat may use his Leadership value
+      when taking Leadership tests.
+    es: Cualquier guerrero de la banda de la Cabalgata a 6" del Aristócrata puede usar su valor de Liderazgo
+      al realizar chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - aristocrat
 - id: aristocrat--expert-horseman
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.cursed-cavalcade.aristocrat.expert-horseman
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: mounts."
+      reason: 'Deferred subsystem: mounts.'
   name: Expert Horseman
   effect: the Aristocrat has the Ride (Nightmare) skill.
   source:
@@ -48,30 +49,27 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Expert Horseman
-    es: null
+    es: Jinete experto
   effect_i18n:
     en: the Aristocrat has the Ride (Nightmare) skill.
-    es: null
+    es: El Aristócrata tiene la habilidad Montar (Pesadilla).
   applies_to:
     profile_ids:
     - aristocrat
 - id: companions--expert-swordsman
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
     - id: skill.expert-swordsman
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: mechanic
         id: skill.expert-swordsman
   name: Expert Swordsman
-  effect: 'As imperial nobles, the Companions
-
-    have been taught the way of the sword since an early age.
-
-    Companions all have Expert Swordsman Skill.'
+  effect: As imperial nobles, the Companions have been taught the way of the sword since an early age.
+    Companions all have Expert Swordsman Skill.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -79,33 +77,31 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Expert Swordsman
-    es: null
+    es: Espadachín experto
   effect_i18n:
     en: 'As imperial nobles, the Companions
 
       have been taught the way of the sword since an early age.
 
       Companions all have Expert Swordsman Skill.'
-    es: null
+    es: Como nobles imperiales, los Compañeros han sido instruidos en el manejo de la espada desde temprana
+      edad. Todos los Compañeros tienen la habilidad Esgrimista experto.
   applies_to:
     profile_ids:
     - companions
 - id: twisted-scholar--magical-adept
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.cursed-cavalcade.twisted-scholar.magical-adept
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: magic."
+      reason: 'Out of scope: magic.'
   name: Magical Adept
-  effect: 'When hiring a Twisted Scholar, you may
-
-    pay 10 additional GC to upgrade it to a Wizard. If you do
-
-    this then the twisted scholar uses Lesser Magic and knows 1 spell chosen randomly.'
+  effect: When hiring a Twisted Scholar, you may pay 10 additional GC to upgrade it to a Wizard. If you
+    do this then the twisted scholar uses Lesser Magic and knows 1 spell chosen randomly.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -113,39 +109,32 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Magical Adept
-    es: null
+    es: Adepto mágico
   effect_i18n:
     en: 'When hiring a Twisted Scholar, you may
 
       pay 10 additional GC to upgrade it to a Wizard. If you do
 
       this then the twisted scholar uses Lesser Magic and knows 1 spell chosen randomly.'
-    es: null
+    es: Al contratar a un Estudioso retorcido, puedes pagar 10 coronas adicionales para ascenderlo a Mago.
+      Si lo haces, el Estudioso retorcido usa Magia Menor y conoce 1 hechizo elegido aleatoriamente.
   applies_to:
     profile_ids:
     - twisted-scholar
 - id: twisted-scholar--story-teller
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.cursed-cavalcade.twisted-scholar.story-teller
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Story Teller
-  effect: 'When hiring a Twisted Scholar, if you did not
-
-    upgrade it to a Wizard, you may pay 10 additional GC to
-
-    make it a Chronicler. A Chronicler has in-depth knowledge
-
-    of the city of Mordheim and may reroll an extra dice during
-
-    Exploration phase and may decide which of the two dice to
-
-    keep.'
+  effect: When hiring a Twisted Scholar, if you did not upgrade it to a Wizard, you may pay 10 additional
+    GC to make it a Chronicler. A Chronicler has in-depth knowledge of the city of Mordheim and may reroll
+    an extra dice during Exploration phase and may decide which of the two dice to keep.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -153,7 +142,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Story Teller
-    es: null
+    es: Narrador de historias
   effect_i18n:
     en: 'When hiring a Twisted Scholar, if you did not
 
@@ -166,58 +155,34 @@ rules:
       Exploration phase and may decide which of the two dice to
 
       keep.'
-    es: null
+    es: Al contratar a un Estudioso retorcido, si no lo has ascendido a Mago, puedes pagar 10 coronas
+      adicionales para convertirlo en Cronista. Un Cronista tiene un conocimiento profundo de la ciudad
+      de Mordheim y puede repetir un dado extra durante la fase de Exploración y decidir cuál de los dos
+      dados conservar.
   applies_to:
     profile_ids:
     - twisted-scholar
 - id: cursed-piper--danse-macabre
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.cursed-cavalcade.cursed-piper.danse-macabre
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Danse Macabre
-  effect: 'The Piper plays the Danse Macabre in
-
-    combat. During the shooting phase the Cursed Piper can
-
-    direct the cursed melody of his flute against one enemy model
-
-    he can see within 6” from the Piper. The enemy model must
-
-    take a Ld test.
-
-    If failed, the warrior is cursed by the Danse
-
-    Macabre loses control of his body and forced to dance under
-
-    the Piper’s will. The Piper can move the enemy model in any
-
-    direction he wishes also out of close combat or force him to
-
-    fall from height.
-
-    At the beginning of the enemy’s turn, in the
-
-    recovery phase the warrior will have to pass a Ld test or will
-
-    continue to be under the Pipers’ control and cannot shoot,
-
-    charge or cast spells. If engaged in close combat the model
-
-    cannot attack (it is too busy dancing!).
-
-    Only one enemy
-
-    warrior at time can be controlled by the Danse Macabre. If
-
-    the Piper targets another warrior the previous one is
-
-    immediately free from the curse.'
+  effect: The Piper plays the Danse Macabre in combat. During the shooting phase the Cursed Piper can
+    direct the cursed melody of his flute against one enemy model he can see within 6” from the Piper.
+    The enemy model must take a Ld test. If failed, the warrior is cursed by the Danse Macabre loses control
+    of his body and forced to dance under the Piper’s will. The Piper can move the enemy model in any
+    direction he wishes also out of close combat or force him to fall from height. At the beginning of
+    the enemy’s turn, in the recovery phase the warrior will have to pass a Ld test or will continue to
+    be under the Pipers’ control and cannot shoot, charge or cast spells. If engaged in close combat the
+    model cannot attack (it is too busy dancing!). Only one enemy warrior at time can be controlled by
+    the Danse Macabre. If the Piper targets another warrior the previous one is immediately free from
+    the curse.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -225,7 +190,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Danse Macabre
-    es: null
+    es: Danza de la muerte
   effect_i18n:
     en: 'The Piper plays the Danse Macabre in
 
@@ -264,38 +229,42 @@ rules:
       the Piper targets another warrior the previous one is
 
       immediately free from the curse.'
-    es: null
+    es: El Flautista toca la Danza de la muerte en combate. Durante la fase de disparo, el Flautista maldito
+      puede dirigir la melodía maldita de su flauta contra una miniatura enemiga que pueda ver a 6” del
+      Flautista. La miniatura enemiga debe superar un chequeo de L. Si falla, el guerrero es maldito por
+      la Danza de la muerte, pierde el control de su cuerpo y se ve forzado a bailar bajo la voluntad
+      del Flautista. El Flautista puede mover la miniatura enemiga en cualquier dirección que desee, incluso
+      fuera del combate cuerpo a cuerpo, o forzarlo a caer desde las alturas. Al comienzo del turno del
+      enemigo, en la fase de recuperación, el guerrero deberá superar un chequeo de L o seguirá bajo el
+      control del Flautista y no podrá disparar, cargar ni lanzar hechizos. Si está trabado en combate
+      cuerpo a cuerpo, la miniatura no puede atacar (¡está demasiado ocupada bailando!). Solo un guerrero
+      enemigo a la vez puede ser controlado por la Danza de la muerte. Si el Flautista apunta a otro guerrero,
+      el anterior queda inmediatamente libre de la maldición.
   applies_to:
     profile_ids:
     - cursed-piper
 - id: captured-thrall--extra-servitors-worthless-but-still-precious
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.cursed-cavalcade.captured-thrall.extra-servitors-worthless-but-still-precious
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Extra servitors, worthless, but still precious
-  effect: 'Captured
-
-    Thralls do not count toward the maximum number of models
-
-    allowed in your warband, effectively increasing the
-
-    maximum capacity from 13 to 18. You cannot dismiss any
-
-    Captured Thrall you own.'
+  effect: Captured Thralls do not count toward the maximum number of models allowed in your warband, effectively
+    increasing the maximum capacity from 13 to 18. You cannot dismiss any Captured Thrall you own.
   source:
     manual: mordheimer.net
     printed_page: 0
-    section: Henchmen / 0 – 5 Captured Thrall / Special Rules / Extra servitors, worthless, but still precious
+    section: Henchmen / 0 – 5 Captured Thrall / Special Rules / Extra servitors, worthless, but still
+      precious
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Extra servitors, worthless, but still precious
-    es: null
+    es: Sirvientes extra, inútiles pero aún preciosos
   effect_i18n:
     en: 'Captured
 
@@ -306,24 +275,24 @@ rules:
       maximum capacity from 13 to 18. You cannot dismiss any
 
       Captured Thrall you own.'
-    es: null
+    es: Los Siervos capturados no cuentan contra el número máximo de miniaturas permitidas en tu banda,
+      aumentando efectivamente la capacidad máxima de 13 a 18. No puedes despedir a ningún Siervo capturado
+      que poseas.
   applies_to:
     profile_ids:
     - captured-thrall
 - id: captured-thrall--not-really-clever
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.cursed-cavalcade.captured-thrall.not-really-clever
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Not really clever
-  effect: 'Captured Thralls cannot earn experience
-
-    points, and therefore cannot gain any advancement.'
+  effect: Captured Thralls cannot earn experience points, and therefore cannot gain any advancement.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -331,23 +300,24 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Not really clever
-    es: null
+    es: No muy listos
   effect_i18n:
     en: 'Captured Thralls cannot earn experience
 
       points, and therefore cannot gain any advancement.'
-    es: null
+    es: Los Siervos capturados no pueden ganar puntos de experiencia y, por tanto, no pueden obtener ninguna
+      mejora.
   applies_to:
     profile_ids:
     - captured-thrall
 - id: great-bear--maddened-with-pain
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
     - id: trait.maddened-with-pain
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.maddened-with-pain
@@ -362,23 +332,23 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Maddened With Pain
-    es: null
+    es: Enloquecido por el dolor
   effect_i18n:
     en: As soon as the Great Bear suffers a single wound it gains an additional attack.
-    es: null
+    es: En cuanto el Gran Oso sufre una sola herida, gana un ataque adicional.
   applies_to:
     profile_ids:
     - great-bear
 - id: great-bear--large-target
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.cursed-cavalcade.great-bear.large-target
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: shooting."
+      reason: 'Out of scope: shooting.'
   name: Large Target
   effect: Great Bears are Large Targets as defined in the shooting rules.
   source:
@@ -388,23 +358,23 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Large Target
-    es: null
+    es: Objetivo grande
   effect_i18n:
     en: Great Bears are Large Targets as defined in the shooting rules.
-    es: null
+    es: Los Osos Grandes son Objetivos Grandes según se define en las reglas de disparo.
   applies_to:
     profile_ids:
     - great-bear
 - id: great-bear--animal
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.cursed-cavalcade.great-bear.animal
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Animal
   effect: Great Bears are animals and thus do not gain experience.
   source:
@@ -414,21 +384,21 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Animal
-    es: null
+    es: Animal
   effect_i18n:
     en: Great Bears are animals and thus do not gain experience.
-    es: null
+    es: Los Osos Grandes son animales y por tanto no ganan experiencia.
   applies_to:
     profile_ids:
     - great-bear
 - id: wild-beasts--charge
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
     - id: trait.first-round-charge-attack-bonus
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.first-round-charge-attack-bonus
@@ -443,23 +413,24 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Charge
-    es: null
+    es: Carga
   effect_i18n:
     en: When charging their enemies the Wild Beasts gain +1 Attack on the first turn of close combat.
-    es: null
+    es: Al cargar contra sus enemigos, las Bestias salvajes obtienen +1 Ataque en el primer turno de combate
+      cuerpo a cuerpo.
   applies_to:
     profile_ids:
     - wild-beasts
 - id: wild-beasts--animal
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.cursed-cavalcade.wild-beasts.animal
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Animal
   effect: Wild Beasts are animals and thus do not gain experience.
   source:
@@ -469,33 +440,27 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Animal
-    es: null
+    es: Animal
   effect_i18n:
     en: Wild Beasts are animals and thus do not gain experience.
-    es: null
+    es: Las Bestias salvajes son animales y por tanto no ganan experiencia.
   applies_to:
     profile_ids:
     - wild-beasts
 - id: fighting-ape--cymbals
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.cursed-cavalcade.fighting-ape.cymbals
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: shooting."
+      reason: 'Out of scope: shooting.'
   name: Cymbals
-  effect: 'when hiring a Fighting Ape, you may give her a
-
-    pair of cymbals at 15 gc, which it frenziedly beats together
-
-    to the forbidding tune of Danse Macabre.
-
-    Any enemy model within 6" will be so disturbed by the
-
-    sound that they suffer a penalty of -1 to BS and Ld.'
+  effect: when hiring a Fighting Ape, you may give her a pair of cymbals at 15 gc, which it frenziedly
+    beats together to the forbidding tune of Danse Macabre. Any enemy model within 6" will be so disturbed
+    by the sound that they suffer a penalty of -1 to BS and Ld.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -503,7 +468,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Cymbals
-    es: null
+    es: Platillos
   effect_i18n:
     en: 'when hiring a Fighting Ape, you may give her a
 
@@ -514,29 +479,26 @@ rules:
       Any enemy model within 6" will be so disturbed by the
 
       sound that they suffer a penalty of -1 to BS and Ld.'
-    es: null
+    es: Al contratar a un Mono de combate, puedes darle un par de platillos por 15 coronas, que golpea
+      frenéticamente al ritmo prohibitivo de la Danza de la muerte. Cualquier miniatura enemiga a 6" se
+      verá tan perturbada por el sonido que sufre una penalización de -1 a HA y L.
   applies_to:
     profile_ids:
     - fighting-ape
 - id: fighting-ape--agile
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.cursed-cavalcade.fighting-ape.agile
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: movement."
+      reason: 'Out of scope: movement.'
   name: Agile
-  effect: 'The Fighting Apes are fantastically agile and nimble,
-
-    putting even the greatest acrobat or Skaven Assassin to
-
-    shame. The Fighting Ape has the Scale Sheer Surfaces Skill, Acrobat Skill, and Dodge Skill. In addition, the Fighting
-    Ape
-
-    can make a diving charge from up to 10" high.'
+  effect: The Fighting Apes are fantastically agile and nimble, putting even the greatest acrobat or Skaven
+    Assassin to shame. The Fighting Ape has the Scale Sheer Surfaces Skill, Acrobat Skill, and Dodge Skill.
+    In addition, the Fighting Ape can make a diving charge from up to 10" high.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -544,34 +506,36 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Agile
-    es: null
+    es: Ágil
   effect_i18n:
     en: 'The Fighting Apes are fantastically agile and nimble,
 
       putting even the greatest acrobat or Skaven Assassin to
 
-      shame. The Fighting Ape has the Scale Sheer Surfaces Skill, Acrobat Skill, and Dodge Skill. In addition, the Fighting
-      Ape
+      shame. The Fighting Ape has the Scale Sheer Surfaces Skill, Acrobat Skill, and Dodge Skill. In addition,
+      the Fighting Ape
 
       can make a diving charge from up to 10" high.'
-    es: null
+    es: Los Monos de combate son fantásticamente ágiles y diligentes, avergonzando incluso al mayor acróbata
+      o Asesino skaven. El Mono de combate tiene la habilidad Trepar superficies verticales, la habilidad
+      Acróbata y la habilidad Esquiva. Además, el Mono de combate puede realizar una carga en picado desde
+      hasta 10" de altura.
   applies_to:
     profile_ids:
     - fighting-ape
 - id: fighting-ape--animal
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.cursed-cavalcade.fighting-ape.animal
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: movement."
+      reason: 'Out of scope: movement.'
   name: Animal
-  effect: 'Fighting Apes are animals and thus do not gain
-
-    experience, but can still climb and enter buildings as normal.'
+  effect: Fighting Apes are animals and thus do not gain experience, but can still climb and enter buildings
+    as normal.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -579,28 +543,30 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Animal
-    es: null
+    es: Animal
   effect_i18n:
     en: 'Fighting Apes are animals and thus do not gain
 
       experience, but can still climb and enter buildings as normal.'
-    es: null
+    es: Los Monos de combate son animales y por tanto no ganan experiencia, pero aún pueden trepar y entrar
+      en edificios con normalidad.
   applies_to:
     profile_ids:
     - fighting-ape
 - id: band--foolish-nobleness
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.cursed-cavalcade.band.foolish-nobleness
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: Foolish Nobleness
-  effect: The Cursed Cavalcade is treated as an Evil warband for all game-effect purposes, similarly to the Cult of the Possessed.
-    It cannot hire Hired Swords or Dramatis Personae except the Crow Master and any entry that specifically says otherwise.
+  effect: The Cursed Cavalcade is treated as an Evil warband for all game-effect purposes, similarly to
+    the Cult of the Possessed. It cannot hire Hired Swords or Dramatis Personae except the Crow Master
+    and any entry that specifically says otherwise.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -608,11 +574,14 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Foolish Nobleness
-    es: null
+    es: Nobleza necia
   effect_i18n:
-    en: The Cursed Cavalcade is treated as an Evil warband for all game-effect purposes, similarly to the Cult of the Possessed.
-      It cannot hire Hired Swords or Dramatis Personae except the Crow Master and any entry that specifically says otherwise.
-    es: null
+    en: The Cursed Cavalcade is treated as an Evil warband for all game-effect purposes, similarly to
+      the Cult of the Possessed. It cannot hire Hired Swords or Dramatis Personae except the Crow Master
+      and any entry that specifically says otherwise.
+    es: La Cabalgata Maldita se trata como una banda Maligna a todos los efectos de juego, de forma similar
+      al Culto de los Poseídos. No puede contratar Espadas a sueldo ni Dramatis Personae, excepto el Maestro
+      de las Cuervos y cualquier entrada que especifique lo contrario.
   applies_to:
     band: true
 - id: band--capture
@@ -624,12 +593,16 @@ rules:
     - id: unimplemented.cursed-cavalcade.band.capture
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
   name: Capture!
-  effect: 'If a Hero takes an enemy human Henchman Out of Action with a Misericordia and the warband has fewer than 5 Captured
-    Thralls, roll a D6: on 5+ the model is captured. Enemy Heroes can only be captured through a 61 - Captured! Serious Injury
-    result. No more than 2 models may be captured per game. If 2 models have already been captured, or the warband already has
-    5 Captured Thralls, reroll 61 - Captured! results for enemy Heroes.'
+  effect: >-
+    If a Hero takes an enemy human Henchman Out of Action with a Misericordia and the warband has
+    fewer than 5 Captured Thralls, roll a D6: on 5+ the model is captured. Enemy Heroes can only be
+    captured through a 61 - Captured! Serious Injury result. No more than 2 models may be captured
+    per game. If 2 models have already been captured, or the warband already has 5 Captured Thralls,
+    reroll 61 - Captured! results for enemy Heroes.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -637,30 +610,37 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Capture!
-    es: null
+    es: ¡Captura!
   effect_i18n:
-    en: 'If a Hero takes an enemy human Henchman Out of Action with a Misericordia and the warband has fewer than 5 Captured
-      Thralls, roll a D6: on 5+ the model is captured. Enemy Heroes can only be captured through a 61 - Captured! Serious
-      Injury result. No more than 2 models may be captured per game. If 2 models have already been captured, or the warband
-      already has 5 Captured Thralls, reroll 61 - Captured! results for enemy Heroes.'
-    es: null
+    en: 'If a Hero takes an enemy human Henchman Out of Action with a Misericordia and the warband has
+      fewer than 5 Captured Thralls, roll a D6: on 5+ the model is captured. Enemy Heroes can only be
+      captured through a 61 - Captured! Serious Injury result. No more than 2 models may be captured per
+      game. If 2 models have already been captured, or the warband already has 5 Captured Thralls, reroll
+      61 - Captured! results for enemy Heroes.'
+    es: 'Si un Héroe saca del combate a un Secuaz humano enemigo con una Misericordia y la banda tiene
+      menos de 5 Siervos capturados, tira un D6: con 5+ la miniatura es capturada. Los Héroes enemigos
+      solo pueden ser capturados mediante un resultado de Herida Grave de 61 - ¡Capturado!. No pueden
+      capturarse más de 2 miniaturas por partida. Si ya se han capturado 2 miniaturas, o la banda ya tiene
+      5 Siervos capturados, repite los resultados de 61 - ¡Capturado! para Héroes enemigos.'
   applies_to:
     band: true
 - id: band--throne-of-worms
   runtime:
-    scope: "NO"
-    implemented: "NO"
+    scope: 'NO'
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.cursed-cavalcade.band.throne-of-worms
-      scope: "NO"
+      scope: 'NO'
       binding: null
-      reason: "Out of scope: campaign."
+      reason: 'Out of scope: campaign.'
   name: The Throne of Worms
-  effect: 'For each enemy captured, instead of rolling normally on the Serious Injury Table after the battle, roll a D6: 1-2
-    = remove the warrior permanently from the original warband; 3-5 = remove the warrior from the original warband and add
-    one Captured Thrall to the Cavalcade; 6 = remove the warrior from the original warband and one random Cavalcade Hero gains
-    +1 Experience. This replaces the standard Captured! Serious Injury rules for Heroes.'
+  effect: >-
+    For each enemy captured, instead of rolling normally on the Serious Injury Table after the
+    battle, roll a D6: 1-2 = remove the warrior permanently from the original warband; 3-5 = remove
+    the warrior from the original warband and add one Captured Thrall to the Cavalcade; 6 = remove
+    the warrior from the original warband and one random Cavalcade Hero gains +1 Experience. This
+    replaces the standard Captured! Serious Injury rules for Heroes.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -668,23 +648,28 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: The Throne of Worms
-    es: null
+    es: El Trono de los Gusanos
   effect_i18n:
-    en: 'For each enemy captured, instead of rolling normally on the Serious Injury Table after the battle, roll a D6: 1-2
-      = remove the warrior permanently from the original warband; 3-5 = remove the warrior from the original warband and add
-      one Captured Thrall to the Cavalcade; 6 = remove the warrior from the original warband and one random Cavalcade Hero
-      gains +1 Experience. This replaces the standard Captured! Serious Injury rules for Heroes.'
-    es: null
+    en: 'For each enemy captured, instead of rolling normally on the Serious Injury Table after the battle,
+      roll a D6: 1-2 = remove the warrior permanently from the original warband; 3-5 = remove the warrior
+      from the original warband and add one Captured Thrall to the Cavalcade; 6 = remove the warrior from
+      the original warband and one random Cavalcade Hero gains +1 Experience. This replaces the standard
+      Captured! Serious Injury rules for Heroes.'
+    es: 'Por cada enemigo capturado, en lugar de tirar con normalidad en la tabla de Heridas Graves tras
+      la batalla, tira un D6: 1-2 = retira al guerrero permanentemente de su banda original; 3-5 = retira
+      al guerrero de su banda original y añade un Siervo capturado a la Cabalgada; 6 = retira al guerrero
+      de su banda original y un Héroe aleatorio de la Cabalgada gana +1 de Experiencia. Esto sustituye
+      a las reglas estándar de Herida Grave ¡Capturado! para Héroes.'
   applies_to:
     band: true
 - id: band--cursed-cavalcade-special-skills
   runtime:
-    scope: "YES"
-    implemented: "YES"
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
     - id: profile.skill-access
-      scope: "YES"
+      scope: 'YES'
       binding:
         kind: profile
         id: profile.skill-access
@@ -699,41 +684,29 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Cursed Cavalcade Special Skills
-    es: null
+    es: Habilidades especiales de la Cabalgada Maldita
   effect_i18n:
     en: Cursed Cavalcade Heroes can use the list of skills below instead of the standard list.
-    es: null
+    es: Los Héroes de la Cabalgada Maldita pueden usar la lista de habilidades de abajo en lugar de la
+      lista estándar.
   applies_to:
     band: true
 - id: band--cursed-cavalcade-special-skills-noblesse-obliges
   kind: warband_skill
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-noblesse-obliges
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Noblesse obliges
-  effect: 'The warrior feels utterly superior to his opponents, with long
-
-    lineage and prestige to look down upon his common
-
-    enemies, seen as nothing more than cattle to be slaughtered.
-
-    The Warrior is immune to fear and can stomp
-
-    opponents who are knocked down with is
-
-    iron-shod boots.
-
-    This gives them additional attack
-
-    against Knocked down opponents at
-
-    their own Strength.'
+  effect: The warrior feels utterly superior to his opponents, with long lineage and prestige to look
+    down upon his common enemies, seen as nothing more than cattle to be slaughtered. The Warrior is immune
+    to fear and can stomp opponents who are knocked down with is iron-shod boots. This gives them additional
+    attack against Knocked down opponents at their own Strength.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -741,7 +714,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Noblesse obliges
-    es: null
+    es: Noblesse oblige
   effect_i18n:
     en: 'The warrior feels utterly superior to his opponents, with long
 
@@ -760,38 +733,29 @@ rules:
       against Knocked down opponents at
 
       their own Strength.'
-    es: null
+    es: El guerrero se siente totalmente superior a sus oponentes, con un largo linaje y prestigio para
+      mirar por encima del hombro a sus enemigos plebeyos, vistos como nada más que ganado para ser sacrificado.
+      El Guerrero es inmune al miedo y puede pisotear a los oponentes Derribados con sus botas con suela
+      de hierro. Esto les otorga un ataque adicional contra oponentes Derribados con su propia Fuerza.
   applies_to:
     band: true
 - id: band--cursed-cavalcade-special-skills-torturer
   kind: warband_skill
   runtime:
-    scope: "LATER"
-    implemented: "NO"
+    scope: LATER
+    implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-torturer
-      scope: "LATER"
+      scope: LATER
       binding: null
-      reason: "Deferred subsystem: psychology."
+      reason: 'Deferred subsystem: psychology.'
   name: Torturer
-  effect: 'Having learned the craft of torture in the Ritual of the Comet,
-
-    the warrior knows how to inflict maximum pain on the body
-
-    and uses it in a sadistic and cruel way in combat.
-
-    Any model successfully wounded (and not saved) in close
-
-    combat by this Hero loses 1 point of Strength permanently
-
-    for the duration of the battle as the pain from the wound
-
-    causes agony. The effect is accumulative and can reduce the
-
-    Strength of the target to a minimum of 1. The Undead are
-
-    immune to this effect.'
+  effect: Having learned the craft of torture in the Ritual of the Comet, the warrior knows how to inflict
+    maximum pain on the body and uses it in a sadistic and cruel way in combat. Any model successfully
+    wounded (and not saved) in close combat by this Hero loses 1 point of Strength permanently for the
+    duration of the battle as the pain from the wound causes agony. The effect is accumulative and can
+    reduce the Strength of the target to a minimum of 1. The Undead are immune to this effect.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -799,7 +763,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Torturer
-    es: null
+    es: Torturador
   effect_i18n:
     en: 'Having learned the craft of torture in the Ritual of the Comet,
 
@@ -818,7 +782,12 @@ rules:
       Strength of the target to a minimum of 1. The Undead are
 
       immune to this effect.'
-    es: null
+    es: Habiendo aprendido el oficio de la tortura en el Ritual del Cometa, el guerrero sabe cómo infligir
+      el máximo dolor al cuerpo y lo usa de forma sádica y cruel en combate. Cualquier miniatura herida
+      con éxito (y no salvada) en combate cuerpo a cuerpo por este Héroe pierde 1 punto de Fuerza permanentemente
+      durante el resto de la batalla, ya que el dolor de la herida causa agonía. El efecto es acumulativo
+      y puede reducir la Fuerza del objetivo a un mínimo de 1. Los Muertos Vivientes son inmunes a este
+      efecto.
   applies_to:
     band: true
 - id: band--cursed-cavalcade-special-skills-duelist
@@ -831,13 +800,16 @@ rules:
     - id: unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-duelist
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
   name: Duelist
-  effect: The warrior is an expert in hand-to-hand combat method of the Imperial duelist, aristocrats famed for their skill
-    in single combat. At the end of each Close Combat phase, the Duelist can force any non-large opponent he is fighting one-on-one
-    to pass a Strength test or be pushed 2" in any direction chosen by the Duelist. If this brings the target in contact with
-    another model, both suffer an automatic Strength 2 hit. If this pushes the opponent off from a high place, then he falls
-    and takes damage as normal. The duelist stays on the elevated area.
+  effect: The warrior is an expert in hand-to-hand combat method of the Imperial duelist, aristocrats
+    famed for their skill in single combat. At the end of each Close Combat phase, the Duelist can force
+    any non-large opponent he is fighting one-on-one to pass a Strength test or be pushed 2" in any direction
+    chosen by the Duelist. If this brings the target in contact with another model, both suffer an automatic
+    Strength 2 hit. If this pushes the opponent off from a high place, then he falls and takes damage
+    as normal. The duelist stays on the elevated area.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -845,7 +817,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
     en: Duelist
-    es: null
+    es: Duelista
   effect_i18n:
     en: 'The warrior is an expert in hand-to-hand combat method of
 
@@ -868,6 +840,12 @@ rules:
       falls and takes damage as normal. The duelist stays on the
 
       elevated area.'
-    es: null
+    es: El guerrero es un experto en el método de combate cuerpo a cuerpo del duelista imperial, aristócratas
+      famosos por su destreza en el combate singular. Al final de cada fase de Combate Cuerpo a Cuerpo,
+      el Duelista puede forzar a cualquier oponente no enorme contra el que luche uno a uno a superar
+      un chequeo de Fuerza o ser empujado 2" en cualquier dirección elegida por el Duelista. Si esto lleva
+      al objetivo a contacto con otra miniatura, ambas sufren un impacto automático de Fuerza 2. Si esto
+      empuja al oponente desde un lugar elevado, entonces cae y sufre daño con normalidad. El duelista
+      permanece en la zona elevada.
   applies_to:
     band: true

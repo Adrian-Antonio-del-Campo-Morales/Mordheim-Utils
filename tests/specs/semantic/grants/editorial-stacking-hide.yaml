@@ -4,367 +4,902 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save, digest: af6e65a8569bfbcca94fafc433b3481b875e5fc3d908b37071f2ba1456a63549}
-  - {target: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-stacks, digest: af6e65a8569bfbcca94fafc433b3481b875e5fc3d908b37071f2ba1456a63549}
-  interpretation: "Mordheimer / Beastmen Special Skills / Shaggy Hide. Natural armour 6+ stackable with equipment; light armour 6+ plus hide produce 5+, plus a shield produce 4+. Strength 4 worsens it by one point; ignoring armour suppresses the save. It is neither a special save nor a second independent roll."
+  - target: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
+    digest: df8bd3281f775e82cd1039a720b5cba4bca1e29bb3e833b2313fe4d49cd7da29
+  - target: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-stacks
+    digest: df8bd3281f775e82cd1039a720b5cba4bca1e29bb3e833b2313fe4d49cd7da29
+  interpretation: Mordheimer / Beastmen Special Skills / Shaggy Hide. Natural armour 6+ stackable with
+    equipment; light armour 6+ plus hide produce 5+, plus a shield produce 4+. Strength 4 worsens it by
+    one point; ignoring armour suppresses the save. It is neither a special save nor a second independent
+    roll.
   cases:
   - id: recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {band_id: beastmen-raiders, profile_id: beastmen-chieftain}
-    context: {rule_id: band--beastmen-special-skills-shaggy-hide}
-    expect: {result.recipients: [beastmen-chieftain, beastmen-shaman, bestigors, centigors]}
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+    context:
+      rule_id: band--beastmen-special-skills-shaggy-hide
+    expect:
+      result.recipients:
+      - beastmen-chieftain
+      - beastmen-shaman
+      - bestigors
+      - centigors
   - id: beastmen-shaman-selected-consumer
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: beastmen-raiders, profile_id: beastmen-shaman, special_rule_ids: [band--beastmen-special-skills-shaggy-hide]}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.target: 6, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-shaman
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.saved: true
   - id: bestigors-selected-consumer
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: beastmen-raiders, profile_id: bestigors, special_rule_ids: [band--beastmen-special-skills-shaggy-hide]}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.target: 6, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: beastmen-raiders
+      profile_id: bestigors
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.saved: true
   - id: centigors-selected-consumer
-    roles: [compiled, active, consumer]
+    roles:
+    - compiled
+    - active
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: beastmen-raiders, profile_id: centigors, special_rule_ids: [band--beastmen-special-skills-shaggy-hide]}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.target: 6, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: beastmen-raiders
+      profile_id: centigors
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.saved: true
   - id: gor-cannot-select-skill
-    roles: [rejected]
+    roles:
+    - rejected
     operation: compile
-    defender: {band_id: beastmen-raiders, profile_id: gor, special_rule_ids: [band--beastmen-special-skills-shaggy-hide]}
+    defender:
+      band_id: beastmen-raiders
+      profile_id: gor
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
     reject: special rule is not available
   - id: ungor-cannot-select-skill
-    roles: [rejected]
+    roles:
+    - rejected
     operation: compile
-    defender: {band_id: beastmen-raiders, profile_id: ungor, special_rule_ids: [band--beastmen-special-skills-shaggy-hide]}
+    defender:
+      band_id: beastmen-raiders
+      profile_id: ungor
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
     reject: special rule is not available
   - id: minotaur-cannot-select-skill
-    roles: [rejected]
+    roles:
+    - rejected
     operation: compile
-    defender: {band_id: beastmen-raiders, profile_id: minotaur, special_rule_ids: [band--beastmen-special-skills-shaggy-hide]}
+    defender:
+      band_id: beastmen-raiders
+      profile_id: minotaur
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
     reject: special rule is not available
   - id: warhounds-of-chaos-cannot-select-skill
-    roles: [rejected]
+    roles:
+    - rejected
     operation: compile
-    defender: {band_id: beastmen-raiders, profile_id: warhounds-of-chaos, special_rule_ids: [band--beastmen-special-skills-shaggy-hide]}
+    defender:
+      band_id: beastmen-raiders
+      profile_id: warhounds-of-chaos
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
     reject: special rule is not available
   - id: bare-face-1
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: beastmen-raiders, profile_id: beastmen-chieftain, special_rule_ids: [band--beastmen-special-skills-shaggy-hide]}
-    rolls: [{key: armour, value: 1}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
+    rolls:
+    - key: armour
+      value: 1
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-2
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: beastmen-raiders, profile_id: beastmen-chieftain, special_rule_ids: [band--beastmen-special-skills-shaggy-hide]}
-    rolls: [{key: armour, value: 2}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
+    rolls:
+    - key: armour
+      value: 2
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-3
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: beastmen-raiders, profile_id: beastmen-chieftain, special_rule_ids: [band--beastmen-special-skills-shaggy-hide]}
-    rolls: [{key: armour, value: 3}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-4
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: beastmen-raiders, profile_id: beastmen-chieftain, special_rule_ids: [band--beastmen-special-skills-shaggy-hide]}
-    rolls: [{key: armour, value: 4}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-5
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: beastmen-raiders, profile_id: beastmen-chieftain, special_rule_ids: [band--beastmen-special-skills-shaggy-hide]}
-    rolls: [{key: armour, value: 5}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-6
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: beastmen-raiders, profile_id: beastmen-chieftain, special_rule_ids: [band--beastmen-special-skills-shaggy-hide]}
-    rolls: [{key: armour, value: 6}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: true
   - id: light-armour-combines
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: beastmen-raiders, profile_id: beastmen-chieftain, special_rule_ids: [band--beastmen-special-skills-shaggy-hide], armour_id: armour.light-armour}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
+      armour_id: armour.light-armour
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/3, 'false': 2/3}
+      expected:
+        'true': 1/3
+        'false': 2/3
   - id: light-armour-shield-combines
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: beastmen-raiders, profile_id: beastmen-chieftain, special_rule_ids: [band--beastmen-special-skills-shaggy-hide], armour_id: armour.light-armour, off_hand_id: defence.shield}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
+      armour_id: armour.light-armour
+      off_hand_id: defence.shield
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: strength-four-negates-bare-hide
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {band_id: beastmen-raiders, profile_id: beastmen-chieftain, special_rule_ids: [band--beastmen-special-skills-shaggy-hide]}
-    expect: {result.eligible: false, result.saved: false, result.roll: null}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
+    expect:
+      result.eligible: false
+      result.saved: false
+      result.roll: null
   - id: strength-four-modifies-combined-armour
-    roles: [boundary]
+    roles:
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {band_id: beastmen-raiders, profile_id: beastmen-chieftain, special_rule_ids: [band--beastmen-special-skills-shaggy-hide], armour_id: armour.light-armour}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
+      armour_id: armour.light-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.saved: false
   - id: ignores-armour
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.vomit-attack}
-    defender: {band_id: beastmen-raiders, profile_id: beastmen-chieftain, special_rule_ids: [band--beastmen-special-skills-shaggy-hide], armour_id: armour.light-armour}
-    expect: {result.eligible: false, result.saved: false, result.roll: null}
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      special_rule_ids:
+      - band--beastmen-special-skills-shaggy-hide
+      armour_id: armour.light-armour
+    expect:
+      result.eligible: false
+      result.saved: false
+      result.roll: null
   - id: not-granted-control
-    roles: [inactive]
+    roles:
+    - inactive
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: beastmen-raiders, profile_id: beastmen-chieftain}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+    expect:
+      result.eligible: false
+      result.saved: false
   mutations:
   - id: remove-natural-save
     changes:
-    - {path: defender.natural_armour_save, value: 7}
-    - {path: defender.armour_save, value: 7}
-    cases: [bare-face-6]
+    - path: defender.natural_armour_save
+      value: 7
+    - path: defender.armour_save
+      value: 7
+    cases:
+    - bare-face-6
   - id: omit-stacking-bonus
     path: defender.armour_save
     value: 6
-    cases: [light-armour-combines]
+    cases:
+    - light-armour-combines
 - id: stacking-hide-black-orc-boss
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/mordheim/black-orcs/black-orc-boss--black-orc/trait.natural-armour-save, digest: 3538c3bcd55d415923e2dbbb10c9bfad9d8386042d3f78be7385128f9425b1ab}
-  - {target: rule/mordheim/black-orcs/black-orc-boss--black-orc/trait.natural-armour-stacks, digest: 3538c3bcd55d415923e2dbbb10c9bfad9d8386042d3f78be7385128f9425b1ab}
-  interpretation: "Mordheimer / Heroes / Black Orc. Natural armour 6+ stackable with equipment; light armour 6+ plus hide produce 5+, plus a shield produce 4+. Strength 4 worsens it by one point; ignoring armour suppresses the save. It is neither a special save nor a second independent roll."
+  - target: rule/mordheim/black-orcs/black-orc-boss--black-orc/trait.natural-armour-save
+    digest: 2892cea69d6c2b66393c655bd5df8b22e366ef827a8e2dd5e86d7d615b2828f8
+  - target: rule/mordheim/black-orcs/black-orc-boss--black-orc/trait.natural-armour-stacks
+    digest: 2892cea69d6c2b66393c655bd5df8b22e366ef827a8e2dd5e86d7d615b2828f8
+  interpretation: Mordheimer / Heroes / Black Orc. Natural armour 6+ stackable with equipment; light armour
+    6+ plus hide produce 5+, plus a shield produce 4+. Strength 4 worsens it by one point; ignoring armour
+    suppresses the save. It is neither a special save nor a second independent roll.
   cases:
   - id: recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: black-orcs, profile_id: black-orc-boss}
-    context: {rule_id: black-orc-boss--black-orc}
-    expect: {result.recipients: [black-orc-boss]}
+    defender:
+      band_id: black-orcs
+      profile_id: black-orc-boss
+    context:
+      rule_id: black-orc-boss--black-orc
+    expect:
+      result.recipients:
+      - black-orc-boss
   - id: bare-face-1
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orc-boss}
-    rolls: [{key: armour, value: 1}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orc-boss
+    rolls:
+    - key: armour
+      value: 1
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-2
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orc-boss}
-    rolls: [{key: armour, value: 2}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orc-boss
+    rolls:
+    - key: armour
+      value: 2
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-3
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orc-boss}
-    rolls: [{key: armour, value: 3}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orc-boss
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-4
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orc-boss}
-    rolls: [{key: armour, value: 4}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orc-boss
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-5
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orc-boss}
-    rolls: [{key: armour, value: 5}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orc-boss
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-6
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orc-boss}
-    rolls: [{key: armour, value: 6}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orc-boss
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: true
   - id: light-armour-combines
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orc-boss, armour_id: armour.light-armour}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orc-boss
+      armour_id: armour.light-armour
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/3, 'false': 2/3}
+      expected:
+        'true': 1/3
+        'false': 2/3
   - id: light-armour-shield-combines
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orc-boss, armour_id: armour.light-armour, off_hand_id: defence.shield}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orc-boss
+      armour_id: armour.light-armour
+      off_hand_id: defence.shield
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: strength-four-negates-bare-hide
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {band_id: black-orcs, profile_id: black-orc-boss}
-    expect: {result.eligible: false, result.saved: false, result.roll: null}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      band_id: black-orcs
+      profile_id: black-orc-boss
+    expect:
+      result.eligible: false
+      result.saved: false
+      result.roll: null
   - id: strength-four-modifies-combined-armour
-    roles: [boundary]
+    roles:
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {band_id: black-orcs, profile_id: black-orc-boss, armour_id: armour.light-armour}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      band_id: black-orcs
+      profile_id: black-orc-boss
+      armour_id: armour.light-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.saved: false
   - id: ignores-armour
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.vomit-attack}
-    defender: {band_id: black-orcs, profile_id: black-orc-boss, armour_id: armour.light-armour}
-    expect: {result.eligible: false, result.saved: false, result.roll: null}
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      band_id: black-orcs
+      profile_id: black-orc-boss
+      armour_id: armour.light-armour
+    expect:
+      result.eligible: false
+      result.saved: false
+      result.roll: null
   - id: not-granted-control
-    roles: [inactive]
+    roles:
+    - inactive
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: younguns}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: younguns
+    expect:
+      result.eligible: false
+      result.saved: false
   mutations:
   - id: remove-natural-save
     changes:
-    - {path: defender.natural_armour_save, value: 7}
-    - {path: defender.armour_save, value: 7}
-    cases: [bare-face-6]
+    - path: defender.natural_armour_save
+      value: 7
+    - path: defender.armour_save
+      value: 7
+    cases:
+    - bare-face-6
   - id: omit-stacking-bonus
     path: defender.armour_save
     value: 6
-    cases: [light-armour-combines]
+    cases:
+    - light-armour-combines
 - id: stacking-hide-black-orc-warriors
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-save, digest: e1984476fefa327830abbe22f97d5e8072b1982d6afb36915950b0f2c33730b3}
-  - {target: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-stacks, digest: e1984476fefa327830abbe22f97d5e8072b1982d6afb36915950b0f2c33730b3}
-  interpretation: "Mordheimer / Heroes / Black Orc. Natural armour 6+ stackable with equipment; light armour 6+ plus hide produce 5+, plus a shield produce 4+. Strength 4 worsens it by one point; ignoring armour suppresses the save. It is neither a special save nor a second independent roll."
+  - target: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-save
+    digest: 5dc3e1baf16fc16b3187b4a38f1379c15b08847a779ec54236ee74476afd9d36
+  - target: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-stacks
+    digest: 5dc3e1baf16fc16b3187b4a38f1379c15b08847a779ec54236ee74476afd9d36
+  interpretation: Mordheimer / Heroes / Black Orc. Natural armour 6+ stackable with equipment; light armour
+    6+ plus hide produce 5+, plus a shield produce 4+. Strength 4 worsens it by one point; ignoring armour
+    suppresses the save. It is neither a special save nor a second independent roll.
   cases:
   - id: recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: black-orcs, profile_id: black-orcs}
-    context: {rule_id: black-orcs--black-orc}
-    expect: {result.recipients: [black-orcs]}
+    defender:
+      band_id: black-orcs
+      profile_id: black-orcs
+    context:
+      rule_id: black-orcs--black-orc
+    expect:
+      result.recipients:
+      - black-orcs
   - id: bare-face-1
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orcs}
-    rolls: [{key: armour, value: 1}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orcs
+    rolls:
+    - key: armour
+      value: 1
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-2
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orcs}
-    rolls: [{key: armour, value: 2}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orcs
+    rolls:
+    - key: armour
+      value: 2
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-3
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orcs}
-    rolls: [{key: armour, value: 3}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orcs
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-4
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orcs}
-    rolls: [{key: armour, value: 4}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orcs
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-5
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orcs}
-    rolls: [{key: armour, value: 5}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orcs
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: false
   - id: bare-face-6
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orcs}
-    rolls: [{key: armour, value: 6}]
-    expect: {defender.natural_armour_save: 6, result.target: 6, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orcs
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      defender.natural_armour_save: 6
+      result.target: 6
+      result.saved: true
   - id: light-armour-combines
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orcs, armour_id: armour.light-armour}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orcs
+      armour_id: armour.light-armour
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/3, 'false': 2/3}
+      expected:
+        'true': 1/3
+        'false': 2/3
   - id: light-armour-shield-combines
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: black-orcs, armour_id: armour.light-armour, off_hand_id: defence.shield}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: black-orcs
+      armour_id: armour.light-armour
+      off_hand_id: defence.shield
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: strength-four-negates-bare-hide
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {band_id: black-orcs, profile_id: black-orcs}
-    expect: {result.eligible: false, result.saved: false, result.roll: null}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      band_id: black-orcs
+      profile_id: black-orcs
+    expect:
+      result.eligible: false
+      result.saved: false
+      result.roll: null
   - id: strength-four-modifies-combined-armour
-    roles: [boundary]
+    roles:
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {band_id: black-orcs, profile_id: black-orcs, armour_id: armour.light-armour}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      band_id: black-orcs
+      profile_id: black-orcs
+      armour_id: armour.light-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.saved: false
   - id: ignores-armour
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.vomit-attack}
-    defender: {band_id: black-orcs, profile_id: black-orcs, armour_id: armour.light-armour}
-    expect: {result.eligible: false, result.saved: false, result.roll: null}
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      band_id: black-orcs
+      profile_id: black-orcs
+      armour_id: armour.light-armour
+    expect:
+      result.eligible: false
+      result.saved: false
+      result.roll: null
   - id: not-granted-control
-    roles: [inactive]
+    roles:
+    - inactive
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: black-orcs, profile_id: younguns}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: black-orcs
+      profile_id: younguns
+    expect:
+      result.eligible: false
+      result.saved: false
   mutations:
   - id: remove-natural-save
     changes:
-    - {path: defender.natural_armour_save, value: 7}
-    - {path: defender.armour_save, value: 7}
-    cases: [bare-face-6]
+    - path: defender.natural_armour_save
+      value: 7
+    - path: defender.armour_save
+      value: 7
+    cases:
+    - bare-face-6
   - id: omit-stacking-bonus
     path: defender.armour_save
     value: 6
-    cases: [light-armour-combines]
+    cases:
+    - light-armour-combines

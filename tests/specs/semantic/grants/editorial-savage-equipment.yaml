@@ -5,34 +5,58 @@ specifications:
   category: construction
   sources:
   - target: rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
-    digest: c077bb059f34329afe9d7fd155fd7f9e52b5f3e062e4822fbcc52213a9e106d2
-  interpretation: Savage forbids every form of armour (including shield and helmet) and ranged weapons for Orc Nuttaz.
-    Ordinary Boyz retain their armour access. Pistols are the ranged weapons currently represented in the duel runtime;
-    these cases require a rejection by the prohibition itself, not merely absence from the equipment list.
+    digest: 8b5d37ee6e1b0df490a0642fca0095e38f4c83f8b2cce4272a8afe9eb33282b8
+  interpretation: Savage forbids every form of armour (including shield and helmet) and ranged weapons
+    for Orc Nuttaz. Ordinary Boyz retain their armour access. Pistols are the ranged weapons currently
+    represented in the duel runtime; these cases require a rejection by the prohibition itself, not merely
+    absence from the equipment list.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: black-orcs, profile_id: orc-nuttaz}
-    context: {rule_id: orc-nuttaz--savage}
-    expect: {result.recipients: [orc-nuttaz]}
+    defender:
+      band_id: black-orcs
+      profile_id: orc-nuttaz
+    context:
+      rule_id: orc-nuttaz--savage
+    expect:
+      result.recipients:
+      - orc-nuttaz
   - id: legal-and-forbidden-choices
-    roles: [accepted, rejected]
+    roles:
+    - accepted
+    - rejected
     operation: equipment_choices
-    attacker: {band_id: black-orcs, profile_id: orc-nuttaz}
+    attacker:
+      band_id: black-orcs
+      profile_id: orc-nuttaz
     context:
       choices:
-        dagger: {main_weapon_id: weapon.dagger}
-        axe: {main_weapon_id: weapon.axe}
-        sword: {main_weapon_id: weapon.sword}
-        light-armour: {armour_id: armour.light-armour}
-        shield: {off_hand_id: defence.shield}
-        helmet: {defence_ids: [defence.helmet]}
-        pistol: {main_weapon_id: weapon.pistol}
-        off-hand-pistol: {off_hand_id: weapon.pistol}
-        duelling-pistol: {main_weapon_id: weapon.duelling-pistol}
+        dagger:
+          main_weapon_id: weapon.dagger
+        axe:
+          main_weapon_id: weapon.axe
+        sword:
+          main_weapon_id: weapon.sword
+        light-armour:
+          armour_id: armour.light-armour
+        shield:
+          off_hand_id: defence.shield
+        helmet:
+          defence_ids:
+          - defence.helmet
+        pistol:
+          main_weapon_id: weapon.pistol
+        off-hand-pistol:
+          off_hand_id: weapon.pistol
+        duelling-pistol:
+          main_weapon_id: weapon.duelling-pistol
     expect:
-      result.accepted: [axe, dagger, sword]
+      result.accepted:
+      - axe
+      - dagger
+      - sword
       result.rejected:
         light-armour: armour is forbidden for black-orcs/orc-nuttaz
         shield: armour is forbidden for black-orcs/orc-nuttaz
@@ -41,18 +65,29 @@ specifications:
         off-hand-pistol: missile weapons are forbidden for black-orcs/orc-nuttaz
         duelling-pistol: missile weapons are forbidden for black-orcs/orc-nuttaz
   - id: ordinary-boyz-retain-armour
-    roles: [accepted]
+    roles:
+    - accepted
     operation: equipment_choices
-    attacker: {band_id: black-orcs, profile_id: orc-boyz}
+    attacker:
+      band_id: black-orcs
+      profile_id: orc-boyz
     context:
       choices:
-        light-armour: {armour_id: armour.light-armour}
-        shield: {off_hand_id: defence.shield}
-        helmet: {defence_ids: [defence.helmet]}
+        light-armour:
+          armour_id: armour.light-armour
+        shield:
+          off_hand_id: defence.shield
+        helmet:
+          defence_ids:
+          - defence.helmet
     expect:
-      result.accepted: [helmet, light-armour, shield]
+      result.accepted:
+      - helmet
+      - light-armour
+      - shield
       result.rejected: {}
   mutations:
   - id: remove-binding-restrictions
     runtime_fault: suppress-bound-equipment-restrictions
-    cases: [legal-and-forbidden-choices]
+    cases:
+    - legal-and-forbidden-choices

@@ -10,7 +10,7 @@ profiles:
   name: Bone Goliath
   name_i18n:
     en: Bone Goliath
-    es: null
+    es: Goliat de hueso
   normalization_status: normalized
   characteristics:
     M: 5
@@ -31,30 +31,57 @@ profiles:
   - id: hireling.hired-sword.bone-goliath.rule.cause-fear
     name: Cause Fear
     effect: Causes fear.
+    name_i18n:
+      en: Cause Fear
+      es: Causa Miedo
   - id: hireling.hired-sword.bone-goliath.rule.may-not-run
     name: May Not Run
     effect: May not run but may charge.
+    name_i18n:
+      en: May Not Run
+      es: No puede correr
   - id: hireling.hired-sword.bone-goliath.rule.immune-to-psychology
     name: Immune to Psychology
     effect: Immune to psychology.
+    name_i18n:
+      en: Immune to Psychology
+      es: Inmune a la Psicología
   - id: hireling.hired-sword.bone-goliath.rule.immune-to-poison
     name: Immune to Poison
     effect: Immune to poison.
+    name_i18n:
+      en: Immune to Poison
+      es: Inmune al veneno
   - id: hireling.hired-sword.bone-goliath.rule.undead-construct
     name: Undead Construct
     effect: May ignore Injury results on 4+ except source magical exceptions.
+    name_i18n:
+      en: Undead Construct
+      es: Constructo no muerto
   - id: hireling.hired-sword.bone-goliath.rule.assembly
     name: Assembly
     effect: Is constructed by a Liche with the source cost/consequences.
+    name_i18n:
+      en: Assembly
+      es: Ensamblaje
   - id: hireling.hired-sword.bone-goliath.rule.large
     name: Large
     effect: Counts as a large target.
+    name_i18n:
+      en: Large
+      es: Grande
   - id: hireling.hired-sword.bone-goliath.rule.no-pain
     name: No Pain
     effect: Treats Stunned as Knocked Down.
+    name_i18n:
+      en: No Pain
+      es: Sin dolor
   - id: hireling.hired-sword.bone-goliath.rule.mindless
     name: Mindless
     effect: Never gains Experience.
+    name_i18n:
+      en: Mindless
+      es: Carente de mente
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -67,7 +94,7 @@ profiles:
   name: Cathayan Merchant
   name_i18n:
     en: Cathayan Merchant
-    es: null
+    es: Mercader de Cathay
   normalization_status: normalized
   characteristics:
     M: 4
@@ -98,18 +125,34 @@ profiles:
   - id: hireling.hired-sword.cathayan-merchant.rule.pawnbroker
     name: Pawnbroker
     effect: Uses merchant sale-price rule.
+    name_i18n:
+      en: Pawnbroker
+      es: Prestamista
   - id: hireling.hired-sword.cathayan-merchant.rule.marketeer
     name: Marketeer
     effect: Uses special-market rule.
+    name_i18n:
+      en: Marketeer
+      es: Comerciante
   - id: hireling.hired-sword.cathayan-merchant.rule.stone-cutter
     name: Stone Cutter
     effect: Uses source stone-cutting rule.
+    name_i18n:
+      en: Stone Cutter
+      es: Cortador de piedra
   - id: hireling.hired-sword.cathayan-merchant.rule.guardian
     name: Guardian
     effect: Uses source guardian rule.
+    name_i18n:
+      en: Guardian
+      es: Guardián
   - id: hireling.hired-sword.cathayan-merchant.rule.campaign-eligibility
     name: Dynamic hiring eligibility — Human or Dwarf composition
-    effect: The Cathayan Merchant may only be hired when the current warband includes Humans or Dwarfs; Battle Monks of Cathay are explicitly included by the source.
+    effect: The Cathayan Merchant may only be hired when the current warband includes Humans or Dwarfs;
+      Battle Monks of Cathay are explicitly included by the source.
+    name_i18n:
+      en: Dynamic hiring eligibility — Human or Dwarf composition
+      es: Elegibilidad de contratación dinámica — composición humana o enana
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -122,7 +165,7 @@ profiles:
   name: Chaos Centaur
   name_i18n:
     en: Chaos Centaur
-    es: null
+    es: Centauro del caos
   normalization_status: normalized
   characteristics:
     M: 8
@@ -156,12 +199,21 @@ profiles:
   - id: hireling.hired-sword.chaos-centaur.rule.drunken
     name: Drunken
     effect: Uses source drunken rule.
+    name_i18n:
+      en: Drunken
+      es: Ebrio
   - id: hireling.hired-sword.chaos-centaur.rule.woodland
     name: Woodland
     effect: Uses source woodland/terrain rule.
+    name_i18n:
+      en: Woodland
+      es: Arboleda
   - id: hireling.hired-sword.chaos-centaur.rule.trample
     name: Trample
     effect: Has source trample attack.
+    name_i18n:
+      en: Trample
+      es: Pisotear
   unresolved_references:
   - kind: equipment_choice
     source_name: Sword or Spear
@@ -179,7 +231,7 @@ profiles:
   name: Coachman
   name_i18n:
     en: Coachman
-    es: null
+    es: Cochero
   normalization_status: normalized
   characteristics:
     M: 4
@@ -216,9 +268,15 @@ profiles:
   - id: hireling.hired-sword.coachman.rule.driver
     name: Driver
     effect: Uses source vehicle-driving rule.
+    name_i18n:
+      en: Driver
+      es: Conductor
   - id: hireling.hired-sword.coachman.rule.handyman
     name: Handyman
     effect: Uses source repair rule.
+    name_i18n:
+      en: Handyman
+      es: Manitas
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -231,7 +289,7 @@ profiles:
   name: Grave Robber
   name_i18n:
     en: Grave Robber
-    es: null
+    es: Ladrón de tumbas
   normalization_status: normalized
   characteristics:
     M: 4
@@ -263,6 +321,9 @@ profiles:
       counts_as:
         item_id: axe
         context: rules
+      name_i18n:
+        en: Pickaxe
+        es: Pico
   skill_access:
   - combat
   - speed
@@ -271,12 +332,22 @@ profiles:
   - id: hireling.hired-sword.grave-robber.rule.hatred
     name: Hatred
     effect: Uses source hatred rule.
+    name_i18n:
+      en: Hatred
+      es: Odio
   - id: hireling.hired-sword.grave-robber.rule.grave-robbing
     name: Grave Robbing
     effect: Uses source post-battle grave-robbing table.
+    name_i18n:
+      en: Grave Robbing
+      es: Saqueo de tumbas
   - id: hireling.hired-sword.grave-robber.rule.campaign-eligibility
     name: Dynamic hiring eligibility — Necromantic roster
-    effect: The Grave Robber may only be hired when the current warband includes a Vampire, Necromancer or Liche.
+    effect: The Grave Robber may only be hired when the current warband includes a Vampire, Necromancer
+      or Liche.
+    name_i18n:
+      en: Dynamic hiring eligibility — Necromantic roster
+      es: Elegibilidad de contratación dinámica — lista nigromántica
   unresolved_references:
   - kind: equipment_mapping
     source_name: Lantern
@@ -292,7 +363,7 @@ profiles:
   name: Hobgoblin Scout
   name_i18n:
     en: Hobgoblin Scout
-    es: null
+    es: Explorador hobgoblin
   normalization_status: normalized
   characteristics:
     M: 4
@@ -331,18 +402,33 @@ profiles:
   - id: hireling.hired-sword.hobgoblin-scout.rule.ride
     name: Ride
     effect: Rides a Giant Wolf.
+    name_i18n:
+      en: Ride
+      es: Montar
   - id: hireling.hired-sword.hobgoblin-scout.rule.loner
     name: Loner
     effect: Uses source loner rule.
+    name_i18n:
+      en: Loner
+      es: Solitario
   - id: hireling.hired-sword.hobgoblin-scout.rule.traitor
     name: Traitor
     effect: Uses source traitor rule.
+    name_i18n:
+      en: Traitor
+      es: Traidor
   - id: hireling.hired-sword.hobgoblin-scout.rule.spy
     name: Spy
     effect: Uses source spying rule.
+    name_i18n:
+      en: Spy
+      es: Espía
   - id: hireling.hired-sword.hobgoblin-scout.rule.potshot
     name: Potshot
     effect: Uses source shooting rule.
+    name_i18n:
+      en: Potshot
+      es: Disparo a bocajarro
   unresolved_references:
   - kind: mount_profile
     source_name: Giant Wolf profile M9 WS3 BS0 S3 T3 W1 I4 A1 Ld4
@@ -358,7 +444,7 @@ profiles:
   name: Ninja
   name_i18n:
     en: Ninja
-    es: null
+    es: Ninja
   normalization_status: normalized
   characteristics:
     M: 4
@@ -394,6 +480,9 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.ninja.item.smoke-bomb
       name: Smoke Bomb
+      name_i18n:
+        en: Smoke Bomb
+        es: Bomba de humo
   skill_access: []
   starting_skill_ids:
   - skill.expert-swordsman
@@ -403,12 +492,21 @@ profiles:
   - id: hireling.hired-sword.ninja.rule.strictly-business
     name: Strictly Business
     effect: Uses the source one-job hiring rule.
+    name_i18n:
+      en: Strictly Business
+      es: Solo negocios
   - id: hireling.hired-sword.ninja.rule.secrecy
     name: Secrecy
     effect: Uses the source secrecy rule.
+    name_i18n:
+      en: Secrecy
+      es: Secreto
   - id: hireling.hired-sword.ninja.rule.no-experience
     name: No Experience
     effect: Does not gain Experience.
+    name_i18n:
+      en: No Experience
+      es: Sin experiencia
   unresolved_references:
   - kind: skill
     source_name: Art of Silent Death
@@ -428,7 +526,7 @@ profiles:
   name: Pyromaniac
   name_i18n:
     en: Pyromaniac
-    es: null
+    es: Piromaníaco
   normalization_status: normalized
   characteristics:
     M: 4
@@ -448,8 +546,14 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.pyromaniac.item.fireworks
       name: Fireworks
+      name_i18n:
+        en: Fireworks
+        es: Fuegos artificiales
     - id: hireling.hired-sword.pyromaniac.item.firecrackers
       name: Firecrackers
+      name_i18n:
+        en: Firecrackers
+        es: Petardos
   skill_access:
   - special
   starting_skill_ids: []
@@ -457,15 +561,27 @@ profiles:
   - id: hireling.hired-sword.pyromaniac.rule.crazed-firestarter
     name: Crazed Firestarter
     effect: Uses source pyromania rule.
+    name_i18n:
+      en: Crazed Firestarter
+      es: Piromaníaco enajenado
   - id: hireling.hired-sword.pyromaniac.rule.rockets
     name: Rockets
     effect: Uses source rocket rule.
+    name_i18n:
+      en: Rockets
+      es: Cohetes
   - id: hireling.hired-sword.pyromaniac.rule.rocket-science
     name: Rocket Science
     effect: Special skill option.
+    name_i18n:
+      en: Rocket Science
+      es: Ciencia de cohetes
   - id: hireling.hired-sword.pyromaniac.rule.display-artist
     name: Display Artist
     effect: Special skill option.
+    name_i18n:
+      en: Display Artist
+      es: Artista de exposiciones
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -478,7 +594,7 @@ profiles:
   name: Swordsmith
   name_i18n:
     en: Swordsmith
-    es: null
+    es: Espadero
   normalization_status: normalized
   characteristics:
     M: 4
@@ -513,12 +629,21 @@ profiles:
   - id: hireling.hired-sword.swordsmith.rule.master-craftsman
     name: Master Craftsman
     effect: Uses source crafting rule.
+    name_i18n:
+      en: Master Craftsman
+      es: Maestro artesano
   - id: hireling.hired-sword.swordsmith.rule.honing
     name: Honing
     effect: Special skill option.
+    name_i18n:
+      en: Honing
+      es: Afilar
   - id: hireling.hired-sword.swordsmith.rule.farrier
     name: Farrier
     effect: Special skill option.
+    name_i18n:
+      en: Farrier
+      es: Herrador
   source_refs:
   - manual: mordheimer.net
     printed_page: 0

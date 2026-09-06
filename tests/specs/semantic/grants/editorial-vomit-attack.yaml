@@ -4,54 +4,106 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/black-orcs/troll--vomit-attack/weapon.vomit-attack, digest: c3e784569d2b00b60b2d640643d1d753556698b31e4d62855a2b703adc57c0fc}
-  - {target: rule/mordheim/night-goblins-mic/troll--vomit-attack/weapon.vomit-attack, digest: e263744e3a1ac03ccae4cd8c7a8fe8e0637fab5b0ac0ce3a9cf16c0545c2cb88}
-  - {target: rule/mordheim/night-goblins-web/troll--vomit-attack/weapon.vomit-attack, digest: 26a68ea3e82ec080abd328e5c6919ddd5427568af074a169d753df7e385b9c7f}
-  - {target: rule/mordheim/orc-mob/troll--vomit-attack/weapon.vomit-attack, digest: 19d6159fa43b8c9caeeb04ad33c7114c9affd71e2173cd34debfc4e0d035055a}
-  - {target: rule/trollheim/chaos-streets-greenskins/troll--troll-vomit/weapon.vomit-attack, digest: 14cf2af7327943652cefa134c2edea3402a98acf222e39cd8a4481ee9d9d063f}
-  depends_on: [mechanic/weapon.vomit-attack]
-  interpretation: Every cited profile entry grants the optional Vomit attack exclusively to the Troll profile. The
-    profile's legal weapon construction exposes the canonical Vomit mechanism; all other profiles in each band must
-    reject the same selection.
+  - target: rule/mordheim/black-orcs/troll--vomit-attack/weapon.vomit-attack
+    digest: ed4d8abde0f16bfb7577b280a06aa1ce78c3a82d8a93ea4ed54863e54d9e5680
+  - target: rule/mordheim/night-goblins-mic/troll--vomit-attack/weapon.vomit-attack
+    digest: 0be66c1f69db8a2f60e6c72be0c01fced9b2a895eb1d6172daa14b5439b027db
+  - target: rule/mordheim/night-goblins-web/troll--vomit-attack/weapon.vomit-attack
+    digest: d2de319711b36865b6cd022385d0e7a129b9d32c0a469414db89740620fca122
+  - target: rule/mordheim/orc-mob/troll--vomit-attack/weapon.vomit-attack
+    digest: 7fca07b68763b4a34b798516565fc4b245a4a307cf330117fac224ee40a23ed7
+  - target: rule/trollheim/chaos-streets-greenskins/troll--troll-vomit/weapon.vomit-attack
+    digest: ce540fbc62ffaeb572bab59c2b4af8579726687363ff32a94dc3cbfeb9487bb3
+  depends_on:
+  - mechanic/weapon.vomit-attack
+  interpretation: Every cited profile entry grants the optional Vomit attack exclusively to the Troll
+    profile. The profile's legal weapon construction exposes the canonical Vomit mechanism; all other
+    profiles in each band must reject the same selection.
   cases:
   - id: black-orcs-only-troll
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: black-orcs, profile_id: troll}
-    context: {rule_id: troll--vomit-attack}
-    expect: {result.recipients: [troll]}
+    defender:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: troll
+    context:
+      rule_id: troll--vomit-attack
+    expect:
+      result.recipients:
+      - troll
   - id: night-goblins-mic-only-troll
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: night-goblins-mic, profile_id: troll}
-    context: {rule_id: troll--vomit-attack}
-    expect: {result.recipients: [troll]}
+    defender:
+      collection: mordheim
+      band_id: night-goblins-mic
+      profile_id: troll
+    context:
+      rule_id: troll--vomit-attack
+    expect:
+      result.recipients:
+      - troll
   - id: night-goblins-web-only-troll
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: night-goblins-web, profile_id: troll}
-    context: {rule_id: troll--vomit-attack}
-    expect: {result.recipients: [troll]}
+    defender:
+      collection: mordheim
+      band_id: night-goblins-web
+      profile_id: troll
+    context:
+      rule_id: troll--vomit-attack
+    expect:
+      result.recipients:
+      - troll
   - id: orc-mob-only-troll
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: orc-mob, profile_id: troll}
-    context: {rule_id: troll--vomit-attack}
-    expect: {result.recipients: [troll]}
+    defender:
+      collection: mordheim
+      band_id: orc-mob
+      profile_id: troll
+    context:
+      rule_id: troll--vomit-attack
+    expect:
+      result.recipients:
+      - troll
   - id: streets-greenskins-only-troll
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: troll}
-    context: {rule_id: troll--troll-vomit}
-    expect: {result.recipients: [troll]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: troll
+    context:
+      rule_id: troll--troll-vomit
+    expect:
+      result.recipients:
+      - troll
   - id: granted-consumer
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: attacks
     attacker:
       collection: mordheim
       band_id: orc-mob
       profile_id: troll
       main_weapon_id: weapon.vomit-attack
-    expect: {result.attacks: 1, attacker.main_weapon.automatic_hit: true, attacker.main_weapon.fixed_strength: 5}
+    expect:
+      result.attacks: 1
+      attacker.main_weapon.automatic_hit: true
+      attacker.main_weapon.fixed_strength: 5
   mutations:
-  - {id: remove-granted-replacement, path: attacker.main_weapon.tags, value: [material.normal], cases: [granted-consumer]}
+  - id: remove-granted-replacement
+    path: attacker.main_weapon.tags
+    value:
+    - material.normal
+    cases:
+    - granted-consumer

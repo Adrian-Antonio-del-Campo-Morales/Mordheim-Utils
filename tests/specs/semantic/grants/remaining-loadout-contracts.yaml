@@ -4,104 +4,217 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/pirates/swabbies--rabble/compiler.swabbie-rabble-loadout, digest: 1c2d17cf9c286294f4df4b5ebe38f392ccc4684de9b6c38d8697cf55dff33935}
-  - {target: rule/trollheim/lustria-pirates/swabbies--rabble/compiler.swabbie-rabble-loadout, digest: d7d41b1b59ae2476ca3cda15862efc6a14db1be72aa352d25e3407cd02756e5a}
-  interpretation: "Each Swabbie individually uses its own list and can never acquire Sorcery or Arcane Lore; group homogeneity is not imposed on the compiled fighter."
+  - target: rule/mordheim/pirates/swabbies--rabble/compiler.swabbie-rabble-loadout
+    digest: 380a242a28d8dc1686b5d151e9cbcd06c04616862ecca65779bb14f612d6d0cd
+  - target: rule/trollheim/lustria-pirates/swabbies--rabble/compiler.swabbie-rabble-loadout
+    digest: ad509a4d7308bc927b4ace893f8aaff52e8e5fa85ab66263f8f21ddbabeb901c
+  interpretation: Each Swabbie individually uses its own list and can never acquire Sorcery or Arcane
+    Lore; group homogeneity is not imposed on the compiled fighter.
   cases:
   - id: mordheim-magic-rejected
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selection_choices
-    attacker: {band_id: pirates, profile_id: swabbies}
-    context: {choices: {ordinary: {}, magic: {skill_ids: [skill.sorcery]}}}
+    attacker:
+      band_id: pirates
+      profile_id: swabbies
+    context:
+      choices:
+        ordinary: {}
+        magic:
+          skill_ids:
+          - skill.sorcery
     expect:
-      result.accepted: [ordinary]
-      result.rejected: {magic: "magic is forbidden for Swabbies: ['skill.sorcery']"}
+      result.accepted:
+      - ordinary
+      result.rejected:
+        magic: 'magic is forbidden for Swabbies: [''skill.sorcery'']'
   - id: lustria-magic-rejected
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selection_choices
-    attacker: {collection: trollheim, band_id: lustria-pirates, profile_id: swabbies}
-    context: {choices: {ordinary: {}, magic: {skill_ids: [skill.arcane-lore]}}}
+    attacker:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: swabbies
+    context:
+      choices:
+        ordinary: {}
+        magic:
+          skill_ids:
+          - skill.arcane-lore
     expect:
-      result.accepted: [ordinary]
-      result.rejected: {magic: "magic is forbidden for Swabbies: ['skill.arcane-lore']"}
+      result.accepted:
+      - ordinary
+      result.rejected:
+        magic: 'magic is forbidden for Swabbies: [''skill.arcane-lore'']'
   - id: contract-present
     operation: construction_tag_presence
-    attacker: {band_id: pirates, profile_id: swabbies}
-    context: {tag: compiler.swabbie-rabble-loadout}
-    expect: {result.present: true}
+    attacker:
+      band_id: pirates
+      profile_id: swabbies
+    context:
+      tag: compiler.swabbie-rabble-loadout
+    expect:
+      result.present: true
   mutations:
-  - {id: remove-swabbie-contract, path: attacker.construction_tags, value: [], cases: [contract-present]}
-
+  - id: remove-swabbie-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract-present
 - id: liche-warrior-wizard
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/restless-dead/liche--warrior-wizard/compiler.warrior-wizard, digest: fc2d795135538ed48bf6840e4482be29e1e9a5cbd32051ae3d1696e10bea61b9}
-  interpretation: "The Liche may equip armour without losing its editorial spellcasting ability; magic is not executed in close combat."
+  - target: rule/mordheim/restless-dead/liche--warrior-wizard/compiler.warrior-wizard
+    digest: ea833315e47d590f0a77f5dc57902888271f033184ab0f4755d4d17d5ed177f9
+  interpretation: The Liche may equip armour without losing its editorial spellcasting ability; magic
+    is not executed in close combat.
   cases:
   - id: armour-accepted
-    roles: [grant, accepted]
+    roles:
+    - grant
+    - accepted
     operation: equipment_choices
-    attacker: {band_id: restless-dead, profile_id: liche}
-    context: {choices: {unarmoured: {}, armoured: {armour_id: armour.light-armour}}}
-    expect: {result.accepted: [armoured, unarmoured], result.rejected: {}}
-  - id: unavailable-item-rejected
-    roles: [rejected]
-    operation: equipment_choices
-    attacker: {band_id: restless-dead, profile_id: liche}
-    context: {choices: {ordinary: {}, illegal: {main_weapon_id: weapon.flail}}}
+    attacker:
+      band_id: restless-dead
+      profile_id: liche
+    context:
+      choices:
+        unarmoured: {}
+        armoured:
+          armour_id: armour.light-armour
     expect:
-      result.accepted: [ordinary]
-      result.rejected: {illegal: "equipment is not available to restless-dead/liche: ['weapon.flail']"}
+      result.accepted:
+      - armoured
+      - unarmoured
+      result.rejected: {}
+  - id: unavailable-item-rejected
+    roles:
+    - rejected
+    operation: equipment_choices
+    attacker:
+      band_id: restless-dead
+      profile_id: liche
+    context:
+      choices:
+        ordinary: {}
+        illegal:
+          main_weapon_id: weapon.flail
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        illegal: 'equipment is not available to restless-dead/liche: [''weapon.flail'']'
   - id: contract-present
     operation: construction_tag_presence
-    attacker: {band_id: restless-dead, profile_id: liche}
-    context: {tag: compiler.warrior-wizard}
-    expect: {result.present: true}
+    attacker:
+      band_id: restless-dead
+      profile_id: liche
+    context:
+      tag: compiler.warrior-wizard
+    expect:
+      result.present: true
   mutations:
-  - {id: remove-warrior-wizard-contract, path: attacker.construction_tags, value: [], cases: [contract-present]}
-
+  - id: remove-warrior-wizard-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract-present
 - id: pirate-human-mercenary-equipment
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/trollheim/lustria-pirates/band--hired-swords/compiler.pirate-human-mercenary-equipment-access, digest: 0fb34858eaa5512dc505da9295539c98ec643091960596497fb20a6f1d8064f0}
-  interpretation: "The Pirates incorporate the equipment access of Human Mercenaries; the upkeep of Dwarfs and Elves belongs to campaign."
+  - target: rule/trollheim/lustria-pirates/band--hired-swords/compiler.pirate-human-mercenary-equipment-access
+    digest: 434d8c3627ff9ff2acafb99f1c14f8879bdb33a54158511096534a9de38a19f7
+  interpretation: The Pirates incorporate the equipment access of Human Mercenaries; the upkeep of Dwarfs
+    and Elves belongs to campaign.
   cases:
   - id: mercenary-halberd-accepted
-    roles: [grant, accepted]
+    roles:
+    - grant
+    - accepted
     operation: equipment_choices
-    attacker: {collection: trollheim, band_id: lustria-pirates, profile_id: pirate-captain}
-    context: {choices: {ordinary: {}, mercenary: {main_weapon_id: weapon.halberd}}}
-    expect: {result.accepted: [mercenary, ordinary], result.rejected: {}}
-  - id: exotic-item-rejected
-    roles: [rejected]
-    operation: equipment_choices
-    attacker: {collection: trollheim, band_id: lustria-pirates, profile_id: pirate-captain}
-    context: {choices: {ordinary: {}, exotic: {main_weapon_id: weapon.flail}}}
+    attacker:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: pirate-captain
+    context:
+      choices:
+        ordinary: {}
+        mercenary:
+          main_weapon_id: weapon.halberd
     expect:
-      result.accepted: [ordinary]
-      result.rejected: {exotic: "equipment is not available to lustria-pirates/pirate-captain: ['weapon.flail']"}
+      result.accepted:
+      - mercenary
+      - ordinary
+      result.rejected: {}
+  - id: exotic-item-rejected
+    roles:
+    - rejected
+    operation: equipment_choices
+    attacker:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: pirate-captain
+    context:
+      choices:
+        ordinary: {}
+        exotic:
+          main_weapon_id: weapon.flail
+    expect:
+      result.accepted:
+      - ordinary
+      result.rejected:
+        exotic: 'equipment is not available to lustria-pirates/pirate-captain: [''weapon.flail'']'
   - id: contract-present
     operation: construction_tag_presence
-    attacker: {collection: trollheim, band_id: lustria-pirates, profile_id: pirate-captain}
-    context: {tag: compiler.pirate-human-mercenary-equipment-access}
-    expect: {result.present: true}
+    attacker:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: pirate-captain
+    context:
+      tag: compiler.pirate-human-mercenary-equipment-access
+    expect:
+      result.present: true
   mutations:
-  - {id: remove-mercenary-contract, path: attacker.construction_tags, value: [], cases: [contract-present]}
-
+  - id: remove-mercenary-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract-present
 - id: savage-goblin-tracker-gear
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/trollheim/lustria-savage-goblins/trackers--tracker-gear/compiler.tracker-gear, digest: d007beb2b541f8421e9eca3973ee537efc0cd74676858b3910c37b1090bb73eb}
-  interpretation: "The Tracker profile incorporates Rope and Hook and Bolas as fixed equipment and keeps the contract that prevents selling or transferring them in campaign."
+  - target: rule/trollheim/lustria-savage-goblins/trackers--tracker-gear/compiler.tracker-gear
+    digest: 19caa4c9cadcaffb339a04afe9a714cf43856cfa5627b6c8067b928b9d57b42f
+  interpretation: The Tracker profile incorporates Rope and Hook and Bolas as fixed equipment and keeps
+    the contract that prevents selling or transferring them in campaign.
   cases:
   - id: fixed-contract
-    roles: [grant, compiled, consumer, boundary]
+    roles:
+    - grant
+    - compiled
+    - consumer
+    - boundary
     operation: construction_tag_presence
-    attacker: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: trackers}
-    context: {tag: compiler.tracker-gear}
-    expect: {result.present: true}
+    attacker:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+    context:
+      tag: compiler.tracker-gear
+    expect:
+      result.present: true
   mutations:
-  - {id: remove-tracker-contract, path: attacker.construction_tags, value: [], cases: [fixed-contract]}
+  - id: remove-tracker-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - fixed-contract

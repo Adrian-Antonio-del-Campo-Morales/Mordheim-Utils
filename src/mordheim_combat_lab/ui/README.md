@@ -12,7 +12,6 @@ must not contain rules, construction validation or simulation loops:
 - `construction` compiles configurations and `combat.vectorized` simulates them.
 
 The workbook keeps stable ids on a hidden sheet and readable summaries on the
-visible sheets. Its contract and preferences location are preserved during
-this reorganization.
+visible sheets.
 
-See [Modify the application](../../../docs/tasks/modify-application.md).
+See [Modify an application](../../../../docs/guides/modify-application.md).

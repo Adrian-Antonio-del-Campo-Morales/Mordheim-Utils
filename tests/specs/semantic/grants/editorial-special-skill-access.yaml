@@ -4,70 +4,180 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/amazons-lustria/band--amazon-special-skills/profile.skill-access, digest: 11cdcbc657d13685e47039a6a2ef80dee40a0dc0d5286eb5c00c7f9e4b44f298}
-  - {target: rule/mordheim/arabian-tomb-raiders/band--arabian-tomb-raiders-special-skills/profile.skill-access, digest: 94ee0a68b4913f1eb631996710690288f29d39cead2baf4a1220d3e9b1aacdce}
-  - {target: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills/profile.skill-access, digest: 86b2055a78d7fadf870a6f36379a71557f4f62af75982e274530d6dd5fd651db}
-  - {target: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills/profile.skill-access, digest: fc635cbf74648b1d9368d0f2d1d501d032785b9dca85ebc15431b554b4343c16}
-  - {target: rule/mordheim/black-orcs/band--black-orc-special-skills/profile.skill-access, digest: 58a1668dbf2c1fafc24a68db273abffc49f2ab50882d88eec533e04f243ede32}
-  - {target: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills/profile.skill-access, digest: aa7ff8baff0d7732bfa7767a32e9af5f8a1441b8a1f7d9b40a6cb039d2fc3911}
-  - {target: rule/mordheim/dwarf-treasure-hunters/dwarf-troll-slayers--slayer-skills/profile.skill-access, digest: 162280ae193797e9ec953153882f3716f963f2750450ae90ed8ac408296fb2ab}
-  - {target: rule/trollheim/chaos-streets-dwarf-treasure-hunters/dwarf-troll-slayers--slayer-skills/profile.skill-access, digest: ca8c04403fcdab2fdb88609fb5bc809f4a6b47789e8d63b75ac156afaf19c71b}
-  interpretation: >-
-    Each access rule grants exactly the editorial list of special skills to the indicated hero
-    profiles. The list is consulted even when a given skill is outside the duel runtime; that does not
-    make its behaviour implemented. Henchman controls receive no access.
+  - target: rule/mordheim/amazons-lustria/band--amazon-special-skills/profile.skill-access
+    digest: d1e60bb5e6bbe2a25359ea48755f0b0399cc56412079ea652e53f110d40f91af
+  - target: rule/mordheim/arabian-tomb-raiders/band--arabian-tomb-raiders-special-skills/profile.skill-access
+    digest: fe84a5276286800eafd0151172efdba27f9113fdd5d3db75a66d304e5660d646
+  - target: rule/mordheim/battle-monks-of-cathay/band--battle-monks-special-skills/profile.skill-access
+    digest: 488bf64d639acdfbaa9a6876cc18da010cb6c58e78499d443f2dbcf885a0c831
+  - target: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills/profile.skill-access
+    digest: cf17320bbbd320873825ba10acd3111ea990819e0f0ff3a71a2e48668cf11c4d
+  - target: rule/mordheim/black-orcs/band--black-orc-special-skills/profile.skill-access
+    digest: be71b9878e9dce17447ea5f5ca151e4bfc16c84088ec28aaba98dcf6e2932dfa
+  - target: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills/profile.skill-access
+    digest: a07a47673f8bb31b60bbc3c9e77024a9f8a6ab73608d1d40c137cbc91002fed2
+  - target: rule/mordheim/dwarf-treasure-hunters/dwarf-troll-slayers--slayer-skills/profile.skill-access
+    digest: 90fa8703fb6d78a032ba9a695fcc992532b48f503d8eeb48e7ece5db8f7aa2e1
+  - target: rule/trollheim/chaos-streets-dwarf-treasure-hunters/dwarf-troll-slayers--slayer-skills/profile.skill-access
+    digest: c4d311c9450e5266633518b8b12192802b7c8f22e5d7538ad2dc88776e0843e9
+  interpretation: Each access rule grants exactly the editorial list of special skills to the indicated
+    hero profiles. The list is consulted even when a given skill is outside the duel runtime; that does
+    not make its behaviour implemented. Henchman controls receive no access.
   cases:
   - id: amazon-heroines
-    roles: [grant, accepted]
+    roles:
+    - grant
+    - accepted
     operation: special_rule_access
-    attacker: {band_id: amazons-lustria, profile_id: serpent-priestess}
-    expect: {result.rules: [band--amazon-special-skills-concealment, band--amazon-special-skills-elixir-of-life, band--amazon-special-skills-mesmerising-dance, band--amazon-special-skills-savage-fury, band--amazon-special-skills-skink-hunter]}
+    attacker:
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+    expect:
+      result.rules:
+      - band--amazon-special-skills-concealment
+      - band--amazon-special-skills-elixir-of-life
+      - band--amazon-special-skills-mesmerising-dance
+      - band--amazon-special-skills-savage-fury
+      - band--amazon-special-skills-skink-hunter
   - id: amazon-henchman-control
-    roles: [rejected]
+    roles:
+    - rejected
     operation: special_rule_access
-    attacker: {band_id: amazons-lustria, profile_id: amazon-warriors}
-    expect: {result.rules: []}
+    attacker:
+      band_id: amazons-lustria
+      profile_id: amazon-warriors
+    expect:
+      result.rules: []
   - id: arab-heroes
-    roles: [grant, accepted]
+    roles:
+    - grant
+    - accepted
     operation: special_rule_access
-    attacker: {band_id: arabian-tomb-raiders, profile_id: sheikh}
-    expect: {result.rules: [band--arabian-tomb-raiders-special-skills-hit-and-run, band--arabian-tomb-raiders-special-skills-sand-worm, band--arabian-tomb-raiders-special-skills-weather-tolerant]}
+    attacker:
+      band_id: arabian-tomb-raiders
+      profile_id: sheikh
+    expect:
+      result.rules:
+      - band--arabian-tomb-raiders-special-skills-hit-and-run
+      - band--arabian-tomb-raiders-special-skills-sand-worm
+      - band--arabian-tomb-raiders-special-skills-weather-tolerant
   - id: cathay-dragon-monks
-    roles: [grant, accepted]
+    roles:
+    - grant
+    - accepted
     operation: special_rule_access
-    attacker: {band_id: battle-monks-of-cathay, profile_id: dragon-monks}
-    expect: {result.rules: [band--battle-monks-special-skills-energy-focus, band--battle-monks-special-skills-human-shield, band--battle-monks-special-skills-leap-of-faith, band--battle-monks-special-skills-lightning-speed]}
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+    expect:
+      result.rules:
+      - band--battle-monks-special-skills-energy-focus
+      - band--battle-monks-special-skills-human-shield
+      - band--battle-monks-special-skills-leap-of-faith
+      - band--battle-monks-special-skills-lightning-speed
   - id: cathay-emissary
-    roles: [grant, accepted]
+    roles:
+    - grant
+    - accepted
     operation: special_rule_access
-    attacker: {band_id: battle-monks-of-cathay, profile_id: emissary}
-    expect: {result.rules: [band--battle-monks-special-skills-warmonger]}
+    attacker:
+      band_id: battle-monks-of-cathay
+      profile_id: emissary
+    expect:
+      result.rules:
+      - band--battle-monks-special-skills-warmonger
   - id: chaos-dwarf-heroes
-    roles: [grant, accepted]
+    roles:
+    - grant
+    - accepted
     operation: special_rule_access
-    attacker: {band_id: black-dwarfs, profile_id: sorcerer}
-    expect: {result.rules: [band--chaos-dwarf-special-skills-chaos-engineer, band--chaos-dwarf-special-skills-extra-tough, band--chaos-dwarf-special-skills-resource-hunter, band--chaos-dwarf-special-skills-thick-skull, band--chaos-dwarf-special-skills-true-grit, band--chaos-dwarf-special-skills-tyrant]}
+    attacker:
+      band_id: black-dwarfs
+      profile_id: sorcerer
+    expect:
+      result.rules:
+      - band--chaos-dwarf-special-skills-chaos-engineer
+      - band--chaos-dwarf-special-skills-extra-tough
+      - band--chaos-dwarf-special-skills-resource-hunter
+      - band--chaos-dwarf-special-skills-thick-skull
+      - band--chaos-dwarf-special-skills-true-grit
+      - band--chaos-dwarf-special-skills-tyrant
   - id: black-orc-heroes
-    roles: [grant, accepted]
+    roles:
+    - grant
+    - accepted
     operation: special_rule_access
-    attacker: {band_id: black-orcs, profile_id: black-orc-boss}
-    expect: {result.rules: [band--black-orc-special-skills-ard-ead, band--black-orc-special-skills-da-cunnin-plan, band--black-orc-special-skills-eadbasher, band--black-orc-special-skills-ere-we-go, band--black-orc-special-skills-proven-warrior, band--black-orc-special-skills-waaagh]}
+    attacker:
+      band_id: black-orcs
+      profile_id: black-orc-boss
+    expect:
+      result.rules:
+      - band--black-orc-special-skills-ard-ead
+      - band--black-orc-special-skills-da-cunnin-plan
+      - band--black-orc-special-skills-eadbasher
+      - band--black-orc-special-skills-ere-we-go
+      - band--black-orc-special-skills-proven-warrior
+      - band--black-orc-special-skills-waaagh
   - id: cavalcade-heroes
-    roles: [grant, accepted]
+    roles:
+    - grant
+    - accepted
     operation: special_rule_access
-    attacker: {band_id: cursed-cavalcade, profile_id: aristocrat}
-    expect: {result.rules: [band--cursed-cavalcade-special-skills-duelist, band--cursed-cavalcade-special-skills-noblesse-obliges, band--cursed-cavalcade-special-skills-torturer]}
+    attacker:
+      band_id: cursed-cavalcade
+      profile_id: aristocrat
+    expect:
+      result.rules:
+      - band--cursed-cavalcade-special-skills-duelist
+      - band--cursed-cavalcade-special-skills-noblesse-obliges
+      - band--cursed-cavalcade-special-skills-torturer
   - id: mordheim-slayer-options
-    roles: [grant, accepted]
+    roles:
+    - grant
+    - accepted
     operation: special_rule_access
-    attacker: {band_id: dwarf-treasure-hunters, profile_id: dwarf-troll-slayers}
-    expect: {result.rules: [band--dwarf-special-skills-extra-tough, band--dwarf-special-skills-master-of-blades, band--dwarf-special-skills-resource-hunter, band--dwarf-special-skills-thick-skull, band--dwarf-special-skills-true-grit, band--slayer-special-skills-berserker, band--slayer-special-skills-ferocious-charge, band--slayer-special-skills-monster-slayer]}
+    attacker:
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    expect:
+      result.rules:
+      - band--dwarf-special-skills-extra-tough
+      - band--dwarf-special-skills-master-of-blades
+      - band--dwarf-special-skills-resource-hunter
+      - band--dwarf-special-skills-thick-skull
+      - band--dwarf-special-skills-true-grit
+      - band--slayer-special-skills-berserker
+      - band--slayer-special-skills-ferocious-charge
+      - band--slayer-special-skills-monster-slayer
   - id: trollheim-slayer-options
-    roles: [grant, accepted]
+    roles:
+    - grant
+    - accepted
     operation: special_rule_access
-    attacker: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-troll-slayers}
-    expect: {result.rules: [band--dwarf-special-skills-extra-tough, band--dwarf-special-skills-master-of-blades, band--dwarf-special-skills-resource-hunter, band--dwarf-special-skills-thick-skull, band--dwarf-special-skills-true-grit, band--slayer-special-skills-berserker, band--slayer-special-skills-ferocious-charge, band--slayer-special-skills-monster-slayer]}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    expect:
+      result.rules:
+      - band--dwarf-special-skills-extra-tough
+      - band--dwarf-special-skills-master-of-blades
+      - band--dwarf-special-skills-resource-hunter
+      - band--dwarf-special-skills-thick-skull
+      - band--dwarf-special-skills-true-grit
+      - band--slayer-special-skills-berserker
+      - band--slayer-special-skills-ferocious-charge
+      - band--slayer-special-skills-monster-slayer
   mutations:
   - id: remove-special-access
     runtime_fault: suppress-special-rule-access
-    cases: [amazon-heroines, arab-heroes, cathay-dragon-monks, cathay-emissary, chaos-dwarf-heroes, black-orc-heroes, cavalcade-heroes, mordheim-slayer-options, trollheim-slayer-options]
+    cases:
+    - amazon-heroines
+    - arab-heroes
+    - cathay-dragon-monks
+    - cathay-emissary
+    - chaos-dwarf-heroes
+    - black-orc-heroes
+    - cavalcade-heroes
+    - mordheim-slayer-options
+    - trollheim-slayer-options

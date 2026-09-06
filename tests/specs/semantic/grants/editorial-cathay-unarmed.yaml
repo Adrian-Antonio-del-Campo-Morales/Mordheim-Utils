@@ -5,170 +5,388 @@ specifications:
   category: contextual
   sources:
   - target: rule/mordheim/battle-monks-of-cathay/dragon-monks--unarmed-fighting/skill.unarmed-fighting
-    digest: 67f7b2ef0fedf6830d2af79ab776d31e0b11aa1f768bfa324c7762d7cb4ff94c
-  depends_on: [mechanic/skill.unarmed-fighting]
-  interpretation: Weapons/Armour / Unarmed Fighting removes the usual fist penalties and adds one attack while
-    unarmed. Printed S3 and A1 therefore give strength 3 and two attacks, without improving enemy armour.
-    An equipped sword does not receive the extra unarmed attack.
+    digest: 2592b7087efec7d850df54c1c731d9f71afea84195662074354b7e91fa9d7618
+  depends_on:
+  - mechanic/skill.unarmed-fighting
+  interpretation: Weapons/Armour / Unarmed Fighting removes the usual fist penalties and adds one attack
+    while unarmed. Printed S3 and A1 therefore give strength 3 and two attacks, without improving enemy
+    armour. An equipped sword does not receive the extra unarmed attack.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: dragon-monks, main_weapon_id: weapon.fist}
-    context: {rule_id: dragon-monks--unarmed-fighting}
-    expect: {result.recipients: [dragon-monks]}
+    defender:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      main_weapon_id: weapon.fist
+    context:
+      rule_id: dragon-monks--unarmed-fighting
+    expect:
+      result.recipients:
+      - dragon-monks
   - id: full-strength
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: strength
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: dragon-monks, main_weapon_id: weapon.fist}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      main_weapon_id: weapon.fist
+    expect:
+      result.wound: 3
+      result.armour: 3
     expect_contains:
-      attacker.global_effects.tags: [skill.unarmed-fighting]
+      attacker.global_effects.tags:
+      - skill.unarmed-fighting
   - id: extra-attack
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: attacks
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: dragon-monks, main_weapon_id: weapon.fist}
-    expect: {result.attacks: 2}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      main_weapon_id: weapon.fist
+    expect:
+      result.attacks: 2
   - id: sword-no-extra
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attacks
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: dragon-monks, main_weapon_id: weapon.sword}
-    expect: {result.attacks: 1}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      main_weapon_id: weapon.sword
+    expect:
+      result.attacks: 1
   - id: unarmoured-no-save
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: dragon-monks, main_weapon_id: weapon.fist}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      main_weapon_id: weapon.fist
+    expect:
+      result.eligible: false
+      result.saved: false
   - id: armour-1
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: dragon-monks, main_weapon_id: weapon.fist}
-    defender: {armour_id: armour.heavy-armour}
-    rolls: [{key: armour, value: 1}]
-    expect: {result.target: 5, result.saved: false}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 1
+    expect:
+      result.target: 5
+      result.saved: false
   - id: armour-2
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: dragon-monks, main_weapon_id: weapon.fist}
-    defender: {armour_id: armour.heavy-armour}
-    rolls: [{key: armour, value: 2}]
-    expect: {result.target: 5, result.saved: false}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 2
+    expect:
+      result.target: 5
+      result.saved: false
   - id: armour-3
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: dragon-monks, main_weapon_id: weapon.fist}
-    defender: {armour_id: armour.heavy-armour}
-    rolls: [{key: armour, value: 3}]
-    expect: {result.target: 5, result.saved: false}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 5
+      result.saved: false
   - id: armour-4
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: dragon-monks, main_weapon_id: weapon.fist}
-    defender: {armour_id: armour.heavy-armour}
-    rolls: [{key: armour, value: 4}]
-    expect: {result.target: 5, result.saved: false}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 5
+      result.saved: false
   - id: armour-5
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: dragon-monks, main_weapon_id: weapon.fist}
-    defender: {armour_id: armour.heavy-armour}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.target: 5, result.saved: true}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.saved: true
   - id: armour-6
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: dragon-monks, main_weapon_id: weapon.fist}
-    defender: {armour_id: armour.heavy-armour}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.target: 5, result.saved: true}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: dragon-monks
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 5
+      result.saved: true
   mutations:
   - id: remove-training
     path: attacker.global_effects.tags
     value: []
-    cases: [full-strength, extra-attack, armour-4]
+    cases:
+    - full-strength
+    - extra-attack
+    - armour-4
 - id: editorial-cathay-unarmed-warrior-monks
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
   - target: rule/mordheim/battle-monks-of-cathay/warrior-monks--unarmed-fighting/skill.unarmed-fighting
-    digest: be59a0c63fd196266d90c6370e6af508818b3b82fb138d2e8250a8599e4c0c78
-  depends_on: [mechanic/skill.unarmed-fighting]
-  interpretation: Weapons/Armour / Unarmed Fighting removes the usual fist penalties and adds one attack while
-    unarmed. Printed S3 and A1 therefore give strength 3 and two attacks, without improving enemy armour.
-    An equipped sword does not receive the extra unarmed attack.
+    digest: 1f68f29c51ed91881944f591acd35eb094734b0a340f5010fdc2cc22663efaba
+  depends_on:
+  - mechanic/skill.unarmed-fighting
+  interpretation: Weapons/Armour / Unarmed Fighting removes the usual fist penalties and adds one attack
+    while unarmed. Printed S3 and A1 therefore give strength 3 and two attacks, without improving enemy
+    armour. An equipped sword does not receive the extra unarmed attack.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: warrior-monks, main_weapon_id: weapon.fist}
-    context: {rule_id: warrior-monks--unarmed-fighting}
-    expect: {result.recipients: [warrior-monks]}
+    defender:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: warrior-monks
+      main_weapon_id: weapon.fist
+    context:
+      rule_id: warrior-monks--unarmed-fighting
+    expect:
+      result.recipients:
+      - warrior-monks
   - id: full-strength
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: strength
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: warrior-monks, main_weapon_id: weapon.fist}
-    expect: {result.wound: 3, result.armour: 3}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: warrior-monks
+      main_weapon_id: weapon.fist
+    expect:
+      result.wound: 3
+      result.armour: 3
     expect_contains:
-      attacker.global_effects.tags: [skill.unarmed-fighting]
+      attacker.global_effects.tags:
+      - skill.unarmed-fighting
   - id: extra-attack
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: attacks
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: warrior-monks, main_weapon_id: weapon.fist}
-    expect: {result.attacks: 2}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: warrior-monks
+      main_weapon_id: weapon.fist
+    expect:
+      result.attacks: 2
   - id: sword-no-extra
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attacks
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: warrior-monks, main_weapon_id: weapon.sword}
-    expect: {result.attacks: 1}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: warrior-monks
+      main_weapon_id: weapon.sword
+    expect:
+      result.attacks: 1
   - id: unarmoured-no-save
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: warrior-monks, main_weapon_id: weapon.fist}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: warrior-monks
+      main_weapon_id: weapon.fist
+    expect:
+      result.eligible: false
+      result.saved: false
   - id: armour-1
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: warrior-monks, main_weapon_id: weapon.fist}
-    defender: {armour_id: armour.heavy-armour}
-    rolls: [{key: armour, value: 1}]
-    expect: {result.target: 5, result.saved: false}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: warrior-monks
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 1
+    expect:
+      result.target: 5
+      result.saved: false
   - id: armour-2
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: warrior-monks, main_weapon_id: weapon.fist}
-    defender: {armour_id: armour.heavy-armour}
-    rolls: [{key: armour, value: 2}]
-    expect: {result.target: 5, result.saved: false}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: warrior-monks
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 2
+    expect:
+      result.target: 5
+      result.saved: false
   - id: armour-3
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: warrior-monks, main_weapon_id: weapon.fist}
-    defender: {armour_id: armour.heavy-armour}
-    rolls: [{key: armour, value: 3}]
-    expect: {result.target: 5, result.saved: false}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: warrior-monks
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 5
+      result.saved: false
   - id: armour-4
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: warrior-monks, main_weapon_id: weapon.fist}
-    defender: {armour_id: armour.heavy-armour}
-    rolls: [{key: armour, value: 4}]
-    expect: {result.target: 5, result.saved: false}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: warrior-monks
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 5
+      result.saved: false
   - id: armour-5
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: warrior-monks, main_weapon_id: weapon.fist}
-    defender: {armour_id: armour.heavy-armour}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.target: 5, result.saved: true}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: warrior-monks
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 5
+      result.saved: true
   - id: armour-6
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: warrior-monks, main_weapon_id: weapon.fist}
-    defender: {armour_id: armour.heavy-armour}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.target: 5, result.saved: true}
+    attacker:
+      collection: mordheim
+      band_id: battle-monks-of-cathay
+      profile_id: warrior-monks
+      main_weapon_id: weapon.fist
+    defender:
+      armour_id: armour.heavy-armour
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 5
+      result.saved: true
   mutations:
   - id: remove-training
     path: attacker.global_effects.tags
     value: []
-    cases: [full-strength, extra-attack, armour-4]
+    cases:
+    - full-strength
+    - extra-attack
+    - armour-4

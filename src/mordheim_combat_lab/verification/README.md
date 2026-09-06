@@ -3,7 +3,7 @@
 Runs `tests/specs/` against the real modular engine and stays out of the UI.
 `audit_export.py` combines — without modifying its sources — the editorial
 inventory, the scope and the executed evidence into a CSV. See
-[Verify rules](../../../docs/tasks/verify-rules.md).
+[Implement and verify rules](../../../../docs/guides/implement-and-verify-rules.md).
 
 `equipment_choices` allows testing equipment, `main_poison_id`, `off_poison_id`
 and `preparation_ids` through the real compiler. Category-prohibition scenarios

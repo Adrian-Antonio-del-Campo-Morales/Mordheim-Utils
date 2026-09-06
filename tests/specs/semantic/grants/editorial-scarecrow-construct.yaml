@@ -4,42 +4,130 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: rule/mordheim/restless-dead/scarecrows--construct/trait.injury-reroll-out, digest: 2512aa115393bcf8a3d958ed1e8312f21844a24f32344361c492c575f63b1b82}
-  interpretation: "The player may re-roll any Injury result once, unless the wound was caused by fire. The choice is asked after knowing the first result."
+  - target: rule/mordheim/restless-dead/scarecrows--construct/trait.injury-reroll-out
+    digest: 61bdfb2839858f8d923fb53674a7e5e95deb81b12958b8d15e9fa62585ba1690
+  interpretation: The player may re-roll any Injury result once, unless the wound was caused by fire.
+    The choice is asked after knowing the first result.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: restless-dead, profile_id: scarecrows}
-    context: {rule_id: scarecrows--construct}
-    expect: {result.recipients: [scarecrows]}
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: scarecrows
+    context:
+      rule_id: scarecrows--construct
+    expect:
+      result.recipients:
+      - scarecrows
   - id: reroll-stunned-result
-    roles: [active, consumer, sequence, consumption]
+    roles:
+    - active
+    - consumer
+    - sequence
+    - consumption
     operation: attack
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: restless-dead, profile_id: scarecrows}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}, {key: test.injury.0, value: 3}, {key: test.injury.0.reroll, value: 1}]
-    decisions: [{key: test.injury.0.reroll-choice, value: true}]
-    expect: {result.defender.condition: KNOCKED_DOWN}
-    expect_contains: {defender.global_effects.tags: [injury_reroll_out]}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: scarecrows
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 3
+    - key: test.injury.0.reroll
+      value: 1
+    decisions:
+    - key: test.injury.0.reroll-choice
+      value: true
+    expect:
+      result.defender.condition: KNOCKED_DOWN
+    expect_contains:
+      defender.global_effects.tags:
+      - injury_reroll_out
   - id: decline-reroll
-    roles: [inactive, boundary, sequence]
+    roles:
+    - inactive
+    - boundary
+    - sequence
     operation: attack
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: restless-dead, profile_id: scarecrows}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}, {key: test.injury.0, value: 5}]
-    decisions: [{key: test.injury.0.reroll-choice, value: false}]
-    expect: {result.defender.condition: OUT}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: scarecrows
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 5
+    decisions:
+    - key: test.injury.0.reroll-choice
+      value: false
+    expect:
+      result.defender.condition: OUT
   - id: fire-forbids-reroll
-    roles: [inactive, boundary, consumption]
+    roles:
+    - inactive
+    - boundary
+    - consumption
     operation: attack
-    attacker: {main_weapon_id: weapon.brazier-iron, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: restless-dead, profile_id: scarecrows}
-    defender_state: {wounds: 2}
-    rolls: [{key: test.hit, value: 4}, {key: test.ignition, value: 1}, {key: test.wound, value: 4}, {key: test.injury.0, value: 5}]
-    expect: {result.damage: 2, result.defender.condition: OUT}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: scarecrows
+    defender_state:
+      wounds: 2
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.ignition
+      value: 1
+    - key: test.wound
+      value: 4
+    - key: test.injury.0
+      value: 5
+    expect:
+      result.damage: 2
+      result.defender.condition: OUT
   mutations:
   - id: remove-construct-reroll
     path: defender.global_effects.tags
-    value: [flammable]
-    cases: [reroll-stunned-result]
+    value:
+    - flammable
+    cases:
+    - reroll-stunned-result

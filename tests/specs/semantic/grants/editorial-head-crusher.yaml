@@ -4,43 +4,83 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/black-orcs/band--black-orc-special-skills-eadbasher/skill.head-crusher, digest: b0cab8710dd98e3fe9c29e9bda96b7a3168471d32fd70fbfee66e31615695a65}
-  - {target: rule/mordheim/orc-mob/band--orc-special-skills-eadbasher/skill.head-crusher, digest: ebec9a7e50f1e56070aa860a4e4d87e1958634e4ab1f25ad2dc89a1f5dcd0fd9}
-  - {target: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-eadbasher/skill.head-crusher, digest: b6e9c6e0e6a0d35548694a19021b62def8841f8d36452750c1e09073c56295bd}
-  depends_on: [mechanic/skill.head-crusher]
-  interpretation: The three 'Eadbasher variants grant the same selectable Head Crusher mechanism to their Orc hero
-    profiles. Henchmen, Goblins, Squigs and Trolls cannot select it.
+  - target: rule/mordheim/black-orcs/band--black-orc-special-skills-eadbasher/skill.head-crusher
+    digest: 9e5e4c336c56ddfbf6dbaa22c104277a271a046066d5dabc330720f2c7c4b924
+  - target: rule/mordheim/orc-mob/band--orc-special-skills-eadbasher/skill.head-crusher
+    digest: 31d470f7cbc7fbf59a38131ff10a43ae5903eeea55977d763460cdceca705257
+  - target: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-eadbasher/skill.head-crusher
+    digest: 266c0e288edaf0f9869f1aed5a8953ac042b6b1ad143d2eb0ffb8a5ae865380b
+  depends_on:
+  - mechanic/skill.head-crusher
+  interpretation: The three 'Eadbasher variants grant the same selectable Head Crusher mechanism to their
+    Orc hero profiles. Henchmen, Goblins, Squigs and Trolls cannot select it.
   cases:
   - id: black-orc-heroes
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: black-orcs, profile_id: black-orc-boss}
-    context: {rule_id: band--black-orc-special-skills-eadbasher}
-    expect: {result.recipients: [black-orc-boss, black-orcs, younguns]}
+    defender:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: black-orc-boss
+    context:
+      rule_id: band--black-orc-special-skills-eadbasher
+    expect:
+      result.recipients:
+      - black-orc-boss
+      - black-orcs
+      - younguns
   - id: orc-mob-heroes
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: orc-mob, profile_id: orc-boss}
-    context: {rule_id: band--orc-special-skills-eadbasher}
-    expect: {result.recipients: [orc-big-uns, orc-boss, orc-shaman]}
+    defender:
+      collection: mordheim
+      band_id: orc-mob
+      profile_id: orc-boss
+    context:
+      rule_id: band--orc-special-skills-eadbasher
+    expect:
+      result.recipients:
+      - orc-big-uns
+      - orc-boss
+      - orc-shaman
   - id: streets-greenskin-heroes
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: orc-boss}
-    context: {rule_id: band--orc-special-skills-eadbasher}
-    expect: {result.recipients: [orc-big-uns, orc-boss, orc-shaman]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: orc-boss
+    context:
+      rule_id: band--orc-special-skills-eadbasher
+    expect:
+      result.recipients:
+      - orc-big-uns
+      - orc-boss
+      - orc-shaman
   - id: granted-consumer
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: injury
     attacker:
       collection: mordheim
       band_id: orc-mob
       profile_id: orc-boss
-      special_rule_ids: [band--orc-special-skills-eadbasher]
-    rolls: [{key: test.injury, value: 1}]
-    expect: {result.condition: STUNNED}
+      special_rule_ids:
+      - band--orc-special-skills-eadbasher
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: STUNNED
   mutations:
   - id: remove-granted-eadbasher
     path: attacker.global_effects.tags
     value: []
-    cases: [granted-consumer]
+    cases:
+    - granted-consumer

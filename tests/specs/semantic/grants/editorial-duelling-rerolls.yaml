@@ -4,192 +4,431 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
-  - {target: rule/trollheim/chaos-streets-deathbringers/knives--dagger-master/trait.dagger-master, digest: 45fecab1a93bea2657d6b2fbb58ae66f4c2762e0da7c88e3c3b7cc7639219d04}
-  interpretation: "Chaos in the Streets p.164 / Knives / Dagger Master. Re-rolls failed hits with daggers on the charge turn; it does not require it to be the first round. It does not benefit other weapons or turns without a charge. With WS3 versus WS3, hitting on 4+ goes from 1/2 to 3/4. An initial hit is not re-rolled."
+  - target: rule/trollheim/chaos-streets-deathbringers/knives--dagger-master/trait.dagger-master
+    digest: 7d395356d949da333f954d7044949478dc7dcc7468b5db69f3b67cd35066e05e
+  interpretation: Chaos in the Streets p.164 / Knives / Dagger Master. Re-rolls failed hits with daggers
+    on the charge turn; it does not require it to be the first round. It does not benefit other weapons
+    or turns without a charge. With WS3 versus WS3, hitting on 4+ goes from 1/2 to 3/4. An initial hit
+    is not re-rolled.
   cases:
   - id: recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: knives}
-    context: {rule_id: knives--dagger-master}
-    expect: {result.recipients: [knives]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+    context:
+      rule_id: knives--dagger-master
+    expect:
+      result.recipients:
+      - knives
   - id: dagger-first-false-charge-false
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: hit
-    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: knives, main_weapon_id: weapon.dagger}
-    context: {first_round: false, charging: false}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+      main_weapon_id: weapon.dagger
+    context:
+      first_round: false
+      charging: false
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: dagger-first-false-charge-true
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: hit
-    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: knives, main_weapon_id: weapon.dagger}
-    context: {first_round: false, charging: true}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+      main_weapon_id: weapon.dagger
+    context:
+      first_round: false
+      charging: true
     distribution:
       observable: result.success
       max_rolls: 2
-      expected: {'true': 3/4, 'false': 1/4}
+      expected:
+        'true': 3/4
+        'false': 1/4
   - id: dagger-first-true-charge-false
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: hit
-    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: knives, main_weapon_id: weapon.dagger}
-    context: {first_round: true, charging: false}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+      main_weapon_id: weapon.dagger
+    context:
+      first_round: true
+      charging: false
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: dagger-first-true-charge-true
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: hit
-    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: knives, main_weapon_id: weapon.dagger}
-    context: {first_round: true, charging: true}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+      main_weapon_id: weapon.dagger
+    context:
+      first_round: true
+      charging: true
     distribution:
       observable: result.success
       max_rolls: 2
-      expected: {'true': 3/4, 'false': 1/4}
+      expected:
+        'true': 3/4
+        'false': 1/4
   - id: sword-first-false-charge-false
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: hit
-    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: knives, main_weapon_id: weapon.sword}
-    context: {first_round: false, charging: false}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+      main_weapon_id: weapon.sword
+    context:
+      first_round: false
+      charging: false
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: sword-first-false-charge-true
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: hit
-    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: knives, main_weapon_id: weapon.sword}
-    context: {first_round: false, charging: true}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+      main_weapon_id: weapon.sword
+    context:
+      first_round: false
+      charging: true
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: sword-first-true-charge-false
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: hit
-    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: knives, main_weapon_id: weapon.sword}
-    context: {first_round: true, charging: false}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+      main_weapon_id: weapon.sword
+    context:
+      first_round: true
+      charging: false
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: sword-first-true-charge-true
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: hit
-    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: knives, main_weapon_id: weapon.sword}
-    context: {first_round: true, charging: true}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+      main_weapon_id: weapon.sword
+    context:
+      first_round: true
+      charging: true
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: success-does-not-reroll
-    roles: [compiled, boundary]
+    roles:
+    - compiled
+    - boundary
     operation: hit
-    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: knives, main_weapon_id: weapon.dagger}
-    context: {charging: true}
-    rolls: [{key: hit, value: 4}]
-    expect: {result.success: true, result.rerolled: false}
-    expect_contains: {attacker.global_effects.tags: [dagger_master]}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+      main_weapon_id: weapon.dagger
+    context:
+      charging: true
+    rolls:
+    - key: hit
+      value: 4
+    expect:
+      result.success: true
+      result.rerolled: false
+    expect_contains:
+      attacker.global_effects.tags:
+      - dagger_master
   - id: failed-reroll-is-final
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: hit
-    attacker: {collection: trollheim, band_id: chaos-streets-deathbringers, profile_id: knives, main_weapon_id: weapon.dagger}
-    context: {charging: true}
-    rolls: [{key: hit, value: 1}, {key: hit.reroll, value: 3}]
-    expect: {result.success: false, result.rerolled: true}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+      main_weapon_id: weapon.dagger
+    context:
+      charging: true
+    rolls:
+    - key: hit
+      value: 1
+    - key: hit.reroll
+      value: 3
+    expect:
+      result.success: false
+      result.rerolled: true
   - id: ordinary-dagger-does-not-reroll
-    roles: [inactive]
+    roles:
+    - inactive
     operation: hit
-    attacker: {main_weapon_id: weapon.dagger}
-    context: {charging: true}
-    rolls: [{key: hit, value: 3}]
-    expect: {result.success: false, result.rerolled: false}
+    attacker:
+      main_weapon_id: weapon.dagger
+    context:
+      charging: true
+    rolls:
+    - key: hit
+      value: 3
+    expect:
+      result.success: false
+      result.rerolled: false
   mutations:
   - id: remove-dagger-master
     path: attacker.global_effects.tags
     value: []
-    cases: [dagger-first-true-charge-true, dagger-first-false-charge-true]
+    cases:
+    - dagger-first-true-charge-true
+    - dagger-first-false-charge-true
 - id: saurus-slayer-duellist
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
-  - {target: mechanic/skill.duellist, digest: 5cf69c696199fe00d4a094e2b508b6f4ace38596f0f6a5e9341262dea2fe49c2}
-  - {target: rule/mordheim/lustrian-reavers/saurus-slayer--duellist/skill.duellist, digest: d217443c4198fb0dc38748c7d8396a329bb92cbf9cce7e704fd49d79b7994b28}
-  interpretation: "Mordheimer / Lustrian Reavers / Saurus Slayer / Duellist. Against a single opponent, it re-rolls failed hits in the first round both when charging and when receiving a charge. The simulator only represents 1v1 duels; no evidence is attributed to combat with multiple enemies. WS4 versus WS4 requires 4+, with probability 3/4 when re-rolling and 1/2 without re-roll."
+  - target: mechanic/skill.duellist
+    digest: f3e95501e29aaf536c0209ac9846a221014c6a51abdaf8d713c8a3209e9a1038
+  - target: rule/mordheim/lustrian-reavers/saurus-slayer--duellist/skill.duellist
+    digest: 5532393465c99d6dd7b32b67f9bbea7ef2bfd64ac3ab200f74989ec4ab67f992
+  interpretation: Mordheimer / Lustrian Reavers / Saurus Slayer / Duellist. Against a single opponent,
+    it re-rolls failed hits in the first round both when charging and when receiving a charge. The simulator
+    only represents 1v1 duels; no evidence is attributed to combat with multiple enemies. WS4 versus WS4
+    requires 4+, with probability 3/4 when re-rolling and 1/2 without re-roll.
   cases:
   - id: recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: lustrian-reavers, profile_id: saurus-slayer}
-    context: {rule_id: saurus-slayer--duellist}
-    expect: {result.recipients: [saurus-slayer]}
+    defender:
+      band_id: lustrian-reavers
+      profile_id: saurus-slayer
+    context:
+      rule_id: saurus-slayer--duellist
+    expect:
+      result.recipients:
+      - saurus-slayer
   - id: first-false-charge-false
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: hit
-    attacker: {band_id: lustrian-reavers, profile_id: saurus-slayer, main_weapon_id: weapon.mace}
-    defender: {characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
-    context: {first_round: false, charging: false}
+    attacker:
+      band_id: lustrian-reavers
+      profile_id: saurus-slayer
+      main_weapon_id: weapon.mace
+    defender:
+      characteristics:
+        weapon_skill: 4
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      first_round: false
+      charging: false
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: first-false-charge-true
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: hit
-    attacker: {band_id: lustrian-reavers, profile_id: saurus-slayer, main_weapon_id: weapon.mace}
-    defender: {characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
-    context: {first_round: false, charging: true}
+    attacker:
+      band_id: lustrian-reavers
+      profile_id: saurus-slayer
+      main_weapon_id: weapon.mace
+    defender:
+      characteristics:
+        weapon_skill: 4
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      first_round: false
+      charging: true
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: first-true-charge-false
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: hit
-    attacker: {band_id: lustrian-reavers, profile_id: saurus-slayer, main_weapon_id: weapon.mace}
-    defender: {characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
-    context: {first_round: true, charging: false}
+    attacker:
+      band_id: lustrian-reavers
+      profile_id: saurus-slayer
+      main_weapon_id: weapon.mace
+    defender:
+      characteristics:
+        weapon_skill: 4
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      first_round: true
+      charging: false
     distribution:
       observable: result.success
       max_rolls: 2
-      expected: {'true': 3/4, 'false': 1/4}
+      expected:
+        'true': 3/4
+        'false': 1/4
   - id: first-true-charge-true
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: hit
-    attacker: {band_id: lustrian-reavers, profile_id: saurus-slayer, main_weapon_id: weapon.mace}
-    defender: {characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 3, attacks: 1}}
-    context: {first_round: true, charging: true}
+    attacker:
+      band_id: lustrian-reavers
+      profile_id: saurus-slayer
+      main_weapon_id: weapon.mace
+    defender:
+      characteristics:
+        weapon_skill: 4
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 3
+        attacks: 1
+    context:
+      first_round: true
+      charging: true
     distribution:
       observable: result.success
       max_rolls: 2
-      expected: {'true': 3/4, 'false': 1/4}
+      expected:
+        'true': 3/4
+        'false': 1/4
   - id: compiled-and-successful-hit
-    roles: [compiled, boundary]
+    roles:
+    - compiled
+    - boundary
     operation: hit
-    attacker: {band_id: lustrian-reavers, profile_id: saurus-slayer}
-    context: {first_round: true}
-    rolls: [{key: hit, value: 4}]
-    expect: {result.success: true, result.rerolled: false}
-    expect_contains: {attacker.global_effects.tags: [skill.duellist]}
+    attacker:
+      band_id: lustrian-reavers
+      profile_id: saurus-slayer
+    context:
+      first_round: true
+    rolls:
+    - key: hit
+      value: 4
+    expect:
+      result.success: true
+      result.rerolled: false
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.duellist
   - id: canonical-mechanism-with-dagger
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: hit
-    attacker: {skill_ids: [skill.duellist], main_weapon_id: weapon.dagger}
-    context: {first_round: true}
-    rolls: [{key: hit, value: 3}, {key: hit.reroll, value: 4}]
-    expect: {result.success: true, result.rerolled: true}
+    attacker:
+      skill_ids:
+      - skill.duellist
+      main_weapon_id: weapon.dagger
+    context:
+      first_round: true
+    rolls:
+    - key: hit
+      value: 3
+    - key: hit.reroll
+      value: 4
+    expect:
+      result.success: true
+      result.rerolled: true
   - id: ordinary-fighter-no-reroll
-    roles: [inactive]
+    roles:
+    - inactive
     operation: hit
-    attacker: {main_weapon_id: weapon.mace}
-    context: {first_round: true}
-    rolls: [{key: hit, value: 3}]
-    expect: {result.success: false, result.rerolled: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+    rolls:
+    - key: hit
+      value: 3
+    expect:
+      result.success: false
+      result.rerolled: false
   mutations:
   - id: remove-duellist
     path: attacker.global_effects.tags
     value: []
-    cases: [first-true-charge-true, first-true-charge-false, canonical-mechanism-with-dagger]
+    cases:
+    - first-true-charge-true
+    - first-true-charge-false
+    - canonical-mechanism-with-dagger

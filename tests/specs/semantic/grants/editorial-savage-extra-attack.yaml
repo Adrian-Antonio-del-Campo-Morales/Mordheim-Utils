@@ -5,22 +5,32 @@ specifications:
   category: permanent
   sources:
   - target: rule/mordheim/black-orcs/orc-nuttaz--savage/skill.extra-attack
-    digest: c077bb059f34329afe9d7fd155fd7f9e52b5f3e062e4822fbcc52213a9e106d2
-  depends_on: [mechanic/skill.extra-attack]
-  interpretation: Savage grants every Orc Nutta one additional close-combat attack without changing the printed profile
-    or racial maximum. This specification covers only that in-scope effect; its equipment restrictions are separate.
+    digest: 8b5d37ee6e1b0df490a0642fca0095e38f4c83f8b2cce4272a8afe9eb33282b8
+  depends_on:
+  - mechanic/skill.extra-attack
+  interpretation: Savage grants every Orc Nutta one additional close-combat attack without changing the
+    printed profile or racial maximum. This specification covers only that in-scope effect; its equipment
+    restrictions are separate.
   cases:
   - id: only-orc-nuttaz
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
     defender:
       collection: mordheim
       band_id: black-orcs
       profile_id: orc-nuttaz
-    context: {rule_id: orc-nuttaz--savage}
-    expect: {result.recipients: [orc-nuttaz]}
+    context:
+      rule_id: orc-nuttaz--savage
+    expect:
+      result.recipients:
+      - orc-nuttaz
   - id: inherent-extra-attack-consumer
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: attacks
     attacker:
       collection: mordheim
@@ -35,4 +45,5 @@ specifications:
   - id: remove-savage-extra-attack
     path: attacker.global_effects.attacks_bonus
     value: 0
-    cases: [inherent-extra-attack-consumer]
+    cases:
+    - inherent-extra-attack-consumer

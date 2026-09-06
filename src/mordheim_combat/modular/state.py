@@ -88,6 +88,7 @@ def _parry_capacity(fighter: CompiledFighter) -> int:
     available = sum((
         fighter.main_weapon.parry,
         bool(fighter.off_hand and fighter.off_hand.parry),
+        int(phases.has_tag(fighter.main_weapon, "weapon.double-bladed-sword")),
         effects.parry,
         phases.has_tag(effects, "skill.miniath"),
         phases.has_tag(effects, "skill.axe-master") and any(
@@ -98,8 +99,38 @@ def _parry_capacity(fighter: CompiledFighter) -> int:
         phases.has_tag(effects, "skill.shield-mastery")
         and phases.has_tag(effects, "defence.shield"),
     ))
-    return min(2 if phases.has_tag(effects, "skill.unbeatable-warrior") else 1, int(available))
+    two_parries = (
+        phases.has_tag(effects, "skill.unbeatable-warrior")
+        or phases.has_tag(fighter.main_weapon, "weapon.double-bladed-sword")
+    )
+    return min(2 if two_parries else 1, int(available))
 
+
+
+def _refresh_random_characteristics(
+    fighter: CompiledFighter, state: FighterState, dice: DiceSource, key: str,
+) -> FighterState:
+    """Roll variable profile characteristics once for the current turn."""
+    random_stats = {characteristic for characteristic, *_ in fighter.random_characteristics}
+    # Condemned/Inconsistency refreshes WS, S, T and A once per turn.
+    # Spawn's random A is a separate D6+1 attack-count rule handled by rounds.
+    if not {"WS", "S", "T", "A"}.issubset(random_stats):
+        return state
+    values: dict[str, int] = {}
+    for characteristic, count, sides, bonus in fighter.random_characteristics:
+        values[characteristic] = sum(
+            dice.roll(RollRequest(f"{key}.characteristic.{characteristic}.{index}", sides))
+            for index in range(count)
+        ) + bonus
+    return replace(
+        state,
+        weapon_skill=values.get("WS", state.weapon_skill),
+        strength=values.get("S", state.strength),
+        toughness=values.get("T", state.toughness - fighter.global_effects.toughness_bonus)
+            + fighter.global_effects.toughness_bonus,
+        initiative=values.get("I", state.initiative),
+        attacks=values.get("A", state.attacks),
+    )
 
 def initialize_fighter(fighter: CompiledFighter, dice: DiceSource, key: str) -> FighterState:
     values = {

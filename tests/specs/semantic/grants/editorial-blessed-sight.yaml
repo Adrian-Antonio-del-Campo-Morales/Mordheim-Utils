@@ -4,30 +4,52 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/sisters-of-sigmar/augur--blessed-sight/skill.blessed-sight, digest: 3fb5ee5866d2cfcb9ecd58b0b96965318b1d7721dbd14211e89720195dfaa081}
-  depends_on: [mechanic/skill.blessed-sight]
-  interpretation: Blessed Sight is an automatic profile rule belonging only to the Augur. Compiling that profile
-    grants both the close-combat hit reroll and the characteristic-test reroll represented by the canonical mechanism.
+  - target: rule/mordheim/sisters-of-sigmar/augur--blessed-sight/skill.blessed-sight
+    digest: 0419aa3fe3e7e7e176e51a894efd1a6ec7bcd080b3f470cbe2b0c1686dc0e9ca
+  depends_on:
+  - mechanic/skill.blessed-sight
+  interpretation: Blessed Sight is an automatic profile rule belonging only to the Augur. Compiling that
+    profile grants both the close-combat hit reroll and the characteristic-test reroll represented by
+    the canonical mechanism.
   cases:
   - id: only-augur-receives-rule
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: sisters-of-sigmar, profile_id: augur}
-    context: {rule_id: augur--blessed-sight}
-    expect: {result.recipients: [augur]}
+    defender:
+      collection: mordheim
+      band_id: sisters-of-sigmar
+      profile_id: augur
+    context:
+      rule_id: augur--blessed-sight
+    expect:
+      result.recipients:
+      - augur
     expect_contains:
-      defender.global_effects.tags: [skill.blessed-sight]
+      defender.global_effects.tags:
+      - skill.blessed-sight
   - id: granted-characteristic-consumer
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: characteristic_test
-    attacker: {collection: mordheim, band_id: sisters-of-sigmar, profile_id: augur}
-    context: {value: 3}
+    attacker:
+      collection: mordheim
+      band_id: sisters-of-sigmar
+      profile_id: augur
+    context:
+      value: 3
     distribution:
       observable: result.passed
       max_rolls: 2
-      expected: {'true': 3/4, 'false': 1/4}
+      expected:
+        'true': 3/4
+        'false': 1/4
   mutations:
   - id: remove-profile-blessing
     path: attacker.global_effects.tags
     value: []
-    cases: [granted-characteristic-consumer]
+    cases:
+    - granted-characteristic-consumer

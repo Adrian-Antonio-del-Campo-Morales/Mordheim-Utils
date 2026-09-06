@@ -6,6 +6,7 @@ from tkinter import ttk
 from mordheim_campaign.application.controller import AppController
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import BorderedFrame
+from mordheim_ui.i18n import tr
 
 
 class NewCampaignDialog(tk.Toplevel):
@@ -24,7 +25,7 @@ class NewCampaignDialog(tk.Toplevel):
         self.controller = controller
         self.options = controller.warband_options()
         self.configure(bg=COLORS["bg"])
-        self.title("Create Campaign")
+        self.title(tr('Create Campaign'))
         self.resizable(False, False)
         self.transient(parent.winfo_toplevel())
         self.grab_set()
@@ -34,14 +35,14 @@ class NewCampaignDialog(tk.Toplevel):
         body = outer.body
         body.configure(padx=20, pady=18)
 
-        tk.Label(body, text="CREATE CAMPAIGN", bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 15)).grid(row=0, column=0, columnspan=2, sticky="w")
-        tk.Label(body, text="Start with the minimum information. The initial warband is built next.", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9)).grid(row=1, column=0, columnspan=2, sticky="w", pady=(4, 18))
+        tk.Label(body, text=tr('CREATE CAMPAIGN'), bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 15)).grid(row=0, column=0, columnspan=2, sticky="w")
+        tk.Label(body, text=tr('Start with the minimum information. The initial warband is built next.'), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9)).grid(row=1, column=0, columnspan=2, sticky="w", pady=(4, 18))
 
-        tk.Label(body, text="CAMPAIGN NAME", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8)).grid(row=2, column=0, sticky="w")
-        self.name_var = tk.StringVar(value="New Mordheim Campaign")
+        tk.Label(body, text=tr('CAMPAIGN NAME'), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8)).grid(row=2, column=0, sticky="w")
+        self.name_var = tk.StringVar(value=tr('New Mordheim Campaign'))
         ttk.Entry(body, textvariable=self.name_var, width=38).grid(row=3, column=0, columnspan=2, sticky="ew", pady=(5, 14))
 
-        tk.Label(body, text="WARBAND", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8)).grid(row=4, column=0, sticky="w")
+        tk.Label(body, text=tr('WARBAND'), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8)).grid(row=4, column=0, sticky="w")
         labels = [option.label for option in self.options]
         self._selected = next(
             (index for index, option in enumerate(self.options) if option.band_id == self.DEFAULT_BAND_ID and option.collection == "mordheim"),
@@ -57,7 +58,7 @@ class NewCampaignDialog(tk.Toplevel):
 
         actions = tk.Frame(body, bg=COLORS["panel"])
         actions.grid(row=7, column=0, columnspan=2, sticky="e", pady=(22, 0))
-        ttk.Button(actions, text="Cancel", command=self.destroy).pack(side="left", padx=(0, 8))
+        ttk.Button(actions, text=tr('Cancel'), command=self.destroy).pack(side="left", padx=(0, 8))
         ttk.Button(actions, text="CREATE", style="Accent.TButton", command=self._create).pack(side="left")
         body.columnconfigure(0, weight=1)
 
@@ -73,7 +74,7 @@ class NewCampaignDialog(tk.Toplevel):
         option = self._current_option()
         source = f" · {option.source_label}" if option.collection != "mordheim" else ""
         self.caption_var.set(
-            f"{option.minimum_models}–{option.maximum_models} models · {option.starting_gold} gc starting{source} · {option.publication}"
+            tr('{}–{} models · {} gc starting{} · {}').format(option.minimum_models, option.maximum_models, option.starting_gold, source, option.publication)
         )
 
     def _on_warband_change(self, _event=None) -> None:
@@ -87,7 +88,7 @@ class NewCampaignDialog(tk.Toplevel):
         self.geometry(f"+{x}+{y}")
 
     def _create(self) -> None:
-        name = self.name_var.get().strip() or "New Mordheim Campaign"
+        name = self.name_var.get().strip() or tr('New Mordheim Campaign')
         option = self._current_option()
         self.controller.new_campaign(name, option.band_id)
         self.destroy()

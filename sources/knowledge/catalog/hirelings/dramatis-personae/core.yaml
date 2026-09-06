@@ -10,7 +10,7 @@ profiles:
   name: Aenur, the Sword of Twilight
   name_i18n:
     en: Aenur, the Sword of Twilight
-    es: null
+    es: Aenur, la Espada del Crepúsculo
   characteristics:
     M: 5
     WS: 8
@@ -41,6 +41,9 @@ profiles:
       - hireling.dramatis.aenur.item.ienh-khain.rule.parry
       - hireling.dramatis.aenur.item.ienh-khain.rule.strength
       - hireling.dramatis.aenur.item.ienh-khain.rule.critical
+      name_i18n:
+        en: Ienh-Khain
+        es: Ienh-Khain
   starting_skill_ids:
   - skill.strike-to-injure
   - skill.expert-swordsman
@@ -66,7 +69,7 @@ profiles:
   name: Bertha Bestraufrung, High Matriarch of the Sisterhood
   name_i18n:
     en: Bertha Bestraufrung, High Matriarch of the Sisterhood
-    es: null
+    es: Bertha Bestraufrung, Gran Matriarca de la Hermandad
   characteristics:
     M: 4
     WS: 5
@@ -124,7 +127,7 @@ profiles:
   name: Johann the Knife
   name_i18n:
     en: Johann the Knife
-    es: null
+    es: Johann el Cuchillo
   characteristics:
     M: 4
     WS: 3
@@ -153,6 +156,9 @@ profiles:
           kind: fixed
           value: 2
         context: close_combat
+      name_i18n:
+        en: Long Daggers
+        es: Dagas largas
   starting_skill_ids:
   - skill.dodge
   - skill.scale-sheer-surfaces
@@ -177,7 +183,7 @@ profiles:
   name: Veskit, High Executioner of Clan Eshin
   name_i18n:
     en: Veskit, High Executioner of Clan Eshin
-    es: null
+    es: Veskit, Gran Verdugo del Clan Eshin
   characteristics:
     M: 5
     WS: 5
@@ -219,14 +225,21 @@ rules:
     printed_page: 0
     section: Dramatis Personae / Aenur / Special Rules / Invincible Swordsman
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: Invincible Swordsman
+    es: Espadachín invencible
 - id: hireling.dramatis.aenur.rule.wanderer
   name: Wanderer
-  effect: Aenur stays for one battle only; a warband must fight at least one battle without him before it may search for him again.
+  effect: Aenur stays for one battle only; a warband must fight at least one battle without him before
+    it may search for him again.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Dramatis Personae / Aenur / Special Rules / Wanderer
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: Wanderer
+    es: Errante
 - id: hireling.dramatis.aenur.item.ienh-khain.rule.parry
   name: 'Ienh-Khain: Parry'
   effect: Ienh-Khain can parry.
@@ -235,6 +248,9 @@ rules:
     printed_page: 0
     section: Dramatis Personae / Aenur / Ienh-Khain
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: 'Ienh-Khain: Parry'
+    es: 'Ienh-Khain: estocada'
 - id: hireling.dramatis.aenur.item.ienh-khain.rule.strength
   name: 'Ienh-Khain: Strength'
   effect: Ienh-Khain adds +1 Strength.
@@ -243,6 +259,9 @@ rules:
     printed_page: 0
     section: Dramatis Personae / Aenur / Ienh-Khain
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: 'Ienh-Khain: Strength'
+    es: 'Ienh-Khain: fuerza'
 - id: hireling.dramatis.aenur.item.ienh-khain.rule.critical
   name: 'Ienh-Khain: Critical'
   effect: Ienh-Khain causes a critical hit on a wound roll of 5-6.
@@ -251,6 +270,9 @@ rules:
     printed_page: 0
     section: Dramatis Personae / Aenur / Ienh-Khain
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: 'Ienh-Khain: Critical'
+    es: 'Ienh-Khain: crítico'
 - id: hireling.dramatis.bertha-bestraufrung.rule.high-matriarch
   name: High Matriarch
   effect: Bertha automatically becomes the leader of a warband she joins.
@@ -259,6 +281,9 @@ rules:
     printed_page: 0
     section: Dramatis Personae / Bertha Bestraufrung / Special Rules / High Matriarch
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: High Matriarch
+    es: Gran Matriarca
 - id: hireling.dramatis.bertha-bestraufrung.rule.sigmars-handmaiden
   name: Sigmar's Handmaiden
   effect: Bertha receives +2 on rolls to determine whether her Prayers of Sigmar are granted.
@@ -267,6 +292,9 @@ rules:
     printed_page: 0
     section: Dramatis Personae / Bertha Bestraufrung / Special Rules / Sigmar's Handmaiden
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: Sigmar's Handmaiden
+    es: Sirvienta de Sigmar
 - id: hireling.dramatis.johann-the-knife.rule.poisoned-weapons
   name: Poisoned Weapons
   effect: Johann's weapons are always coated with Black Lotus.
@@ -275,6 +303,9 @@ rules:
     printed_page: 0
     section: Dramatis Personae / Johann the Knife / Weapons and Armour
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: Poisoned Weapons
+    es: Armas envenenadas
 - id: hireling.dramatis.johann-the-knife.rule.crimson-shade
   name: Crimson Shade
   effect: Johann may take Crimson Shade before a battle.
@@ -283,6 +314,9 @@ rules:
     printed_page: 0
     section: Dramatis Personae / Johann the Knife / Weapons and Armour
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: Crimson Shade
+    es: Sombra carmesí
 - id: hireling.dramatis.johann-the-knife.rule.knife-fighter-extraordinaire
   name: Knife Fighter Extraordinaire
   effect: Johann may combine Knife-Fighter and Quick Shot when using throwing knives.
@@ -291,14 +325,21 @@ rules:
     printed_page: 0
     section: Dramatis Personae / Johann the Knife / Special Rules / Knife Fighter Extraordinaire
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: Knife Fighter Extraordinaire
+    es: Luchador de cuchillos extraordinario
 - id: hireling.dramatis.veskit.rule.integrated-warplock-pistols
   name: Integrated Warplock Pistols
-  effect: Veskit's fighting claws incorporate Warplock Pistols; his listed extra Attack is already included in the profile and his claw attacks use the special Strength/save-modifier rules from his entry.
+  effect: Veskit's fighting claws incorporate Warplock Pistols; his listed extra Attack is already included
+    in the profile and his claw attacks use the special Strength/save-modifier rules from his entry.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Dramatis Personae / Veskit / Weapons and Armour
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: Integrated Warplock Pistols
+    es: Pistolas warplock integradas
 - id: hireling.dramatis.veskit.rule.unfeeling
   name: Unfeeling
   effect: Veskit is immune to psychology.
@@ -307,6 +348,9 @@ rules:
     printed_page: 0
     section: Dramatis Personae / Veskit / Special Rules / Unfeeling
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: Unfeeling
+    es: Insensible
 - id: hireling.dramatis.veskit.rule.no-pain
   name: No Pain
   effect: Veskit ignores Knocked Down and Stunned injury results and remains until his last Wound is lost.
@@ -315,6 +359,9 @@ rules:
     printed_page: 0
     section: Dramatis Personae / Veskit / Special Rules / No Pain
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: No Pain
+    es: Sin dolor
 - id: hireling.dramatis.veskit.rule.unblinking-eye
   name: Unblinking Eye
   effect: Veskit detects Hidden enemies within twice his Initiative value in inches.
@@ -323,6 +370,9 @@ rules:
     printed_page: 0
     section: Dramatis Personae / Veskit / Special Rules / Unblinking Eye
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: Unblinking Eye
+    es: Ojo inmaculado
 - id: hireling.dramatis.veskit.rule.metallic-body
   name: Metallic Body
   effect: Veskit has a 3+ armour save from his mechanical body.
@@ -331,3 +381,6 @@ rules:
     printed_page: 0
     section: Dramatis Personae / Veskit / Special Rules / Metallic Body
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+  name_i18n:
+    en: Metallic Body
+    es: Cuerpo metálico

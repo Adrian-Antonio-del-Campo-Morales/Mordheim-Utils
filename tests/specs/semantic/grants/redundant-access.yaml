@@ -5,11 +5,11 @@ specifications:
   category: construction
   sources:
   - target: rule/trollheim/chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-powerful-build/profile.skill-access
-    digest: 1181ff58f0cfefa36b7671c566711d47b5063bd672ff143347b183b712916a47
-  interpretation: The source says Powerful Build grants Strength access and excludes Shadow Weavers. In this KB
-    variant both eligible profiles already list Strength (profiles, pp.140); applying the grant is idempotent. Combat
-    and Strength are the only applicable general tables in the current scoped catalogue, unlike the Mordheim Shadow
-    Warrior variant.
+    digest: 116be02df7fede7ecf6834d44cb10f5ace1be430d5f37b9468f52666f1091a19
+  interpretation: The source says Powerful Build grants Strength access and excludes Shadow Weavers. In
+    this KB variant both eligible profiles already list Strength (profiles, pp.140); applying the grant
+    is idempotent. Combat and Strength are the only applicable general tables in the current scoped catalogue,
+    unlike the Mordheim Shadow Warrior variant.
   interaction_contract:
     reads:
     - construction.skill-lists
@@ -132,7 +132,7 @@ specifications:
     - shadow-master-granted
     - shadow-walker-already-available
     - shadow-walker-granted
-    equivalent_reason: Both eligible profiles already have Combat and Strength before selecting the rule. Redirecting
-      only this redundant grant from Strength to Combat cannot change any allowed general skill. Every candidate
-      general skill and both eligible profiles are checked, with and without selection. Eligibility is tested separately.
-      Changes to profile lists invalidate the pinned source digest.
+    equivalent_reason: Both eligible profiles already have Combat and Strength before selecting the rule.
+      Redirecting only this redundant grant from Strength to Combat cannot change any allowed general
+      skill. Every candidate general skill and both eligible profiles are checked, with and without selection.
+      Eligibility is tested separately. Changes to profile lists invalidate the pinned source digest.

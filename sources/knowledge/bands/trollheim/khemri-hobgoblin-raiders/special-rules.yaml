@@ -10,10 +10,10 @@ rules:
     section: Heroes / 1 Khann / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: Any warband model within 6" of the Khann may use his Leadership instead of its own.
-    es: null
+    es: Cualquier modelo de la banda a 6" del Khann puede usar su Liderazgo en lugar del suyo propio.
   applies_to:
     profile_ids:
     - khann
@@ -28,19 +28,21 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: hobgoblin-shaman--wizard
   name: Wizard
-  effect: The Hobgoblin Shaman is a Wizard and begins with one spell from Waaagh! Shamanic Magic. The spell list and spell
-    effects are intentionally not modelled in this file.
+  effect: The Hobgoblin Shaman is a Wizard and begins with one spell from Waaagh! Shamanic Magic. The
+    spell list and spell effects are intentionally not modelled in this file.
   source:
     manual: khemri
     printed_page: 80
     section: Heroes / 0-1 Hobgoblin Shaman / Wizard
   name_i18n:
     en: Wizard
-    es: null
+    es: Hechicero
   effect_i18n:
-    en: The Hobgoblin Shaman is a Wizard and begins with one spell from Waaagh! Shamanic Magic. The spell list and spell effects
-      are intentionally not modelled in this file.
-    es: null
+    en: The Hobgoblin Shaman is a Wizard and begins with one spell from Waaagh! Shamanic Magic. The spell
+      list and spell effects are intentionally not modelled in this file.
+    es: El Chamán Hobgoblin es un hechicero y comienza con un hechizo de la Magia Chamánica ¡WAAAGH!.
+      La lista de hechizos y los efectos de los hechizos no están modelados intencionadamente en este
+      archivo.
   applies_to:
     profile_ids:
     - hobgoblin-shaman
@@ -52,20 +54,25 @@ rules:
     - id: unimplemented.khemri-hobgoblin-raiders.hobgoblin-shaman.wizard
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: sneaky--unpredictable
   name: Unpredictable
-  effect: The Sneaky may declare one of its attacks Unpredictable; that attack cannot be parried by the opponent.
+  effect: The Sneaky may declare one of its attacks Unpredictable; that attack cannot be parried by the
+    opponent.
   source:
     manual: khemri
     printed_page: 80
     section: Heroes / 0-1 Sneaky / Unpredictable
   name_i18n:
     en: Unpredictable
-    es: null
+    es: Impredecible
   effect_i18n:
-    en: The Sneaky may declare one of its attacks Unpredictable; that attack cannot be parried by the opponent.
-    es: null
+    en: The Sneaky may declare one of its attacks Unpredictable; that attack cannot be parried by the
+      opponent.
+    es: El Furtivo puede declarar uno de sus ataques Impredecible; ese ataque no puede ser emparañado
+      por el oponente.
   applies_to:
     profile_ids:
     - sneaky
@@ -81,19 +88,20 @@ rules:
         id: mechanic.unpredictable-attack
 - id: archers--moving-shot
   name: Moving Shot
-  effect: An Archer ignores the normal shooting penalty for moving. This rule may also be used while the Archer is mounted
-    on a Giant Wolf.
+  effect: An Archer ignores the normal shooting penalty for moving. This rule may also be used while the
+    Archer is mounted on a Giant Wolf.
   source:
     manual: khemri
     printed_page: 81
     section: Henchmen / 0-5 Archers / Moving Shot
   name_i18n:
     en: Moving Shot
-    es: null
+    es: Disparo en movimiento
   effect_i18n:
-    en: An Archer ignores the normal shooting penalty for moving. This rule may also be used while the Archer is mounted on
-      a Giant Wolf.
-    es: null
+    en: An Archer ignores the normal shooting penalty for moving. This rule may also be used while the
+      Archer is mounted on a Giant Wolf.
+    es: Un Arquero ignora la penalización normal de disparo por moverse. Esta regla también puede usarse
+      mientras el Arquero esté montado en un Lobo Gigante.
   applies_to:
     profile_ids:
     - archers
@@ -115,10 +123,10 @@ rules:
     section: Henchmen / 0-5 Giant Wolves / Animal
   name_i18n:
     en: Animal
-    es: null
+    es: Animales
   effect_i18n:
     en: Giant Wolves are animals and never gain Experience.
-    es: null
+    es: Los Lobos Gigantes son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - giant-wolves
@@ -133,23 +141,27 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: giant-wolves--mount
   name: Mount
-  effect: Every Giant Wolf that participates in a battle must normally be ridden by a member of the warband. The rider may
-    not voluntarily dismount. If the rider is taken Out of Action, the Giant Wolf must pass a Leadership test; if it fails,
-    the wolf immediately leaves the table and counts as Out of Action. The Wolf Tamer special skill provides the stated exceptions
-    to these restrictions.
+  effect: Every Giant Wolf that participates in a battle must normally be ridden by a member of the warband.
+    The rider may not voluntarily dismount. If the rider is taken Out of Action, the Giant Wolf must pass
+    a Leadership test; if it fails, the wolf immediately leaves the table and counts as Out of Action.
+    The Wolf Tamer special skill provides the stated exceptions to these restrictions.
   source:
     manual: khemri
     printed_page: 81
     section: Henchmen / 0-5 Giant Wolves / Mounts
   name_i18n:
     en: Mount
-    es: null
+    es: Montura
   effect_i18n:
-    en: Every Giant Wolf that participates in a battle must normally be ridden by a member of the warband. The rider may not
-      voluntarily dismount. If the rider is taken Out of Action, the Giant Wolf must pass a Leadership test; if it fails,
-      the wolf immediately leaves the table and counts as Out of Action. The Wolf Tamer special skill provides the stated
-      exceptions to these restrictions.
-    es: null
+    en: Every Giant Wolf that participates in a battle must normally be ridden by a member of the warband.
+      The rider may not voluntarily dismount. If the rider is taken Out of Action, the Giant Wolf must
+      pass a Leadership test; if it fails, the wolf immediately leaves the table and counts as Out of
+      Action. The Wolf Tamer special skill provides the stated exceptions to these restrictions.
+    es: Cada Lobo Gigante que participe en una batalla debe normalmente ser montado por un miembro de
+      la banda. El jinete no puede desmontar voluntariamente. Si el jinete es puesto Fuera de combate,
+      el Lobo Gigante debe superar un chequeo de Liderazgo; si lo falla, el lobo abandona inmediatamente
+      la mesa y cuenta como Fuera de combate. La habilidad especial Domalobos proporciona las excepciones
+      indicadas a estas restricciones.
   applies_to:
     profile_ids:
     - giant-wolves
@@ -164,27 +176,36 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--traitors
   name: Traitors
-  effect: 'Each turn, roll D6 for every Hobgoblin Henchman that is not engaged in close combat. Only a roll of 1 fails the
-    betrayal test. If the test fails, roll another D6 and apply the following result: 1 = Traitor: the opponent immediately
-    takes control of the model; in a multiplayer game it joins the opposing warband with the highest rating. The model must
-    continue to take betrayal tests normally on subsequent turns. 2-5 = I Prefer Not to Die!: the model may not charge or
-    shoot that turn, but may perform other actions. 6 = Blood for Morko!!!: the model no longer takes betrayal tests for the
-    rest of the battle.'
+  effect: >-
+    Each turn, roll D6 for every Hobgoblin Henchman that is not engaged in close combat. Only a roll
+    of 1 fails the betrayal test. If the test fails, roll another D6 and apply the following result:
+    1 = Traitor: the opponent immediately takes control of the model; in a multiplayer game it joins
+    the opposing warband with the highest rating. The model must continue to take betrayal tests
+    normally on subsequent turns. 2-5 = I Prefer Not to Die!: the model may not charge or shoot that
+    turn, but may perform other actions. 6 = Blood for Morko!!!: the model no longer takes betrayal
+    tests for the rest of the battle.
   source:
     manual: khemri
     printed_page: 78
     section: Hobgoblin Raiders Special Rules / Traitors
   name_i18n:
     en: Traitors
-    es: null
+    es: Traidores
   effect_i18n:
-    en: 'Each turn, roll D6 for every Hobgoblin Henchman that is not engaged in close combat. Only a roll of 1 fails the betrayal
-      test. If the test fails, roll another D6 and apply the following result: 1 = Traitor: the opponent immediately takes
-      control of the model; in a multiplayer game it joins the opposing warband with the highest rating. The model must continue
-      to take betrayal tests normally on subsequent turns. 2-5 = I Prefer Not to Die!: the model may not charge or shoot that
-      turn, but may perform other actions. 6 = Blood for Morko!!!: the model no longer takes betrayal tests for the rest of
-      the battle.'
-    es: null
+    en: 'Each turn, roll D6 for every Hobgoblin Henchman that is not engaged in close combat. Only a roll
+      of 1 fails the betrayal test. If the test fails, roll another D6 and apply the following result:
+      1 = Traitor: the opponent immediately takes control of the model; in a multiplayer game it joins
+      the opposing warband with the highest rating. The model must continue to take betrayal tests normally
+      on subsequent turns. 2-5 = I Prefer Not to Die!: the model may not charge or shoot that turn, but
+      may perform other actions. 6 = Blood for Morko!!!: the model no longer takes betrayal tests for
+      the rest of the battle.'
+    es: 'Cada asalto, tira D6 por cada secuaz Hobgoblin que no esté empeñado en combate cuerpo a cuerpo.
+      Solo un resultado de 1 falla el chequeo de traición. Si el chequeo falla, tira otro D6 y aplica
+      el siguiente resultado: 1 = Traidor: el oponente toma inmediatamente el control del modelo; en una
+      partida multijugador se une a la banda rival con mayor valoración. El modelo debe seguir haciendo
+      los chequeos de traición con normalidad en los asaltos siguientes. 2-5 = ¡Prefiero no morir!: el
+      modelo no puede cargar ni disparar ese asalto, pero puede realizar otras acciones. 6 = ¡Sangre para
+      Morko!: el modelo ya no hace chequeos de traición por el resto de la batalla.'
   eligibility:
   - hobgoblin-warriors
   - archers
@@ -208,10 +229,10 @@ rules:
     section: Hobgoblin Raiders Special Rules / Wolf Riders
   name_i18n:
     en: Wolf Riders
-    es: null
+    es: Jinetes de lobos
   effect_i18n:
     en: Every Hobgoblin member of the warband has the ability to ride a Giant Wolf.
-    es: null
+    es: Cada miembro Hobgoblin de la banda tiene la capacidad de montar un Lobo Gigante.
   applies_to:
     band: true
   runtime:
@@ -226,19 +247,20 @@ rules:
 - id: band--hobgoblin-special-skills-moving-shot
   kind: warband_skill
   name: Moving Shot
-  effect: The Hero ignores the normal shooting penalty for moving. This skill may also be used while the Hero is mounted on
-    a Giant Wolf.
+  effect: The Hero ignores the normal shooting penalty for moving. This skill may also be used while the
+    Hero is mounted on a Giant Wolf.
   source:
     manual: khemri
     printed_page: 79
     section: Hobgoblin Special Skills / Moving Shot
   name_i18n:
     en: Moving Shot
-    es: null
+    es: Disparo en movimiento
   effect_i18n:
-    en: The Hero ignores the normal shooting penalty for moving. This skill may also be used while the Hero is mounted on
-      a Giant Wolf.
-    es: null
+    en: The Hero ignores the normal shooting penalty for moving. This skill may also be used while the
+      Hero is mounted on a Giant Wolf.
+    es: El Héroe ignora la penalización normal de disparo por moverse. Esta habilidad también puede usarse
+      mientras el Héroe esté montado en un Lobo Gigante.
   eligibility:
   - khann
   - hobgoblin-shaman
@@ -258,19 +280,20 @@ rules:
 - id: band--hobgoblin-special-skills-disguised
   kind: warband_skill
   name: Disguised
-  effect: The Hero deploys after the opposing warband and may be placed anywhere outside the opposing warband's line of sight
-    and more than 12" from every enemy model.
+  effect: The Hero deploys after the opposing warband and may be placed anywhere outside the opposing
+    warband's line of sight and more than 12" from every enemy model.
   source:
     manual: khemri
     printed_page: 79
     section: Hobgoblin Special Skills / Disguised
   name_i18n:
     en: Disguised
-    es: null
+    es: Disfrazado
   effect_i18n:
-    en: The Hero deploys after the opposing warband and may be placed anywhere outside the opposing warband's line of sight
-      and more than 12" from every enemy model.
-    es: null
+    en: The Hero deploys after the opposing warband and may be placed anywhere outside the opposing warband's
+      line of sight and more than 12" from every enemy model.
+    es: El Héroe se despliega después de la banda rival y puede colocarse en cualquier punto fuera de
+      la línea de visión de la banda rival y a más de 12" de cada modelo enemigo.
   eligibility:
   - khann
   - hobgoblin-shaman
@@ -290,17 +313,19 @@ rules:
 - id: band--hobgoblin-special-skills-unpredictable
   kind: warband_skill
   name: Unpredictable
-  effect: The Hero may declare one of its attacks Unpredictable; that attack cannot be parried by the opponent.
+  effect: The Hero may declare one of its attacks Unpredictable; that attack cannot be parried by the
+    opponent.
   source:
     manual: khemri
     printed_page: 79
     section: Hobgoblin Special Skills / Unpredictable
   name_i18n:
     en: Unpredictable
-    es: null
+    es: Impredecible
   effect_i18n:
     en: The Hero may declare one of its attacks Unpredictable; that attack cannot be parried by the opponent.
-    es: null
+    es: El Héroe puede declarar uno de sus ataques Impredecible; ese ataque no puede ser emparañado por
+      el oponente.
   eligibility:
   - khann
   - hobgoblin-shaman
@@ -321,23 +346,27 @@ rules:
 - id: band--hobgoblin-special-skills-wolf-tamer
   kind: warband_skill
   name: Wolf Tamer
-  effect: The Hero may direct one purchased Giant Wolf in battle without riding it; that wolf still counts toward the warband's
-    normal 0-5 Giant Wolf limit. If the Hero rides a Giant Wolf, it may re-roll failed Riding tests but must accept the second
-    result. The Hero may also voluntarily dismount whenever desired without requiring the wolf to take the normal Leadership
-    test for being left without a rider.
+  effect: The Hero may direct one purchased Giant Wolf in battle without riding it; that wolf still counts
+    toward the warband's normal 0-5 Giant Wolf limit. If the Hero rides a Giant Wolf, it may re-roll failed
+    Riding tests but must accept the second result. The Hero may also voluntarily dismount whenever desired
+    without requiring the wolf to take the normal Leadership test for being left without a rider.
   source:
     manual: khemri
     printed_page: 79
     section: Hobgoblin Special Skills / Wolf Tamer
   name_i18n:
     en: Wolf Tamer
-    es: null
+    es: Domalobos
   effect_i18n:
-    en: The Hero may direct one purchased Giant Wolf in battle without riding it; that wolf still counts toward the warband's
-      normal 0-5 Giant Wolf limit. If the Hero rides a Giant Wolf, it may re-roll failed Riding tests but must accept the
-      second result. The Hero may also voluntarily dismount whenever desired without requiring the wolf to take the normal
-      Leadership test for being left without a rider.
-    es: null
+    en: The Hero may direct one purchased Giant Wolf in battle without riding it; that wolf still counts
+      toward the warband's normal 0-5 Giant Wolf limit. If the Hero rides a Giant Wolf, it may re-roll
+      failed Riding tests but must accept the second result. The Hero may also voluntarily dismount whenever
+      desired without requiring the wolf to take the normal Leadership test for being left without a rider.
+    es: El Héroe puede dirigir en batalla un Lobo Gigante comprado sin montarlo; ese lobo sigue contando
+      para el límite normal de 0-5 Lobos Gigantes de la banda. Si el Héroe monta un Lobo Gigante, puede
+      repetir los chequeos de Equitación fallados, pero debe aceptar el segundo resultado. El Héroe también
+      puede desmontar voluntariamente cuando lo desee, sin necesidad de que el lobo haga el chequeo normal
+      de Liderazgo por quedarse sin jinete.
   eligibility:
   - khann
   - hobgoblin-shaman
@@ -357,19 +386,20 @@ rules:
 - id: band--hobgoblin-special-skills-ambush
   kind: warband_skill
   name: Ambush
-  effect: Khann only. After both warbands have deployed and before the first turn begins, 1D3 members of the warband may each
-    make one free Movement turn.
+  effect: Khann only. After both warbands have deployed and before the first turn begins, 1D3 members
+    of the warband may each make one free Movement turn.
   source:
     manual: khemri
     printed_page: 79
     section: Hobgoblin Special Skills / Ambush
   name_i18n:
     en: Ambush
-    es: null
+    es: Emboscada
   effect_i18n:
-    en: Khann only. After both warbands have deployed and before the first turn begins, 1D3 members of the warband may each
-      make one free Movement turn.
-    es: null
+    en: Khann only. After both warbands have deployed and before the first turn begins, 1D3 members of
+      the warband may each make one free Movement turn.
+    es: Solo el Khann. Después de que ambas bandas se hayan desplegado y antes de que comience el primer
+      asalto, D3 miembros de la banda pueden hacer cada uno un asalto de Movimiento gratis.
   eligibility:
   - khann
   applies_to:

@@ -269,7 +269,7 @@ DEEP_SCENARIOS: tuple[BenchmarkScenario, ...] = (
     # effect axes represented by the current runtime scope. NumPy matches the
     # modular oracle on every pair at 10k
     # duels; the native port still lags on several (see
-    # docs/tasks/generate-test-reports.md, "Current status").
+    # docs/guides/develop-and-release.md, "Current status").
     # 1. Undead family: sigmarite hammer bonus vs undead_or_possessed,
     #    poison immunity and ignore-pain injury resolution.
     BenchmarkScenario(

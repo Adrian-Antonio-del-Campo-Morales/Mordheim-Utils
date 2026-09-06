@@ -3,11 +3,8 @@ band_id: shadow-warriors
 rules:
 - id: shadow-master--leader
   name: Leader
-  effect: 'Any warrior within 6" of the Shadow
-
-    Master may use his Leadership characteristic
-
-    when taking any Leadership tests.'
+  effect: Any warrior within 6" of the Shadow Master may use his Leadership characteristic when taking
+    any Leadership tests.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -15,14 +12,15 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: 'Any warrior within 6" of the Shadow
 
       Master may use his Leadership characteristic
 
       when taking any Leadership tests.'
-    es: null
+    es: Cualquier guerrero a 6" del Maestro de las Sombras puede usar su característica de Liderazgo al
+      realizar cualquier chequeo de Liderazgo.
   applies_to:
     profile_ids:
     - shadow-master
@@ -37,7 +35,8 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: shadow-weaver--wizard
   name: Wizard
-  effect: The Shadow Weaver is a wizard and may use Shadow Magic. The spell list itself is not modelled in this file.
+  effect: The Shadow Weaver is a wizard and may use Shadow Magic. The spell list itself is not modelled
+    in this file.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -45,10 +44,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     en: Wizard
-    es: null
+    es: Mago
   effect_i18n:
-    en: The Shadow Weaver is a wizard and may use Shadow Magic. The spell list itself is not modelled in this file.
-    es: null
+    en: The Shadow Weaver is a wizard and may use Shadow Magic. The spell list itself is not modelled
+      in this file.
+    es: El Tejedor de Sombras es un mago y puede usar la Magia de Sombras. La propia lista de hechizos
+      no está modelada en este fichero.
   applies_to:
     profile_ids:
     - shadow-weaver
@@ -63,7 +64,8 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--hate-dark-elves
   name: Hate Dark Elves
-  effect: All warriors in the Shadow Warrior warband, excluding Hired Swords, are subject to Hatred against Dark Elves.
+  effect: All warriors in the Shadow Warrior warband, excluding Hired Swords, are subject to Hatred against
+    Dark Elves.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -71,10 +73,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     en: Hate Dark Elves
-    es: null
+    es: Odio a los elfos oscuros
   effect_i18n:
-    en: All warriors in the Shadow Warrior warband, excluding Hired Swords, are subject to Hatred against Dark Elves.
-    es: null
+    en: All warriors in the Shadow Warrior warband, excluding Hired Swords, are subject to Hatred against
+      Dark Elves.
+    es: Todos los guerreros de la banda de Guerreros de las Sombras, exceptuando las Espadas a sueldo,
+      están sujetos a Odio contra los elfos oscuros.
   applies_to:
     band: true
   runtime:
@@ -88,7 +92,9 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--excellent-sight
   name: Excellent Sight
-  effect: 'All Elves in the warband spot Hidden enemies at twice the normal distance: twice their Initiative in inches.'
+  effect: >-
+    All Elves in the warband spot Hidden enemies at twice the normal distance: twice their
+    Initiative in inches.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -96,10 +102,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     en: Excellent Sight
-    es: null
+    es: Vista excelente
   effect_i18n:
-    en: 'All Elves in the warband spot Hidden enemies at twice the normal distance: twice their Initiative in inches.'
-    es: null
+    en: 'All Elves in the warband spot Hidden enemies at twice the normal distance: twice their Initiative
+      in inches.'
+    es: 'Todos los elfos de la banda detectan enemigos Ocultos al doble de la distancia normal: el doble
+      de su Iniciativa, en pulgadas.'
   applies_to:
     band: true
   runtime:
@@ -121,10 +129,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     en: Distaste for Poison
-    es: null
+    es: Repulsa por el veneno
   effect_i18n:
     en: Warriors in the Shadow Warrior warband may not use poisons of any type.
-    es: null
+    es: Los guerreros de la banda de Guerreros de las Sombras no pueden usar venenos de ningún tipo.
   applies_to:
     band: true
   runtime:
@@ -142,8 +150,8 @@ rules:
           - poison
 - id: band--unforgiving
   name: Unforgiving
-  effect: In multiplayer games, the Shadow Warrior warband may never form an alliance with a warband of a Chaotic nature,
-    including Possessed, Skaven, Beastmen and Dark Elves.
+  effect: In multiplayer games, the Shadow Warrior warband may never form an alliance with a warband of
+    a Chaotic nature, including Possessed, Skaven, Beastmen and Dark Elves.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -151,11 +159,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     en: Unforgiving
-    es: null
+    es: Implacables
   effect_i18n:
-    en: In multiplayer games, the Shadow Warrior warband may never form an alliance with a warband of a Chaotic nature, including
-      Possessed, Skaven, Beastmen and Dark Elves.
-    es: null
+    en: In multiplayer games, the Shadow Warrior warband may never form an alliance with a warband of
+      a Chaotic nature, including Possessed, Skaven, Beastmen and Dark Elves.
+    es: En partidas multijugador, la banda de Guerreros de las Sombras nunca puede formar una alianza
+      con una banda de naturaleza Caótica, incluyendo Poseídos, Skaven, Hombres bestia y Elfos Oscuros.
   applies_to:
     band: true
   runtime:
@@ -169,8 +178,9 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--tolerant
   name: Tolerant
-  effect: The warband may hire Hired Swords that are not Chaotic or evil and do not specialise in poison. Examples explicitly
-    barred by the source include Skaven, Possessed, Beastmen, Dark Elves, Undead and Assassins.
+  effect: The warband may hire Hired Swords that are not Chaotic or evil and do not specialise in poison.
+    Examples explicitly barred by the source include Skaven, Possessed, Beastmen, Dark Elves, Undead and
+    Assassins.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -178,11 +188,14 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     en: Tolerant
-    es: null
+    es: Tolerantes
   effect_i18n:
-    en: The warband may hire Hired Swords that are not Chaotic or evil and do not specialise in poison. Examples explicitly
-      barred by the source include Skaven, Possessed, Beastmen, Dark Elves, Undead and Assassins.
-    es: null
+    en: The warband may hire Hired Swords that are not Chaotic or evil and do not specialise in poison.
+      Examples explicitly barred by the source include Skaven, Possessed, Beastmen, Dark Elves, Undead
+      and Assassins.
+    es: La banda puede contratar Espadas a sueldo que no sean Caóticas o malignas y que no se especialicen
+      en veneno. Ejemplos explícitamente vetados por la fuente incluyen Skaven, Poseídos, Hombres bestia,
+      Elfos Oscuros, Muertos Vivientes y Asesinos.
   applies_to:
     band: true
   runtime:
@@ -193,10 +206,12 @@ rules:
     - id: unimplemented.shadow-warriors.band.tolerant
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--elf-maximum-characteristics
   name: Elf Maximum Characteristics
-  effect: 'Shadow Warriors are Elves and use the Elf racial maximum profile (campaign.limit.racial-maximum.elf).'
+  effect: Shadow Warriors are Elves and use the Elf racial maximum profile (campaign.limit.racial-maximum.elf).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -204,10 +219,10 @@ rules:
     url: https://mordheimer.net/docs/campaigns/experience
   name_i18n:
     en: Elf Maximum Characteristics
-    es: null
+    es: Características máximas élficas
   effect_i18n:
-    en: 'Shadow Warriors are Elves and use the Elf racial maximum profile (campaign.limit.racial-maximum.elf).'
-    es: null
+    en: Shadow Warriors are Elves and use the Elf racial maximum profile (campaign.limit.racial-maximum.elf).
+    es: Los Guerreros de las Sombras son elfos y usan el perfil racial máximo élfico (campaign.limit.racial-maximum.elf).
   applies_to:
     band: true
   runtime:
@@ -218,13 +233,16 @@ rules:
     - id: unimplemented.shadow-warriors.band.elf-maximum-characteristics
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--shadow-warrior-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
-  effect: An Elf with this skill is always placed on the battlefield after the opposing warband and can be placed anywhere
-    on the table as long as it is out of sight of the opposing warband and more than 12" away from any enemy model. If both
-    players have models which infiltrate, roll a D6 for each, and the lowest roll sets up first.
+  effect: An Elf with this skill is always placed on the battlefield after the opposing warband and can
+    be placed anywhere on the table as long as it is out of sight of the opposing warband and more than
+    12" away from any enemy model. If both players have models which infiltrate, roll a D6 for each, and
+    the lowest roll sets up first.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -232,12 +250,16 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     en: Infiltration
-    es: null
+    es: Infiltración
   effect_i18n:
-    en: An Elf with this skill is always placed on the battlefield after the opposing warband and can be placed anywhere on
-      the table as long as it is out of sight of the opposing warband and more than 12" away from any enemy model. If both
-      players have models which infiltrate, roll a D6 for each, and the lowest roll sets up first.
-    es: null
+    en: An Elf with this skill is always placed on the battlefield after the opposing warband and can
+      be placed anywhere on the table as long as it is out of sight of the opposing warband and more than
+      12" away from any enemy model. If both players have models which infiltrate, roll a D6 for each,
+      and the lowest roll sets up first.
+    es: Un elfo con esta habilidad siempre se despliega en el campo de batalla después de la banda contraria
+      y puede situarse en cualquier lugar de la mesa siempre que esté fuera de la línea de visión de la
+      banda contraria y a más de 12" de cualquier miniatura enemiga. Si ambos jugadores tienen miniaturas
+      que infiltran, tira un D6 por cada una, y la tirada más baja despliega primero.
   applies_to:
     band: true
   runtime:
@@ -252,17 +274,9 @@ rules:
 - id: band--shadow-warrior-special-skills-see-in-shadows
   kind: warband_skill
   name: See in Shadows
-  effect: 'The warrior''s senses have become especially
-
-    keen from years spent walking the shadows.
-
-    As long as he has movement to reach them,
-
-    the warrior may always roll to charge
-
-    opponents he cannot see (instead of the
-
-    normal 4").'
+  effect: The warrior's senses have become especially keen from years spent walking the shadows. As long
+    as he has movement to reach them, the warrior may always roll to charge opponents he cannot see (instead
+    of the normal 4").
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -270,7 +284,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     en: See in Shadows
-    es: null
+    es: Ver en las sombras
   effect_i18n:
     en: 'The warrior''s senses have become especially
 
@@ -283,7 +297,9 @@ rules:
       opponents he cannot see (instead of the
 
       normal 4").'
-    es: null
+    es: Los sentidos del guerrero se han agudizado especialmente tras años recorriendo las sombras. Mientras
+      tenga movimiento suficiente para alcanzarlos, el guerrero siempre puede tirar para cargar contra
+      oponentes que no puede ver (en lugar de los 4" normales).
   applies_to:
     band: true
   runtime:
@@ -298,19 +314,9 @@ rules:
 - id: band--shadow-warrior-special-skills-hide-in-shadows
   kind: warband_skill
   name: Hide in Shadows
-  effect: 'Over time Shadow Warriors have learned how
-
-    to freeze in place and remain undetected,
-
-    even from the heightened senses of their Dark
-
-    Elf cousins. An enemy warrior attempting to
-
-    detect this warrior when he is Hidden must
-
-    halve his Initiative before measuring the
-
-    distance.'
+  effect: Over time Shadow Warriors have learned how to freeze in place and remain undetected, even from
+    the heightened senses of their Dark Elf cousins. An enemy warrior attempting to detect this warrior
+    when he is Hidden must halve his Initiative before measuring the distance.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -318,7 +324,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     en: Hide in Shadows
-    es: null
+    es: Ocultarse en las sombras
   effect_i18n:
     en: 'Over time Shadow Warriors have learned how
 
@@ -333,7 +339,10 @@ rules:
       halve his Initiative before measuring the
 
       distance.'
-    es: null
+    es: Con el tiempo, los Guerreros de las Sombras han aprendido a quedar inmóviles y pasar inadvertidos,
+      incluso ante los sentidos agudizados de sus primos elfos oscuros. Un guerrero enemigo que intente
+      detectar a este guerrero cuando esté Oculto debe dividir su Iniciativa a la mitad antes de medir
+      la distancia.
   applies_to:
     band: true
   runtime:
@@ -348,10 +357,11 @@ rules:
 - id: band--shadow-warrior-special-skills-sniper
   kind: warband_skill
   name: Sniper
-  effect: Long years of guerrilla warfare against the Dark Elves have taught Shadow Warriors how to strike from the shadows
-    without being seen. If Hidden, a warrior with this skill may shoot or cast spells and still remain Hidden. If his target
-    is not immediately taken out of action by the Sniper they get to test against their Initiative in an attempt to spot him.
-    A successful test means that the Sniper has been spotted and is no longer hidden.
+  effect: Long years of guerrilla warfare against the Dark Elves have taught Shadow Warriors how to strike
+    from the shadows without being seen. If Hidden, a warrior with this skill may shoot or cast spells
+    and still remain Hidden. If his target is not immediately taken out of action by the Sniper they get
+    to test against their Initiative in an attempt to spot him. A successful test means that the Sniper
+    has been spotted and is no longer hidden.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -359,13 +369,18 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     en: Sniper
-    es: null
+    es: Francotirador
   effect_i18n:
-    en: Long years of guerrilla warfare against the Dark Elves have taught Shadow Warriors how to strike from the shadows
-      without being seen. If Hidden, a warrior with this skill may shoot or cast spells and still remain Hidden. If his target
-      is not immediately taken out of action by the Sniper they get to test against their Initiative in an attempt to spot
-      him. A successful test means that the Sniper has been spotted and is no longer hidden.
-    es: null
+    en: Long years of guerrilla warfare against the Dark Elves have taught Shadow Warriors how to strike
+      from the shadows without being seen. If Hidden, a warrior with this skill may shoot or cast spells
+      and still remain Hidden. If his target is not immediately taken out of action by the Sniper they
+      get to test against their Initiative in an attempt to spot him. A successful test means that the
+      Sniper has been spotted and is no longer hidden.
+    es: Los largos años de guerra de guerrillas contra los Elfos Oscuros han enseñado a los Guerreros
+      de las Sombras a golpear desde las sombras sin ser vistos. Si está Oculto, un guerrero con esta
+      habilidad puede disparar o lanzar hechizos y seguir Oculto. Si su objetivo no es retirado del combate
+      inmediatamente por el Francotirador, este puede chequear contra su Iniciativa en un intento de descubrirlo.
+      Un chequeo exitoso significa que el Francotirador ha sido descubierto y ya no está oculto.
   applies_to:
     band: true
   runtime:
@@ -380,21 +395,10 @@ rules:
 - id: band--shadow-warrior-special-skills-powerful-build
   kind: warband_skill
   name: Powerful Build
-  effect: 'The warrior is strongly built for an Elf, and is
-
-    capable of feats of strength not often seen
-
-    among the people of Ulthuan. A warrior with
-
-    this skill may choose skills from the Strength
-
-    skills table from now on. This skill may not be
-
-    taken by Shadow Weavers. There may never
-
-    be more than two Elves with this skill in the
-
-    warband at any one time.'
+  effect: The warrior is strongly built for an Elf, and is capable of feats of strength not often seen
+    among the people of Ulthuan. A warrior with this skill may choose skills from the Strength skills
+    table from now on. This skill may not be taken by Shadow Weavers. There may never be more than two
+    Elves with this skill in the warband at any one time.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -402,7 +406,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     en: Powerful Build
-    es: null
+    es: Complexión poderosa
   effect_i18n:
     en: 'The warrior is strongly built for an Elf, and is
 
@@ -419,7 +423,11 @@ rules:
       be more than two Elves with this skill in the
 
       warband at any one time.'
-    es: null
+    es: El guerrero está fuertemente constituido para ser un elfo, y es capaz de proezas de fuerza que
+      no se ven a menudo entre el pueblo de Ulthuan. Un guerrero con esta habilidad puede elegir habilidades
+      de la tabla de habilidades de Fuerza de ahora en adelante. Esta habilidad no puede ser tomada por
+      los Tejedores de Sombras. Nunca puede haber más de dos elfos con esta habilidad en la banda al mismo
+      tiempo.
   applies_to:
     band: true
   eligibility:
@@ -444,31 +452,12 @@ rules:
 - id: band--shadow-warrior-special-skills-master-of-runes
   kind: warband_skill
   name: Master of Runes
-  effect: 'The Shadow Weaver has learned to harness
-
-    the power of the High Elven runes of power
-
-    (see Elven Runestones, below) to a degree
-
-    few mages attain. When using Elven
-
-    Runestones, the mage is +1 to his dispel roll.
-
-    In addition, the mage can inscribe the
-
-    weapons and armour of one of his fellow
-
-    warriors with Elven runes. One member of the
-
-    warband may reroll a single failed armour
-
-    save or Parry roll once per battle. After a
-
-    single battle, the runes lose their glamour and
-
-    must be redone. This skill may only be taken
-
-    by Shadow Weavers.'
+  effect: The Shadow Weaver has learned to harness the power of the High Elven runes of power (see Elven
+    Runestones, below) to a degree few mages attain. When using Elven Runestones, the mage is +1 to his
+    dispel roll. In addition, the mage can inscribe the weapons and armour of one of his fellow warriors
+    with Elven runes. One member of the warband may reroll a single failed armour save or Parry roll once
+    per battle. After a single battle, the runes lose their glamour and must be redone. This skill may
+    only be taken by Shadow Weavers.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -476,7 +465,7 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
   name_i18n:
     en: Master of Runes
-    es: null
+    es: Maestro de runas
   effect_i18n:
     en: 'The Shadow Weaver has learned to harness
 
@@ -503,7 +492,13 @@ rules:
       must be redone. This skill may only be taken
 
       by Shadow Weavers.'
-    es: null
+    es: El Tejedor de Sombras ha aprendido a aprovechar el poder de las runas de poder de los Altos Elfos
+      (ver Piedras Rúnicas Élficas, más abajo) hasta un grado que pocos magos alcanzan. Al usar Piedras
+      Rúnicas Élficas, el mago obtiene +1 a su tirada de disipar. Además, el mago puede grabar las armas
+      y armaduras de uno de sus guerreros compañeros con runas élficas. Un miembro de la banda puede repetir
+      una única salvación de armadura fallida o tirada de Aturdir una vez por batalla. Tras una sola batalla,
+      las runas pierden su encanto y deben rehacerse. Esta habilidad solo puede ser tomada por los Tejedores
+      de Sombras.
   eligibility:
   - shadow-weaver
   applies_to:
@@ -516,4 +511,6 @@ rules:
     - id: unimplemented.shadow-warriors.band.shadow-warrior-special-skills-master-of-runes
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.

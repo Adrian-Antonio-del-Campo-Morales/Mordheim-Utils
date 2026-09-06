@@ -226,6 +226,8 @@ cdef struct SourceC:
     bint counter_cutlass
     bint flammable_double
     bint nightshade
+    bint disease_dagger
+    bint luck_wound
     bint spider_spittle
     bint web_of_steel
     bint poisonous_injury
@@ -257,6 +259,8 @@ cdef struct FighterC:
     int armour_save_floor
     int out_of_action_threshold
     bint poison_immune
+    bint luck
+    bint infection_immune
     int incoming_strength_modifier
     int incoming_attacks_modifier
     bint thick_skull
@@ -365,6 +369,7 @@ cdef struct DuelC:
     SourceC hug_first, hug_second
     SourceC acid_first, acid_second
     SourceC counter_first, counter_second
+    SourceC infection_first, infection_second
 
 
 cdef struct StateC:
@@ -466,6 +471,8 @@ cdef void fill_source(object d, SourceC* out) except *:
     out.counter_cutlass = _flag(f, "counter_cutlass")
     out.flammable_double = _flag(f, "flammable_double")
     out.nightshade = _flag(f, "nightshade")
+    out.disease_dagger = _flag(f, "disease_dagger")
+    out.luck_wound = _flag(f, "luck_wound")
     out.spider_spittle = _flag(f, "spider_spittle")
     out.web_of_steel = _flag(f, "web_of_steel")
     out.poisonous_injury = _flag(f, "poisonous_injury")
@@ -482,7 +489,7 @@ cdef void fill_source(object d, SourceC* out) except *:
 cdef void fill_fighter(object d, FighterC* out, object sources, object reactions,
                        SourceC* bull, SourceC* body, SourceC* spines, SourceC* backlash,
                        SourceC* fire, SourceC* entangle, SourceC* hug, SourceC* acid,
-                       SourceC* counter) except *:
+                       SourceC* counter, SourceC* infection) except *:
     out.ws = _int(d, "ws")
     out.s = _int(d, "s")
     out.t = _int(d, "t")
@@ -504,6 +511,8 @@ cdef void fill_fighter(object d, FighterC* out, object sources, object reactions
     out.armour_save_floor = _int(d, "armour_save_floor")
     out.out_of_action_threshold = _int(d, "out_of_action_threshold")
     out.poison_immune = _flag(d, "poison_immune")
+    out.luck = _flag(d, "luck")
+    out.infection_immune = _flag(d, "infection_immune")
     out.incoming_strength_modifier = _int(d, "incoming_strength_modifier")
     out.incoming_attacks_modifier = _int(d, "incoming_attacks_modifier")
     out.thick_skull = _flag(d, "thick_skull")
@@ -602,6 +611,7 @@ cdef void fill_fighter(object d, FighterC* out, object sources, object reactions
     fill_source(reactions["hug"], hug)
     fill_source(reactions["acid"], acid)
     fill_source(reactions["counter"], counter)
+    fill_source(reactions["infection"], infection)
     cdef object rc_list = d.get("random_characteristics") or ()
     out.random_characteristics_count = min(len(rc_list), MAX_RANDOM_CHARACTERISTICS)
     cdef dict stat_index = {"WS": 0, "S": 1, "T": 2, "I": 3, "A": 4}
@@ -1069,6 +1079,9 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
     cdef int* spittle_targets = NULL
     cdef int* spittle_rows = NULL
     cdef int8_t* spittle_results = NULL
+    cdef int* infection_rows = NULL
+    cdef int* infection_targets = NULL
+    cdef int8_t* infection_results = NULL
     cdef int* injury_rows = NULL
     cdef int8_t* injury_crit = NULL
     cdef int8_t* injury_rolls = NULL
@@ -1085,7 +1098,9 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
     cdef int* hr2 = NULL
     cdef int* hp2 = NULL
     cdef SourceC* acid_src = &d.acid_first if atk_side == 1 else &d.acid_second
+    cdef SourceC* infection_src = &d.infection_first if atk_side == 0 else &d.infection_second
     cdef PreparedC acid_prep
+    cdef PreparedC infection_prep
     cdef int n_react = 0, prepared_ok = 0
     cdef int inj_count = 0
     cdef int pos = 0
@@ -1218,6 +1233,61 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
             for i in range(n_spittle):
                 if not spittle_results[i]:
                     s_def.condition[spittle_rows[i]] = PARALYZED
+        # Disease Dagger adds one ordinary automatic wound on a natural-six
+        # hit unless the defender has poison/disease immunity. Resolve it
+        # before the dagger's ordinary wound, matching modular.attacks.
+        if src.disease_dagger and not defender.infection_immune:
+            infection_rows = <int*>malloc(n * sizeof(int))
+            infection_targets = <int*>malloc(n * sizeof(int))
+            infection_results = <int8_t*>malloc(n * sizeof(int8_t))
+            if infection_rows == NULL or infection_targets == NULL or infection_results == NULL:
+                rc = -1
+                return rc
+            n_spittle = 0
+            for i in range(n):
+                if hit_values[i] == 6:
+                    infection_rows[n_spittle] = hit_rows[i]
+                    infection_targets[n_spittle] = s_def.toughness[hit_rows[i]]
+                    n_spittle += 1
+            if n_spittle:
+                characteristic_tests_c(defender, infection_rows, n_spittle,
+                                       infection_targets, rng, 0, infection_results)
+                k = 0
+                for i in range(n_spittle):
+                    if not infection_results[i]:
+                        infection_rows[k] = infection_rows[i]
+                        k += 1
+                if k:
+                    if prepare_attack_c(atk, defender, infection_src, infection_rows, k,
+                                         charging, s_atk, s_def, rng, first_round,
+                                         &infection_prep) < 0:
+                        rc = -1
+                        return rc
+                    if infection_prep.active_n:
+                        if resolve_weapon_c(d, atk_side, infection_src, &infection_prep,
+                                             charging, s_atk, s_def, rng, first_round,
+                                             phase_condition, 1, NULL, 0, 0, decisions,
+                                             always_accept, attacker_py, defender_py,
+                                             None) < 0:
+                            prepared_free(&infection_prep)
+                            rc = -1
+                            return rc
+                        prepared_free(&infection_prep)
+                    k = 0
+                    for i in range(n):
+                        if s_def.condition[hit_rows[i]] != OUT:
+                            hit_rows[k] = hit_rows[i]
+                            hit_positions[k] = hit_positions[i]
+                            hit_values[k] = hit_values[i]
+                            strength_hits[k] = strength_hits[i]
+                            armour_strength_hits[k] = armour_strength_hits[i]
+                            k += 1
+                    n = k
+            free(infection_rows); infection_rows = NULL
+            free(infection_targets); infection_targets = NULL
+            free(infection_results); infection_results = NULL
+            if n == 0:
+                return rc
         # Automatic tagged wounds omit the die. Lotus/Wight retain a wound
         # while allowing the ordinary critical attempt.
         if src.automatic_wound_tag:
@@ -1275,6 +1345,15 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
             for i in range(n):
                 if wounded[i] and wound_rolls[i] == 1:
                     wounded[i] = 0
+        # Luck rerolls one failed wound when not already spent on hit.
+        if src.luck_wound:
+            for i in range(n):
+                if not wounded[i] and not s_atk.luck_used[hit_rows[i]]:
+                    roll = rng_draw_safe(rng, 1, 6)
+                    wound_rolls[i] = <int8_t>roll
+                    critical_rolls[i] = <int8_t>roll
+                    wounded[i] = 1 if roll >= targets[i] else 0
+                    s_atk.luck_used[hit_rows[i]] = 1
         # Rerolled wound rolls (single full-array draw over the failed rows).
         if eff.v[<int>F_REROLL_WOUNDS]:
             rerolls = <int8_t*>malloc(n * sizeof(int8_t))
@@ -1377,6 +1456,21 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
                     t = 2
                 if rng_draw_safe(rng, 1, 6) >= t:
                     saved[i] = 1
+        if defender.luck:
+            for i in range(m):
+                row = wound_rows[i]
+                if save_target[i] <= 6 and not saved[i] and not s_def.luck_used[row]:
+                    if rng_draw_safe(rng, 1, 6) >= max(2, save_target[i]):
+                        saved[i] = 1
+                    s_def.luck_used[row] = 1
+                    break
+        if defender.mark:
+            for i in range(m):
+                row = wound_rows[i]
+                if save_target[i] <= 6 and not saved[i] and not s_def.mark_of_old_ones_used[row]:
+                    saved[i] = 1
+                    s_def.mark_of_old_ones_used[row] = 1
+                    break
         k = 0
         for i in range(m):
             if not saved[i]:
@@ -1513,7 +1607,9 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
         # Nightshade poison: initiative penalty per wound.
         if src.nightshade:
             for i in range(m):
-                s_def.initiative_penalty[wound_rows[i]] = <int8_t>(s_def.initiative_penalty[wound_rows[i]] + 1)
+                s_def.initiative_penalty[wound_rows[i]] = <int8_t>(
+                    s_def.initiative_penalty[wound_rows[i]] + damage_values[i]
+                )
         # Injury rolls: one per damage instance that reaches zero wounds.
         injury_rows = <int*>malloc(total * sizeof(int))
         injury_crit = <int8_t*>malloc(total * sizeof(int8_t))
@@ -1653,6 +1749,9 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
         free(spittle_targets)
         free(spittle_rows)
         free(spittle_results)
+        free(infection_rows)
+        free(infection_targets)
+        free(infection_results)
         free(injury_rows)
         free(injury_crit)
         free(injury_rolls)
@@ -1820,16 +1919,12 @@ cdef int parry_resolve_c(FighterC* defender, SourceC* src, int* hit_rows, int hi
             else:
                 if second > value and eligible[i]:
                     blocked[i] = 1
-    # Bookkeeping: every eligible attempt marks the row, but the remaining
-    # count is decremented once per distinct row.  NumPy's buffered fancy
-    # ``parry_remaining[rows] -= 1`` applies once per unique index even when
-    # a row has two eligible hits (parry capacity 2), so mirror that here.
+    # Bookkeeping: each eligible hit consumes one exceptional parry.
     for i in range(hit_n):
         row = hit_rows[i]
         if eligible[i]:
             def_state.parry_used[row] = 1
-            if i == 0 or row != hit_rows[i - 1]:
-                def_state.parry_remaining[row] = <int8_t>(def_state.parry_remaining[row] - 1)
+            def_state.parry_remaining[row] = <int8_t>(def_state.parry_remaining[row] - 1)
         if blocked[i]:
             out_parried[parried] = row
             parried += 1
@@ -2288,7 +2383,8 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
                 # Mirror the modular oracle's offer-from-the-highest-downwards.
                 # A natural six closes this defender's parry capacity for the
                 # whole attack pool. It cannot be replaced by a lower hit.
-                if any_c == 6 and not defender.parry_can_parry_six:
+                if (any_c == 6 and not defender.parry_can_parry_six
+                        and defender.parry_capacity < 2):
                     s_def.parry_remaining[row] = 0
                     continue
                 # A hit that cannot be parried (a cannot-be-parried effect or
@@ -2509,7 +2605,8 @@ cdef inline int effective_initiative_c(FighterC* f, StateC* s, int row) noexcept
 
 
 cdef int attack_count_c(FighterC* f, StateC* s, const int8_t* charging,
-                        bint first_round, int16_t* out, int count) except -1:
+                        const int8_t* player_turn, bint first_round,
+                        int16_t* out, int count) except -1:
     """Port of vectorized.attack_count (state.attacks as base_attacks)."""
     cdef int extra = f.extra_weapon_attack
     if f.fist_penalized:
@@ -2529,7 +2626,7 @@ cdef int attack_count_c(FighterC* f, StateC* s, const int8_t* charging,
             result += 1
         if f.art_bonus:
             result += 1
-        if f.inspiring:
+        if f.inspiring and player_turn[i]:
             result += 1
         if first_round:
             result += f.first_round_attacks_bonus
@@ -2641,6 +2738,38 @@ cdef int init_state_c(FighterC* f, StateC* s, int count, Rng* rng) except -1:
             elif d == 5:
                 s.strength[i] = <int16_t>(s.strength[i] - 1 if s.strength[i] > 1 else 1)
     return 0
+
+
+cdef void refresh_random_characteristics_c(FighterC* f, StateC* s,
+                                           const int* rows, int rows_n,
+                                           Rng* rng) noexcept:
+    """Refresh Condemned/Inconsistency WS, S, T and A per later turn."""
+    cdef int key, i, d, total, stat, dice, sides, bonus
+    cdef bint has_ws = 0
+    cdef bint has_s = 0
+    cdef bint has_t = 0
+    cdef bint has_a = 0
+    for key in range(f.random_characteristics_count):
+        stat = f.random_characteristics[key][0]
+        if stat == 0: has_ws = 1
+        elif stat == 1: has_s = 1
+        elif stat == 2: has_t = 1
+        elif stat == 4: has_a = 1
+    if not (has_ws and has_s and has_t and has_a):
+        return
+    for key in range(f.random_characteristics_count):
+        stat = f.random_characteristics[key][0]
+        dice = f.random_characteristics[key][1]
+        sides = f.random_characteristics[key][2]
+        bonus = f.random_characteristics[key][3]
+        for i in range(rows_n):
+            total = bonus
+            for d in range(dice):
+                total += rng_draw_safe(rng, 1, sides)
+            if stat == 0: s.weapon_skill[rows[i]] = <int16_t>total
+            elif stat == 1: s.strength[rows[i]] = <int16_t>total
+            elif stat == 2: s.toughness[rows[i]] = <int16_t>(total + f.toughness_bonus)
+            elif stat == 4: s.attacks[rows[i]] = <int16_t>total
 
 
 cdef int netter_charge_c(FighterC* netter, FighterC* target, const int* rows,
@@ -2926,6 +3055,8 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
     cdef int8_t* first_charges = <int8_t*>malloc(count)
     cdef int8_t* charge1 = <int8_t*>malloc(count)
     cdef int8_t* charge2 = <int8_t*>malloc(count)
+    cdef int8_t* player_turn1 = <int8_t*>malloc(count)
+    cdef int8_t* player_turn2 = <int8_t*>malloc(count)
     cdef int8_t* stood1 = <int8_t*>malloc(count)
     cdef int8_t* stood2 = <int8_t*>malloc(count)
     cdef int16_t* attacks1 = <int16_t*>malloc(count * sizeof(int16_t))
@@ -2962,6 +3093,7 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
             state_free(&s2)
             return -1
         if (first_charges == NULL or charge1 == NULL or charge2 == NULL
+                or player_turn1 == NULL or player_turn2 == NULL
                 or stood1 == NULL or stood2 == NULL or attacks1 == NULL
                 or attacks2 == NULL or p1 == NULL or p2 == NULL or ini1 == NULL
                 or ini2 == NULL or first_acts == NULL or ties == NULL
@@ -2987,6 +3119,8 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
                     if unresolved[i]:
                         active_rows[n_active] = i
                         n_active += 1
+                refresh_random_characteristics_c(&d.first, &s1, active_rows, n_active, &rng)
+                refresh_random_characteristics_c(&d.second, &s2, active_rows, n_active, &rng)
                 if sustain_force_of_will_c(&d.first, &s1, &rng, active_rows,
                                            n_active) < 0:
                     rc = -1
@@ -3080,6 +3214,8 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
             for i in range(count):
                 charge1[i] = first_charges[i] if first_round else 0
                 charge2[i] = (1 - first_charges[i]) if first_round else 0
+                player_turn1[i] = first_charges[i] if (round_index % 2 == 0) else (1 - first_charges[i])
+                player_turn2[i] = 1 - player_turn1[i]
             if first_round:
                 if d.first.netter:
                     n_rows = 0
@@ -3135,11 +3271,11 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
                     rc = -1
                     return rc
             # Attack counts (charged = the opponent's charging mask).
-            if attack_count_c(&d.first, &s1, charge1, first_round, attacks1,
+            if attack_count_c(&d.first, &s1, charge1, player_turn1, first_round, attacks1,
                               count) < 0:
                 rc = -1
                 return rc
-            if attack_count_c(&d.second, &s2, charge2, first_round, attacks2,
+            if attack_count_c(&d.second, &s2, charge2, player_turn2, first_round, attacks2,
                               count) < 0:
                 rc = -1
                 return rc
@@ -3308,6 +3444,7 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
         out_u[0] += count - wins_a - wins_b
     finally:
         free(first_charges); free(charge1); free(charge2)
+        free(player_turn1); free(player_turn2)
         free(stood1); free(stood2)
         free(attacks1); free(attacks2)
         free(p1); free(p2); free(ini1); free(ini2)
@@ -3331,12 +3468,12 @@ cdef int _run_batch(object ctx, int count, uint64_t seed, int maximum_rounds,
                  ctx["reactions_first"], &d.bull_first, &d.body_first,
                  &d.spines_first, &d.backlash_first, &d.fire_first,
                  &d.entangle_first, &d.hug_first, &d.acid_first,
-                 &d.counter_first)
+                 &d.counter_first, &d.infection_first)
     fill_fighter(ctx["second"], &d.second, ctx["sources_second"],
                  ctx["reactions_second"], &d.bull_second, &d.body_second,
                  &d.spines_second, &d.backlash_second, &d.fire_second,
                  &d.entangle_second, &d.hug_second, &d.acid_second,
-                 &d.counter_second)
+                 &d.counter_second, &d.infection_second)
     if simulate_batch_c(&d, count, seed, maximum_rounds, decisions, first_py,
                         second_py, a, b, u) < 0:
         return -1

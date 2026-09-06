@@ -237,7 +237,8 @@ def attack_count(fighter: CompiledFighter, charging: np.ndarray, first_round: bo
                  frenzy: np.ndarray | None = None, charged: np.ndarray | None = None,
                  attack_penalty: np.ndarray | None = None,
                  wounded: np.ndarray | None = None,
-                 base_attacks: np.ndarray | None = None) -> np.ndarray:
+                 base_attacks: np.ndarray | None = None,
+                 player_turn: bool = True) -> np.ndarray:
     effect = fighter.global_effects
     extra_weapon_attack = int(fighter.off_hand_attacks or fighter.main_weapon.paired)
     base = (
@@ -261,7 +262,7 @@ def attack_count(fighter: CompiledFighter, charging: np.ndarray, first_round: bo
     if has(effect,"skill.art-of-silent-death") and (has(fighter.main_weapon,"weapon.fist") or has(fighter.main_weapon,"weapon.fighting-claws")):
         result += 1
     if has(effect,"skill.inspiring-sermon"):
-        result += 1
+        result += np.asarray(player_turn, dtype=np.int16)
     if first_round:
         result += fighter.main_weapon.first_round_attacks_bonus
     if frenzy is not None:

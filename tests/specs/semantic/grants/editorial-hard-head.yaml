@@ -5,576 +5,1281 @@ specifications:
   category: local
   sources:
   - target: rule/mordheim/dwarf-rangers/band--hard-head/trait.concussion-immune
-    digest: 23a242596a7eacb7de76f6982f10b68d7db52a52b5bab8d0cc03fe5c93cd28eb
-  depends_on: [mechanic/weapon.mace, mechanic/skill.hard-to-kill]
-  interpretation: Special Rules / Hard Head cancels the easier stunning caused by maces and clubs.
-    All current profiles in this band are Dwarfs. With their Hard to Kill rule the Injury table
-    remains 1-2 Knocked Down, 3-5 Stunned, 6 Out even against Concussion. This is not immunity
-    to Stunned, nor does it change an ordinary sword attack.
+    digest: 048dbae08e6186980ff81579063df24008f2205fdc6742cf38c117f66e628f16
+  depends_on:
+  - mechanic/weapon.mace
+  - mechanic/skill.hard-to-kill
+  interpretation: Special Rules / Hard Head cancels the easier stunning caused by maces and clubs. All
+    current profiles in this band are Dwarfs. With their Hard to Kill rule the Injury table remains 1-2
+    Knocked Down, 3-5 Stunned, 6 Out even against Concussion. This is not immunity to Stunned, nor does
+    it change an ordinary sword attack.
   cases:
   - id: exact-recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: beardlings}
-    context: {rule_id: band--hard-head}
-    expect: {result.recipients: [apprentice-runesmith, beardlings, dwarf-clansmen, dwarf-crossbowmen, dwarf-longbeards, dwarf-troll-slayers, runesmith]}
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    context:
+      rule_id: band--hard-head
+    expect:
+      result.recipients:
+      - apprentice-runesmith
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-crossbowmen
+      - dwarf-longbeards
+      - dwarf-troll-slayers
+      - runesmith
   - id: granted-apprentice-runesmith
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: apprentice-runesmith}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: apprentice-runesmith
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-beardlings
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-dwarf-clansmen
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: dwarf-clansmen}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-dwarf-crossbowmen
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: dwarf-crossbowmen}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-crossbowmen
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-dwarf-longbeards
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: dwarf-longbeards}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-longbeards
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-dwarf-troll-slayers
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: dwarf-troll-slayers}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-runesmith
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: runesmith}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: mace-face-1
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 1}]
-    expect: {result.condition: KNOCKED_DOWN}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
   - id: mace-face-2
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
   - id: mace-face-3
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 3}]
-    expect: {result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
   - id: mace-face-4
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 4}]
-    expect: {result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
   - id: mace-face-5
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 5}]
-    expect: {result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
   - id: mace-face-6
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 6}]
-    expect: {result.condition: OUT}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
   - id: mace-complete-table
-    roles: [boundary, active]
+    roles:
+    - boundary
+    - active
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: beardlings}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
     distribution:
       observable: result.condition
       max_rolls: 1
-      expected: {KNOCKED_DOWN: 1/3, STUNNED: 1/2, OUT: 1/6}
+      expected:
+        KNOCKED_DOWN: 1/3
+        STUNNED: 1/2
+        OUT: 1/6
   - id: sword-complete-table
-    roles: [boundary, inactive]
+    roles:
+    - boundary
+    - inactive
     operation: injury
-    attacker: {main_weapon_id: weapon.sword}
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: beardlings}
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: beardlings
     distribution:
       observable: result.condition
       max_rolls: 1
-      expected: {KNOCKED_DOWN: 1/3, STUNNED: 1/2, OUT: 1/6}
+      expected:
+        KNOCKED_DOWN: 1/3
+        STUNNED: 1/2
+        OUT: 1/6
   - id: unprotected-opponent
-    roles: [inactive]
+    roles:
+    - inactive
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: STUNNED, context.concussion_immune: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+      context.concussion_immune: false
   mutations:
   - id: remove-concussion-immunity
     path: defender.global_effects.tags
-    value: [skill.hard-to-kill]
-    cases: [mace-face-2, mace-complete-table]
+    value:
+    - skill.hard-to-kill
+    cases:
+    - mace-face-2
+    - mace-complete-table
 - id: editorial-hard-head-sons-of-hashut
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
   - target: rule/mordheim/sons-of-hashut/band--hard-head/trait.concussion-immune
-    digest: 6813d1db823d73aa775f4845a688084745d76a9bc8c147e03689ee6ca07a1a8e
-  depends_on: [mechanic/weapon.mace, mechanic/skill.hard-to-kill]
-  interpretation: Special rules / Hard Head explicitly includes Chaos Dwarfs and Bull Centaurs, but not Hobgoblins.
-    Concussion cannot turn injury face 2 into Stunned. Hard to Kill independently preserves
+    digest: 89fb247c37639226b9359dfc1f14f7dd3b8b39a3715e95e9fc533265bc23c49d
+  depends_on:
+  - mechanic/weapon.mace
+  - mechanic/skill.hard-to-kill
+  interpretation: Special rules / Hard Head explicitly includes Chaos Dwarfs and Bull Centaurs, but not
+    Hobgoblins. Concussion cannot turn injury face 2 into Stunned. Hard to Kill independently preserves
     1-2 Knocked Down, 3-5 Stunned and 6 Out. Ordinary sword injuries are unchanged.
   cases:
   - id: exact-recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: bull-centaur}
-    context: {rule_id: band--hard-head}
-    expect: {result.recipients: [apprentice-sorcerer, blunderbuss-chaos-dwarfs, bull-centaur, chaos-dwarf-champions, chaos-dwarf-warriors]}
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    context:
+      rule_id: band--hard-head
+    expect:
+      result.recipients:
+      - apprentice-sorcerer
+      - blunderbuss-chaos-dwarfs
+      - bull-centaur
+      - chaos-dwarf-champions
+      - chaos-dwarf-warriors
   - id: granted-apprentice-sorcerer
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: apprentice-sorcerer}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: apprentice-sorcerer
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-blunderbuss-chaos-dwarfs
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: blunderbuss-chaos-dwarfs}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: blunderbuss-chaos-dwarfs
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-bull-centaur
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: bull-centaur}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-chaos-dwarf-champions
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: chaos-dwarf-champions}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-champions
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-chaos-dwarf-warriors
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: chaos-dwarf-warriors}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: chaos-dwarf-warriors
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: mace-face-1
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: bull-centaur}
-    rolls: [{key: test.injury, value: 1}]
-    expect: {result.condition: KNOCKED_DOWN}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
   - id: mace-face-2
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: bull-centaur}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
   - id: mace-face-3
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: bull-centaur}
-    rolls: [{key: test.injury, value: 3}]
-    expect: {result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
   - id: mace-face-4
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: bull-centaur}
-    rolls: [{key: test.injury, value: 4}]
-    expect: {result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
   - id: mace-face-5
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: bull-centaur}
-    rolls: [{key: test.injury, value: 5}]
-    expect: {result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
   - id: mace-face-6
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: bull-centaur}
-    rolls: [{key: test.injury, value: 6}]
-    expect: {result.condition: OUT}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
   - id: mace-complete-table
-    roles: [boundary, active]
+    roles:
+    - boundary
+    - active
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: bull-centaur}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
     distribution:
       observable: result.condition
       max_rolls: 1
-      expected: {KNOCKED_DOWN: 1/3, STUNNED: 1/2, OUT: 1/6}
+      expected:
+        KNOCKED_DOWN: 1/3
+        STUNNED: 1/2
+        OUT: 1/6
   - id: sword-complete-table
-    roles: [boundary, inactive]
+    roles:
+    - boundary
+    - inactive
     operation: injury
-    attacker: {main_weapon_id: weapon.sword}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: bull-centaur}
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: bull-centaur
     distribution:
       observable: result.condition
       max_rolls: 1
-      expected: {KNOCKED_DOWN: 1/3, STUNNED: 1/2, OUT: 1/6}
+      expected:
+        KNOCKED_DOWN: 1/3
+        STUNNED: 1/2
+        OUT: 1/6
   - id: excluded-hobgoblins
-    roles: [inactive]
+    roles:
+    - inactive
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: hobgoblins}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: STUNNED, context.concussion_immune: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: hobgoblins
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+      context.concussion_immune: false
   - id: hobgoblin-complete-table
-    roles: [boundary, inactive]
+    roles:
+    - boundary
+    - inactive
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: hobgoblins}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: hobgoblins
     distribution:
       observable: result.condition
       max_rolls: 1
-      expected: {KNOCKED_DOWN: 1/6, STUNNED: 1/2, OUT: 1/3}
+      expected:
+        KNOCKED_DOWN: 1/6
+        STUNNED: 1/2
+        OUT: 1/3
   mutations:
   - id: remove-concussion-immunity
     path: defender.global_effects.tags
-    value: [skill.hard-to-kill]
-    cases: [mace-face-2, mace-complete-table]
+    value:
+    - skill.hard-to-kill
+    cases:
+    - mace-face-2
+    - mace-complete-table
   - id: wrongly-protect-hobgoblins
     path: defender.global_effects.tags
-    value: [concussion_immune]
-    cases: [excluded-hobgoblins, hobgoblin-complete-table]
+    value:
+    - concussion_immune
+    cases:
+    - excluded-hobgoblins
+    - hobgoblin-complete-table
 - id: editorial-hard-head-chaos-streets-dwarf-treasure-hunters
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
   - target: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--hard-head/trait.concussion-immune
-    digest: 591590ee7add192bb251ff5352289ad7427ac54b250d93015f6c0c8526ffe825
-  depends_on: [mechanic/weapon.mace, mechanic/skill.hard-to-kill]
-  interpretation: Chaos in the Streets p.111 / Hard Head applies to all six current Dwarf profiles.
-    Concussion cannot turn injury face 2 into Stunned. Hard to Kill independently preserves
-    1-2 Knocked Down, 3-5 Stunned and 6 Out. Ordinary sword injuries are unchanged.
+    digest: 353651d6b80d28f348427a6e33a91e1aeb6c07550718fc9f2b56a51d22f843e6
+  depends_on:
+  - mechanic/weapon.mace
+  - mechanic/skill.hard-to-kill
+  interpretation: Chaos in the Streets p.111 / Hard Head applies to all six current Dwarf profiles. Concussion
+    cannot turn injury face 2 into Stunned. Hard to Kill independently preserves 1-2 Knocked Down, 3-5
+    Stunned and 6 Out. Ordinary sword injuries are unchanged.
   cases:
   - id: exact-recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: beardlings}
-    context: {rule_id: band--hard-head}
-    expect: {result.recipients: [beardlings, dwarf-clansmen, dwarf-engineer, dwarf-noble, dwarf-thunderers, dwarf-troll-slayers]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    context:
+      rule_id: band--hard-head
+    expect:
+      result.recipients:
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-thunderers
+      - dwarf-troll-slayers
   - id: granted-beardlings
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-dwarf-clansmen
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-clansmen}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-dwarf-engineer
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-engineer}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-dwarf-noble
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-noble}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-dwarf-thunderers
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-thunderers}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-dwarf-troll-slayers
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-troll-slayers}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: mace-face-1
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 1}]
-    expect: {result.condition: KNOCKED_DOWN}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
   - id: mace-face-2
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
   - id: mace-face-3
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 3}]
-    expect: {result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
   - id: mace-face-4
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 4}]
-    expect: {result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
   - id: mace-face-5
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 5}]
-    expect: {result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
   - id: mace-face-6
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 6}]
-    expect: {result.condition: OUT}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
   - id: mace-complete-table
-    roles: [boundary, active]
+    roles:
+    - boundary
+    - active
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: beardlings}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
     distribution:
       observable: result.condition
       max_rolls: 1
-      expected: {KNOCKED_DOWN: 1/3, STUNNED: 1/2, OUT: 1/6}
+      expected:
+        KNOCKED_DOWN: 1/3
+        STUNNED: 1/2
+        OUT: 1/6
   - id: sword-complete-table
-    roles: [boundary, inactive]
+    roles:
+    - boundary
+    - inactive
     operation: injury
-    attacker: {main_weapon_id: weapon.sword}
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: beardlings}
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: beardlings
     distribution:
       observable: result.condition
       max_rolls: 1
-      expected: {KNOCKED_DOWN: 1/3, STUNNED: 1/2, OUT: 1/6}
+      expected:
+        KNOCKED_DOWN: 1/3
+        STUNNED: 1/2
+        OUT: 1/6
   mutations:
   - id: remove-concussion-immunity
     path: defender.global_effects.tags
-    value: [skill.hard-to-kill]
-    cases: [mace-face-2, mace-complete-table]
+    value:
+    - skill.hard-to-kill
+    cases:
+    - mace-face-2
+    - mace-complete-table
 - id: editorial-hard-head-dwarf-treasure-hunters
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
   - target: rule/mordheim/dwarf-treasure-hunters/band--hard-head/trait.concussion-immune
-    digest: 88c6f91493cb911297f1a548e9af6384d12f0d5366a9b69f497b8beddcc25084
-  depends_on: [mechanic/weapon.mace, mechanic/skill.hard-to-kill]
-  interpretation: Special Rules / Hard Head cancels the easier stunning caused by maces and clubs.
-    All current profiles in this band are Dwarfs. With their Hard to Kill rule the Injury table
-    remains 1-2 Knocked Down, 3-5 Stunned, 6 Out even against Concussion. This is not immunity
-    to Stunned, nor does it change an ordinary sword attack.
+    digest: 5be0f6db12eb334e5360cca9094db6a3243c01c8868677c635bb09c0618dbd07
+  depends_on:
+  - mechanic/weapon.mace
+  - mechanic/skill.hard-to-kill
+  interpretation: Special Rules / Hard Head cancels the easier stunning caused by maces and clubs. All
+    current profiles in this band are Dwarfs. With their Hard to Kill rule the Injury table remains 1-2
+    Knocked Down, 3-5 Stunned, 6 Out even against Concussion. This is not immunity to Stunned, nor does
+    it change an ordinary sword attack.
   cases:
   - id: exact-recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: beardlings}
-    context: {rule_id: band--hard-head}
-    expect: {result.recipients: [beardlings, dwarf-clansmen, dwarf-engineer, dwarf-noble, dwarf-thunderers, dwarf-troll-slayers]}
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    context:
+      rule_id: band--hard-head
+    expect:
+      result.recipients:
+      - beardlings
+      - dwarf-clansmen
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-thunderers
+      - dwarf-troll-slayers
   - id: granted-beardlings
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-dwarf-clansmen
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: dwarf-clansmen}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-clansmen
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-dwarf-engineer
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: dwarf-engineer}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-engineer
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-dwarf-noble
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: dwarf-noble}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-dwarf-thunderers
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: dwarf-thunderers}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-thunderers
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: granted-dwarf-troll-slayers
-    roles: [active, consumer, compiled]
+    roles:
+    - active
+    - consumer
+    - compiled
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: dwarf-troll-slayers}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN, context.concussion: true, context.concussion_immune: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+      context.concussion: true
+      context.concussion_immune: true
     expect_contains:
-      defender.global_effects.tags: [concussion_immune]
+      defender.global_effects.tags:
+      - concussion_immune
   - id: mace-face-1
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 1}]
-    expect: {result.condition: KNOCKED_DOWN}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
   - id: mace-face-2
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
   - id: mace-face-3
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 3}]
-    expect: {result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
   - id: mace-face-4
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 4}]
-    expect: {result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
   - id: mace-face-5
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 5}]
-    expect: {result.condition: STUNNED}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
   - id: mace-face-6
-    roles: [boundary, consumer]
+    roles:
+    - boundary
+    - consumer
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: beardlings}
-    rolls: [{key: test.injury, value: 6}]
-    expect: {result.condition: OUT}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
   - id: mace-complete-table
-    roles: [boundary, active]
+    roles:
+    - boundary
+    - active
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: beardlings}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
     distribution:
       observable: result.condition
       max_rolls: 1
-      expected: {KNOCKED_DOWN: 1/3, STUNNED: 1/2, OUT: 1/6}
+      expected:
+        KNOCKED_DOWN: 1/3
+        STUNNED: 1/2
+        OUT: 1/6
   - id: sword-complete-table
-    roles: [boundary, inactive]
+    roles:
+    - boundary
+    - inactive
     operation: injury
-    attacker: {main_weapon_id: weapon.sword}
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: beardlings}
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: beardlings
     distribution:
       observable: result.condition
       max_rolls: 1
-      expected: {KNOCKED_DOWN: 1/3, STUNNED: 1/2, OUT: 1/6}
+      expected:
+        KNOCKED_DOWN: 1/3
+        STUNNED: 1/2
+        OUT: 1/6
   - id: unprotected-opponent
-    roles: [inactive]
+    roles:
+    - inactive
     operation: injury
-    attacker: {main_weapon_id: weapon.mace}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: STUNNED, context.concussion_immune: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: STUNNED
+      context.concussion_immune: false
   mutations:
   - id: remove-concussion-immunity
     path: defender.global_effects.tags
-    value: [skill.hard-to-kill]
-    cases: [mace-face-2, mace-complete-table]
+    value:
+    - skill.hard-to-kill
+    cases:
+    - mace-face-2
+    - mace-complete-table

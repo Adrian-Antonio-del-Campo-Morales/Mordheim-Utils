@@ -4,13 +4,20 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/trollheim/chaos-streets-pit-fighters/dwarf-troll-slayer--slayer-skill-options/compiler.slayer-skill-options, digest: cd9867284e50ba7cbd0f4d81d025555a4e9ecba86c3519293382f2c81765b2e0}
-  interpretation: "The Dwarf Troll Slayer may choose special skills of Dwarf Treasure Hunters, Pit Fighters and Troll Slayers; the three lists join without replacing one another."
+  - target: rule/trollheim/chaos-streets-pit-fighters/dwarf-troll-slayer--slayer-skill-options/compiler.slayer-skill-options
+    digest: f2ebd56dc3f3fd3fa7907a763a68af41c323caeede17ac5c271f35358a837cca
+  interpretation: The Dwarf Troll Slayer may choose special skills of Dwarf Treasure Hunters, Pit Fighters
+    and Troll Slayers; the three lists join without replacing one another.
   cases:
   - id: exact-combined-access
-    roles: [grant, accepted]
+    roles:
+    - grant
+    - accepted
     operation: special_rule_access
-    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: dwarf-troll-slayer}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
     expect:
       result.rules:
       - band--dwarf-special-skills-master-of-blades
@@ -27,14 +34,30 @@ specifications:
       - band--troll-slayer-special-skills-ferocious-charge
       - band--troll-slayer-special-skills-monster-slayer
   - id: dwarf-option-compiles
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--dwarf-special-skills-thick-skull]}
-    expect: {attacker.global_effects.thick_skull: true}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids:
+      - band--dwarf-special-skills-thick-skull
+    expect:
+      attacker.global_effects.thick_skull: true
   - id: ordinary-pit-fighter-control
-    roles: [rejected]
+    roles:
+    - rejected
     operation: compile
-    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: pit-fighters, special_rule_ids: [band--dwarf-special-skills-thick-skull]}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: pit-fighters
+      special_rule_ids:
+      - band--dwarf-special-skills-thick-skull
     reject: special rule is not available
   mutations:
-  - {id: remove-combined-access, runtime_fault: suppress-special-rule-access, cases: [exact-combined-access]}
+  - id: remove-combined-access
+    runtime_fault: suppress-special-rule-access
+    cases:
+    - exact-combined-access
