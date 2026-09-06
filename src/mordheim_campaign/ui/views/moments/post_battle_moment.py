@@ -18,7 +18,7 @@ def _injury_card(dice: list[int], resolver, *, hero: bool) -> tuple[str, str, st
     parts = list(outcome.effects)
     if outcome.follow_up:
         parts.append(outcome.follow_up)
-    detail = " · ".join(parts) or "No lasting effect."
+    detail = " · ".join(parts) or tr('No lasting effect.')
     tone = "danger" if outcome.result in ("Dead", "Removed", "Multiple Injuries") else "accent"
     return outcome.result, detail, tone
 
@@ -31,10 +31,10 @@ def _injury_store(dice: list[int], resolver, *, hero: bool, holder: dict) -> tup
 def _exploration_card(dice: list[int], resolver) -> tuple[str, str, str]:
     """Live KB resolution of an exploration roll."""
     resolved = resolver.resolve_exploration(tuple(dice))
-    detail = f"Total {resolved.total} → {resolved.shards} wyrdstone shard(s)"
+    detail = tr('Total {} → {} wyrdstone shard(s)').format(resolved.total, resolved.shards)
     if resolved.matching_dice_note:
         detail += f" · {resolved.matching_dice_note}"
-    return f"Exploration resolved · {resolved.shards} shard(s)", detail, "accent"
+    return tr('Exploration resolved · {} shard(s)').format(resolved.shards), detail, "accent"
 
 
 def _exploration_store(dice: list[int], resolver, holder: dict) -> tuple[str, str, str]:
@@ -47,7 +47,7 @@ def _rarity_card(dice: list[int], resolver, item_id: str, name: str, holder: dic
     search = resolver.resolve_rarity_search(item_id, sum(dice))
     holder["dice"] = list(dice)
     holder["success"] = search.success
-    title = "Available" if search.success else "Not found"
+    title = "Available" if search.success else tr('Not found')
     tone = "success" if search.success else "neutral"
     return title, f"{name}: {search.note}", tone
 
@@ -124,21 +124,21 @@ class PostBattleMoment(tk.Frame):
 
     def _build_completed(self, post) -> None:
         battle = self.controller.state.campaign.battle(post.battle_number)
-        tk.Label(self, text=f"POST-BATTLE #{post.battle_number}", bg=COLORS["bg"], fg=COLORS["text"], font=("Georgia", 16)).pack(anchor="w")
+        tk.Label(self, text=tr('POST-BATTLE #{}').format(post.battle_number), bg=COLORS["bg"], fg=COLORS["text"], font=("Georgia", 16)).pack(anchor="w")
         tk.Label(
             self,
-            text=f"Complete · transformed State #{post.battle_number - 1} into State #{post.battle_number}",
+            text=tr('Complete · transformed State #{} into State #{}').format(post.battle_number - 1, post.battle_number),
             bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI", 9),
         ).pack(anchor="w", pady=(3, 10))
         SummaryStrip(
             self,
             [
-                ("Experience", f"+{battle.xp_delta}"),
-                ("Casualties", str(battle.casualties)),
-                ("Advances", str(battle.advances)),
+                (tr('Experience'), f"+{battle.xp_delta}"),
+                (tr('Casualties'), str(battle.casualties)),
+                (tr('Advances'), str(battle.advances)),
                 ("Wyrdstone", f"+{battle.wyrdstone}"),
-                ("Gold", f"{battle.gold_delta:+d} gc"),
-                ("Rating", f"{battle.rating_before} → {battle.rating_after}"),
+                (tr('Gold'), f"{battle.gold_delta:+d} gc"),
+                (tr('Rating'), f"{battle.rating_before} → {battle.rating_after}"),
             ],
         ).pack(fill="x", pady=(0, 10))
 
@@ -146,19 +146,19 @@ class PostBattleMoment(tk.Frame):
         box.pack(fill="x")
         body = box.body
         body.configure(padx=18, pady=16)
-        tk.Label(body, text="THE TRANSITION", bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w")
+        tk.Label(body, text=tr('THE TRANSITION'), bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w")
         for line in (
             "Recovery resolved injuries, experience and resulting advances.",
-            f"Exploration yielded {battle.wyrdstone} wyrdstone shard(s) before income decisions.",
+            tr('Exploration yielded {} wyrdstone shard(s) before income decisions.').format(battle.wyrdstone),
             "Veterans, rare items and Dramatis searches were resolved.",
-            "Recruitment and equipment reallocation produced the final warband.",
+            tr('Recruitment and equipment reallocation produced the final warband.'),
             f"Warband rating was recalculated automatically: {battle.rating_before} → {battle.rating_after}.",
         ):
             tk.Label(body, text=f"• {line}", bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 9)).pack(anchor="w", pady=3)
         actions = tk.Frame(body, bg=COLORS["panel"])
         actions.pack(fill="x", pady=(16, 0))
-        ttk.Button(actions, text=f"‹ STATE #{post.battle_number - 1}", command=lambda: self.controller.select_state(post.battle_number - 1)).pack(side="left")
-        ttk.Button(actions, text=f"STATE #{post.battle_number} ›", style="Accent.TButton", command=lambda: self.controller.select_state(post.battle_number)).pack(side="right")
+        ttk.Button(actions, text=tr('‹ STATE #{}').format(post.battle_number - 1), command=lambda: self.controller.select_state(post.battle_number - 1)).pack(side="left")
+        ttk.Button(actions, text=tr('STATE #{} ›').format(post.battle_number), style="Accent.TButton", command=lambda: self.controller.select_state(post.battle_number)).pack(side="right")
 
     def _build_pending(self, post) -> None:
         battle = self.controller.state.campaign.battle(post.battle_number)
@@ -169,9 +169,9 @@ class PostBattleMoment(tk.Frame):
         top.grid(row=0, column=0, sticky="ew", pady=(0, 4))
         title = tk.Frame(top, bg=COLORS["bg"])
         title.pack(side="left", fill="x", expand=True)
-        tk.Label(title, text=f"POST-BATTLE #{post.battle_number}", bg=COLORS["bg"], fg=COLORS["text"], font=("Georgia", 16)).pack(side="left")
-        tk.Label(title, text="IN PROGRESS", bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Segoe UI Semibold", 7), padx=8, pady=4).pack(side="left", padx=10)
-        ttk.Button(top, text="SAVE & CLOSE", command=self._save_and_close).pack(side="right")
+        tk.Label(title, text=tr('POST-BATTLE #{}').format(post.battle_number), bg=COLORS["bg"], fg=COLORS["text"], font=("Georgia", 16)).pack(side="left")
+        tk.Label(title, text=tr('IN PROGRESS'), bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Segoe UI Semibold", 7), padx=8, pady=4).pack(side="left", padx=10)
+        ttk.Button(top, text=tr('SAVE & CLOSE'), command=self._save_and_close).pack(side="right")
         ttk.Button(top, text=f"VIEW BATTLE #{post.battle_number}", style="Ghost.TButton", command=lambda: self.controller.select_battle(post.battle_number)).pack(side="right", padx=(0, 5))
 
         intro = (
@@ -229,7 +229,7 @@ class PostBattleMoment(tk.Frame):
         actions.grid(row=5, column=0, sticky="ew", pady=(8, 0))
         if post.review_open:
             ttk.Button(actions, text=f"‹  {tr('Equipment').upper()}", command=lambda: self.controller.set_post_battle_step(len(POST_BATTLE_STEPS) - 1)).pack(side="left")
-            ttk.Button(actions, text=f"COMMIT STATE #{post.battle_number}", style="Accent.TButton", command=self._commit).pack(side="right")
+            ttk.Button(actions, text=tr('COMMIT STATE #{}').format(post.battle_number), style="Accent.TButton", command=self._commit).pack(side="right")
             return
 
         if post.active_step > 0:
@@ -243,9 +243,9 @@ class PostBattleMoment(tk.Frame):
                 command=self.controller.advance_post_battle_step,
             ).pack(side="right")
         elif post.active_step in post.completed_steps:
-            ttk.Button(actions, text="FINAL REVIEW  ›", style="Accent.TButton", command=self.controller.open_post_battle_review).pack(side="right")
+            ttk.Button(actions, text=tr('FINAL REVIEW  ›'), style="Accent.TButton", command=self.controller.open_post_battle_review).pack(side="right")
         else:
-            ttk.Button(actions, text="CONTINUE TO FINAL REVIEW  ›", style="Accent.TButton", command=self.controller.advance_post_battle_step).pack(side="right")
+            ttk.Button(actions, text=tr('CONTINUE TO FINAL REVIEW  ›'), style="Accent.TButton", command=self.controller.advance_post_battle_step).pack(side="right")
 
     def _commit(self) -> None:
         ok, message = self.controller.commit_post_battle()
@@ -274,7 +274,7 @@ class PostBattleMoment(tk.Frame):
         source = sources[index]
         step_ids = " + ".join(source.kb_step_ids)
         files = ", ".join(source.resolved_catalogues)
-        return f"KB source: {step_ids} — resolves {files}"
+        return tr('KB source: {} — resolves {}').format(step_ids, files)
 
     # 01 · injuries ---------------------------------------------------------
 
@@ -295,21 +295,21 @@ class PostBattleMoment(tk.Frame):
         marked = self._out_of_action_warriors(battle)
         recorded = battle.out_of_action_ids is not None
         scope = (
-            f"{len(marked)} warrior(s) were recorded Out of Action in the battle record"
-            if recorded else "No per-warrior record exists for this battle; every warrior is offered"
+            tr('{} warrior(s) were recorded Out of Action in the battle record').format(len(marked))
+            if recorded else tr('No per-warrior record exists for this battle; every warrior is offered')
         )
-        self._title(parent, "01 · Injuries", f"{scope}. Resolve each against the KB serious-injury charts: each roll starts unresolved; resolving then applying it mutates the roster. {self._kb_provenance(0)}")
+        self._title(parent, tr('01 · Injuries'), tr('{}. Resolve each against the KB serious-injury charts: each roll starts unresolved; resolving then applying it mutates the roster. {}').format(scope, self._kb_provenance(0)))
         if not marked:
-            tk.Label(parent, text="No warrior was recorded Out of Action: proceed to Experience.", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
+            tk.Label(parent, text=tr('No warrior was recorded Out of Action: proceed to Experience.'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
             return
         for warrior in marked:
             hero = warrior.kind == "hero"
             applied = warrior.id in self._applied_injuries
             holder: dict = {}
-            subtitle = ("Hero · Out of Action · D66 serious injury roll"
-                        if hero else f"Henchmen group · {warrior.quantity} member{'s' if warrior.quantity != 1 else ''} · D6 survival roll")
+            subtitle = (tr('Hero · Out of Action · D66 serious injury roll')
+                        if hero else tr('Henchmen group · {} member{} · D6 survival roll').format(warrior.quantity, 's' if warrior.quantity != 1 else ''))
             if applied:
-                subtitle += " · APPLIED"
+                subtitle += tr(' · APPLIED')
             DiceResolutionCard(
                 parent,
                 title=warrior.name, subtitle=subtitle,
@@ -318,7 +318,7 @@ class PostBattleMoment(tk.Frame):
                 demo_dice=(2, 4) if hero else (1,),
                 combine="d66" if hero else "sum",
                 on_resolved=lambda dice, _r=resolver, _h=hero, _x=holder: _injury_store(dice, _r, hero=_h, holder=_x),
-                outcome_actions=(() if applied else (("APPLY TO ROSTER", lambda w=warrior, _x=holder: self._apply_injury(w, _x), "Accent.TButton"),)),
+                outcome_actions=(() if applied else ((tr('APPLY TO ROSTER'), lambda w=warrior, _x=holder: self._apply_injury(w, _x), "Accent.TButton"),)),
             ).pack(fill="x", pady=(0, 9))
 
     def _apply_injury(self, warrior, holder: dict) -> None:
@@ -335,7 +335,7 @@ class PostBattleMoment(tk.Frame):
 
     def _experience(self, parent: tk.Misc, battle) -> None:
         engine = self._engine()
-        self._title(parent, "02 · Experience", f"Allocate the experience Battle #{battle.number} granted (+{battle.xp_delta} XP). Crossed thresholds earn advance rolls resolved against the KB advancement tables; stat increases and skill/spell picks are committed here. {self._kb_provenance(1)}")
+        self._title(parent, tr('02 · Experience'), tr('Allocate the experience Battle #{} granted (+{} XP). Crossed thresholds earn advance rolls resolved against the KB advancement tables; stat increases and skill/spell picks are committed here. {}').format(battle.number, battle.xp_delta, self._kb_provenance(1)))
         engine.sync_pending_advances()
         for warrior in self.controller.state.campaign.warriors:
             card = tk.Frame(parent, bg=COLORS["panel_alt"], padx=12, pady=10)
@@ -347,17 +347,17 @@ class PostBattleMoment(tk.Frame):
             if warrior.quantity > 1:
                 label += f"  ·  ×{warrior.quantity}"
             tk.Label(top, text=label, bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(side="left", padx=(8, 0))
-            tk.Label(top, text=f"XP {warrior.experience}", bg=COLORS["panel_alt"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(side="right", padx=(0, 10))
-            ttk.Button(top, text="+1 XP", style="Mini.TButton", command=lambda w=warrior: self._run(lambda: self._engine().add_xp(w.id, 1))).pack(side="right")
-            tk.Label(card, text="Survived +1   ·   Scenario / objectives +1", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w", pady=(5, 5))
+            tk.Label(top, text=tr('XP {}').format(warrior.experience), bg=COLORS["panel_alt"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(side="right", padx=(0, 10))
+            ttk.Button(top, text=tr('+1 XP'), style="Mini.TButton", command=lambda w=warrior: self._run(lambda: self._engine().add_xp(w.id, 1))).pack(side="right")
+            tk.Label(card, text=tr('Survived +1   ·   Scenario / objectives +1'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w", pady=(5, 5))
             ExperienceTrack(card, warrior.experience, track_type="hero" if warrior.kind == "hero" else "henchman").pack(fill="x")
 
-        tk.Label(parent, text="ADVANCE ROLLS EARNED THIS SEQUENCE", bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(7, 6))
+        tk.Label(parent, text=tr('ADVANCE ROLLS EARNED THIS SEQUENCE'), bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(7, 6))
         pending = engine.post.pending_advances if engine.post is not None else []
         if not pending:
             tk.Label(
                 parent,
-                text="No warrior has crossed an experience threshold yet. Grant XP above; a threshold earns a 2D6 advance roll on the KB table (heroes: 20/40/65/90… · henchmen: 8/16/25/35…).",
+                text=tr('No warrior has crossed an experience threshold yet. Grant XP above; a threshold earns a 2D6 advance roll on the KB table (heroes: 20/40/65/90… · henchmen: 8/16/25/35…).'),
                 bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8), wraplength=900, justify="left",
             ).pack(anchor="w")
             return
@@ -370,15 +370,15 @@ class PostBattleMoment(tk.Frame):
         if warrior is None:
             return
         is_hero = str(row.get("table") or "hero") == "hero"
-        kind_label = "Hero" if is_hero else f"Henchmen group (all {warrior.quantity} members gain it)"
+        kind_label = tr('Hero') if is_hero else f"Henchmen group (all {warrior.quantity} members gain it)"
         threshold = row.get("threshold")
         committed = bool(row.get("committed"))
         roll_total = row.get("roll_total")
-        subtitle = f"{kind_label} · crossed the {threshold} XP threshold · 2D6 on the KB {'hero' if is_hero else 'henchman'} table"
+        subtitle = tr('{} · crossed the {} XP threshold · 2D6 on the KB {} table').format(kind_label, threshold, 'hero' if is_hero else 'henchman')
         if committed:
-            subtitle += f" · COMMITTED: {row.get('applied_label') or 'applied'}"
+            subtitle += tr(' · COMMITTED: {}').format(row.get('applied_label') or 'applied')
         elif roll_total is not None:
-            subtitle += f" · rolled {roll_total}"
+            subtitle += tr(' · rolled {}').format(roll_total)
 
         card = tk.Frame(parent, bg=COLORS["panel_alt"], highlightthickness=1, highlightbackground=COLORS["border_soft"], padx=12, pady=10)
         card.pack(fill="x", pady=(0, 7))
@@ -393,12 +393,12 @@ class PostBattleMoment(tk.Frame):
         if roll_total is None:
             holder: dict = {}
             DiceResolutionCard(
-                card, title="Advance roll", subtitle="Roll in app or enter physical dice",
+                card, title=tr('Advance roll'), subtitle=tr('Roll in app or enter physical dice'),
                 notation="2D6", dice_count=2, demo_dice=(4, 3), combine="sum",
-                outcome_title="Pending pick", outcome_detail="Resolved; choose the advance below.",
+                outcome_title=tr('Pending pick'), outcome_detail=tr('Resolved; choose the advance below.'),
                 on_resolved=lambda dice, _e=engine, _w=warrior_id, _x=holder: _x.update(dice=list(dice))
-                or ("Advance resolved", "Choose the resulting advance.", "accent"),
-                outcome_actions=(("RESOLVE ROLL", lambda: self._resolve_advance(_e, _w, _x), "Accent.TButton"),),
+                or (tr('Advance resolved'), tr('Choose the resulting advance.'), "accent"),
+                outcome_actions=((tr('RESOLVE ROLL'), lambda: self._resolve_advance(_e, _w, _x), "Accent.TButton"),),
             ).pack(fill="x", pady=(8, 0))
             return
         outcome, _row = engine._pending_outcome(warrior_id)
@@ -415,20 +415,20 @@ class PostBattleMoment(tk.Frame):
                                    command=lambda w=warrior_id, k=key: self._commit_advance(w, option_kind="characteristic_increase", characteristic=k)).pack(side="left", padx=(0, 6))
                         break
             elif option.kind == "choose_skill":
-                ttk.Button(actions, text="CHOOSE SKILL…", style="Accent.TButton",
+                ttk.Button(actions, text=tr('CHOOSE SKILL…'), style="Accent.TButton",
                            command=lambda w=warrior_id: self._open_skill_dialog(w, want_spells=False)).pack(side="left", padx=(0, 6))
             elif option.kind == "generate_spell":
-                ttk.Button(actions, text="GENERATE SPELL…", style="Accent.TButton",
+                ttk.Button(actions, text=tr('GENERATE SPELL…'), style="Accent.TButton",
                            command=lambda w=warrior_id: self._open_skill_dialog(w, want_spells=True)).pack(side="left", padx=(0, 6))
             elif option.kind == "promote_henchman":
                 if warrior.quantity < 2:
-                    tk.Label(actions, text="A group of one cannot split into a hero; reroll this advance instead.", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(side="left")
+                    tk.Label(actions, text=tr('A group of one cannot split into a hero; reroll this advance instead.'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(side="left")
                 else:
-                    ttk.Button(actions, text="THE LAD'S GOT TALENT…", style="Accent.TButton",
+                    ttk.Button(actions, text=tr("THE LAD'S GOT TALENT…"), style="Accent.TButton",
                                command=lambda w=warrior_id: self._promote_member(w)).pack(side="left", padx=(0, 6))
         budget = engine.promotion_pick_budget(warrior_id)
         if budget and budget < 2:
-            ttk.Button(actions, text=f"PICK PROMOTION SKILL ({budget} LEFT)…", style="Accent.TButton",
+            ttk.Button(actions, text=tr('PICK PROMOTION SKILL ({} LEFT)…').format(budget), style="Accent.TButton",
                        command=lambda w=warrior_id: self._open_skill_dialog(w, want_spells=False, promotion=True)).pack(side="left", padx=(0, 6))
 
     def _resolve_advance(self, engine, warrior_id: str, holder: dict) -> None:
@@ -450,11 +450,11 @@ class PostBattleMoment(tk.Frame):
         dialog.title("D6 sub-roll")
         dialog.transient(self.winfo_toplevel())
         dialog.grab_set()
-        tk.Label(dialog, text=f"The advance row {total} needs a D6 sub-roll.", bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 10)).pack(padx=18, pady=(14, 6))
+        tk.Label(dialog, text=tr('The advance row {} needs a D6 sub-roll.').format(total), bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 10)).pack(padx=18, pady=(14, 6))
         var = tk.IntVar(value=3)
         ttk.Spinbox(dialog, from_=1, to=6, width=5, textvariable=var).pack(pady=4)
         result: list[int] = []
-        ttk.Button(dialog, text="OK", style="Accent.TButton", command=lambda: (result.append(int(var.get())), dialog.destroy())).pack(pady=(4, 12))
+        ttk.Button(dialog, text=tr('OK'), style="Accent.TButton", command=lambda: (result.append(int(var.get())), dialog.destroy())).pack(pady=(4, 12))
         dialog.wait_window()
         return result[0] if result else None
 
@@ -469,15 +469,15 @@ class PostBattleMoment(tk.Frame):
     def _promote_member(self, warrior) -> None:
         """Ask for the promoted member's name, then split the group (Lad's Got Talent)."""
         dialog = tk.Toplevel(self)
-        dialog.title("The Lad's Got Talent")
+        dialog.title(tr("The Lad's Got Talent"))
         dialog.transient(self.winfo_toplevel())
         dialog.grab_set()
         tk.Label(
             dialog,
-            text=f"Name the member of {warrior.name} who becomes a Hero.",
+            text=tr('Name the member of {} who becomes a Hero.').format(warrior.name),
             bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 10),
         ).pack(padx=18, pady=(14, 6))
-        var = tk.StringVar(value=f"{warrior.profile_name} Champion")
+        var = tk.StringVar(value=tr('{} Champion').format(warrior.profile_name))
         entry = ttk.Entry(dialog, textvariable=var, width=32)
         entry.pack(padx=18, pady=4)
         entry.selection_range(0, "end")
@@ -485,10 +485,10 @@ class PostBattleMoment(tk.Frame):
         result: list[str] = []
 
         def _confirm() -> None:
-            result.append(var.get().strip() or f"{warrior.profile_name} Champion")
+            result.append(var.get().strip() or tr('{} Champion').format(warrior.profile_name))
             dialog.destroy()
 
-        ttk.Button(dialog, text="PROMOTE", style="Accent.TButton", command=_confirm).pack(pady=(6, 14))
+        ttk.Button(dialog, text=tr('PROMOTE'), style="Accent.TButton", command=_confirm).pack(pady=(6, 14))
         dialog.bind("<Return>", lambda _e: _confirm())
         dialog.bind("<Escape>", lambda _e: dialog.destroy())
         dialog.wait_window()
@@ -506,7 +506,7 @@ class PostBattleMoment(tk.Frame):
         engine = self._engine()
         row = engine.post.pending_advance_for(warrior_id) if engine.post is not None else None
         if row is not None and row.get("committed"):
-            self._status_text = "✓ " + str(row.get("applied_label") or "Advance committed")
+            self._status_text = "✓ " + str(row.get("applied_label") or tr('Advance committed'))
         self._rebuild()
 
     # 03 · exploration ------------------------------------------------------
@@ -514,9 +514,9 @@ class PostBattleMoment(tk.Frame):
     def _exploration(self, parent: tk.Misc, battle) -> None:
         resolver = self.controller.post_battle_resolver()
         engine = self._engine()
-        self._title(parent, "03 · Exploration", f"Roll once for each eligible Hero, plus one die when the warband won. Shards come from the KB shard chart; matching dice open the KB special-result table. {self._kb_provenance(2)}")
+        self._title(parent, tr('03 · Exploration'), tr('Roll once for each eligible Hero, plus one die when the warband won. Shards come from the KB shard chart; matching dice open the KB special-result table. {}').format(self._kb_provenance(2)))
         if engine.post is not None and engine.post.wyrdstone_delta:
-            SummaryStrip(parent, [("Shards found", f"+{engine.post.wyrdstone_delta}"), ("In hoard", f"{engine.projected_shards()}")]).pack(fill="x", pady=(0, 12))
+            SummaryStrip(parent, [(tr('Shards found'), f"+{engine.post.wyrdstone_delta}"), (tr('In hoard'), f"{engine.projected_shards()}")]).pack(fill="x", pady=(0, 12))
             return
         surviving = max(0, engine.projected_heroes() - battle.casualties)
         won = battle.result == "Victory"
@@ -524,11 +524,11 @@ class PostBattleMoment(tk.Frame):
         demo = ((3, 3, 5, 6) + (1,) * 6)[:dice_count]
         holder: dict = {}
         DiceResolutionCard(
-            parent, title="Exploration Dice", subtitle=f"Eligible Heroes: {surviving} · {dice_count}D6 from the KB allocation",
+            parent, title=tr('Exploration Dice'), subtitle=tr('Eligible Heroes: {} · {}D6 from the KB allocation').format(surviving, dice_count),
             notation=f"{dice_count}D6", dice_count=dice_count, demo_dice=demo, combine="list",
-            outcome_title="Exploration resolved", outcome_detail="Resolve the roll to reveal the shard total.",
+            outcome_title="Exploration resolved", outcome_detail=tr('Resolve the roll to reveal the shard total.'),
             on_resolved=lambda dice, _r=resolver, _x=holder: _exploration_store(dice, _r, holder=_x),
-            outcome_actions=(("ADD SHARDS TO HOARD", lambda: self._apply_exploration(holder), "Accent.TButton"),),
+            outcome_actions=((tr('ADD SHARDS TO HOARD'), lambda: self._apply_exploration(holder), "Accent.TButton"),),
         ).pack(fill="x")
 
     def _apply_exploration(self, holder: dict) -> None:
@@ -542,42 +542,42 @@ class PostBattleMoment(tk.Frame):
         engine = self._engine()
         resolver = self.controller.post_battle_resolver()
         post = engine.post
-        self._title(parent, "04 · Sell Wyrdstone", f"Choose how many shards to sell. This action can only be performed once in the post-battle sequence; the sale value comes from the KB pricing table (warband size × shards sold). {self._kb_provenance(3)}")
+        self._title(parent, tr('04 · Sell Wyrdstone'), tr('Choose how many shards to sell. This action can only be performed once in the post-battle sequence; the sale value comes from the KB pricing table (warband size × shards sold). {}').format(self._kb_provenance(3)))
         if post is None:
             return
         available = engine.projected_shards()
         if post.sale_resolved:
-            SummaryStrip(parent, [("Sale resolved", "once per sequence"), ("Shards sold", str(post.wyrdstone_sold)), ("Shards remaining", str(available))]).pack(fill="x", pady=(0, 12))
+            SummaryStrip(parent, [(tr('Sale resolved'), tr('once per sequence')), (tr('Shards sold'), str(post.wyrdstone_sold)), (tr('Shards remaining'), str(available))]).pack(fill="x", pady=(0, 12))
             return
-        SummaryStrip(parent, [("In hoard", str(available)), ("Sell now", "choose below"), ("Income", "KB pricing table")]).pack(fill="x", pady=(0, 12))
-        card = self._section(parent, "Choose quantity to sell", "The table value is calculated from the current warband size and the fragments sold.")
+        SummaryStrip(parent, [(tr('In hoard'), str(available)), (tr('Sell now'), tr('choose below')), (tr('Income'), tr('KB pricing table'))]).pack(fill="x", pady=(0, 12))
+        card = self._section(parent, tr('Choose quantity to sell'), tr('The table value is calculated from the current warband size and the fragments sold.'))
         row = tk.Frame(card, bg=COLORS["panel_alt"])
         row.pack(fill="x")
-        tk.Label(row, text="Wyrdstone shards", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 9)).pack(side="left")
+        tk.Label(row, text=tr('Wyrdstone shards'), bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 9)).pack(side="left")
         sell_var = tk.IntVar(value=min(1, available))
         ttk.Spinbox(row, from_=0, to=available, width=5, textvariable=sell_var).pack(side="left", padx=12)
         value_var = tk.StringVar(value="—")
         tk.Label(row, textvariable=value_var, bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI Semibold", 9)).pack(side="left", padx=(4, 12))
-        ttk.Button(row, text="CALCULATE SALE", command=lambda: value_var.set(
+        ttk.Button(row, text=tr('CALCULATE SALE'), command=lambda: value_var.set(
             f"{resolver.wyrdstone_sale_value(max(0, sell_var.get()), engine.projected_models())} gc")).pack(side="left")
-        ttk.Button(row, text="SELL", style="Accent.TButton", command=lambda: self._run(
+        ttk.Button(row, text=tr('SELL'), style="Accent.TButton", command=lambda: self._run(
             lambda: engine.sell_wyrdstone(max(0, sell_var.get())))).pack(side="right")
-        tk.Label(card, text="Selling zero shards is allowed: it closes the once-per-sequence action.", bg=COLORS["panel_alt"], fg=COLORS["muted_dark"], font=("Segoe UI", 7)).pack(anchor="w", pady=(9, 0))
+        tk.Label(card, text=tr('Selling zero shards is allowed: it closes the once-per-sequence action.'), bg=COLORS["panel_alt"], fg=COLORS["muted_dark"], font=("Segoe UI", 7)).pack(anchor="w", pady=(9, 0))
 
     # 05 · veterans ---------------------------------------------------------
 
     def _veterans(self, parent: tk.Misc, _battle) -> None:
         engine = self._engine()
-        self._title(parent, "05 · Available Veterans", f"Determine the post-battle experience pool available for hiring experienced recruits. You are not committing to hire anyone yet. {self._kb_provenance(4)}")
+        self._title(parent, tr('05 · Available Veterans'), tr('Determine the post-battle experience pool available for hiring experienced recruits. You are not committing to hire anyone yet. {}').format(self._kb_provenance(4)))
         post = engine.post
         holder: dict = {}
         pool = post.veteran_pool if post is not None else 0
         DiceResolutionCard(
-            parent, title="Veteran Experience Pool", subtitle=f"Availability check before recruitment · current pool {pool} XP",
+            parent, title=tr('Veteran Experience Pool'), subtitle=tr('Availability check before recruitment · current pool {} XP').format(pool),
             notation="2D6", dice_count=2, demo_dice=(4, 3), combine="sum",
-            outcome_title="Pool rolled", outcome_detail="This pool is used later in Recruitment",
-            on_resolved=lambda dice, _x=holder: (_x.update(dice=list(dice)), f"{sum(dice)} XP available", f"Veteran pool of {sum(dice)} XP", "accent")[1:],
-            outcome_actions=(("SET VETERAN POOL", lambda: self._apply_veterans(holder), "Accent.TButton"),),
+            outcome_title=tr('Pool rolled'), outcome_detail=tr('This pool is used later in Recruitment'),
+            on_resolved=lambda dice, _x=holder: (_x.update(dice=list(dice)), tr('{} XP available').format(sum(dice)), tr('Veteran pool of {} XP').format(sum(dice)), "accent")[1:],
+            outcome_actions=((tr('SET VETERAN POOL'), lambda: self._apply_veterans(holder), "Accent.TButton"),),
         ).pack(fill="x")
 
     def _apply_veterans(self, holder: dict) -> None:
@@ -594,28 +594,28 @@ class PostBattleMoment(tk.Frame):
         dramatis = content.dramatis_personae()
         self._title(
             parent,
-            "06 · Rare Items & Dramatis",
-            f"One UI phase contains the two consecutive searches: first rare items, then Dramatis Personae. Eligible Heroes are a limited search resource. Offers come from the KB Trading Post and hiring catalogue. {self._kb_provenance(5)}",
+            tr('06 · Rare Items & Dramatis'),
+            tr('One UI phase contains the two consecutive searches: first rare items, then Dramatis Personae. Eligible Heroes are a limited search resource. Offers come from the KB Trading Post and hiring catalogue. {}').format(self._kb_provenance(5)),
         )
 
-        tk.Label(parent, text="A · RARE ITEMS", bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 6))
+        tk.Label(parent, text=tr('A · RARE ITEMS'), bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 6))
         rare_section = self._section(
-            parent, "Choose a rare item",
-            f"{len(rare)} rare Trading Post items are available to this warband. Assign an eligible Hero to search for one specific item; successful purchases go to the stash.",
+            parent, tr('Choose a rare item'),
+            tr('{} rare Trading Post items are available to this warband. Assign an eligible Hero to search for one specific item; successful purchases go to the stash.').format(len(rare)),
         )
         if rare:
             controls = tk.Frame(rare_section, bg=COLORS["panel_alt"])
             controls.pack(fill="x")
-            item_labels = [f"{entry.name} · Rare {entry.rarity} · {entry.price_label}" for entry in rare[:12]]
+            item_labels = [tr('{} · Rare {} · {}').format(entry.name, entry.rarity, entry.price_label) for entry in rare[:12]]
             picker = ttk.Combobox(controls, state="readonly", values=item_labels, width=42)
             picker.pack(side="left")
             picker.set(item_labels[0])
 
             holder: dict = {}
             DiceResolutionCard(
-                parent, title="Rare item availability search", subtitle="A successful search reveals a contextual Buy action · resolves the 2D6 rarity test against the KB availability of the selected item",
+                parent, title=tr('Rare item availability search'), subtitle=tr('A successful search reveals a contextual Buy action · resolves the 2D6 rarity test against the KB availability of the selected item'),
                 notation="2D6", dice_count=2, demo_dice=(5, 4), combine="sum",
-                outcome_title="Rare item search", outcome_detail="Resolve the roll to test the selected item.",
+                outcome_title=tr('Rare item search'), outcome_detail=tr('Resolve the roll to test the selected item.'),
                 on_resolved=lambda dice, _r=resolver, _h=holder: _rarity_card(
                     dice, _r, rare[_selected_index(item_labels, picker)].item_id,
                     rare[_selected_index(item_labels, picker)].name, holder),
@@ -623,21 +623,21 @@ class PostBattleMoment(tk.Frame):
             ).pack(fill="x", pady=(10, 4))
             tk.Label(
                 rare_section,
-                text=f"{len(rare)} rare entries in the KB trading post (showing {min(len(rare), 12)}).",
+                text=tr('{} rare entries in the KB trading post (showing {}).').format(len(rare), min(len(rare), 12)),
                 bg=COLORS["panel_alt"], fg=COLORS["muted_dark"], font=("Segoe UI", 7),
             ).pack(anchor="w", pady=(4, 0))
         else:
             tk.Label(
-                rare_section, text="No rare items from the Trading Post are available to this warband.",
+                rare_section, text=tr('No rare items from the Trading Post are available to this warband.'),
                 bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8),
             ).pack(anchor="w")
 
         divider = tk.Frame(parent, bg=COLORS["border_soft"], height=1)
         divider.pack(fill="x", pady=(0, 11))
-        tk.Label(parent, text="B · DRAMATIS PERSONAE", bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 6))
+        tk.Label(parent, text=tr('B · DRAMATIS PERSONAE'), bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 6))
         dramatis_section = self._section(
-            parent, "Choose a special character",
-            "Heroes assigned to this search are not available to look for rare items in the same sequence. Entries marked * depend on roster/variant conditions evaluated by the application.",
+            parent, tr('Choose a special character'),
+            tr('Heroes assigned to this search are not available to look for rare items in the same sequence. Entries marked * depend on roster/variant conditions evaluated by the application.'),
         )
         if dramatis:
             eligibility_notes = [
@@ -669,26 +669,26 @@ class PostBattleMoment(tk.Frame):
 
             holder: dict = {}
             DiceResolutionCard(
-                parent, title="Dramatis Personae search", subtitle="One D6 per searcher · a result under the Hero's Initiative locates the character",
+                parent, title=tr('Dramatis Personae search'), subtitle=tr("One D6 per searcher · a result under the Hero's Initiative locates the character"),
                 notation="D6", dice_count=1, demo_dice=(3,), combine="sum",
-                outcome_title="Dramatis search", outcome_detail="Resolve the roll to locate the character. For conditional entries the acceptance roll reuses the same die.",
-                on_resolved=lambda dice, _x=holder: (_x.update(dice=list(dice), success=True), "Located", "Character found · hiring remains optional", "success")[1:],
+                outcome_title=tr('Dramatis search'), outcome_detail=tr('Resolve the roll to locate the character. For conditional entries the acceptance roll reuses the same die.'),
+                on_resolved=lambda dice, _x=holder: (_x.update(dice=list(dice), success=True), tr('Located'), tr('Character found · hiring remains optional'), "success")[1:],
                 outcome_actions=(("HIRE", lambda: self._hire_dramatis(_selected_offer(), holder), "Accent.TButton"),),
             ).pack(fill="x", pady=(10, 0))
         else:
             tk.Label(
-                dramatis_section, text="No Dramatis Personae are currently searchable by this warband.",
+                dramatis_section, text=tr('No Dramatis Personae are currently searchable by this warband.'),
                 bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8),
             ).pack(anchor="w")
 
     def _buy_selected_rare(self, rare, item_labels: list[str], picker, holder: dict) -> None:
         if not holder.get("success"):
-            self._status_text = "⚠ The rarity test failed; the item is not available to buy."
+            self._status_text = tr('⚠ The rarity test failed; the item is not available to buy.')
             self._rebuild()
             return
         offer = rare[_selected_index(item_labels, picker)]
         if offer.price_gc is None:
-            self._status_text = "⚠ This item has no flat price; purchases are not supported yet."
+            self._status_text = tr('⚠ This item has no flat price; purchases are not supported yet.')
             self._rebuild()
             return
         self._run(lambda: self._engine().buy_item(offer.item_id, 1, offer.price_gc))
@@ -708,29 +708,29 @@ class PostBattleMoment(tk.Frame):
         common = content.common_items()
         self._title(
             parent,
-            "07 · Recruitment",
-            f"Hire new warriors or Hired Swords and buy common items. This is the warband-building stage; rare-item searches are already closed. {self._kb_provenance(6)}",
+            tr('07 · Recruitment'),
+            tr('Hire new warriors or Hired Swords and buy common items. This is the warband-building stage; rare-item searches are already closed. {}').format(self._kb_provenance(6)),
         )
         post = engine.post
         SummaryStrip(parent, [
-            ("Treasury", f"{engine.projected_gold()} gc"),
+            (tr('Treasury'), f"{engine.projected_gold()} gc"),
             ("Veteran pool", f"{post.veteran_pool if post else 0} XP"),
-            ("Models", f"{engine.projected_models()}/{campaign.maximum_models}"),
+            (tr('Models'), f"{engine.projected_models()}/{campaign.maximum_models}"),
         ]).pack(fill="x", pady=(0, 12))
 
         warriors = [
             profile for profile in self.controller.port.profiles(campaign.collection, campaign.band_id, kind="henchman")
             if profile.kind == "henchman"
         ]
-        recruit_section = self._section(parent, "WARRIORS", "Recruit new members or add to the roster (KB profiles, model and treasury limits enforced).")
+        recruit_section = self._section(parent, tr('WARRIORS'), tr('Recruit new members or add to the roster (KB profiles, model and treasury limits enforced).'))
         for profile in warriors[:14]:
             row = tk.Frame(recruit_section, bg=COLORS["panel_alt"])
             row.pack(fill="x", pady=2)
             tk.Label(row, text=f"{profile.name}  ·  {profile.cost} gc", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8)).pack(side="left")
-            ttk.Button(row, text="RECRUIT", style="Mini.TButton", command=lambda p=profile: self._run(
+            ttk.Button(row, text=tr('RECRUIT'), style="Mini.TButton", command=lambda p=profile: self._run(
                 lambda: engine.recruit_band_profile(p.profile_id, 1))).pack(side="right")
 
-        hired_section = self._section(parent, "HIRED SWORDS", "Hire available mercenaries and account for upkeep where applicable. * = acceptance roll or Mercenary-variant condition.")
+        hired_section = self._section(parent, tr('HIRED SWORDS'), tr('Hire available mercenaries and account for upkeep where applicable. * = acceptance roll or Mercenary-variant condition.'))
         if hired:
             for offer in hired[:14]:
                 row = tk.Frame(hired_section, bg=COLORS["panel_alt"])
@@ -738,17 +738,17 @@ class PostBattleMoment(tk.Frame):
                 marker = " *" if offer.eligibility != "eligible" else ""
                 label = f"{offer.name}{marker}  ·  {offer.availability_label.lower()}"
                 if offer.fee_label:
-                    label += f"  ·  Hire {offer.fee_label}"
+                    label += tr('  ·  Hire {}').format(offer.fee_label)
                 if offer.upkeep_label:
-                    label += f" · Upkeep {offer.upkeep_label}"
+                    label += tr(' · Upkeep {}').format(offer.upkeep_label)
                 tk.Label(row, text=label, bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8)).pack(side="left")
                 if offer.fee_gc is not None and offer.eligibility == "eligible":
                     ttk.Button(row, text="HIRE", style="Mini.TButton", command=lambda o=offer: self._run(
                         lambda: engine.hire_hireling(o, acceptance_roll=None))).pack(side="right")
         else:
-            tk.Label(hired_section, text="No Hired Swords are available to this warband.", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
+            tk.Label(hired_section, text=tr('No Hired Swords are available to this warband.'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
 
-        common_section = self._section(parent, "COMMON ITEMS", "Common equipment can be purchased without a rarity search (KB Trading Post).")
+        common_section = self._section(parent, tr('COMMON ITEMS'), tr('Common equipment can be purchased without a rarity search (KB Trading Post).'))
         for offer in common[:14]:
             if offer.price_gc is None:
                 continue
@@ -767,22 +767,22 @@ class PostBattleMoment(tk.Frame):
         common = content.common_items()
         self._title(
             parent,
-            "08 · Equipment",
-            f"Buy common equipment, then manage the complete band inventory from the stash. Items found or purchased earlier appear here before the next warband state is committed. {self._kb_provenance(7)}",
+            tr('08 · Equipment'),
+            tr('Buy common equipment, then manage the complete band inventory from the stash. Items found or purchased earlier appear here before the next warband state is committed. {}').format(self._kb_provenance(7)),
         )
-        purchase = self._section(parent, "BUY EQUIPMENT", "Common items can be bought here. Rare finds from Searches have already been resolved and, if purchased, are waiting in the stash below.")
+        purchase = self._section(parent, tr('BUY EQUIPMENT'), tr('Common items can be bought here. Rare finds from Searches have already been resolved and, if purchased, are waiting in the stash below.'))
         purchase_head = tk.Frame(purchase, bg=COLORS["panel_alt"])
         purchase_head.pack(fill="x", pady=(0, 9))
-        tk.Label(purchase_head, text="TREASURY", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(side="left")
+        tk.Label(purchase_head, text=tr('TREASURY'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(side="left")
         tk.Label(purchase_head, text=f"{engine.projected_gold()} gc", bg=COLORS["panel_alt"], fg=COLORS["accent"], font=("Georgia", 17)).pack(side="left", padx=(8, 20))
-        tk.Label(purchase_head, text="Purchases are added to the stash", bg=COLORS["panel_alt"], fg=COLORS["muted_dark"], font=("Segoe UI", 7)).pack(side="left")
+        tk.Label(purchase_head, text=tr('Purchases are added to the stash'), bg=COLORS["panel_alt"], fg=COLORS["muted_dark"], font=("Segoe UI", 7)).pack(side="left")
 
         offers = [offer for offer in common if offer.price_gc is not None][:14]
         if offers:
             chooser = tk.Frame(purchase, bg=COLORS["panel_alt"])
             chooser.pack(fill="x")
-            tk.Label(chooser, text="ITEM", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).grid(row=0, column=0, sticky="w")
-            tk.Label(chooser, text="QTY", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).grid(row=0, column=1, sticky="w", padx=(8, 0))
+            tk.Label(chooser, text=tr('ITEM'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).grid(row=0, column=0, sticky="w")
+            tk.Label(chooser, text=tr('QTY'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).grid(row=0, column=1, sticky="w", padx=(8, 0))
             item_labels = [f"{offer.name} · {offer.price_label}" for offer in offers]
             item = ttk.Combobox(chooser, state="readonly", values=item_labels, width=40)
             item.grid(row=1, column=0, sticky="ew", pady=(3, 0))
@@ -796,7 +796,7 @@ class PostBattleMoment(tk.Frame):
                 except ValueError:
                     return offers[0]
 
-            ttk.Button(chooser, text="BUY & ADD TO STASH", style="Accent.TButton", command=lambda: self._run(
+            ttk.Button(chooser, text=tr('BUY & ADD TO STASH'), style="Accent.TButton", command=lambda: self._run(
                 lambda: engine.buy_item(_selected_offer().item_id, max(1, qty.get()), _selected_offer().price_gc))).grid(row=1, column=2, sticky="e", pady=(3, 0))
             chooser.columnconfigure(0, weight=1)
 
@@ -805,22 +805,22 @@ class PostBattleMoment(tk.Frame):
 
         stash_tab = tk.Frame(notebook, bg=COLORS["panel"], padx=10, pady=10)
         warrior_tab = tk.Frame(notebook, bg=COLORS["panel"], padx=10, pady=10)
-        notebook.add(stash_tab, text="STASH")
-        notebook.add(warrior_tab, text="BY WARRIOR")
+        notebook.add(stash_tab, text=tr('STASH'))
+        notebook.add(warrior_tab, text=tr('BY WARRIOR'))
 
         stash_top = tk.Frame(stash_tab, bg=COLORS["panel"])
         stash_top.pack(fill="x", pady=(0, 7))
         owned = sum(item.owned for item in campaign.inventory)
         equipped = sum(item.equipped for item in campaign.inventory)
         available = sum(item.stash for item in campaign.inventory)
-        tk.Label(stash_top, text="BAND INVENTORY", bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 11)).pack(side="left")
-        tk.Label(stash_top, text=f"Owned {owned}  ·  Equipped {equipped}  ·  Available {available}", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(side="right")
+        tk.Label(stash_top, text=tr('BAND INVENTORY'), bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 11)).pack(side="left")
+        tk.Label(stash_top, text=tr('Owned {}  ·  Equipped {}  ·  Available {}').format(owned, equipped, available), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(side="right")
 
         stash_table = tk.Frame(stash_tab, bg=COLORS["border_soft"], padx=1, pady=1)
         stash_table.pack(fill="x")
         hdr = tk.Frame(stash_table, bg=COLORS["panel_deep"], padx=9, pady=6)
         hdr.pack(fill="x")
-        for text, width in (("ITEM", 24), ("OWNED", 8), ("CURRENTLY EQUIPPED", 40), ("STASH", 8)):
+        for text, width in ((tr('ITEM'), 24), (tr('OWNED'), 8), (tr('CURRENTLY EQUIPPED'), 40), (tr('STASH'), 8)):
             tk.Label(hdr, text=text, width=width, anchor="w", bg=COLORS["panel_deep"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(side="left")
 
         if campaign.inventory:
@@ -829,21 +829,21 @@ class PostBattleMoment(tk.Frame):
                 item_row.pack(fill="x", pady=(1, 0))
                 tk.Label(item_row, text=row.name, width=24, anchor="w", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8)).pack(side="left")
                 tk.Label(item_row, text=str(row.owned), width=8, anchor="w", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(side="left")
-                tk.Label(item_row, text=f"{row.equipped} equipped", width=26, anchor="w", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(side="left")
+                tk.Label(item_row, text=tr('{} equipped').format(row.equipped), width=26, anchor="w", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(side="left")
                 tk.Label(item_row, text=str(row.stash), width=8, anchor="w", bg=COLORS["panel_alt"], fg=COLORS["accent"] if row.stash else COLORS["muted_dark"], font=("Segoe UI Semibold", 8)).pack(side="left")
                 if row.stash > 0:
-                    ttk.Button(item_row, text="SELL", style="Mini.TButton", command=lambda r=row: self._run(lambda: engine.sell_item(r.id, 1))).pack(side="right", padx=(5, 0))
-                    ttk.Button(item_row, text="ASSIGN", style="Mini.TButton", command=lambda r=row: self._assign_menu(r)).pack(side="right", padx=(5, 0))
+                    ttk.Button(item_row, text=tr('SELL'), style="Mini.TButton", command=lambda r=row: self._run(lambda: engine.sell_item(r.id, 1))).pack(side="right", padx=(5, 0))
+                    ttk.Button(item_row, text=tr('ASSIGN'), style="Mini.TButton", command=lambda r=row: self._assign_menu(r)).pack(side="right", padx=(5, 0))
         else:
-            tk.Label(stash_table, text="The stash is empty.", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8), padx=9, pady=6).pack(anchor="w")
+            tk.Label(stash_table, text=tr('The stash is empty.'), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8), padx=9, pady=6).pack(anchor="w")
 
         tk.Label(
             stash_tab,
-            text="Assign moves an available copy from the stash to a warrior. Sell uses half the stored value.",
+            text=tr('Assign moves an available copy from the stash to a warrior. Sell uses half the stored value.'),
             bg=COLORS["panel"], fg=COLORS["muted_dark"], font=("Segoe UI", 7),
         ).pack(anchor="w", pady=(7, 0))
 
-        tk.Label(warrior_tab, text="EQUIPMENT BY WARRIOR", bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 11)).pack(anchor="w", pady=(0, 7))
+        tk.Label(warrior_tab, text=tr('EQUIPMENT BY WARRIOR'), bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 11)).pack(anchor="w", pady=(0, 7))
         for warrior in campaign.warriors:
             row = tk.Frame(warrior_tab, bg=COLORS["panel_alt"], padx=10, pady=7)
             row.pack(fill="x", pady=(0, 3))
@@ -873,18 +873,18 @@ class PostBattleMoment(tk.Frame):
         engine = self._engine()
         projections = engine.projections()
         base = engine._base_state()
-        self._title(parent, "Final Review", f"All eight player actions are complete. This confirmation creates State #{battle.number}; warband rating is calculated automatically from the final roster. {self._kb_provenance(0)}")
+        self._title(parent, tr('Final Review'), tr('All eight player actions are complete. This confirmation creates State #{}; warband rating is calculated automatically from the final roster. {}').format(battle.number, self._kb_provenance(0)))
         SummaryStrip(parent, [
-            ("Rating", f"{base.rating if base else '—'} → {projections['rating']}"),
-            ("Models", f"{base.models if base else '—'} → {projections['models']}"),
-            ("Treasury", f"{base.gold if base else '—'} → {projections['gold']} gc"),
+            (tr('Rating'), f"{base.rating if base else '—'} → {projections['rating']}"),
+            (tr('Models'), f"{base.models if base else '—'} → {projections['models']}"),
+            (tr('Treasury'), f"{base.gold if base else '—'} → {projections['gold']} gc"),
             ("Wyrdstone", f"{base.wyrdstone if base else '—'} → {projections['shards']}"),
         ]).pack(fill="x", pady=(0, 12))
         for title, lines in (
-            ("RECOVERY", ["Injuries applied", f"Experience total {projections['experience']} XP"]),
-            ("EXPLORATION & INCOME", ["Exploration resolved", "Wyrdstone sale resolved once"]),
-            ("SEARCHES", [f"Veteran pool: {engine.post.veteran_pool if engine.post else 0} XP", "Rare items and Dramatis searches resolved"]),
-            ("WARBAND", ["Recruitment complete", "Equipment reallocated", "Rating recalculated automatically"]),
+            (tr('RECOVERY'), [tr('Injuries applied'), tr('Experience total {} XP').format(projections['experience'])]),
+            (tr('EXPLORATION & INCOME'), ["Exploration resolved", tr('Wyrdstone sale resolved once')]),
+            (tr('SEARCHES'), [tr('Veteran pool: {} XP').format(engine.post.veteran_pool if engine.post else 0), tr('Rare items and Dramatis searches resolved')]),
+            (tr('WARBAND'), [tr('Recruitment complete'), tr('Equipment reallocated'), "Rating recalculated automatically"]),
         ):
             tk.Label(parent, text=title, bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(6, 3))
             for line in lines:

@@ -5,10 +5,11 @@ specifications:
   category: local
   sources:
   - target: mechanic/skill.defensive-stance
-    digest: 1ee22995c06c835e513d7b04cbf698865f75e8159ca957ae3e402f3e1ae177cb
-  interpretation: Defensive Stance provides one parry even when neither carried weapon has Parry. Such an improvised
-    parry must still exceed the attack roll. If either carried weapon already has Parry, equality is sufficient. The
-    ordinary restrictions against natural-six hits and overwhelming Strength remain in force.
+    digest: e46068ab68c60c633020bb25ccecbd64fe69a533aca5ac5a1e68aa2448e58de7
+  interpretation: Defensive Stance provides one parry even when neither carried weapon has Parry. Such
+    an improvised parry must still exceed the attack roll. If either carried weapon already has Parry,
+    equality is sufficient. The ordinary restrictions against natural-six hits and overwhelming Strength
+    remain in force.
   interaction_contract:
     reads:
     - hit.roll
@@ -18,59 +19,112 @@ specifications:
     - state.parries
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    defender: {skill_ids: [skill.defensive-stance], main_weapon_id: weapon.mace}
-    expect: {defender.global_effects.parry: true}
+    defender:
+      skill_ids:
+      - skill.defensive-stance
+      main_weapon_id: weapon.mace
+    expect:
+      defender.global_effects.parry: true
     expect_contains:
-      defender.global_effects.tags: [skill.defensive-stance]
+      defender.global_effects.tags:
+      - skill.defensive-stance
   - id: ordinary-weapon-can-parry-but-must-exceed
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: parry
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {skill_ids: [skill.defensive-stance], main_weapon_id: weapon.mace}
-    context: {hit_roll: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.defensive-stance
+      main_weapon_id: weapon.mace
+    context:
+      hit_roll: 4
     distribution:
       observable: result.blocked
       max_rolls: 1
-      expected: {'true': 1/3, 'false': 2/3}
+      expected:
+        'true': 1/3
+        'false': 2/3
   - id: native-parry-weapon-may-match
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: parry
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {skill_ids: [skill.defensive-stance], main_weapon_id: weapon.sword}
-    context: {hit_roll: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.defensive-stance
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 4
     distribution:
       observable: result.blocked
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: ordinary-mace-cannot-parry
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: parry
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {main_weapon_id: weapon.mace}
-    context: {hit_roll: 4}
-    expect: {result.attempted: false, result.blocked: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.mace
+    context:
+      hit_roll: 4
+    expect:
+      result.attempted: false
+      result.blocked: false
   - id: ordinary-sword-must-exceed
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: parry
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {main_weapon_id: weapon.sword}
-    context: {hit_roll: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 4
     distribution:
       observable: result.blocked
       max_rolls: 1
-      expected: {'true': 1/3, 'false': 2/3}
+      expected:
+        'true': 1/3
+        'false': 2/3
   - id: natural-six-remains-unparryable
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: parry
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {skill_ids: [skill.defensive-stance], main_weapon_id: weapon.sword}
-    context: {hit_roll: 6}
-    expect: {result.attempted: false, result.blocked: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.defensive-stance
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
   mutations:
   - id: remove-defensive-stance
     changes:
-    - {path: defender.global_effects.tags, value: []}
-    - {path: defender.global_effects.parry, value: false}
-    cases: [ordinary-weapon-can-parry-but-must-exceed, native-parry-weapon-may-match]
+    - path: defender.global_effects.tags
+      value: []
+    - path: defender.global_effects.parry
+      value: false
+    cases:
+    - ordinary-weapon-can-parry-but-must-exceed
+    - native-parry-weapon-may-match

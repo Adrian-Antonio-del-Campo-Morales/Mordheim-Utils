@@ -6,6 +6,7 @@ from tkinter import ttk
 from mordheim_campaign.application.post_battle_engine import PostBattleEngine
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import BorderedFrame
+from mordheim_ui.i18n import tr
 
 
 class SkillChoiceDialog(tk.Toplevel):
@@ -30,7 +31,7 @@ class SkillChoiceDialog(tk.Toplevel):
             return
 
         self.configure(bg=COLORS["bg"])
-        self.title("Commit Spell" if want_spells else "Promotion Skill" if promotion else "Commit Skill")
+        self.title(tr('Commit Spell') if want_spells else tr('Promotion Skill') if promotion else tr('Commit Skill'))
         self.resizable(False, False)
         self.transient(parent.winfo_toplevel())
         self.grab_set()
@@ -41,13 +42,13 @@ class SkillChoiceDialog(tk.Toplevel):
         body.configure(padx=20, pady=18)
 
         if promotion:
-            heading = "PROMOTION SKILL PICK"
+            heading = tr('PROMOTION SKILL PICK')
         elif want_spells:
-            heading = "COMMIT A NEW SPELL"
+            heading = tr('COMMIT A NEW SPELL')
         else:
-            heading = "COMMIT A NEW SKILL"
+            heading = tr('COMMIT A NEW SKILL')
         subtitle = (
-            f"{warrior.name} chooses one option of this advance. Known entries are listed but cannot be re-picked."
+            tr('{} chooses one option of this advance. Known entries are listed but cannot be re-picked.').format(warrior.name)
         )
         tk.Label(body, text=heading, bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 14)).pack(anchor="w")
         tk.Label(body, text=subtitle, bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9), wraplength=420, justify="left").pack(anchor="w", pady=(4, 12))
@@ -77,7 +78,7 @@ class SkillChoiceDialog(tk.Toplevel):
 
         actions = tk.Frame(body, bg=COLORS["panel"])
         actions.pack(fill="x", pady=(16, 0))
-        ttk.Button(actions, text="Cancel", command=self.destroy).pack(side="right", padx=(0, 6))
+        ttk.Button(actions, text=tr('Cancel'), command=self.destroy).pack(side="right", padx=(0, 6))
         ttk.Button(actions, text="COMMIT", style="Accent.TButton", command=self._commit).pack(side="right")
 
         self._listbox.bind("<<ListboxSelect>>", lambda _e: self._update_detail())
@@ -97,7 +98,7 @@ class SkillChoiceDialog(tk.Toplevel):
             spell_id = str(spell.get("id") or "")
             name = str(spell.get("name") or spell_id)
             known = name in warrior.skills
-            label = f"✓ {name}" if known else f"  {name}  ·  difficulty {spell.get('difficulty', '?')}"
+            label = f"✓ {name}" if known else tr('  {}  ·  difficulty {}').format(name, spell.get('difficulty', '?'))
             entries.append((spell_id, label))
         return entries
 
@@ -122,7 +123,7 @@ class SkillChoiceDialog(tk.Toplevel):
             return
         _payload, label = self._entries[selection[0]]
         if label.startswith("✓"):
-            self._detail_var.set("Already known — pick a different entry.")
+            self._detail_var.set(tr('Already known — pick a different entry.'))
             return
         if self.want_spells:
             lore = self.engine.port.wizard_lore(
@@ -141,7 +142,7 @@ class SkillChoiceDialog(tk.Toplevel):
 
         # Keep the detail text honest for known entries (they cannot be picked).
         if self._listbox.get(selection[0]).startswith("✓"):
-            self._detail_var.set("Already known — pick a different entry.")
+            self._detail_var.set(tr('Already known — pick a different entry.'))
 
     def _commit(self) -> None:
         selection = self._listbox.curselection()

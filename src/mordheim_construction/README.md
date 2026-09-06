@@ -1,4 +1,4 @@
 # Construction
 
 Converts ids and legal choices into `CompiledFighter`. See
-[Implement behaviour](../../../docs/tasks/implement-rule.md).
+[Implement behaviour](../../../docs/guides/implement-and-verify-rules.md).

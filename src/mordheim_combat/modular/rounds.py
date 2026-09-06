@@ -10,6 +10,7 @@ from mordheim_combat.modular.aftermath import _force_of_will
 from mordheim_combat.modular.aftermath import _netter
 from mordheim_combat.modular.aftermath import _spines
 from mordheim_combat.modular.aftermath import _start_round_state
+from mordheim_combat.modular.state import _refresh_random_characteristics
 from mordheim_combat.modular.pools import _resolve_attack_pool
 from mordheim_combat.modular.attacks import resolve_reference_attack
 from mordheim_combat.modular.state import AttackOutcome
@@ -41,6 +42,13 @@ def resolve_round(
     first_state, second_state = state.first, state.second
     outcomes: list[AttackOutcome] = []
     first_round = state.round_index == 0
+    if not first_round:
+        first_state = _refresh_random_characteristics(
+            first, first_state, dice, f"round.{state.round_index}.first"
+        )
+        second_state = _refresh_random_characteristics(
+            second, second_state, dice, f"round.{state.round_index}.second"
+        )
     first = equipment_for_state(first, first_state, first_round=first_round)
     second = equipment_for_state(second, second_state, first_round=first_round)
     if not first_round:
@@ -135,12 +143,12 @@ def resolve_round(
     first_count = phases.build_attacks(AttackPoolContext(
         first_attack_fighter, first_round, first_charging, second_charging,
         first_state.frenzy, first_state.wounds < first.characteristics.wounds,
-        0, first_state.attacks,
+        0, first_state.attacks, state.first_player_turn,
     )).attacks
     second_count = phases.build_attacks(AttackPoolContext(
         second_attack_fighter, first_round, second_charging, first_charging,
         second_state.frenzy, second_state.wounds < second.characteristics.wounds,
-        0, second_state.attacks,
+        0, second_state.attacks, not state.first_player_turn,
     )).attacks
     first_count = resolve_spawn_attack_count(
         first_attack_fighter, first_count, dice, f"round.{state.round_index}.first.spawn-attacks"

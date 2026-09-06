@@ -4,23 +4,34 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: interaction
   sources:
-  - {target: mechanic/skill.vampire-reflexes, digest: aff74901140a8d543bbb2a442679ce1a68bdbe9f760b6c70e2db8a28f11e816d}
-  - {target: mechanic/skill.step-aside, digest: 7d543001fc0b5b9a9361518b4ddeaf5a0f31d89b9ef071e6f5f7732590893d36}
+  - target: mechanic/skill.vampire-reflexes
+    digest: d629522331824dfa9932b313cfb0326b18b5e78d9475e78788aa941a8ca693b4
+  - target: mechanic/skill.step-aside
+    digest: fa330a0a851b02a64dd8b68e9335a115de376506dcd77d84afde7782a723c6e1
   bindings:
   - '{"id": "skill.vampire-reflexes", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.step-aside", "kind": "mechanic", "parameters": {}}'
-  interpretation: Khemri p.90 explicitly combines Vampire Reflexes with Step Aside into a single 4+ melee save.
+  interpretation: Khemri p.90 explicitly combines Vampire Reflexes with Step Aside into a single 4+ melee
+    save.
   cases:
   - id: one-combined-save
-    roles: [composition, boundary]
+    roles:
+    - composition
+    - boundary
     operation: special_save
-    defender: {skill_ids: [skill.vampire-reflexes, skill.step-aside]}
+    defender:
+      skill_ids:
+      - skill.vampire-reflexes
+      - skill.step-aside
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   mutations:
   - id: omit-improvement
     path: defender.global_effects.tags
     value: []
-    cases: [one-combined-save]
+    cases:
+    - one-combined-save

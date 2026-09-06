@@ -2,8 +2,9 @@
 
 The registry holds the small files that give the rest of the KB its shape:
 collections, rulesets, editorial sources, band aliases, cross-band warband
-groups and the runtime classification schema. Full layout:
-[the knowledge-base guide](../../../docs/knowledge-base-guide.md).
+groups and the runtime classification schema. Full layout and the
+classification contract:
+[the KB guide](../../../docs/reference/knowledge-base.md).
 
 ## Files
 
@@ -41,30 +42,6 @@ the classification relies on:
    Sigmar's orders, Bretonnian knights, imperial institutions), when the
    warband does not belong to the registry's own evil/chaotic groups.
 
-**Added during the audit (14):**
-
-- `hochland-bandits`, `kislevites`, `merchant-caravans`, `pirates`,
-  `lustria-pirates` — the page declares Hired Swords access identical to a
-  Human Mercenary warband (pirates: «same access to Hired Swords & any other
-  items as for a regular human Mercenary Warband»).
-- `imperial-outriders` — mounted swords only, including the Roadwarden
-  (good-aligned contract).
-- `outlaws-of-stirwood-forest` — only 4 exclusions (Bounty Hunter, Wolf-Priest
-  of Ulric, Norse Shaman, Dark Elf Assassin); the remaining swords, including
-  the good-aligned contract ones, stay available.
-- `bretonnian-knights`, `bretonnian-chapel-guard`,
-  `chaos-streets-bretonnian-knights` — Bretonnian knightly order (Chivalry,
-  Holy Water, no poisons/drugs).
-- `chaos-streets-sigmar-protectorate` — mirror of
-  `warband-group.sigmar-devoted` (Sisters of Sigmar and Witch Hunters were
-  already included).
-- `lustria-high-elves` — mirror of `warband-group.high-elf` (Shadow Warriors
-  and Sons of Nagarythe were already included).
-- `mootlanders` — halfling race, no contrary declaration on the page (race
-  convention).
-- `gunnery-school-of-nuln` — imperial state institution; the page does not
-  publish a Hired Swords section (documented inference).
-
 **Residual doubts — warbands with no source declaration, treated as
 non-good/neutral and therefore NOT included:** `horned-hunters`,
 `lustrian-reavers`, `khemri-mages`, `khemri-thieves-guild`,
@@ -75,3 +52,7 @@ warbands (`black-orcs`, `orc-mob`, `forest-goblins`, `night-goblins-*`,
 `chaos-streets-greenskins`), which the hiring canon expressly excludes
 («Orcs & Goblins»). If a future source classifies them, the audit must be
 repeated only for those warbands.
+
+The per-warband membership (including the 14 warbands added during the audit,
+with the source clause or race convention that justified each) lives in
+`warband-groups.yaml` itself.

@@ -117,6 +117,7 @@ def _parry_capacity(fighter: CompiledFighter) -> int:
     available = sum((
         fighter.main_weapon.parry,
         bool(fighter.off_hand and fighter.off_hand.parry),
+        has(fighter.main_weapon, "weapon.double-bladed-sword"),
         effects.parry,
         has(effects, "skill.miniath"),
         has(effects, "skill.axe-master") and any(
@@ -126,7 +127,11 @@ def _parry_capacity(fighter: CompiledFighter) -> int:
         ),
         has(effects, "skill.shield-mastery") and has(effects, "defence.shield"),
     ))
-    return min(2 if has(effects, "skill.unbeatable-warrior") else 1, int(available))
+    two_parries = (
+        has(effects, "skill.unbeatable-warrior")
+        or has(fighter.main_weapon, "weapon.double-bladed-sword")
+    )
+    return min(2 if two_parries else 1, int(available))
 
 def _claim_criticals(candidate: np.ndarray, rows: np.ndarray, state: CombatState) -> np.ndarray:
     """Allow at most one critical per attacker and close-combat phase."""

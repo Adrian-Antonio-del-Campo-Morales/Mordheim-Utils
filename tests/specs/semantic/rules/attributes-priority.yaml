@@ -5,7 +5,7 @@ specifications:
   category: permanent
   sources:
   - target: mechanic/skill.red-fury
-    digest: d4b1b8b2ca2be4cf877d9356bfe88f2ad47533521760dc347185fd43c7270aba
+    digest: 409eba12f269da908e1a0d3b1d9932d6ba46e539076d9559e56dac3bfe08d928
   interpretation: The rule adds one Attack to the profile, not a multiplier.
   interaction_contract:
     reads:
@@ -63,7 +63,7 @@ specifications:
   category: permanent
   sources:
   - target: mechanic/skill.extra-attack
-    digest: 82f5c464d737753aff836db387a8150b196246c320cb13b4e388269bb6f6567f
+    digest: 0337617f661391392e53a4025122e03a62f3b98d9dfbbe636b15c358661d6ef8
   interpretation: The rule adds one Attack to the profile, not a multiplier.
   interaction_contract:
     reads:
@@ -121,7 +121,7 @@ specifications:
   category: permanent
   sources:
   - target: mechanic/skill.monstrous
-    digest: 25e380f85bbfa6ebde7ab6cae9254f02c97870c694d7e41eb726d3e77b123bbc
+    digest: 4dee6e94288abd3757dc03b78e29e4fb22b1d9dde41c61716632456aa13a44d4
   interpretation: Add one Wound to the fighter's initial wounds for the duel.
   interaction_contract:
     reads:
@@ -181,7 +181,7 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.strength-of-steel
-    digest: 7bece24b96e881b55a0eeb73d1880e8d986ac923f012b79ff9e5f112bb5b88f7
+    digest: 92090320839c98b13427a46d25ba9f568e0b01adcdd21c851e5089c3b1e4c72e
   interpretation: Charging grants +1 Strength. Outside the charge the ordinary Strength is unchanged.
   interaction_contract:
     reads:
@@ -261,9 +261,9 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.resilient
-    digest: c1d7210e8e6a2400a99605bbfc369806e39dbad2c810fe515eaf0a01ac10167a
-  interpretation: Incoming hits lose one Strength for wounding, minimum one. Armour modifiers use the unmodified
-    attacking Strength.
+    digest: 7c15682b8523bbb3e8109ed734bfd6108f07bda21d6d7f1833dca2c0170ad6d6
+  interpretation: Incoming hits lose one Strength for wounding, minimum one. Armour modifiers use the
+    unmodified attacking Strength.
   interaction_contract:
     reads:
     - attack.strength
@@ -348,9 +348,9 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.berserker
-    digest: d8f02b72be724a5e60c2cd12efe0104148a34ceeeb9164b2d459b8c5c0906f68
-  interpretation: The charging bonus is +1 to hit, not +1 Weapon Skill. It changes an ordinary 4+ to 3+ only while
-    charging.
+    digest: f464ae0ab69bd06a1079e8d51c75a209ec3b6fc4a30cde55526b8183fc1ac630
+  interpretation: The charging bonus is +1 to hit, not +1 Weapon Skill. It changes an ordinary 4+ to 3+
+    only while charging.
   interaction_contract:
     reads:
     - round.charging
@@ -419,9 +419,9 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.hatred
-    digest: 55903f96c0da47a95bba838dc0d85778de25d638c945f5d81c4fca0e83cbe923
-  interpretation: Re-roll failed hit rolls only when first_round is true. A base 4+ succeeds with probability 3/4
-    when active, otherwise 1/2.
+    digest: 581c1dc7c5a768c0cb43f98cda42027dae221a3068f72611f9e170e72e40e8ad
+  interpretation: Re-roll failed hit rolls only when first_round is true. A base 4+ succeeds with probability
+    3/4 when active, otherwise 1/2.
   interaction_contract:
     reads:
     - round.first_round
@@ -491,9 +491,9 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.infallible
-    digest: 2a9abcf44f4629001ad86c1387bcf4041762c99193b62b1f83bbebba5d929c3a
-  interpretation: Re-roll failed hit rolls only when charging is true. A base 4+ succeeds with probability 3/4 when
-    active, otherwise 1/2.
+    digest: 1f8ef6863ea78aa5515557595e49bac94142bc0771528d4550b7cb90823feef2
+  interpretation: Re-roll failed hit rolls only when charging is true. A base 4+ succeeds with probability
+    3/4 when active, otherwise 1/2.
   interaction_contract:
     reads:
     - round.charging
@@ -563,9 +563,9 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.unstoppable-charge
-    digest: 0c9cb21c34b5dda1f1b6ac27594ece3e61defe3d4e5ac963f44e7223aeabcdb9
-  interpretation: A charge grants +1 Weapon Skill, changing WS3 versus WS3 from a 4+ hit to 3+. Without charging
-    WS is unchanged.
+    digest: 4439afb69b042c733ea03e460686598567f97089f520a8fb3c75003c94447994
+  interpretation: A charge grants +1 Weapon Skill, changing WS3 versus WS3 from a 4+ hit to 3+. Without
+    charging WS is unchanged.
   interaction_contract:
     reads:
     - round.charging
@@ -632,7 +632,7 @@ specifications:
   category: local
   sources:
   - target: mechanic/skill.monster-slayer
-    digest: c551d671c5939a98b93af5bab7a61b89b70a244598c7dd566fe7d62a2ff79c47
+    digest: 33eae53aa2d886122a262ec6b6be5b39be8f620942657ea5fd65993852202888
   interpretation: The wound target is no worse than 4+, while naturally easier targets are retained.
   interaction_contract:
     reads:
@@ -721,8 +721,9 @@ specifications:
   category: priority
   sources:
   - target: mechanic/skill.always-strikes-first
-    digest: 3c5bc14ee8ba7c3552b52d5bf42e6c2f8e7162597829cc42517aa162a2659b6d
-  interpretation: Strike-first acts before ordinary attacks regardless of the ordinary attacker's higher Initiative.
+    digest: 75d336e91842036ad1bc8414979ec7cf67e52b9a2b1c5aee1b12533eacc4431e
+  interpretation: Strike-first acts before ordinary attacks regardless of the ordinary attacker's higher
+    Initiative.
   interaction_contract:
     reads:
     - round.charged
@@ -827,9 +828,9 @@ specifications:
   category: priority
   sources:
   - target: mechanic/skill.lightning-reflexes
-    digest: a14b1677ce99a62c6eb607f2f83bc8a0b4f7066a827d0e56bda8e7cc08ef40be
-  interpretation: When charged the warrior strikes first too; if both have strike first, higher Initiative decides.
-    Without a charge the rule grants no advantage.
+    digest: bd4eacedd324d08e59e884cc347f0c2ca8a7ddb018174a30e16091d809bfeac5
+  interpretation: When charged the warrior strikes first too; if both have strike first, higher Initiative
+    decides. Without a charge the rule grants no advantage.
   interaction_contract:
     reads:
     - round.charged

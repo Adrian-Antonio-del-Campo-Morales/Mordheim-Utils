@@ -4,43 +4,83 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/norse-explorers-btb/band--norse-special-skills-crushing-blow/skill.crushing-blow, digest: 8dcf9bb0b5b1ea42d5e80f0697009c437ec3aa61a522e53b559151cbe3c08f0a}
-  - {target: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-crushing-blow/skill.crushing-blow, digest: 054ecbd0474cca91f616ff63811c48b19837d52509254c94de648b8941e23bd6}
-  - {target: rule/trollheim/lustria-norse/band--norse-special-skills-crushing-blow/skill.crushing-blow, digest: 6315bc79a3e21a61f65e38d904f0dc3414876f56d4a498d9186422acc31c64a0}
-  depends_on: [mechanic/skill.crushing-blow]
-  interpretation: The three Norse publications grant the same selectable skill to their four hero profiles. Henchmen
-    and wolves cannot select it. The historical spelling difference between beserkers and berserkers is a profile ID,
-    not a semantic difference.
+  - target: rule/mordheim/norse-explorers-btb/band--norse-special-skills-crushing-blow/skill.crushing-blow
+    digest: 7ebb117200337a65c2cd3434048dea72ede15475cac1e4822bbbf4adf99a7a37
+  - target: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-crushing-blow/skill.crushing-blow
+    digest: e95346c2a7a9dc18881ccbdd0983ad980b770cbec2d54ad0dc95685399dc67a4
+  - target: rule/trollheim/lustria-norse/band--norse-special-skills-crushing-blow/skill.crushing-blow
+    digest: ef9e2e546456748f1fe2303ca7578ed7f6c3d9c9ce68f287961e14129f3ec562
+  depends_on:
+  - mechanic/skill.crushing-blow
+  interpretation: The three Norse publications grant the same selectable skill to their four hero profiles.
+    Henchmen and wolves cannot select it. The historical spelling difference between beserkers and berserkers
+    is a profile ID, not a semantic difference.
   cases:
   - id: border-town-burning-heroes
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: norse-explorers-btb, profile_id: jarl}
-    context: {rule_id: band--norse-special-skills-crushing-blow}
-    expect: {result.recipients: [beserkers, bondsmen, jarl, wulfen]}
+    defender:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: jarl
+    context:
+      rule_id: band--norse-special-skills-crushing-blow
+    expect:
+      result.recipients:
+      - beserkers
+      - bondsmen
+      - jarl
+      - wulfen
   - id: mordheim-lustria-heroes
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: norse-explorers-lustria, profile_id: jarl}
-    context: {rule_id: band--norse-special-skills-crushing-blow}
-    expect: {result.recipients: [beserkers, bondsmen, jarl, wulfen]}
+    defender:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: jarl
+    context:
+      rule_id: band--norse-special-skills-crushing-blow
+    expect:
+      result.recipients:
+      - beserkers
+      - bondsmen
+      - jarl
+      - wulfen
   - id: trollheim-lustria-heroes
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: lustria-norse, profile_id: jarl}
-    context: {rule_id: band--norse-special-skills-crushing-blow}
-    expect: {result.recipients: [berserkers, bondsmen, jarl, wulfen]}
+    defender:
+      collection: trollheim
+      band_id: lustria-norse
+      profile_id: jarl
+    context:
+      rule_id: band--norse-special-skills-crushing-blow
+    expect:
+      result.recipients:
+      - berserkers
+      - bondsmen
+      - jarl
+      - wulfen
   - id: granted-consumer
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: parry
     attacker:
       collection: mordheim
       band_id: norse-explorers-btb
       profile_id: jarl
-      special_rule_ids: [band--norse-special-skills-crushing-blow]
+      special_rule_ids:
+      - band--norse-special-skills-crushing-blow
       main_weapon_id: weapon.mace
-    defender: {main_weapon_id: weapon.sword}
-    context: {hit_roll: 4}
+    defender:
+      main_weapon_id: weapon.sword
+    context:
+      hit_roll: 4
     expect:
       attacker.global_effects.cannot_be_parried: true
       result.attempted: false
@@ -49,4 +89,5 @@ specifications:
   - id: remove-granted-effect
     path: attacker.global_effects.cannot_be_parried
     value: false
-    cases: [granted-consumer]
+    cases:
+    - granted-consumer

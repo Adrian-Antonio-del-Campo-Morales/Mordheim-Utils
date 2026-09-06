@@ -4,35 +4,57 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: interaction
   sources:
-  - {target: mechanic/skill.shield-mastery, digest: 0e5b9977b9143371eeb178aa51d6dc46b843d88a3a58a317c6bac08789903306}
-  - {target: mechanic/defence.shield, digest: 43d3529b96ece2d932e95a8116a0100e4273112ca47a5759d0b294800bf3a23e}
+  - target: mechanic/skill.shield-mastery
+    digest: 9cb8e7421815d344f358097fa978c95b2839eeb5facfbec2ed7e022a6b22a79f
+  - target: mechanic/defence.shield
+    digest: bad7a6cc281a2b0ef7782dff61fb81dd8765a905236513210a3476e8f55fb8fa
   bindings:
   - '{"id": "skill.shield-mastery", "kind": "mechanic", "parameters": {}}'
   - '{"id": "defence.shield", "kind": "mechanic", "parameters": {}}'
-  interpretation: The same equipped shield simultaneously contributes its ordinary 6+ armour save and one parry
-    through Shield Mastery. Enabling the parry does not replace the armour contribution.
+  interpretation: The same equipped shield simultaneously contributes its ordinary 6+ armour save and
+    one parry through Shield Mastery. Enabling the parry does not replace the armour contribution.
   cases:
   - id: parry-enabled
-    roles: [composition, boundary]
+    roles:
+    - composition
+    - boundary
     operation: parry
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {skill_ids: [skill.shield-mastery], main_weapon_id: weapon.axe, off_hand_id: defence.shield}
-    context: {hit_roll: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.shield-mastery
+      main_weapon_id: weapon.axe
+      off_hand_id: defence.shield
+    context:
+      hit_roll: 4
     distribution:
       observable: result.blocked
       max_rolls: 1
-      expected: {'true': 1/3, 'false': 2/3}
+      expected:
+        'true': 1/3
+        'false': 2/3
   - id: armour-retained
-    roles: [composition, boundary]
+    roles:
+    - composition
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {skill_ids: [skill.shield-mastery], main_weapon_id: weapon.axe, off_hand_id: defence.shield}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      skill_ids:
+      - skill.shield-mastery
+      main_weapon_id: weapon.axe
+      off_hand_id: defence.shield
     distribution:
       observable: result.saved
       max_rolls: 1
-      expected: {'true': 1/6, 'false': 5/6}
+      expected:
+        'true': 1/6
+        'false': 5/6
   mutations:
   - id: remove-parry-half
     path: defender.global_effects.tags
     value: []
-    cases: [parry-enabled]
+    cases:
+    - parry-enabled

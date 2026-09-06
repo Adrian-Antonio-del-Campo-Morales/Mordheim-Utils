@@ -5,11 +5,11 @@ specifications:
   category: local
   sources:
   - target: mechanic/weapon.bo
-    digest: c5eff9f594781aaa3c9321d48dd3087cc9298b91ea7e8d58ca91210e61a997e3
+    digest: f1f48e5ca341c76816faf57b92f51ae7e05195a4d9213935c12400946c73f66f
   - target: mechanic/weapon.stiletto
-    digest: 264fd98ec58111cd89fb0575d2f7def11926bcb91347e83b474bcfdeb535b65e
-  interpretation: Bo occupies both hands, adds one attack and allows parrying. Stiletto adds one attack but
-    all its attacks resolve at Strength -1.
+    digest: e1720aef9d34001be2a3a5c842662ee4fdc3f3e4d7cce25b211b426bf618a59b
+  interpretation: Bo occupies both hands, adds one attack and allows parrying. Stiletto adds one attack
+    but all its attacks resolve at Strength -1.
   cases:
   - id: bo-extra-attack
     roles:
@@ -97,11 +97,11 @@ specifications:
   category: local
   sources:
   - target: mechanic/weapon.poisoned-daggers
-    digest: 658e944a1a21aef1a32fa05f1b2bbc2214859639007ff9fcada7affa8a485100
+    digest: 35423fb88a03966af14ff3aba2ab199b1ec1a775989adedadd07250d8b7ed9a8
   depends_on:
   - mechanic/poison.black-lotus
-  interpretation: Poisoned Daggers are used as a paired set and apply the Black Lotus mechanism. Poison immunity
-    removes the automatic wound but not the extra attack.
+  interpretation: Poisoned Daggers are used as a paired set and apply the Black Lotus mechanism. Poison
+    immunity removes the automatic wound but not the extra attack.
   cases:
   - id: paired
     roles:
@@ -185,11 +185,11 @@ specifications:
   category: local
   sources:
   - target: mechanic/weapon.unholy-sword
-    digest: 0811d785cb14a9b71b381f1b92042780eea7a2be30824255f54e0ab2d1b3de5b
+    digest: a375ad22b51315d30cb761adeea3086d421143f1ba8a0a9e664b4177b36d256e
   - target: mechanic/weapon.yari-one-handed
-    digest: 6edefb0eb0a1d83e2ba334e9fa5af036686dd4c5f3ddff0c1f18f0ab49a8ae8a
+    digest: 1f3365f5b63c90d758ed5a487aa66f372c684dec4e13f7d995d0bb450c6aecba
   - target: mechanic/weapon.yari-two-handed
-    digest: 75bd5178e9495859f2cbdad181e86730d7891750e4f9c844dd14b82abc8ebc8b
+    digest: f7a3eeb313bc3f62c577c8442dadd053aa522178d77c89843803261d414dbafa
   interpretation: The three weapons allow one parry. One-handed Unholy Sword and Yari alter neither Strength
     nor priority; the two-handed Yari occupies both hands and strikes first.
   cases:
@@ -302,13 +302,13 @@ specifications:
   category: stateful
   sources:
   - target: mechanic/weapon.claw-of-the-old-ones
-    digest: 6002c005721339a5027ad475e42224b5fbe03da125597156c5a97c39365b89df
+    digest: dca4292d902c8512a858fdc6b0d3041d98d67699f5ebfe0976384962f33a28a7
   - target: mechanic/weapon.draich
-    digest: 16076561aa34ab62fee8d11f698a16326a874e1e3afecd595075b05ec5efff7c
-  interpretation: 'Claw adds one to Strength, ignores armour and allows parrying. Draich combines two hands,
-    Strength +2, strikes last, parry, Concussion and +1 extra to Injury when it produces a critical. Draich
-    adds to the separate critical table: 4 becomes Master Strike, rather than a flat additional Injury point
-    (M01).'
+    digest: 726aca0cf7d181063f758702e3b4a4b734a52debc4263fe9c6d6803ce5a33d96
+  interpretation: 'Claw adds one to Strength, ignores armour and allows parrying. Draich combines two
+    hands, Strength +2, strikes last, parry, Concussion and +1 extra to Injury when it produces a critical.
+    Draich adds to the separate critical table: 4 becomes Master Strike, rather than a flat additional
+    Injury point (M01).'
   cases:
   - id: claw-strength
     roles:
@@ -430,18 +430,18 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/weapon.beastlash
-    digest: 35048832cdca30b65b0acc4f7fbc27dc94527ce4ea2b55f2d64fcc803381de9d
+    digest: 9aae4dbda45246ddb8e49c13d78abf1cb31cd990076807225c5d13353036d067
   - target: mechanic/weapon.death-knife
-    digest: 52d5ef244241412f84f4c1341cc64d6d864a9003856cfafa1c1784a499249743
+    digest: 1b6c81949e01c1d6fdbcf10257e94c327420609c5e4139a43f8ae50e54617187
   - target: mechanic/weapon.disease-dagger
-    digest: 45cdf8af830e67d7d2a948013365320a8e27a3f22e81ab2a366a8bdeb06eb8b8
+    digest: 43a1c08932ff8f7226a8c62a04e887ed0775496d6ccf1331f72d40426adc04e8
   - target: mechanic/weapon.censer
-    digest: 93b69e8ae25634c1931d6ed8f888727f6884510242e26da5cf91d998198ef7b6
+    digest: a8896d4137ea524525ba0b6fdfe79ff46adc14440b804a5f78f9ff0d38b97a32
   - target: mechanic/weapon.ball-and-chain
-    digest: f44bfb8a01832528845b04f6ccc8b4f97539f8c872236a0e9a0b398d074e7062
-  interpretation: Beastlash uses Strength -1. Death Knife adds +1 Injury and ignores armour at Strength -1.
-    Disease Dagger improves the enemy save. Censer gains Strength +2 only in the first round. Ball and Chain
-    keeps Strength +2 and ignores armour.
+    digest: 5362ab5501d6b284c91e4352ff399f1efba124f951bbddc0941fcec8582b19c8
+  interpretation: Beastlash uses Strength -1. Death Knife adds +1 Injury and ignores armour at Strength
+    -1. Disease Dagger improves the enemy save. Censer gains Strength +2 only in the first round. Ball
+    and Chain keeps Strength +2 and ignores armour.
   cases:
   - id: beastlash-strength
     roles:

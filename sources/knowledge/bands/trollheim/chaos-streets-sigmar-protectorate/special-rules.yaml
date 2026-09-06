@@ -3,17 +3,20 @@ band_id: chaos-streets-sigmar-protectorate
 rules:
 - id: warrior-priest--leader
   name: Leader
-  effect: Any warband model within 6" of the Warrior Priest may use his Leadership when taking Leadership tests.
+  effect: Any warband model within 6" of the Warrior Priest may use his Leadership when taking Leadership
+    tests.
   source:
     manual: chaos-in-the-streets
     printed_page: 153
     section: Heroes / 1 Warrior Priest / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
-    en: Any warband model within 6" of the Warrior Priest may use his Leadership when taking Leadership tests.
-    es: null
+    en: Any warband model within 6" of the Warrior Priest may use his Leadership when taking Leadership
+      tests.
+    es: Cualquier modelo de la banda a 6" del Sacerdote Guerrero puede usar su Liderazgo cuando realice
+      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - warrior-priest
@@ -28,19 +31,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: warrior-priest--prayers-of-sigmar
   name: Prayers of Sigmar
-  effect: The Warrior Priest may use the Prayers of Sigmar. The prayer list and prayer effects are intentionally not modelled
-    in this file.
+  effect: The Warrior Priest may use the Prayers of Sigmar. The prayer list and prayer effects are intentionally
+    not modelled in this file.
   source:
     manual: chaos-in-the-streets
     printed_page: 153
     section: Heroes / 1 Warrior Priest / Prayers
   name_i18n:
     en: Prayers of Sigmar
-    es: null
+    es: Oraciones de Sigmar
   effect_i18n:
-    en: The Warrior Priest may use the Prayers of Sigmar. The prayer list and prayer effects are intentionally not modelled
-      in this file.
-    es: null
+    en: The Warrior Priest may use the Prayers of Sigmar. The prayer list and prayer effects are intentionally
+      not modelled in this file.
+    es: El Sacerdote Guerrero puede usar las Oraciones de Sigmar. La lista de oraciones y los efectos
+      de las oraciones no están modelados intencionadamente en este archivo.
   applies_to:
     profile_ids:
     - warrior-priest
@@ -55,19 +59,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: ranger--animal-tamer
   name: Animal Tamer
-  effect: Any animal in the warband within 6" of the Ranger may use his Leadership. Any animal attempting to charge the Ranger
-    must first pass a Leadership test.
+  effect: Any animal in the warband within 6" of the Ranger may use his Leadership. Any animal attempting
+    to charge the Ranger must first pass a Leadership test.
   source:
     manual: chaos-in-the-streets
     printed_page: 154
     section: Heroes / 0-1 Ranger / Animal Tamer
   name_i18n:
     en: Animal Tamer
-    es: null
+    es: Domador
   effect_i18n:
-    en: Any animal in the warband within 6" of the Ranger may use his Leadership. Any animal attempting to charge the Ranger
-      must first pass a Leadership test.
-    es: null
+    en: Any animal in the warband within 6" of the Ranger may use his Leadership. Any animal attempting
+      to charge the Ranger must first pass a Leadership test.
+    es: Cualquier animal de la banda a 6" del Guardabosques puede usar su Liderazgo. Cualquier animal
+      que intente cargar contra el Guardabosques debe superar primero un chequeo de Liderazgo.
   applies_to:
     profile_ids:
     - ranger
@@ -82,19 +87,22 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: templar--devout
   name: Devout
-  effect: Templars are subject to Hatred against every model belonging to a Chaotic warband. The source explicitly includes
-    Skaven, Possessed, Carnival of Chaos, Beastmen and any warband containing a Daemon.
+  effect: Templars are subject to Hatred against every model belonging to a Chaotic warband. The source
+    explicitly includes Skaven, Possessed, Carnival of Chaos, Beastmen and any warband containing a Daemon.
   source:
     manual: chaos-in-the-streets
     printed_page: 154
     section: Heroes / 0-2 Templars / Devout
   name_i18n:
     en: Devout
-    es: null
+    es: Devoto
   effect_i18n:
-    en: Templars are subject to Hatred against every model belonging to a Chaotic warband. The source explicitly includes
-      Skaven, Possessed, Carnival of Chaos, Beastmen and any warband containing a Daemon.
-    es: null
+    en: Templars are subject to Hatred against every model belonging to a Chaotic warband. The source
+      explicitly includes Skaven, Possessed, Carnival of Chaos, Beastmen and any warband containing a
+      Daemon.
+    es: Los Templarios están sujetos a Odio contra todo modelo perteneciente a una banda Caótica. La fuente
+      incluye explícitamente a los Skaven, Poseídos, Carnaval del Caos, Beastmen y cualquier banda que
+      contenga un Demonio.
   applies_to:
     profile_ids:
     - templar
@@ -116,10 +124,10 @@ rules:
     section: Henchmen / 0-5 Mastiffs / Animal
   name_i18n:
     en: Animal
-    es: null
+    es: Animales
   effect_i18n:
     en: Mastiffs are animals and never gain Experience.
-    es: null
+    es: Los Mastines son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - protectorate-mastiff
@@ -134,25 +142,31 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--warrior-priest-death
   name: Death of the Warrior Priest
-  effect: If the Warrior Priest dies, the Initiate with the most Experience takes the leader's place. That model changes its
-    warrior type to Warrior Priest and gains the Warrior Priest's base rules, including Leader and Prayers of Sigmar. It does
-    not immediately learn a Prayer. The next time it gains an advance, it may forgo the normal advance roll and instead roll
-    directly on the Prayers of Sigmar table. Once the replacement has occurred, the warband may recruit another Initiate to
-    fill the vacant slot.
+  effect: If the Warrior Priest dies, the Initiate with the most Experience takes the leader's place.
+    That model changes its warrior type to Warrior Priest and gains the Warrior Priest's base rules, including
+    Leader and Prayers of Sigmar. It does not immediately learn a Prayer. The next time it gains an advance,
+    it may forgo the normal advance roll and instead roll directly on the Prayers of Sigmar table. Once
+    the replacement has occurred, the warband may recruit another Initiate to fill the vacant slot.
   source:
     manual: chaos-in-the-streets
     printed_page: 150
     section: Special Rules / Death of the Warrior Priest
   name_i18n:
     en: Death of the Warrior Priest
-    es: null
+    es: Muerte del Sacerdote Guerrero
   effect_i18n:
-    en: If the Warrior Priest dies, the Initiate with the most Experience takes the leader's place. That model changes its
-      warrior type to Warrior Priest and gains the Warrior Priest's base rules, including Leader and Prayers of Sigmar. It
-      does not immediately learn a Prayer. The next time it gains an advance, it may forgo the normal advance roll and instead
-      roll directly on the Prayers of Sigmar table. Once the replacement has occurred, the warband may recruit another Initiate
-      to fill the vacant slot.
-    es: null
+    en: If the Warrior Priest dies, the Initiate with the most Experience takes the leader's place. That
+      model changes its warrior type to Warrior Priest and gains the Warrior Priest's base rules, including
+      Leader and Prayers of Sigmar. It does not immediately learn a Prayer. The next time it gains an
+      advance, it may forgo the normal advance roll and instead roll directly on the Prayers of Sigmar
+      table. Once the replacement has occurred, the warband may recruit another Initiate to fill the vacant
+      slot.
+    es: Si el Sacerdote Guerrero muere, el Iniciado con más Experiencia ocupa el lugar del líder. Ese
+      modelo cambia su tipo de guerrero a Sacerdote Guerrero y gana las reglas base del Sacerdote Guerrero,
+      incluidas Líder y Oraciones de Sigmar. No aprende inmediatamente una Oración. La próxima vez que
+      gane una mejora, puede renunciar a la tirada de mejora normal y tirar en su lugar directamente en
+      la tabla de Oraciones de Sigmar. Una vez producido el reemplazo, la banda puede reclutar otro Iniciado
+      para cubrir la plaza vacante.
   applies_to:
     band: true
   runtime:
@@ -173,10 +187,10 @@ rules:
     section: Choice of Warriors / Ranger and Templars
   name_i18n:
     en: Ranger and Templar Limit
-    es: null
+    es: Límite de Guardabosques y Templarios
   effect_i18n:
     en: If the warband includes a Ranger, it may include no more than one Templar.
-    es: null
+    es: Si la banda incluye un Guardabosques, no puede incluir más de un Templario.
   applies_to:
     band: true
   runtime:
@@ -191,19 +205,20 @@ rules:
 - id: band--protectorate-special-skills-protection-of-sigmar
   kind: warband_skill
   name: Protection of Sigmar
-  effect: Any spell cast against the Hero is dispelled on a D6 roll of 4+. If the spell is dispelled, it does not affect any
-    other model either.
+  effect: Any spell cast against the Hero is dispelled on a D6 roll of 4+. If the spell is dispelled,
+    it does not affect any other model either.
   source:
     manual: chaos-in-the-streets
     printed_page: 153
     section: Sigmar's Protectorate Special Skills / Protection of Sigmar
   name_i18n:
     en: Protection of Sigmar
-    es: null
+    es: Protección de Sigmar
   effect_i18n:
-    en: Any spell cast against the Hero is dispelled on a D6 roll of 4+. If the spell is dispelled, it does not affect any
-      other model either.
-    es: null
+    en: Any spell cast against the Hero is dispelled on a D6 roll of 4+. If the spell is dispelled, it
+      does not affect any other model either.
+    es: Cualquier hechizo lanzado contra el Héroe se disipa con una tirada de 4+ en 1D6. Si el hechizo
+      se disipa, tampoco afecta a ningún otro modelo.
   eligibility:
   - warrior-priest
   - templar
@@ -222,17 +237,20 @@ rules:
 - id: band--protectorate-special-skills-absolute-faith
   kind: warband_skill
   name: Absolute Faith
-  effect: The Hero may re-roll failed Fear tests and does not need to take a test for being engaged by multiple opponents.
+  effect: The Hero may re-roll failed Fear tests and does not need to take a test for being engaged by
+    multiple opponents.
   source:
     manual: chaos-in-the-streets
     printed_page: 153
     section: Sigmar's Protectorate Special Skills / Absolute Faith
   name_i18n:
     en: Absolute Faith
-    es: null
+    es: Fe absoluta
   effect_i18n:
-    en: The Hero may re-roll failed Fear tests and does not need to take a test for being engaged by multiple opponents.
-    es: null
+    en: The Hero may re-roll failed Fear tests and does not need to take a test for being engaged by multiple
+      opponents.
+    es: El Héroe puede repetir los chequeos de Miedo fallados y no necesita hacer un chequeo por estar
+      empeñado con múltiples oponentes.
   eligibility:
   - warrior-priest
   - templar
@@ -258,10 +276,10 @@ rules:
     section: Sigmar's Protectorate Special Skills / Absolute Determination
   name_i18n:
     en: Absolute Determination
-    es: null
+    es: Determinación absoluta
   effect_i18n:
     en: Warrior Priest only. The Warrior Priest may re-roll failed Rout tests.
-    es: null
+    es: Solo Sacerdote Guerrero. El Sacerdote Guerrero puede repetir los chequeos de huida fallados.
   eligibility:
   - warrior-priest
   applies_to:
@@ -288,21 +306,24 @@ rules:
         kind: mechanic
         id: skill.inspiring-sermon
   name: Rousing Sermon
-  effect: 'Warrior Priest only. At the start of the Protectorate player''s turn, the Warrior Priest may declare a Rousing
-    Sermon. He may not use Prayers that turn. The effect is automatic: the Warrior Priest and all friendly models within 6"
-    gain +1 Attack for that turn.'
+  effect: >-
+    Warrior Priest only. At the start of the Protectorate player's turn, the Warrior Priest may
+    declare a Rousing Sermon. He may not use Prayers that turn. The effect is automatic: the Warrior
+    Priest and all friendly models within 6" gain +1 Attack for that turn.
   source:
     manual: chaos-in-the-streets
     printed_page: 153
     section: Sigmar's Protectorate Special Skills / Rousing Sermon
   name_i18n:
     en: Rousing Sermon
-    es: null
+    es: Sermón enardecedor
   effect_i18n:
-    en: 'Warrior Priest only. At the start of the Protectorate player''s turn, the Warrior Priest may declare a Rousing Sermon.
-      He may not use Prayers that turn. The effect is automatic: the Warrior Priest and all friendly models within 6" gain
-      +1 Attack for that turn.'
-    es: null
+    en: 'Warrior Priest only. At the start of the Protectorate player''s turn, the Warrior Priest may
+      declare a Rousing Sermon. He may not use Prayers that turn. The effect is automatic: the Warrior
+      Priest and all friendly models within 6" gain +1 Attack for that turn.'
+    es: 'Solo Sacerdote Guerrero. Al inicio del turno del jugador del Protectorado, el Sacerdote Guerrero
+      puede declarar un Sermón enardecedor. No puede usar Oraciones ese asalto. El efecto es automático:
+      el Sacerdote Guerrero y todos los modelos amigos a 6" ganan +1 Ataque durante ese asalto.'
   eligibility:
   - warrior-priest
   applies_to:
@@ -310,19 +331,20 @@ rules:
 - id: band--protectorate-special-skills-guidance-of-sigmar
   kind: warband_skill
   name: Guidance of Sigmar
-  effect: When using missile weapons, the Hero may freely choose a target and ignore the normal requirement to shoot at the
-    nearest enemy.
+  effect: When using missile weapons, the Hero may freely choose a target and ignore the normal requirement
+    to shoot at the nearest enemy.
   source:
     manual: chaos-in-the-streets
     printed_page: 153
     section: Sigmar's Protectorate Special Skills / Guidance of Sigmar
   name_i18n:
     en: Guidance of Sigmar
-    es: null
+    es: Guía de Sigmar
   effect_i18n:
-    en: When using missile weapons, the Hero may freely choose a target and ignore the normal requirement to shoot at the
-      nearest enemy.
-    es: null
+    en: When using missile weapons, the Hero may freely choose a target and ignore the normal requirement
+      to shoot at the nearest enemy.
+    es: Al usar armas de misil, el Héroe puede elegir libremente un objetivo e ignorar el requisito normal
+      de disparar al enemigo más cercano.
   eligibility:
   - warrior-priest
   - templar

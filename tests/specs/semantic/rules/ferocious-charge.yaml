@@ -5,10 +5,10 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.ferocious-charge
-    digest: d0e9cbebc4255ae4a5f8c7c76ad78ab3997fc6399a6aeef8c68be1ff4787c44d
-  interpretation: Ferocious Charge doubles the fighter's Attacks characteristic only during the first round in
-    which that fighter charged. During exactly the same window every ordinary To Hit roll suffers a -1 modifier.
-    Neither half remains active in a later round or when the fighter did not charge.
+    digest: e5e6cb8dd5014c8d8a4b7b8c949176496fa18e138f981e77aab9e8e8ff8c7166
+  interpretation: Ferocious Charge doubles the fighter's Attacks characteristic only during the first
+    round in which that fighter charged. During exactly the same window every ordinary To Hit roll suffers
+    a -1 modifier. Neither half remains active in a later round or when the fighter did not charge.
   interaction_contract:
     reads:
     - fighter.attacks
@@ -20,68 +20,141 @@ specifications:
     - hit.target
   cases:
   - id: compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {skill_ids: [skill.ferocious-charge], main_weapon_id: weapon.mace}
-    expect: {attacker.characteristics.attacks: 1}
+    attacker:
+      skill_ids:
+      - skill.ferocious-charge
+      main_weapon_id: weapon.mace
+    expect:
+      attacker.characteristics.attacks: 1
     expect_contains:
-      attacker.global_effects.tags: [skill.ferocious-charge]
+      attacker.global_effects.tags:
+      - skill.ferocious-charge
   - id: doubles-attacks-on-charge
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: attacks
     attacker:
-      skill_ids: [skill.ferocious-charge]
+      skill_ids:
+      - skill.ferocious-charge
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 2}
-    context: {first_round: true, charging: true}
-    expect: {result.attacks: 4}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 2
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.attacks: 4
   - id: no-double-without-charge
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attacks
     attacker:
-      skill_ids: [skill.ferocious-charge]
+      skill_ids:
+      - skill.ferocious-charge
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 2}
-    context: {first_round: true, charging: false}
-    expect: {result.attacks: 2}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 2
+    context:
+      first_round: true
+      charging: false
+    expect:
+      result.attacks: 2
   - id: no-double-after-first-round
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attacks
     attacker:
-      skill_ids: [skill.ferocious-charge]
+      skill_ids:
+      - skill.ferocious-charge
       main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 2}
-    context: {first_round: false, charging: true}
-    expect: {result.attacks: 2}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 2
+    context:
+      first_round: false
+      charging: true
+    expect:
+      result.attacks: 2
   - id: hit-penalty-on-charge
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: hit
-    attacker: {skill_ids: [skill.ferocious-charge], main_weapon_id: weapon.mace}
-    context: {first_round: true, charging: true}
+    attacker:
+      skill_ids:
+      - skill.ferocious-charge
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+      charging: true
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/3, 'false': 2/3}
+      expected:
+        'true': 1/3
+        'false': 2/3
   - id: no-hit-penalty-without-charge
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: hit
-    attacker: {skill_ids: [skill.ferocious-charge], main_weapon_id: weapon.mace}
-    context: {first_round: true, charging: false}
+    attacker:
+      skill_ids:
+      - skill.ferocious-charge
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+      charging: false
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: no-hit-penalty-after-first-round
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: hit
-    attacker: {skill_ids: [skill.ferocious-charge], main_weapon_id: weapon.mace}
-    context: {first_round: false, charging: true}
+    attacker:
+      skill_ids:
+      - skill.ferocious-charge
+      main_weapon_id: weapon.mace
+    context:
+      first_round: false
+      charging: true
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   mutations:
   - id: remove-ferocious-charge
     path: attacker.global_effects.tags
     value: []
-    cases: [doubles-attacks-on-charge, hit-penalty-on-charge]
+    cases:
+    - doubles-attacks-on-charge
+    - hit-penalty-on-charge

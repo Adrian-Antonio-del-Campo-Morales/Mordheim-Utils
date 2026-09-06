@@ -5,170 +5,412 @@ specifications:
   category: local
   sources:
   - target: rule/mordheim/dark-elves/cold-one-beasthounds--scaly-skin/trait.natural-armour-save
-    digest: e65efd612d52cd8f5d51ee3332de6fcf55079db5506c11059b48b93b218f63f2
+    digest: 0f40b77c087ff6573828ea2d2f00b37dbede37fae53398581254fe5a6502c5bb
   - target: rule/mordheim/dark-elves/cold-one-beasthounds--scaly-skin/trait.natural-armour-unmodified
-    digest: e65efd612d52cd8f5d51ee3332de6fcf55079db5506c11059b48b93b218f63f2
-  interpretation: Henchmen / Scaly Skin grants 6+ armour. This edition explicitly protects it from Strength modifiers, but not from armour denial.
-    The no-armour control uses Vomit to exercise the generic denial consumer, not to generate a critical hit.
+    digest: 0f40b77c087ff6573828ea2d2f00b37dbede37fae53398581254fe5a6502c5bb
+  interpretation: Henchmen / Scaly Skin grants 6+ armour. This edition explicitly protects it from Strength
+    modifiers, but not from armour denial. The no-armour control uses Vomit to exercise the generic denial
+    consumer, not to generate a critical hit.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: dark-elves, profile_id: cold-one-beasthounds}
-    context: {rule_id: cold-one-beasthounds--scaly-skin}
-    expect: {result.recipients: [cold-one-beasthounds]}
+    defender:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+    context:
+      rule_id: cold-one-beasthounds--scaly-skin
+    expect:
+      result.recipients:
+      - cold-one-beasthounds
   - id: face-1
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dark-elves, profile_id: cold-one-beasthounds}
-    rolls: [{key: armour, value: 1}]
-    expect: {result.target: 6, result.saved: false, defender.natural_armour_unmodified: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+    rolls:
+    - key: armour
+      value: 1
+    expect:
+      result.target: 6
+      result.saved: false
+      defender.natural_armour_unmodified: true
   - id: face-2
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dark-elves, profile_id: cold-one-beasthounds}
-    rolls: [{key: armour, value: 2}]
-    expect: {result.target: 6, result.saved: false, defender.natural_armour_unmodified: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+    rolls:
+    - key: armour
+      value: 2
+    expect:
+      result.target: 6
+      result.saved: false
+      defender.natural_armour_unmodified: true
   - id: face-3
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dark-elves, profile_id: cold-one-beasthounds}
-    rolls: [{key: armour, value: 3}]
-    expect: {result.target: 6, result.saved: false, defender.natural_armour_unmodified: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 6
+      result.saved: false
+      defender.natural_armour_unmodified: true
   - id: face-4
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dark-elves, profile_id: cold-one-beasthounds}
-    rolls: [{key: armour, value: 4}]
-    expect: {result.target: 6, result.saved: false, defender.natural_armour_unmodified: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 6
+      result.saved: false
+      defender.natural_armour_unmodified: true
   - id: face-5
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dark-elves, profile_id: cold-one-beasthounds}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.target: 6, result.saved: false, defender.natural_armour_unmodified: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.saved: false
+      defender.natural_armour_unmodified: true
   - id: face-6
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: dark-elves, profile_id: cold-one-beasthounds}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.target: 6, result.saved: true, defender.natural_armour_unmodified: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.saved: true
+      defender.natural_armour_unmodified: true
   - id: strength-4
-    roles: [boundary]
+    roles:
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: dark-elves, profile_id: cold-one-beasthounds}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.eligible: true, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.eligible: true
+      result.saved: true
   - id: strength-6
-    roles: [boundary]
+    roles:
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: dark-elves, profile_id: cold-one-beasthounds}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.eligible: true, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 6
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.eligible: true
+      result.saved: true
   - id: armour-denial
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.vomit-attack}
-    defender: {collection: mordheim, band_id: dark-elves, profile_id: cold-one-beasthounds}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+    expect:
+      result.eligible: false
+      result.saved: false
   mutations:
   - id: remove-skin
     path: defender.natural_armour_save
     value: 7
-    cases: [face-6]
+    cases:
+    - face-6
   - id: invert-strength-exception
     path: defender.natural_armour_unmodified
     value: false
-    cases: [strength-4]
+    cases:
+    - strength-4
 - id: editorial-cold-one-skin-lustria-dark-elves
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
   - target: rule/trollheim/lustria-dark-elves/cold-ones--scaly-skin/trait.natural-armour-save
-    digest: 36f4fc728fa3a23cbc909eb7ee5fc7ee9b7e3fdc4ddacade99bcbf16a1fda58e
-  interpretation: Henchmen / Scaly Skin grants 6+ armour. Lustria p.64 gives no exemption from normal Strength modifiers.
-    The no-armour control uses Vomit to exercise the generic denial consumer, not to generate a critical hit.
+    digest: baf3cc8cc49998c793790785a755dbd6d03193799350e597b93cf3fb747ff956
+  interpretation: Henchmen / Scaly Skin grants 6+ armour. Lustria p.64 gives no exemption from normal
+    Strength modifiers. The no-armour control uses Vomit to exercise the generic denial consumer, not
+    to generate a critical hit.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: trollheim, band_id: lustria-dark-elves, profile_id: cold-ones}
-    context: {rule_id: cold-ones--scaly-skin}
-    expect: {result.recipients: [cold-ones]}
+    defender:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+    context:
+      rule_id: cold-ones--scaly-skin
+    expect:
+      result.recipients:
+      - cold-ones
   - id: face-1
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-dark-elves, profile_id: cold-ones}
-    rolls: [{key: armour, value: 1}]
-    expect: {result.target: 6, result.saved: false, defender.natural_armour_unmodified: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+    rolls:
+    - key: armour
+      value: 1
+    expect:
+      result.target: 6
+      result.saved: false
+      defender.natural_armour_unmodified: false
   - id: face-2
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-dark-elves, profile_id: cold-ones}
-    rolls: [{key: armour, value: 2}]
-    expect: {result.target: 6, result.saved: false, defender.natural_armour_unmodified: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+    rolls:
+    - key: armour
+      value: 2
+    expect:
+      result.target: 6
+      result.saved: false
+      defender.natural_armour_unmodified: false
   - id: face-3
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-dark-elves, profile_id: cold-ones}
-    rolls: [{key: armour, value: 3}]
-    expect: {result.target: 6, result.saved: false, defender.natural_armour_unmodified: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      result.target: 6
+      result.saved: false
+      defender.natural_armour_unmodified: false
   - id: face-4
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-dark-elves, profile_id: cold-ones}
-    rolls: [{key: armour, value: 4}]
-    expect: {result.target: 6, result.saved: false, defender.natural_armour_unmodified: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      result.target: 6
+      result.saved: false
+      defender.natural_armour_unmodified: false
   - id: face-5
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-dark-elves, profile_id: cold-ones}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.target: 6, result.saved: false, defender.natural_armour_unmodified: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.saved: false
+      defender.natural_armour_unmodified: false
   - id: face-6
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-dark-elves, profile_id: cold-ones}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.target: 6, result.saved: true, defender.natural_armour_unmodified: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.target: 6
+      result.saved: true
+      defender.natural_armour_unmodified: false
   - id: strength-4
-    roles: [boundary]
+    roles:
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: trollheim, band_id: lustria-dark-elves, profile_id: cold-ones}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+    expect:
+      result.eligible: false
+      result.saved: false
   - id: strength-6
-    roles: [boundary]
+    roles:
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: trollheim, band_id: lustria-dark-elves, profile_id: cold-ones}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 6
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+    expect:
+      result.eligible: false
+      result.saved: false
   - id: armour-denial
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.vomit-attack}
-    defender: {collection: trollheim, band_id: lustria-dark-elves, profile_id: cold-ones}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.vomit-attack
+    defender:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+    expect:
+      result.eligible: false
+      result.saved: false
   mutations:
   - id: remove-skin
     path: defender.natural_armour_save
     value: 7
-    cases: [face-6]
+    cases:
+    - face-6
   - id: invert-strength-exception
     path: defender.natural_armour_unmodified
     value: true
-    cases: [strength-4]
+    cases:
+    - strength-4

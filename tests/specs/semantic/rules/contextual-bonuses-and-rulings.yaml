@@ -5,13 +5,12 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/mechanic.retain-flail-morning-star-strength-bonus
-    digest: 12d6373b6aa56e172187767442ced1bbb65ac061823efddc020bbd6661611f5d
+    digest: 876b76dc615b919ca4d046e2bdd9dc594f4fb377d1421de6d2cf35e8f63b4e9e
   - target: rule/mordheim/bretonnian-chapel-guard/band--bulging-muscles/mechanic.retain-flail-morning-star-strength-bonus
-    digest: 2a1268fca63780a162f86fc3970c101f4cb604f59a15e2902dcfe0b1a9b3f93c
-  interpretation: >-
-    Knightly Skills / Bulging Muscles: keeps the flail's +2 S and the morning star's +1 S after the
-    first round. It does not increase swords nor add more Strength to the initial bonus; wounds and
-    Strength-based penetration use the same value.
+    digest: 1e47e09d31e9ad0cabda0e7346d25f816b232f2ee85526f6d161e4a4b12dc108
+  interpretation: 'Knightly Skills / Bulging Muscles: keeps the flail''s +2 S and the morning star''s
+    +1 S after the first round. It does not increase swords nor add more Strength to the initial bonus;
+    wounds and Strength-based penetration use the same value.'
   cases:
   - id: recipients
     roles:
@@ -244,13 +243,12 @@ specifications:
   category: local
   sources:
   - target: mechanic/skill.inspiring-sermon
-    digest: 69d14860a2af98f88815ce045a0af2b0e35b4107b6fa781a78a3bd619d0f14e0
+    digest: a28792979fed5f099a1c8782d6a7b7def4501c3917cd1b4a870d48e0cb26202e
   - target: rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-rousing-sermon/skill.inspiring-sermon
-    digest: 1233d95e760970a863987e8db9135170567869f0bfa652fd83877a7ea90273d0
-  interpretation: >-
-    Chaos in the Streets p.153 / Rousing Sermon: on the turn it is declared, the priest gains +1
-    Attack. This selection represents the sermon active in the tested turn. Prayers and allies within
-    6 inches do not belong to the individual duel; they are not simulated here.
+    digest: 5c9a48307a9374488ae680ded446c8790be48d21314c5078a97e63e44d6c4bac
+  interpretation: 'Chaos in the Streets p.153 / Rousing Sermon: on the turn it is declared, the priest
+    gains +1 Attack. This selection represents the sermon active in the tested turn. Prayers and allies
+    within 6 inches do not belong to the individual duel; they are not simulated here.'
   cases:
   - id: recipients
     roles:
@@ -294,8 +292,26 @@ specifications:
     context:
       first_round: false
       charging: false
+      player_turn: true
     expect:
       result.attacks: 2
+  - id: inactive-enemy-turn
+    roles:
+    - inactive
+    - boundary
+    operation: attacks
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-sigmar-protectorate
+      profile_id: warrior-priest
+      special_rule_ids:
+      - band--protectorate-special-skills-rousing-sermon
+    context:
+      first_round: false
+      charging: false
+      player_turn: false
+    expect:
+      result.attacks: 1
   - id: active-false-true
     roles:
     - active
@@ -311,6 +327,7 @@ specifications:
     context:
       first_round: false
       charging: true
+      player_turn: true
     expect:
       result.attacks: 2
   - id: active-true-false
@@ -382,32 +399,45 @@ specifications:
     cases:
     - active-false-false
 - id: well-ard-no-armour-ruling
-  question: "Does the +1 from Well 'Ard create a 6+ armour save when the warrior has no armour save at all?"
+  question: Does the +1 from Well 'Ard create a 6+ armour save when the warrior has no armour save at
+    all?
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
   - target: mechanic/mechanic.armour-save-bonus
-    digest: 706d02035f5a119855f2dece41ce243503d4ea5f6392ba9192d44c32592c5c31
+    digest: 928605648657bee41293e97abd5c6d9ed46cef7ba13badebdd39eac5ea15abbe
   - target: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-well-ard/mechanic.armour-save-bonus
-    digest: 783f79c9339673872720b157b57ffb784fc35558929c1ab41ebb1b4ebecf53ff
+    digest: bf4bc0d221a6ba0c264ec1087bca0ca27981b1526777c7014c07f57377abcc32
   - target: rule/mordheim/orc-mob/band--orc-special-skills-well-ard/mechanic.armour-save-bonus
-    digest: 1ae228710ef27463423da43ad137ecec7f92507e585a9b01009546cbd8d442dc
-  ruling: "Well 'Ard creates a 6+ armour save if the warrior had none."
-  interpretation: >-
-    Well 'Ard improves an existing armour save by one point and turns the absence of armour into a 6+
-    save. It applies as ordinary armour, so it still suffers the relevant penetration modifiers.
+    digest: 9006d2a6f368a0ba02d684d145fa9bdc5829f07841a2e1881bcb4120d5e7f6ae
+  ruling: Well 'Ard creates a 6+ armour save if the warrior had none.
+  interpretation: Well 'Ard improves an existing armour save by one point and turns the absence of armour
+    into a 6+ save. It applies as ordinary armour, so it still suffers the relevant penetration modifiers.
   cases:
   - id: compiled-bonus
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    attacker: {skill_ids: [mechanic.armour-save-bonus]}
-    expect: {attacker.armour_save: 6}
+    attacker:
+      skill_ids:
+      - mechanic.armour-save-bonus
+    expect:
+      attacker.armour_save: 6
   - id: recipients-trollheim
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: orc-boss}
-    context: {rule_id: band--orc-special-skills-well-ard}
-    expect: {result.recipients: [orc-big-uns, orc-boss, orc-shaman]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: orc-boss
+    context:
+      rule_id: band--orc-special-skills-well-ard
+    expect:
+      result.recipients:
+      - orc-big-uns
+      - orc-boss
+      - orc-shaman
   - id: existing-armour
     roles:
     - active
@@ -425,69 +455,166 @@ specifications:
     expect:
       result.saved: true
   - id: no-armour-six-saves
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {skill_ids: [mechanic.armour-save-bonus]}
-    rolls: [{key: armour, value: 6}]
-    expect: {result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      skill_ids:
+      - mechanic.armour-save-bonus
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      result.saved: true
   - id: no-armour-five-fails
-    roles: [active, boundary]
+    roles:
+    - active
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {skill_ids: [mechanic.armour-save-bonus]}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      skill_ids:
+      - mechanic.armour-save-bonus
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.saved: false
   - id: ordinary-unarmoured-control
-    roles: [inactive]
+    roles:
+    - inactive
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
+    attacker:
+      main_weapon_id: weapon.mace
     defender: {}
-    expect: {result.eligible: false}
+    expect:
+      result.eligible: false
   mutations:
   - id: remove-created-save
     path: defender.armour_save
     value: 7
-    cases: [no-armour-six-saves]
+    cases:
+    - no-armour-six-saves
 - id: shield-strike-penetration-ruling
-  question: "Does Shield Strike apply a special penalty or the normal Strength-based modification?"
+  question: Does Shield Strike apply a special penalty or the normal Strength-based modification?
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
   - target: mechanic/skill.shield-strike
-    digest: 44393f01efecdb9a51e8e3e0bc5386a0881a1e8f30c8c2ffbf0bfd1105e61e81
-  ruling: "Shield Strike modifies armour normally according to the Strength of the hit."
-  interpretation: "The extra attack uses the warrior's Strength and contributes no armour bonus or penalty of its own. The existing grant requires a standard shield."
+    digest: 9d1261a67161d0ba42fbb62956ae83dd6e318a9d0a2f7849f7289214a27a6758
+  ruling: Shield Strike modifies armour normally according to the Strength of the hit.
+  interpretation: The extra attack uses the warrior's Strength and contributes no armour bonus or penalty
+    of its own. The existing grant requires a standard shield.
   cases:
   - id: compiled-without-special-penetration
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: compile
-    attacker: {skill_ids: [skill.shield-strike], off_hand_id: defence.shield}
-    expect: {attacker.extra_attacks.0.target_armour_bonus: 0}
-    expect_contains: {attacker.extra_attacks.0.tags: [rule.shield-strike]}
+    attacker:
+      skill_ids:
+      - skill.shield-strike
+      off_hand_id: defence.shield
+    expect:
+      attacker.extra_attacks.0.target_armour_bonus: 0
+    expect_contains:
+      attacker.extra_attacks.0.tags:
+      - rule.shield-strike
   - id: strength-four-penetrates
-    roles: [active, consumer, sequence, boundary]
+    roles:
+    - active
+    - consumer
+    - sequence
+    - boundary
     operation: extra_attack
     attacker:
-      skill_ids: [skill.shield-strike]
+      skill_ids:
+      - skill.shield-strike
       off_hand_id: defence.shield
-      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
     defender:
       armour_id: armour.plate-armour
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 3}, {key: test.armour, value: 4}]
-    expect: {result.wounded: true, result.defender.wounds: 1}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 3
+    - key: test.armour
+      value: 4
+    expect:
+      result.wounded: true
+      result.defender.wounds: 1
   - id: strength-three-control
-    roles: [inactive, consumption, boundary]
+    roles:
+    - inactive
+    - consumption
+    - boundary
     operation: extra_attack
     attacker:
-      skill_ids: [skill.shield-strike]
+      skill_ids:
+      - skill.shield-strike
       off_hand_id: defence.shield
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
     defender:
       armour_id: armour.plate-armour
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}, {key: test.armour, value: 4}]
-    expect: {result.defender.wounds: 2}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.armour
+      value: 4
+    expect:
+      result.defender.wounds: 2
   mutations:
-  - {id: restore-poor-penetration, path: attacker.extra_attacks.0.target_armour_bonus, value: 1, cases: [strength-four-penetrates, strength-three-control]}
+  - id: restore-poor-penetration
+    path: attacker.extra_attacks.0.target_armour_bonus
+    value: 1
+    cases:
+    - strength-four-penetrates
+    - strength-three-control

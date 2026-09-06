@@ -4,62 +4,118 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
-  - {target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle/mechanic.blessings-of-nurgle, digest: e0e1fae91096cbaf7132bb472a0a4a6b56a1611de9b455e2db47d2b27fd479e5}
-  interpretation: >-
-    In the construction runtime, only Tainted Ones can select one or several Blessings. Later purchase
-    and increasing costs are campaign and explicitly separated outside scope.
+  - target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle/mechanic.blessings-of-nurgle
+    digest: ebe9baabafa26b3c39d307a56cb9f9bfcb9fb3d5fc0b703599c7f3fa84960e0a
+  interpretation: In the construction runtime, only Tainted Ones can select one or several Blessings.
+    Later purchase and increasing costs are campaign and explicitly separated outside scope.
   cases:
   - id: one-and-many
-    roles: [grant, accepted, rejected]
+    roles:
+    - grant
+    - accepted
+    - rejected
     operation: selection_choices
-    attacker: {band_id: carnival-of-chaos, profile_id: tainted-ones, special_rule_ids: [band--blessings-of-nurgle-nurgles-rot]}
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-nurgles-rot
     context:
       choices:
-        one: {special_rule_ids: [band--blessings-of-nurgle-nurgles-rot]}
-        many: {special_rule_ids: [band--blessings-of-nurgle-nurgles-rot, band--blessings-of-nurgle-cloud-of-flies]}
-        none: {special_rule_ids: []}
+        one:
+          special_rule_ids:
+          - band--blessings-of-nurgle-nurgles-rot
+        many:
+          special_rule_ids:
+          - band--blessings-of-nurgle-nurgles-rot
+          - band--blessings-of-nurgle-cloud-of-flies
+        none:
+          special_rule_ids: []
     expect:
-      result.accepted: [many, one]
-      result.rejected: {none: Tainted Ones require at least one Blessing of Nurgle}
+      result.accepted:
+      - many
+      - one
+      result.rejected:
+        none: Tainted Ones require at least one Blessing of Nurgle
   - id: other-profile-rejected
-    roles: [rejected]
+    roles:
+    - rejected
     operation: compile
-    attacker: {band_id: carnival-of-chaos, profile_id: carnival-master, special_rule_ids: [band--blessings-of-nurgle-nurgles-rot]}
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: carnival-master
+      special_rule_ids:
+      - band--blessings-of-nurgle-nurgles-rot
     reject: special rule is not available
   - id: band-contract-present
     operation: construction_tag_presence
-    attacker: {band_id: carnival-of-chaos, profile_id: tainted-ones, special_rule_ids: [band--blessings-of-nurgle-nurgles-rot]}
-    context: {tag: compiler.blessings-of-nurgle}
-    expect: {result.present: true}
+    attacker:
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-nurgles-rot
+    context:
+      tag: compiler.blessings-of-nurgle
+    expect:
+      result.present: true
   mutations:
-  - {id: remove-blessings-contract, path: attacker.construction_tags, value: [], cases: [band-contract-present]}
-
+  - id: remove-blessings-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - band-contract-present
 - id: nurgles-rot-poison-immunity
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-nurgles-rot/trait.poison-immune, digest: 174282b076c9b645cb98b11d9ad6ef8c4415e4b34b00102f51fb037899d64477}
-  interpretation: >-
-    In the simulator, Nurgle's Rot grants only immunity to all poisons. Disease, contagion and
-    persistence are campaign effects outside the current scope.
+  - target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-nurgles-rot/trait.poison-immune
+    digest: 9deb7356a5b3512336d3a4bcf773ca9af047fdd0795144d9c350acbaa84e96bd
+  interpretation: In the simulator, Nurgle's Rot grants only immunity to all poisons. Disease, contagion
+    and persistence are campaign effects outside the current scope.
   cases:
   - id: recipient
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {band_id: carnival-of-chaos, profile_id: tainted-ones, special_rule_ids: [band--blessings-of-nurgle-nurgles-rot]}
-    context: {rule_id: band--blessings-of-nurgle-nurgles-rot}
-    expect: {result.recipients: [tainted-ones]}
+    defender:
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-nurgles-rot
+    context:
+      rule_id: band--blessings-of-nurgle-nurgles-rot
+    expect:
+      result.recipients:
+      - tainted-ones
   - id: black-lotus-is-suppressed
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: wound
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-lotus}
-    defender: {band_id: carnival-of-chaos, profile_id: tainted-ones, special_rule_ids: [band--blessings-of-nurgle-nurgles-rot]}
-    context: {hit_roll: 6}
-    rolls: [{key: wound, value: 1}]
-    expect: {result.success: false, result.roll: 1, result.target: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-lotus
+    defender:
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+      special_rule_ids:
+      - band--blessings-of-nurgle-nurgles-rot
+    context:
+      hit_roll: 6
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.success: false
+      result.roll: 1
+      result.target: 4
   mutations:
   - id: remove-rot-immunity
     changes:
-    - {path: defender.global_effects.poison_immunity, value: false}
-    - {path: defender.global_effects.tags, value: []}
-    cases: [black-lotus-is-suppressed]
+    - path: defender.global_effects.poison_immunity
+      value: false
+    - path: defender.global_effects.tags
+      value: []
+    cases:
+    - black-lotus-is-suppressed

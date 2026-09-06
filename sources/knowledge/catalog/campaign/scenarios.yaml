@@ -2,16 +2,12 @@ schema_version: 1
 ruleset: mordheim
 catalog: campaign-scenarios
 status: published
-# Scenario catalogue: identity, selection and victory conditions.
-# The development of a concrete scenario (terrain, deployment, special rules)
-# is scenario rule; its result in a concrete campaign is external state.
 pre_battle:
   id: campaign.pre-battle
-  summary: The player with the lowest warband rating rolls on the scenario
-    table to determine which scenario is played. In scenarios with an attacker
-    and a defender, the same player may choose which he is. Roll for warriors
-    with old battle wounds to see whether they can take part, then set up
-    terrain and warbands according to the scenario.
+  summary: The player with the lowest warband rating rolls on the scenario table to determine which scenario
+    is played. In scenarios with an attacker and a defender, the same player may choose which he is. Roll
+    for warriors with old battle wounds to see whether they can take part, then set up terrain and warbands
+    according to the scenario.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -20,65 +16,114 @@ pre_battle:
 selection_tables:
 - id: campaign.scenario-table.rulebook
   name: Mordheim rulebook scenario table
-  dice: { count: 2, sides: 6 }
+  dice:
+    count: 2
+    sides: 6
   rows:
-  - when: { min: 2, max: 2 }
+  - when:
+      min: 2
+      max: 2
     outcome: The player with the lower warband rating may choose which scenario is played
-  - when: { min: 3, max: 3 }
+  - when:
+      min: 3
+      max: 3
     scenario: scenario.street-fight
-  - when: { min: 4, max: 4 }
+  - when:
+      min: 4
+      max: 4
     scenario: scenario.hidden-treasure
-  - when: { min: 5, max: 5 }
+  - when:
+      min: 5
+      max: 5
     scenario: scenario.wyrdstone-hunt
-  - when: { min: 6, max: 6 }
+  - when:
+      min: 6
+      max: 6
     scenario: scenario.occupy
-  - when: { min: 7, max: 7 }
+  - when:
+      min: 7
+      max: 7
     scenario: scenario.skirmish
-  - when: { min: 8, max: 8 }
+  - when:
+      min: 8
+      max: 8
     scenario: scenario.breakthrough
-  - when: { min: 9, max: 9 }
+  - when:
+      min: 9
+      max: 9
     scenario: scenario.surprise-attack
-  - when: { min: 10, max: 10 }
+  - when:
+      min: 10
+      max: 10
     scenario: scenario.chance-encounter
-  - when: { min: 11, max: 11 }
+  - when:
+      min: 11
+      max: 11
     scenario: scenario.defend-the-find
-  - when: { min: 12, max: 12 }
+  - when:
+      min: 12
+      max: 12
     outcome: The player with the lower warband rating may choose which scenario is played
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Campaigns / Scenarios / Mordheim rulebook scenario table
     url: https://mordheimer.net/docs/campaigns/scenarios
+  name_i18n:
+    en: Mordheim rulebook scenario table
+    es: Tabla de escenarios del manual de Mordheim
 - id: campaign.scenario-table.chaos-on-the-streets
   name: Chaos on the Streets Scenarios
-  dice: { count: 2, sides: 6 }
-  note: Multiplayer scenarios introduced in Town Cryer #5.
+  dice:
+    count: 2
+    sides: 6
+  note: Multiplayer scenarios introduced in Town Cryer
   rows:
-  - when: { min: 2, max: 2 }
+  - when:
+      min: 2
+      max: 2
     outcome: The player with the lowest warband rating may choose which scenario is played
-  - when: { min: 3, max: 3 }
+  - when:
+      min: 3
+      max: 3
     scenario: scenario.monster-hunt
-  - when: { min: 4, max: 4 }
+  - when:
+      min: 4
+      max: 4
     scenario: scenario.wizards-mansion
-  - when: { min: 5, max: 6 }
+  - when:
+      min: 5
+      max: 6
     scenario: scenario.treasure-hunt
-  - when: { min: 7, max: 7 }
+  - when:
+      min: 7
+      max: 7
     scenario: scenario.street-brawl
-  - when: { min: 8, max: 9 }
+  - when:
+      min: 8
+      max: 9
     scenario: scenario.ambush
-  - when: { min: 10, max: 10 }
+  - when:
+      min: 10
+      max: 10
     scenario: scenario.the-pool
-  - when: { min: 11, max: 11 }
+  - when:
+      min: 11
+      max: 11
     scenario: scenario.the-lost-prince
-  - when: { min: 12, max: 12 }
+  - when:
+      min: 12
+      max: 12
     outcome: The player with the lowest warband rating may choose which scenario is played
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Campaigns / Scenarios / Chaos on the Streets Scenarios
     url: https://mordheimer.net/docs/campaigns/scenarios
+  name_i18n:
+    en: Chaos on the Streets Scenarios
+    es: Escenarios de Caos en las calles
 scenarios:
-# Mordheim Rulebook (core)
 - id: scenario.defend-the-find
   name: Defend the Find
   number: 1
@@ -87,7 +132,9 @@ scenarios:
   author: Tuomas Pirinen
   player_mode: 1v1
   summary: Defend a building from attackers.
-  tags: [attacker-defender, objective-building]
+  tags:
+  - attacker-defender
+  - objective-building
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -98,7 +145,11 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    wyrdstone: One shard of wyrdstone for each Hero of either warband who is inside the objective building at the end of the game, up to a maximum of three shards per warband.
+    wyrdstone: One shard of wyrdstone for each Hero of either warband who is inside the objective building
+      at the end of the game, up to a maximum of three shards per warband.
+  name_i18n:
+    en: Defend the Find
+    es: Defender el hallazgo
 - id: scenario.skirmish
   name: Skirmish
   number: 2
@@ -107,7 +158,8 @@ scenarios:
   author: Tuomas Pirinen
   player_mode: 1v1
   summary: Brawl between rival warbands.
-  tags: [brawl]
+  tags:
+  - brawl
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -118,6 +170,9 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
+  name_i18n:
+    en: Skirmish
+    es: Escaramuza
 - id: scenario.wyrdstone-hunt
   name: Wyrdstone Hunt
   number: 3
@@ -126,7 +181,8 @@ scenarios:
   author: Tuomas Pirinen
   player_mode: 1v1
   summary: Gain wealth by picking up wyrdstone.
-  tags: [wyrdstone-tokens]
+  tags:
+  - wyrdstone-tokens
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -139,7 +195,11 @@ scenarios:
     - summary: A Hero or Henchman carrying a Wyrdstone counter at the end of the battle receives +1 Experience
       amount: 1
     - ref: campaign.experience.award.per-enemy-out-of-action
-    wyrdstone: Warriors earn one shard of wyrdstone for each counter still in their possession at the end of the battle.
+    wyrdstone: Warriors earn one shard of wyrdstone for each counter still in their possession at the
+      end of the battle.
+  name_i18n:
+    en: Wyrdstone Hunt
+    es: Caza de piedra bruja
 - id: scenario.breakthrough
   name: Breakthrough
   number: 4
@@ -148,7 +208,9 @@ scenarios:
   author: Tuomas Pirinen
   player_mode: 1v1
   summary: The attacker needs to reach the other side of the board.
-  tags: [attacker-defender, traverse-the-board]
+  tags:
+  - attacker-defender
+  - traverse-the-board
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -159,8 +221,12 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: Any warrior earns +1 Experience for breaking through enemy lines; if the warrior is a Henchman the whole group gains +1 Experience
+    - summary: Any warrior earns +1 Experience for breaking through enemy lines; if the warrior is a Henchman
+        the whole group gains +1 Experience
       amount: 1
+  name_i18n:
+    en: Breakthrough
+    es: Irrupción
 - id: scenario.street-fight
   name: Street Fight
   number: 5
@@ -169,7 +235,8 @@ scenarios:
   author: Tuomas Pirinen
   player_mode: 1v1
   summary: Both warbands try to reach the other side of the street.
-  tags: [traverse-the-board]
+  tags:
+  - traverse-the-board
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -180,8 +247,12 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: The first Hero from either side (not both) who exits via the opposing table edge gains +1 Experience
+    - summary: The first Hero from either side (not both) who exits via the opposing table edge gains
+        +1 Experience
       amount: 1
+  name_i18n:
+    en: Street Fight
+    es: Pelea callejera
 - id: scenario.chance-encounter
   name: Chance Encounter
   number: 6
@@ -190,7 +261,8 @@ scenarios:
   author: Tuomas Pirinen
   player_mode: 1v1
   summary: Two warbands try to steal each other's wyrdstone.
-  tags: [wyrdstone-tokens]
+  tags:
+  - wyrdstone-tokens
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -201,13 +273,14 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    wyrdstone: >-
-      Each warband starts the battle carrying D3 shards of wyrdstone, recorded
-      before the game. At the end, each warband gains all the wyrdstone it was
-      carrying minus one shard per Hero of its own that was taken out of action
-      during the game (down to a minimum of zero), plus one extra shard for
-      each enemy Hero it took out of action, up to the maximum number of shards
-      the opposing warband was carrying at the beginning of the battle.
+    wyrdstone: Each warband starts the battle carrying D3 shards of wyrdstone, recorded before the game.
+      At the end, each warband gains all the wyrdstone it was carrying minus one shard per Hero of its
+      own that was taken out of action during the game (down to a minimum of zero), plus one extra shard
+      for each enemy Hero it took out of action, up to the maximum number of shards the opposing warband
+      was carrying at the beginning of the battle.
+  name_i18n:
+    en: Chance Encounter
+    es: Encuentro fortuito
 - id: scenario.hidden-treasure
   name: Hidden Treasure
   number: 7
@@ -216,7 +289,8 @@ scenarios:
   author: Tuomas Pirinen
   player_mode: 1v1
   summary: Search the buildings for a hidden treasure.
-  tags: [treasure]
+  tags:
+  - treasure
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -230,10 +304,8 @@ scenarios:
     - summary: A Hero who finds the treasure chest earns +2 Experience
       amount: 2
     loot:
-      summary: >-
-        Whoever recovers the chest rolls on the contents chart after the game;
-        each item is rolled for separately, apart from the gold crowns which are
-        always found.
+      summary: Whoever recovers the chest rolls on the contents chart after the game; each item is rolled
+        for separately, apart from the gold crowns which are always found.
       contents:
       - reward: 3D6 gold crowns
         roll: automatic
@@ -247,6 +319,9 @@ scenarios:
         roll: 3+
       - reward: D3 gems worth 10 gc each
         roll: 5+
+  name_i18n:
+    en: Hidden Treasure
+    es: Tesoro oculto
 - id: scenario.occupy
   name: Occupy
   number: 8
@@ -255,7 +330,8 @@ scenarios:
   author: Tuomas Pirinen
   player_mode: 1v1
   summary: Both warbands try to capture as many buildings as they can.
-  tags: [objective-building]
+  tags:
+  - objective-building
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -264,9 +340,14 @@ scenarios:
   progression:
     experience:
     - ref: campaign.experience.award.survives
-    - summary: The leader of the warband controlling the highest number of buildings at the end of the battle gains +1 Experience; if both warbands occupy the same number of buildings it is a draw and neither leader gains the bonus
+    - summary: The leader of the warband controlling the highest number of buildings at the end of the
+        battle gains +1 Experience; if both warbands occupy the same number of buildings it is a draw
+        and neither leader gains the bonus
       amount: 1
     - ref: campaign.experience.award.per-enemy-out-of-action
+  name_i18n:
+    en: Occupy
+    es: Ocupar
 - id: scenario.surprise-attack
   name: Surprise Attack
   number: 9
@@ -275,7 +356,9 @@ scenarios:
   author: Tuomas Pirinen
   player_mode: 1v1
   summary: The defender tries to fend off the attacker and starts with limited numbers.
-  tags: [attacker-defender, reserves]
+  tags:
+  - attacker-defender
+  - reserves
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -286,15 +369,20 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-# Chaos on the Streets (Town Cryer #5, multiplayer)
+  name_i18n:
+    en: Surprise Attack
+    es: Ataque sorpresa
 - id: scenario.treasure-hunt
   name: Treasure Hunt
   setting: Mordheim
-  source: Town Cryer #5
+  source: Town Cryer
   author: Mark Havener
   player_mode: multiplayer
   summary: Multiplayer. Similar to Wyrdstone Hunt.
-  tags: [chaos-on-the-streets, wyrdstone-tokens, treasure]
+  tags:
+  - chaos-on-the-streets
+  - wyrdstone-tokens
+  - treasure
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -307,15 +395,21 @@ scenarios:
     - summary: A Hero or Henchman carrying a Wyrdstone counter at the end of the battle receives +1 Experience
       amount: 1
     - ref: campaign.experience.award.per-enemy-out-of-action
-    wyrdstone: Warriors earn one shard of wyrdstone for each counter in their possession at the end of the battle.
+    wyrdstone: Warriors earn one shard of wyrdstone for each counter in their possession at the end of
+      the battle.
+  name_i18n:
+    en: Treasure Hunt
+    es: Caza del tesoro
 - id: scenario.street-brawl
   name: Street Brawl
   setting: Mordheim
-  source: Town Cryer #5
+  source: Town Cryer
   author: Mark Havener
   player_mode: multiplayer
   summary: Multiplayer. Similar to Skirmish.
-  tags: [chaos-on-the-streets, brawl]
+  tags:
+  - chaos-on-the-streets
+  - brawl
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -326,15 +420,20 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
+  name_i18n:
+    en: Street Brawl
+    es: Pelea callejera
 - id: scenario.the-lost-prince
   name: The Lost Prince
   setting: Mordheim
-  source: Town Cryer #5
+  source: Town Cryer
   author: Mark Havener
   player_mode: multiplayer
-  summary: The warbands have heard rumours that a powerful man's son has
-    wandered into the ruins and a handsome reward will be paid for his return.
-  tags: [chaos-on-the-streets, escort-npc]
+  summary: The warbands have heard rumours that a powerful man's son has wandered into the ruins and a
+    handsome reward will be paid for his return.
+  tags:
+  - chaos-on-the-streets
+  - escort-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -346,11 +445,9 @@ scenarios:
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
     loot:
-      summary: >-
-        The grateful father awards the winning warband with the following
-        treasure; each item is rolled for separately apart from the gold crowns,
-        which are always received. If the merchant's son is killed, no reward is
-        issued to the winning warband.
+      summary: The grateful father awards the winning warband with the following treasure; each item is
+        rolled for separately apart from the gold crowns, which are always received. If the merchant's
+        son is killed, no reward is issued to the winning warband.
       contents:
       - reward: 5D6 gold crowns
         roll: automatic
@@ -369,14 +466,19 @@ scenarios:
         roll: 4+
       - reward: D3 gems worth 10 gc each
         roll: 5+
+  name_i18n:
+    en: The Lost Prince
+    es: El Príncipe perdido
 - id: scenario.wizards-mansion
   name: The Wizard's Mansion
   setting: Mordheim
-  source: Town Cryer #5
+  source: Town Cryer
   author: Mark Havener
   player_mode: multiplayer
   summary: Multiplayer. Similar to Skirmish with items at stake.
-  tags: [chaos-on-the-streets, treasure]
+  tags:
+  - chaos-on-the-streets
+  - treasure
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -388,11 +490,9 @@ scenarios:
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
     loot:
-      summary: >-
-        At the end of the game the winning warband finds all of the items of
-        the defender's pre-battle chart that were not found before the battle,
-        plus the mansion chart below; each item is rolled for separately apart
-        from the gold crowns, which are always found.
+      summary: At the end of the game the winning warband finds all of the items of the defender's pre-battle
+        chart that were not found before the battle, plus the mansion chart below; each item is rolled
+        for separately apart from the gold crowns, which are always found.
       contents:
       - reward: 5D6 gold crowns
         roll: automatic
@@ -409,20 +509,23 @@ scenarios:
       - reward: Dispel scroll
         roll: 5+
     notes:
-    - >-
-      The defender receives, in addition, one roll on the initial equipment
-      table per additional attacking warband (Wooden Man, Mandrake Root,
-      Crimson Shade, Lucky Charm, Holy/Unholy Relic or Cathayan Silk Cloak);
-      each item may be found only once. Verify the special rules of those
-      items in Town Cryer #5 before modelling them.
+    - 'The defender receives, in addition, one roll on the initial equipment table per additional attacking
+      warband (Wooden Man, Mandrake Root, Crimson Shade, Lucky Charm, Holy/Unholy Relic or Cathayan Silk
+      Cloak); each item may be found only once. Verify the special rules of those items in Town Cryer
+      #5 before modelling them.'
+  name_i18n:
+    en: The Wizard's Mansion
+    es: La Mansión del mago
 - id: scenario.the-pool
   name: The Pool
   setting: Mordheim
-  source: Town Cryer #5
+  source: Town Cryer
   author: Mark Havener
   player_mode: multiplayer
   summary: Multiplayer. Root around for wyrdstone in a pool in the centre of the table.
-  tags: [chaos-on-the-streets, wyrdstone-tokens]
+  tags:
+  - chaos-on-the-streets
+  - wyrdstone-tokens
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -435,26 +538,28 @@ scenarios:
     - summary: A Hero or Henchman carrying a Wyrdstone counter at the end of the battle receives +1 Experience
       amount: 1
     - ref: campaign.experience.award.per-enemy-out-of-action
-    wyrdstone: >-
-      The pool contains D3+3 pieces of wyrdstone; a Hero spending a whole turn
-      within 1" of the pool doing nothing else finds one piece on a D6 roll of
-      1-2 at the end of his turn (no Hero may search within 1" of another
-      model). Only as many pieces may be found as were rolled at the start of
-      the game.
+    wyrdstone: The pool contains D3+3 pieces of wyrdstone; a Hero spending a whole turn within 1" of the
+      pool doing nothing else finds one piece on a D6 roll of 1-2 at the end of his turn (no Hero may
+      search within 1" of another model). Only as many pieces may be found as were rolled at the start
+      of the game.
     notes:
-    - >-
-      The page does not repeat the final conversion of counters into shards
-      (one shard per counter held at the end); the same convention as Treasure
-      Hunt, which does declare it, is assumed. Verify against the Town Cryer
-      #5 print.
+    - 'The page does not repeat the final conversion of counters into shards (one shard per counter held
+      at the end); the same convention as Treasure Hunt, which does declare it, is assumed. Verify against
+      the Town Cryer #5 print.'
+  name_i18n:
+    en: The Pool
+    es: El Estanque
 - id: scenario.ambush
   name: Ambush!
   setting: Mordheim
-  source: Town Cryer #5
+  source: Town Cryer
   author: Mark Havener
   player_mode: multiplayer
   summary: Multiplayer. Wyrdstone carrying defenders have to get off the table alive.
-  tags: [chaos-on-the-streets, wyrdstone-tokens, traverse-the-board]
+  tags:
+  - chaos-on-the-streets
+  - wyrdstone-tokens
+  - traverse-the-board
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -467,25 +572,27 @@ scenarios:
     - summary: A Hero or Henchman carrying a Wyrdstone counter at the end of the battle receives +1 Experience
       amount: 1
     - ref: campaign.experience.award.per-enemy-out-of-action
-    wyrdstone: >-
-      Each Hero of the defending warband carries D3 pieces of wyrdstone; if a
-      Hero carrying wyrdstone is taken out of action, place counters equal to
-      the amount he was carrying where he fell, and any Hero may pick them up.
-      The warband that gets the most wyrdstone shards off the table (or held by
+    wyrdstone: Each Hero of the defending warband carries D3 pieces of wyrdstone; if a Hero carrying wyrdstone
+      is taken out of action, place counters equal to the amount he was carrying where he fell, and any
+      Hero may pick them up. The warband that gets the most wyrdstone shards off the table (or held by
       one of its Heroes when the game ends) is the winner.
     notes:
-    - >-
-      The page does not declare the conversion of counters held at the end into
-      earned wyrdstone shards; the standard convention of wyrdstone scenarios
-      is assumed (see Treasure Hunt). Verify against Town Cryer #5.
+    - 'The page does not declare the conversion of counters held at the end into earned wyrdstone shards;
+      the standard convention of wyrdstone scenarios is assumed (see Treasure Hunt). Verify against Town
+      Cryer #5.'
+  name_i18n:
+    en: Ambush!
+    es: ¡Emboscada!
 - id: scenario.monster-hunt
   name: Monster Hunt
   setting: Mordheim
-  source: Town Cryer #5
+  source: Town Cryer
   author: Mark Havener
   player_mode: multiplayer
   summary: Multiplayer. Warbands team up (or not) to take on a monster.
-  tags: [chaos-on-the-streets, hostile-npc]
+  tags:
+  - chaos-on-the-streets
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -501,10 +608,8 @@ scenarios:
       amount: 2
     - ref: campaign.experience.award.per-enemy-out-of-action
     loot:
-      summary: >-
-        Whichever warband has control of the monster's lair at the end of the
-        game may search it; each item is rolled for separately apart from the
-        gold crowns, which are always found.
+      summary: Whichever warband has control of the monster's lair at the end of the game may search it;
+        each item is rolled for separately apart from the gold crowns, which are always found.
       contents:
       - reward: 5D6 gold crowns
         roll: automatic
@@ -535,20 +640,22 @@ scenarios:
       - reward: Jewellery worth D6 x 10 gc
         roll: 5+
     notes:
-    - >-
-      The 'Suit of light armour' row appears twice in the source (Town Cryer
-      #5); it is transcribed as-is for fidelity, pending verification of
-      whether it is an errata or two independent rolls.
-# Town Cryer and other supplements (registry entries)
+    - 'The ''Suit of light armour'' row appears twice in the source (Town Cryer #5); it is transcribed
+      as-is for fidelity, pending verification of whether it is an errata or two independent rolls.'
+  name_i18n:
+    en: Monster Hunt
+    es: Cacería del monstruo
 - id: scenario.kidnapped
   name: Kidnapped
   setting: Mordheim
-  source: Town Cryer #6
+  source: Town Cryer
   author: Tuomas Pirinen
   player_mode: 1v1
-  summary: Possessed vs any warband. Rescue a fair maiden before she gets
-    sacrificed, or sacrifice her before she gets rescued.
-  tags: [escort-npc, objective]
+  summary: Possessed vs any warband. Rescue a fair maiden before she gets sacrificed, or sacrifice her
+    before she gets rescued.
+  tags:
+  - escort-npc
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -556,26 +663,35 @@ scenarios:
     url: https://mordheimer.net/docs/campaigns/scenarios/town-cryer/kidnapped
   progression:
     experience:
-    - summary: If the game ends before the sacrificial victim is killed or escapes, the warband controlling the victim gains +1 Experience which can be given to any Hero in the warband
+    - summary: If the game ends before the sacrificial victim is killed or escapes, the warband controlling
+        the victim gains +1 Experience which can be given to any Hero in the warband
       amount: 1
-    - summary: If the Possessed manage to sacrifice the victim, the warband gains +D6 Experience to be freely distributed between its Heroes, and may optionally roll on the Rewards of the Shadowlord for any two Heroes
+    - summary: If the Possessed manage to sacrifice the victim, the warband gains +D6 Experience to be
+        freely distributed between its Heroes, and may optionally roll on the Rewards of the Shadowlord
+        for any two Heroes
       amount_dice: D6
-    - summary: If the rescuers move the victim off the table, the warband gains +D6 Experience freely distributed among its Heroes
+    - summary: If the rescuers move the victim off the table, the warband gains +D6 Experience freely
+        distributed among its Heroes
       amount_dice: D6
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    income: If the sacrificial victim escapes, the rescuing warband gains a reward of 50 gold crowns added directly to its treasury.
+    income: If the sacrificial victim escapes, the rescuing warband gains a reward of 50 gold crowns added
+      directly to its treasury.
+  name_i18n:
+    en: Kidnapped
+    es: Secuestrado
 - id: scenario.rat-attack
   name: Rat Attack
   setting: Mordheim
-  source: Town Cryer #7
+  source: Town Cryer
   author: Christian Ellegaard
   player_mode: 1v1
-  summary: Skaven vs any warband. Sewers. The defender must escape from the
-    opposite table edge; Skaven use a mixture of decoy counters and warband
-    counters to confuse the enemy.
-  tags: [underground, traverse-the-board]
+  summary: Skaven vs any warband. Sewers. The defender must escape from the opposite table edge; Skaven
+    use a mixture of decoy counters and warband counters to confuse the enemy.
+  tags:
+  - underground
+  - traverse-the-board
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -586,20 +702,23 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.per-enemy-out-of-action
     notes:
-    - >-
-      The source additionally lists '+2 Putting a Skaven Out of Action' with
-      the text of a generic +1 per enemy out of action; the page itself marks
-      it as a probable errata ('should probably read +1 additional Experience
-      for each Skaven enemy put out of action'). The notice is transcribed
-      without fixing the amount until verifying the Town Cryer #7 print.
+    - 'The source additionally lists ''+2 Putting a Skaven Out of Action'' with the text of a generic
+      +1 per enemy out of action; the page itself marks it as a probable errata (''should probably read
+      +1 additional Experience for each Skaven enemy put out of action''). The notice is transcribed without
+      fixing the amount until verifying the Town Cryer #7 print.'
+  name_i18n:
+    en: Rat Attack
+    es: Ataque de rata
 - id: scenario.scourge-and-purge
   name: Scourge & Purge
   setting: Mordheim
-  source: Town Cryer #7
+  source: Town Cryer
   author: Donato Ranzato
   player_mode: 1v1
   summary: Witch Hunters vs any warband. Skirmish in the company of a possessed wizard.
-  tags: [brawl, hostile-npc]
+  tags:
+  - brawl
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -607,29 +726,36 @@ scenarios:
     url: https://mordheimer.net/docs/campaigns/scenarios/town-cryer/scourge-and-purge
   progression:
     experience:
-    - summary: A fighter who survives the battle earns +1 Experience; even fighters who are wounded and taken Out of Action receive Experience for taking part
+    - summary: A fighter who survives the battle earns +1 Experience; even fighters who are wounded and
+        taken Out of Action receive Experience for taking part
       amount: 1
     - summary: The leader of the winning side earns +2 Experience
       amount: 2
-    - summary: A fighter earns +1 Experience for each opposing fighter he takes down or Out of Action during the battle
+    - summary: A fighter earns +1 Experience for each opposing fighter he takes down or Out of Action
+        during the battle
       amount: 1
     - summary: The fighter that takes the possessed wizard Out of Action earns +3 Experience
       amount: 3
-    - summary: '+2 Purge: a Witch Hunter earns double Experience for each opposing fighter he takes Out of Action during the battle'
-    - summary: '+6 Scourge: if the Witch Hunter Captain personally takes the possessed wizard Out of Action he earns double Experience'
+    - summary: '+2 Purge: a Witch Hunter earns double Experience for each opposing fighter he takes Out
+        of Action during the battle'
+    - summary: '+6 Scourge: if the Witch Hunter Captain personally takes the possessed wizard Out of Action
+        he earns double Experience'
     notes:
-    - >-
-      The '+2 Purge' and '+6 Scourge' awards mix amount and text ('earns
-      double Experience'); both are transcribed as-is, pending verification
-      against Town Cryer #7.
+    - 'The ''+2 Purge'' and ''+6 Scourge'' awards mix amount and text (''earns double Experience''); both
+      are transcribed as-is, pending verification against Town Cryer #7.'
+  name_i18n:
+    en: Scourge & Purge
+    es: Flagelo y purga
 - id: scenario.surrounded
   name: Surrounded
   setting: Mordheim
-  source: Town Cryer #7
+  source: Town Cryer
   author: Christian Ellegaard
   player_mode: 1v1
   summary: Sewers. The defender must escape from the centre of the sewer network.
-  tags: [underground, traverse-the-board]
+  tags:
+  - underground
+  - traverse-the-board
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -639,15 +765,19 @@ scenarios:
     experience:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.per-enemy-out-of-action
+  name_i18n:
+    en: Surrounded
+    es: Rodeado
 - id: scenario.forbidden-square
   name: Forbidden Square
   setting: Mordheim
-  source: Town Cryer #8
+  source: Town Cryer
   author: Donato Ranzato
   player_mode: 1v1
-  summary: A Witch Hunter Warband has been sent into a specific part of the
-    City of the Damned by prominent members of the Order of the Templars of Sigmar.
-  tags: [objective]
+  summary: A Witch Hunter Warband has been sent into a specific part of the City of the Damned by prominent
+    members of the Order of the Templars of Sigmar.
+  tags:
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -655,35 +785,38 @@ scenarios:
     url: https://mordheimer.net/docs/campaigns/scenarios/town-cryer/forbidden-square
   progression:
     experience:
-    - summary: A fighter who survives the battle earns +1 Experience; even fighters who are wounded and taken Out of Action receive Experience for taking part
+    - summary: A fighter who survives the battle earns +1 Experience; even fighters who are wounded and
+        taken Out of Action receive Experience for taking part
       amount: 1
     - summary: The leader of the winning side earns +2 Experience
       amount: 2
-    - summary: A fighter earns +1 Experience for each opposing fighter he takes down or Out of Action during the battle
+    - summary: A fighter earns +1 Experience for each opposing fighter he takes down or Out of Action
+        during the battle
       amount: 1
-    wyrdstone: >-
-      D6+2 Wyrdstone counters are placed before deployment. Warriors pick them
-      up by moving into contact; when a warrior is knocked down, stunned or
-      taken Out of Action he drops all counters he is carrying. Each side
-      carries its counters off through the gate (or offers them to the totem
-      for the Possessed). When all counters have been carried away or absorbed
-      the game ends and the player with the most stones wins.
+    wyrdstone: D6+2 Wyrdstone counters are placed before deployment. Warriors pick them up by moving into
+      contact; when a warrior is knocked down, stunned or taken Out of Action he drops all counters he
+      is carrying. Each side carries its counters off through the gate (or offers them to the totem for
+      the Possessed). When all counters have been carried away or absorbed the game ends and the player
+      with the most stones wins.
     notes:
-    - >-
-      The page does not declare the conversion of counters held at the end into
-      earned wyrdstone shards. The text of the '+1 Winning Leader' award
-      declares '+2 Experience'; the page header cites Town Cryer #7 /
-      Christian Ellegaard while the site index assigns it to Town Cryer #8 /
-      Donato Ranzato. Verify both ends against the prints.
+    - 'The page does not declare the conversion of counters held at the end into earned wyrdstone shards.
+      The text of the ''+1 Winning Leader'' award declares ''+2 Experience''; the page header cites Town
+      Cryer #7 / Christian Ellegaard while the site index assigns it to Town Cryer #8 / Donato Ranzato.
+      Verify both ends against the prints.'
+  name_i18n:
+    en: Forbidden Square
+    es: Plaza prohibida
 - id: scenario.stake-out
   name: Stake-Out
   setting: Mordheim
-  source: Town Cryer #8
+  source: Town Cryer
   author: Gavin Thorpe
   player_mode: 1v1
-  summary: Sneaky attackers must kill the leader of the startled defenders; the
-    defenders' leader must escape from the table.
-  tags: [attacker-defender, objective]
+  summary: Sneaky attackers must kill the leader of the startled defenders; the defenders' leader must
+    escape from the table.
+  tags:
+  - attacker-defender
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -700,17 +833,20 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     wyrdstone: The loser earns D6 shards of wyrdstone and the winner D6+1 shards.
     notes:
-    - >-
-      'Fame' is not a standard campaign metric; the page itself marks it as a
-      possible leftover of a previous version. Verify against Town Cryer #8.
+    - '''Fame'' is not a standard campaign metric; the page itself marks it as a possible leftover of
+      a previous version. Verify against Town Cryer #8.'
+  name_i18n:
+    en: Stake-Out
+    es: Acecho
 - id: scenario.the-lair-of-the-snake
   name: The Lair of the Snake
   setting: Mordheim
-  source: Town Cryer #9
+  source: Town Cryer
   author: Christian Ellegaard
   player_mode: multiplayer
   summary: Four player scenario. Each player must take out his randomly specified enemy.
-  tags: [objective]
+  tags:
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -718,27 +854,32 @@ scenarios:
     url: https://mordheimer.net/docs/campaigns/scenarios/town-cryer/the-lair-of-the-snake
   progression:
     experience:
-    - summary: The first member of the warband that reaches the platform and gets an opponent gains +2 Experience
+    - summary: The first member of the warband that reaches the platform and gets an opponent gains +2
+        Experience
       amount: 2
-    - summary: Every surviving Hero and Henchman group in the warband that completes its objective (routs its chosen enemy) gains a further +1 Experience
+    - summary: Every surviving Hero and Henchman group in the warband that completes its objective (routs
+        its chosen enemy) gains a further +1 Experience
       amount: 1
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
     notes:
-    - >-
-      The text of the first award declares '+2 experience' under the '+1 First
-      to reach the platform' label; 2 is fixed as the amount and the label
-      discrepancy is left documented for verification against Town Cryer #9.
+    - 'The text of the first award declares ''+2 experience'' under the ''+1 First to reach the platform''
+      label; 2 is fixed as the amount and the label discrepancy is left documented for verification against
+      Town Cryer #9.'
+  name_i18n:
+    en: The Lair of the Snake
+    es: La Guarida de la serpiente
 - id: scenario.the-script-of-sigmar
   name: The Script of Sigmar
   setting: Mordheim
-  source: Town Cryer #9
+  source: Town Cryer
   author: Paul Smith
   player_mode: 1v1
-  summary: Witch Hunters vs Sisters of Sigmar. Two linked scenarios involving
-    burgling the Sisters' Abbey.
-  tags: [objective-building, objective]
+  summary: Witch Hunters vs Sisters of Sigmar. Two linked scenarios involving burgling the Sisters' Abbey.
+  tags:
+  - objective-building
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -750,26 +891,32 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: 'Mission 1: the Sisterhood warband leader earns +1 Experience if the alarm is raised'
       amount: 1
-    - summary: 'Mission 1: each surviving Witch Hunter warband member who makes it to the door earns +1 Experience'
+    - summary: 'Mission 1: each surviving Witch Hunter warband member who makes it to the door earns +1
+        Experience'
       amount: 1
-    - summary: 'Mission 1: the Witch Hunter leader earns +1 Experience if they reached the door without the alarm being raised'
+    - summary: 'Mission 1: the Witch Hunter leader earns +1 Experience if they reached the door without
+        the alarm being raised'
       amount: 1
-    - summary: 'Mission 2: the winning warband leader earns +1 Experience (the warbands that reach the second mission use the surviving members of the first)'
+    - summary: 'Mission 2: the winning warband leader earns +1 Experience (the warbands that reach the
+        second mission use the surviving members of the first)'
       amount: 1
     notes:
-    - >-
-      The five brotherhood soldiers patrolling outside in mission 1 do not
-      count as part of the warband and gain no experience, unless real warband
-      members are used (who then do gain normal experience).
+    - The five brotherhood soldiers patrolling outside in mission 1 do not count as part of the warband
+      and gain no experience, unless real warband members are used (who then do gain normal experience).
+  name_i18n:
+    en: The Script of Sigmar
+    es: El Guión de Sigmar
 - id: scenario.thats-all-mine
   name: That's All Mine
   setting: Mordheim
-  source: Town Cryer #10
+  source: Town Cryer
   author: Paul Smith
   player_mode: 1v1
-  summary: Attackers blow up a mine using gunpowder rules from Archive
-    Pestilens amid some random zombie shenanigans.
-  tags: [attacker-defender, hostile-npc]
+  summary: Attackers blow up a mine using gunpowder rules from Archive Pestilens amid some random zombie
+    shenanigans.
+  tags:
+  - attacker-defender
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -793,14 +940,19 @@ scenarios:
       amount: 1
     - summary: 'Defenders: +1 Experience for surviving'
       amount: 1
+  name_i18n:
+    en: That's All Mine
+    es: Eso es todo mío
 - id: scenario.the-caravan
   name: The Caravan
   setting: Mordheim
-  source: Town Cryer #11
+  source: Town Cryer
   author: Honza Skypala & Stepan Stepanov
   player_mode: 1v1
   summary: Escort or rob a merchant's caravan train.
-  tags: [escort-npc, objective]
+  tags:
+  - escort-npc
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -811,28 +963,30 @@ scenarios:
     - ref: campaign.experience.award.survives
     - summary: Any Hero earns +1 Experience for each enemy (or wagon) he puts Out of Action
       amount: 1
-    - summary: 'Winning leader: if at least two wagons escape the defender wins the game, otherwise the attacker wins; the bonus does not depend on routing'
+    - summary: 'Winning leader: if at least two wagons escape the defender wins the game, otherwise the
+        attacker wins; the bonus does not depend on routing'
       amount: 1
-    income: >-
-      The defender receives 5D6 gold crowns as a starting payment plus 5D6 gold
-      crowns for each wagon that escapes, with an additional bonus of 5D6 gold
-      crowns if all three wagons escape. The attacker receives 3D6 gold crowns
-      for each wagon he loots. A traitorous defender who attacks the caravan he
-      was hired to protect receives 3D6 gold crowns per looted wagon instead.
+    income: The defender receives 5D6 gold crowns as a starting payment plus 5D6 gold crowns for each
+      wagon that escapes, with an additional bonus of 5D6 gold crowns if all three wagons escape. The
+      attacker receives 3D6 gold crowns for each wagon he loots. A traitorous defender who attacks the
+      caravan he was hired to protect receives 3D6 gold crowns per looted wagon instead.
     notes:
-    - >-
-      The traitor defender warband can never escort another caravan in the
-      campaign and suffers -1 when searching for rare items over the next D6
-      games. Defenders can only be Mercenaries, Witch Hunters, Sisters of
-      Sigmar or Bretonnians.
+    - The traitor defender warband can never escort another caravan in the campaign and suffers -1 when
+      searching for rare items over the next D6 games. Defenders can only be Mercenaries, Witch Hunters,
+      Sisters of Sigmar or Bretonnians.
+  name_i18n:
+    en: The Caravan
+    es: La Caravana
 - id: scenario.the-secrets-of-beujuntae
   name: The Secrets of Beujuntae
   setting: Lustria
-  source: Town Cryer #12
+  source: Town Cryer
   author: Stephanus Cornette
   player_mode: 1v1
   summary: Wyrdstone Hunt while a Daemon spirit flits around possessing random Heroes.
-  tags: [wyrdstone-tokens, hostile-npc]
+  tags:
+  - wyrdstone-tokens
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -846,7 +1000,8 @@ scenarios:
     - summary: A Hero or Henchman carrying an artefact counter at the end of the battle receives +1 Experience
       amount: 1
     loot:
-      summary: The winning player gets to open the tomb of a long-dead Slann Mage Priest and rolls on the items chart to see what he finds within.
+      summary: The winning player gets to open the tomb of a long-dead Slann Mage Priest and rolls on
+        the items chart to see what he finds within.
       contents:
       - reward: 2D6 gc
         roll: automatic
@@ -857,19 +1012,22 @@ scenarios:
       - reward: Ancient Bone Armour (confers a 4+ save and in all other respects acts like light armour)
         roll: 8+
     notes:
-    - >-
-      The page reward table is badly formatted ('Roll 2D6' heading with
-      confusing columns); it is interpreted like other treasure tables of the
-      site: automatic crowns and each item with its required roll. Verify
-      against Town Cryer #12.
+    - 'The page reward table is badly formatted (''Roll 2D6'' heading with confusing columns); it is interpreted
+      like other treasure tables of the site: automatic crowns and each item with its required roll. Verify
+      against Town Cryer #12.'
+  name_i18n:
+    en: The Secrets of Beujuntae
+    es: Los Secretos de Beujuntae
 - id: scenario.jungle-skirmish
   name: Jungle Skirmish / The Fog of War
   setting: Lustria
-  source: Town Cryer #12
+  source: Town Cryer
   author: Stephanus Cornette
   player_mode: 1v1
   summary: Light fog affecting movement and missile range.
-  tags: [brawl, low-visibility]
+  tags:
+  - brawl
+  - low-visibility
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -881,15 +1039,18 @@ scenarios:
     - summary: The Leader and Heroes of the winning warband each gain +1 Experience
       amount: 1
     - ref: campaign.experience.award.per-enemy-out-of-action
+  name_i18n:
+    en: Jungle Skirmish / The Fog of War
+    es: Escaramuza en la selva / La niebla de la guerra
 - id: scenario.island-hopping
   name: Island Hopping
   setting: Lustria
-  source: Town Cryer #12
+  source: Town Cryer
   author: Stephanus Cornette
   player_mode: 1v1
-  summary: Islands in a fast flowing river connected by bridges. Control as
-    many as possible.
-  tags: [objective]
+  summary: Islands in a fast flowing river connected by bridges. Control as many as possible.
+  tags:
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -900,17 +1061,23 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: The Leader of a warband that controls another player's starting island at the end of the game gains +1 Experience
+    - summary: The Leader of a warband that controls another player's starting island at the end of the
+        game gains +1 Experience
       amount: 1
+  name_i18n:
+    en: Island Hopping
+    es: Salto de isla en isla
 - id: scenario.the-night-of-the-headless-one
   name: The Night Of The Headless One
   setting: Mordheim
-  source: Town Cryer #12
+  source: Town Cryer
   author: Kevin J Coleman
   player_mode: 1v1
-  summary: Hidden Treasure except warbands look for the skull of the Headless
-    One while its awesome original owner creates carnage.
-  tags: [treasure, hostile-npc]
+  summary: Hidden Treasure except warbands look for the skull of the Headless One while its awesome original
+    owner creates carnage.
+  tags:
+  - treasure
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -926,23 +1093,26 @@ scenarios:
     - summary: Any Hero earns +2 Experience for placing the Headless One Out of Action
       amount: 2
     loot:
-      summary: >-
-        A warband that captures the Skull of the Headless One (by moving it off
-        the table) may keep it and, in a campaign, attempt to summon the
-        Headless One at the start of any subsequent game.
+      summary: A warband that captures the Skull of the Headless One (by moving it off the table) may
+        keep it and, in a campaign, attempt to summon the Headless One at the start of any subsequent
+        game.
     notes:
-    - >-
-      The skull summoning roll (1 it is lost; 2-5 the Headless One does not
-      appear; 6 it appears and increases the warband rating by +125 for the
-      game) remains pending modelling together with the Headless One profile.
+    - The skull summoning roll (1 it is lost; 2-5 the Headless One does not appear; 6 it appears and increases
+      the warband rating by +125 for the game) remains pending modelling together with the Headless One
+      profile.
+  name_i18n:
+    en: The Night Of The Headless One
+    es: La Noche del Descabezado
 - id: scenario.the-hunters-become-the-hunted
   name: The Hunters Become The Hunted
   setting: Lustria
-  source: Town Cryer #13
+  source: Town Cryer
   author: Lustria Development Team
   player_mode: 1v1
   summary: Similar to Surprise Attack.
-  tags: [attacker-defender, reserves]
+  tags:
+  - attacker-defender
+  - reserves
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -956,25 +1126,25 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: All units in the winning warband which survive get +1 Experience per Cold One alive
       amount: 1
-    income: >-
-      If the winning warband captures the Cold Ones alive they can either mount
-      a unit on them or sell them for 80 gc; if one or both Cold Ones are dead
-      they can be sold for 40 gc each. The artefacts taken from the Beastmaster
-      are the equivalent of a Wyrdstone shard each and can also be sold.
+    income: If the winning warband captures the Cold Ones alive they can either mount a unit on them or
+      sell them for 80 gc; if one or both Cold Ones are dead they can be sold for 40 gc each. The artefacts
+      taken from the Beastmaster are the equivalent of a Wyrdstone shard each and can also be sold.
     notes:
-    - >-
-      The unit that puts the Beastmaster Out of Action obtains his whip and
-      control of the Cold Ones; it also carries D3 artefacts. The Beastmaster
-      and Cold Ones profiles (Town Cryer #11) are not modelled here. A model
-      killed by a carnivorous plant is removed from the campaign on a 1 (D6).
+    - 'The unit that puts the Beastmaster Out of Action obtains his whip and control of the Cold Ones;
+      it also carries D3 artefacts. The Beastmaster and Cold Ones profiles (Town Cryer #11) are not modelled
+      here. A model killed by a carnivorous plant is removed from the campaign on a 1 (D6).'
+  name_i18n:
+    en: The Hunters Become The Hunted
+    es: Los cazadores se convierten en presas
 - id: scenario.lost-temple-of-the-slann
   name: Lost Temple Of The Slann
   setting: Lustria
-  source: Town Cryer #13
+  source: Town Cryer
   author: Lustria Development Team
   player_mode: multiplayer
   summary: Similar to Wizard's Mansion.
-  tags: [treasure]
+  tags:
+  - treasure
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -986,11 +1156,9 @@ scenarios:
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
     loot:
-      summary: >-
-        At the end of the game the winning warband finds all of the items of the
-        defender's booty table that were not found before the battle, plus it
-        rolls once on the relics chart for each Hero it has that is not Out of
-        Action (maximum 6 rolls). Each item is rolled for separately apart from
+      summary: At the end of the game the winning warband finds all of the items of the defender's booty
+        table that were not found before the battle, plus it rolls once on the relics chart for each Hero
+        it has that is not Out of Action (maximum 6 rolls). Each item is rolled for separately apart from
         the gold crowns, which are always found.
       contents:
       - reward: 3D6 gc
@@ -1008,22 +1176,25 @@ scenarios:
       - reward: Dispel Scroll
         roll: 5+
     notes:
-    - >-
-      The defender receives, in addition, one roll on the loot table per
-      additional attacking warband (1 Temple Stone Guard; 2 1D3 doses of Dark
-      Venom; 3 1D3 doses of Crimson Shade; 4 Holy/Unholy Relic; 5 Lucky Charm;
-      6 Heavy Armour); each item may only be found once. The magic items
-      (Cloak of Mists, Dispel Scroll, Gromril Sword, Tome of Magic) have no
-      entry in the canonical Trading Post.
+    - The defender receives, in addition, one roll on the loot table per additional attacking warband
+      (1 Temple Stone Guard; 2 1D3 doses of Dark Venom; 3 1D3 doses of Crimson Shade; 4 Holy/Unholy Relic;
+      5 Lucky Charm; 6 Heavy Armour); each item may only be found once. The magic items (Cloak of Mists,
+      Dispel Scroll, Gromril Sword, Tome of Magic) have no entry in the canonical Trading Post.
+  name_i18n:
+    en: Lost Temple Of The Slann
+    es: Templo perdido de los Slann
 - id: scenario.the-sword-of-the-herald
   name: The Sword of the Herald
   setting: Mordheim
-  source: Town Cryer #13
+  source: Town Cryer
   author: Jeff Hogg
   player_mode: multiplayer
-  summary: Multiplayer scenario involving a mean sword, huge chunks of
-    wyrdstone and those ever-popular random zombies.
-  tags: [treasure, wyrdstone-tokens, hostile-npc]
+  summary: Multiplayer scenario involving a mean sword, huge chunks of wyrdstone and those ever-popular
+    random zombies.
+  tags:
+  - treasure
+  - wyrdstone-tokens
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1032,30 +1203,31 @@ scenarios:
   progression:
     experience:
     - ref: campaign.experience.award.survives
-    - summary: A Hero earns +1 Experience for each enemy model he puts Out of Action; Heroes are restricted to earning +1 point for killing any number of Zombies
+    - summary: A Hero earns +1 Experience for each enemy model he puts Out of Action; Heroes are restricted
+        to earning +1 point for killing any number of Zombies
       amount: 1
     - ref: campaign.experience.award.winning-leader
-    wyrdstone: >-
-      Each Star Stone splinter is worth 3 additional wyrdstone in the post
-      battle sequence when removed from the table. Note that additional
-      experience is not earned for removing the Star Stone splinters or the
-      Sword of the Herald.
+    wyrdstone: Each Star Stone splinter is worth 3 additional wyrdstone in the post battle sequence when
+      removed from the table. Note that additional experience is not earned for removing the Star Stone
+      splinters or the Sword of the Herald.
     notes:
-    - >-
-      Players who choose that the game 'does not count' gain no experience, do
-      not roll serious injuries and do not search for wyrdstone in the
-      post-battle sequence, but they can still gain the awards for drawing the
-      sword and the shards. The sword value is left to the referee's
-      discretion.
+    - Players who choose that the game 'does not count' gain no experience, do not roll serious injuries
+      and do not search for wyrdstone in the post-battle sequence, but they can still gain the awards
+      for drawing the sword and the shards. The sword value is left to the referee's discretion.
+  name_i18n:
+    en: The Sword of the Herald
+    es: La Espada del Heraldo
 - id: scenario.finders-keepers
   name: Finders Keepers
   setting: Mordheim
-  source: Town Cryer #14
+  source: Town Cryer
   author: Roger Latham
   player_mode: 1v1
-  summary: Run the length of the table, grab the wyrdstone and run back again
-    while trying not to die. Designed for mounted warriors but doesn't have to be.
-  tags: [wyrdstone-tokens, traverse-the-board]
+  summary: Run the length of the table, grab the wyrdstone and run back again while trying not to die.
+    Designed for mounted warriors but doesn't have to be.
+  tags:
+  - wyrdstone-tokens
+  - traverse-the-board
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1068,16 +1240,22 @@ scenarios:
     - summary: A Hero or Henchman carrying a Wyrdstone counter at the end of the battle receives +1 Experience
       amount: 1
     - ref: campaign.experience.award.per-enemy-out-of-action
-    wyrdstone: Warriors earn one shard of wyrdstone for each counter still in their possession at the end of the battle (the stash holds 1D3 counters).
+    wyrdstone: Warriors earn one shard of wyrdstone for each counter still in their possession at the
+      end of the battle (the stash holds 1D3 counters).
+  name_i18n:
+    en: Finders Keepers
+    es: El que lo encuentra se lo queda
 - id: scenario.mule-train
   name: Mule Train
   setting: Mordheim
-  source: Town Cryer #14
+  source: Town Cryer
   author: Robert J Walker
   player_mode: 1v1
-  summary: The good guys try to lead the mule train along a country road while
-    the bad guys try to steal them.
-  tags: [escort-npc, objective]
+  summary: The good guys try to lead the mule train along a country road while the bad guys try to steal
+    them.
+  tags:
+  - escort-npc
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1090,26 +1268,25 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: If a Hero leads one or more mules off the table, he gains +1 Experience
       amount: 1
-    income: >-
-      If the attackers recover one or more mules they may keep or sell them, and
-      the goods on the mules are determined as if the warband found a
-      Slaughtered Warband in the exploration phase, adding +1 to the dice roll
-      for every mule recovered over the first. The defenders gain 2D6 gc for
-      each mule they lead off the table. Both warbands may explore as normal
-      at the end of the scenario.
+    income: If the attackers recover one or more mules they may keep or sell them, and the goods on the
+      mules are determined as if the warband found a Slaughtered Warband in the exploration phase, adding
+      +1 to the dice roll for every mule recovered over the first. The defenders gain 2D6 gc for each
+      mule they lead off the table. Both warbands may explore as normal at the end of the scenario.
     notes:
-    - >-
-      The page shows '(4 4 4 4 4 4)' next to the reference of the warband wiped
-      out in exploration without clarifying its meaning; verify against Town
-      Cryer #14.
+    - 'The page shows ''(4 4 4 4 4 4)'' next to the reference of the warband wiped out in exploration
+      without clarifying its meaning; verify against Town Cryer #14.'
+  name_i18n:
+    en: Mule Train
+    es: Tren de mulas
 - id: scenario.death-in-the-mists
   name: Death in the Mists
   setting: Albion
-  source: Town Cryer #15
+  source: Town Cryer
   author: Nicodemus Kyme
   player_mode: 1v1
   summary: Visibility reduced to 2D6". Warriors might get lost.
-  tags: [low-visibility]
+  tags:
+  - low-visibility
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1120,14 +1297,18 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
+  name_i18n:
+    en: Death in the Mists
+    es: Muerte en las brumas
 - id: scenario.gift-of-the-truthsayers
   name: Gift of the Truthsayers
   setting: Albion
-  source: Town Cryer #15
+  source: Town Cryer
   author: Nicodemus Kyme
   player_mode: 1v1
   summary: Scrap over a magic item with random boggy happenings.
-  tags: [treasure]
+  tags:
+  - treasure
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1141,35 +1322,57 @@ scenarios:
     - summary: If a Hero is carrying the artefact at the end of the game he earns +2 Experience
       amount: 2
     loot:
-      summary: The warband in possession of the artefact at the end of the game may examine it to discover its worth; roll 2D6.
+      summary: The warband in possession of the artefact at the end of the game may examine it to discover
+        its worth; roll 2D6.
       contents:
-      - when: { min: 1, max: 4 }
+      - when:
+          min: 1
+          max: 4
         roll: 2D6
         reward: The artefact is valuable and worth 5D6 gold coins
-      - when: { min: 5, max: 6 }
+      - when:
+          min: 5
+          max: 6
         roll: 2D6
-        reward: Enchanted Totem of Light (bearer immune to psychology and all alone tests; +1 Leadership if given to the warband's leader)
-      - when: { min: 7, max: 8 }
+        reward: Enchanted Totem of Light (bearer immune to psychology and all alone tests; +1 Leadership
+          if given to the warband's leader)
+      - when:
+          min: 7
+          max: 8
         roll: 2D6
-        reward: Silver Sickle (acts like a normal sword, +1 Weapon Skill, +1 Strength vs Daemons, Possessed and Undead)
-      - when: { min: 9, max: 9 }
+        reward: Silver Sickle (acts like a normal sword, +1 Weapon Skill, +1 Strength vs Daemons, Possessed
+          and Undead)
+      - when:
+          min: 9
+          max: 9
         roll: 2D6
         reward: Talisman of Light (nullifies any harmful spell cast at the wearer on a 4+)
-      - when: { min: 10, max: 11 }
+      - when:
+          min: 10
+          max: 11
         roll: 2D6
-        reward: Tome of the Truthsayers (cast a single randomly determined Lore of Light spell once per battle without difficulty roll)
-      - when: { min: 12, max: 12 }
+        reward: Tome of the Truthsayers (cast a single randomly determined Lore of Light spell once per
+          battle without difficulty roll)
+      - when:
+          min: 12
+          max: 12
         roll: 2D6
-        reward: Vambrace of Silver (any ranged weapon that hits the wearer is deflected harmlessly on a 5+)
+        reward: Vambrace of Silver (any ranged weapon that hits the wearer is deflected harmlessly on
+          a 5+)
+  name_i18n:
+    en: Gift of the Truthsayers
+    es: Don de los decidores de verdades
 - id: scenario.the-mummy
   name: The Mummy
   setting: Mordheim
-  source: Town Cryer #15
+  source: Town Cryer
   author: Rob Houdek
   player_mode: 1v1
-  summary: Hidden Treasure except warbands look for the stash of a mummy while
-    its scary original owner plus friends have their say.
-  tags: [treasure, hostile-npc]
+  summary: Hidden Treasure except warbands look for the stash of a mummy while its scary original owner
+    plus friends have their say.
+  tags:
+  - treasure
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1187,10 +1390,8 @@ scenarios:
     - summary: The Hero that finds the hoard earns +1 Experience
       amount: 1
     loot:
-      summary: >-
-        Once KaHotep is vanquished the warriors may loot the hoard. Roll 1D6
-        for each item separately except for the gold crowns, which are found
-        automatically.
+      summary: Once KaHotep is vanquished the warriors may loot the hoard. Roll 1D6 for each item separately
+        except for the gold crowns, which are found automatically.
       contents:
       - reward: 5D6 Gold Crowns and a Lucky Charm
         roll: automatic
@@ -1225,20 +1426,22 @@ scenarios:
       - reward: Tome of Magic
         roll: 4+
     notes:
-    - >-
-      The page treasure table appears with the column order altered; the
-      required rolls are reconstructed following the pattern of equivalent
-      tables of the same site (Monster Hunt, Hidden Treasure) and remain
-      pending verification against Town Cryer #15.
+    - 'The page treasure table appears with the column order altered; the required rolls are reconstructed
+      following the pattern of equivalent tables of the same site (Monster Hunt, Hidden Treasure) and
+      remain pending verification against Town Cryer #15.'
+  name_i18n:
+    en: The Mummy
+    es: La Momia
 - id: scenario.the-ogham-stones
   name: The Ogham Stones
   setting: Albion
-  source: Town Cryer #15
+  source: Town Cryer
   author: Nicodemus Kyme
   player_mode: 1v1
-  summary: Enhance powers for spell-casters with Truthsayers and Dark
-    Emissaries tagging along for good measure.
-  tags: [objective]
+  summary: Enhance powers for spell-casters with Truthsayers and Dark Emissaries tagging along for good
+    measure.
+  tags:
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1251,15 +1454,21 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: Any Hero who slays a Truthsayer or Dark Emissary gains +2 Experience
       amount: 2
-    income: The winning warband is rewarded by the Truthsayer or Dark Emissary they serve and gains 5D6 gold coins worth of gems and jewels.
+    income: The winning warband is rewarded by the Truthsayer or Dark Emissary they serve and gains 5D6
+      gold coins worth of gems and jewels.
+  name_i18n:
+    en: The Ogham Stones
+    es: Las Piedras ogham
 - id: scenario.haunted-treasure
   name: Haunted Treasure
   setting: Mordheim
-  source: Town Cryer #18
+  source: Town Cryer
   author: Michael Reuvers
   player_mode: 1v1
   summary: Serious treasure guarded by an equally serious Banshee.
-  tags: [treasure, hostile-npc]
+  tags:
+  - treasure
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1270,15 +1479,15 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: >-
-        The warrior earns +2 Experience for carrying the chest off to safety; if
-        more than one warrior carries the chest each can only gain +1
-        Experience, and if one or more of a Henchman group carry it the group
-        only gains the Experience once
-    - summary: The warrior earns +3 Experience for vanquishing the Banshee (killing it or driving it off the table)
+    - summary: The warrior earns +2 Experience for carrying the chest off to safety; if more than one
+        warrior carries the chest each can only gain +1 Experience, and if one or more of a Henchman group
+        carry it the group only gains the Experience once
+    - summary: The warrior earns +3 Experience for vanquishing the Banshee (killing it or driving it off
+        the table)
       amount: 3
     loot:
-      summary: Whoever recovers the chest may roll on the contents chart after the game; each item is rolled for separately apart from the gold crowns, which are always found.
+      summary: Whoever recovers the chest may roll on the contents chart after the game; each item is
+        rolled for separately apart from the gold crowns, which are always found.
       contents:
       - reward: D3 pieces of wyrdstone
         roll: 4+
@@ -1298,18 +1507,21 @@ scenarios:
       - reward: Magical artefact
         roll: 5+
     notes:
-    - >-
-      The page header cites Town Cryer #14 while the site index assigns it to
-      Town Cryer #18; verify against the prints.
+    - 'The page header cites Town Cryer #14 while the site index assigns it to Town Cryer #18; verify
+      against the prints.'
+  name_i18n:
+    en: Haunted Treasure
+    es: Tesoro embrujado
 - id: scenario.a-night-in-the-graveyard
   name: A Night In The Graveyard
   setting: Mordheim
-  source: Town Cryer #19
+  source: Town Cryer
   author: Jason "Teacher Guy" Kahler
   player_mode: 1v1
-  summary: Warbands compete to plunder a dead man's grave while his restless
-    spirit attempts to stop them.
-  tags: [treasure, hostile-npc]
+  summary: Warbands compete to plunder a dead man's grave while his restless spirit attempts to stop them.
+  tags:
+  - treasure
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1322,16 +1534,22 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: Any Hero earns +3 Experience if he puts Erasmus out of action
       amount: 3
-    income: If Erasmus is taken Out of Action or driven off, any warrior close enough to his mausoleum gets to loot his grave and gains 4D6 + 20 gc in addition to their normal Exploration roll.
+    income: If Erasmus is taken Out of Action or driven off, any warrior close enough to his mausoleum
+      gets to loot his grave and gains 4D6 + 20 gc in addition to their normal Exploration roll.
+  name_i18n:
+    en: A Night In The Graveyard
+    es: Una noche en el cementerio
 - id: scenario.bar-room-brawl
   name: Bar Room Brawl
   setting: Mordheim
-  source: Town Cryer #19
+  source: Town Cryer
   author: Jason "Teacher Guy" Kahler
   player_mode: 1v1
-  summary: A bar room brawl. Players start with 3 warriors in the bar with more
-    arriving during the battle.
-  tags: [brawl, reserves, interior]
+  summary: A bar room brawl. Players start with 3 warriors in the bar with more arriving during the battle.
+  tags:
+  - brawl
+  - reserves
+  - interior
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1344,21 +1562,25 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: Any Hero earns +3 Experience if he puts Sam the Bartender Out of Action
       amount: 3
-    income: If Sam is out of action, the winning warband gets 3D6 gc from the cash register and a supply of Bugman's Ale, in addition to anything from normal exploring.
+    income: If Sam is out of action, the winning warband gets 3D6 gc from the cash register and a supply
+      of Bugman's Ale, in addition to anything from normal exploring.
     notes:
-    - >-
-      The Sam award label says '+1 Taking Out Sam' but the text declares '+3
-      Experience'; 3 is fixed and the discrepancy is documented for
-      verification against Town Cryer #19.
+    - 'The Sam award label says ''+1 Taking Out Sam'' but the text declares ''+3 Experience''; 3 is fixed
+      and the discrepancy is documented for verification against Town Cryer #19.'
+  name_i18n:
+    en: Bar Room Brawl
+    es: Pelea de taberna
 - id: scenario.defend-the-oasis
   name: Defend the Oasis
   setting: Khemri
-  source: Town Cryer #19
+  source: Town Cryer
   author: Khemri Development Team
   player_mode: 1v1
-  summary: Attackers must get more men within 6" of a well than the defenders;
-    defenders must cause a rout test.
-  tags: [attacker-defender, objective]
+  summary: Attackers must get more men within 6" of a well than the defenders; defenders must cause a
+    rout test.
+  tags:
+  - attacker-defender
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1369,24 +1591,25 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    income: >-
-      The winner fills his water supply to the maximum (no more water and
-      treasure than his burden limit) and, when trading, may remain at the
-      oasis rolling for a caravan (3+) as normal. The defeated warband must
-      roll on the Exploration chart with a -1 modifier.
+    income: The winner fills his water supply to the maximum (no more water and treasure than his burden
+      limit) and, when trading, may remain at the oasis rolling for a caravan (3+) as normal. The defeated
+      warband must roll on the Exploration chart with a -1 modifier.
     notes:
-    - >-
-      The water and caravan mechanics of the scenario belong to the Khemri
-      campaign (water as a resource) and are documented without modelling.
+    - The water and caravan mechanics of the scenario belong to the Khemri campaign (water as a resource)
+      and are documented without modelling.
+  name_i18n:
+    en: Defend the Oasis
+    es: Defender el oasis
 - id: scenario.tomb-raid
   name: Tomb Raid
   setting: Khemri
-  source: Town Cryer #19
+  source: Town Cryer
   author: Khemri Development Team
   player_mode: 1v1
-  summary: As Defend The Tomb except the chest begins in the middle of the
-    complex while both warbands begin at the edges.
-  tags: [treasure]
+  summary: As Defend The Tomb except the chest begins in the middle of the complex while both warbands
+    begin at the edges.
+  tags:
+  - treasure
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1400,34 +1623,51 @@ scenarios:
     loot:
       summary: In the tomb the winner gets D3 items of treasure, rolling a D6 for each one.
       contents:
-      - when: { min: 1, max: 1 }
+      - when:
+          min: 1
+          max: 1
         roll: D6
         reward: Heavy armour
         item_id: heavy_armour
-      - when: { min: 2, max: 2 }
+      - when:
+          min: 2
+          max: 2
         roll: D6
         reward: D3 Scimitars
         item_id: sword_scimitar
-      - when: { min: 3, max: 3 }
+      - when:
+          min: 3
+          max: 3
         roll: D6
         reward: D6 Jambiyas (daggers)
-      - when: { min: 4, max: 4 }
+      - when:
+          min: 4
+          max: 4
         roll: D6
         reward: Gem-encrusted helmet worth D6 x 10 gc
-      - when: { min: 5, max: 5 }
+      - when:
+          min: 5
+          max: 5
         roll: D6
         reward: Shield
-      - when: { min: 6, max: 6 }
+      - when:
+          min: 6
+          max: 6
         roll: D6
-        reward: Monkey's paw (see Town Cryer #17)
+        reward: Monkey's paw (see Town Cryer
+  name_i18n:
+    en: Tomb Raid
+    es: Saqueo de tumba
 - id: scenario.protect-the-prince
   name: Protect the Prince
   setting: Khemri
-  source: Town Cryer #19
+  source: Town Cryer
   author: Khemri Development Team
   player_mode: 1v1
   summary: Protect the Merchant's son.
-  tags: [escort-npc, objective]
+  tags:
+  - escort-npc
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1440,20 +1680,24 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: Any Character who puts the prince Out of Action gains +1 Experience
       amount: 1
-    income: >-
-      If the prince escapes he rewards his protectors with 4D6 gold crowns
-      from his purse; if he is killed the winning warband finds 2D6 gold crowns
-      plus jewellery equivalent to two pieces of treasure on his body.
+    income: If the prince escapes he rewards his protectors with 4D6 gold crowns from his purse; if he
+      is killed the winning warband finds 2D6 gold crowns plus jewellery equivalent to two pieces of treasure
+      on his body.
+  name_i18n:
+    en: Protect the Prince
+    es: Proteger al príncipe
 - id: scenario.burn-the-witches
   name: Burn the Witches
   setting: Mordheim
-  source: Town Cryer #20
+  source: Town Cryer
   author: Nicodemus Kyme
   player_mode: 1v1
-  summary: Set in a huge temple which burns to the ground during the battle.
-    Defender's Heroes must carry three relics from the temple; attackers must
-    stop them.
-  tags: [attacker-defender, objective, hazards]
+  summary: Set in a huge temple which burns to the ground during the battle. Defender's Heroes must carry
+    three relics from the temple; attackers must stop them.
+  tags:
+  - attacker-defender
+  - objective
+  - hazards
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1470,19 +1714,22 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     wyrdstone: The attackers can pilfer the tomb after the battle and find D3+1 wyrdstone shards.
     notes:
-    - >-
-      The three relics (Holy Tome, Holy Relic and Blessed Water) are chosen
-      by the defender if only some are rescued; the attackers do not use them.
+    - The three relics (Holy Tome, Holy Relic and Blessed Water) are chosen by the defender if only some
+      are rescued; the attackers do not use them.
+  name_i18n:
+    en: Burn the Witches
+    es: Quemad a las brujas
 - id: scenario.one-mans-rescue
   name: One Man's Rescue is Another Man's Kidnap
   setting: Khemri
-  source: Town Cryer #20
+  source: Town Cryer
   author: Khemri Development Team
   player_mode: 1v1
-  summary: A prisoner is being guarded within one of several tents. The
-    attacker must find the prisoner by entering the correct tent and then
-    escort him from the table.
-  tags: [attacker-defender, escort-npc]
+  summary: A prisoner is being guarded within one of several tents. The attacker must find the prisoner
+    by entering the correct tent and then escort him from the table.
+  tags:
+  - attacker-defender
+  - escort-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1493,18 +1740,26 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: The warrior who rescues the victim gains +1 Experience; the winning leader bonus and this bonus are not awarded if the kidnap victim dies (the game is a draw)
+    - summary: The warrior who rescues the victim gains +1 Experience; the winning leader bonus and this
+        bonus are not awarded if the kidnap victim dies (the game is a draw)
       amount: 1
-    income: The winning warband gains 5D6 + 10 gc as a ransom/reward; if the victim dies neither side gets the win bonus, additional Experience or gold.
+    income: The winning warband gains 5D6 + 10 gc as a ransom/reward; if the victim dies neither side
+      gets the win bonus, additional Experience or gold.
+  name_i18n:
+    en: One Man's Rescue is Another Man's Kidnap
+    es: El rescate de uno es el secuestro de otro
 - id: scenario.the-gauntlet
   name: The Gauntlet
   setting: Mordheim
-  source: Town Cryer #21
+  source: Town Cryer
   author: Erik Johnson
   player_mode: multiplayer
-  summary: Classic Indiana Jones stuff. Warbands race along trap-laden
-    corridors towards a great treasure. For 2+ warbands.
-  tags: [treasure, hazards, interior]
+  summary: Classic Indiana Jones stuff. Warbands race along trap-laden corridors towards a great treasure.
+    For 2+ warbands.
+  tags:
+  - treasure
+  - hazards
+  - interior
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1518,18 +1773,22 @@ scenarios:
     - summary: Any Hero earns +1 Experience for surviving a trap (or escaping from it)
       amount: 1
     notes:
-    - >-
-      The 'Great Treasure' is defined by the referee (magic items, chest,
-      etc.) and there are D3 extra wyrdstone/treasure counters in the central
-      room; the concrete value is not fixed in the source.
+    - The 'Great Treasure' is defined by the referee (magic items, chest, etc.) and there are D3 extra
+      wyrdstone/treasure counters in the central room; the concrete value is not fixed in the source.
+  name_i18n:
+    en: The Gauntlet
+    es: El Guantelete
 - id: scenario.assault-on-the-rock
   name: Assault on the Rock
   setting: Mordheim
-  source: Town Cryer #22
+  source: Town Cryer
   author: Grayson Gaudreault
   player_mode: 1v1
   summary: Warbands infiltrate the Sisters' rock and attempt to steal a magical tome.
-  tags: [attacker-defender, treasure, objective-building]
+  tags:
+  - attacker-defender
+  - treasure
+  - objective-building
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1543,23 +1802,28 @@ scenarios:
     - summary: Any Hero or Henchman who leaves the board with the magic tome gains +1 Experience
       amount: 1
     loot:
-      summary: The tome of magic allows the user to gain two spells from the lesser magic list, two new spells from his own list, or any combination thereof; any warband may use it except Sisters of Sigmar, Witch Hunters and warbands containing a priest of Morr.
+      summary: The tome of magic allows the user to gain two spells from the lesser magic list, two new
+        spells from his own list, or any combination thereof; any warband may use it except Sisters of
+        Sigmar, Witch Hunters and warbands containing a priest of Morr.
     notes:
-    - >-
-      Awards per faction: the Sisters gain 100 gc and +2 Experience for the
-      Matriarch, and Sisters recruited during the battle may join the warband;
-      the Witch Hunters and warbands with a priest of Morr destroy the book and
-      gain +D6 Experience to share, the Witch Hunters additionally +2
-      Experience per Augur/Matriarch out of action and 50 gc.
+    - 'Awards per faction: the Sisters gain 100 gc and +2 Experience for the Matriarch, and Sisters recruited
+      during the battle may join the warband; the Witch Hunters and warbands with a priest of Morr destroy
+      the book and gain +D6 Experience to share, the Witch Hunters additionally +2 Experience per Augur/Matriarch
+      out of action and 50 gc.'
+  name_i18n:
+    en: Assault on the Rock
+    es: Asalto a la peña
 - id: scenario.in-the-dead-of-the-night
   name: In The Dead Of The Night
   setting: Mordheim
-  source: Town Cryer #22
+  source: Town Cryer
   author: Space McQuirk & Chris Blair
   player_mode: 1v1
-  summary: Set in Mordheim's Cemetery of Saint Voller. Graveyard battle with an
-    Undead warband, half of which is unavailable, as the defenders.
-  tags: [attacker-defender, reserves]
+  summary: Set in Mordheim's Cemetery of Saint Voller. Graveyard battle with an Undead warband, half of
+    which is unavailable, as the defenders.
+  tags:
+  - attacker-defender
+  - reserves
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1570,23 +1834,27 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: Any Hero earns a further +3 Experience for taking the Undead spellcaster Out of Action and stopping the ritual
+    - summary: Any Hero earns a further +3 Experience for taking the Undead spellcaster Out of Action
+        and stopping the ritual
       amount: 3
     wyrdstone: The winning warband recovers D3 shards of Wyrdstone left over from the ritual.
     notes:
-    - >-
-      If the defender completes the ritual he retains D3+3 of the summoned
-      Zombies (without exceeding his warband limit); the rival models out of
-      action come back as Zombies keeping their original equipment.
+    - If the defender completes the ritual he retains D3+3 of the summoned Zombies (without exceeding
+      his warband limit); the rival models out of action come back as Zombies keeping their original equipment.
+  name_i18n:
+    en: In The Dead Of The Night
+    es: En plena noche
 - id: scenario.a-stroll-in-the-garden
   name: A Stroll In The Garden
   setting: Mordheim
-  source: Town Cryer #23
+  source: Town Cryer
   author: Anonymous
   player_mode: 1v1
-  summary: Skirmish set in Mordheim's Steinhardt Memorial Gardens. Warriors
-    within 2" of a tree or bush receive hits from the chaos-wracked foliage.
-  tags: [brawl, hazards]
+  summary: Skirmish set in Mordheim's Steinhardt Memorial Gardens. Warriors within 2" of a tree or bush
+    receive hits from the chaos-wracked foliage.
+  tags:
+  - brawl
+  - hazards
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1599,15 +1867,21 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: Any Hero who gets hit at least once by an attack from a plant gains +1 Experience
       amount: 1
-    exploration: At the end of the game each player receives one additional dice for Exploration; after rolling, each player may re-roll ALL of his Exploration dice (never keeping some and re-rolling others).
+    exploration: At the end of the game each player receives one additional dice for Exploration; after
+      rolling, each player may re-roll ALL of his Exploration dice (never keeping some and re-rolling
+      others).
+  name_i18n:
+    en: A Stroll In The Garden
+    es: Un paseo por el jardín
 - id: scenario.the-bodyguards
   name: The Bodyguards
   setting: Mordheim
-  source: Town Cryer #23
+  source: Town Cryer
   author: Anonymous
   player_mode: 1v1
   summary: Town Cryer edit of "Now Keep Me Safe, You Hear!?"
-  tags: [escort-npc]
+  tags:
+  - escort-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1618,64 +1892,85 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    income: >-
-      If the merchant survives he gives the defender 7D6 + 20 gold pieces plus
-      a 2D6 roll on the defender reward table. An attacking warband that
-      snatches the merchant or his head and returns it to his overlord
-      receives 4D6 + 15 gold pieces plus a 2D6 roll on the attacker reward
-      table.
+    income: If the merchant survives he gives the defender 7D6 + 20 gold pieces plus a 2D6 roll on the
+      defender reward table. An attacking warband that snatches the merchant or his head and returns it
+      to his overlord receives 4D6 + 15 gold pieces plus a 2D6 roll on the attacker reward table.
     loot:
       summary: Reward tables for each side; roll 2D6 once (rows carry the side that receives them).
       contents:
       - side: defender
-        when: { min: 2, max: 2 }
+        when:
+          min: 2
+          max: 2
         roll: 2D6
         reward: Holy or Unholy Relic
       - side: defender
-        when: { min: 3, max: 5 }
+        when:
+          min: 3
+          max: 5
         roll: 2D6
         reward: Cathayan Silk Clothes
       - side: defender
-        when: { min: 6, max: 8 }
+        when:
+          min: 6
+          max: 8
         roll: 2D6
         reward: Ithilmar Armour
       - side: defender
-        when: { min: 9, max: 10 }
+        when:
+          min: 9
+          max: 10
         roll: 2D6
         reward: Elven Cloak
       - side: defender
-        when: { min: 11, max: 12 }
+        when:
+          min: 11
+          max: 12
         roll: 2D6
         reward: Gromril Armour
       - side: attacker
-        when: { min: 2, max: 2 }
+        when:
+          min: 2
+          max: 2
         roll: 2D6
         reward: Throwing Knives
       - side: attacker
-        when: { min: 3, max: 5 }
+        when:
+          min: 3
+          max: 5
         roll: 2D6
         reward: Crossbow Pistol
       - side: attacker
-        when: { min: 6, max: 8 }
+        when:
+          min: 6
+          max: 8
         roll: 2D6
         reward: Hunting Arrows
       - side: attacker
-        when: { min: 9, max: 10 }
+        when:
+          min: 9
+          max: 10
         roll: 2D6
         reward: Repeater Crossbow
       - side: attacker
-        when: { min: 11, max: 12 }
+        when:
+          min: 11
+          max: 12
         roll: 2D6
         reward: Hunting Rifle
+  name_i18n:
+    en: The Bodyguards
+    es: Los Guardaespaldas
 - id: scenario.blood-hunt
   name: Blood Hunt
   setting: Mordheim
-  source: Town Cryer #25
+  source: Town Cryer
   author: Mark Havener, et al.
   player_mode: 1v1
-  summary: Clashing warbands gain the help of a Dramatis Personae, most likely
-    Johann The Knife & Marriana Chevaux, free of charge.
-  tags: [friendly-npc]
+  summary: Clashing warbands gain the help of a Dramatis Personae, most likely Johann The Knife & Marriana
+    Chevaux, free of charge.
+  tags:
+  - friendly-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1686,23 +1981,27 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: Any Hero who takes an enemy Dramatis Personae Out of Action gets an additional +2 Experience, in addition to the normal +1 for taking out an enemy warrior
+    - summary: Any Hero who takes an enemy Dramatis Personae Out of Action gets an additional +2 Experience,
+        in addition to the normal +1 for taking out an enemy warrior
       amount: 2
     notes:
-    - >-
-      Each warband receives the services of a Dramatis Personae free of charge
-      during the scenario; if that Dramatis Personae is put Out of Action, the
-      warband automatically routs at the start of its next turn. The Dramatis
-      Personae catalogue (hired-swords-and-dramatis.yaml) remains in draft.
+    - Each warband receives the services of a Dramatis Personae free of charge during the scenario; if
+      that Dramatis Personae is put Out of Action, the warband automatically routs at the start of its
+      next turn. The Dramatis Personae catalogue (hired-swords-and-dramatis.yaml) remains in draft.
+  name_i18n:
+    en: Blood Hunt
+    es: Cacería de sangre
 - id: scenario.bounty-hunting
   name: Bounty Hunting
   setting: The Empire
-  source: Town Cryer #25
+  source: Town Cryer
   author: Mark Havener, et al.
   player_mode: 1v1
-  summary: An Empire In Flames scenario. Warbands attempt to round up a gang of
-    bandits who are holed up in a remote hideout building.
-  tags: [objective-building, hostile-npc]
+  summary: An Empire In Flames scenario. Warbands attempt to round up a gang of bandits who are holed
+    up in a remote hideout building.
+  tags:
+  - objective-building
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1713,12 +2012,11 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: Any Hero who gets wounded by a bandit crossbow but is not taken Out of Action gains +1 Experience
+    - summary: Any Hero who gets wounded by a bandit crossbow but is not taken Out of Action gains +1
+        Experience
       amount: 1
-    income: >-
-      The bandits may be turned in to the authorities for 5 + 1D6 gc per head
-      (roll separately for each bandit). There are 6 plus the number of
-      warbands bandits in the hideout.
+    income: The bandits may be turned in to the authorities for 5 + 1D6 gc per head (roll separately for
+      each bandit). There are 6 plus the number of warbands bandits in the hideout.
     loot:
       summary: The winning warband captures the bandits' equipment.
       contents:
@@ -1729,15 +2027,19 @@ scenarios:
         roll: automatic
       - reward: 2D6 daggers
         roll: automatic
+  name_i18n:
+    en: Bounty Hunting
+    es: Caza de recompensas
 - id: scenario.down-at-the-docks
   name: Down At The Docks
   setting: Mordheim
-  source: Town Cryer #25
+  source: Town Cryer
   author: Mark Havener, et al.
   player_mode: 1v1
-  summary: Warbands must attempt to gain cargo crates from smugglers' ship by
-    carrying them off.
-  tags: [treasure, objective]
+  summary: Warbands must attempt to gain cargo crates from smugglers' ship by carrying them off.
+  tags:
+  - treasure
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1748,70 +2050,107 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: A Hero or Henchman from an attacking warband who takes a crate from the battlefield earns +1 Experience
+    - summary: A Hero or Henchman from an attacking warband who takes a crate from the battlefield earns
+        +1 Experience
       amount: 1
     loot:
-      summary: >-
-        Any crates removed from the battlefield may be prised open after the
-        battle; roll 4D6 per crate and consult the table. The defending warband
-        instead receives 25 gc per crate remaining on the battlefield at the
-        end of the game.
+      summary: Any crates removed from the battlefield may be prised open after the battle; roll 4D6 per
+        crate and consult the table. The defending warband instead receives 25 gc per crate remaining
+        on the battlefield at the end of the game.
       contents:
-      - when: { min: 4, max: 4 }
+      - when:
+          min: 4
+          max: 4
         roll: 4D6
-        reward: Gems worth 100 gc (fence value 40 gc, or worn adds +1 to rarity finds) and a pack of Tarot cards
-      - when: { min: 5, max: 5 }
+        reward: Gems worth 100 gc (fence value 40 gc, or worn adds +1 to rarity finds) and a pack of Tarot
+          cards
+      - when:
+          min: 5
+          max: 5
         roll: 4D6
         reward: Blunderbuss and shot
-      - when: { min: 6, max: 6 }
+      - when:
+          min: 6
+          max: 6
         roll: 4D6
-        reward: Medicine chest usable as D6 doses of Healing Herbs or as a one-off re-roll on the Hero Serious Injury table
-      - when: { min: 7, max: 7 }
+        reward: Medicine chest usable as D6 doses of Healing Herbs or as a one-off re-roll on the Hero
+          Serious Injury table
+      - when:
+          min: 7
+          max: 7
         roll: 4D6
         reward: Suit of heavy armour
         item_id: heavy_armour
-      - when: { min: 8, max: 8 }
+      - when:
+          min: 8
+          max: 8
         roll: 4D6
         reward: Elven Cloak
-      - when: { min: 9, max: 9 }
+      - when:
+          min: 9
+          max: 9
         roll: 4D6
         reward: D3 shields and swords
-      - when: { min: 10, max: 11 }
+      - when:
+          min: 10
+          max: 11
         roll: 4D6
         reward: Beer worth 2D6 gc per crate; on a D6 roll of 6 there is one dose of Bugman's Ale
-      - when: { min: 12, max: 16 }
+      - when:
+          min: 12
+          max: 16
         roll: 4D6
-        reward: Food worth D6 gc per crate, including one clove of Garlic per warband member; on a D6 roll of 6 also one dose of Dark Venom (1-2), Black Lotus (3-4) or Crimson Shade (5-6)
-      - when: { min: 17, max: 18 }
+        reward: Food worth D6 gc per crate, including one clove of Garlic per warband member; on a D6
+          roll of 6 also one dose of Dark Venom (1-2), Black Lotus (3-4) or Crimson Shade (5-6)
+      - when:
+          min: 17
+          max: 18
         roll: 4D6
         reward: Clothing worth 2D6 gc per crate, including D3 sets of toughened leathers
-      - when: { min: 19, max: 19 }
+      - when:
+          min: 19
+          max: 19
         roll: 4D6
-        reward: Luxury goods worth 4D6 gc per crate; hidden inside is a Wyrdstone pendulum (1-3) or a set of Cathayan Silks (4-6)
-      - when: { min: 20, max: 20 }
+        reward: Luxury goods worth 4D6 gc per crate; hidden inside is a Wyrdstone pendulum (1-3) or a
+          set of Cathayan Silks (4-6)
+      - when:
+          min: 20
+          max: 20
         roll: 4D6
         reward: Blackpowder worth 5D6 per crate, containing one pack of Superior Blackpowder
-      - when: { min: 21, max: 21 }
+      - when:
+          min: 21
+          max: 21
         roll: 4D6
         reward: D3 Crossbows each with Hunting Bolts (same as Hunting Arrows) for one game
-      - when: { min: 22, max: 22 }
+      - when:
+          min: 22
+          max: 22
         roll: 4D6
         reward: D3 Elven bows
-      - when: { min: 23, max: 23 }
+      - when:
+          min: 23
+          max: 23
         roll: 4D6
         reward: Hunting Rifle
-      - when: { min: 24, max: 24 }
+      - when:
+          min: 24
+          max: 24
         roll: 4D6
         reward: Suit of Gromril armour
+  name_i18n:
+    en: Down At The Docks
+    es: En los muelles
 - id: scenario.lost-in-the-bogs
   name: Lost In The Bogs
   setting: The Empire
-  source: Town Cryer #25
+  source: Town Cryer
   author: Mark Havener, et al.
   player_mode: 1v1
-  summary: An Empire In Flames scenario. The highest rated warband is lost and
-    must be deployed spread out.
-  tags: [attacker-defender]
+  summary: An Empire In Flames scenario. The highest rated warband is lost and must be deployed spread
+    out.
+  tags:
+  - attacker-defender
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1822,15 +2161,20 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
+  name_i18n:
+    en: Lost In The Bogs
+    es: Perdidos en las turberas
 - id: scenario.stagecoach-ambush
   name: Stagecoach Ambush
   setting: The Empire
-  source: Town Cryer #25
+  source: Town Cryer
   author: Mark Havener, et al.
   player_mode: 1v1
-  summary: An Empire In Flames scenario. Defenders on horseback must protect a
-    stagecoach from mounted attackers.
-  tags: [attacker-defender, escort-npc]
+  summary: An Empire In Flames scenario. Defenders on horseback must protect a stagecoach from mounted
+    attackers.
+  tags:
+  - attacker-defender
+  - escort-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1845,22 +2189,26 @@ scenarios:
       amount: 1
     - summary: If a Hero in the attacking warband captures the stagecoach intact he earns +2 Experience
       amount: 2
-    - summary: If the stagecoach survives and leaves the battlefield in the hands of the defending warband, its leader gains +2 Experience
+    - summary: If the stagecoach survives and leaves the battlefield in the hands of the defending warband,
+        its leader gains +2 Experience
       amount: 2
     notes:
-    - >-
-      The page URL keeps the site typo ('stagecoash'); the scenario is
-      published as 'Stagecoach Ambush'. Roadwarden and Highwayman can be hired
-      at half price in this scenario.
+    - The page URL keeps the site typo ('stagecoash'); the scenario is published as 'Stagecoach Ambush'.
+      Roadwarden and Highwayman can be hired at half price in this scenario.
+  name_i18n:
+    en: Stagecoach Ambush
+    es: Emboscada a la diligencia
 - id: scenario.the-item-lost
   name: The Item Lost
   setting: Mordheim
-  source: Town Cryer #25
+  source: Town Cryer
   author: Mark Havener, et al.
   player_mode: multiplayer
-  summary: Nicodemus joins one warband in an attempt to retrieve a magic wand.
-    Naturally the other warbands would like the wand for themselves.
-  tags: [treasure, friendly-npc]
+  summary: Nicodemus joins one warband in an attempt to retrieve a magic wand. Naturally the other warbands
+    would like the wand for themselves.
+  tags:
+  - treasure
+  - friendly-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1873,21 +2221,25 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: The Hero or Henchman group who takes the wand off the edge of the board gains +1 Experience
       amount: 1
-    wyrdstone: If the warband that Nicodemus has hired successfully retrieves the wand, they are considered to have found two additional Wyrdstone shards as their payment.
+    wyrdstone: If the warband that Nicodemus has hired successfully retrieves the wand, they are considered
+      to have found two additional Wyrdstone shards as their payment.
     loot:
-      summary: >-
-        The Wand of Phyrros allows the wielder to use the spell Fires of U'Zhul
-        once per game (automatically successful, no need to be a spell caster,
-        but the wielder must be a Hero); it may be sold for 100 gc.
+      summary: The Wand of Phyrros allows the wielder to use the spell Fires of U'Zhul once per game (automatically
+        successful, no need to be a spell caster, but the wielder must be a Hero); it may be sold for
+        100 gc.
+  name_i18n:
+    en: The Item Lost
+    es: El objeto perdido
 - id: scenario.the-thing-in-the-woods
   name: The Thing In The Woods
   setting: The Empire
-  source: Town Cryer #25
+  source: Town Cryer
   author: Mark Havener, et al.
   player_mode: 1v1
-  summary: An Empire In Flames scenario. At least 1/2 the terrain is spooky
-    fear-inducing woods.
-  tags: [brawl, hazards]
+  summary: An Empire In Flames scenario. At least 1/2 the terrain is spooky fear-inducing woods.
+  tags:
+  - brawl
+  - hazards
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1898,22 +2250,25 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: Any Hero who takes a Thing in the Woods Out of Action gets +1 Experience, cumulative with the +1 for taking an enemy out of action
+    - summary: Any Hero who takes a Thing in the Woods Out of Action gets +1 Experience, cumulative with
+        the +1 for taking an enemy out of action
       amount: 1
     notes:
-    - >-
-      A warrior cursed by the Balewolf's lycanthropy may disappear from the
-      warband roster (roll 1 after the battle); exceptional progression rule
-      dependent on the Balewolf profile (TC28), not yet modelled.
+    - A warrior cursed by the Balewolf's lycanthropy may disappear from the warband roster (roll 1 after
+      the battle); exceptional progression rule dependent on the Balewolf profile (TC28), not yet modelled.
+  name_i18n:
+    en: The Thing In The Woods
+    es: La Cosa del bosque
 - id: scenario.gathering-of-the-horde
   name: Gathering of the Horde
   setting: Mordheim
-  source: Town Cryer #26
+  source: Town Cryer
   author: Nicodemus Kyme
   player_mode: multiplayer
-  summary: Massive multi-warband gang fight based upon the "Gangs Of New York"
-    film, complete with special rules for horde fighting.
-  tags: [brawl]
+  summary: Massive multi-warband gang fight based upon the "Gangs Of New York" film, complete with special
+    rules for horde fighting.
+  tags:
+  - brawl
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1921,23 +2276,29 @@ scenarios:
     url: https://mordheimer.net/docs/campaigns/scenarios/town-cryer/gathering-of-the-horde
   progression:
     experience:
-    - summary: A fighter who survives the battle earns +1 Experience; even fighters who are wounded and taken Out of Action receive Experience for taking part
+    - summary: A fighter who survives the battle earns +1 Experience; even fighters who are wounded and
+        taken Out of Action receive Experience for taking part
       amount: 1
     - summary: The leader of the winning side earns +2 Experience
       amount: 2
-    - summary: A fighter earns +1 Experience for each opposing fighter he takes down or Out of Action during the battle
+    - summary: A fighter earns +1 Experience for each opposing fighter he takes down or Out of Action
+        during the battle
       amount: 1
     - summary: Any Hero earns +2 Experience for putting the Horde Leader Out of Action
       amount: 2
+  name_i18n:
+    en: Gathering of the Horde
+    es: Reunión de la horda
 - id: scenario.the-watchers
   name: The Watchers
   setting: Mordheim
-  source: Town Cryer #26
+  source: Town Cryer
   author: Mark Havener, et al.
   player_mode: 1v1
-  summary: Warbands attempt to gather random treasures from the SE quarter of
-    Mordheim (right next to where the comet landed).
-  tags: [treasure]
+  summary: Warbands attempt to gather random treasures from the SE quarter of Mordheim (right next to
+    where the comet landed).
+  tags:
+  - treasure
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1951,35 +2312,53 @@ scenarios:
     - summary: A Hero or Henchman carrying a Swag counter at the end of the battle receives +1 Experience
       amount: 1
     loot:
-      summary: Players may roll once on the table for each Swag counter they still possess at the end of the game.
+      summary: Players may roll once on the table for each Swag counter they still possess at the end
+        of the game.
       contents:
-      - when: { min: 1, max: 1 }
+      - when:
+          min: 1
+          max: 1
         roll: D6
         reward: Lucky Charm
-      - when: { min: 2, max: 2 }
+      - when:
+          min: 2
+          max: 2
         roll: D6
         reward: Tears of Shallya
-      - when: { min: 3, max: 3 }
+      - when:
+          min: 3
+          max: 3
         roll: D6
         reward: Crimson Shade
-      - when: { min: 4, max: 4 }
+      - when:
+          min: 4
+          max: 4
         roll: D6
         reward: Dark Venom
-      - when: { min: 5, max: 5 }
+      - when:
+          min: 5
+          max: 5
         roll: D6
         reward: Cathayan Silks
-      - when: { min: 6, max: 6 }
+      - when:
+          min: 6
+          max: 6
         roll: D6
         reward: Tome of Magic
+  name_i18n:
+    en: The Watchers
+    es: Los Vigilantes
 - id: scenario.the-frenzied-mob
   name: The Frenzied Mob
   setting: The Empire
-  source: Town Cryer #27
+  source: Town Cryer
   author: Anonymous
   player_mode: 1v1
-  summary: An Empire In Flames scenario. Warbands attempt to loot a village
-    consisting of D3+1 buildings, each staunchly defended by D3+1 frenzied villagers.
-  tags: [objective-building, hostile-npc]
+  summary: An Empire In Flames scenario. Warbands attempt to loot a village consisting of D3+1 buildings,
+    each staunchly defended by D3+1 frenzied villagers.
+  tags:
+  - objective-building
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1992,15 +2371,20 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: If a Hero successfully loots a building he receives +1 Experience
       amount: 1
+  name_i18n:
+    en: The Frenzied Mob
+    es: La Chusma frenética
 - id: scenario.encampment-raid
   name: Encampment Raid
   setting: The Empire
-  source: Town Cryer #28
+  source: Town Cryer
   author: Anonymous
   player_mode: 1v1
-  summary: Attackers attempt to take the defenders' camp. Plays as Defend The
-    Find except the defenders have a number of advantages due to being on home turf.
-  tags: [attacker-defender, objective-building]
+  summary: Attackers attempt to take the defenders' camp. Plays as Defend The Find except the defenders
+    have a number of advantages due to being on home turf.
+  tags:
+  - attacker-defender
+  - objective-building
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2012,26 +2396,27 @@ scenarios:
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
     loot:
-      summary: >-
-        If the attacker succeeds in capturing the camp he may either destroy it
-        or occupy it, and claims the defender's stash for his own; the defender
-        must then roll for a new camp.
+      summary: If the attacker succeeds in capturing the camp he may either destroy it or occupy it, and
+        claims the defender's stash for his own; the defender must then roll for a new camp.
     notes:
-    - >-
-      The scenario is played as Defend the Find with exceptions, so its
-      experience section is not repeated on the page; the standard awards
-      equivalent to those of scenario.defend-the-find are assumed. The page
-      does not detail the contents of the captured stash.
+    - The scenario is played as Defend the Find with exceptions, so its experience section is not repeated
+      on the page; the standard awards equivalent to those of scenario.defend-the-find are assumed. The
+      page does not detail the contents of the captured stash.
+  name_i18n:
+    en: Encampment Raid
+    es: Asalto al campamento
 - id: scenario.the-rats-lair
   name: The Rat's Lair
   setting: Mordheim
-  source: Town Cryer #28
+  source: Town Cryer
   author: Aaron Ishmael
   player_mode: multiplayer
-  summary: Designed for several warbands to ally against a pack of Skaven run
-    by a moderator. The warbands descend into an ingenious multi-leveled
-    underground lair.
-  tags: [underground, hostile-npc, objective]
+  summary: Designed for several warbands to ally against a pack of Skaven run by a moderator. The warbands
+    descend into an ingenious multi-leveled underground lair.
+  tags:
+  - underground
+  - hostile-npc
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2043,15 +2428,18 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: Any Hero earns +2 Experience for putting the Skaven Breeder Queen Out of Action
       amount: 2
-    income: Each warband earns 5 gold crowns for each vermin it takes Out of Action (the head of each rat killed).
+    income: Each warband earns 5 gold crowns for each vermin it takes Out of Action (the head of each
+      rat killed).
+  name_i18n:
+    en: The Rat's Lair
+    es: La Guarida de la rata
 - id: scenario.upon-the-eerie-downs
   name: Upon the Eerie Downs
   setting: The Empire
-  source: Fanatic Magazine #1
+  source: Fanatic Magazine
   author: Nick Kyme
   player_mode: 1v1
-  summary: A sombre and mysterious place, the Eerie Downs holds a palpable
-    dread for the folk of the Mark.
+  summary: A sombre and mysterious place, the Eerie Downs holds a palpable dread for the folk of the Mark.
   tags: []
   source_refs:
   - manual: mordheimer.net
@@ -2066,19 +2454,21 @@ scenarios:
     - summary: Any Hero or Henchman group that escapes earns +1 Experience
       amount: 1
     notes:
-    - >-
-      A model that wanders off the table edge lost in the fog is removed from
-      the warband roster (never seen again); exceptional progression rule not
-      modelled.
+    - A model that wanders off the table edge lost in the fog is removed from the warband roster (never
+      seen again); exceptional progression rule not modelled.
+  name_i18n:
+    en: Upon the Eerie Downs
+    es: En las lomas siniestras
 - id: scenario.battle-for-the-farm
   name: Battle for the Farm
   setting: The Empire
-  source: Fanatic Magazine #1
+  source: Fanatic Magazine
   author: Nick Kyme
   player_mode: 1v1
-  summary: There are many farmsteads around Ostermark. Mercenaries and brigands
-    are drawn to them like moths to the flame.
-  tags: [objective-building]
+  summary: There are many farmsteads around Ostermark. Mercenaries and brigands are drawn to them like
+    moths to the flame.
+  tags:
+  - objective-building
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2093,27 +2483,38 @@ scenarios:
     - summary: Any Hero or Henchman group that starts a fire which destroys a building earns +1 Experience
       amount: 1
     loot:
-      summary: At the end of a turn, a model inside a farm building that has taken no other action may loot it once per building.
+      summary: At the end of a turn, a model inside a farm building that has taken no other action may
+        loot it once per building.
       contents:
-      - when: { min: 1, max: 1 }
+      - when:
+          min: 1
+          max: 1
         roll: D6
         reward: Nothing of value
-      - when: { min: 2, max: 5 }
+      - when:
+          min: 2
+          max: 5
         roll: D6
         reward: Valuables worth 2D6 gold crowns
-      - when: { min: 6, max: 6 }
+      - when:
+          min: 6
+          max: 6
         roll: D6
         reward: A single shard of wyrdstone
+  name_i18n:
+    en: Battle for the Farm
+    es: Batalla por la granja
 - id: scenario.blood-on-the-pasturelands
   name: Blood on the Pasturelands
   setting: The Empire
-  source: Fanatic Magazine #3
+  source: Fanatic Magazine
   author: Nick Kyme
   player_mode: 1v1
-  summary: Rival warbands attempt to rustle some horses from a pasture. The
-    frightened horses run randomly and need taming once caught; they are
-    defended by six Outriders.
-  tags: [objective, hostile-npc]
+  summary: Rival warbands attempt to rustle some horses from a pasture. The frightened horses run randomly
+    and need taming once caught; they are defended by six Outriders.
+  tags:
+  - objective
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2128,19 +2529,20 @@ scenarios:
     - summary: Any Hero or Henchman group that manages to steal a horse earns +1 Experience
       amount: 1
     notes:
-    - >-
-      Successfully stolen horses are added to the warband roster; if a warband
-      fails its fleeing test it loses D3-1 of its stolen horses in the
-      confusion.
+    - Successfully stolen horses are added to the warband roster; if a warband fails its fleeing test
+      it loses D3-1 of its stolen horses in the confusion.
+  name_i18n:
+    en: Blood on the Pasturelands
+    es: Sangre en los pastizales
 - id: scenario.through-black-fire-pass
   name: Through Black Fire Pass
   setting: The Empire
-  source: Fanatic Magazine #3
+  source: Fanatic Magazine
   author: Nick Kyme
   player_mode: 1v1
-  summary: One warband ambushes another as they make their way along the
-    treacherous trade route.
-  tags: [attacker-defender]
+  summary: One warband ambushes another as they make their way along the treacherous trade route.
+  tags:
+  - attacker-defender
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2154,19 +2556,20 @@ scenarios:
     - summary: Any Hero or Henchman group that manages to escape earns +1 Experience
       amount: 1
     notes:
-    - >-
-      Because of how hard his task is, the Defender gains double Experience for
-      surviving or for being the winning leader; the page shows the +1 awards
-      with the double applied to the Defender.
+    - Because of how hard his task is, the Defender gains double Experience for surviving or for being
+      the winning leader; the page shows the +1 awards with the double applied to the Defender.
+  name_i18n:
+    en: Through Black Fire Pass
+    es: A través del Paso del Fuego Negro
 - id: scenario.brigands-in-the-pasturelands
   name: Brigands in the Pasturelands
   setting: The Empire
-  source: Fanatic Magazine #4
+  source: Fanatic Magazine
   author: Nick Kyme
   player_mode: 1v1
-  summary: One warband attempts to hunt down the other, a lawless band of
-    brigands hiding out in the forest.
-  tags: [attacker-defender]
+  summary: One warband attempts to hunt down the other, a lawless band of brigands hiding out in the forest.
+  tags:
+  - attacker-defender
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2174,28 +2577,31 @@ scenarios:
     url: https://mordheimer.net/docs/campaigns/scenarios/fanatic-magazine/brigands-in-the-pasturelands
   progression:
     experience:
-    - summary: Surviving Heroes or Henchman groups gain +1 Experience among the attackers and +2 Experience among the defenders
-    - summary: The leader of the winning warband gains +1 Experience if he was an attacker and +2 Experience if he was a defender
+    - summary: Surviving Heroes or Henchman groups gain +1 Experience among the attackers and +2 Experience
+        among the defenders
+    - summary: The leader of the winning warband gains +1 Experience if he was an attacker and +2 Experience
+        if he was a defender
     - ref: campaign.experience.award.per-enemy-out-of-action
-    income: >-
-      If the attackers win they gain D6 gold crowns for each Henchman they put
-      out of action and D6 x 5 gold crowns for each Hero put out of action; in
-      a campaign, if a Hero rolls a Captured result on the Serious Injuries
-      chart the Baron pays an additional D6 x 10 gold crowns for that Hero.
+    income: If the attackers win they gain D6 gold crowns for each Henchman they put out of action and
+      D6 x 5 gold crowns for each Hero put out of action; in a campaign, if a Hero rolls a Captured result
+      on the Serious Injuries chart the Baron pays an additional D6 x 10 gold crowns for that Hero.
     notes:
-    - >-
-      If the defenders win, one of the hired mercenaries still standing joins
-      the warband for free (even if he is a hired sword normally not allowed);
-      his subsequent upkeep is normal.
+    - If the defenders win, one of the hired mercenaries still standing joins the warband for free (even
+      if he is a hired sword normally not allowed); his subsequent upkeep is normal.
+  name_i18n:
+    en: Brigands in the Pasturelands
+    es: Bandidos en los pastizales
 - id: scenario.the-watchtower
   name: The Watchtower
   setting: The Empire
-  source: Fanatic Magazine #4
+  source: Fanatic Magazine
   author: Nick Kyme
   player_mode: 1v1
-  summary: Half of the defending warband starts on or near a well-defended
-    central tower (with special rules to reflect this).
-  tags: [attacker-defender, objective-building]
+  summary: Half of the defending warband starts on or near a well-defended central tower (with special
+    rules to reflect this).
+  tags:
+  - attacker-defender
+  - objective-building
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2208,14 +2614,19 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: Any Hero who successfully lights the beacon gains +1 Experience
       amount: 1
+  name_i18n:
+    en: The Watchtower
+    es: La Atalaya
 - id: scenario.wolf-hunt
   name: Wolf Hunt!
   setting: The Empire
-  source: Fanatic Magazine #6
+  source: Fanatic Magazine
   author: Nick Kyme
   player_mode: 1v1
   summary: Both warbands have been offered a reward to kill a pack of troublesome wolves.
-  tags: [hostile-npc, objective]
+  tags:
+  - hostile-npc
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2228,16 +2639,22 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: Any Hero earns +1 Experience for each bear he puts out of action
       amount: 1
-    income: The baron rewards any warband a bounty of 10 gold crowns for each slain wolf (there is no reward for slaying a bear).
+    income: The baron rewards any warband a bounty of 10 gold crowns for each slain wolf (there is no
+      reward for slaying a bear).
+  name_i18n:
+    en: Wolf Hunt!
+    es: ¡Caza del lobo!
 - id: scenario.protect-hornsbys-ferry
   name: Protect Hornsby's Ferry!
   setting: The Empire
-  source: Fanatic Magazine #7
+  source: Fanatic Magazine
   author: Mark Havener
   player_mode: 1v1
-  summary: Defenders must protect a boat and pull-rope style river ferry
-    crossing from sabotage; attackers must sabotage it.
-  tags: [attacker-defender, objective]
+  summary: Defenders must protect a boat and pull-rope style river ferry crossing from sabotage; attackers
+    must sabotage it.
+  tags:
+  - attacker-defender
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2248,27 +2665,30 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: The leader of an attacking warband gains +1 Experience if members
-        of that warband rough up the Hornsbys
+    - summary: The leader of an attacking warband gains +1 Experience if members of that warband rough
+        up the Hornsbys
       amount: 1
-    - summary: The leader of the defending warband gains an additional +1 Experience
-        if his warband wins the scenario without letting the Hornsbys get roughed up
+    - summary: The leader of the defending warband gains an additional +1 Experience if his warband wins
+        the scenario without letting the Hornsbys get roughed up
       amount: 1
-    income: In addition to normal exploration money, if the attackers win the
-      scenario they receive 3D6 gc each (rolled separately per warband). Any
-      attacking warband that has a warrior taking part in roughing up the Hornsbys
-      receives 2D6 gc whether they win or not. If the defenders win and the Hornsbys
-      have NOT been roughed up, the defenders receive 5D6 gc from the Hornsbys
-      (subtract 2D6 gc if the win came from the turn limit, representing the patrol's
-      fees). If the defenders win but the Hornsbys were roughed up they receive no pay.
+    income: In addition to normal exploration money, if the attackers win the scenario they receive 3D6
+      gc each (rolled separately per warband). Any attacking warband that has a warrior taking part in
+      roughing up the Hornsbys receives 2D6 gc whether they win or not. If the defenders win and the Hornsbys
+      have NOT been roughed up, the defenders receive 5D6 gc from the Hornsbys (subtract 2D6 gc if the
+      win came from the turn limit, representing the patrol's fees). If the defenders win but the Hornsbys
+      were roughed up they receive no pay.
+  name_i18n:
+    en: Protect Hornsby's Ferry!
+    es: ¡Proteger el transbordador de Hornsby!
 - id: scenario.stop-thief
   name: Stop Thief!
   setting: The Empire
-  source: Fanatic Magazine #7
+  source: Fanatic Magazine
   author: Mark Havener
   player_mode: 1v1
   summary: Defenders must protect the Halfling Thief hired sword from the attacking warband.
-  tags: [escort-npc]
+  tags:
+  - escort-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2279,22 +2699,26 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: The leader of an attacking warband that retrieves its stolen item
-        gains an additional +1 Experience
+    - summary: The leader of an attacking warband that retrieves its stolen item gains an additional +1
+        Experience
       amount: 1
-    income: If the defending warband wins, the Thief hocks the stolen items (half
-      value, as usual for selling equipment) and gives the proceeds to his warband.
-      If the attackers win they get all their items back and additionally find 2D6
-      gc worth of valuables the Thief stole from other victims.
+    income: If the defending warband wins, the Thief hocks the stolen items (half value, as usual for
+      selling equipment) and gives the proceeds to his warband. If the attackers win they get all their
+      items back and additionally find 2D6 gc worth of valuables the Thief stole from other victims.
+  name_i18n:
+    en: Stop Thief!
+    es: ¡Al ladrón!
 - id: scenario.hunt-the-heretic
   name: Hunt the Heretic
   setting: The Empire
-  source: Fanatic Magazine #9
+  source: Fanatic Magazine
   author: Nick Kyme
   player_mode: 1v1
-  summary: Four members of the defenders' warband attempt to protect a tooled-up
-    Warlock hired sword from the attackers plus an accompanying Witch Hunter Captain.
-  tags: [escort-npc, attacker-defender]
+  summary: Four members of the defenders' warband attempt to protect a tooled-up Warlock hired sword from
+    the attackers plus an accompanying Witch Hunter Captain.
+  tags:
+  - escort-npc
+  - attacker-defender
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2305,18 +2729,23 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    income: If the Witch Hunter's warband wins they gain D6 x 15 gold crowns as
-      payment and D3 vials of Blessed Water. If the Warlock's warband wins he
-      concocts D3 doses of any poison or drug of their choice.
+    income: If the Witch Hunter's warband wins they gain D6 x 15 gold crowns as payment and D3 vials of
+      Blessed Water. If the Warlock's warband wins he concocts D3 doses of any poison or drug of their
+      choice.
+  name_i18n:
+    en: Hunt the Heretic
+    es: Cazar al hereje
 - id: scenario.river-watch
   name: River Watch
   setting: The Empire
-  source: Fanatic Magazine #9
+  source: Fanatic Magazine
   author: Nick Kyme
   player_mode: 1v1
-  summary: Attackers at the south side must smuggle some loot across an
-    east-west flowing river at night and get 25% of their band off the north edge.
-  tags: [attacker-defender, traverse-the-board]
+  summary: Attackers at the south side must smuggle some loot across an east-west flowing river at night
+    and get 25% of their band off the north edge.
+  tags:
+  - attacker-defender
+  - traverse-the-board
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2327,20 +2756,25 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: Each Hero or Henchman group that manages to escape off the north
-        board edge in the attacking warband gains +1 Experience
+    - summary: Each Hero or Henchman group that manages to escape off the north board edge in the attacking
+        warband gains +1 Experience
       amount: 1
-    income: If the defender wins they are paid D6 x 20 gold crowns plus 5 gold
-      crowns extra for each enemy they take out of action.
+    income: If the defender wins they are paid D6 x 20 gold crowns plus 5 gold crowns extra for each enemy
+      they take out of action.
+  name_i18n:
+    en: River Watch
+    es: Vigilancia del río
 - id: scenario.night-of-the-dead
   name: Night Of The Dead
   setting: Mordheim
   source: Fanatic Online
   author: Andy Tabor
   player_mode: 1v1
-  summary: Warband members must venture to the centre of the board, grab a
-    wyrdstone shard and escape from the table.
-  tags: [wyrdstone-tokens, traverse-the-board]
+  summary: Warband members must venture to the centre of the board, grab a wyrdstone shard and escape
+    from the table.
+  tags:
+  - wyrdstone-tokens
+  - traverse-the-board
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2351,23 +2785,32 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: Any Hero or Henchman group earns +1 Experience for each piece of wyrdstone they get to carry off the board
+    - summary: Any Hero or Henchman group earns +1 Experience for each piece of wyrdstone they get to
+        carry off the board
     - summary: Any Hero earns +1 Experience for each Zombie he puts Out of Action
-    wyrdstone: A pile of wyrdstone sits in an 8" circle in the centre of the board; the pile is brought to safety as D6+2 wyrdstone. Each time a model takes wyrdstone from the pile, D3+1 Zombies per warband
+    wyrdstone: A pile of wyrdstone sits in an 8" circle in the centre of the board; the pile is brought
+      to safety as D6+2 wyrdstone. Each time a model takes wyrdstone from the pile, D3+1 Zombies per warband
       are generated 8" away around the pile.
     notes:
-    - Multiplayer (one or several players; adapted from Troll 23). Only one Hero and one group of henchmen chosen at random are on the table at a time; upon returning to the deployment zone with wyrdstone, another of the
-      same type may come out. The fog limits visibility to 4" with its own 2D6 table. Victory is decided by the agreed option (most wyrdstone recovered, last one standing, etc.).
+    - Multiplayer (one or several players; adapted from Troll 23). Only one Hero and one group of henchmen
+      chosen at random are on the table at a time; upon returning to the deployment zone with wyrdstone,
+      another of the same type may come out. The fog limits visibility to 4" with its own 2D6 table. Victory
+      is decided by the agreed option (most wyrdstone recovered, last one standing, etc.).
+  name_i18n:
+    en: Night Of The Dead
+    es: Noche de los muertos
 - id: scenario.happy-harpy-hunting-grounds
   name: Happy Harpy Hunting Grounds
   setting: Mordheim
   source: Fanatic Online
   author: Chris Van Tigem
   player_mode: 1v1
-  summary: A group of 3 Harpies have nested in one of the tall buildings and
-    their scavenging and attacks on unfortunate warbands has ensured a sizable
-    stash of valuables.
-  tags: [treasure, hostile-npc, objective-building]
+  summary: A group of 3 Harpies have nested in one of the tall buildings and their scavenging and attacks
+    on unfortunate warbands has ensured a sizable stash of valuables.
+  tags:
+  - treasure
+  - hostile-npc
+  - objective-building
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2380,10 +2823,12 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: A Hero earns +1 Experience for each enemy he puts out of action, including Harpies
       amount: 1
-    wyrdstone: 'The nest contains a number of wyrdstone shards: roll D3 at set-up to determine how many are included.'
+    wyrdstone: 'The nest contains a number of wyrdstone shards: roll D3 at set-up to determine how many
+      are included.'
     loot:
-      summary: The warband that does not rout is the winner and may roll on the nest contents chart if all three Harpies were taken out of action first; otherwise no one receives the rewards. Each item is
-        rolled for separately.
+      summary: The warband that does not rout is the winner and may roll on the nest contents chart if
+        all three Harpies were taken out of action first; otherwise no one receives the rewards. Each
+        item is rolled for separately.
       contents:
       - roll: 5+
         reward: 2D6 gc.
@@ -2400,7 +2845,8 @@ scenarios:
         reward: Wolfcloak.
         item_id: wolfcloak
       - roll: 5+
-        reward: 'Straggler: an unfortunate captive who may aid the warband in its exploration phase either this game or next.'
+        reward: 'Straggler: an unfortunate captive who may aid the warband in its exploration phase either
+          this game or next.'
       - roll: 3+
         reward: Lucky Charm.
         item_id: lucky_charm
@@ -2414,17 +2860,22 @@ scenarios:
         reward: D3 Swords.
         item_id: sword
     notes:
-    - 'Multiplayer scenario for three players: one controls a warband of three Harpies (own profile, never flee) and the other two try to kill them to get the treasure.'
+    - 'Multiplayer scenario for three players: one controls a warband of three Harpies (own profile, never
+      flee) and the other two try to kill them to get the treasure.'
+  name_i18n:
+    en: Happy Harpy Hunting Grounds
+    es: Felices cotos de caza de arpías
 - id: scenario.round-up-at-the-mordheim-corral
   name: Round-up at the Mordheim Corral
   setting: Mordheim
   source: Fanatic Online
   author: Andy Tabor
   player_mode: 1v1
-  summary: Two to four wild boars have eaten a merchant's wyrdstone. Warbands
-    must kill randomly moving and aggressive boars to recover it. Optional
-    suggestion of using mutations.
-  tags: [wyrdstone-tokens, hostile-npc]
+  summary: Two to four wild boars have eaten a merchant's wyrdstone. Warbands must kill randomly moving
+    and aggressive boars to recover it. Optional suggestion of using mutations.
+  tags:
+  - wyrdstone-tokens
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2435,21 +2886,29 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: Any Hero or Henchman group carrying a wyrdstone counter at the end of the battle gains +1 Experience
+    - summary: Any Hero or Henchman group carrying a wyrdstone counter at the end of the battle gains
+        +1 Experience
       amount: 1
-    wyrdstone: 'The boars have swallowed the wyrdstone. Each boar must be killed before it can be searched: roll D6, on 1-3 the warrior cannot locate the stomach and may try again next turn, on 4-6 he rolls
-      D3 to determine how many shards are found. A warrior carrying wyrdstone who is killed, stunned or knocked down drops counters where he fell.'
+    wyrdstone: 'The boars have swallowed the wyrdstone. Each boar must be killed before it can be searched:
+      roll D6, on 1-3 the warrior cannot locate the stomach and may try again next turn, on 4-6 he rolls
+      D3 to determine how many shards are found. A warrior carrying wyrdstone who is killed, stunned or
+      knocked down drops counters where he fell.'
     notes:
-    - Multiplayer; the boars (own profile, D3+1 per warband, do not flee) move first. Optional mutation rules (5+ per boar from its second turn) and domestication by Orc Heroes.
+    - Multiplayer; the boars (own profile, D3+1 per warband, do not flee) move first. Optional mutation
+      rules (5+ per boar from its second turn) and domestication by Orc Heroes.
+  name_i18n:
+    en: Round-up at the Mordheim Corral
+    es: Redada en el corral de Mordheim
 - id: scenario.the-recipe
   name: The Recipe
   setting: Mordheim
   source: Fanatic Online
   author: Mark Havener
   player_mode: 1v1
-  summary: Warbands must attempt to abduct an esteemed pie-maker who is being
-    stoutly defended by his ballistically adept bodyguard.
-  tags: [escort-npc]
+  summary: Warbands must attempt to abduct an esteemed pie-maker who is being stoutly defended by his
+    ballistically adept bodyguard.
+  tags:
+  - escort-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2462,22 +2921,28 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: Any Hero who turns in one or more pies gains +1 Experience
       amount: 1
-    income: 'The winning warband is considered to have captured Geefer: turning him in is worth 5D6 gc (if two or more warbands share the win they must decide which one turns him in). Pies that have not been
-      ruined may also be turned in: worth 1 gc each for a non-winning warband, or half that amount rounded up for the winning warband. A winning warband also gets any pies held by its warriors or still in
-      the cart at the end of the game.'
+    income: 'The winning warband is considered to have captured Geefer: turning him in is worth 5D6 gc
+      (if two or more warbands share the win they must decide which one turns him in). Pies that have
+      not been ruined may also be turned in: worth 1 gc each for a non-winning warband, or half that amount
+      rounded up for the winning warband. A winning warband also gets any pies held by its warriors or
+      still in the cart at the end of the game.'
     notes:
-    - Multiplayer (two or more). Geefer Lugbottom (own profile, ignores psychology) and his six halfling guards (bows) defend the pie cart (3D6+6 pies). If all warbands flee leaving Geefer
-      or his guards in play, all lose.
+    - Multiplayer (two or more). Geefer Lugbottom (own profile, ignores psychology) and his six halfling
+      guards (bows) defend the pie cart (3D6+6 pies). If all warbands flee leaving Geefer or his guards
+      in play, all lose.
+  name_i18n:
+    en: The Recipe
+    es: La Receta
 - id: scenario.ambush-archive-pestilens
   name: Ambush
   setting: Mordheim
   source: Archive Pestilen
   author: Andrew "Boss Orc"
   player_mode: 1v1
-  summary: Some more devious gangs use the element of surprise as a safer
-    alternative to a drawn out battle of attrition. These gangs are often
-    smaller than their rivals and use the surprise to their advantage.
-  tags: [attacker-defender]
+  summary: Some more devious gangs use the element of surprise as a safer alternative to a drawn out battle
+    of attrition. These gangs are often smaller than their rivals and use the surprise to their advantage.
+  tags:
+  - attacker-defender
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2488,15 +2953,20 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
+  name_i18n:
+    en: Ambush
+    es: Emboscada
 - id: scenario.ambush-surrounded
   name: Ambush
   setting: Mordheim
   source: Archive Pestilen
   author: Michael Reuvers
   player_mode: 1v1
-  summary: One warband is on the way back to their encampment with the wyrdstone
-    they found in the ruins when suddenly they are surrounded.
-  tags: [attacker-defender, wyrdstone-tokens]
+  summary: One warband is on the way back to their encampment with the wyrdstone they found in the ruins
+    when suddenly they are surrounded.
+  tags:
+  - attacker-defender
+  - wyrdstone-tokens
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2509,9 +2979,14 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: Any Hero or Henchman group earns +1 Experience for breaking through enemy lines
       amount: 1
-    wyrdstone: The defender starts the battle carrying D6 pieces of wyrdstone, but never more than the number of Heroes in the warband. The defending warband gains all the wyrdstone it was carrying at the
-      beginning, minus the number of its own Heroes taken Out of Action during the game, down to a minimum of zero. The attacking warband gains one shard for each enemy Hero it takes Out of Action, up to
-      the number of shards the opposing warband was carrying at the start.
+    wyrdstone: The defender starts the battle carrying D6 pieces of wyrdstone, but never more than the
+      number of Heroes in the warband. The defending warband gains all the wyrdstone it was carrying at
+      the beginning, minus the number of its own Heroes taken Out of Action during the game, down to a
+      minimum of zero. The attacking warband gains one shard for each enemy Hero it takes Out of Action,
+      up to the number of shards the opposing warband was carrying at the start.
+  name_i18n:
+    en: Ambush
+    es: Emboscada
 - id: scenario.breakthrough-archive-pestilens
   name: Breakthrough
   setting: Mordheim
@@ -2519,7 +2994,8 @@ scenarios:
   author: Andrew "Boss Orc"
   player_mode: 1v1
   summary: Warbands must get half their models off the opposite edge.
-  tags: [traverse-the-board]
+  tags:
+  - traverse-the-board
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2530,6 +3006,9 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
+  name_i18n:
+    en: Breakthrough
+    es: Irrupción
 - id: scenario.defend-the-village
   name: Defend the Village!
   setting: The Empire
@@ -2537,7 +3016,9 @@ scenarios:
   author: Mark "Rinku" Dewis
   player_mode: 1v1
   summary: The Magnificent Seven without the cowboy hats.
-  tags: [attacker-defender, objective-building]
+  tags:
+  - attacker-defender
+  - objective-building
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2548,16 +3029,19 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: If less than 25% of the villagers are put out of action and the defender wins, each surviving member of the winning warband gets a bonus +1 Experience for saving the village
+    - summary: If less than 25% of the villagers are put out of action and the defender wins, each surviving
+        member of the winning warband gets a bonus +1 Experience for saving the village
       amount: 1
     loot:
-      summary: The winning player rolls D6 to see what reward the villagers provide (defender) or what loot is squeezed from them (attacker). If the attacker won he adds +1 to the roll.
+      summary: The winning player rolls D6 to see what reward the villagers provide (defender) or what
+        loot is squeezed from them (attacker). If the attacker won he adds +1 to the roll.
       contents:
       - when:
           min: 1
           max: 2
         roll: D6
-        reward: Nothing. The villagers were on their last legs and tricked the defenders about the hire fee.
+        reward: Nothing. The villagers were on their last legs and tricked the defenders about the hire
+          fee.
       - when:
           min: 3
           max: 4
@@ -2569,7 +3053,11 @@ scenarios:
         roll: D6
         reward: 1D3 Wyrdstone shards.
     notes:
-    - The original reward table lists the 5-7 range with a D6; the attacker's +1 explains the 7 (when the attacker wins, the effective range becomes 2-3 / 4-5 / 6-8).
+    - The original reward table lists the 5-7 range with a D6; the attacker's +1 explains the 7 (when
+      the attacker wins, the effective range becomes 2-3 / 4-5 / 6-8).
+  name_i18n:
+    en: Defend the Village!
+    es: ¡Defender la aldea!
 - id: scenario.dont-wake-the-giant
   name: Don't Wake the Giant
   setting: Mordheim
@@ -2577,7 +3065,9 @@ scenarios:
   author: David Gitchel
   player_mode: 1v1
   summary: Two warbands fight for the giant's goodies while trying not to wake him.
-  tags: [treasure, hostile-npc]
+  tags:
+  - treasure
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2587,7 +3077,8 @@ scenarios:
     experience:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: The leader of a warband that gets any treasure off the board gains +1 Experience (only once, even if multiple treasures are taken)
+    - summary: The leader of a warband that gets any treasure off the board gains +1 Experience (only
+        once, even if multiple treasures are taken)
       amount: 1
     - summary: Any Hero or Henchman group that successfully gets a treasure chest to safety gains +1 Experience
       amount: 1
@@ -2596,8 +3087,9 @@ scenarios:
     - summary: Any Hero or Henchman group that successfully gets the bag of gold to safety gains +2 Experience
       amount: 2
     loot:
-      summary: The giant holds two treasure chests and a bag of gold. A model reaching a chest must pass an Initiative test to steal it; taking the bag requires a -1 Initiative test. Carrying the chest follows
-        the Hidden Treasure scenario rules. Each treasure is rolled on its own table.
+      summary: The giant holds two treasure chests and a bag of gold. A model reaching a chest must pass
+        an Initiative test to steal it; taking the bag requires a -1 Initiative test. Carrying the chest
+        follows the Hidden Treasure scenario rules. Each treasure is rolled on its own table.
       contents:
       - roll: automatic
         reward: 'Chest: 3D6 gold crowns.'
@@ -2618,15 +3110,19 @@ scenarios:
         reward: 'Bag of gold: D6 x 10 gold crowns.'
       - roll: 5+
         reward: 'Bag of gold: D3 gems worth 10 gc each.'
+  name_i18n:
+    en: Don't Wake the Giant
+    es: No despertar al gigante
 - id: scenario.grudge-match
   name: Grudge Match
   setting: Mordheim
   source: Archive Pestilen
   author: Mark "Rinku" Dewis
   player_mode: 1v1
-  summary: Honorable duel between two rival heroes, watched by their warbands
-    and with a serious chance of crowd trouble breaking out.
-  tags: [objective]
+  summary: Honorable duel between two rival heroes, watched by their warbands and with a serious chance
+    of crowd trouble breaking out.
+  tags:
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2637,19 +3133,24 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: A Champion who puts the opposing Champion out of action while the Single Combat rules are in force gains +2 Experience, in addition to the +1 for putting an enemy out of action (a Henchman
+    - summary: A Champion who puts the opposing Champion out of action while the Single Combat rules are
+        in force gains +2 Experience, in addition to the +1 for putting an enemy out of action (a Henchman
         Champion adds the +2 to his group total)
       amount: 2
+  name_i18n:
+    en: Grudge Match
+    es: Combate de rencor
 - id: scenario.haunted-treasure-archive-pestilens
   name: Haunted Treasure
   setting: Mordheim
   source: Archive Pestilen
   author: Michael Reuvers
   player_mode: 1v1
-  summary: There is a rumor that a treasure of unimaginable wealth lies in the
-    ruins of an old house, guarded by an evil spirit whose howl is so terrible
-    it will make you go mad.
-  tags: [treasure, hostile-npc]
+  summary: There is a rumor that a treasure of unimaginable wealth lies in the ruins of an old house,
+    guarded by an evil spirit whose howl is so terrible it will make you go mad.
+  tags:
+  - treasure
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2660,12 +3161,15 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
-    - summary: Any warrior earns +2 Experience for retrieving the chest to safety (+1 each if several warriors carry it; a Henchman group gains the bonus once)
+    - summary: Any warrior earns +2 Experience for retrieving the chest to safety (+1 each if several
+        warriors carry it; a Henchman group gains the bonus once)
       amount: 2
-    - summary: Any warrior earns +3 Experience for vanquishing the Banshee, either by killing it or driving it off the table
+    - summary: Any warrior earns +3 Experience for vanquishing the Banshee, either by killing it or driving
+        it off the table
       amount: 3
     loot:
-      summary: Whoever recovers the chest rolls on the contents chart after the game; each item is rolled for separately, apart from the gold crowns which are always found.
+      summary: Whoever recovers the chest rolls on the contents chart after the game; each item is rolled
+        for separately, apart from the gold crowns which are always found.
       contents:
       - roll: 4+
         reward: D3 pieces of wyrdstone.
@@ -2687,15 +3191,20 @@ scenarios:
         item_id: holy_tome
       - roll: 5+
         reward: A magical artefact.
+  name_i18n:
+    en: Haunted Treasure
+    es: Tesoro embrujado
 - id: scenario.its-all-mine
   name: It's all MINE!!
   setting: Mordheim
   source: Archive Pestilen
   author: Paul Smith
   player_mode: 1v1
-  summary: Attackers blow up a mine using gunpowder rules from Archive
-    Pestilens amid some random zombie shenanigans.
-  tags: [attacker-defender, hostile-npc]
+  summary: Attackers blow up a mine using gunpowder rules from Archive Pestilens amid some random zombie
+    shenanigans.
+  tags:
+  - attacker-defender
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2707,12 +3216,17 @@ scenarios:
     - summary: 'Attackers: any warrior gains +1 Experience for surviving the battle.'
     - summary: 'Attackers: any warrior gains +1 Experience for stopping the zombies.'
     - summary: 'Attackers: any warrior gains +1 Experience for each wounding hit caused.'
-    - summary: 'Defenders: any warrior gains +1 Experience for preventing the capture/destruction of the mine.'
+    - summary: 'Defenders: any warrior gains +1 Experience for preventing the capture/destruction of the
+        mine.'
     - summary: 'Defenders: any warrior gains +1 Experience for stopping the zombies.'
     - summary: 'Defenders: any warrior gains +1 Experience for each wounding hit caused.'
     - summary: 'Defenders: any warrior gains +1 Experience for surviving the battle.'
     notes:
-    - 'The page does not detail rewards in gc or wyrdstone: only Experience per side. The Attackers receive two barrels of gunpowder (gunpowder rules, not described in the article itself).'
+    - 'The page does not detail rewards in gc or wyrdstone: only Experience per side. The Attackers receive
+      two barrels of gunpowder (gunpowder rules, not described in the article itself).'
+  name_i18n:
+    en: It's all MINE!!
+    es: ¡¡Es todo MÍO!!
 - id: scenario.raid
   name: Raid
   setting: Mordheim
@@ -2720,7 +3234,8 @@ scenarios:
   author: Andrew "Boss Orc"
   player_mode: 1v1
   summary: Attack on a warband's camp. Defender in centre, attacker on edges.
-  tags: [attacker-defender]
+  tags:
+  - attacker-defender
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2731,6 +3246,9 @@ scenarios:
     - ref: campaign.experience.award.survives
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
+  name_i18n:
+    en: Raid
+    es: Incursión
 - id: scenario.raids
   name: Raids
   setting: The Empire
@@ -2738,7 +3256,9 @@ scenarios:
   author: Christian Ellegaard
   player_mode: 1v1
   summary: Bad warband vs townsfolk; raid a village for loot and slaves.
-  tags: [attacker-defender, treasure]
+  tags:
+  - attacker-defender
+  - treasure
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2746,8 +3266,9 @@ scenarios:
     url: https://mordheimer.net/docs/campaigns/scenarios/archive-pestilen/raids
   progression:
     loot:
-      summary: The raiders search the settlement buildings (one Hero or two Henchmen must enter and spend the next turn searching an empty building). Roll on the Search table, applying the modifier from the
-        Townsfolk table; a roll of 1 always fails. Jewelleries are later sold at 5 gc each.
+      summary: The raiders search the settlement buildings (one Hero or two Henchmen must enter and spend
+        the next turn searching an empty building). Roll on the Search table, applying the modifier from
+        the Townsfolk table; a roll of 1 always fails. Jewelleries are later sold at 5 gc each.
       contents:
       - when:
           min: 1
@@ -2774,20 +3295,29 @@ scenarios:
           max: 6
         roll: D6
         reward: A treasure chest under a trapdoor; add 2D6 Jewelleries.
-    income: 'After the raid the Jewelleries are sold: multiply the total number of Jewelleries by five to get the gold crowns paid. Warriors may also capture slaves: three Inhabitants or one Townsman put
-      out of action count as one Slave, recorded on the roster and usable in a later post-battle phase to add one die to the warband dice pool (then crossed off). After the raid roll D6 minus 1 per Slave
-      captured plus 1 per building set on fire; on 1 or less the warband was traced and ambushed: randomly roll D6 Henchmen and roll on the Injury table for each.'
+    income: 'After the raid the Jewelleries are sold: multiply the total number of Jewelleries by five
+      to get the gold crowns paid. Warriors may also capture slaves: three Inhabitants or one Townsman
+      put out of action count as one Slave, recorded on the roster and usable in a later post-battle phase
+      to add one die to the warband dice pool (then crossed off). After the raid roll D6 minus 1 per Slave
+      captured plus 1 per building set on fire; on 1 or less the warband was traced and ambushed: randomly
+      roll D6 Henchmen and roll on the Injury table for each.'
     notes:
-    - 'The page has no Experience section nor winning-leader awards: it is a campaign event with its own rewards (building searches, slaves and burning).'
+    - 'The page has no Experience section nor winning-leader awards: it is a campaign event with its own
+      rewards (building searches, slaves and burning).'
+  name_i18n:
+    en: Raids
+    es: Incursiones
 - id: scenario.rawhide
   name: Rawhide
   setting: The Empire
   source: Archive Pestilen
   author: Paul Smith
   player_mode: 1v1
-  summary: Get a wagon train across the board using wagon rules from Wyrdstone
-    Archive while your opponent tries to stop you.
-  tags: [escort-npc, traverse-the-board]
+  summary: Get a wagon train across the board using wagon rules from Wyrdstone Archive while your opponent
+    tries to stop you.
+  tags:
+  - escort-npc
+  - traverse-the-board
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2800,18 +3330,25 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: The Marienburger leader gains +1 Experience if he escapes off the board with the wyrdstone
       amount: 1
-    - summary: The leader of the ambushing party gains +1 Experience if they stop the wyrdstone from leaving the board
+    - summary: The leader of the ambushing party gains +1 Experience if they stop the wyrdstone from leaving
+        the board
       amount: 1
     - summary: Each driver that gets off the board with his wagon gains +1 Experience
       amount: 1
     - summary: Each warrior that stops a wagon gains +1 Experience
       amount: 1
-    income: Before the game the Marienburger player chooses one wagon to carry his wyrdstone and remaining gold (gaining vast profits if it gets through, losing it all if it does not), or leaves all wagons
-      empty for no bonus. If the ambushers stop the wyrdstone from leaving the table they gain whatever amount was placed in the wagon. If the Marienburgers get the wyrdstone off the table they gain 30% of
-      the amount placed in the wagon (e.g. 100 gc of wyrdstone becomes 130 gc).
+    income: Before the game the Marienburger player chooses one wagon to carry his wyrdstone and remaining
+      gold (gaining vast profits if it gets through, losing it all if it does not), or leaves all wagons
+      empty for no bonus. If the ambushers stop the wyrdstone from leaving the table they gain whatever
+      amount was placed in the wagon. If the Marienburgers get the wyrdstone off the table they gain 30%
+      of the amount placed in the wagon (e.g. 100 gc of wyrdstone becomes 130 gc).
     notes:
-    - The page adapts the original print awards (which used +20 xp to the leader, +5 xp per driver, D6 xp per survivor, +5 xp per wound and for stopping a wagon) to the site standard +1 system;
-      the originals are listed on the page itself under Original Experience.
+    - The page adapts the original print awards (which used +20 xp to the leader, +5 xp per driver, D6
+      xp per survivor, +5 xp per wound and for stopping a wagon) to the site standard +1 system; the originals
+      are listed on the page itself under Original Experience.
+  name_i18n:
+    en: Rawhide
+    es: Cuero crudo
 - id: scenario.rescue
   name: Rescue
   setting: Mordheim
@@ -2819,7 +3356,9 @@ scenarios:
   author: Andrew "Boss Orc"
   player_mode: 1v1
   summary: Rescue a captive warrior. Defender in centre, attacker on edges.
-  tags: [attacker-defender, escort-npc]
+  tags:
+  - attacker-defender
+  - escort-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2831,7 +3370,11 @@ scenarios:
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
     notes:
-    - The page wrongly copies the Grudge Match Single Combat sentence into the +1 Per Enemy Out of Action award, inapplicable here.
+    - The page wrongly copies the Grudge Match Single Combat sentence into the +1 Per Enemy Out of Action
+      award, inapplicable here.
+  name_i18n:
+    en: Rescue
+    es: Rescate
 - id: scenario.romeros-pride
   name: Romero's Pride
   setting: Mordheim
@@ -2839,7 +3382,8 @@ scenarios:
   author: Paul Smith, Lex & Donato
   player_mode: 1v1
   summary: A variation on the random zombie invasion theme.
-  tags: [hostile-npc]
+  tags:
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2847,8 +3391,12 @@ scenarios:
     url: https://mordheimer.net/docs/campaigns/scenarios/archive-pestilen/romeros-pride
   progression:
     notes:
-    - 'The page has no Experience, wyrdstone or gc reward section: only the zombie horde rules (arrival 1D3 per exit at the end of turn 3, 1D4 on the 4th and 1D6 from the 5th onwards).
-      Victory and its awards remain undefined in the source; documented for later steps.'
+    - 'The page has no Experience, wyrdstone or gc reward section: only the zombie horde rules (arrival
+      1D3 per exit at the end of turn 3, 1D4 on the 4th and 1D6 from the 5th onwards). Victory and its
+      awards remain undefined in the source; documented for later steps.'
+  name_i18n:
+    en: Romero's Pride
+    es: Orgullo de Romero
 - id: scenario.the-battle-at-koleshire-keep
   name: The Battle At Koleshire Keep
   setting: The Empire
@@ -2856,7 +3404,9 @@ scenarios:
   author: Baby Cindi
   player_mode: 1v1
   summary: Skirmish over a keep.
-  tags: [brawl, objective-building]
+  tags:
+  - brawl
+  - objective-building
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2864,8 +3414,12 @@ scenarios:
     url: https://mordheimer.net/docs/campaigns/scenarios/archive-pestilen/the-battle-at-koleshire-keep
   progression:
     notes:
-    - 'The page has no Experience or rewards section: the first side to flee or be destroyed loses. The scenario uses own profiles (Jarsyn Gaylord, Reikland mercenary captain with 2 Wounds
-      and Expert Swordsman, 80 gc; Skaggle, Orc Boss with Ld 9 and low-blow, 90 gc); no documented progression awards.'
+    - 'The page has no Experience or rewards section: the first side to flee or be destroyed loses. The
+      scenario uses own profiles (Jarsyn Gaylord, Reikland mercenary captain with 2 Wounds and Expert
+      Swordsman, 80 gc; Skaggle, Orc Boss with Ld 9 and low-blow, 90 gc); no documented progression awards.'
+  name_i18n:
+    en: The Battle At Koleshire Keep
+    es: La batalla en la fortaleza de Koleshire
 - id: scenario.the-caravan-archive-pestilens
   name: The Caravan
   setting: Mordheim
@@ -2873,7 +3427,9 @@ scenarios:
   author: Unknown
   player_mode: 1v1
   summary: Guard or plunder a caravan of gold before it gets to the other side.
-  tags: [escort-npc, traverse-the-board]
+  tags:
+  - escort-npc
+  - traverse-the-board
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2886,11 +3442,17 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - summary: A Hero or Henchman carrying the cargo at the end of the battle gains +1 Experience
       amount: 1
-    wyrdstone: The merchant carries a small chest with D3+1 shards of wyrdstone. If a warband ends the game in possession of the cargo it keeps all of the wyrdstone. If the merchant successfully keeps the
-      cargo, the guarding warband receives 1 shard plus D6 x 5 gold crowns for their trouble.
+    wyrdstone: The merchant carries a small chest with D3+1 shards of wyrdstone. If a warband ends the
+      game in possession of the cargo it keeps all of the wyrdstone. If the merchant successfully keeps
+      the cargo, the guarding warband receives 1 shard plus D6 x 5 gold crowns for their trouble.
     notes:
-    - 'The editorial note of the page says the scenario proved very difficult for the defender in four games; they suggest toughening the merchant (T4, shield, lucky bastard) and that the defenders should not fail
-      the fleeing test except voluntarily. Optional variants: Lucky Fool, Two''s a Crowd, Greedy Bastard and A Friend in the Business (20% discount/surcharge on equipment until the next battle).'
+    - 'The editorial note of the page says the scenario proved very difficult for the defender in four
+      games; they suggest toughening the merchant (T4, shield, lucky bastard) and that the defenders should
+      not fail the fleeing test except voluntarily. Optional variants: Lucky Fool, Two''s a Crowd, Greedy
+      Bastard and A Friend in the Business (20% discount/surcharge on equipment until the next battle).'
+  name_i18n:
+    en: The Caravan
+    es: La Caravana
 - id: scenario.the-restless-dead
   name: The Restless Dead
   setting: Mordheim
@@ -2898,7 +3460,8 @@ scenarios:
   author: Tom Webster-Deakin
   player_mode: 1v1
   summary: Random zombies invade the table, attacking both players.
-  tags: [hostile-npc]
+  tags:
+  - hostile-npc
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2906,8 +3469,12 @@ scenarios:
     url: https://mordheimer.net/docs/campaigns/scenarios/archive-pestilen/the-restless-dead
   progression:
     notes:
-    - 'The page has no Experience, wyrdstone or rewards section: only the undead invasion rules (appearance from turn 2 on 6+, turn 3 on 5+, and from turn 4+ onwards on 4+;
-      D6 skeletons or zombies per appearance). Victory and its awards remain undefined in the source; documented for later steps.'
+    - 'The page has no Experience, wyrdstone or rewards section: only the undead invasion rules (appearance
+      from turn 2 on 6+, turn 3 on 5+, and from turn 4+ onwards on 4+; D6 skeletons or zombies per appearance).
+      Victory and its awards remain undefined in the source; documented for later steps.'
+  name_i18n:
+    en: The Restless Dead
+    es: Los Muertos Inquietos
 - id: scenario.the-square-of-the-snake
   name: The Square Of The Snake
   setting: Mordheim
@@ -2915,7 +3482,8 @@ scenarios:
   author: Christian Ellegaard
   player_mode: multiplayer
   summary: Four player scenario. Each player must take out his randomly specified enemy.
-  tags: [objective]
+  tags:
+  - objective
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2923,21 +3491,28 @@ scenarios:
     url: https://mordheimer.net/docs/campaigns/scenarios/archive-pestilen/the-square-of-the-snake
   progression:
     experience:
-    - summary: The warrior who reaches the tombstone at the end of the battle (after eliminating his chosen enemy warband) is awarded 5 free Experience points
+    - summary: The warrior who reaches the tombstone at the end of the battle (after eliminating his chosen
+        enemy warband) is awarded 5 free Experience points
       amount: 5
     notes:
-    - 'Multiplayer scenario by victory points, not standard experience: 10 points for the first warband that reaches the platform and receives a random opponent, 1 for putting any warrior out of action,
-      2 for the chosen enemy warrior, and 10 for returning to the platform after eliminating the chosen enemy. There are no gc or wyrdstone rewards on the page.'
+    - 'Multiplayer scenario by victory points, not standard experience: 10 points for the first warband
+      that reaches the platform and receives a random opponent, 1 for putting any warrior out of action,
+      2 for the chosen enemy warrior, and 10 for returning to the platform after eliminating the chosen
+      enemy. There are no gc or wyrdstone rewards on the page.'
+  name_i18n:
+    en: The Square Of The Snake
+    es: La Plaza de la Serpiente
 - id: scenario.the-wizards-tower
   name: The Wizard's Tower
   setting: Mordheim
   source: Archive Pestilen
   author: Christian Ellegaard
   player_mode: 1v1
-  summary: Your warband is peacefully making their way through the city to a
-    wyrdstone deposit when they are set upon by a rival warband. They have no
-    choice but to fight their way through them to get to the wyrdstone.
-  tags: [wyrdstone-tokens]
+  summary: Your warband is peacefully making their way through the city to a wyrdstone deposit when they
+    are set upon by a rival warband. They have no choice but to fight their way through them to get to
+    the wyrdstone.
+  tags:
+  - wyrdstone-tokens
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2949,14 +3524,17 @@ scenarios:
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
     loot:
-      summary: 'The Heroes carry chests out of the Wizard''s Tower (a D6 per appearing Hero: on a 6 he brings a chest; if no Hero brings one, a random Hero is given one, so there is always at least one chest).
-        In the post-battle sequence, roll D6 for each chest removed from the table. After this battle no Exploration rolls are made: no one dares search the cursed ruins of the tower.'
+      summary: 'The Heroes carry chests out of the Wizard''s Tower (a D6 per appearing Hero: on a 6 he
+        brings a chest; if no Hero brings one, a random Hero is given one, so there is always at least
+        one chest). In the post-battle sequence, roll D6 for each chest removed from the table. After
+        this battle no Exploration rolls are made: no one dares search the cursed ruins of the tower.'
       contents:
       - when:
           min: 1
           max: 2
         roll: D6
-        reward: 'Illusions: the treasures were simple illusions and vanish before the warband returns to camp.'
+        reward: 'Illusions: the treasures were simple illusions and vanish before the warband returns
+          to camp.'
       - when:
           min: 3
           max: 5
@@ -2967,15 +3545,19 @@ scenarios:
           max: 6
         roll: D6
         reward: 'Gold, Gold, GOLD: roll 6D6 and add the result to the Treasury.'
+  name_i18n:
+    en: The Wizard's Tower
+    es: La Torre del mago
 - id: scenario.mordheims-burning
   name: Mordheim's Burning
   setting: Mordheim
   source: Rynn Tyrr
   author: Rowan Coupland
   player_mode: 1v1
-  summary: This scenario is set at the end of Mordheim's existence, and
-    provides a very fitting ending to a campaign.
-  tags: [hazards]
+  summary: This scenario is set at the end of Mordheim's existence, and provides a very fitting ending
+    to a campaign.
+  tags:
+  - hazards
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -2988,12 +3570,17 @@ scenarios:
     - summary: The leader of the winning warband gains +5 Experience
       amount: 5
     - ref: campaign.experience.award.per-enemy-out-of-action
-    wyrdstone: The winning warband is the only warband that may search for wyrdstone after the battle (it does not roll the extra exploration D6). Due to the increased demand after the city's destruction,
+    wyrdstone: The winning warband is the only warband that may search for wyrdstone after the battle
+      (it does not roll the extra exploration D6). Due to the increased demand after the city's destruction,
       wyrdstone sells for triple the normal gold crowns.
     notes:
-    - 'Multiplayer end-of-campaign scenario (at least three warbands with rating 300+). Special injury table: anyone out of action rolls on the own table (1-5 death, 6 the warrior escapes unhurt
-      and gains +1 Experience). No voluntary fleeing: fleeing tests only start at 50% casualties, with unmodified Ld 10 while the leader lives. Random events occur automatically every
-      turn.'
+    - 'Multiplayer end-of-campaign scenario (at least three warbands with rating 300+). Special injury
+      table: anyone out of action rolls on the own table (1-5 death, 6 the warrior escapes unhurt and
+      gains +1 Experience). No voluntary fleeing: fleeing tests only start at 50% casualties, with unmodified
+      Ld 10 while the leader lives. Random events occur automatically every turn.'
+  name_i18n:
+    en: Mordheim's Burning
+    es: Mordheim arde
 effect_ids:
 - campaign.scenario.select
 - campaign.scenario.victory

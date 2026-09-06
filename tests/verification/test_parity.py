@@ -36,10 +36,10 @@ def test_parity_inventory_covers_fields_tags_and_complex_sequences():
 
 def test_semantic_specs_are_reused_as_a_case_level_parity_inventory():
     report = verify_specification_parity()
-    assert len(report.cases) == 3736
+    assert len(report.cases) == 3742
     assert report.divergences == ()
-    assert len(report.passed) == 3733
-    assert len(report.pending) == 3
+    assert len(report.passed) == 3742
+    assert report.pending == ()
     assert report.out_of_scope == ()
     assert {item.status for item in report.cases} <= {
         "PASS", "DIVERGENCE", "PENDING_ADAPTER", "OUT_OF_SCOPE",
@@ -137,7 +137,7 @@ def test_report_exposes_semantic_case_statuses_without_claiming_completion():
     assert payload["specifications"]["pending"]
     markdown = parity_report_markdown(payload)
     assert "## Semantic specification parity" in markdown
-    assert "PENDING_ADAPTER: `3`" in markdown
+    assert "PENDING_ADAPTER: `4`" in markdown
 
 
 def _single_deep_pair():
@@ -353,4 +353,3 @@ def test_certify_deep_does_not_escalate_by_default():
     )
     assert modular_duels == 60
     assert all(not row.escalated for row in samples)
-

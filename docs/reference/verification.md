@@ -1,39 +1,15 @@
-# Testing strategy for the duel engines
+# Verification
 
 How the repository maximizes confidence that the vectorized (NumPy) and native
 engines behave exactly like the modular oracle — **without** spending the
 compute that exhaustive pair-by-pair statistical certification would require.
 
-The core decision behind this document: the statistical six-sigma layer is
-**not** the primary guarantee that individual rules work, and it never can be.
-Rule-level correctness is certified *deterministically*, cheaply and at
-engine-code granularity; the statistical layer is demoted to what it can
-actually see (interaction between rules and joint drift), and every expensive
-pair must justify itself by covering something no deterministic test covers.
-
-Read this with the [interaction matrix](interaction-matrix.md) (the rule-pair
-coverage) and the [task guide for test reports](tasks/generate-test-reports.md)
-(the commands that produce the certificates).
-
-## Why "thousands of pairs" is the wrong lever
-
-The statistical gate in `_statistical.py` accepts a divergence smaller than
-≈ `6·√(2·p·(1−p)/N)` percentage points. With the typical oracle budget of
-100 000 duels per engine and `p ≈ 0.5` that is **±1.3 pp**; halving the
-resolution costs *four times* the duels, and the gate is capped by the smaller
-sample — the oracle — so a new pair of 100k buys the same resolution as every
-pair before it. A thousand pairs is ≈ 10⁸ oracle duels ≈ weeks of compute, to
-keep resolving the same ±1.3 pp. Worse, any rare branch (`p < 10⁻³`) is
-invisible to any sample that fits in a working day.
-
-The empirical history agrees: every real defect found so far — the reply-phase
-suppression, the native port drifts, the automatic-wound dice-stream shift —
-surfaced through **few deterministic cases designed for coverage**, not
-through enumeration. Several "failing" pairs shared one root cause.
-
-So the strategy is layered. Each layer certifies something the layer above it
-cannot see, and the expensive layers run rarely because the cheap ones already
-carry the load.
+The core decision: the statistical six-sigma layer is **not** the primary
+guarantee that individual rules work, and it never can be. Rule-level
+correctness is certified *deterministically*, cheaply and at engine-code
+granularity; the statistical layer is demoted to what it can actually see
+(interaction between rules and joint drift), and every expensive pair must
+justify itself by covering something no deterministic test covers.
 
 ## The layers
 
@@ -44,10 +20,10 @@ carry the load.
 | L2 whole-duel determinism | orchestration: acting order, reply phases, stateful timing | round-truncation outcome parity (`parity --truncations`); observed-mode samples | minutes | engine-touching changes |
 | L3 interaction, statistical | joint behaviour of many rules over real archetype duels | 6σ marginal gate; deep archetype matrix; numpy↔native cross at scale | minutes–hours | certification, deep on demand |
 | L4 engine-code coverage | no reachable engine line lacks a deterministic test; the tests can tell engines apart | coverage drift gate; engine mutation catalogue | ~3–10 min | engine-touching changes |
-| L5 process | gates are run, certificates are versioned and reproducible | certificate schema, committed budgets, `--seed`, this document | n/a | every change |
+| L5 process | gates are run, certificates are versioned and reproducible | certificate schema, committed budgets, `--seed` | n/a | every change |
 
-L0 is documented in the [knowledge base guide](knowledge-base-guide.md) and the
-verification-corpus README; this document focuses on L1–L5.
+L0 is documented in [the KB guide](knowledge-base.md); this document focuses
+on L1–L5.
 
 ## Runtime budget: the expensive layers run rarely
 
@@ -60,7 +36,7 @@ verification-corpus README; this document focuses on L1–L5.
 > | Command | Full run | Trimmed version for small checks |
 > | --- | --- | --- |
 > | `parity --deep --pair-set fast` (L3) | 30 pairs: ≈2.925M oracle duels + 1M cross duels/pair (target ≈10–15 min pooled) | `--deep-simulations 10000 --deep-cross-simulations 100000` |
-> | `parity --deep --pair-set full` (L3) | 42 pairs: ≈4.05M oracle duels + 1M cross duels/pair (tens of minutes pooled; hours without pooling or with larger cross samples) | use `--pair-set fast` for the short loop |
+> | `parity --deep --pair-set full` (L3) | 42 pairs: ≈4.05M oracle duels + 1M cross duels/pair (tens of minutes pooled; hours without pooling) | use `--pair-set fast` for the short loop |
 > | `parity --truncations --pair-set fast` (L2) | 30 pairs × 8 horizons × 10k duels/engine (≈20–40 min sequential, ≈6–12 min pooled) | `--truncation-simulations 2000` |
 > | `parity --truncations --pair-set full` (L2) | 42 pairs × 8 horizons × 10k duels/engine (≈28–55 min sequential, ≈8–15 min pooled) | use `--pair-set fast` for a smaller sweep |
 > | `coverage-gate` (L4) | ≈3–10 min under `coverage` | run the deterministic suites directly (`pytest tests/combat/... tests/verification/test_parity.py -q`) |
@@ -74,9 +50,9 @@ verification-corpus README; this document focuses on L1–L5.
 > nothing to the small-change loop. When a certification command is
 > genuinely needed for a small check, prefer the trimmed version; the CLI
 > warns when a trimmed matrix still leaves an expensive layer at its full
-> size (e.g. the deep cross at its 1M default).
+> size.
 
-### L1 — deterministic per-rule evidence (both engines)
+## L1 — deterministic per-rule evidence (both engines)
 
 - The **semantic specifications** (`tests/specs/semantic/`) declare exact dice
   and decisions and compare the *distribution* the engines induce, computed by
@@ -98,7 +74,7 @@ verification-corpus README; this document focuses on L1–L5.
 New rules land here first. This layer is why adding a rule does **not**
 require adding a statistical pair.
 
-### L2 — whole-duel orchestration, deterministically
+## L2 — whole-duel orchestration, deterministically
 
 Per-rule checks prove each rule fires correctly in isolation; they are weak
 at proving the *duel driver* composes phases in the right order. The known
@@ -109,46 +85,44 @@ duels.
 The **round-truncation outcome parity** (`_truncations.py`, CLI
 `parity --truncations`) certifies the outcome distribution at every horizon
 `h ∈ {2, 4, 6, 8, 10, 12, 15, 20}` on **every deep-matrix pair** (42
-scenarios; previously only the five standard ones): both engines run the
-pair with `maximum_rounds = h` and the three outcome rates
-(first / second / unresolved) must stay inside the same six-sigma gate used
-for full duels. A defect that shifts *when* duels resolve pushes one or more
-horizon rows apart (rows are labelled `<scenario>@rounds=<h>`) while the
-final aggregate marginals still agree — exactly the class of divergence the
-aggregate gate cannot see. Default budget is 10 000 duels per engine,
-scenario and horizon (`--truncation-simulations`); the oracle leg is shared
-per horizon and poolable with `--workers`.
+scenarios): both engines run the pair with `maximum_rounds = h` and the three
+outcome rates (first / second / unresolved) must stay inside the same
+six-sigma gate used for full duels. A defect that shifts *when* duels resolve
+pushes one or more horizon rows apart (rows are labelled
+`<scenario>@rounds=<h>`) while the final aggregate marginals still agree —
+exactly the class of divergence the aggregate gate cannot see. Default budget
+is 10 000 duels per engine, scenario and horizon (`--truncation-simulations`);
+the oracle leg is shared per horizon and poolable with `--workers`.
 
 **Round-ledger caveat.** The first attempt compared per-duel *resolution
 rounds* via a χ² over a winner×round histogram and diverged on the
-`stateful` scenario while aggregate rates passed. Triage showed the 
+`stateful` scenario while aggregate rates passed. Triage showed the
 divergence was a ledger-convention artifact: duels resolved by round-start
 phases (fire, Force-of-Will sustain) are attributed to different round
 numbers by each driver. The oracle's observed mode
-(`simulate_duel_observed`) keeps per-duel records (winner, resolution round,
-wounds, conditions) and mirrors the vectorized ledger, but **resolution round
-is not an engine-agnostic observable**. Outcome *after exactly h rounds* is
-— an unresolved duel counts as unresolved in both drivers whatever internal
-ledger they keep — which is why the truncation sweep replaced the histogram.
+(`simulate_duel_observed`) keeps per-duel records and mirrors the vectorized
+ledger, but **resolution round is not an engine-agnostic observable**.
+Outcome *after exactly h rounds* is — an unresolved duel counts as unresolved
+in both drivers whatever internal ledger they keep — which is why the
+truncation sweep replaced the histogram.
 
-### L3 — interaction, statistical, at scale
+## L3 — interaction, statistical, at scale
 
 What remains for statistics is *interaction*: many rules composed over real
 archetype duels, watched for joint drift. The 6σ marginal gate
 (`--statistical`, `--deep`) compares first/second/unresolved rates on the
 42-pair archetype matrix (glass cannons, brutes, elites, tanks, parry,
-mechanics like regeneration-vs-fire, ward saves, entangle, and the
-timing/parry amplifiers added 2026-09-05 — 4 hits vs one parry, a W1
-stun stressor, a measurable-rate frenzy pair, the durable mirror and a
-75-round heavy grind — plus skill consumers, helmet/injury-profile-2,
-Cathayan Longsword, and the benchmark-only blessed-regeneration boundary)
-plus the numpy↔native cross-certification at
-1 000 000 duels/pair where the optimized engines make scale cheap and the
-oracle is never touched. `--pair-set fast` is designed to retain the full
-matrix's distinct effect-axis coverage in a smaller run; `--pair-set full`
-adds the omitted baselines, mirrors and alternate matchup contexts. The pair
-set applies only to the deep matrix and truncation sweep; the five-scenario
-`--statistical` preset is unchanged.
+mechanics like regeneration-vs-fire, ward saves, entangle, the
+timing/parry amplifiers — 4 hits vs one parry, a W1 stun stressor, a
+measurable-rate frenzy pair, the durable mirror and a 75-round heavy grind —
+plus skill consumers, helmet/injury-profile-2, Cathayan Longsword, and the
+benchmark-only blessed-regeneration boundary) plus the numpy↔native
+cross-certification at 1 000 000 duels/pair where the optimized engines make
+scale cheap and the oracle is never touched. `--pair-set fast` is designed to
+retain the full matrix's distinct effect-axis coverage in a smaller run;
+`--pair-set full` adds the omitted baselines, mirrors and alternate matchup
+contexts. The pair set applies only to the deep matrix and truncation sweep;
+the five-scenario `--statistical` preset is unchanged.
 
 Two properties keep this honest:
 
@@ -163,13 +137,11 @@ deterministic case covers (see *When to add a pair*).
 
 ### Pair sets and current rule-coverage estimate
 
-The deep tools expose two maintained views of the same matrix:
-
 - **`fast` (30 pairs)** keeps one representative for each distinct mechanic
   family currently present in the full matrix, plus the timing/native-drift
-  amplifiers and the eight coverage-completion probes. It intentionally removes
-  baselines, mirrors and alternate matchup contexts, so it is the recommended
-  10–15 minute certification loop.
+  amplifiers and the eight coverage-completion probes. It intentionally
+  removes baselines, mirrors and alternate matchup contexts, so it is the
+  recommended 10–15 minute certification loop.
 - **`full` (42 pairs)** is the complete matrix. It adds the omitted baselines,
   mirrors and alternate contexts; these do not usually add a new rule family,
   but they are valuable for finding direction-dependent or composition bugs
@@ -193,7 +165,7 @@ those changes settle before treating the percentage as a release metric. No
 additional broad matchup variants are recommended until a new missing axis is
 demonstrated.
 
-### L4 — coverage gate and engine mutation
+## L4 — coverage gate and engine mutation
 
 Two gates measure whether the deterministic corpus is *complete enough*,
 which no amount of naming discipline can assert by itself.
@@ -245,7 +217,7 @@ python tools/mutate-engine.py                 # full catalogue (≈3–5 min)
 python tools/mutate-engine.py --mutant wound-ramp-off-by-one --json   # one mutant
 ```
 
-### L5 — process and certificates
+## L5 — process and certificates
 
 - **Every change** touching the engines must leave green: unit suites,
   semantic specs, deterministic parity inventory, and `coverage-gate` — all
@@ -253,13 +225,12 @@ python tools/mutate-engine.py --mutant wound-ramp-off-by-one --json   # one muta
   (the same selection the coverage gate measures).
 - **Engine-touching changes** additionally run `parity --truncations` — the
   `--level` presets of `parity` select the statistical/deep certification
-  tiers, see [the report guide](tasks/generate-test-reports.md) — and, for
-  vectorized/native code, the mutation catalogue.
+  tiers, see [Develop and release](../guides/develop-and-release.md) — and,
+  for vectorized/native code, the mutation catalogue.
 - **Deep statistical runs** (`parity --deep`, hours) are certification runs,
   executed on demand or before a release — never the default loop. Because
   L1/L2/L4 already pin each rule and each engine line, the deep layer only
-  watches interaction drift. See *Runtime budget* above for the trimmed
-  versions to use when a small change still deserves a statistical check.
+  watches interaction drift.
 - Certificates are versioned. The parity certificate is schema
   `mordheim-combat-parity/v2`: it adds the `truncations` block (horizon rows
   with their own `complete` flag) and records top-level `elapsed_seconds`;
@@ -278,7 +249,23 @@ python tools/mutate-engine.py --mutant wound-ramp-off-by-one --json   # one muta
   checks and L4 mutation catalogue.
 - Two engines may share a wrong reading of a rule (oracle included) → L1
   specs are reviewed against the written sources, never against engine
-  output; see the verification-corpus README.
+  output; see `tests/specs/README.md`.
+
+## Why "thousands of pairs" is the wrong lever
+
+The statistical gate in `_statistical.py` accepts a divergence smaller than
+≈ `6·√(2·p·(1−p)/N)` percentage points. With the typical oracle budget of
+100 000 duels per engine and `p ≈ 0.5` that is **±1.3 pp**; halving the
+resolution costs *four times* the duels, and the gate is capped by the smaller
+sample — the oracle — so a new pair of 100k buys the same resolution as every
+pair before it. A thousand pairs is ≈ 10⁸ oracle duels ≈ weeks of compute, to
+keep resolving the same ±1.3 pp. Worse, any rare branch (`p < 10⁻³`) is
+invisible to any sample that fits in a working day.
+
+The empirical history agrees: every real defect found so far — the reply-phase
+suppression, the native port drifts, the automatic-wound dice-stream shift —
+surfaced through **few deterministic cases designed for coverage**, not
+through enumeration. Several "failing" pairs shared one root cause.
 
 ## When to add a pair
 
@@ -289,3 +276,19 @@ case that covers that axis instead whenever one exists. Keep the matrix
 curated: each pair is justified by the axis it adds, triage is expected to
 find root causes shared by several pairs, and the number of pairs converges
 to tens — not to the combinatorics of all possible matchups.
+
+## Reports and the interaction matrix
+
+`test-report` writes Excel-friendly CSVs (`outputs/test-report/`);
+`parity` saves versioned certificates (`outputs/parity/`); options, statuses
+and presets are documented in [Develop and release](../guides/develop-and-release.md).
+
+The **interaction matrix** — how every required interaction pair of the
+verification gate is closed — is documented per cluster in the verification
+corpus README (`tests/specs/README.md`): the nine cluster files of
+`tests/specs/semantic/interactions/`, the authoring recipe (one spec per pair
+with composition + boundary cases, strict dice, ≥1 detected mutation) and the
+10 reviewed `illegal` overrides in `tests/specs/interaction-policy.yaml`
+(body-armour × body-armour pairs that can never co-occur in legal
+construction). As of 2026-09-04 the matrix is complete: 217/217 required
+interactions covered, 0 required pending, `parity` 0 divergences.

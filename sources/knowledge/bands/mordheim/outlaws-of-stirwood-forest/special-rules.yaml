@@ -3,7 +3,8 @@ band_id: outlaws-of-stirwood-forest
 rules:
 - id: bandit-leader--leader
   name: Leader
-  effect: Any model in the warband within 6" of the Bandit Leader may use the Leader's Leadership instead of its own.
+  effect: Any model in the warband within 6" of the Bandit Leader may use the Leader's Leadership instead
+    of its own.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -11,10 +12,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/outlaws-of-stirwood-forest
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
-    en: Any model in the warband within 6" of the Bandit Leader may use the Leader's Leadership instead of its own.
-    es: null
+    en: Any model in the warband within 6" of the Bandit Leader may use the Leader's Leadership instead
+      of its own.
+    es: Cualquier miniatura de la banda a 6" del Líder bandido puede usar el Liderazgo del líder en lugar
+      del suyo propio.
   applies_to:
     profile_ids:
     - bandit-leader
@@ -29,8 +32,8 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: cleric--disciple-of-sigmar
   name: Disciple of Sigmar
-  effect: The Cleric is a follower of Sigmar and may never learn Sorcery or Arcane Lore. The Cleric begins with a Prayer of
-    Sigmar, but prayer mechanics are intentionally not modelled in this file.
+  effect: The Cleric is a follower of Sigmar and may never learn Sorcery or Arcane Lore. The Cleric begins
+    with a Prayer of Sigmar, but prayer mechanics are intentionally not modelled in this file.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -38,11 +41,13 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/outlaws-of-stirwood-forest
   name_i18n:
     en: Disciple of Sigmar
-    es: null
+    es: Discípulo de Sigmar
   effect_i18n:
-    en: The Cleric is a follower of Sigmar and may never learn Sorcery or Arcane Lore. The Cleric begins with a Prayer of
-      Sigmar, but prayer mechanics are intentionally not modelled in this file.
-    es: null
+    en: The Cleric is a follower of Sigmar and may never learn Sorcery or Arcane Lore. The Cleric begins
+      with a Prayer of Sigmar, but prayer mechanics are intentionally not modelled in this file.
+    es: El Clérigo es un seguidor de Sigmar y nunca puede aprender Hechicería ni Lore Arcano. El Clérigo
+      comienza con una Oración de Sigmar, pero la mecánica de oraciones no está modelada intencionadamente
+      en este fichero.
   applies_to:
     profile_ids:
     - cleric
@@ -58,8 +63,9 @@ rules:
         id: compiler.disciple-of-sigmar
 - id: band--bow-discipline
   name: Bow Discipline
-  effect: Every warrior may carry only one missile weapon at a time. Every warrior except the Cleric must carry a bow-type
-    missile weapon, and crossbows are not permitted even if later skills would otherwise allow them.
+  effect: Every warrior may carry only one missile weapon at a time. Every warrior except the Cleric must
+    carry a bow-type missile weapon, and crossbows are not permitted even if later skills would otherwise
+    allow them.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -67,11 +73,14 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/outlaws-of-stirwood-forest
   name_i18n:
     en: Bow Discipline
-    es: null
+    es: Disciplina del arco
   effect_i18n:
-    en: Every warrior may carry only one missile weapon at a time. Every warrior except the Cleric must carry a bow-type missile
-      weapon, and crossbows are not permitted even if later skills would otherwise allow them.
-    es: null
+    en: Every warrior may carry only one missile weapon at a time. Every warrior except the Cleric must
+      carry a bow-type missile weapon, and crossbows are not permitted even if later skills would otherwise
+      allow them.
+    es: Cada guerrero solo puede llevar un arma arrojadiza a la vez. Todos los guerreros, excepto el Clérigo,
+      deben llevar un arma arrojadiza de tipo arco, y no se permiten ballestas, incluso si habilidades
+      posteriores los permitieran.
   applies_to:
     band: true
   runtime:
@@ -86,8 +95,9 @@ rules:
         id: compiler.bow-discipline
 - id: band--hired-swords
   name: Hired Swords
-  effect: 'The following Hired Swords are not available to the Outlaws: Bounty Hunter, Wolf-Priest of Ulric, Norse Shaman,
-    and Dark Elf Assassin.'
+  effect: >-
+    The following Hired Swords are not available to the Outlaws: Bounty Hunter, Wolf-Priest of
+    Ulric, Norse Shaman, and Dark Elf Assassin.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -95,11 +105,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/outlaws-of-stirwood-forest
   name_i18n:
     en: Hired Swords
-    es: null
+    es: Espadas a sueldo
   effect_i18n:
-    en: 'The following Hired Swords are not available to the Outlaws: Bounty Hunter, Wolf-Priest of Ulric, Norse Shaman, and
-      Dark Elf Assassin.'
-    es: null
+    en: 'The following Hired Swords are not available to the Outlaws: Bounty Hunter, Wolf-Priest of Ulric,
+      Norse Shaman, and Dark Elf Assassin.'
+    es: 'Las siguientes Espadas a sueldo no están disponibles para los Forajidos: Cazador de recompensas,
+      Sacerdote Lobo de Ulric, Chamán nórdico y Asesino elfo oscuro.'
   applies_to:
     band: true
   runtime:
@@ -110,11 +121,13 @@ rules:
     - id: unimplemented.outlaws-of-stirwood-forest.band.hired-swords
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: band--cleric-hero-slot
   name: Cleric Hero Slot
-  effect: A Cleric may only be included instead of either a Champion or a Petty Thief. Therefore, if a Cleric is included,
-    the combined number of Champions and Petty Thieves may not exceed three.
+  effect: A Cleric may only be included instead of either a Champion or a Petty Thief. Therefore, if a
+    Cleric is included, the combined number of Champions and Petty Thieves may not exceed three.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -122,11 +135,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/outlaws-of-stirwood-forest
   name_i18n:
     en: Cleric Hero Slot
-    es: null
+    es: Hueco de héroe del Clérigo
   effect_i18n:
-    en: A Cleric may only be included instead of either a Champion or a Petty Thief. Therefore, if a Cleric is included, the
-      combined number of Champions and Petty Thieves may not exceed three.
-    es: null
+    en: A Cleric may only be included instead of either a Champion or a Petty Thief. Therefore, if a Cleric
+      is included, the combined number of Champions and Petty Thieves may not exceed three.
+    es: Un Clérigo solo puede incluirse en lugar de un Campeón o de un Ladruchuelo. Por tanto, si se incluye
+      un Clérigo, el número combinado de Campeones y Ladruchuelos no puede exceder de tres.
   applies_to:
     band: true
   runtime:

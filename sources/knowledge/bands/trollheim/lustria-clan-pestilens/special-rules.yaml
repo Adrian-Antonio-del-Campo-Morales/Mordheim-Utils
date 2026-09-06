@@ -3,17 +3,20 @@ band_id: lustria-clan-pestilens
 rules:
 - id: plague-priest--leader
   name: Leader
-  effect: Any warband model within 6" of the Plague Priest may use his Leadership when taking Leadership tests.
+  effect: Any warband model within 6" of the Plague Priest may use his Leadership when taking Leadership
+    tests.
   source:
     manual: lustria
     printed_page: 78
     section: Heroes / 1 Plague Priest / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
-    en: Any warband model within 6" of the Plague Priest may use his Leadership when taking Leadership tests.
-    es: null
+    en: Any warband model within 6" of the Plague Priest may use his Leadership when taking Leadership
+      tests.
+    es: Cualquier modelo de la banda a 6" del Sacerdote de la peste puede usar su Liderazgo al realizar
+      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - plague-priest
@@ -28,19 +31,21 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: pestilens-sorcerer--spellcaster
   name: Spellcaster
-  effect: The Pestilens Sorcerer is a spellcaster and begins with one randomly generated spell from Magic of the Horned Rat.
-    The spell list and spell effects are intentionally not modelled in this file.
+  effect: The Pestilens Sorcerer is a spellcaster and begins with one randomly generated spell from Magic
+    of the Horned Rat. The spell list and spell effects are intentionally not modelled in this file.
   source:
     manual: lustria
     printed_page: 78
     section: Heroes / 0-1 Pestilens Sorcerer / Spellcaster
   name_i18n:
     en: Spellcaster
-    es: null
+    es: Lanzador de hechizos
   effect_i18n:
-    en: The Pestilens Sorcerer is a spellcaster and begins with one randomly generated spell from Magic of the Horned Rat.
-      The spell list and spell effects are intentionally not modelled in this file.
-    es: null
+    en: The Pestilens Sorcerer is a spellcaster and begins with one randomly generated spell from Magic
+      of the Horned Rat. The spell list and spell effects are intentionally not modelled in this file.
+    es: El Hechicero de Pestilens es un lanzador de hechizos y comienza con un hechizo generado al azar
+      de la Magia del Rata Cuernudo. La lista de hechizos y sus efectos no se modelan intencionadamente
+      en este archivo.
   applies_to:
     profile_ids:
     - pestilens-sorcerer
@@ -62,10 +67,10 @@ rules:
     section: Henchmen / Giant Rats / Animal
   name_i18n:
     en: Animal
-    es: null
+    es: Animal
   effect_i18n:
     en: Giant Rats are animals and never gain Experience.
-    es: null
+    es: Las Ratas gigantes son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - giant-rats
@@ -87,10 +92,10 @@ rules:
     section: Henchmen / 0-1 Rat Ogre / Fear
   name_i18n:
     en: Fear
-    es: null
+    es: Miedo
   effect_i18n:
     en: The Rat Ogre causes Fear.
-    es: null
+    es: El Ogro rata causa Miedo.
   applies_to:
     profile_ids:
     - rat-ogre
@@ -112,10 +117,10 @@ rules:
     section: Henchmen / 0-1 Rat Ogre / Stupidity
   name_i18n:
     en: Stupidity
-    es: null
+    es: Estupidez
   effect_i18n:
     en: The Rat Ogre is subject to Stupidity unless a Skaven Hero is within 6".
-    es: null
+    es: El Ogro rata está sujeto a Estupidez salvo que haya un Héroe skaven a 6".
   applies_to:
     profile_ids:
     - rat-ogre
@@ -137,10 +142,10 @@ rules:
     section: Henchmen / 0-1 Rat Ogre / Experience
   name_i18n:
     en: Experience
-    es: null
+    es: Experiencia
   effect_i18n:
     en: The Rat Ogre never gains Experience.
-    es: null
+    es: El Ogro rata nunca gana Experiencia.
   applies_to:
     profile_ids:
     - rat-ogre
@@ -155,19 +160,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: rat-ogre--large-target
   name: Large Target
-  effect: The Rat Ogre may be selected as a shooting target even when it is not the closest eligible target, and missile attacks
-    against it gain +1 To Hit.
+  effect: The Rat Ogre may be selected as a shooting target even when it is not the closest eligible target,
+    and missile attacks against it gain +1 To Hit.
   source:
     manual: lustria
     printed_page: 79
     section: Henchmen / 0-1 Rat Ogre / Large Target
   name_i18n:
     en: Large Target
-    es: null
+    es: Objetivo grande
   effect_i18n:
-    en: The Rat Ogre may be selected as a shooting target even when it is not the closest eligible target, and missile attacks
-      against it gain +1 To Hit.
-    es: null
+    en: The Rat Ogre may be selected as a shooting target even when it is not the closest eligible target,
+      and missile attacks against it gain +1 To Hit.
+    es: El Ogro rata puede ser elegido como objetivo de disparo incluso cuando no es el objetivo elegible
+      más cercano, y los ataques de misil contra él obtienen +1 por Golpear.
   applies_to:
     profile_ids:
     - rat-ogre
@@ -183,19 +189,23 @@ rules:
 - id: band--clan-pestilens-special-skills-black-hunger
   kind: warband_skill
   name: Black Hunger
-  effect: At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack and adds the result
-    of 1D6 x 0.4" + 1" to his Movement. At the end of the turn he suffers 1D3 Strength 3 hits with no armour save.
+  effect: At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack
+    and adds the result of 1D6 x 0.4" + 1" to his Movement. At the end of the turn he suffers 1D3 Strength
+    3 hits with no armour save.
   source:
     manual: lustria
     printed_page: 80
     section: Clan Pestilens Special Skills / Black Hunger
   name_i18n:
     en: Black Hunger
-    es: null
+    es: Hambre negra
   effect_i18n:
-    en: At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack and adds the result
-      of 1D6 x 0.4" + 1" to his Movement. At the end of the turn he suffers 1D3 Strength 3 hits with no armour save.
-    es: null
+    en: At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack
+      and adds the result of 1D6 x 0.4" + 1" to his Movement. At the end of the turn he suffers 1D3 Strength
+      3 hits with no armour save.
+    es: Al comienzo de su turno, el Héroe puede invocar el Hambre negra. Durante ese turno gana +1 Ataque
+      y añade a su Movimiento el resultado de 1D6 x 0,4" + 1". Al final del turno sufre 1D3 impactos de
+      Fuerza 3 sin tirada de salvación por armadura.
   eligibility:
   - plague-priest
   - pestilens-sorcerer
@@ -223,10 +233,11 @@ rules:
     section: Clan Pestilens Special Skills / Censer Bearer
   name_i18n:
     en: Censer Bearer
-    es: null
+    es: Portador del incensario
   effect_i18n:
     en: Requires Black Hunger. The Hero gains Frenzy and may use only a Censer as a close-combat weapon.
-    es: null
+    es: Requiere Hambre negra. El Héroe gana Frenesí y solo puede usar un Incensario como arma de combate
+      cuerpo a cuerpo.
   eligibility:
   - plague-priest
   - pestilens-sorcerer
@@ -247,19 +258,23 @@ rules:
 - id: band--clan-pestilens-special-skills-rotten-body
   kind: warband_skill
   name: Rotten Body
-  effect: The Hero is immune to poisons and diseases. If taken Out of Action because of a failed test while using a Censer,
-    the Hero does not roll on the Serious Injury table after the battle and recovers automatically.
+  effect: The Hero is immune to poisons and diseases. If taken Out of Action because of a failed test
+    while using a Censer, the Hero does not roll on the Serious Injury table after the battle and recovers
+    automatically.
   source:
     manual: lustria
     printed_page: 80
     section: Clan Pestilens Special Skills / Rotten Body
   name_i18n:
     en: Rotten Body
-    es: null
+    es: Cuerpo podrido
   effect_i18n:
-    en: The Hero is immune to poisons and diseases. If taken Out of Action because of a failed test while using a Censer,
-      the Hero does not roll on the Serious Injury table after the battle and recovers automatically.
-    es: null
+    en: The Hero is immune to poisons and diseases. If taken Out of Action because of a failed test while
+      using a Censer, the Hero does not roll on the Serious Injury table after the battle and recovers
+      automatically.
+    es: El Héroe es inmune a los venenos y las enfermedades. Si sale de Combate por fallar un chequeo
+      al usar un Incensario, el Héroe no tira en la tabla de Heridas Graves tras la batalla y se recupera
+      automáticamente.
   eligibility:
   - plague-priest
   - pestilens-sorcerer
@@ -286,21 +301,24 @@ rules:
 - id: band--clan-pestilens-special-skills-contagious
   kind: warband_skill
   name: Contagious
-  effect: Requires Rotten Body. A model that takes this Hero Out of Action in close combat must take a Toughness test. Roll
-    D6; if the result is higher than that model's Toughness, it suffers one automatic Wound. A natural 6 always inflicts a
-    Wound. Undead and Possessed are immune to this test.
+  effect: Requires Rotten Body. A model that takes this Hero Out of Action in close combat must take a
+    Toughness test. Roll D6; if the result is higher than that model's Toughness, it suffers one automatic
+    Wound. A natural 6 always inflicts a Wound. Undead and Possessed are immune to this test.
   source:
     manual: lustria
     printed_page: 80
     section: Clan Pestilens Special Skills / Contagious
   name_i18n:
     en: Contagious
-    es: null
+    es: Contagioso
   effect_i18n:
-    en: Requires Rotten Body. A model that takes this Hero Out of Action in close combat must take a Toughness test. Roll
-      D6; if the result is higher than that model's Toughness, it suffers one automatic Wound. A natural 6 always inflicts
-      a Wound. Undead and Possessed are immune to this test.
-    es: null
+    en: Requires Rotten Body. A model that takes this Hero Out of Action in close combat must take a Toughness
+      test. Roll D6; if the result is higher than that model's Toughness, it suffers one automatic Wound.
+      A natural 6 always inflicts a Wound. Undead and Possessed are immune to this test.
+    es: Requiere Cuerpo podrido. Un modelo que saque de Combate a este Héroe en combate cuerpo a cuerpo
+      debe realizar un chequeo de Resistencia. Tira 1D6; si el resultado es mayor que la Resistencia de
+      ese modelo, sufre una Herida automática. Un 6 natural siempre inflige una Herida. Los No muertos
+      y los Poseídos son inmunes a este chequeo.
   eligibility:
   - plague-priest
   - pestilens-sorcerer
@@ -333,17 +351,20 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: Ignore Pain
-  effect: Requires the Resilient Strength skill. The Hero treats a Stunned result on the Injury chart as Knocked Down.
+  effect: Requires the Resilient Strength skill. The Hero treats a Stunned result on the Injury chart
+    as Knocked Down.
   source:
     manual: lustria
     printed_page: 80
     section: Clan Pestilens Special Skills / Ignore Pain
   name_i18n:
     en: Ignore Pain
-    es: null
+    es: Ignorar el dolor
   effect_i18n:
-    en: Requires the Resilient Strength skill. The Hero treats a Stunned result on the Injury chart as Knocked Down.
-    es: null
+    en: Requires the Resilient Strength skill. The Hero treats a Stunned result on the Injury chart as
+      Knocked Down.
+    es: Requiere la habilidad Fuerza resiliente. El Héroe trata un resultado Aturdido de la tabla de Heridas
+      como Derribado.
   eligibility:
   - plague-priest
   - pestilens-sorcerer
@@ -361,10 +382,10 @@ rules:
     section: Clan Pestilens Special Skills / Natural Climber
   name_i18n:
     en: Natural Climber
-    es: null
+    es: Trepanador natural
   effect_i18n:
     en: The Hero does not need to take Initiative tests when climbing walls or other vertical surfaces.
-    es: null
+    es: El Héroe no necesita realizar chequeos de Iniciativa al escalar muros u otras superficies verticales.
   eligibility:
   - plague-priest
   - pestilens-sorcerer

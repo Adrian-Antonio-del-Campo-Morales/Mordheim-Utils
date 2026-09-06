@@ -57,6 +57,7 @@ def _vector_attack_count(case: dict, root: Path) -> None:
         attack_penalty=optional_int("attack_penalty"),
         wounded=optional_flag("wounded"),
         base_attacks=optional_int("base_attacks"),
+        player_turn=bool(context.get("player_turn", True)),
     )[0])
     expected = int(modular["result"]["attacks"])
     if actual != expected:
@@ -604,6 +605,28 @@ def _vector_recovery(case: dict, root: Path) -> None:
     if actual != modular["result"]:
         raise AssertionError(f"vectorized recovery={actual}, modular={modular['result']}")
 
+
+def _vector_round(case: dict, root: Path) -> None:
+    attacker = build_semantic_fighter(case.get("attacker", {}), root)
+    defender = build_semantic_fighter(case.get("defender", {}), root)
+    rng = _RollVectorRng(case, strict=True)
+    attacker_state = vectorized._new_state(attacker, 1, rng)
+    defender_state = vectorized._new_state(defender, 1, rng)
+    _apply_vector_state_overrides(attacker_state, case.get("attacker_state", {}))
+    _apply_vector_state_overrides(defender_state, case.get("defender_state", {}))
+    if attacker_state.condition[0] != int(phases.Condition.OUT) or defender_state.condition[0] != int(phases.Condition.OUT):
+        raise NotImplementedError("vectorized round adapter only supports state-only terminal cases")
+    if int(case.get("context", {}).get("round_index", 0)):
+        rows = np.asarray([0], dtype=np.int64)
+        vectorized._refresh_random_characteristics(attacker, attacker_state, rows, rng)
+        vectorized._refresh_random_characteristics(defender, defender_state, rows, rng)
+    rng.finish()
+    _compare_vector_expectations(case, root, {"result": {"state": {
+        "first": _plain_initial_vector_state(attacker_state),
+        "second": _plain_initial_vector_state(defender_state),
+    }}})
+
+
 def _apply_vector_state_overrides(state: vectorized.CombatState, values: dict) -> None:
     scalar_fields = {
         "wounds": "wounds", "frenzy": "frenzy", "lucky_charm": "lucky_charm",
@@ -1059,6 +1082,7 @@ SPECIFICATION_ADAPTERS = {
     "bear_hug": ("vectorized.bear_hug_wins", _vector_bear_hug),
     "initialize": ("vectorized._new_state", _vector_initialize),
     "recovery": ("vectorized.recover_round_state", _vector_recovery),
+    "round": ("vectorized._refresh_random_characteristics", _vector_round),
     "attack": ("vectorized._resolve_weapon", _vector_attack),
     "extra_attack": ("vectorized._resolve_weapon", _vector_attack),
     "attack_reaction": ("vectorized._resolve_weapon", _vector_attack),

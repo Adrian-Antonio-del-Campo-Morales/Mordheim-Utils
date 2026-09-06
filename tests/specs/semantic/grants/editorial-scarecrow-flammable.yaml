@@ -4,54 +4,160 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: stateful
   sources:
-  - {target: rule/mordheim/restless-dead/scarecrows--flammable/trait.flammable, digest: 0ccbe32b3dd33eef0751e058f53c227791954152418f0fc86caf23b85652c686}
-  - {target: rule/mordheim/restless-dead/scarecrows--flammable/trait.caught-fire-threshold, digest: 0ccbe32b3dd33eef0751e058f53c227791954152418f0fc86caf23b85652c686}
-  interpretation: "Fire causes two wounds and sets the Scarecrow alight on 3+. A non-fire attack neither uses the threshold nor doubles the damage."
+  - target: rule/mordheim/restless-dead/scarecrows--flammable/trait.flammable
+    digest: ed9cf1d0416a616dc0d1c48b986e7b76f7d03aa9fd983e5d20aaf153087a65a1
+  - target: rule/mordheim/restless-dead/scarecrows--flammable/trait.caught-fire-threshold
+    digest: ed9cf1d0416a616dc0d1c48b986e7b76f7d03aa9fd983e5d20aaf153087a65a1
+  interpretation: Fire causes two wounds and sets the Scarecrow alight on 3+. A non-fire attack neither
+    uses the threshold nor doubles the damage.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: restless-dead, profile_id: scarecrows}
-    context: {rule_id: scarecrows--flammable}
-    expect: {result.recipients: [scarecrows]}
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: scarecrows
+    context:
+      rule_id: scarecrows--flammable
+    expect:
+      result.recipients:
+      - scarecrows
   - id: ignition-three-and-double-damage
-    roles: [active, consumer, sequence, consumption, boundary]
+    roles:
+    - active
+    - consumer
+    - sequence
+    - consumption
+    - boundary
     operation: attack
-    attacker: {main_weapon_id: weapon.brazier-iron, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: restless-dead, profile_id: scarecrows}
-    defender_state: {wounds: 3}
-    rolls: [{key: test.hit, value: 4}, {key: test.ignition, value: 3}, {key: test.wound, value: 4}]
-    expect_contains: {defender.global_effects.tags: [flammable]}
-    expect: {defender.global_effects.caught_fire_threshold: 3, result.damage: 2, result.defender.wounds: 1, result.defender.on_fire: true}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: scarecrows
+    defender_state:
+      wounds: 3
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.ignition
+      value: 3
+    - key: test.wound
+      value: 4
+    expect_contains:
+      defender.global_effects.tags:
+      - flammable
+    expect:
+      defender.global_effects.caught_fire_threshold: 3
+      result.damage: 2
+      result.defender.wounds: 1
+      result.defender.on_fire: true
   - id: ignition-two-fails
-    roles: [boundary, sequence]
+    roles:
+    - boundary
+    - sequence
     operation: attack
-    attacker: {main_weapon_id: weapon.brazier-iron, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: restless-dead, profile_id: scarecrows}
-    defender_state: {wounds: 3}
-    rolls: [{key: test.hit, value: 4}, {key: test.ignition, value: 2}, {key: test.wound, value: 4}]
-    expect: {result.damage: 2, result.defender.on_fire: false}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: scarecrows
+    defender_state:
+      wounds: 3
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.ignition
+      value: 2
+    - key: test.wound
+      value: 4
+    expect:
+      result.damage: 2
+      result.defender.on_fire: false
   - id: ordinary-target-needs-four-and-takes-one-damage
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attack
-    attacker: {main_weapon_id: weapon.brazier-iron, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender_state: {wounds: 3}
-    rolls: [{key: test.hit, value: 4}, {key: test.ignition, value: 3}, {key: test.wound, value: 4}]
-    expect: {result.damage: 1, result.defender.wounds: 2, result.defender.on_fire: false}
+    attacker:
+      main_weapon_id: weapon.brazier-iron
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender_state:
+      wounds: 3
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.ignition
+      value: 3
+    - key: test.wound
+      value: 4
+    expect:
+      result.damage: 1
+      result.defender.wounds: 2
+      result.defender.on_fire: false
   - id: non-fire-does-not-double
-    roles: [inactive, consumption]
+    roles:
+    - inactive
+    - consumption
     operation: attack
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: restless-dead, profile_id: scarecrows}
-    defender_state: {wounds: 3}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}]
-    expect: {result.damage: 1, result.defender.wounds: 2, result.defender.on_fire: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: restless-dead
+      profile_id: scarecrows
+    defender_state:
+      wounds: 3
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.damage: 1
+      result.defender.wounds: 2
+      result.defender.on_fire: false
   mutations:
   - id: remove-flammable
     path: defender.global_effects.tags
-    value: [injury_reroll_out]
-    cases: [ignition-three-and-double-damage]
+    value:
+    - injury_reroll_out
+    cases:
+    - ignition-three-and-double-damage
   - id: restore-normal-ignition-threshold
     path: defender.global_effects.caught_fire_threshold
     value: 4
-    cases: [ignition-three-and-double-damage]
+    cases:
+    - ignition-three-and-double-damage

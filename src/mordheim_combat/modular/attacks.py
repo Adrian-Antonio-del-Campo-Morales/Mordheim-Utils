@@ -104,7 +104,8 @@ def _resolve_reference_attack_once(
     )
     hit_context = replace(hit_context, modifier=hit_context.modifier - barrage_penalty)
     reroll = _hit_reroll(attacker, defender, weapon, effect, first_round, charging)
-    luck_available = phases.has_tag(effect, "skill.luck") and "luck" not in attacker_state.resources_spent and not reroll
+    luck_available = phases.has_tag(effect, "skill.luck") and "luck" not in attacker_state.resources_spent
+    luck_for_hit = luck_available and not reroll
     if prepared_hit is not None:
         hit = prepared_hit
     elif phases.has_tag(effect, "skill.sweep") and weapon.two_handed:
@@ -117,7 +118,7 @@ def _resolve_reference_attack_once(
     else:
         hit = phases.resolve_hit(hit_context, dice)
     trace = (Phase.HIT,)
-    if luck_available and hit.rerolled:
+    if luck_for_hit and hit.rerolled:
         attacker_state = attacker_state.spend("luck")
     if not hit.success and phases.has_tag(attacker.global_effects, "mechanic.mark-of-the-old-ones") and "mark-of-the-old-ones" not in attacker_state.resources_spent:
         attacker_state = attacker_state.spend("mark-of-the-old-ones")
@@ -208,6 +209,7 @@ def _resolve_reference_attack_once(
         defender_state = replace(defender_state, on_fire=True)
     poison_blocked = defender.global_effects.poison_immunity or phases.has_tag(defender.global_effects, "poison_immune")
     if (phases.has_tag(weapon, "weapon.disease-dagger") and hit.roll == 6
+            and not poison_blocked
             and not phases.has_tag(defender.global_effects, "undead_or_possessed")
             and not phases._characteristic_test(defender_state.toughness, dice, f"{key}.infection")):
         # Infection is an additional automatic wound, not a second dagger hit.
@@ -237,7 +239,14 @@ def _resolve_reference_attack_once(
     if (hit.roll == 6 and phases.has_tag(effect, "poison.black-lotus") and not poison_blocked
             and decisions is not None and not decisions.choose(f"{key}.lotus-critical", wound_context)):
         wound_context = replace(wound_context, automatic=True)
+    luck_for_wound = (
+        phases.has_tag(effect, "skill.luck")
+        and "luck" not in attacker_state.resources_spent
+        and not effect.reroll_wounds
+    )
     wound = phases.resolve_wound(wound_context, dice)
+    if luck_for_wound and wound.rerolled:
+        attacker_state = attacker_state.spend("luck")
     trace += (Phase.WOUND,)
     if not wound.success and phases.has_tag(attacker.global_effects, "mechanic.mark-of-the-old-ones") and "mark-of-the-old-ones" not in attacker_state.resources_spent:
         attacker_state = attacker_state.spend("mark-of-the-old-ones")
@@ -265,6 +274,23 @@ def _resolve_reference_attack_once(
     armour = phases.resolve_armour(replace(armour_context,
         ignore_armour=armour_context.ignore_armour or critical.ignore_armour), dice)
     trace += (Phase.ARMOUR,)
+    if not armour.saved and armour.roll is not None:
+        defender_luck = (
+            phases.has_tag(defender.global_effects, "skill.luck")
+            and "luck" not in defender_state.resources_spent
+        )
+        if defender_luck:
+            armour = phases.resolve_armour(replace(
+                armour_context,
+                ignore_armour=armour_context.ignore_armour or critical.ignore_armour,
+                key=f"{key}.armour.reroll",
+            ), dice)
+            defender_state = defender_state.spend("luck")
+        if (not armour.saved
+                and phases.has_tag(defender.global_effects, "mechanic.mark-of-the-old-ones")
+                and "mark-of-the-old-ones" not in defender_state.resources_spent):
+            defender_state = defender_state.spend("mark-of-the-old-ones")
+            armour = replace(armour, saved=True)
     if armour.saved:
         return AttackOutcome(attacker_state, defender_state, True, wounded=True, saved=True, critical=wound.critical, trace=trace)
     special = phases.resolve_special_save(prepare_special_save_context(
@@ -280,7 +306,10 @@ def _resolve_reference_attack_once(
     damage = max(1, weapon_damage, critical.damage) * (2 if phases.has_tag(defender.global_effects, "flammable") and phases.has_tag(effect, "attack.fire") else 1)
     remaining = defender_state.wounds - damage
     if phases.has_tag(effect, "poison.nightshade") and not poison_blocked:
-        defender_state = replace(defender_state, initiative_penalty=defender_state.initiative_penalty + 1)
+        defender_state = replace(
+            defender_state,
+            initiative_penalty=defender_state.initiative_penalty + damage,
+        )
     if remaining > 0:
         defender_state = replace(defender_state, wounds=remaining)
         return AttackOutcome(attacker_state, defender_state, True, wounded=True, damage=damage, critical=wound.critical, trace=trace)

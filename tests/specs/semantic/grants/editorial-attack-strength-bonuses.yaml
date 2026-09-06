@@ -5,69 +5,104 @@ specifications:
   category: permanent
   sources:
   - target: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-red-fury/skill.red-fury
-    digest: 5798dfcd95d5a07c60942e6e30be5d6e27161e2d6aa6ed5519c4fbe73307f32e
-  depends_on: [mechanic/skill.red-fury]
-  interpretation: Red Fury grants the Blood Dragon Vampire one additional Attack, giving three rather than two.
+    digest: 5a4d706f915e725ac2d750bfa49b59acc4d39f3daadc49d8016e6b450f9bb67b
+  depends_on:
+  - mechanic/skill.red-fury
+  interpretation: Red Fury grants the Blood Dragon Vampire one additional Attack, giving three rather
+    than two.
   cases:
   - id: exact-recipient
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: blood-dragon-vampire}
-    context: {rule_id: band--blood-dragon-power-red-fury}
-    expect: {result.recipients: [blood-dragon-vampire]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+    context:
+      rule_id: band--blood-dragon-power-red-fury
+    expect:
+      result.recipients:
+      - blood-dragon-vampire
   - id: granted-consumer
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: attacks
     attacker:
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
       profile_id: blood-dragon-vampire
-      special_rule_ids: [band--blood-dragon-power-red-fury]
+      special_rule_ids:
+      - band--blood-dragon-power-red-fury
     expect:
       attacker.global_effects.attacks_bonus: 1
       result.attacks: 3
   - id: without-grant
-    roles: [boundary]
+    roles:
+    - boundary
     operation: attacks
-    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: blood-dragon-vampire}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
     expect:
       result.attacks: 2
   mutations:
   - id: remove-contribution
     path: attacker.global_effects.attacks_bonus
     value: 0
-    cases: [granted-consumer]
+    cases:
+    - granted-consumer
 - id: editorial-iron-sinews-grant
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
   - target: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-iron-sinews/skill.iron-sinews
-    digest: a05bd6730f7a6ee350593f1ebb5a8b3980279eba75f658fa8a420eb4977a029f
-  depends_on: [mechanic/skill.iron-sinews]
-  interpretation: Iron Sinews grants the Strigoi Vampire one additional Strength, giving five rather than four.
+    digest: 7d2309953f62af5a7cb74f9eb01baeb6fa5781585d5a3af3715043456431fd8e
+  depends_on:
+  - mechanic/skill.iron-sinews
+  interpretation: Iron Sinews grants the Strigoi Vampire one additional Strength, giving five rather than
+    four.
   cases:
   - id: exact-recipient
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: strigoi-vampire}
-    context: {rule_id: band--strigoi-power-iron-sinews}
-    expect: {result.recipients: [strigoi-vampire]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
+    context:
+      rule_id: band--strigoi-power-iron-sinews
+    expect:
+      result.recipients:
+      - strigoi-vampire
   - id: granted-consumer
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: strength
     attacker:
       collection: trollheim
       band_id: chaos-streets-undead-bloodlines
       profile_id: strigoi-vampire
-      special_rule_ids: [band--strigoi-power-iron-sinews]
+      special_rule_ids:
+      - band--strigoi-power-iron-sinews
     expect:
       attacker.global_effects.strength_bonus: 1
       result.wound: 5
       result.armour: 5
   - id: without-grant
-    roles: [boundary]
+    roles:
+    - boundary
     operation: strength
-    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: strigoi-vampire}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
     expect:
       result.wound: 4
       result.armour: 4
@@ -75,38 +110,56 @@ specifications:
   - id: remove-contribution
     path: attacker.global_effects.strength_bonus
     value: 0
-    cases: [granted-consumer]
+    cases:
+    - granted-consumer
 - id: editorial-tremendous-strength-grant
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
   - target: rule/trollheim/khemri-necromancers/band--necromantic-modification-tremendous-strength/skill.iron-sinews
-    digest: f6fbc66687a138eb7139b75cc2dcb39f3c5506984388ef39728ae94d93c0aa67
-  depends_on: [mechanic/skill.iron-sinews]
-  interpretation: Tremendous Strength grants the Necromantic Abomination one additional Strength, giving five rather than four. Its campaign acquisition roll and cost are not simulated here.
+    digest: 5d9d58400b7f784e0609bccd6ccdc5d0343c2554d53512c07a59d9cfccec473f
+  depends_on:
+  - mechanic/skill.iron-sinews
+  interpretation: Tremendous Strength grants the Necromantic Abomination one additional Strength, giving
+    five rather than four. Its campaign acquisition roll and cost are not simulated here.
   cases:
   - id: exact-recipient
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: khemri-necromancers, profile_id: necromantic-abomination}
-    context: {rule_id: band--necromantic-modification-tremendous-strength}
-    expect: {result.recipients: [necromantic-abomination]}
+    defender:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+    context:
+      rule_id: band--necromantic-modification-tremendous-strength
+    expect:
+      result.recipients:
+      - necromantic-abomination
   - id: granted-consumer
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: strength
     attacker:
       collection: trollheim
       band_id: khemri-necromancers
       profile_id: necromantic-abomination
-      special_rule_ids: [band--necromantic-modification-tremendous-strength]
+      special_rule_ids:
+      - band--necromantic-modification-tremendous-strength
     expect:
       attacker.global_effects.strength_bonus: 1
       result.wound: 5
       result.armour: 5
   - id: without-grant
-    roles: [boundary]
+    roles:
+    - boundary
     operation: strength
-    attacker: {collection: trollheim, band_id: khemri-necromancers, profile_id: necromantic-abomination}
+    attacker:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
     expect:
       result.wound: 4
       result.armour: 4
@@ -114,4 +167,5 @@ specifications:
   - id: remove-contribution
     path: attacker.global_effects.strength_bonus
     value: 0
-    cases: [granted-consumer]
+    cases:
+    - granted-consumer

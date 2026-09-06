@@ -6,6 +6,7 @@ from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.application.state import POST_BATTLE_STEPS
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import ScrollableFrame
+from mordheim_ui.i18n import tr
 
 
 class CampaignTimeline(tk.Frame):
@@ -23,15 +24,15 @@ class CampaignTimeline(tk.Frame):
 
         header = tk.Frame(self, bg=COLORS["panel_deep"], padx=14, pady=12)
         header.pack(fill="x")
-        tk.Label(header, text="CAMPAIGN TIMELINE", bg=COLORS["panel_deep"], fg=COLORS["text"], font=("Georgia", 11)).pack(anchor="w")
+        tk.Label(header, text=tr('CAMPAIGN TIMELINE'), bg=COLORS["panel_deep"], fg=COLORS["text"], font=("Georgia", 11)).pack(anchor="w")
         c = controller.state.campaign
         if c.is_draft:
-            detail = "Campaign has not started yet"
+            detail = tr('Campaign has not started yet')
         else:
             pending = c.pending_post_battle
-            detail = f"{len(c.states) - 1} completed battle states"
+            detail = tr('{} completed battle states').format(len(c.states) - 1)
             if pending:
-                detail += f"  ·  Battle #{pending.battle_number} resolving"
+                detail += tr('  ·  Battle #{} resolving').format(pending.battle_number)
         tk.Label(header, text=detail, bg=COLORS["panel_deep"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w", pady=(3, 0))
         tk.Frame(self, bg=COLORS["border_soft"], height=1).pack(fill="x")
 
@@ -44,7 +45,7 @@ class CampaignTimeline(tk.Frame):
         if c.is_draft:
             self._draft_node()
             self._connector()
-            self._future_node("○", "INITIAL STATE", "Created when the draft is committed")
+            self._future_node("○", tr('INITIAL STATE'), tr('Created when the draft is committed'))
         else:
             if c.states:
                 self._state_node(c.states[0], initial=True, current=(c.current_state_number == 0 and not c.battles))
@@ -66,11 +67,11 @@ class CampaignTimeline(tk.Frame):
         footer = tk.Frame(self, bg=COLORS["panel_deep"], padx=12, pady=9)
         footer.pack(fill="x")
         if c.is_draft:
-            text = "NEXT · START CAMPAIGN"
+            text = tr('NEXT · START CAMPAIGN')
             tone = COLORS["accent"]
         else:
             pending = c.pending_post_battle
-            text = f"NEXT STATE PENDING · finish Post-Battle #{pending.battle_number}" if pending else "NEXT · RECORD BATTLE"
+            text = tr('NEXT STATE PENDING · finish Post-Battle #{}').format(pending.battle_number) if pending else tr('NEXT · RECORD BATTLE')
             tone = COLORS["accent"] if pending else COLORS["accent"]
         tk.Label(footer, text=text, bg=COLORS["panel_deep"], fg=tone, font=("Segoe UI Semibold", 7)).pack(anchor="w")
         self.after_idle(self._reveal_selection)
@@ -124,8 +125,8 @@ class CampaignTimeline(tk.Frame):
 
     def _draft_node(self) -> None:
         c = self.controller.state.campaign
-        subtitle = f"{c.draft_model_count}/{c.maximum_models} models  ·  {c.draft_treasury} gc remaining"
-        row = self._base_node("draft:0", "●", "INITIAL WARBAND  ·  DRAFT", subtitle, major=True, tone="accent")
+        subtitle = tr('{}/{} models  ·  {} gc remaining').format(c.draft_model_count, c.maximum_models, c.draft_treasury)
+        row = self._base_node("draft:0", "●", tr('INITIAL WARBAND  ·  DRAFT'), subtitle, major=True, tone="accent")
         self._bind(row, self.controller.select_draft)
 
     def _future_node(self, icon: str, title: str, subtitle: str) -> None:
@@ -142,18 +143,18 @@ class CampaignTimeline(tk.Frame):
 
     def _state_node(self, state, *, initial: bool = False, current: bool = False) -> None:
         if current:
-            title = "CURRENT WARBAND"
+            title = tr('CURRENT WARBAND')
         elif initial:
-            title = "INITIAL STATE"
+            title = tr('INITIAL STATE')
         else:
-            title = f"STATE #{state.number}"
-        subtitle = f"Rating {state.rating}  ·  {state.models}/{state.max_models} models"
+            title = tr('STATE #{}').format(state.number)
+        subtitle = tr('Rating {}  ·  {}/{} models').format(state.rating, state.models, state.max_models)
         row = self._base_node(state.node_id, "●", title, subtitle, major=True, tone="accent" if current else "text")
         self._bind(row, lambda n=state.number: self.controller.select_state(n))
 
     def _battle_node(self, battle) -> None:
         result_tone = "success" if battle.result.lower() == "victory" else "danger"
-        title = f"BATTLE #{battle.number}  ·  {battle.result.upper()}"
+        title = tr('BATTLE #{}  ·  {}').format(battle.number, battle.result.upper())
         subtitle = f"{battle.scenario} vs. {battle.opponent}"
         row = self._base_node(f"battle:{battle.number}", "⚔", title, subtitle, major=False, tone=result_tone)
         self._bind(row, lambda n=battle.number: self.controller.select_battle(n))
@@ -168,8 +169,8 @@ class CampaignTimeline(tk.Frame):
         tk.Label(icon_wrap, text="＋", bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Segoe UI Symbol", 10)).pack(expand=True)
         text = tk.Frame(row, bg=COLORS["panel_deep"], pady=4)
         text.pack(side="left", fill="x", expand=True)
-        tk.Label(text, text="RECORD BATTLE", bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8), anchor="w", cursor="hand2").pack(fill="x")
-        tk.Label(text, text="Scenario · opponent · result · XP and casualties", bg=COLORS["panel_deep"], fg=COLORS["muted_dark"], font=("Segoe UI", 7), anchor="w").pack(fill="x", pady=(1, 0))
+        tk.Label(text, text=tr('RECORD BATTLE'), bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8), anchor="w", cursor="hand2").pack(fill="x")
+        tk.Label(text, text=tr('Scenario · opponent · result · XP and casualties'), bg=COLORS["panel_deep"], fg=COLORS["muted_dark"], font=("Segoe UI", 7), anchor="w").pack(fill="x", pady=(1, 0))
         for widget in (row, icon_wrap, text, *text.winfo_children(), icon_wrap.winfo_children()):
             widget.bind("<Button-1>", lambda _e: self._open_record_dialog())
 
@@ -180,12 +181,12 @@ class CampaignTimeline(tk.Frame):
 
     def _post_node(self, post) -> None:
         if post.complete:
-            title = f"POST-BATTLE #{post.battle_number}  ·  COMPLETE"
-            subtitle = "Recovery · Exploration & Income · Searches · Warband"
+            title = tr('POST-BATTLE #{}  ·  COMPLETE').format(post.battle_number)
+            subtitle = tr('Recovery · Exploration & Income · Searches · Warband')
             tone = "muted"
         else:
-            title = f"POST-BATTLE #{post.battle_number}  ·  IN PROGRESS"
-            subtitle = ("Final Review" if post.review_open else f"Step {post.active_step + 1}/8  ·  {POST_BATTLE_STEPS[post.active_step]}")
+            title = tr('POST-BATTLE #{}  ·  IN PROGRESS').format(post.battle_number)
+            subtitle = (tr('Final Review') if post.review_open else tr('Step {}/8  ·  {}').format(post.active_step + 1, POST_BATTLE_STEPS[post.active_step]))
             tone = "accent"
         row = self._base_node(post.node_id, "✦", title, subtitle, major=False, tone=tone)
         self._bind(row, lambda n=post.battle_number: self.controller.select_post_battle(n))

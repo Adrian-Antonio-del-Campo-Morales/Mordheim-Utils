@@ -10,10 +10,11 @@ rules:
     section: Heroes / 1 Tomb Lord / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: Any warband model within 6" of the Tomb Lord may use his Leadership instead of its own.
-    es: null
+    es: Cualquier modelo de la banda a 6" del Señor de la tumba puede usar su Liderazgo en lugar del suyo
+      propio.
   applies_to:
     profile_ids:
     - tomb-lord
@@ -35,10 +36,10 @@ rules:
     section: Heroes / 1 Tomb Lord / Undead
   name_i18n:
     en: Undead
-    es: null
+    es: No muerto
   effect_i18n:
     en: The Tomb Lord is Undead and is subject to the warband's Undead special rules.
-    es: null
+    es: El Señor de la tumba es No muerto y está sujeto a las reglas especiales de No muertos de la banda.
   applies_to:
     profile_ids:
     - tomb-lord
@@ -72,28 +73,29 @@ rules:
     section: Undead Special Rules / Flammable
   name_i18n:
     en: Flammable
-    es: null
+    es: Inflamable
   effect_i18n:
     en: A fire-based attack that wounds the Tomb Lord causes double the normal number of Wounds.
-    es: null
+    es: Un ataque de fuego que hiere al Señor de la tumba causa el doble de Heridas de lo normal.
   applies_to:
     profile_ids:
     - tomb-lord
 - id: mortuary-priest--wizard
   name: Wizard
-  effect: The Mortuary Priest is a spellcaster and may use the Mortuary Priests' scrolls. The individual scroll list and its
-    effects are intentionally not modelled in this file.
+  effect: The Mortuary Priest is a spellcaster and may use the Mortuary Priests' scrolls. The individual
+    scroll list and its effects are intentionally not modelled in this file.
   source:
     manual: khemri
     printed_page: 44
     section: Heroes / 0-1 Mortuary Priest / Wizard
   name_i18n:
     en: Wizard
-    es: null
+    es: Hechicero
   effect_i18n:
-    en: The Mortuary Priest is a spellcaster and may use the Mortuary Priests' scrolls. The individual scroll list and its
-      effects are intentionally not modelled in this file.
-    es: null
+    en: The Mortuary Priest is a spellcaster and may use the Mortuary Priests' scrolls. The individual
+      scroll list and its effects are intentionally not modelled in this file.
+    es: El Sacerdote funerario es un lanzador de hechizos y puede usar los pergaminos de los Sacerdotes
+      funerarios. La lista de pergaminos y sus efectos no se modelan intencionadamente en este archivo.
   applies_to:
     profile_ids:
     - mortuary-priest
@@ -115,10 +117,11 @@ rules:
     section: Heroes / 0-1 Mortuary Priest / Undead
   name_i18n:
     en: Undead
-    es: null
+    es: No muerto
   effect_i18n:
     en: The Mortuary Priest is Undead and is subject to the warband's Undead special rules.
-    es: null
+    es: El Sacerdote funerario es No muerto y está sujeto a las reglas especiales de No muertos de la
+      banda.
   applies_to:
     profile_ids:
     - mortuary-priest
@@ -140,10 +143,10 @@ rules:
     section: Heroes / 0-1 Necrotect / Undead
   name_i18n:
     en: Undead
-    es: null
+    es: No muerto
   effect_i18n:
     en: The Necrotect is Undead and is subject to the warband's Undead special rules.
-    es: null
+    es: El Necrotecto es No muerto y está sujeto a las reglas especiales de No muertos de la banda.
   applies_to:
     profile_ids:
     - necrotect
@@ -176,10 +179,11 @@ rules:
     section: Heroes / 0-1 Necrotect / Hatred
   name_i18n:
     en: Hatred
-    es: null
+    es: Odio
   effect_i18n:
     en: The Necrotect may re-roll failed To Hit rolls during the first round of each close combat.
-    es: null
+    es: El Necrotecto puede repetir las tiradas de Golpear falladas durante la primera ronda de cada combate
+      cuerpo a cuerpo.
   applies_to:
     profile_ids:
     - necrotect
@@ -192,10 +196,11 @@ rules:
     section: Heroes / 0-1 Necrotect / Stone Forger
   name_i18n:
     en: Stone Forger
-    es: null
+    es: Forjador de piedra
   effect_i18n:
     en: Friendly Stone Golems within 6" of the Necrotect gain a 6+ Regeneration save.
-    es: null
+    es: Los Gólems de piedra aliados a 6" del Necrotecto obtienen una tirada de salvación de Regeneración
+      de 6+.
   applies_to:
     profile_ids:
     - necrotect
@@ -217,10 +222,11 @@ rules:
     section: Heroes / 0-3 Mortuary Acolytes / Undead
   name_i18n:
     en: Undead
-    es: null
+    es: No muertos
   effect_i18n:
     en: Mortuary Acolytes are Undead and are subject to the warband's Undead special rules.
-    es: null
+    es: Los Acólitos funerarios son No muertos y están sujetos a las reglas especiales de No muertos de
+      la banda.
   applies_to:
     profile_ids:
     - mortuary-acolytes
@@ -242,10 +248,11 @@ rules:
     section: Henchmen / Skeleton Warriors / Undead
   name_i18n:
     en: Undead
-    es: null
+    es: No muertos
   effect_i18n:
     en: Skeleton Warriors are Undead and are subject to the warband's Undead special rules.
-    es: null
+    es: Los Guerreros esqueleto son No muertos y están sujetos a las reglas especiales de No muertos de
+      la banda.
   applies_to:
     profile_ids:
     - skeleton-warriors
@@ -267,10 +274,11 @@ rules:
     section: Henchmen / Tomb Guardians / Undead
   name_i18n:
     en: Undead
-    es: null
+    es: No muertos
   effect_i18n:
     en: Tomb Guardians are Undead and are subject to the warband's Undead special rules.
-    es: null
+    es: Los Guardianes de la tumba son No muertos y están sujetos a las reglas especiales de No muertos
+      de la banda.
   applies_to:
     profile_ids:
     - tomb-guardians
@@ -285,17 +293,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: tomb-scorpions--living
   name: Living
-  effect: Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not need water.
+  effect: Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not
+    need water.
   source:
     manual: khemri
     printed_page: 46
     section: Henchmen / 0-3 Tomb Scorpions / Living
   name_i18n:
     en: Living
-    es: null
+    es: Viviente
   effect_i18n:
-    en: Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not need water.
-    es: null
+    en: Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not need
+      water.
+    es: Los Escorpiones de tumba son criaturas vivientes y se ven afectados por la Psicología con normalidad,
+      pero no necesitan agua.
   applies_to:
     profile_ids:
     - tomb-scorpions
@@ -317,10 +328,10 @@ rules:
     section: Henchmen / 0-3 Tomb Scorpions / Animal
   name_i18n:
     en: Animal
-    es: null
+    es: Animal
   effect_i18n:
     en: Tomb Scorpions are animals and never gain Experience.
-    es: null
+    es: Los Escorpiones de tumba son animales y nunca ganan Experiencia.
   applies_to:
     profile_ids:
     - tomb-scorpions
@@ -345,19 +356,23 @@ rules:
         kind: mechanic
         id: poison.black-lotus
   name: Scorpion's Sting
-  effect: A Tomb Scorpion attacks with the poisonous sting in its tail. The source resolves this as though the attack used
-    Black Lotus; the underlying poison-item mechanics are intentionally not duplicated in this file.
+  effect: A Tomb Scorpion attacks with the poisonous sting in its tail. The source resolves this as though
+    the attack used Black Lotus; the underlying poison-item mechanics are intentionally not duplicated
+    in this file.
   source:
     manual: khemri
     printed_page: 46
     section: Henchmen / 0-3 Tomb Scorpions / Scorpion's Sting
   name_i18n:
     en: Scorpion's Sting
-    es: null
+    es: Aguijón de escorpión
   effect_i18n:
-    en: A Tomb Scorpion attacks with the poisonous sting in its tail. The source resolves this as though the attack used Black
-      Lotus; the underlying poison-item mechanics are intentionally not duplicated in this file.
-    es: null
+    en: A Tomb Scorpion attacks with the poisonous sting in its tail. The source resolves this as though
+      the attack used Black Lotus; the underlying poison-item mechanics are intentionally not duplicated
+      in this file.
+    es: Un Escorpión de tumba ataca con el aguijón venenoso de su cola. La fuente lo resuelve como si
+      el ataque usara Loto negro; la mecánica subyacente del objeto venenoso no se duplica intencionadamente
+      en este archivo.
   applies_to:
     profile_ids:
     - tomb-scorpions
@@ -382,10 +397,10 @@ rules:
     section: Henchmen / 0-1 Stone Golem / Weapons and Armour
   name_i18n:
     en: Stone Body
-    es: null
+    es: Cuerpo de piedra
   effect_i18n:
     en: The Stone Golem has a natural 4+ armour save.
-    es: null
+    es: El Gólem de piedra tiene una tirada de salvación por armadura natural de 4+.
   applies_to:
     profile_ids:
     - stone-golem
@@ -398,10 +413,10 @@ rules:
     section: Henchmen / 0-1 Stone Golem / Fear
   name_i18n:
     en: Fear
-    es: null
+    es: Miedo
   effect_i18n:
     en: The Stone Golem causes Fear.
-    es: null
+    es: El Gólem de piedra causa Miedo.
   applies_to:
     profile_ids:
     - stone-golem
@@ -423,10 +438,10 @@ rules:
     section: Henchmen / 0-1 Stone Golem / Immune to Psychology
   name_i18n:
     en: Immune to Psychology
-    es: null
+    es: Inmune a la Psicología
   effect_i18n:
     en: The Stone Golem is immune to Psychology and never leaves combat because of Psychology.
-    es: null
+    es: El Gólem de piedra es inmune a la Psicología y nunca abandona el combate a causa de la Psicología.
   applies_to:
     profile_ids:
     - stone-golem
@@ -460,10 +475,10 @@ rules:
     section: Henchmen / 0-1 Stone Golem / Immune to Poison
   name_i18n:
     en: Immune to Poison
-    es: null
+    es: Inmune al veneno
   effect_i18n:
     en: The Stone Golem is immune to poison.
-    es: null
+    es: El Gólem de piedra es inmune al veneno.
   applies_to:
     profile_ids:
     - stone-golem
@@ -476,10 +491,10 @@ rules:
     section: Henchmen / 0-1 Stone Golem / Brainless
   name_i18n:
     en: Brainless
-    es: null
+    es: Carente de mente
   effect_i18n:
     en: The Stone Golem never gains Experience.
-    es: null
+    es: El Gólem de piedra nunca gana Experiencia.
   applies_to:
     profile_ids:
     - stone-golem
@@ -501,10 +516,10 @@ rules:
     section: Henchmen / 0-1 Stone Golem / Impossible to Hide
   name_i18n:
     en: Impossible to Hide
-    es: null
+    es: Imposible de ocultar
   effect_i18n:
     en: The Stone Golem is too large to Hide.
-    es: null
+    es: El Gólem de piedra es demasiado grande para Ocultarse.
   applies_to:
     profile_ids:
     - stone-golem
@@ -519,17 +534,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: stone-golem--large-target
   name: Large Target
-  effect: The Stone Golem may be selected as a shooting target even when it is not the closest eligible target.
+  effect: The Stone Golem may be selected as a shooting target even when it is not the closest eligible
+    target.
   source:
     manual: khemri
     printed_page: 47
     section: Henchmen / 0-1 Stone Golem / Large Target
   name_i18n:
     en: Large Target
-    es: null
+    es: Objetivo grande
   effect_i18n:
-    en: The Stone Golem may be selected as a shooting target even when it is not the closest eligible target.
-    es: null
+    en: The Stone Golem may be selected as a shooting target even when it is not the closest eligible
+      target.
+    es: El Gólem de piedra puede ser elegido como objetivo de disparo incluso cuando no es el objetivo
+      elegible más cercano.
   applies_to:
     profile_ids:
     - stone-golem
@@ -551,10 +569,10 @@ rules:
     section: Henchmen / 0-1 Stone Golem / No Water
   name_i18n:
     en: No Water
-    es: null
+    es: Sin agua
   effect_i18n:
     en: The Stone Golem does not need water.
-    es: null
+    es: El Gólem de piedra no necesita agua.
   applies_to:
     profile_ids:
     - stone-golem
@@ -576,10 +594,10 @@ rules:
     section: Henchmen / 0-1 Stone Golem / Animated
   name_i18n:
     en: Animated
-    es: null
+    es: Animado
   effect_i18n:
     en: The Stone Golem is an animated being and is not Undead.
-    es: null
+    es: El Gólem de piedra es un ser animado y no es No muerto.
   applies_to:
     profile_ids:
     - stone-golem
@@ -601,10 +619,10 @@ rules:
     section: Undead Special Rules / Cause Fear
   name_i18n:
     en: Cause Fear
-    es: null
+    es: Causan Miedo
   effect_i18n:
     en: All warriors with the Undead special rule cause Fear.
-    es: null
+    es: Todos los guerreros con la regla especial No muerto causan Miedo.
   eligibility:
   - tomb-lord
   - mortuary-priest
@@ -625,17 +643,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--immune-to-psychology
   name: Immune to Psychology
-  effect: All warriors with the Undead special rule are immune to Psychology and never leave combat because of Psychology.
+  effect: All warriors with the Undead special rule are immune to Psychology and never leave combat because
+    of Psychology.
   source:
     manual: khemri
     printed_page: 43
     section: Undead Special Rules / Immune to Psychology
   name_i18n:
     en: Immune to Psychology
-    es: null
+    es: Inmunes a la Psicología
   effect_i18n:
-    en: All warriors with the Undead special rule are immune to Psychology and never leave combat because of Psychology.
-    es: null
+    en: All warriors with the Undead special rule are immune to Psychology and never leave combat because
+      of Psychology.
+    es: Todos los guerreros con la regla especial No muerto son inmunes a la Psicología y nunca abandonan
+      el combate a causa de la Psicología.
   eligibility:
   - tomb-lord
   - mortuary-priest
@@ -666,17 +687,20 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: All warriors with the Undead special rule treat a Stunned result on the Injury chart as Knocked Down.
+  effect: All warriors with the Undead special rule treat a Stunned result on the Injury chart as Knocked
+    Down.
   source:
     manual: khemri
     printed_page: 43
     section: Undead Special Rules / No Pain
   name_i18n:
     en: No Pain
-    es: null
+    es: Sin dolor
   effect_i18n:
-    en: All warriors with the Undead special rule treat a Stunned result on the Injury chart as Knocked Down.
-    es: null
+    en: All warriors with the Undead special rule treat a Stunned result on the Injury chart as Knocked
+      Down.
+    es: Todos los guerreros con la regla especial No muerto tratan un resultado Aturdido de la tabla de
+      Heridas como Derribado.
   eligibility:
   - tomb-lord
   - mortuary-priest
@@ -695,10 +719,10 @@ rules:
     section: Undead Special Rules / No Food or Water
   name_i18n:
     en: No Food or Water
-    es: null
+    es: Sin comida ni agua
   effect_i18n:
     en: Warriors with the Undead special rule do not need food or water.
-    es: null
+    es: Los guerreros con la regla especial No muerto no necesitan comida ni agua.
   eligibility:
   - tomb-lord
   - mortuary-priest
@@ -726,10 +750,10 @@ rules:
     section: Undead Special Rules / May Not Run
   name_i18n:
     en: May Not Run
-    es: null
+    es: No pueden correr
   effect_i18n:
     en: Warriors with the Undead special rule may not run, but may charge normally.
-    es: null
+    es: Los guerreros con la regla especial No muerto no pueden correr, pero pueden cargar con normalidad.
   eligibility:
   - tomb-lord
   - mortuary-priest
@@ -769,10 +793,10 @@ rules:
     section: Undead Special Rules / Immune to Poison
   name_i18n:
     en: Immune to Poison
-    es: null
+    es: Inmunes al veneno
   effect_i18n:
     en: Warriors with the Undead special rule are immune to poison.
-    es: null
+    es: Los guerreros con la regla especial No muerto son inmunes al veneno.
   eligibility:
   - tomb-lord
   - mortuary-priest
@@ -784,21 +808,26 @@ rules:
     band: true
 - id: band--brainless
   name: Brainless
-  effect: Undead Henchmen never gain Experience. The printed paragraph is broader, but the same warband gives all four Hero
-    profiles starting Experience and skill access; the Necrotect is omitted from the paragraph's named exceptions. This normalized
-    model therefore applies Brainless to Skeleton Warriors and Tomb Guardians only.
+  effect: Undead Henchmen never gain Experience. The printed paragraph is broader, but the same warband
+    gives all four Hero profiles starting Experience and skill access; the Necrotect is omitted from the
+    paragraph's named exceptions. This normalized model therefore applies Brainless to Skeleton Warriors
+    and Tomb Guardians only.
   source:
     manual: khemri
     printed_page: 43
     section: Undead Special Rules / Brainless
   name_i18n:
     en: Brainless
-    es: null
+    es: Carentes de mente
   effect_i18n:
-    en: Undead Henchmen never gain Experience. The printed paragraph is broader, but the same warband gives all four Hero
-      profiles starting Experience and skill access; the Necrotect is omitted from the paragraph's named exceptions. This
-      normalized model therefore applies Brainless to Skeleton Warriors and Tomb Guardians only.
-    es: null
+    en: Undead Henchmen never gain Experience. The printed paragraph is broader, but the same warband
+      gives all four Hero profiles starting Experience and skill access; the Necrotect is omitted from
+      the paragraph's named exceptions. This normalized model therefore applies Brainless to Skeleton
+      Warriors and Tomb Guardians only.
+    es: Los Soldados No muertos nunca ganan Experiencia. El párrafo impreso es más amplio, pero la misma
+      banda otorga a los cuatro perfiles de Héroe la Experiencia inicial y el acceso a habilidades; el
+      Necrotecto queda omitido de las excepciones nombradas en el párrafo. Este modelo normalizado aplica,
+      por tanto, Carentes de mente solo a los Guerreros esqueleto y a los Guardianes de la tumba.
   eligibility:
   - skeleton-warriors
   - tomb-guardians
@@ -822,10 +851,10 @@ rules:
     section: Undead Special Rules / At Home
   name_i18n:
     en: At Home
-    es: null
+    es: En casa
   effect_i18n:
     en: When the warband explores in Khemri, roll one additional die during the Exploration phase.
-    es: null
+    es: Cuando la banda explora en Khemri, tira un dado adicional durante la fase de Exploración.
   applies_to:
     band: true
   runtime:

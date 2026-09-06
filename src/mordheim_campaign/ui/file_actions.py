@@ -7,6 +7,7 @@ through :class:`AppController`.
 from __future__ import annotations
 
 from tkinter import filedialog, messagebox
+from mordheim_ui.i18n import tr
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.persistence import (
@@ -17,11 +18,11 @@ from mordheim_campaign.persistence import (
     suggest_filename,
 )
 
-_FILE_TYPES = (("Mordheim campaign", "*.mordheim"), ("JSON", "*.json"), ("All files", "*.*"))
+_FILE_TYPES = (("Mordheim campaign", "*.mordheim"), (tr('JSON'), "*.json"), (tr('All files'), "*.*"))
 
 
 def _report_error(parent, action: str, exc: Exception) -> None:
-    messagebox.showerror(f"Campaign {action} error", str(exc), parent=parent)
+    messagebox.showerror(tr('Campaign {} error').format(action), str(exc), parent=parent)
 
 
 def save_current_campaign(parent, controller: AppController):
@@ -30,7 +31,7 @@ def save_current_campaign(parent, controller: AppController):
     if path is None:
         path = filedialog.asksaveasfilename(
             parent=parent,
-            title="Save Mordheim campaign",
+            title=tr('Save Mordheim campaign'),
             defaultextension=".mordheim",
             initialfile=suggest_filename(controller.state.campaign),
             filetypes=_FILE_TYPES,
@@ -50,7 +51,7 @@ def save_campaign_copy(parent, controller: AppController):
     """Saves the campaign to a user-chosen path (Save As / Export)."""
     path = filedialog.asksaveasfilename(
         parent=parent,
-        title="Save a copy of the Mordheim campaign",
+        title=tr('Save a copy of the Mordheim campaign'),
         defaultextension=".mordheim",
         initialfile=suggest_filename(controller.state.campaign),
         filetypes=_FILE_TYPES,
@@ -68,7 +69,7 @@ def save_campaign_copy(parent, controller: AppController):
 
 def load_campaign_file(parent, controller: AppController):
     """Loads a saved campaign and makes it the active state."""
-    path = filedialog.askopenfilename(parent=parent, title="Load Mordheim campaign", filetypes=_FILE_TYPES)
+    path = filedialog.askopenfilename(parent=parent, title=tr('Load Mordheim campaign'), filetypes=_FILE_TYPES)
     if not path:
         return None
     try:
@@ -85,10 +86,10 @@ def export_campaign_markdown(parent, controller: AppController):
     """Exports a readable Markdown summary of the current state."""
     path = filedialog.asksaveasfilename(
         parent=parent,
-        title="Export campaign summary",
+        title=tr('Export campaign summary'),
         defaultextension=".md",
         initialfile=f"{suggest_filename(controller.state.campaign).removesuffix('.mordheim')}-summary.md",
-        filetypes=(("Markdown", "*.md"), ("Text", "*.txt"), ("All files", "*.*")),
+        filetypes=((tr('Markdown'), "*.md"), (tr('Text'), "*.txt"), (tr('All files'), "*.*")),
     )
     if not path:
         return None

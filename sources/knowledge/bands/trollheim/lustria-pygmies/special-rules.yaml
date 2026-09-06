@@ -3,17 +3,20 @@ band_id: lustria-pygmies
 rules:
 - id: great-headhunter--leader
   name: Leader
-  effect: Any warband warrior within 6" of the Great Headhunter may use his Leadership when taking Leadership tests.
+  effect: Any warband warrior within 6" of the Great Headhunter may use his Leadership when taking Leadership
+    tests.
   source:
     manual: lustria
     printed_page: 123
     section: Heroes / 1 Great Headhunter / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
-    en: Any warband warrior within 6" of the Great Headhunter may use his Leadership when taking Leadership tests.
-    es: null
+    en: Any warband warrior within 6" of the Great Headhunter may use his Leadership when taking Leadership
+      tests.
+    es: Cualquier guerrero de la banda a 6" del Gran cazacabezas puede usar su Liderazgo al realizar chequeos
+      de Liderazgo.
   applies_to:
     profile_ids:
     - great-headhunter
@@ -35,10 +38,10 @@ rules:
     section: Heroes / 1 Great Headhunter / Fear
   name_i18n:
     en: Fear
-    es: null
+    es: Miedo
   effect_i18n:
     en: The Great Headhunter causes Fear.
-    es: null
+    es: El Gran cazacabezas causa Miedo.
   applies_to:
     profile_ids:
     - great-headhunter
@@ -53,19 +56,21 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: silent-walker--spirit-form
   name: Spirit Form
-  effect: The Silent Walker may move through walls and obstacles as if they did not exist, but may not charge a target outside
-    its line of sight. The Silent Walker never suffers falling damage.
+  effect: The Silent Walker may move through walls and obstacles as if they did not exist, but may not
+    charge a target outside its line of sight. The Silent Walker never suffers falling damage.
   source:
     manual: lustria
     printed_page: 123
     section: Heroes / 0-1 Silent Walker / Spirit Form
   name_i18n:
     en: Spirit Form
-    es: null
+    es: Forma espiritual
   effect_i18n:
-    en: The Silent Walker may move through walls and obstacles as if they did not exist, but may not charge a target outside
-      its line of sight. The Silent Walker never suffers falling damage.
-    es: null
+    en: The Silent Walker may move through walls and obstacles as if they did not exist, but may not charge
+      a target outside its line of sight. The Silent Walker never suffers falling damage.
+    es: El Caminante silencioso puede moverse a través de muros y obstáculos como si no existieran, pero
+      no puede cargar contra un objetivo fuera de su línea de visión. El Caminante silencioso nunca sufre
+      daño por caídas.
   applies_to:
     profile_ids:
     - silent-walker
@@ -80,17 +85,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: silent-walker--ethereal
   name: Ethereal
-  effect: The Silent Walker has a 5+ special save against mundane attacks. This save is negated by magical attacks.
+  effect: The Silent Walker has a 5+ special save against mundane attacks. This save is negated by magical
+    attacks.
   source:
     manual: lustria
     printed_page: 123
     section: Heroes / 0-1 Silent Walker / Ethereal
   name_i18n:
     en: Ethereal
-    es: null
+    es: Etéreo
   effect_i18n:
-    en: The Silent Walker has a 5+ special save against mundane attacks. This save is negated by magical attacks.
-    es: null
+    en: The Silent Walker has a 5+ special save against mundane attacks. This save is negated by magical
+      attacks.
+    es: El Caminante silencioso tiene una salvación especial de 5+ contra ataques mundanos. Esta salvación
+      queda anulada por los ataques mágicos.
   applies_to:
     profile_ids:
     - silent-walker
@@ -122,10 +130,10 @@ rules:
     section: Heroes / 0-1 Silent Walker / Immune to Psychology
   name_i18n:
     en: Immune to Psychology
-    es: null
+    es: Inmune a la Psicología
   effect_i18n:
     en: The Silent Walker is immune to Psychology.
-    es: null
+    es: El Caminante silencioso es inmune a la Psicología.
   applies_to:
     profile_ids:
     - silent-walker
@@ -147,10 +155,10 @@ rules:
     section: Heroes / 0-1 Silent Walker / Fear
   name_i18n:
     en: Fear
-    es: null
+    es: Miedo
   effect_i18n:
     en: The Silent Walker causes Fear.
-    es: null
+    es: El Caminante silencioso causa Miedo.
   applies_to:
     profile_ids:
     - silent-walker
@@ -172,10 +180,10 @@ rules:
     section: Heroes / 0-3 Cannibals / Fear
   name_i18n:
     en: Fear
-    es: null
+    es: Miedo
   effect_i18n:
     en: Cannibals cause Fear.
-    es: null
+    es: Los Caníbales causan Miedo.
   applies_to:
     profile_ids:
     - cannibals
@@ -209,10 +217,10 @@ rules:
     section: Heroes / 0-3 Cannibals / Immune to Poison
   name_i18n:
     en: Immune to Poison
-    es: null
+    es: Inmunes al veneno
   effect_i18n:
     en: Cannibals are immune to poison.
-    es: null
+    es: Los Caníbales son inmunes al veneno.
   applies_to:
     profile_ids:
     - cannibals
@@ -225,10 +233,10 @@ rules:
     section: Henchmen / 0-5 Wild Lunatics / Immune to Psychology
   name_i18n:
     en: Immune to Psychology
-    es: null
+    es: Inmunes a la Psicología
   effect_i18n:
     en: Wild Lunatics are immune to Psychology.
-    es: null
+    es: Los Dementes salvajes son inmunes a la Psicología.
   applies_to:
     profile_ids:
     - wild-lunatics
@@ -243,21 +251,23 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: wild-lunatics--lunatics
   name: Lunatics
-  effect: At the start of each turn, roll 1D6 for each Wild Lunatic in play. On 1-3 that model gains Frenzy; on 4-6 it gains
-    Stupidity. The printed rule mistakenly says to roll for each Cannibal even though the rule appears under the Wild Lunatic
-    profile.
+  effect: At the start of each turn, roll 1D6 for each Wild Lunatic in play. On 1-3 that model gains Frenzy;
+    on 4-6 it gains Stupidity. The printed rule mistakenly says to roll for each Cannibal even though
+    the rule appears under the Wild Lunatic profile.
   source:
     manual: lustria
     printed_page: 124
     section: Henchmen / 0-5 Wild Lunatics / Lunatics
   name_i18n:
     en: Lunatics
-    es: null
+    es: Dementes
   effect_i18n:
-    en: At the start of each turn, roll 1D6 for each Wild Lunatic in play. On 1-3 that model gains Frenzy; on 4-6 it gains
-      Stupidity. The printed rule mistakenly says to roll for each Cannibal even though the rule appears under the Wild Lunatic
-      profile.
-    es: null
+    en: At the start of each turn, roll 1D6 for each Wild Lunatic in play. On 1-3 that model gains Frenzy;
+      on 4-6 it gains Stupidity. The printed rule mistakenly says to roll for each Cannibal even though
+      the rule appears under the Wild Lunatic profile.
+    es: Al comienzo de cada turno, tira 1D6 por cada Demente salvaje sobre la mesa. Con 1-3 ese modelo
+      gana Frenesí; con 4-6 gana Estupidez. La regla impresa dice por error que se tire por cada Caníbal,
+      aunque la regla aparece bajo el perfil de Demente salvaje.
   applies_to:
     profile_ids:
     - wild-lunatics
@@ -279,10 +289,11 @@ rules:
     section: Pygmy Special Rules / Jungle Natives
   name_i18n:
     en: Jungle Natives
-    es: null
+    es: Nativos de la selva
   effect_i18n:
     en: Pygmies suffer no movement penalties for moving through woods or any kind of vegetation.
-    es: null
+    es: Los Pigmeos no sufren penalizaciones de movimiento por moverse por bosques ni por ningún tipo
+      de vegetación.
   applies_to:
     band: true
   runtime:
@@ -303,10 +314,10 @@ rules:
     section: Pygmy Special Rules / Poison Experts
   name_i18n:
     en: Poison Experts
-    es: null
+    es: Expertos en venenos
   effect_i18n:
     en: Pygmies treat all poisons as Common on the Trading table.
-    es: null
+    es: Los Pigmeos tratan todos los venenos como Comunes en la tabla de Comercio.
   applies_to:
     band: true
   runtime:
@@ -317,22 +328,25 @@ rules:
     - id: unimplemented.lustria-pygmies.band.poison-experts
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.'
 - id: band--camouflage
   name: Camouflage
-  effect: A Pygmy that is not wearing armour cannot be detected unless the detecting model first passes an Initiative test.
-    Hardened Leather is explicitly allowed and does not prevent this rule from applying.
+  effect: A Pygmy that is not wearing armour cannot be detected unless the detecting model first passes
+    an Initiative test. Hardened Leather is explicitly allowed and does not prevent this rule from applying.
   source:
     manual: lustria
     printed_page: 121
     section: Pygmy Special Rules / Camouflage
   name_i18n:
     en: Camouflage
-    es: null
+    es: Camuflaje
   effect_i18n:
-    en: A Pygmy that is not wearing armour cannot be detected unless the detecting model first passes an Initiative test.
-      Hardened Leather is explicitly allowed and does not prevent this rule from applying.
-    es: null
+    en: A Pygmy that is not wearing armour cannot be detected unless the detecting model first passes
+      an Initiative test. Hardened Leather is explicitly allowed and does not prevent this rule from applying.
+    es: Un Pigmeo que no lleve armadura no puede ser detectado a menos que el modelo que detecta supere
+      primero un chequeo de Iniciativa. El Cuero curtido está permitido explícitamente y no impide que
+      se aplique esta regla.
   applies_to:
     band: true
   runtime:

@@ -5,175 +5,418 @@ specifications:
   category: local
   sources:
   - target: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--slayer-special-skills-monster-slayer/skill.monster-slayer
-    digest: 0755daf7e561d4fd14fd259ec3d328b8cc3e1ce43ffa4fd0e4a3dfc959a7253a
-  depends_on: [mechanic/skill.monster-slayer]
-  interpretation: Only the Slayer may select this skill. Its S3 wounds T6 on 4+, while retaining the natural 3+
-    against T2. This specification verifies only the wound threshold, not any separately bound armour effect.
+    digest: c1f0bed0302abfca3aa4f66e10f5b3c2845ef2f940da289edce0f4bda93d6e2b
+  depends_on:
+  - mechanic/skill.monster-slayer
+  interpretation: Only the Slayer may select this skill. Its S3 wounds T6 on 4+, while retaining the natural
+    3+ against T2. This specification verifies only the wound threshold, not any separately bound armour
+    effect.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-troll-slayers}
-    context: {rule_id: band--slayer-special-skills-monster-slayer}
-    expect: {result.recipients: [dwarf-troll-slayers]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+    context:
+      rule_id: band--slayer-special-skills-monster-slayer
+    expect:
+      result.recipients:
+      - dwarf-troll-slayers
   - id: tough-opponent-boundary
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+      special_rule_ids:
+      - band--slayer-special-skills-monster-slayer
+      main_weapon_id: weapon.dagger
     defender:
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 1, initiative: 3, attacks: 1}
-    rolls: [{key: wound, value: 4}]
-    expect: {result.target: 4, result.success: true}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 6
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 4
+    expect:
+      result.target: 4
+      result.success: true
     expect_contains:
-      attacker.global_effects.tags: [skill.monster-slayer]
+      attacker.global_effects.tags:
+      - skill.monster-slayer
   - id: tough-opponent-all-faces
-    roles: [boundary]
+    roles:
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+      special_rule_ids:
+      - band--slayer-special-skills-monster-slayer
+      main_weapon_id: weapon.dagger
     defender:
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 1, initiative: 3, attacks: 1}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 6
+        wounds: 1
+        initiative: 3
+        attacks: 1
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: easier-target-retained
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+      special_rule_ids:
+      - band--slayer-special-skills-monster-slayer
+      main_weapon_id: weapon.dagger
     defender:
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 3, attacks: 1}
-    rolls: [{key: wound, value: 3}]
-    expect: {result.target: 3, result.success: true}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 2
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 3
+    expect:
+      result.target: 3
+      result.success: true
   - id: easier-target-all-faces
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-troll-slayers, special_rule_ids: [band--slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-troll-slayers
+      special_rule_ids:
+      - band--slayer-special-skills-monster-slayer
+      main_weapon_id: weapon.dagger
     defender:
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 3, attacks: 1}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 2
+        wounds: 1
+        initiative: 3
+        attacks: 1
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 2/3, 'false': 1/3}
+      expected:
+        'true': 2/3
+        'false': 1/3
   mutations:
   - id: remove-threshold-limit
     path: attacker.global_effects.tags
     value: []
-    cases: [tough-opponent-boundary, tough-opponent-all-faces]
+    cases:
+    - tough-opponent-boundary
+    - tough-opponent-all-faces
 - id: editorial-monster-slayer-chaos-streets-pit-fighters
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
   - target: rule/trollheim/chaos-streets-pit-fighters/band--troll-slayer-special-skills-monster-slayer/skill.monster-slayer
-    digest: 7acfcbe6d2b3cd067c0b7072611bb62bbc9a51f63559f052bbd4342406f46302
-  depends_on: [mechanic/skill.monster-slayer]
-  interpretation: Only the Slayer may select this skill. Its S3 wounds T6 on 4+, while retaining the natural 3+
-    against T2. This specification verifies only the wound threshold, not any separately bound armour effect.
+    digest: 13d0db8c73e8430f8966771c45701aabb87fa4f2188c52212dfe434380776b82
+  depends_on:
+  - mechanic/skill.monster-slayer
+  interpretation: Only the Slayer may select this skill. Its S3 wounds T6 on 4+, while retaining the natural
+    3+ against T2. This specification verifies only the wound threshold, not any separately bound armour
+    effect.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: dwarf-troll-slayer}
-    context: {rule_id: band--troll-slayer-special-skills-monster-slayer}
-    expect: {result.recipients: [dwarf-troll-slayer]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+    context:
+      rule_id: band--troll-slayer-special-skills-monster-slayer
+    expect:
+      result.recipients:
+      - dwarf-troll-slayer
   - id: tough-opponent-boundary
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids:
+      - band--troll-slayer-special-skills-monster-slayer
+      main_weapon_id: weapon.dagger
     defender:
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 1, initiative: 3, attacks: 1}
-    rolls: [{key: wound, value: 4}]
-    expect: {result.target: 4, result.success: true}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 6
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 4
+    expect:
+      result.target: 4
+      result.success: true
     expect_contains:
-      attacker.global_effects.tags: [skill.monster-slayer]
+      attacker.global_effects.tags:
+      - skill.monster-slayer
   - id: tough-opponent-all-faces
-    roles: [boundary]
+    roles:
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids:
+      - band--troll-slayer-special-skills-monster-slayer
+      main_weapon_id: weapon.dagger
     defender:
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 1, initiative: 3, attacks: 1}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 6
+        wounds: 1
+        initiative: 3
+        attacks: 1
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: easier-target-retained
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids:
+      - band--troll-slayer-special-skills-monster-slayer
+      main_weapon_id: weapon.dagger
     defender:
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 3, attacks: 1}
-    rolls: [{key: wound, value: 3}]
-    expect: {result.target: 3, result.success: true}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 2
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 3
+    expect:
+      result.target: 3
+      result.success: true
   - id: easier-target-all-faces
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: chaos-streets-pit-fighters, profile_id: dwarf-troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids:
+      - band--troll-slayer-special-skills-monster-slayer
+      main_weapon_id: weapon.dagger
     defender:
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 3, attacks: 1}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 2
+        wounds: 1
+        initiative: 3
+        attacks: 1
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 2/3, 'false': 1/3}
+      expected:
+        'true': 2/3
+        'false': 1/3
   mutations:
   - id: remove-threshold-limit
     path: attacker.global_effects.tags
     value: []
-    cases: [tough-opponent-boundary, tough-opponent-all-faces]
+    cases:
+    - tough-opponent-boundary
+    - tough-opponent-all-faces
 - id: editorial-monster-slayer-khemri-cursed-of-karak-zorn
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
   - target: rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-monster-slayer/skill.monster-slayer
-    digest: a6a6d09dd7745aafdd87a6f0c9558b9b249f285fec83bb171b8b5725011b38f9
-  depends_on: [mechanic/skill.monster-slayer]
-  interpretation: Only the Slayer may select this skill. Its S3 wounds T6 on 4+, while retaining the natural 3+
-    against T2. This specification verifies only the wound threshold, not any separately bound armour effect.
+    digest: b93c3e46b034f0966715e9b05d93de0651582dd9e179bfa884850f518d2e9cf5
+  depends_on:
+  - mechanic/skill.monster-slayer
+  interpretation: Only the Slayer may select this skill. Its S3 wounds T6 on 4+, while retaining the natural
+    3+ against T2. This specification verifies only the wound threshold, not any separately bound armour
+    effect.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: troll-slayer}
-    context: {rule_id: band--troll-slayer-special-skills-monster-slayer}
-    expect: {result.recipients: [troll-slayer]}
+    defender:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+    context:
+      rule_id: band--troll-slayer-special-skills-monster-slayer
+    expect:
+      result.recipients:
+      - troll-slayer
   - id: tough-opponent-boundary
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    attacker:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+      special_rule_ids:
+      - band--troll-slayer-special-skills-monster-slayer
+      main_weapon_id: weapon.dagger
     defender:
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 1, initiative: 3, attacks: 1}
-    rolls: [{key: wound, value: 4}]
-    expect: {result.target: 4, result.success: true}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 6
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 4
+    expect:
+      result.target: 4
+      result.success: true
     expect_contains:
-      attacker.global_effects.tags: [skill.monster-slayer]
+      attacker.global_effects.tags:
+      - skill.monster-slayer
   - id: tough-opponent-all-faces
-    roles: [boundary]
+    roles:
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    attacker:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+      special_rule_ids:
+      - band--troll-slayer-special-skills-monster-slayer
+      main_weapon_id: weapon.dagger
     defender:
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 1, initiative: 3, attacks: 1}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 6
+        wounds: 1
+        initiative: 3
+        attacks: 1
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: easier-target-retained
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    attacker:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+      special_rule_ids:
+      - band--troll-slayer-special-skills-monster-slayer
+      main_weapon_id: weapon.dagger
     defender:
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 3, attacks: 1}
-    rolls: [{key: wound, value: 3}]
-    expect: {result.target: 3, result.success: true}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 2
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: wound
+      value: 3
+    expect:
+      result.target: 3
+      result.success: true
   - id: easier-target-all-faces
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: wound
-    attacker: {collection: trollheim, band_id: khemri-cursed-of-karak-zorn, profile_id: troll-slayer, special_rule_ids: [band--troll-slayer-special-skills-monster-slayer], main_weapon_id: weapon.dagger}
+    attacker:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+      special_rule_ids:
+      - band--troll-slayer-special-skills-monster-slayer
+      main_weapon_id: weapon.dagger
     defender:
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 1, initiative: 3, attacks: 1}
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 2
+        wounds: 1
+        initiative: 3
+        attacks: 1
     distribution:
       observable: result.success
       max_rolls: 1
-      expected: {'true': 2/3, 'false': 1/3}
+      expected:
+        'true': 2/3
+        'false': 1/3
   mutations:
   - id: remove-threshold-limit
     path: attacker.global_effects.tags
     value: []
-    cases: [tough-opponent-boundary, tough-opponent-all-faces]
+    cases:
+    - tough-opponent-boundary
+    - tough-opponent-all-faces

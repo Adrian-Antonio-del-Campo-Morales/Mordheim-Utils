@@ -220,6 +220,9 @@ def _validate_profile_selections(build, package, profile, mechanics, root, main_
     if "compiler.no-arcane-lore" in compiler_contracts:
         forbidden=sorted(skill for skill in build.skill_ids if "arcane" in skill or "sorcery" in skill)
         if forbidden:raise ValueError(f"Arcane Lore is forbidden for {build.band_id}/{build.profile_id}: {forbidden}")
+    if "compiler.promoted-hero-no-strength-access" in compiler_contracts:
+        strength_skills=sorted(skill for skill in build.skill_ids if (skills.get(skill) or {}).get("category")=="strength")
+        if strength_skills:raise ValueError(f"Strength skills are forbidden for {build.band_id}/{build.profile_id}: {strength_skills}")
     illegal_skills=sorted(skill for skill in build.skill_ids if not skill_is_available(skill))
     if illegal_skills:raise ValueError(f"skills are not available to {build.band_id}/{build.profile_id}: {illegal_skills}")
     if "compiler.knighthood" in compiler_contracts:
@@ -229,9 +232,6 @@ def _validate_profile_selections(build, package, profile, mechanics, root, main_
         }
         if len(ordinary_categories)>2:
             raise ValueError("a promoted Squire may use at most two ordinary skill lists")
-    if "compiler.promoted-hero-no-strength-access" in compiler_contracts:
-        strength_skills=sorted(skill for skill in build.skill_ids if (skills.get(skill) or {}).get("category")=="strength")
-        if strength_skills:raise ValueError(f"Strength skills are forbidden for {build.band_id}/{build.profile_id}: {strength_skills}")
     restrictions=" ".join(profile.get("equipment_restrictions") or ()).lower()
     forbids_armour=any(text in restrictions for text in (
         "never wear armour","cannot wear armour","armour is not allowed","does not allow armour",

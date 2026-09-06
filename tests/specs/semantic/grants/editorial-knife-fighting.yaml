@@ -5,46 +5,65 @@ specifications:
   category: contextual
   sources:
   - target: rule/trollheim/khemri-thieves-guild/band--guild-special-skills-knife-fighting/skill.knife-fighting
-    digest: a9e1583f4ee87a2ab7a3251dadf3a523b88c932dc330ccf03003c9f00445f62e
-  depends_on: [mechanic/skill.knife-fighting]
-  interpretation: Knife Fighting is selectable by the four Thieves' Guild hero profiles. Selection grants the canonical
-    dagger-or-yambiya-only WS and Injury modifiers; ordinary henchmen do not receive access.
+    digest: 247d8963b1be1d6d3d650feca85b510986078443fba0d306ae1021a9711f7a88
+  depends_on:
+  - mechanic/skill.knife-fighting
+  interpretation: Knife Fighting is selectable by the four Thieves' Guild hero profiles. Selection grants
+    the canonical dagger-or-yambiya-only WS and Injury modifiers; ordinary henchmen do not receive access.
   cases:
   - id: exact-guild-heroes
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
     defender:
       collection: trollheim
       band_id: khemri-thieves-guild
       profile_id: guild-chief
-    context: {rule_id: band--guild-special-skills-knife-fighting}
+    context:
+      rule_id: band--guild-special-skills-knife-fighting
     expect:
-      result.recipients: [guild-chief, guild-hashashiyyin, guild-master-thief, guild-ruffian]
+      result.recipients:
+      - guild-chief
+      - guild-hashashiyyin
+      - guild-master-thief
+      - guild-ruffian
   - id: granted-injury-consumer
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: injury
     attacker:
       collection: trollheim
       band_id: khemri-thieves-guild
       profile_id: guild-chief
-      special_rule_ids: [band--guild-special-skills-knife-fighting]
+      special_rule_ids:
+      - band--guild-special-skills-knife-fighting
       main_weapon_id: weapon.dagger
-    rolls: [{key: test.injury, value: 2}]
+    rolls:
+    - key: test.injury
+      value: 2
     expect:
       result.total: 3
       result.condition: STUNNED
     expect_contains:
-      attacker.global_effects.tags: [skill.knife-fighting]
+      attacker.global_effects.tags:
+      - skill.knife-fighting
   - id: granted-but-wrong-weapon
-    roles: [inactive]
+    roles:
+    - inactive
     operation: injury
     attacker:
       collection: trollheim
       band_id: khemri-thieves-guild
       profile_id: guild-chief
-      special_rule_ids: [band--guild-special-skills-knife-fighting]
+      special_rule_ids:
+      - band--guild-special-skills-knife-fighting
       main_weapon_id: weapon.sword
-    rolls: [{key: test.injury, value: 2}]
+    rolls:
+    - key: test.injury
+      value: 2
     expect:
       result.total: 2
       result.condition: KNOCKED_DOWN
@@ -52,4 +71,5 @@ specifications:
   - id: remove-granted-skill
     path: attacker.global_effects.tags
     value: []
-    cases: [granted-injury-consumer]
+    cases:
+    - granted-injury-consumer

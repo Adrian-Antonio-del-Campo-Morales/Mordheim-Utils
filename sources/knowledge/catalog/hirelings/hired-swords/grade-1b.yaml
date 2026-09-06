@@ -10,7 +10,7 @@ profiles:
   name: Bard
   name_i18n:
     en: Bard
-    es: null
+    es: Bardo
   normalization_status: normalized
   characteristics:
     M: 4
@@ -48,6 +48,9 @@ profiles:
   - id: hireling.hired-sword.bard.rule.songster
     name: Songster
     effect: Friendly warriors within the source-defined range benefit from the Bard's leadership song.
+    name_i18n:
+      en: Songster
+      es: Cantador
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -60,7 +63,7 @@ profiles:
   name: Big Game Hunter
   name_i18n:
     en: Big Game Hunter
-    es: null
+    es: Cazador de piezas mayores
   normalization_status: normalized
   characteristics:
     M: 4
@@ -106,6 +109,9 @@ profiles:
   - id: hireling.hired-sword.big-game-hunter.rule.set-traps
     name: Set Traps
     effect: May set traps according to the source procedure.
+    name_i18n:
+      en: Set Traps
+      es: Tender trampas
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -118,7 +124,7 @@ profiles:
   name: Black Orc Overseer
   name_i18n:
     en: Black Orc Overseer
-    es: null
+    es: Sobrestante orco negro
   normalization_status: normalized
   characteristics:
     M: 4
@@ -149,11 +155,15 @@ profiles:
   - id: hireling.hired-sword.black-orc-overseer.rule.overseer
     name: Overseer
     effect: Uses the source Black Orc Overseer special rules.
+    name_i18n:
+      en: Overseer
+      es: Sobrestante
   unresolved_references:
   - kind: equipment_choice
     source_name: two Axes or Double-handed Weapon
   source_notes:
-  - The original publication does not provide advancement skill lists; Mordheimer gives an editorial recommendation. It has not been normalized as canonical skill_access.
+  - The original publication does not provide advancement skill lists; Mordheimer gives an editorial recommendation.
+    It has not been normalized as canonical skill_access.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -166,7 +176,7 @@ profiles:
   name: Bounty Hunter
   name_i18n:
     en: Bounty Hunter
-    es: null
+    es: Cazador de recompensas
   normalization_status: normalized
   characteristics:
     M: 4
@@ -222,6 +232,9 @@ profiles:
   - id: hireling.hired-sword.bounty-hunter.rule.capture
     name: Capture
     effect: Has a source-defined post-battle capture rule.
+    name_i18n:
+      en: Capture
+      es: Captura
   unresolved_references:
   - kind: equipment_mapping
     source_name: Lantern
@@ -237,7 +250,7 @@ profiles:
   name: Chameleon Skink
   name_i18n:
     en: Chameleon Skink
-    es: null
+    es: Skink camaleón
   normalization_status: normalized
   characteristics:
     M: 6
@@ -276,15 +289,27 @@ profiles:
   - id: hireling.hired-sword.chameleon-skink.rule.chameleon-skin
     name: Chameleon Skin
     effect: Uses the source chameleon-skin concealment rule.
+    name_i18n:
+      en: Chameleon Skin
+      es: Piel de camaleón
   - id: hireling.hired-sword.chameleon-skink.rule.infiltrator
     name: Infiltrator
     effect: May infiltrate according to the source rule.
+    name_i18n:
+      en: Infiltrator
+      es: Infiltrador
   - id: hireling.hired-sword.chameleon-skink.rule.aquatic
     name: Aquatic
     effect: Uses the source aquatic rule.
+    name_i18n:
+      en: Aquatic
+      es: Acuático
   - id: hireling.hired-sword.chameleon-skink.rule.cold-blooded
     name: Cold Blooded
     effect: Uses the source cold-blooded rule.
+    name_i18n:
+      en: Cold Blooded
+      es: Sangre fría
   unresolved_references:
   - kind: equipment_modifier
     source_name: poison darts
@@ -300,7 +325,7 @@ profiles:
   name: Clan Skryre Rat Ogre
   name_i18n:
     en: Clan Skryre Rat Ogre
-    es: null
+    es: Ogro rata del Clan Skryre
   normalization_status: normalized
   characteristics:
     M: 4
@@ -319,36 +344,66 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.clan-skryre-rat-ogre.item.warpfire-thrower
       name: Integrated Warpfire Thrower
+      name_i18n:
+        en: Integrated Warpfire Thrower
+        es: Lanzallamas de disformidad integrado
     - id: hireling.hired-sword.clan-skryre-rat-ogre.item.bio-armour
       name: Bio-mechanical Armour
       save: 4+
+      name_i18n:
+        en: Bio-mechanical Armour
+        es: Armadura biomecánica
   skill_access: []
   starting_skill_ids: []
   rules:
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.large
     name: Large
     effect: Counts as a large target.
+    name_i18n:
+      en: Large
+      es: Grande
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.fear
     name: Fear
     effect: Causes fear.
+    name_i18n:
+      en: Fear
+      es: Miedo
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-machinery
     name: Bio Machinery
     effect: Uses the source bio-machinery rule.
+    name_i18n:
+      en: Bio Machinery
+      es: Biomaquinaria
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.wyrdstone-powered
     name: Wyrdstone Powered
     effect: Requires source-defined wyrdstone upkeep/power.
+    name_i18n:
+      en: Wyrdstone Powered
+      es: Propulsado por piedra bruja
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.may-not-run
     name: May Not Run
     effect: May not run according to the source rule.
+    name_i18n:
+      en: May Not Run
+      es: No puede correr
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.immune-to-poison
     name: Immune to Poison
     effect: Immune to poison.
+    name_i18n:
+      en: Immune to Poison
+      es: Inmune al veneno
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.warpfire-thrower
     name: Warpfire Thrower
     effect: Has an integrated warpfire thrower and malfunction rule.
+    name_i18n:
+      en: Warpfire Thrower
+      es: Lanzallamas de disformidad
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.no-experience
     name: No Experience
     effect: Does not gain Experience.
+    name_i18n:
+      en: No Experience
+      es: Sin experiencia
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -361,7 +416,7 @@ profiles:
   name: Dark Elf Assassin
   name_i18n:
     en: Dark Elf Assassin
-    es: null
+    es: Asesina elfa oscura
   normalization_status: normalized
   characteristics:
     M: 5
@@ -394,11 +449,17 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.dark-elf-assassin.item.dark-elf-blade
       name: Dark Elf Blade
+      name_i18n:
+        en: Dark Elf Blade
+        es: Hoja de elfo oscuro
     - id: hireling.hired-sword.dark-elf-assassin.item.dark-cloak
       name: Dark Cloak
       counts_as:
         item_id: elven_cloak
         context: rules
+      name_i18n:
+        en: Dark Cloak
+        es: Capa oscura
   skill_access:
   - combat
   - shooting
@@ -409,9 +470,15 @@ profiles:
   - id: hireling.hired-sword.dark-elf-assassin.rule.perfect-killer
     name: Perfect Killer
     effect: Uses the source Perfect Killer rule.
+    name_i18n:
+      en: Perfect Killer
+      es: Asesino perfecto
   - id: hireling.hired-sword.dark-elf-assassin.rule.kindred-hatred
     name: Kindred Hatred
     effect: Uses the source Dark Elf hatred rule.
+    name_i18n:
+      en: Kindred Hatred
+      es: Odio de sangre
   unresolved_references:
   - kind: equipment_mapping
     source_name: Repeater Crossbow
@@ -427,7 +494,7 @@ profiles:
   name: Duellist
   name_i18n:
     en: Duellist
-    es: null
+    es: Duelista
   normalization_status: normalized
   characteristics:
     M: 4
@@ -463,6 +530,9 @@ profiles:
       counts_as:
         item_id: buckler
         context: rules
+      name_i18n:
+        en: Duelist's Cloak
+        es: Capa de duelo
   skill_access:
   - combat
   - shooting
@@ -471,6 +541,9 @@ profiles:
   - id: hireling.hired-sword.duellist.rule.darting-steel
     name: Darting Steel
     effect: Uses the source Darting Steel rule.
+    name_i18n:
+      en: Darting Steel
+      es: Acero veloz
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -483,7 +556,7 @@ profiles:
   name: Dwarf Pathfinder
   name_i18n:
     en: Dwarf Pathfinder
-    es: null
+    es: Explorador enano
   normalization_status: normalized
   characteristics:
     M: 3
@@ -526,18 +599,33 @@ profiles:
   - id: hireling.hired-sword.dwarf-pathfinder.rule.explorer
     name: Explorer
     effect: Uses the source exploration rule.
+    name_i18n:
+      en: Explorer
+      es: Explorador
   - id: hireling.hired-sword.dwarf-pathfinder.rule.hard-to-kill
     name: Hard to Kill
     effect: Uses the source Dwarf injury rule.
+    name_i18n:
+      en: Hard to Kill
+      es: Difíciles de matar
   - id: hireling.hired-sword.dwarf-pathfinder.rule.hard-head
     name: Hard Head
     effect: Uses the source Dwarf concussion rule.
+    name_i18n:
+      en: Hard Head
+      es: Cabeza dura
   - id: hireling.hired-sword.dwarf-pathfinder.rule.hate-orcs-and-goblins
     name: Hate Orcs and Goblins
     effect: Hates Orcs and Goblins.
+    name_i18n:
+      en: Hate Orcs and Goblins
+      es: Odio a orcos y goblins
   - id: hireling.hired-sword.dwarf-pathfinder.rule.elf-grudge
     name: Elf Grudge
     effect: Uses the source Elf-grudge restriction.
+    name_i18n:
+      en: Elf Grudge
+      es: Rencor élfico
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -550,7 +638,7 @@ profiles:
   name: Dwarf Treasure Hunter
   name_i18n:
     en: Dwarf Treasure Hunter
-    es: null
+    es: Cazador de tesoros enano
   normalization_status: normalized
   characteristics:
     M: 3
@@ -591,8 +679,14 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.dwarf-treasure-hunter.item.mining-pick
       name: Mining Pick
+      name_i18n:
+        en: Mining Pick
+        es: Pico de minero
     - id: hireling.hired-sword.dwarf-treasure-hunter.item.lantern-rig
       name: Lantern Rig
+      name_i18n:
+        en: Lantern Rig
+        es: Aparejo de linterna
   skill_access:
   - combat
   - strength
@@ -601,18 +695,34 @@ profiles:
   - id: hireling.hired-sword.dwarf-treasure-hunter.rule.hard-to-kill
     name: Hard to Kill
     effect: Uses the Dwarf injury rule.
+    name_i18n:
+      en: Hard to Kill
+      es: Difíciles de matar
   - id: hireling.hired-sword.dwarf-treasure-hunter.rule.hard-head
     name: Hard Head
     effect: Uses the Dwarf concussion rule.
+    name_i18n:
+      en: Hard Head
+      es: Cabeza dura
   - id: hireling.hired-sword.dwarf-treasure-hunter.rule.hate-orcs-and-goblins
     name: Hate Orcs and Goblins
     effect: Hates Orcs and Goblins.
+    name_i18n:
+      en: Hate Orcs and Goblins
+      es: Odio a orcos y goblins
   - id: hireling.hired-sword.dwarf-treasure-hunter.rule.treasure-hunter
     name: Treasure Hunter
     effect: Uses the source treasure-hunting subtable.
+    name_i18n:
+      en: Treasure Hunter
+      es: Cazador de tesoros
   - id: hireling.hired-sword.dwarf-treasure-hunter.rule.campaign-eligibility
     name: Dynamic hiring eligibility — Elven employers
-    effect: Mercenaries and Witch Hunters may hire the Dwarf Treasure Hunter. A warband whose current roster includes Elves may also hire him.
+    effect: Mercenaries and Witch Hunters may hire the Dwarf Treasure Hunter. A warband whose current
+      roster includes Elves may also hire him.
+    name_i18n:
+      en: Dynamic hiring eligibility — Elven employers
+      es: Elegibilidad de contratación dinámica — contratistas élficos
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -625,7 +735,7 @@ profiles:
   name: Elf Mage
   name_i18n:
     en: Elf Mage
-    es: null
+    es: Mago élfico
   normalization_status: normalized
   characteristics:
     M: 5
@@ -656,15 +766,27 @@ profiles:
   - id: hireling.hired-sword.elf-mage.rule.fey
     name: Fey
     effect: Uses the source Fey rule.
+    name_i18n:
+      en: Fey
+      es: Hada
   - id: hireling.hired-sword.elf-mage.rule.sorcery
     name: Sorcery
     effect: Uses the source sorcery rule.
+    name_i18n:
+      en: Sorcery
+      es: Hechicería
   - id: hireling.hired-sword.elf-mage.rule.wanderer
     name: Wanderer
     effect: Does not advance and uses the source one-battle/wanderer condition.
+    name_i18n:
+      en: Wanderer
+      es: Errante
   - id: hireling.hired-sword.elf-mage.rule.wizard
     name: Wizard
     effect: Begins with three randomly generated Djed'hi spells.
+    name_i18n:
+      en: Wizard
+      es: Mago
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -677,7 +799,7 @@ profiles:
   name: Gaoler
   name_i18n:
     en: Gaoler
-    es: null
+    es: Carcelero
   normalization_status: normalized
   characteristics:
     M: 4
@@ -701,15 +823,27 @@ profiles:
   - id: hireling.hired-sword.gaoler.rule.torturer-s-grapple
     name: Torturer's Grapple
     effect: May replace normal attacks with the source-defined grapple.
+    name_i18n:
+      en: Torturer's Grapple
+      es: Agarre del verdugo
   - id: hireling.hired-sword.gaoler.rule.devout
     name: Devout
     effect: May remain unpaid under the source Sigmarite-priest condition but does not fight until paid.
+    name_i18n:
+      en: Devout
+      es: Devoto
   - id: hireling.hired-sword.gaoler.rule.inured-to-pain
     name: Inured to Pain
     effect: Injury rolls against the Gaoler suffer the source modifier.
+    name_i18n:
+      en: Inured to Pain
+      es: Endurecido al dolor
   - id: hireling.hired-sword.gaoler.rule.hatred
     name: Hatred
     effect: Hates the source-listed Chaos/Undead enemy categories.
+    name_i18n:
+      en: Hatred
+      es: Odio
   unresolved_references:
   - kind: equipment_choice
     source_name: heavy chain (counts as flail) or two Hammers/Clubs
@@ -725,7 +859,7 @@ profiles:
   name: Halfling Thief
   name_i18n:
     en: Halfling Thief
-    es: null
+    es: Ladrón halfling
   normalization_status: normalized
   characteristics:
     M: 4
@@ -768,21 +902,39 @@ profiles:
   - id: hireling.hired-sword.halfling-thief.rule.wily-thief
     name: Wily Thief
     effect: Adds extra Treasure when its source conditions are met.
+    name_i18n:
+      en: Wily Thief
+      es: Ladrón astuto
   - id: hireling.hired-sword.halfling-thief.rule.stealthy
     name: Stealthy
     effect: May hide/run according to the source rule.
+    name_i18n:
+      en: Stealthy
+      es: Sigiloso
   - id: hireling.hired-sword.halfling-thief.rule.infiltrator
     name: Infiltrator
     effect: Uses the source infiltration rule.
+    name_i18n:
+      en: Infiltrator
+      es: Infiltrador
   - id: hireling.hired-sword.halfling-thief.rule.pick-locks
     name: Pick Locks
     effect: Uses Initiative to open locked doors.
+    name_i18n:
+      en: Pick Locks
+      es: Forzar cerraduras
   - id: hireling.hired-sword.halfling-thief.rule.cutpurse
     name: Cutpurse
     effect: Adds one Treasure when eligible.
+    name_i18n:
+      en: Cutpurse
+      es: Carterista
   - id: hireling.hired-sword.halfling-thief.rule.uneasy-ally
     name: Uneasy Ally
     effect: Has a source-defined post-battle upkeep/retention table.
+    name_i18n:
+      en: Uneasy Ally
+      es: Aliado incómodo
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -795,7 +947,7 @@ profiles:
   name: Human Scout
   name_i18n:
     en: Human Scout
-    es: null
+    es: Explorador humano
   normalization_status: normalized
   characteristics:
     M: 4
@@ -836,12 +988,21 @@ profiles:
   - id: hireling.hired-sword.human-scout.rule.not-a-fighter
     name: Not a Fighter
     effect: Uses a special injury/retention rule.
+    name_i18n:
+      en: Not a Fighter
+      es: No es luchador
   - id: hireling.hired-sword.human-scout.rule.expert-hunter
     name: Expert Hunter
     effect: Uses the source hunting rule.
+    name_i18n:
+      en: Expert Hunter
+      es: Cazador experto
   - id: hireling.hired-sword.human-scout.rule.sit-in-wait
     name: Sit in Wait
     effect: Uses the source ambush rule.
+    name_i18n:
+      en: Sit in Wait
+      es: Aguaitar
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -854,7 +1015,7 @@ profiles:
   name: Kislev Ranger
   name_i18n:
     en: Kislev Ranger
-    es: null
+    es: Guardabosques de Kislev
   normalization_status: normalized
   characteristics:
     M: 4
@@ -883,6 +1044,9 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.kislev-ranger.item.hunters-cloak
       name: Hunter's Cloak
+      name_i18n:
+        en: Hunter's Cloak
+        es: Capa de cazador
   skill_access:
   - combat
   - shooting
@@ -895,21 +1059,39 @@ profiles:
   - id: hireling.hired-sword.kislev-ranger.rule.heart-strike
     name: Heart Strike
     effect: Uses the source Heart Strike rule.
+    name_i18n:
+      en: Heart Strike
+      es: Golpe al corazón
   - id: hireling.hired-sword.kislev-ranger.rule.hunter-s-cloak
     name: Hunter's Cloak
     effect: Uses a unique cloak rule.
+    name_i18n:
+      en: Hunter's Cloak
+      es: Capa de cazador
   - id: hireling.hired-sword.kislev-ranger.rule.loner
     name: Loner
     effect: Uses the source loner rule.
+    name_i18n:
+      en: Loner
+      es: Solitario
   - id: hireling.hired-sword.kislev-ranger.rule.seeker
     name: Seeker
     effect: Modifies exploration according to the source.
+    name_i18n:
+      en: Seeker
+      es: Buscador
   - id: hireling.hired-sword.kislev-ranger.rule.animal-call
     name: Animal Call
     effect: Special skill option.
+    name_i18n:
+      en: Animal Call
+      es: Llamado animal
   - id: hireling.hired-sword.kislev-ranger.rule.herb-lore
     name: Herb Lore
     effect: Special skill option.
+    name_i18n:
+      en: Herb Lore
+      es: Sabiduría de las hierbas
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -922,7 +1104,7 @@ profiles:
   name: Mule Skinner
   name_i18n:
     en: Mule Skinner
-    es: null
+    es: Arriero de mulas
   normalization_status: normalized
   characteristics:
     M: 4
@@ -958,9 +1140,15 @@ profiles:
   - id: hireling.hired-sword.mule-skinner.rule.animal-handler
     name: Animal Handler
     effect: Uses the source animal-handler rule.
+    name_i18n:
+      en: Animal Handler
+      es: Tratador de animales
   - id: hireling.hired-sword.mule-skinner.rule.whip-master
     name: Whip Master
     effect: Uses the source whip-master rule.
+    name_i18n:
+      en: Whip Master
+      es: Maestro del látigo
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -973,7 +1161,7 @@ profiles:
   name: Nomad Scout
   name_i18n:
     en: Nomad Scout
-    es: null
+    es: Explorador nómada
   normalization_status: normalized
   characteristics:
     M: 4
@@ -1007,8 +1195,12 @@ profiles:
   - id: hireling.hired-sword.nomad-scout.rule.son-of-the-desert
     name: Son of the Desert
     effect: Uses the source desert-specialist rule.
+    name_i18n:
+      en: Son of the Desert
+      es: Hijo del desierto
   source_notes:
-  - The source weapon is a Scimitar; this entry records it by the existing canonical Sword item only because the rule states its sword-equivalent use.
+  - The source weapon is a Scimitar; this entry records it by the existing canonical Sword item only because
+    the rule states its sword-equivalent use.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1021,7 +1213,7 @@ profiles:
   name: Norse Shaman
   name_i18n:
     en: Norse Shaman
-    es: null
+    es: Chamán norse
   normalization_status: normalized
   characteristics:
     M: 4
@@ -1051,6 +1243,9 @@ profiles:
   - id: hireling.hired-sword.norse-shaman.rule.runecaster
     name: Runecaster
     effect: Begins with two Norse Runes and may learn further runes according to the source.
+    name_i18n:
+      en: Runecaster
+      es: Lanzador de runas
   unresolved_references:
   - kind: equipment_choice
     source_name: Sword or Axe
@@ -1066,7 +1261,7 @@ profiles:
   name: Old Prospector
   name_i18n:
     en: Old Prospector
-    es: null
+    es: Viejo buscador
   normalization_status: normalized
   characteristics:
     M: 4
@@ -1092,6 +1287,9 @@ profiles:
     - id: hireling.hired-sword.old-prospector.item.pick
       name: Prospector's Pick
       counts_as: two-handed-weapon
+      name_i18n:
+        en: Prospector's Pick
+        es: Pico del buscador
   skill_access:
   - strength
   - speed
@@ -1102,12 +1300,21 @@ profiles:
   - id: hireling.hired-sword.old-prospector.rule.hardened
     name: Hardened
     effect: Immune to Fear.
+    name_i18n:
+      en: Hardened
+      es: Endurecido
   - id: hireling.hired-sword.old-prospector.rule.finders-keepers
     name: Finders Keepers
     effect: Keeps source-defined Treasure/Wyrdstone finds.
+    name_i18n:
+      en: Finders Keepers
+      es: El que lo encuentra se lo queda
   - id: hireling.hired-sword.old-prospector.rule.old-coot
     name: Old Coot
     effect: May leave after a battle on the source D6 result.
+    name_i18n:
+      en: Old Coot
+      es: Viejo chocho
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1120,7 +1327,7 @@ profiles:
   name: Pathfinder
   name_i18n:
     en: Pathfinder
-    es: null
+    es: Explorador de senderos
   normalization_status: normalized
   characteristics:
     M: 4
@@ -1168,15 +1375,27 @@ profiles:
   - id: hireling.hired-sword.pathfinder.rule.lay-of-the-land
     name: Lay of the Land
     effect: Ignores terrain modifiers per source.
+    name_i18n:
+      en: Lay of the Land
+      es: Conocer el terreno
   - id: hireling.hired-sword.pathfinder.rule.knowledge-of-myths-and-legends
     name: Knowledge of Myths and Legends
     effect: May reroll one exploration die when eligible.
+    name_i18n:
+      en: Knowledge of Myths and Legends
+      es: Conocimiento de mitos y leyendas
   - id: hireling.hired-sword.pathfinder.rule.lookout
     name: Lookout
     effect: Special skill option to cancel a trap/hazard.
+    name_i18n:
+      en: Lookout
+      es: Vigía
   - id: hireling.hired-sword.pathfinder.rule.this-way
     name: This Way
     effect: Special skill option allowing nearby models to traverse impassable terrain.
+    name_i18n:
+      en: This Way
+      es: Por aquí
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1189,7 +1408,7 @@ profiles:
   name: Priest Of Morr
   name_i18n:
     en: Priest Of Morr
-    es: null
+    es: Sacerdote de Morr
   normalization_status: normalized
   characteristics:
     M: 4
@@ -1219,9 +1438,15 @@ profiles:
   - id: hireling.hired-sword.priest-of-morr.rule.loner
     name: Loner
     effect: Does not suffer All Alone.
+    name_i18n:
+      en: Loner
+      es: Solitario
   - id: hireling.hired-sword.priest-of-morr.rule.funerary-rites
     name: Funerary Rites
     effect: May learn and perform Funerary Rites according to Magic rules.
+    name_i18n:
+      en: Funerary Rites
+      es: Ritos funerarios
   unresolved_references:
   - kind: entity_semantics
     source_name: Mercenary Hero replacement rather than normal Hired Sword
@@ -1237,7 +1462,7 @@ profiles:
   name: Runesmith Journeyman
   name_i18n:
     en: Runesmith Journeyman
-    es: null
+    es: Oficial herrero rúnico
   normalization_status: normalized
   characteristics:
     M: 3
@@ -1262,6 +1487,9 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.runesmith-journeyman.item.gromril-hammer
       name: Gromril Hammer
+      name_i18n:
+        en: Gromril Hammer
+        es: Martillo de gromril
   skill_access:
   - combat
   - strength
@@ -1271,15 +1499,28 @@ profiles:
   - id: hireling.hired-sword.runesmith-journeyman.rule.runesmith
     name: Runesmith
     effect: May inscribe runes according to source.
+    name_i18n:
+      en: Runesmith
+      es: Herrero rúnico
   - id: hireling.hired-sword.runesmith-journeyman.rule.armourer
     name: Armourer
     effect: May buy one eligible item at a 2D6 gc discount if eligible.
+    name_i18n:
+      en: Armourer
+      es: Armero
   - id: hireling.hired-sword.runesmith-journeyman.rule.armour
     name: Armour
     effect: Does not suffer Dwarf movement penalty from armour.
+    name_i18n:
+      en: Armour
+      es: Armadura
   - id: hireling.hired-sword.runesmith-journeyman.rule.campaign-eligibility
     name: Dynamic hiring eligibility — Elven employers
-    effect: Mercenaries and Witch Hunters may hire the Runesmith Journeyman. A warband whose current roster includes Elves may also hire him; the source's higher upkeep for such a warband is resolved separately.
+    effect: Mercenaries and Witch Hunters may hire the Runesmith Journeyman. A warband whose current roster
+      includes Elves may also hire him; the source's higher upkeep for such a warband is resolved separately.
+    name_i18n:
+      en: Dynamic hiring eligibility — Elven employers
+      es: Elegibilidad de contratación dinámica — contratistas élficos
   unresolved_references:
   - kind: rune_system
     source_name: Rune use
@@ -1295,7 +1536,7 @@ profiles:
   name: Shadow Warrior
   name_i18n:
     en: Shadow Warrior
-    es: null
+    es: Guerrero de las sombras
   normalization_status: normalized
   characteristics:
     M: 5
@@ -1342,18 +1583,34 @@ profiles:
   - id: hireling.hired-sword.shadow-warrior.rule.hate-dark-elves
     name: Hate Dark Elves
     effect: Hates Dark Elves.
+    name_i18n:
+      en: Hate Dark Elves
+      es: Odio a los elfos oscuros
   - id: hireling.hired-sword.shadow-warrior.rule.excellent-sight
     name: Excellent Sight
     effect: Uses the source improved spotting rule.
+    name_i18n:
+      en: Excellent Sight
+      es: Vista excepcional
   - id: hireling.hired-sword.shadow-warrior.rule.bitter-enemies
     name: Bitter Enemies
     effect: Uses the source rivalry/restriction rule.
+    name_i18n:
+      en: Bitter Enemies
+      es: Enemigos amargos
   - id: hireling.hired-sword.shadow-warrior.rule.infiltration
     name: Infiltration
     effect: Uses source infiltration.
+    name_i18n:
+      en: Infiltration
+      es: Infiltración
   - id: hireling.hired-sword.shadow-warrior.rule.campaign-eligibility
     name: Dynamic hiring eligibility — Evil Hired Sword incompatibility
-    effect: The Shadow Warrior cannot be hired by or remain with a warband whose current roster contains an evil Hired Sword.
+    effect: The Shadow Warrior cannot be hired by or remain with a warband whose current roster contains
+      an evil Hired Sword.
+    name_i18n:
+      en: Dynamic hiring eligibility — Evil Hired Sword incompatibility
+      es: Elegibilidad de contratación dinámica — incompatibilidad con Espada contratada maligna
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1366,7 +1623,7 @@ profiles:
   name: Snake Charmer
   name_i18n:
     en: Snake Charmer
-    es: null
+    es: Encantador de serpientes
   normalization_status: normalized
   characteristics:
     M: 4
@@ -1400,18 +1657,33 @@ profiles:
   - id: hireling.hired-sword.snake-charmer.rule.snake-charmer
     name: Snake Charmer
     effect: Controls up to the source-defined number of snakes.
+    name_i18n:
+      en: Snake Charmer
+      es: Encantador de serpientes
   - id: hireling.hired-sword.snake-charmer.rule.immune-to-poison
     name: Immune to Poison
     effect: Immune to poison.
+    name_i18n:
+      en: Immune to Poison
+      es: Inmune al veneno
   - id: hireling.hired-sword.snake-charmer.rule.venomous
     name: Venomous
     effect: Snake attacks use the source venom rule.
+    name_i18n:
+      en: Venomous
+      es: Venenosos
   - id: hireling.hired-sword.snake-charmer.rule.animals
     name: Animals
     effect: Snakes use animal/no-XP rules.
+    name_i18n:
+      en: Animals
+      es: Animales
   - id: hireling.hired-sword.snake-charmer.rule.snake-hunter
     name: Snake Hunter
     effect: Uses the source snake-hunting rule.
+    name_i18n:
+      en: Snake Hunter
+      es: Cazador de serpientes
   unresolved_references:
   - kind: companion_profiles
     source_name: three snakes with separate profile
@@ -1429,7 +1701,7 @@ profiles:
   name: Thief
   name_i18n:
     en: Thief
-    es: null
+    es: Ladrón
   normalization_status: normalized
   characteristics:
     M: 4
@@ -1458,6 +1730,9 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.thief.item.thiefs-cloak
       name: Thief's Cloak
+      name_i18n:
+        en: Thief's Cloak
+        es: Capa del ladrón
   skill_access:
   - combat
   - speed
@@ -1466,6 +1741,9 @@ profiles:
   - id: hireling.hired-sword.thief.rule.thief
     name: Thief
     effect: Uses the source stealing/exploration rules.
+    name_i18n:
+      en: Thief
+      es: Ladrón
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1478,7 +1756,7 @@ profiles:
   name: Tomb Robber
   name_i18n:
     en: Tomb Robber
-    es: null
+    es: Ladrón de tumbas
   normalization_status: normalized
   characteristics:
     M: 4
@@ -1517,12 +1795,21 @@ profiles:
   - id: hireling.hired-sword.tomb-robber.rule.explorer
     name: Explorer
     effect: Uses the source exploration rule.
+    name_i18n:
+      en: Explorer
+      es: Explorador
   - id: hireling.hired-sword.tomb-robber.rule.trap-expert
     name: Trap Expert
     effect: Uses source trap rule.
+    name_i18n:
+      en: Trap Expert
+      es: Experto en trampas
   - id: hireling.hired-sword.tomb-robber.rule.excellent-reflexes
     name: Excellent Reflexes
     effect: Uses source reflex rule.
+    name_i18n:
+      en: Excellent Reflexes
+      es: Reflejos excelentes
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1535,7 +1822,7 @@ profiles:
   name: Warrior Priest Of Sigmar
   name_i18n:
     en: Warrior Priest Of Sigmar
-    es: null
+    es: Sacerdote guerrero de Sigmar
   normalization_status: normalized
   characteristics:
     M: 4
@@ -1564,6 +1851,9 @@ profiles:
     unique_equipment:
     - id: hireling.hired-sword.warrior-priest-of-sigmar.item.hammer-of-sigmar
       name: Hammer of Sigmar
+      name_i18n:
+        en: Hammer of Sigmar
+        es: Martillo de Sigmar
   skill_access:
   - academic
   starting_skill_ids: []
@@ -1571,9 +1861,16 @@ profiles:
   - id: hireling.hired-sword.warrior-priest-of-sigmar.rule.prayers
     name: Prayers
     effect: May learn/use Prayers of Sigmar.
+    name_i18n:
+      en: Prayers
+      es: Plegarias
   - id: hireling.hired-sword.warrior-priest-of-sigmar.rule.campaign-eligibility
     name: Dynamic hiring eligibility — Middenheim variant
-    effect: Middenheim Mercenaries may not hire the Warrior Priest of Sigmar. The application must evaluate the selected Mercenary variant.
+    effect: Middenheim Mercenaries may not hire the Warrior Priest of Sigmar. The application must evaluate
+      the selected Mercenary variant.
+    name_i18n:
+      en: Dynamic hiring eligibility — Middenheim variant
+      es: Elegibilidad de contratación dinámica — variante de Middenheim
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1586,7 +1883,7 @@ profiles:
   name: Witch
   name_i18n:
     en: Witch
-    es: null
+    es: Bruja
   normalization_status: normalized
   characteristics:
     M: 4
@@ -1613,17 +1910,30 @@ profiles:
   - id: hireling.hired-sword.witch.rule.wizard
     name: Wizard
     effect: Begins with two random Charms & Hexes spells.
+    name_i18n:
+      en: Wizard
+      es: Mago
   - id: hireling.hired-sword.witch.rule.recluse
     name: Recluse
     effect: Requires a source D6 hiring check.
+    name_i18n:
+      en: Recluse
+      es: Recluso
   - id: hireling.hired-sword.witch.rule.potions
     name: Potions
     effect: May give one Hero a source-defined random potion before battle.
+    name_i18n:
+      en: Potions
+      es: Pociones
   - id: hireling.hired-sword.witch.rule.reluctant
     name: Reluctant
     effect: Uses source movement/charge restrictions.
+    name_i18n:
+      en: Reluctant
+      es: Renuente
   source_notes:
-  - The original publication does not state advancement skill lists. Mordheimer recommends Academic/Charms & Hexes; this recommendation is not normalized into skill_access.
+  - The original publication does not state advancement skill lists. Mordheimer recommends Academic/Charms
+    & Hexes; this recommendation is not normalized into skill_access.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1636,7 +1946,7 @@ profiles:
   name: Witch Hunter
   name_i18n:
     en: Witch Hunter
-    es: null
+    es: Cazador de brujas
   normalization_status: normalized
   characteristics:
     M: 4
@@ -1677,15 +1987,28 @@ profiles:
   - id: hireling.hired-sword.witch-hunter.rule.burn-the-witch
     name: Burn the Witch
     effect: Hates enemy spellcasters and has source hiring restrictions regarding friendly spellcasters.
+    name_i18n:
+      en: Burn the Witch
+      es: Quemad a la bruja
   - id: hireling.hired-sword.witch-hunter.rule.in-sigmar-s-name
     name: In Sigmar's Name
     effect: May reroll failed Fear tests.
+    name_i18n:
+      en: In Sigmar's Name
+      es: En nombre de Sigmar
   - id: hireling.hired-sword.witch-hunter.rule.sigmar-s-reward
     name: Sigmar's Reward
     effect: Can reduce upkeep when source victory conditions are met.
+    name_i18n:
+      en: Sigmar's Reward
+      es: Recompensa de Sigmar
   - id: hireling.hired-sword.witch-hunter.rule.campaign-eligibility
     name: Dynamic hiring eligibility — Spellcaster restriction
-    effect: The Witch Hunter will not work for a warband whose current roster contains a spellcaster, except a Priest of Sigmar, Ulric, Taal or Morr.
+    effect: The Witch Hunter will not work for a warband whose current roster contains a spellcaster,
+      except a Priest of Sigmar, Ulric, Taal or Morr.
+    name_i18n:
+      en: Dynamic hiring eligibility — Spellcaster restriction
+      es: Elegibilidad de contratación dinámica — restricción de lanzadores de hechizos
   unresolved_references:
   - kind: equipment_choice
     source_name: Duelling Pistol or Crossbow Pistol
@@ -1703,7 +2026,7 @@ profiles:
   name: Wolf Priest of Ulric
   name_i18n:
     en: Wolf Priest of Ulric
-    es: null
+    es: Sacerdote lobo de Ulric
   normalization_status: normalized
   characteristics:
     M: 4
@@ -1735,15 +2058,28 @@ profiles:
   - id: hireling.hired-sword.wolf-priest-of-ulric.rule.prayers
     name: Prayers
     effect: May use Prayers of Ulric.
+    name_i18n:
+      en: Prayers
+      es: Plegarias
   - id: hireling.hired-sword.wolf-priest-of-ulric.rule.hatred
     name: Hatred
     effect: Hates the source-listed Sigmarite models.
+    name_i18n:
+      en: Hatred
+      es: Odio
   - id: hireling.hired-sword.wolf-priest-of-ulric.rule.wolf-companion
     name: Wolf Companion
     effect: May be accompanied by the source Wolf Companion.
+    name_i18n:
+      en: Wolf Companion
+      es: Lobo compañero
   - id: hireling.hired-sword.wolf-priest-of-ulric.rule.campaign-eligibility
     name: Dynamic hiring eligibility — Middenheim variant
-    effect: The Wolf Priest of Ulric is a Hero replacement available only to Middenheim Mercenaries. The application must evaluate the selected Mercenary variant.
+    effect: The Wolf Priest of Ulric is a Hero replacement available only to Middenheim Mercenaries. The
+      application must evaluate the selected Mercenary variant.
+    name_i18n:
+      en: Dynamic hiring eligibility — Middenheim variant
+      es: Elegibilidad de contratación dinámica — variante de Middenheim
   unresolved_references:
   - kind: entity_semantics
     source_name: Middenheim Hero replacement rather than normal Hired Sword

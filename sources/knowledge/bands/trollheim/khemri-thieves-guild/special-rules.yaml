@@ -10,10 +10,11 @@ rules:
     section: Heroes / 1 Guild Chief / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: Any warband model within 6" of the Guild Chief may use his Leadership instead of its own.
-    es: null
+    es: Cualquier modelo de la banda a 6" del Jefe del Gremio puede usar su Liderazgo en lugar del suyo
+      propio.
   applies_to:
     profile_ids:
     - guild-chief
@@ -28,21 +29,27 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: guild-chief--wanted
   name: Wanted
-  effect: 'If the Guild Chief is captured by an enemy warband after a battle, that warband may sell him to the authorities
-    for 1D6 plus his accumulated Experience in gold crowns. Then roll D6 for the captive: 1-3 = one of his hands is cut off;
-    4-5 = he is branded on the forehead, suffering -1 Toughness and -3 on rolls to find Rare items; 6 = he is executed.'
+  effect: >-
+    If the Guild Chief is captured by an enemy warband after a battle, that warband may sell him to
+    the authorities for 1D6 plus his accumulated Experience in gold crowns. Then roll D6 for the
+    captive: 1-3 = one of his hands is cut off; 4-5 = he is branded on the forehead, suffering -1
+    Toughness and -3 on rolls to find Rare items; 6 = he is executed.
   source:
     manual: khemri
     printed_page: 72
     section: Heroes / 1 Guild Chief / Wanted
   name_i18n:
     en: Wanted
-    es: null
+    es: Buscado
   effect_i18n:
-    en: 'If the Guild Chief is captured by an enemy warband after a battle, that warband may sell him to the authorities for
-      1D6 plus his accumulated Experience in gold crowns. Then roll D6 for the captive: 1-3 = one of his hands is cut off;
-      4-5 = he is branded on the forehead, suffering -1 Toughness and -3 on rolls to find Rare items; 6 = he is executed.'
-    es: null
+    en: 'If the Guild Chief is captured by an enemy warband after a battle, that warband may sell him
+      to the authorities for 1D6 plus his accumulated Experience in gold crowns. Then roll D6 for the
+      captive: 1-3 = one of his hands is cut off; 4-5 = he is branded on the forehead, suffering -1 Toughness
+      and -3 on rolls to find Rare items; 6 = he is executed.'
+    es: 'Si el Jefe del Gremio es capturado por una banda enemiga tras una batalla, esa banda puede venderlo
+      a las autoridades por 1D6 más su Experiencia acumulada en coronas de oro. Luego tira D6 por el cautivo:
+      1-3 = le cortan una mano; 4-5 = le marcan la frente con hierro, sufriendo -1 Resistencia y -3 en
+      las tiradas para encontrar objetos Raros; 6 = es ejecutado.'
   applies_to:
     profile_ids:
     - guild-chief
@@ -64,10 +71,10 @@ rules:
     section: Heroes / 1 Guild Chief / Contacts
   name_i18n:
     en: Contacts
-    es: null
+    es: Contactos
   effect_i18n:
     en: The Guild Chief gains +1 on rolls to find Rare items in the black market.
-    es: null
+    es: El Jefe del Gremio obtiene +1 en las tiradas para encontrar objetos Raros en el mercado negro.
   applies_to:
     profile_ids:
     - guild-chief
@@ -82,19 +89,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: guild-chief--disable-traps
   name: Disable Traps
-  effect: The Guild Chief is an expert at detecting and disabling traps. Resolve this using the trap rules referenced by the
-    Khemri Experience section.
+  effect: The Guild Chief is an expert at detecting and disabling traps. Resolve this using the trap rules
+    referenced by the Khemri Experience section.
   source:
     manual: khemri
     printed_page: 72
     section: Heroes / 1 Guild Chief / Disable Traps
   name_i18n:
     en: Disable Traps
-    es: null
+    es: Desactivar trampas
   effect_i18n:
-    en: The Guild Chief is an expert at detecting and disabling traps. Resolve this using the trap rules referenced by the
-      Khemri Experience section.
-    es: null
+    en: The Guild Chief is an expert at detecting and disabling traps. Resolve this using the trap rules
+      referenced by the Khemri Experience section.
+    es: El Jefe del Gremio es un experto en detectar y desactivar trampas. Resuélvelo usando las reglas
+      de trampas referenciadas por la sección de Experiencia de Khemri.
   applies_to:
     profile_ids:
     - guild-chief
@@ -109,21 +117,27 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: guild-master-thief--wanted
   name: Wanted
-  effect: 'If the Master Thief is captured by an enemy warband after a battle, that warband may sell him to the authorities
-    for 1D6 plus his accumulated Experience in gold crowns. Then roll D6 for the captive: 1-3 = one of his hands is cut off;
-    4-5 = he is branded on the forehead, suffering -1 Toughness and -3 on rolls to find Rare items; 6 = he is executed.'
+  effect: >-
+    If the Master Thief is captured by an enemy warband after a battle, that warband may sell him to
+    the authorities for 1D6 plus his accumulated Experience in gold crowns. Then roll D6 for the
+    captive: 1-3 = one of his hands is cut off; 4-5 = he is branded on the forehead, suffering -1
+    Toughness and -3 on rolls to find Rare items; 6 = he is executed.
   source:
     manual: khemri
     printed_page: 72
     section: Heroes / 0-1 Master Thief / Wanted
   name_i18n:
     en: Wanted
-    es: null
+    es: Buscado
   effect_i18n:
-    en: 'If the Master Thief is captured by an enemy warband after a battle, that warband may sell him to the authorities
-      for 1D6 plus his accumulated Experience in gold crowns. Then roll D6 for the captive: 1-3 = one of his hands is cut
-      off; 4-5 = he is branded on the forehead, suffering -1 Toughness and -3 on rolls to find Rare items; 6 = he is executed.'
-    es: null
+    en: 'If the Master Thief is captured by an enemy warband after a battle, that warband may sell him
+      to the authorities for 1D6 plus his accumulated Experience in gold crowns. Then roll D6 for the
+      captive: 1-3 = one of his hands is cut off; 4-5 = he is branded on the forehead, suffering -1 Toughness
+      and -3 on rolls to find Rare items; 6 = he is executed.'
+    es: 'Si el Ladrón Maestro es capturado por una banda enemiga tras una batalla, esa banda puede venderlo
+      a las autoridades por 1D6 más su Experiencia acumulada en coronas de oro. Luego tira D6 por el cautivo:
+      1-3 = le cortan una mano; 4-5 = le marcan la frente con hierro, sufriendo -1 Resistencia y -3 en
+      las tiradas para encontrar objetos Raros; 6 = es ejecutado.'
   applies_to:
     profile_ids:
     - guild-master-thief
@@ -145,10 +159,10 @@ rules:
     section: Heroes / 0-1 Master Thief / Contacts
   name_i18n:
     en: Contacts
-    es: null
+    es: Contactos
   effect_i18n:
     en: The Master Thief gains +1 on rolls to find Rare items in the black market.
-    es: null
+    es: El Ladrón Maestro obtiene +1 en las tiradas para encontrar objetos Raros en el mercado negro.
   applies_to:
     profile_ids:
     - guild-master-thief
@@ -163,19 +177,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: guild-master-thief--disable-traps
   name: Disable Traps
-  effect: The Master Thief is an expert at detecting and disabling traps. Resolve this using the trap rules referenced by
-    the Khemri Experience section.
+  effect: The Master Thief is an expert at detecting and disabling traps. Resolve this using the trap
+    rules referenced by the Khemri Experience section.
   source:
     manual: khemri
     printed_page: 72
     section: Heroes / 0-1 Master Thief / Disable Traps
   name_i18n:
     en: Disable Traps
-    es: null
+    es: Desactivar trampas
   effect_i18n:
-    en: The Master Thief is an expert at detecting and disabling traps. Resolve this using the trap rules referenced by the
-      Khemri Experience section.
-    es: null
+    en: The Master Thief is an expert at detecting and disabling traps. Resolve this using the trap rules
+      referenced by the Khemri Experience section.
+    es: El Ladrón Maestro es un experto en detectar y desactivar trampas. Resuélvelo usando las reglas
+      de trampas referenciadas por la sección de Experiencia de Khemri.
   applies_to:
     profile_ids:
     - guild-master-thief
@@ -197,10 +212,10 @@ rules:
     section: Heroes / 0-2 Ruffians / Contacts
   name_i18n:
     en: Contacts
-    es: null
+    es: Contactos
   effect_i18n:
     en: A Ruffian gains +1 on rolls to find Rare items in the black market.
-    es: null
+    es: Un Matón obtiene +1 en las tiradas para encontrar objetos Raros en el mercado negro.
   applies_to:
     profile_ids:
     - guild-ruffian
@@ -215,19 +230,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: guild-ruffian--disable-traps
   name: Disable Traps
-  effect: Ruffians are experts at detecting and disabling traps. Resolve this using the trap rules referenced by the Khemri
-    Experience section.
+  effect: Ruffians are experts at detecting and disabling traps. Resolve this using the trap rules referenced
+    by the Khemri Experience section.
   source:
     manual: khemri
     printed_page: 73
     section: Heroes / 0-2 Ruffians / Disable Traps
   name_i18n:
     en: Disable Traps
-    es: null
+    es: Desactivar trampas
   effect_i18n:
-    en: Ruffians are experts at detecting and disabling traps. Resolve this using the trap rules referenced by the Khemri
-      Experience section.
-    es: null
+    en: Ruffians are experts at detecting and disabling traps. Resolve this using the trap rules referenced
+      by the Khemri Experience section.
+    es: Los Matones son expertos en detectar y desactivar trampas. Resuélvelo usando las reglas de trampas
+      referenciadas por la sección de Experiencia de Khemri.
   applies_to:
     profile_ids:
     - guild-ruffian
@@ -242,19 +258,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: guild-hashashiyyin--consummate-fighter
   name: Consummate Fighter
-  effect: Any Wound inflicted by the Hashashiyyin Assassin, whether in close combat or shooting, imposes an additional -1
-    modifier to the target's armour save.
+  effect: Any Wound inflicted by the Hashashiyyin Assassin, whether in close combat or shooting, imposes
+    an additional -1 modifier to the target's armour save.
   source:
     manual: khemri
     printed_page: 73
     section: Heroes / 0-1 Hashashiyyin Assassin / Consummate Fighter
   name_i18n:
     en: Consummate Fighter
-    es: null
+    es: Luchador consumado
   effect_i18n:
-    en: Any Wound inflicted by the Hashashiyyin Assassin, whether in close combat or shooting, imposes an additional -1 modifier
-      to the target's armour save.
-    es: null
+    en: Any Wound inflicted by the Hashashiyyin Assassin, whether in close combat or shooting, imposes
+      an additional -1 modifier to the target's armour save.
+    es: Cualquier Herida infligida por el Asesino Hashashiyyin, ya sea en combate cuerpo a cuerpo o en
+      disparo, impone un modificador adicional de -1 a la salvación por armadura del objetivo.
   applies_to:
     profile_ids:
     - guild-hashashiyyin
@@ -279,10 +296,10 @@ rules:
     section: Heroes / 0-1 Hashashiyyin Assassin / Contacts
   name_i18n:
     en: Contacts
-    es: null
+    es: Contactos
   effect_i18n:
     en: The Hashashiyyin Assassin gains +1 on rolls to find Rare items in the black market.
-    es: null
+    es: El Asesino Hashashiyyin obtiene +1 en las tiradas para encontrar objetos Raros en el mercado negro.
   applies_to:
     profile_ids:
     - guild-hashashiyyin
@@ -297,19 +314,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: guild-hashashiyyin--disable-traps
   name: Disable Traps
-  effect: The Hashashiyyin Assassin is an expert at detecting and disabling traps. Resolve this using the trap rules referenced
-    by the Khemri Experience section.
+  effect: The Hashashiyyin Assassin is an expert at detecting and disabling traps. Resolve this using
+    the trap rules referenced by the Khemri Experience section.
   source:
     manual: khemri
     printed_page: 73
     section: Heroes / 0-1 Hashashiyyin Assassin / Disable Traps
   name_i18n:
     en: Disable Traps
-    es: null
+    es: Desactivar trampas
   effect_i18n:
-    en: The Hashashiyyin Assassin is an expert at detecting and disabling traps. Resolve this using the trap rules referenced
-      by the Khemri Experience section.
-    es: null
+    en: The Hashashiyyin Assassin is an expert at detecting and disabling traps. Resolve this using the
+      trap rules referenced by the Khemri Experience section.
+    es: El Asesino Hashashiyyin es un experto en detectar y desactivar trampas. Resuélvelo usando las
+      reglas de trampas referenciadas por la sección de Experiencia de Khemri.
   applies_to:
     profile_ids:
     - guild-hashashiyyin
@@ -324,19 +342,22 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: guild-beggar--alms
   name: Alms
-  effect: 'Whenever the warband is in an oasis or a city, a Beggar may go begging. Roll D6: 1 = the Beggar is beaten and misses
-    the next battle; 2-6 = the Beggar receives 1D3 gold crowns.'
+  effect: >-
+    Whenever the warband is in an oasis or a city, a Beggar may go begging. Roll D6: 1 = the Beggar
+    is beaten and misses the next battle; 2-6 = the Beggar receives 1D3 gold crowns.
   source:
     manual: khemri
     printed_page: 74
     section: Henchmen / Beggars / Alms
   name_i18n:
     en: Alms
-    es: null
+    es: Limosna
   effect_i18n:
-    en: 'Whenever the warband is in an oasis or a city, a Beggar may go begging. Roll D6: 1 = the Beggar is beaten and misses
-      the next battle; 2-6 = the Beggar receives 1D3 gold crowns.'
-    es: null
+    en: 'Whenever the warband is in an oasis or a city, a Beggar may go begging. Roll D6: 1 = the Beggar
+      is beaten and misses the next battle; 2-6 = the Beggar receives 1D3 gold crowns.'
+    es: 'Siempre que la banda esté en un oasis o en una ciudad, un Mendigo puede ir a mendigar. Tira D6:
+      1 = el Mendigo es apaleado y se pierde la siguiente batalla; 2-6 = el Mendigo recibe D3 coronas
+      de oro.'
   applies_to:
     profile_ids:
     - guild-beggar
@@ -352,21 +373,24 @@ rules:
 - id: band--guild-special-skills-pickpocket
   kind: warband_skill
   name: Pickpocket
-  effect: If the Hero moves into contact with an enemy model that is Out of Action but has not yet been removed from the game,
-    the Hero may try to steal one of that model's weapons. Roll D6; on 5+ the weapon is stolen. The Hero may take no other
-    action that turn.
+  effect: If the Hero moves into contact with an enemy model that is Out of Action but has not yet been
+    removed from the game, the Hero may try to steal one of that model's weapons. Roll D6; on 5+ the weapon
+    is stolen. The Hero may take no other action that turn.
   source:
     manual: khemri
     printed_page: 75
     section: Thieves' Special Skills / Pickpocket
   name_i18n:
     en: Pickpocket
-    es: null
+    es: Carterista
   effect_i18n:
-    en: If the Hero moves into contact with an enemy model that is Out of Action but has not yet been removed from the game,
-      the Hero may try to steal one of that model's weapons. Roll D6; on 5+ the weapon is stolen. The Hero may take no other
-      action that turn.
-    es: null
+    en: If the Hero moves into contact with an enemy model that is Out of Action but has not yet been
+      removed from the game, the Hero may try to steal one of that model's weapons. Roll D6; on 5+ the
+      weapon is stolen. The Hero may take no other action that turn.
+    es: Si el Héroe se mueve hasta entrar en contacto con un modelo enemigo que esté Fuera de combate
+      pero que aún no haya sido retirado del juego, el Héroe puede intentar robar una de las armas de
+      ese modelo. Tira D6; con un 5+ el arma es robada. El Héroe no puede realizar ninguna otra acción
+      ese asalto.
   eligibility:
   - guild-chief
   - guild-master-thief
@@ -396,19 +420,21 @@ rules:
         kind: mechanic
         id: skill.knife-fighting
   name: Knife Fighting
-  effect: While using a Yambiya or Dagger, the Hero gains +1 WS and +1 on the Injury roll. The opponent still receives the
-    normal +1 armour-save modifier for being attacked with such a weapon.
+  effect: While using a Yambiya or Dagger, the Hero gains +1 WS and +1 on the Injury roll. The opponent
+    still receives the normal +1 armour-save modifier for being attacked with such a weapon.
   source:
     manual: khemri
     printed_page: 75
     section: Thieves' Special Skills / Knife Fighting
   name_i18n:
     en: Knife Fighting
-    es: null
+    es: Pelea con cuchillos
   effect_i18n:
-    en: While using a Yambiya or Dagger, the Hero gains +1 WS and +1 on the Injury roll. The opponent still receives the normal
-      +1 armour-save modifier for being attacked with such a weapon.
-    es: null
+    en: While using a Yambiya or Dagger, the Hero gains +1 WS and +1 on the Injury roll. The opponent
+      still receives the normal +1 armour-save modifier for being attacked with such a weapon.
+    es: Mientras use una Yambiya o una Daga, el Héroe gana +1 HA y +1 en la tirada de heridas. El oponente
+      sigue recibiendo el modificador normal de +1 a la salvación por armadura por ser atacado con tal
+      arma.
   eligibility:
   - guild-chief
   - guild-master-thief
@@ -419,19 +445,21 @@ rules:
 - id: band--guild-special-skills-hide-in-shadows
   kind: warband_skill
   name: Hide in Shadows
-  effect: While the Hero is within 1" of a wall or another linear obstacle such as a hedge, fence or well, an enemy model
-    must pass an Initiative test before it can charge or shoot at the Hero.
+  effect: While the Hero is within 1" of a wall or another linear obstacle such as a hedge, fence or well,
+    an enemy model must pass an Initiative test before it can charge or shoot at the Hero.
   source:
     manual: khemri
     printed_page: 75
     section: Thieves' Special Skills / Hide in Shadows
   name_i18n:
     en: Hide in Shadows
-    es: null
+    es: Ocultarse en las sombras
   effect_i18n:
-    en: While the Hero is within 1" of a wall or another linear obstacle such as a hedge, fence or well, an enemy model must
-      pass an Initiative test before it can charge or shoot at the Hero.
-    es: null
+    en: While the Hero is within 1" of a wall or another linear obstacle such as a hedge, fence or well,
+      an enemy model must pass an Initiative test before it can charge or shoot at the Hero.
+    es: Mientras el Héroe esté a 1" de un muro u otro obstáculo lineal como un seto, una valla o un pozo,
+      un modelo enemigo debe superar un chequeo de Iniciativa antes de poder cargar o disparar contra
+      el Héroe.
   eligibility:
   - guild-chief
   - guild-master-thief
@@ -451,22 +479,26 @@ rules:
 - id: band--guild-special-skills-poisoner
   kind: warband_skill
   name: Poisoner
-  effect: Ruffians may not take this skill. At the start of each battle, choose two of the Hero's own weapons; each is coated
-    with either Black Venom or Black Lotus, chosen before the battle. No gold is paid for these poisons and they may not be
-    used to coat weapons belonging to other warband members. The internal poison effects are intentionally not modelled here.
+  effect: Ruffians may not take this skill. At the start of each battle, choose two of the Hero's own
+    weapons; each is coated with either Black Venom or Black Lotus, chosen before the battle. No gold
+    is paid for these poisons and they may not be used to coat weapons belonging to other warband members.
+    The internal poison effects are intentionally not modelled here.
   source:
     manual: khemri
     printed_page: 75
     section: Thieves' Special Skills / Poisoner
   name_i18n:
     en: Poisoner
-    es: null
+    es: Envenenador
   effect_i18n:
-    en: Ruffians may not take this skill. At the start of each battle, choose two of the Hero's own weapons; each is coated
-      with either Black Venom or Black Lotus, chosen before the battle. No gold is paid for these poisons and they may not
-      be used to coat weapons belonging to other warband members. The internal poison effects are intentionally not modelled
-      here.
-    es: null
+    en: Ruffians may not take this skill. At the start of each battle, choose two of the Hero's own weapons;
+      each is coated with either Black Venom or Black Lotus, chosen before the battle. No gold is paid
+      for these poisons and they may not be used to coat weapons belonging to other warband members. The
+      internal poison effects are intentionally not modelled here.
+    es: Los Matones no pueden tomar esta habilidad. Al inicio de cada batalla, elige dos de las armas
+      propias del Héroe; cada una se recubre con Ponzoña Negra o Loto Negro, elegidos antes de la batalla.
+      No se paga oro por estos venenos y no pueden usarse para recubrir armas de otros miembros de la
+      banda. Los efectos internos de los venenos no están modelados intencionadamente aquí.
   eligibility:
   - guild-chief
   - guild-master-thief
@@ -485,19 +517,20 @@ rules:
 - id: band--guild-special-skills-fast-legs
   kind: warband_skill
   name: Fast Legs
-  effect: Ruffians may not take this skill. The Hero increases its base Movement by +1". This skill may not be used while
-    wearing Heavy Armour, carrying a Shield or wearing a Helmet.
+  effect: Ruffians may not take this skill. The Hero increases its base Movement by +1". This skill may
+    not be used while wearing Heavy Armour, carrying a Shield or wearing a Helmet.
   source:
     manual: khemri
     printed_page: 75
     section: Thieves' Special Skills / Fast Legs
   name_i18n:
     en: Fast Legs
-    es: null
+    es: Piernas veloces
   effect_i18n:
-    en: Ruffians may not take this skill. The Hero increases its base Movement by +1". This skill may not be used while wearing
-      Heavy Armour, carrying a Shield or wearing a Helmet.
-    es: null
+    en: Ruffians may not take this skill. The Hero increases its base Movement by +1". This skill may
+      not be used while wearing Heavy Armour, carrying a Shield or wearing a Helmet.
+    es: Los Matones no pueden tomar esta habilidad. El Héroe aumenta su Movimiento base en +1". Esta habilidad
+      no puede usarse llevando Armadura Pesada, escudo o Yelmo.
   eligibility:
   - guild-chief
   - guild-master-thief
@@ -516,21 +549,24 @@ rules:
 - id: band--guild-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
-  effect: Ruffians may not take this skill. The Hero deploys after the opposing warband and may be placed anywhere outside
-    enemy line of sight and more than 12" from every enemy model. If both players have infiltrating models, roll D6 for each;
-    the lowest result deploys first.
+  effect: Ruffians may not take this skill. The Hero deploys after the opposing warband and may be placed
+    anywhere outside enemy line of sight and more than 12" from every enemy model. If both players have
+    infiltrating models, roll D6 for each; the lowest result deploys first.
   source:
     manual: khemri
     printed_page: 75
     section: Thieves' Special Skills / Infiltration
   name_i18n:
     en: Infiltration
-    es: null
+    es: Infiltración
   effect_i18n:
-    en: Ruffians may not take this skill. The Hero deploys after the opposing warband and may be placed anywhere outside enemy
-      line of sight and more than 12" from every enemy model. If both players have infiltrating models, roll D6 for each;
-      the lowest result deploys first.
-    es: null
+    en: Ruffians may not take this skill. The Hero deploys after the opposing warband and may be placed
+      anywhere outside enemy line of sight and more than 12" from every enemy model. If both players have
+      infiltrating models, roll D6 for each; the lowest result deploys first.
+    es: Los Matones no pueden tomar esta habilidad. El Héroe se despliega después de la banda rival y
+      puede colocarse en cualquier punto fuera de la línea de visión enemiga y a más de 12" de cada modelo
+      enemigo. Si ambos jugadores tienen modelos que se infiltran, tira D6 por cada uno; el de menor resultado
+      se despliega primero.
   eligibility:
   - guild-chief
   - guild-master-thief

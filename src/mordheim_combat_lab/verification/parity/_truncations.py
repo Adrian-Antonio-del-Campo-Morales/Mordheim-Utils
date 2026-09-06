@@ -13,7 +13,7 @@ within the same six-sigma gate as the full-horizon samples.  Outcome after
 exactly ``h`` rounds is engine-agnostic — a duel that has not resolved by
 horizon ``h`` counts as unresolved in both drivers, whatever internal ledger
 they keep — so no round-counting convention leaks into the comparison (see
-``docs/testing-strategy.md``, round-ledger notes).  A defect that shifts
+``docs/reference/verification.md``, round-ledger notes).  A defect that shifts
 resolution timing pushes one or more horizon rows apart while the final
 marginals still agree.
 """

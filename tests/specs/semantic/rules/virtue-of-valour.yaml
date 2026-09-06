@@ -4,82 +4,223 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
-  - {target: mechanic/skill.virtue-of-valour, digest: 7d1632107f7a09a980b63b08308fb6ddf799c3e7c24de06bfee55f47a3d56ae4}
-  - {target: rule/mordheim/bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour, digest: 51bd46293ff197891dd61d2413e76b7137c7551fc0c21f9ebc97b3cb602ee22e}
-  - {target: rule/trollheim/chaos-streets-bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour, digest: 12d63fb877ba1656d18e458f86458a59c3266a5eec117ce352bd130a57015241}
-  interpretation: Bretonnian Knight Virtues / Virtue of Valour permits one reroll of failed melee hit rolls
-    only against strictly higher Strength characteristics. Weapon bonuses are not characteristics.
+  - target: mechanic/skill.virtue-of-valour
+    digest: cdf8b08bfa38544b141883dad913676ec34400cb7e691d314a519d4d851dcf6b
+  - target: rule/mordheim/bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour
+    digest: 0547226ea834ce5831cecb43fb0d002a3f729340ece66779be36701f4288477c
+  - target: rule/trollheim/chaos-streets-bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour
+    digest: 80006dc4da3097560a6d263f77490f2884117848a57dd0f841fbcf5d2f823f7f
+  interpretation: Bretonnian Knight Virtues / Virtue of Valour permits one reroll of failed melee hit
+    rolls only against strictly higher Strength characteristics. Weapon bonuses are not characteristics.
     Native Bretonnian Heroes with special access may select the virtue; foreign acquisition is separate.
   cases:
   - id: opponent-strength-2
-    roles: [inactive, consumer, boundary, compiled]
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    - compiled
     operation: hit
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [skill.virtue-of-valour]}
-    defender: {characteristics: {weapon_skill: 3, strength: 2, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.virtue-of-valour
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 2
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
     distribution:
       observable: result.success
       max_rolls: 2
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: opponent-strength-3
-    roles: [inactive, consumer, boundary, compiled]
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    - compiled
     operation: hit
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [skill.virtue-of-valour]}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.virtue-of-valour
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
     distribution:
       observable: result.success
       max_rolls: 2
-      expected: {'true': 1/2, 'false': 1/2}
+      expected:
+        'true': 1/2
+        'false': 1/2
   - id: opponent-strength-4
-    roles: [active, consumer, boundary, compiled]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - compiled
     operation: hit
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [skill.virtue-of-valour]}
-    defender: {characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.virtue-of-valour
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
     distribution:
       observable: result.success
       max_rolls: 2
-      expected: {'true': 3/4, 'false': 1/4}
+      expected:
+        'true': 3/4
+        'false': 1/4
   - id: weapon-strength-does-not-qualify
-    roles: [inactive]
+    roles:
+    - inactive
     operation: hit
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [skill.virtue-of-valour]}
-    defender: {main_weapon_id: weapon.double-handed-weapon}
-    rolls: [{key: hit, value: 3}]
-    expect: {context.reroll: false, result.success: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.virtue-of-valour
+    defender:
+      main_weapon_id: weapon.double-handed-weapon
+    rolls:
+    - key: hit
+      value: 3
+    expect:
+      context.reroll: false
+      result.success: false
   - id: successful-hit-no-reroll
-    roles: [boundary, consumption]
+    roles:
+    - boundary
+    - consumption
     operation: hit
-    attacker: {main_weapon_id: weapon.mace, skill_ids: [skill.virtue-of-valour]}
-    defender: {characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    rolls: [{key: hit, value: 4}]
-    expect: {result.success: true, result.rerolled: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      skill_ids:
+      - skill.virtue-of-valour
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: hit
+      value: 4
+    expect:
+      result.success: true
+      result.rerolled: false
   - id: bretonnian-knights-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: bretonnian-knights, profile_id: questing-knight}
-    context: {rule_id: band--virtue-of-valour}
-    expect: {result.recipients: [knights-errant, questing-knight, squires]}
+    defender:
+      collection: mordheim
+      band_id: bretonnian-knights
+      profile_id: questing-knight
+    context:
+      rule_id: band--virtue-of-valour
+    expect:
+      result.recipients:
+      - knights-errant
+      - questing-knight
+      - squires
   - id: bretonnian-knights-reroll
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: hit
-    attacker: {collection: mordheim, band_id: bretonnian-knights, profile_id: questing-knight, main_weapon_id: weapon.sword, special_rule_ids: [band--virtue-of-valour]}
-    defender: {characteristics: {weapon_skill: 4, strength: 5, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    rolls: [{key: hit, value: 3}, {key: hit.reroll, value: 4}]
-    expect: {context.reroll: true, result.success: true, result.rerolled: true}
+    attacker:
+      collection: mordheim
+      band_id: bretonnian-knights
+      profile_id: questing-knight
+      main_weapon_id: weapon.sword
+      special_rule_ids:
+      - band--virtue-of-valour
+    defender:
+      characteristics:
+        weapon_skill: 4
+        strength: 5
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: hit
+      value: 3
+    - key: hit.reroll
+      value: 4
+    expect:
+      context.reroll: true
+      result.success: true
+      result.rerolled: true
   - id: chaos-streets-bretonnian-knights-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: chaos-streets-bretonnian-knights, profile_id: questing-knight}
-    context: {rule_id: band--virtue-of-valour}
-    expect: {result.recipients: [knights-errant, questing-knight, squires]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-bretonnian-knights
+      profile_id: questing-knight
+    context:
+      rule_id: band--virtue-of-valour
+    expect:
+      result.recipients:
+      - knights-errant
+      - questing-knight
+      - squires
   - id: chaos-streets-bretonnian-knights-reroll
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: hit
-    attacker: {collection: trollheim, band_id: chaos-streets-bretonnian-knights, profile_id: questing-knight, main_weapon_id: weapon.sword, special_rule_ids: [band--virtue-of-valour]}
-    defender: {characteristics: {weapon_skill: 4, strength: 5, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    rolls: [{key: hit, value: 3}, {key: hit.reroll, value: 4}]
-    expect: {context.reroll: true, result.success: true, result.rerolled: true}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-bretonnian-knights
+      profile_id: questing-knight
+      main_weapon_id: weapon.sword
+      special_rule_ids:
+      - band--virtue-of-valour
+    defender:
+      characteristics:
+        weapon_skill: 4
+        strength: 5
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: hit
+      value: 3
+    - key: hit.reroll
+      value: 4
+    expect:
+      context.reroll: true
+      result.success: true
+      result.rerolled: true
   mutations:
   - id: remove-virtue
     path: attacker.global_effects.tags
     value: []
-    cases: [opponent-strength-4, bretonnian-knights-reroll, chaos-streets-bretonnian-knights-reroll]
+    cases:
+    - opponent-strength-4
+    - bretonnian-knights-reroll
+    - chaos-streets-bretonnian-knights-reroll

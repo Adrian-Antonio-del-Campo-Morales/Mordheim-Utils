@@ -3,17 +3,20 @@ band_id: chaos-streets-bretonnian-knights
 rules:
 - id: questing-knight--leader
   name: Leader
-  effect: Any warband model within 6" of the Questing Knight may use his Leadership when taking Leadership tests.
+  effect: Any warband model within 6" of the Questing Knight may use his Leadership when taking Leadership
+    tests.
   source:
     manual: chaos-in-the-streets
     printed_page: 108
     section: Heroes / 1 Questing Knight / Special Rules / Leader
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
-    en: Any warband model within 6" of the Questing Knight may use his Leadership when taking Leadership tests.
-    es: null
+    en: Any warband model within 6" of the Questing Knight may use his Leadership when taking Leadership
+      tests.
+    es: Cualquier modelo de la banda a 6" del Caballero Andante puede usar su Liderazgo cuando realice
+      chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - questing-knight
@@ -28,17 +31,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: questing-knight--knights-virtue
   name: Knight's Virtue
-  effect: The Questing Knight never panics or flees from combat and never needs to take a Leadership test for fighting alone.
+  effect: The Questing Knight never panics or flees from combat and never needs to take a Leadership test
+    for fighting alone.
   source:
     manual: chaos-in-the-streets
     printed_page: 108
     section: Heroes / 1 Questing Knight / Special Rules / Knight's Virtue
   name_i18n:
     en: Knight's Virtue
-    es: null
+    es: Virtud del Caballero
   effect_i18n:
-    en: The Questing Knight never panics or flees from combat and never needs to take a Leadership test for fighting alone.
-    es: null
+    en: The Questing Knight never panics or flees from combat and never needs to take a Leadership test
+      for fighting alone.
+    es: El Caballero Andante nunca entra en pánico ni huye del combate y jamás necesita hacer un chequeo
+      de Liderazgo por luchar solo.
   applies_to:
     profile_ids:
     - questing-knight
@@ -60,35 +66,38 @@ rules:
     section: Heroes / 1 Questing Knight / Special Rules / Ride Warhorse
   name_i18n:
     en: Ride Warhorse
-    es: null
+    es: Montar corcel de guerra
   effect_i18n:
     en: The Questing Knight has the Ride Warhorse skill.
-    es: null
+    es: El Caballero Andante tiene la habilidad Montar corcel de guerra.
   applies_to:
     profile_ids:
     - questing-knight
   runtime:
-    scope: 'LATER'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-bretonnian-knights.questing-knight.ride-warhorse
-      scope: 'LATER'
+      scope: LATER
       binding: null
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: knights-errant--knights-virtue
   name: Knight's Virtue
-  effect: A Knight Errant never panics or flees from combat and never needs to take a Leadership test for fighting alone.
+  effect: A Knight Errant never panics or flees from combat and never needs to take a Leadership test
+    for fighting alone.
   source:
     manual: chaos-in-the-streets
     printed_page: 108
     section: Heroes / 0-2 Knights Errant / Special Rules / Knight's Virtue
   name_i18n:
     en: Knight's Virtue
-    es: null
+    es: Virtud del Caballero
   effect_i18n:
-    en: A Knight Errant never panics or flees from combat and never needs to take a Leadership test for fighting alone.
-    es: null
+    en: A Knight Errant never panics or flees from combat and never needs to take a Leadership test for
+      fighting alone.
+    es: Un Caballero Novel nunca entra en pánico ni huye del combate y jamás necesita hacer un chequeo
+      de Liderazgo por luchar solo.
   applies_to:
     profile_ids:
     - knights-errant
@@ -110,20 +119,20 @@ rules:
     section: Heroes / 0-2 Knights Errant / Special Rules / Ride Warhorse
   name_i18n:
     en: Ride Warhorse
-    es: null
+    es: Montar corcel de guerra
   effect_i18n:
     en: A Knight Errant has the Ride Warhorse skill.
-    es: null
+    es: Un Caballero Novel tiene la habilidad Montar corcel de guerra.
   applies_to:
     profile_ids:
     - knights-errant
   runtime:
-    scope: 'LATER'
+    scope: LATER
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.chaos-streets-bretonnian-knights.knights-errant.ride-warhorse
-      scope: 'LATER'
+      scope: LATER
       binding: null
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: squires--ride-horse
@@ -135,10 +144,10 @@ rules:
     section: Heroes / 0-3 Squires / Special Rules / Ride Horse
   name_i18n:
     en: Ride Horse
-    es: null
+    es: Montar a caballo
   effect_i18n:
     en: A Squire has the Ride Horse skill.
-    es: null
+    es: Un Escudero tiene la habilidad Montar a caballo.
   applies_to:
     profile_ids:
     - squires
@@ -153,25 +162,32 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--lady-of-the-lake-blessing
   name: Lady of the Lake's Blessing
-  effect: Before each battle, make a Leadership test using the warband leader's Leadership. If successful, the Lady of the
-    Lake blesses the warband. While the blessing is active, any enemy model attempting to fire a blackpowder weapon must roll
-    4+ on D6 each time it tries to fire; on a failure it may not shoot. Other missile weapons do not require this roll unless
-    targeting a Bretonnian Knight. Before shooting at a Questing Knight or Knight Errant with any missile weapon, an enemy
-    model must first roll 4+ on D6.
+  effect: Before each battle, make a Leadership test using the warband leader's Leadership. If successful,
+    the Lady of the Lake blesses the warband. While the blessing is active, any enemy model attempting
+    to fire a blackpowder weapon must roll 4+ on D6 each time it tries to fire; on a failure it may not
+    shoot. Other missile weapons do not require this roll unless targeting a Bretonnian Knight. Before
+    shooting at a Questing Knight or Knight Errant with any missile weapon, an enemy model must first
+    roll 4+ on D6.
   source:
     manual: chaos-in-the-streets
     printed_page: 105
     section: Special Rules / Lady of the Lake's Blessing
   name_i18n:
     en: Lady of the Lake's Blessing
-    es: null
+    es: Bendición de la Dama del Lago
   effect_i18n:
-    en: Before each battle, make a Leadership test using the warband leader's Leadership. If successful, the Lady of the Lake
-      blesses the warband. While the blessing is active, any enemy model attempting to fire a blackpowder weapon must roll
-      4+ on D6 each time it tries to fire; on a failure it may not shoot. Other missile weapons do not require this roll unless
-      targeting a Bretonnian Knight. Before shooting at a Questing Knight or Knight Errant with any missile weapon, an enemy
-      model must first roll 4+ on D6.
-    es: null
+    en: Before each battle, make a Leadership test using the warband leader's Leadership. If successful,
+      the Lady of the Lake blesses the warband. While the blessing is active, any enemy model attempting
+      to fire a blackpowder weapon must roll 4+ on D6 each time it tries to fire; on a failure it may
+      not shoot. Other missile weapons do not require this roll unless targeting a Bretonnian Knight.
+      Before shooting at a Questing Knight or Knight Errant with any missile weapon, an enemy model must
+      first roll 4+ on D6.
+    es: Antes de cada batalla, haz un chequeo de Liderazgo usando el Liderazgo del líder de la banda.
+      Si tiene éxito, la Dama del Lago bendice la banda. Mientras la bendición esté activa, cualquier
+      modelo enemigo que intente disparar un arma de pólvora debe sacar 4+ en 1D6 cada vez que intente
+      disparar; si falla, no puede disparar. Las demás armas de misil no requieren esta tirada salvo que
+      apunten a un Caballero Bretoniano. Antes de disparar a un Caballero Andante o Caballero Novel con
+      cualquier arma de misil, un modelo enemigo debe sacar primero 4+ en 1D6.
   applies_to:
     band: true
   runtime:
@@ -192,10 +208,10 @@ rules:
     section: Bretonnian Knight Special Skills / Virtue of Purity
   name_i18n:
     en: Virtue of Purity
-    es: null
+    es: Virtud de Pureza
   effect_i18n:
     en: Any spell cast on this Knight is dispelled on a D6 roll of 4+.
-    es: null
+    es: Cualquier hechizo lanzado sobre este Caballero se disipa con una tirada de 4+ en 1D6.
   eligibility:
   - questing-knight
   - knights-errant
@@ -224,19 +240,20 @@ rules:
         kind: mechanic
         id: skill.virtue-of-valour
   name: Virtue of Valour
-  effect: When fighting a model with a higher Strength characteristic, this Knight may re-roll failed To Hit rolls in close
-    combat.
+  effect: When fighting a model with a higher Strength characteristic, this Knight may re-roll failed
+    To Hit rolls in close combat.
   source:
     manual: chaos-in-the-streets
     printed_page: 106
     section: Bretonnian Knight Special Skills / Virtue of Valour
   name_i18n:
     en: Virtue of Valour
-    es: null
+    es: Virtud del Valor
   effect_i18n:
-    en: When fighting a model with a higher Strength characteristic, this Knight may re-roll failed To Hit rolls in close
-      combat.
-    es: null
+    en: When fighting a model with a higher Strength characteristic, this Knight may re-roll failed To
+      Hit rolls in close combat.
+    es: Al luchar contra un modelo con una característica de Fuerza superior, este Caballero puede repetir
+      las tiradas de impactar falladas en el combate cuerpo a cuerpo.
   eligibility:
   - questing-knight
   - knights-errant
@@ -252,10 +269,10 @@ rules:
     section: Bretonnian Knight Special Skills / Virtue of Noble Disdain
   name_i18n:
     en: Virtue of Noble Disdain
-    es: null
+    es: Virtud del Desdén Noble
   effect_i18n:
     en: This Knight is subject to Hatred against all enemies equipped with missile weapons.
-    es: null
+    es: Este Caballero está sujeto a Odio contra todos los enemigos equipados con armas de misil.
   eligibility:
   - questing-knight
   - knights-errant
@@ -273,17 +290,20 @@ rules:
       reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--virtue-of-the-impetuous-knight
   name: Virtue of the Impetuous Knight
-  effect: When this Knight charges, add the result of 1D6 × 0.4" to his Movement. Roll before moving the charging model.
+  effect: When this Knight charges, add the result of 1D6 × 0.4" to his Movement. Roll before moving the
+    charging model.
   source:
     manual: chaos-in-the-streets
     printed_page: 106
     section: Bretonnian Knight Special Skills / Virtue of the Impetuous Knight
   name_i18n:
     en: Virtue of the Impetuous Knight
-    es: null
+    es: Virtud del Caballero Impetuoso
   effect_i18n:
-    en: When this Knight charges, add the result of 1D6 × 0.4" to his Movement. Roll before moving the charging model.
-    es: null
+    en: When this Knight charges, add the result of 1D6 × 0.4" to his Movement. Roll before moving the
+      charging model.
+    es: Cuando este Caballero carga, suma el resultado de 1D6 × 0,4" a su Movimiento. Tira antes de mover
+      el modelo que carga.
   eligibility:
   - questing-knight
   - knights-errant
@@ -301,17 +321,20 @@ rules:
       reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--virtue-of-discipline
   name: Virtue of Discipline
-  effect: Once per battle, if this Knight is not Knocked Down, Stunned or Out of Action, the warband may re-roll a Rout test.
+  effect: Once per battle, if this Knight is not Knocked Down, Stunned or Out of Action, the warband may
+    re-roll a Rout test.
   source:
     manual: chaos-in-the-streets
     printed_page: 106
     section: Bretonnian Knight Special Skills / Virtue of Discipline
   name_i18n:
     en: Virtue of Discipline
-    es: null
+    es: Virtud de la Disciplina
   effect_i18n:
-    en: Once per battle, if this Knight is not Knocked Down, Stunned or Out of Action, the warband may re-roll a Rout test.
-    es: null
+    en: Once per battle, if this Knight is not Knocked Down, Stunned or Out of Action, the warband may
+      re-roll a Rout test.
+    es: Una vez por batalla, si este Caballero no está Derribado, Aturdido o Fuera de combate, la banda
+      puede repetir un chequeo de huida.
   eligibility:
   - questing-knight
   - knights-errant

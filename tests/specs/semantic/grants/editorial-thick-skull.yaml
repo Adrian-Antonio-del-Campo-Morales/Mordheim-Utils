@@ -4,76 +4,169 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-thick-skull/skill.thick-skull, digest: a445eb1cf76e6612463fb6ea43353e01bc9f8ef836b81fcf2d7721883449839c}
-  - {target: rule/mordheim/black-orcs/band--black-orc-special-skills-ard-ead/skill.thick-skull, digest: e42e6a61e98becfd86a8826a3875f1be86eff5eacf61520291f193680e107195}
-  - {target: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-thick-skull/skill.thick-skull, digest: ecb0807b68be95eb513f738ae06d230252e156dfe5e5a06792c75584544160b2}
-  - {target: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull/skill.thick-skull, digest: 012fee58047fb891ebc764a65c61e6b587c134b45660c9baae0780f0350dfe36}
-  - {target: rule/mordheim/orc-mob/band--orc-special-skills-ard-ead/skill.thick-skull, digest: 8e6eee13108d966e567483686b3a5e023ae5e953ae65b38a7edcf85945ee7a3e}
-  - {target: rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-thick-skull/skill.thick-skull, digest: 4320662018f0a3368b9ecb89bf1d6f0d919775af5d7c8df047bdbb74a570a3d8}
-  - {target: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull/skill.thick-skull, digest: 30cb5d4adb66204d8db8293bce1ef77f50ca6dcbebc5d1c41caaa0f6584fb308}
-  - {target: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-ard-ead/skill.thick-skull, digest: 57e745e1a975f56d577e88f2cc59fd5e5097faaa37d6d275106b1df7e0845712}
-  depends_on: [mechanic/skill.thick-skull]
-  interpretation: Each cited entry is a selectable warband special skill. It is available exactly to profiles whose
-    source profile grants access to the special skill table; henchmen and heroes without that table cannot select it.
-    All eight texts grant the same canonical Thick Skull behaviour already verified independently.
+  - target: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-thick-skull/skill.thick-skull
+    digest: 1e4c505d3055168be43473b31060c3e74541171c86669d74aab9e3579968336f
+  - target: rule/mordheim/black-orcs/band--black-orc-special-skills-ard-ead/skill.thick-skull
+    digest: 270e8f13ebba7209b7ff50ace7a02cebd5f21fee64e9f9d80ac89376ca28c9b7
+  - target: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-thick-skull/skill.thick-skull
+    digest: 405a6225a1054ffab475a38cb532e695b4b7d74298c1677fb1e5f8a050959a52
+  - target: rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull/skill.thick-skull
+    digest: 7c16bc7dd46ae49b3150f5c6b7e1207c6fd77dbaa8142792c9827d0887174ef7
+  - target: rule/mordheim/orc-mob/band--orc-special-skills-ard-ead/skill.thick-skull
+    digest: c7a252c3034f77245176e5f390f6233562b96724d3f89e5d5aff5c16d2c93d6d
+  - target: rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-thick-skull/skill.thick-skull
+    digest: fcc0a446f8dadd607f53a4e847d44c3ec412ef45c7a069e7922981584119e3f3
+  - target: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull/skill.thick-skull
+    digest: 3bdf8473d191752b5af1174460287480c8700cbbcc8a1de97a88743cc41f0be2
+  - target: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-ard-ead/skill.thick-skull
+    digest: af652f7c44490334ee18cdcbfd7312bb29f5f56a51b4af85ea198f83b282f053
+  depends_on:
+  - mechanic/skill.thick-skull
+  interpretation: Each cited entry is a selectable warband special skill. It is available exactly to profiles
+    whose source profile grants access to the special skill table; henchmen and heroes without that table
+    cannot select it. All eight texts grant the same canonical Thick Skull behaviour already verified
+    independently.
   cases:
   - id: black-dwarfs-recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: black-dwarfs, profile_id: sorcerer}
-    context: {rule_id: band--chaos-dwarf-special-skills-thick-skull}
-    expect: {result.recipients: [gaolers, sorcerer]}
+    defender:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+    context:
+      rule_id: band--chaos-dwarf-special-skills-thick-skull
+    expect:
+      result.recipients:
+      - gaolers
+      - sorcerer
   - id: black-orcs-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: black-orcs, profile_id: black-orc-boss}
-    context: {rule_id: band--black-orc-special-skills-ard-ead}
-    expect: {result.recipients: [black-orc-boss, black-orcs, younguns]}
+    defender:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: black-orc-boss
+    context:
+      rule_id: band--black-orc-special-skills-ard-ead
+    expect:
+      result.recipients:
+      - black-orc-boss
+      - black-orcs
+      - younguns
   - id: dwarf-rangers-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: dwarf-rangers, profile_id: runesmith}
-    context: {rule_id: band--dwarf-special-skills-thick-skull}
-    expect: {result.recipients: [apprentice-runesmith, dwarf-troll-slayers, runesmith]}
+    defender:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+    context:
+      rule_id: band--dwarf-special-skills-thick-skull
+    expect:
+      result.recipients:
+      - apprentice-runesmith
+      - dwarf-troll-slayers
+      - runesmith
   - id: dwarf-treasure-hunters-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: dwarf-treasure-hunters, profile_id: dwarf-noble}
-    context: {rule_id: band--dwarf-special-skills-thick-skull}
-    expect: {result.recipients: [dwarf-engineer, dwarf-noble, dwarf-troll-slayers]}
+    defender:
+      collection: mordheim
+      band_id: dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    context:
+      rule_id: band--dwarf-special-skills-thick-skull
+    expect:
+      result.recipients:
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-troll-slayers
   - id: orc-mob-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: orc-mob, profile_id: orc-boss}
-    context: {rule_id: band--orc-special-skills-ard-ead}
-    expect: {result.recipients: [orc-big-uns, orc-boss, orc-shaman]}
+    defender:
+      collection: mordheim
+      band_id: orc-mob
+      profile_id: orc-boss
+    context:
+      rule_id: band--orc-special-skills-ard-ead
+    expect:
+      result.recipients:
+      - orc-big-uns
+      - orc-boss
+      - orc-shaman
   - id: sons-of-hashut-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: sons-of-hashut, profile_id: apprentice-sorcerer}
-    context: {rule_id: band--chaos-dwarfs-special-skills-thick-skull}
-    expect: {result.recipients: [apprentice-sorcerer, bull-centaur, chaos-dwarf-champions]}
+    defender:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: apprentice-sorcerer
+    context:
+      rule_id: band--chaos-dwarfs-special-skills-thick-skull
+    expect:
+      result.recipients:
+      - apprentice-sorcerer
+      - bull-centaur
+      - chaos-dwarf-champions
   - id: streets-dwarfs-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: chaos-streets-dwarf-treasure-hunters, profile_id: dwarf-noble}
-    context: {rule_id: band--dwarf-special-skills-thick-skull}
-    expect: {result.recipients: [dwarf-engineer, dwarf-noble, dwarf-troll-slayers]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+    context:
+      rule_id: band--dwarf-special-skills-thick-skull
+    expect:
+      result.recipients:
+      - dwarf-engineer
+      - dwarf-noble
+      - dwarf-troll-slayers
   - id: streets-greenskins-recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: orc-boss}
-    context: {rule_id: band--orc-special-skills-ard-ead}
-    expect: {result.recipients: [orc-big-uns, orc-boss, orc-shaman]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: orc-boss
+    context:
+      rule_id: band--orc-special-skills-ard-ead
+    expect:
+      result.recipients:
+      - orc-big-uns
+      - orc-boss
+      - orc-shaman
   - id: granted-consumer
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: stun_reaction
     defender:
       collection: mordheim
       band_id: black-dwarfs
       profile_id: sorcerer
-      special_rule_ids: [band--chaos-dwarf-special-skills-thick-skull]
-    rolls: [{key: test.thick-skull, value: 3}]
-    expect: {result.condition: KNOCKED_DOWN, defender.global_effects.thick_skull: true}
+      special_rule_ids:
+      - band--chaos-dwarf-special-skills-thick-skull
+    rolls:
+    - key: test.thick-skull
+      value: 3
+    expect:
+      result.condition: KNOCKED_DOWN
+      defender.global_effects.thick_skull: true
   mutations:
-  - {id: remove-granted-effect, path: defender.global_effects.thick_skull, value: false, cases: [granted-consumer]}
+  - id: remove-granted-effect
+    path: defender.global_effects.thick_skull
+    value: false
+    cases:
+    - granted-consumer

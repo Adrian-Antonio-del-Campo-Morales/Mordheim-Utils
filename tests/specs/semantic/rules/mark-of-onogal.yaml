@@ -4,34 +4,72 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/marauders-of-chaos/band--mark-of-onogal/trait.mark-of-onogal-the-crow, digest: 94a6beb496ec7c1bfe8d8d8f5d85e0447f78f34a2494b063737e8bb4855ac8e8}
-  interpretation: >-
-    The marked Chieftain adds one to Toughness and is immune to poison. The marked Seer is also immune
-    to poison but does not receive the Toughness increase. The Serious Injury re-roll stays outside
-    the isolated duel.
+  - target: rule/mordheim/marauders-of-chaos/band--mark-of-onogal/trait.mark-of-onogal-the-crow
+    digest: 1ebeb0fbbbdde92477dbe51b030e703688abe1c4a965571b5fdd382e473a6916
+  interpretation: The marked Chieftain adds one to Toughness and is immune to poison. The marked Seer
+    is also immune to poison but does not receive the Toughness increase. The Serious Injury re-roll stays
+    outside the isolated duel.
   cases:
   - id: recipients
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {band_id: marauders-of-chaos, profile_id: marauder-chieftain}
-    context: {rule_id: band--mark-of-onogal}
-    expect: {result.recipients: [marauder-chieftain, seer]}
+    defender:
+      band_id: marauders-of-chaos
+      profile_id: marauder-chieftain
+    context:
+      rule_id: band--mark-of-onogal
+    expect:
+      result.recipients:
+      - marauder-chieftain
+      - seer
   - id: chieftain-compiled
-    roles: [compiled]
+    roles:
+    - compiled
     operation: compile
-    defender: {band_id: marauders-of-chaos, profile_id: marauder-chieftain, special_rule_ids: [band--mark-of-onogal]}
-    expect: {defender.characteristics.toughness: 5, defender.global_effects.poison_immunity: true}
+    defender:
+      band_id: marauders-of-chaos
+      profile_id: marauder-chieftain
+      special_rule_ids:
+      - band--mark-of-onogal
+    expect:
+      defender.characteristics.toughness: 5
+      defender.global_effects.poison_immunity: true
   - id: seer-does-not-gain-toughness
     operation: compile
-    defender: {band_id: marauders-of-chaos, profile_id: seer, special_rule_ids: [band--mark-of-onogal]}
-    expect: {defender.characteristics.toughness: 3, defender.global_effects.poison_immunity: true}
+    defender:
+      band_id: marauders-of-chaos
+      profile_id: seer
+      special_rule_ids:
+      - band--mark-of-onogal
+    expect:
+      defender.characteristics.toughness: 3
+      defender.global_effects.poison_immunity: true
   - id: poison-is-consumed-as-ordinary-weapon
-    roles: [consumer, boundary]
+    roles:
+    - consumer
+    - boundary
     operation: wound
-    attacker: {main_weapon_id: weapon.mace, main_poison_id: poison.black-lotus}
-    defender: {band_id: marauders-of-chaos, profile_id: seer, special_rule_ids: [band--mark-of-onogal]}
-    context: {hit_roll: 6}
-    rolls: [{key: wound, value: 1}]
-    expect: {result.target: 4, result.success: false, result.critical: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.black-lotus
+    defender:
+      band_id: marauders-of-chaos
+      profile_id: seer
+      special_rule_ids:
+      - band--mark-of-onogal
+    context:
+      hit_roll: 6
+    rolls:
+    - key: wound
+      value: 1
+    expect:
+      result.target: 4
+      result.success: false
+      result.critical: false
   mutations:
-  - {id: remove-onogal-immunity, path: defender.global_effects.poison_immunity, value: false, cases: [poison-is-consumed-as-ordinary-weapon]}
+  - id: remove-onogal-immunity
+    path: defender.global_effects.poison_immunity
+    value: false
+    cases:
+    - poison-is-consumed-as-ordinary-weapon

@@ -12,7 +12,8 @@ rules:
       binding: null
       reason: 'Deferred subsystem: psychology.'
   name: Leader
-  effect: Any models in the warband within 6" of the Magister may use his Leadership instead of their own.
+  effect: Any models in the warband within 6" of the Magister may use his Leadership instead of their
+    own.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -20,10 +21,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Leader
-    es: null
+    es: Líder
   effect_i18n:
     en: Any models in the warband within 6" of the Magister may use his Leadership instead of their own.
-    es: null
+    es: Todas las miniaturas de la banda a 6" del Magister pueden usar su Liderazgo en lugar del suyo
+      propio.
   applies_to:
     profile_ids:
     - magister
@@ -36,11 +38,13 @@ rules:
     - id: unimplemented.cult-of-the-possessed.magister.magic-user
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
   name: Magic User
-  effect: The Magister has the ability to use magic and casts spells like any other magicians, and the Magister starts with
-    one spell generated at random from the Chaos Rituals. In addition the Magister may learn a new Spell instead of a new
-    skill.
+  effect: The Magister has the ability to use magic and casts spells like any other magicians, and the
+    Magister starts with one spell generated at random from the Chaos Rituals. In addition the Magister
+    may learn a new Spell instead of a new skill.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -48,12 +52,14 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Magic User
-    es: null
+    es: Usuario de magia
   effect_i18n:
-    en: The Magister has the ability to use magic and casts spells like any other magicians, and the Magister starts with
-      one spell generated at random from the Chaos Rituals. In addition the Magister may learn a new Spell instead of a new
-      skill.
-    es: null
+    en: The Magister has the ability to use magic and casts spells like any other magicians, and the Magister
+      starts with one spell generated at random from the Chaos Rituals. In addition the Magister may learn
+      a new Spell instead of a new skill.
+    es: El Magister tiene la capacidad de usar la magia y lanza hechizos como cualquier otro mago, y el
+      Magister comienza con un hechizo generado aleatoriamente de los Rituales del Caos. Además, el Magister
+      puede aprender un nuevo Hechizo en lugar de una nueva habilidad.
   applies_to:
     profile_ids:
     - magister
@@ -76,10 +82,10 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Fear
-    es: null
+    es: Miedo
   effect_i18n:
     en: The Possessed are terrifying, twisted creatures and therefore cause fear.
-    es: null
+    es: Los Poseídos son criaturas terroríficas y retorcidas y por tanto provocan miedo.
   applies_to:
     profile_ids:
     - the-possessed
@@ -103,10 +109,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Mutations
-    es: null
+    es: Mutaciones
   effect_i18n:
     en: Possessed may start the game with one or more mutations each. See the Mutations list for costs.
-    es: null
+    es: Los Poseídos pueden comenzar la partida con una o más mutaciones cada uno. Ver la lista de Mutaciones
+      para los costes.
   applies_to:
     profile_ids:
     - the-possessed
@@ -122,7 +129,8 @@ rules:
         kind: compiler
         id: compiler.mutant-requires-mutation-at-recruitment
   name: Mutations
-  effect: Mutants must start the game with one or more mutations each. See the Mutations list for the cost.
+  effect: Mutants must start the game with one or more mutations each. See the Mutations list for the
+    cost.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -130,10 +138,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Mutations
-    es: null
+    es: Mutaciones
   effect_i18n:
     en: Mutants must start the game with one or more mutations each. See the Mutations list for the cost.
-    es: null
+    es: Los Mutantes deben comenzar la partida con una o más mutaciones cada uno. Ver la lista de Mutaciones
+      para el coste.
   applies_to:
     profile_ids:
     - mutants
@@ -148,8 +157,8 @@ rules:
       binding: null
       reason: 'Deferred subsystem: psychology.'
   name: Crazed
-  effect: Darksouls have been driven insane by daemonic possession and know no fear. They automatically pass any Leadership
-    tests they are required to take.
+  effect: Darksouls have been driven insane by daemonic possession and know no fear. They automatically
+    pass any Leadership tests they are required to take.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -157,11 +166,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Crazed
-    es: null
+    es: Enloquecidos
   effect_i18n:
-    en: Darksouls have been driven insane by daemonic possession and know no fear. They automatically pass any Leadership
-      tests they are required to take.
-    es: null
+    en: Darksouls have been driven insane by daemonic possession and know no fear. They automatically
+      pass any Leadership tests they are required to take.
+    es: Las Almas oscuras han sido enloquecidas por la posesión demoníaca y no conocen el miedo. Superan
+      automáticamente cualquier chequeo de Liderazgo que deban realizar.
   applies_to:
     profile_ids:
     - darksouls
@@ -179,14 +189,17 @@ rules:
     - id: campaign.mutation-purchase-history-and-costs
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: recruitment timing, later campaign purchases and escalating gold costs require campaign history.'
+      reason: >-
+        Out of scope: recruitment timing, later campaign purchases and escalating gold costs require
+        campaign history.
   name: Mutations
-  effect: Those who dwell in Mordheim soon develop horrible mutations, and the Cult of the Possessed seem to be especially
-    susceptible. In addition, Mordheim attracts mutants from all over the Empire, who are always quick to join the Chaos covens.
-    Most mutations are simply inconvenient or hideous, but some make their bearers extremely dangerous in combat. Mutations
-    may be bought for a Mutant or a Possessed warrior only when they are recruited; you may not buy new mutations for a model
-    after recruitment. Any Mutant or Possessed may have one or more mutations. The first mutation is bought at the price indicated,
-    but second and subsequent mutations bought for the same model cost double.
+  effect: Those who dwell in Mordheim soon develop horrible mutations, and the Cult of the Possessed seem
+    to be especially susceptible. In addition, Mordheim attracts mutants from all over the Empire, who
+    are always quick to join the Chaos covens. Most mutations are simply inconvenient or hideous, but
+    some make their bearers extremely dangerous in combat. Mutations may be bought for a Mutant or a Possessed
+    warrior only when they are recruited; you may not buy new mutations for a model after recruitment.
+    Any Mutant or Possessed may have one or more mutations. The first mutation is bought at the price
+    indicated, but second and subsequent mutations bought for the same model cost double.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -194,16 +207,25 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Mutations
-    es: null
+    es: Mutaciones
   effect_i18n:
-    en: 'Those who dwell in Mordheim soon develop horrible mutations, and the Cult of the Possessed seem to be especially
-      susceptible. In addition, Mordheim attracts mutants from all over the Empire, who are always quick to join the Chaos
-      covens. Most mutations are simply inconvenient or hideous, but some make their bearers extremely dangerous in combat.
+    en: 'Those who dwell in Mordheim soon develop horrible mutations, and the Cult of the Possessed seem
+      to be especially susceptible. In addition, Mordheim attracts mutants from all over the Empire, who
+      are always quick to join the Chaos covens. Most mutations are simply inconvenient or hideous, but
+      some make their bearers extremely dangerous in combat.
 
-      Mutations may be bought for a Mutant or a Possessed warrior only when they are recruited; you may not buy new mutations
-      for a model after recruitment. Any Mutant or Possessed may have one or more mutations. The first mutation is bought
-      at the price indicated, but second and subsequent mutations bought for the same model cost double.'
-    es: null
+      Mutations may be bought for a Mutant or a Possessed warrior only when they are recruited; you may
+      not buy new mutations for a model after recruitment. Any Mutant or Possessed may have one or more
+      mutations. The first mutation is bought at the price indicated, but second and subsequent mutations
+      bought for the same model cost double.'
+    es: Quienes moran en Mordheim pronto desarrollan horribles mutaciones, y el Culto de los Poseídos
+      parece ser especialmente susceptible. Además, Mordheim atrae a mutantes de todo el Imperio, que
+      siempre se apresuran a unirse a los conventículos del Caos. La mayoría de las mutaciones son simplemente
+      inconvenientes o horripilantes, pero algunas hacen que sus portadores sean extremadamente peligrosos
+      en combate. Las mutaciones pueden comprarse para un Mutante o un guerrero Poseído solo cuando son
+      reclutados; no puedes comprar nuevas mutaciones para una miniatura tras el reclutamiento. Cualquier
+      Mutante o Poseído puede tener una o más mutaciones. La primera mutación se compra al precio indicado,
+      pero la segunda y sucesivas mutaciones compradas para la misma miniatura cuestan el doble.
   applies_to:
     band: true
 - id: band--mutations-daemon-soul
@@ -218,9 +240,9 @@ rules:
       binding: null
       reason: only affects spells and prayers
   name: Daemon Soul
-  effect: 'A Daemon lives within the mutant’s soul. This gives him a 4+ save against the effects of spells or prayers.
-
-    Cost: 20 gold crowns.'
+  effect: >-
+    A Daemon lives within the mutant’s soul. This gives him a 4+ save against the effects of spells
+    or prayers. Cost: 20 gold crowns.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -228,12 +250,14 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Daemon Soul
-    es: null
+    es: Alma demoníaca
   effect_i18n:
-    en: 'A Daemon lives within the mutant’s soul. This gives him a 4+ save against the effects of spells or prayers.
+    en: 'A Daemon lives within the mutant’s soul. This gives him a 4+ save against the effects of spells
+      or prayers.
 
       Cost: 20 gold crowns.'
-    es: null
+    es: 'Un Demonio vive dentro del alma del mutante. Esto le da una salvación de 4+ contra los efectos
+      de hechizos u oraciones. Coste: 20 coronas de oro.'
   applies_to:
     band: true
 - id: band--mutations-great-claw
@@ -249,10 +273,9 @@ rules:
         kind: compiler
         id: special-rule.band--mutations-great-claw
   name: Great Claw
-  effect: 'One of the mutant’s arms ends in a great, crab-like claw. He may carry no weapons in this arm, but gains an extra
-    attack in hand-to-hand combat with a +1 Strength bonus.
-
-    Cost: 50 gold crowns.'
+  effect: >-
+    One of the mutant’s arms ends in a great, crab-like claw. He may carry no weapons in this arm,
+    but gains an extra attack in hand-to-hand combat with a +1 Strength bonus. Cost: 50 gold crowns.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -260,13 +283,15 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Great Claw
-    es: null
+    es: Garra enorme
   effect_i18n:
-    en: 'One of the mutant’s arms ends in a great, crab-like claw. He may carry no weapons in this arm, but gains an extra
-      attack in hand-to-hand combat with a +1 Strength bonus.
+    en: 'One of the mutant’s arms ends in a great, crab-like claw. He may carry no weapons in this arm,
+      but gains an extra attack in hand-to-hand combat with a +1 Strength bonus.
 
       Cost: 50 gold crowns.'
-    es: null
+    es: 'Uno de los brazos del mutante termina en una gran garra parecida a la de un cangrejo. No puede
+      llevar armas en este brazo, pero gana un ataque extra en combate cuerpo a cuerpo con un bonus de
+      +1 de Fuerza. Coste: 50 coronas de oro.'
   applies_to:
     band: true
 - id: band--mutations-cloven-hoofs
@@ -281,9 +306,7 @@ rules:
       binding: null
       reason: movement is outside the close-combat duel
   name: Cloven Hoofs
-  effect: 'The warrior gains +1 Movement.
-
-    Cost: 40 gold crowns'
+  effect: 'The warrior gains +1 Movement. Cost: 40 gold crowns'
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -291,12 +314,12 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Cloven Hoofs
-    es: null
+    es: Pezuñas hendidas
   effect_i18n:
     en: 'The warrior gains +1 Movement.
 
       Cost: 40 gold crowns'
-    es: null
+    es: 'El guerrero gana +1 Movimiento. Coste: 40 coronas de oro.'
   applies_to:
     band: true
 - id: band--mutations-tentacle
@@ -312,10 +335,10 @@ rules:
         kind: compiler
         id: special-rule.band--mutations-tentacle
   name: Tentacle
-  effect: 'One of the mutant’s arms ends in a tentacle. He may grapple his opponent in close combat to reduce his attacks
-    by -1, down to a minimum of 1. The mutant may decide which attack his opponent loses.
-
-    Cost: 35 gold crowns'
+  effect: >-
+    One of the mutant’s arms ends in a tentacle. He may grapple his opponent in close combat to
+    reduce his attacks by -1, down to a minimum of 1. The mutant may decide which attack his
+    opponent loses. Cost: 35 gold crowns
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -323,13 +346,15 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Tentacle
-    es: null
+    es: Tentáculo
   effect_i18n:
-    en: 'One of the mutant’s arms ends in a tentacle. He may grapple his opponent in close combat to reduce his attacks by
-      -1, down to a minimum of 1. The mutant may decide which attack his opponent loses.
+    en: 'One of the mutant’s arms ends in a tentacle. He may grapple his opponent in close combat to reduce
+      his attacks by -1, down to a minimum of 1. The mutant may decide which attack his opponent loses.
 
       Cost: 35 gold crowns'
-    es: null
+    es: 'Uno de los brazos del mutante termina en un tentáculo. Puede atrapar a su oponente en combate
+      cuerpo a cuerpo para reducir sus ataques en -1, hasta un mínimo de 1. El mutante puede decidir qué
+      ataque pierde su oponente. Coste: 35 coronas de oro.'
   applies_to:
     band: true
 - id: band--mutations-blackblood
@@ -347,10 +372,9 @@ rules:
         parameters:
           value: true
   name: Blackblood
-  effect: 'If the model loses a wound in close combat, anyone in base contact with the model suffers a Strength 3 hit (no
-    critical hits) from the spurting corrosive blood.
-
-    Cost: 30 gold crowns'
+  effect: >-
+    If the model loses a wound in close combat, anyone in base contact with the model suffers a
+    Strength 3 hit (no critical hits) from the spurting corrosive blood. Cost: 30 gold crowns
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -358,13 +382,15 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Blackblood
-    es: null
+    es: Sangre negra
   effect_i18n:
-    en: 'If the model loses a wound in close combat, anyone in base contact with the model suffers a Strength 3 hit (no critical
-      hits) from the spurting corrosive blood.
+    en: 'If the model loses a wound in close combat, anyone in base contact with the model suffers a Strength
+      3 hit (no critical hits) from the spurting corrosive blood.
 
       Cost: 30 gold crowns'
-    es: null
+    es: 'Si la miniatura pierde una herida en combate cuerpo a cuerpo, cualquiera en contacto base con
+      la miniatura sufre un impacto de Fuerza 3 (sin golpes críticos) de la sangre corrosiva a chorro.
+      Coste: 30 coronas de oro.'
   applies_to:
     band: true
 - id: band--mutations-spines
@@ -382,10 +408,9 @@ rules:
         parameters:
           value: true
   name: Spines
-  effect: 'Any model in base contact with the mutant suffers an automatic Strength 1 hit at the beginning of each close combat
-    phase. Spines will never cause critical hits.
-
-    Cost: 35 gold crowns'
+  effect: >-
+    Any model in base contact with the mutant suffers an automatic Strength 1 hit at the beginning
+    of each close combat phase. Spines will never cause critical hits. Cost: 35 gold crowns
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -393,13 +418,15 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Spines
-    es: null
+    es: Espinas
   effect_i18n:
-    en: 'Any model in base contact with the mutant suffers an automatic Strength 1 hit at the beginning of each close combat
-      phase. Spines will never cause critical hits.
+    en: 'Any model in base contact with the mutant suffers an automatic Strength 1 hit at the beginning
+      of each close combat phase. Spines will never cause critical hits.
 
       Cost: 35 gold crowns'
-    es: null
+    es: 'Cualquier miniatura en contacto base con el mutante sufre un impacto automático de Fuerza 1 al
+      comienzo de cada fase de combate cuerpo a cuerpo. Las Espinas nunca causan golpes críticos. Coste:
+      35 coronas de oro.'
   applies_to:
     band: true
 - id: band--mutations-scorpion-tail
@@ -417,10 +444,10 @@ rules:
         parameters:
           value: true
   name: Scorpion Tail
-  effect: 'The mutant has a long barbed tail with a venomed tip, allowing him to make an extra Strength 5 attack in each hand-to-hand
-    combat phase. If the model hit by the tail is immune to poison, the Strength of the hit is reduced to 2.
-
-    Cost: 40 gold crowns'
+  effect: >-
+    The mutant has a long barbed tail with a venomed tip, allowing him to make an extra Strength 5
+    attack in each hand-to-hand combat phase. If the model hit by the tail is immune to poison, the
+    Strength of the hit is reduced to 2. Cost: 40 gold crowns
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -428,13 +455,16 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Scorpion Tail
-    es: null
+    es: Cola de escorpión
   effect_i18n:
-    en: 'The mutant has a long barbed tail with a venomed tip, allowing him to make an extra Strength 5 attack in each hand-to-hand
-      combat phase. If the model hit by the tail is immune to poison, the Strength of the hit is reduced to 2.
+    en: 'The mutant has a long barbed tail with a venomed tip, allowing him to make an extra Strength
+      5 attack in each hand-to-hand combat phase. If the model hit by the tail is immune to poison, the
+      Strength of the hit is reduced to 2.
 
       Cost: 40 gold crowns'
-    es: null
+    es: 'El mutante tiene una larga cola con púas y punta venenosa, que le permite hacer un ataque extra
+      de Fuerza 5 en cada fase de combate cuerpo a cuerpo. Si la miniatura impactada por la cola es inmune
+      al veneno, la Fuerza del impacto se reduce a 2. Coste: 40 coronas de oro.'
   applies_to:
     band: true
 - id: band--mutations-extra-arm
@@ -451,11 +481,11 @@ rules:
         id: special-rule.band--mutations-extra-arm
   runtime_selectable: true
   name: Extra Arm
-  effect: 'The mutant may use any single-handed weapon in the extra arm, giving him +1 attack when fighting in hand-to-hand
-    combat. Alternatively, he may carry a shield or a buckler in the extra arm. If a Possessed chooses to do this, he gains
-    an extra attack but still cannot carry a weapon.
-
-    Cost: 40 gold crowns'
+  effect: >-
+    The mutant may use any single-handed weapon in the extra arm, giving him +1 attack when fighting
+    in hand-to-hand combat. Alternatively, he may carry a shield or a buckler in the extra arm. If a
+    Possessed chooses to do this, he gains an extra attack but still cannot carry a weapon. Cost: 40
+    gold crowns
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -463,14 +493,17 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Extra Arm
-    es: null
+    es: Brazo extra
   effect_i18n:
-    en: 'The mutant may use any single-handed weapon in the extra arm, giving him +1 attack when fighting in hand-to-hand
-      combat. Alternatively, he may carry a shield or a buckler in the extra arm. If a Possessed chooses to do this, he gains
-      an extra attack but still cannot carry a weapon.
+    en: 'The mutant may use any single-handed weapon in the extra arm, giving him +1 attack when fighting
+      in hand-to-hand combat. Alternatively, he may carry a shield or a buckler in the extra arm. If a
+      Possessed chooses to do this, he gains an extra attack but still cannot carry a weapon.
 
       Cost: 40 gold crowns'
-    es: null
+    es: 'El mutante puede usar cualquier arma de una mano en el brazo extra, dándole +1 ataque al luchar
+      en combate cuerpo a cuerpo. Alternativamente, puede llevar un escudo o una rodela en el brazo extra.
+      Si un Poseído elige hacer esto, gana un ataque extra pero aun así no puede llevar un arma. Coste:
+      40 coronas de oro.'
   applies_to:
     band: true
 - id: band--mutations-hideous
@@ -485,9 +518,7 @@ rules:
       binding: null
       reason: fear/psychology is outside the duel runtime
   name: Hideous
-  effect: 'The mutant causes fear.
-
-    Cost: 40 gold crowns'
+  effect: 'The mutant causes fear. Cost: 40 gold crowns'
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -495,11 +526,11 @@ rules:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     en: Hideous
-    es: null
+    es: Horripilante
   effect_i18n:
     en: 'The mutant causes fear.
 
       Cost: 40 gold crowns'
-    es: null
+    es: 'El mutante provoca miedo. Coste: 40 coronas de oro.'
   applies_to:
     band: true

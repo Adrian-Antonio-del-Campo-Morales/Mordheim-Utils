@@ -282,6 +282,71 @@ def test_multi_hit_pool_resolves_both_hits_when_the_highest_is_six():
     assert defender_state.parry_remaining.tolist() == [0]
 
 
+def test_nightshade_applies_one_initiative_penalty_per_damage():
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _resolve_weapon
+
+    attacker = build(main_weapon_id="weapon.mace", main_poison_id="poison.nightshade")
+    defender = build(wounds=4)
+    attacker_state = _new_state(attacker, 1, np.random.default_rng(1))
+    defender_state = _new_state(defender, 1, np.random.default_rng(2))
+    _resolve_weapon(
+        attacker, defender, attacker.main_weapon, np.array([0]),
+        np.zeros(1, dtype=bool), attacker_state, defender_state,
+        FixedRng(4, 6, 1), False,
+    )
+    assert defender_state.wounds.tolist() == [2]
+    assert defender_state.initiative_penalty.tolist() == [2]
+
+
+def test_mark_of_old_ones_converts_failed_armour_save():
+    from mordheim_combat.vectorized import VectorAttackObservation
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _resolve_weapon
+
+    attacker = build(main_weapon_id="weapon.mace")
+    defender = build(
+        wounds=3,
+        armour_id="armour.light-armour",
+        skill_ids=("mechanic.mark-of-the-old-ones",),
+    )
+    attacker_state = _new_state(attacker, 1, np.random.default_rng(1))
+    defender_state = _new_state(defender, 1, np.random.default_rng(2))
+    observation = VectorAttackObservation()
+    _resolve_weapon(
+        attacker, defender, attacker.main_weapon, np.array([0]),
+        np.zeros(1, dtype=bool), attacker_state, defender_state,
+        FixedRng(4, 4, 1), False, observation=observation,
+    )
+    assert observation.saved
+    assert defender_state.wounds.tolist() == [3]
+    assert defender_state.mark_of_old_ones_used.tolist() == [True]
+
+
+def test_luck_rerolls_failed_armour_save():
+    from mordheim_combat.vectorized import VectorAttackObservation
+    from mordheim_combat.vectorized import _new_state
+    from mordheim_combat.vectorized import _resolve_weapon
+
+    attacker = build(main_weapon_id="weapon.mace")
+    defender = build(
+        wounds=3,
+        armour_id="armour.light-armour",
+        skill_ids=("skill.luck",),
+    )
+    attacker_state = _new_state(attacker, 1, np.random.default_rng(1))
+    defender_state = _new_state(defender, 1, np.random.default_rng(2))
+    observation = VectorAttackObservation()
+    _resolve_weapon(
+        attacker, defender, attacker.main_weapon, np.array([0]),
+        np.zeros(1, dtype=bool), attacker_state, defender_state,
+        FixedRng(4, 4, 1, 6), False, observation=observation,
+    )
+    assert observation.saved
+    assert defender_state.wounds.tolist() == [3]
+    assert defender_state.luck_used.tolist() == [True]
+
+
 def test_same_warrior_cannot_finish_a_defender_stunned_by_its_previous_attack():
     """Close Combat: same-warrior follow-ups still need wound/Injury rolls."""
     from mordheim_combat.vectorized import STUNNED

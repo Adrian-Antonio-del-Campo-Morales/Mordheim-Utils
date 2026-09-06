@@ -6,10 +6,11 @@ from tkinter import messagebox, ttk
 from mordheim_campaign.application.controller import AppController
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import BorderedFrame, ScrollableFrame, SegmentedTabs, SummaryStrip
+from mordheim_ui.i18n import tr
 
 
 def _placeholder(parent: tk.Misc) -> None:
-    messagebox.showinfo("Prototype", "This control is visual-only in the interface prototype.", parent=parent)
+    messagebox.showinfo(tr('Prototype'), tr('This control is visual-only in the interface prototype.'), parent=parent)
 
 
 class InventoryWorkspace(tk.Frame):
@@ -30,10 +31,10 @@ class InventoryWorkspace(tk.Frame):
             SummaryStrip(
                 self,
                 [
-                    ("Gold crowns", f"{c.current_state.gold} gc"),
-                    ("Wyrdstone", f"{c.current_state.wyrdstone} shards"),
-                    ("Inventory", f"{sum(i.owned for i in c.inventory)} items"),
-                    ("In stash", f"{sum(i.stash for i in c.inventory)} items"),
+                    (tr('Gold crowns'), f"{c.current_state.gold} gc"),
+                    ("Wyrdstone", tr('{} shards').format(c.current_state.wyrdstone)),
+                    (tr('Inventory'), tr('{} items').format(sum(i.owned for i in c.inventory))),
+                    (tr('In stash'), tr('{} items').format(sum(i.stash for i in c.inventory))),
                 ],
             ).grid(row=0, column=0, sticky="ew", pady=(0, 10))
             base_row = 1
@@ -44,20 +45,20 @@ class InventoryWorkspace(tk.Frame):
         toolbar.grid(row=base_row, column=0, sticky="ew", pady=(0, 8))
         SegmentedTabs(
             toolbar,
-            (("item", "BY ITEM"), ("warrior", "BY WARRIOR")),
+            (("item", tr('BY ITEM')), ("warrior", tr('BY WARRIOR'))),
             controller.state.inventory_mode,
             controller.set_inventory_mode,
         ).pack(side="left")
         if not read_only:
-            ttk.Button(toolbar, text="+ ADD ITEM", command=lambda: _placeholder(self)).pack(side="right")
-            ttk.Button(toolbar, text="MANAGE RESOURCES", command=lambda: _placeholder(self)).pack(side="right", padx=(0, 7))
+            ttk.Button(toolbar, text=tr('+ ADD ITEM'), command=lambda: _placeholder(self)).pack(side="right")
+            ttk.Button(toolbar, text=tr('MANAGE RESOURCES'), command=lambda: _placeholder(self)).pack(side="right", padx=(0, 7))
 
         filters = tk.Frame(self, bg=COLORS["bg"])
         filters.grid(row=base_row + 1, column=0, sticky="ew", pady=(0, 8))
         search = ttk.Entry(filters)
-        search.insert(0, "Search inventory…")
+        search.insert(0, tr('Search inventory…'))
         search.pack(side="left", fill="x", expand=True, padx=(0, 10))
-        for index, label in enumerate(("ALL", "WEAPONS", "ARMOUR", "MISC", "CONSUMABLES")):
+        for index, label in enumerate((tr('ALL'), tr('WEAPONS'), tr('ARMOUR'), tr('MISC'), tr('CONSUMABLES'))):
             tk.Label(
                 filters,
                 text=label,
@@ -83,7 +84,7 @@ class InventoryWorkspace(tk.Frame):
         head.grid(row=0, column=0, sticky="ew")
         head.pack_propagate(False)
         widths = (5, 2, 1, 1, 1, 1)
-        cols = ("ITEM", "TYPE", "OWNED", "EQUIPPED", "STASH", "")
+        cols = (tr('ITEM'), tr('TYPE'), tr('OWNED'), tr('EQUIPPED'), tr('STASH'), "")
         for index, (label, weight) in enumerate(zip(cols, widths)):
             head.columnconfigure(index, weight=weight)
             tk.Label(
@@ -135,11 +136,11 @@ class InventoryWorkspace(tk.Frame):
             top = tk.Frame(body, bg=COLORS["panel"])
             top.pack(fill="x")
             tk.Label(top, text=warrior.name, bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 11)).pack(side="left")
-            tk.Label(top, text=f"{len(warrior.equipment)} items", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(side="left", padx=10)
+            tk.Label(top, text=tr('{} items').format(len(warrior.equipment)), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(side="left", padx=10)
             ttk.Button(top, text="MANAGE", style="Mini.TButton", command=self._open_editor).pack(side="right")
             tk.Label(
                 body,
-                text="   •   ".join(warrior.equipment) if warrior.equipment else "No equipment",
+                text="   •   ".join(warrior.equipment) if warrior.equipment else tr('No equipment'),
                 bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8), anchor="w", justify="left",
             ).pack(fill="x", pady=(7, 0))
 
@@ -147,7 +148,7 @@ class InventoryWorkspace(tk.Frame):
         stash.pack(fill="x", pady=(4, 0))
         body = stash.body
         body.configure(padx=14, pady=11)
-        tk.Label(body, text="STASH", bg=COLORS["panel"], fg=COLORS["accent"], font=("Georgia", 11)).pack(anchor="w")
+        tk.Label(body, text=tr('STASH'), bg=COLORS["panel"], fg=COLORS["accent"], font=("Georgia", 11)).pack(anchor="w")
         stash_items = [f"{item.name} ×{item.stash}" for item in self.controller.state.campaign.inventory if item.stash]
         tk.Label(body, text="   •   ".join(stash_items), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8), anchor="w", justify="left").pack(fill="x", pady=(7, 0))
         return frame
@@ -167,10 +168,10 @@ class InventoryWorkspace(tk.Frame):
                 assigned.append(warrior.name)
         detail = (
             f"{item.name}\n\nOwned: {item.owned}\nEquipped: {item.equipped}\nStash: {item.stash}\n\n"
-            + ("Assigned to:\n• " + "\n• ".join(assigned) if assigned else "No current assignments")
+            + ("Assigned to:\n• " + "\n• ".join(assigned) if assigned else tr('No current assignments'))
             + "\n\nAssignment and selling actions will be wired later."
         )
-        messagebox.showinfo("Inventory item", detail, parent=self)
+        messagebox.showinfo(tr('Inventory item'), detail, parent=self)
 
 
 # Compatibility exports for older imports while the prototype evolves.

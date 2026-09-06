@@ -5,212 +5,484 @@ specifications:
   category: local
   sources:
   - target: rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.natural-armour-save
-    digest: 1e6d750787adb3e5a327ebcab7f0d4b94a53ad322926156ccd9573ba6a1de891
+    digest: 784d0132aaa75c08b154e4f295c8058061eab8097ecc2c2012304e26640e883b
   - target: rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.natural-armour-negated-by-magic
-    digest: 1e6d750787adb3e5a327ebcab7f0d4b94a53ad322926156ccd9573ba6a1de891
+    digest: 784d0132aaa75c08b154e4f295c8058061eab8097ecc2c2012304e26640e883b
   - target: rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.magical-attacks
-    digest: 1e6d750787adb3e5a327ebcab7f0d4b94a53ad322926156ccd9573ba6a1de891
+    digest: 784d0132aaa75c08b154e4f295c8058061eab8097ecc2c2012304e26640e883b
   interpretation: Henchmen / Daemonic Aura gives 5+ armour modified by Strength and cancelled by magic,
     and makes the bearer's attacks magical. It is not an additional ward save.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
-    context: {rule_id: nurglings--daemonic-aura}
-    expect: {result.recipients: [nurglings]}
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    context:
+      rule_id: nurglings--daemonic-aura
+    expect:
+      result.recipients:
+      - nurglings
   - id: face-1
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
-    rolls: [{key: armour, value: 1}]
-    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    rolls:
+    - key: armour
+      value: 1
+    expect:
+      defender.natural_armour_save: 5
+      result.target: 5
+      result.saved: false
   - id: face-2
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
-    rolls: [{key: armour, value: 2}]
-    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    rolls:
+    - key: armour
+      value: 2
+    expect:
+      defender.natural_armour_save: 5
+      result.target: 5
+      result.saved: false
   - id: face-3
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
-    rolls: [{key: armour, value: 3}]
-    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      defender.natural_armour_save: 5
+      result.target: 5
+      result.saved: false
   - id: face-4
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
-    rolls: [{key: armour, value: 4}]
-    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      defender.natural_armour_save: 5
+      result.target: 5
+      result.saved: false
   - id: face-5
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
-    rolls: [{key: armour, value: 5}]
-    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      defender.natural_armour_save: 5
+      result.target: 5
+      result.saved: true
   - id: face-6
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
-    rolls: [{key: armour, value: 6}]
-    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      defender.natural_armour_save: 5
+      result.target: 5
+      result.saved: true
   - id: strength-4
-    roles: [boundary]
+    roles:
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.saved: false
   - id: magic-cancels-aura
-    roles: [inactive, consumer]
+    roles:
+    - inactive
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
-    expect: {context.magical_attack: true, context.natural_armour_negated_by_magic: true, result.eligible: false, result.saved: false}
+    attacker:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    expect:
+      context.magical_attack: true
+      context.natural_armour_negated_by_magic: true
+      result.eligible: false
+      result.saved: false
     expect_contains:
-      attacker.global_effects.tags: [attack.magical]
+      attacker.global_effects.tags:
+      - attack.magical
   - id: magical-attacks-cancel-ethereal
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: special_save
-    attacker: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
-    defender: {collection: trollheim, band_id: lustria-pygmies, profile_id: silent-walker}
-    expect: {context.ward_blocked: true, result.saved: false, result.ward_roll: null}
+    attacker:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    defender:
+      collection: trollheim
+      band_id: lustria-pygmies
+      profile_id: silent-walker
+    expect:
+      context.ward_blocked: true
+      result.saved: false
+      result.ward_roll: null
   - id: mundane-attacks-do-not-cancel-ethereal
-    roles: [inactive]
+    roles:
+    - inactive
     operation: special_save
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-pygmies, profile_id: silent-walker}
-    rolls: [{key: special.ward, value: 5}]
-    expect: {result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-pygmies
+      profile_id: silent-walker
+    rolls:
+    - key: special.ward
+      value: 5
+    expect:
+      result.saved: true
   - id: no-ward
-    roles: [inactive]
+    roles:
+    - inactive
     operation: special_save
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
-    expect: {result.saved: false}
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+    expect:
+      result.saved: false
   mutations:
   - id: remove-aura
     path: defender.natural_armour_save
     value: 7
-    cases: [face-5]
+    cases:
+    - face-5
   - id: ignore-magic
     path: defender.global_effects.natural_armour_negated_by_magic
     value: false
-    cases: [magic-cancels-aura]
+    cases:
+    - magic-cancels-aura
   - id: mundane-attacks
     path: attacker.global_effects.tags
     value: []
-    cases: [magical-attacks-cancel-ethereal]
+    cases:
+    - magical-attacks-cancel-ethereal
 - id: editorial-daemonic-aura-plague-bearers
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
   - target: rule/mordheim/carnival-of-chaos/plague-bearers--daemonic-aura/trait.natural-armour-save
-    digest: f63d0668c109df6e11d37a8c90187f86ee30fb17b8e67c75a13cb259725b9ad1
+    digest: a484df50ab64f13656f53254e04095284a4a37a275f0a1af6d20b072ec6b97b0
   - target: rule/mordheim/carnival-of-chaos/plague-bearers--daemonic-aura/trait.natural-armour-negated-by-magic
-    digest: f63d0668c109df6e11d37a8c90187f86ee30fb17b8e67c75a13cb259725b9ad1
+    digest: a484df50ab64f13656f53254e04095284a4a37a275f0a1af6d20b072ec6b97b0
   - target: rule/mordheim/carnival-of-chaos/plague-bearers--daemonic-aura/trait.magical-attacks
-    digest: f63d0668c109df6e11d37a8c90187f86ee30fb17b8e67c75a13cb259725b9ad1
+    digest: a484df50ab64f13656f53254e04095284a4a37a275f0a1af6d20b072ec6b97b0
   interpretation: Henchmen / Daemonic Aura gives 5+ armour modified by Strength and cancelled by magic,
     and makes the bearer's attacks magical. It is not an additional ward save.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
-    context: {rule_id: plague-bearers--daemonic-aura}
-    expect: {result.recipients: [plague-bearers]}
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    context:
+      rule_id: plague-bearers--daemonic-aura
+    expect:
+      result.recipients:
+      - plague-bearers
   - id: face-1
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
-    rolls: [{key: armour, value: 1}]
-    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    rolls:
+    - key: armour
+      value: 1
+    expect:
+      defender.natural_armour_save: 5
+      result.target: 5
+      result.saved: false
   - id: face-2
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
-    rolls: [{key: armour, value: 2}]
-    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    rolls:
+    - key: armour
+      value: 2
+    expect:
+      defender.natural_armour_save: 5
+      result.target: 5
+      result.saved: false
   - id: face-3
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
-    rolls: [{key: armour, value: 3}]
-    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    rolls:
+    - key: armour
+      value: 3
+    expect:
+      defender.natural_armour_save: 5
+      result.target: 5
+      result.saved: false
   - id: face-4
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
-    rolls: [{key: armour, value: 4}]
-    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    rolls:
+    - key: armour
+      value: 4
+    expect:
+      defender.natural_armour_save: 5
+      result.target: 5
+      result.saved: false
   - id: face-5
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
-    rolls: [{key: armour, value: 5}]
-    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      defender.natural_armour_save: 5
+      result.target: 5
+      result.saved: true
   - id: face-6
-    roles: [active, boundary, consumer]
+    roles:
+    - active
+    - boundary
+    - consumer
     operation: armour
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
-    rolls: [{key: armour, value: 6}]
-    expect: {defender.natural_armour_save: 5, result.target: 5, result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    rolls:
+    - key: armour
+      value: 6
+    expect:
+      defender.natural_armour_save: 5
+      result.target: 5
+      result.saved: true
   - id: strength-4
-    roles: [boundary]
+    roles:
+    - boundary
     operation: armour
-    attacker: {main_weapon_id: weapon.mace, characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
-    rolls: [{key: armour, value: 5}]
-    expect: {result.target: 6, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 4
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    rolls:
+    - key: armour
+      value: 5
+    expect:
+      result.target: 6
+      result.saved: false
   - id: magic-cancels-aura
-    roles: [inactive, consumer]
+    roles:
+    - inactive
+    - consumer
     operation: armour
-    attacker: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
-    expect: {context.magical_attack: true, context.natural_armour_negated_by_magic: true, result.eligible: false, result.saved: false}
+    attacker:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    expect:
+      context.magical_attack: true
+      context.natural_armour_negated_by_magic: true
+      result.eligible: false
+      result.saved: false
     expect_contains:
-      attacker.global_effects.tags: [attack.magical]
+      attacker.global_effects.tags:
+      - attack.magical
   - id: magical-attacks-cancel-ethereal
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: special_save
-    attacker: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
-    defender: {collection: trollheim, band_id: lustria-pygmies, profile_id: silent-walker}
-    expect: {context.ward_blocked: true, result.saved: false, result.ward_roll: null}
+    attacker:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    defender:
+      collection: trollheim
+      band_id: lustria-pygmies
+      profile_id: silent-walker
+    expect:
+      context.ward_blocked: true
+      result.saved: false
+      result.ward_roll: null
   - id: mundane-attacks-do-not-cancel-ethereal
-    roles: [inactive]
+    roles:
+    - inactive
     operation: special_save
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {collection: trollheim, band_id: lustria-pygmies, profile_id: silent-walker}
-    rolls: [{key: special.ward, value: 5}]
-    expect: {result.saved: true}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-pygmies
+      profile_id: silent-walker
+    rolls:
+    - key: special.ward
+      value: 5
+    expect:
+      result.saved: true
   - id: no-ward
-    roles: [inactive]
+    roles:
+    - inactive
     operation: special_save
-    defender: {collection: mordheim, band_id: carnival-of-chaos, profile_id: plague-bearers}
-    expect: {result.saved: false}
+    defender:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+    expect:
+      result.saved: false
   mutations:
   - id: remove-aura
     path: defender.natural_armour_save
     value: 7
-    cases: [face-5]
+    cases:
+    - face-5
   - id: ignore-magic
     path: defender.global_effects.natural_armour_negated_by_magic
     value: false
-    cases: [magic-cancels-aura]
+    cases:
+    - magic-cancels-aura
   - id: mundane-attacks
     path: attacker.global_effects.tags
     value: []
-    cases: [magical-attacks-cancel-ethereal]
+    cases:
+    - magical-attacks-cancel-ethereal

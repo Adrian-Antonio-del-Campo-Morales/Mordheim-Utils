@@ -5,247 +5,475 @@ specifications:
   category: contextual
   sources:
   - target: rule/mordheim/undead/dire-wolves--charge/trait.charge-attack-bonus
-    digest: 1bd3e6da1529eb2811f0bd4439157a105e9c78fe853d032ce68c2624328721f0
-  interpretation: Dire Wolves / Charge grants two attacks instead of the printed one on the turn the wolf charges.
-    Being charged does not qualify. The source conditions this on charging, not on a global round number.
-    The profile uses natural attacks with no additional off-hand attack; no dice or optional decision is required.
+    digest: 867a56d6b6ee508ce7336a531712664b59d94cc22a1e38277c553a537bf70044
+  interpretation: Dire Wolves / Charge grants two attacks instead of the printed one on the turn the wolf
+    charges. Being charged does not qualify. The source conditions this on charging, not on a global round
+    number. The profile uses natural attacks with no additional off-hand attack; no dice or optional decision
+    is required.
   cases:
   - id: exact-recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: mordheim, band_id: undead, profile_id: dire-wolves}
-    context: {rule_id: dire-wolves--charge}
-    expect: {result.recipients: [dire-wolves]}
+    defender:
+      collection: mordheim
+      band_id: undead
+      profile_id: dire-wolves
+    context:
+      rule_id: dire-wolves--charge
+    expect:
+      result.recipients:
+      - dire-wolves
   - id: first-false-charging-false
-    roles: [inactive, consumer, boundary, compiled]
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    - compiled
     operation: attacks
-    attacker: {collection: mordheim, band_id: undead, profile_id: dire-wolves}
-    context: {first_round: false, charging: false}
+    attacker:
+      collection: mordheim
+      band_id: undead
+      profile_id: dire-wolves
+    context:
+      first_round: false
+      charging: false
     expect:
       attacker.characteristics.attacks: 1
       attacker.global_effects.charge_attacks_bonus: 1
       result.attacks: 1
   - id: first-false-charging-true
-    roles: [active, consumer, boundary, compiled]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - compiled
     operation: attacks
-    attacker: {collection: mordheim, band_id: undead, profile_id: dire-wolves}
-    context: {first_round: false, charging: true}
+    attacker:
+      collection: mordheim
+      band_id: undead
+      profile_id: dire-wolves
+    context:
+      first_round: false
+      charging: true
     expect:
       attacker.characteristics.attacks: 1
       attacker.global_effects.charge_attacks_bonus: 1
       result.attacks: 2
   - id: first-true-charging-false
-    roles: [inactive, consumer, boundary, compiled]
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    - compiled
     operation: attacks
-    attacker: {collection: mordheim, band_id: undead, profile_id: dire-wolves}
-    context: {first_round: true, charging: false}
+    attacker:
+      collection: mordheim
+      band_id: undead
+      profile_id: dire-wolves
+    context:
+      first_round: true
+      charging: false
     expect:
       attacker.characteristics.attacks: 1
       attacker.global_effects.charge_attacks_bonus: 1
       result.attacks: 1
   - id: first-true-charging-true
-    roles: [active, consumer, boundary, compiled]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - compiled
     operation: attacks
-    attacker: {collection: mordheim, band_id: undead, profile_id: dire-wolves}
-    context: {first_round: true, charging: true}
+    attacker:
+      collection: mordheim
+      band_id: undead
+      profile_id: dire-wolves
+    context:
+      first_round: true
+      charging: true
     expect:
       attacker.characteristics.attacks: 1
       attacker.global_effects.charge_attacks_bonus: 1
       result.attacks: 2
   - id: receiving-charge
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attacks
-    attacker: {collection: mordheim, band_id: undead, profile_id: dire-wolves}
-    context: {first_round: true, charged: true, charging: false}
-    expect: {result.attacks: 1}
+    attacker:
+      collection: mordheim
+      band_id: undead
+      profile_id: dire-wolves
+    context:
+      first_round: true
+      charged: true
+      charging: false
+    expect:
+      result.attacks: 1
   - id: allocate-charge-attacks
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: allocate
-    attacker: {collection: mordheim, band_id: undead, profile_id: dire-wolves}
-    context: {first_round: true, charging: true}
-    expect: {result.count: 2}
+    attacker:
+      collection: mordheim
+      band_id: undead
+      profile_id: dire-wolves
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.count: 2
     expect_contains:
-      result.weapons.0.tags: [weapon.natural-attacks]
-      result.weapons.1.tags: [weapon.natural-attacks]
+      result.weapons.0.tags:
+      - weapon.natural-attacks
+      result.weapons.1.tags:
+      - weapon.natural-attacks
   - id: unrelated-fighter-charge
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attacks
-    attacker: {main_weapon_id: weapon.mace}
-    context: {first_round: true, charging: true}
-    expect: {result.attacks: 1, attacker.global_effects.charge_attacks_bonus: 0}
+    attacker:
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.attacks: 1
+      attacker.global_effects.charge_attacks_bonus: 0
   mutations:
   - id: remove-charge-bonus
     path: attacker.global_effects.charge_attacks_bonus
     value: 0
-    cases: [first-true-charging-true, allocate-charge-attacks]
+    cases:
+    - first-true-charging-true
+    - allocate-charge-attacks
   - id: make-bonus-permanent
     changes:
-    - {path: attacker.global_effects.charge_attacks_bonus, value: 0}
-    - {path: attacker.global_effects.attacks_bonus, value: 1}
-    cases: [first-false-charging-false, receiving-charge]
+    - path: attacker.global_effects.charge_attacks_bonus
+      value: 0
+    - path: attacker.global_effects.attacks_bonus
+      value: 1
+    cases:
+    - first-false-charging-false
+    - receiving-charge
 - id: editorial-dire-wolf-charge-chaos-streets-undead-bloodlines
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
   - target: rule/trollheim/chaos-streets-undead-bloodlines/dire-wolf--charge/trait.charge-attack-bonus
-    digest: 911cb14284ecef0af6a237ae0aac4f357ca3c940d73569860571833b8b868d0d
-  interpretation: Dire Wolves / Charge grants two attacks instead of the printed one on the turn the wolf charges.
-    Being charged does not qualify. The source conditions this on charging, not on a global round number.
-    The profile uses natural attacks with no additional off-hand attack; no dice or optional decision is required.
+    digest: 904e6bccac2eddcd39903a9e3b0bd2a3411b58f13f01c246eb5e994568aa0447
+  interpretation: Dire Wolves / Charge grants two attacks instead of the printed one on the turn the wolf
+    charges. Being charged does not qualify. The source conditions this on charging, not on a global round
+    number. The profile uses natural attacks with no additional off-hand attack; no dice or optional decision
+    is required.
   cases:
   - id: exact-recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: dire-wolf}
-    context: {rule_id: dire-wolf--charge}
-    expect: {result.recipients: [dire-wolf]}
+    defender:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dire-wolf
+    context:
+      rule_id: dire-wolf--charge
+    expect:
+      result.recipients:
+      - dire-wolf
   - id: first-false-charging-false
-    roles: [inactive, consumer, boundary, compiled]
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    - compiled
     operation: attacks
-    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: dire-wolf}
-    context: {first_round: false, charging: false}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dire-wolf
+    context:
+      first_round: false
+      charging: false
     expect:
       attacker.characteristics.attacks: 1
       attacker.global_effects.charge_attacks_bonus: 1
       result.attacks: 1
   - id: first-false-charging-true
-    roles: [active, consumer, boundary, compiled]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - compiled
     operation: attacks
-    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: dire-wolf}
-    context: {first_round: false, charging: true}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dire-wolf
+    context:
+      first_round: false
+      charging: true
     expect:
       attacker.characteristics.attacks: 1
       attacker.global_effects.charge_attacks_bonus: 1
       result.attacks: 2
   - id: first-true-charging-false
-    roles: [inactive, consumer, boundary, compiled]
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    - compiled
     operation: attacks
-    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: dire-wolf}
-    context: {first_round: true, charging: false}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dire-wolf
+    context:
+      first_round: true
+      charging: false
     expect:
       attacker.characteristics.attacks: 1
       attacker.global_effects.charge_attacks_bonus: 1
       result.attacks: 1
   - id: first-true-charging-true
-    roles: [active, consumer, boundary, compiled]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - compiled
     operation: attacks
-    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: dire-wolf}
-    context: {first_round: true, charging: true}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dire-wolf
+    context:
+      first_round: true
+      charging: true
     expect:
       attacker.characteristics.attacks: 1
       attacker.global_effects.charge_attacks_bonus: 1
       result.attacks: 2
   - id: receiving-charge
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attacks
-    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: dire-wolf}
-    context: {first_round: true, charged: true, charging: false}
-    expect: {result.attacks: 1}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dire-wolf
+    context:
+      first_round: true
+      charged: true
+      charging: false
+    expect:
+      result.attacks: 1
   - id: allocate-charge-attacks
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: allocate
-    attacker: {collection: trollheim, band_id: chaos-streets-undead-bloodlines, profile_id: dire-wolf}
-    context: {first_round: true, charging: true}
-    expect: {result.count: 2}
+    attacker:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: dire-wolf
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.count: 2
     expect_contains:
-      result.weapons.0.tags: [weapon.natural-attacks]
-      result.weapons.1.tags: [weapon.natural-attacks]
+      result.weapons.0.tags:
+      - weapon.natural-attacks
+      result.weapons.1.tags:
+      - weapon.natural-attacks
   - id: unrelated-fighter-charge
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attacks
-    attacker: {main_weapon_id: weapon.mace}
-    context: {first_round: true, charging: true}
-    expect: {result.attacks: 1, attacker.global_effects.charge_attacks_bonus: 0}
+    attacker:
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.attacks: 1
+      attacker.global_effects.charge_attacks_bonus: 0
   mutations:
   - id: remove-charge-bonus
     path: attacker.global_effects.charge_attacks_bonus
     value: 0
-    cases: [first-true-charging-true, allocate-charge-attacks]
+    cases:
+    - first-true-charging-true
+    - allocate-charge-attacks
   - id: make-bonus-permanent
     changes:
-    - {path: attacker.global_effects.charge_attacks_bonus, value: 0}
-    - {path: attacker.global_effects.attacks_bonus, value: 1}
-    cases: [first-false-charging-false, receiving-charge]
+    - path: attacker.global_effects.charge_attacks_bonus
+      value: 0
+    - path: attacker.global_effects.attacks_bonus
+      value: 1
+    cases:
+    - first-false-charging-false
+    - receiving-charge
 - id: editorial-dire-wolf-charge-trollheim-undead
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
   - target: rule/trollheim/trollheim-undead/dire-wolves--charge/trait.charge-attack-bonus
-    digest: 270fb0800b3c21af2eb6a65047d157d46eeaac7e6b3d8c811c045660a212617a
-  interpretation: Dire Wolves / Charge grants two attacks instead of the printed one on the turn the wolf charges.
-    Being charged does not qualify. The source conditions this on charging, not on a global round number.
-    The profile uses natural attacks with no additional off-hand attack; no dice or optional decision is required.
+    digest: c3d2b21f073a7b87635c52e83df8aeabc1ce0670b184e663504a8ca11cca3ae1
+  interpretation: Dire Wolves / Charge grants two attacks instead of the printed one on the turn the wolf
+    charges. Being charged does not qualify. The source conditions this on charging, not on a global round
+    number. The profile uses natural attacks with no additional off-hand attack; no dice or optional decision
+    is required.
   cases:
   - id: exact-recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: grant
-    defender: {collection: trollheim, band_id: trollheim-undead, profile_id: dire-wolves}
-    context: {rule_id: dire-wolves--charge}
-    expect: {result.recipients: [dire-wolves]}
+    defender:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: dire-wolves
+    context:
+      rule_id: dire-wolves--charge
+    expect:
+      result.recipients:
+      - dire-wolves
   - id: first-false-charging-false
-    roles: [inactive, consumer, boundary, compiled]
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    - compiled
     operation: attacks
-    attacker: {collection: trollheim, band_id: trollheim-undead, profile_id: dire-wolves}
-    context: {first_round: false, charging: false}
+    attacker:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: dire-wolves
+    context:
+      first_round: false
+      charging: false
     expect:
       attacker.characteristics.attacks: 1
       attacker.global_effects.charge_attacks_bonus: 1
       result.attacks: 1
   - id: first-false-charging-true
-    roles: [active, consumer, boundary, compiled]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - compiled
     operation: attacks
-    attacker: {collection: trollheim, band_id: trollheim-undead, profile_id: dire-wolves}
-    context: {first_round: false, charging: true}
+    attacker:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: dire-wolves
+    context:
+      first_round: false
+      charging: true
     expect:
       attacker.characteristics.attacks: 1
       attacker.global_effects.charge_attacks_bonus: 1
       result.attacks: 2
   - id: first-true-charging-false
-    roles: [inactive, consumer, boundary, compiled]
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    - compiled
     operation: attacks
-    attacker: {collection: trollheim, band_id: trollheim-undead, profile_id: dire-wolves}
-    context: {first_round: true, charging: false}
+    attacker:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: dire-wolves
+    context:
+      first_round: true
+      charging: false
     expect:
       attacker.characteristics.attacks: 1
       attacker.global_effects.charge_attacks_bonus: 1
       result.attacks: 1
   - id: first-true-charging-true
-    roles: [active, consumer, boundary, compiled]
+    roles:
+    - active
+    - consumer
+    - boundary
+    - compiled
     operation: attacks
-    attacker: {collection: trollheim, band_id: trollheim-undead, profile_id: dire-wolves}
-    context: {first_round: true, charging: true}
+    attacker:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: dire-wolves
+    context:
+      first_round: true
+      charging: true
     expect:
       attacker.characteristics.attacks: 1
       attacker.global_effects.charge_attacks_bonus: 1
       result.attacks: 2
   - id: receiving-charge
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attacks
-    attacker: {collection: trollheim, band_id: trollheim-undead, profile_id: dire-wolves}
-    context: {first_round: true, charged: true, charging: false}
-    expect: {result.attacks: 1}
+    attacker:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: dire-wolves
+    context:
+      first_round: true
+      charged: true
+      charging: false
+    expect:
+      result.attacks: 1
   - id: allocate-charge-attacks
-    roles: [active, consumer]
+    roles:
+    - active
+    - consumer
     operation: allocate
-    attacker: {collection: trollheim, band_id: trollheim-undead, profile_id: dire-wolves}
-    context: {first_round: true, charging: true}
-    expect: {result.count: 2}
+    attacker:
+      collection: trollheim
+      band_id: trollheim-undead
+      profile_id: dire-wolves
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.count: 2
     expect_contains:
-      result.weapons.0.tags: [weapon.natural-attacks]
-      result.weapons.1.tags: [weapon.natural-attacks]
+      result.weapons.0.tags:
+      - weapon.natural-attacks
+      result.weapons.1.tags:
+      - weapon.natural-attacks
   - id: unrelated-fighter-charge
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attacks
-    attacker: {main_weapon_id: weapon.mace}
-    context: {first_round: true, charging: true}
-    expect: {result.attacks: 1, attacker.global_effects.charge_attacks_bonus: 0}
+    attacker:
+      main_weapon_id: weapon.mace
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.attacks: 1
+      attacker.global_effects.charge_attacks_bonus: 0
   mutations:
   - id: remove-charge-bonus
     path: attacker.global_effects.charge_attacks_bonus
     value: 0
-    cases: [first-true-charging-true, allocate-charge-attacks]
+    cases:
+    - first-true-charging-true
+    - allocate-charge-attacks
   - id: make-bonus-permanent
     changes:
-    - {path: attacker.global_effects.charge_attacks_bonus, value: 0}
-    - {path: attacker.global_effects.attacks_bonus, value: 1}
-    cases: [first-false-charging-false, receiving-charge]
+    - path: attacker.global_effects.charge_attacks_bonus
+      value: 0
+    - path: attacker.global_effects.attacks_bonus
+      value: 1
+    cases:
+    - first-false-charging-false
+    - receiving-charge

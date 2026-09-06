@@ -4,90 +4,243 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/trollheim/lustria-lizardmen/band--sacred-mark-huge-jaws/trait.huge-jaws, digest: cdb9d5790f79e90680f10af275b7525ab20a4832b95ffe10686cddfa4fb3a0ef}
-  interpretation: "Huge Jaws is available only to Saurus Totem Warriors and adds one to the Strength of their bite attack, not to their weapons."
+  - target: rule/trollheim/lustria-lizardmen/band--sacred-mark-huge-jaws/trait.huge-jaws
+    digest: 0578347d9261b4ff3004344cf6e5bc58e52122dc17befcb398ee61df159acf87
+  interpretation: Huge Jaws is available only to Saurus Totem Warriors and adds one to the Strength of
+    their bite attack, not to their weapons.
   cases:
   - id: recipient
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-totem-warrior}
-    context: {rule_id: band--sacred-mark-huge-jaws}
-    expect: {result.recipients: [saurus-totem-warrior]}
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
+    context:
+      rule_id: band--sacred-mark-huge-jaws
+    expect:
+      result.recipients:
+      - saurus-totem-warrior
   - id: strengthened-bite
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: extra_attack
-    attacker: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-totem-warrior, special_rule_ids: [band--sacred-mark-huge-jaws]}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 2, initiative: 3, attacks: 1}}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 3}]
-    expect: {result.wounded: true, result.defender.wounds: 1}
+    attacker:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
+      special_rule_ids:
+      - band--sacred-mark-huge-jaws
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 3
+    expect:
+      result.wounded: true
+      result.defender.wounds: 1
   - id: ordinary-bite-control
-    roles: [inactive]
+    roles:
+    - inactive
     operation: extra_attack
-    attacker: {collection: trollheim, band_id: lustria-lizardmen, profile_id: saurus-totem-warrior}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 2, initiative: 3, attacks: 1}}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 3}]
-    expect: {result.wounded: false, result.defender.wounds: 2}
+    attacker:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 3
+    expect:
+      result.wounded: false
+      result.defender.wounds: 2
   mutations:
-  - {id: remove-jaw-strength, path: attacker.extra_attacks.0.strength_bonus, value: 0, cases: [strengthened-bite]}
-
+  - id: remove-jaw-strength
+    path: attacker.extra_attacks.0.strength_bonus
+    value: 0
+    cases:
+    - strengthened-bite
 - id: lizardmen-venom-glands
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/trollheim/lustria-lizardmen/band--sacred-mark-venom-glands/special-rule.band--sacred-mark-venom-glands, digest: 361ddd027d00ede948ed7aec09dc997809ca1746facfefdf1d423d6f75e2f10a}
-  interpretation: >-
-    Venom Glands is available to the indicated Skink heroes and replaces their weapon attacks with
-    bites: their own Strength, +1 to the enemy save and +1 to Injury.
+  - target: rule/trollheim/lustria-lizardmen/band--sacred-mark-venom-glands/special-rule.band--sacred-mark-venom-glands
+    digest: eaeb2629d2e73797427db3dc949ebf94ee449553b220337aae5d98d57d32e2f7
+  interpretation: 'Venom Glands is available to the indicated Skink heroes and replaces their weapon attacks
+    with bites: their own Strength, +1 to the enemy save and +1 to Injury.'
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest}
-    context: {rule_id: band--sacred-mark-venom-glands}
-    expect: {result.recipients: [skink-great-crests, skink-priest]}
+    defender:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+    context:
+      rule_id: band--sacred-mark-venom-glands
+    expect:
+      result.recipients:
+      - skink-great-crests
+      - skink-priest
   - id: injury-bonus
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: attack
-    attacker: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest, special_rule_ids: [band--sacred-mark-venom-glands]}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}, {key: test.armour, value: 1}, {key: test.injury.0, value: 4}]
-    expect: {result.defender.condition: OUT}
-    expect_contains: {attacker.main_weapon.tags: [rule.venom-glands, weapon.natural-attacks]}
+    attacker:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+      special_rule_ids:
+      - band--sacred-mark-venom-glands
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.armour
+      value: 1
+    - key: test.injury.0
+      value: 4
+    expect:
+      result.defender.condition: OUT
+    expect_contains:
+      attacker.main_weapon.tags:
+      - rule.venom-glands
+      - weapon.natural-attacks
   - id: ordinary-skink-control
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attack
-    attacker: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-priest}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1}}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}, {key: test.armour, value: 1}, {key: test.injury.0, value: 4}]
-    expect: {result.defender.condition: STUNNED}
+    attacker:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    - key: test.armour
+      value: 1
+    - key: test.injury.0
+      value: 4
+    expect:
+      result.defender.condition: STUNNED
   mutations:
-  - {id: remove-venom-injury, path: attacker.main_weapon.injury_modifier, value: 0, cases: [injury-bonus]}
-
+  - id: remove-venom-injury
+    path: attacker.main_weapon.injury_modifier
+    value: 0
+    cases:
+    - injury-bonus
 - id: bretonnian-shield-bash
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/mordheim/bretonnian-chapel-guard/band--shield-bash/special-rule.band--shield-bash, digest: 437b3d7a202512ce18366a91ecf3e585138ddc0f3791830e21cc3974e6a8ceba}
-  interpretation: "Shield Bash grants, each turn, one extra club attack with the shield or kite shield resolved at Strength -1; without one of those shields the build is illegal."
+  - target: rule/mordheim/bretonnian-chapel-guard/band--shield-bash/special-rule.band--shield-bash
+    digest: ae5a7bbb7af2da8d77e9874e5c5405ee32be92b307413756576fe8722aa1cb7b
+  interpretation: Shield Bash grants, each turn, one extra club attack with the shield or kite shield
+    resolved at Strength -1; without one of those shields the build is illegal.
   cases:
   - id: recipients
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {band_id: bretonnian-chapel-guard, profile_id: questing-knight, off_hand_id: defence.shield}
-    context: {rule_id: band--shield-bash}
-    expect: {result.recipients: [knights-errant, questing-knight]}
+    defender:
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      off_hand_id: defence.shield
+    context:
+      rule_id: band--shield-bash
+    expect:
+      result.recipients:
+      - knights-errant
+      - questing-knight
   - id: reduced-strength
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: extra_attack
-    attacker: {band_id: bretonnian-chapel-guard, profile_id: knights-errant, off_hand_id: defence.shield, special_rule_ids: [band--shield-bash]}
-    defender: {characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}}
-    rolls: [{key: test.hit, value: 4}, {key: test.wound, value: 4}]
-    expect: {result.wounded: false, result.defender.wounds: 2}
-    expect_contains: {attacker.extra_attacks.0.tags: [weapon.mace]}
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: knights-errant
+      off_hand_id: defence.shield
+      special_rule_ids:
+      - band--shield-bash
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 2
+        initiative: 3
+        attacks: 1
+    rolls:
+    - key: test.hit
+      value: 4
+    - key: test.wound
+      value: 4
+    expect:
+      result.wounded: false
+      result.defender.wounds: 2
+    expect_contains:
+      attacker.extra_attacks.0.tags:
+      - weapon.mace
   - id: no-skill-control
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attacks
-    attacker: {band_id: bretonnian-chapel-guard, profile_id: knights-errant, off_hand_id: defence.shield}
-    expect: {result.attacks: 1}
+    attacker:
+      band_id: bretonnian-chapel-guard
+      profile_id: knights-errant
+      off_hand_id: defence.shield
+    expect:
+      result.attacks: 1
   mutations:
-  - {id: restore-full-strength, path: attacker.extra_attacks.0.strength_bonus, value: 0, cases: [reduced-strength]}
+  - id: restore-full-strength
+    path: attacker.extra_attacks.0.strength_bonus
+    value: 0
+    cases:
+    - reduced-strength

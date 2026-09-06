@@ -4,49 +4,94 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: permanent
   sources:
-  - {target: rule/mordheim/norse-explorers-btb/band--norse-special-skills-shield-master/skill.shield-mastery, digest: 1369742642de6b20d8f08e1bfd925376723e8b611201e46a65f4c1c1da720a9e}
-  - {target: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-shield-master/skill.shield-mastery, digest: 5ab8c6a1ae382844e42c2da9129466b1e320f9c9311f13c71aec55f1dedcd62e}
-  - {target: rule/trollheim/lustria-norse/band--norse-special-skills-shield-mastery/skill.shield-mastery, digest: 01b68eea64c7605bd235800651121266beda6e1558da5c2325942b806cd68069}
-  depends_on: [mechanic/skill.shield-mastery]
-  interpretation: The three Norse variants grant the selectable skill to their four hero profiles. The spelling of
-    the Berserker profile differs between collections, while the granted shield behaviour is identical.
+  - target: rule/mordheim/norse-explorers-btb/band--norse-special-skills-shield-master/skill.shield-mastery
+    digest: 99e528b13cd24489aa9700847583767c525a86d9bd672f8f62b6abe3ecba9e15
+  - target: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-shield-master/skill.shield-mastery
+    digest: ad995591ff208516e248f8e080551065e59a59e8e43f2d25eaf04f5601dac0dd
+  - target: rule/trollheim/lustria-norse/band--norse-special-skills-shield-mastery/skill.shield-mastery
+    digest: daea29c42c8bd1ac7dbf0df8b925b87bee6a752b086f45ce71694a9df75edabc
+  depends_on:
+  - mechanic/skill.shield-mastery
+  interpretation: The three Norse variants grant the selectable skill to their four hero profiles. The
+    spelling of the Berserker profile differs between collections, while the granted shield behaviour
+    is identical.
   cases:
   - id: border-town-burning-heroes
-    roles: [grant, compiled]
+    roles:
+    - grant
+    - compiled
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: norse-explorers-btb, profile_id: jarl}
-    context: {rule_id: band--norse-special-skills-shield-master}
-    expect: {result.recipients: [beserkers, bondsmen, jarl, wulfen]}
+    defender:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: jarl
+    context:
+      rule_id: band--norse-special-skills-shield-master
+    expect:
+      result.recipients:
+      - beserkers
+      - bondsmen
+      - jarl
+      - wulfen
   - id: mordheim-lustria-heroes
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: mordheim, band_id: norse-explorers-lustria, profile_id: jarl}
-    context: {rule_id: band--norse-special-skills-shield-master}
-    expect: {result.recipients: [beserkers, bondsmen, jarl, wulfen]}
+    defender:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: jarl
+    context:
+      rule_id: band--norse-special-skills-shield-master
+    expect:
+      result.recipients:
+      - beserkers
+      - bondsmen
+      - jarl
+      - wulfen
   - id: trollheim-lustria-heroes
-    roles: [grant]
+    roles:
+    - grant
     operation: selectable_grant
-    defender: {collection: trollheim, band_id: lustria-norse, profile_id: jarl}
-    context: {rule_id: band--norse-special-skills-shield-mastery}
-    expect: {result.recipients: [berserkers, bondsmen, jarl, wulfen]}
-  - id: granted-consumer
-    roles: [active, boundary, consumer]
-    operation: parry
-    attacker: {main_weapon_id: weapon.mace}
     defender:
       collection: trollheim
       band_id: lustria-norse
       profile_id: jarl
-      special_rule_ids: [band--norse-special-skills-shield-mastery]
+    context:
+      rule_id: band--norse-special-skills-shield-mastery
+    expect:
+      result.recipients:
+      - berserkers
+      - bondsmen
+      - jarl
+      - wulfen
+  - id: granted-consumer
+    roles:
+    - active
+    - boundary
+    - consumer
+    operation: parry
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: lustria-norse
+      profile_id: jarl
+      special_rule_ids:
+      - band--norse-special-skills-shield-mastery
       main_weapon_id: weapon.axe
       off_hand_id: defence.shield
-    context: {hit_roll: 4}
+    context:
+      hit_roll: 4
     distribution:
       observable: result.blocked
       max_rolls: 1
-      expected: {'true': 1/3, 'false': 2/3}
+      expected:
+        'true': 1/3
+        'false': 2/3
   mutations:
   - id: remove-granted-mastery
     path: defender.global_effects.tags
     value: []
-    cases: [granted-consumer]
+    cases:
+    - granted-consumer

@@ -125,8 +125,11 @@ def _resolve_prepared_defences(
         weapon, prepared = prepared_attacks[index]
         if (prepared.hit_roll == 6 and not phases.has_tag(
                 defender.global_effects, "rule.blood-dragon-sword-master")):
-            # The highest natural six defeats the parry, rather than exposing
-            # a lower die to a second attempt by this same defender.
+            # A natural six cannot be parried. With one available
+            # attempt it also closes the normal parry window (M03).
+            # Exceptional two-parry capacity may still defend a lower hit.
+            if defender_state.parries_remaining > 1:
+                continue
             defender_state = replace(defender_state, parries_remaining=0)
             break
         outcome = resolve_reference_attack(
@@ -175,7 +178,8 @@ def _resolve_attack_pool(
             key=f"{key}.bull-charge", first_round=True, charging=True,
             helpless_at_start=helpless, stunned_at_start=False, decisions=decisions,
         )
-        if result.hit and not result.parried and result.defender.condition == Condition.STANDING:
+        if (result.hit and not result.parried and not result.saved
+                and result.defender.condition == Condition.STANDING):
             result = replace(result, defender=replace(result.defender, condition=Condition.KNOCKED_DOWN))
         result = _react_to_wound(attacker, defender, result, dice, f"{key}.bull-charge")
         return result.attacker, result.defender, (result,)

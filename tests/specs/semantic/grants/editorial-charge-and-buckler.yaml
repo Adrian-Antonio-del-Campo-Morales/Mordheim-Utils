@@ -4,99 +4,192 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
-  - {target: rule/mordheim/cursed-cavalcade/wild-beasts--charge/trait.first-round-charge-attack-bonus, digest: eb16343256b672a71c362eae26825aa0663bcad313427debffebe573264331bd}
-  interpretation: "Wild Beasts gain +1 Attack only during the first combat turn in which they charge. Their A2 profile becomes A3; being charged, charging in a later round, or the first round without charging does not activate it."
+  - target: rule/mordheim/cursed-cavalcade/wild-beasts--charge/trait.first-round-charge-attack-bonus
+    digest: 51a7bfc4eaefde238b0e46ba46dfd24e75504f090226800e549c12659400a9ec
+  interpretation: Wild Beasts gain +1 Attack only during the first combat turn in which they charge. Their
+    A2 profile becomes A3; being charged, charging in a later round, or the first round without charging
+    does not activate it.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: cursed-cavalcade, profile_id: wild-beasts}
-    context: {rule_id: wild-beasts--charge}
-    expect: {result.recipients: [wild-beasts]}
+    defender:
+      band_id: cursed-cavalcade
+      profile_id: wild-beasts
+    context:
+      rule_id: wild-beasts--charge
+    expect:
+      result.recipients:
+      - wild-beasts
   - id: first-false-charging-false
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attacks
-    attacker: {band_id: cursed-cavalcade, profile_id: wild-beasts}
-    context: {first_round: false, charging: false}
-    expect: {result.attacks: 2}
+    attacker:
+      band_id: cursed-cavalcade
+      profile_id: wild-beasts
+    context:
+      first_round: false
+      charging: false
+    expect:
+      result.attacks: 2
   - id: first-false-charging-true
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attacks
-    attacker: {band_id: cursed-cavalcade, profile_id: wild-beasts}
-    context: {first_round: false, charging: true}
-    expect: {result.attacks: 2}
+    attacker:
+      band_id: cursed-cavalcade
+      profile_id: wild-beasts
+    context:
+      first_round: false
+      charging: true
+    expect:
+      result.attacks: 2
   - id: first-true-charging-false
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: attacks
-    attacker: {band_id: cursed-cavalcade, profile_id: wild-beasts}
-    context: {first_round: true, charging: false}
-    expect: {result.attacks: 2}
+    attacker:
+      band_id: cursed-cavalcade
+      profile_id: wild-beasts
+    context:
+      first_round: true
+      charging: false
+    expect:
+      result.attacks: 2
   - id: first-true-charging-true
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: attacks
-    attacker: {band_id: cursed-cavalcade, profile_id: wild-beasts}
-    context: {first_round: true, charging: true}
-    expect: {attacker.global_effects.first_round_charge_attacks_bonus: 1, result.attacks: 3}
+    attacker:
+      band_id: cursed-cavalcade
+      profile_id: wild-beasts
+    context:
+      first_round: true
+      charging: true
+    expect:
+      attacker.global_effects.first_round_charge_attacks_bonus: 1
+      result.attacks: 3
   - id: neighbouring-bear-control
-    roles: [inactive]
+    roles:
+    - inactive
     operation: attacks
-    attacker: {band_id: cursed-cavalcade, profile_id: great-bear}
-    context: {first_round: true, charging: true}
-    expect: {result.attacks: 2}
+    attacker:
+      band_id: cursed-cavalcade
+      profile_id: great-bear
+    context:
+      first_round: true
+      charging: true
+    expect:
+      result.attacks: 2
   mutations:
   - id: remove-charge-bonus
     path: attacker.global_effects.first_round_charge_attacks_bonus
     value: 0
-    cases: [first-true-charging-true]
+    cases:
+    - first-true-charging-true
 - id: tilean-cloak-as-buckler
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: local
   sources:
-  - {target: rule/mordheim/tileans/duelists--cloak-dagger/trait.counts-as-buckler, digest: a6c13995f04fbf99f588485a417df8ed2c8c8feb1403225ad568828855e9a60e}
-  interpretation: "The cloak counts as a buckler in melee and grants an ordinary parry. It must beat the to-hit roll; it does not allow matching it, cannot parry a six, and grants no armour."
+  - target: rule/mordheim/tileans/duelists--cloak-dagger/trait.counts-as-buckler
+    digest: 3772a3d0d3f4b577f0ffb7b65d6c4bfe8f1766b5e64a099e3f74f86886c8a99c
+  interpretation: The cloak counts as a buckler in melee and grants an ordinary parry. It must beat the
+    to-hit roll; it does not allow matching it, cannot parry a six, and grants no armour.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: tileans, profile_id: duelists}
-    context: {rule_id: duelists--cloak-dagger}
-    expect: {result.recipients: [duelists]}
+    defender:
+      band_id: tileans
+      profile_id: duelists
+    context:
+      rule_id: duelists--cloak-dagger
+    expect:
+      result.recipients:
+      - duelists
   - id: parry-distribution
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: parry
-    attacker: {main_weapon_id: weapon.mace}
-    defender: {band_id: tileans, profile_id: duelists, main_weapon_id: weapon.dagger}
-    context: {hit_roll: 4}
+    attacker:
+      main_weapon_id: weapon.mace
+    defender:
+      band_id: tileans
+      profile_id: duelists
+      main_weapon_id: weapon.dagger
+    context:
+      hit_roll: 4
     distribution:
       observable: result.blocked
       max_rolls: 1
-      expected: {'true': 1/3, 'false': 2/3}
+      expected:
+        'true': 1/3
+        'false': 2/3
   - id: equality-fails
-    roles: [boundary]
+    roles:
+    - boundary
     operation: parry
-    defender: {band_id: tileans, profile_id: duelists}
-    context: {hit_roll: 4}
-    rolls: [{key: test.parry, value: 4}]
-    expect: {result.attempted: true, result.blocked: false}
+    defender:
+      band_id: tileans
+      profile_id: duelists
+    context:
+      hit_roll: 4
+    rolls:
+    - key: test.parry
+      value: 4
+    expect:
+      result.attempted: true
+      result.blocked: false
   - id: six-unparryable
-    roles: [inactive, boundary]
+    roles:
+    - inactive
+    - boundary
     operation: parry
-    defender: {band_id: tileans, profile_id: duelists}
-    context: {hit_roll: 6}
-    expect: {result.attempted: false, result.blocked: false}
+    defender:
+      band_id: tileans
+      profile_id: duelists
+    context:
+      hit_roll: 6
+    expect:
+      result.attempted: false
+      result.blocked: false
   - id: no-armour
-    roles: [inactive]
+    roles:
+    - inactive
     operation: armour
-    attacker: {main_weapon_id: weapon.sword}
-    defender: {band_id: tileans, profile_id: duelists}
-    expect: {result.eligible: false, result.saved: false}
+    attacker:
+      main_weapon_id: weapon.sword
+    defender:
+      band_id: tileans
+      profile_id: duelists
+    expect:
+      result.eligible: false
+      result.saved: false
   - id: warrior-control
-    roles: [inactive]
+    roles:
+    - inactive
     operation: parry
-    defender: {band_id: tileans, profile_id: warriors}
-    expect: {result.attempted: false, result.blocked: false}
+    defender:
+      band_id: tileans
+      profile_id: warriors
+    expect:
+      result.attempted: false
+      result.blocked: false
   mutations:
   - id: remove-cloak-parry
     path: defender.global_effects.parry
     value: false
-    cases: [parry-distribution]
+    cases:
+    - parry-distribution

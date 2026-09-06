@@ -5,33 +5,43 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.thick-skull
-    digest: 4819600fd8bc2849d0a915b323b8729882c37119a23174442c005e3978ff635f
+    digest: 30869012f644e7bece0bb9c28a79f423c027db6ced91319b827c2809eb9694ee
   - target: mechanic/defence.helmet
-    digest: e38f4f8e7da5e91fa8400e0f91b8b4389b266c73cbde0c7896f22388719c4926
+    digest: 75710b95c76f4c5c3625b5984239ed7bbb5fc6995f8f725a41f6963105827e56
   bindings:
   - '{"id": "skill.thick-skull", "kind": "mechanic", "parameters": {}}'
   - '{"id": "defence.helmet", "kind": "mechanic", "parameters": {}}'
-  interpretation: The Thick Skull text explicitly replaces the Helmet special rule. The combined threshold is 2+;
-    it does not perform a 3+ Thick Skull attempt followed by a separate 4+ Helmet attempt.
+  interpretation: The Thick Skull text explicitly replaces the Helmet special rule. The combined threshold
+    is 2+; it does not perform a 3+ Thick Skull attempt followed by a separate 4+ Helmet attempt.
   cases:
   - id: combined-threshold
-    roles: [composition]
+    roles:
+    - composition
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
-      defence_ids: [defence.helmet]
-    rolls: [{key: test.thick-skull, value: 2}]
+      skill_ids:
+      - skill.thick-skull
+      defence_ids:
+      - defence.helmet
+    rolls:
+    - key: test.thick-skull
+      value: 2
     expect:
       result.condition: KNOCKED_DOWN
       result.threshold: 2
       result.roll: 2
   - id: failure-consumes-no-helmet-roll
-    roles: [boundary]
+    roles:
+    - boundary
     operation: stun_reaction
     defender:
-      skill_ids: [skill.thick-skull]
-      defence_ids: [defence.helmet]
-    rolls: [{key: test.thick-skull, value: 1}]
+      skill_ids:
+      - skill.thick-skull
+      defence_ids:
+      - defence.helmet
+    rolls:
+    - key: test.thick-skull
+      value: 1
     expect:
       result.condition: STUNNED
       result.threshold: 2
@@ -40,20 +50,21 @@ specifications:
   - id: remove-replacement
     path: defender.global_effects.thick_skull
     value: false
-    cases: [combined-threshold]
+    cases:
+    - combined-threshold
 - id: mighty-and-resilient
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: interaction
   sources:
   - target: mechanic/skill.mighty-blow
-    digest: 90e3a20d279e166a42a5d9332852f105bb8c0b05f0e6234dfcc95bc40f0de20d
+    digest: 16444ea9794523d0da8cef415f236f7de696506aa00d34440958584857358a93
   - target: mechanic/skill.resilient
-    digest: c1d7210e8e6a2400a99605bbfc369806e39dbad2c810fe515eaf0a01ac10167a
+    digest: 7c15682b8523bbb3e8109ed734bfd6108f07bda21d6d7f1833dca2c0170ad6d6
   bindings:
   - '{"id": "skill.mighty-blow", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.resilient", "kind": "mechanic", "parameters": {}}'
-  interpretation: Apply the independently specified Strength contributions before wounding. Resilient reduces only
-    wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
+  interpretation: Apply the independently specified Strength contributions before wounding. Resilient
+    reduces only wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
   cases:
   - id: first-round
     roles:
@@ -97,14 +108,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.mighty-blow
-    digest: 90e3a20d279e166a42a5d9332852f105bb8c0b05f0e6234dfcc95bc40f0de20d
+    digest: 16444ea9794523d0da8cef415f236f7de696506aa00d34440958584857358a93
   - target: mechanic/poison.black-venom
-    digest: b7e264f4e5af9e2da9889fd91855e0b820afb43f38ac34b7482ba124db8dc204
+    digest: 6f3fca0e6abcbbbd85d7fa9069b2df9b04de9f90048cb658286e977a465e9259
   bindings:
   - '{"id": "skill.mighty-blow", "kind": "mechanic", "parameters": {}}'
   - '{"id": "poison.black-venom", "kind": "mechanic", "parameters": {}}'
-  interpretation: Apply the independently specified Strength contributions before wounding. Resilient reduces only
-    wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
+  interpretation: Apply the independently specified Strength contributions before wounding. Resilient
+    reduces only wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
   cases:
   - id: first-round
     roles:
@@ -146,14 +157,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.mighty-blow
-    digest: 90e3a20d279e166a42a5d9332852f105bb8c0b05f0e6234dfcc95bc40f0de20d
+    digest: 16444ea9794523d0da8cef415f236f7de696506aa00d34440958584857358a93
   - target: mechanic/weapon.halberd
-    digest: 7cae0d6b4c940cb65505831f5ad6b9e8974a8d8a22c1af4532ccebe5db8c1543
+    digest: 37ac2203b4e00c920dacc65c9a872a57d96d135625d8f843b0608486da3b2ee9
   bindings:
   - '{"id": "skill.mighty-blow", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.halberd", "kind": "mechanic", "parameters": {}}'
-  interpretation: Apply the independently specified Strength contributions before wounding. Resilient reduces only
-    wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
+  interpretation: Apply the independently specified Strength contributions before wounding. Resilient
+    reduces only wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
   cases:
   - id: first-round
     roles:
@@ -193,14 +204,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.mighty-blow
-    digest: 90e3a20d279e166a42a5d9332852f105bb8c0b05f0e6234dfcc95bc40f0de20d
+    digest: 16444ea9794523d0da8cef415f236f7de696506aa00d34440958584857358a93
   - target: mechanic/weapon.flail
-    digest: 29048acd50dfc0325940a2789714643811bbf762588889795b315ba2c927378b
+    digest: 36c5b4567bfa6c85d999f965a561bf9f1321d407f31aa05da98ee74e381dc27b
   bindings:
   - '{"id": "skill.mighty-blow", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.flail", "kind": "mechanic", "parameters": {}}'
-  interpretation: Apply the independently specified Strength contributions before wounding. Resilient reduces only
-    wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
+  interpretation: Apply the independently specified Strength contributions before wounding. Resilient
+    reduces only wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
   cases:
   - id: first-round
     roles:
@@ -240,14 +251,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.resilient
-    digest: c1d7210e8e6a2400a99605bbfc369806e39dbad2c810fe515eaf0a01ac10167a
+    digest: 7c15682b8523bbb3e8109ed734bfd6108f07bda21d6d7f1833dca2c0170ad6d6
   - target: mechanic/weapon.halberd
-    digest: 7cae0d6b4c940cb65505831f5ad6b9e8974a8d8a22c1af4532ccebe5db8c1543
+    digest: 37ac2203b4e00c920dacc65c9a872a57d96d135625d8f843b0608486da3b2ee9
   bindings:
   - '{"id": "skill.resilient", "kind": "mechanic", "parameters": {}}'
   - '{"id": "weapon.halberd", "kind": "mechanic", "parameters": {}}'
-  interpretation: Apply the independently specified Strength contributions before wounding. Resilient reduces only
-    wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
+  interpretation: Apply the independently specified Strength contributions before wounding. Resilient
+    reduces only wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
   cases:
   - id: first-round
     roles:
@@ -287,14 +298,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.mighty-blow
-    digest: 90e3a20d279e166a42a5d9332852f105bb8c0b05f0e6234dfcc95bc40f0de20d
+    digest: 16444ea9794523d0da8cef415f236f7de696506aa00d34440958584857358a93
   - target: mechanic/skill.strength-of-steel
-    digest: 7bece24b96e881b55a0eeb73d1880e8d986ac923f012b79ff9e5f112bb5b88f7
+    digest: 92090320839c98b13427a46d25ba9f568e0b01adcdd21c851e5089c3b1e4c72e
   bindings:
   - '{"id": "skill.mighty-blow", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.strength-of-steel", "kind": "mechanic", "parameters": {}}'
-  interpretation: Apply the independently specified Strength contributions before wounding. Resilient reduces only
-    wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
+  interpretation: Apply the independently specified Strength contributions before wounding. Resilient
+    reduces only wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
   cases:
   - id: first-round
     roles:
@@ -336,14 +347,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.iron-sinews
-    digest: 335e5c79c86a19609693d1fdf74bf830bfb91870cee8809db4171177620ff3af
+    digest: e0ef11ee6c29717442a836f97bb2134b74264b7142f24d69e63c4dc3e9f4c4fd
   - target: mechanic/skill.strength-of-steel
-    digest: 7bece24b96e881b55a0eeb73d1880e8d986ac923f012b79ff9e5f112bb5b88f7
+    digest: 92090320839c98b13427a46d25ba9f568e0b01adcdd21c851e5089c3b1e4c72e
   bindings:
   - '{"id": "skill.iron-sinews", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.strength-of-steel", "kind": "mechanic", "parameters": {}}'
-  interpretation: Apply the independently specified Strength contributions before wounding. Resilient reduces only
-    wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
+  interpretation: Apply the independently specified Strength contributions before wounding. Resilient
+    reduces only wounding Strength, not armour Strength; charging/first-round bonuses expire as stated.
   cases:
   - id: first-round
     roles:
@@ -385,14 +396,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.hatred
-    digest: 55903f96c0da47a95bba838dc0d85778de25d638c945f5d81c4fca0e83cbe923
+    digest: 581c1dc7c5a768c0cb43f98cda42027dae221a3068f72611f9e170e72e40e8ad
   - target: mechanic/skill.infinite-hatred
-    digest: 04e5fb5a6e2b7e4f0aa920b8ac8d0af91b41595a3259db12e42c469c65f47710
+    digest: 1d5e211bd8c705167bde654adf528fcd7852e194d3f28c316e5f2069a4cbd5e7
   bindings:
   - '{"id": "skill.hatred", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.infinite-hatred", "kind": "mechanic", "parameters": {}}'
-  interpretation: Two independent permissions to reroll a failed roll do not allow rerolling a reroll. On a 4+ threshold
-    success is exactly 3/4, not 7/8.
+  interpretation: Two independent permissions to reroll a failed roll do not allow rerolling a reroll.
+    On a 4+ threshold success is exactly 3/4, not 7/8.
   cases:
   - id: all-branches
     roles:
@@ -450,14 +461,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.hatred
-    digest: 55903f96c0da47a95bba838dc0d85778de25d638c945f5d81c4fca0e83cbe923
+    digest: 581c1dc7c5a768c0cb43f98cda42027dae221a3068f72611f9e170e72e40e8ad
   - target: mechanic/skill.expert-swordsman
-    digest: 417d4a1cc3519510be69e893d00de9bcfa6c662769bdca0945b4d46a284157dd
+    digest: 539ea94192052d75a0a3cbfbf51f478e833f1f922b4934e5b7d2c525fe7262be
   bindings:
   - '{"id": "skill.hatred", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.expert-swordsman", "kind": "mechanic", "parameters": {}}'
-  interpretation: Two independent permissions to reroll a failed roll do not allow rerolling a reroll. On a 4+ threshold
-    success is exactly 3/4, not 7/8.
+  interpretation: Two independent permissions to reroll a failed roll do not allow rerolling a reroll.
+    On a 4+ threshold success is exactly 3/4, not 7/8.
   cases:
   - id: all-branches
     roles:
@@ -515,14 +526,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.sure-strike
-    digest: ca1bb0a4961fa059e1c59165d4113d473e86420c9c975d899fa02b0870a8c509
+    digest: 989d7d72be44744758e7c2c3a73eac1aeb651d11ee1f6c93720c54141e48ce75
   - target: mechanic/material.dark-steel
-    digest: 8d728f140afba7fe68d83eafebfe5b51c1688d5252cee6f3c50969272b668133
+    digest: 8649233b514c302ffc1364cbeca0322d48d3ed4e7fd401c223f032a73349986a
   bindings:
   - '{"id": "skill.sure-strike", "kind": "mechanic", "parameters": {}}'
   - '{"id": "material.dark-steel", "kind": "mechanic", "parameters": {}}'
-  interpretation: Two independent permissions to reroll a failed roll do not allow rerolling a reroll. On a 4+ threshold
-    success is exactly 3/4, not 7/8.
+  interpretation: Two independent permissions to reroll a failed roll do not allow rerolling a reroll.
+    On a 4+ threshold success is exactly 3/4, not 7/8.
   cases:
   - id: all-branches
     roles:
@@ -580,14 +591,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.jump-up
-    digest: 0ddeeeffb0d9b1435c8b575dca91af2981daedcbc841bd875c240ecb9ccf7ccd
+    digest: bd0549a145021fce8abf6155da85b25ee905d7aeee2aed09bb371fdf1ef51ea2
   - target: mechanic/skill.ignore-pain
-    digest: 38aff21454539c3b866e4b04592950668da23cf87004c9def80eaf2f8f5b75ae
+    digest: f25a1289989017d8a76c3c6230f5527ff0e1333e7fa7de218495c02db820ddc4
   bindings:
   - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
-  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit exceptions.
-    Every original D6 face has an independent expected final state.
+  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit
+    exceptions. Every original D6 face has an independent expected final state.
   cases:
   - id: face-1
     roles:
@@ -702,14 +713,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/skill.jump-up
-    digest: 0ddeeeffb0d9b1435c8b575dca91af2981daedcbc841bd875c240ecb9ccf7ccd
+    digest: bd0549a145021fce8abf6155da85b25ee905d7aeee2aed09bb371fdf1ef51ea2
   - target: mechanic/skill.hard-to-kill
-    digest: b66c185a5a58b1f030ef4dc30f29ae0054d249281805410af7521c982cc88cd4
+    digest: b3210faa2837a545c46b44c18e0d505347a00ca82b80e51704cc36afb7aa6f86
   bindings:
   - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
-  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit exceptions.
-    Every original D6 face has an independent expected final state.
+  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit
+    exceptions. Every original D6 face has an independent expected final state.
   cases:
   - id: face-1
     roles:
@@ -824,14 +835,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/weapon.mace
-    digest: 8bd3ca5bc3d4418757c689510280b1a6f351b3c4565f11497f181c94fa3fc2ee
+    digest: a5e9577524929d6890599159efe7efc12b8531f931dfe75c7e18732910900676
   - target: mechanic/skill.ignore-pain
-    digest: 38aff21454539c3b866e4b04592950668da23cf87004c9def80eaf2f8f5b75ae
+    digest: f25a1289989017d8a76c3c6230f5527ff0e1333e7fa7de218495c02db820ddc4
   bindings:
   - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.ignore-pain", "kind": "mechanic", "parameters": {}}'
-  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit exceptions.
-    Every original D6 face has an independent expected final state.
+  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit
+    exceptions. Every original D6 face has an independent expected final state.
   cases:
   - id: face-1
     roles:
@@ -939,14 +950,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/weapon.mace
-    digest: 8bd3ca5bc3d4418757c689510280b1a6f351b3c4565f11497f181c94fa3fc2ee
+    digest: a5e9577524929d6890599159efe7efc12b8531f931dfe75c7e18732910900676
   - target: mechanic/skill.hard-to-kill
-    digest: b66c185a5a58b1f030ef4dc30f29ae0054d249281805410af7521c982cc88cd4
+    digest: b3210faa2837a545c46b44c18e0d505347a00ca82b80e51704cc36afb7aa6f86
   bindings:
   - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.hard-to-kill", "kind": "mechanic", "parameters": {}}'
-  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit exceptions.
-    Every original D6 face has an independent expected final state.
+  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit
+    exceptions. Every original D6 face has an independent expected final state.
   cases:
   - id: face-1
     roles:
@@ -1054,14 +1065,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/weapon.mace
-    digest: 8bd3ca5bc3d4418757c689510280b1a6f351b3c4565f11497f181c94fa3fc2ee
+    digest: a5e9577524929d6890599159efe7efc12b8531f931dfe75c7e18732910900676
   - target: mechanic/skill.jump-up
-    digest: 0ddeeeffb0d9b1435c8b575dca91af2981daedcbc841bd875c240ecb9ccf7ccd
+    digest: bd0549a145021fce8abf6155da85b25ee905d7aeee2aed09bb371fdf1ef51ea2
   bindings:
   - '{"id": "weapon.mace", "kind": "mechanic", "parameters": {}}'
   - '{"id": "skill.jump-up", "kind": "mechanic", "parameters": {}}'
-  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit exceptions.
-    Every original D6 face has an independent expected final state.
+  interpretation: Apply the printed injury table, then Concussion/No Pain/Jump Up with their explicit
+    exceptions. Every original D6 face has an independent expected final state.
   cases:
   - id: face-1
     roles:
@@ -1169,14 +1180,14 @@ specifications:
   category: interaction
   sources:
   - target: mechanic/weapon.axe
-    digest: 331fe535d241616ebe9c23e0b6084bf29105b5799abb42da5217032862efec81
+    digest: 39a7e23760e24bd0748fdb320540268c9475faab3360cc719afee5e691960e2f
   - target: mechanic/material.gromril
-    digest: e7dd5d61e2f8e547890471309390d16ddbb8346753e64efc6241fcaba00aa5c4
+    digest: fb76925bf64e3fd3a034d779fc3fecdf8ac17dfac866662c00d87b46d488904c
   bindings:
   - '{"id": "weapon.axe", "kind": "mechanic", "parameters": {}}'
   - '{"id": "material.gromril", "kind": "mechanic", "parameters": {}}'
-  interpretation: The axe and Gromril material each worsen the opponent's armour save by one. A 4+ save becomes
-    6+ before any Strength penalty.
+  interpretation: The axe and Gromril material each worsen the opponent's armour save by one. A 4+ save
+    becomes 6+ before any Strength penalty.
   cases:
   - id: all-dice
     roles:

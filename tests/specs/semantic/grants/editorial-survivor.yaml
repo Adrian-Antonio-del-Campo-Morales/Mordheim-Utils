@@ -4,78 +4,173 @@ specifications:
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: contextual
   sources:
-  - {target: rule/mordheim/lustrian-reavers/conqueror--survivor/trait.survivor, digest: 537f691026d2547bc0c1e418db459f470da510564ea7f3b591b4e554f3aa2fe6}
-  interpretation: "Survivor turns Out of Action into Stunned only if the Conqueror was standing. If it was already Knocked Down or Stunned, the same result leaves it Out of Action. The Dead replacement in Serious Injury belongs to campaign and is outside the executed scope."
+  - target: rule/mordheim/lustrian-reavers/conqueror--survivor/trait.survivor
+    digest: f799096af82f48b1ee32c92bf46c7a0c0074ba0bbf01dfeab67270ca5d47afcb
+  interpretation: Survivor turns Out of Action into Stunned only if the Conqueror was standing. If it
+    was already Knocked Down or Stunned, the same result leaves it Out of Action. The Dead replacement
+    in Serious Injury belongs to campaign and is outside the executed scope.
   cases:
   - id: recipient
-    roles: [grant]
+    roles:
+    - grant
     operation: grant
-    defender: {band_id: lustrian-reavers, profile_id: conqueror}
-    context: {rule_id: conqueror--survivor}
-    expect: {result.recipients: [conqueror]}
+    defender:
+      band_id: lustrian-reavers
+      profile_id: conqueror
+    context:
+      rule_id: conqueror--survivor
+    expect:
+      result.recipients:
+      - conqueror
   - id: standing-face-1
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: injury
-    defender: {band_id: lustrian-reavers, profile_id: conqueror}
-    rolls: [{key: test.injury, value: 1}]
-    expect: {result.condition: KNOCKED_DOWN}
-    expect_contains: {defender.global_effects.tags: [survivor]}
+    defender:
+      band_id: lustrian-reavers
+      profile_id: conqueror
+    rolls:
+    - key: test.injury
+      value: 1
+    expect:
+      result.condition: KNOCKED_DOWN
+    expect_contains:
+      defender.global_effects.tags:
+      - survivor
   - id: standing-face-2
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: injury
-    defender: {band_id: lustrian-reavers, profile_id: conqueror}
-    rolls: [{key: test.injury, value: 2}]
-    expect: {result.condition: KNOCKED_DOWN}
-    expect_contains: {defender.global_effects.tags: [survivor]}
+    defender:
+      band_id: lustrian-reavers
+      profile_id: conqueror
+    rolls:
+    - key: test.injury
+      value: 2
+    expect:
+      result.condition: KNOCKED_DOWN
+    expect_contains:
+      defender.global_effects.tags:
+      - survivor
   - id: standing-face-3
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: injury
-    defender: {band_id: lustrian-reavers, profile_id: conqueror}
-    rolls: [{key: test.injury, value: 3}]
-    expect: {result.condition: STUNNED}
-    expect_contains: {defender.global_effects.tags: [survivor]}
+    defender:
+      band_id: lustrian-reavers
+      profile_id: conqueror
+    rolls:
+    - key: test.injury
+      value: 3
+    expect:
+      result.condition: STUNNED
+    expect_contains:
+      defender.global_effects.tags:
+      - survivor
   - id: standing-face-4
-    roles: [compiled, inactive, boundary]
+    roles:
+    - compiled
+    - inactive
+    - boundary
     operation: injury
-    defender: {band_id: lustrian-reavers, profile_id: conqueror}
-    rolls: [{key: test.injury, value: 4}]
-    expect: {result.condition: STUNNED}
-    expect_contains: {defender.global_effects.tags: [survivor]}
+    defender:
+      band_id: lustrian-reavers
+      profile_id: conqueror
+    rolls:
+    - key: test.injury
+      value: 4
+    expect:
+      result.condition: STUNNED
+    expect_contains:
+      defender.global_effects.tags:
+      - survivor
   - id: standing-face-5
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: injury
-    defender: {band_id: lustrian-reavers, profile_id: conqueror}
-    rolls: [{key: test.injury, value: 5}]
-    expect: {result.condition: STUNNED}
-    expect_contains: {defender.global_effects.tags: [survivor]}
+    defender:
+      band_id: lustrian-reavers
+      profile_id: conqueror
+    rolls:
+    - key: test.injury
+      value: 5
+    expect:
+      result.condition: STUNNED
+    expect_contains:
+      defender.global_effects.tags:
+      - survivor
   - id: standing-face-6
-    roles: [compiled, active, consumer, boundary]
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
     operation: injury
-    defender: {band_id: lustrian-reavers, profile_id: conqueror}
-    rolls: [{key: test.injury, value: 6}]
-    expect: {result.condition: STUNNED}
-    expect_contains: {defender.global_effects.tags: [survivor]}
+    defender:
+      band_id: lustrian-reavers
+      profile_id: conqueror
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: STUNNED
+    expect_contains:
+      defender.global_effects.tags:
+      - survivor
   - id: already-knocked_down-can-go-out
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: injury
-    defender: {band_id: lustrian-reavers, profile_id: conqueror}
-    defender_state: {condition: KNOCKED_DOWN}
-    rolls: [{key: test.injury, value: 6}]
-    expect: {result.condition: OUT}
+    defender:
+      band_id: lustrian-reavers
+      profile_id: conqueror
+    defender_state:
+      condition: KNOCKED_DOWN
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
   - id: already-stunned-can-go-out
-    roles: [active, consumer, boundary]
+    roles:
+    - active
+    - consumer
+    - boundary
     operation: injury
-    defender: {band_id: lustrian-reavers, profile_id: conqueror}
-    defender_state: {condition: STUNNED}
-    rolls: [{key: test.injury, value: 6}]
-    expect: {result.condition: OUT}
+    defender:
+      band_id: lustrian-reavers
+      profile_id: conqueror
+    defender_state:
+      condition: STUNNED
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
   - id: ordinary-standing-warrior-goes-out
-    roles: [inactive]
+    roles:
+    - inactive
     operation: injury
-    rolls: [{key: test.injury, value: 6}]
-    expect: {result.condition: OUT}
+    rolls:
+    - key: test.injury
+      value: 6
+    expect:
+      result.condition: OUT
   mutations:
   - id: remove-survivor
     path: defender.global_effects.tags
     value: []
-    cases: [standing-face-5, standing-face-6]
+    cases:
+    - standing-face-5
+    - standing-face-6
