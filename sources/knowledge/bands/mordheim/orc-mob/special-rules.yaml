@@ -3,20 +3,22 @@ band_id: orc-mob
 rules:
 - id: orc-boss--leader
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Orc Boss may use his Leadership characteristic when taking
-    Leadership tests.
+  effect: Any warrior within 6" of the Orc Boss may use his Leadership characteristic when taking Leadership
+    tests.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 1 Orc Boss / Special Rules / Leader
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
+    en: Leader
     es: Líder
   effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Jefe orco puede usar su característica de Liderazgo al realizar
-      chequeos de Liderazgo.
+    en: 'Any warrior within 6" of the Orc Boss may use his
+
+      Leadership characteristic when taking Leadership tests.'
+    es: Cualquier guerrero a 6" del Jefe orco puede usar su característica de Liderazgo al realizar chequeos
+      de Liderazgo.
   applies_to:
     profile_ids:
     - orc-boss
@@ -28,8 +30,7 @@ rules:
     - id: unimplemented.orc-mob.orc-boss.leader
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: orc-shaman--wizard
   name: Wizard
   effect: The Orc Shaman is a wizard and uses Waaagh! Magic.
@@ -39,8 +40,10 @@ rules:
     section: heroes / 0 – 1 Orc Shaman / Special Rules / Wizard
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
+    en: Wizard
     es: Mago
   effect_i18n:
+    en: The Orc Shaman is a wizard and uses Waaagh! Magic.
     es: El Chamán orco es un mago y usa la Magia ¡Waaagh!.
   applies_to:
     profile_ids:
@@ -53,17 +56,21 @@ rules:
     - id: unimplemented.orc-mob.orc-shaman.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: orc-boyz--animosity
   name: Animosity
+  effect: Orc Boyz are subject to the warband's Animosity rule.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Orc Boyz / Special Rules / Animosity
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
+    en: Animosity
     es: Rencor
+  effect_i18n:
+    en: Orc Boyz are subject to the warband's Animosity rule.
+    es: Los Chicos orcos están sujetos a la regla de Rencor de la banda.
   applies_to:
     profile_ids:
     - orc-boyz
@@ -75,27 +82,27 @@ rules:
     - id: unimplemented.orc-mob.orc-boyz.animosity
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.animosity
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: goblin-warriors--animosity
   name: Animosity
-  effect: >-
-    Goblin Warriors are subject to the warband's Animosity rule. If a Goblin fails Animosity and
-    rolls a 1 on the result table, it will never charge an Orc Henchman, though it may still shoot
-    an Orc Henchman with a missile weapon as normal.
+  effect: Goblin Warriors are subject to the warband's Animosity rule. If a Goblin fails Animosity and
+    rolls a 1 on the result table, it will never charge an Orc Henchman, though it may still shoot an
+    Orc Henchman with a missile weapon as normal.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Goblin Warriors / Special Rules / Animosity
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
+    en: Animosity
     es: Rencor
   effect_i18n:
-    es: >-
-      Los Guerreros goblin están sujetos a la regla de Rencor de la banda. Si un Goblin falla el
-      Rencor y saca un 1 en la tabla de resultados, nunca cargará contra un Secuaz orco, aunque aún
-      puede disparar a un Secuaz orco con un arma arrojadiza con normalidad.
+    en: Goblin Warriors are subject to the warband's Animosity rule. If a Goblin fails Animosity and rolls
+      a 1 on the result table, it will never charge an Orc Henchman, though it may still shoot an Orc
+      Henchman with a missile weapon as normal.
+    es: Los Guerreros goblin están sujetos a la regla de Rencor de la banda. Si un Goblin falla el Rencor
+      y saca un 1 en la tabla de resultados, nunca cargará contra un Secuaz orco, aunque aún puede disparar
+      a un Secuaz orco con un arma arrojadiza con normalidad.
   applies_to:
     profile_ids:
     - goblin-warriors
@@ -107,32 +114,47 @@ rules:
     - id: unimplemented.orc-mob.goblin-warriors.animosity
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: goblin-warriors--not-orcs
   name: Not Orcs
-  effect: >-
-    Orcs don't expect much from non-Orcs, and are therefore not unsettled if Goblins or Cave Squigs
-    break or get cut down in battle. In fact, they expect as much from these weaklings! Therefore,
-    when testing to see if an Orc Warband needs to take a Rout test, each Goblin Warrior or Cave
-    Squig taken out of action only counts as half a model. Therefore, a band of 5 Orcs and 10
-    Goblins (15 models) would only have to take a test if 4 models fell (4 Orcs or 8 Goblins, or
-    some combination thereof ).
+  effect: Orcs don't expect much from non-Orcs, and are therefore not unsettled if Goblins or Cave Squigs
+    break or get cut down in battle. In fact, they expect as much from these weaklings! Therefore, when
+    testing to see if an Orc Warband needs to take a Rout test, each Goblin Warrior or Cave Squig taken
+    out of action only counts as half a model. Therefore, a band of 5 Orcs and 10 Goblins (15 models)
+    would only have to take a test if 4 models fell (4 Orcs or 8 Goblins, or some combination thereof
+    ).
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Goblin Warriors / Special Rules / Not Orcs
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
-    es: No Son Orcos
+    en: Not Orcs
+    es: No son orcos
   effect_i18n:
-    es: >-
-      Los orcos no esperan mucho de los no orcos, y por tanto no se inquietan si los Goblins o los
-      Squigs de las cavernas se baten en retirada o caen en batalla. De hecho, ¡esperan tanto de
-      estos debiluchos! Por tanto, al chequear si una Banda Orca necesita realizar un chequeo de
-      Huida, cada Guerrero goblin o Squig de las cavernas puesto fuera de combate solo cuenta como
-      media miniatura. Por tanto, una banda de 5 orcos y 10 goblins (15 miniaturas) solo tendría que
-      chequear si caen 4 miniaturas (4 orcos u 8 goblins, o alguna combinación de ambos).
+    en: 'Orcs don''t expect much from non-Orcs, and are
+
+      therefore not unsettled if Goblins or Cave Squigs break or get
+
+      cut down in battle. In fact, they expect as much from these
+
+      weaklings! Therefore, when testing to see if an Orc Warband
+
+      needs to take a Rout test, each Goblin Warrior or Cave Squig
+
+      taken out of action only counts as half a model. Therefore, a
+
+      band of 5 Orcs and 10 Goblins (15 models) would only have
+
+      to take a test if 4 models fell (4 Orcs or 8 Goblins, or some
+
+      combination thereof ).'
+    es: Los orcos no esperan mucho de los no orcos, y por tanto no se inquietan si los Goblins o los Squigs
+      de las cavernas se baten en retirada o caen en batalla. De hecho, ¡esperan tanto de estos debiluchos!
+      Por tanto, al chequear si una Banda Orca necesita realizar un chequeo de Huida, cada Guerrero goblin
+      o Squig de las cavernas puesto fuera de combate solo cuenta como media miniatura. Por tanto, una
+      banda de 5 orcos y 10 goblins (15 miniaturas) solo tendría que chequear si caen 4 miniaturas (4
+      orcos u 8 goblins, o alguna combinación de ambos).
   applies_to:
     profile_ids:
     - goblin-warriors
@@ -144,26 +166,29 @@ rules:
     - id: unimplemented.orc-mob.goblin-warriors.not-orcs
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: goblin-warriors--runts
   name: Runts
-  effect: >-
-    Goblins may gain experience but if they happen to roll 'That Lad's Got Talent' they are
-    immediately killed by their Orc overlords for becoming too ‘mouthy' (remove the Gobbo from the
-    roster).
+  effect: Goblins may gain experience but if they happen to roll 'That Lad's Got Talent' they are immediately
+    killed by their Orc overlords for becoming too ‘mouthy' (remove the Gobbo from the roster).
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Goblin Warriors / Special Rules / Runts
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
+    en: Runts
     es: Runtz
   effect_i18n:
-    es: >-
-      Los Goblins pueden ganar experiencia, pero si les sale 'That Lad's Got Talent' son
-      inmediatamente matados por sus señores orcos por volverse demasiado 'bocones' (retira al Gobbo
-      de la lista).
+    en: 'Goblins may gain experience but if they happen to
+
+      roll ''That Lad''s Got Talent'' they are immediately killed by their
+
+      Orc overlords for becoming too ‘mouthy'' (remove the Gobbo
+
+      from the roster).'
+    es: Los Goblins pueden ganar experiencia, pero si les sale 'That Lad's Got Talent' son inmediatamente
+      matados por sus señores orcos por volverse demasiado 'bocones' (retira al Gobbo de la lista).
   applies_to:
     profile_ids:
     - goblin-warriors
@@ -175,17 +200,43 @@ rules:
     - id: unimplemented.orc-mob.goblin-warriors.runts
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: cave-squigs--movement
   name: Movement
+  effect: Cave Squigs do not have a set Movement characteristic but move with an ungainly bouncing stride.
+    To represent this, when moving Squigs, roll 2D6 for the distance they move. Squigs never run and never
+    declare charges. Instead, they are allowed to contact enemy models with their normal 2D6" movement.
+    If this happens, they count as charging for the following round of close combat, just as if they had
+    declared a charge.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 5 Cave Squigs / Special Rules / Movement
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
+    en: Movement
     es: Movimiento
+  effect_i18n:
+    en: 'Cave Squigs do not have a set Movement
+
+      characteristic but move with an ungainly bouncing stride. To
+
+      represent this, when moving Squigs, roll 2D6 for the distance
+
+      they move. Squigs never run and never declare charges.
+
+      Instead, they are allowed to contact enemy models with their
+
+      normal 2D6" movement. If this happens, they count as
+
+      charging for the following round of close combat, just as if
+
+      they had declared a charge.'
+    es: Los Squigs de las cavernas no tienen una característica de Movimiento fija sino que se mueven
+      con una zancada saltarina torpe. Para representar esto, al mover Squigs, tira 2D6 para la distancia
+      que se mueven. Los Squigs nunca corren y nunca declaran cargas. En cambio, se les permite contactar
+      con miniaturas enemigas con su movimiento normal de 2D6". Si esto ocurre, cuentan como cargando
+      para la siguiente ronda de combate cuerpo a cuerpo, igual que si hubieran declarado una carga.
   applies_to:
     profile_ids:
     - cave-squigs
@@ -197,18 +248,48 @@ rules:
     - id: unimplemented.orc-mob.cave-squigs.movement
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.movement
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: cave-squigs--minderz
   name: Minderz
+  effect: Each Cave Squig must always remain within 6" of a Goblin Warrior, who keeps the creature in
+    line. If a Cave Squig finds itself without a Goblin within 6" at the start of its Movement phase,
+    it will go wild. From that point on, move the Squig 2D6" in a random direction during each of its
+    Movement phases. If its movement takes it into contact with another model (friend or foe), it will
+    engage the model in hand-to-hand combat as normal. The Cave Squig is out of the Orc & Goblin player's
+    control until the end of the game.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 5 Cave Squigs / Special Rules / Minderz
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
+    en: Minderz
     es: Cuidadorz
+  effect_i18n:
+    en: 'Each Cave Squig must always remain within 6" of a
+
+      Goblin Warrior, who keeps the creature in line. If a Cave
+
+      Squig finds itself without a Goblin within 6" at the start of its
+
+      Movement phase, it will go wild. From that point on, move
+
+      the Squig 2D6" in a random direction during each of its
+
+      Movement phases. If its movement takes it into contact with
+
+      another model (friend or foe), it will engage the model in
+
+      hand-to-hand combat as normal. The Cave Squig is out of the
+
+      Orc & Goblin player''s control until the end of the game.'
+    es: Cada Squig de las cavernas debe permanecer siempre a 6" de un Guerrero goblin, que mantiene a
+      la criatura bajo control. Si un Squig de las cavernas se encuentra sin un Goblin a 6" al comienzo
+      de su fase de Movimiento, se volverá salvaje. A partir de ese momento, mueve el Squig 2D6" en una
+      dirección aleatoria durante cada una de sus fases de Movimiento. Si su movimiento lo lleva a contacto
+      con otra miniatura (amiga o enemiga), trabará combate cuerpo a cuerpo con la miniatura con normalidad.
+      El Squig de las cavernas queda fuera del control del jugador de Orcos y Goblins hasta el final de
+      la partida.
   applies_to:
     profile_ids:
     - cave-squigs
@@ -220,9 +301,7 @@ rules:
     - id: unimplemented.orc-mob.cave-squigs.minderz
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.minderz
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: cave-squigs--not-orcs
   name: Not Orcs
   effect: See Goblin Warriors entry for rules.
@@ -232,8 +311,10 @@ rules:
     section: henchmen / 0 – 5 Cave Squigs / Special Rules / Not Orcs
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
-    es: No Son Orcos
+    en: Not Orcs
+    es: No son orcos
   effect_i18n:
+    en: See Goblin Warriors entry for rules.
     es: Ver la entrada de Guerreros goblin para las reglas.
   applies_to:
     profile_ids:
@@ -246,17 +327,23 @@ rules:
     - id: unimplemented.orc-mob.cave-squigs.not-orcs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: cave-squigs--animals
   name: Animals
+  effect: Cave Squigs are animals of a sort and so do not gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 5 Cave Squigs / Special Rules / Animals
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
+    en: Animals
     es: Animales
+  effect_i18n:
+    en: 'Cave Squigs are animals of a sort and so do not gain
+
+      experience.'
+    es: Los Squigs de las cavernas son una especie de animales y por tanto no ganan experiencia.
   applies_to:
     profile_ids:
     - cave-squigs
@@ -268,18 +355,21 @@ rules:
     - id: unimplemented.orc-mob.cave-squigs.animals
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.animals
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: troll--fear
   name: Fear
+  effect: Trolls are frightening monsters which cause fear.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 1 Troll / Special Rules / Fear
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
+    en: Fear
     es: Miedo
+  effect_i18n:
+    en: Trolls are frightening monsters which cause fear.
+    es: Los Trolles son monstruos aterradores que provocan miedo.
   applies_to:
     profile_ids:
     - troll
@@ -291,18 +381,21 @@ rules:
     - id: unimplemented.orc-mob.troll.fear
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.fear-5
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: troll--stupidity
   name: Stupidity
+  effect: A Troll is subject to the rules for stupidity.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 1 Troll / Special Rules / Stupidity
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
+    en: Stupidity
     es: Estupidez
+  effect_i18n:
+    en: A Troll is subject to the rules for stupidity.
+    es: Un Trol está sujeto a las reglas de estupidez.
   applies_to:
     profile_ids:
     - troll
@@ -314,18 +407,37 @@ rules:
     - id: unimplemented.orc-mob.troll.stupidity
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.stupidity-2
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: troll--regeneration
   name: Regeneration
+  effect: Trolls have a unique physiology that allow them to regenerate wounds. Whenever an enemy successfully
+    inflicts a wound on a Troll roll a D6, on a result of 4 or more the wound is ignored and the Troll
+    is unhurt. Trolls may not regenerate wounds caused by fire or fire-based magic. Trolls never roll
+    for Injury after a battle.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 1 Troll / Special Rules / Regeneration
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
+    en: Regeneration
     es: Regeneración
+  effect_i18n:
+    en: 'Trolls have a unique physiology that allow
+
+      them to regenerate wounds. Whenever an enemy successfully
+
+      inflicts a wound on a Troll roll a D6, on a result of 4 or more
+
+      the wound is ignored and the Troll is unhurt. Trolls may not
+
+      regenerate wounds caused by fire or fire-based magic. Trolls
+
+      never roll for Injury after a battle.'
+    es: Los Trolles tienen una fisiología única que les permite regenerar heridas. Siempre que un enemigo
+      inflija con éxito una herida a un Trol, tira un D6; con un resultado de 4 o más la herida se ignora
+      y el Trol queda ileso. Los Trolles no pueden regenerar heridas causadas por fuego o magia de base
+      fuego. Los Trolles nunca tiran para Herida tras una batalla.
   applies_to:
     profile_ids:
     - troll
@@ -339,16 +451,22 @@ rules:
       binding:
         kind: mechanic
         id: skill.regeneration
-  rule_ref: shared-rule.regeneration
 - id: troll--dumb-monster
   name: Dumb Monster
+  effect: A Troll is far too stupid to ever learn any new skills. Trolls do not gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 1 Troll / Special Rules / Dumb Monster
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
-    es: Monstruo Tonto
+    en: Dumb Monster
+    es: Monstruo tonto
+  effect_i18n:
+    en: 'A Troll is far too stupid to ever learn any
+
+      new skills. Trolls do not gain experience.'
+    es: Un Trol es demasiado estúpido para aprender alguna habilidad nueva. Los Trolles no ganan experiencia.
   applies_to:
     profile_ids:
     - troll
@@ -360,18 +478,50 @@ rules:
     - id: unimplemented.orc-mob.troll.dumb-monster
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.dumb-monster
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: troll--always-hungry
   name: Always Hungry
+  effect: A Troll requires an upkeep cost. This upkeep represents the copious amounts of food that must
+    be fed to the Troll in order to keep him loyal to the warband. The warband must pay 15 gold crowns
+    after every game in order to keep the Troll. If the warband lacks the gold to pay the upkeep, the
+    Boss has the option of sacrificing two Goblin Warriors or Cave Squigs to the Troll in lieu of buying
+    food (Trolls eat nearly anything). If this fee is not paid (either in gold or in warband members)
+    the Troll gets hungry and wanders off in search of food.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 1 Troll / Special Rules / Always Hungry
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
-    es: Siempre Hambriento
+    en: Always Hungry
+    es: Siempre hambriento
+  effect_i18n:
+    en: 'A Troll requires an upkeep cost. This
+
+      upkeep represents the copious amounts of food that must be
+
+      fed to the Troll in order to keep him loyal to the warband.
+
+      The warband must pay 15 gold crowns after every game in
+
+      order to keep the Troll. If the warband lacks the gold to pay
+
+      the upkeep, the Boss has the option of sacrificing two Goblin
+
+      Warriors or Cave Squigs to the Troll in lieu of buying food
+
+      (Trolls eat nearly anything). If this fee is not paid (either in
+
+      gold or in warband members) the Troll gets hungry and
+
+      wanders off in search of food.'
+    es: Un Trol requiere un coste de mantenimiento. Este mantenimiento representa las copiosas cantidades
+      de comida que deben darse al Trol para mantenerlo leal a la banda. La banda debe pagar 15 coronas
+      de oro después de cada partida para conservar al Trol. Si a la banda le falta oro para pagar el
+      mantenimiento, el Jefe tiene la opción de sacrificar dos Guerreros goblin o Squigs de las cavernas
+      al Trol en lugar de comprar comida (los Trolles comen casi cualquier cosa). Si esta tarifa no se
+      paga (ni en oro ni en miembros de la banda), el Trol se queda hambriento y se marcha en busca de
+      comida.
   applies_to:
     profile_ids:
     - troll
@@ -383,9 +533,7 @@ rules:
     - id: unimplemented.orc-mob.troll.always-hungry
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.always-hungry
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: troll--vomit-attack
   kind: profile_ability
   runtime:
@@ -399,26 +547,47 @@ rules:
         kind: mechanic
         id: weapon.vomit-attack
   name: Vomit Attack
+  effect: Instead of his normal attacks, a Troll can regurgitate its highly corrosive digestive juices
+    on an unfortunate hand-to-hand combat opponent. This is a single attack that automatically hits with
+    a Strength of 5 and ignores armour saves.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 1 Troll / Special Rules / Vomit Attack
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
-    es: Ataque de Vómito
+    en: Vomit Attack
+    es: Ataque de vómito
+  effect_i18n:
+    en: 'Instead of his normal attacks, a Troll can
+
+      regurgitate its highly corrosive digestive juices on an
+
+      unfortunate hand-to-hand combat opponent. This is a single
+
+      attack that automatically hits with a Strength of 5 and ignores
+
+      armour saves.'
+    es: En lugar de sus ataques normales, un Trol puede regurgitar sus jugos digestivos altamente corrosivos
+      sobre un desafortunado oponente de combate cuerpo a cuerpo. Este es un único ataque que impacta
+      automáticamente con una Fuerza de 5 e ignora las salvaciones por armadura.
   applies_to:
     profile_ids:
     - troll
-  rule_ref: shared-rule.vomit-attack
 - id: troll--large-target
   name: Large Target
+  effect: Trolls are Large Targets as defined in the shooting rules.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 1 Troll / Special Rules / Large Target
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
-    es: Objetivo Grande
+    en: Large Target
+    es: Objetivo grande
+  effect_i18n:
+    en: Trolls are Large Targets as defined in the shooting rules.
+    es: Los Trolles son Objetivos Grandes según se define en las reglas de disparo.
   applies_to:
     profile_ids:
     - troll
@@ -430,9 +599,7 @@ rules:
     - id: unimplemented.orc-mob.troll.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.large-target
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--distasteful-company
   name: Distasteful Company
   effect: Orc Mobs may only hire Pit Fighters, Ogre Bodyguards, or Warlocks as Hired Swords.
@@ -442,10 +609,11 @@ rules:
     section: Special Rules / Distasteful Company
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
-    es: Compañía Desagradable
+    en: Distasteful Company
+    es: Compañía desagradable
   effect_i18n:
-    es: >-
-      Las Hordas Orcas solo pueden contratar Luchadores de fosa, Guardaespaldas ogros o Brujos como
+    en: Orc Mobs may only hire Pit Fighters, Ogre Bodyguards, or Warlocks as Hired Swords.
+    es: Las Hordas Orcas solo pueden contratar Luchadores de fosa, Guardaespaldas ogros o Brujos como
       Espadas a sueldo.
   applies_to:
     band: true
@@ -482,23 +650,34 @@ rules:
     section: Special Rules / Animosity
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
+    en: Animosity
     es: Rencor
   effect_i18n:
-    es: >-
-      Al comienzo del turno del jugador orco, tira un D6 por cada Secuaz orco o goblin que aún no
-      esté trabado en combate cuerpo a cuerpo. Con un 1, tira otro D6: 1 = '¡Yo lo oí!': el guerrero
-      ataca inmediatamente al Secuaz orco/goblin amistoso o Espada a sueldo elegible más cercano. Si
-      hay uno al alcance de carga, cárgalo y lucha una ronda de combate cuerpo a cuerpo, y luego
-      separa las miniaturas 1 pulgada. Si no puede cargarse a ninguno y el guerrero tiene un arma
-      arrojadiza, dispara inmediatamente al Secuaz orco/goblin amistoso o Espada a sueldo elegible
-      más cercano. Si no aplica ninguno de los dos, o la miniatura amistosa más cercana es un Héroe
-      orco, trata el resultado como 2-5. En todos los casos el guerrero no realiza ninguna otra
-      acción ese turno excepto defenderse si es atacado. 2-5 = '¿Qué dijiste?': el guerrero no hace
-      nada más ese turno, pero puede defenderse si es atacado. 6 = '¡Ya lo verás!': muévete
-      inmediatamente lo más rápido posible hacia el enemigo visible más cercano, cargando si es
-      posible; si no hay ningún enemigo visible, realiza un movimiento normal de inmediato. Este es
-      un movimiento extra además del movimiento normal. Si el movimiento extra pone a un enemigo en
-      alcance de carga, el guerrero debe cargar durante su fase de Movimiento normal.
+    en: 'At the start of the Orc player''s turn, roll a D6 for each Orc or Goblin Henchman not already
+      engaged in hand-to-hand combat. On a 1, roll another D6: 1 = ''I ''Erd Dat!'': the warrior immediately
+      attacks the nearest eligible friendly Orc/Goblin Henchman or Hired Sword. If one is within charge
+      reach, charge it and fight one round of close combat, then move the models 1 inch apart. If none
+      can be charged and the warrior has a missile weapon, immediately shoot the nearest eligible friendly
+      Orc/Goblin Henchman or Hired Sword. If neither applies, or the nearest friendly model is an Orc
+      Hero, treat the result as 2-5. In all cases the warrior takes no other action that turn except defending
+      itself if attacked. 2-5 = ''Wud Yoo Say?'': the warrior does nothing else that turn, but may defend
+      itself if attacked. 6 = ''I''ll Show Yer!'': immediately move as quickly as possible toward the
+      nearest visible enemy, charging if possible; if no enemy is visible, make a normal move immediately.
+      This is an extra move in addition to normal movement. If the extra move brings an enemy into charge
+      range, the warrior must charge during its normal Movement phase.'
+    es: 'Al comienzo del turno del jugador orco, tira un D6 por cada Secuaz orco o goblin que aún no esté
+      trabado en combate cuerpo a cuerpo. Con un 1, tira otro D6: 1 = ''¡Yo lo oí!'': el guerrero ataca
+      inmediatamente al Secuaz orco/goblin amistoso o Espada a sueldo elegible más cercano. Si hay uno
+      al alcance de carga, cárgalo y lucha una ronda de combate cuerpo a cuerpo, y luego separa las miniaturas
+      1 pulgada. Si no puede cargarse a ninguno y el guerrero tiene un arma arrojadiza, dispara inmediatamente
+      al Secuaz orco/goblin amistoso o Espada a sueldo elegible más cercano. Si no aplica ninguno de los
+      dos, o la miniatura amistosa más cercana es un Héroe orco, trata el resultado como 2-5. En todos
+      los casos el guerrero no realiza ninguna otra acción ese turno excepto defenderse si es atacado.
+      2-5 = ''¿Qué dijiste?'': el guerrero no hace nada más ese turno, pero puede defenderse si es atacado.
+      6 = ''¡Ya lo verás!'': muévete inmediatamente lo más rápido posible hacia el enemigo visible más
+      cercano, cargando si es posible; si no hay ningún enemigo visible, realiza un movimiento normal
+      de inmediato. Este es un movimiento extra además del movimiento normal. Si el movimiento extra pone
+      a un enemigo en alcance de carga, el guerrero debe cargar durante su fase de Movimiento normal.'
   applies_to:
     band: true
   runtime:
@@ -509,17 +688,24 @@ rules:
     - id: unimplemented.orc-mob.band.animosity
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--goblin-ratio
   name: Goblin Limit
+  effect: The warband may never include more than two Goblin Warriors for each Orc in the warband, including
+    Orc Heroes.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Choice of warriors / Goblin Warriors
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
-    es: Límite de Goblins
+    en: Goblin Limit
+    es: Límite de goblins
+  effect_i18n:
+    en: The warband may never include more than two Goblin Warriors for each Orc in the warband, including
+      Orc Heroes.
+    es: La banda nunca puede incluir más de dos Guerreros goblin por cada orco de la banda, incluidos
+      los Héroes orcos.
   applies_to:
     band: true
   runtime:
@@ -530,9 +716,7 @@ rules:
     - id: unimplemented.orc-mob.band.goblin-ratio
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.goblin-limit
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--cave-squig-ratio
   name: Cave Squig Limit
   effect: The warband may never include more Cave Squigs than Goblin Warriors.
@@ -542,8 +726,10 @@ rules:
     section: Choice of warriors / Cave Squigs
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
-    es: Límite de Squigs
+    en: Cave Squig Limit
+    es: Límite de squigs
   effect_i18n:
+    en: The warband may never include more Cave Squigs than Goblin Warriors.
     es: La banda nunca puede incluir más Squigs de las cavernas que Guerreros goblin.
   applies_to:
     band: true
@@ -555,18 +741,29 @@ rules:
     - id: unimplemented.orc-mob.band.cave-squig-ratio
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--orc-special-skills-ard-ead
   kind: warband_skill
   name: '''Ard Ead'
+  effect: The warrior has a thick skull even for an Orc. He has a special 3+ save on a D6 to avoid being
+    stunned. If the save is made, treat a stunned result as knocked down instead. If the Orc also wears
+    a helmet, this save is 2+ instead of 3+ (this takes the place of the normal helmet special rule).
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Orc Special Skills / 'ard ead
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
-    es: Cráneo Grueso
+    en: '''Ard Ead'
+    es: Cráneo grueso
+  effect_i18n:
+    en: The warrior has a thick skull even for an Orc. He has a special 3+ save on a D6 to avoid being
+      stunned. If the save is made, treat a stunned result as knocked down instead. If the Orc also wears
+      a helmet, this save is 2+ instead of 3+ (this takes the place of the normal helmet special rule).
+    es: El guerrero tiene un cráneo grueso incluso para ser un orco. Tiene una salvación especial de 3+
+      en un D6 para evitar quedar Aturdido. Si supera la salvación, trata un resultado de Aturdido como
+      Derribado en su lugar. Si el orco además lleva casco, esta salvación es 2+ en lugar de 3+ (esto
+      sustituye a la regla especial normal de casco).
   applies_to:
     band: true
   runtime:
@@ -579,17 +776,24 @@ rules:
       binding:
         kind: mechanic
         id: skill.thick-skull
-  rule_ref: shared-rule.ard-ead
 - id: band--orc-special-skills-waaagh
   kind: warband_skill
   name: Waaagh!
+  effect: Orcs are aggressive creatures and some are experts at bulldozing charges. The warrior may add
+    +D3" to his charge range.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Orc Special Skills / waaagh!
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
+    en: Waaagh!
     es: ¡Waaagh!
+  effect_i18n:
+    en: Orcs are aggressive creatures and some are experts at bulldozing charges. The warrior may add
+      +D3" to his charge range.
+    es: Los orcos son criaturas agresivas y algunos son expertos en cargas arrolladoras. El guerrero puede
+      añadir +D3" a su alcance de carga.
   applies_to:
     band: true
   runtime:
@@ -600,19 +804,25 @@ rules:
     - id: unimplemented.orc-mob.band.orc-special-skills-waaagh
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.waaagh
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
 - id: band--orc-special-skills-ere-we-go
   kind: warband_skill
   name: '''Ere We Go!'
+  effect: Orcs often charge even the most fearsome opponents. The model may ignore fear tests when charging.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Orc Special Skills / 'ere we go!
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
-    es: ¡Vamos Allá!
+    en: '''Ere We Go!'
+    es: ¡Vamos allá!
+  effect_i18n:
+    en: 'Orcs often charge even the most fearsome opponents. The
+
+      model may ignore fear tests when charging.'
+    es: Los orcos a menudo cargan contra incluso los oponentes más temibles. La miniatura puede ignorar
+      los chequeos de miedo al cargar.
   applies_to:
     band: true
   runtime:
@@ -623,19 +833,26 @@ rules:
     - id: unimplemented.orc-mob.band.orc-special-skills-ere-we-go
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.ere-we-go
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--orc-special-skills-da-cunnin-plan
   kind: warband_skill
   name: Da Cunnin' Plan
+  effect: Only the Boss may have this skill. The warband may re-roll any failed Rout tests as long as
+    the Boss is not out of action.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Orc Special Skills / da cunnin' plan
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
-    es: El Plan Maestro
+    en: Da Cunnin' Plan
+    es: El plan maestro
+  effect_i18n:
+    en: 'Only the Boss may have this skill. The warband may re-roll
+
+      any failed Rout tests as long as the Boss is not out of action.'
+    es: Solo el Jefe puede tener esta habilidad. La banda puede repetir cualquier chequeo de Huida fallido
+      mientras el Jefe no esté fuera de combate.
   applies_to:
     band: true
   runtime:
@@ -649,7 +866,6 @@ rules:
       reason: >-
         Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
         construction.
-  rule_ref: shared-rule.da-cunnin-plan
 - id: band--orc-special-skills-well-ard
   kind: warband_skill
   runtime:
@@ -664,8 +880,7 @@ rules:
         id: mechanic.armour-save-bonus
   runtime_selectable: true
   name: Well 'Ard
-  effect: >-
-    The Orc has a thick, dark-green skin, possibly indicating Black Orc blood. Such is the toughness
+  effect: The Orc has a thick, dark-green skin, possibly indicating Black Orc blood. Such is the toughness
     of the Orc that he may add +1 to any armour saves.
   source:
     manual: mordheimer.net
@@ -673,23 +888,39 @@ rules:
     section: Orc Special Skills / well 'ard
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
-    es: Muy Duro
+    en: Well 'Ard
+    es: Muy duro
   effect_i18n:
-    es: >-
-      El orco tiene una piel gruesa de verde oscuro, posiblemente indicando sangre de Orco Negro.
-      Tal es la dureza del orco que puede añadir +1 a cualquier salvación por armadura.
+    en: 'The Orc has a thick, dark-green skin, possibly indicating Black
+
+      Orc blood. Such is the toughness of the Orc that he may add
+
+      +1 to any armour saves.'
+    es: El orco tiene una piel gruesa de verde oscuro, posiblemente indicando sangre de Orco Negro. Tal
+      es la dureza del orco que puede añadir +1 a cualquier salvación por armadura.
   applies_to:
     band: true
 - id: band--orc-special-skills-eadbasher
   kind: warband_skill
   name: '''Eadbasher'
+  effect: Orcs have massive physical strength and some of them even learn to aim their blows at the heads
+    of their opponents, with obvious results. Any knocked down results which the Orc causes in hand-to-hand
+    count as stunned results instead.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Orc Special Skills / 'eadbasher
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/orc-mob
   name_i18n:
+    en: '''Eadbasher'
     es: Machacacráneos
+  effect_i18n:
+    en: Orcs have massive physical strength and some of them even learn to aim their blows at the heads
+      of their opponents, with obvious results. Any knocked down results which the Orc causes in hand-to-hand
+      count as stunned results instead.
+    es: Los orcos tienen una fuerza física masiva y algunos incluso aprenden a apuntar sus golpes a las
+      cabezas de sus oponentes, con resultados obvios. Cualquier resultado de Derribado que el orco cause
+      en combate cuerpo a cuerpo cuenta como resultado de Aturdido en su lugar.
   applies_to:
     band: true
   runtime:
@@ -702,5 +933,3 @@ rules:
       binding:
         kind: mechanic
         id: skill.head-crusher
-
-  rule_ref: shared-rule.eadbasher

@@ -3,18 +3,18 @@ band_id: trollheim-mercenaries
 rules:
 - id: mercenary-captain--leader
   name: Leader
-  effect: >-
-    Any warrior within 6" of the Mercenary Captain may use his Leadership when taking Leadership
+  effect: Any warrior within 6" of the Mercenary Captain may use his Leadership when taking Leadership
     tests.
   source:
     manual: trollheim
     printed_page: 71
     section: Heroes / 1 Mercenary Captain / Leader
   name_i18n:
+    en: Leader
     es: Líder
   effect_i18n:
-    es: >-
-      Cualquier guerrero a 6" del Capitán mercenario puede usar su Liderazgo al realizar chequeos de
+    en: Any warrior within 6" of the Mercenary Captain may use his Leadership when taking Leadership tests.
+    es: Cualquier guerrero a 6" del Capitán mercenario puede usar su Liderazgo al realizar chequeos de
       Liderazgo.
   applies_to:
     profile_ids:
@@ -27,8 +27,7 @@ rules:
     - id: unimplemented.trollheim-mercenaries.mercenary-captain.leader
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: swordsmen--expert-swordsmen
   kind: profile_ability
   runtime:
@@ -42,36 +41,38 @@ rules:
         kind: mechanic
         id: skill.expert-swordsman
   name: Expert Swordsmen
-  effect: >-
-    When charging, Swordsmen may re-roll failed To Hit rolls while armed with normal swords. This
+  effect: When charging, Swordsmen may re-roll failed To Hit rolls while armed with normal swords. This
     does not apply when using great swords or any other weapon.
   source:
     manual: trollheim
     printed_page: 71
     section: Henchmen / 0-5 Swordsmen / Expert Swordsmen
   name_i18n:
-    es: Espadachines Expertos
+    en: Expert Swordsmen
+    es: Espadachines expertos
   effect_i18n:
-    es: >-
-      Al cargar, los Espadachines pueden repetir las tiradas de Golpear falladas mientras empuñen
-      espadas normales. Esto no se aplica al usar espadones ni cualquier otra arma.
+    en: When charging, Swordsmen may re-roll failed To Hit rolls while armed with normal swords. This
+      does not apply when using great swords or any other weapon.
+    es: Al cargar, los Espadachines pueden repetir las tiradas de Golpear falladas mientras empuñen espadas
+      normales. Esto no se aplica al usar espadones ni cualquier otra arma.
   applies_to:
     profile_ids:
     - swordsmen
 - id: band--reikland-command-radius
   name: Reikland — Military Discipline
-  effect: >-
-    Reikland warriors may use their Captain's Leadership while within 12" instead of the normal 6".
+  effect: Reikland warriors may use their Captain's Leadership while within 12" instead of the normal
+    6".
   source:
     manual: trollheim
     printed_page: 68
     section: Reikland / Special Rules / Military Discipline
   name_i18n:
-    es: Reikland — Disciplina Militar
+    en: Reikland — Military Discipline
+    es: Reikland — Disciplina militar
   effect_i18n:
-    es: >-
-      Los guerreros de Reikland pueden usar el Liderazgo de su Capitán estando dentro de 12" en
-      lugar de los 6" normales.
+    en: Reikland warriors may use their Captain's Leadership while within 12" instead of the normal 6".
+    es: Los guerreros de Reikland pueden usar el Liderazgo de su Capitán estando dentro de 12" en lugar
+      de los 6" normales.
   applies_to:
     band: true
   runtime:
@@ -82,22 +83,22 @@ rules:
     - id: unimplemented.trollheim-mercenaries.band.reikland-command-radius
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--reikland-marksman-training
   name: Reikland — Marksman Training
-  effect: >-
-    All Reikland Marksmen add +1 to their Ballistic Skill, whether recruited when the warband is
+  effect: All Reikland Marksmen add +1 to their Ballistic Skill, whether recruited when the warband is
     created or later during a campaign.
   source:
     manual: trollheim
     printed_page: 68
     section: Reikland / Special Rules / Marksman Training
   name_i18n:
-    es: Reikland — Adiestramiento de Tiradores
+    en: Reikland — Marksman Training
+    es: Reikland — Adiestramiento de tiradores
   effect_i18n:
-    es: >-
-      Todos los Tiradores de Reikland añaden +1 a su Habilidad de disparo, ya sea que se recluten al
+    en: All Reikland Marksmen add +1 to their Ballistic Skill, whether recruited when the warband is created
+      or later during a campaign.
+    es: Todos los Tiradores de Reikland añaden +1 a su Habilidad de disparo, ya sea que se recluten al
       crear la banda o más tarde durante la campaña.
   applies_to:
     band: true
@@ -109,23 +110,23 @@ rules:
     - id: unimplemented.trollheim-mercenaries.band.reikland-marksman-training
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: band--middenheim-physical-prowess
   kind: warband_variant
   name: Middenheim — Physical Prowess
-  effect: >-
-    The Mercenary Captain and all Champions in a Middenheim warband start with Strength 4 instead of
-    Strength 3.
+  effect: The Mercenary Captain and all Champions in a Middenheim warband start with Strength 4 instead
+    of Strength 3.
   source:
     manual: trollheim
     printed_page: 69
     section: Middenheim / Special Rules
   name_i18n:
-    es: Middenheim — Proeza Física
+    en: Middenheim — Physical Prowess
+    es: Middenheim — Proeza física
   effect_i18n:
-    es: >-
-      El Capitán mercenario y todos los Campeones de una banda de Middenheim comienzan con Fuerza 4
+    en: The Mercenary Captain and all Champions in a Middenheim warband start with Strength 4 instead
+      of Strength 3.
+    es: El Capitán mercenario y todos los Campeones de una banda de Middenheim comienzan con Fuerza 4
       en lugar de Fuerza 3.
   applies_to:
     band: true
@@ -156,8 +157,10 @@ rules:
     printed_page: 69
     section: Marienburg / Special Rules / Natural Traders
   name_i18n:
-    es: Mariemburgo — Comerciantes Natos
+    en: Marienburg — Natural Traders
+    es: Mariemburgo — Comerciantes natos
   effect_i18n:
+    en: A Marienburg warband receives +1 when attempting to find Rare items.
     es: Una banda de Mariemburgo recibe +1 al intentar encontrar objetos Raros.
   applies_to:
     band: true
@@ -169,23 +172,23 @@ rules:
     - id: unimplemented.trollheim-mercenaries.band.marienburg-traders
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: band--marienburg-wealth
   name: Marienburg — Enormous Wealth
-  effect: >-
-    A Marienburg warband starts a campaign with 600 gc instead of 500 gc. In a one-off game it
-    receives 20% more gold crowns for recruitment.
+  effect: A Marienburg warband starts a campaign with 600 gc instead of 500 gc. In a one-off game it receives
+    20% more gold crowns for recruitment.
   source:
     manual: trollheim
     printed_page: 69
     section: Marienburg / Special Rules / Enormous Wealth
   name_i18n:
-    es: Mariemburgo — Enorme Riqueza
+    en: Marienburg — Enormous Wealth
+    es: Mariemburgo — Enorme riqueza
   effect_i18n:
-    es: >-
-      Una banda de Mariemburgo comienza la campaña con 600 coronas en lugar de 500. En una partida
-      suelta recibe un 20% más de coronas de oro para el reclutamiento.
+    en: A Marienburg warband starts a campaign with 600 gc instead of 500 gc. In a one-off game it receives
+      20% more gold crowns for recruitment.
+    es: Una banda de Mariemburgo comienza la campaña con 600 coronas en lugar de 500. En una partida suelta
+      recibe un 20% más de coronas de oro para el reclutamiento.
   applies_to:
     band: true
   runtime:
@@ -196,5 +199,4 @@ rules:
     - id: unimplemented.trollheim-mercenaries.band.marienburg-wealth
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
