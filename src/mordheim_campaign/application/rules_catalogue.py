@@ -36,6 +36,16 @@ class RulesCategory:
     label: str
 
 
+@dataclass(frozen=True, slots=True)
+class ProfileLink:
+    """One warband profile that can take the browsed entry."""
+
+    band: str
+    profile: str
+    profile_id: str
+    relation: str  # "skill table" | "starting skill" | "special rule" | "equipment" | "lore"
+
+
 def _unaccent_lower(text: str) -> str:
     decomposed = normalize("NFD", text.casefold())
     return "".join(char for char in decomposed if char.isascii())
@@ -79,6 +89,8 @@ class RulesCatalogue:
         self._skill_rows = load_skills(self.port.ruleset)
         self._item_rows = load_items(self.port.ruleset)
         self._entries_cache: dict[str, tuple[RuleEntry, ...]] = {}
+        self._profiles_cache: list | None = None
+        self._item_index_cache: dict[str, set[tuple[str, str, str]]] | None = None
 
     # ------------------------------------------------------------- sources
 
@@ -194,6 +206,67 @@ class RulesCatalogue:
 
     def entry(self, category_id: str, entry_id: str) -> RuleEntry | None:
         return next((row for row in self.entries(category_id) if row.entry_id == entry_id), None)
+
+    # -------------------------------------------------------- cross-links
+
+    def _profiles_index(self) -> list[tuple[str, object]]:
+        """(collection, band_id, band name, WarbandProfile) of the whole KB."""
+        if self._profiles_cache is None:
+            rows = []
+            for collection_id, _label in self.port.collections():
+                for band in self.port.options(collection_id):
+                    for profile in self.port.profiles(collection_id, band.band_id):
+                        rows.append((collection_id, band.band_id, band.name, profile))
+            self._profiles_cache = rows
+        return self._profiles_cache
+
+    def profile_links(self, category_id: str, entry: RuleEntry) -> tuple[ProfileLink, ...]:
+        """Warband profiles that can take/have this entry (reverse index).
+
+        Supported categories: skills (table access or starting skill),
+        special rules (band ``rule_ref`` back to the shared rule), equipment
+        (profile equipment lists) and spells (assigned wizard lore).
+        """
+        links: set[ProfileLink] = set()
+        if category_id == "skills":
+            skill = next((row for row in self._skill_rows if str(row.get("id") or "") == entry.entry_id), None)
+            if skill is None:
+                return ()
+            canonical_name = str(skill.get("name") or "")
+            table = self.port.skill_table_label(skill)
+            for _collection, _band_id, band_name, profile in self._profiles_index():
+                if canonical_name and canonical_name in profile.starting_skills:
+                    links.add(ProfileLink(band_name, profile.name, profile.profile_id, "starting skill"))
+                elif table and table in profile.skill_tables:
+                    links.add(ProfileLink(band_name, profile.name, profile.profile_id, "skill table"))
+        elif category_id == "special-rules":
+            for _collection, band_id, band_name, profile in self._profiles_index():
+                package = self.port.find_package(band_id, _collection)
+                for rule in package.special_rules:
+                    if str(rule.get("rule_ref") or "") != entry.entry_id:
+                        continue
+                    if profile.profile_id not in set((rule.get("applies_to") or {}).get("profile_ids") or ()):
+                        continue
+                    links.add(ProfileLink(band_name, profile.name, profile.profile_id, "special rule"))
+        elif category_id == "equipment":
+            if self._item_index_cache is None:
+                # One-time pass: profile -> the item ids its equipment lists grant.
+                index: dict[str, set[tuple[str, str, str]]] = {}
+                for _collection, band_id, band_name, profile in self._profiles_index():
+                    for offer in self.port.items_for_profile(profile):
+                        index.setdefault(offer.item_id, set()).add((band_name, profile.name, profile.profile_id))
+                self._item_index_cache = index
+            for band_name, profile_name, profile_id in self._item_index_cache.get(entry.entry_id, ()):
+                links.add(ProfileLink(band_name, profile_name, profile_id, "equipment"))
+        elif category_id == "spells":
+            parts = entry.entry_id.split(".")
+            lore_id = f"lore.{parts[1]}" if len(parts) > 2 else ""
+            if not lore_id:
+                return ()
+            for _collection, band_id, band_name, profile in self._profiles_index():
+                if self.port.wizard_lore(profile.profile_id, band_id) == lore_id:
+                    links.add(ProfileLink(band_name, profile.name, profile.profile_id, "lore"))
+        return tuple(sorted(links, key=lambda link: (link.band.casefold(), link.profile.casefold())))
 
     # -------------------------------------------------------------- search
 
