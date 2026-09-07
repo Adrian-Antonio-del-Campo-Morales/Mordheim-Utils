@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import messagebox, simpledialog, ttk
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.application.state import STAT_KEYS, WarriorVM
@@ -169,6 +169,7 @@ class InitialWarbandDraftMoment(tk.Frame):
                 menu.add_command(label=tr('+ 1 member'), command=lambda: self._adjust_group(warrior, 1))
                 menu.add_command(label=tr('− 1 member'), command=lambda: self._adjust_group(warrior, -1))
                 menu.add_separator()
+            menu.add_command(label=tr('Rename…'), command=lambda: self._rename_warrior(warrior))
             menu.add_command(label=tr('Remove from draft'), command=lambda: self._remove_warrior(warrior))
             try:
                 menu.tk_popup(self.winfo_pointerx(), self.winfo_pointery())
@@ -186,6 +187,14 @@ class InitialWarbandDraftMoment(tk.Frame):
         ok, message = self.controller.remove_draft_warrior(warrior.id)
         if not ok:
             messagebox.showerror(tr('Cannot remove warrior'), message, parent=self)
+
+    def _rename_warrior(self, warrior: WarriorVM) -> None:
+        name = simpledialog.askstring(tr('Rename'), tr('New name'), initialvalue=warrior.name, parent=self)
+        if name is None:
+            return
+        ok, message = self.controller.rename_draft_warrior(warrior.id, name)
+        if not ok:
+            messagebox.showerror(tr('Cannot rename'), message, parent=self)
 
 class DraftWarriorCard(tk.Frame):
     def __init__(self, master: tk.Misc, warrior: WarriorVM, *, on_more, **kwargs) -> None:

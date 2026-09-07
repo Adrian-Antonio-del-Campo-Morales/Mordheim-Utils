@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from dataclasses import dataclass, field
 from datetime import date
 
@@ -44,6 +45,10 @@ class WarriorVM:
     stat_advances: dict[str, int] = field(default_factory=dict)
     #: Canonical KB profile id (bands/<collection>/<band>/profiles.yaml).
     profile_id: str = ""
+    #: Per-spell casting-difficulty modifiers gained in play. A repeated spell
+    #: generation result lowers the duplicate spell's difficulty by 1 (KB
+    #: rule); one entry per spell name, value -1.
+    spell_difficulty_modifiers: dict[str, int] = field(default_factory=dict)
 
 
 @dataclass(slots=True)
@@ -69,6 +74,19 @@ class BattleVM:
     #: their injury rolls. ``None`` = not recorded (legacy files): the UI
     #: then offers every warrior.
     out_of_action_ids: list[str] | None = None
+    #: Roster snapshot at battle time (id, name, kind, quantity, condition),
+    #: so historical reviews do not depend on the live roster.
+    participants: list[dict] = field(default_factory=list)
+    #: Explicit per-group Out-of-Action counts (warrior_id -> members lost).
+    #: ``out_of_action_ids`` is derived from this map when present.
+    per_group_casualties: dict[str, int] = field(default_factory=dict)
+    #: Per-warrior experience award recorded with the battle
+    #: (warrior_id -> XP). Empty for legacy battles: the uniform ``xp_delta``
+    #: applies to every surviving warrior instead.
+    xp_awards: dict[str, int] = field(default_factory=dict)
+    #: Answers recorded for the structured scenario result fields
+    #: (award id or question id -> value). Free-form, award-plan driven.
+    scenario_results: dict = field(default_factory=dict)
 
 
 @dataclass(slots=True)
@@ -96,6 +114,11 @@ class WarbandStateVM:
     henchmen: int
     experience: int
     label: str = ""
+    #: Roster and inventory deep-copied when the state was committed, so any
+    #: timeline moment can be exported (PDF) exactly as it was then. Empty
+    #: only in snapshots built before this field existed.
+    roster: list["WarriorVM"] = field(default_factory=list)
+    inventory: list["InventoryItemVM"] = field(default_factory=list)
 
     @property
     def node_id(self) -> str:
@@ -118,6 +141,7 @@ class PostBattleVM:
     wyrdstone_sold: int = 0
     sale_resolved: bool = False
     veteran_pool: int = 0
+    experience_applied: bool = False
     #: Pending advance rolls of this sequence, persisted so a mid-sequence
     #: save/load resumes. One row per warrior that crossed a threshold:
     #:
@@ -125,11 +149,56 @@ class PostBattleVM:
     #: - ``committed``: the pick is applied to the roster;
     #: - ``table``: hero | henchman (the KB advancement table that resolves it).
     pending_advances: list[dict] = field(default_factory=list)
+    #: Step-local working data of the pending sequence (unresolved dice,
+    #: sale quantity, sub-roll choices), keyed by step index. Persisted so
+    #: navigating away or a mid-sequence save/load cannot discard them.
+    step_state: dict = field(default_factory=dict)
+    #: Hero search assignments and results of step 06, keyed by hero id:
+    #: {target, kind (rare|dramatis), item_id, modifiers, roll, success, used}.
+    searches: dict = field(default_factory=dict)
+    #: Explicit acknowledgement that an effect was resolved outside the
+    #: application, keyed by step: list of acknowledged item ids.
+    acknowledgements: dict = field(default_factory=dict)
+    #: Structured log of every applied mutation of this sequence, rendered by
+    #: the completed review: {step, action, ids, message}.
+    event_log: list[dict] = field(default_factory=list)
+    #: Per-group equipment obligations created by recruitment:
+    #: [{warrior_id, item_id, quantity}]. Settled by the Equipment step.
+    equipment_obligations: list[dict] = field(default_factory=list)
+    #: Pending follow-up actions (injury subtables, exploration specials,
+    #: advancement effects) awaiting resolution or acknowledgement:
+    #: {id, step, type, description, ...}.
+    pending_follow_ups: list[dict] = field(default_factory=list)
 
-    def pending_advance_for(self, warrior_id: str) -> dict | None:
+    def log_event(self, step: int, action: str, message: str, **ids) -> None:
+        """Append one structured entry to the sequence event log."""
+        self.event_log.append({"step": step, "action": action, "ids": {k: str(v) for k, v in ids.items() if v is not None}, "message": message})
+
+    def acknowledge(self, step: int, item: str) -> None:
+        acknowledged = self.acknowledgements.setdefault(str(step), [])
+        if item not in acknowledged:
+            acknowledged.append(item)
+
+    def is_acknowledged(self, step: int, item: str) -> bool:
+        return item in self.acknowledgements.get(str(step), [])
+
+    def unacknowledged_follow_ups(self, step: int) -> list[dict]:
+        """Pending follow-ups of one step the player has not acknowledged yet."""
+        return [
+            row for row in self.pending_follow_ups
+            if int(row.get("step") or -1) == int(step) and not self.is_acknowledged(step, str(row.get("id")))
+        ]
+
+    def pending_advance_for(self, warrior_id: str, threshold: int | None = None) -> dict | None:
         """The advance row being worked on: the first uncommitted row of the
-        warrior, falling back to its first (already committed) row."""
+        warrior, falling back to its first (already committed) row.
+
+        ``threshold`` identifies one concrete earned advance when a warrior
+        crossed several XP rungs in the same sequence.
+        """
         rows = [row for row in self.pending_advances if str(row.get("warrior_id")) == warrior_id]
+        if threshold is not None:
+            return next((row for row in rows if int(row.get("threshold") or -1) == int(threshold)), None)
         return next((row for row in rows if not row.get("committed")), rows[0] if rows else None)
 
     @property
@@ -151,6 +220,11 @@ class CampaignVM:
     inventory: list[InventoryItemVM] = field(default_factory=list)
     stash_value: int = 0
     rare_finds: int = 0
+    #: Non-gold hiring resources declared by the KB hireling catalogue
+    #: (per-resource fee/upkeep). Wyrdstone shards live on the states;
+    #: these pools are campaign-level counters.
+    treasures: int = 0
+    campaign_points: int = 0
 
     # Draft-only construction metadata. In the real application these values
     # are supplied by the selected warband rules rather than the GUI.
@@ -245,6 +319,30 @@ class AppState:
     battle_section: str = "overview"
     inventory_mode: str = "item"
     draft_warrior_tab: str = "hero"
+    #: Partially entered battle-entry draft (record-battle dialog), persisted
+    #: so navigating to another timeline row does not discard it. Cleared
+    #: when the battle is recorded or the dialog is cancelled.
+    pending_battle_draft: dict = field(default_factory=dict)
+
+
+def unique_warrior_name(warriors, base: str, *, exclude_id: str | None = None) -> str:
+    """Stable, human-readable unique roster name using Roman suffixes."""
+    taken = {row.name.casefold() for row in warriors if row.id != exclude_id}
+    if base.casefold() not in taken:
+        return base
+    numerals = ((10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I"))
+    index = 2
+    while True:
+        number = index
+        suffix = ""
+        for value, numeral in numerals:
+            while number >= value:
+                suffix += numeral
+                number -= value
+        candidate = f"{base} {suffix}"
+        if candidate.casefold() not in taken:
+            return candidate
+        index += 1
 
 
 STAT_KEYS = ("M", "WS", "BS", "S", "T", "W", "I", "A", "Ld")
@@ -432,8 +530,8 @@ def make_example_state(port: KnowledgePort) -> AppState:
     ]
 
     post_battles = [
-        *[PostBattleVM(number, True, 7, set(range(8)), False) for number in range(1, 8)],
-        PostBattleVM(8, False, 4, set(range(4)), False),
+        *[PostBattleVM(number, True, 7, set(range(8)), False, experience_applied=True) for number in range(1, 8)],
+        PostBattleVM(8, False, 4, set(range(4)), False, experience_applied=True),
     ]
 
     inventory = [
@@ -447,6 +545,11 @@ def make_example_state(port: KnowledgePort) -> AppState:
         InventoryItemVM("healing_herbs", "Healing Herbs", "Consumable", 3, 0, 3, 8),
         InventoryItemVM("holy_relic", "Holy Relic", "Misc", 1, 0, 1, 15, "Rare"),
     ]
+
+    # The current state carries the live roster/inventory as its snapshot;
+    # earlier example states stay aggregate-only.
+    states[-1].roster = copy.deepcopy(warriors)
+    states[-1].inventory = copy.deepcopy(inventory)
 
     campaign = CampaignVM(
         campaign_name="The Sisters of Morr",

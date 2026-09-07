@@ -4,7 +4,13 @@ import tkinter as tk
 from tkinter import ttk
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_campaign.ui.file_actions import export_campaign_markdown, load_campaign_file, save_current_campaign
+from mordheim_campaign.ui.dialogs import NewCampaignDialog
+from mordheim_campaign.ui.file_actions import (
+    export_campaign_markdown,
+    export_warband_pdf,
+    load_campaign_file,
+    save_current_campaign,
+)
 from mordheim_campaign.ui.views import CampaignView, RulesView, SettingsView
 from mordheim_ui.theme import COLORS
 from mordheim_ui.i18n import tr
@@ -61,9 +67,11 @@ class AppShell(tk.Frame):
         actions = tk.Frame(header, bg=COLORS["bg"], padx=12)
         actions.pack(side="right", fill="y")
         handlers = {
+            tr('New Campaign'): lambda: NewCampaignDialog(self, self.controller),
             "Load": lambda: load_campaign_file(self, self.controller),
             "Save": lambda: save_current_campaign(self, self.controller),
-            "Export": lambda: export_campaign_markdown(self, self.controller),
+            tr('Export Summary'): lambda: export_campaign_markdown(self, self.controller),
+            tr('Export PDF'): lambda: export_warband_pdf(self, self.controller),
         }
         for text, handler in handlers.items():
             ttk.Button(actions, text=text, style="Ghost.TButton", command=handler).pack(side="left", pady=13, padx=2)

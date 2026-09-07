@@ -88,6 +88,9 @@ class HirelingOffer:
     #: Flat hiring fee in gc the write side can apply; None = not in gold or
     #: variable (e.g. treasures/campaign points), hire then unsupported.
     fee_gc: int | None = None
+    #: Full per-resource hiring fee declared by the KB (resource -> flat
+    #: cost). Dice-declared amounts are omitted; the engine rejects them.
+    fee_resources: tuple[tuple[str, int], ...] = ()
     #: Acceptance roll for ``eligibility == "conditional"``: succeed on D6
     #: >= ``roll_ge``. None when the entry is unconditional.
     roll_ge: int | None = None
@@ -150,6 +153,18 @@ def _trading_category(entry: dict) -> str:
         if section:
             return section.rsplit("/", 1)[-1].strip()
     return "Other items"
+
+
+def _resource_costs(resources: dict | None) -> tuple[tuple[str, int], ...]:
+    """Flat per-resource costs of a hiring fee (dice amounts excluded)."""
+    costs: list[tuple[str, int]] = []
+    for name, amount in (resources or {}).items():
+        if not isinstance(amount, dict):
+            continue
+        cost = amount.get("cost")
+        if isinstance(cost, int) and not amount.get("dice"):
+            costs.append((str(name), cost))
+    return tuple(costs)
 
 
 def _gold_fee(resources: dict | None) -> int | None:
@@ -387,6 +402,7 @@ class PostBattleCatalogue:
                 eligibility=eligibility,
                 eligibility_note=note.strip(),
                 fee_gc=fee_gc,
+                fee_resources=_resource_costs((entry.get("hiring_fee") or {}).get("resources")),
                 roll_ge=roll_ge,
             ))
         return tuple(sorted(offers, key=lambda offer: (offer.eligibility != "eligible", offer.name.casefold())))

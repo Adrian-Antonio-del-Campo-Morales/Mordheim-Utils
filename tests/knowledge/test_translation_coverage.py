@@ -83,3 +83,68 @@ def test_no_spanish_rule_translation_is_truncated() -> None:
             continue
         _walk(doc, [kb_file.name], findings)
     assert not findings, "\n".join(findings)
+
+
+def _check_translation(effect: str, es: str, where: str, findings: list[str]) -> None:
+    """Shared completeness/truncation checks used by the reference walk."""
+    if not es:
+        findings.append(f"{where}: shared rule has no Spanish effect")
+        return
+    if es == effect:
+        findings.append(f"{where}: Spanish translation equals the English text")
+        return
+    if len(effect) > 60:
+        en_units = _sentence_units(effect)
+        unit_ratio = _sentence_units(es) / en_units if en_units else 1.0
+        char_ratio = len(es) / len(effect)
+        if char_ratio < 0.70 and (en_units < 4 or unit_ratio <= 0.85):
+            findings.append(
+                f"{where}: sentence coverage {_sentence_units(es)}/{en_units} "
+                f"({unit_ratio:.2f}), text {len(es)}/{len(effect)} chars "
+                f"({char_ratio:.2f}) — translation may stop before the end of the rule"
+            )
+
+
+def test_referenced_shared_rules_resolve_and_are_completely_translated() -> None:
+    """Every band ``rule_ref`` resolves to a fully translated shared rule.
+
+    Promoted band rules no longer carry their own ``effect`` — the prose
+    (and its translation) lives once in ``catalog/rules/special-rules.yaml``.
+    This guard follows the reference for **every** band (the pilot-band
+    parity test only pins one warband) so a dangling reference or an
+    incomplete translation of any referenced rule fails loudly.
+    """
+    registry_path = KB_ROOT / "catalog/rules/special-rules.yaml"
+    registry: dict[str, dict] = {}
+    if registry_path.exists():
+        doc = yaml.safe_load(registry_path.read_text(encoding="utf-8")) or {}
+        registry = {str(row["id"]): row for row in doc.get("rules") or [] if isinstance(row, dict)}
+    findings: list[str] = []
+    # Every shared rule must itself carry a complete translation, referenced
+    # or not (unreferenced entries can be promoted later).
+    for ref, record in sorted(registry.items()):
+        _check_translation(
+            str(record.get("effect") or ""),
+            str((record.get("effect_i18n") or {}).get("es") or ""),
+            f"registry/{ref}",
+            findings,
+        )
+    for kb_file in sorted((KB_ROOT / "bands").rglob("*/special-rules.yaml")):
+        doc = yaml.safe_load(kb_file.read_text(encoding="utf-8")) or {}
+        for rule in doc.get("rules") or []:
+            if not isinstance(rule, dict):
+                continue
+            ref = str(rule.get("rule_ref") or "")
+            if not ref:
+                continue
+            record = registry.get(ref)
+            if record is None:
+                findings.append(f"{kb_file.name} {rule.get('id')}: dangling rule_ref {ref}")
+                continue
+            _check_translation(
+                str(record.get("effect") or ""),
+                str((record.get("effect_i18n") or {}).get("es") or ""),
+                f"{kb_file.name} {rule.get('id')} -> {ref}",
+                findings,
+            )
+    assert not findings, "\n".join(findings)

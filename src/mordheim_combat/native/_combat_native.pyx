@@ -965,11 +965,15 @@ cdef int prepare_attack_c(FighterC* atk, FighterC* defender, SourceC* src,
             out.rolls[i] = 6 if not char_results[i] else 1
         else:
             if eff.v[<int>F_AUTOMATIC_HIT]:
-                roll = 6
+                # Automatic hits have no natural die result.  Keep roll=0,
+                # matching vectorized._prepare_weapon_attack; success is
+                # explicit so this value cannot trigger natural-six effects.
+                roll = 0
+                successful[i] = 1
             else:
                 roll = rng_draw_safe(rng, 1, 6)
+                successful[i] = 1 if roll >= out.hit_target[i] else 0
             out.rolls[i] = <int8_t>roll
-            successful[i] = 1 if roll >= out.hit_target[i] else 0
         defender_cond = def_state.condition[row]
         helpless = defender_cond == KNOCKED_DOWN or defender_cond == PARALYZED
         if helpless:
@@ -1114,6 +1118,7 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
     cdef int inj_count = 0
     cdef int pos = 0
     cdef int wb = 0, c2 = 0, run_index = 0
+    cdef int highest_crit = 0
     cdef int crit_bonus = (1 if src.web_of_steel else 0) + eff.v[<int>F_CRITICAL_INJURY_BONUS]
     cdef int n_contagious = 0
     cdef int n_spittle = 0
@@ -1472,14 +1477,12 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
                     if rng_draw_safe(rng, 1, 6) >= max(2, save_target[i]):
                         saved[i] = 1
                     s_def.luck_used[row] = 1
-                    break
         if defender.mark:
             for i in range(m):
                 row = wound_rows[i]
                 if save_target[i] <= 6 and not saved[i] and not s_def.mark_of_old_ones_used[row]:
                     saved[i] = 1
                     s_def.mark_of_old_ones_used[row] = 1
-                    break
         k = 0
         for i in range(m):
             if not saved[i]:
@@ -1677,7 +1680,30 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
                 src.head_crusher, defender.ignore_pain, defender.jump_up,
                 defender.mandrake,
             )
-        # Thick Skull / helmet stun recovery (full-array draws over injury rows).
+        # Collapse multiple injury instances for one duel row before helmet or
+        # Thick Skull reacts. NumPy aggregates the highest injury per row first;
+        # drawing a reaction per damage instance changes both outcomes and the
+        # subsequent RNG stream when one hit deals multiple wounds.
+        k = 0
+        i = 0
+        while i < inj_count:
+            row = injury_rows[i]
+            highest = injury[i]
+            highest_crit = injury_crit[i]
+            j = i + 1
+            while j < inj_count and injury_rows[j] == row:
+                if injury[j] > highest:
+                    highest = injury[j]
+                    highest_crit = injury_crit[j]
+                j += 1
+            injury_rows[k] = row
+            injury[k] = <int8_t>highest
+            injury_crit[k] = <int8_t>highest_crit
+            k += 1
+            i = j
+        inj_count = k
+        # Thick Skull / helmet stun recovery (one full-array draw per injured
+        # duel row, after highest-injury aggregation, matching NumPy).
         if defender.thick_skull:
             t = 2 if defender.helmet_save <= 4 else 3
             for i in range(inj_count):
@@ -2318,9 +2344,10 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
             src = &atk.unpredictable if (index == 0 and atk.has_unpredictable) else &atk.main
             if not first_round and atk.main_pistol:
                 # Match phase_equipment(): pistol is removed after first
-                # round, then the other hand is promoted or the fighter uses
-                # the compiled unarmed fallback.
-                src = &atk.off if atk.off_present else &atk.unarmed
+                # round, then the other hand is promoted only when it can
+                # provide attacks. Otherwise the fighter uses the compiled
+                # unarmed fallback.
+                src = &atk.off if (atk.off_present and atk.off_hand_attacks) else &atk.unarmed
             ok = prepare_attack_c(atk, defender, src, main_rows, n_main, charging, s_atk,
                                   s_def, rng, first_round, &tmp_prep)
             if ok < 0:
@@ -2407,9 +2434,9 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
                 # Mirror the modular oracle's offer-from-the-highest-downwards.
                 # A natural six closes this defender's parry capacity for the
                 # whole attack pool. It cannot be replaced by a lower hit.
-                if (any_c == 6 and not defender.parry_can_parry_six
-                        and defender.parry_capacity < 2):
-                    s_def.parry_remaining[row] = 0
+                if (any_c == 6 and not defender.parry_can_parry_six):
+                    # Natural six cannot occupy either exceptional-parry slot.
+                    # With two slots, lower hits remain eligible.
                     continue
                 # A hit that cannot be parried (a cannot-be-parried effect or
                 # strength >= 2x the defender's strength) does not own a slot.
@@ -2667,15 +2694,23 @@ cdef int attack_count_c(FighterC* f, StateC* s, const int8_t* charging,
         result += extra
         if f.vomit or f.sweep_main:
             result = 1
-        if f.main_pistol:
-            if first_round:
-                if not f.off_hand_attacks:
-                    result = 1
+        if f.main_pistol and first_round:
+            if f.off_pistol and f.off_hand_attacks:
+                # Both pistols fire during the opening round.
+                result = 2
+            elif not f.off_hand_attacks:
+                result = 1
+        elif f.main_pistol and not first_round:
+            # phase_equipment() removes a spent main pistol.  If no off-hand
+            # weapon exists, it promotes the compiled unarmed fallback; that
+            # fallback must receive its normal attack count rather than the
+            # pistol's zero-attacks-after-opening-round rule.
+            if f.off_hand_attacks:
+                result -= 1
+                if result < 0:
+                    result = 0
             else:
-                # phase_equipment() removes pistol after opening round. With
-                # no second weapon, fighter uses compiled unarmed fallback.
-                if not f.off_present:
-                    result = 1
+                result = 1
         elif f.off_pistol and not first_round and f.off_hand_attacks:
             result -= 1
             if result < 0:

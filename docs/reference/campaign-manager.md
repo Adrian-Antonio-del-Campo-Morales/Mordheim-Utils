@@ -94,9 +94,9 @@ until the roll resolves successfully.
 **KB-backed warbands and campaign files.** The warband picker lists every
 canonical warband (collections `mordheim`/`trollheim`, ruleset `mordheim`)
 with model range and starting gold; band selection derives a draft roster from
-the KB (required members, legal minimum starter, canonical profiles,
-roster limits). Header file actions save/load `.mordheim` files and export a
-Markdown summary.
+the KB (required members, legal minimum starter, canonical profiles,roster limits). Header file actions save/load `.mordheim` files and export a Markdown summary plus a **PDF warband sheet** of the moment selected in the timeline.
+
+**PDF warband export.** `Export PDF` renders the warband at the selected timeline moment (`persistence/warband_pdf.py`, `fpdf2`): campaign/warband identity, the state's aggregates, the full roster with statlines, equipment, skills and advances, the battles recorded up to that moment and the inventory ledger. Every committed state deep-copies its roster and inventory at commit time (`WarbandStateVM.roster`/`inventory`), so any past State #N exports exactly as it was; the draft exports the live roster. The campaign file format is v3 (old files are rejected, no migration), and display labels follow `MORDHEIM_LOCALE` through the shared i18n reader.
 
 **Hiring.** Offers merge static eligibility (fee, upkeep, availability) with
 the 18 dynamic rules. Variant-capable warbands pick their Mercenary variant
