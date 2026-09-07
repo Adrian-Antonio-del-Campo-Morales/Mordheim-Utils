@@ -5,7 +5,7 @@ specifications:
   category: stateful
   sources:
   - target: mechanic/weapon.rapier
-    digest: 9ccb559c10dcf82b8d009e766aeba8ce50522f2f53c6196eb012443751547015
+    digest: 3782f3ddd7494fb3c8bfcf614a5e51fb65fcaec7cf44fcf87f8bd648e1a7d738
   interpretation: Rapier uses user Strength, parries and grants the enemy +1 armour. After each failed
     wound Barrage may continue with a cumulative -1 hit penalty, capped at 6 to hit.
   cases:
@@ -134,7 +134,7 @@ specifications:
   category: stateful
   sources:
   - target: mechanic/weapon.cutlass
-    digest: aa1bf1977cc4a204b5c6c63bdb50e5ebc227fff8a0b740e3ccad19527f0e80a0
+    digest: ac8f4a4c431a71e5d18526250b40888d1aa08619eb876188fc46e05bf7650281
   interpretation: A successful parry with Cutlass cancels the hit and immediately triggers a normal riposte.
     A failed parry creates no riposte.
   cases:
@@ -209,9 +209,9 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/weapon.pistol
-    digest: 5371196d34dbe6cc6e05760390fea039379c7d9d3fb3aef29f091bec31e2c698
+    digest: 2f9480148c529e909e32787918c7f2c253d52c37fc52b3ff5fed897cff3c3a52
   - target: mechanic/weapon.duelling-pistol
-    digest: 6cfa1d8ea3f1ea1d5aea653f487ef20911388d4dfaf4d6f4e9c2c48327eb6e55
+    digest: 63ddb83aa35ca61396d6bf0fcf699e61099c7b3a94adf0d70feb9e405e26c51e
   interpretation: Pistols fire at Strength 4 with one additional penetration point (total armour modifier
     -2). Their shot is limited to the first combat turn; Duelling Pistols add +1 to hit.
   cases:
@@ -329,9 +329,9 @@ specifications:
   category: local
   sources:
   - target: mechanic/weapon.natural-attacks
-    digest: 22145edec3339fe79251fd4a929bb3dcec508255252b6c3cfb83b979d73f3acc
+    digest: 805eb197469e53fee9b3bd43614d516dd03f2f0fc4f6b61d06f293bd0cd02eea
   - target: mechanic/weapon.fist
-    digest: bed0c2762db14b5b488b0408c727d643869aa4438eb7e1079a2aa9b6bf1da6f2
+    digest: 209e655c49f78df4515142dce5ecf201ca1552aafc35cbbb34cd6ceec11ee6c3
   interpretation: Natural Attacks uses the profile's Strength and number of attacks without penalty or
     off hand. Fist limits to one attack, applies Strength -1 and improves the target's save by one, creating
     6+ if it had no armour.
@@ -466,13 +466,13 @@ specifications:
   category: stateful
   sources:
   - target: mechanic/weapon.brazier-iron
-    digest: 79671746b8425e887b7b5846a6df43f20a589966b1e032386008c616911dc03a
+    digest: 0451b44d66c480412e326291081ecf0b30c8f07b7fe0f84eaa1d54bc7ae53a3e
   - target: mechanic/weapon.brass-knuckles
-    digest: c999c97d9a97c9386c6cf86e34430f6ea1df1455dc89e073387aa13691167512
+    digest: 17ffc2e66fddecc8f1c3718e6255200ef47ce88c67d21026a00b875965193a82
   - target: mechanic/weapon.war-maul
-    digest: c4cc19df674cef75bea0670c3468056cf56478f4ed4dea30494466bb2e887f8d
+    digest: 012ed5b905cf7c1f2e5193068644617b50d12a6b39ac16e1921c8c3beb30d0b6
   - target: mechanic/weapon.double-bladed-sword
-    digest: 1d8b5163a192259b56b1a2c039031c8eef438ff4b5093267b13c1143af35e910
+    digest: ad22ae3e9502f909d2c3780b6000c484b294a3ec998ac4a20cce48443c0739b4
   interpretation: The Brazier's 5+ fire and Strength +1, the paired set of Brass Knuckles, the heavy unparriable
     package of the War Maul, and the repeated attack/parry of the Double-bladed Sword are verified separately.
   cases:

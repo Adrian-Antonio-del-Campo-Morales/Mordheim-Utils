@@ -7,7 +7,7 @@ inventory ledger counters (owned/equipped/stash) consistent.
 from __future__ import annotations
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_campaign.application.state import make_example_state
+from mordheim_campaign.application.state import EquipmentEntryVM, make_example_state
 
 
 def _controller() -> AppController:
@@ -96,3 +96,44 @@ def test_henchman_group_carries_equipment_as_a_group():
     ok, message = controller.return_equipped_item(item.id, group.id)
     assert ok, message
     assert item.stash == group.quantity
+
+
+def test_bought_dagger_stays_separate_from_free_starting_dagger():
+    controller = _controller()
+    campaign = controller.state.campaign
+    warrior = campaign.warriors[0]
+    dagger = next(row for row in campaign.inventory if row.id == "dagger")
+    warrior.equipment = [
+        EquipmentEntryVM("dagger", "Dagger", 1, "starting_grant", 0, True, False),
+    ]
+    dagger.stash = 1
+
+    ok, message = controller.assign_stash_item("dagger", warrior.id)
+
+    assert ok, message
+    entries = [row for row in warrior.equipment if row.item_id == "dagger"]
+    assert len(entries) == 2
+    assert any(row.acquisition == "starting_grant" and not row.transferable for row in entries)
+    assert any(row.acquisition == "stash_assignment" and row.transferable for row in entries)
+
+    ok, message = controller.return_equipped_item("dagger", warrior.id)
+    assert ok, message
+    assert len(warrior.equipment) == 1
+    assert warrior.equipment[0].acquisition == "starting_grant"
+    assert not warrior.equipment[0].transferable
+
+
+def test_stash_assignment_enforces_weapon_hand_limit():
+    controller = _controller()
+    campaign = controller.state.campaign
+    warrior = campaign.warriors[0]
+    dagger = next(row for row in campaign.inventory if row.id == "dagger")
+    warrior.equipment = [
+        EquipmentEntryVM("dagger", "Dagger", 2, "purchase", 2, False, True),
+    ]
+    dagger.stash = 1
+
+    ok, message = controller.assign_stash_item("dagger", warrior.id)
+
+    assert not ok and "hands" in message
+    assert dagger.stash == 1

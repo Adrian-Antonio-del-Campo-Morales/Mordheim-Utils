@@ -42,6 +42,21 @@ def test_henchman_group_thresholds_and_shared_advance_row():
     assert rows[0]["table"] == "henchman" and rows[0]["threshold"] == 8
 
 
+def test_multiple_advances_for_one_warrior_are_resolved_by_threshold():
+    engine, state, _ = _pending()
+    engine.add_xp("novices", 12)  # 4 -> 16: earns the 8 and 16 XP advances.
+
+    ok_second, _ = engine.resolve_pending_advance("novices", 5, threshold=16)
+    ok_first, _ = engine.resolve_pending_advance("novices", 8, threshold=8)
+
+    rows = [row for row in state.campaign.pending_post_battle.pending_advances if row["warrior_id"] == "novices"]
+    assert ok_first and ok_second
+    assert [(row["threshold"], row["committed"]) for row in rows] == [(8, True), (16, True)]
+    novices = next(row for row in state.campaign.warriors if row.id == "novices")
+    assert novices.stat_advances["A"] == 1
+    assert novices.stat_advances["S"] == 1
+
+
 def test_roll_11_offers_skill_and_spell_for_the_wizard_matriarch():
     engine, _state, _port = _pending()
     engine.sync_pending_advances()
@@ -87,6 +102,25 @@ def test_commit_spell_comes_from_the_wizards_lore():
     engine.add_xp("anna", 1)
     engine.resolve_pending_advance("anna", 12)
     ok, _ = engine.commit_pending_advance("anna", option_kind="generate_spell", spell_id=spells[0]["id"])
+    assert not ok
+
+
+def test_duplicate_spell_persists_difficulty_modifier():
+    engine, state, port = _pending()
+    engine.sync_pending_advances()
+    engine.resolve_pending_advance("matriarch", 11)
+    lore = port.wizard_lore("sigmarite-matriarch", state.campaign.band_id)
+    spells = port.lore_spells(lore)
+    known_id, known_name = spells[0]["id"], spells[0]["name"]
+    matriarch = next(w for w in state.campaign.warriors if w.id == "matriarch")
+    matriarch.skills.append(known_name)
+    ok, message = engine.commit_pending_advance("matriarch", option_kind="duplicate_spell", spell_id=known_id)
+    assert ok, message
+    assert matriarch.spell_difficulty_modifiers[known_id] == -1
+    assert matriarch.skills.count(known_name) == 1  # duplicate does not add a second entry
+    # Only a warrior who already knows the spell may commit the duplicate.
+    engine.sync_pending_advances()
+    ok, _ = engine.commit_pending_advance("matriarch", option_kind="duplicate_spell", spell_id=spells[1]["id"])
     assert not ok
 
 
@@ -159,9 +193,11 @@ def test_racial_maximum_blocks_further_increases():
     matriarch = next(w for w in state.campaign.warriors if w.id == "matriarch")
     matriarch.stats["T"] = 4  # human racial max for T; hero roll 9 subroll 4-6 = +1 T
     ok, message = engine.resolve_pending_advance("matriarch", 9, subroll=6)
-    assert not ok and "racial maximum" in message
+    # Blocked picks reopen the same advance for a reroll (structured reroll action).
+    assert ok and "racial maximum" in message and "again" in message
     row = engine.post.pending_advance_for("matriarch")
-    assert not row["committed"] and row["roll_total"] == 9  # stays pending for a reroll
+    assert not row["committed"] and row["roll_total"] is None  # reopened for a reroll
+    assert row["roll_history"] and "racial maximum" in row["roll_history"][0]
 
 def test_advancement_state_survives_save_load(tmp_path):
     engine, state, _ = _pending()
@@ -219,74 +255,77 @@ def test_promotion_splits_the_group_and_preserves_state():
     assert novices.quantity == 1 and novices.kind == "henchman"
     assert engine.projected_heroes() == heroes_before + 1
     assert engine.projected_models() == 8  # split, not added
-    # The pending advance continues on the promoted hero with 2 picks.
+    # Remaining group keeps its earned advance; Hero gets separate immediate advance.
+    group_row = engine.post.pending_advance_for("novices")
+    assert group_row["roll_total"] is None and group_row["reroll_exclude_promotion"]
     row = engine.post.pending_advance_for(hero.id)
     assert row is not None, engine.post.pending_advances
-    assert row["promotion_pending"] and engine.promotion_pick_budget(hero.id) == 2
+    assert row["promotion_setup_pending"] and engine.promotion_pick_budget(hero.id) == 2
 
 
-def test_promotion_requires_two_skills_and_completes():
+def test_promotion_requires_two_skill_lists_then_immediate_hero_advance():
     engine, state, _ = _pending()
     engine.add_xp("novices", 4)
     engine.resolve_pending_advance("novices", 10)
     engine.promote_henchman("novices", member_name="Novice Olaf")
     hero = next(w for w in state.campaign.warriors if w.kind == "hero" and "promoted" in w.id)
     tables = engine.promotion_hero_tables(hero.id)
-    assert "Combat" in tables
-    skill = next(s for s in (str(r.get("name")) for r in engine.port.skills())
-                 if engine.port.skill_table_label(engine.port.skill_by_name(s) or {}) == "Combat")
-    ok, message = engine.commit_promotion_skill(hero.id, skill)
-    assert ok and "1 promotion pick left" in message
-    # Re-resolving mid-promotion does not treat the row as done.
-    ok, message = engine.resolve_pending_advance(hero.id, 10)
-    assert ok and "second skill" in message
-    second = next(s for s in (str(r.get("name")) for r in engine.port.skills())
-                  if s != skill and engine.port.skill_table_label(engine.port.skill_by_name(s) or {}) == "Combat")
-    ok, message = engine.commit_promotion_skill(hero.id, second)
-    assert ok and "completes the promotion" in message
+    ok, message = engine.set_promotion_skill_tables(hero.id, list(tables[:2]))
+    assert ok, message
+    assert hero.skill_access == list(tables[:2]) and not hero.skills
+    ok, message = engine.resolve_pending_advance(hero.id, 8, subroll=2)
+    assert ok, message
     row = engine.post.pending_advance_for(hero.id)
-    assert row["committed"] and "Promoted" in row["applied_label"]
-    assert hero.kind == "hero" and len(hero.skills) >= 2
-    # Budget exhausted: no third pick.
-    ok, _ = engine.commit_promotion_skill(hero.id, skill)
-    assert not ok
+    assert row["committed"] and hero.kind == "hero"
 
 
-def test_promotion_skills_must_come_from_warband_hero_tables():
+def test_promotion_skill_lists_must_come_from_warband_hero_tables():
     engine, state, _ = _pending()
     engine.add_xp("novices", 4)
     engine.resolve_pending_advance("novices", 10)
     engine.promote_henchman("novices")
     hero = next(w for w in state.campaign.warriors if w.kind == "hero" and "promoted" in w.id)
-    tables = set(engine.promotion_hero_tables(hero.id))
-    outside = next(s for s in (str(r.get("name")) for r in engine.port.skills())
-                   if engine.port.skill_table_label(engine.port.skill_by_name(s) or {}) not in tables)
-    ok, message = engine.commit_promotion_skill(hero.id, outside)
-    assert not ok and "hero skill tables" in message
+    ok, message = engine.set_promotion_skill_tables(hero.id, ["Combat", "Not a table"])
+    assert not ok and "available" in message
 
 
-def test_promotion_bypasses_the_static_hero_limit_once():
+def test_promotion_at_hero_limit_reopens_advance_for_reroll():
     engine, state, _ = _pending()
     engine.campaign.hero_limit = 4  # example roster fields 4 heroes
     engine.add_xp("novices", 4)
     engine.resolve_pending_advance("novices", 10)  # pending promotion row grants the allowance
     ok, message = engine.promote_henchman("novices", member_name="Novice Olaf")
-    assert ok, message
-    # A second simultaneous promotion would exceed it again.
-    engine.add_xp("sisters", 2)  # 6 -> 8: first henchman rung
-    engine.resolve_pending_advance("sisters", 10)
-    ok, message = engine.promote_henchman("sisters")
-    assert not ok and "hero maximum" in message
+    assert ok and "reroll" in message
+    assert not any(w.name == "Novice Olaf" for w in state.campaign.warriors)
+    assert engine.post.pending_advance_for("novices")["roll_total"] is None
 
 
-def test_promotion_of_a_single_model_group_is_rejected():
+def test_promotion_of_a_single_model_group_replaces_group_with_hero():
     engine, state, _ = _pending()
     novices = next(w for w in state.campaign.warriors if w.id == "novices")
     novices.quantity = 1
+    for item in novices.equipment:
+        if item.per_model:
+            item.quantity = 1
     engine.add_xp("novices", 4)
     engine.resolve_pending_advance("novices", 10)
     ok, message = engine.promote_henchman("novices")
-    assert not ok and "cannot split" in message
+    assert ok, message
+    assert not any(w.id == "novices" for w in state.campaign.warriors)
+    assert any(w.kind == "hero" and "promoted" in w.id for w in state.campaign.warriors)
+
+
+def test_remaining_group_rerolls_10_to_12_after_promotion():
+    engine, state, _ = _pending()
+    engine.add_xp("novices", 4)
+    engine.resolve_pending_advance("novices", 10)
+    engine.promote_henchman("novices")
+
+    ok, message = engine.resolve_pending_advance("novices", 11)
+
+    assert ok and "Roll again" in message
+    row = engine.post.pending_advance_for("novices")
+    assert row["roll_total"] is None and row["roll_history"]
 
 
 def test_promotion_state_survives_save_load(tmp_path):
@@ -295,15 +334,15 @@ def test_promotion_state_survives_save_load(tmp_path):
     engine.resolve_pending_advance("novices", 10)
     engine.promote_henchman("novices", member_name="Novice Olaf")
     hero = next(w for w in state.campaign.warriors if w.kind == "hero" and "promoted" in w.id)
-    engine.commit_promotion_skill(hero.id, "Combat Master")
+    tables = engine.promotion_hero_tables(hero.id)
+    engine.set_promotion_skill_tables(hero.id, list(tables[:2]))
     from mordheim_campaign.persistence import load_campaign, save_campaign
 
     reloaded = load_campaign(save_campaign(tmp_path / "promo.mordheim", state))
     promoted = next(w for w in reloaded.campaign.warriors if w.kind == "hero" and "promoted" in w.id)
-    assert "Combat Master" in promoted.skills
     row = reloaded.campaign.pending_post_battle.pending_advance_for(promoted.id)
-    assert row["promotion_pending"] and row["promotion_skills"] == 1
-    # Finishing on the reloaded engine completes the promotion.
+    assert not row["promotion_setup_pending"] and row["promotion_tables"] == list(tables[:2])
+    # Immediate Hero advance remains resolvable after reload.
     from mordheim_campaign.application.post_battle_engine import PostBattleEngine
 
     engine2 = PostBattleEngine(
@@ -313,8 +352,8 @@ def test_promotion_state_survives_save_load(tmp_path):
     ) if False else PostBattleEngine(
         engine.port, reloaded.campaign, reloaded.campaign.pending_post_battle,
     )
-    ok, message = engine2.commit_promotion_skill(promoted.id, "Step Aside")
-    assert ok and "completes the promotion" in message
+    ok, message = engine2.resolve_pending_advance(promoted.id, 8, subroll=2)
+    assert ok, message
     assert reloaded.campaign.pending_post_battle.pending_advance_for(promoted.id)["committed"]
 
 

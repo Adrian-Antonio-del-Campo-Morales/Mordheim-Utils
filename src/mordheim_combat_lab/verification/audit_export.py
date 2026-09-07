@@ -160,16 +160,11 @@ def build_audit_rows(knowledge: Path | None = None, specs: Path | None = None) -
     catalogue_path = root / "catalog/mechanics/close-combat.yaml"
     catalogue = read_yaml(catalogue_path)
     for family in ("weapons", "armours", "defences", "materials", "preparations", "poisons", "skills"):
-        if family == "skills":
-            # Skills live in catalog/skills (no mechanics twin any more).
-            mechanic_rows = [
-                row for path in sorted((root / "catalog/skills").glob("*.yaml"))
-                for row in read_yaml(path).get("skills", [])
-            ]
-            source_file = "catalog/skills"
-        else:
-            mechanic_rows = catalogue.get(family, [])
-            source_file = "catalog/mechanics/close-combat.yaml"
+        # The `skills` family of the mechanics catalogue holds the executable
+        # close-combat mechanics; catalog/skills is the selectable-skill
+        # catalogue and is not the source of mechanic audit rows.
+        mechanic_rows = catalogue.get(family, [])
+        source_file = "catalog/mechanics/close-combat.yaml"
         for mechanic in mechanic_rows:
             reason = exclusions.get(mechanic["id"], "")
             scope = "NO" if mechanic["id"] in exclusions else "YES"
