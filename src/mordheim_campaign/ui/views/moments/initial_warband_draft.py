@@ -5,9 +5,10 @@ from tkinter import messagebox, ttk
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.application.state import STAT_KEYS, WarriorVM
-from mordheim_campaign.ui.dialogs import AddWarriorDialog
+from mordheim_campaign.ui.dialogs import AddWarriorDialog, HireSwordDialog
+from mordheim_campaign.ui.panels import InventoryWorkspace
 from mordheim_ui.theme import COLORS
-from mordheim_ui.widgets import BorderedFrame, ExperienceTrack, ScrollableFrame, SegmentedTabs, SummaryStrip
+from mordheim_ui.widgets import BorderedFrame, ExperienceTrack, ScrollableFrame, SegmentedTabs
 from mordheim_ui.i18n import tr
 
 
@@ -26,19 +27,10 @@ class InitialWarbandDraftMoment(tk.Frame):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(3, weight=1)
 
-        self._build_heading().grid(row=0, column=0, sticky="ew", pady=(0, 8))
-        SummaryStrip(
-            self,
-            [
-                (tr('Gold Crowns'), f"{self.campaign.draft_treasury} gc"),
-                (tr('Warband Rating'), str(self.campaign.draft_rating)),
-                (tr('Models'), f"{self.campaign.draft_model_count}/{self.campaign.maximum_models}"),
-                (tr('Heroes'), f"{self.campaign.draft_hero_count}/{self.campaign.hero_limit}"),
-            ],
-        ).grid(row=1, column=0, sticky="ew", pady=(0, 8))
-        self._build_roster_toolbar().grid(row=2, column=0, sticky="ew", pady=(0, 8))
+        self._build_summary_bar().grid(row=0, column=0, sticky="ew", pady=(0, 6))
+        self._build_heading().grid(row=1, column=0, sticky="ew", pady=(0, 6))
+        self._build_roster_toolbar().grid(row=2, column=0, sticky="ew", pady=(0, 6))
         self._build_roster().grid(row=3, column=0, sticky="nsew")
-        self._build_footer().grid(row=4, column=0, sticky="ew", pady=(8, 0))
 
     def _build_heading(self) -> tk.Frame:
         frame = tk.Frame(self, bg=COLORS["bg"])
@@ -46,9 +38,9 @@ class InitialWarbandDraftMoment(tk.Frame):
         text.pack(side="left", fill="x", expand=True)
         line = tk.Frame(text, bg=COLORS["bg"])
         line.pack(anchor="w")
-        tk.Label(line, text=tr('INITIAL WARBAND'), bg=COLORS["bg"], fg=COLORS["text"], font=("Georgia", 16)).pack(side="left")
-        tk.Label(line, text=tr('DRAFT'), bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Segoe UI Semibold", 7), padx=8, pady=4).pack(side="left", padx=(10, 0))
-        tk.Label(text, text=tr("Build the warband that will become the campaign's immutable starting state."), bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI", 9)).pack(anchor="w", pady=(3, 0))
+        tk.Label(line, text=tr('INITIAL WARBAND'), bg=COLORS["bg"], fg=COLORS["text"], font=("Georgia", 14)).pack(side="left")
+        tk.Label(line, text=tr('DRAFT'), bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Segoe UI Semibold", 7), padx=6, pady=2).pack(side="left", padx=(8, 0))
+        tk.Label(text, text=tr("Build the warband that will become the campaign's immutable starting state."), bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w", pady=(2, 0))
 
         identity = tk.Frame(frame, bg=COLORS["bg"])
         identity.pack(side="right", padx=(14, 0))
@@ -59,22 +51,31 @@ class InitialWarbandDraftMoment(tk.Frame):
     def _build_roster_toolbar(self) -> tk.Frame:
         frame = tk.Frame(self, bg=COLORS["bg"])
         tab = self.controller.state.draft_warrior_tab
-        hero_count = self.campaign.draft_hero_count
-        hench_count = self.campaign.draft_henchman_count
         SegmentedTabs(
             frame,
-            (("hero", tr('HEROES  {}/{}').format(hero_count, self.campaign.hero_limit)), ("henchman", tr('HENCHMEN  {}').format(hench_count))),
+            (
+                ("hero", tr('HEROES')),
+                ("henchman", tr('HENCHMEN')),
+                ("hireling", tr('HIRED SWORDS')),
+                ("inventory", tr('INVENTORY')),
+            ),
             tab,
             self.controller.set_draft_warrior_tab,
+            prominent=True,
         ).pack(side="left")
-        action = tr('+ ADD HERO') if tab == "hero" else tr('+ ADD HENCHMAN GROUP')
-        ttk.Button(frame, text=action, style="Accent.TButton", command=self._open_add_warrior).pack(side="right")
+        if tab == "hireling":
+            ttk.Button(frame, text=tr('+ HIRE SWORD'), style="Accent.TButton", command=lambda: HireSwordDialog(self, self.controller)).pack(side="right")
+        elif tab != "inventory":
+            action = tr('+ ADD HERO') if tab == "hero" else tr('+ ADD HENCHMAN GROUP')
+            ttk.Button(frame, text=action, style="Accent.TButton", command=self._open_add_warrior).pack(side="right")
         return frame
 
     def _open_add_warrior(self) -> None:
         AddWarriorDialog(self, self.controller, kind=self.controller.state.draft_warrior_tab)
 
     def _build_roster(self) -> tk.Frame:
+        if self.controller.state.draft_warrior_tab == "inventory":
+            return InventoryWorkspace(self, self.controller, show_summary=False)
         frame = tk.Frame(self, bg=COLORS["bg"])
         frame.columnconfigure(0, weight=1)
         frame.rowconfigure(0, weight=1)
@@ -88,57 +89,68 @@ class InitialWarbandDraftMoment(tk.Frame):
             body = empty.body
             body.configure(height=230)
             body.pack_propagate(False)
-            label = tr('No heroes yet') if kind == "hero" else tr('No henchman groups yet')
+            label = tr('No heroes yet') if kind == "hero" else (tr('No Hired Swords yet') if kind == "hireling" else tr('No henchman groups yet'))
             tk.Label(body, text=label, bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 13)).pack(pady=(58, 6))
             tk.Label(body, text=tr('Pick a canonical profile from the warband roster to begin.'), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9)).pack()
-            ttk.Button(
-                body,
-                text=(tr('+ ADD FIRST HERO') if kind == "hero" else tr('+ ADD FIRST GROUP')),
-                style="Accent.TButton",
-                command=self._open_add_warrior,
-            ).pack(pady=(12, 0))
+            if kind == "hireling":
+                ttk.Button(body, text=tr('+ HIRE SWORD'), style="Accent.TButton", command=lambda: HireSwordDialog(self, self.controller)).pack(pady=(12, 0))
+            else:
+                ttk.Button(
+                    body,
+                    text=(tr('+ ADD FIRST HERO') if kind == "hero" else tr('+ ADD FIRST GROUP')),
+                    style="Accent.TButton",
+                    command=self._open_add_warrior,
+                ).pack(pady=(12, 0))
             return frame
         for warrior in warriors:
-            DraftWarriorCard(scroll.inner, warrior, on_edit=self._placeholder, on_more=self._warrior_menu(warrior)).pack(fill="x", pady=(0, 8))
+            DraftWarriorCard(
+                scroll.inner,
+                warrior,
+                on_more=self._warrior_menu(warrior),
+            ).pack(fill="x", pady=(0, 8))
         return frame
 
-    def _build_footer(self) -> tk.Frame:
+    def _build_summary_bar(self) -> tk.Frame:
         outer = BorderedFrame(self, background=COLORS["panel_deep"], padding=1)
         body = outer.body
-        body.configure(padx=14, pady=11)
+        body.configure(padx=10, pady=7)
 
         metrics = tk.Frame(body, bg=COLORS["panel_deep"])
-        metrics.pack(side="left", fill="y")
+        metrics.pack(fill="x")
         values = (
-            (tr('MODELS'), f"{self.campaign.draft_model_count}/{self.campaign.maximum_models}"),
+            (tr('TREASURY'), f"{self.campaign.draft_treasury} gc"),
             (tr('RECRUITMENT'), f"{self.campaign.draft_recruitment_cost} gc"),
             (tr('EQUIPMENT'), f"{self.campaign.draft_equipment_cost} gc"),
-            (tr('TREASURY'), f"{self.campaign.draft_treasury} gc"),
+            (tr('RATING'), str(self.campaign.draft_rating)),
+            (tr('MODELS'), f"{self.campaign.draft_model_count}/{self.campaign.maximum_models}"),
+            (tr('HEROES'), f"{self.campaign.draft_hero_count}/{self.campaign.hero_limit}"),
         )
         for index, (label, value) in enumerate(values):
             if index:
-                tk.Frame(metrics, bg=COLORS["border_soft"], width=1).pack(side="left", fill="y", padx=12)
+                tk.Frame(metrics, bg=COLORS["border_soft"], width=1).pack(side="left", fill="y", padx=8)
             cell = tk.Frame(metrics, bg=COLORS["panel_deep"])
             cell.pack(side="left")
-            tk.Label(cell, text=value, bg=COLORS["panel_deep"], fg=COLORS["text"], font=("Georgia", 11)).pack(anchor="w")
-            tk.Label(cell, text=label, bg=COLORS["panel_deep"], fg=COLORS["muted_dark"], font=("Segoe UI Semibold", 7)).pack(anchor="w", pady=(2, 0))
+            tk.Label(cell, text=value, bg=COLORS["panel_deep"], fg=COLORS["text"], font=("Georgia", 10)).pack(anchor="w")
+            tk.Label(cell, text=label, bg=COLORS["panel_deep"], fg=COLORS["muted_dark"], font=("Segoe UI Semibold", 6)).pack(anchor="w", pady=(1, 0))
 
         actions = tk.Frame(body, bg=COLORS["panel_deep"])
-        actions.pack(side="right", fill="y")
+        actions.pack(fill="x", pady=(6, 0))
         checks = tk.Frame(actions, bg=COLORS["panel_deep"])
-        checks.pack(side="left", padx=(0, 18))
+        checks.pack(side="left")
         conditions = (
             (self.campaign.draft_hero_count >= 1, tr('Leader / hero present')),
             (self.campaign.draft_model_count >= self.campaign.minimum_models, tr('Minimum {} models reached').format(self.campaign.minimum_models)),
             (self.campaign.draft_treasury >= 0, tr('Within starting treasury')),
         )
-        for ok, text in conditions:
-            tk.Label(checks, text=("✓ " if ok else "! ") + text, bg=COLORS["panel_deep"], fg=COLORS["success"] if ok else COLORS["danger"], font=("Segoe UI Semibold", 8), anchor="w").pack(anchor="w", pady=1)
+        for index, (ok, text) in enumerate(conditions):
+            tk.Label(
+                checks,
+                text=("✓ " if ok else "! ") + text,
+                bg=COLORS["panel_deep"],
+                fg=COLORS["success"] if ok else COLORS["danger"],
+                font=("Segoe UI Semibold", 7),
+            ).pack(side="left", padx=(0 if index == 0 else 12, 0))
 
-        start = ttk.Button(actions, text=tr('START CAMPAIGN'), style="Accent.TButton", command=self.controller.commit_initial_warband)
-        start.pack(side="left", pady=2)
-        if not self.campaign.draft_is_legal:
-            start.state(["disabled"])
         return outer
 
     def _warrior_menu(self, warrior: WarriorVM):
@@ -175,12 +187,8 @@ class InitialWarbandDraftMoment(tk.Frame):
         if not ok:
             messagebox.showerror(tr('Cannot remove warrior'), message, parent=self)
 
-    def _placeholder(self) -> None:
-        messagebox.showinfo(tr('Prototype'), tr('Per-warrior equipment and skill editing arrives with the campaign rules engine.'), parent=self)
-
-
 class DraftWarriorCard(tk.Frame):
-    def __init__(self, master: tk.Misc, warrior: WarriorVM, *, on_edit, on_more, **kwargs) -> None:
+    def __init__(self, master: tk.Misc, warrior: WarriorVM, *, on_more, **kwargs) -> None:
         super().__init__(master, bg=COLORS["bg"], **kwargs)
         self.warrior = warrior
         border = BorderedFrame(self, background=COLORS["panel_alt"], padding=1)
@@ -199,10 +207,9 @@ class DraftWarriorCard(tk.Frame):
 
         tools = tk.Frame(header, bg=COLORS["panel_alt"])
         tools.pack(side="right")
-        total = warrior.cost * warrior.quantity + warrior.equipment_cost * warrior.quantity
+        total = warrior.cost * warrior.quantity + sum(item.total_cost for item in warrior.equipment)
         tk.Label(tools, text=f"{total} gc", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Georgia", 10)).pack(side="left", padx=(0, 12))
-        ttk.Button(tools, text=tr('EDIT'), style="Mini.TButton", command=on_edit).pack(side="left")
-        ttk.Button(tools, text="…", style="Mini.TButton", command=on_more, width=3).pack(side="left", padx=(5, 0))
+        ttk.Button(tools, text="…", style="Mini.TButton", command=on_more, width=3).pack(side="left")
 
         tk.Frame(card, bg=COLORS["border_soft"], height=1).pack(fill="x")
         body = tk.Frame(card, bg=COLORS["panel"], height=174)
@@ -251,7 +258,7 @@ class DraftWarriorCard(tk.Frame):
 
     def _equipment(self, master: tk.Misc) -> tk.Frame:
         outer, content = self._section(master, tr('EQUIPMENT'))
-        lines = self.warrior.equipment or ["None"]
+        lines = [f"{item.name}{f' ×{item.quantity}' if item.quantity > 1 else ''}" for item in self.warrior.equipment] or ["None"]
         for line in lines[:5]:
             tk.Label(content, text=line, bg=COLORS["panel"], fg=COLORS["muted"] if line == "None" else COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(fill="x", pady=2)
         return outer

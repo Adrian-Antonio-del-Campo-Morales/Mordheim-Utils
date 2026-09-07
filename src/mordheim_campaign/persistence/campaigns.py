@@ -21,6 +21,7 @@ from mordheim_campaign.application.state import (
     AppState,
     BattleVM,
     CampaignVM,
+    EquipmentEntryVM,
     InventoryItemVM,
     PostBattleVM,
     WarbandStateVM,
@@ -173,7 +174,7 @@ def _warrior_from_payload(row: dict) -> WarriorVM:
         profile_name=str(row.get("profile_name") or ""),
         kind=str(row.get("kind") or "henchman"),
         stats={str(key): int(value) for key, value in dict(row.get("stats") or {}).items()},
-        equipment=[str(item) for item in row.get("equipment") or ()],
+        equipment=[EquipmentEntryVM(**item) for item in row.get("equipment") or ()],
         skills=[str(item) for item in row.get("skills") or ()],
         experience=int(row.get("experience") or 0),
         previous_experience=int(row["previous_experience"]) if row.get("previous_experience") is not None else None,
@@ -181,7 +182,6 @@ def _warrior_from_payload(row: dict) -> WarriorVM:
         condition=row.get("condition"),
         condition_detail=row.get("condition_detail"),
         cost=int(row.get("cost") or 0),
-        equipment_cost=int(row.get("equipment_cost") or 0),
         stat_modifiers={str(key): int(value) for key, value in dict(row.get("stat_modifiers") or {}).items()},
         skill_access=[str(item) for item in row.get("skill_access") or ()],
         stat_advances={str(key): int(value) for key, value in dict(row.get("stat_advances") or {}).items()},
@@ -280,7 +280,7 @@ def export_campaign_summary(path, state: AppState) -> Path:
                      f"{' ×' + str(warrior.quantity) if warrior.quantity > 1 else ''}) · {warrior.cost} gc · EXP {warrior.experience}")
         lines.append(f"  - {stats}")
         if warrior.equipment:
-            lines.append("  - Equipment: " + ", ".join(warrior.equipment))
+            lines.append("  - Equipment: " + ", ".join(f"{item.name} ×{item.quantity}" for item in warrior.equipment))
         if warrior.skills:
             lines.append("  - Skills / rules: " + ", ".join(warrior.skills))
     if campaign.states:

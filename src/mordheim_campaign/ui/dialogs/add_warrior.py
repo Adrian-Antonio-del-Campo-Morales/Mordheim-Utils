@@ -45,6 +45,7 @@ class AddWarriorDialog(tk.Toplevel):
         self._build_detail(body)
         if kind == "henchman":
             self._build_quantity(body)
+        self._update_detail()
         self._build_actions(body)
 
         self.bind("<Return>", lambda _e: self._add())
@@ -66,6 +67,7 @@ class AddWarriorDialog(tk.Toplevel):
             bd=0,
             font=("Segoe UI", 9),
             activestyle="none",
+            exportselection=False,
         )
         self.listbox.pack(fill="x")
         for profile in self.profiles:

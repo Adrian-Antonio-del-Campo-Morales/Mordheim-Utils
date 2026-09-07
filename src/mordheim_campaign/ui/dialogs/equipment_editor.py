@@ -66,10 +66,11 @@ class EquipmentEditorDialog(tk.Toplevel):
         actions.pack(fill="x", pady=(12, 0))
         self._status = tk.StringVar(value="")
         tk.Label(actions, textvariable=self._status, bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8), wraplength=380, justify="left").pack(side="left")
-        ttk.Button(actions, text=tr('Done'), command=self.destroy).pack(side="right")
+        ttk.Button(actions, text=tr('Done'), command=self._close).pack(side="right")
 
         self._refresh()
-        self.bind("<Escape>", lambda _e: self.destroy())
+        self.protocol("WM_DELETE_WINDOW", self._close)
+        self.bind("<Escape>", lambda _e: self._close())
         self.after_idle(self._center)
 
     # ----------------------------------------------------------------- blocks
@@ -84,12 +85,16 @@ class EquipmentEditorDialog(tk.Toplevel):
         label = warrior.name + (f"  ·  ×{warrior.quantity}" if warrior.quantity > 1 else "")
         tk.Label(head, text=label, bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI Semibold", 9)).pack(side="left")
         if warrior.equipment:
-            for item_id, name in self._equipped_items(warrior):
+            for item_id, name, quantity, transferable in self._equipped_items(warrior):
                 row = tk.Frame(block, bg=COLORS["panel_alt"])
                 row.pack(fill="x", pady=1)
-                tk.Label(row, text=f"• {name}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(side="left", fill="x", expand=True)
-                ttk.Button(row, text="RETURN", style="Mini.TButton", width=8,
-                           command=lambda i=item_id, w=warrior: self._move(self.controller.return_equipped_item, i, w.id)).pack(side="right")
+                suffix = f" ×{quantity}" if quantity > 1 else ""
+                tk.Label(row, text=f"• {name}{suffix}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(side="left", fill="x", expand=True)
+                action = ttk.Button(row, text="RETURN" if transferable else "LOCKED", style="Mini.TButton", width=8,
+                                    command=lambda i=item_id, w=warrior: self._move(self.controller.return_equipped_item, i, w.id))
+                action.pack(side="right")
+                if not transferable:
+                    action.state(["disabled"])
         else:
             tk.Label(block, text=tr('No equipment'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
 
@@ -107,7 +112,17 @@ class EquipmentEditorDialog(tk.Toplevel):
 
     def _assign_pick(self, item_id: str) -> None:
         """Pick the warrior receiving the stash item."""
-        warriors = self.controller.state.campaign.warriors
+        campaign = self.controller.state.campaign
+        stock = next((item.stash for item in campaign.inventory if item.id == item_id), 0)
+        warriors = [warrior for warrior in campaign.warriors if warrior.kind != "henchman" or warrior.quantity <= stock]
+        if campaign.is_draft:
+            warriors = [
+                warrior for warrior in warriors
+                if item_id in {offer.item_id for offer in self.controller.draft_equipment_offers(warrior.id)}
+            ]
+        if not warriors:
+            self._status.set(tr('No eligible group or warrior has enough copies available.'))
+            return
         dialog = tk.Toplevel(self)
         dialog.title(tr('Assign to…'))
         dialog.transient(self)
@@ -136,18 +151,10 @@ class EquipmentEditorDialog(tk.Toplevel):
 
     # --------------------------------------------------------------- plumbing
 
-    def _equipped_items(self, warrior) -> list[tuple[str, str]]:
-        """(item_id, display name) pairs carried by the warrior."""
-        pairs: list[tuple[str, str]] = []
-        for name in warrior.equipment:
-            row = next((item for item in self.controller.state.campaign.inventory if item.name == name), None)
-            pairs.append((row.id if row else f"name:{name}", name))
-        return pairs
+    def _equipped_items(self, warrior) -> list[tuple[str, str, int, bool]]:
+        return [(item.item_id, item.name, item.quantity, item.transferable) for item in warrior.equipment]
 
     def _move(self, action, item_id: str, warrior_id: str) -> None:
-        if item_id.startswith("name:"):
-            self._status.set(tr('This item is not in the inventory ledger; only ledger items can move.'))
-            return
         ok, message = action(item_id, warrior_id)
         self._status.set(("✓ " if ok else "⚠ ") + message)
         self._refresh()
@@ -160,6 +167,10 @@ class EquipmentEditorDialog(tk.Toplevel):
         for warrior in self.controller.state.campaign.warriors:
             self._warrior_block(self._scroll.inner, warrior, highlighted=False)
         self._stash_rows(self._stash_box)
+
+    def _close(self) -> None:
+        self.destroy()
+        self.controller.notify()
 
     def _center(self) -> None:
         self.update_idletasks()
