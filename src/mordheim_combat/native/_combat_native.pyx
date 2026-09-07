@@ -266,6 +266,7 @@ cdef struct FighterC:
     bint thick_skull
     bint injury_reroll_out
     bint hard_to_kill
+    bint true_grit
     bint concussion_immune
     bint fragile
     bint survivor
@@ -346,6 +347,7 @@ cdef struct FighterC:
     bint parry_parry_reroll
     # attack sources (weapon + merged effect per attack type)
     SourceC main
+    SourceC unarmed
     SourceC unpredictable
     SourceC off
     bint has_unpredictable
@@ -518,6 +520,7 @@ cdef void fill_fighter(object d, FighterC* out, object sources, object reactions
     out.thick_skull = _flag(d, "thick_skull")
     out.injury_reroll_out = _flag(d, "injury_reroll_out")
     out.hard_to_kill = _flag(d, "hard_to_kill")
+    out.true_grit = _flag(d, "true_grit")
     out.concussion_immune = _flag(d, "concussion_immune")
     out.fragile = _flag(d, "fragile")
     out.survivor = _flag(d, "survivor")
@@ -592,6 +595,7 @@ cdef void fill_fighter(object d, FighterC* out, object sources, object reactions
     out.parry_dwarf_axes = _flag(d, "parry_dwarf_axes")
     out.parry_parry_reroll = _flag(d, "parry_parry_reroll")
     fill_source(sources["main"], &out.main)
+    fill_source(sources["unarmed"], &out.unarmed)
     if sources.get("unpredictable") is not None:
         fill_source(sources["unpredictable"], &out.unpredictable)
         out.has_unpredictable = 1
@@ -709,9 +713,9 @@ cdef inline int _clip(int value, int low, int high) noexcept:
 
 cdef int injury_condition_c(
     int total, int out_threshold, int injury_profile, bint hard_to_kill,
-    bint concussion, bint concussion_immune, bint fragile, bint poisonous,
-    bint survivor, bint head_crusher, bint ignore_pain, bint jump_up,
-    bint mandrake,
+    bint true_grit, bint concussion, bint concussion_immune,
+    bint fragile, bint poisonous, bint survivor, bint head_crusher,
+    bint ignore_pain, bint jump_up, bint mandrake,
 ) noexcept:
     cdef int result
     if total >= out_threshold:
@@ -724,6 +728,13 @@ cdef int injury_condition_c(
         if total >= 6:
             result = OUT
         elif total >= 3:
+            result = STUNNED
+        else:
+            result = KNOCKED_DOWN
+    if true_grit:
+        if total >= 6:
+            result = OUT
+        elif total >= 4:
             result = STUNNED
         else:
             result = KNOCKED_DOWN
@@ -863,11 +874,9 @@ cdef int prepare_attack_c(FighterC* atk, FighterC* defender, SourceC* src,
     cdef int i, row, count = 0, strength, aws, target, roll, hit_n = 0
     cdef int defender_cond, modifier, armour_strength
     cdef bint charging_row, helpless, sweep, any_failed, use_luck
-    # Kill STUNNED defenders in the active set and drop OUT rows.
-    for i in range(active_n):
-        row = active_in[i]
-        if def_state.condition[row] == STUNNED:
-            def_state.condition[row] = OUT
+    # Do not finish STUNNED defenders here. The phase-level snapshot above
+    # handles only defenders stunned before this pool began; a new STUNNED
+    # result must remain available to later attacks in this same pool.
     for i in range(active_n):
         row = active_in[i]
         if def_state.condition[row] != OUT:
@@ -1650,7 +1659,7 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
             injury_rolls[i] = <int8_t>t
         # Injury reroll on high rolls (Hard to Kill / Tough as Steel).
         if defender.injury_reroll_out and not src.fire:
-            t = 6 if defender.hard_to_kill else defender.out_of_action_threshold
+            t = 6 if defender.hard_to_kill or defender.true_grit else defender.out_of_action_threshold
             for i in range(inj_count):
                 if injury_rolls[i] >= t:
                     injury_rolls[i] = <int8_t>rng_draw_safe(rng, 1, 6)
@@ -1661,10 +1670,12 @@ cdef int resolve_weapon_c(DuelC* d, int atk_side, SourceC* src,
             return rc
         for i in range(inj_count):
             injury[i] = <int8_t>injury_condition_c(
-                injury_rolls[i], defender.out_of_action_threshold, defender.injury_profile,
-                defender.hard_to_kill, eff.v[<int>F_CONCUSSION] != 0, defender.concussion_immune,
-                defender.fragile, src.poisonous_injury, defender.survivor, src.head_crusher,
-                defender.ignore_pain, defender.jump_up, defender.mandrake,
+                injury_rolls[i], defender.out_of_action_threshold,
+                defender.injury_profile, defender.hard_to_kill, defender.true_grit,
+                eff.v[<int>F_CONCUSSION] != 0, defender.concussion_immune,
+                defender.fragile, src.poisonous_injury, defender.survivor,
+                src.head_crusher, defender.ignore_pain, defender.jump_up,
+                defender.mandrake,
             )
         # Thick Skull / helmet stun recovery (full-array draws over injury rows).
         if defender.thick_skull:
@@ -2124,7 +2135,10 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
             return rc
         memcpy(phase_cond, s_def.condition, n)
         for i in range(rows_n):
-            remaining[i] = rows[i]
+            row = rows[i]
+            if phase_cond[row] == STUNNED:
+                s_def.condition[row] = OUT
+            remaining[i] = row
         # Bull-charge reaction (first round only).
         if first_round:
             for i in range(remaining_n):
@@ -2283,7 +2297,8 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
                     m += 1
             if m == 0:
                 continue
-            offhand = atk.off_hand_attacks and atk.off_present != 0
+            offhand = (atk.off_hand_attacks and atk.off_present != 0
+                       and (first_round or not atk.main_pistol))
             n_main = 0
             n_off = 0
             for i in range(m):
@@ -2301,6 +2316,11 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
                     main_rows[n_main] = row
                     n_main += 1
             src = &atk.unpredictable if (index == 0 and atk.has_unpredictable) else &atk.main
+            if not first_round and atk.main_pistol:
+                # Match phase_equipment(): pistol is removed after first
+                # round, then the other hand is promoted or the fighter uses
+                # the compiled unarmed fallback.
+                src = &atk.off if atk.off_present else &atk.unarmed
             ok = prepare_attack_c(atk, defender, src, main_rows, n_main, charging, s_atk,
                                   s_def, rng, first_round, &tmp_prep)
             if ok < 0:
@@ -2315,6 +2335,10 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
                 tmp_ptr[0] = tmp_prep
                 prepared[prepared_count] = tmp_ptr
                 prepared_count += 1
+            if not first_round and atk.main_pistol:
+                # Promoted off-hand weapon is already represented by the main
+                # source above; it must not be prepared a second time.
+                n_off = 0
             if offhand:
                 ok = prepare_attack_c(atk, defender, &atk.off, off_rows, n_off, charging,
                                       s_atk, s_def, rng, first_round, &tmp_prep)
@@ -2647,13 +2671,12 @@ cdef int attack_count_c(FighterC* f, StateC* s, const int8_t* charging,
             if first_round:
                 if not f.off_hand_attacks:
                     result = 1
-            elif f.off_hand_attacks:
-                result -= 1
-                if result < 0:
-                    result = 0
             else:
-                result = 0
-        elif f.off_pistol and not first_round:
+                # phase_equipment() removes pistol after opening round. With
+                # no second weapon, fighter uses compiled unarmed fallback.
+                if not f.off_present:
+                    result = 1
+        elif f.off_pistol and not first_round and f.off_hand_attacks:
             result -= 1
             if result < 0:
                 result = 0
@@ -3173,22 +3196,28 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
             if d.second.spawn:
                 for i in range(count):
                     s2.attacks[i] = <int16_t>(rng_draw_safe(&rng, 1, 6) + 1)
-            # Recovery: STUNNED -> KNOCKED_DOWN, KNOCKED_DOWN -> STANDING.
+            # Recovery is player-turn scoped. A fighter recovers only during
+            # that fighter's own turn; the opponent remains knocked down or
+            # stunned until its turn, matching NumPy and modular.rounds.
             for i in range(count):
-                stood1[i] = 1 if s1.condition[i] == KNOCKED_DOWN else 0
-                stood2[i] = 1 if s2.condition[i] == KNOCKED_DOWN else 0
-                if s1.condition[i] == STUNNED:
-                    s1.condition[i] = KNOCKED_DOWN
-                elif s1.condition[i] == KNOCKED_DOWN:
-                    s1.condition[i] = STANDING
-                if s2.condition[i] == STUNNED:
-                    s2.condition[i] = KNOCKED_DOWN
-                elif s2.condition[i] == KNOCKED_DOWN:
-                    s2.condition[i] = STANDING
+                player_turn1[i] = first_charges[i] if (round_index % 2 == 0) else (1 - first_charges[i])
+                player_turn2[i] = 1 - player_turn1[i]
+                stood1[i] = 1 if (s1.condition[i] == KNOCKED_DOWN and player_turn1[i]) else 0
+                stood2[i] = 1 if (s2.condition[i] == KNOCKED_DOWN and player_turn2[i]) else 0
+                if player_turn1[i]:
+                    if s1.condition[i] == STUNNED:
+                        s1.condition[i] = KNOCKED_DOWN
+                    elif s1.condition[i] == KNOCKED_DOWN:
+                        s1.condition[i] = STANDING
+                if player_turn2[i]:
+                    if s2.condition[i] == STUNNED:
+                        s2.condition[i] = KNOCKED_DOWN
+                    elif s2.condition[i] == KNOCKED_DOWN:
+                        s2.condition[i] = STANDING
             # Paralyzed recovery (Toughness tests for both fighters).
             n_paralyze = 0
             for i in range(count):
-                if s1.condition[i] == PARALYZED:
+                if s1.condition[i] == PARALYZED and player_turn1[i]:
                     paralyze_rows[n_paralyze] = i
                     paralyze_targets[n_paralyze] = s1.toughness[i]
                     n_paralyze += 1
@@ -3200,7 +3229,7 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
                         s1.condition[paralyze_rows[i]] = STANDING
             n_paralyze = 0
             for i in range(count):
-                if s2.condition[i] == PARALYZED:
+                if s2.condition[i] == PARALYZED and player_turn2[i]:
                     paralyze_rows[n_paralyze] = i
                     paralyze_targets[n_paralyze] = s2.toughness[i]
                     n_paralyze += 1
@@ -3242,14 +3271,6 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
                                     &s1, &s2, &rng) < 0:
                     rc = -1
                     return rc
-            if rescue_force_of_will_c(&d.first, &s1, active_rows, n_active,
-                                      &rng) < 0:
-                rc = -1
-                return rc
-            if rescue_force_of_will_c(&d.second, &s2, active_rows, n_active,
-                                      &rng) < 0:
-                rc = -1
-                return rc
             if d.second.entangle:
                 n_rows = 0
                 for i in range(count):
@@ -3270,6 +3291,15 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
                                       &rng) < 0:
                     rc = -1
                     return rc
+            # Force of Will rescue follows both entanglement reactions.
+            if rescue_force_of_will_c(&d.first, &s1, active_rows, n_active,
+                                      &rng) < 0:
+                rc = -1
+                return rc
+            if rescue_force_of_will_c(&d.second, &s2, active_rows, n_active,
+                                      &rng) < 0:
+                rc = -1
+                return rc
             # Attack counts (charged = the opponent's charging mask).
             if attack_count_c(&d.first, &s1, charge1, player_turn1, first_round, attacks1,
                               count) < 0:

@@ -30,7 +30,7 @@ class SequenceRng:
 
 def test_no_scope_yes_rules_remain_without_an_implementation_family():
     implemented = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
-    assert implemented["summary"] == {"families": 66, "rules": 101, "kinds": {"compiler": 41, "mechanic": 20, "trait": 5}}
+    assert implemented["counts"] == {"families": 66, "rules": 101, "kinds": {"compiler": 41, "mechanic": 20, "trait": 5}}
 
 
 def test_mandatory_mutations_and_blessings_are_enforced():

@@ -7,13 +7,28 @@ from mordheim_campaign.application.knowledge_port import KnowledgePort, WarbandP
 
 
 @dataclass(slots=True)
+class EquipmentEntryVM:
+    item_id: str
+    name: str
+    quantity: int = 1
+    acquisition: str = "purchase"
+    unit_cost: int = 0
+    per_model: bool = False
+    transferable: bool = True
+
+    @property
+    def total_cost(self) -> int:
+        return self.quantity * self.unit_cost
+
+
+@dataclass(slots=True)
 class WarriorVM:
     id: str
     name: str
     profile_name: str
     kind: str
     stats: dict[str, int]
-    equipment: list[str]
+    equipment: list[EquipmentEntryVM]
     skills: list[str]
     experience: int
     previous_experience: int | None = None
@@ -21,7 +36,6 @@ class WarriorVM:
     condition: str | None = None
     condition_detail: str | None = None
     cost: int = 0
-    equipment_cost: int = 0
     stat_modifiers: dict[str, int] = field(default_factory=dict)
     skill_access: list[str] = field(default_factory=list)
     #: Characteristic points gained from post-battle advance rolls, by display
@@ -201,7 +215,7 @@ class CampaignVM:
 
     @property
     def draft_equipment_cost(self) -> int:
-        return sum(w.equipment_cost * w.quantity for w in self.warriors)
+        return sum(item.owned * item.value for item in self.inventory)
 
     @property
     def draft_treasury(self) -> int:
@@ -294,7 +308,7 @@ def _starter_warriors(port: KnowledgePort, option) -> list[WarriorVM]:
     def add(profile: WarbandProfile, quantity: int, *, row_id: str) -> None:
         if quantity <= 0:
             return
-        rows.append(warrior_vm(profile, quantity=quantity, row_id=row_id))
+        rows.append(warrior_vm(port, profile, quantity=quantity, row_id=row_id))
 
     required = [profile for profile in profiles.values() if profile.required]
     occurrences: dict[str, int] = {}
@@ -365,8 +379,8 @@ def make_example_state(port: KnowledgePort) -> AppState:
              modifiers: dict[str, int] | None = None, row_id: str | None = None) -> WarriorVM:
         profile = port.profile(option.collection, option.band_id, profile_id)
         return warrior_vm(
-            profile, row_id=row_id or f"{profile_id}:1", name=name, experience=experience,
-            previous_experience=previous, equipment=[port.item_name(item) or item for item in equipment or []],
+            port, profile, row_id=row_id or f"{profile_id}:1", name=name, experience=experience,
+            previous_experience=previous, equipment=equipment or [],
             extra_skills=extra_skills or [], condition=condition, condition_detail=condition_detail,
             stat_modifiers=modifiers or {},
         )
@@ -374,8 +388,8 @@ def make_example_state(port: KnowledgePort) -> AppState:
     def group(profile_id: str, *, quantity: int, experience: int, equipment: list[str], row_id: str) -> WarriorVM:
         profile = port.profile(option.collection, option.band_id, profile_id)
         return warrior_vm(
-            profile, row_id=row_id, quantity=quantity, experience=experience,
-            equipment=[port.item_name(item) or item for item in equipment],
+            port, profile, row_id=row_id, quantity=quantity, experience=experience,
+            equipment=equipment,
         )
 
     warriors = [
@@ -454,6 +468,7 @@ def make_example_state(port: KnowledgePort) -> AppState:
 
 
 def warrior_vm(
+    port: KnowledgePort,
     profile: WarbandProfile,
     *,
     row_id: str | None = None,
@@ -469,16 +484,31 @@ def warrior_vm(
 ) -> WarriorVM:
     """Converts a canonical profile into the warrior view-model used by the GUI.
 
-    ``equipment`` already receives canonical catalogue names (not ids); ``skills``
-    combines the profile's inherent rules with skills gained in play.
+    ``equipment`` receives canonical item ids. ``skills`` combines profile
+    rules with skills gained in play.
     """
+    item_ids = list(profile.fixed_equipment if equipment is None else equipment)
+    entries = [
+        EquipmentEntryVM(
+            item_id=item_id,
+            name=port.item_name(item_id) or item_id,
+            quantity=quantity,
+            acquisition="fixed",
+            per_model=True,
+        )
+        for item_id in item_ids
+    ]
+    if equipment is None:
+        free = next((offer for offer in port.items_for_profile(profile) if offer.first_free), None)
+        if free is not None and all(item.item_id != free.item_id for item in entries):
+            entries.append(EquipmentEntryVM(free.item_id, free.name, quantity, "starting_grant", 0, True, False))
     return WarriorVM(
         id=row_id or f"{profile.profile_id}#1",
         name=name or profile.name,
         profile_name=profile.name,
         kind=profile.kind,
         stats={**profile.characteristics, **(stat_modifiers or {})},
-        equipment=list(profile.fixed_equipment if equipment is None else equipment),
+        equipment=entries,
         skills=list(profile.inherent_rules) + list(extra_skills or []),
         experience=profile.experience if experience is None else experience,
         previous_experience=previous_experience,
@@ -486,7 +516,6 @@ def warrior_vm(
         condition=condition,
         condition_detail=condition_detail,
         cost=profile.cost,
-        equipment_cost=0,
         stat_modifiers=dict(stat_modifiers or {}),
         skill_access=list(profile.skill_tables),
         profile_id=profile.profile_id,

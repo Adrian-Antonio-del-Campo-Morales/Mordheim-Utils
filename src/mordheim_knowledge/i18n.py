@@ -1,10 +1,11 @@
 """KB locale policy and localized display names.
 
 The knowledge base is **canonical English** by convention (see the
-"Locale policy" section of ``sources/knowledge/README.md``): every editorial
-record carries a ``name_i18n`` / ``effect_i18n`` block for forward
-compatibility, and the non-English fields (e.g. ``es``) are ``null`` except
-for a few reviewed historical entries.
+"Locale policy" section of ``sources/knowledge/README.md``): the English
+``name`` / ``effect`` fields are the single canonical source. The
+``name_i18n`` / ``effect_i18n`` blocks store only *translations* for
+non-canonical locales (``es``) — they never carry an ``en`` mirror of the
+canonical English.
 
 This module is the single sanctioned reader of those blocks:
 
@@ -26,12 +27,12 @@ import os
 #: The canonical locale the KB is authored in.
 CANONICAL_LOCALE = "en"
 
-#: Locales with an authorised translation effort (currently none beyond the
-#: canonical English; ``es`` is enabled because reviewed Spanish strings
-#: already exist in the Bretonnian band).
+#: Locales with an authorised translation effort.
 SUPPORTED_LOCALES = frozenset({"en", "es"})
 
-_FALLBACK_LOCALES = (CANONICAL_LOCALE, "es")
+#: Non-canonical locales, in resolution order, used only as a last resort so
+#: a record without canonical text still shows something readable.
+_TRANSLATED_LOCALES = ("es",)
 
 _active_locale = CANONICAL_LOCALE
 
@@ -66,11 +67,10 @@ def display_name(record: object, fallback: str | None = None) -> str:
     """Best display name of one KB record (dict row).
 
     Resolution order: the reviewed ``name_i18n`` entry of the active locale
-    (when it is not the canonical one), the canonical ``name`` field, the
-    canonical ``name_i18n.en`` entry, and finally any other translated
-    locale present. Non-dict records and missing values fall back to
-    ``fallback`` (the caller's id, typically) so ids remain visible instead
-    of crashing.
+    (when it is not the canonical one), the canonical ``name`` field, and
+    finally any other translated locale present. Non-dict records and
+    missing values fall back to ``fallback`` (the caller's id, typically) so
+    ids remain visible instead of crashing.
     """
     i18n = record.get("name_i18n") if isinstance(record, dict) else None
     if isinstance(i18n, dict) and _active_locale != CANONICAL_LOCALE:
@@ -82,10 +82,7 @@ def display_name(record: object, fallback: str | None = None) -> str:
         if name:
             return name
         if isinstance(i18n, dict):
-            canonical = str(i18n.get(CANONICAL_LOCALE) or "").strip()
-            if canonical:
-                return canonical
-            for locale in _FALLBACK_LOCALES:
+            for locale in _TRANSLATED_LOCALES:
                 value = str(i18n.get(locale) or "").strip()
                 if value:
                     return value
@@ -109,8 +106,8 @@ def display_effect(record: object) -> str:
     """Best display effect text of one KB record (dict row), same policy.
 
     The reviewed ``effect_i18n`` entry of the active locale wins when it is
-    not the canonical one; otherwise the canonical ``effect`` prose, then the
-    canonical ``effect_i18n.en`` entry, then any other translated entry.
+    not the canonical one; otherwise the canonical ``effect`` prose, then
+    any other translated entry.
     """
     i18n = record.get("effect_i18n") if isinstance(record, dict) else None
     if isinstance(i18n, dict) and _active_locale != CANONICAL_LOCALE:
@@ -122,10 +119,7 @@ def display_effect(record: object) -> str:
         if effect:
             return effect
         if isinstance(i18n, dict):
-            canonical = str(i18n.get(CANONICAL_LOCALE) or "").strip()
-            if canonical:
-                return canonical
-            for locale in _FALLBACK_LOCALES:
+            for locale in _TRANSLATED_LOCALES:
                 value = str(i18n.get(locale) or "").strip()
                 if value:
                     return value

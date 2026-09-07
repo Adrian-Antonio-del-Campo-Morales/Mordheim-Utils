@@ -7,9 +7,22 @@ from dataclasses import replace
 from mordheim_core.dice import DecisionPolicy
 from mordheim_core.models import CompiledFighter, DuelRequest, DuelResult, EffectSet, SimulationCancelled
 from mordheim_combat.vectorized._types import CombatState, KNOCKED_DOWN, OUT, PARALYZED, STANDING, STUNNED, VectorBatchObservation, _parry_capacity, has
-from mordheim_combat.vectorized._operators import _characteristic_test, attack_count, effective_initiative, priority
+from mordheim_combat.vectorized._operators import _characteristic_test, attack_count, effective_initiative, priority, round_weapon_attack_count
 from mordheim_combat.vectorized._attacks import _optional_phase_plan, _prepare_weapon_attack, _resolve_weapon, resolve_attacks
 from mordheim_combat.vectorized._equipment import phase_equipment, staff_power
+
+
+_WHIPCRACK_TAGS = (
+    "weapon.steel-whip", "weapon.beastlash", "weapon.pirate-scourge",
+    "weapon.serpent-whip",
+)
+
+
+def _whipcrack_weapon(fighter: CompiledFighter) -> EffectSet | None:
+    for weapon in (fighter.main_weapon, fighter.off_hand):
+        if weapon is not None and any(has(weapon, tag) for tag in _WHIPCRACK_TAGS):
+            return weapon
+    return None
 
 def _new_state(fighter: CompiledFighter, count: int, rng: np.random.Generator) -> CombatState:
     wounds = fighter.characteristics.wounds + int(has(fighter.global_effects, "skill.monstrous"))
@@ -271,18 +284,35 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             state2.parry_remaining[:] = 0
         attacks1=attack_count(first,charge1,first_round,state1.frenzy,charged1,state1.attack_penalty,state1.wounds<first.characteristics.wounds,state1.attacks,player_turn=first_player_turn)
         attacks2=attack_count(second,charge2,first_round,state2.frenzy,charged2,state2.attack_penalty,state2.wounds<second.characteristics.wounds,state2.attacks,player_turn=~first_player_turn)
+        attacks1=round_weapon_attack_count(
+            first, second, attacks1, first_round=first_round,
+            charging=charge1, charged=charged1,
+        )
+        attacks2=round_weapon_attack_count(
+            second, first, attacks2, first_round=first_round,
+            charging=charge2, charged=charged2,
+        )
+        whip1 = _whipcrack_weapon(first)
+        whip2 = _whipcrack_weapon(second)
+        whip1_active = bool(
+            first_round and whip1 is not None
+            and (charge1 | charged1).any()
+        )
+        whip2_active = bool(
+            first_round and whip2 is not None
+            and (charge2 | charged2).any()
+        )
+        whip1_rows = (charge1 | charged1) if whip1_active else np.zeros(count, dtype=bool)
+        whip2_rows = (charge2 | charged2) if whip2_active else np.zeros(count, dtype=bool)
+        whip1_rows &= attacks1 > 0
+        whip2_rows &= attacks2 > 0
+        ordinary_attacks1 = attacks1 - whip1_rows.astype(np.int16)
+        ordinary_attacks2 = attacks2 - whip2_rows.astype(np.int16)
         attacks1=np.where(attacks1>0,np.maximum(1,attacks1+second.global_effects.incoming_attacks_modifier),0)
         attacks2=np.where(attacks2>0,np.maximum(1,attacks2+first.global_effects.incoming_attacks_modifier),0)
-        attacks1[state1.on_fire]=0;attacks2[state2.on_fire]=0
-        if has(first.global_effects,"animal_friendship") and has(second.global_effects,"species.animal"):
-            attacks2[:]=0
-        if has(second.global_effects,"animal_friendship") and has(first.global_effects,"species.animal"):
-            attacks1[:]=0
-        state1.attack_penalty[:]=0;state2.attack_penalty[:]=0
-        if first_round and has(first.main_weapon,"weapon.serpent-whip"):attacks1+=charge1|charged1
-        if first_round and has(second.main_weapon,"weapon.serpent-whip"):attacks2+=charge2|charged2
-        if first_round and has(first.main_weapon,"weapon.boar-spear"):attacks2[charge2]=np.maximum(1,attacks2[charge2]-1)
-        if first_round and has(second.main_weapon,"weapon.boar-spear"):attacks1[charge1]=np.maximum(1,attacks1[charge1]-1)
+        ordinary_attacks1=np.where(ordinary_attacks1>0,np.maximum(1,ordinary_attacks1+second.global_effects.incoming_attacks_modifier),0)
+        ordinary_attacks2=np.where(ordinary_attacks2>0,np.maximum(1,ordinary_attacks2+first.global_effects.incoming_attacks_modifier),0)
+        ordinary_attacks1[state1.on_fire]=0;ordinary_attacks2[state2.on_fire]=0
         if first_round and has(first.global_effects,"skill.sigmar-s-sign") and has(second.global_effects,"undead_or_possessed"):
             attacks2=np.where(attacks2>0,np.maximum(1,attacks2-1),0)
         if first_round and has(second.global_effects,"skill.sigmar-s-sign") and has(first.global_effects,"undead_or_possessed"):
@@ -291,30 +321,61 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         i1,i2=effective_initiative(first,state1),effective_initiative(second,state2)
         first_acts=(p1>p2)|((p1==p2)&(i1>i2));ties=(p1==p2)&(i1==i2)
         first_acts[ties]=rng.random(int(ties.sum()))<.5
-        # Each fighter's attack phase is gated only on *their own* standing,
-        # never on the other fighter's row set.  Deriving the reply rows from
-        # the primary actor's rows once silently dropped the standing
-        # opponent's attack whenever the primary was down (knocked down or
-        # stunned at round start): the downed primary's rows are empty, so the
-        # reply — and with it the helpless auto-OOA execution — vanished too.
-        # The scalar oracle resolves each pool independently, so the opponent
-        # must still strike (and auto-out the helpless target).
-        rows1=np.flatnonzero(unresolved&(state1.condition==STANDING)&first_acts)
-        resolve_attacks(first,second,rows1,attacks1,charge1,state1,state2,rng,first_round,decisions)
-        if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows1,rng)
-        if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows1,rng)
-        reply1=np.flatnonzero(unresolved&(state2.condition==STANDING)&first_acts)
-        resolve_attacks(second,first,reply1,attacks2,charge2,state2,state1,rng,first_round,decisions)
-        if optional.first_force_of_will:_rescue_force_of_will(first,state1,reply1,rng)
-        if optional.second_force_of_will:_rescue_force_of_will(second,state2,reply1,rng)
-        rows2=np.flatnonzero(unresolved&(state2.condition==STANDING)&~first_acts)
-        resolve_attacks(second,first,rows2,attacks2,charge2,state2,state1,rng,first_round,decisions)
-        if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows2,rng)
-        if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows2,rng)
-        reply2=np.flatnonzero(unresolved&(state1.condition==STANDING)&~first_acts)
-        resolve_attacks(first,second,reply2,attacks1,charge1,state1,state2,rng,first_round,decisions)
-        if optional.first_force_of_will:_rescue_force_of_will(first,state1,reply2,rng)
-        if optional.second_force_of_will:_rescue_force_of_will(second,state2,reply2,rng)
+        event_scores = np.stack((
+            p1 * 100 + i1,
+            p2 * 100 + i2,
+            np.where(whip1_rows, 100 + i1, -10000),
+            np.where(whip2_rows, 100 + i2, -10000),
+        ))
+        priority_tie = (p1 == p2) & (i1 == i2)
+        event_scores[0] += (priority_tie & first_acts).astype(np.int16)
+        event_scores[1] += (priority_tie & ~first_acts).astype(np.int16)
+        event_order = np.argsort(-event_scores, axis=0, kind="stable")
+        whip1_fighter = (
+            replace(first, main_weapon=whip1, off_hand=None,
+                    off_hand_attacks=False, extra_attacks=())
+            if whip1 is not None else first
+        )
+        whip2_fighter = (
+            replace(second, main_weapon=whip2, off_hand=None,
+                    off_hand_attacks=False, extra_attacks=())
+            if whip2 is not None else second
+        )
+
+        for event_index in range(4):
+            event = event_order[event_index]
+            rows_first = np.flatnonzero(
+                unresolved & (state1.condition == STANDING)
+                & (event == 0) & (ordinary_attacks1 > 0)
+            )
+            rows_second = np.flatnonzero(
+                unresolved & (state2.condition == STANDING)
+                & (event == 1) & (ordinary_attacks2 > 0)
+            )
+            rows_whip1 = np.flatnonzero(
+                unresolved & (state1.condition == STANDING)
+                & (event == 2) & whip1_rows
+            )
+            rows_whip2 = np.flatnonzero(
+                unresolved & (state2.condition == STANDING)
+                & (event == 3) & whip2_rows
+            )
+            if rows_first.size:
+                resolve_attacks(first,second,rows_first,ordinary_attacks1,charge1,state1,state2,rng,first_round,decisions)
+                if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows_first,rng)
+                if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows_first,rng)
+            if rows_second.size:
+                resolve_attacks(second,first,rows_second,ordinary_attacks2,charge2,state2,state1,rng,first_round,decisions)
+                if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows_second,rng)
+                if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows_second,rng)
+            if rows_whip1.size:
+                resolve_attacks(whip1_fighter,second,rows_whip1,np.ones(count,dtype=np.int16),charge1,state1,state2,rng,first_round,decisions)
+                if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows_whip1,rng)
+                if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows_whip1,rng)
+            if rows_whip2.size:
+                resolve_attacks(whip2_fighter,first,rows_whip2,np.ones(count,dtype=np.int16),charge2,state2,state1,rng,first_round,decisions)
+                if optional.first_force_of_will:_rescue_force_of_will(first,state1,rows_whip2,rng)
+                if optional.second_force_of_will:_rescue_force_of_will(second,state2,rows_whip2,rng)
         if optional.first_black_hunger:
             _black_hunger_backlash(first,state1,active_rows,rng)
         if optional.second_black_hunger:

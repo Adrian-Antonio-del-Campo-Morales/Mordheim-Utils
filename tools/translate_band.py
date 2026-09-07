@@ -17,9 +17,10 @@ The translation file is a YAML document of the shape::
       ...
 
 Only ``name_i18n.es`` / ``effect_i18n.es`` / band ``name_i18n.es`` are
-touched; ids, runtime blocks, bindings and sources stay untouched. Values
-are normalized to single logical lines (artifact newlines from the source
-are not reproduced).
+touched; ids, runtime blocks, bindings and sources stay untouched. English
+is the canonical ``name`` / ``effect`` fields (the i18n blocks carry no
+``en`` mirror), and values are normalized to single logical lines
+(artifact newlines from the source are not reproduced).
 """
 from __future__ import annotations
 
@@ -59,7 +60,6 @@ def main() -> int:
     band_doc = yaml.safe_load(band_file.read_text(encoding="utf-8")) or {}
     if band_doc.get("name"):
         i18n = band_doc.setdefault("name_i18n", {})
-        i18n.setdefault("en", band_doc["name"])
         if i18n.get("es") != band_es:
             i18n["es"] = band_es
             changed += 1
@@ -77,7 +77,6 @@ def main() -> int:
             if pid in profiles and profile.get("name"):
                 es = profiles[pid]
                 i18n = profile.setdefault("name_i18n", {})
-                i18n.setdefault("en", profile["name"])
                 if i18n.get("es") != es:
                     i18n["es"] = es
                     changed += 1
@@ -97,13 +96,11 @@ def main() -> int:
             entry = rules[rid] or {}
             if rule.get("name") and entry.get("name"):
                 i18n = rule.setdefault("name_i18n", {})
-                i18n.setdefault("en", rule["name"])
                 if i18n.get("es") != entry["name"]:
                     i18n["es"] = entry["name"]
                     changed += 1
             if rule.get("effect") and entry.get("effect"):
                 i18n = rule.setdefault("effect_i18n", {})
-                i18n.setdefault("en", normalize(rule["effect"]))
                 es = normalize(entry["effect"])
                 if i18n.get("es") != es:
                     i18n["es"] = es

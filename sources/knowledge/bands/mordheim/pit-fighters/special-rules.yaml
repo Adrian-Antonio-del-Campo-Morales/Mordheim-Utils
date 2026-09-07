@@ -3,22 +3,18 @@ band_id: pit-fighters
 rules:
 - id: pit-king--leader
   name: Leader
-  effect: Any models in the warband within 6" of the King may use his Leadership instead of their own.
+  effect: >-
+    Any models in the warband within 6" of the King may use his Leadership instead of their own.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 1 Pit King / Special Rules / Leader
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Leader
     es: Líder
   effect_i18n:
-    en: 'Any models in the warband within 6"
-
-      of the King may use his Leadership instead of
-
-      their own.'
-    es: Todos los modelos de la banda a 6" del Rey pueden usar su Liderazgo en lugar del suyo propio.
+    es: >-
+      Todos los modelos de la banda a 6" del Rey pueden usar su Liderazgo en lugar del suyo propio.
   applies_to:
     profile_ids:
     - pit-king
@@ -30,7 +26,8 @@ rules:
     - id: unimplemented.pit-fighters.pit-king.leader
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: pit-king--pit-fighter
   name: Pit Fighter
   effect: This warrior has the warband's Pit Fighter skill.
@@ -40,10 +37,8 @@ rules:
     section: heroes / 1 Pit King / Special Rules / Pit Fighter
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Pit Fighter
-    es: Luchador de foso
+    es: Luchador de Foso
   effect_i18n:
-    en: This warrior has the warband's Pit Fighter skill.
     es: Este guerrero tiene la habilidad Luchador de foso de la banda.
   applies_to:
     profile_ids:
@@ -69,10 +64,8 @@ rules:
     section: heroes / 0 – 1 Dwarf Troll Slayer / Special Rules / Pit Fighter
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Pit Fighter
-    es: Luchador de foso
+    es: Luchador de Foso
   effect_i18n:
-    en: This warrior has the warband's Pit Fighter skill.
     es: Este guerrero tiene la habilidad Luchador de foso de la banda.
   applies_to:
     profile_ids:
@@ -101,32 +94,22 @@ rules:
         kind: mechanic
         id: skill.hard-to-kill
   name: Hard to Kill
-  effect: Dwarfs are tough, resilient individuals who can only be taken out of action on a roll of a 6
-    instead of 5-6 when rolling on the Injury chart. Treat a roll of 1-2 as knocked down, 3-5 as stunned,
-    and 6 as out of action.
+  effect: >-
+    Dwarfs are tough, resilient individuals who can only be taken out of action on a roll of a 6
+    instead of 5-6 when rolling on the Injury chart. Treat a roll of 1-2 as knocked down, 3-5 as
+    stunned, and 6 as out of action.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 0 – 1 Dwarf Troll Slayer / Special Rules / Hard to Kill
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Hard to Kill
-    es: Difíciles de matar
+    es: Difíciles de Matar
   effect_i18n:
-    en: 'Dwarfs are tough, resilient
-
-      individuals who can only be taken out of
-
-      action on a roll of a 6 instead of 5-6 when
-
-      rolling on the Injury chart. Treat a roll of 1-2
-
-      as knocked down, 3-5 as stunned, and 6 as
-
-      out of action.'
-    es: Los enanos son individuos duros y resistentes que solo pueden ser puestos Fuera de combate con
-      un resultado de 6 en lugar de 5-6 al tirar en la tabla de Heridas. Trata un resultado de 1-2 como
-      derribado, 3-5 como aturdido y 6 como Fuera de combate.
+    es: >-
+      Los enanos son individuos duros y resistentes que solo pueden ser puestos Fuera de combate con
+      un resultado de 6 en lugar de 5-6 al tirar en la tabla de Heridas. Trata un resultado de 1-2
+      como derribado, 3-5 como aturdido y 6 como Fuera de combate.
   applies_to:
     profile_ids:
     - dwarf-troll-slayer
@@ -139,14 +122,8 @@ rules:
     section: heroes / 0 – 1 Dwarf Troll Slayer / Special Rules / Hard Head
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Hard Head
-    es: Cráneo grueso
+    es: Cráneo Grueso
   effect_i18n:
-    en: 'Dwarfs ignores the special rules
-
-      for maces, clubs, etc. They are not easy to
-
-      knock out!'
     es: Los enanos ignoran las reglas especiales de mazas, porras, etc. ¡No es fácil dejarlos K.O.!
   applies_to:
     profile_ids:
@@ -165,7 +142,8 @@ rules:
           value: true
 - id: dwarf-troll-slayer--hate-orcs-and-goblins
   name: Hate Orcs and Goblins
-  effect: All Dwarfs hate Orcs and Goblins. See the psychology section of the Mordheim rules for details
+  effect: >-
+    All Dwarfs hate Orcs and Goblins. See the psychology section of the Mordheim rules for details
     on the effects of hatred.
   source:
     manual: mordheimer.net
@@ -173,17 +151,10 @@ rules:
     section: heroes / 0 – 1 Dwarf Troll Slayer / Special Rules / Hate Orcs and Goblins
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Hate Orcs and Goblins
-    es: Odio a orcos y goblins
+    es: Odio a Orcos y Goblins
   effect_i18n:
-    en: 'All Dwarfs hate Orcs
-
-      and Goblins. See the psychology section of
-
-      the Mordheim rules for details on the effects
-
-      of hatred.'
-    es: Todos los enanos odian a los orcos y goblins. Consulta la sección de psicología de las reglas
+    es: >-
+      Todos los enanos odian a los orcos y goblins. Consulta la sección de psicología de las reglas
       de Mordheim para más detalles sobre los efectos del odio.
   applies_to:
     profile_ids:
@@ -196,38 +167,27 @@ rules:
     - id: unimplemented.pit-fighters.dwarf-troll-slayer.hate-orcs-and-goblins
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: dwarf-troll-slayer--grudgebearers
   name: Grudgebearers
-  effect: Dwarfs hold an ancient grudge against Elves from the days when the two races fought for the
-    supremacy of the Old World. If the Pit Fighters ever hire any kind of Elven Hired Sword, he will leave
-    the warband immediately, he refuses to fight alongside these pansy Elves!
+  effect: >-
+    Dwarfs hold an ancient grudge against Elves from the days when the two races fought for the
+    supremacy of the Old World. If the Pit Fighters ever hire any kind of Elven Hired Sword, he will
+    leave the warband immediately, he refuses to fight alongside these pansy Elves!
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 0 – 1 Dwarf Troll Slayer / Special Rules / Grudgebearers
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Grudgebearers
     es: Rencorosos
   effect_i18n:
-    en: 'Dwarfs hold an ancient
-
-      grudge against Elves from the days when the
-
-      two races fought for the supremacy of the Old
-
-      World. If the Pit Fighters ever hire any kind of
-
-      Elven Hired Sword, he will leave the warband
-
-      immediately, he refuses to fight alongside
-
-      these pansy Elves!'
-    es: 'Los enanos guardan un rencor ancestral contra los elfos desde los días en que ambas razas lucharon
-      por la supremacía del Viejo Mundo. Si los Luchadores de Foso contratan alguna vez cualquier tipo
-      de Espada a Sueldo Elfa, esta abandonará la banda inmediatamente: ¡se niega a luchar junto a estos
-      elfos acalorados!'
+    es: >-
+      Los enanos guardan un rencor ancestral contra los elfos desde los días en que ambas razas
+      lucharon por la supremacía del Viejo Mundo. Si los Luchadores de Foso contratan alguna vez
+      cualquier tipo de Espada a Sueldo Elfa, esta abandonará la banda inmediatamente: ¡se niega a
+      luchar junto a estos elfos acalorados!
   applies_to:
     profile_ids:
     - dwarf-troll-slayer
@@ -244,22 +204,19 @@ rules:
         construction.
 - id: dwarf-troll-slayer--death-wish
   name: Death Wish
-  effect: Troll Slayers seek an honourable death in combat. They are completely immune to all psychology
+  effect: >-
+    Troll Slayers seek an honourable death in combat. They are completely immune to all psychology
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 0 – 1 Dwarf Troll Slayer / Special Rules / Death Wish
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Death Wish
-    es: Deseo de muerte
+    es: Deseo de Muerte
   effect_i18n:
-    en: 'Troll Slayers seek an honourable
-
-      death in combat. They are completely immune
-
-      to all psychology'
-    es: Los Asesatrolls buscan una muerte honorable en combate. Son completamente inmunes a toda la psicología.
+    es: >-
+      Los Asesatrolls buscan una muerte honorable en combate. Son completamente inmunes a toda la
+      psicología.
   applies_to:
     profile_ids:
     - dwarf-troll-slayer
@@ -271,7 +228,8 @@ rules:
     - id: unimplemented.pit-fighters.dwarf-troll-slayer.death-wish
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: pit-veterans--pit-fighter
   name: Pit Fighter
   effect: This warrior has the warband's Pit Fighter skill.
@@ -281,10 +239,8 @@ rules:
     section: heroes / 0 – 2 Pit Veterans / Special Rules / Pit Fighter
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Pit Fighter
-    es: Luchador de foso
+    es: Luchador de Foso
   effect_i18n:
-    en: This warrior has the warband's Pit Fighter skill.
     es: Este guerrero tiene la habilidad Luchador de foso de la banda.
   applies_to:
     profile_ids:
@@ -310,10 +266,8 @@ rules:
     section: henchmen / Pit Fighters / Special Rules / Pit Fighter
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Pit Fighter
-    es: Luchador de foso
+    es: Luchador de Foso
   effect_i18n:
-    en: This warrior has the warband's Pit Fighter skill.
     es: Este guerrero tiene la habilidad Luchador de foso de la banda.
   applies_to:
     profile_ids:
@@ -339,10 +293,8 @@ rules:
     section: henchmen / 0 – 7 Pursuers / Special Rules / Pit Fighter
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Pit Fighter
-    es: Luchador de foso
+    es: Luchador de Foso
   effect_i18n:
-    en: This warrior has the warband's Pit Fighter skill.
     es: Este guerrero tiene la habilidad Luchador de foso de la banda.
   applies_to:
     profile_ids:
@@ -361,21 +313,13 @@ rules:
           value: true
 - id: pursuers--evade
   name: Evade
-  effect: When an enemy charges a Pursuer, the Pursuer may attempt to evade. On a successful Initiative
-    test the charge counts as failed and the normal failed-charge rules apply.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 7 Pursuers / Special Rules / Evade
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Evade
     es: Evadir
-  effect_i18n:
-    en: When an enemy charges a Pursuer, the Pursuer may attempt to evade. On a successful Initiative
-      test the charge counts as failed and the normal failed-charge rules apply.
-    es: Cuando un enemigo carga contra un Perseguidor, este puede intentar evadir. Con un chequeo de Iniciativa
-      con éxito, la carga cuenta como fallida y se aplican las reglas normales de carga fallida.
   applies_to:
     profile_ids:
     - pursuers
@@ -390,6 +334,7 @@ rules:
       reason: >-
         Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
         construction.
+  rule_ref: shared-rule.evade
 - id: ogre-pit-fighter--pit-fighter
   name: Pit Fighter
   effect: This warrior has the warband's Pit Fighter skill.
@@ -399,10 +344,8 @@ rules:
     section: henchmen / 0 – 1 Ogre Pit Fighter / Special Rules / Pit Fighter
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Pit Fighter
-    es: Luchador de foso
+    es: Luchador de Foso
   effect_i18n:
-    en: This warrior has the warband's Pit Fighter skill.
     es: Este guerrero tiene la habilidad Luchador de foso de la banda.
   applies_to:
     profile_ids:
@@ -428,12 +371,8 @@ rules:
     section: henchmen / 0 – 1 Ogre Pit Fighter / Special Rules / Fear
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Fear
     es: Miedo
   effect_i18n:
-    en: 'Ogre Pit Fighters are large, threatening
-
-      creatures that cause fear.'
     es: Los Luchadores de Foso Ogro son criaturas grandes y amenazantes que causan miedo.
   applies_to:
     profile_ids:
@@ -446,10 +385,12 @@ rules:
     - id: unimplemented.pit-fighters.ogre-pit-fighter.fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: ogre-pit-fighter--large
   name: Large
-  effect: Ogre Pit Fighters are huge, lumbering creatures and therefore make tempting targets for archers.
+  effect: >-
+    Ogre Pit Fighters are huge, lumbering creatures and therefore make tempting targets for archers.
     Any model may shoot at the Ogre Pit Fighter, even if he is not the closest target.
   source:
     manual: mordheimer.net
@@ -457,19 +398,12 @@ rules:
     section: henchmen / 0 – 1 Ogre Pit Fighter / Special Rules / Large
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Large
     es: Grande
   effect_i18n:
-    en: 'Ogre Pit Fighters are huge, lumbering
-
-      creatures and therefore make tempting targets
-
-      for archers. Any model may shoot at the Ogre
-
-      Pit Fighter, even if he is not the closest target.'
-    es: Los Luchadores de Foso Ogro son criaturas enormes y torpes y por tanto constituyen objetivos tentadores
-      para los arqueros. Cualquier modelo puede disparar al Luchador de Foso Ogro, incluso si no es el
-      objetivo más cercano.
+    es: >-
+      Los Luchadores de Foso Ogro son criaturas enormes y torpes y por tanto constituyen objetivos
+      tentadores para los arqueros. Cualquier modelo puede disparar al Luchador de Foso Ogro,
+      incluso si no es el objetivo más cercano.
   applies_to:
     profile_ids:
     - ogre-pit-fighter
@@ -481,24 +415,17 @@ rules:
     - id: unimplemented.pit-fighters.ogre-pit-fighter.large
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: ogre-pit-fighter--skills
   name: Skills
-  effect: If the Ogre Pit Fighter becomes a Hero through The Lad's Got Talent, it may choose Combat, Strength
-    and Pit Fighter Special Skills.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 1 Ogre Pit Fighter / Special Rules / Skills
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Skills
     es: Habilidades
-  effect_i18n:
-    en: If the Ogre Pit Fighter becomes a Hero through The Lad's Got Talent, it may choose Combat, Strength
-      and Pit Fighter Special Skills.
-    es: Si el Luchador de Foso Ogro se convierte en Héroe mediante 'El mozo tiene talento', puede elegir
-      Habilidades de Combate, Fuerza y Habilidades Especiales de Luchador de Foso.
   applies_to:
     profile_ids:
     - ogre-pit-fighter
@@ -517,34 +444,25 @@ rules:
           - combat
           - strength
           - special
+  rule_ref: shared-rule.skills
 - id: ogre-pit-fighter--slow-witted
   name: Slow Witted
-  effect: Although Ogres are capable of earning experience and bettering themselves, they are not the
-    smartest creatures. Ogres only gain advances at half the rate of everyone else (i.e., they must accrue
-    twice as much experience as normal to get an advance).
+  effect: >-
+    Although Ogres are capable of earning experience and bettering themselves, they are not the
+    smartest creatures. Ogres only gain advances at half the rate of everyone else (i.e., they must
+    accrue twice as much experience as normal to get an advance).
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 1 Ogre Pit Fighter / Special Rules / Slow Witted
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Slow Witted
     es: Torpes
   effect_i18n:
-    en: 'Although Ogres are capable of
-
-      earning experience and bettering themselves,
-
-      they are not the smartest creatures. Ogres
-
-      only gain advances at half the rate of everyone
-
-      else (i.e., they must accrue twice as much
-
-      experience as normal to get an advance).'
-    es: Aunque los ogros son capaces de ganar experiencia y superarse, no son las criaturas más listas.
-      Los ogros solo ganan mejoras a la mitad del ritmo del resto (es decir, deben acumular el doble de
-      experiencia de lo normal para obtener una mejora).
+    es: >-
+      Aunque los ogros son capaces de ganar experiencia y superarse, no son las criaturas más
+      listas. Los ogros solo ganan mejoras a la mitad del ritmo del resto (es decir, deben acumular
+      el doble de experiencia de lo normal para obtener una mejora).
   applies_to:
     profile_ids:
     - ogre-pit-fighter
@@ -556,7 +474,8 @@ rules:
     - id: unimplemented.pit-fighters.ogre-pit-fighter.slow-witted
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: band--pit-fighter-skill
   name: Pit Fighter
   effect: >-
@@ -568,13 +487,11 @@ rules:
     section: Special Rules
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Pit Fighter
-    es: Luchador de foso
+    es: Luchador de Foso
   effect_i18n:
-    en: 'All Pit Fighters have the Pit Fighter skill: they gain +1 WS and +1 A when fighting in ruins,
-      buildings or The Pit.'
-    es: 'Todos los Luchadores de Foso tienen la habilidad Luchador de foso: ganan +1 HA y +1 A cuando
-      luchan en ruinas, edificios o el Foso.'
+    es: >-
+      Todos los Luchadores de Foso tienen la habilidad Luchador de foso: ganan +1 HA y +1 A cuando
+      luchan en ruinas, edificios o el Foso.
   applies_to:
     band: true
   runtime:
@@ -585,7 +502,8 @@ rules:
     - id: unimplemented.pit-fighters.band.pit-fighter-skill
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: band--hired-swords
   name: Hired Swords
   effect: Pit Fighters may hire all normally available Hired Swords except the Elf Ranger.
@@ -595,12 +513,11 @@ rules:
     section: Special Rules / Hired Swords
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Hired Swords
     es: Espadas a Sueldo
   effect_i18n:
-    en: Pit Fighters may hire all normally available Hired Swords except the Elf Ranger.
-    es: Los Luchadores de Foso pueden contratar todas las Espadas a Sueldo normalmente disponibles, excepto
-      el Guardabosques Elfo.
+    es: >-
+      Los Luchadores de Foso pueden contratar todas las Espadas a Sueldo normalmente disponibles,
+      excepto el Guardabosques Elfo.
   applies_to:
     band: true
   runtime:
@@ -616,34 +533,31 @@ rules:
         construction.
 - id: band--fighting-styles
   name: Weapons & Armour — Fighting Styles
-  effect: Pit Kings, Veterans, Pit Fighters and Pursuers must select one of the fighting styles in their
-    appropriate equipment list; the style determines their initial weapons and armour. Troll Slayers and
-    Ogres instead choose from the Ogre & Slayer Equipment List. A Pit Fighter may later change style by
-    swapping styles with another warrior or buying a new style or its separate components. Heroes are
-    not prevented from using other items if they later learn the appropriate skills. A Pit Fighter Henchman
-    group may mix multiple fighting styles and its members do not need identical equipment.
+  effect: >-
+    Pit Kings, Veterans, Pit Fighters and Pursuers must select one of the fighting styles in their
+    appropriate equipment list; the style determines their initial weapons and armour. Troll Slayers
+    and Ogres instead choose from the Ogre & Slayer Equipment List. A Pit Fighter may later change
+    style by swapping styles with another warrior or buying a new style or its separate components.
+    Heroes are not prevented from using other items if they later learn the appropriate skills. A
+    Pit Fighter Henchman group may mix multiple fighting styles and its members do not need
+    identical equipment.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Special Rules / Weapons & Armour
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Weapons & Armour — Fighting Styles
-    es: 'Armas y armadura: estilos de lucha'
+    es: 'Armas y Armadura: Estilos de Lucha'
   effect_i18n:
-    en: Pit Kings, Veterans, Pit Fighters and Pursuers must select one of the fighting styles in their
-      appropriate equipment list; the style determines their initial weapons and armour. Troll Slayers
-      and Ogres instead choose from the Ogre & Slayer Equipment List. A Pit Fighter may later change style
-      by swapping styles with another warrior or buying a new style or its separate components. Heroes
-      are not prevented from using other items if they later learn the appropriate skills. A Pit Fighter
-      Henchman group may mix multiple fighting styles and its members do not need identical equipment.
-    es: Los Reyes del Foso, Veteranos, Luchadores de Foso y Perseguidores deben seleccionar uno de los
-      estilos de lucha de su lista de equipo correspondiente; el estilo determina sus armas y armadura
-      iniciales. Los Asesatrolls y los Ogros eligen en su lugar de la Lista de Equipo de Ogro y Asesatrolls.
-      Un Luchador de Foso puede cambiar de estilo más tarde intercambiándolo con otro guerrero o comprando
-      un estilo nuevo o sus componentes por separado. No se impide a los héroes usar otros objetos si
-      más tarde aprenden las habilidades apropiadas. Un grupo de secuaces Luchador de Foso puede mezclar
-      varios estilos de lucha y sus miembros no necesitan equipo idéntico.
+    es: >-
+      Los Reyes del Foso, Veteranos, Luchadores de Foso y Perseguidores deben seleccionar uno de los
+      estilos de lucha de su lista de equipo correspondiente; el estilo determina sus armas y
+      armadura iniciales. Los Asesatrolls y los Ogros eligen en su lugar de la Lista de Equipo de
+      Ogro y Asesatrolls. Un Luchador de Foso puede cambiar de estilo más tarde intercambiándolo con
+      otro guerrero o comprando un estilo nuevo o sus componentes por separado. No se impide a los
+      héroes usar otros objetos si más tarde aprenden las habilidades apropiadas. Un grupo de
+      secuaces Luchador de Foso puede mezclar varios estilos de lucha y sus miembros no necesitan
+      equipo idéntico.
   applies_to:
     band: true
   runtime:
@@ -659,19 +573,13 @@ rules:
         equipment between warband members require roster and campaign state.
 - id: band--free-the-slaves
   name: Free the Slaves!
-  effect: Pit Fighters hate slavers and will never sell captured opponents to slavers.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Special Rules / Free the Slaves!
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Free the Slaves!
-    es: ¡Libertad a los esclavos!
-  effect_i18n:
-    en: Pit Fighters hate slavers and will never sell captured opponents to slavers.
-    es: Los Luchadores de Foso odian a los tratantes de esclavos y jamás venderán oponentes capturados
-      a esclavistas.
+    es: ¡Libertad a los Esclavos!
   applies_to:
     band: true
   runtime:
@@ -682,37 +590,36 @@ rules:
     - id: unimplemented.pit-fighters.band.free-the-slaves
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
+  rule_ref: shared-rule.free-the-slaves
 - id: band--in-the-pit
   name: In the Pit!
-  effect: A captured opponent may be sent to fight in the pits against one or more warriors from the Pit
-    Fighter warband. If a Pit Fighter wins, that warrior gains +2 Experience and the warband receives
-    the captive's armour and weapons plus 50 gc. If a Pit Fighter loses, resolve death/injury normally
-    but ignore Robbed, Captured, Hardened, Sold to the Pits and Survives Against the Odds; the Pit Fighter
-    keeps its equipment. A victorious captive gains 50 gc and +2 Experience, then goes free on 4+; on
-    1-3 the captive remains held and may be sent to the pits again after later games.
+  effect: >-
+    A captured opponent may be sent to fight in the pits against one or more warriors from the Pit
+    Fighter warband. If a Pit Fighter wins, that warrior gains +2 Experience and the warband
+    receives the captive's armour and weapons plus 50 gc. If a Pit Fighter loses, resolve
+    death/injury normally but ignore Robbed, Captured, Hardened, Sold to the Pits and Survives
+    Against the Odds; the Pit Fighter keeps its equipment. A victorious captive gains 50 gc and +2
+    Experience, then goes free on 4+; on 1-3 the captive remains held and may be sent to the pits
+    again after later games.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Special Rules / In the Pit!
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: In the Pit!
-    es: ¡Al foso!
+    es: ¡Al Foso!
   effect_i18n:
-    en: A captured opponent may be sent to fight in the pits against one or more warriors from the Pit
-      Fighter warband. If a Pit Fighter wins, that warrior gains +2 Experience and the warband receives
-      the captive's armour and weapons plus 50 gc. If a Pit Fighter loses, resolve death/injury normally
-      but ignore Robbed, Captured, Hardened, Sold to the Pits and Survives Against the Odds; the Pit Fighter
-      keeps its equipment. A victorious captive gains 50 gc and +2 Experience, then goes free on 4+; on
-      1-3 the captive remains held and may be sent to the pits again after later games.
-    es: Un oponente capturado puede ser enviado a luchar en los fosos contra uno o más guerreros de la
-      banda de Luchadores de Foso. Si un Luchador de Foso gana, ese guerrero gana +2 de Experiencia y
-      la banda recibe la armadura y las armas del cautivo más 50 coronas. Si un Luchador de Foso pierde,
-      resuelve la muerte/herida con normalidad pero ignora Robado, Capturado, Endurecido, Vendido al foso
-      y Sobrevive contra pronóstico; el Luchador de Foso conserva su equipo. Un cautivo victorioso gana
-      50 coronas y +2 de Experiencia, y luego queda libre con un 4+; con un 1-3 el cautivo sigue retenido
-      y puede ser enviado de nuevo a los fosos tras partidas posteriores.
+    es: >-
+      Un oponente capturado puede ser enviado a luchar en los fosos contra uno o más guerreros de la
+      banda de Luchadores de Foso. Si un Luchador de Foso gana, ese guerrero gana +2 de Experiencia
+      y la banda recibe la armadura y las armas del cautivo más 50 coronas. Si un Luchador de Foso
+      pierde, resuelve la muerte/herida con normalidad pero ignora Robado, Capturado, Endurecido,
+      Vendido al foso y Sobrevive contra pronóstico; el Luchador de Foso conserva su equipo. Un
+      cautivo victorioso gana 50 coronas y +2 de Experiencia, y luego queda libre con un 4+; con un
+      1-3 el cautivo sigue retenido y puede ser enviado de nuevo a los fosos tras partidas
+      posteriores.
   applies_to:
     band: true
   runtime:
@@ -723,7 +630,8 @@ rules:
     - id: unimplemented.pit-fighters.band.in-the-pit
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: band--pit-fighter-skill-bulging-biceps
   kind: warband_skill
   runtime:
@@ -737,7 +645,8 @@ rules:
         kind: mechanic
         id: skill.mighty-biceps
   name: Bulging Biceps
-  effect: The warrior ignores the penalty from the Heavy weapon special rule; a weapon's Strength bonus
+  effect: >-
+    The warrior ignores the penalty from the Heavy weapon special rule; a weapon's Strength bonus
     therefore applies in every round of close combat.
   source:
     manual: mordheimer.net
@@ -745,37 +654,34 @@ rules:
     section: Pit Fighter Skills / Bulging Biceps
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Bulging Biceps
-    es: Bíceps desbordantes
+    es: Bíceps Desbordantes
   effect_i18n:
-    en: The warrior ignores the penalty from the Heavy weapon special rule; a weapon's Strength bonus
-      therefore applies in every round of close combat.
-    es: El guerrero ignora la penalización de la regla especial de Arma Pesada; el bonificador de Fuerza
-      del arma se aplica por tanto en cada asalto de combate cuerpo a cuerpo.
+    es: >-
+      El guerrero ignora la penalización de la regla especial de Arma Pesada; el bonificador de
+      Fuerza del arma se aplica por tanto en cada asalto de combate cuerpo a cuerpo.
   applies_to:
     band: true
 - id: band--pit-fighter-skill-force-of-will
   kind: warband_skill
   name: Force of Will
-  effect: When taken Out of Action by losing the last Wound, roll D6 equal to or under Toughness. On success
-    the warrior gets back up and may continue fighting. Repeat in each following round with a cumulative
-    -1 modifier. If the warrior is taken Out of Action a second time, remove it normally.
+  effect: >-
+    When taken Out of Action by losing the last Wound, roll D6 equal to or under Toughness. On
+    success the warrior gets back up and may continue fighting. Repeat in each following round with
+    a cumulative -1 modifier. If the warrior is taken Out of Action a second time, remove it
+    normally.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Pit Fighter Skills / Force of Will
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Force of Will
-    es: Fuerza de voluntad
+    es: Fuerza de Voluntad
   effect_i18n:
-    en: When taken Out of Action by losing the last Wound, roll D6 equal to or under Toughness. On success
-      the warrior gets back up and may continue fighting. Repeat in each following round with a cumulative
-      -1 modifier. If the warrior is taken Out of Action a second time, remove it normally.
-    es: Cuando sea puesto Fuera de combate por perder la última Herida, tira D6 igual o menor que su Resistencia.
-      Con éxito, el guerrero se levanta y puede seguir luchando. Repite en cada asalto siguiente con un
-      modificador acumulativo de -1. Si el guerrero es puesto Fuera de combate una segunda vez, retíralo
-      con normalidad.
+    es: >-
+      Cuando sea puesto Fuera de combate por perder la última Herida, tira D6 igual o menor que su
+      Resistencia. Con éxito, el guerrero se levanta y puede seguir luchando. Repite en cada asalto
+      siguiente con un modificador acumulativo de -1. Si el guerrero es puesto Fuera de combate una
+      segunda vez, retíralo con normalidad.
   applies_to:
     band: true
   runtime:
@@ -791,7 +697,8 @@ rules:
 - id: band--pit-fighter-skill-arms-master
   kind: warband_skill
   name: Arms Master
-  effect: The warrior ignores all 'difficult to use' weapon restrictions, allowing combinations that would
+  effect: >-
+    The warrior ignores all 'difficult to use' weapon restrictions, allowing combinations that would
     normally be prohibited.
   source:
     manual: mordheimer.net
@@ -799,13 +706,11 @@ rules:
     section: Pit Fighter Skills / Arms Master
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Arms Master
-    es: Maestro de armas
+    es: Maestro de Armas
   effect_i18n:
-    en: The warrior ignores all 'difficult to use' weapon restrictions, allowing combinations that would
-      normally be prohibited.
-    es: El guerrero ignora todas las restricciones de armas 'difíciles de usar', permitiendo combinaciones
-      que normalmente estarían prohibidas.
+    es: >-
+      El guerrero ignora todas las restricciones de armas 'difíciles de usar', permitiendo
+      combinaciones que normalmente estarían prohibidas.
   applies_to:
     band: true
   runtime:
@@ -821,7 +726,8 @@ rules:
 - id: band--pit-fighter-skill-body-slam
   kind: warband_skill
   name: Body Slam
-  effect: Instead of a normal charge attack sequence, the warrior may make one Body Slam attack at +1
+  effect: >-
+    Instead of a normal charge attack sequence, the warrior may make one Body Slam attack at +1
     Strength and +1 to hit, with no weapon bonuses or abilities; it scores a critical hit on 5+.
   source:
     manual: mordheimer.net
@@ -829,14 +735,12 @@ rules:
     section: Pit Fighter Skills / Body Slam
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Body Slam
     es: Planchazo
   effect_i18n:
-    en: Instead of a normal charge attack sequence, the warrior may make one Body Slam attack at +1 Strength
-      and +1 to hit, with no weapon bonuses or abilities; it scores a critical hit on 5+.
-    es: En lugar de una secuencia normal de ataque de carga, el guerrero puede realizar un único ataque
-      de Planchazo a +1 Fuerza y +1 para impactar, sin bonificaciones ni habilidades de armas; causa un
-      impacto crítico con un 5+.
+    es: >-
+      En lugar de una secuencia normal de ataque de carga, el guerrero puede realizar un único
+      ataque de Planchazo a +1 Fuerza y +1 para impactar, sin bonificaciones ni habilidades de
+      armas; causa un impacto crítico con un 5+.
   applies_to:
     band: true
   runtime:
@@ -858,10 +762,8 @@ rules:
     section: Pit Fighter Skills / Grizzled Veteran
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Grizzled Veteran
-    es: Veterano curtido
+    es: Veterano Curtido
   effect_i18n:
-    en: The warrior is immune to all psychology.
     es: El guerrero es inmune a toda la psicología.
   applies_to:
     band: true
@@ -873,24 +775,24 @@ rules:
     - id: unimplemented.pit-fighters.band.pit-fighter-skill-grizzled-veteran
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: band--troll-slayer-special-skills-ferocious-charge
   kind: warband_skill
   name: Ferocious Charge
-  effect: The Slayer may double his attacks on the turn that he charges. He will suffer a -1 to hit penalty
-    on that turn.
+  effect: >-
+    The Slayer may double his attacks on the turn that he charges. He will suffer a -1 to hit
+    penalty on that turn.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Troll Slayer Special Skills / Ferocious Charge
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Ferocious Charge
-    es: Carga feroz
+    es: Carga Feroz
   effect_i18n:
-    en: The Slayer may double his attacks on the turn that he charges. He will suffer a -1 to hit penalty
-      on that turn.
-    es: El Asesatroll puede doblar sus ataques en el asalto en el que carga. Sufrirá una penalización
+    es: >-
+      El Asesatroll puede doblar sus ataques en el asalto en el que carga. Sufrirá una penalización
       de -1 para impactar ese asalto.
   eligibility:
   - dwarf-troll-slayer
@@ -909,24 +811,22 @@ rules:
 - id: band--troll-slayer-special-skills-monster-slayer
   kind: warband_skill
   name: Monster Slayer
-  effect: The Slayer always wounds any opponent on a roll of 4+, regardless of Toughness, unless his own
-    Strength (after all modifiers due to weapon bonuses, etc.) would mean that a lower roll than this
-    is needed.
+  effect: >-
+    The Slayer always wounds any opponent on a roll of 4+, regardless of Toughness, unless his own
+    Strength (after all modifiers due to weapon bonuses, etc.) would mean that a lower roll than
+    this is needed.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Troll Slayer Special Skills / Monster Slayer
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Monster Slayer
     es: Matamostro
   effect_i18n:
-    en: The Slayer always wounds any opponent on a roll of 4+, regardless of Toughness, unless his own
-      Strength (after all modifiers due to weapon bonuses, etc.) would mean that a lower roll than this
-      is needed.
-    es: El Asesatroll siempre hiere a cualquier oponente con un resultado de 4+, independientemente de
-      su Resistencia, salvo que su propia Fuerza (tras todos los modificadores debidos a bonificadores
-      de armas, etc.) signifique que se necesita una tirada menor.
+    es: >-
+      El Asesatroll siempre hiere a cualquier oponente con un resultado de 4+, independientemente de
+      su Resistencia, salvo que su propia Fuerza (tras todos los modificadores debidos a
+      bonificadores de armas, etc.) signifique que se necesita una tirada menor.
   eligibility:
   - dwarf-troll-slayer
   applies_to:
@@ -959,21 +859,20 @@ rules:
         kind: compiler
         id: compiler.berserker-incompatible-with-ferocious-charge
   name: Berserker
-  effect: The Slayer may add +1 to his close combat to hit rolls during the turn which he charges (may
-    not be used with Ferocious Charge).
+  effect: >-
+    The Slayer may add +1 to his close combat to hit rolls during the turn which he charges (may not
+    be used with Ferocious Charge).
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Troll Slayer Special Skills / Berserker
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Berserker
     es: Berserker
   effect_i18n:
-    en: The Slayer may add +1 to his close combat to hit rolls during the turn which he charges (may not
-      be used with Ferocious Charge).
-    es: El Asesatroll puede sumar +1 a sus tiradas de impactar en el combate cuerpo a cuerpo durante el
-      asalto en el que carga (no puede usarse con Carga feroz).
+    es: >-
+      El Asesatroll puede sumar +1 a sus tiradas de impactar en el combate cuerpo a cuerpo durante
+      el asalto en el que carga (no puede usarse con Carga feroz).
   eligibility:
   - dwarf-troll-slayer
   applies_to:

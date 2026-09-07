@@ -7,6 +7,7 @@ skip the extension: ``available_backends()`` then reports only NumPy.
 """
 
 import os
+import shutil
 
 from setuptools import Extension
 from setuptools import setup
@@ -42,11 +43,18 @@ def _native_buildable() -> bool:
     documented behaviour: no compiler, no native extension, pure-Python
     install.
     """
+    # distutils' compiler probe can reject GCC on Windows before setuptools
+    # gets a chance to honor CC/CXX. Accept an explicitly configured compiler
+    # or a compiler executable already present on PATH.
+    requested = os.environ.get("COMBAT_NATIVE_COMPILER") or os.environ.get("CC")
+    if requested:
+        return bool(shutil.which(requested) or os.path.isfile(requested))
+    if any(shutil.which(name) for name in ("cl", "gcc", "clang", "cc")):
+        return True
     try:
         from distutils.ccompiler import new_compiler
 
-        requested = os.environ.get("COMBAT_NATIVE_COMPILER")
-        compiler = new_compiler(compiler=requested) if requested else new_compiler()
+        compiler = new_compiler()
         compiler.initialize()
         return True
     except (Exception, SystemExit):

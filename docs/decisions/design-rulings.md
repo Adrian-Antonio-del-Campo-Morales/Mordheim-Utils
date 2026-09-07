@@ -77,9 +77,10 @@ a single spec.
 - **Hireling profile identities are not reused from bands** merely because
   names match; source-only concepts stay in `unresolved_references` until
   their catalogue exists.
-- **Translation is single-locale canonical English** until a reviewed pass
-  fills `name_i18n.es` / `effect_i18n.es`; the Bretonnian pilot band is the
-  style and glossary reference
+- **English is canonical and stored once** in the `name` / `effect` fields;
+  `name_i18n` / `effect_i18n` hold only translations and carry no `en`
+  mirror. A reviewed Spanish pass fills `name_i18n.es` / `effect_i18n.es`
+  across the warbands and catalogues, following the translation glossary
   ([translation glossary](../../sources/knowledge/catalog/translation-glossary.md)).
 
 ## Campaign application

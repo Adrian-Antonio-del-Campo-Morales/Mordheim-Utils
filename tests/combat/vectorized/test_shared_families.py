@@ -42,7 +42,7 @@ def build(band, profile, *, collection="mordheim", **kwargs):
 
 def test_all_implemented_canonical_families_are_executable_for_every_member():
     document = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
-    assert document["summary"] == {"families": 66, "rules": 101, "kinds": {"compiler": 41, "mechanic": 20, "trait": 5}}
+    assert document["counts"] == {"families": 66, "rules": 101, "kinds": {"compiler": 41, "mechanic": 20, "trait": 5}}
     packages = {
         package.band["id"]: package
         for collection in ("mordheim", "trollheim")

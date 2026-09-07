@@ -215,7 +215,7 @@ def test_employed_hired_sword_on_the_roster_blocks_its_counterpart_in_content():
     engine = PostBattleEngine(controller.port, campaign, None)
     offer = next(o for o in controller.post_battle_content().hired_swords()
                  if o.profile_id == "hireling.hired-sword.highwayman")
-    row = engine._hireling_warrior(offer)  # exactly what a successful hire appends
+    row = engine.hireling_warrior(offer)  # exactly what a successful hire appends
     campaign.warriors.append(row)
     content = controller.post_battle_content()
     assert not any(
@@ -252,7 +252,7 @@ def test_buy_assign_sell_round_trip():
     ok, _ = engine.assign_item(offer.item_id, warrior.id)
     assert ok
     assert row.stash == 1 and row.equipped == 1
-    assert offer.name in warrior.equipment
+    assert any(entry.item_id == offer.item_id for entry in warrior.equipment)
 
     ok, _ = engine.sell_item(offer.item_id, 1)
     assert ok

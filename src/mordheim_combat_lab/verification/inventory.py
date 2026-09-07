@@ -49,19 +49,33 @@ def inventory(root: Path | None = None) -> tuple[Obligation, ...]:
                                    "url": row.get("source_url")}, row.get("effect", ""),
             ))
     for family in ("weapons", "armours", "defences", "materials", "preparations", "poisons", "skills"):
-        for row in catalogue.get(family, []):
+        if family == "skills":
+            # Skills live in catalog/skills; the mechanics catalogue no longer
+            # carries a twin `skills` family (see tools/rule_registry.py).
+            rows = [
+                row for path in sorted((root / "catalog/skills").glob("*.yaml"))
+                for row in read_yaml(path).get("skills", [])
+            ]
+        else:
+            rows = catalogue.get(family, [])
+        for row in rows:
             if row["id"] in excluded:
                 continue
             result.append(Obligation(
                 f"mechanic/{row['id']}", "mechanic",
                 binding_key({"kind": "mechanic", "id": row["id"]}),
-                fingerprint(row), {"file": "catalog/mechanics/close-combat.yaml", "id": row["id"],
+                fingerprint(row), {"file": "catalog/mechanics/close-combat.yaml" if family != "skills" else "catalog/skills", "id": row["id"],
                                    "references": row.get("source_refs", []),
                                    "url": row.get("rules_source_url")},
-                row.get("summary", ""),
+                row.get("effect", ""),
             ))
     # Deliberately do not use load_bands/runtime_bindings: those are runtime
     # filters and must not make a pending or partly classified effect disappear.
+    registry_path = root / "catalog/rules/special-rules.yaml"
+    shared = {
+        str(row["id"]): row
+        for row in (read_yaml(registry_path).get("rules", []) if registry_path.exists() else [])
+    }
     paths = sorted((root / "bands").glob("*/*/special-rules.yaml"))
     paths += sorted((root / "catalog/skills").glob("*.yaml"))
     for path in paths:
@@ -79,12 +93,14 @@ def inventory(root: Path | None = None) -> tuple[Obligation, ...]:
                     continue
                 binding = effect.get("binding")
                 dependency = (f"mechanic/{binding['id']}",) if binding and binding.get("kind") == "mechanic" else ()
+                ref = str(row.get("rule_ref") or "")
+                text = str(row.get("effect") or shared.get(ref, {}).get("effect") or "")
                 result.append(Obligation(
                     f"rule/{collection}/{owner}/{row['id']}/{effect['id']}", "grant",
                     binding_key(binding), fingerprint({"rule": row, "context": related}),
                     {"file": path.relative_to(root).as_posix(), "id": row["id"],
                      "effect": effect["id"], **(row.get("source") or {})},
-                    row.get("effect", row.get("summary", "")), dependency,
+                    text, dependency,
                 ))
     ids = [item.id for item in result]
     if len(ids) != len(set(ids)):

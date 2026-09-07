@@ -45,28 +45,35 @@ class SegmentedTabs(tk.Frame):
         items: Iterable[tuple[str, str]],
         active: str,
         on_select: Callable[[str], None],
+        prominent: bool = False,
         **kwargs,
     ) -> None:
-        super().__init__(master, bg=COLORS["bg"], **kwargs)
+        super().__init__(
+            master,
+            bg=COLORS["panel_deep"] if prominent else COLORS["bg"],
+            highlightthickness=1 if prominent else 0,
+            highlightbackground=COLORS["border_soft"],
+            **kwargs,
+        )
         for key, label in items:
             selected = key == active
             button = tk.Button(
                 self,
                 text=label,
                 command=lambda value=key: on_select(value),
-                bg=COLORS["panel_deep"] if selected else COLORS["bg"],
-                fg=COLORS["accent"] if selected else COLORS["muted"],
+                bg=(COLORS["accent"] if selected else COLORS["panel_deep"]) if prominent else (COLORS["panel_deep"] if selected else COLORS["bg"]),
+                fg=(COLORS["black"] if selected else COLORS["text"]) if prominent else (COLORS["accent"] if selected else COLORS["muted"]),
                 activebackground=COLORS["panel_soft"],
                 activeforeground=COLORS["text"],
                 relief="flat",
                 bd=0,
                 highlightthickness=0,
-                padx=14,
-                pady=8,
-                font=("Segoe UI Semibold", 8),
+                padx=18 if prominent else 14,
+                pady=9 if prominent else 8,
+                font=("Segoe UI Semibold", 9 if prominent else 8),
                 cursor="hand2",
             )
-            button.pack(side="left", padx=(0, 2))
+            button.pack(side="left", padx=(0, 1 if prominent else 2))
 
 
 class SummaryStrip(tk.Frame):
