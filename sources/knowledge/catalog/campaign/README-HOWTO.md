@@ -160,14 +160,14 @@ zombie invasions of the Archive Pestilen — the absence must be documented in
 
 - `experience`: list of awards. Each row has **either** `ref` (a canonical
   `campaign.experience.award.*` id from `experience-and-advances.yaml` when
-  the line matches the standard award) **or** `effect` (text faithful to the
+  the line matches the standard award) **or** `summary` (text faithful to the
   source for scenario-specific awards), never both. When the amount is numeric
   it is declared as `amount`; when the source gives it in dice,
   `amount_dice` (e.g. `D6`). Never both.
 - `wyrdstone`: text with the wyrdstone the warband gets at the end (e.g. per
   shard in possession, with a cap if the source declares one).
 - `income`: text with income in crowns or fixed payments.
-- `loot`: treasure/items. `effect` describes when it is obtained;
+- `loot`: treasure/items. `summary` describes when it is obtained;
   `contents` (optional) lists rows with `reward`, `roll` (e.g. `4D6`),
   `when.min`/`when.max` (optional, if the roll discriminates) and `item_id`
   (optional, canonical item-catalogue id when the reward is a concrete Trading

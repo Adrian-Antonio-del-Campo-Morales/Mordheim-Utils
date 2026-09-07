@@ -3,17 +3,17 @@ band_id: trollheim-cult-of-the-possessed
 rules:
 - id: magister--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Magister may use his Leadership when taking Leadership tests.
+  effect: Any warband model within 6" of the Magister may use his Leadership when taking Leadership tests.
   source:
     manual: trollheim
     printed_page: 74
     section: Heroes / 1 Magister / Leader
   name_i18n:
+    en: Leader
     es: Líder
   effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Magister puede usar su Liderazgo al realizar chequeos de
+    en: Any warband model within 6" of the Magister may use his Leadership when taking Leadership tests.
+    es: Cualquier modelo de la banda a 6" del Magister puede usar su Liderazgo al realizar chequeos de
       Liderazgo.
   applies_to:
     profile_ids:
@@ -26,23 +26,23 @@ rules:
     - id: unimplemented.trollheim-cult-of-the-possessed.magister.leader
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: magister--spellcaster
   name: Spellcaster
-  effect: >-
-    The Magister is a spellcaster and may use Chaos Rituals. The ritual list and ritual effects are
-    intentionally not modelled in this file.
+  effect: The Magister is a spellcaster and may use Chaos Rituals. The ritual list and ritual effects
+    are intentionally not modelled in this file.
   source:
     manual: trollheim
     printed_page: 74
     section: Heroes / 1 Magister / Spellcaster
   name_i18n:
-    es: Lanzador de Hechizos
+    en: Spellcaster
+    es: Lanzador de hechizos
   effect_i18n:
-    es: >-
-      El Magister es un lanzador de hechizos y puede usar los Rituales del Caos. La lista de
-      rituales y sus efectos no se modelan intencionadamente en este archivo.
+    en: The Magister is a spellcaster and may use Chaos Rituals. The ritual list and ritual effects are
+      intentionally not modelled in this file.
+    es: El Magister es un lanzador de hechizos y puede usar los Rituales del Caos. La lista de rituales
+      y sus efectos no se modelan intencionadamente en este archivo.
   applies_to:
     profile_ids:
     - magister
@@ -54,8 +54,7 @@ rules:
     - id: unimplemented.trollheim-cult-of-the-possessed.magister.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: the-possessed--fear
   name: Fear
   effect: The Possessed cause Fear.
@@ -64,8 +63,10 @@ rules:
     printed_page: 74
     section: Heroes / 0-2 The Possessed / Fear
   name_i18n:
+    en: Fear
     es: Miedo
   effect_i18n:
+    en: The Possessed cause Fear.
     es: Los Poseídos causan Miedo.
   applies_to:
     profile_ids:
@@ -78,22 +79,22 @@ rules:
     - id: unimplemented.trollheim-cult-of-the-possessed.the-possessed.fear
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: the-possessed--mutations
   name: Mutations
-  effect: >-
-    When recruited, each Possessed may begin with one or two Mutations, with their costs added to
+  effect: When recruited, each Possessed may begin with one or two Mutations, with their costs added to
     recruitment. Mutations may not be added to that model later.
   source:
     manual: trollheim
     printed_page: 74
     section: Heroes / 0-2 The Possessed / Mutations
   name_i18n:
+    en: Mutations
     es: Mutaciones
   effect_i18n:
-    es: >-
-      Al ser reclutado, cada Poseído puede comenzar con una o dos Mutaciones, cuyos costes se añaden
+    en: When recruited, each Possessed may begin with one or two Mutations, with their costs added to
+      recruitment. Mutations may not be added to that model later.
+    es: Al ser reclutado, cada Poseído puede comenzar con una o dos Mutaciones, cuyos costes se añaden
       al reclutamiento. No se pueden añadir Mutaciones a ese modelo más tarde.
   applies_to:
     profile_ids:
@@ -110,19 +111,20 @@ rules:
         id: compiler.possessed-optional-zero-to-two-mutations-at-recruitment
 - id: mutants--mutations
   name: Mutations
-  effect: >-
-    Each Mutant must begin with one or more Mutations when recruited, with their costs added to
+  effect: Each Mutant must begin with one or more Mutations when recruited, with their costs added to
     recruitment. Mutations may not be added to that model later.
   source:
     manual: trollheim
     printed_page: 74
     section: Heroes / 0-2 Mutants / Mutations
   name_i18n:
+    en: Mutations
     es: Mutaciones
   effect_i18n:
-    es: >-
-      Cada Mutante debe comenzar con una o más Mutaciones al ser reclutado, cuyos costes se añaden
-      al reclutamiento. No se pueden añadir Mutaciones a ese modelo más tarde.
+    en: Each Mutant must begin with one or more Mutations when recruited, with their costs added to recruitment.
+      Mutations may not be added to that model later.
+    es: Cada Mutante debe comenzar con una o más Mutaciones al ser reclutado, cuyos costes se añaden al
+      reclutamiento. No se pueden añadir Mutaciones a ese modelo más tarde.
   applies_to:
     profile_ids:
     - mutants
@@ -139,23 +141,22 @@ rules:
     - id: campaign.mutant-mutation-history-and-costs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: recruitment costs and the prohibition on adding mutations later require
-        campaign history.
+      reason: 'Out of scope: recruitment costs and the prohibition on adding mutations later require campaign
+        history.'
 - id: darksouls--crazed
   name: Crazed
-  effect: >-
-    Darksouls know no fear and automatically pass every Leadership test they are required to take.
+  effect: Darksouls know no fear and automatically pass every Leadership test they are required to take.
   source:
     manual: trollheim
     printed_page: 75
     section: Henchmen / 0-5 Darksouls / Crazed
   name_i18n:
+    en: Crazed
     es: Enajenados
   effect_i18n:
-    es: >-
-      Las Ánimas oscuras no conocen el miedo y superan automáticamente todos los chequeos de
-      Liderazgo que deban realizar.
+    en: Darksouls know no fear and automatically pass every Leadership test they are required to take.
+    es: Las Ánimas oscuras no conocen el miedo y superan automáticamente todos los chequeos de Liderazgo
+      que deban realizar.
   applies_to:
     profile_ids:
     - darksouls
@@ -167,30 +168,33 @@ rules:
     - id: unimplemented.trollheim-cult-of-the-possessed.darksouls.crazed
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--mutation-purchase
   name: Mutation Purchase
-  effect: >-
-    Mutations may be purchased for a Mutant or The Possessed only when that model is recruited. No
-    new Mutations may be bought for the model later. The first Mutation costs the listed amount; the
-    second and each subsequent Mutation bought for the same model cost twice the listed amount. The
-    general Mutations section says a Mutant or Possessed may have one or more Mutations, while the
-    specific Possessed profile says one or two; this file preserves the profile-specific one-or-two
-    limit for initial Possessed recruitment.
+  effect: Mutations may be purchased for a Mutant or The Possessed only when that model is recruited.
+    No new Mutations may be bought for the model later. The first Mutation costs the listed amount; the
+    second and each subsequent Mutation bought for the same model cost twice the listed amount. The general
+    Mutations section says a Mutant or Possessed may have one or more Mutations, while the specific Possessed
+    profile says one or two; this file preserves the profile-specific one-or-two limit for initial Possessed
+    recruitment.
   source:
     manual: trollheim
     printed_page: 76
     section: Mutations / Purchase
   name_i18n:
-    es: Compra de Mutaciones
+    en: Mutation Purchase
+    es: Compra de mutaciones
   effect_i18n:
-    es: >-
-      Las Mutaciones solo pueden comprarse para un Mutante o un Poseído cuando ese modelo es
-      reclutado. No se pueden comprar nuevas Mutaciones para el modelo más tarde. La primera
-      Mutación cuesta la cantidad indicada; la segunda y cada Mutación posterior comprada para el
-      mismo modelo cuestan el doble de la cantidad indicada. La tabla general de Mutaciones no se
-      modela en este archivo.
+    en: Mutations may be purchased for a Mutant or The Possessed only when that model is recruited. No
+      new Mutations may be bought for the model later. The first Mutation costs the listed amount; the
+      second and each subsequent Mutation bought for the same model cost twice the listed amount. The
+      general Mutations section says a Mutant or Possessed may have one or more Mutations, while the specific
+      Possessed profile says one or two; this file preserves the profile-specific one-or-two limit for
+      initial Possessed recruitment.
+    es: Las Mutaciones solo pueden comprarse para un Mutante o un Poseído cuando ese modelo es reclutado.
+      No se pueden comprar nuevas Mutaciones para el modelo más tarde. La primera Mutación cuesta la cantidad
+      indicada; la segunda y cada Mutación posterior comprada para el mismo modelo cuestan el doble de
+      la cantidad indicada. La tabla general de Mutaciones no se modela en este archivo.
   eligibility:
   - the-possessed
   - mutants
@@ -209,9 +213,8 @@ rules:
     - id: campaign.mutation-purchase-history-and-costs
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: recruitment timing, later campaign purchases and escalating gold costs require
-        campaign history.
+      reason: 'Out of scope: recruitment timing, later campaign purchases and escalating gold costs require
+        campaign history.'
 - id: band--mutations-daemon-soul
   kind: mutation
   runtime:
@@ -222,21 +225,20 @@ rules:
     - id: unimplemented.band-mutations-daemon-soul
       scope: 'NO'
       binding: null
-      reason: >-
-        only affects spells and prayers
+      reason: only affects spells and prayers
   name: Daemon Soul
-  effect: >-
-    The model has a 4+ special save against the effects of spells or prayers. Cost: 20 gc.
+  effect: 'The model has a 4+ special save against the effects of spells or prayers. Cost: 20 gc.'
   source:
     manual: trollheim
     printed_page: 76
     section: Mutations / Daemon Soul
   name_i18n:
-    es: Alma Demoníaca
+    en: Daemon Soul
+    es: Alma demoníaca
   effect_i18n:
-    es: >-
-      El modelo tiene una salvación especial de 4+ contra los efectos de hechizos o plegarias.
-      Coste: 20 coronas.
+    en: 'The model has a 4+ special save against the effects of spells or prayers. Cost: 20 gc.'
+    es: 'El modelo tiene una salvación especial de 4+ contra los efectos de hechizos o plegarias. Coste:
+      20 coronas.'
   eligibility:
   - the-possessed
   - mutants
@@ -255,19 +257,20 @@ rules:
         kind: compiler
         id: special-rule.band--mutations-great-claw
   name: Great Claw
-  effect: >-
-    One arm ends in a great claw and may not carry a weapon. The model gains one additional
-    close-combat Attack with +1 Strength. Cost: 50 gc.
+  effect: 'One arm ends in a great claw and may not carry a weapon. The model gains one additional close-combat
+    Attack with +1 Strength. Cost: 50 gc.'
   source:
     manual: trollheim
     printed_page: 76
     section: Mutations / Great Claw
   name_i18n:
-    es: Garra Grande
+    en: Great Claw
+    es: Garra grande
   effect_i18n:
-    es: >-
-      Un brazo termina en una garra grande y no puede llevar un arma. El modelo gana un Ataque
-      adicional de combate cuerpo a cuerpo con +1 de Fuerza. Coste: 50 coronas.
+    en: 'One arm ends in a great claw and may not carry a weapon. The model gains one additional close-combat
+      Attack with +1 Strength. Cost: 50 gc.'
+    es: 'Un brazo termina en una garra grande y no puede llevar un arma. El modelo gana un Ataque adicional
+      de combate cuerpo a cuerpo con +1 de Fuerza. Coste: 50 coronas.'
   eligibility:
   - the-possessed
   - mutants
@@ -283,20 +286,19 @@ rules:
     - id: unimplemented.band-mutations-cloven-hooves
       scope: 'NO'
       binding: null
-      reason: >-
-        movement is outside the close-combat duel
+      reason: movement is outside the close-combat duel
   name: Cloven Hooves
-  effect: >-
-    The model gains +1" Movement. Cost: 40 gc.
+  effect: 'The model gains +1" Movement. Cost: 40 gc.'
   source:
     manual: trollheim
     printed_page: 76
     section: Mutations / Cloven Hooves
   name_i18n:
-    es: Pezuñas Hendidas
+    en: Cloven Hooves
+    es: Pezuñas hendidas
   effect_i18n:
-    es: >-
-      El modelo gana +1" de Movimiento. Coste: 40 coronas.
+    en: 'The model gains +1" Movement. Cost: 40 gc.'
+    es: 'El modelo gana +1" de Movimiento. Coste: 40 coronas.'
   eligibility:
   - the-possessed
   - mutants
@@ -315,19 +317,20 @@ rules:
         kind: compiler
         id: special-rule.band--mutations-tentacle
   name: Tentacle
-  effect: >-
-    In close combat, the model may reduce one opponent's Attacks by 1, to a minimum of 1, and may
-    choose which attack is lost. Cost: 35 gc.
+  effect: 'In close combat, the model may reduce one opponent''s Attacks by 1, to a minimum of 1, and
+    may choose which attack is lost. Cost: 35 gc.'
   source:
     manual: trollheim
     printed_page: 76
     section: Mutations / Tentacle
   name_i18n:
+    en: Tentacle
     es: Tentáculo
   effect_i18n:
-    es: >-
-      En combate cuerpo a cuerpo, el modelo puede reducir en 1 los Ataques de un oponente, hasta un
-      mínimo de 1, y puede elegir qué ataque se pierde. Coste: 35 coronas.
+    en: 'In close combat, the model may reduce one opponent''s Attacks by 1, to a minimum of 1, and may
+      choose which attack is lost. Cost: 35 gc.'
+    es: 'En combate cuerpo a cuerpo, el modelo puede reducir en 1 los Ataques de un oponente, hasta un
+      mínimo de 1, y puede elegir qué ataque se pierde. Coste: 35 coronas.'
   eligibility:
   - the-possessed
   - mutants
@@ -348,20 +351,20 @@ rules:
         parameters:
           value: true
   name: Acid Blood
-  effect: >-
-    Whenever the model loses a Wound in close combat, every model in base contact suffers one
-    Strength 3 hit. These hits never cause critical hits. Cost: 30 gc.
+  effect: 'Whenever the model loses a Wound in close combat, every model in base contact suffers one Strength
+    3 hit. These hits never cause critical hits. Cost: 30 gc.'
   source:
     manual: trollheim
     printed_page: 76
     section: Mutations / Acid Blood
   name_i18n:
-    es: Sangre Ácida
+    en: Acid Blood
+    es: Sangre ácida
   effect_i18n:
-    es: >-
-      Siempre que el modelo pierda una Herida en combate cuerpo a cuerpo, todos los modelos en
-      contacto de base sufren un impacto de Fuerza 3. Estos impactos nunca causan golpes críticos.
-      Coste: 30 coronas.
+    en: 'Whenever the model loses a Wound in close combat, every model in base contact suffers one Strength
+      3 hit. These hits never cause critical hits. Cost: 30 gc.'
+    es: 'Siempre que el modelo pierda una Herida en combate cuerpo a cuerpo, todos los modelos en contacto
+      de base sufren un impacto de Fuerza 3. Estos impactos nunca causan golpes críticos. Coste: 30 coronas.'
   eligibility:
   - the-possessed
   - mutants
@@ -382,20 +385,21 @@ rules:
         parameters:
           value: true
   name: Spines
-  effect: >-
-    At the start of each close-combat phase, every model in base contact with the bearer suffers one
-    automatic Strength 1 hit. These hits never cause critical hits. Cost: 35 gc.
+  effect: 'At the start of each close-combat phase, every model in base contact with the bearer suffers
+    one automatic Strength 1 hit. These hits never cause critical hits. Cost: 35 gc.'
   source:
     manual: trollheim
     printed_page: 76
     section: Mutations / Spines
   name_i18n:
+    en: Spines
     es: Púas
   effect_i18n:
-    es: >-
-      Al comienzo de cada fase de combate cuerpo a cuerpo, todos los modelos en contacto de base con
-      el portador sufren un impacto automático de Fuerza 1. Estos impactos nunca causan golpes
-      críticos. Coste: 35 coronas.
+    en: 'At the start of each close-combat phase, every model in base contact with the bearer suffers
+      one automatic Strength 1 hit. These hits never cause critical hits. Cost: 35 gc.'
+    es: 'Al comienzo de cada fase de combate cuerpo a cuerpo, todos los modelos en contacto de base con
+      el portador sufren un impacto automático de Fuerza 1. Estos impactos nunca causan golpes críticos.
+      Coste: 35 coronas.'
   eligibility:
   - the-possessed
   - mutants
@@ -416,19 +420,20 @@ rules:
         parameters:
           value: true
   name: Scorpion Tail
-  effect: >-
-    The model gains one additional Strength 5 attack in each close-combat phase. Against a model
-    immune to poison, this attack is Strength 2 instead. Cost: 40 gc.
+  effect: 'The model gains one additional Strength 5 attack in each close-combat phase. Against a model
+    immune to poison, this attack is Strength 2 instead. Cost: 40 gc.'
   source:
     manual: trollheim
     printed_page: 76
     section: Mutations / Scorpion Tail
   name_i18n:
-    es: Cola de Escorpión
+    en: Scorpion Tail
+    es: Cola de escorpión
   effect_i18n:
-    es: >-
-      El modelo gana un ataque adicional de Fuerza 5 en cada fase de combate cuerpo a cuerpo. Contra
-      un modelo inmune al veneno, este ataque es de Fuerza 2 en su lugar. Coste: 40 coronas.
+    en: 'The model gains one additional Strength 5 attack in each close-combat phase. Against a model
+      immune to poison, this attack is Strength 2 instead. Cost: 40 gc.'
+    es: 'El modelo gana un ataque adicional de Fuerza 5 en cada fase de combate cuerpo a cuerpo. Contra
+      un modelo inmune al veneno, este ataque es de Fuerza 2 en su lugar. Coste: 40 coronas.'
   eligibility:
   - the-possessed
   - mutants
@@ -448,21 +453,23 @@ rules:
         id: special-rule.band--mutations-extra-arm
   runtime_selectable: true
   name: Extra Arm
-  effect: >-
-    A Mutant may use a one-handed weapon in the extra arm and gains +1 Attack in close combat, or
-    may carry a Shield or Buckler in that arm. The Possessed gains the extra Attack but still may
-    not carry a weapon. Cost: 40 gc.
+  effect: 'A Mutant may use a one-handed weapon in the extra arm and gains +1 Attack in close combat,
+    or may carry a Shield or Buckler in that arm. The Possessed gains the extra Attack but still may not
+    carry a weapon. Cost: 40 gc.'
   source:
     manual: trollheim
     printed_page: 76
     section: Mutations / Extra Arm
   name_i18n:
-    es: Brazo Extra
+    en: Extra Arm
+    es: Brazo extra
   effect_i18n:
-    es: >-
-      Un Mutante puede empuñar un arma a una mano en el brazo extra y gana +1 Ataque en combate
-      cuerpo a cuerpo, o puede llevar un Escudo o una Rodela en ese brazo. El Poseído gana el Ataque
-      extra, pero aun así no puede llevar un arma. Coste: 40 coronas.
+    en: 'A Mutant may use a one-handed weapon in the extra arm and gains +1 Attack in close combat, or
+      may carry a Shield or Buckler in that arm. The Possessed gains the extra Attack but still may not
+      carry a weapon. Cost: 40 gc.'
+    es: 'Un Mutante puede empuñar un arma a una mano en el brazo extra y gana +1 Ataque en combate cuerpo
+      a cuerpo, o puede llevar un Escudo o una Rodela en ese brazo. El Poseído gana el Ataque extra, pero
+      aun así no puede llevar un arma. Coste: 40 coronas.'
   eligibility:
   - the-possessed
   - mutants
@@ -478,20 +485,19 @@ rules:
     - id: unimplemented.band-mutations-hideous
       scope: LATER
       binding: null
-      reason: >-
-        fear/psychology is outside the duel runtime
+      reason: fear/psychology is outside the duel runtime
   name: Hideous
-  effect: >-
-    The model causes Fear. Cost: 40 gc.
+  effect: 'The model causes Fear. Cost: 40 gc.'
   source:
     manual: trollheim
     printed_page: 76
     section: Mutations / Hideous
   name_i18n:
+    en: Hideous
     es: Horripilante
   effect_i18n:
-    es: >-
-      El modelo causa Miedo. Coste: 40 coronas.
+    en: 'The model causes Fear. Cost: 40 gc.'
+    es: 'El modelo causa Miedo. Coste: 40 coronas.'
   eligibility:
   - the-possessed
   - mutants

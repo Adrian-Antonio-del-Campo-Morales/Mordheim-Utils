@@ -22,22 +22,29 @@ modelling conventions).
 
 ## Locale policy
 
-English is **canonical and stored once**: the `name` field (and the `effect`
-prose). The `name_i18n` / `effect_i18n` blocks store only *translations* for
-non-canonical locales (`es`) and never carry an `en` mirror of the canonical
-English. `tools/normalize_names.py` enforces this, and
-`tests/knowledge/test_kb_i18n.py` guards it independently.
+The KB is **canonical English only** by convention: every record carries a
+`name_i18n` / `effect_i18n` block for forward compatibility, but the
+non-English fields (e.g. `name_i18n.es`) stay `null`. Do not fill them
+casually — a translation pass would be a dedicated, reviewed project (and the
+few existing Spanish strings in the Bretonnian band are historical exceptions,
+not the convention).
 
-The KB carries a **reviewed Spanish translation**: warband rules, profiles
-and band names, hired swords and campaign catalogues, and the skill / item /
-mechanic catalogues fill `name_i18n.es` / `effect_i18n.es`. `es` fields are
-data-only: `mordheim_knowledge.i18n` — the single sanctioned reader
-(`set_locale` / `display_name` / `display_effect`, translation-first,
-canonical-English-fallback) — is wired into both applications, so a filled
-`es` surfaces immediately under `MORDHEIM_LOCALE=es`; an unfilled record
-renders its canonical English.
+The KB is nevertheless **prepared for a Spanish translation**:
+`mordheim_knowledge.i18n` is the single sanctioned reader of the i18n blocks
+(`set_locale` / `display_name` / `display_effect`, canonical-English-first,
+locale fallback); it is already wired into the Campaign Manager's read model
+(`KnowledgePort` band/profile/skill/item/hireling names). Filling an
+`es` field is therefore a data-only change that surfaces immediately in the
+applications, and reviewed entries (such as the Bretonnian ones) take effect
+without any code change. Until a reviewed pass fills the fields, the display
+locale renders the canonical English names.
 
-Canonical glossary terms live in `catalog/translation-glossary.md`.
+The **pilot band** for the reviewed Spanish pass is `bands/mordheim/bretonnian-knights`:
+all ten of its rules carry complete `name_i18n.es` / `effect_i18n.es` entries
+reviewed against the same printed source as the English text. New bands should
+follow its in-file glossary (Caballero Andante = Questing Knight, Caballero
+Novel = Knight Errant, chequeo = test, 1D6 = D6) so translations stay
+consistent across the KB.
 
 ```powershell
 python -m mordheim_combat_lab validate

@@ -3,19 +3,19 @@ band_id: lustria-savage-goblins
 rules:
 - id: witch-doctor--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Witch Doctor may use his Leadership when taking Leadership
+  effect: Any warband model within 6" of the Witch Doctor may use his Leadership when taking Leadership
     tests.
   source:
     manual: lustria
     printed_page: 100
     section: Heroes / 1 Witch Doctor / Leader
   name_i18n:
+    en: Leader
     es: Líder
   effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Brujo puede usar su Liderazgo al realizar chequeos de
-      Liderazgo.
+    en: Any warband model within 6" of the Witch Doctor may use his Leadership when taking Leadership
+      tests.
+    es: Cualquier modelo de la banda a 6" del Brujo puede usar su Liderazgo al realizar chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - witch-doctor
@@ -27,25 +27,24 @@ rules:
     - id: unimplemented.lustria-savage-goblins.witch-doctor.leader
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: witch-doctor--spellcaster
   name: Spellcaster
-  effect: >-
-    The Witch Doctor is a spellcaster and begins with one randomly generated spell from Forest
-    Little WAAAGH! Magic. The spell list and spell effects are intentionally not modelled in this
-    file.
+  effect: The Witch Doctor is a spellcaster and begins with one randomly generated spell from Forest Little
+    WAAAGH! Magic. The spell list and spell effects are intentionally not modelled in this file.
   source:
     manual: lustria
     printed_page: 100
     section: Heroes / 1 Witch Doctor / Spellcaster
   name_i18n:
-    es: Lanzador de Hechizos
+    en: Spellcaster
+    es: Lanzador de hechizos
   effect_i18n:
-    es: >-
-      El Brujo es un lanzador de hechizos y comienza con un hechizo generado al azar de la Magia del
-      pequeño ¡WAAAGH! del bosque. La lista de hechizos y sus efectos no se modelan
-      intencionadamente en este archivo.
+    en: The Witch Doctor is a spellcaster and begins with one randomly generated spell from Forest Little
+      WAAAGH! Magic. The spell list and spell effects are intentionally not modelled in this file.
+    es: El Brujo es un lanzador de hechizos y comienza con un hechizo generado al azar de la Magia del
+      pequeño ¡WAAAGH! del bosque. La lista de hechizos y sus efectos no se modelan intencionadamente
+      en este archivo.
   applies_to:
     profile_ids:
     - witch-doctor
@@ -57,28 +56,29 @@ rules:
     - id: unimplemented.lustria-savage-goblins.witch-doctor.spellcaster
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: witch-doctor--return-from-the-darkness
   name: Return from the Darkness
-  effect: >-
-    After a Primitive Goblin dies, the Witch Doctor may add one Zomblin to the warband for free,
-    even if this takes the warband above its normal 20-model limit. If more than one Goblin died,
-    the first may be returned automatically; each second and subsequent Goblin is returned only on a
-    4+ on D6. The warband may never contain more than five Zomblins.
+  effect: After a Primitive Goblin dies, the Witch Doctor may add one Zomblin to the warband for free,
+    even if this takes the warband above its normal 20-model limit. If more than one Goblin died, the
+    first may be returned automatically; each second and subsequent Goblin is returned only on a 4+ on
+    D6. The warband may never contain more than five Zomblins.
   source:
     manual: lustria
     printed_page: 100
     section: Heroes / 1 Witch Doctor / Return from the Darkness
   name_i18n:
-    es: Retorno desde la Oscuridad
+    en: Return from the Darkness
+    es: Retorno desde la oscuridad
   effect_i18n:
-    es: >-
-      Tras la muerte de un Goblin primitivo, el Brujo puede añadir un Zomblin a la banda de forma
-      gratuita, aunque con ello supere el límite normal de 20 modelos de la banda. Si murió más de
-      un Goblin, el primero puede volver automáticamente; cada segundo Goblin y los siguientes
-      vuelven solo con un 4+ en 1D6. La banda no puede superar de este modo su límite de modelos en
-      más de un Zomblin.
+    en: After a Primitive Goblin dies, the Witch Doctor may add one Zomblin to the warband for free, even
+      if this takes the warband above its normal 20-model limit. If more than one Goblin died, the first
+      may be returned automatically; each second and subsequent Goblin is returned only on a 4+ on D6.
+      The warband may never contain more than five Zomblins.
+    es: Tras la muerte de un Goblin primitivo, el Brujo puede añadir un Zomblin a la banda de forma gratuita,
+      aunque con ello supere el límite normal de 20 modelos de la banda. Si murió más de un Goblin, el
+      primero puede volver automáticamente; cada segundo Goblin y los siguientes vuelven solo con un 4+
+      en 1D6. La banda no puede superar de este modo su límite de modelos en más de un Zomblin.
   applies_to:
     profile_ids:
     - witch-doctor
@@ -90,25 +90,26 @@ rules:
     - id: unimplemented.lustria-savage-goblins.witch-doctor.return-from-the-darkness
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: big-boss--second-in-command
   name: Second in Command
-  effect: >-
-    If the Witch Doctor's Leadership cannot be used, the Big Boss gains the Leader rule with a 4"
-    range. If the Witch Doctor dies, the Big Boss becomes the warband leader until a new Witch
-    Doctor is recruited.
+  effect: If the Witch Doctor's Leadership cannot be used, the Big Boss gains the Leader rule with a 4"
+    range. If the Witch Doctor dies, the Big Boss becomes the warband leader until a new Witch Doctor
+    is recruited.
   source:
     manual: lustria
     printed_page: 100
     section: Heroes / 0-1 Big Boss / Second in Command
   name_i18n:
-    es: Segundo al Mando
+    en: Second in Command
+    es: Segundo al mando
   effect_i18n:
-    es: >-
-      Si no puede usarse el Liderazgo del Brujo, el Gran jefe obtiene la regla de Líder con un
-      alcance de 4". Si el Brujo muere, el Gran jefe se convierte en el líder de la banda hasta que
-      se reclute un nuevo Brujo.
+    en: If the Witch Doctor's Leadership cannot be used, the Big Boss gains the Leader rule with a 4"
+      range. If the Witch Doctor dies, the Big Boss becomes the warband leader until a new Witch Doctor
+      is recruited.
+    es: Si no puede usarse el Liderazgo del Brujo, el Gran jefe obtiene la regla de Líder con un alcance
+      de 4". Si el Brujo muere, el Gran jefe se convierte en el líder de la banda hasta que se reclute
+      un nuevo Brujo.
   applies_to:
     profile_ids:
     - big-boss
@@ -120,8 +121,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.big-boss.second-in-command
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: red-teeth--frenzy
   runtime:
     scope: LATER
@@ -142,28 +142,31 @@ rules:
     printed_page: 101
     section: Heroes / 0-2 Red Teeth / Frenzy
   name_i18n:
+    en: Frenzy
     es: Frenesí
   effect_i18n:
+    en: Red Teeth are subject to Frenzy.
     es: Los Dientes rojos están sujetos a Frenesí.
   applies_to:
     profile_ids:
     - red-teeth
 - id: trackers--tracker-gear
   name: Tracker Gear
-  effect: >-
-    Trackers begin every battle with a Rope and Hook and one set of Bolas. These items may not be
+  effect: Trackers begin every battle with a Rope and Hook and one set of Bolas. These items may not be
     sold or transferred, and any lost items are replaced automatically for the next battle.
   source:
     manual: lustria
     printed_page: 101
     section: Heroes / 0-2 Trackers / Tracker Gear
   name_i18n:
-    es: Equipo de Rastreo
+    en: Tracker Gear
+    es: Equipo de rastreo
   effect_i18n:
-    es: >-
-      Los Rastreadores comienzan cada batalla con una Cuerda y gancho y un juego de Bolas. Estos
-      objetos no pueden venderse ni transferirse, y los objetos perdidos se reponeen automáticamente
-      para la siguiente batalla.
+    en: Trackers begin every battle with a Rope and Hook and one set of Bolas. These items may not be
+      sold or transferred, and any lost items are replaced automatically for the next battle.
+    es: Los Rastreadores comienzan cada batalla con una Cuerda y gancho y un juego de Bolas. Estos objetos
+      no pueden venderse ni transferirse, y los objetos perdidos se reponeen automáticamente para la siguiente
+      batalla.
   applies_to:
     profile_ids:
     - trackers
@@ -185,8 +188,10 @@ rules:
     printed_page: 103
     section: Henchmen / 0-5 Zomblins / May Not Run
   name_i18n:
-    es: No Pueden Correr
+    en: May Not Run
+    es: No pueden correr
   effect_i18n:
+    en: Zomblins may not run, but may charge normally.
     es: Los Zomblins no pueden correr, pero pueden cargar con normalidad.
   applies_to:
     profile_ids:
@@ -199,8 +204,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblins.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: zomblins--fear
   name: Fear
   effect: Zomblins cause Fear.
@@ -209,8 +213,10 @@ rules:
     printed_page: 103
     section: Henchmen / 0-5 Zomblins / Fear
   name_i18n:
+    en: Fear
     es: Miedo
   effect_i18n:
+    en: Zomblins cause Fear.
     es: Los Zomblins causan Miedo.
   applies_to:
     profile_ids:
@@ -223,8 +229,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblins.fear
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: zomblins--immune-to-psychology
   name: Immune to Psychology
   effect: Zomblins are immune to Psychology and never leave close combat because of Psychology.
@@ -233,10 +238,11 @@ rules:
     printed_page: 103
     section: Henchmen / 0-5 Zomblins / Immune to Psychology
   name_i18n:
+    en: Immune to Psychology
     es: Inmunes a la Psicología
   effect_i18n:
-    es: >-
-      Los Zomblins son inmunes a la Psicología y nunca abandonan el combate cuerpo a cuerpo a causa
+    en: Zomblins are immune to Psychology and never leave close combat because of Psychology.
+    es: Los Zomblins son inmunes a la Psicología y nunca abandonan el combate cuerpo a cuerpo a causa
       de la Psicología.
   applies_to:
     profile_ids:
@@ -249,8 +255,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblins.immune-to-psychology
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: zomblins--immune-to-poison
   runtime:
     scope: 'YES'
@@ -271,8 +276,10 @@ rules:
     printed_page: 103
     section: Henchmen / 0-5 Zomblins / Immune to Poison
   name_i18n:
-    es: Inmunes al Veneno
+    en: Immune to Poison
+    es: Inmunes al veneno
   effect_i18n:
+    en: Zomblins are immune to poison.
     es: Los Zomblins son inmunes al veneno.
   applies_to:
     profile_ids:
@@ -295,8 +302,10 @@ rules:
     printed_page: 103
     section: Henchmen / 0-5 Zomblins / No Pain
   name_i18n:
-    es: Sin Dolor
+    en: No Pain
+    es: Sin dolor
   effect_i18n:
+    en: Zomblins treat a Stunned result on the Injury chart as Knocked Down.
     es: Los Zomblins tratan un resultado Aturdido de la tabla de Heridas como Derribado.
   applies_to:
     profile_ids:
@@ -309,8 +318,10 @@ rules:
     printed_page: 103
     section: Henchmen / 0-5 Zomblins / Brainless
   name_i18n:
-    es: Carentes de Mente
+    en: Brainless
+    es: Carentes de mente
   effect_i18n:
+    en: Zomblins never gain Experience.
     es: Los Zomblins nunca ganan Experiencia.
   applies_to:
     profile_ids:
@@ -323,23 +334,23 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblins.brainless
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: zomblintua--construction
   name: Construction
-  effect: >-
-    Recruiting a Zomblintua costs 195 gc and also requires at least three Zomblins in the warband;
+  effect: Recruiting a Zomblintua costs 195 gc and also requires at least three Zomblins in the warband;
     those three Zomblins are sacrificed.
   source:
     manual: lustria
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / Construction
   name_i18n:
+    en: Construction
     es: Construcción
   effect_i18n:
-    es: >-
-      Reclutar un Zomblintua cuesta 195 coronas y también requiere al menos tres Zomblins en la
-      banda; esos tres Zomblins son sacrificados.
+    en: Recruiting a Zomblintua costs 195 gc and also requires at least three Zomblins in the warband;
+      those three Zomblins are sacrificed.
+    es: Reclutar un Zomblintua cuesta 195 coronas y también requiere al menos tres Zomblins en la banda;
+      esos tres Zomblins son sacrificados.
   applies_to:
     profile_ids:
     - zomblintua
@@ -351,8 +362,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblintua.construction
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: zomblintua--may-not-run
   name: May Not Run
   effect: Zomblintua may not run, but may charge normally.
@@ -361,8 +371,10 @@ rules:
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / May Not Run
   name_i18n:
-    es: No Puede Correr
+    en: May Not Run
+    es: No puede correr
   effect_i18n:
+    en: Zomblintua may not run, but may charge normally.
     es: El Zomblintua no puede correr, pero puede cargar con normalidad.
   applies_to:
     profile_ids:
@@ -375,8 +387,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblintua.may-not-run
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: zomblintua--fear
   name: Fear
   effect: Zomblintua causes Fear.
@@ -385,8 +396,10 @@ rules:
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / Fear
   name_i18n:
+    en: Fear
     es: Miedo
   effect_i18n:
+    en: Zomblintua causes Fear.
     es: El Zomblintua causa Miedo.
   applies_to:
     profile_ids:
@@ -399,8 +412,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblintua.fear
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: zomblintua--immune-to-psychology
   name: Immune to Psychology
   effect: Zomblintua is immune to Psychology and never leaves close combat because of Psychology.
@@ -409,10 +421,11 @@ rules:
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / Immune to Psychology
   name_i18n:
+    en: Immune to Psychology
     es: Inmune a la Psicología
   effect_i18n:
-    es: >-
-      El Zomblintua es inmune a la Psicología y nunca abandona el combate cuerpo a cuerpo a causa de
+    en: Zomblintua is immune to Psychology and never leaves close combat because of Psychology.
+    es: El Zomblintua es inmune a la Psicología y nunca abandona el combate cuerpo a cuerpo a causa de
       la Psicología.
   applies_to:
     profile_ids:
@@ -425,8 +438,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblintua.immune-to-psychology
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: zomblintua--immune-to-poison
   runtime:
     scope: 'YES'
@@ -447,8 +459,10 @@ rules:
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / Immune to Poison
   name_i18n:
-    es: Inmune al Veneno
+    en: Immune to Poison
+    es: Inmune al veneno
   effect_i18n:
+    en: Zomblintua is immune to poison.
     es: El Zomblintua es inmune al veneno.
   applies_to:
     profile_ids:
@@ -471,8 +485,10 @@ rules:
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / No Pain
   name_i18n:
-    es: Sin Dolor
+    en: No Pain
+    es: Sin dolor
   effect_i18n:
+    en: Zomblintua treats a Stunned result on the Injury chart as Knocked Down.
     es: El Zomblintua trata un resultado Aturdido de la tabla de Heridas como Derribado.
   applies_to:
     profile_ids:
@@ -485,8 +501,10 @@ rules:
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / Brainless
   name_i18n:
-    es: Carente de Mente
+    en: Brainless
+    es: Carente de mente
   effect_i18n:
+    en: Zomblintua never gains Experience.
     es: El Zomblintua nunca gana Experiencia.
   applies_to:
     profile_ids:
@@ -499,23 +517,23 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblintua.brainless
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: zomblintua--large-target
   name: Large Target
-  effect: >-
-    Zomblintua may be selected as a shooting target even when it is not the closest eligible target,
+  effect: Zomblintua may be selected as a shooting target even when it is not the closest eligible target,
     and missile attacks against it gain +1 To Hit.
   source:
     manual: lustria
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / Large Target
   name_i18n:
-    es: Objetivo Grande
+    en: Large Target
+    es: Objetivo grande
   effect_i18n:
-    es: >-
-      El Zomblintua puede ser elegido como objetivo de disparo incluso cuando no es el objetivo
-      elegible más cercano, y los ataques de misil contra él obtienen +1 por Golpear.
+    en: Zomblintua may be selected as a shooting target even when it is not the closest eligible target,
+      and missile attacks against it gain +1 To Hit.
+    es: El Zomblintua puede ser elegido como objetivo de disparo incluso cuando no es el objetivo elegible
+      más cercano, y los ataques de misil contra él obtienen +1 por Golpear.
   applies_to:
     profile_ids:
     - zomblintua
@@ -527,8 +545,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.zomblintua.large-target
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: zomblintua--regeneration
   runtime:
     scope: 'YES'
@@ -541,22 +558,23 @@ rules:
         kind: mechanic
         id: skill.regeneration-5-plus
   name: Regeneration
-  effect: >-
-    Whenever Zomblintua suffers a Wound, roll D6; on 5+ that Wound is ignored. Wounds caused by fire
-    or fire-based magic cannot be regenerated. After a battle, Zomblintua does not roll for Serious
+  effect: Whenever Zomblintua suffers a Wound, roll D6; on 5+ that Wound is ignored. Wounds caused by
+    fire or fire-based magic cannot be regenerated. After a battle, Zomblintua does not roll for Serious
     Injuries unless the relevant wounds were caused by fire.
   source:
     manual: lustria
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / Regeneration
   name_i18n:
+    en: Regeneration
     es: Regeneración
   effect_i18n:
-    es: >-
-      Siempre que el Zomblintua sufra una Herida, tira 1D6; con 5+ esa Herida se ignora. Las Heridas
-      causadas por fuego o magia basada en fuego no pueden regenerarse. Tras una batalla, el
-      Zomblintua no tira en la tabla de Heridas Graves salvo que las heridas pertinentes fueran
-      causadas por fuego.
+    en: Whenever Zomblintua suffers a Wound, roll D6; on 5+ that Wound is ignored. Wounds caused by fire
+      or fire-based magic cannot be regenerated. After a battle, Zomblintua does not roll for Serious
+      Injuries unless the relevant wounds were caused by fire.
+    es: Siempre que el Zomblintua sufra una Herida, tira 1D6; con 5+ esa Herida se ignora. Las Heridas
+      causadas por fuego o magia basada en fuego no pueden regenerarse. Tras una batalla, el Zomblintua
+      no tira en la tabla de Heridas Graves salvo que las heridas pertinentes fueran causadas por fuego.
   applies_to:
     profile_ids:
     - zomblintua
@@ -578,26 +596,28 @@ rules:
     printed_page: 104
     section: Henchmen / 0-1 Zomblintua / Weapons and Armour
   name_i18n:
-    es: Ataques Contundentes
+    en: Blunt Attacks
+    es: Ataques contundentes
   effect_i18n:
+    en: All of Zomblintua's attacks count as if they were made with a blunt weapon.
     es: Todos los ataques del Zomblintua cuentan como si fueran realizados con un arma contundente.
   applies_to:
     profile_ids:
     - zomblintua
 - id: band--jungle-natives
   name: Jungle Natives
-  effect: >-
-    Savage Goblins suffer no movement penalties for moving through woods or any kind of vegetation.
+  effect: Savage Goblins suffer no movement penalties for moving through woods or any kind of vegetation.
   source:
     manual: lustria
     printed_page: 98
     section: Savage Goblin Special Rules / Jungle Natives
   name_i18n:
-    es: Nativos de la Selva
+    en: Jungle Natives
+    es: Nativos de la selva
   effect_i18n:
-    es: >-
-      Los Goblins salvajes no sufren penalizaciones de movimiento por moverse por bosques ni por
-      ningún tipo de vegetación.
+    en: Savage Goblins suffer no movement penalties for moving through woods or any kind of vegetation.
+    es: Los Goblins salvajes no sufren penalizaciones de movimiento por moverse por bosques ni por ningún
+      tipo de vegetación.
   applies_to:
     band: true
   runtime:
@@ -608,24 +628,24 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.jungle-natives
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: band--unpleasant-company
   name: Unpleasant Company
-  effect: >-
-    The warband may hire only the following Hired Swords unless a specific rule says otherwise or
-    the Hired Sword is also a Greenskin: Pit Fighter, Ogre Bodyguard and Warlock.
+  effect: 'The warband may hire only the following Hired Swords unless a specific rule says otherwise
+    or the Hired Sword is also a Greenskin: Pit Fighter, Ogre Bodyguard and Warlock.'
   source:
     manual: lustria
     printed_page: 98
     section: Savage Goblin Special Rules / Unpleasant Company
   name_i18n:
-    es: Mala Compañía
+    en: Unpleasant Company
+    es: Mala compañía
   effect_i18n:
-    es: >-
-      La banda solo puede contratar las siguientes Espadas contratadas, salvo que una regla
-      específica diga lo contrario o que la Espada contratada sea también un piel verde: Luchador de
-      foso, Ogro guardaespaldas y Hechicero.
+    en: 'The warband may hire only the following Hired Swords unless a specific rule says otherwise or
+      the Hired Sword is also a Greenskin: Pit Fighter, Ogre Bodyguard and Warlock.'
+    es: 'La banda solo puede contratar las siguientes Espadas contratadas, salvo que una regla específica
+      diga lo contrario o que la Espada contratada sea también un piel verde: Luchador de foso, Ogro guardaespaldas
+      y Hechicero.'
   applies_to:
     band: true
   runtime:
@@ -636,25 +656,25 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.unpleasant-company
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.'
 - id: band--camouflage
   name: Camouflage
-  effect: >-
-    A Savage Goblin that is not wearing armour, with Hardened Leather explicitly allowed as an
-    exception, cannot be detected unless the detecting model first passes an Initiative test.
+  effect: A Savage Goblin that is not wearing armour, with Hardened Leather explicitly allowed as an exception,
+    cannot be detected unless the detecting model first passes an Initiative test.
   source:
     manual: lustria
     printed_page: 98
     section: Savage Goblin Special Rules / Camouflage
   name_i18n:
+    en: Camouflage
     es: Camuflaje
   effect_i18n:
-    es: >-
-      Un Goblin salvaje que no lleve armadura, estando el Cuero curtido permitido explícitamente
-      como excepción, no puede ser detectado a menos que el modelo que detecta supere primero un
-      chequeo de Iniciativa.
+    en: A Savage Goblin that is not wearing armour, with Hardened Leather explicitly allowed as an exception,
+      cannot be detected unless the detecting model first passes an Initiative test.
+    es: Un Goblin salvaje que no lleve armadura, estando el Cuero curtido permitido explícitamente como
+      excepción, no puede ser detectado a menos que el modelo que detecta supere primero un chequeo de
+      Iniciativa.
   applies_to:
     band: true
   runtime:
@@ -665,8 +685,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.camouflage
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: band--fear-of-pointy-ears
   name: Fear of Pointy Ears
   effect: Savage Goblins are subject to Fear of Elves.
@@ -675,8 +694,10 @@ rules:
     printed_page: 98
     section: Savage Goblin Special Rules / Fear of Pointy Ears
   name_i18n:
-    es: Miedo a las Orejas Puntiagudas
+    en: Fear of Pointy Ears
+    es: Miedo a las orejas puntiagudas
   effect_i18n:
+    en: Savage Goblins are subject to Fear of Elves.
     es: Los Goblins salvajes están sujetos a Miedo a los elfos.
   applies_to:
     band: true
@@ -688,40 +709,39 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.fear-of-pointy-ears
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--animosity
   name: Animosity
-  effect: >-
-    At the start of the warband's turn, roll D6 for each eligible Goblin Henchman that is not
-    engaged in close combat. On a 1, roll another D6: 1 = "I Heard That!": if possible the Goblin
-    immediately charges the nearest Goblin Henchman or Hired Sword in charge range and fights one
-    round; after that round separate the models by 1". If no such charge is possible but the Goblin
-    can shoot, it shoots the nearest eligible friendly target. If neither is possible, or the
-    nearest Goblin is a Hero, treat the result as 2-5. 2-5 = "What Did You Call Me?": the Goblin
-    does nothing else that turn except defend itself if attacked. 6 = "I'll Show You!": the Goblin
-    immediately moves as quickly as possible toward the nearest visible enemy and charges if
-    possible; if no enemy is visible, it immediately makes a normal move. This is additional to its
-    normal Movement-phase move.
+  effect: 'At the start of the warband''s turn, roll D6 for each eligible Goblin Henchman that is not
+    engaged in close combat. On a 1, roll another D6: 1 = "I Heard That!": if possible the Goblin immediately
+    charges the nearest Goblin Henchman or Hired Sword in charge range and fights one round; after that
+    round separate the models by 1". If no such charge is possible but the Goblin can shoot, it shoots
+    the nearest eligible friendly target. If neither is possible, or the nearest Goblin is a Hero, treat
+    the result as 2-5. 2-5 = "What Did You Call Me?": the Goblin does nothing else that turn except defend
+    itself if attacked. 6 = "I''ll Show You!": the Goblin immediately moves as quickly as possible toward
+    the nearest visible enemy and charges if possible; if no enemy is visible, it immediately makes a
+    normal move. This is additional to its normal Movement-phase move.'
   source:
     manual: lustria
     printed_page: 98
     section: Savage Goblin Special Rules / Animosity
   name_i18n:
+    en: Animosity
     es: Rencor
   effect_i18n:
-    es: >-
-      Al comienzo del turno de la banda, tira 1D6 por cada Soldado goblin elegible que no esté
-      enfrascado en combate cuerpo a cuerpo. Con un 1, tira otro 1D6: 1 = "¡Te he oído!": si es
-      posible, el Goblin carga de inmediato contra el Soldado goblin o la Espada contratada más
-      cercanos dentro del alcance de carga y lucha una ronda; tras esa ronda, separa los modelos 1".
-      Si no puede cargar, pero el Goblin puede disparar, dispara al objetivo aliado elegible más
-      cercano. Si no puede hacer ninguna de las dos cosas, o si el Goblin más cercano es un Héroe,
-      trata el resultado como 2-5. 2-5 = "¿Qué me has llamado?": el Goblin no hace nada más durante
-      ese turno, salvo defenderse si es atacado. 6 = "¡Te lo demostraré!": el Goblin se mueve de
-      inmediato lo más rápido posible hacia el enemigo visible más cercano y carga si puede; si no
-      hay enemigos visibles, hace de inmediato un movimiento normal. Esto es adicional a su
-      movimiento normal de la fase de Movimiento.
+    en: 'At the start of the warband''s turn, roll D6 for each eligible Goblin Henchman that is not engaged
+      in close combat. On a 1, roll another D6: 1 = "I Heard That!": if possible the Goblin immediately
+      charges the nearest Goblin Henchman or Hired Sword in charge range and fights one round; after that
+      round separate the models by 1". If no such charge is possible but the Goblin can shoot, it shoots
+      the nearest eligible friendly target. If neither is possible, or the nearest Goblin is a Hero, treat
+      the result as 2-5. 2-5 = "What Did You Call Me?": the Goblin does nothing else that turn except
+      defend itself if attacked. 6 = "I''ll Show You!": the Goblin immediately moves as quickly as possible
+      toward the nearest visible enemy and charges if possible; if no enemy is visible, it immediately
+      makes a normal move. This is additional to its normal Movement-phase move.'
+    es: 'Al comienzo del turno de la banda, tira 1D6 por cada Soldado goblin elegible que no esté enfrascado
+      en combate cuerpo a cuerpo. Con un 1, tira otro 1D6: 1 = "¡Te he oído!": si es posible, el Goblin
+      carga de inmediato contra el Soldado goblin o Espada contratada más cercano dentro del alcance de
+      carga y combate una ronda; tras esa ronda, ambos modelos se separan 1" y el turno continúa con normalidad.'
   eligibility:
   - savage-goblins
   - headhunters
@@ -736,23 +756,23 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.animosity
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--savage-goblin-special-skills-infiltration
   kind: warband_skill
   name: Infiltration
-  effect: >-
-    Red Teeth and the Witch Doctor may not take this skill. The Hero deploys after the opposing
+  effect: Red Teeth and the Witch Doctor may not take this skill. The Hero deploys after the opposing
     warband, outside enemy line of sight and more than 12" from every enemy model.
   source:
     manual: lustria
     printed_page: 105
     section: Savage Goblin Special Skills / Infiltration
   name_i18n:
+    en: Infiltration
     es: Infiltración
   effect_i18n:
-    es: >-
-      Los Dientes rojos y el Brujo no pueden llevar esta habilidad. El Héroe se despliega después de
+    en: Red Teeth and the Witch Doctor may not take this skill. The Hero deploys after the opposing warband,
+      outside enemy line of sight and more than 12" from every enemy model.
+    es: Los Dientes rojos y el Brujo no pueden llevar esta habilidad. El Héroe se despliega después de
       la banda rival, fuera de la línea de visión enemiga y a más de 12" de cada modelo enemigo.
   eligibility:
   - big-boss
@@ -767,8 +787,7 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.savage-goblin-special-skills-infiltration
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: band--savage-goblin-special-skills-unpredictable
   kind: warband_skill
   name: Unpredictable
@@ -778,8 +797,10 @@ rules:
     printed_page: 105
     section: Savage Goblin Special Skills / Unpredictable
   name_i18n:
+    en: Unpredictable
     es: Impredecible
   effect_i18n:
+    en: The Hero may declare one of its attacks Unpredictable; that attack cannot be parried.
     es: El Héroe puede declarar uno de sus ataques Impredecible; ese ataque no puede estocarse.
   eligibility:
   - witch-doctor
@@ -801,22 +822,23 @@ rules:
 - id: band--savage-goblin-special-skills-zomblin-medicine
   kind: warband_skill
   name: Zomblin Medicine
-  effect: >-
-    Witch Doctor only. Whenever the Witch Doctor would learn a new skill, he may choose a Necromancy
-    spell instead. Zomblins and Zomblintua count as Zombies for those spells. The individual
-    Necromancy spell list and spell effects are intentionally not modelled in this file.
+  effect: Witch Doctor only. Whenever the Witch Doctor would learn a new skill, he may choose a Necromancy
+    spell instead. Zomblins and Zomblintua count as Zombies for those spells. The individual Necromancy
+    spell list and spell effects are intentionally not modelled in this file.
   source:
     manual: lustria
     printed_page: 105
     section: Savage Goblin Special Skills / Zomblin Medicine
   name_i18n:
-    es: Medicina Zomblin
+    en: Zomblin Medicine
+    es: Medicina zomblin
   effect_i18n:
-    es: >-
-      Solo el Brujo. Siempre que el Brujo vaya a aprender una nueva habilidad, puede elegir en su
-      lugar un hechizo de Nigromancia. Los Zomblins y el Zomblintua cuentan como Zombis para esos
-      hechizos. La lista de hechizos de Nigromancia y sus efectos no se modelan intencionadamente en
-      este archivo.
+    en: Witch Doctor only. Whenever the Witch Doctor would learn a new skill, he may choose a Necromancy
+      spell instead. Zomblins and Zomblintua count as Zombies for those spells. The individual Necromancy
+      spell list and spell effects are intentionally not modelled in this file.
+    es: Solo el Brujo. Siempre que el Brujo vaya a aprender una nueva habilidad, puede elegir en su lugar
+      un hechizo de Nigromancia. Los Zomblins y el Zomblintua cuentan como Zombis para esos hechizos.
+      La lista de hechizos de Nigromancia y sus efectos no se modelan intencionadamente en este archivo.
   eligibility:
   - witch-doctor
   applies_to:
@@ -829,27 +851,28 @@ rules:
     - id: unimplemented.lustria-savage-goblins.band.savage-goblin-special-skills-zomblin-medicine
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: band--savage-goblin-special-skills-spider-infested
   kind: warband_skill
   name: Spider Infested
-  effect: >-
-    Whenever an enemy fails a To Hit roll against the Hero, or the Hero successfully parries an
-    attack, that enemy suffers a cumulative -1 Initiative penalty until it is no longer engaged with
-    the Hero or the Hero is taken Out of Action. The penalty can reduce Initiative to 0.
+  effect: Whenever an enemy fails a To Hit roll against the Hero, or the Hero successfully parries an
+    attack, that enemy suffers a cumulative -1 Initiative penalty until it is no longer engaged with the
+    Hero or the Hero is taken Out of Action. The penalty can reduce Initiative to 0.
   source:
     manual: lustria
     printed_page: 105
     section: Savage Goblin Special Skills / Spider Infested
   name_i18n:
-    es: Infestado de Arañas
+    en: Spider Infested
+    es: Infestado de arañas
   effect_i18n:
-    es: >-
-      Siempre que un enemigo falle una tirada por Golpear contra el Héroe, o que el Héroe efectúe
-      una estocada con éxito, ese enemigo sufre una penalización acumulativa de -1 de Iniciativa
-      hasta que deje de estar enfrentado al Héroe o el Héroe salga de Combate. La penalización puede
-      reducir la Iniciativa a 0.
+    en: Whenever an enemy fails a To Hit roll against the Hero, or the Hero successfully parries an attack,
+      that enemy suffers a cumulative -1 Initiative penalty until it is no longer engaged with the Hero
+      or the Hero is taken Out of Action. The penalty can reduce Initiative to 0.
+    es: Siempre que un enemigo falle una tirada por Golpear contra el Héroe, o que el Héroe efectúe una
+      estocada con éxito, ese enemigo sufre una penalización acumulativa de -1 de Iniciativa hasta que
+      deje de estar enfrentado al Héroe o el Héroe salga de Combate. La penalización puede reducir la
+      Iniciativa a 0.
   eligibility:
   - witch-doctor
   - big-boss
@@ -876,11 +899,11 @@ rules:
     printed_page: 105
     section: Savage Goblin Special Skills / Master of Throwing Weapons
   name_i18n:
-    es: Maestro de las Armas Arrojadizas
+    en: Master of Throwing Weapons
+    es: Maestro de las armas arrojadizas
   effect_i18n:
-    es: >-
-      Solo los Rastreadores. El Héroe puede llevar hasta cinco armas de misil en lugar de las dos
-      habituales.
+    en: Trackers only. The Hero may carry up to five missile weapons instead of the usual two.
+    es: Solo los Rastreadores. El Héroe puede llevar hasta cinco armas de misil en lugar de las dos habituales.
   eligibility:
   - trackers
   applies_to:

@@ -10,11 +10,9 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.dwarf-noble.leader
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Deferred subsystem: psychology.'
   name: Leader
-  effect: >-
-    Any models in the warband within 6" of the Dwarf Noble may use his Leadership instead of their
+  effect: Any models in the warband within 6" of the Dwarf Noble may use his Leadership instead of their
     own.
   source:
     manual: mordheimer.net
@@ -22,11 +20,14 @@ rules:
     section: heroes / 1 Dwarf Noble / Special Rules / Leader
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
+    en: Leader
     es: Líder
   effect_i18n:
-    es: >-
-      Todas las miniaturas de la banda a 6" del Noble enano pueden usar su Liderazgo en lugar del
-      suyo propio.
+    en: 'Any models in the warband within 6" of the Dwarf
+
+      Noble may use his Leadership instead of their own.'
+    es: Todas las miniaturas de la banda a 6" del Noble enano pueden usar su Liderazgo en lugar del suyo
+      propio.
   applies_to:
     profile_ids:
     - dwarf-noble
@@ -39,34 +40,38 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.dwarf-engineer.expert-weaponsmith
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: shooting.
+      reason: 'Out of scope: shooting.'
   name: Expert Weaponsmith
-  effect: >-
-    A Dwarf Engineer is a master of mechanical devices. By using stronger construction materials and
-    time-tested secrets of Dwarf engineering, a Dwarf Engineer can increase the distance the
-    warband's missile weapons can shoot. Missile weapons bought from the warband's basic equipment
-    lists have their range increased by 3" for pistols and 6" for crossbows and handguns. Range
-    increases only apply in battles in which the Engineer takes part (though they do apply even if
-    he is yet to enter the battlefield or has already been taken out of action in this battle). He
-    has no effect on the equipment of Hired Swords.
+  effect: A Dwarf Engineer is a master of mechanical devices. By using stronger construction materials
+    and time-tested secrets of Dwarf engineering, a Dwarf Engineer can increase the distance the warband's
+    missile weapons can shoot. Missile weapons bought from the warband's basic equipment lists have their
+    range increased by 3" for pistols and 6" for crossbows and handguns. Range increases only apply in
+    battles in which the Engineer takes part (though they do apply even if he is yet to enter the battlefield
+    or has already been taken out of action in this battle). He has no effect on the equipment of Hired
+    Swords.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 0 – 1 Dwarf Engineer / Special Rules / Expert Weaponsmith
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
-    es: Armero Experto
+    en: Expert Weaponsmith
+    es: Armero experto
   effect_i18n:
-    es: >-
-      Un Ingeniero enano es un maestro de los dispositivos mecánicos. Usando materiales de
-      construcción más resistentes y los secretos probados de la ingeniería enana, un Ingeniero
-      enano puede aumentar la distancia a la que disparan las armas arrojadizas de la banda. Las
-      armas arrojadizas compradas en las listas de equipo básicas de la banda ven su alcance
-      aumentado en 3" para pistolas y 6" para ballestas y armas de fuego. Los aumentos de alcance
-      solo aplican en las batallas en las que participa el Ingeniero (aunque aplican incluso si aún
-      no ha entrado en el campo de batalla o ya ha sido retirado del combate en esta batalla). No
-      tiene ningún efecto sobre el equipo de las Espadas a sueldo.
+    en: A Dwarf Engineer is a master of mechanical devices. By using stronger construction materials and
+      time-tested secrets of Dwarf engineering, a Dwarf Engineer can increase the distance the warband's
+      missile weapons can shoot. Missile weapons bought from the warband's basic equipment lists have
+      their range increased by 3" for pistols and 6" for crossbows and handguns. Range increases only
+      apply in battles in which the Engineer takes part (though they do apply even if he is yet to enter
+      the battlefield or has already been taken out of action in this battle). He has no effect on the
+      equipment of Hired Swords.
+    es: Un Ingeniero enano es un maestro de los dispositivos mecánicos. Usando materiales de construcción
+      más resistentes y los secretos probados de la ingeniería enana, un Ingeniero enano puede aumentar
+      la distancia a la que disparan las armas arrojadizas de la banda. Las armas arrojadizas compradas
+      en las listas de equipo básicas de la banda ven su alcance aumentado en 3" para pistolas y 6" para
+      ballestas y armas de fuego. Los aumentos de alcance solo aplican en las batallas en las que participa
+      el Ingeniero (aunque aplican incluso si aún no ha entrado en el campo de batalla o ya ha sido retirado
+      del combate en esta batalla). No tiene ningún efecto sobre el equipo de las Espadas a sueldo.
   applies_to:
     profile_ids:
     - dwarf-engineer
@@ -79,20 +84,29 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.dwarf-troll-slayers.deathwish
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Deferred subsystem: psychology.'
   name: Deathwish
+  effect: Troll Slayers seek an honourable death in combat. They are completely immune to all psychology
+    and never need to test if fighting alone.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 0 – 2 Dwarf Troll Slayers / Special Rules / Deathwish
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
-    es: Deseo de Muerte
+    en: Deathwish
+    es: Deseo de muerte
+  effect_i18n:
+    en: 'Troll Slayers seek an honourable death in
+
+      combat. They are completely immune to all psychology and
+
+      never need to test if fighting alone.'
+    es: Los Matatrolles buscan una muerte honorable en combate. Son completamente inmunes a toda la psicología
+      y nunca necesitan chequear si luchan solos.
   applies_to:
     profile_ids:
     - dwarf-troll-slayers
-  rule_ref: shared-rule.deathwish
 - id: dwarf-troll-slayers--slayer-skills
   runtime:
     scope: 'YES'
@@ -107,8 +121,7 @@ rules:
         parameters:
           category: special
   name: Slayer Skills
-  effect: >-
-    Troll Slayers may choose a skill from the Troll Slayer Skill table instead of the normal Skill
+  effect: Troll Slayers may choose a skill from the Troll Slayer Skill table instead of the normal Skill
     tables when they gain a new skill.
   source:
     manual: mordheimer.net
@@ -116,10 +129,15 @@ rules:
     section: heroes / 0 – 2 Dwarf Troll Slayers / Special Rules / Slayer Skills
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
+    en: Slayer Skills
     es: Habilidades de Matatrolles
   effect_i18n:
-    es: >-
-      Los Matatrolles pueden elegir una habilidad de la tabla de Habilidades de Matatrolles en lugar
+    en: 'Troll Slayers may choose a skill from the Troll
+
+      Slayer Skill table instead of the normal Skill tables when they
+
+      gain a new skill.'
+    es: Los Matatrolles pueden elegir una habilidad de la tabla de Habilidades de Matatrolles en lugar
       de las tablas de Habilidades normales cuando ganan una nueva habilidad.
   applies_to:
     profile_ids:
@@ -136,16 +154,23 @@ rules:
         kind: mechanic
         id: skill.hard-to-kill
   name: Hard to Kill
+  effect: Dwarfs are taken out of action only on a 6 on the Injury chart; 1-2 is Knocked Down and 3-5
+    is Stunned.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Special Rules / Hard to Kill
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
-    es: Difíciles de Matar
+    en: Hard to Kill
+    es: Difíciles de matar
+  effect_i18n:
+    en: Dwarfs are taken out of action only on a 6 on the Injury chart; 1-2 is Knocked Down and 3-5 is
+      Stunned.
+    es: Los enanos se retiran del combate solo con un 6 en la tabla de Heridas; 1-2 es Derribado y 3-5
+      es Aturdido.
   applies_to:
     band: true
-  rule_ref: shared-rule.hard-to-kill
 - id: band--hard-head
   runtime:
     scope: 'YES'
@@ -160,16 +185,20 @@ rules:
         parameters:
           value: true
   name: Hard Head
+  effect: Dwarfs ignore the special rules for maces, clubs and similar weapons.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Special Rules / Hard Head
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
-    es: Cabeza Dura
+    en: Hard Head
+    es: Cabeza dura
+  effect_i18n:
+    en: Dwarfs ignore the special rules for maces, clubs and similar weapons.
+    es: Los enanos ignoran las reglas especiales de mazas, garrotes y armas similares.
   applies_to:
     band: true
-  rule_ref: shared-rule.hard-head-2
 - id: band--armour
   runtime:
     scope: 'NO'
@@ -183,16 +212,20 @@ rules:
         Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
         construction.
   name: Armour
+  effect: Dwarfs never suffer movement penalties for wearing armour.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Special Rules / Armour
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
+    en: Armour
     es: Armadura
+  effect_i18n:
+    en: Dwarfs never suffer movement penalties for wearing armour.
+    es: Los enanos nunca sufren penalizaciones de movimiento por llevar armadura.
   applies_to:
     band: true
-  rule_ref: shared-rule.armour-2
 - id: band--hate-orcs-and-goblins
   runtime:
     scope: LATER
@@ -202,19 +235,22 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.band.hate-orcs-and-goblins
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Deferred subsystem: psychology.'
   name: Hate Orcs and Goblins
+  effect: All Dwarfs hate Orcs and Goblins.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Special Rules / Hate Orcs and Goblins
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
-    es: Odio a Orcos y Goblins
+    en: Hate Orcs and Goblins
+    es: Odio a orcos y goblins
+  effect_i18n:
+    en: All Dwarfs hate Orcs and Goblins.
+    es: Todos los enanos odian a los orcos y los goblins.
   applies_to:
     band: true
-  rule_ref: shared-rule.hate-orcs-and-goblins
 - id: band--grudgebearers
   runtime:
     scope: 'NO'
@@ -224,19 +260,22 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.band.grudgebearers
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: 'Out of scope: campaign.'
   name: Grudgebearers
+  effect: A Dwarf warband may never include any kind of Elven Hired Sword or Dramatis Personae.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Special Rules / Grudgebearers
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
-    es: Portadores del Agravio
+    en: Grudgebearers
+    es: Portadores del agravio
+  effect_i18n:
+    en: A Dwarf warband may never include any kind of Elven Hired Sword or Dramatis Personae.
+    es: Una banda enana nunca puede incluir ningún tipo de Espada a sueldo o Dramatis Personae élfico.
   applies_to:
     band: true
-  rule_ref: shared-rule.grudgebearers
 - id: band--incomparable-miners
   runtime:
     scope: 'NO'
@@ -246,19 +285,25 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.band.incomparable-miners
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: 'Out of scope: campaign.'
   name: Incomparable Miners
+  effect: When checking for wyrdstone at the end of a game, add +1 to the number of pieces found by the
+    Dwarf warband.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Special Rules / Incomparable Miners
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
-    es: Mineros Incomparables
+    en: Incomparable Miners
+    es: Mineros incomparables
+  effect_i18n:
+    en: When checking for wyrdstone at the end of a game, add +1 to the number of pieces found by the
+      Dwarf warband.
+    es: Al buscar wyrdstone al final de una partida, añade +1 al número de fragmentos encontrados por
+      la banda enana.
   applies_to:
     band: true
-  rule_ref: shared-rule.incomparable-miners
 - id: band--dwarf-special-skills-master-of-blades
   kind: warband_skill
   runtime:
@@ -277,30 +322,64 @@ rules:
         kind: mechanic
         id: skill.sword-master
   name: Master of Blades
-  effect: >-
-    This Dwarf’s martial skills surpass those of a normal warrior; he has fought unscathed against
-    hordes of Orcs and Goblins. When using a weapon that has a Parry special rule, this hero parries
-    successfully if he beats or matches his opponents highest ‘to hit’ roll, not just if he beats
-    the roll. In addition, if this warrior is using two weapons that have the Parry special rule, he
-    is allowed to parry two attacks (if his two dice match or beat the two highest Attack dice
-    against him) instead of the normal maximum of one. Note that if this Dwarf has two Dwarf axes
-    (as detailed above) he can reroll any failed parries.
+  effect: This Dwarf’s martial skills surpass those of a normal warrior; he has fought unscathed against
+    hordes of Orcs and Goblins. When using a weapon that has a Parry special rule, this hero parries successfully
+    if he beats or matches his opponents highest ‘to hit’ roll, not just if he beats the roll. In addition,
+    if this warrior is using two weapons that have the Parry special rule, he is allowed to parry two
+    attacks (if his two dice match or beat the two highest Attack dice against him) instead of the normal
+    maximum of one. Note that if this Dwarf has two Dwarf axes (as detailed above) he can reroll any failed
+    parries.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Dwarf Special Skills / Master of Blades
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
-    es: Maestro de las Hojas
+    en: Master of Blades
+    es: Maestro de las hojas
   effect_i18n:
-    es: >-
-      Las habilidades marciales de este enano superan las de un guerrero normal; ha luchado ileso
-      contra hordas de orcos y goblins. Al usar un arma con la regla especial Aturdir (Parry), este
-      héroe aturde con éxito si iguala o supera la tirada de 'impactar' más alta de su oponente, no
-      solo si la supera. Además, si este guerrero usa dos armas con la regla especial Aturdir, se le
-      permite aturdir dos ataques (si sus dos dados igualan o superan los dos dados de ataque más
-      altos contra él) en lugar del máximo normal de uno. Nótese que si este enano lleva dos hachas
-      enanas (como se detalla arriba) puede repetir cualquier aturdimiento fallido.
+    en: 'This Dwarf’s martial skills surpass those of a normal warrior; he
+
+      has fought unscathed against hordes of Orcs and Goblins. When
+
+      using a weapon that has a Parry special rule, this hero parries
+
+      successfully if he beats or matches his opponents highest ‘to hit’
+
+      roll, not just if he beats the roll. In addition, if this warrior is
+
+      using two weapons that have the Parry
+
+      special rule, he is allowed to parry
+
+      two attacks (if his two dice
+
+      match or beat the two
+
+      highest Attack dice
+
+      against him) instead
+
+      of the normal
+
+      maximum of one.
+
+      Note that if this
+
+      Dwarf has two Dwarf
+
+      axes (as detailed
+
+      above) he can reroll any failed
+
+      parries.'
+    es: Las habilidades marciales de este enano superan las de un guerrero normal; ha luchado ileso contra
+      hordas de orcos y goblins. Al usar un arma con la regla especial Aturdir (Parry), este héroe aturde
+      con éxito si iguala o supera la tirada de 'impactar' más alta de su oponente, no solo si la supera.
+      Además, si este guerrero usa dos armas con la regla especial Aturdir, se le permite aturdir dos
+      ataques (si sus dos dados igualan o superan los dos dados de ataque más altos contra él) en lugar
+      del máximo normal de uno. Nótese que si este enano lleva dos hachas enanas (como se detalla arriba)
+      puede repetir cualquier aturdimiento fallido.
   applies_to:
     band: true
 - id: band--dwarf-special-skills-extra-tough
@@ -317,16 +396,36 @@ rules:
         Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
         construction.
   name: Extra Tough
+  effect: This Dwarf is notorious for walking away from wounds that would kill a lesser being. When rolling
+    on the Heroes Serious Injury chart for this Hero after a game in which he has been taken out of action,
+    the dice may be re-rolled once. The result of this second dice roll must be accepted, even if it is
+    a worse result.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Dwarf Special Skills / Extra Tough
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
-    es: Extra Resistente
+    en: Extra Tough
+    es: Extra resistente
+  effect_i18n:
+    en: 'This Dwarf is notorious for walking away from wounds that
+
+      would kill a lesser being. When rolling on the Heroes Serious
+
+      Injury chart for this Hero after a game in which he has been
+
+      taken out of action, the dice may be re-rolled once. The result
+
+      of this second dice roll must be accepted, even if it is a worse
+
+      result.'
+    es: Este enano es famoso por sobrevivir a heridas que matarían a un ser inferior. Al tirar en la tabla
+      de Heridas Graves de Héroes para este héroe tras una partida en la que haya sido retirado del combate,
+      el dado puede repetirse una vez. El resultado de esta segunda tirada debe aceptarse, incluso si
+      es peor.
   applies_to:
     band: true
-  rule_ref: shared-rule.extra-tough
 - id: band--dwarf-special-skills-resource-hunter
   kind: warband_skill
   runtime:
@@ -337,19 +436,28 @@ rules:
     - id: unimplemented.dwarf-treasure-hunters.band.dwarf-special-skills-resource-hunter
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: 'Out of scope: campaign.'
   name: Resource Hunter
+  effect: This Dwarf is especially good at locating valuable resources. When rolling on the Exploration
+    chart at the end of a game, the Hero may modify one dice roll by +1/-1.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Dwarf Special Skills / Resource Hunter.
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
-    es: Cazador de Recursos
+    en: Resource Hunter
+    es: Cazador de recursos
+  effect_i18n:
+    en: 'This Dwarf is especially good at locating valuable resources.
+
+      When rolling on the Exploration chart at the end of a game,
+
+      the Hero may modify one dice roll by +1/-1.'
+    es: Este enano es especialmente bueno localizando recursos valiosos. Al tirar en la tabla de Exploración
+      al final de una partida, el Héroe puede modificar una tirada de dado en +1/-1.
   applies_to:
     band: true
-  rule_ref: shared-rule.resource-hunter
 - id: band--dwarf-special-skills-true-grit
   kind: warband_skill
   runtime:
@@ -363,16 +471,29 @@ rules:
         kind: mechanic
         id: skill.tough-as-steel
   name: True Grit
+  effect: Dwarfs are hardy individuals and this Hero is hardy even for a Dwarf! When rolling on the Injury
+    table for this Hero, a roll of 1-3 is treated as knocked down, 4-5 as stunned, and 6 as out of action.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Dwarf Special Skills / True Grit
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
+    en: True Grit
     es: Entereza
+  effect_i18n:
+    en: 'Dwarfs are hardy individuals and this Hero is hardy even for
+
+      a Dwarf! When rolling on the Injury table for this Hero, a roll
+
+      of 1-3 is treated as knocked down, 4-5 as stunned, and 6 as
+
+      out of action.'
+    es: ¡Los enanos son individuos duros y este Héroe lo es incluso para un enano! Al tirar en la tabla
+      de Heridas para este Héroe, un resultado de 1-3 se trata como Derribado, 4-5 como Aturdido y 6 como
+      Fuera de combate.
   applies_to:
     band: true
-  rule_ref: shared-rule.hard-as-steel
 - id: band--dwarf-special-skills-thick-skull
   kind: warband_skill
   runtime:
@@ -386,16 +507,35 @@ rules:
         kind: mechanic
         id: skill.thick-skull
   name: Thick Skull
+  effect: The Hero has a thick skull, even for a Dwarf. He has a 3+ save on a D6 to avoid being stunned.
+    If the save is made, treat a stunned result as knocked down instead. If the Dwarf also wears a helmet,
+    this save is 2+ instead of 3+ (this takes the place of the normal Helmet special rule).
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Dwarf Special Skills / Thick Skull
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
-    es: Cráneo Grueso
+    en: Thick Skull
+    es: Cráneo grueso
+  effect_i18n:
+    en: 'The Hero has a thick skull, even for a Dwarf. He
+
+      has a 3+ save on a D6 to avoid being stunned. If
+
+      the save is made, treat a stunned result as knocked
+
+      down instead. If the Dwarf also wears a helmet,
+
+      this save is 2+ instead of 3+ (this takes the
+
+      place of the normal Helmet special rule).'
+    es: El Héroe tiene un cráneo grueso, incluso para un enano. Tiene una salvación de 3+ en un D6 para
+      evitar quedar Aturdido. Si supera la salvación, trata un resultado de Aturdido como Derribado en
+      su lugar. Si el enano además lleva casco, esta salvación es 2+ en lugar de 3+ (esto sustituye a
+      la regla especial normal de Casco).
   applies_to:
     band: true
-  rule_ref: shared-rule.thick-skull
 - id: band--slayer-special-skills-ferocious-charge
   kind: warband_skill
   runtime:
@@ -409,19 +549,20 @@ rules:
         kind: mechanic
         id: skill.ferocious-charge
   name: Ferocious Charge
-  effect: >-
-    The Slayer may double his attacks on the turn in which he charges, but suffers a -1 to hit
-    penalty that turn.
+  effect: The Slayer may double his attacks on the turn in which he charges, but suffers a -1 to hit penalty
+    that turn.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: TROLL SLAYER SKILLS / Ferocious Charge
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
-    es: Carga Feroz
+    en: Ferocious Charge
+    es: Carga feroz
   effect_i18n:
-    es: >-
-      El Matatrolles puede doblar sus ataques en el turno en que carga, pero sufre una penalización
+    en: The Slayer may double his attacks on the turn in which he charges, but suffers a -1 to hit penalty
+      that turn.
+    es: El Matatrolles puede doblar sus ataques en el turno en que carga, pero sufre una penalización
       de -1 para impactar ese turno.
   eligibility:
   - dwarf-troll-slayers
@@ -442,8 +583,7 @@ rules:
         kind: mechanic
         id: skill.monster-slayer
   name: Monster Slayer
-  effect: >-
-    The Slayer always wounds on a 4+ regardless of the opponent's Toughness, unless his modified
+  effect: The Slayer always wounds on a 4+ regardless of the opponent's Toughness, unless his modified
     Strength would require a lower roll.
   source:
     manual: mordheimer.net
@@ -451,11 +591,13 @@ rules:
     section: TROLL SLAYER SKILLS / Monster Slayer
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
+    en: Monster Slayer
     es: Matamostro
   effect_i18n:
-    es: >-
-      El Matatrolles siempre hiere con un 4+ sin importar la Resistencia del oponente, a menos que
-      su Fuerza modificada requiera un resultado menor.
+    en: The Slayer always wounds on a 4+ regardless of the opponent's Toughness, unless his modified Strength
+      would require a lower roll.
+    es: El Matatrolles siempre hiere con un 4+ sin importar la Resistencia del oponente, a menos que su
+      Fuerza modificada requiera un resultado menor.
   applies_to:
     band: true
 - id: band--slayer-special-skills-berserker
@@ -480,10 +622,11 @@ rules:
     section: TROLL SLAYER SKILLS / Berserker
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
+    en: Berserker
     es: Berserker
   effect_i18n:
-    es: >-
-      El Matatrolles añade +1 a sus tiradas para impactar en combate cuerpo a cuerpo durante el
-      turno en que carga.
+    en: The Slayer adds +1 to his close combat to-hit rolls during the turn in which he charges.
+    es: El Matatrolles añade +1 a sus tiradas para impactar en combate cuerpo a cuerpo durante el turno
+      en que carga.
   applies_to:
     band: true
