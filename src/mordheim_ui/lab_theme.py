@@ -30,6 +30,16 @@ def apply_theme(root) -> None:
     style = ttk.Style(root)
     style.theme_use("clam")
     root.configure(background=COLORS["bg"])
+    # Visible scrollbar thumbs on the dark clam surface (shared with theme.py).
+    style.configure(
+        "TScrollbar", background=COLORS["border"], troughcolor=COLORS["bg"],
+        bordercolor=COLORS["border"], arrowcolor=COLORS["text"], relief="flat",
+    )
+    style.map(
+        "TScrollbar",
+        background=[("pressed", COLORS["accent"]), ("active", COLORS["border_light"])],
+        arrowcolor=[("pressed", COLORS["accent"])],
+    )
     default_font = ("Segoe UI", 10)
     root.option_add("*Font", default_font)
     # Pop-up menus are classic Tk widgets, not ttk widgets.  Configure them
