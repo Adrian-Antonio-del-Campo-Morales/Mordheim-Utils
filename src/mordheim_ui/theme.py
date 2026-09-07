@@ -121,5 +121,29 @@ def configure_theme(root: tk.Misc) -> ttk.Style:
     style.configure("TNotebook.Tab", background=COLORS["panel"], foreground=COLORS["muted"], bordercolor=COLORS["border"], padding=(18, 9), font=("Segoe UI Semibold", 9))
     style.map("TNotebook.Tab", background=[("selected", COLORS["panel_alt"]), ("active", COLORS["panel_soft"])], foreground=[("selected", COLORS["accent"]), ("active", COLORS["text"])])
 
-    style.configure("Vertical.TScrollbar", background=COLORS["panel_soft"], troughcolor=COLORS["bg"], arrowcolor=COLORS["muted"])
+    # Scrollbars: the clam theme honors these options; keep the thumb clearly
+    # lighter than the trough so the bars are visible on dark panels.
+    style.configure(
+        "TScrollbar", background=COLORS["border"], troughcolor=COLORS["panel_deep"],
+        bordercolor=COLORS["border_soft"], arrowcolor=COLORS["text"], relief="flat",
+    )
+    style.map(
+        "TScrollbar",
+        background=[("pressed", COLORS["accent"]), ("active", COLORS["muted"])],
+        arrowcolor=[("pressed", COLORS["accent"])],
+    )
+    style.configure(
+        "Treeview", background=COLORS["entry"], fieldbackground=COLORS["entry"],
+        foreground=COLORS["text"], bordercolor=COLORS["border_soft"],
+        rowheight=27, font=("Segoe UI", 8),
+    )
+    style.map(
+        "Treeview", background=[("selected", COLORS["accent"])],
+        foreground=[("selected", COLORS["black"])],
+    )
+    style.configure(
+        "Treeview.Heading", background=COLORS["panel_deep"], foreground=COLORS["muted"],
+        bordercolor=COLORS["border_soft"], relief="flat", font=("Segoe UI Semibold", 8), padding=(7, 6),
+    )
+    style.map("Treeview.Heading", background=[("active", COLORS["panel_soft"])], foreground=[("active", COLORS["text"])])
     return style
