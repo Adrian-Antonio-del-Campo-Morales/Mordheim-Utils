@@ -10,9 +10,11 @@ rules:
     - id: unimplemented.mercenaries.mercenary-captain.leader
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology.'
+      reason: >-
+        Deferred subsystem: psychology.
   name: Leader
-  effect: Any warrior within 6" of the Mercenary Captain may use his Leadership characteristic when taking
+  effect: >-
+    Any warrior within 6" of the Mercenary Captain may use his Leadership characteristic when taking
     Leadership tests.
   source:
     manual: mordheimer.net
@@ -20,16 +22,11 @@ rules:
     section: heroes / 1 Mercenary captain / Special Rules / Leader
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
   name_i18n:
-    en: Leader
     es: Líder
   effect_i18n:
-    en: 'Any warrior within 6" of the Mercenary
-
-      Captain may use his Leadership characteristic when
-
-      taking Leadership tests.'
-    es: Cualquier guerrero a 6" del Capitán mercenario puede usar su característica de Liderazgo cuando
-      realice chequeos de Liderazgo.
+    es: >-
+      Cualquier guerrero a 6" del Capitán mercenario puede usar su característica de Liderazgo
+      cuando realice chequeos de Liderazgo.
   applies_to:
     profile_ids:
     - mercenary-captain
@@ -46,28 +43,22 @@ rules:
         kind: mechanic
         id: skill.expert-swordsman
   name: Expert Swordsmen
-  effect: Swordsmen are so skilled with their weapons that they may re-roll any failed hits when charging.
-    Note that this only applies when they are armed with normal swords, and not with doublehanded swords
-    or any other weapons.
+  effect: >-
+    Swordsmen are so skilled with their weapons that they may re-roll any failed hits when charging.
+    Note that this only applies when they are armed with normal swords, and not with doublehanded
+    swords or any other weapons.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 5 Swordsmen / Special Rules / Expert Swordsmen
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
   name_i18n:
-    en: Expert Swordsmen
-    es: Espadachines expertos
+    es: Espadachines Expertos
   effect_i18n:
-    en: 'Swordsmen are so skilled with
-
-      their weapons that they may re-roll any failed hits
-
-      when charging. Note that this only applies when they
-
-      are armed with normal swords, and not with doublehanded swords or any other weapons.'
-    es: Los Espadachines son tan hábiles con sus armas que pueden repetir los impactos fallidos cuando
-      cargan. Ten en cuenta que esto solo se aplica cuando van armados con espadas normales, y no con
-      espadas a dos manos ni cualquier otra arma.
+    es: >-
+      Los Espadachines son tan hábiles con sus armas que pueden repetir los impactos fallidos cuando
+      cargan. Ten en cuenta que esto solo se aplica cuando van armados con espadas normales, y no
+      con espadas a dos manos ni cualquier otra arma.
   applies_to:
     profile_ids:
     - swordsmen
@@ -80,21 +71,21 @@ rules:
     - id: unimplemented.mercenaries.band.reikland-command-radius
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology.'
+      reason: >-
+        Deferred subsystem: psychology.
   name: Reikland — Military Discipline
-  effect: Reikland fighters may use their Captain's Leadership while within 12" instead of the normal
-    6".
+  effect: >-
+    Reikland fighters may use their Captain's Leadership while within 12" instead of the normal 6".
   source:
     manual: mordheimer.net
     printed_page: 0
     section: special rules / Reikland / Reiklander Special rules
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
   name_i18n:
-    en: Reikland — Military Discipline
-    es: Reikland — Disciplina militar
+    es: Reikland — Disciplina Militar
   effect_i18n:
-    en: Reikland fighters may use their Captain's Leadership while within 12" instead of the normal 6".
-    es: Los guerreros de Reikland pueden usar el Liderazgo de su Capitán estando a 12" en lugar de los
+    es: >-
+      Los guerreros de Reikland pueden usar el Liderazgo de su Capitán estando a 12" en lugar de los
       6" habituales.
   applies_to:
     band: true
@@ -107,23 +98,23 @@ rules:
     - id: unimplemented.mercenaries.band.reikland-marksman-training
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: shooting.'
+      reason: >-
+        Out of scope: shooting.
   name: Reikland — Marksman Training
-  effect: All Reikland Marksmen have +1 Ballistic Skill, including Marksmen recruited after the warband
-    is created.
+  effect: >-
+    All Reikland Marksmen have +1 Ballistic Skill, including Marksmen recruited after the warband is
+    created.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: special rules / Reikland / Reiklander Special rules
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
   name_i18n:
-    en: Reikland — Marksman Training
-    es: Reikland — Entrenamiento de tirador
+    es: Reikland — Entrenamiento de Tirador
   effect_i18n:
-    en: All Reikland Marksmen have +1 Ballistic Skill, including Marksmen recruited after the warband
-      is created.
-    es: Todos los Tiradores de Reikland tienen +1 a Habilidad con Disparo, incluidos los Tiradores reclutados
-      después de crear la banda.
+    es: >-
+      Todos los Tiradores de Reikland tienen +1 a Habilidad con Disparo, incluidos los Tiradores
+      reclutados después de crear la banda.
   applies_to:
     band: true
 - id: band--middenheim-physical-prowess
@@ -145,26 +136,19 @@ rules:
           bonuses:
             strength: 1
   name: Middenheim — Physical Prowess
-  effect: The Mercenary Captain and all Champions in a Middenheim warband start with Strength 4 instead
-    of Strength 3.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: special rules / Middenheim / Middenheimer Special rules
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
   name_i18n:
-    en: Middenheim — Physical Prowess
-    es: Middenheim — Proeza física
-  effect_i18n:
-    en: The Mercenary Captain and all Champions in a Middenheim warband start with Strength 4 instead
-      of Strength 3.
-    es: El Capitán mercenario y todos los Campeones de una banda de Middenheim comienzan con Fuerza 4
-      en lugar de Fuerza 3.
+    es: Middenheim — Proeza Física
   applies_to:
     band: true
   eligibility:
   - mercenary-captain
   - champions
+  rule_ref: shared-rule.middenheim-physical-prowess
 - id: band--marienburg-traders
   runtime:
     scope: 'NO'
@@ -174,22 +158,19 @@ rules:
     - id: unimplemented.mercenaries.band.marienburg-traders
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign.'
+      reason: >-
+        Out of scope: campaign.
   name: Marienburg — Natural Traders
-  effect: A Marienburg warband receives +1 when attempting to find Rare items.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: special rules / Marienburg / Marienburger Special rules
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
   name_i18n:
-    en: Marienburg — Natural Traders
-    es: Marienburgo — Comerciantes natos
-  effect_i18n:
-    en: A Marienburg warband receives +1 when attempting to find Rare items.
-    es: Una banda de Marienburgo recibe +1 al intentar encontrar objetos raros.
+    es: Marienburgo — Comerciantes Natos
   applies_to:
     band: true
+  rule_ref: shared-rule.marienburg-natural-traders
 - id: band--marienburg-wealth
   runtime:
     scope: 'NO'
@@ -199,25 +180,19 @@ rules:
     - id: unimplemented.mercenaries.band.marienburg-wealth
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign.'
+      reason: >-
+        Out of scope: campaign.
   name: Marienburg — Enormous Wealth
-  effect: A Marienburg warband starts a campaign with 600 gc instead of 500 gc. In a one-off game it receives
-    20% more gold crowns for recruitment.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: special rules / Marienburg / Marienburger Special rules
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
   name_i18n:
-    en: Marienburg — Enormous Wealth
-    es: Marienburgo — Enorme riqueza
-  effect_i18n:
-    en: A Marienburg warband starts a campaign with 600 gc instead of 500 gc. In a one-off game it receives
-      20% more gold crowns for recruitment.
-    es: Una banda de Marienburgo comienza la campaña con 600 gc en lugar de 500 gc. En una partida suelta
-      recibe un 20% más de coronas de oro para el reclutamiento.
+    es: Marienburgo — Enorme Riqueza
   applies_to:
     band: true
+  rule_ref: shared-rule.marienburg-enormous-wealth
 - id: band--ostermark-stubborn-resolve
   runtime:
     scope: LATER
@@ -227,22 +202,23 @@ rules:
     - id: unimplemented.mercenaries.band.ostermark-stubborn-resolve
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology.'
+      reason: >-
+        Deferred subsystem: psychology.
   name: Ostermark — Stubborn Resolve
-  effect: Ostermark Heroes and Henchmen may re-roll a failed Leadership test for All Alone, and the warband
-    may re-roll a failed Rout test. The second result must be accepted.
+  effect: >-
+    Ostermark Heroes and Henchmen may re-roll a failed Leadership test for All Alone, and the
+    warband may re-roll a failed Rout test. The second result must be accepted.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: special rules / Ostermark / Ostermarker Special rules
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
   name_i18n:
-    en: Ostermark — Stubborn Resolve
-    es: Ostermark — Firmeza obstinada
+    es: Ostermark — Firmeza Obstinada
   effect_i18n:
-    en: Ostermark Heroes and Henchmen may re-roll a failed Leadership test for All Alone, and the warband
-      may re-roll a failed Rout test. The second result must be accepted.
-    es: Los Héroes y Secuaces de Ostermark pueden repetir un chequeo de Liderazgo fallido por Solo (All
-      Alone), y la banda puede repetir un chequeo de huida fallido. El segundo resultado debe aceptarse.
+    es: >-
+      Los Héroes y Secuaces de Ostermark pueden repetir un chequeo de Liderazgo fallido por Solo
+      (All Alone), y la banda puede repetir un chequeo de huida fallido. El segundo resultado debe
+      aceptarse.
   applies_to:
     band: true
