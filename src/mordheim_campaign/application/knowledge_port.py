@@ -355,6 +355,31 @@ class KnowledgePort:
                 names.append(name)
         return tuple(names)
 
+    def banned_skill_categories(self, band_id: str, profile_id: str) -> set[str]:
+        """Skill categories a profile may never acquire, from implemented rules.
+
+        Reads profile rules whose binding is ``compiler.forbid-skill-categories``
+        (grant ``profile``, implemented YES, applies to ``profile_id``) and
+        returns the forbidden category ids (``strength``, ``academic``, ...).
+        This is decoupled from ``skill_access``: the advance/editor paths must
+        reject these even when a campaign grant would otherwise add the list.
+        """
+        package = self.find_package(band_id)
+        banned: set[str] = set()
+        for rule in package.special_rules:
+            runtime = rule.get("runtime") or {}
+            if runtime.get("grant") != "profile" or runtime.get("implemented") != "YES":
+                continue
+            if profile_id not in set((rule.get("applies_to") or {}).get("profile_ids") or ()):
+                continue
+            for effect in runtime.get("effects") or ():
+                binding = effect.get("binding") or {}
+                if binding.get("id") != "compiler.forbid-skill-categories":
+                    continue
+                for category in (binding.get("parameters") or {}).get("categories") or ():
+                    banned.add(str(category))
+        return banned
+
     # -------------------------------------------------------------- equipment
 
     def equipment(self, collection: str, band_id: str) -> tuple[EquipmentOffer, ...]:
@@ -446,6 +471,32 @@ class KnowledgePort:
                 return int(price)
             return None
         return None
+
+    def trading_post_restriction(self, item_id: str) -> dict:
+        """Typed Trading Post restrictions of one item (first matching entry).
+
+        Returns ``{'heroes_only': bool, 'limit_per_warband': int | None,
+        'notes': tuple[str, ...]}``. Prose-only ``condition``/``profile_only``
+        notes are carried as text; they stay data-transcription work.
+        """
+        trading = self.campaign_catalog().catalogue("trading-post.yaml")
+        for entry in trading.get("items") or ():
+            if str(entry.get("item_id") or "") != item_id:
+                continue
+            restrictions = entry.get("restrictions") or ()
+            return {
+                "heroes_only": any(r.get("type") == "heroes_only" for r in restrictions),
+                "limit_per_warband": next(
+                    (int(r.get("value")) for r in restrictions
+                     if r.get("type") == "limit_per_warband" and r.get("value") is not None),
+                    None,
+                ),
+                "notes": tuple(
+                    str(r.get("note")) for r in restrictions
+                    if r.get("type") in ("condition", "profile_only") and r.get("note")
+                ),
+            }
+        return {"heroes_only": False, "limit_per_warband": None, "notes": ()}
 
     def items_for_profile(self, profile: WarbandProfile) -> tuple[EquipmentOffer, ...]:
         """Offers applicable to a concrete profile (its equipment lists)."""
@@ -542,6 +593,12 @@ class KnowledgePort:
             if str(lore.get("id") or "") == lore_id:
                 return tuple(lore.get("spells") or ())
         return ()
+
+    def rules_catalogue(self):
+        """Read-only RULES browser catalogue (categories, entries, search)."""
+        from mordheim_campaign.application.rules_catalogue import RulesCatalogue
+
+        return RulesCatalogue(self)
 
     def racial_maximums(self) -> tuple[dict, ...]:
         """Racial characteristic maximums of ``catalog/rules/racial-maximums.yaml``."""
