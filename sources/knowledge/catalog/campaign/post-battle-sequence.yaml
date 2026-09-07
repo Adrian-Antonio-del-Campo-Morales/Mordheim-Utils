@@ -4,7 +4,7 @@ catalog: campaign-post-battle-sequence
 status: published
 sequence:
   id: campaign.post-battle
-  name: Post-Battle Sequence
+  name: Post-battle sequence
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -13,7 +13,7 @@ sequence:
   steps:
   - order: 1
     id: campaign.step.serious-injuries
-    name: Serious Injuries
+    name: Serious injuries
     resolves: serious-injuries.yaml
     repeatability: once
     source_refs:
@@ -22,10 +22,11 @@ sequence:
       section: Tools / Post-battle / Injuries
       url: https://mordheimer.net/docs/tools
     name_i18n:
-      es: Heridas Graves
+      en: Serious injuries
+      es: Heridas graves
   - order: 2
     id: campaign.step.experience
-    name: Allocate Experience
+    name: Allocate experience
     resolves: experience-and-advances.yaml
     repeatability: once
     source_refs:
@@ -34,10 +35,11 @@ sequence:
       section: Tools / Post-battle / Allocate experience
       url: https://mordheimer.net/docs/tools
     name_i18n:
-      es: Repartir Experiencia
+      en: Allocate experience
+      es: Repartir experiencia
   - order: 3
     id: campaign.step.exploration
-    name: Roll on the Exploration Chart
+    name: Roll on the Exploration chart
     resolves: exploration-and-income.yaml
     repeatability: once
     source_refs:
@@ -46,7 +48,8 @@ sequence:
       section: Tools / Post-battle / Roll on the Exploration chart
       url: https://mordheimer.net/docs/tools
     name_i18n:
-      es: Tirar en la Tabla de Exploración
+      en: Roll on the Exploration chart
+      es: Tirar en la tabla de Exploración
   - order: 4
     id: campaign.step.sell-wyrdstone
     name: Sell Wyrdstone
@@ -58,10 +61,11 @@ sequence:
       section: Tools / Post-battle / Sell Wyrdstone
       url: https://mordheimer.net/docs/tools
     name_i18n:
-      es: Vender Piedra Bruja
+      en: Sell Wyrdstone
+      es: Vender piedra bruja
   - order: 5
     id: campaign.step.veterans
-    name: Check Available Veterans
+    name: Check available veterans
     resolves: recruitment-and-veterans.yaml
     repeatability: once
     source_refs:
@@ -70,10 +74,11 @@ sequence:
       section: Tools / Post-battle / Check available veterans
       url: https://mordheimer.net/docs/tools
     name_i18n:
-      es: Consultar Veteranos Disponibles
+      en: Check available veterans
+      es: Consultar veteranos disponibles
   - order: 6
     id: campaign.step.rare-items
-    name: Make Rarity Rolls and Buy Rare Items
+    name: Make rarity rolls and buy rare items
     resolves: trading-and-rarity.yaml
     repeatability: once
     source_refs:
@@ -82,7 +87,8 @@ sequence:
       section: Tools / Post-battle / Make rarity rolls and buy rare items
       url: https://mordheimer.net/docs/tools
     name_i18n:
-      es: Hacer Tiradas de Rareza y Comprar Objetos Raros
+      en: Make rarity rolls and buy rare items
+      es: Hacer tiradas de rareza y comprar objetos raros
   - order: 7
     id: campaign.step.dramatis-personae
     name: Look for Dramatis Personae
@@ -94,10 +100,11 @@ sequence:
       section: Tools / Post-battle / Look for Dramatis Personae
       url: https://mordheimer.net/docs/tools
     name_i18n:
-      es: Buscar Personajes Dramáticos
+      en: Look for Dramatis Personae
+      es: Buscar Personajes dramáticos
   - order: 8
     id: campaign.step.recruit-and-buy-common
-    name: Hire Recruits and Buy Common Items
+    name: Hire recruits and buy common items
     resolves: recruitment-and-veterans.yaml
     repeatability: repeatable
     source_refs:
@@ -106,10 +113,11 @@ sequence:
       section: Tools / Post-battle / Hire new recruits & buy common items
       url: https://mordheimer.net/docs/tools
     name_i18n:
-      es: Contratar Reclutas y Comprar Objetos Comunes
+      en: Hire recruits and buy common items
+      es: Contratar reclutas y comprar objetos comunes
   - order: 9
     id: campaign.step.reallocate-equipment
-    name: Reallocate Equipment
+    name: Reallocate equipment
     resolves: trading-and-rarity.yaml
     repeatability: repeatable
     source_refs:
@@ -118,10 +126,11 @@ sequence:
       section: Tools / Post-battle / Reallocate equipment
       url: https://mordheimer.net/docs/tools
     name_i18n:
-      es: Reasignar Equipo
+      en: Reallocate equipment
+      es: Reasignar equipo
   - order: 10
     id: campaign.step.update-rating
-    name: Update Warband Rating
+    name: Update warband rating
     resolves: warband-rating.yaml
     repeatability: once
     source_refs:
@@ -130,6 +139,8 @@ sequence:
       section: Tools / Post-battle / Update your warband rating
       url: https://mordheimer.net/docs/tools
     name_i18n:
-      es: Actualizar la Valoración de la Banda
+      en: Update warband rating
+      es: Actualizar la valoración de la banda
   name_i18n:
-    es: Secuencia Tras la Batalla
+    en: Post-battle sequence
+    es: Secuencia tras la batalla

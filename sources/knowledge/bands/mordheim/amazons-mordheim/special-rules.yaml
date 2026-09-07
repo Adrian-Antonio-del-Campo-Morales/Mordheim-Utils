@@ -10,20 +10,25 @@ rules:
     - id: unimplemented.amazons-mordheim.priestess.leader
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Deferred subsystem: psychology.'
   name: Leader
+  effect: Any models in the warband within 6" of the Priestess may use her Leadership instead of their
+    own.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroines / 1 Priestess / Special Rules / Leader
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
   name_i18n:
+    en: Leader
     es: Líder
+  effect_i18n:
+    en: Any models in the warband within 6" of the Priestess may use her Leadership instead of their own.
+    es: Todas las miniaturas de la banda a 6" de la Sacerdotisa pueden usar su Liderazgo en lugar del
+      suyo propio.
   applies_to:
     profile_ids:
     - priestess
-  rule_ref: shared-rule.leader
 - id: priestess--wizard
   runtime:
     scope: 'NO'
@@ -33,23 +38,23 @@ rules:
     - id: unimplemented.amazons-mordheim.priestess.wizard
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: magic.
+      reason: 'Out of scope: magic.'
   name: Wizard
-  effect: >-
-    The Priestess is a Wizard and may use Amazon Rituals. She starts with one ritual chosen at
-    random from the list.
+  effect: The Priestess is a Wizard and may use Amazon Rituals. She starts with one ritual chosen at random
+    from the list.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroines / 1 Priestess / Special Rules / Wizard
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
   name_i18n:
+    en: Wizard
     es: Mago
   effect_i18n:
-    es: >-
-      La Sacerdotisa es una Hechicera y puede usar los Rituales de las Amazonas. Comienza con un
-      ritual elegido aleatoriamente de la lista.
+    en: The Priestess is a Wizard and may use Amazon Rituals. She starts with one ritual chosen at random
+      from the list.
+    es: La Sacerdotisa es una Hechicera y puede usar los Rituales de las Amazonas. Comienza con un ritual
+      elegido aleatoriamente de la lista.
   applies_to:
     profile_ids:
     - priestess
@@ -67,24 +72,27 @@ rules:
         parameters:
           value: true
   name: Frenzy
-  effect: >-
-    Totem Warriors are utterly fanatical, blood-crazed individuals. They are also totally out of
-    their heads on dangerous, psychedelic, herbal concoctions prepared by their sisters. Totem
-    Warriors are mad berserkers who care little about danger or the prospect of death. They are
-    subject to the rules for Frenzy.
+  effect: Totem Warriors are utterly fanatical, blood-crazed individuals. They are also totally out of
+    their heads on dangerous, psychedelic, herbal concoctions prepared by their sisters. Totem Warriors
+    are mad berserkers who care little about danger or the prospect of death. They are subject to the
+    rules for Frenzy.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroines / 0 – 2 Totem Warriors / Special Rules / Frenzy
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
   name_i18n:
+    en: Frenzy
     es: Frenesí
   effect_i18n:
-    es: >-
-      Las Guerreras tótem son individuos completamente fanáticos y enloquecidos por la sangre.
-      También están totalmente fuera de sí por concocciones herbales psicodélicas y peligrosas
-      preparadas por sus hermanas. Las Guerreras tótem son berserkers enloquecidas a las que les
-      importa poco el peligro o la perspectiva de la muerte. Están sujetas a las reglas de Frenesí.
+    en: Totem Warriors are utterly fanatical, blood-crazed individuals. They are also totally out of their
+      heads on dangerous, psychedelic, herbal concoctions prepared by their sisters. Totem Warriors are
+      mad berserkers who care little about danger or the prospect of death. They are subject to the rules
+      for Frenzy.
+    es: Las Guerreras tótem son individuos completamente fanáticos y enloquecidos por la sangre. También
+      están totalmente fuera de sí por concocciones herbales psicodélicas y peligrosas preparadas por
+      sus hermanas. Las Guerreras tótem son berserkers enloquecidas a las que les importa poco el peligro
+      o la perspectiva de la muerte. Están sujetas a las reglas de Frenesí.
   applies_to:
     profile_ids:
     - totem-warriors
@@ -97,23 +105,23 @@ rules:
     - id: unimplemented.amazons-mordheim.scouts.stealthy
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: movement.
+      reason: 'Out of scope: movement.'
   name: Stealthy
-  effect: >-
-    A Scout may deploy twice the distance onto the battlefield than other warriors and may start the
-    battle Hiding.
+  effect: A Scout may deploy twice the distance onto the battlefield than other warriors and may start
+    the battle Hiding.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchwomen / 0 – 3 Scouts / Special Rules / Stealthy
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
   name_i18n:
+    en: Stealthy
     es: Sigilosas
   effect_i18n:
-    es: >-
-      Una Exploradora puede desplegar al doble de distancia dentro del campo de batalla que otros
-      guerreros y puede comenzar la batalla Oculta.
+    en: A Scout may deploy twice the distance onto the battlefield than other warriors and may start the
+      battle Hiding.
+    es: Una Exploradora puede desplegar al doble de distancia dentro del campo de batalla que otros guerreros
+      y puede comenzar la batalla Oculta.
   applies_to:
     profile_ids:
     - scouts
@@ -126,11 +134,9 @@ rules:
     - id: unimplemented.amazons-mordheim.band.sacrifice
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
+      reason: 'Out of scope: campaign.'
   name: Sacrifice
-  effect: >-
-    The Amazons are quick to sacrifice any captive to their gods. The Amazons follow the rules for
+  effect: The Amazons are quick to sacrifice any captive to their gods. The Amazons follow the rules for
     Possessed in the Rulebook when it comes to captives.
   source:
     manual: mordheimer.net
@@ -138,11 +144,13 @@ rules:
     section: Special Rules / Sacrifice
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
   name_i18n:
+    en: Sacrifice
     es: Sacrificio
   effect_i18n:
-    es: >-
-      Las Amazonas son rápidas a la hora de sacrificar a cualquier cautivo a sus dioses. Las
-      Amazonas siguen las reglas de los Poseídos del libro de reglas en lo referente a los cautivos.
+    en: The Amazons are quick to sacrifice any captive to their gods. The Amazons follow the rules for
+      Possessed in the Rulebook when it comes to captives.
+    es: Las Amazonas son rápidas a la hora de sacrificar a cualquier cautivo a sus dioses. Las Amazonas
+      siguen las reglas de los Poseídos del libro de reglas en lo referente a los cautivos.
   applies_to:
     band: true
 - id: band--not-one-of-us
@@ -154,25 +162,26 @@ rules:
     - id: unimplemented.amazons-mordheim.band.not-one-of-us
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign.
-  name: Not One of Us
-  effect: >-
-    Due to the Amazons’ isolationism and suspicions about other races they never side with anyone
-    else. For this reason, the Amazons may not have any Hired Swords or Dramatis Personae unless
-    they are actually Amazons themselves.
+      reason: 'Out of scope: campaign.'
+  name: Not one of us
+  effect: Due to the Amazons’ isolationism and suspicions about other races they never side with anyone
+    else. For this reason, the Amazons may not have any Hired Swords or Dramatis Personae unless they
+    are actually Amazons themselves.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Special Rules / Not one of us
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
   name_i18n:
-    es: No Es de las Nuestras
+    en: Not one of us
+    es: No es de las nuestras
   effect_i18n:
-    es: >-
-      Debido al aislamiento de las Amazonas y sus sospechas sobre otras razas, nunca se alían con
-      nadie. Por esta razón, las Amazonas no pueden tener ninguna Espada a sueldo ni Dramatis
-      Personae a menos que sean realmente Amazonas.
+    en: Due to the Amazons’ isolationism and suspicions about other races they never side with anyone
+      else. For this reason, the Amazons may not have any Hired Swords or Dramatis Personae unless they
+      are actually Amazons themselves.
+    es: Debido al aislamiento de las Amazonas y sus sospechas sobre otras razas, nunca se alían con nadie.
+      Por esta razón, las Amazonas no pueden tener ninguna Espada a sueldo ni Dramatis Personae a menos
+      que sean realmente Amazonas.
   applies_to:
     band: true
 - id: band--human-maximum-characteristics
@@ -187,9 +196,8 @@ rules:
       reason: >-
         Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
         construction.
-  name: Human Maximum Characteristics
-  effect: >-
-    Although outsiders consider the Amazons to be immortal, the maximum characteristics for each
+  name: Human maximum characteristics
+  effect: Although outsiders consider the Amazons to be immortal, the maximum characteristics for each
     type will be the same as any other human warband (campaign.limit.racial-maximum.human).
   source:
     manual: mordheimer.net
@@ -197,11 +205,12 @@ rules:
     section: Choice of warriors
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/amazons
   name_i18n:
-    es: Características Máximas Humanas
+    en: Human maximum characteristics
+    es: Características máximas humanas
   effect_i18n:
-    es: >-
-      Aunque los forasteros consideran a las Amazonas inmortales, las características máximas de
-      cada tipo serán las mismas que las de cualquier otra banda humana
-      (campaign.limit.racial-maximum.human).
+    en: Although outsiders consider the Amazons to be immortal, the maximum characteristics for each type
+      will be the same as any other human warband (campaign.limit.racial-maximum.human).
+    es: Aunque los forasteros consideran a las Amazonas inmortales, las características máximas de cada
+      tipo serán las mismas que las de cualquier otra banda humana (campaign.limit.racial-maximum.human).
   applies_to:
     band: true

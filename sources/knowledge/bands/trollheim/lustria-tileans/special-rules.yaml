@@ -3,19 +3,20 @@ band_id: lustria-tileans
 rules:
 - id: mercenary-captain--leader
   name: Leader
-  effect: >-
-    Any warband model within 6" of the Mercenary Captain may use his Leadership when taking
-    Leadership tests.
+  effect: Any warband model within 6" of the Mercenary Captain may use his Leadership when taking Leadership
+    tests.
   source:
     manual: lustria
     printed_page: 49
     section: Heroes / 1 Mercenary Captain / Leader
   name_i18n:
+    en: Leader
     es: Líder
   effect_i18n:
-    es: >-
-      Cualquier modelo de la banda a 6" del Capitán mercenario puede usar su Liderazgo al realizar
-      chequeos de Liderazgo.
+    en: Any warband model within 6" of the Mercenary Captain may use his Leadership when taking Leadership
+      tests.
+    es: Cualquier modelo de la banda a 6" del Capitán mercenario puede usar su Liderazgo al realizar chequeos
+      de Liderazgo.
   applies_to:
     profile_ids:
     - mercenary-captain
@@ -27,8 +28,7 @@ rules:
     - id: unimplemented.lustria-tileans.mercenary-captain.leader
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: duelists--cloak-and-dagger
   runtime:
     scope: 'YES'
@@ -43,17 +43,17 @@ rules:
         parameters:
           value: true
   name: Cloak and Dagger
-  effect: >-
-    A Duelist counts as using a shield in close combat because of the defensive use of the cloak.
+  effect: A Duelist counts as using a shield in close combat because of the defensive use of the cloak.
   source:
     manual: lustria
     printed_page: 50
     section: Henchmen / 0-5 Duelists / Cloak and Dagger
   name_i18n:
-    es: Capa y Daga
+    en: Cloak and Dagger
+    es: Capa y daga
   effect_i18n:
-    es: >-
-      Un Duelista cuenta como si usara un escudo en combate cuerpo a cuerpo gracias al uso defensivo
+    en: A Duelist counts as using a shield in close combat because of the defensive use of the cloak.
+    es: Un Duelista cuenta como si usara un escudo en combate cuerpo a cuerpo gracias al uso defensivo
       de la capa.
   applies_to:
     profile_ids:
@@ -66,8 +66,10 @@ rules:
     printed_page: 46
     section: Miragliano / Special Rules
   name_i18n:
-    es: Miragliano — Maestría con la Ballesta
+    en: Miragliano — Crossbow Mastery
+    es: Miragliano — Maestría con la ballesta
   effect_i18n:
+    en: Heroes in a Miragliano warband gain +1 To Hit when shooting with a Crossbow.
     es: Los Héroes de una banda de Miragliano obtienen +1 por Golpear al disparar con una Ballesta.
   eligibility:
   - mercenary-captain
@@ -83,28 +85,29 @@ rules:
     - id: unimplemented.lustria-tileans.band.miragliano-crossbow-mastery
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: band--miragliano-marksman-accuracy
   name: Miragliano — Marksman Accuracy
-  effect: >-
-    Marksmen in a Miragliano warband gain +1 To Hit with any missile weapon they use. The source
-    says this bonus is already included in their characteristic profile, although the universal
-    Marksman profile printed on page 50 shows BS 3; the normalized model therefore keeps the printed
-    BS 3 and represents the bonus explicitly as this rule.
+  effect: Marksmen in a Miragliano warband gain +1 To Hit with any missile weapon they use. The source
+    says this bonus is already included in their characteristic profile, although the universal Marksman
+    profile printed on page 50 shows BS 3; the normalized model therefore keeps the printed BS 3 and represents
+    the bonus explicitly as this rule.
   source:
     manual: lustria
     printed_page: 46
     section: Miragliano / Special Rules
   name_i18n:
-    es: Miragliano — Precisión del Tirador
+    en: Miragliano — Marksman Accuracy
+    es: Miragliano — Precisión del tirador
   effect_i18n:
-    es: >-
-      Los Tiradores de una banda de Miragliano obtienen +1 por Golpear con cualquier arma de misil
-      que empleen. La fuente indica que este bono ya está incluido en su perfil de características,
-      aunque el perfil universal de Tirador impreso en la página 50 muestra HB 3; el modelo
-      normalizado mantiene, por tanto, el HB 3 impreso y representa el bono explícitamente mediante
-      esta regla.
+    en: Marksmen in a Miragliano warband gain +1 To Hit with any missile weapon they use. The source says
+      this bonus is already included in their characteristic profile, although the universal Marksman
+      profile printed on page 50 shows BS 3; the normalized model therefore keeps the printed BS 3 and
+      represents the bonus explicitly as this rule.
+    es: Los Tiradores de una banda de Miragliano obtienen +1 por Golpear con cualquier arma de misil que
+      empleen. La fuente indica que este bono ya está incluido en su perfil de características, aunque
+      el perfil universal de Tirador impreso en la página 50 muestra HB 3; el modelo normalizado mantiene,
+      por tanto, el HB 3 impreso y representa el bono explícitamente mediante esta regla.
   eligibility:
   - marksmen
   applies_to:
@@ -117,23 +120,23 @@ rules:
     - id: unimplemented.lustria-tileans.band.miragliano-marksman-accuracy
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
 - id: band--miragliano-hatred-skaven
   name: Miragliano — Hatred of Skaven
-  effect: >-
-    When fighting a Skaven warband, all Miragliano warband members are subject to Hatred against
+  effect: When fighting a Skaven warband, all Miragliano warband members are subject to Hatred against
     Skaven. Hired Swords do not gain this Hatred.
   source:
     manual: lustria
     printed_page: 46
     section: Miragliano / Special Rules
   name_i18n:
-    es: Miragliano — Odio a los Skaven
+    en: Miragliano — Hatred of Skaven
+    es: Miragliano — Odio a los skaven
   effect_i18n:
-    es: >-
-      Al combatir contra una banda skaven, todos los miembros de la banda de Miragliano están
-      sujetos a Odio contra los skaven. Las Espadas contratadas no obtienen este Odio.
+    en: When fighting a Skaven warband, all Miragliano warband members are subject to Hatred against Skaven.
+      Hired Swords do not gain this Hatred.
+    es: Al combatir contra una banda skaven, todos los miembros de la banda de Miragliano están sujetos
+      a Odio contra los skaven. Las Espadas contratadas no obtienen este Odio.
   applies_to:
     band: true
   runtime:
@@ -144,22 +147,22 @@ rules:
     - id: unimplemented.lustria-tileans.band.miragliano-hatred-skaven
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--remas-dark-elf-rout
   name: Remas — Defiance Against Dark Elves
-  effect: >-
-    When fighting a Dark Elf warband, a Remas warband may re-roll one Rout test. The second result
+  effect: When fighting a Dark Elf warband, a Remas warband may re-roll one Rout test. The second result
     must be accepted.
   source:
     manual: lustria
     printed_page: 47
     section: Remas / Special Rules
   name_i18n:
-    es: Remas — Desafío a los Elfos Oscuros
+    en: Remas — Defiance Against Dark Elves
+    es: Remas — Desafío a los elfos oscuros
   effect_i18n:
-    es: >-
-      Al combatir contra una banda de elfos oscuros, una banda de Remas puede repetir un chequeo de
+    en: When fighting a Dark Elf warband, a Remas warband may re-roll one Rout test. The second result
+      must be accepted.
+    es: Al combatir contra una banda de elfos oscuros, una banda de Remas puede repetir un chequeo de
       Retirada. Debe aceptarse el segundo resultado.
   applies_to:
     band: true
@@ -171,23 +174,23 @@ rules:
     - id: unimplemented.lustria-tileans.band.remas-dark-elf-rout
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--remas-officer-leadership
   name: Remas — Veteran Officers
-  effect: >-
-    The Mercenary Captain, Champions and Recruits in a Remas warband have +1 Leadership at all
-    times, regardless of the opposing warband.
+  effect: The Mercenary Captain, Champions and Recruits in a Remas warband have +1 Leadership at all times,
+    regardless of the opposing warband.
   source:
     manual: lustria
     printed_page: 47
     section: Remas / Special Rules
   name_i18n:
-    es: Remas — Oficiales Veteranos
+    en: Remas — Veteran Officers
+    es: Remas — Oficiales veteranos
   effect_i18n:
-    es: >-
-      El Capitán mercenario, los Campeones y los Reclutas de una banda de Remas tienen +1 de
-      Liderazgo en todo momento, independientemente de la banda rival.
+    en: The Mercenary Captain, Champions and Recruits in a Remas warband have +1 Leadership at all times,
+      regardless of the opposing warband.
+    es: El Capitán mercenario, los Campeones y los Reclutas de una banda de Remas tienen +1 de Liderazgo
+      en todo momento, independientemente de la banda rival.
   eligibility:
   - mercenary-captain
   - champions
@@ -202,25 +205,24 @@ rules:
     - id: unimplemented.lustria-tileans.band.remas-officer-leadership
       scope: LATER
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Deferred subsystem: psychology or mounts.'
 - id: band--trantio-wealth
   name: Trantio — Wealth
-  effect: >-
-    A Trantio warband starts with an additional 100 gc. If the campaign is played in Lustria,
-    increase that already-modified amount by a further 20%; from the normal 500 gc this produces 720
-    gc.
+  effect: A Trantio warband starts with an additional 100 gc. If the campaign is played in Lustria, increase
+    that already-modified amount by a further 20%; from the normal 500 gc this produces 720 gc.
   source:
     manual: lustria
     printed_page: 47
     section: Trantio / Special Rules
   name_i18n:
+    en: Trantio — Wealth
     es: Trantio — Riqueza
   effect_i18n:
-    es: >-
-      Una banda de Trantio comienza con 100 coronas adicionales. Si la campaña se juega en Lustria,
-      aumenta esa cantidad ya modificada un 20% más; a partir de las 500 coronas normales esto
-      produce 720 coronas.
+    en: A Trantio warband starts with an additional 100 gc. If the campaign is played in Lustria, increase
+      that already-modified amount by a further 20%; from the normal 500 gc this produces 720 gc.
+    es: Una banda de Trantio comienza con 100 coronas adicionales. Si la campaña se juega en Lustria,
+      aumenta esa cantidad ya modificada un 20% más; a partir de las 500 coronas normales esto produce
+      720 coronas.
   applies_to:
     band: true
   runtime:
@@ -231,5 +233,4 @@ rules:
     - id: unimplemented.lustria-tileans.band.trantio-wealth
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
