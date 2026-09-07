@@ -332,6 +332,7 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
         "hard_to_kill": bool(
             has(g, "skill.hard-to-kill") or has(g, "skill.tough-as-steel")
         ),
+        "true_grit": has(g, "skill.tough-as-steel"),
         "concussion_immune": has(g, "concussion_immune"),
         "fragile": has(g, "fragile_halflings"),
         "survivor": has(g, "survivor"),
@@ -495,6 +496,9 @@ def compile_duel(first: CompiledFighter, second: CompiledFighter) -> dict:
             else me.main_weapon
         )
         result = {"main": compile_source(me, foe, main_base)}
+        result["unarmed"] = compile_source(
+            me, foe, me.unarmed_weapon or EffectSet(tags=("weapon.fist",))
+        )
         unpredictable = has(me.global_effects, "mechanic.unpredictable-attack")
         result["unpredictable"] = (
             compile_source(

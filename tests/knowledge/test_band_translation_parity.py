@@ -97,9 +97,23 @@ def test_pilot_band_is_fully_translated() -> None:
     assert (band.get("name_i18n") or {}).get("es"), "pilot band name untranslated"
     for profile in _iter_profiles(band_dir):
         assert (profile.get("name_i18n") or {}).get("es"), f"untranslated profile {profile['id']}"
+    registry = {}
+    registry_path = BANDS_ROOT.parent / "catalog/rules/special-rules.yaml"
+    if registry_path.exists():
+        registry = {
+            str(row["id"]): row
+            for row in (yaml.safe_load(registry_path.read_text(encoding="utf-8")) or {}).get("rules", [])
+        }
     for rule in _iter_rules(band_dir):
         assert (rule.get("name_i18n") or {}).get("es"), f"untranslated rule {rule['id']}"
-        assert (rule.get("effect_i18n") or {}).get("es"), f"untranslated effect {rule['id']}"
+        ref = str(rule.get("rule_ref") or "")
+        if ref:
+            # Rule prose lives once in the shared-rule registry: the band rule
+            # is fully translated when its reference target carries the es.
+            assert registry.get(ref, {}).get("effect_i18n", {}).get("es"), \
+                f"untranslated shared effect {rule['id']} -> {ref}"
+        else:
+            assert (rule.get("effect_i18n") or {}).get("es"), f"untranslated effect {rule['id']}"
 
 
 def test_equivalent_rules_share_the_same_spanish_name() -> None:

@@ -53,7 +53,8 @@ class WarriorCard(BorderedFrame):
         equip.grid(row=0, column=1, sticky="nsew", padx=(1, 0))
         tk.Label(equip, text=tr('EQUIPMENT'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 5))
         for item in warrior.equipment[:5]:
-            tk.Label(equip, text=f"• {item}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(fill="x", pady=1)
+            suffix = f" ×{item.quantity}" if item.quantity > 1 else ""
+            tk.Label(equip, text=f"• {item.name}{suffix}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(fill="x", pady=1)
 
         skills = tk.Frame(body, bg=COLORS["panel_alt"], padx=12, pady=9)
         skills.grid(row=0, column=2, sticky="nsew", padx=(1, 0))

@@ -1,4 +1,989 @@
 schema_version: 2
 ruleset: mordheim
-rules: []
-note: Cross-band special rules are promoted here only after equivalence review.
+note: Cross-band rules promoted after an equivalence review (identical prose across two or more band files).
+note2: Band rules restate them as `rule_ref`; runtime stays on the band rule.
+rules:
+- id: shared-rule.always-hungry
+  name: Always Hungry
+  name_i18n:
+    es: Siempre Hambriento
+  effect: >-
+    A Troll requires an upkeep cost. This upkeep represents the copious amounts of food that must be
+    fed to the Troll in order to keep him loyal to the warband. The warband must pay 20 gold crowns
+    after every game in order to keep the Troll. If a warband lacks the gold to pay the upkeep, the
+    Boss has the option to let him count as 2 members, letting the Troll cost only 5 crowns. However
+    this does effectively drop your maximum warband size down to 11 models.
+  effect_i18n:
+    es: >-
+      Un troll requiere un coste de manutención. Este coste representa las cantidades copiosas de
+      comida que hay que darle al troll para mantenerlo leal a la banda. La banda debe pagar 20
+      coronas de oro tras cada partida para conservar al troll. Si la banda carece de oro para pagar
+      la manutención, el Jefe tiene la opción de que cuente como 2 miembros, de modo que el troll
+      solo cueste 5 coronas. Sin embargo, esto reduce efectivamente el tamaño máximo de tu banda a
+      11 modelos.
+- id: shared-rule.animal
+  name: Animal
+  name_i18n:
+    es: Animal
+  effect: >-
+    Giant Rats are animals and never gain Experience.
+  effect_i18n:
+    es: >-
+      Las Ratas gigantes son animales y nunca ganan Experiencia.
+- id: shared-rule.animal-2
+  name: Animal
+  name_i18n:
+    es: Animal
+  effect: >-
+    Tomb Scorpions are animals and never gain Experience.
+  effect_i18n:
+    es: >-
+      Los Escorpiones de tumba son animales y nunca ganan Experiencia.
+- id: shared-rule.animals
+  name: Animals
+  name_i18n:
+    es: Animales
+  effect: >-
+    Cave Squigs are animals of a sort and so do not gain experience.
+  effect_i18n:
+    es: >-
+      Los Squigs de Cueva son, en cierto modo, animales y por tanto no ganan experiencia.
+- id: shared-rule.animals-2
+  name: Animals
+  name_i18n:
+    es: Animales
+  effect: >-
+    Warhounds are animals and thus do not gain experience.
+  effect_i18n:
+    es: >-
+      Los sabuesos de guerra son animales y por tanto no ganan experiencia.
+- id: shared-rule.animals-3
+  name: Animals
+  name_i18n:
+    es: Animales
+  effect: >-
+    Wolves are animals and thus do not gain experience.
+  effect_i18n:
+    es: >-
+      Los lobos son animales y por tanto no ganan experiencia.
+- id: shared-rule.animosity
+  name: Animosity
+  name_i18n:
+    es: Rencor (Animosity)
+  effect: >-
+    Subject to the warband's Animosity rule. At the start of the Orc player's turn, roll a D6 for
+    this Orc Henchman if it is not in hand-to-hand combat; on a 1, roll on the Animosity result
+    table.
+  effect_i18n:
+    es: >-
+      Sujeto a la regla especial Rencor de la banda. Al inicio del turno del jugador orco, tira 1D6
+      por este secuaz orco si no está en combate cuerpo a cuerpo; con un 1, tira en la tabla de
+      resultados de Rencor.
+- id: shared-rule.ard-ead
+  name: ’Ard Ead
+  name_i18n:
+    es: Cráneo Grueso
+  effect: >-
+    The warrior has a thick skull even for an Orc. He has a special 3+ save on a D6 to avoid being
+    stunned. If the save is made, treat a stunned result as knocked down instead. If the Orc also
+    wears a helmet, this save is 2+ instead of 3+ (this takes the place of the normal helmet special
+    rule).
+  effect_i18n:
+    es: >-
+      El guerrero tiene el cráneo grueso incluso para ser un orco. Tiene una salvación especial de
+      3+ con 1D6 para evitar ser aturdido. Si supera la salvación, trata un resultado de aturdido
+      como derribado. Si el orco además lleva yelmo, esta salvación es de 2+ en lugar de 3+ (esto
+      sustituye a la regla especial normal del yelmo).
+- id: shared-rule.armour-2
+  name: Armour
+  name_i18n:
+    es: Armadura
+  effect: >-
+    Dwarfs never suffer movement penalties for wearing armour.
+  effect_i18n:
+    es: >-
+      Los enanos nunca sufren penalizaciones de movimiento por llevar armadura.
+- id: shared-rule.barbarian-courage
+  name: Barbarian Courage
+  name_i18n:
+    es: Coraje Bárbaro
+  effect: >-
+    As Norse warriors strive to die bravely in battle, they learn to fear nothing and embrace
+    hardship. This hero never needs to take all alone tests and may re-roll failed fear tests.
+  effect_i18n:
+    es: >-
+      Como los guerreros Norse se esfuerzan por morir con valentía en la batalla, aprenden a no
+      temer nada y a abrazar la adversidad. Este héroe jamás necesita hacer chequeos de Estar Solo y
+      puede repetir los chequeos de miedo fallados.
+- id: shared-rule.battle-tongue
+  name: Battle Tongue
+  name_i18n:
+    es: Lengua de Batalla
+  effect: >-
+    Only a hero with the leader skill may gain this skill. It allows models within 12" of him to use
+    his leadership, rather than the normal 6".
+  effect_i18n:
+    es: >-
+      Solo un héroe con la habilidad de líder puede ganar esta habilidad. Permite a los modelos a
+      12" de él usar su liderazgo, en lugar de los 6" normales.
+- id: shared-rule.berserk-charge
+  name: Berserk Charge
+  name_i18n:
+    es: Carga Berserker
+  effect: >-
+    The Norse are very skilled with weapons that many other races see as primitive and savage. When
+    this hero is armed with an axe or double handed weapon, he may re-roll all failed to hit rolls
+    when he charges.
+  effect_i18n:
+    es: >-
+      Los Norse son muy diestros con armas que muchas otras razas consideran primitivas y salvajes.
+      Cuando este héroe está armado con un hacha o un arma a dos manos, puede repetir todas las
+      tiradas de impactar falladas cuando carga.
+- id: shared-rule.berserkers
+  name: Berserkers
+  name_i18n:
+    es: Berserker
+  effect: >-
+    Berserkers are subject to frenzy as detailed in the Psychology section of the Mordheim rulebook.
+  effect_i18n:
+    es: >-
+      Los Berserkers están sujetos al frenesí tal como se detalla en la sección de Psicología del
+      reglamento de Mordheim.
+- id: shared-rule.bestial
+  name: Bestial
+  name_i18n:
+    es: Bestia (Bestial)
+  effect: >-
+    Wulfen are ravenous beasts and therefore immune to psychology. Also despite being greatly
+    revered by their barbarian kinsmen, Wulfen are too feral and uncontrolled to become the leader
+    of the warband.
+  effect_i18n:
+    es: >-
+      Los Wulfen son bestias voraces y por tanto inmunes a la psicología. Además, a pesar de ser muy
+      venerados por sus parientes bárbaros, los Wulfen son demasiado feroces e indomables para
+      convertirse en el líder de la banda.
+- id: shared-rule.brainless
+  name: No Brain
+  name_i18n:
+    es: Sin Cerebro
+  effect: >-
+    Zombies never gain experience.
+  effect_i18n:
+    es: >-
+      Los Zombis nunca ganan Experiencia.
+- id: shared-rule.burn-the-witch
+  name: Burn the Witch!
+  name_i18n:
+    es: ¡Quemad a la Bruja!
+  effect: >-
+    The Witch Hunter Captain is subject to Hatred against all models that can cast spells.
+  effect_i18n:
+    es: >-
+      El Capitán cazador de brujas está sujeto a Odio contra todos los modelos capaces de lanzar
+      hechizos.
+- id: shared-rule.burn-the-witch-2
+  name: Burn the Witch!
+  name_i18n:
+    es: ¡Quemad a la Bruja!
+  effect: >-
+    Witch Hunters are subject to Hatred against all models that can cast spells.
+  effect_i18n:
+    es: >-
+      Los Cazadores de brujas están sujetos a Odio contra todos los modelos capaces de lanzar
+      hechizos.
+- id: shared-rule.cause-fear-2
+  name: Cause Fear
+  name_i18n:
+    es: Provocar Miedo
+  effect: >-
+    All warriors with the Undead special rule cause Fear.
+  effect_i18n:
+    es: >-
+      Todos los guerreros con la regla especial No muerto causan Miedo.
+- id: shared-rule.censer-bearer
+  name: Censer Bearer
+  name_i18n:
+    es: Portador de Incensario
+  effect: >-
+    Requires Black Hunger. The Hero gains Frenzy and may use only a Censer as a close-combat weapon.
+  effect_i18n:
+    es: >-
+      Requiere Hambre negra. El Héroe gana Frenesí y solo puede usar un Incensario como arma de
+      combate cuerpo a cuerpo.
+- id: shared-rule.charge
+  name: Charge
+  name_i18n:
+    es: Carga
+  effect: >-
+    A Dire Wolf has 2 Attacks instead of 1 during a turn in which it charges.
+  effect_i18n:
+    es: >-
+      Un Lobo dire tiene 2 Ataques en lugar de 1 durante un turno en el que cargue.
+- id: shared-rule.crushing-blow
+  name: Crushing Blow
+  name_i18n:
+    es: Golpe Aplastante
+  effect: >-
+    Norse warriors train in almost all of their spare time. They are expert fighters and learn to
+    put all of their strength into very powerful attacks. No enemy may parry an attack made by this
+    hero because it strikes with such great power that it pushes right through a buckler or sword.
+  effect_i18n:
+    es: >-
+      Los guerreros Norse se entrenan en casi todo su tiempo libre. Son luchadores expertos y
+      aprenden a meter toda su fuerza en ataques muy poderosos. Ningún enemigo puede emparañar un
+      ataque de este héroe, pues golpea con una fuerza tan grande que atraviesa de lleno un broquel
+      o una espada.
+- id: shared-rule.da-cunnin-plan
+  name: Da Cunnin' Plan
+  name_i18n:
+    es: El Plan Maestro
+  effect: >-
+    Only the Boss may have this skill. The warband may re-roll any failed Rout tests as long as the
+    Boss is not out of action.
+  effect_i18n:
+    es: >-
+      Solo el Jefe puede tener esta habilidad. La banda puede repetir cualquier chequeo de huida
+      fallido mientras el Jefe no esté Fuera de combate.
+- id: shared-rule.dead
+  name: Unliving
+  name_i18n:
+    es: Sin Vida
+  effect: >-
+    Dire Wolves never gain Experience.
+  effect_i18n:
+    es: >-
+      Los Lobos dire nunca ganan Experiencia.
+- id: shared-rule.deathwish
+  name: Deathwish
+  name_i18n:
+    es: Deseo de Muerte
+  effect: >-
+    Troll Slayers seek an honourable death in combat. They are completely immune to all psychology
+    and never need to test if fighting alone.
+  effect_i18n:
+    es: >-
+      Los Matatrolles buscan una muerte honorable en combate. Son completamente inmunes a toda la
+      psicología y nunca necesitan chequear si luchan solos.
+- id: shared-rule.dumb-monster
+  name: Dumb Monster
+  name_i18n:
+    es: Monstruo Tarugo
+  effect: >-
+    A Troll is far too stupid to ever learn any new skills. Trolls do not gain experience.
+  effect_i18n:
+    es: >-
+      Un troll es demasiado estúpido para aprender nuevas habilidades. Los trolls no ganan
+      experiencia.
+- id: shared-rule.eadbasher
+  name: '''Eadbasher'
+  name_i18n:
+    es: Machacacráneos
+  effect: >-
+    Orcs have massive physical strength and some of them even learn to aim their blows at the heads
+    of their opponents, with obvious results. Any knocked down results which the Orc causes in
+    hand-to-hand count as stunned results instead.
+  effect_i18n:
+    es: >-
+      Los orcos tienen una fuerza física masiva y algunos incluso aprenden a dirigir sus golpes
+      contra las cabezas de sus oponentes, con resultados obvios. Cualquier resultado de derribado
+      que el orco cause en el cuerpo a cuerpo cuenta como resultado de aturdido.
+- id: shared-rule.elven-agility
+  name: Elven Agility
+  name_i18n:
+    es: Agilidad Élfica
+  effect: >-
+    The Hero has a 6+ special save against close-combat and missile attacks. If the Hero also has
+    Dodge or Step Aside, the relevant save improves to 4+ and Elven Agility no longer applies to
+    that attack type.
+  effect_i18n:
+    es: >-
+      El Héroe tiene una tirada de salvación especial de 6+ contra ataques de combate cuerpo a
+      cuerpo y de misil. Si el Héroe también tiene Esquivar o Apartarse, la salvación pertinente
+      mejora a 4+ y la Agilidad élfica deja de aplicarse a ese tipo de ataque.
+- id: shared-rule.ere-we-go
+  name: '''Ere We Go!'
+  name_i18n:
+    es: ¡Vamos Allá!
+  effect: >-
+    Orcs often charge even the most fearsome opponents. The model may ignore fear tests when
+    charging.
+  effect_i18n:
+    es: >-
+      Los orcos suelen cargar contra los oponentes más temibles. El modelo puede ignorar los
+      chequeos de miedo cuando carga.
+- id: shared-rule.evade
+  name: Evade
+  name_i18n:
+    es: Evadir
+  effect: >-
+    When an enemy charges a Pursuer, the Pursuer may attempt to evade. On a successful Initiative
+    test the charge counts as failed and the normal failed-charge rules apply.
+  effect_i18n:
+    es: >-
+      Cuando un enemigo carga contra un Perseguidor, este puede intentar evadir. Con un chequeo de
+      Iniciativa con éxito, la carga cuenta como fallida y se aplican las reglas normales de carga
+      fallida.
+- id: shared-rule.experience
+  name: Experience
+  name_i18n:
+    es: Experiencia
+  effect: >-
+    The Rat Ogre never gains Experience.
+  effect_i18n:
+    es: >-
+      El Ogro rata nunca gana Experiencia.
+- id: shared-rule.extra-tough
+  name: Extra Tough
+  name_i18n:
+    es: Extra Resistente
+  effect: >-
+    This Dwarf is notorious for walking away from wounds that would kill a lesser being. When
+    rolling on the Heroes Serious Injury chart for this Hero after a game in which he has been taken
+    out of action, the dice may be re-rolled once. The result of this second dice roll must be
+    accepted, even if it is a worse result.
+  effect_i18n:
+    es: >-
+      Este enano es famoso por sobrevivir a heridas que matarían a un ser inferior. Al tirar en la
+      tabla de Heridas Graves de Héroes para este héroe tras una partida en la que haya sido
+      retirado del combate, el dado puede repetirse una vez. El resultado de esta segunda tirada
+      debe aceptarse, incluso si es peor.
+- id: shared-rule.fear
+  name: Fear
+  name_i18n:
+    es: Miedo
+  effect: >-
+    The Vampire causes Fear.
+  effect_i18n:
+    es: >-
+      El Vampiro causa Miedo.
+- id: shared-rule.fear-2
+  name: Fear
+  name_i18n:
+    es: Miedo
+  effect: >-
+    The Rat Ogre causes Fear.
+  effect_i18n:
+    es: >-
+      El Ogro rata provoca Miedo.
+- id: shared-rule.fear-3
+  name: Cause Fear
+  name_i18n:
+    es: Provocar Miedo
+  effect: >-
+    Dire Wolves cause Fear.
+  effect_i18n:
+    es: >-
+      Los Lobos dire causan Miedo.
+- id: shared-rule.fear-4
+  name: Cause Fear
+  name_i18n:
+    es: Provocar Miedo
+  effect: >-
+    Ghouls cause Fear.
+  effect_i18n:
+    es: >-
+      Los Ghouls causan Miedo.
+- id: shared-rule.fear-5
+  name: Fear
+  name_i18n:
+    es: Miedo
+  effect: >-
+    Trolls are frightening monsters which cause fear.
+  effect_i18n:
+    es: >-
+      Los trolls son monstruos aterradores que causan miedo.
+- id: shared-rule.fear-6
+  name: Cause Fear
+  name_i18n:
+    es: Provocar Miedo
+  effect: >-
+    Zombies are horrible abominations and so cause fear.
+  effect_i18n:
+    es: >-
+      Los Zombis son abominaciones horribles y por tanto provocan miedo.
+- id: shared-rule.fear-7
+  name: Fear
+  name_i18n:
+    es: Miedo
+  effect: >-
+    Wulfen are terrifying creatures to behold and cause fear.
+  effect_i18n:
+    es: >-
+      Los Wulfen son criaturas aterradoras de contemplar y causan miedo.
+- id: shared-rule.free-the-slaves
+  name: Free the Slaves!
+  name_i18n:
+    es: ¡Libertad a los Esclavos!
+  effect: >-
+    Pit Fighters hate slavers and will never sell captured opponents to slavers.
+  effect_i18n:
+    es: >-
+      Los Luchadores de Foso odian a los tratantes de esclavos y jamás venderán oponentes capturados
+      a esclavistas.
+- id: shared-rule.goblin-limit
+  name: Goblin Limit
+  name_i18n:
+    es: Límite de Goblins
+  effect: >-
+    The warband may never include more than two Goblin Warriors for each Orc in the warband,
+    including Orc Heroes.
+  effect_i18n:
+    es: >-
+      La banda nunca puede incluir más de dos Guerreros goblin por cada orco de la banda, incluidos
+      los Héroes orcos.
+- id: shared-rule.grudgebearers
+  name: Grudgebearers
+  name_i18n:
+    es: Portadores del Agravio
+  effect: >-
+    A Dwarf warband may never include any kind of Elven Hired Sword or Dramatis Personae.
+  effect_i18n:
+    es: >-
+      Una banda enana nunca puede incluir ningún tipo de Espada a sueldo o Dramatis Personae élfico.
+- id: shared-rule.hard-as-steel
+  name: True Grit
+  name_i18n:
+    es: Entereza
+  effect: >-
+    Dwarfs are hardy individuals and this Hero is hardy even for a Dwarf! When rolling on the Injury
+    table for this Hero, a roll of 1-3 is treated as knocked down, 4-5 as stunned, and 6 as out of
+    action.
+  effect_i18n:
+    es: >-
+      ¡Los enanos son individuos duros y este Héroe lo es incluso para un enano! Al tirar en la
+      tabla de Heridas para este Héroe, un resultado de 1-3 se trata como Derribado, 4-5 como
+      Aturdido y 6 como Fuera de combate.
+- id: shared-rule.hard-head-2
+  name: Hard Head
+  name_i18n:
+    es: Cabeza Dura
+  effect: >-
+    Dwarfs ignore the special rules for maces, clubs and similar weapons.
+  effect_i18n:
+    es: >-
+      Los enanos ignoran las reglas especiales de mazas, garrotes y armas similares.
+- id: shared-rule.hard-to-kill
+  name: Hard to Kill
+  name_i18n:
+    es: Difíciles de Matar
+  effect: >-
+    Dwarfs are taken out of action only on a 6 on the Injury chart; 1–2 is Knocked Down and 3–5 is
+    Stunned.
+  effect_i18n:
+    es: >-
+      Los enanos se retiran del combate solo con un 6 en la tabla de Heridas; 1–2 es Derribado y 3–5
+      es Aturdido.
+- id: shared-rule.hate-orcs-and-goblins
+  name: Hate Orcs and Goblins
+  name_i18n:
+    es: Odio a Orcos y Goblins
+  effect: >-
+    All Dwarfs hate Orcs and Goblins.
+  effect_i18n:
+    es: >-
+      Todos los enanos odian a los orcos y los goblins.
+- id: shared-rule.immune-to-poison
+  name: Immune to Poison
+  name_i18n:
+    es: Inmune al Veneno
+  effect: >-
+    The Vampire is immune to poison.
+  effect_i18n:
+    es: >-
+      El Vampiro es inmune al veneno.
+- id: shared-rule.immune-to-poison-2
+  name: Immune to Poison
+  name_i18n:
+    es: Inmune al Veneno
+  effect: >-
+    Dire Wolves are immune to poison.
+  effect_i18n:
+    es: >-
+      Los Lobos dire son inmunes al veneno.
+- id: shared-rule.immune-to-poison-3
+  name: Immune to Poison
+  name_i18n:
+    es: Inmune al Veneno
+  effect: >-
+    Warriors with the Undead special rule are unaffected by poison.
+  effect_i18n:
+    es: >-
+      Los guerreros con la regla especial Muerto viviente no se ven afectados por el veneno.
+- id: shared-rule.immune-to-poison-4
+  name: Immune to Poison
+  name_i18n:
+    es: Inmune al Veneno
+  effect: >-
+    A Zombie is not affected by poison.
+  effect_i18n:
+    es: >-
+      Un Zombi no se ve afectado por el veneno.
+- id: shared-rule.immune-to-psychology
+  name: Immune to Psychology
+  name_i18n:
+    es: Inmune a la Psicología
+  effect: >-
+    The Vampire is immune to Psychology and never leaves combat because of Psychology.
+  effect_i18n:
+    es: >-
+      El Vampiro es inmune a la Psicología y nunca abandona el combate a causa de la Psicología.
+- id: shared-rule.immune-to-psychology-3
+  name: Immune to Psychology
+  name_i18n:
+    es: Inmune a la Psicología
+  effect: >-
+    Dire Wolves are immune to Psychology and never leave combat because of Psychology.
+  effect_i18n:
+    es: >-
+      Los Lobos terrible son inmunes a la Psicología y nunca abandonan el combate a causa de la
+      Psicología.
+- id: shared-rule.immune-to-psychology-4
+  name: Immune to Psychology
+  name_i18n:
+    es: Inmune a la Psicología
+  effect: >-
+    All warriors with the Undead special rule are immune to Psychology and never leave combat
+    because of Psychology.
+  effect_i18n:
+    es: >-
+      Todos los guerreros con la regla especial No muerto son inmunes a la Psicología y nunca
+      abandonan el combate a causa de la Psicología.
+- id: shared-rule.immune-to-psychology-5
+  name: Immune to Psychology
+  name_i18n:
+    es: Inmune a la Psicología
+  effect: >-
+    A Zombie is not affected by psychology and never leaves combat.
+  effect_i18n:
+    es: >-
+      Un Zombi no se ve afectado por la psicología y nunca abandona el combate.
+- id: shared-rule.incomparable-miners
+  name: Incomparable Miners
+  name_i18n:
+    es: Mineros Incomparables
+  effect: >-
+    When checking for wyrdstone at the end of a game, add +1 to the number of pieces found by the
+    Dwarf warband.
+  effect_i18n:
+    es: >-
+      Al buscar wyrdstone al final de una partida, añade +1 al número de fragmentos encontrados por
+      la banda enana.
+- id: shared-rule.large-target
+  name: Large Target
+  name_i18n:
+    es: Objetivo Grande
+  effect: >-
+    Trolls are Large Targets as defined in the shooting rules.
+  effect_i18n:
+    es: >-
+      Los trolls son Objetivos Grandes tal como se define en las reglas de disparo.
+- id: shared-rule.large-target-2
+  name: Large Target
+  name_i18n:
+    es: Objetivo Grande
+  effect: >-
+    The Rat Ogre is a Large Target.
+  effect_i18n:
+    es: >-
+      El Ogro rata es un Objetivo Grande.
+- id: shared-rule.leader
+  name: Leader
+  name_i18n:
+    es: Líder
+  effect: >-
+    Any models in the warband within 6" of the Priestess may use her Leadership instead of their
+    own.
+  effect_i18n:
+    es: >-
+      Todos los modelos de la banda a 6" de la Sacerdotisa pueden usar su Liderazgo en lugar del
+      suyo propio.
+- id: shared-rule.leader-2
+  name: Leader
+  name_i18n:
+    es: Líder
+  effect: >-
+    Any warrior within 6" of the Captain may use his Leadership characteristic when taking
+    Leadership tests.
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6" del Capitán puede usar su característica de Liderazgo cuando realice
+      chequeos de Liderazgo.
+- id: shared-rule.leader-3
+  name: Leader
+  name_i18n:
+    es: Líder
+  effect: >-
+    Any warrior within 6" of the Jarl may use his Leadership instead of his own when taking Ld
+    tests.
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6" del Jarl puede usar su Liderazgo en lugar del suyo propio cuando
+      realice chequeos de Ld.
+- id: shared-rule.leader-4
+  name: Leader
+  name_i18n:
+    es: Líder
+  effect: >-
+    Any warrior within 6" of the Questing Knight may use his Leadership characteristic when taking
+    Leadership tests.
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6" del Caballero Andante puede usar su característica de Liderazgo cuando
+      realice chequeos de Liderazgo.
+- id: shared-rule.leader-5
+  name: Leader
+  name_i18n:
+    es: Líder
+  effect: >-
+    Any warrior within 6" of the Witch Hunter Captain may use his Leadership when taking Leadership
+    tests.
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6" del Capitán cazador de brujas puede usar su Liderazgo al realizar
+      chequeos de Liderazgo.
+- id: shared-rule.living
+  name: Living
+  name_i18n:
+    es: Viviente
+  effect: >-
+    Tomb Scorpions are living creatures and are affected by Psychology normally, but they do not
+    need water.
+  effect_i18n:
+    es: >-
+      Los Escorpiones de tumba son criaturas vivientes y se ven afectados por la Psicología con
+      normalidad, pero no necesitan agua.
+- id: shared-rule.marienburg-enormous-wealth
+  name: Marienburg — Enormous Wealth
+  name_i18n:
+    es: Marienburgo — Enorme Riqueza
+  effect: >-
+    A Marienburg warband starts a campaign with 600 gc instead of 500 gc. In a one-off game it
+    receives 20% more gold crowns for recruitment.
+  effect_i18n:
+    es: >-
+      Una banda de Mariemburgo comienza la campaña con 600 coronas en lugar de 500. En una partida
+      suelta recibe un 20% más de coronas de oro para el reclutamiento.
+- id: shared-rule.marienburg-natural-traders
+  name: Marienburg — Natural Traders
+  name_i18n:
+    es: Marienburgo — Comerciantes Natos
+  effect: >-
+    A Marienburg warband receives +1 when attempting to find Rare items.
+  effect_i18n:
+    es: >-
+      Una banda de Mariemburgo recibe +1 al intentar encontrar objetos Raros.
+- id: shared-rule.may-not-run
+  name: May Not Run
+  name_i18n:
+    es: No Pueden Correr
+  effect: >-
+    Dire Wolves may not run, but may charge normally.
+  effect_i18n:
+    es: >-
+      Los Lobos dire no pueden correr, pero pueden cargar con normalidad.
+- id: shared-rule.may-not-run-2
+  name: May Not Run
+  name_i18n:
+    es: No Pueden Correr
+  effect: >-
+    Warriors with the Undead special rule may not run, but may charge normally.
+  effect_i18n:
+    es: >-
+      Los guerreros con la regla especial No muerto no pueden correr, pero pueden cargar con
+      normalidad.
+- id: shared-rule.may-not-run-3
+  name: May Not Run
+  name_i18n:
+    es: No Pueden Correr
+  effect: >-
+    Zombies are slow undead creatures and may not run (but may charge normally).
+  effect_i18n:
+    es: >-
+      Los Zombis son criaturas muertas vivientes lentas y no pueden correr (pero pueden cargar
+      normalmente).
+- id: shared-rule.middenheim-physical-prowess
+  name: Middenheim — Physical Prowess
+  name_i18n:
+    es: Middenheim — Proeza Física
+  effect: >-
+    The Mercenary Captain and all Champions in a Middenheim warband start with Strength 4 instead of
+    Strength 3.
+  effect_i18n:
+    es: >-
+      El Capitán mercenario y todos los Campeones de una banda de Middenheim comienzan con Fuerza 4
+      en lugar de Fuerza 3.
+- id: shared-rule.minderz
+  name: Minderz
+  name_i18n:
+    es: Cuidadores (Minderz)
+  effect: >-
+    Each Cave Squig must always remain within 6" of a Goblin Warrior, who keeps the creature in
+    line. If a Cave Squig finds itself without a Goblin within 6" at the start of its Movement
+    phase, it will go wild. From that point on, move the Squig 2D6" in a random direction during
+    each of its Movement phases. If its movement takes it into contact with another model (friend or
+    foe), it will engage the model in hand-to-hand combat as normal. The Cave Squig is out of the
+    Orc & Goblin player's control until the end of the game.
+  effect_i18n:
+    es: >-
+      Cada Squig de Cueva debe permanecer siempre a 6" de un guerrero goblin, quien mantiene a la
+      criatura a raya. Si un Squig de Cueva se encuentra sin ningún goblin a 6" al inicio de su fase
+      de Movimiento, se volverá salvaje. A partir de ese momento, mueve el Squig 2D6" en una
+      dirección aleatoria durante cada una de sus fases de Movimiento. Si su movimiento lo pone en
+      contacto con otro modelo (amigo o enemigo), entablará combate cuerpo a cuerpo con él con
+      normalidad. El Squig de Cueva queda fuera del control del jugador de Orcos y Goblins hasta el
+      final de la partida.
+- id: shared-rule.movement
+  name: Movement
+  name_i18n:
+    es: Movimiento
+  effect: >-
+    Cave Squigs do not have a set Movement characteristic but move with an ungainly bouncing stride.
+    To represent this, when moving Squigs, roll 2D6 for the distance they move. Squigs never run and
+    never declare charges. Instead, they are allowed to contact enemy models with their normal 2D6"
+    movement. If this happens, they count as charging for the following round of close combat, just
+    as if they had declared a charge.
+  effect_i18n:
+    es: >-
+      Los Squigs de Cueva no tienen una característica de Movimiento fija, sino que se mueven con un
+      zancudo brinco desgarbado. Para representarlo, cuando muevas Squigs, tira 2D6 para la
+      distancia que se desplazan. Los Squigs nunca corren ni declaran cargas. En cambio, se les
+      permite contactar con modelos enemigos con su movimiento normal de 2D6". Si esto sucede,
+      cuentan como cargando en el siguiente asalto de combate cuerpo a cuerpo, igual que si hubieran
+      declarado una carga.
+- id: shared-rule.natural-weapons
+  name: Natural Weapons
+  name_i18n:
+    es: Armas Naturales
+  effect: >-
+    The Wulfen fights with teeth and claws, may never use weapons or armour, and suffers no penalty
+    for fighting unarmed.
+  effect_i18n:
+    es: >-
+      El Wulfen lucha con dientes y garras, jamás puede usar armas ni armadura y no sufre
+      penalización por luchar sin armas.
+- id: shared-rule.never-gain-experience
+  name: Never Gain Experience
+  name_i18n:
+    es: Nunca Ganan Experiencia
+  effect: >-
+    Swabbies never gain Experience.
+  effect_i18n:
+    es: >-
+      Los Fregones nunca ganan Experiencia.
+- id: shared-rule.no-pain
+  name: No Pain
+  name_i18n:
+    es: Sin Dolor
+  effect: >-
+    The Vampire treats a Stunned result on the Injury chart as Knocked Down.
+  effect_i18n:
+    es: >-
+      El Vampiro trata un resultado Aturdido de la tabla de Heridas como Derribado.
+- id: shared-rule.no-pain-2
+  name: No Pain
+  name_i18n:
+    es: Sin Dolor
+  effect: >-
+    Dire Wolves treat a Stunned result on the Injury chart as Knocked Down.
+  effect_i18n:
+    es: >-
+      Los Lobos dire tratan un resultado Aturdido de la tabla de Heridas como Derribado.
+- id: shared-rule.no-pain-3
+  name: No Pain
+  name_i18n:
+    es: Sin Dolor
+  effect: >-
+    Zombies treat stunned results on the injury chart as knocked down.
+  effect_i18n:
+    es: >-
+      Los Zombis tratan los resultados de Aturdido en la tabla de heridas como Derribado.
+- id: shared-rule.no-pain-4
+  name: No Pain
+  name_i18n:
+    es: Sin Dolor
+  effect: >-
+    All warriors with the Undead special rule treat a Stunned result as Knocked Down.
+  effect_i18n:
+    es: >-
+      Todos los guerreros con la regla especial Muerto viviente tratan un resultado de Aturdido como
+      Derribado.
+- id: shared-rule.pack-leader
+  name: Pack Leader
+  name_i18n:
+    es: Líder de la Manada
+  effect: >-
+    Wolves may only be included in the warband if it includes a Wulfen. If the Wulfen is dead or
+    unavailable because of injury, the Wolves cannot be used until a Wulfen is available again.
+  effect_i18n:
+    es: >-
+      Los lobos solo pueden incluirse en la banda si esta incluye un Wulfen. Si el Wulfen está
+      muerto o no disponible por herida, los Lobos no pueden usarse hasta que haya un Wulfen
+      disponible de nuevo.
+- id: shared-rule.prayers
+  name: Prayers
+  name_i18n:
+    es: Oraciones
+  effect: >-
+    A Priest of Taal may use the Prayers of Taal.
+  effect_i18n:
+    es: >-
+      Un Sacerdote de Taal puede usar las Oraciones de Taal.
+- id: shared-rule.regeneration
+  name: Regeneration
+  name_i18n:
+    es: Regeneración
+  effect: >-
+    Trolls have a unique physiology that allows them to regenerate wounds. Whenever an enemy
+    successfully inflicts a wound on a Troll roll a D6, on a result of 4 or more the wound is
+    ignored and the Troll is unhurt. Trolls may not regenerate wounds caused by fire or fire-based
+    magic. Trolls never roll for Injury after a battle, unless they were taken Out of Action by a
+    Flaming weapon or spell. Then they roll after the battle as a normal Henchman.
+  effect_i18n:
+    es: >-
+      Los trolls tienen una fisiología única que les permite regenerar heridas. Siempre que un
+      enemigo inflija con éxito una herida a un troll, tira 1D6: con un resultado de 4 o más la
+      herida se ignora y el troll queda ileso. Los trolls no pueden regenerar heridas causadas por
+      fuego o magia de fuego. Los trolls nunca tiran por heridas tras una batalla, salvo que hayan
+      sido puestos Fuera de combate por un arma o hechizo ígneo; entonces tiran tras la batalla como
+      un secuaz normal.
+- id: shared-rule.resource-hunter
+  name: Resource Hunter
+  name_i18n:
+    es: Cazador de Recursos
+  effect: >-
+    This Dwarf is especially good at locating valuable resources. When rolling on the Exploration
+    chart at the end of a game, the Hero may modify one dice roll by +1/-1.
+  effect_i18n:
+    es: >-
+      Este enano es especialmente bueno localizando recursos valiosos. Al tirar en la tabla de
+      Exploración al final de una partida, el Héroe puede modificar una tirada de dado en +1/-1.
+- id: shared-rule.seafaring
+  name: Seafaring
+  name_i18n:
+    es: Navegante
+  effect: >-
+    All Norse warriors receive +2 Strength when rowing a boat.
+  effect_i18n:
+    es: >-
+      Todos los guerreros Norse reciben +2 Fuerza cuando reman un bote.
+- id: shared-rule.shield-master
+  name: Shield Master
+  name_i18n:
+    es: Maestro del Escudo
+  effect: >-
+    Norse warriors begin training with shields when they are still children. Some warriors become so
+    skilled with these weapons they can block almost any blow against them. When this hero is armed
+    with a shield he may parry with it in addition to getting a 6+ save.
+  effect_i18n:
+    es: >-
+      Los guerreros Norse comienzan a entrenar con escudos cuando todavía son niños. Algunos
+      guerreros se vuelven tan diestros con estas armas que pueden bloquear casi cualquier golpe
+      contra ellos. Cuando este héroe está armado con un escudo, puede emparañar con él además de
+      obtener una salvación de 6+.
+- id: shared-rule.skills
+  name: Skills
+  name_i18n:
+    es: Habilidades
+  effect: >-
+    If the Ogre Pit Fighter becomes a Hero through The Lad's Got Talent, it may choose Combat,
+    Strength and Pit Fighter Special Skills.
+  effect_i18n:
+    es: >-
+      Si el Luchador de Foso Ogro se convierte en Héroe mediante 'El mozo tiene talento', puede
+      elegir Habilidades de Combate, Fuerza y Habilidades Especiales de Luchador de Foso.
+- id: shared-rule.strictures
+  name: Strictures
+  name_i18n:
+    es: Preceptos
+  effect: >-
+    Priests of Taal may never wear heavy armour.
+  effect_i18n:
+    es: >-
+      Los Sacerdotes de Taal jamás pueden llevar armadura pesada.
+- id: shared-rule.stupidity
+  name: Stupidity
+  name_i18n:
+    es: Estupidez
+  effect: >-
+    The Rat Ogre is subject to Stupidity unless a Skaven Hero is within 6".
+  effect_i18n:
+    es: >-
+      El Ogro rata está sujeto a Estupidez a menos que haya un Héroe skaven a 6" de él.
+- id: shared-rule.stupidity-2
+  name: Stupidity
+  name_i18n:
+    es: Estupidez
+  effect: >-
+    A Troll is subject to the rules for stupidity.
+  effect_i18n:
+    es: >-
+      Un troll está sujeto a las reglas de estupidez.
+- id: shared-rule.thick-skull
+  name: Thick Skull
+  name_i18n:
+    es: Cráneo Grueso
+  effect: >-
+    The Hero has a thick skull, even for a Dwarf. He has a 3+ save on a D6 to avoid being stunned.
+    If the save is made, treat a stunned result as knocked down instead. If the Dwarf also wears a
+    helmet, this save is 2+ instead of 3+ (this takes the place of the normal Helmet special rule).
+  effect_i18n:
+    es: >-
+      El Héroe tiene un cráneo grueso, incluso para un enano. Tiene una salvación de 3+ en un D6
+      para evitar quedar Aturdido. Si supera la salvación, trata un resultado de Aturdido como
+      Derribado en su lugar. Si el enano además lleva casco, esta salvación es 2+ en lugar de 3+
+      (esto sustituye a la regla especial normal de Casco).
+- id: shared-rule.undead
+  name: Undead
+  name_i18n:
+    es: Muerto Viviente
+  effect: >-
+    Skeletons are undead and follow all rules for the Undead.
+  effect_i18n:
+    es: >-
+      Los Esqueletos son muertos vivientes y siguen todas las reglas de los Muertos Vivientes.
+- id: shared-rule.vomit-attack
+  name: Vomit Attack
+  name_i18n:
+    es: Ataque de Vómito
+  effect: >-
+    Instead of his normal attacks, a Troll can regurgitate its highly corrosive digestive juices on
+    an unfortunate hand-to-hand combat opponent. This is a single attack that automatically hits
+    with a Strength of 5 and ignores armour saves.
+  effect_i18n:
+    es: >-
+      En lugar de sus ataques normales, un troll puede regurgitar sus jugos digestivos, altamente
+      corrosivos, sobre un desdichado oponente en combate cuerpo a cuerpo. Es un ataque único que
+      impacta automáticamente con una Fuerza de 5 e ignora las tiradas de salvación por armadura.
+- id: shared-rule.waaagh
+  name: Waaagh!
+  name_i18n:
+    es: ¡WAAAGH!
+  effect: >-
+    Orcs are aggressive creatures and some are experts at bulldozing charges. The warrior may add
+    +D3" to his charge range.
+  effect_i18n:
+    es: >-
+      Los orcos son criaturas agresivas y algunos son expertos en cargas arrolladoras. El guerrero
+      puede sumar +D3" a su alcance de carga.
+- id: shared-rule.weedy
+  name: Weedy
+  name_i18n:
+    es: Debiluchos
+  effect: >-
+    Snotlings are not the most robust of creatures. If wounded they will be knocked down on a 1,
+    stunned on a 2-3 and go out of action on a 4-6.
+  effect_i18n:
+    es: >-
+      Los Snotlings no son precisamente criaturas robustas. Si resultan heridos, quedarán derribados
+      con un 1, aturdidos con un 2-3 y Fuera de combate con un 4-6.
+- id: shared-rule.wizard
+  name: Wizard
+  name_i18n:
+    es: Mago
+  effect: >-
+    The Necromancer is a Wizard and starts knowing one of the Liche's two Necromantic spells. The
+    spell list itself is not modelled here.
+  effect_i18n:
+    es: >-
+      El Nigromante es un Mago y comienza conociendo uno de los dos hechizos Nigrománticos del
+      Liche. La propia lista de hechizos no está modelada aquí.

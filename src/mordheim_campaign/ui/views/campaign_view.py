@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import tkinter as tk
-from tkinter import ttk
+from tkinter import messagebox, ttk
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.ui.dialogs import NewCampaignDialog
 from mordheim_campaign.ui.panels import CampaignTimeline
 from mordheim_campaign.ui.views.campaign_statistics import CampaignStatistics
-from mordheim_campaign.ui.views.moments import BattleMoment, InitialWarbandDraftMoment, PostBattleMoment, WarbandStateMoment
+from mordheim_campaign.ui.views.moments import BattleEntryMoment, BattleMoment, InitialWarbandDraftMoment, PostBattleMoment, WarbandStateMoment
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import SegmentedTabs
 from mordheim_ui.i18n import tr
@@ -83,28 +83,13 @@ class CampaignView(tk.Frame):
             box.bind("<<ComboboxSelected>>", lambda _e: self.controller.set_mercenary_variant(
                 None if variant_var.get() == "—" else next(identifier for identifier, label in variants if label == variant_var.get())
             ))
-        if c.is_draft:
-            tk.Label(
-                compact,
-                text=tr('DRAFT  ·  {} gc  ·  Rating {}  ·  {}/{} models').format(c.draft_treasury, c.draft_rating, c.draft_model_count, c.maximum_models),
-                bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8),
-            ).pack(side="left", padx=(0, 12))
-            start = ttk.Button(compact, text=tr('START CAMPAIGN'), style="Accent.TButton", command=self.controller.commit_initial_warband)
-            start.pack(side="left")
-            if not c.draft_is_legal:
-                start.state(["disabled"])
-        else:
+        if not c.is_draft:
             current = c.current_state
             tk.Label(
                 compact,
                 text=tr('CURRENT  ·  Rating {}  ·  {}/{} models  ·  {} gc').format(current.rating, current.models, current.max_models, current.gold),
                 bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8),
             ).pack(side="left", padx=(0, 12))
-            pending = c.pending_post_battle
-            if pending:
-                ttk.Button(compact, text=tr('RESUME POST-BATTLE #{}').format(pending.battle_number), style="Accent.TButton", command=self.controller.resume_pending_post_battle).pack(side="left")
-            else:
-                ttk.Button(compact, text=tr('+ NEW BATTLE'), style="Accent.TButton", command=self._new_battle).pack(side="left")
         return frame
 
     def _timeline(self) -> tk.Frame:
@@ -127,6 +112,8 @@ class CampaignView(tk.Frame):
             widget = WarbandStateMoment(detail, self.controller, number)
         elif kind == "battle":
             widget = BattleMoment(detail, self.controller, number)
+        elif kind == "new-battle":
+            widget = BattleEntryMoment(detail, self.controller, number)
         else:
             widget = PostBattleMoment(detail, self.controller, number)
         widget.grid(row=0, column=0, sticky="nsew")
@@ -135,7 +122,9 @@ class CampaignView(tk.Frame):
     def _new_campaign(self) -> None:
         NewCampaignDialog(self, self.controller)
 
-    def _new_battle(self) -> None:
-        from mordheim_campaign.ui.dialogs.record_battle import RecordBattleDialog
-
-        RecordBattleDialog(self, self.controller)
+    def _placeholder(self) -> None:
+        messagebox.showinfo(
+            tr('Prototype'),
+            tr('Campaign management is not available yet.'),
+            parent=self,
+        )

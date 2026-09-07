@@ -141,10 +141,24 @@ class EquipmentOffer:
     name: str
     cost: int | None
     notes: str
+    category: str = "other"
 
     @property
     def cost_label(self) -> str:
         return "—" if self.cost is None else f"{self.cost} gc"
+
+    @property
+    def price_gc(self) -> int | None:
+        return self.cost
+
+    @property
+    def price_label(self) -> str:
+        return self.cost_label
+
+    @property
+    def first_free(self) -> bool:
+        note = self.notes.casefold()
+        return ("first" in note or "1st" in note) and "free" in note
 
 
 @dataclass(frozen=True, slots=True)
@@ -316,10 +330,7 @@ class KnowledgePort:
                 group_minimum=int(group_size.get("minimum") or 1),
                 group_maximum=group_size.get("maximum"),
                 equipment_list_ids=tuple(str(value) for value in profile.get("equipment_lists") or ()),
-                fixed_equipment=tuple(
-                    kb_resolved_name(self._items.get(str(value)), value)
-                    for value in profile.get("fixed_equipment") or ()
-                ),
+                fixed_equipment=tuple(str(value) for value in profile.get("fixed_equipment") or ()),
             ))
         return tuple(result)
 
@@ -358,6 +369,7 @@ class KnowledgePort:
                     name=name,
                     cost=int(cost) if isinstance(cost, int) else cost if isinstance(cost, float) else None,
                     notes=str(item.get("notes") or ""),
+                    category=self.trading_post_category(item_id),
                 ))
         return tuple(sorted(offers, key=lambda offer: (offer.name.casefold(), offer.item_id)))
 
@@ -365,6 +377,23 @@ class KnowledgePort:
         """Display name of one item (KB locale policy), ``None`` if unknown."""
         row = self._items.get(item_id)
         return kb_display_name(row, item_id) or None if row else None
+
+    def item_kind(self, item_id: str) -> str:
+        row = self._items.get(item_id) or {}
+        return str(row.get("kind") or "other")
+
+    def trading_post_category(self, item_id: str) -> str:
+        """Printed Trading Post section for an item used by creation lists."""
+        trading = self.campaign_catalog().catalogue("trading-post.yaml")
+        for entry in trading.get("items") or ():
+            if str(entry.get("item_id") or "") != item_id:
+                continue
+            for source in entry.get("source_refs") or ():
+                section = str(source.get("section") or "")
+                if section:
+                    return section.rsplit("/", 1)[-1].strip()
+        # TODO: Give band-only items a structured display category in the KB.
+        return self.item_kind(item_id)
 
     def price_override(self, collection: str, band_id: str, item_id: str) -> int | None:
         """Flat Trading Post price exception a warband pays for an item.

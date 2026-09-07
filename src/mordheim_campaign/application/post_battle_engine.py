@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING
 
 from mordheim_campaign.application.knowledge_port import KnowledgePort
 from mordheim_campaign.application.post_battle_resolution import SeriousInjuryOutcome
-from mordheim_campaign.application.state import InventoryItemVM, WarbandStateVM, WarriorVM, warrior_vm
+from mordheim_campaign.application.state import EquipmentEntryVM, InventoryItemVM, WarbandStateVM, WarriorVM, warrior_vm
 
 if TYPE_CHECKING:
     from mordheim_campaign.application.post_battle_catalogue import HirelingOffer
@@ -152,7 +152,7 @@ class PostBattleEngine:
                 if scope == "carried_by_subject" and warrior.equipment:
                     lost = list(warrior.equipment)
                     warrior.equipment.clear()
-                    notes.append(f"{disposition}: {' · '.join(lost)}")
+                    notes.append(f"{disposition}: {' · '.join(item.name for item in lost)}")
             else:
                 notes.append(str(effect.get("type") or "").replace("_", " "))
         if not notes:
@@ -518,13 +518,20 @@ class PostBattleEngine:
             return False, f"Unknown profile: {warrior.profile_id}"
 
         promoted_name = member_name or f"{warrior.profile_name} Champion"
+        promoted_equipment = []
+        for item in warrior.equipment:
+            if item.per_model and item.quantity > 0:
+                promoted_equipment.append(EquipmentEntryVM(item.item_id, item.name, 1, item.acquisition, item.unit_cost, True, item.transferable))
+                item.quantity -= 1
+        # TODO: Ask which member owns non-uniform group equipment when a
+        # henchman is promoted; only per-model loadouts split automatically.
         hero_row = WarriorVM(
             id=f"{warrior.profile_id}#promoted{sum(1 for r in campaign.warriors if r.profile_id == warrior.profile_id)}",
             name=promoted_name,
             profile_name=warrior.profile_name,
             kind="hero",
             stats=dict(warrior.stats),  # preserve accumulated characteristic increases
-            equipment=list(warrior.equipment),  # one set stays with the promoted member
+            equipment=promoted_equipment,
             skills=[skill for skill in warrior.skills if skill not in profile.inherent_rules],
             experience=warrior.experience,  # preserve experience
             previous_experience=warrior.previous_experience,
@@ -652,15 +659,26 @@ class PostBattleEngine:
         sequence. ``assign_item`` (post-battle window) delegates here.
         """
         row = next((item for item in self.campaign.inventory if item.id == item_id), None)
-        if row is None or row.stash < 1:
+        if row is None:
             return False, f"No unassigned {row.name if row else item_id or 'item'} in the stash."
         warrior = next((w for w in self.campaign.warriors if w.id == warrior_id), None)
         if warrior is None:
             return False, f"Unknown warrior: {warrior_id}"
-        row.stash -= 1
-        row.equipped += 1
-        warrior.equipment.append(row.name)
-        return True, f"{row.name} assigned to {warrior.name}."
+        amount = warrior.quantity if warrior.kind == "henchman" else 1
+        if row.stash < amount:
+            return False, f"{warrior.name} needs {amount}× {row.name}; only {row.stash} in stash."
+        per_model = warrior.kind == "henchman"
+        row.stash -= amount
+        row.equipped += amount
+        entry = next(
+            (item for item in warrior.equipment if item.item_id == item_id and item.acquisition == "stash_assignment" and item.per_model == per_model),
+            None,
+        )
+        if entry is None:
+            warrior.equipment.append(EquipmentEntryVM(item_id, row.name, amount, "stash_assignment", row.value, per_model))
+        else:
+            entry.quantity += amount
+        return True, f"{amount}× {row.name} assigned to {warrior.name}."
 
     def return_warrior_to_stash(self, item_id: str, warrior_id: str) -> tuple[bool, str]:
         """Return one equipped copy to the stash (keeps ``owned`` intact)."""
@@ -668,12 +686,20 @@ class PostBattleEngine:
         warrior = next((w for w in self.campaign.warriors if w.id == warrior_id), None)
         if row is None or warrior is None:
             return False, "Unknown warrior or item."
-        if row.name not in warrior.equipment:
+        entry = next(
+            (item for item in warrior.equipment if item.item_id == item_id and item.quantity > 0 and item.transferable),
+            None,
+        )
+        if entry is None:
             return False, f"{warrior.name} does not carry {row.name}."
-        warrior.equipment.remove(row.name)
-        row.equipped = max(0, row.equipped - 1)
-        row.stash += 1
-        return True, f"{row.name} returned to the stash from {warrior.name}."
+        amount = warrior.quantity if warrior.kind == "henchman" and entry.per_model else 1
+        amount = min(amount, entry.quantity)
+        entry.quantity -= amount
+        if entry.quantity <= 0:
+            warrior.equipment.remove(entry)
+        row.equipped = max(0, row.equipped - amount)
+        row.stash += amount
+        return True, f"{amount}× {row.name} returned to the stash from {warrior.name}."
 
     def sell_item(self, item_id: str, quantity: int) -> tuple[bool, str]:
         if self.post is None:
@@ -717,7 +743,7 @@ class PostBattleEngine:
         if profile.kind == "henchman" and profile.group_maximum is not None and quantity > profile.group_maximum:
             return False, f"Groups of {profile.name} hold at most {profile.group_maximum} models."
         occurrences = sum(1 for row in campaign.warriors if row.profile_id == profile_id and row.kind == profile.kind)
-        row = warrior_vm(profile, row_id=f"{profile_id}#recruit{occurrences + 1}", quantity=quantity)
+        row = warrior_vm(self.port, profile, row_id=f"{profile_id}#recruit{occurrences + 1}", quantity=quantity)
         campaign.warriors.append(row)
         self.post.gold_delta -= cost
         return True, f"{profile.name} ×{quantity} recruited for {cost} gc."
@@ -741,14 +767,14 @@ class PostBattleEngine:
             return False, f"Not enough gold: {offer.fee_gc} gc needed, {self.projected_gold()} gc available."
         if self.projected_models() + 1 > self.campaign.maximum_models:
             return False, f"Cannot exceed {self.campaign.maximum_models} models."
-        row = self._hireling_warrior(offer)
+        row = self.hireling_warrior(offer)
         if row is None:
             return False, f"Hireling profile not found in the KB: {offer.profile_id}"
         self.campaign.warriors.append(row)
         self.post.gold_delta -= offer.fee_gc
         return True, f"{offer.name} hired for {offer.fee_gc} gc."
 
-    def _hireling_warrior(self, offer: "HirelingOffer") -> WarriorVM | None:
+    def hireling_warrior(self, offer: "HirelingOffer") -> WarriorVM | None:
         catalogue = self.port.hireling_catalogue()
         profile = next(
             (row for row in catalogue.profiles if str(row.get("id") or "") == offer.profile_id),
@@ -769,7 +795,7 @@ class PostBattleEngine:
                 value = quantity_block.get("value")
                 if isinstance(value, int):
                     quantity = value
-            equipment.extend([self.port.item_name(item_id) or item_id] * quantity)
+            equipment.append(EquipmentEntryVM(item_id, self.port.item_name(item_id) or item_id, quantity, "hireling_grant", 0, False, False))
         occurrences = sum(
             1 for row in self.campaign.warriors
             if row.profile_id == offer.profile_id and row.kind == "henchman"
@@ -778,7 +804,7 @@ class PostBattleEngine:
             id=f"{offer.profile_id}#hire{occurrences + 1}",
             name=offer.name,
             profile_name=offer.name,
-            kind="henchman",
+            kind="hireling",
             stats=stats,
             equipment=equipment,
             skills=[],

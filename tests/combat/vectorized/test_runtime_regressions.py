@@ -31,7 +31,29 @@ def build(*, attacks=1, strength=3, toughness=3, wounds=1, **changes):
     return compile_fighter(FighterBuild(**options))
 
 
-def test_audited_weapon_contracts_expose_their_missing_numeric_effects():
+def test_steel_whip_charge_bonus_matches_modular_round_modifier():
+    from mordheim_combat.modular.rounds import apply_round_weapon_attack_modifiers
+    from mordheim_combat.vectorized import round_weapon_attack_count
+
+    attacker = build(main_weapon_id="weapon.steel-whip")
+    defender = build()
+    charging = np.array([False])
+    charged = np.array([True])
+    base = np.array([2], dtype=np.int16)
+
+    expected = apply_round_weapon_attack_modifiers(
+        attacker, defender, int(base[0]), first_round=True,
+        charging=False, charged=True,
+    )
+    actual = round_weapon_attack_count(
+        attacker, defender, base, first_round=True,
+        charging=charging, charged=charged,
+    )
+
+    assert expected == 3
+    assert actual.tolist() == [expected]
+
+
     from mordheim_combat.vectorized import attack_count
     from mordheim_combat.vectorized import priority
 
