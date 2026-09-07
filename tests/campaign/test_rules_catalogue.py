@@ -80,3 +80,32 @@ def test_port_accessor_returns_a_working_catalogue():
     entry = catalogue.entry("core-rules", "combat-order")
     assert entry is not None and entry.effect
     assert catalogue.entry("core-rules", "no-such-id") is None
+
+
+def test_cross_links_from_skills_to_warband_profiles():
+    catalogue = _catalogue()
+    entry = catalogue.entry("skills", "skill.acrobat")
+    links = catalogue.profile_links("skills", entry)
+    assert links, "Speed skills should reach profiles through the Speed table"
+    assert all(link.relation in ("skill table", "starting skill") for link in links)
+    assert all(link.band and link.profile for link in links)
+
+
+def test_cross_links_from_shared_rule_to_band_profiles():
+    catalogue = _catalogue()
+    entry = catalogue.entry("special-rules", "shared-rule.always-hungry")
+    links = catalogue.profile_links("special-rules", entry)
+    assert links and all(link.relation == "special rule" for link in links)
+    assert any("Troll" in link.profile or link.profile for link in links)  # some profile carries it
+
+
+def test_cross_links_from_equipment_and_spells():
+    catalogue = _catalogue()
+    item_links = catalogue.profile_links("equipment", catalogue.entry("equipment", "blessed_water"))
+    assert item_links and all(link.relation == "equipment" for link in item_links)
+    spell = catalogue.entry("spells", "spell.prayers-of-sigmar.armour-of-righteousness")
+    spell_links = catalogue.profile_links("spells", spell)
+    assert spell_links and all(link.relation == "lore" for link in spell_links)
+    assert any("Matriarch" in link.profile for link in spell_links)
+    # Categories without roster semantics have no links.
+    assert catalogue.profile_links("conditions", catalogue.entries("conditions")[0]) == ()
