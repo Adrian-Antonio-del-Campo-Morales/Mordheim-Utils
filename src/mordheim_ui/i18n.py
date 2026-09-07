@@ -391,6 +391,34 @@ STRINGS: dict[str, dict[str, str]] = {
     "Resolved; choose the advance below.": {"es": "Resuelta; elige la mejora abajo."},
     "Choose the resulting advance.": {"es": "Elige la mejora resultante."},
     "Already known — pick a different entry.": {"es": "Ya conocida — elige otra entrada."},
+    "VARIABLE PRICE": {"es": "PRECIO VARIABLE"},
+    "COST ROLL": {"es": "TIRADA DE COSTE"},
+    "Roll the declared cost dice; the total fixes the price.": {
+        "es": "Tira los dados de coste declarados; el total fija el precio."
+    },
+    "Price resolved": {"es": "Precio resuelto"},
+    "{} costs {} gc": {"es": "{} cuesta {} coronas"},
+    "The buy uses the rolled total.": {"es": "La compra usa el total tirado."},
+    "Cannot resolve": {"es": "No se puede resolver"},
+    "The offer price could not be computed.": {"es": "No se pudo calcular el precio de la oferta."},
+    "CLOSE": {"es": "CERRAR"},
+    "UPGRADE PRICE": {"es": "PRECIO DE MEJORA"},
+    "{}× the price of the base record it upgrades. Pick the record:": {
+        "es": "{}× el precio del registro base que mejora. Elige el registro:"
+    },
+    "No owned records to upgrade. Buy the base item first.": {
+        "es": "No hay registros propios que mejorar. Compra primero el objeto base."
+    },
+    "UPGRADE ({} gc)": {"es": "MEJORAR ({} coronas)"},
+    "HIRING FEE ROLL": {"es": "TIRADA DE TARIFA DE CONTRATACIÓN"},
+    "Hiring fee: {} + {}D{} gc": {"es": "Tarifa de contratación: {} + {}D{} coronas"},
+    "FEE ROLL": {"es": "TIRADA DE TARIFA"},
+    "Roll the fee dice; the engine adds the flat base.": {
+        "es": "Tira los dados de la tarifa; el motor añade la base fija."
+    },
+    "Fee resolved": {"es": "Tarifa resuelta"},
+    "The hire charges base + roll.": {"es": "La contratación cobra base + tirada."},
+    "Total fee: {} gc": {"es": "Tarifa total: {} coronas"},
     "Already known — committing this pick records the duplicate: casting difficulty reduced by 1.": {
         "es": "Ya conocida — confirmar esta elección registra el duplicado: la dificultad de lanzamiento baja en 1."
     },
@@ -400,7 +428,7 @@ STRINGS: dict[str, dict[str, str]] = {
     "This scenario declares no structured awards.": {
         "es": "Este escenario no declara premios estructurados."
     },
-    "manual": {"es": "manual"},
+    "MANUAL ROW": {"es": "FILA MANUAL"},
     "XP": {"es": "PX"},
     "This result requires an effect or reroll outside the application. Reopen the advance and roll again once the roster is correct.": {
         "es": "Este resultado requiere un efecto o repesca fuera de la aplicación. Reabre la mejora y tira de nuevo cuando la lista esté correcta."
@@ -722,6 +750,9 @@ STRINGS: dict[str, dict[str, str]] = {
     "Add Henchmen Group": {"es": "Añadir grupo de secuaces"},
     "ADD HERO": {"es": "AÑADIR HÉROE"},
     "ADD HENCHMEN GROUP": {"es": "AÑADIR GRUPO DE SECUACES"},
+    "HIRE SWORD": {"es": "CONTRATAR ESPADA A SUELDO"},
+    "ADD FIRST HERO": {"es": "AÑADIR PRIMER HÉROE"},
+    "ADD FIRST GROUP": {"es": "AÑADIR PRIMER GRUPO"},
     "+ ADD HERO": {"es": "+ AÑADIR HÉROE"},
     "+ ADD HENCHMAN GROUP": {"es": "+ AÑADIR GRUPO DE SECUACES"},
     "+ ADD FIRST HERO": {"es": "+ AÑADIR PRIMER HÉROE"},
@@ -820,6 +851,17 @@ STRINGS: dict[str, dict[str, str]] = {
     "XP": {"es": "PX"},
     "Condition": {"es": "Estado"},
     "Equipment": {"es": "Equipo"},
+    "Rules": {"es": "Reglas"},
+    "SEARCH": {"es": "BUSCAR"},
+    "SOURCES": {"es": "FUENTES"},
+    "No entries match the search.": {"es": "Ninguna entrada coincide con la búsqueda."},
+    "This category has no entries.": {"es": "Esta categoría no tiene entradas."},
+    "Select an entry to read its rules.": {"es": "Selecciona una entrada para leer sus reglas."},
+    "No effect text is recorded for this entry.": {"es": "No hay texto de efecto registrado para esta entrada."},
+    "Conditions": {"es": "Estados"},
+    "Core Rules": {"es": "Reglas Básicas"},
+    "Spells": {"es": "Hechizos"},
+    "Serious Injuries": {"es": "Heridas Graves"},
     "Value": {"es": "Valor"},
     "Number": {"es": "NÚMERO"},
     "Warband name:": {"es": "NOMBRE DE LA BANDA:"},

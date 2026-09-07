@@ -1,4 +1,5 @@
 from .campaign_view import CampaignView
-from .placeholder_view import RulesView, SettingsView
+from .rules_view import RulesView
+from .placeholder_view import SettingsView
 
 __all__ = ["CampaignView", "RulesView", "SettingsView"]
