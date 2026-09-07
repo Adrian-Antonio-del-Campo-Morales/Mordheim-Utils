@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import pytest
 
+from mordheim_combat.kernel import EFFECT_VALUE_FIELDS
+from mordheim_combat.native._combat_compile import compile_duel
 from mordheim_combat.vectorized import available_backends
 from mordheim_combat.vectorized import simulate_duel
 from mordheim_combat_lab.verification.parity import compare_statistical_parity
@@ -27,6 +29,37 @@ def _request(simulations: int, *, seed: int = 7, batch_size: int = 500) -> DuelR
 def _require_native() -> None:
     if "native" not in available_backends():
         pytest.skip("native combat backend is not compiled in this environment")
+
+
+def test_native_compile_keeps_unarmed_fallback_for_later_pistol_rounds() -> None:
+    """A main pistol becomes unarmed after opening round when no off-hand exists."""
+    from mordheim_combat_lab.cli.benchmarking import DEEP_SCENARIOS
+
+    scenario = next(s for s in DEEP_SCENARIOS if s.id == "pistol-vs-parry")
+    first = compile_fighter(scenario.first)
+    second = compile_fighter(scenario.second)
+    context = compile_duel(first, second)
+    compiled = context["sources_first"]
+
+    assert compiled["main"]["flags"]["hit_mod_base"] == 1
+    assert compiled["unarmed"]["weapon"] == tuple(
+        int(getattr(first.unarmed_weapon, name))
+        for name in EFFECT_VALUE_FIELDS
+    )
+
+def test_native_compile_preserves_entangle_reaction_contract() -> None:
+    """Entangle reaction is compiled as automatic fixed-strength attack."""
+    from mordheim_combat_lab.cli.benchmarking import DEEP_SCENARIOS
+
+    scenario = next(s for s in DEEP_SCENARIOS if s.id == "entangle-vs-fencer")
+    first = compile_fighter(scenario.first)
+    second = compile_fighter(scenario.second)
+    context = compile_duel(first, second)
+    reaction = context["reactions_first"]["entangle"]
+
+    assert context["first"]["entangle"] is True
+    assert reaction["weapon"][5] == 3
+    assert reaction["effect"][37] == 1
 
 
 def test_native_is_selected_by_auto_when_available() -> None:

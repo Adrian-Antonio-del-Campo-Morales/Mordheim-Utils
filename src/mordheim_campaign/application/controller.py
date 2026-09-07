@@ -5,7 +5,7 @@ from datetime import date
 from pathlib import Path
 
 from mordheim_campaign.application.knowledge_port import KnowledgePort, WarbandProfile
-from .state import AppState, BattleVM, PostBattleVM, WarbandStateVM, make_draft_state, make_example_state, warrior_vm
+from .state import AppState, BattleVM, EquipmentEntryVM, InventoryItemVM, PostBattleVM, WarbandStateVM, make_draft_state, make_example_state, warrior_vm
 
 
 _ROMAN = ((10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I"))
@@ -78,6 +78,9 @@ class AppController:
 
     def select_battle(self, number: int) -> None:
         self.select_moment(f"battle:{number}")
+
+    def select_battle_entry(self, number: int) -> None:
+        self.select_moment(f"new-battle:{number}")
 
     def select_post_battle(self, number: int) -> None:
         self.select_moment(f"post:{number}")
@@ -163,6 +166,11 @@ class AppController:
 
     def assign_stash_item(self, item_id: str, warrior_id: str) -> tuple[bool, str]:
         """Assign one stash copy to a warrior (legal outside post-battle too)."""
+        campaign = self.state.campaign
+        if campaign.is_draft:
+            allowed = {offer.item_id for offer in self.draft_equipment_offers(warrior_id)}
+            if item_id not in allowed:
+                return False, "This warrior cannot use that item during creation."
         from mordheim_campaign.application.post_battle_engine import PostBattleEngine
 
         engine = PostBattleEngine(self.port, self.state.campaign, self.state.campaign.pending_post_battle)
@@ -174,6 +182,41 @@ class AppController:
 
         engine = PostBattleEngine(self.port, self.state.campaign, self.state.campaign.pending_post_battle)
         return engine.return_warrior_to_stash(item_id, warrior_id)
+
+    def transfer_equipped_item(self, item_id: str, source_id: str, target_id: str) -> tuple[bool, str]:
+        """Move one complete loadout set between warriors without partial state."""
+        if source_id == target_id:
+            return False, "Source and destination are the same warrior."
+        campaign = self.state.campaign
+        source = next((row for row in campaign.warriors if row.id == source_id), None)
+        target = next((row for row in campaign.warriors if row.id == target_id), None)
+        if source is None or target is None:
+            return False, "Unknown source or destination warrior."
+        equipment = next(
+            (item for item in source.equipment if item.item_id == item_id and item.transferable),
+            None,
+        )
+        if equipment is None:
+            return False, "This item cannot be transferred."
+        if campaign.is_draft:
+            allowed = {offer.item_id for offer in self.draft_equipment_offers(target_id)}
+            if item_id not in allowed:
+                return False, "The destination warrior cannot use that item during creation."
+        inventory = next((row for row in campaign.inventory if row.id == item_id), None)
+        released = source.quantity if source.kind == "henchman" and equipment.per_model else 1
+        needed = target.quantity if target.kind == "henchman" else 1
+        available = (inventory.stash if inventory is not None else 0) + released
+        if available < needed:
+            return False, f"The destination needs {needed} copies; only {available} are available."
+
+        ok, message = self.return_equipped_item(item_id, source_id)
+        if not ok:
+            return False, message
+        ok, message = self.assign_stash_item(item_id, target_id)
+        if not ok:
+            self.assign_stash_item(item_id, source_id)
+            return False, message
+        return True, f"{equipment.name} transferred from {source.name} to {target.name}."
 
     def record_battle(
         self,
@@ -290,6 +333,16 @@ class AppController:
         campaign = self.state.campaign
         if not campaign.is_draft or not campaign.draft_is_legal:
             return
+        for warrior in campaign.warriors:
+            for equipment in warrior.equipment:
+                if not equipment.transferable or equipment.acquisition in {"purchase", "stash_assignment"}:
+                    continue
+                row = next((item for item in campaign.inventory if item.id == equipment.item_id), None)
+                if row is None:
+                    row = InventoryItemVM(equipment.item_id, equipment.name, "Equipment", 0, 0, 0, equipment.unit_cost)
+                    campaign.inventory.append(row)
+                row.owned += equipment.quantity
+                row.equipped += equipment.quantity
         campaign.is_draft = False
         campaign.started = date.today().strftime("%d %b %Y")
         campaign.current_state_number = 0
@@ -316,6 +369,19 @@ class AppController:
 
     def _campaign(self):
         return self.state.campaign
+
+    @staticmethod
+    def _change_inventory(campaign, equipment: EquipmentEntryVM, amount: int) -> None:
+        row = next((item for item in campaign.inventory if item.id == equipment.item_id), None)
+        if row is None and amount > 0:
+            row = InventoryItemVM(equipment.item_id, equipment.name, "Equipment", 0, 0, 0, equipment.unit_cost)
+            campaign.inventory.append(row)
+        if row is None:
+            return
+        row.owned += amount
+        row.equipped += amount
+        if row.owned <= 0:
+            campaign.inventory.remove(row)
 
     def post_battle_resolver(self):
         """KB-backed post-battle dice resolution (cached per controller)."""
@@ -421,7 +487,7 @@ class AppController:
         name = profile.name
         if profile.kind == "hero":
             name = self._unique_hero_name(profile.name)
-        campaign.warriors.append(warrior_vm(profile, row_id=row_id, name=name, quantity=quantity))
+        campaign.warriors.append(warrior_vm(self.port, profile, row_id=row_id, name=name, quantity=quantity))
         self.notify()
         return True, f"{name}{f' ×{quantity}' if quantity > 1 else ''} added to the draft."
 
@@ -449,11 +515,26 @@ class AppController:
             taken, maximum = self.profile_allowance(profile)
             if maximum is not None and taken + added > maximum:
                 return False, f"Roster limit for {profile.name} reached."
-            if added * profile.cost > campaign.draft_treasury:
+            equipment_per_member = sum(item.unit_cost for item in row.equipment if item.per_model)
+            if added * (profile.cost + equipment_per_member) > campaign.draft_treasury:
                 return False, "Not enough gold for the added members."
             if campaign.draft_model_count + added > campaign.maximum_models:
                 return False, f"Cannot exceed {campaign.maximum_models} models."
+            for item in row.equipment:
+                if item.per_model and item.acquisition == "stash_assignment":
+                    inventory = next((entry for entry in campaign.inventory if entry.id == item.item_id), None)
+                    if inventory is None or inventory.stash < added:
+                        return False, f"The stash needs {added} more {item.name} for the whole group."
         row.quantity = new_quantity
+        for item in row.equipment:
+            if item.per_model:
+                item.quantity += added
+                if item.acquisition == "purchase":
+                    self._change_inventory(campaign, item, added)
+                elif item.acquisition == "stash_assignment":
+                    inventory = next(entry for entry in campaign.inventory if entry.id == item.item_id)
+                    inventory.stash -= added
+                    inventory.equipped += added
         self.notify()
         return True, f"{row.name} now has {new_quantity} member{'s' if new_quantity != 1 else ''}."
 
@@ -465,9 +546,156 @@ class AppController:
         row = next((w for w in campaign.warriors if w.id == warrior_id), None)
         if row is None:
             return False, "Warrior not found in the draft."
+        for item in row.equipment:
+            if item.acquisition == "purchase":
+                self._change_inventory(campaign, item, -item.quantity)
+            elif item.acquisition == "stash_assignment":
+                inventory = next((entry for entry in campaign.inventory if entry.id == item.item_id), None)
+                if inventory is not None:
+                    inventory.equipped = max(0, inventory.equipped - item.quantity)
+                    inventory.stash += item.quantity
         campaign.warriors.remove(row)
         self.notify()
         return True, f"{row.name} removed from the draft."
+
+    def draft_equipment_offers(self, warrior_id: str):
+        campaign = self._campaign()
+        warrior = next((row for row in campaign.warriors if row.id == warrior_id), None)
+        if warrior is None or not campaign.is_draft:
+            return ()
+        if warrior.kind == "hireling" or warrior.profile_id.startswith("hireling."):
+            return ()
+        profile = self.port.profile(campaign.collection, campaign.band_id, warrior.profile_id)
+        return self.port.items_for_profile(profile)
+
+    def buy_draft_equipment(self, warrior_id: str, item_id: str) -> tuple[bool, str]:
+        campaign = self._campaign()
+        warrior = next((row for row in campaign.warriors if row.id == warrior_id), None)
+        if warrior is None or not campaign.is_draft:
+            return False, "Only draft warriors can buy creation equipment."
+        offer = next((row for row in self.draft_equipment_offers(warrior_id) if row.item_id == item_id), None)
+        if offer is None:
+            return False, "This warrior cannot buy that item."
+        if offer.cost is None:
+            return False, "This item has no supported creation price."
+        # TODO: Enforce weapon-hand, armour-combination and duplicate-item
+        # limits when the knowledge layer exposes structured loadout rules.
+        total = offer.cost * warrior.quantity
+        if total > campaign.draft_treasury:
+            return False, f"Not enough gold: {total} gc needed, {campaign.draft_treasury} gc available."
+        existing = next(
+            (item for item in warrior.equipment if item.item_id == offer.item_id and item.acquisition == "purchase" and item.per_model),
+            None,
+        )
+        if existing is None:
+            existing = EquipmentEntryVM(offer.item_id, offer.name, warrior.quantity, "purchase", offer.cost, True)
+            warrior.equipment.append(existing)
+        else:
+            existing.quantity += warrior.quantity
+        self._change_inventory(campaign, existing, warrior.quantity)
+        return True, f"{offer.name} bought for {total} gc."
+
+    def remove_draft_equipment(self, warrior_id: str, item_id: str) -> tuple[bool, str]:
+        campaign = self._campaign()
+        warrior = next((row for row in campaign.warriors if row.id == warrior_id), None)
+        purchased = next(
+            (item for item in warrior.equipment if item.item_id == item_id and item.acquisition == "purchase"),
+            None,
+        ) if warrior is not None else None
+        if warrior is None or not campaign.is_draft or purchased is None:
+            return False, "Purchased item not found on this draft warrior."
+        removed = min(warrior.quantity, purchased.quantity)
+        self._change_inventory(campaign, purchased, -removed)
+        purchased.quantity -= removed
+        if purchased.quantity <= 0:
+            warrior.equipment.remove(purchased)
+        return True, f"{purchased.name} sold; {purchased.unit_cost * removed} gc refunded."
+
+    def draft_stash_offers(self):
+        campaign = self._campaign()
+        if not campaign.is_draft:
+            return ()
+        offers = {offer.item_id: offer for offer in self.post_battle_content().common_items()}
+        # TODO: Model band equipment exceptions as structured availability/rarity
+        # and restriction overrides. At present, inclusion in a band equipment
+        # list only makes the item available during creation and may change price;
+        # rule details written in ``notes`` are not interpreted.
+        band_offers = {}
+        for offer in self.port.equipment(campaign.collection, campaign.band_id):
+            current = band_offers.get(offer.item_id)
+            if current is None or (offer.cost is not None and (current.cost is None or offer.cost < current.cost)):
+                band_offers[offer.item_id] = offer
+        offers.update(band_offers)
+        return tuple(sorted(offers.values(), key=lambda offer: (offer.category, offer.name.casefold())))
+
+    def draft_hired_swords(self):
+        if not self._campaign().is_draft:
+            return ()
+        return self.post_battle_content().hired_swords()
+
+    def hire_draft_hired_sword(self, profile_id: str, acceptance_roll: int | None = None) -> tuple[bool, str]:
+        campaign = self._campaign()
+        if not campaign.is_draft:
+            return False, "Hired Swords can be added here only during warband creation."
+        offer = next((row for row in self.draft_hired_swords() if row.profile_id == profile_id), None)
+        if offer is None:
+            return False, "This Hired Sword is not available to the warband."
+        if offer.eligibility == "variant":
+            return False, "Select the warband's Mercenary variant first."
+        if offer.eligibility == "conditional":
+            if offer.roll_ge is None or acceptance_roll is None:
+                return False, f"An acceptance roll of {offer.roll_ge or '?'}+ is required."
+            if int(acceptance_roll) < offer.roll_ge:
+                return False, f"Acceptance roll failed; {offer.roll_ge}+ was required."
+        if offer.fee_gc is None:
+            # TODO: Support non-gold hiring resources declared by the KB.
+            return False, "This hiring fee cannot yet be paid by the campaign model."
+        if offer.fee_gc > campaign.draft_treasury:
+            return False, f"Not enough gold: {offer.fee_gc} gc needed, {campaign.draft_treasury} gc available."
+        if campaign.draft_model_count >= campaign.maximum_models:
+            return False, f"Cannot exceed {campaign.maximum_models} models."
+        from mordheim_campaign.application.post_battle_engine import PostBattleEngine
+
+        warrior = PostBattleEngine(self.port, campaign, None).hireling_warrior(offer)
+        if warrior is None:
+            return False, f"Hireling profile not found in the KB: {offer.profile_id}"
+        campaign.warriors.append(warrior)
+        return True, f"{offer.name} hired for {offer.fee_gc} gc."
+
+    def buy_draft_stash_item(self, item_id: str, quantity: int) -> tuple[bool, str]:
+        campaign = self._campaign()
+        if not campaign.is_draft:
+            return False, "Items can be bought for the draft stash only during creation."
+        offer = next((row for row in self.draft_stash_offers() if row.item_id == item_id), None)
+        quantity = max(1, int(quantity))
+        if offer is None:
+            return False, "This warband cannot buy that item."
+        if offer.price_gc is None:
+            return False, "This item has no supported creation price."
+        total = offer.price_gc * quantity
+        if total > campaign.draft_treasury:
+            return False, f"Not enough gold: {total} gc needed, {campaign.draft_treasury} gc available."
+        row = next((item for item in campaign.inventory if item.id == item_id), None)
+        if row is None:
+            row = InventoryItemVM(item_id, offer.name, offer.category, 0, 0, 0, offer.price_gc)
+            campaign.inventory.append(row)
+        row.owned += quantity
+        row.stash += quantity
+        row.value = offer.price_gc
+        return True, f"{quantity}× {offer.name} bought for {total} gc (stash)."
+
+    def remove_draft_stash_item(self, item_id: str, quantity: int = 1) -> tuple[bool, str]:
+        campaign = self._campaign()
+        row = next((item for item in campaign.inventory if item.id == item_id), None)
+        quantity = max(1, int(quantity))
+        if not campaign.is_draft or row is None or row.stash < quantity:
+            return False, "That quantity is not available in the draft stash."
+        row.stash -= quantity
+        row.owned -= quantity
+        refund = row.value * quantity
+        if row.owned <= 0:
+            campaign.inventory.remove(row)
+        return True, f"{quantity}× {row.name} sold; {refund} gc refunded."
 
     def _unique_hero_name(self, base: str) -> str:
         taken = {row.name for row in self._campaign().warriors if row.kind == "hero"}

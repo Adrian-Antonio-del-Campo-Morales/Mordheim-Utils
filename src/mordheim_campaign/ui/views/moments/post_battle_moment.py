@@ -155,10 +155,6 @@ class PostBattleMoment(tk.Frame):
             f"Warband rating was recalculated automatically: {battle.rating_before} → {battle.rating_after}.",
         ):
             tk.Label(body, text=f"• {line}", bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 9)).pack(anchor="w", pady=3)
-        actions = tk.Frame(body, bg=COLORS["panel"])
-        actions.pack(fill="x", pady=(16, 0))
-        ttk.Button(actions, text=tr('‹ STATE #{}').format(post.battle_number - 1), command=lambda: self.controller.select_state(post.battle_number - 1)).pack(side="left")
-        ttk.Button(actions, text=tr('STATE #{} ›').format(post.battle_number), style="Accent.TButton", command=lambda: self.controller.select_state(post.battle_number)).pack(side="right")
 
     def _build_pending(self, post) -> None:
         battle = self.controller.state.campaign.battle(post.battle_number)
@@ -172,7 +168,6 @@ class PostBattleMoment(tk.Frame):
         tk.Label(title, text=tr('POST-BATTLE #{}').format(post.battle_number), bg=COLORS["bg"], fg=COLORS["text"], font=("Georgia", 16)).pack(side="left")
         tk.Label(title, text=tr('IN PROGRESS'), bg=COLORS["panel_deep"], fg=COLORS["accent"], font=("Segoe UI Semibold", 7), padx=8, pady=4).pack(side="left", padx=10)
         ttk.Button(top, text=tr('SAVE & CLOSE'), command=self._save_and_close).pack(side="right")
-        ttk.Button(top, text=f"VIEW BATTLE #{post.battle_number}", style="Ghost.TButton", command=lambda: self.controller.select_battle(post.battle_number)).pack(side="right", padx=(0, 5))
 
         intro = (
             f"Resolve Battle #{post.battle_number} in order. The eight actions below create the next warband state; "
@@ -851,7 +846,7 @@ class PostBattleMoment(tk.Frame):
             left.pack(side="left", fill="x", expand=True)
             label = warrior.name + (f"  ×{warrior.quantity}" if warrior.quantity > 1 else "")
             tk.Label(left, text=label, bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Georgia", 9)).pack(anchor="w")
-            current = ", ".join(warrior.equipment) or "—"
+            current = ", ".join(f"{item.name}{f' ×{item.quantity}' if item.quantity > 1 else ''}" for item in warrior.equipment) or "—"
             tk.Label(left, text=current, bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w", pady=(2, 0))
 
     def _assign_menu(self, item_row) -> None:

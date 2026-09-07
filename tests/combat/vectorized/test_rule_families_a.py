@@ -36,8 +36,8 @@ def build(band, profile, *, collection="mordheim", **kwargs):
 
 def test_first_25_pending_families_moved_to_the_executable_catalogue():
     implemented = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
-    assert implemented["summary"]["families"] == 66
-    assert implemented["summary"]["rules"] == 101
+    assert implemented["counts"]["families"] == 66
+    assert implemented["counts"]["rules"] == 101
 
 
 def test_animal_friendship_and_contagious_traits_are_selectable_and_enforce_prerequisites():

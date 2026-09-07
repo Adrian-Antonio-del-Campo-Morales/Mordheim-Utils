@@ -197,7 +197,7 @@ def load_simulation_mappings(ruleset: str, root: Path | None = None):
     mechanics = load_mechanics(ruleset, base)
     mechanic_options = {
         str(row["id"]): row.get("engine_option")
-        for family in ("weapons","armours","defences","materials","preparations","poisons","skills")
+        for family in ("weapons","armours","defences","materials","preparations","poisons")
         for row in mechanics.get(family) or ()
     }
     declared = document.get("item_mappings") or ()
@@ -262,3 +262,46 @@ def load_runtime_scope(ruleset: str, root: Path | None = None):
     document=read_yaml((root or knowledge_root())/"registry/runtime-scope.yaml")
     if document.get("ruleset") != ruleset:raise ValueError(f"runtime scope does not describe {ruleset}")
     return document
+
+
+@lru_cache(maxsize=None)
+def load_shared_rules(ruleset: str, root: Path | None = None):
+    """Shared rule text of ``catalog/rules/special-rules.yaml``.
+
+    Cross-band duplicate rules live here exactly once: band special rules that
+    restate a shared rule carry ``rule_ref: <shared-rule.id>`` instead of a
+    duplicated ``effect``.  Resolution is display-only — runtime behaviour
+    comes from the band rule's own ``runtime`` block — so the engine never
+    reads this catalogue.
+    """
+    base = (root or knowledge_root()) / "catalog/rules/special-rules.yaml"
+    document = read_yaml(base)
+    if document.get("ruleset") != ruleset:
+        raise ValueError(f"shared rule catalogue does not describe {ruleset}: {base}")
+    rows = tuple(document.get("rules") or ())
+    ids = [str(row.get("id") or "") for row in rows]
+    refs = [str(row.get("rule_ref") or "") for row in rows]
+    if any(not value for value in ids) or len(ids) != len(set(ids)):
+        raise ValueError("shared rule catalogue has missing or duplicate IDs")
+    if any(not row.get("effect") for row in rows):
+        raise ValueError("shared rule catalogue entries need an effect")
+    if any(refs):
+        raise ValueError("shared rule catalogue entries cannot reference another shared rule")
+    return {str(row["id"]): row for row in rows}
+
+
+def shared_rule_text(rule: dict, registry: dict[str, dict] | None = None) -> str:
+    """Display text of one band special rule, following ``rule_ref``.
+
+    A rule carries its own ``effect`` prose, or references a shared rule in
+    the registry whose effect is the single source of text.  Locale handling
+    is left to :func:`mordheim_knowledge.i18n.display_effect`, which reads
+    the returned record's ``effect``/``effect_i18n``.
+    """
+    ref = str(rule.get("rule_ref") or "")
+    if not ref:
+        return str(rule.get("effect") or "").strip()
+    if registry is None:
+        registry = load_shared_rules(str(rule.get("ruleset") or "mordheim"))
+    record = registry.get(ref)
+    return str(record.get("effect") or "").strip() if record else ""
