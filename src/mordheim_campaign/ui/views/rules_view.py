@@ -6,6 +6,7 @@ from tkinter import ttk
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import BorderedFrame, PageHeader, ScrollableFrame
 from mordheim_ui.i18n import tr
+from mordheim_ui.icons import ui_icon
 
 
 class RulesView(tk.Frame):
@@ -53,7 +54,7 @@ class RulesView(tk.Frame):
         self._search_box = ttk.Entry(toolbar, textvariable=self._search_var, width=36)
         self._search_box.pack(side="right")
         self._search_hint = tk.Label(
-            toolbar, text=tr('SEARCH'), bg=COLORS["bg"], fg=COLORS["muted"],
+            toolbar, text=tr('SEARCH'), image=ui_icon(self, "campaign_file_search", 18), compound="left", bg=COLORS["bg"], fg=COLORS["muted"],
             font=("Segoe UI Semibold", 8),
         )
         self._search_hint.pack(side="right", padx=(0, 6))
@@ -174,7 +175,7 @@ class RulesView(tk.Frame):
             ).pack(anchor="w")
             return
         tk.Label(
-            host, text=entry.name, bg=COLORS["panel"], fg=COLORS["text"],
+            host, text=entry.name, image=ui_icon(self, "campaign_dice_rule_reference", 26), compound="left", bg=COLORS["panel"], fg=COLORS["text"],
             font=("Georgia", 15), wraplength=520, justify="left",
         ).pack(anchor="w", padx=16, pady=(16, 2))
         if entry.tags:
@@ -197,4 +198,17 @@ class RulesView(tk.Frame):
                 tk.Label(
                     host, text=f"— {label}", bg=COLORS["panel"], fg=COLORS["muted"],
                     font=("Segoe UI", 7), wraplength=520, justify="left",
+                ).pack(anchor="w", padx=(24, 16))
+        links = self._catalogue().profile_links(entry.category_id, entry)
+        if links:
+            tk.Label(
+                host, text=tr('AVAILABLE TO'), bg=COLORS["panel"], fg=COLORS["accent"],
+                font=("Segoe UI Semibold", 8),
+            ).pack(anchor="w", padx=16, pady=(12, 2))
+            for link in links:
+                tk.Label(
+                    host,
+                    text="{}  ·  {}  ({})".format(link.band, link.profile, tr(link.relation.title())),
+                    bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 8),
+                    wraplength=520, justify="left",
                 ).pack(anchor="w", padx=(24, 16))
