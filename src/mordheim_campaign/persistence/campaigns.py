@@ -1,9 +1,9 @@
 """persistence.campaigns: campaign files of the Campaign Manager.
 
-The format is self-contained JSON with a marker and a version. It saves the
-campaign state managed by the GUI —warband, roster, battles, states,
-post-battle and inventory— together with the UI selection so the same view
-can be resumed. The KB is never serialised: the file references stable
+The format is self-contained JSON with a marker and a version (3). It saves the
+campaign state managed by the GUI —warband, roster, battles, states (each one
+with its roster/inventory snapshot), post-battle and inventory— together with
+the UI selection so the same view can be resumed. The KB is never serialised: the file references stable
 identities (``band_id``, ``profile_id``, ``item_id``) that the KB resolves
 again on load.
 
@@ -29,7 +29,7 @@ from mordheim_campaign.application.state import (
 )
 
 CAMPAIGN_MARKER = "MORDHEIM_CAMPAIGN_MANAGER"
-FORMAT_VERSION = 1
+FORMAT_VERSION = 3
 
 FILE_EXTENSION = ".mordheim"
 
@@ -74,6 +74,7 @@ def save_campaign(path, state: AppState) -> Path:
             "battle_section": state.battle_section,
             "inventory_mode": state.inventory_mode,
             "draft_warrior_tab": state.draft_warrior_tab,
+            "pending_battle_draft": state.pending_battle_draft,
         },
     }
     try:
@@ -94,7 +95,10 @@ def load_campaign(path) -> AppState:
     if not isinstance(payload, dict) or payload.get("marker") != CAMPAIGN_MARKER:
         raise CampaignFileError(f"{source} is not a Mordheim Campaign Manager file.")
     if int(payload.get("format_version") or -1) != FORMAT_VERSION:
-        raise CampaignFileError(f"Unsupported campaign format version: {payload.get('format_version')}")
+        raise CampaignFileError(
+            f"Unsupported campaign format version: {payload.get('format_version')} "
+            f"(this build reads format {FORMAT_VERSION})."
+        )
     try:
         campaign = _campaign_from_payload(dict(payload.get("campaign") or {}))
         view = dict(payload.get("view") or {})
@@ -107,6 +111,7 @@ def load_campaign(path) -> AppState:
             battle_section=str(view.get("battle_section") or "overview"),
             inventory_mode=str(view.get("inventory_mode") or "item"),
             draft_warrior_tab=str(view.get("draft_warrior_tab") or "hero"),
+            pending_battle_draft=dict(view.get("pending_battle_draft") or {}),
         )
     except (KeyError, TypeError, ValueError) as exc:
         raise CampaignFileError(f"Invalid campaign payload: {exc}") from exc
@@ -152,6 +157,8 @@ def _campaign_from_payload(payload: dict) -> CampaignVM:
         inventory=[_inventory_from_payload(row) for row in payload.get("inventory") or ()],
         stash_value=int(payload.get("stash_value") or 0),
         rare_finds=int(payload.get("rare_finds") or 0),
+        treasures=int(payload.get("treasures") or 0),
+        campaign_points=int(payload.get("campaign_points") or 0),
         is_draft=bool(payload.get("is_draft") or False),
         starting_gold=int(payload.get("starting_gold") or 500),
         minimum_models=int(payload.get("minimum_models") or 3),
@@ -186,6 +193,10 @@ def _warrior_from_payload(row: dict) -> WarriorVM:
         skill_access=[str(item) for item in row.get("skill_access") or ()],
         stat_advances={str(key): int(value) for key, value in dict(row.get("stat_advances") or {}).items()},
         profile_id=str(row.get("profile_id") or ""),
+        spell_difficulty_modifiers={
+            str(key): int(value)
+            for key, value in dict(row.get("spell_difficulty_modifiers") or {}).items()
+        },
     )
 
 
@@ -207,7 +218,20 @@ def _battle_from_payload(row: dict) -> BattleVM:
         models_after=int(row.get("models_after") or 0),
         notes=str(row.get("notes") or ""),
         opponent_rating=int(row["opponent_rating"]) if row.get("opponent_rating") is not None else None,
-        out_of_action_ids=[str(value) for value in row.get("out_of_action_ids") or ()] or None,
+        out_of_action_ids=(
+            None if row.get("out_of_action_ids") is None
+            else [str(value) for value in row.get("out_of_action_ids") or ()]
+        ),
+        participants=[dict(item) for item in row.get("participants") or ()],
+        per_group_casualties={
+            str(key): int(value)
+            for key, value in dict(row.get("per_group_casualties") or {}).items()
+        },
+        xp_awards={
+            str(key): int(value)
+            for key, value in dict(row.get("xp_awards") or {}).items()
+        },
+        scenario_results=dict(row.get("scenario_results") or {}),
     )
 
 
@@ -224,6 +248,8 @@ def _state_from_payload(row: dict) -> WarbandStateVM:
         henchmen=int(row.get("henchmen") or 0),
         experience=int(row.get("experience") or 0),
         label=str(row.get("label") or ""),
+        roster=[_warrior_from_payload(item) for item in row.get("roster") or ()],
+        inventory=[_inventory_from_payload(item) for item in row.get("inventory") or ()],
     )
 
 
@@ -241,7 +267,14 @@ def _post_from_payload(row: dict) -> PostBattleVM:
         wyrdstone_sold=int(row.get("wyrdstone_sold") or 0),
         sale_resolved=bool(row.get("sale_resolved") or False),
         veteran_pool=int(row.get("veteran_pool") or 0),
+        experience_applied=bool(row.get("experience_applied") or False),
         pending_advances=[dict(item) for item in row.get("pending_advances") or ()],
+        step_state=dict(row.get("step_state") or {}),
+        searches=dict(row.get("searches") or {}),
+        acknowledgements=dict(row.get("acknowledgements") or {}),
+        event_log=[dict(item) for item in row.get("event_log") or ()],
+        equipment_obligations=[dict(item) for item in row.get("equipment_obligations") or ()],
+        pending_follow_ups=[dict(item) for item in row.get("pending_follow_ups") or ()],
     )
 
 

@@ -49,22 +49,18 @@ def inventory(root: Path | None = None) -> tuple[Obligation, ...]:
                                    "url": row.get("source_url")}, row.get("effect", ""),
             ))
     for family in ("weapons", "armours", "defences", "materials", "preparations", "poisons", "skills"):
-        if family == "skills":
-            # Skills live in catalog/skills; the mechanics catalogue no longer
-            # carries a twin `skills` family (see tools/rule_registry.py).
-            rows = [
-                row for path in sorted((root / "catalog/skills").glob("*.yaml"))
-                for row in read_yaml(path).get("skills", [])
-            ]
-        else:
-            rows = catalogue.get(family, [])
+        # The `skills` family of the mechanics catalogue holds the executable
+        # close-combat mechanics (including mechanic.* bindings); catalog/skills
+        # is the selectable-skill catalogue for progression and is not the
+        # source of mechanic obligations.
+        rows = catalogue.get(family, [])
         for row in rows:
             if row["id"] in excluded:
                 continue
             result.append(Obligation(
                 f"mechanic/{row['id']}", "mechanic",
                 binding_key({"kind": "mechanic", "id": row["id"]}),
-                fingerprint(row), {"file": "catalog/mechanics/close-combat.yaml" if family != "skills" else "catalog/skills", "id": row["id"],
+                fingerprint(row), {"file": "catalog/mechanics/close-combat.yaml", "id": row["id"],
                                    "references": row.get("source_refs", []),
                                    "url": row.get("rules_source_url")},
                 row.get("effect", ""),

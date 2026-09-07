@@ -75,6 +75,17 @@ def test_hero_names_are_unique():
     assert "Sister Superior II" in names
 
 
+def test_new_henchmen_groups_get_unique_names_and_can_be_renamed():
+    controller = _controller()
+    assert controller.add_draft_warriors("novices")[0]
+    assert controller.add_draft_warriors("novices")[0]
+    added = [w for w in controller.state.campaign.warriors if w.id.startswith("novices#")][-2:]
+    assert [w.name for w in added] == ["Novices Group", "Novices Group II"]
+    assert controller.rename_draft_warrior(added[0].id, "The Faithful")[0]
+    assert added[0].name == "The Faithful"
+    assert not controller.rename_draft_warrior(added[1].id, "The Faithful")[0]
+
+
 def test_commit_initial_warband_creates_state_zero():
     controller = _controller()
     campaign = controller.state.campaign

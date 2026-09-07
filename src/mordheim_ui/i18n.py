@@ -76,6 +76,29 @@ STRINGS: dict[str, dict[str, str]] = {
     },
     "‹ BACK": {"es": "‹ ATRÁS"},
     "CONTINUE ›": {"es": "CONTINUAR ›"},
+    "of {} models": {"es": "de {} miniaturas"},
+    "Henchmen casualty {} of {} · D6 survival roll": {"es": "Baja de secuaz {} de {} · tirada de supervivencia D6"},
+    "Rename…": {"es": "Cambiar nombre…"},
+    "Rename": {"es": "Cambiar nombre"},
+    "New name": {"es": "Nuevo nombre"},
+    "Cannot rename": {"es": "No se puede cambiar el nombre"},
+    "Name warrior or group": {"es": "Nombrar guerrero o grupo"},
+    "Name": {"es": "Nombre"},
+    "Incomplete step": {"es": "Paso incompleto"},
+    "Resolve every injury roll before continuing.": {"es": "Resuelve todas las tiradas de heridas antes de continuar."},
+    "Resolve the exploration roll before continuing.": {"es": "Resuelve la tirada de exploración antes de continuar."},
+    "Resolve the veteran roll before continuing.": {"es": "Resuelve la tirada de veteranos antes de continuar."},
+    "Cannot apply result": {"es": "No se puede aplicar el resultado"},
+    "Resolve every assigned search before continuing.": {"es": "Resuelve todas las búsquedas asignadas antes de continuar."},
+    "Assign each available Hero to one rare item or Dramatis search. A Hero can perform at most one search in this sequence. {}": {
+        "es": "Asigna cada héroe disponible a la búsqueda de un objeto raro o Dramatis. Cada héroe puede realizar como máximo una búsqueda en esta secuencia. {}"
+    },
+    "HERO SEARCH ASSIGNMENTS": {"es": "ASIGNACIONES DE BÚSQUEDA DE HÉROES"},
+    "No search": {"es": "No buscar"},
+    "RARE ITEM": {"es": "OBJETO RARO"},
+    "No Heroes are currently available to search.": {"es": "No hay héroes disponibles para realizar búsquedas."},
+    "{} searches for a Rare {} item": {"es": "{} busca un objeto de rareza {}"},
+    "{} searches for this Dramatis Persona": {"es": "{} busca a este Dramatis Personae"},
     "BATTLE #{} · RESULTS": {"es": "BATALLA #{} · RESULTADOS"},
     "Scenario": {"es": "Escenario"},
     "Results": {"es": "Resultados"},
@@ -368,6 +391,31 @@ STRINGS: dict[str, dict[str, str]] = {
     "Resolved; choose the advance below.": {"es": "Resuelta; elige la mejora abajo."},
     "Choose the resulting advance.": {"es": "Elige la mejora resultante."},
     "Already known — pick a different entry.": {"es": "Ya conocida — elige otra entrada."},
+    "Already known — committing this pick records the duplicate: casting difficulty reduced by 1.": {
+        "es": "Ya conocida — confirmar esta elección registra el duplicado: la dificultad de lanzamiento baja en 1."
+    },
+    "Already known — committing this pick records the duplicate: {}’s casting difficulty becomes {}.": {
+        "es": "Ya conocida — confirmar esta elección registra el duplicado: la dificultad de lanzamiento de {} pasa a ser {}."
+    },
+    "This scenario declares no structured awards.": {
+        "es": "Este escenario no declara premios estructurados."
+    },
+    "manual": {"es": "manual"},
+    "XP": {"es": "PX"},
+    "This result requires an effect or reroll outside the application. Reopen the advance and roll again once the roster is correct.": {
+        "es": "Este resultado requiere un efecto o repesca fuera de la aplicación. Reabre la mejora y tira de nuevo cuando la lista esté correcta."
+    },
+    "REOPEN ADVANCE FOR REROLL": {"es": "REABRIR LA MEJORA PARA REPESCAR"},
+    "Result resolved at the table; the advance reopens for a new roll.": {
+        "es": "Resultado resuelto en la mesa; la mejora se reabre para una nueva tirada."
+    },
+    "Award rows are generated from the KB scenario plan (scenario_rewards); objectives that remain prose-only in the KB stay manual entries.": {
+        "es": "Las filas de premio se generan del plan del escenario en la base de conocimiento; los objetivos que siguen en prosa se quedan como entradas manuales."
+    },
+    "Duplicated spell: {} (difficulty {})": {"es": "Hechizo duplicado: {} (dificultad {})"},
+    "{} deepens {}: casting difficulty reduced by 1.": {
+        "es": "{} profundiza {}: la dificultad de lanzamiento baja en 1."
+    },
     "A group of one cannot split into a hero; reroll this advance instead.": {
         "es": "Un grupo de uno no puede dividirse en un héroe; vuelve a tirar esta mejora."
     },
@@ -756,6 +804,36 @@ STRINGS: dict[str, dict[str, str]] = {
     "Exports a readable Markdown summary of the current state.": {
         "es": "Exporta un resumen Markdown legible del estado actual."
     },
+    "Export PDF": {"es": "Exportar PDF"},
+    "Export warband PDF": {"es": "Exportar PDF de la banda"},
+    "Exports the warband at the selected timeline moment as PDF.": {
+        "es": "Exporta la banda en el momento seleccionado de la línea temporal como PDF."
+    },
+    "PDF": {"es": "PDF files"},
+    # PDF roster sheet labels (persistence/warband_pdf.py); the Spanish
+    # values follow the printed warband sheets.
+    "Warband": {"es": "Banda"},
+    "Roster": {"es": "Plantilla"},
+    "Profile": {"es": "Perfil"},
+    "Type": {"es": "Tipo"},
+    "Cost": {"es": "Coste"},
+    "XP": {"es": "PX"},
+    "Condition": {"es": "Estado"},
+    "Equipment": {"es": "Equipo"},
+    "Value": {"es": "Valor"},
+    "Number": {"es": "NÚMERO"},
+    "Warband name:": {"es": "NOMBRE DE LA BANDA:"},
+    "Warband type:": {"es": "TIPO DE BANDA:"},
+    "Treasure": {"es": "TESORO"},
+    "Gold Crowns:": {"es": "Coronas de Oro:"},
+    "Wyrdstone:": {"es": "Piedra Bruja:"},
+    "Warband value": {"es": "VALOR DE LA BANDA"},
+    "Total experience:": {"es": "Experiencia Total:"},
+    "Members ( {} ) x 5:": {"es": "Miembros ( {} ) x 5:"},
+    "Rating:": {"es": "Valor:"},
+    "Stored equipment": {"es": "EQUIPO ALMACENADO"},
+    "Notes": {"es": "NOTAS"},
+    "No warriors recorded.": {"es": "No hay guerreros registrados."},
     "All files": {"es": "Todos los archivos"},
     "JSON": {"es": "JSON files"},
     "Markdown": {"es": "Markdown files"},

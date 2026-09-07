@@ -129,12 +129,54 @@ def test_full_recovery_leaves_roster_untouched():
 # ----------------------------------------------------------------- experience
 
 
+def test_battle_experience_is_applied_once_to_current_survivors():
+    engine, state, _ = _pending()
+    engine.post.experience_applied = False
+    before = {warrior.id: warrior.experience for warrior in state.campaign.warriors}
+    amount = state.campaign.battle(8).xp_delta
+    assert engine.apply_battle_experience()[0]
+    assert all(warrior.experience == before[warrior.id] + amount for warrior in state.campaign.warriors)
+    assert engine.apply_battle_experience()[0]
+    assert all(warrior.experience == before[warrior.id] + amount for warrior in state.campaign.warriors)
+
+
 def test_add_xp_increases_rating():
     engine, _, _ = _pending()
     ok, _ = engine.add_xp("matriarch", 3)
     assert ok
     assert engine.projected_experience() == 88
     assert engine.projected_rating() == 128
+
+
+def test_existing_group_recruit_uses_veteran_xp_and_leaves_equipment_pending():
+    engine, state, _ = _pending()
+    group = next(row for row in state.campaign.warriors if row.id == "sisters")
+    engine.apply_veteran_pool(group.experience)
+    gold = engine.projected_gold()
+
+    ok, _ = engine.add_member_to_group(group.id)
+
+    assert ok and group.quantity == 3
+    assert engine.post.veteran_pool == 0
+    # KB veteran_availability: joining recruit spends the group's current
+    # experience from the pool AND 2 gc per experience point.
+    assert engine.projected_gold() == gold - group.cost - 2 * group.experience
+    assert all(item.quantity == 2 for item in group.equipment)
+    obligations = engine.post.equipment_obligations
+    assert obligations and all(row["warrior_id"] == group.id for row in obligations)
+
+
+def test_dismissing_one_group_member_returns_one_equipment_set_to_stash():
+    engine, state, _ = _pending()
+    group = next(row for row in state.campaign.warriors if row.id == "sisters")
+    hammer = next(row for row in state.campaign.inventory if row.id == "hammer")
+    buckler = next(row for row in state.campaign.inventory if row.id == "buckler")
+
+    ok, _ = engine.dismiss_warrior(group.id, one_member=True)
+
+    assert ok and group.quantity == 1
+    assert (hammer.stash, buckler.stash) == (1, 1)
+    assert all(item.quantity == 1 for item in group.equipment)
 
 
 # ----------------------------------------------------------------- recruitment
@@ -266,6 +308,19 @@ def test_buy_item_rejected_when_funds_run_out():
     offer = next(o for o in catalogue.common_items() if o.price_gc is not None and o.price_gc > 0)
     ok, message = engine.buy_item(offer.item_id, 100, offer.price_gc)
     assert not ok and "Not enough gold" in message
+
+
+def test_rare_purchase_keeps_its_inventory_marker():
+    engine, state, port = _pending()
+    catalogue = PostBattleCatalogue(port, state.campaign.collection, state.campaign.band_id)
+    offer = next(o for o in catalogue.rare_items() if o.price_gc is not None and o.price_gc <= engine.projected_gold())
+
+    ok, _ = engine.buy_item(offer.item_id, 1, offer.price_gc, category=offer.category, rarity=offer.rarity)
+
+    row = next(item for item in state.campaign.inventory if item.id == offer.item_id)
+    assert ok
+    assert row.stash == 1
+    assert row.rarity == f"Rare {offer.rarity}"
 
 
 # --------------------------------------------------------------------- commit

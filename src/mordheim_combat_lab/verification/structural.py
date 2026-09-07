@@ -15,7 +15,6 @@ from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import load_bands
 from mordheim_knowledge.loader import load_execution_contract
 from mordheim_knowledge.loader import load_mechanics
-from mordheim_knowledge.loader import load_skills
 from mordheim_combat_lab.verification.specifications import load_phase_verification
 from mordheim_knowledge.loader import load_runtime_scope
 from mordheim_knowledge.loader import runtime_bindings
@@ -65,7 +64,6 @@ def _projection_errors(ruleset: str, root: Path | None) -> tuple[int, list[str]]
     """
     catalogue = load_mechanics(ruleset, root)
     effects = effect_index(ruleset, root)
-    skills_catalogue = load_skills(ruleset, root)
     parameters_by_id = {
         str(row["id"]): dict(row.get("parameters") or {})
         for row in load_execution_contract(ruleset, root).get("mechanics") or ()
@@ -79,7 +77,7 @@ def _projection_errors(ruleset: str, root: Path | None) -> tuple[int, list[str]]
     projected = 0
 
     for family in ("weapons", "armours", "defences", "materials", "preparations", "poisons", "skills"):
-        for row in (skills_catalogue if family == "skills" else catalogue.get(family) or ()):
+        for row in catalogue.get(family) or ():
             mechanic_id = str(row["id"])
             if mechanic_id in excluded:
                 continue

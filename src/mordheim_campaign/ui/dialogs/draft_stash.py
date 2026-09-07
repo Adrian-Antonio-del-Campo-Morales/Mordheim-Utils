@@ -12,10 +12,12 @@ from mordheim_ui.widgets import BorderedFrame, ScrollableFrame
 class DraftStashDialog(tk.Toplevel):
     """Buy creation items without assigning them to a warrior."""
 
-    def __init__(self, parent: tk.Misc, controller: AppController) -> None:
+    def __init__(self, parent: tk.Misc, controller: AppController, *, mode: str = "draft") -> None:
         super().__init__(parent)
         self.controller = controller
-        self.offers = controller.draft_stash_offers()
+        self.mode = mode
+        self.offers = controller.draft_stash_offers() if mode == "draft" else controller.post_battle_content().common_items()
+        self.rare_ids = {offer.item_id for offer in controller.post_battle_content().rare_items()} if mode == "post_battle" else set()
         categories = list(dict.fromkeys(offer.category for offer in self.offers))
         self.expanded_categories = {categories[0]} if categories else set()
         self.configure(bg=COLORS["bg"])
@@ -68,7 +70,8 @@ class DraftStashDialog(tk.Toplevel):
             for child in parent.winfo_children():
                 child.destroy()
         campaign = self.controller.state.campaign
-        self.treasury_var.set(tr('{} gc remaining').format(campaign.draft_treasury))
+        treasury = campaign.draft_treasury if self.mode == "draft" else self.controller.post_battle_engine().projected_gold()
+        self.treasury_var.set(tr('{} gc remaining').format(treasury))
         grouped = {}
         for offer in self.offers:
             grouped.setdefault(offer.category, []).append(offer)
@@ -90,9 +93,9 @@ class DraftStashDialog(tk.Toplevel):
                 row = tk.Frame(self.available_rows, bg=COLORS["panel_alt"])
                 row.pack(fill="x", pady=1, padx=(7, 0))
                 tk.Label(row, text=f"{offer.name}  ·  {offer.price_label}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(side="left", fill="x", expand=True)
-                button = ttk.Button(row, text=tr('BUY'), style="Mini.TButton", width=6, command=lambda item_id=offer.item_id: self._run(self.controller.buy_draft_stash_item, item_id))
+                button = ttk.Button(row, text=tr('BUY'), style="Mini.TButton", width=6, command=lambda value=offer: self._buy(value))
                 button.pack(side="right")
-                if offer.price_gc is None or offer.price_gc > campaign.draft_treasury:
+                if offer.price_gc is None or offer.price_gc > treasury:
                     button.state(["disabled"])
         if not campaign.inventory:
             tk.Label(self.stash_rows, text=tr('The stash is empty.'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
@@ -101,8 +104,10 @@ class DraftStashDialog(tk.Toplevel):
                 continue
             row = tk.Frame(self.stash_rows, bg=COLORS["panel_alt"])
             row.pack(fill="x", pady=1)
-            tk.Label(row, text=f"{item.name} ×{item.stash}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(side="left", fill="x", expand=True)
-            ttk.Button(row, text=tr('SELL'), style="Mini.TButton", width=8, command=lambda item_id=item.id: self._run(self.controller.remove_draft_stash_item, item_id)).pack(side="right")
+            rarity = item.rarity or (tr('RARE ITEM') if item.id in self.rare_ids else "")
+            suffix = f"  ·  {rarity}" if rarity else ""
+            tk.Label(row, text=f"{item.name} ×{item.stash}{suffix}", bg=COLORS["panel_alt"], fg=COLORS["accent"] if rarity else COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(side="left", fill="x", expand=True)
+            ttk.Button(row, text=tr('SELL'), style="Mini.TButton", width=8, command=lambda item_id=item.id: self._sell(item_id)).pack(side="right")
 
     @staticmethod
     def _category_label(category: str) -> str:
@@ -129,6 +134,20 @@ class DraftStashDialog(tk.Toplevel):
         ok, message = action(item_id, 1)
         self.status_var.set(("✓ " if ok else "! ") + message)
         self._refresh()
+
+    def _buy(self, offer) -> None:
+        if self.mode == "draft":
+            self._run(self.controller.buy_draft_stash_item, offer.item_id)
+            return
+        result = self.controller.post_battle_engine().buy_item(
+            offer.item_id, 1, offer.price_gc, category=offer.category, rarity=offer.rarity,
+        )
+        self.status_var.set(("✓ " if result[0] else "! ") + result[1])
+        self._refresh()
+
+    def _sell(self, item_id: str) -> None:
+        action = self.controller.remove_draft_stash_item if self.mode == "draft" else self.controller.post_battle_engine().sell_item
+        self._run(action, item_id)
 
     def _close(self) -> None:
         self.destroy()

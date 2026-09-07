@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import copy
 from collections.abc import Callable
 from datetime import date
 from pathlib import Path
 
 from mordheim_campaign.application.knowledge_port import KnowledgePort, WarbandProfile
-from .state import AppState, BattleVM, EquipmentEntryVM, InventoryItemVM, PostBattleVM, WarbandStateVM, make_draft_state, make_example_state, warrior_vm
+from .state import AppState, BattleVM, EquipmentEntryVM, InventoryItemVM, PostBattleVM, WarbandStateVM, make_draft_state, make_example_state, unique_warrior_name, warrior_vm
 
 
 _ROMAN = ((10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I"))
@@ -158,6 +159,12 @@ class AppController:
 
     # --------------------------------------------------------------- battles
 
+    def scenario_rewards(self):
+        """Award planner of the KB scenario catalogue."""
+        from mordheim_campaign.application.scenario_rewards import ScenarioRewards
+
+        return ScenarioRewards(self.port)
+
     def scenario_options(self):
         """(id, name, player_mode) triples of the KB scenario catalogue."""
         return self.port.scenario_options()
@@ -232,6 +239,9 @@ class AppController:
         opponent_rating: int | None = None,
         notes: str = "",
         out_of_action_ids: list[str] | None = None,
+        per_group_casualties: dict[str, int] | None = None,
+        xp_awards: dict[str, int] | None = None,
+        scenario_results: dict | None = None,
     ) -> tuple[bool, str]:
         """Record a played battle and open its pending post-battle.
 
@@ -273,10 +283,28 @@ class AppController:
             models_after=base.models,
             notes=notes.strip(),
             opponent_rating=opponent_rating,
-            out_of_action_ids=list(out_of_action_ids) if out_of_action_ids else None,
+            out_of_action_ids=list(out_of_action_ids) if out_of_action_ids is not None else None,
+            per_group_casualties=dict(per_group_casualties or {}),
+            xp_awards={str(key): max(0, int(value)) for key, value in dict(xp_awards or {}).items()},
+            scenario_results=dict(scenario_results or {}),
+            participants=[
+                {
+                    "id": warrior.id, "name": warrior.name, "kind": warrior.kind,
+                    "quantity": warrior.quantity, "profile_name": warrior.profile_name,
+                    "condition": warrior.condition or "",
+                }
+                for warrior in campaign.warriors
+            ],
         )
         if battle.out_of_action_ids is not None:
             battle.casualties = len(battle.out_of_action_ids)
+        elif battle.per_group_casualties:
+            battle.casualties = sum(battle.per_group_casualties.values())
+            battle.out_of_action_ids = [
+                warrior_id
+                for warrior_id, count in battle.per_group_casualties.items()
+                for _ in range(count)
+            ]
         campaign.battles.append(battle)
         campaign.post_battles.append(PostBattleVM(battle_number=number, complete=False))
         self.select_battle(number)
@@ -359,6 +387,8 @@ class AppController:
                 henchmen=campaign.draft_henchman_count,
                 experience=campaign.draft_experience,
                 label="Initial Warband",
+                roster=copy.deepcopy(campaign.warriors),
+                inventory=copy.deepcopy(campaign.inventory),
             )
         ]
         self.state.selected_moment = "state:0"
@@ -484,9 +514,8 @@ class AppController:
             return False, f"Cannot exceed {campaign.hero_limit} heroes."
         occurrences = sum(1 for row in campaign.warriors if row.profile_id == profile_id)
         row_id = f"{profile_id}#{occurrences + 1}"
-        name = profile.name
-        if profile.kind == "hero":
-            name = self._unique_hero_name(profile.name)
+        base_name = profile.name if profile.kind == "hero" else f"{profile.name} Group"
+        name = unique_warrior_name(campaign.warriors, base_name)
         campaign.warriors.append(warrior_vm(self.port, profile, row_id=row_id, name=name, quantity=quantity))
         self.notify()
         return True, f"{name}{f' ×{quantity}' if quantity > 1 else ''} added to the draft."
@@ -558,6 +587,20 @@ class AppController:
         self.notify()
         return True, f"{row.name} removed from the draft."
 
+    def rename_draft_warrior(self, warrior_id: str, name: str) -> tuple[bool, str]:
+        campaign = self._campaign()
+        row = next((warrior for warrior in campaign.warriors if warrior.id == warrior_id), None)
+        name = name.strip()
+        if row is None or not campaign.is_draft:
+            return False, "Only draft warriors and groups can be renamed here."
+        if not name:
+            return False, "Name cannot be empty."
+        if any(other.id != row.id and other.name.casefold() == name.casefold() for other in campaign.warriors):
+            return False, "Another warrior or group already uses that name."
+        row.name = name
+        self.notify()
+        return True, f"Renamed to {name}."
+
     def draft_equipment_offers(self, warrior_id: str):
         campaign = self._campaign()
         warrior = next((row for row in campaign.warriors if row.id == warrior_id), None)
@@ -578,8 +621,9 @@ class AppController:
             return False, "This warrior cannot buy that item."
         if offer.cost is None:
             return False, "This item has no supported creation price."
-        # TODO: Enforce weapon-hand, armour-combination and duplicate-item
-        # limits when the knowledge layer exposes structured loadout rules.
+        violation = self._loadout_violation(warrior, offer.item_id)
+        if violation:
+            return False, violation
         total = offer.cost * warrior.quantity
         if total > campaign.draft_treasury:
             return False, f"Not enough gold: {total} gc needed, {campaign.draft_treasury} gc available."
@@ -594,6 +638,12 @@ class AppController:
             existing.quantity += warrior.quantity
         self._change_inventory(campaign, existing, warrior.quantity)
         return True, f"{offer.name} bought for {total} gc."
+
+    def _loadout_violation(self, warrior, item_id: str) -> str | None:
+        """Hands-per-model and duplicate-item limits from the KB mechanics."""
+        from mordheim_campaign.application.post_battle_engine import PostBattleEngine
+
+        return PostBattleEngine(self.port, self._campaign(), self._campaign().pending_post_battle).loadout_violation(warrior, item_id)
 
     def remove_draft_equipment(self, warrior_id: str, item_id: str) -> tuple[bool, str]:
         campaign = self._campaign()
@@ -616,10 +666,12 @@ class AppController:
         if not campaign.is_draft:
             return ()
         offers = {offer.item_id: offer for offer in self.post_battle_content().common_items()}
-        # TODO: Model band equipment exceptions as structured availability/rarity
-        # and restriction overrides. At present, inclusion in a band equipment
-        # list only makes the item available during creation and may change price;
-        # rule details written in ``notes`` are not interpreted.
+        # Band equipment lists are creation offers: inclusion makes the item
+        # available and the list ``cost`` (or the KB ``price_override``) sets
+        # the price. Per-band rule exceptions written as prose stay data work:
+        # the offer ``notes`` carry them for the player, and a structured
+        # ``restriction`` key on the equipment row would plug straight into
+        # this merge once transcribed (see TODO.md).
         band_offers = {}
         for offer in self.port.equipment(campaign.collection, campaign.band_id):
             current = band_offers.get(offer.item_id)
@@ -647,20 +699,37 @@ class AppController:
                 return False, f"An acceptance roll of {offer.roll_ge or '?'}+ is required."
             if int(acceptance_roll) < offer.roll_ge:
                 return False, f"Acceptance roll failed; {offer.roll_ge}+ was required."
-        if offer.fee_gc is None:
-            # TODO: Support non-gold hiring resources declared by the KB.
-            return False, "This hiring fee cannot yet be paid by the campaign model."
-        if offer.fee_gc > campaign.draft_treasury:
-            return False, f"Not enough gold: {offer.fee_gc} gc needed, {campaign.draft_treasury} gc available."
-        if campaign.draft_model_count >= campaign.maximum_models:
-            return False, f"Cannot exceed {campaign.maximum_models} models."
         from mordheim_campaign.application.post_battle_engine import PostBattleEngine
 
-        warrior = PostBattleEngine(self.port, campaign, None).hireling_warrior(offer)
+        engine = PostBattleEngine(self.port, campaign, None)
+        costs = offer.fee_resources or ((("gold_crowns", offer.fee_gc),) if offer.fee_gc is not None else ())
+        if not costs:
+            return False, f"{offer.name} declares a variable hiring fee the application cannot charge."
+        for resource, amount in costs:
+            label = engine.RESOURCE_LABELS.get(resource, resource)
+            available = campaign.draft_treasury if resource == "gold_crowns" else (
+                campaign.treasures if resource == "treasures"
+                else campaign.campaign_points if resource == "campaign_points"
+                else 0
+            )
+            if amount > available:
+                return False, f"Not enough {label}: {amount} needed, {available} available."
+        if campaign.draft_model_count >= campaign.maximum_models:
+            return False, f"Cannot exceed {campaign.maximum_models} models."
+        warrior = engine.hireling_warrior(offer)
         if warrior is None:
             return False, f"Hireling profile not found in the KB: {offer.profile_id}"
         campaign.warriors.append(warrior)
-        return True, f"{offer.name} hired for {offer.fee_gc} gc."
+        pieces: list[str] = []
+        for resource, amount in costs:
+            if resource == "gold_crowns":
+                pass  # gold fee is part of the draft recruitment cost already
+            elif resource == "treasures":
+                campaign.treasures -= amount
+            elif resource == "campaign_points":
+                campaign.campaign_points -= amount
+            pieces.append(f"{amount} {engine.RESOURCE_LABELS.get(resource, resource)}")
+        return True, f"{offer.name} hired for {' + '.join(pieces)}."
 
     def buy_draft_stash_item(self, item_id: str, quantity: int) -> tuple[bool, str]:
         campaign = self._campaign()

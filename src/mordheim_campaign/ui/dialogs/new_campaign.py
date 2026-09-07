@@ -9,6 +9,13 @@ from mordheim_ui.widgets import BorderedFrame
 from mordheim_ui.i18n import tr
 
 
+def _category_label(option) -> str:
+    values = option.categories or ((option.grade,) if option.grade else ())
+    if not values:
+        values = (option.source_label,)
+    return " · ".join(value.upper() if value[:1].isdigit() else value.replace("-", " ").title() for value in values)
+
+
 class NewCampaignDialog(tk.Toplevel):
     """Small campaign creation dialog.
 
@@ -43,15 +50,31 @@ class NewCampaignDialog(tk.Toplevel):
         ttk.Entry(body, textvariable=self.name_var, width=38).grid(row=3, column=0, columnspan=2, sticky="ew", pady=(5, 14))
 
         tk.Label(body, text=tr('WARBAND'), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8)).grid(row=4, column=0, sticky="w")
-        labels = [option.label for option in self.options]
         self._selected = next(
             (index for index, option in enumerate(self.options) if option.band_id == self.DEFAULT_BAND_ID and option.collection == "mordheim"),
             0,
         )
-        self.warband_var = tk.StringVar(value=labels[self._selected])
-        self.warband_box = ttk.Combobox(body, textvariable=self.warband_var, values=labels, state="readonly", width=35)
-        self.warband_box.grid(row=5, column=0, columnspan=2, sticky="ew", pady=(5, 6))
-        self.warband_box.bind("<<ComboboxSelected>>", self._on_warband_change)
+        picker = tk.Frame(body, bg=COLORS["panel"])
+        picker.grid(row=5, column=0, columnspan=2, sticky="ew", pady=(5, 6))
+        self.warband_box = ttk.Treeview(
+            picker, columns=("warband", "category"), show="headings",
+            height=min(12, max(6, len(self.options))), selectmode="browse",
+        )
+        self.warband_box.heading("warband", text=tr('WARBAND'), anchor="w")
+        self.warband_box.heading("category", text=tr('CATEGORY'), anchor="e")
+        self.warband_box.column("warband", width=300, minwidth=220, anchor="w", stretch=True)
+        self.warband_box.column("category", width=90, minwidth=70, anchor="e", stretch=False)
+        scrollbar = ttk.Scrollbar(picker, orient="vertical", command=self.warband_box.yview)
+        self.warband_box.configure(yscrollcommand=scrollbar.set)
+        self.warband_box.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+        for index, option in enumerate(self.options):
+            self.warband_box.insert("", "end", iid=str(index), values=(option.name, _category_label(option)))
+        if self.options:
+            self.warband_box.selection_set(str(self._selected))
+            self.warband_box.see(str(self._selected))
+        self.warband_box.bind("<<TreeviewSelect>>", self._on_warband_change)
+        self.warband_box.bind("<Double-Button-1>", lambda _event: self._create())
         self.caption_var = tk.StringVar()
         tk.Label(body, textvariable=self.caption_var, bg=COLORS["panel"], fg=COLORS["muted_dark"], font=("Segoe UI", 8), justify="left", wraplength=330).grid(row=6, column=0, columnspan=2, sticky="w")
         self._update_caption()
@@ -67,8 +90,9 @@ class NewCampaignDialog(tk.Toplevel):
         self.after_idle(self._center)
 
     def _current_option(self):
-        label = self.warband_var.get()
-        return next((option for option in self.options if option.label == label), self.options[self._selected])
+        selection = self.warband_box.selection()
+        index = int(selection[0]) if selection else self._selected
+        return self.options[index]
 
     def _update_caption(self) -> None:
         option = self._current_option()

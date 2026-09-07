@@ -12,10 +12,11 @@ from mordheim_ui.widgets import BorderedFrame, ScrollableFrame, SummaryStrip
 class InventoryWorkspace(tk.Frame):
     """Single equipment board: roster on the left, stash on the right."""
 
-    def __init__(self, master: tk.Misc, controller: AppController, *, show_summary: bool = True, read_only: bool = False, **kwargs) -> None:
+    def __init__(self, master: tk.Misc, controller: AppController, *, show_summary: bool = True, read_only: bool = False, purchase_mode: str | None = None, **kwargs) -> None:
         super().__init__(master, bg=COLORS["bg"], **kwargs)
         self.controller = controller
         self.read_only = read_only
+        self.purchase_mode = purchase_mode
         self._drag = None
         self._drag_badge: tk.Toplevel | None = None
         campaign = controller.state.campaign
@@ -34,8 +35,8 @@ class InventoryWorkspace(tk.Frame):
         toolbar = tk.Frame(self, bg=COLORS["bg"])
         toolbar.grid(row=row, column=0, sticky="ew", pady=(0, 6))
         tk.Label(toolbar, text=tr('Drag items between warriors and stash.'), bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(side="left")
-        if campaign.is_draft and not read_only:
-            ttk.Button(toolbar, text=tr('BUY AND SELL'), style="Accent.TButton", command=self._open_draft_stash).pack(side="right")
+        if (campaign.is_draft or purchase_mode == "post_battle") and not read_only:
+            ttk.Button(toolbar, text=tr('BUY AND SELL'), style="Accent.TButton", command=self._open_stash).pack(side="right")
 
         board = tk.Frame(self, bg=COLORS["bg"])
         board.grid(row=row + 1, column=0, sticky="nsew")
@@ -73,7 +74,9 @@ class InventoryWorkspace(tk.Frame):
                 else:
                     note = ""
                 icon = "🔒" if locked else "≡"
-                tk.Label(item, text=f"{icon}  {equipment.name}{suffix}{note}", bg=COLORS["panel_alt"], fg=COLORS["muted"] if locked else COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(fill="x")
+                rarity = next((row.rarity for row in self.controller.state.campaign.inventory if row.id == equipment.item_id), None)
+                rare_note = f"  ·  {rarity}" if rarity else ""
+                tk.Label(item, text=f"{icon}  {equipment.name}{suffix}{note}{rare_note}", bg=COLORS["panel_alt"], fg=COLORS["muted"] if locked else COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(fill="x")
                 if not self.read_only and not locked:
                     self._make_draggable(item, ("warrior", equipment.item_id, warrior.id), equipment.name)
         return outer
@@ -95,7 +98,8 @@ class InventoryWorkspace(tk.Frame):
             item = tk.Frame(scroll.inner, bg=COLORS["panel_alt"], padx=7, pady=5, cursor="hand2")
             item.pack(fill="x", pady=(0, 4))
             item._equipment_drop_stash = True
-            tk.Label(item, text=f"≡  {inventory.name} ×{inventory.stash}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(fill="x")
+            rare_note = f"  ·  {inventory.rarity}" if inventory.rarity else ""
+            tk.Label(item, text=f"≡  {inventory.name} ×{inventory.stash}{rare_note}", bg=COLORS["panel_alt"], fg=COLORS["accent"] if inventory.rarity else COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(fill="x")
             if not self.read_only:
                 self._make_draggable(item, ("stash", inventory.id, None), inventory.name)
         return outer
@@ -155,10 +159,10 @@ class InventoryWorkspace(tk.Frame):
             return
         self.controller.notify()
 
-    def _open_draft_stash(self) -> None:
+    def _open_stash(self) -> None:
         from mordheim_campaign.ui.dialogs.draft_stash import DraftStashDialog
 
-        DraftStashDialog(self, self.controller)
+        DraftStashDialog(self, self.controller, mode=self.purchase_mode or "draft")
 
 
 ResourcesPanel = InventoryWorkspace

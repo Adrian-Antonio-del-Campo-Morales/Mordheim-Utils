@@ -23,6 +23,7 @@ from mordheim_knowledge.loader import BandPackage
 from mordheim_knowledge.loader import load_bands
 from mordheim_knowledge.loader import load_collections
 from mordheim_knowledge.loader import load_items
+from mordheim_knowledge.loader import load_mechanics
 from mordheim_knowledge.loader import load_racial_maximums
 from mordheim_knowledge.loader import load_skills
 from mordheim_knowledge.i18n import display_name as kb_display_name
@@ -202,6 +203,11 @@ class KnowledgePort:
             str(row["id"]): row
             for row in load_skills(ruleset)
         }
+        self._weapon_hands: dict[str, int] = {}
+        for weapon in load_mechanics(ruleset).get("weapons") or ():
+            hands = weapon.get("hands")
+            if isinstance(hands, int):
+                self._weapon_hands[str(weapon.get("id") or "")] = hands
         self._profiles_cache: dict[tuple[str, str], tuple[WarbandProfile, ...]] = {}
         self._hireling_traits_cache: dict[str, frozenset[str]] | None = None
 
@@ -373,6 +379,11 @@ class KnowledgePort:
                 ))
         return tuple(sorted(offers, key=lambda offer: (offer.name.casefold(), offer.item_id)))
 
+    def weapon_hands(self, item_id: str) -> int | None:
+        """Hands a weapon occupies per the KB mechanics catalogue (None if unknown)."""
+        mechanic_id = str((self._items.get(item_id) or {}).get("mechanic_id") or "")
+        return self._weapon_hands.get(mechanic_id)
+
     def item_name(self, item_id: str) -> str | None:
         """Display name of one item (KB locale policy), ``None`` if unknown."""
         row = self._items.get(item_id)
@@ -392,8 +403,9 @@ class KnowledgePort:
                 section = str(source.get("section") or "")
                 if section:
                     return section.rsplit("/", 1)[-1].strip()
-        # TODO: Give band-only items a structured display category in the KB.
-        return self.item_kind(item_id)
+        # Band-only items have no Trading Post section: derive a stable display
+        # category from the canonical item kind instead.
+        return self.item_kind(item_id).replace("-", " ").title()
 
     def price_override(self, collection: str, band_id: str, item_id: str) -> int | None:
         """Flat Trading Post price exception a warband pays for an item.
@@ -418,6 +430,21 @@ class KnowledgePort:
                     return int(base) if isinstance(base, (int, float)) else None
                 if isinstance(override, (int, float)):
                     return int(override)
+        return None
+
+    def trading_post_price(self, item_id: str) -> int | None:
+        """Canonical Trading Post base price of an item, or None."""
+        trading = self.campaign_catalog().catalogue("trading-post.yaml")
+        for entry in trading.get("items") or ():
+            if str(entry.get("item_id") or "") != item_id:
+                continue
+            price = entry.get("price")
+            if isinstance(price, dict):
+                value = price.get("base_gc", price.get("base", price.get("value")))
+                return int(value) if value is not None else None
+            if isinstance(price, (int, float)):
+                return int(price)
+            return None
         return None
 
     def items_for_profile(self, profile: WarbandProfile) -> tuple[EquipmentOffer, ...]:

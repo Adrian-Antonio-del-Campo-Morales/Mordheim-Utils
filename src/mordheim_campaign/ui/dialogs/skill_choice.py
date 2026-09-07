@@ -14,16 +14,16 @@ class SkillChoiceDialog(tk.Toplevel):
 
     Lists the warrior's KB skill tables and marks known skills; spells list
     the warrior's lore and mark known spells. COMMIT validates through the
-    engine (duplicates, tables, lore) and reports its message. Promotion mode
-    (Lad's Got Talent) commits through ``commit_promotion_skill`` instead.
+    engine (duplicates, tables, lore) and reports its message.
     """
 
-    def __init__(self, parent: tk.Misc, engine: PostBattleEngine, warrior_id: str, *, want_spells: bool, promotion: bool = False) -> None:
+    def __init__(self, parent: tk.Misc, engine: PostBattleEngine, warrior_id: str, *, want_spells: bool, promotion: bool = False, threshold: int | None = None) -> None:
         super().__init__(parent)
         self.engine = engine
         self.warrior_id = warrior_id
         self.want_spells = want_spells
         self.promotion = promotion
+        self.threshold = threshold
 
         warrior = next((row for row in engine.campaign.warriors if row.id == warrior_id), None)
         if warrior is None:
@@ -123,7 +123,23 @@ class SkillChoiceDialog(tk.Toplevel):
             return
         _payload, label = self._entries[selection[0]]
         if label.startswith("✓"):
-            self._detail_var.set(tr('Already known — pick a different entry.'))
+            if self.want_spells:
+                known_id, known_name = payload, label.removeprefix("✓ ")
+                difficulty = next(
+                    (entry.get("difficulty", "?") for entry in self.engine.port.lore_spells(
+                        self.engine.port.wizard_lore(
+                            next(row.profile_id for row in self.engine.campaign.warriors if row.id == self.warrior_id),
+                            self.engine.campaign.band_id,
+                        ) or ""
+                    ) if str(entry.get("id") or "") == known_id),
+                    "?",
+                )
+                warrior = next(row for row in self.engine.campaign.warriors if row.id == self.warrior_id)
+                modifier = warrior.spell_difficulty_modifiers.get(known_id, 0)
+                shown = difficulty + modifier if isinstance(difficulty, int) else difficulty
+                self._detail_var.set(tr('Already known — committing this pick records the duplicate: {}’s casting difficulty becomes {}.').format(known_name, shown))
+            else:
+                self._detail_var.set(tr('Already known — pick a different skill.'))
             return
         if self.want_spells:
             lore = self.engine.port.wizard_lore(
@@ -140,9 +156,11 @@ class SkillChoiceDialog(tk.Toplevel):
             skill = self.engine.port.skill_by_name(name)
             self._detail_var.set(str(skill.get("effect") or "") if skill else "")
 
-        # Keep the detail text honest for known entries (they cannot be picked).
         if self._listbox.get(selection[0]).startswith("✓"):
-            self._detail_var.set(tr('Already known — pick a different entry.'))
+            if self.want_spells:
+                self._detail_var.set(tr('Already known — committing this pick records the duplicate: casting difficulty reduced by 1.'))
+            else:
+                self._detail_var.set(tr('Already known — pick a different skill.'))
 
     def _commit(self) -> None:
         selection = self._listbox.curselection()
@@ -150,18 +168,21 @@ class SkillChoiceDialog(tk.Toplevel):
             return
         payload, label = self._entries[selection[0]]
         if label.startswith("✓"):
-            return
-        if self.promotion:
-            ok, message = self.engine.commit_promotion_skill(self.warrior_id, payload)
+            if not self.want_spells:
+                return
+            # Duplicate spell: the advance is spent lowering its difficulty.
+            ok, message = self.engine.commit_pending_advance(
+                self.warrior_id, option_kind="duplicate_spell", spell_id=payload, threshold=self.threshold,
+            )
             if not ok:
                 self._detail_var.set(message)
                 return
             self.destroy()
             return
         if self.want_spells:
-            ok, message = self.engine.commit_pending_advance(self.warrior_id, option_kind="generate_spell", spell_id=payload)
+            ok, message = self.engine.commit_pending_advance(self.warrior_id, option_kind="generate_spell", spell_id=payload, threshold=self.threshold)
         else:
-            ok, message = self.engine.commit_pending_advance(self.warrior_id, option_kind="choose_skill", skill_name=payload)
+            ok, message = self.engine.commit_pending_advance(self.warrior_id, option_kind="choose_skill", skill_name=payload, threshold=self.threshold)
         if not ok:
             self._detail_var.set(message)
             return

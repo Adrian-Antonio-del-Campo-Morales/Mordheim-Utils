@@ -10,7 +10,7 @@ from mordheim_knowledge.loader import load_runtime_scope
 from mordheim_knowledge.loader import load_shared_rules
 from mordheim_knowledge.loader import load_simulation_mappings
 from mordheim_knowledge.loader import load_skills
-from mordheim_knowledge.loader import shared_rule_text
+from mordheim_knowledge.i18n import display_effect
 
 
 @dataclass(frozen=True, slots=True)
@@ -174,8 +174,18 @@ class CombatCatalogue:
         return str(skill["id"]) not in self._excluded_mechanics
 
     def _rule_text(self, rule: dict) -> str:
-        """Resolve a band rule's display prose, following ``rule_ref``."""
-        return shared_rule_text(rule, self._shared_rules)
+        """Resolve a band rule's display prose, following ``rule_ref``.
+
+        ``rule_ref`` rules render the shared catalogue record (its ``effect``
+        is the single source of prose); every record goes through
+        :func:`mordheim_knowledge.i18n.display_effect` so the active locale
+        wins when a translation exists.
+        """
+        ref = str(rule.get("rule_ref") or "")
+        record = self._shared_rules.get(ref) if ref else rule
+        if not isinstance(record, dict):
+            return ""
+        return display_effect(record)
 
     @staticmethod
     def _rule_unavailable_reason(rule: dict) -> str | None:

@@ -1,11 +1,21 @@
 from __future__ import annotations
 
+import secrets
 import tkinter as tk
 from tkinter import ttk
 from collections.abc import Callable, Sequence
 
 from mordheim_ui.theme import COLORS
 from mordheim_ui.i18n import tr
+
+
+def roll_dice(count: int, sides: int = 6) -> list[int]:
+    """Roll independent dice using the OS random source."""
+    return [secrets.randbelow(sides) + 1 for _ in range(max(0, int(count)))]
+
+
+def roll_d6(count: int) -> list[int]:
+    return roll_dice(count, 6)
 
 
 class DiceResolutionCard(tk.Frame):
@@ -25,6 +35,7 @@ class DiceResolutionCard(tk.Frame):
         notation: str,
         dice_count: int,
         demo_dice: Sequence[int],
+        dice_sides: int = 6,
         combine: str = "sum",
         outcome_title: str = "",
         outcome_detail: str = "",
@@ -44,6 +55,7 @@ class DiceResolutionCard(tk.Frame):
         super().__init__(master, bg=COLORS["panel_alt"], highlightthickness=1, highlightbackground=COLORS["border_soft"], **kwargs)
         self.notation = notation
         self.dice_count = dice_count
+        self.dice_sides = dice_sides
         self.demo_dice = list(demo_dice)
         self.combine = combine
         self.on_resolved = on_resolved
@@ -103,16 +115,14 @@ class DiceResolutionCard(tk.Frame):
             field.pack(side="left", padx=(0, 8))
             if self.dice_count > 1:
                 tk.Label(field, text=tr('DIE {}').format(index), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 6)).pack(anchor="w")
-            ttk.Spinbox(field, from_=1, to=6, width=4, textvariable=variable).pack(anchor="w", pady=(2, 0))
+            ttk.Spinbox(field, from_=1, to=self.dice_sides, width=4, textvariable=variable).pack(anchor="w", pady=(2, 0))
         ttk.Button(dice, text=tr('USE RESULT'), style="Accent.TButton", command=self._accept_manual).pack(side="left", padx=(6, 0), pady=(12 if self.dice_count > 1 else 0, 0))
 
     def _roll_in_app(self) -> None:
-        # Deterministic demo values keep screenshots/reviews reproducible. The
-        # real implementation will swap this for the campaign dice service.
-        self._show_result(self.demo_dice, source=tr('Rolled in app'))
+        self._show_result(roll_dice(self.dice_count, self.dice_sides), source=tr('Rolled in app'))
 
     def _accept_manual(self) -> None:
-        self._show_result([max(1, min(6, int(var.get()))) for var in self.manual_vars], source=tr('Entered manually'))
+        self._show_result([max(1, min(self.dice_sides, int(var.get()))) for var in self.manual_vars], source=tr('Entered manually'))
 
     def _format_value(self, dice: Sequence[int]) -> str:
         if self.combine == "d66":

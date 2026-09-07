@@ -1,15 +1,12 @@
 from __future__ import annotations
 
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import ttk
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_campaign.ui.dialogs import NewCampaignDialog
 from mordheim_campaign.ui.panels import CampaignTimeline
-from mordheim_campaign.ui.views.campaign_statistics import CampaignStatistics
 from mordheim_campaign.ui.views.moments import BattleEntryMoment, BattleMoment, InitialWarbandDraftMoment, PostBattleMoment, WarbandStateMoment
 from mordheim_ui.theme import COLORS
-from mordheim_ui.widgets import SegmentedTabs
 from mordheim_ui.i18n import tr
 
 
@@ -20,77 +17,31 @@ class CampaignView(tk.Frame):
         super().__init__(master, bg=COLORS["bg"], **kwargs)
         self.controller = controller
         self.columnconfigure(0, weight=1)
-        self.rowconfigure(2, weight=1)
         c = controller.state.campaign
-        self._header(c).grid(row=0, column=0, sticky="ew", pady=(0, 8))
+        variants = self.controller.variant_options()
+        content_row = 0
+        if variants:
+            compact = tk.Frame(self, bg=COLORS["bg"])
+            compact.grid(row=0, column=0, sticky="ew", pady=(0, 5))
+            self._variant_selector(compact, c)
+            content_row = 1
+        self.rowconfigure(content_row, weight=1)
+        self._timeline().grid(row=content_row, column=0, sticky="nsew")
 
-        mode_bar = tk.Frame(self, bg=COLORS["bg"])
-        mode_bar.grid(row=1, column=0, sticky="ew", pady=(0, 8))
-        modes = (("timeline", tr('TIMELINE')),) if c.is_draft else (("timeline", tr('TIMELINE')), ("statistics", tr('STATISTICS')))
-        SegmentedTabs(mode_bar, modes, "timeline" if c.is_draft else controller.state.campaign_mode, controller.set_campaign_mode).pack(side="left")
-
-        if not c.is_draft and controller.state.campaign_mode == "statistics":
-            CampaignStatistics(self, controller).grid(row=2, column=0, sticky="nsew")
-        else:
-            self._timeline().grid(row=2, column=0, sticky="nsew")
-
-    def _header(self, c) -> tk.Frame:
-        frame = tk.Frame(self, bg=COLORS["bg"])
-        text = tk.Frame(frame, bg=COLORS["bg"])
-        text.pack(side="left", fill="x", expand=True)
-
-        selector = tk.Menubutton(
-            text,
-            text=f"{c.campaign_name}  ▾",
-            bg=COLORS["bg"],
-            fg=COLORS["text"],
-            activebackground=COLORS["panel_deep"],
-            activeforeground=COLORS["text"],
-            relief="flat",
-            bd=0,
-            highlightthickness=0,
-            font=("Georgia", 17),
-            cursor="hand2",
-            padx=0,
-            pady=0,
-        )
-        selector.pack(anchor="w")
-        menu = tk.Menu(selector, tearoff=False, bg=COLORS["panel"], fg=COLORS["text"], activebackground=COLORS["panel_soft"], activeforeground=COLORS["text"])
-        menu.add_command(label=f"✓  {c.campaign_name}", state="disabled")
-        menu.add_separator()
-        menu.add_command(label=tr('New Campaign…'), command=self._new_campaign)
-        menu.add_command(label=tr('Open creation example'), command=self.controller.open_creation_example)
-        menu.add_command(label=tr('Open campaign example'), command=self.controller.open_campaign_example)
-        menu.add_separator()
-        menu.add_command(label=tr('Manage Campaigns…'), command=self._placeholder)
-        selector.configure(menu=menu)
-
-        phase = tr('Initial warband draft') if c.is_draft else tr('{}  ·  {}  ·  started {}').format(c.warband_name, c.warband_type, c.started)
-        tk.Label(text, text=phase, bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI", 9)).pack(anchor="w", pady=(3, 0))
-
-        compact = tk.Frame(frame, bg=COLORS["bg"])
-        compact.pack(side="right", padx=(12, 0))
+    def _variant_selector(self, frame: tk.Misc, c) -> None:
         variants = self.controller.variant_options()
         if variants:
-            vbox = tk.Frame(compact, bg=COLORS["bg"])
-            vbox.pack(side="left", padx=(0, 12))
-            tk.Label(vbox, text=tr('MERCENARY VARIANT'), bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(anchor="w")
+            vbox = tk.Frame(frame, bg=COLORS["bg"])
+            vbox.pack(side="right")
+            tk.Label(vbox, text=tr('MERCENARY VARIANT'), bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(side="left", padx=(0, 6))
             labels = [label for _, label in variants]
             current = next((label for identifier, label in variants if identifier == c.mercenary_variant), None)
             variant_var = tk.StringVar(value=current or "—")
             box = ttk.Combobox(vbox, textvariable=variant_var, values=("—", *labels), state="readonly", width=11)
-            box.pack(anchor="w", pady=(2, 0))
+            box.pack(side="left")
             box.bind("<<ComboboxSelected>>", lambda _e: self.controller.set_mercenary_variant(
                 None if variant_var.get() == "—" else next(identifier for identifier, label in variants if label == variant_var.get())
             ))
-        if not c.is_draft:
-            current = c.current_state
-            tk.Label(
-                compact,
-                text=tr('CURRENT  ·  Rating {}  ·  {}/{} models  ·  {} gc').format(current.rating, current.models, current.max_models, current.gold),
-                bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8),
-            ).pack(side="left", padx=(0, 12))
-        return frame
 
     def _timeline(self) -> tk.Frame:
         frame = tk.Frame(self, bg=COLORS["bg"])
@@ -118,13 +69,3 @@ class CampaignView(tk.Frame):
             widget = PostBattleMoment(detail, self.controller, number)
         widget.grid(row=0, column=0, sticky="nsew")
         return frame
-
-    def _new_campaign(self) -> None:
-        NewCampaignDialog(self, self.controller)
-
-    def _placeholder(self) -> None:
-        messagebox.showinfo(
-            tr('Prototype'),
-            tr('Campaign management is not available yet.'),
-            parent=self,
-        )

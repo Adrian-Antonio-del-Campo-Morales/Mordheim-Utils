@@ -198,6 +198,61 @@ class PostBattleResolver:
             )
         return None
 
+    def _injury_row(self, kind: str, result_id: str) -> dict | None:
+        """One chart row of the hero/henchman table by its result id."""
+        for row in self._serious_injury_table(kind):
+            if str(row.get("id") or "") == result_id:
+                return row
+        return None
+
+    def injury_followup_dice(self, kind: str, result_id: str) -> tuple[int, int] | None:
+        """(count, sides) of a subtable/repeat resolution; ``None`` when direct."""
+        row = self._injury_row(kind, result_id)
+        resolution = row.get("resolution") if row else None
+        if not isinstance(resolution, dict):
+            return None
+        dice = resolution.get("dice") or {}
+        return int(dice.get("count") or 1), int(dice.get("sides") or 6)
+
+    def repeat_reroll_exclusions(self, kind: str, result_id: str) -> frozenset[str]:
+        """Result ids a ``repeat_table`` follow-up must reroll."""
+        row = self._injury_row(kind, result_id)
+        resolution = row.get("resolution") if row else None
+        if not isinstance(resolution, dict) or resolution.get("type") != "repeat_table":
+            return frozenset()
+        return frozenset(str(value) for value in resolution.get("reroll_ids") or ())
+
+    def resolve_injury_subtable(self, kind: str, result_id: str, roll: int) -> SeriousInjuryOutcome | None:
+        """Resolve one ``roll_table`` injury follow-up branch by its roll."""
+        row = self._injury_row(kind, result_id)
+        resolution = row.get("resolution") if row else None
+        if not isinstance(resolution, dict) or resolution.get("type") != "roll_table":
+            return None
+        for branch in resolution.get("branches") or ():
+            when = branch.get("when") or {}
+            low = int(when.get("min") or 0)
+            high = when.get("max")
+            if roll >= low and (high is None or roll <= int(high)):
+                return SeriousInjuryOutcome(
+                    table=kind,
+                    roll=int(roll),
+                    result_id=str(branch.get("id") or ""),
+                    result=str(branch.get("result") or ""),
+                    effects=_effect_labels(branch.get("effects")),
+                    follow_up=None,
+                    effects_raw=tuple(dict(effect) for effect in branch.get("effects") or ()),
+                )
+        return None
+
+    def resolve_repeat_reroll(self, kind: str, result_id: str, roll: int) -> SeriousInjuryOutcome | None:
+        """Resolve one ``repeat_table`` reroll; ``None`` while the roll lands on
+        an excluded result (the caller must roll again)."""
+        outcome = (self.resolve_hero_serious_injury(roll) if kind == "hero"
+                   else self.resolve_henchman_serious_injury(roll))
+        if outcome.result_id in self.repeat_reroll_exclusions(kind, result_id):
+            return None
+        return outcome
+
     def resolve_hero_serious_injury(self, d66: int) -> SeriousInjuryOutcome:
         """Resolve the hero D66 chart (two dice: tens and ones digit)."""
         tens = max(1, min(6, d66 // 10))
@@ -279,6 +334,24 @@ class PostBattleResolver:
             matches=tuple(matches),
             matching_dice_note=note,
         )
+
+    def exploration_followup_row(self, dice: tuple[int, ...]) -> dict | None:
+        """The KB special-result row matched by the dice (largest set), or None."""
+        values = tuple(sorted(int(d) for d in dice))
+        counts: dict[int, int] = {}
+        for value in values:
+            counts[value] = counts.get(value, 0) + 1
+        special = [(value, count) for value, count in counts.items() if count >= 2]
+        if not special:
+            return None
+        value, count = max(special, key=lambda item: (item[1], item[0]))
+        pattern = ",".join(str(value) for _ in range(count))
+        catalog = self.port.campaign_catalog()
+        document = catalog.catalogue("exploration-and-income.yaml")
+        for row in (document.get("exploration") or {}).get("results") or ():
+            if str(row.get("dice_pattern") or "") == pattern:
+                return dict(row)
+        return None
 
     # ----------------------------------------------------------- advancement
 

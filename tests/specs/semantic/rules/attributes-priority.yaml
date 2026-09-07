@@ -5,7 +5,7 @@ specifications:
   category: permanent
   sources:
   - target: mechanic/skill.red-fury
-    digest: 58c3ce78c8de4a094ff381721018c58d9f910192a85fe2fd502f5f355413d853
+    digest: 8f74477b2d2af6f8010903253474e1b67f56ecca3a9a1e58068a00a827060a68
   interpretation: The rule adds one Attack to the profile, not a multiplier.
   interaction_contract:
     reads:
@@ -63,7 +63,7 @@ specifications:
   category: permanent
   sources:
   - target: mechanic/skill.extra-attack
-    digest: 235c519136ef30ceca011819d2dee8d8b9865fee67c3f2d76fa1cc0240ae2cc9
+    digest: 9a28c8fa3d6cb16037fb053bd60c2676bd2d8cf3e2e3ef624759e52dd98d4b5c
   interpretation: The rule adds one Attack to the profile, not a multiplier.
   interaction_contract:
     reads:
@@ -121,7 +121,7 @@ specifications:
   category: permanent
   sources:
   - target: mechanic/skill.monstrous
-    digest: 0aa319f50c5d2c8de074ddd71b27a19fa93b94d7d7c6204e79f8c839a36d3d57
+    digest: 022d79b1841c65a78d73cbc8d545aa0d8b307a408f10871afba8447233354245
   interpretation: Add one Wound to the fighter's initial wounds for the duel.
   interaction_contract:
     reads:
@@ -181,7 +181,7 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.strength-of-steel
-    digest: ea9f63739dda008a1c6dab42433f75ec791e481908eda7e20e726fb18d722347
+    digest: f0a8478d5bdd320cfaa35178af2f04dfb971d54fe8ab716280d3650d05428da7
   interpretation: Charging grants +1 Strength. Outside the charge the ordinary Strength is unchanged.
   interaction_contract:
     reads:
@@ -261,7 +261,7 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.resilient
-    digest: 849c6b30b6927260b285a6eff26cca9fc16a6f23563f4a179277466538c0d43a
+    digest: fc71b79caf70e599197ca56a90e2083964ba604ef73688e8cb9ec5c15e3b42de
   interpretation: Incoming hits lose one Strength for wounding, minimum one. Armour modifiers use the
     unmodified attacking Strength.
   interaction_contract:
@@ -348,7 +348,7 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.berserker
-    digest: 1c45833cdbae7ea54313ed743f66ebb7fc499d4333aeb2b7e7e5d14372a0409c
+    digest: 497bf75265405f7bac1e708c39254e0a9bcdf2c290e38520f932ba86251e16d5
   interpretation: The charging bonus is +1 to hit, not +1 Weapon Skill. It changes an ordinary 4+ to 3+
     only while charging.
   interaction_contract:
@@ -419,7 +419,7 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.hatred
-    digest: e41d8cc1d65facf8fb6b646cd6034eb8c945e0a285dc70b697ebe72d01479469
+    digest: 2c60337538fda45f3406c812d68c4dae2a7df9d5ca106940cdfd8a6b506a2949
   interpretation: Re-roll failed hit rolls only when first_round is true. A base 4+ succeeds with probability
     3/4 when active, otherwise 1/2.
   interaction_contract:
@@ -491,7 +491,7 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.infallible
-    digest: f79f425c2ae250f56e7433d802d46020dd87e59d15ab2495b68ade87d477b501
+    digest: f0f6d7bb033a99475314df4b168fe6f2028e65780d0b63420f9db744fb896d8c
   interpretation: Re-roll failed hit rolls only when charging is true. A base 4+ succeeds with probability
     3/4 when active, otherwise 1/2.
   interaction_contract:
@@ -563,7 +563,7 @@ specifications:
   category: contextual
   sources:
   - target: mechanic/skill.unstoppable-charge
-    digest: 272d6c307792c2ebc499b65e5fc0c2fb5ed41ed830df9313ad75a66add7967c2
+    digest: 339cd5775e3c592a76f612ee1e1f2320825fe1b8e9a326e1950df2685b7fb943
   interpretation: A charge grants +1 Weapon Skill, changing WS3 versus WS3 from a 4+ hit to 3+. Without
     charging WS is unchanged.
   interaction_contract:
@@ -632,7 +632,7 @@ specifications:
   category: local
   sources:
   - target: mechanic/skill.monster-slayer
-    digest: b816cea8e10d9f621e77531cc01f36846033fa12273de6391a8ad9a40170754c
+    digest: 5dc089e9b8e8312933dffbb7a0ec436b1f47099c7167a71794206fda7c98a4b1
   interpretation: The wound target is no worse than 4+, while naturally easier targets are retained.
   interaction_contract:
     reads:
@@ -721,7 +721,7 @@ specifications:
   category: priority
   sources:
   - target: mechanic/skill.always-strikes-first
-    digest: 711130b5def4ac1dfbe955daf79ea4c9cc83258c5a793cb4c6ac3b5ee9b5552f
+    digest: ded49af1868c23b058e0f990ada7e2aacf606b2c9ad3acfe0cb5ab8dfa74cff7
   interpretation: Strike-first acts before ordinary attacks regardless of the ordinary attacker's higher
     Initiative.
   interaction_contract:
@@ -828,7 +828,7 @@ specifications:
   category: priority
   sources:
   - target: mechanic/skill.lightning-reflexes
-    digest: c94a48b50420a96244fd2f56125b5dd56370aafdaa3208e7eb7745f6cc0ee34f
+    digest: 5a856bfa8b28f32a9b0a0909c2b62ea15e289c882651e49af6c1965026ccdaae
   interpretation: When charged the warrior strikes first too; if both have strike first, higher Initiative
     decides. Without a charge the rule grants no advantage.
   interaction_contract:
