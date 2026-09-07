@@ -25,9 +25,6 @@ class BattleMoment(tk.Frame):
 
         nav = tk.Frame(self, bg=COLORS["bg"]); nav.grid(row=2, column=0, sticky="ew", pady=(0, 8))
         SegmentedTabs(nav, (("overview", tr('OVERVIEW')), ("participants", tr('PARTICIPANTS')), ("notes", tr('NOTES'))), controller.state.battle_section, controller.set_battle_section).pack(side="left")
-        if battle.number <= controller.state.campaign.current_state_number:
-            tk.Button(nav, text="RESULTING STATE ›", command=lambda: controller.select_state(battle.number), bg=COLORS["panel_soft"], fg=COLORS["text"], relief="flat", padx=9, pady=5).pack(side="right")
-        tk.Button(nav, text=tr('POST-BATTLE'), command=lambda: controller.select_post_battle(battle.number), bg=COLORS["panel_soft"], fg=COLORS["text"], relief="flat", padx=9, pady=5).pack(side="right", padx=(0, 6))
 
         section = controller.state.battle_section
         content = self._participants(battle) if section == "participants" else self._notes(battle) if section == "notes" else self._overview(battle)

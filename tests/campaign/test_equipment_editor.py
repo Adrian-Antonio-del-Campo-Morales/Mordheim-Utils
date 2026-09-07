@@ -25,12 +25,12 @@ def test_assign_and_return_round_trip_keeps_ledger_consistent():
 
     ok, message = controller.assign_stash_item(herbs.id, warrior.id)
     assert ok, message
-    assert herbs.name in warrior.equipment
+    assert any(entry.item_id == herbs.id for entry in warrior.equipment)
     assert (herbs.owned, herbs.equipped, herbs.stash) == (before[0], before[1] + 1, before[2] - 1)
 
     ok, message = controller.return_equipped_item(herbs.id, warrior.id)
     assert ok, message
-    assert herbs.name not in warrior.equipment
+    assert all(entry.item_id != herbs.id for entry in warrior.equipment)
     assert (herbs.owned, herbs.equipped, herbs.stash) == before
 
 
@@ -77,7 +77,7 @@ def test_moves_survive_save_load(tmp_path):
     reloaded = load_campaign(save_campaign(tmp_path / "eq.mordheim", controller.state))
     warrior2 = next(w for w in reloaded.campaign.warriors if w.id == warrior.id)
     item2 = next(row for row in reloaded.campaign.inventory if row.id == item.id)
-    assert item.name in warrior2.equipment
+    assert any(entry.item_id == item.id for entry in warrior2.equipment)
     assert item2.equipped == item.equipped and item2.stash == item.stash
 
 
@@ -86,6 +86,13 @@ def test_henchman_group_carries_equipment_as_a_group():
     campaign = controller.state.campaign
     group = next(w for w in campaign.warriors if w.quantity > 1)
     item = next(row for row in campaign.inventory if row.stash > 0)
+    item.owned += max(0, group.quantity - item.stash)
+    item.stash = group.quantity
     ok, message = controller.assign_stash_item(item.id, group.id)
     assert ok, message
-    assert item.name in group.equipment
+    assert any(entry.item_id == item.id and entry.quantity == group.quantity for entry in group.equipment)
+    assert item.stash == 0
+
+    ok, message = controller.return_equipped_item(item.id, group.id)
+    assert ok, message
+    assert item.stash == group.quantity

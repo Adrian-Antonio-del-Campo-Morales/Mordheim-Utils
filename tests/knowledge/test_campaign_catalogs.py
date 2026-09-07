@@ -139,7 +139,7 @@ def test_conditions_catalog_is_canonical():
         "condition.cold-blooded",
     }
     assert all(c.get("name") for c in conditions)
-    assert all(c.get("summary") for c in conditions)
+    assert all(c.get("effect") for c in conditions)
     assert all(c.get("source_refs") for c in conditions)
     assert len({c["id"] for c in conditions}) == len(conditions)
 
@@ -155,7 +155,9 @@ def test_trading_post_ingestion_state():
     assert len(entry_ids) == len(set(entry_ids))
     assert all(item_id.startswith("campaign.trading-post.") for item_id in entry_ids)
     kinds = Counter(item["availability"]["kind"] for item in items)
-    assert dict(kinds) == {"common": 77, "rare": 183, "not_sold": 78}
+    # `reptile-venom` is classified rare (Venom is a rare trade item in the
+    # source rules); the common/rare split tracks the curated data.
+    assert dict(kinds) == {"common": 76, "rare": 184, "not_sold": 78}
 
 
 def test_trading_post_price_and_availability_shapes():
@@ -369,11 +371,9 @@ def test_band_rules_reference_racial_maximums_without_inlining_statlines():
     for path in sorted(BANDS.glob("**/special-rules.yaml")):
         rules = yaml.safe_load(path.read_text(encoding="utf-8")).get("rules", [])
         for rule in rules:
-            texts = [rule.get("effect") or ""]
-            i18n = rule.get("effect_i18n") or {}
-            if isinstance(i18n, dict):
-                texts.append(i18n.get("en") or "")
-            text = "\n".join(texts)
+            # English prose is canonical in `effect`; effect_i18n carries only
+            # translations and is not part of the statline-inlining check.
+            text = rule.get("effect") or ""
             if "maximum" not in text.lower():
                 continue
             rules_with_maximums += 1
@@ -428,7 +428,7 @@ def test_wyrdstone_sale_and_magical_artefacts_state():
     assert len(sale["cells"]) == 48
     artefacts = document["magical_artefacts"]["results"]
     assert [artefact["roll"] for artefact in artefacts] == ["1", "2", "3", "4", "5", "6"]
-    assert all(artefact["summary"] for artefact in artefacts)
+    assert all(artefact["effect"] for artefact in artefacts)
 
 
 # --------------------------------------------------------------------------
@@ -565,8 +565,8 @@ def test_scenario_progression_shape_and_reference_integrity():
         experience = progression["experience"]
         assert experience
         for row in experience:
-            assert bool(row.get("ref")) != bool(row.get("summary")), \
-                f"{scenario['id']}: experience row needs ref XOR summary"
+            assert bool(row.get("ref")) != bool(row.get("effect")), \
+                f"{scenario['id']}: experience row needs ref XOR effect"
             if "ref" in row:
                 assert row["ref"] in xp_award_ids, f"{scenario['id']}: unknown {row['ref']}"
             assert not ("amount" in row and "amount_dice" in row)
@@ -578,7 +578,7 @@ def test_scenario_progression_shape_and_reference_integrity():
             assert isinstance(progression["income"], str) and progression["income"]
         if "loot" in progression:
             loot = progression["loot"]
-            assert loot.get("summary"), f"{scenario['id']}: loot needs a summary"
+            assert loot.get("effect"), f"{scenario['id']}: loot needs an effect"
             if "contents" in loot:
                 assert loot["contents"]
                 for content in loot["contents"]:
@@ -638,7 +638,7 @@ def test_magic_lore_spell_lists_are_complete_per_roll():
             assert sorted(rolls) == ["1", "2", "3", "4", "5", "6"], lore["id"]
         for spell in lore["spells"]:
             assert spell["name"]
-            assert spell["summary"]
+            assert spell["effect"]
             difficulty = spell["difficulty"]
             assert isinstance(difficulty, int) or difficulty == "auto", spell["id"]
     assert sum(1 for spell in spells if spell["difficulty"] == "auto") == 6
@@ -661,7 +661,7 @@ def test_magic_profile_references_resolve():
 def test_casting_rules_are_declarative():
     casting = campaign("magic.yaml")["casting_rules"]
     assert casting["id"] == "campaign.magic.casting"
-    assert casting["summary"]
+    assert casting["effect"]
     assert casting["starting_spells"]
     assert casting["source_refs"]
 
@@ -680,7 +680,7 @@ def test_mutations_ingestion_state():
         assert mutation["id"].startswith("campaign.mutation.")
         assert mutation["name"]
         assert isinstance(mutation["cost_gc"], int)
-        assert mutation["summary"]
+        assert mutation["effect"]
         assert mutation["source_refs"]
 
 

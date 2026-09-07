@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import tkinter as tk
-from tkinter import ttk
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.ui.panels import InventoryWorkspace, WarriorCard
@@ -29,8 +28,6 @@ class WarbandStateMoment(tk.Frame):
         tk.Label(top, text=title, bg=COLORS["bg"], fg=COLORS["text"], font=("Georgia", 16)).pack(side="left")
         if not current:
             tk.Label(top, text=tr('HISTORICAL · READ ONLY'), bg=COLORS["panel_deep"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7), padx=8, pady=4).pack(side="left", padx=10)
-        else:
-            ttk.Button(top, text=tr('EQUIPMENT'), style="Accent.TButton", command=self._open_equipment_editor).pack(side="right")
 
         subtitle = tr('Campaign starting point') if number == 0 else tr('After Battle #{} · {}').format(number, state.date)
         tk.Label(self, text=subtitle, bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI", 9)).grid(row=1, column=0, sticky="w", pady=(0, 8))
@@ -43,16 +40,11 @@ class WarbandStateMoment(tk.Frame):
             controller.state.state_section,
             controller.set_state_section,
         ).pack(side="left")
-        if not current:
-            if number > 0:
-                ttk.Button(nav, text=tr('‹ PREVIOUS STATE'), style="Mini.TButton", command=lambda: controller.select_state(number - 1)).pack(side="right")
-            if number < c.current_state_number:
-                ttk.Button(nav, text=tr('NEXT STATE ›'), style="Mini.TButton", command=lambda: controller.select_state(number + 1)).pack(side="right", padx=(0, 6))
 
         if controller.state.state_section == "warriors":
-            content = self._warriors(read_only=not current)
+            content = self._warriors()
         elif controller.state.state_section == "inventory":
-            content = InventoryWorkspace(self, controller, show_summary=False, read_only=not current)
+            content = InventoryWorkspace(self, controller, show_summary=False, read_only=True)
         else:
             content = self._overview(state, current)
         content.grid(row=3, column=0, sticky="nsew")
@@ -91,48 +83,19 @@ class WarbandStateMoment(tk.Frame):
                 tk.Label(xb, text=tr('Battle #{} is complete').format(battle.number), bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 12)).pack(anchor="w", pady=(10, 3))
                 tk.Label(xb, text=f"{battle.scenario} vs. {battle.opponent} · {battle.result}", bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9)).pack(anchor="w")
                 tk.Label(xb, text=tr('Post-battle is at step {}/8. State #{} does not exist yet.').format(pending.active_step + 1, pending.battle_number), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9), wraplength=430, justify="left").pack(anchor="w", pady=(8, 12))
-                tk.Label(xb, text=tr('Select the Post-Battle #8 node in the timeline, or use the Resume action above.'), bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8), wraplength=430, justify="left").pack(anchor="w")
+                tk.Label(xb, text=tr('Select the Post-Battle node in the timeline to continue.'), bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8), wraplength=430, justify="left").pack(anchor="w")
             else:
                 tk.Label(xb, text=tr('No pending actions.'), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9)).pack(anchor="w", pady=(10, 12))
-                ttk.Button(xb, text=tr('+ NEW BATTLE'), style="Accent.TButton", command=self._open_record_battle).pack(anchor="w")
         else:
             tk.Label(xb, text=tr('THIS STATE IN THE TIMELINE'), bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w")
             text = tr('This is the immutable starting point from which the campaign begins.') if state.number == 0 else tr('This snapshot was created when Post-Battle #{} was committed. Open the adjacent transition nodes to see why the warband changed.').format(state.number)
             tk.Label(xb, text=text, bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9), wraplength=430, justify="left").pack(anchor="w", pady=(10, 12))
-            if state.number > 0:
-                ttk.Button(xb, text=tr('VIEW POST-BATTLE #{}').format(state.number), command=lambda: self.controller.select_post_battle(state.number)).pack(anchor="w")
         return frame
 
-    def _warriors(self, read_only: bool) -> tk.Frame:
+    def _warriors(self) -> tk.Frame:
         frame = tk.Frame(self, bg=COLORS["bg"])
         frame.columnconfigure(0, weight=1); frame.rowconfigure(0, weight=1)
         scroll = ScrollableFrame(frame, background=COLORS["bg"]); scroll.grid(row=0, column=0, sticky="nsew")
-        if not read_only:
-            bar = tk.Frame(scroll.inner, bg=COLORS["bg"])
-            bar.pack(fill="x", pady=(0, 7))
-            tk.Label(
-                bar,
-                text=tr('Reassign equipment between the roster and the stash with the EQUIPMENT action above.'),
-                bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI", 8),
-            ).pack(side="left")
         for warrior in self.controller.state.campaign.warriors:
-            WarriorCard(scroll.inner, warrior, on_edit=(self._open_equipment_editor if not read_only else None)).pack(fill="x", pady=(0, 7))
+            WarriorCard(scroll.inner, warrior).pack(fill="x", pady=(0, 7))
         return frame
-
-    def _open_equipment_editor(self, warrior_id: str | None = None) -> None:
-        from mordheim_campaign.ui.dialogs.equipment_editor import EquipmentEditorDialog
-
-        dialog = EquipmentEditorDialog(self, self.controller)
-        self.wait_window(dialog)
-        self.notify_rebuild()
-
-    def notify_rebuild(self) -> None:
-        # The editor edits the live campaign; refresh the moment on return.
-        self.controller.notify()
-
-    def _open_record_battle(self) -> None:
-        from mordheim_campaign.ui.dialogs.record_battle import RecordBattleDialog
-
-        dialog = RecordBattleDialog(self, self.controller)
-        self.wait_window(dialog)
-        self.controller.notify()

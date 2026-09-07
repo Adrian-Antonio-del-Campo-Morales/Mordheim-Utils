@@ -36,9 +36,9 @@ def test_parity_inventory_covers_fields_tags_and_complex_sequences():
 
 def test_semantic_specs_are_reused_as_a_case_level_parity_inventory():
     report = verify_specification_parity()
-    assert len(report.cases) == 3742
+    assert len(report.cases) == 3743
     assert report.divergences == ()
-    assert len(report.passed) == 3742
+    assert len(report.passed) == 3743
     assert report.pending == ()
     assert report.out_of_scope == ()
     assert {item.status for item in report.cases} <= {
@@ -128,16 +128,22 @@ def test_report_distinguishes_smoke_samples_from_certification_samples():
     assert "## Deterministic checks" in markdown
 
 
-def test_report_exposes_semantic_case_statuses_without_claiming_completion():
+def test_report_exposes_semantic_case_statuses_and_couples_completion_to_them():
     report = verify_vectorized_parity()
     specifications = verify_specification_parity()
     payload = parity_report_payload(report, specifications=specifications)
-    assert not payload["complete"]
+    assert payload["complete"]
     assert payload["specifications"]["passed"]
-    assert payload["specifications"]["pending"]
+    assert not payload["specifications"]["pending"]
     markdown = parity_report_markdown(payload)
     assert "## Semantic specification parity" in markdown
-    assert "PENDING_ADAPTER: `4`" in markdown
+    assert "PENDING_ADAPTER: `0`" in markdown
+    # Completion is coupled to the semantic cases: while any case is still
+    # pending, the certificate must not claim completion.
+    from dataclasses import replace
+    incomplete = replace(specifications, complete=False)
+    payload = parity_report_payload(report, specifications=incomplete)
+    assert not payload["complete"]
 
 
 def _single_deep_pair():

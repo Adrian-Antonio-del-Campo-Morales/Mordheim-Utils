@@ -66,6 +66,7 @@ class TradingPostOffer:
     price_label: str
     price_gc: int | None  # flat price the write side can apply; None = variable/multiplier
     source: str  # trading-post entry id
+    category: str = "other"
 
 
 @dataclass(frozen=True, slots=True)
@@ -140,6 +141,15 @@ def _price_gc(price: dict | None, override: int | None) -> int | None:
     if price.get("multiplier") or price.get("optional_variable_cost"):
         return None
     return int(price["base_gc"])
+
+
+def _trading_category(entry: dict) -> str:
+    """Printed Trading Post section, rather than the item's storage kind."""
+    for source in entry.get("source_refs") or ():
+        section = str(source.get("section") or "")
+        if section:
+            return section.rsplit("/", 1)[-1].strip()
+    return "Other items"
 
 
 def _gold_fee(resources: dict | None) -> int | None:
@@ -319,6 +329,7 @@ class PostBattleCatalogue:
                 price_label=price_label,
                 price_gc=_price_gc(entry.get("price"), override),
                 source=str(entry.get("id") or ""),
+                category=_trading_category(entry),
             ))
         ordering = (lambda offer: (offer.rarity or 0, offer.name.casefold())) if kind == "rare" \
             else (lambda offer: offer.name.casefold())

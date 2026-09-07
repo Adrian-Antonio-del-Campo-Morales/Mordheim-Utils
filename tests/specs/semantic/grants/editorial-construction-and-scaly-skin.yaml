@@ -5,7 +5,7 @@ specifications:
   category: construction
   sources:
   - target: rule/mordheim/battle-monks-of-cathay/band--strictures/compiler.strictures
-    digest: 78c70b98ef3b0b98277633840ba97c724978ee64f215a6c70cc886b7bf1f42f1
+    digest: d22215394d16a5c5cdb907f5654b41e4fa13a8a5158a893262c4816f5dbeef5a
   interpretation: Battle Monks / Strictures forbids any armour to Dragon Monks and Warrior Monks. No Armour
     is accepted, Light Armour is specifically rejected by Strictures and the Officer serves as a non-recipient
     control.
@@ -89,7 +89,7 @@ specifications:
   category: construction
   sources:
   - target: rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access
-    digest: 1d19b840e581ce6b6e6447110895580edca70b0936274c942557777dadcd09bd
+    digest: e013a3affd12a6318659930973e554832945343ae72f664f3a2f4a0a23e7eeee
   interpretation: 'Averlanders / Halfling Scouts / Promotion forbids choosing Strength for the promoted
     Halfling. In a henchman build, selecting a skill represents its promoted profile: Mighty Blow is rejected
     and a permitted skill from its own access is accepted. Captain does not inherit the rule.'
@@ -149,13 +149,27 @@ specifications:
       result.accepted:
       - strength
       result.rejected: {}
-  mutations: []
+  - id: contract-present
+    operation: construction_tag_presence
+    attacker:
+      band_id: averlanders
+      profile_id: halflings-scouts
+    context:
+      tag: compiler.promoted-hero-no-strength-access
+    expect:
+      result.present: true
+  mutations:
+  - id: remove-promotion-contract
+    path: attacker.construction_tags
+    value: []
+    cases:
+    - contract-present
 - id: savage-tracker-master-of-throwing-weapons
   scope_digest: fcb37e89b6a5fa8ee7e3d91a7612e8e591b9c19a96f087940d32276517be73c9
   category: construction
   sources:
   - target: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons
-    digest: 6805d72bc1674b6ef7ecf1729b89dbe54825b3ee5601a97fa471b63407e453e7
+    digest: d75643f7c5d3dcb527b1c7179e230c325a8da224a8ed905cc0326e5f97f2e68e
   interpretation: Lustria p.105 / Master of Throwing Weapons is only for Trackers and raises the missile
     weapon limit from two to five. The exact recipient, the compiled value five and the ordinary control
     two without selecting are checked.
@@ -208,7 +222,7 @@ specifications:
   category: local
   sources:
   - target: rule/mordheim/lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
-    digest: bdf906cc5df5ca3d0ce998e49584ce27377d72e05de2caad961f731a9a347d56
+    digest: 83cd6bb2f7760337532b4e0834c88085a8636fb37c287175440497762d186447
   interpretation: Mordheim Lizardmen / Scaly Skin grants 6+ to Skinks, 5+ to Saurus and keeps the Kroxigor's
     own 4+. The natural contribution is never worsened from 6+ by Strength, stacks with Light Armour and
     Shield, and an attack that ignores armour nullifies it.
@@ -333,7 +347,7 @@ specifications:
   category: local
   sources:
   - target: rule/trollheim/lustria-lizardmen/band--scaly-skin/compiler.lizardmen-scaly-skin
-    digest: c030d1888c5a717e91136724de7542e8422cf1a78710fb6d0510bbe906b2c897
+    digest: 76adb5d9b0416c51f489d42180fa59fe0d16d01995019bab4765e58f399eb935
   interpretation: Lustria pp.54-56 / Scaly Skin keeps the natural saves, their 6+ floor, the combination
     with ordinary armour and the total negation when the attack does not allow armour. Hardened Leather
     adds no extra bonus.
@@ -464,7 +478,7 @@ specifications:
   category: stateful
   sources:
   - target: rule/mordheim/marauders-of-chaos/condemned--inconsistency/profile.random-characteristics
-    digest: 9b10ea284ed7f8ff48e43dcde046bcd470f0166ab0441d23baf872de5fe3c5d3
+    digest: 0b098268bc8e39e59b5ca29f11550753c7268cf96b4b23400189018ff6d0cffe
   interpretation: Marauders of Chaos / Condemned / Inconsistency rolls D6 per turn for WS, S and T, and
     D3 for A. Modular initialisation consumes those four rolls, and each subsequent combat turn refreshes
     the same values before priority and attack resolution. I remains 4, and minima and maxima are preserved.

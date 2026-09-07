@@ -132,13 +132,13 @@ class SkillChoiceDialog(tk.Toplevel):
             )
             spells = self.engine.port.lore_spells(lore) if lore else ()
             index = selection[0]
-            summary = str(spells[index].get("summary") or "") if index < len(spells) else ""
+            summary = str(spells[index].get("effect") or "") if index < len(spells) else ""
             self._detail_var.set(summary)
         else:
             _payload, label = self._entries[selection[0]]
             name = label.split("]  ", 1)[-1]
             skill = self.engine.port.skill_by_name(name)
-            self._detail_var.set(str(skill.get("summary") or "") if skill else "")
+            self._detail_var.set(str(skill.get("effect") or "") if skill else "")
 
         # Keep the detail text honest for known entries (they cannot be picked).
         if self._listbox.get(selection[0]).startswith("✓"):

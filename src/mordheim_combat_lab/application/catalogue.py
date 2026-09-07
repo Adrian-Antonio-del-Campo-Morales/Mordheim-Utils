@@ -7,8 +7,10 @@ from mordheim_knowledge.loader import load_bands
 from mordheim_knowledge.loader import load_collections
 from mordheim_knowledge.loader import load_mechanics
 from mordheim_knowledge.loader import load_runtime_scope
+from mordheim_knowledge.loader import load_shared_rules
 from mordheim_knowledge.loader import load_simulation_mappings
 from mordheim_knowledge.loader import load_skills
+from mordheim_knowledge.loader import shared_rule_text
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,6 +65,7 @@ class CombatCatalogue:
             for row in exclusions
         }
         option_to_id = {str(row.get("engine_option")): item_id for item_id, row in self._mechanics.items()}
+        self._shared_rules = load_shared_rules(ruleset)
         self._item_mechanics = {
             str(row["item_id"]): option_to_id[str(row["engine_option"])]
             for row in load_simulation_mappings(ruleset).get("item_mappings", ())
@@ -113,7 +116,7 @@ class CombatCatalogue:
                 str(skill["id"]),
                 str(skill["name"]),
                 str(skill["category"]),
-                str(skill.get("summary") or ""),
+                str(skill.get("effect") or ""),
                 self._skill_unavailable_reason(skill),
                 runtime_available=(
                     (allowed_categories is None or str(skill.get("category") or "") in allowed_categories)
@@ -170,6 +173,10 @@ class CombatCatalogue:
             return runtime.get("scope") == "YES" and runtime.get("implemented") == "YES"
         return str(skill["id"]) not in self._excluded_mechanics
 
+    def _rule_text(self, rule: dict) -> str:
+        """Resolve a band rule's display prose, following ``rule_ref``."""
+        return shared_rule_text(rule, self._shared_rules)
+
     @staticmethod
     def _rule_unavailable_reason(rule: dict) -> str | None:
         runtime = rule.get("runtime") or {}
@@ -219,7 +226,7 @@ class CombatCatalogue:
                         else str(rule.get("name") or rule["id"])
                     ),
                     "special",
-                    str(rule.get("effect") or ""),
+                    self._rule_text(rule),
                     self._rule_unavailable_reason(rule),
                     "warband_skill",
                     str(rule["id"]),
@@ -240,7 +247,7 @@ class CombatCatalogue:
             ProfileRule(
                 str(rule["id"]),
                 str(rule["name"]),
-                str(rule.get("effect") or ""),
+                self._rule_text(rule),
                 bool(
                     (rule.get("runtime") or {}).get("implemented") == "YES"
                     and (rule.get("runtime") or {}).get("grant") in {"profile", "band"}
@@ -260,7 +267,7 @@ class CombatCatalogue:
                 str(rule["id"]),
                 str(rule["name"]),
                 str(rule.get("kind") or "selectable rule").replace("_", " ").title(),
-                str(rule.get("effect") or ""),
+                self._rule_text(rule),
                 self._rule_unavailable_reason(rule),
                 str(rule.get("kind") or "selectable_rule"),
                 str(rule["id"]),
