@@ -63,6 +63,20 @@ class AppController:
         for listener in list(self._listeners):
             listener()
 
+    def set_locale(self, locale: str) -> None:
+        """Switch the display locale for both UI strings and KB names.
+
+        The KB reader lives in ``mordheim_knowledge.i18n`` and the UI one in
+        ``mordheim_ui.i18n``; the UI layer may not import the KB directly, so
+        the application layer performs both switches.
+        """
+        from mordheim_knowledge.i18n import set_locale as set_kb_locale
+        from mordheim_ui.i18n import set_locale as set_ui_locale
+
+        set_ui_locale(locale)
+        set_kb_locale(locale)
+        self.notify()
+
     @property
     def can_undo(self) -> bool:
         return bool(self._undo_history)
@@ -81,7 +95,8 @@ class AppController:
         result = action()
         succeeded = result[0] if isinstance(result, tuple) and result else result is not False
         if succeeded and self.state != before:
-            self._undo_history.append((before, description.strip() or "Change"))
+            result_description = str(result[1]) if isinstance(result, tuple) and len(result) > 1 else ""
+            self._undo_history.append((before, description.strip() or result_description or "Change"))
             del self._undo_history[:-self._undo_limit]
             self._notify_undo()
         return result
@@ -315,8 +330,11 @@ class AppController:
         available, unavailable_rows = self.battle_availability()
         unavailable = [warrior for warrior, _reason, _temporary in unavailable_rows]
         available_ids = {warrior.id for warrior in available}
+        known_ids = {warrior.id for warrior in campaign.warriors}
         submitted_ids = set(out_of_action_ids or ()) | set((per_group_casualties or {}).keys()) | set((xp_awards or {}).keys())
-        invalid_ids = submitted_ids - available_ids
+        # Unknown ids are simply ignored by the post-battle filter; only ids
+        # naming a real warrior that cannot receive results are rejected.
+        invalid_ids = submitted_ids & (known_ids - available_ids)
         if invalid_ids:
             names = [warrior.name for warrior in unavailable if warrior.id in invalid_ids]
             return False, f"Unavailable warriors cannot receive battle results: {', '.join(names or sorted(invalid_ids))}."
@@ -845,6 +863,7 @@ class AppController:
                 if row.profile_id and row.profile_id.startswith("hireling.")
             ),
             variant=campaign.mercenary_variant,
+            phase="creation" if campaign.is_draft else "post_battle",
         )
 
     def addable_profiles(self, kind: str) -> tuple[WarbandProfile, ...]:
@@ -1057,12 +1076,8 @@ class AppController:
         if not campaign.is_draft:
             return ()
         offers = {offer.item_id: offer for offer in self.post_battle_content().common_items()}
-        # Band equipment lists are creation offers: inclusion makes the item
-        # available and the list ``cost`` (or the KB ``price_override``) sets
-        # the price. Per-band rule exceptions written as prose stay data work:
-        # the offer ``notes`` carry them for the player, and a structured
-        # ``restriction`` key on the equipment row would plug straight into
-        # this merge once transcribed (see TODO.md).
+        # Band equipment lists are authoritative creation offers: inclusion
+        # grants availability and the list cost overrides the global market.
         band_offers = {}
         for offer in self.port.equipment(campaign.collection, campaign.band_id):
             current = band_offers.get(offer.item_id)

@@ -6,6 +6,7 @@ the example campaign. No KB data is edited.
 """
 from __future__ import annotations
 
+from mordheim_campaign.application.knowledge_port import KnowledgePort
 from mordheim_campaign.application.post_battle_catalogue import PostBattleCatalogue, resolve_offer_price
 from tests.campaign.test_post_battle_engine import _pending
 
@@ -159,3 +160,31 @@ def test_prose_only_restriction_notes_are_carried_as_text():
     assert noted  # condition/profile_only notes stay visible to the player
     for offer in noted:
         assert all(isinstance(note, str) and note for note in offer.restriction_notes)
+
+
+def test_profile_only_restriction_blocks_the_wrong_bearer():
+    engine, state, _ = _pending()
+    item_id = "reptile_venom"
+    row = engine._inventory_row(item_id, name="Reptile Venom", price_gc=5)
+    row.owned = row.stash = 1
+    wrong_bearer = next(w for w in state.campaign.warriors if "skink" not in w.profile_name.casefold())
+
+    ok, message = engine.move_stash_to_warrior(item_id, wrong_bearer.id)
+
+    assert not ok
+    assert "Skink Henchmen" in message
+
+    wrong_bearer.profile_name = "Skink Hero"
+    wrong_bearer.profile_id = "skink-hero"
+    wrong_bearer.kind = "hero"
+    ok, _ = engine.move_stash_to_warrior(item_id, wrong_bearer.id)
+    assert not ok
+
+
+def test_creation_only_offer_is_hidden_after_creation():
+    port = KnowledgePort()
+    creation = PostBattleCatalogue(port, "mordheim", "shadow-warriors", phase="creation")
+    post_battle = PostBattleCatalogue(port, "mordheim", "shadow-warriors", phase="post_battle")
+
+    assert "standard_of_nagarythe" in {offer.item_id for offer in creation.rare_items()}
+    assert "standard_of_nagarythe" not in {offer.item_id for offer in post_battle.rare_items()}

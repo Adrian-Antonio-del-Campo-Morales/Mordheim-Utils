@@ -70,3 +70,20 @@ def test_replacing_campaign_clears_history() -> None:
 
     assert not controller.can_undo
 
+
+def test_undo_history_keeps_only_the_latest_twenty_actions() -> None:
+    controller = AppController()
+    initial = controller.state.campaign.starting_gold
+    for index in range(25):
+        controller.perform_undoable(
+            f"Correction {index + 1}",
+            lambda: (setattr(controller.state.campaign, "starting_gold",
+                             controller.state.campaign.starting_gold + 1) or True, "ok"),
+        )
+
+    undone = 0
+    while controller.undo()[0]:
+        undone += 1
+
+    assert undone == 20
+    assert controller.state.campaign.starting_gold == initial + 5

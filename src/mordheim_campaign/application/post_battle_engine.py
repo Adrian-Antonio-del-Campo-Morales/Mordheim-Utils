@@ -112,6 +112,16 @@ class PostBattleEngine:
     def projected_heroes(self) -> int:
         return sum(row.quantity for row in self.campaign.warriors if row.kind == "hero")
 
+    def eligible_exploration_heroes(self, battle) -> int:
+        """Heroes still able to explore after this battle's Out of Action results."""
+        heroes = {row.id for row in self.campaign.warriors if row.kind == "hero"}
+        if battle.out_of_action_ids is None:
+            # Old/incomplete battle records cannot identify which casualties
+            # were heroes, so do not subtract unrelated models.
+            return len(heroes)
+        unavailable = heroes.intersection(battle.out_of_action_ids)
+        return max(0, len(heroes) - len(unavailable))
+
     def projected_henchmen(self) -> int:
         return sum(row.quantity for row in self.campaign.warriors if row.kind == "henchman")
 
@@ -1507,7 +1517,9 @@ class PostBattleEngine:
         self.post.wyrdstone_sold += quantity
         self.post.gold_delta += value
         self.post.sale_resolved = True
-        return True, f"Sold {quantity} shard(s) for {value} gc."
+        message = f"Sold {quantity} shard(s) for {value} gc."
+        self._log(self.STEP_SELL, "sell_wyrdstone", message, quantity=quantity)
+        return True, message
 
     # --------------------------------------------------------------- veterans
 
@@ -1515,7 +1527,9 @@ class PostBattleEngine:
         if self.post is None:
             return False, "No pending post-battle."
         self.post.veteran_pool = max(0, int(pool))
-        return True, f"Veteran experience pool set to {self.post.veteran_pool} XP."
+        message = f"Veteran experience pool set to {self.post.veteran_pool} XP."
+        self._log(self.STEP_VETERANS, "veteran_pool", message, pool=self.post.veteran_pool)
+        return True, message
 
     # ------------------------------------------------------------------ items
 
@@ -1556,7 +1570,9 @@ class PostBattleEngine:
         row.category = category or row.category
         row.rarity = f"Rare {rarity}" if rarity is not None else row.rarity
         self.post.gold_delta -= cost
-        return True, f"{quantity}× {row.name} bought for {cost} gc (stash)."
+        message = f"{quantity}× {row.name} bought for {cost} gc (stash)."
+        self._log(self.STEP_EQUIPMENT, "buy_item", message, item_id=item_id, quantity=quantity)
+        return True, message
 
     def assign_item(self, item_id: str, warrior_id: str) -> tuple[bool, str]:
         """Post-battle assign; delegates to the always-available stash move."""
@@ -1579,6 +1595,9 @@ class PostBattleEngine:
             return False, f"Unknown warrior: {warrior_id}"
         if self.port.trading_post_restriction(item_id).get("heroes_only") and warrior.kind != "hero":
             return False, f"{self.port.item_name(item_id) or item_id} may only be assigned to heroes."
+        restriction = self._profile_assignment_violation(item_id, warrior)
+        if restriction:
+            return False, restriction
         violation = self.loadout_violation(warrior, row.base_item_id or item_id)
         if violation:
             return False, violation
@@ -1611,7 +1630,60 @@ class PostBattleEngine:
                                                        per_model, True, list(row.special_rules), row.base_item_id))
         else:
             entry.quantity += amount
-        return True, f"{amount}× {row.name} assigned to {warrior.name}."
+        message = f"{amount}× {row.name} assigned to {warrior.name}."
+        if self.post is not None:
+            self._log(self.STEP_EQUIPMENT, "assign_item", message, item_id=item_id, warrior_id=warrior.id)
+        return True, message
+
+    def _profile_assignment_violation(self, item_id: str, warrior) -> str | None:
+        """Enforce the Trading Post's profile-specific bearer restrictions."""
+        identity = " ".join(
+            (warrior.name, warrior.profile_name, warrior.profile_id, *warrior.skills, *warrior.special_rules)
+        ).replace("-", " ").replace("_", " ").casefold()
+        equipped = " ".join(
+            item.name + " " + item.item_id + " " + item.base_item_id
+            for item in warrior.equipment
+        ).casefold()
+        allowed_terms = {
+            "beastlash": ("beastmaster",),
+            "broadsword": ("chapel guard knight",),
+            "serpent_staff": ("liche priest",),
+            "shortsword": ("chapel guard knight",),
+            "nehekharan_javelin": ("tomb lord",),
+            "swivel_gun": ("gunner",),
+            "kite_shield": ("chapel guard knight",),
+            "asp_arrows": ("tomb lord",),
+            "conch_shell_horn": ("piranha warrior",),
+            "elven_runestones": ("weaver",),
+            "parrot": ("captain", "mate"),
+        }
+        if item_id == "barbed_whip" and warrior.kind != "hero":
+            return "Barbed Whip may only be assigned to a Marauders of Chaos Hero."
+        if item_id == "great_axe" and not (warrior.kind == "hero" and "chosen of chaos" in identity):
+            return "Great Axe requires a Marauders Hero with the Chosen of Chaos skill."
+        if item_id == "reptile_venom" and not (warrior.kind == "henchman" and "skink" in identity):
+            return "Reptile Venom may only be assigned to Skink Henchmen."
+        if item_id in {"familiar", "arcane_familiar"} and "spellcaster" not in identity:
+            return "A Familiar may only be assigned to a spellcaster."
+        if item_id == "book_of_the_dead" and not any(term in identity for term in ("vampire", "necromancer")):
+            return "The Book of the Dead may only be assigned to Vampires or Necromancers."
+        if item_id == "nightmare" and not any(term in identity for term in ("vampire", "necromancer", "grave guard")):
+            return "A Nightmare may only be assigned to Vampires, Necromancers or Grave Guards."
+        if item_id == "temple_dog" and not any(term in identity for term in ("dragon monk", "sister", "priest")):
+            return "A Temple Dog may only be assigned to Dragon Monks, Sisters of Sigmar or Priests."
+        if item_id in {"barding", "bretonnian_barding"} and not any(term in equipped for term in ("warhorse", "horse")):
+            return "Barding requires this warrior to have a Warhorse."
+        if item_id in {"dark_elf_blade_weapon_upgrade", "poisoned_weapon"} and not any(
+            self.port.weapon_hands(item.base_item_id or item.item_id) is not None for item in warrior.equipment
+        ):
+            return f"{self.port.item_name(item_id) or item_id} requires an equipped weapon to upgrade."
+        if item_id == "sword_heroes_only" and warrior.kind != "hero":
+            return "This Sword variant may only be assigned to Heroes."
+        terms = allowed_terms.get(item_id)
+        if terms and not any(term in identity for term in terms):
+            note = "; ".join(self.port.trading_post_restriction(item_id).get("notes") or ())
+            return note or f"{self.port.item_name(item_id) or item_id} cannot be assigned to this warrior."
+        return None
 
     def loadout_violation(self, warrior: "WarriorVM", item_id: str) -> str | None:
         """Validate structured hand and duplicate limits for one assignment."""
@@ -1651,7 +1723,10 @@ class PostBattleEngine:
             warrior.equipment.remove(entry)
         row.equipped = max(0, row.equipped - amount)
         row.stash += amount
-        return True, f"{amount}× {row.name} returned to the stash from {warrior.name}."
+        message = f"{amount}× {row.name} returned to the stash from {warrior.name}."
+        if self.post is not None:
+            self._log(self.STEP_EQUIPMENT, "return_item", message, item_id=item_id, warrior_id=warrior.id)
+        return True, message
 
     def sell_item(self, item_id: str, quantity: int) -> tuple[bool, str]:
         if self.post is None:
@@ -1668,7 +1743,9 @@ class PostBattleEngine:
         if row.owned <= 0:
             self.campaign.inventory.remove(row)
         self.post.gold_delta += price * quantity
-        return True, f"Sold {quantity}× {row.name} for {price * quantity} gc."
+        message = f"Sold {quantity}× {row.name} for {price * quantity} gc."
+        self._log(self.STEP_EQUIPMENT, "sell_item", message, item_id=item_id, quantity=quantity)
+        return True, message
 
     # ------------------------------------------------------------- recruitment
 
@@ -1803,9 +1880,13 @@ class PostBattleEngine:
                 warrior.equipment.remove(item)
         if removing_member:
             warrior.quantity -= 1
-            return True, f"One member dismissed from {warrior.name}; transferable equipment returned to stash."
+            message = f"One member dismissed from {warrior.name}; transferable equipment returned to stash."
+            self._log(self.STEP_RECRUITMENT, "dismiss_member", message, warrior_id=warrior.id)
+            return True, message
         self.campaign.warriors.remove(warrior)
-        return True, f"{warrior.name} dismissed; transferable equipment returned to stash."
+        message = f"{warrior.name} dismissed; transferable equipment returned to stash."
+        self._log(self.STEP_RECRUITMENT, "dismiss_warrior", message, warrior_id=warrior.id)
+        return True, message
 
     def resolve_hireling_upkeep(self, followup_id: str, *, pay: bool) -> tuple[bool, str]:
         if self.post is None:
@@ -1924,7 +2005,9 @@ class PostBattleEngine:
         row = warrior_vm(self.port, profile, row_id=f"{profile_id}#recruit{occurrences + 1}", name=unique_name, quantity=quantity)
         campaign.warriors.append(row)
         self.post.gold_delta -= cost
-        return True, f"{profile.name} ×{quantity} recruited for {cost} gc."
+        message = f"{profile.name} ×{quantity} recruited for {cost} gc."
+        self._log(self.STEP_RECRUITMENT, "recruit", message, warrior_id=row.id, profile_id=profile_id)
+        return True, message
 
     def hire_hireling(self, offer: "HirelingOffer", *, acceptance_roll: int | None = None, fee_roll: int | None = None) -> tuple[bool, str]:
         """Hire a Hired Sword or Dramatis Persona whose fee is paid in gold.
