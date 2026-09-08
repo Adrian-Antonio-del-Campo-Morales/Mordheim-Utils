@@ -16,9 +16,15 @@ from mordheim_ui.widgets import BorderedFrame
 class CampaignLibraryDialog(tk.Toplevel):
     """Small local library of saved campaign files."""
 
+    #: Desktop default of the session library folder. Path handling belongs to
+    #: the desktop adapter: the controller only carries the session value.
+    DEFAULT_LIBRARY = Path.home() / "Documents" / "Mordheim Campaigns"
+
     def __init__(self, parent, controller) -> None:
         super().__init__(parent)
         self.controller = controller
+        if controller.campaign_library_path is None:
+            controller.campaign_library_path = self.DEFAULT_LIBRARY
         self.configure(bg=COLORS["bg"]); self.title(tr("Campaign library")); self.resizable(False, False)
         self.transient(parent.winfo_toplevel()); self.grab_set()
         outer = BorderedFrame(self, background=COLORS["panel"], padding=1); outer.pack(padx=14, pady=14)

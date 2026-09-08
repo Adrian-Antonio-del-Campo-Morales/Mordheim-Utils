@@ -21,6 +21,11 @@ class CampaignManagerApp(tk.Tk):
         self.geometry("1560x900")
         self.minsize(1280, 760)
         self.controller = AppController()
+        # Desktop locale wiring: the application layer fans locale switches
+        # out to registered callbacks instead of importing the singletons, so
+        # the same controller works in the web adapter.
+        self.controller.subscribe_locale(set_ui_locale)
+        self.controller.subscribe_locale(set_kb_locale)
         AppShell(self, self.controller)
 
 

@@ -1,6 +1,12 @@
-"""Campaign persistence: JSON round-trip, robustness and Markdown export."""
+"""Campaign persistence: JSON round-trip, robustness and Markdown export.
+
+The persistence layer reads and writes only the neutral v4 contract
+(``contracts/campaign-file-v4/``): schema-validated documents, explicit
+rejection of retired versions and of documents the contract does not accept.
+"""
 from dataclasses import asdict
 import json
+from pathlib import Path
 
 import pytest
 
@@ -9,6 +15,9 @@ from mordheim_campaign.application.knowledge_port import KnowledgePort
 from mordheim_campaign.application.post_battle_engine import PostBattleEngine
 from mordheim_campaign.application.state import make_draft_state, make_example_state
 from mordheim_campaign.persistence import CampaignFileError, export_campaign_summary, load_campaign, save_campaign
+
+ROOT = Path(__file__).resolve().parents[2]
+FIXTURES = ROOT / "contracts" / "campaign-file-v4" / "fixtures"
 
 
 def _canonical(state):
@@ -107,14 +116,92 @@ def test_missing_band_id_is_rejected(tmp_path):
 
     payload = {
         "marker": "MORDHEIM_CAMPAIGN_MANAGER",
-        "format_version": 1,
-        "campaign": {"campaign_name": "No KB band", "warband_name": "X", "warband_type": "X", "started": ""},
-        "view": {},
+        "format_version": 4,
+        "saved_at": "2026-09-08T18:30:00+00:00",
+        "campaign": {
+            "identity": {"campaign_name": "No KB band", "warband_name": "X", "warband_type": "X", "band_id": ""},
+            "configuration": {"is_draft": False},
+            "resources": {"stash_value": 0, "rare_finds": 0, "treasures": 0, "campaign_points": 0},
+            "warriors": [], "battles": [], "states": [], "post_battles": [], "inventory": [],
+            "special_rules": [], "manual_log": [],
+        },
     }
     path = tmp_path / "broken.mordheim"
     path.write_text(json.dumps(payload), encoding="utf-8")
     with pytest.raises(CampaignFileError):
         load_campaign(path)
+
+
+@pytest.mark.parametrize("version", [1, 2, 3])
+def test_retired_format_versions_are_rejected_explicitly(tmp_path, version):
+    """v1–v3 are retired: the loader must refuse them naming both versions."""
+    payload = {
+        "marker": "MORDHEIM_CAMPAIGN_MANAGER",
+        "format_version": version,
+        "saved_at": "2026-09-08T18:30:00+00:00",
+        "campaign": {},
+        "view": {},
+    }
+    path = tmp_path / f"v{version}.mordheim"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(CampaignFileError) as excinfo:
+        load_campaign(path)
+    message = str(excinfo.value)
+    assert str(version) in message and "v4" in message
+
+
+def test_future_format_version_is_rejected(tmp_path):
+    payload = {
+        "marker": "MORDHEIM_CAMPAIGN_MANAGER",
+        "format_version": 5,
+        "saved_at": "2026-09-08T18:30:00+00:00",
+        "campaign": {},
+    }
+    path = tmp_path / "v5.mordheim"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(CampaignFileError) as excinfo:
+        load_campaign(path)
+    assert "5" in str(excinfo.value)
+
+
+def test_schema_violations_are_rejected_with_location(tmp_path):
+    """A structurally invalid v4 document fails against the shared schema."""
+    port = KnowledgePort()
+    state = make_draft_state(port, "sisters-of-sigmar")
+    payload = json.loads(
+        (FIXTURES / "draft.json").read_text(encoding="utf-8")
+    )
+    payload["campaign"]["warriors"][0]["kind"] = "boss"  # not an allowed kind
+    path = tmp_path / "invalid.mordheim"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(CampaignFileError) as excinfo:
+        load_campaign(path)
+    assert "kind" in str(excinfo.value)
+
+
+def test_unknown_top_level_section_is_rejected(tmp_path):
+    payload = json.loads((FIXTURES / "draft.json").read_text(encoding="utf-8"))
+    payload["settings"] = {"theme": "dark"}
+    path = tmp_path / "unknown.mordheim"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(CampaignFileError):
+        load_campaign(path)
+
+
+@pytest.mark.parametrize("fixture_name", ["draft.json", "active-campaign.json", "pending-post-battle.json", "full-inventory.json"])
+def test_fixture_round_trips_through_the_python_implementation(fixture_name):
+    """Every contract fixture loads through the reference reader."""
+    state = load_campaign(FIXTURES / fixture_name)
+    assert state.campaign.band_id
+
+
+def test_saved_at_is_the_only_volatile_field(tmp_path):
+    """Two saves of an unchanged campaign differ only in saved_at."""
+    state = make_draft_state(KnowledgePort(), "sisters-of-sigmar")
+    first = json.loads(save_campaign(tmp_path / "a.mordheim", state).read_text(encoding="utf-8"))
+    second = json.loads(save_campaign(tmp_path / "b.mordheim", state).read_text(encoding="utf-8"))
+    first.pop("saved_at"), second.pop("saved_at")
+    assert first == second
 
 
 def test_rejects_foreign_or_corrupt_files(tmp_path):

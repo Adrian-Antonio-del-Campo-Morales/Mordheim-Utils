@@ -2,11 +2,30 @@ from __future__ import annotations
 
 import copy
 from collections.abc import Callable
-from datetime import date
-from pathlib import Path
 
 from mordheim_campaign.application.knowledge_port import KnowledgePort, WarbandProfile
-from .state import AppState, BattleVM, EquipmentEntryVM, InventoryItemVM, PostBattleVM, WarbandStateVM, make_draft_state, make_example_state, unique_warrior_name, warrior_vm
+from mordheim_campaign.domain import (
+    AppState,
+    BattleVM,
+    CampaignVM,
+    EquipmentEntryVM,
+    InventoryItemVM,
+    PostBattleVM,
+    WarbandStateVM,
+)
+from mordheim_campaign.domain.battle_service import (
+    battle_availability as _battle_availability_domain,
+    pending_battle_start_checks as _pending_battle_start_checks_domain,
+    record_battle as _record_battle_domain,
+)
+from mordheim_campaign.domain.builders import make_draft_state, make_example_state, warrior_vm
+from mordheim_campaign.domain.models import unique_warrior_name
+from mordheim_campaign.domain.timeline_service import (
+    advance_step as _advance_post_battle_step,
+    open_review as _open_post_battle_review,
+    select_step as _select_post_battle_step,
+)
+from mordheim_campaign.domain.warband_service import commit_initial_warband as _commit_initial_warband_domain
 
 
 _ROMAN = ((10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I"))
@@ -41,16 +60,24 @@ class AppController:
     def __init__(self, state: AppState | None = None, *, port: KnowledgePort | None = None) -> None:
         self.port = port or KnowledgePort()
         self.state = state if state is not None else make_draft_state(self.port, "sisters-of-sigmar")
-        self.persist_path: Path | None = None
-        self.campaign_library_path = Path.home() / "Documents" / "Mordheim Campaigns"
+        #: Session file-targeting state of the desktop adapter. The controller
+        #: only carries it so the UI file actions have one object to read;
+        #: the domain and the use cases never touch these paths.
+        self.persist_path = None
+        self.campaign_library_path: str | None = None
         self._listeners: list[Callable[[], None]] = []
         self._undo_listeners: list[Callable[[], None]] = []
+        self._locale_callbacks: list[Callable[[str], None]] = []
         self._resolver = None
         self._undo_history: list[tuple[AppState, str]] = []
         self._undo_limit = 20
 
     def subscribe(self, listener: Callable[[], None]) -> None:
         self._listeners.append(listener)
+
+    def subscribe_locale(self, callback: Callable[[str], None]) -> None:
+        """Register a callback invoked with every locale switch."""
+        self._locale_callbacks.append(callback)
 
     def subscribe_undo(self, listener: Callable[[], None]) -> None:
         self._undo_listeners.append(listener)
@@ -64,17 +91,15 @@ class AppController:
             listener()
 
     def set_locale(self, locale: str) -> None:
-        """Switch the display locale for both UI strings and KB names.
+        """Switch the display locale for UI strings and KB names.
 
-        The KB reader lives in ``mordheim_knowledge.i18n`` and the UI one in
-        ``mordheim_ui.i18n``; the UI layer may not import the KB directly, so
-        the application layer performs both switches.
+        The application layer does not import locale singletons itself: the
+        desktop UI and the KB readers register their own switch callbacks and
+        this method only fans the choice out to them (``app.py`` wires the
+        desktop pair). The web application registers its own or ignores it.
         """
-        from mordheim_knowledge.i18n import set_locale as set_kb_locale
-        from mordheim_ui.i18n import set_locale as set_ui_locale
-
-        set_ui_locale(locale)
-        set_kb_locale(locale)
+        for callback in self._locale_callbacks:
+            callback(locale)
         self.notify()
 
     @property
@@ -164,16 +189,8 @@ class AppController:
 
     def set_post_battle_step(self, index: int) -> None:
         pending = self.state.campaign.pending_post_battle
-        if pending is None:
+        if pending is None or not _select_post_battle_step(pending, index):
             return
-        # Completed steps may be revisited, but future steps are reached only
-        # through the sequential Continue action. Final Review is outside the
-        # eight rules-facing actions, so selecting a step closes Review.
-        accessible = set(pending.completed_steps) | {pending.active_step}
-        if index not in accessible:
-            return
-        pending.active_step = index
-        pending.review_open = False
         self.state.selected_moment = pending.node_id
         self.state.active_view = "campaign"
         self.state.campaign_mode = "timeline"
@@ -183,17 +200,7 @@ class AppController:
         pending = self.state.campaign.pending_post_battle
         if pending is None:
             return
-        from .state import POST_BATTLE_STEPS
-
-        current = pending.active_step
-        pending.completed_steps.add(current)
-        if current >= len(POST_BATTLE_STEPS) - 1:
-            # Rating is derived automatically. Once Equipment is complete the
-            # eight-step sequence is done and the app opens a confirmation diff.
-            pending.review_open = True
-        else:
-            pending.active_step = current + 1
-            pending.review_open = False
+        _advance_post_battle_step(pending)
         self.state.selected_moment = pending.node_id
         self.state.active_view = "campaign"
         self.state.campaign_mode = "timeline"
@@ -201,13 +208,8 @@ class AppController:
 
     def open_post_battle_review(self) -> None:
         pending = self.state.campaign.pending_post_battle
-        if pending is None:
+        if pending is None or not _open_post_battle_review(pending):
             return
-        from .state import POST_BATTLE_STEPS
-
-        if len(pending.completed_steps) < len(POST_BATTLE_STEPS):
-            return
-        pending.review_open = True
         self.state.selected_moment = pending.node_id
         self.notify()
 
@@ -313,131 +315,38 @@ class AppController:
         campaign = self.state.campaign
         if campaign.is_draft:
             return False, "Commit the initial warband before recording battles."
-        if campaign.pending_post_battle is not None:
-            return False, (
-                f"Post-Battle #{campaign.pending_post_battle.battle_number} is still pending; "
-                "commit it before recording the next battle."
-            )
-        known = {scenario_id for scenario_id, _name, _mode in self.port.scenario_options()}
-        if scenario_id not in known:
-            return False, f"Unknown scenario: {scenario_id}"
-        result = result.strip().casefold().capitalize()
-        if result not in ("Victory", "Defeat", "Draw"):
-            return False, "Result must be Victory, Defeat or Draw."
-        unresolved_checks = self.pending_battle_start_checks()
-        if unresolved_checks:
+        if self.pending_battle_start_checks():
             return False, "Resolve every pre-battle injury check before recording the battle."
-        available, unavailable_rows = self.battle_availability()
-        unavailable = [warrior for warrior, _reason, _temporary in unavailable_rows]
-        available_ids = {warrior.id for warrior in available}
-        known_ids = {warrior.id for warrior in campaign.warriors}
-        submitted_ids = set(out_of_action_ids or ()) | set((per_group_casualties or {}).keys()) | set((xp_awards or {}).keys())
-        # Unknown ids are simply ignored by the post-battle filter; only ids
-        # naming a real warrior that cannot receive results are rejected.
-        invalid_ids = submitted_ids & (known_ids - available_ids)
-        if invalid_ids:
-            names = [warrior.name for warrior in unavailable if warrior.id in invalid_ids]
-            return False, f"Unavailable warriors cannot receive battle results: {', '.join(names or sorted(invalid_ids))}."
-        number = campaign.next_battle_number
-        base = campaign.current_state
-        opponent_name = opponent.strip() or "Unknown opponent"
-        if not opponent_band_id:
-            opponent_band_id = next((
-                option.band_id for option in self.port.options()
-                if option.name.casefold() == opponent_name.casefold()
-            ), "")
-        battle = BattleVM(
-            number=number,
-            date=date.today().strftime("%d %b %Y"),
-            scenario=scenario_name or scenario_id,
-            opponent=opponent_name,
+        resolved = dict(self.state.pending_battle_draft.get("battle_start_checks") or {})
+        available, unavailable_rows = _battle_availability_domain(campaign, resolved)
+        ok, message = _record_battle_domain(
+            campaign,
+            self.port,
+            scenario_id=scenario_id,
+            scenario_name=scenario_name,
+            opponent=opponent,
             opponent_band_id=opponent_band_id,
             result=result,
-            gold_delta=int(gold_delta),
-            wyrdstone=max(0, int(wyrdstone)),
-            xp_delta=max(0, int(xp_delta)),
-            casualties=max(0, int(casualties)),
-            advances=0,
-            rating_before=base.rating,
-            rating_after=base.rating,
-            models_before=sum(warrior.quantity for warrior in available),
-            models_after=base.models,
-            notes=notes.strip(),
+            xp_delta=xp_delta,
+            casualties=casualties,
+            gold_delta=gold_delta,
+            wyrdstone=wyrdstone,
             opponent_rating=opponent_rating,
-            out_of_action_ids=list(out_of_action_ids) if out_of_action_ids is not None else None,
-            per_group_casualties=dict(per_group_casualties or {}),
-            xp_awards={str(key): max(0, int(value)) for key, value in dict(xp_awards or {}).items()},
-            scenario_results=dict(scenario_results or {}),
-            participants=[
-                {
-                    "id": warrior.id, "name": warrior.name, "kind": warrior.kind,
-                    "quantity": warrior.quantity, "profile_name": warrior.profile_name,
-                    "condition": warrior.condition or "",
-                }
-                for warrior in available
-            ],
-            absentees=[
-                {
-                    "id": warrior.id, "name": warrior.name, "kind": warrior.kind,
-                    "quantity": warrior.quantity, "reason": reason,
-                    "remaining_before": warrior.games_to_miss,
-                }
-                for warrior, reason, _temporary in unavailable_rows
-            ],
+            notes=notes,
+            out_of_action_ids=out_of_action_ids,
+            per_group_casualties=per_group_casualties,
+            xp_awards=xp_awards,
+            scenario_results=scenario_results,
+            available_warriors=available,
+            unavailable_rows=unavailable_rows,
         )
-        if battle.out_of_action_ids is not None:
-            battle.casualties = len(battle.out_of_action_ids)
-        elif battle.per_group_casualties:
-            battle.casualties = sum(battle.per_group_casualties.values())
-            battle.out_of_action_ids = [
-                warrior_id
-                for warrior_id, count in battle.per_group_casualties.items()
-                for _ in range(count)
-            ]
-        campaign.battles.append(battle)
-        opponent_key = f"{battle.opponent_band_id} {battle.opponent}".casefold()
-        retained_rules = []
-        for rule in campaign.special_rules:
-            triggers = [str(value).casefold() for value in rule.get("consume_when_opponent_contains") or ()]
-            applies = not triggers or any(value in opponent_key for value in triggers)
-            expires = rule.get("expires_after_battles")
-            if expires is None or not applies:
-                retained_rules.append(rule)
-                continue
-            remaining = int(expires) - 1
-            if remaining > 0:
-                rule["expires_after_battles"] = remaining
-                retained_rules.append(rule)
-        campaign.special_rules[:] = retained_rules
-        for warrior, _reason, temporary in unavailable_rows:
-            if temporary:
-                continue
-            warrior.games_to_miss = max(0, warrior.games_to_miss - 1)
-            if warrior.games_to_miss == 0:
-                warrior.absence_reason = ""
-        post_battle = PostBattleVM(battle_number=number, complete=False)
-        self._apply_recorded_scenario_loot(battle, post_battle)
-        for warrior in campaign.warriors:
-            if warrior.kind != "hireling" or not warrior.upkeep_resources:
-                continue
-            post_battle.pending_follow_ups.append({
-                "id": f"upkeep:{number}:{warrior.id}", "step": 6, "type": "hireling_upkeep",
-                "warrior_id": warrior.id, "costs": [[key, value] for key, value in warrior.upkeep_resources],
-                "description": f"Pay {warrior.name}'s upkeep or dismiss the Hired Sword.",
-            })
-        campaign.post_battles.append(post_battle)
-        self.select_battle(number)
-        return True, f"Battle #{number} recorded · {battle.scenario} vs. {battle.opponent} ({result})."
+        if ok:
+            self.select_battle(campaign.battles[-1].number)
+        return ok, message
 
     def pending_battle_start_checks(self) -> list[tuple[object, dict]]:
         resolved = dict(self.state.pending_battle_draft.get("battle_start_checks") or {})
-        return [
-            (warrior, check)
-            for warrior in self.state.campaign.warriors
-            if warrior.games_to_miss <= 0
-            for check in warrior.battle_start_checks
-            if f"{warrior.id}:{check.get('check_id')}" not in resolved
-        ]
+        return _pending_battle_start_checks_domain(self.state.campaign, resolved)
 
     def resolve_battle_start_check(self, warrior_id: str, check_id: str, roll: int) -> tuple[bool, str]:
         warrior = next((row for row in self.state.campaign.warriors if row.id == warrior_id), None)
@@ -458,140 +367,7 @@ class AppController:
 
     def battle_availability(self) -> tuple[list, list[tuple[object, str, bool]]]:
         checks = dict(self.state.pending_battle_draft.get("battle_start_checks") or {})
-        available = []
-        unavailable = []
-        for warrior in self.state.campaign.warriors:
-            if warrior.games_to_miss > 0:
-                unavailable.append((warrior, warrior.absence_reason or "Injury", False))
-                continue
-            failed = any(
-                bool(checks.get(f"{warrior.id}:{check.get('check_id')}", {}).get("misses_battle"))
-                for check in warrior.battle_start_checks
-            )
-            if failed:
-                unavailable.append((warrior, "Old Battle Wound", True))
-            else:
-                available.append(warrior)
-        return available, unavailable
-
-    def _apply_recorded_scenario_loot(self, battle: BattleVM, post_battle: PostBattleVM) -> None:
-        """Apply normalized KB scenario rewards to the pending campaign state."""
-        campaign = self.state.campaign
-        results = battle.scenario_results or {}
-        summaries = []
-        for reward in results.get("additional_rewards") or ():
-            kind = str(reward.get("kind") or "")
-            quantity = max(0, int(reward.get("quantity") or 0))
-            source = str(reward.get("source") or "scenario")
-            source_label = "House rule" if source == "house_rule" else "Scenario"
-            if kind == "resource" and reward.get("resource") == "gold_crowns":
-                battle.gold_delta += quantity
-                post_battle.gold_delta += quantity
-                summaries.append(f"{source_label}: +{quantity} gc")
-                continue
-            if kind == "resource" and reward.get("resource") == "wyrdstone_fragments":
-                battle.wyrdstone += quantity
-                post_battle.wyrdstone_delta += quantity
-                summaries.append(f"{source_label}: +{quantity} wyrdstone")
-                continue
-            if kind == "exploration":
-                post_battle.step_state["scenario_exploration"] = {
-                    "extra_dice": int(reward.get("extra_dice") or 0),
-                    "reroll_all": bool(reward.get("reroll_all")),
-                }
-                summaries.append("scenario exploration rule enabled")
-                continue
-            if kind not in {"item", "special"} or quantity <= 0:
-                continue
-            if kind == "special":
-                special_id = str(reward.get("special_id") or "")
-                no_reward = ("nothing" in special_id or "failure" in special_id or "illusions" in special_id)
-                if no_reward:
-                    summaries.append(str(reward.get("label") or "No reward"))
-                    continue
-                if "magical-artefact" in special_id:
-                    for index in range(quantity):
-                        post_battle.pending_follow_ups.append({
-                            "id": f"scenario:{battle.number}:{special_id}:{index + 1}", "step": 2,
-                            "type": "exploration_followup", "queue": [{"type": "magical_artefact_table"}],
-                            "messages": [str(reward.get("label") or "Magical artefact found")],
-                        })
-                    summaries.append("magical artefact roll pending")
-                    continue
-                if special_id == "scenario.assault-on-the-rock.reward":
-                    forbidden = campaign.band_id in {"sisters-of-sigmar", "witch-hunters"} or any(
-                        "priest of morr" in " ".join((warrior.name, warrior.profile_name,
-                                                      *warrior.skills, *warrior.special_rules)).casefold()
-                        for warrior in campaign.warriors
-                    )
-                    if forbidden:
-                        summaries.append("Tome of Magic cannot be used by this warband")
-                    else:
-                        post_battle.pending_follow_ups.append({
-                            "id": f"scenario:{battle.number}:tome-of-magic", "step": 2,
-                            "type": "scenario_spell_reward", "mandatory": True,
-                            "description": "Choose a Hero and exactly two spells granted by the Tome of Magic.",
-                        })
-                        summaries.append("Tome of Magic spell selection pending")
-                    continue
-                if special_id == "scenario.the-item-lost.reward":
-                    post_battle.pending_follow_ups.append({
-                        "id": f"scenario:{battle.number}:wand-of-phyrros", "step": 2,
-                        "type": "exploration_followup", "mandatory": True, "messages": [],
-                        "queue": [{"type": "grant_special_item", "recipient": "hero",
-                                   "item_id": "scenario_reward.wand_of_phyrros", "name": "Wand of Phyrros",
-                                   "text": str(reward.get("rule") or reward.get("label") or "")}],
-                    })
-                    summaries.append("Wand of Phyrros bearer selection pending")
-                    continue
-                if special_id == "scenario.encampment-raid.reward":
-                    post_battle.pending_follow_ups.append({
-                        "id": f"scenario:{battle.number}:encampment", "step": 2,
-                        "type": "scenario_encampment", "mandatory": True,
-                        "description": "Choose whether to destroy or occupy the captured camp; add captured stash items in Equipment.",
-                    })
-                    summaries.append("captured camp decision pending")
-                    continue
-                if special_id == "scenario.the-night-of-the-headless-one.reward":
-                    item_id = "scenario_reward.skull_of_the_headless_one"
-                    stock = next((entry for entry in campaign.inventory if entry.id == item_id), None)
-                    if stock is None:
-                        stock = InventoryItemVM(item_id, "Skull of the Headless One", "Scenario Reward",
-                                                0, 0, 0, 0, "Unique",
-                                                [str(reward.get("rule") or reward.get("label") or "")])
-                        campaign.inventory.append(stock)
-                    stock.owned += quantity; stock.stash += quantity
-                    summaries.append(f"+{quantity} Skull of the Headless One")
-                    continue
-                if any(token in special_id for token in ("worthless-inventories", "straggler-", "encampment-raid")):
-                    text = str(reward.get("rule") or reward.get("label") or special_id)
-                    self.state.campaign.special_rules.append({
-                        "source": f"scenario:{battle.number}", "text": text,
-                        "expires_after_battles": None, "consume_when_opponent_contains": [],
-                    })
-                    summaries.append(text)
-                    continue
-            canonical_special_items = {
-                "dispel-scroll": "dispelling_scroll",
-                "holy-or-unholy-relic": "holy_relic",
-            }
-            item_id = str(reward.get("item_id") or canonical_special_items.get(
-                str(reward.get("special_id") or ""), f"scenario_reward.{reward.get('special_id') or 'special'}"
-            ))
-            stock = next((entry for entry in self.state.campaign.inventory if entry.id == item_id), None)
-            if stock is None:
-                name = self.port.item_name(item_id) or str(reward.get("label") or item_id.replace("_", " ").title())
-                stock = InventoryItemVM(item_id, name, "Scenario Reward", 0, 0, 0, 0)
-                self.state.campaign.inventory.append(stock)
-            if kind == "special":
-                rule = str(reward.get("rule") or reward.get("label") or "").strip()
-                if rule and rule not in stock.special_rules:
-                    stock.special_rules.append(rule)
-            stock.owned += quantity
-            stock.stash += quantity
-            summaries.append(f"{source_label}: +{quantity} {stock.name}")
-        if summaries:
-            post_battle.log_event(2, "scenario_reward", ", ".join(summaries))
+        return _battle_availability_domain(self.state.campaign, checks)
 
     def latest_battle_number(self) -> int | None:
         """Number of the most recent battle (the one a dialog may extend)."""
@@ -642,38 +418,9 @@ class AppController:
 
     def commit_initial_warband(self) -> None:
         campaign = self.state.campaign
-        if not campaign.is_draft or not campaign.draft_is_legal:
+        ok, _message = _commit_initial_warband_domain(campaign)
+        if not ok:
             return
-        for warrior in campaign.warriors:
-            for equipment in warrior.equipment:
-                if not equipment.transferable or equipment.acquisition in {"purchase", "stash_assignment"}:
-                    continue
-                row = next((item for item in campaign.inventory if item.id == equipment.item_id), None)
-                if row is None:
-                    row = InventoryItemVM(equipment.item_id, equipment.name, "Equipment", 0, 0, 0, equipment.unit_cost)
-                    campaign.inventory.append(row)
-                row.owned += equipment.quantity
-                row.equipped += equipment.quantity
-        campaign.is_draft = False
-        campaign.started = date.today().strftime("%d %b %Y")
-        campaign.current_state_number = 0
-        campaign.states = [
-            WarbandStateVM(
-                number=0,
-                date=campaign.started,
-                gold=campaign.draft_treasury,
-                wyrdstone=0,
-                rating=campaign.draft_rating,
-                models=campaign.draft_model_count,
-                max_models=campaign.effective_maximum_models,
-                heroes=campaign.draft_hero_count,
-                henchmen=campaign.draft_henchman_count,
-                experience=campaign.draft_experience,
-                label="Initial Warband",
-                roster=copy.deepcopy(campaign.warriors),
-                inventory=copy.deepcopy(campaign.inventory),
-            )
-        ]
         self.state.selected_moment = "state:0"
         self.state.state_section = "overview"
         self.clear_undo_history()
