@@ -1,4 +1,4 @@
-"""combat.modular.state: responsibility extracted without altering the rules."""
+"""combat: Fighter and duel state with immutable transitions."""
 from __future__ import annotations
 from mordheim_combat import phases
 

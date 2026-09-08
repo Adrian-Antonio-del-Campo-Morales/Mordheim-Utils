@@ -1,4 +1,4 @@
-"""verification.interactions: responsibility extracted without altering the rules."""
+"""verification: Interaction-matrix verification."""
 from __future__ import annotations
 
 from dataclasses import dataclass

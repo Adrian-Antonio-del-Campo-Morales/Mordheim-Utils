@@ -1,4 +1,4 @@
-"""combat.phases: responsibility extracted without altering the rules."""
+"""combat: Canonical phase model and pure local combat contracts."""
 from __future__ import annotations
 
 from dataclasses import dataclass

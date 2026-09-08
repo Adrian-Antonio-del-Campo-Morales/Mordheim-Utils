@@ -1,4 +1,4 @@
-"""verification.consumers: responsibility extracted without altering the rules."""
+"""verification: Maps KB effects to their executable engine consumers."""
 from __future__ import annotations
 
 

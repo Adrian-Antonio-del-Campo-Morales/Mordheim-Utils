@@ -532,3 +532,30 @@ rules:
       binding:
         kind: mechanic
         id: skill.thick-skull
+- id: apprentice-sorcerer--no-armoured-casting
+  name: No Armour Casting
+  effect: >-
+    An Apprentice Sorcerer may not cast spells while wearing armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 1 Apprentice Sorcerer / Special Rules / No Armour Casting
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    es: Sin Conjuros con Armadura
+  effect_i18n:
+    es: >-
+      Un Hechicero Aprendiz no puede lanzar conjuros mientras lleva armadura.
+  applies_to:
+    profile_ids:
+    - apprentice-sorcerer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sons-of-hashut.apprentice-sorcerer.no-armoured-casting
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic.

@@ -1,4 +1,4 @@
-"""combat.modular.aftermath: responsibility extracted without altering the rules."""
+"""combat: Stateful post-wound effects (fire, nets, black hunger, ...)."""
 from __future__ import annotations
 from mordheim_combat import phases
 

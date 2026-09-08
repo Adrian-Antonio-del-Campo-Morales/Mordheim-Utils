@@ -1,4 +1,4 @@
-"""external.test_workbooks: responsibility extracted without altering the rules."""
+"""external.test_workbooks: Workbook save/load round-trip tests."""
 from __future__ import annotations
 
 from mordheim_combat_lab.application.settings import DuelExecutionSettings

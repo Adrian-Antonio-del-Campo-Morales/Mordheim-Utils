@@ -55,7 +55,7 @@ HIRELING_COST_RESOURCES = frozenset({
 _REQUIRED_CAMPAIGN_STEMS = frozenset({
     "post-battle-sequence", "hired-swords-and-dramatis", "magic",
     "experience-and-advances", "scenarios", "serious-injuries",
-    "trading-and-rarity",
+    "trading-and-rarity", "scenario-rewards",
 })
 
 
@@ -316,6 +316,27 @@ def _validate_scenarios_document(document: dict) -> None:
                 f"campaign catalogue scenarios: selection table references "
                 f"unknown scenario {value!r}"
             )
+
+
+def _validate_scenario_rewards_document(document: dict, scenario_ids: set[str]) -> None:
+    valid_kinds = {"resource", "loot_table", "exploration"}
+    seen = set()
+    for entry in document.get("scenarios") or ():
+        scenario_id = str(entry.get("scenario_id") or "")
+        if scenario_id not in scenario_ids:
+            raise ValueError(f"scenario rewards reference unknown scenario {scenario_id!r}")
+        if scenario_id in seen:
+            raise ValueError(f"duplicate scenario rewards for {scenario_id!r}")
+        seen.add(scenario_id)
+        for reward in entry.get("rewards") or ():
+            if reward.get("kind") not in valid_kinds:
+                raise ValueError(f"{scenario_id}: unknown reward kind {reward.get('kind')!r}")
+            if reward.get("kind") == "resource" and reward.get("resource") not in {"gold_crowns", "wyrdstone_fragments"}:
+                raise ValueError(f"{scenario_id}: invalid reward resource {reward.get('resource')!r}")
+            for content in reward.get("contents") or ():
+                grant = content.get("grant") or {}
+                if grant.get("kind") not in {"resource", "item", "special"}:
+                    raise ValueError(f"{scenario_id}: invalid loot grant {grant.get('kind')!r}")
 
 
 def _validate_magic_document(
@@ -617,6 +638,8 @@ def _load_all_campaign_documents(ruleset: str, root: Path) -> dict[str, dict]:
     sequence = _sequence_from_document(documents[POST_BATTLE_SEQUENCE_STEM])
     _validate_sequence_document(sequence, campaign_stems)
     _validate_scenarios_document(documents["scenarios"])
+    scenario_ids = {str(row.get("id") or "") for row in documents["scenarios"].get("scenarios") or ()}
+    _validate_scenario_rewards_document(documents["scenario-rewards"], scenario_ids)
     _validate_magic_document(magic, lore_ids, band_profiles, hireling_ids)
     _validate_hired_swords_document(documents[HIRED_SWORDS_STEM], hireling_ids)
     _validate_serious_injuries_document(documents["serious-injuries"])

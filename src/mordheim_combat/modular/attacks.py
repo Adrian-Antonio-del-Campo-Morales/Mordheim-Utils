@@ -1,4 +1,4 @@
-"""combat.modular.attacks: responsibility extracted without altering the rules."""
+"""combat: Reference attack resolution for the modular engine."""
 from __future__ import annotations
 from mordheim_combat import phases
 

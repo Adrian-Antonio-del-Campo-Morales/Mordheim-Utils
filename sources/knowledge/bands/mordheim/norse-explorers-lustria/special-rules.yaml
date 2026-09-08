@@ -303,3 +303,32 @@ rules:
     band: true
 
   rule_ref: shared-rule.shield-master
+- id: beserkers--no-armour
+  name: No Armour
+  effect: >-
+    A Berserker may never wear armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 2 Beserkers / Special Rules / No Armour
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    es: Sin Armadura
+  effect_i18n:
+    es: >-
+      Un Berserker jamás puede llevar armadura.
+  applies_to:
+    profile_ids:
+    - beserkers
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: armour

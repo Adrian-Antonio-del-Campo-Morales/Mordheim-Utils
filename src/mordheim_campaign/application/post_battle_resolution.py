@@ -36,6 +36,7 @@ class SeriousInjuryOutcome:
     #: The typed effect rows as declared in the catalogue; the write side
     #: (post-battle engine) applies them to the roster.
     effects_raw: tuple[dict, ...] = ()
+    note: str = ""
 
 
 @dataclass(frozen=True, slots=True)
@@ -116,10 +117,46 @@ def _effect_labels(effects) -> tuple[str, ...]:
         kind = str(effect.get("type") or "")
         label = _EFFECT_LABELS.get(kind, kind.replace("_", " "))
         if kind == "warrior.characteristic_modifier":
-            characteristic = effect.get("characteristic")
+            characteristic = str(effect.get("characteristic") or "characteristic").replace("_", " ")
             modifier = effect.get("modifier")
-            if characteristic and modifier is not None:
-                label = f"permanent {characteristic} {int(modifier):+d}"
+            if modifier is not None:
+                label = f"Permanent {characteristic} modifier: {int(modifier):+d}."
+        elif kind == "warrior.equipment_limit":
+            maximum = effect.get("maximum_one_handed_weapons")
+            label = f"May use no more than {maximum} one-handed weapon at a time." if maximum is not None else "Gains a permanent equipment restriction."
+        elif kind == "warrior.miss_games":
+            games = effect.get("games") or {}
+            if games.get("kind") == "fixed":
+                value = int(games.get("value") or 0)
+                label = f"Misses the next {value} game{'s' if value != 1 else ''}."
+            elif games.get("kind") == "dice":
+                dice = games.get("dice") or {}
+                count, sides = int(dice.get("count") or 1), int(dice.get("sides") or 6)
+                label = f"Misses {count if count != 1 else ''}D{sides} games; roll to determine the duration."
+        elif kind == "warrior.add_condition":
+            condition = str(effect.get("condition_id") or "condition").rsplit(".", 1)[-1].replace("-", " ")
+            duration = str(effect.get("duration") or "").replace("_", " ")
+            label = f"Gains {condition}{f' ({duration})' if duration else ''}."
+        elif kind == "warrior.battle_start_check":
+            dice = effect.get("dice") or {}
+            count, sides = int(dice.get("count") or 1), int(dice.get("sides") or 6)
+            failure = effect.get("failure_when") or {}
+            failed_on = failure.get("min") if failure.get("min") == failure.get("max") else f"{failure.get('min')}-{failure.get('max')}"
+            label = f"Before each battle roll {count if count != 1 else ''}D{sides}; on {failed_on}, the warrior misses that game."
+        elif kind == "equipment.disposition":
+            label = "All equipment carried by the warrior is lost."
+        elif kind == "roster.remove_warrior":
+            label = "The warrior is permanently removed from the roster."
+        elif kind == "prisoner.create":
+            label = "The warrior is captured; their equipment remains with them until captivity is resolved."
+        elif kind == "relationship.add_hatred":
+            target = str(effect.get("target_selector") or "the selected enemy").replace("_", " ")
+            label = f"Permanently hates {target}."
+        elif kind == "encounter.trigger":
+            label = "Triggers the special Sold to the Pits encounter; resolve it before continuing."
+        elif kind == "reward.grant":
+            experience = ((effect.get("resources") or {}).get("experience") or {}).get("value")
+            label = f"The warrior gains {experience} Experience." if experience is not None else "The warrior gains the listed reward."
         labels.append(label)
     return tuple(dict.fromkeys(labels))
 
@@ -195,6 +232,7 @@ class PostBattleResolver:
                 effects=_effect_labels(row.get("effects")),
                 follow_up=follow_up,
                 effects_raw=tuple(dict(effect) for effect in row.get("effects") or ()),
+                note=str(row.get("note") or ""),
             )
         return None
 
@@ -241,6 +279,7 @@ class PostBattleResolver:
                     effects=_effect_labels(branch.get("effects")),
                     follow_up=None,
                     effects_raw=tuple(dict(effect) for effect in branch.get("effects") or ()),
+                    note=str(branch.get("note") or ""),
                 )
         return None
 
@@ -438,6 +477,9 @@ class PostBattleResolver:
                     if is_wizard:
                         labels.append("New Spell")
                         options.append(AdvancementOption("generate_spell", "New Spell"))
+                elif option_type:
+                    label = str(option.get("label") or option.get("name") or option_type.replace("_", " ").title())
+                    options.append(AdvancementOption("external_resolution", label))
             return AdvancementOutcome(
                 kind, total, "Choice", " · ".join(labels) or "No option", True,
                 tuple(options), subroll=subroll,

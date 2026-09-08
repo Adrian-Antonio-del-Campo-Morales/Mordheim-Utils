@@ -1,4 +1,4 @@
-"""construction.restrictions: responsibility extracted without altering the rules."""
+"""construction: Equipment and skill restriction checks."""
 from __future__ import annotations
 
 from mordheim_construction.contracts import BLACKPOWDER_WEAPONS
@@ -223,6 +223,14 @@ def _validate_profile_selections(build, package, profile, mechanics, root, main_
     if "compiler.promoted-hero-no-strength-access" in compiler_contracts:
         strength_skills=sorted(skill for skill in build.skill_ids if (skills.get(skill) or {}).get("category")=="strength")
         if strength_skills:raise ValueError(f"Strength skills are forbidden for {build.band_id}/{build.profile_id}: {strength_skills}")
+    banned_categories={
+        str(category) for binding in compiler_bindings
+        if binding.get("id") == "compiler.forbid-skill-categories"
+        for category in (binding.get("parameters") or {}).get("categories") or ()
+    }
+    if banned_categories:
+        forbidden=sorted(skill for skill in build.skill_ids if (skills.get(skill) or {}).get("category") in banned_categories)
+        if forbidden:raise ValueError(f"skills are forbidden for {build.band_id}/{build.profile_id}: {forbidden}")
     illegal_skills=sorted(skill for skill in build.skill_ids if not skill_is_available(skill))
     if illegal_skills:raise ValueError(f"skills are not available to {build.band_id}/{build.profile_id}: {illegal_skills}")
     if "compiler.knighthood" in compiler_contracts:

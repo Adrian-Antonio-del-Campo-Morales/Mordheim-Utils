@@ -1,4 +1,4 @@
-"""combat.modular.contexts: responsibility extracted without altering the rules."""
+"""combat: Prepared per-attack contexts shared by orchestration and verification."""
 from __future__ import annotations
 from mordheim_combat import phases
 

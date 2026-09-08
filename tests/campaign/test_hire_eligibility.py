@@ -232,8 +232,8 @@ def test_employed_hired_sword_blocks_the_incompatible_counterpart():
         hired_sword_profile_ids=frozenset({"hireling.hired-sword.highwayman"}),
     )
     assert not any(o.profile_id == "hireling.hired-sword.roadwarden" for o in with_highwayman.hired_swords())
-    # …and the Highwayman himself is still hireable (no Roadwarden on the roster).
-    assert any(o.profile_id == "hireling.hired-sword.highwayman" for o in with_highwayman.hired_swords())
+    # The global one-per-type rule also removes the employed Highwayman.
+    assert not any(o.profile_id == "hireling.hired-sword.highwayman" for o in with_highwayman.hired_swords())
 
 
 def test_controller_variant_flows_into_post_battle_content():

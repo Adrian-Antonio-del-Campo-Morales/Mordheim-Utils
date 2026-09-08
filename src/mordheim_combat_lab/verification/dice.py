@@ -1,4 +1,4 @@
-"""verification.dice: responsibility extracted without altering the rules."""
+"""verification: Scripted dice sources for deterministic verification."""
 from __future__ import annotations
 
 from fractions import Fraction

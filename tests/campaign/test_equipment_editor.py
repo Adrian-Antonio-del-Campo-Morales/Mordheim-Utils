@@ -7,7 +7,8 @@ inventory ledger counters (owned/equipped/stash) consistent.
 from __future__ import annotations
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_campaign.application.state import EquipmentEntryVM, make_example_state
+from mordheim_campaign.application.state import EquipmentEntryVM, WarriorVM, make_example_state
+from mordheim_campaign.ui.equipment_display import equipment_quantity_suffix
 
 
 def _controller() -> AppController:
@@ -96,6 +97,17 @@ def test_henchman_group_carries_equipment_as_a_group():
     ok, message = controller.return_equipped_item(item.id, group.id)
     assert ok, message
     assert item.stash == group.quantity
+
+
+def test_henchman_equipment_display_uses_copies_per_member():
+    group = WarriorVM("g", "Group", "Henchmen", "henchman", {}, [], [], 0, quantity=3)
+
+    one_each = EquipmentEntryVM("dagger", "Dagger", 3, per_model=True)
+    two_each = EquipmentEntryVM("dagger", "Dagger", 6, per_model=True)
+
+    assert equipment_quantity_suffix(group, one_each) == ""
+    assert equipment_quantity_suffix(group, two_each) == " ×2"
+    assert one_each.quantity == 3
 
 
 def test_bought_dagger_stays_separate_from_free_starting_dagger():

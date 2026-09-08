@@ -68,16 +68,37 @@ class BattleMoment(tk.Frame):
             ],
         )
         if battle.scenario_results:
-            lines = [
-                f"• {key}: {value}"
-                for key, value in battle.scenario_results.items()
-            ]
+            lines = self._scenario_result_lines(battle)
             self._summary_card(
                 frame, tr('SCENARIO OBJECTIVES'),
                 tr('Structured scenario answers recorded with this battle.'),
                 lines,
             )
         return frame
+
+    def _scenario_result_lines(self, battle) -> list[str]:
+        names = {str(row.get("id")): str(row.get("name")) for row in battle.participants}
+        results = battle.scenario_results or {}
+        lines = []
+        for warrior_id, count in (results.get("enemy_out_of_action_by_warrior") or {}).items():
+            if int(count or 0):
+                lines.append(tr('{} put {} enemy model(s) Out of Action.').format(names.get(warrior_id, warrior_id), count))
+        for objective in (results.get("objectives") or {}).values():
+            recipient = str((objective or {}).get("recipient") or "")
+            amount = int((objective or {}).get("amount") or 0)
+            if recipient and amount:
+                lines.append(tr('{} received +{} XP for a scenario objective.').format(names.get(recipient, recipient), amount))
+        for reward in results.get("additional_rewards") or ():
+            quantity = int(reward.get("quantity") or 0)
+            if reward.get("kind") == "exploration":
+                lines.append(tr('Scenario exploration rule applied.'))
+            elif reward.get("resource") == "gold_crowns":
+                lines.append(tr('{} gc awarded.').format(quantity))
+            elif reward.get("resource") == "wyrdstone_fragments":
+                lines.append(tr('{} wyrdstone shard(s) awarded.').format(quantity))
+            elif reward.get("kind") in {"item", "special"}:
+                lines.append(tr('{} × {} added to the stash.').format(quantity, reward.get("label") or reward.get("item_id") or reward.get("special_id")))
+        return lines or [tr('No additional reward was recorded.')]
 
     def _summary_card(self, parent, title: str, intro: str, lines: list[str]) -> None:
         box = BorderedFrame(parent, background=COLORS["panel"], padding=1)
@@ -110,6 +131,14 @@ class BattleMoment(tk.Frame):
                 status = warrior["condition"]
                 tone = COLORS["danger"]
             tk.Label(row, text=status, bg=COLORS["panel"], fg=tone, font=("Segoe UI", 8)).pack(side="right")
+        for warrior in battle.absentees:
+            row = tk.Frame(body, bg=COLORS["panel"], pady=5); row.pack(fill="x")
+            label = str(warrior.get("name") or warrior.get("id"))
+            if int(warrior.get("quantity") or 1) > 1:
+                label += f"  ·  ×{int(warrior['quantity'])}"
+            tk.Label(row, text=label, bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9)).pack(side="left")
+            reason = str(warrior.get("reason") or tr('Injury'))
+            tk.Label(row, text=tr('Did not participate · {}').format(reason), bg=COLORS["panel"], fg=COLORS["danger"], font=("Segoe UI", 8)).pack(side="right")
         return box
 
     def _participant_rows(self, battle) -> list[dict]:

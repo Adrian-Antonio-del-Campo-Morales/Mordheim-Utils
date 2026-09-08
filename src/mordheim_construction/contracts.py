@@ -1,4 +1,4 @@
-"""construction.contracts: responsibility extracted without altering the rules."""
+"""construction: Construction contracts and shared compile-time data."""
 from __future__ import annotations
 
 from dataclasses import fields
@@ -59,6 +59,7 @@ COMPILER_CONTRACTS = {
     "compiler.promoted-hero-skill-access",
     "compiler.pit-fighter-fighting-styles",
     "compiler.no-missile-weapons",
+    "compiler.forbid-skill-categories",
     "compiler.promoted-hero-no-strength-access",
     "compiler.blessings-of-nurgle",
     "compiler.bow-discipline",

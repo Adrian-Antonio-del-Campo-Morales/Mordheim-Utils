@@ -1,4 +1,4 @@
-"""combat.modular.rounds: responsibility extracted without altering the rules."""
+"""combat: Per-round state machine of the modular engine."""
 from __future__ import annotations
 from mordheim_combat import phases
 

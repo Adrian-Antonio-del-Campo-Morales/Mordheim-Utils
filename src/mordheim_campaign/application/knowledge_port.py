@@ -51,6 +51,7 @@ class KnowledgePortError(ValueError):
 
 
 _DICE_EXPRESSION = re.compile(r"(\d*)D(\d+)(?:\+(\d+))?", re.IGNORECASE)
+_VARIABLE_COST = re.compile(r"(?:(\d+)\s*\+\s*)?(\d*)D(\d+)", re.IGNORECASE)
 
 
 def _characteristics(row: dict) -> tuple[dict[str, int], bool]:
@@ -143,10 +144,20 @@ class EquipmentOffer:
     cost: int | None
     notes: str
     category: str = "other"
+    price_base_gc: int | None = None
+    price_dice: tuple[int, int] | None = None
+    price_variable_multiplier: int | None = None
+    price_upgrade_multiplier: int | None = None
 
     @property
     def cost_label(self) -> str:
-        return "—" if self.cost is None else f"{self.cost} gc"
+        if self.cost is not None:
+            return f"{self.cost} gc"
+        if self.price_dice is not None:
+            count, sides = self.price_dice
+            dice = f"{'' if count == 1 else count}D{sides}"
+            return f"{self.price_base_gc}+{dice} gc" if self.price_base_gc else f"{dice} gc"
+        return "—"
 
     @property
     def price_gc(self) -> int | None:
@@ -393,6 +404,7 @@ class KnowledgePort:
                 item_row = self._items.get(item_id)
                 name = kb_display_name(item_row, item_id) if item_row else item_id
                 cost = item.get("cost")
+                variable = _VARIABLE_COST.fullmatch(str(cost).replace(" ", "")) if isinstance(cost, str) else None
                 offers.append(EquipmentOffer(
                     list_id=str(equipment_list["id"]),
                     list_name=list_name,
@@ -401,6 +413,8 @@ class KnowledgePort:
                     cost=int(cost) if isinstance(cost, int) else cost if isinstance(cost, float) else None,
                     notes=str(item.get("notes") or ""),
                     category=self.trading_post_category(item_id),
+                    price_base_gc=int(variable.group(1) or 0) if variable else None,
+                    price_dice=(int(variable.group(2) or 1), int(variable.group(3))) if variable else None,
                 ))
         return tuple(sorted(offers, key=lambda offer: (offer.name.casefold(), offer.item_id)))
 
@@ -413,6 +427,13 @@ class KnowledgePort:
         """Display name of one item (KB locale policy), ``None`` if unknown."""
         row = self._items.get(item_id)
         return kb_display_name(row, item_id) or None if row else None
+
+    def item_options(self) -> tuple[tuple[str, str], ...]:
+        """Every canonical item as ``(item_id, display_name)`` for generic pickers."""
+        return tuple(sorted(
+            ((item_id, kb_display_name(row, item_id)) for item_id, row in self._items.items()),
+            key=lambda pair: (pair[1].casefold(), pair[0]),
+        ))
 
     def item_kind(self, item_id: str) -> str:
         row = self._items.get(item_id) or {}
@@ -529,6 +550,22 @@ class KnowledgePort:
         against this catalogue; ``profile_ids`` is the authoritative pool.
         """
         return load_hirelings(self.ruleset)
+
+    def hireling_roster_values(self, profile_id: str, experience: int = 0) -> tuple[int, int]:
+        """Return intrinsic rating and maximum-model modifier declared by a hireling."""
+        catalogue = self.hireling_catalogue()
+        profile = next((row for row in catalogue.profiles if str(row.get("id") or "") == profile_id), {})
+        rating = profile.get("warband_rating") or {}
+        contribution = int(rating.get("base") or 0)
+        if rating.get("kind") == "base_plus_experience":
+            contribution += int(rating.get("per_experience_point") or 0) * max(0, int(experience))
+        rules = {str(row.get("id") or ""): row for row in catalogue.rules}
+        maximum_modifier = 0
+        for rule_id in profile.get("rule_ids") or ():
+            for mechanic in (rules.get(str(rule_id)) or {}).get("mechanics") or ():
+                if mechanic.get("type") == "warband.maximum_models_modifier":
+                    maximum_modifier += int(mechanic.get("value") or 0)
+        return contribution, maximum_modifier
 
     def warband_groups(self) -> tuple[dict, ...]:
         """Reusable ``warband-group.*`` band sets from the registry (validated)."""

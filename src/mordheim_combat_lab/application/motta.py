@@ -1,4 +1,4 @@
-"""application.motta: responsibility extracted without altering the rules."""
+"""application: MOTTA score computation for fighter builds."""
 from __future__ import annotations
 
 from math import hypot

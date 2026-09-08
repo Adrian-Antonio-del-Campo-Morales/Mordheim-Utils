@@ -1,4 +1,4 @@
-"""ui.editors: responsibility extracted without altering the rules."""
+"""ui: Fighter build editors."""
 from __future__ import annotations
 
 from dataclasses import replace

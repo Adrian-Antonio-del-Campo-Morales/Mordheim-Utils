@@ -57,11 +57,11 @@ class ExperienceTrack(tk.Canvas):
                 x1, y1 = x0 + cell_size, y0 + cell_size
                 threshold = (row, column) in self.shaded_cells
                 if index < previous:
-                    fill = COLORS["accent_dark"] if threshold else COLORS["accent"]
+                    fill = COLORS["accent_dark"] if threshold else COLORS["accent_hover"]
                 elif index < current:
-                    fill = COLORS["success"]
+                    fill = COLORS["success_dark"] if threshold else COLORS["success"]
                 elif threshold:
-                    fill = COLORS["border"]
+                    fill = COLORS["panel_deep"]
                 else:
-                    fill = COLORS["panel_soft"]
-                self.create_rectangle(x0, y0, x1, y1, fill=fill, outline=COLORS["black"], width=1)
+                    fill = COLORS["border"]
+                self.create_rectangle(x0, y0, x1, y1, fill=fill, outline=COLORS["border_soft"], width=1)

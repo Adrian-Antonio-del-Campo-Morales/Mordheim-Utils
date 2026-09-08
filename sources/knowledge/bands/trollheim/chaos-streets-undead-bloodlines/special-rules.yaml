@@ -1994,3 +1994,32 @@ rules:
   - strigoi-vampire
   applies_to:
     band: true
+- id: necrarch-vampire--no-strength-skills
+  name: No Strength Skills
+  effect: >-
+    A Necrarch Vampire may never acquire Strength skills.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 177
+    section: 1 Necrarch Vampire / No Strength Skills
+  name_i18n:
+    es: Sin Habilidades de Fuerza
+  effect_i18n:
+    es: >-
+      Un Vampiro Necrarca jamás puede adquirir habilidades de Fuerza.
+  applies_to:
+    profile_ids:
+    - necrarch-vampire
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.forbid-skill-categories
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.forbid-skill-categories
+        parameters:
+          categories:
+          - strength

@@ -647,3 +647,32 @@ rules:
       reason: >-
         Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
         construction.
+- id: liche-priest--no-armour
+  name: No Armour
+  effect: >-
+    A Liche Priest may never wear armour because it interferes with spell casting.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Liche Priest / Special Rules / No Armour
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    es: Sin Armadura
+  effect_i18n:
+    es: >-
+      Un Sacerdote Liche jamás puede llevar armadura porque interfiere con el lanzamiento de conjuros.
+  applies_to:
+    profile_ids:
+    - liche-priest
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: armour

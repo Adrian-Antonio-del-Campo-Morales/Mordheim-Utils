@@ -750,3 +750,31 @@ rules:
     band: true
 
   rule_ref: shared-rule.eadbasher
+- id: orc-shaman--no-armour
+  name: No Armour
+  effect: >-
+    An Orc Shaman may never wear armour.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 132
+    section: Heroes / 0-1 Orc Shaman / Special Rules / No Armour
+  name_i18n:
+    es: Sin Armadura
+  effect_i18n:
+    es: >-
+      Un Chamán Orco jamás puede llevar armadura.
+  applies_to:
+    profile_ids:
+    - orc-shaman
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: armour

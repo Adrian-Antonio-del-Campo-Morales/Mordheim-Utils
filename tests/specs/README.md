@@ -19,9 +19,10 @@ temporarily in memory and restored.
 
 ## Interaction corpus
 
-The interaction matrix of the gate is complete: `verify --require-complete`
-reports `semantic_complete=True`, 217/217 required interactions covered,
-0 required pending.
+The interaction matrix of the gate is closed: `verify --require-complete`
+reports `semantic_complete=True` with every required interaction covered and
+0 required pending. Run it for the live status instead of trusting a number
+written here.
 
 - `interaction-policy.yaml` records the reviewed `illegal` overrides (the
   body-armour × body-armour pairs that can never co-occur in legal

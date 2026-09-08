@@ -65,6 +65,15 @@ CARD_TOTAL_WIDTH = 190.0
 LEFT_COL_W = 60.0
 MID_COL_W = 60.0
 
+# --- Mordheim palette: aged parchment and iron-gall ink ---------------------
+# Everything stays printable: the parchment is a light wash, the ink a warm
+# near-black, and the accents sepia — evoking the grimdark rulebook paper.
+PARCHMENT = (246, 240, 222)
+PARCHMENT_SHADE = (236, 227, 202)
+INK = (42, 33, 24)
+INK_SOFT = (110, 90, 62)
+BOX_FILL_EARNED = (206, 194, 166)
+
 #: XP tracks, one box per experience point: heroes and hired swords get
 #: 90 boxes in two rows, henchman groups a single row of 14.
 HERO_XP_ROWS, HERO_XP_PER_ROW = 2, 45
@@ -84,13 +93,29 @@ def _safe(text) -> str:
 
 
 class _WarbandPDF(FPDF):
-    """A4 document with a page-number footer."""
+    """A4 parchment document with a page-number footer.
+
+    Every page gets the aged-paper wash and a thin ink frame drawn in the
+    header, before any content, so the whole document reads as one printed
+    sheet from the old world.
+    """
+
+    def header(self):
+        self.set_fill_color(*PARCHMENT)
+        self.rect(0, 0, self.w, self.h, style="F")
+        # Thin double frame around the printable area, in sepia ink.
+        self.set_draw_color(*INK_SOFT)
+        self.set_line_width(0.4)
+        self.rect(7.0, 7.0, self.w - 14.0, self.h - 14.0)
+        self.set_line_width(0.15)
+        self.rect(8.5, 8.5, self.w - 17.0, self.h - 17.0)
+        self.set_text_color(*INK)
 
     def footer(self):
-        self.set_y(-13)
+        self.set_y(-16)
         self.set_font("Times", "I", 8)
-        self.set_text_color(120, 120, 120)
-        self.cell(0, 8, text=_safe(str(self.page_no())), align="C")
+        self.set_text_color(*INK_SOFT)
+        self.cell(0, 6, text=_safe(str(self.page_no())), align="C")
 
 
 def _resolve_data(campaign: CampaignVM, state_number: int | None):
@@ -167,15 +192,15 @@ def _stat_block(pdf: _WarbandPDF, x: float, y: float, warrior: WarriorVM, header
     headers = _STAT_HEADERS.get(current_locale(), _STAT_HEADERS["en"])
     cell_w = (LEFT_COL_W - 4.0) / len(_STAT_KEYS)
     pdf.set_font("Times", "B", 6.5)
-    pdf.set_text_color(255, 255, 255)
-    pdf.set_fill_color(30, 30, 30)
-    pdf.set_draw_color(0, 0, 0)
+    pdf.set_text_color(246, 240, 222)
+    pdf.set_fill_color(*INK)
+    pdf.set_draw_color(*INK)
     pdf.set_line_width(0.25)
     for index, header in enumerate(headers):
         pdf.set_xy(x + index * cell_w, y)
         pdf.cell(cell_w, header_h, text=_safe(header), border=1, align="C", fill=True)
     pdf.set_font("Times", "", 8)
-    pdf.set_text_color(0, 0, 0)
+    pdf.set_text_color(*INK)
     pdf.set_fill_color(255, 255, 255)
     for index, value in enumerate(_stat_values(warrior)):
         pdf.set_xy(x + index * cell_w, y + header_h)
@@ -196,7 +221,7 @@ def _box_region(
     """One EQUIPO/HABILIDADES cell: caps label, rule under it, content below."""
     pdf.set_xy(x, y)
     pdf.set_font("Times", "B", 9)
-    pdf.set_text_color(0, 0, 0)
+    pdf.set_text_color(*INK)
     pdf.cell(width, 4.2, text=_safe(label))
     pdf.set_line_width(0.25)
     pdf.line(rule_x1, y + 4.6, rule_x2, y + 4.6)
@@ -217,27 +242,32 @@ def _xp_boxes(
     box_h: float,
     stride: float,
     thresholds,
+    band_width: float | None = None,
 ) -> None:
     """The experience track: one box per XP. Advance-point boxes carry a
     thicker border, as on the printed band sheet; boxes of experience already
-    earned are filled grey."""
+    earned are filled grey. When ``band_width`` is given the stride is
+    recomputed so the row fits exactly inside it, keeping a margin from the
+    card's inner hairline."""
     capacity = per_row * rows
     reached = int(warrior.experience)
     threshold_set = set(thresholds)
-    band_w = per_row * stride - (stride - box_w)
+    if band_width is not None:
+        stride = (band_width - box_w) / (per_row - 1)
+    band_w = (per_row - 1) * stride + box_w
     start_x = x + (CARD_TOTAL_WIDTH - band_w) / 2.0
     for index in range(capacity):
         number = index + 1
         row, column = divmod(index, per_row)
         px = start_x + column * stride
         py = y + row * (box_h + 1.0)
-        pdf.set_draw_color(0, 0, 0)
+        pdf.set_draw_color(*INK)
         if number in threshold_set:
             pdf.set_line_width(0.55)  # thicker border marks an advance point
         else:
             pdf.set_line_width(0.2)
         if number <= reached:
-            pdf.set_fill_color(200, 200, 200)
+            pdf.set_fill_color(*BOX_FILL_EARNED)
         else:
             pdf.set_fill_color(255, 255, 255)
         pdf.rect(px, py, box_w, box_h, style="DF")
@@ -259,25 +289,33 @@ def _warrior_card(pdf: _WarbandPDF, warrior: WarriorVM, y: float, height: float)
         stats_y = y + 10.4
         band_h = 8.0
     top_h = height - band_h
-    pdf.set_draw_color(0, 0, 0)
-    pdf.set_text_color(0, 0, 0)
+    pdf.set_draw_color(*INK)
+    pdf.set_text_color(*INK)
+    pdf.set_fill_color(*PARCHMENT)
     pdf.set_line_width(0.9)
     pdf.rect(x, y, CARD_TOTAL_WIDTH, height, round_corners=True, corner_radius=3.0)
+    # Inner hairline, in the style of an engraved plate.
+    pdf.set_line_width(0.2)
+    pdf.set_draw_color(*INK_SOFT)
+    pdf.rect(x + 1.1, y + 1.1, CARD_TOTAL_WIDTH - 2.2, height - 2.2, round_corners=True, corner_radius=2.2)
+    pdf.set_draw_color(*INK)
 
-    # Left column: ruled NOMBRE / TIPO rows, then the stat table.
+    # Left column: ruled NOMBRE / TIPO rows, then the stat table. Both rows
+    # share one label-column width so the values line up on the same vertical.
     lx = x + 2.5
+    label_w = 19.0
     pdf.set_line_width(0.25)
     pdf.set_xy(lx, name_y)
     pdf.set_font("Times", "B", 9.5)
-    pdf.cell(17, 4.3, text=_safe(tr('Name')))
+    pdf.cell(label_w, 4.3, text=_safe(tr('Name')))
     pdf.set_font("Times", "", 8)
-    pdf.cell(LEFT_COL_W - 20, 4.3, text=_safe(warrior.name))
+    pdf.cell(LEFT_COL_W - label_w - 2.5, 4.3, text=_safe(warrior.name))
     pdf.line(lx, name_rule, x + LEFT_COL_W - 2.5, name_rule)
     pdf.set_xy(lx, type_y)
     pdf.set_font("Times", "B", 8.5)
-    pdf.cell(13, 3.8, text=_safe(tr('Type')))
+    pdf.cell(label_w, 3.8, text=_safe(tr('Type')))
     pdf.set_font("Times", "", 7)
-    pdf.cell(LEFT_COL_W - 16, 3.8, text=_safe(_type_text(warrior)))
+    pdf.cell(LEFT_COL_W - label_w - 2.5, 3.8, text=_safe(_type_text(warrior)))
     pdf.line(lx, type_rule, x + LEFT_COL_W - 2.5, type_rule)
     if hero:
         _stat_block(pdf, lx, stats_y, warrior, 4.2, 5.0)
@@ -304,7 +342,7 @@ def _warrior_card(pdf: _WarbandPDF, warrior: WarriorVM, y: float, height: float)
     pdf.line(x + 1.0, y + top_h, x + CARD_TOTAL_WIDTH - 1.0, y + top_h)
     if hero:
         _xp_boxes(pdf, x, y + top_h + 2.0, warrior, HERO_XP_PER_ROW, HERO_XP_ROWS,
-                  3.4, 3.0, 4.2, HERO_ADVANCE_THRESHOLDS)
+                  3.4, 3.0, 4.2, HERO_ADVANCE_THRESHOLDS, band_width=182.0)
     else:
         pdf.set_xy(x + 2.5, y + top_h + 1.6)
         pdf.set_font("Times", "B", 8.5)
@@ -320,27 +358,51 @@ def _warrior_card(pdf: _WarbandPDF, warrior: WarriorVM, y: float, height: float)
 # ---------------------------------------------------------------------------
 
 def _page_title(pdf: _WarbandPDF, text: str) -> None:
+    """A warband-summary masthead: letterspaced caps between ornament rules."""
+    pdf.set_text_color(*INK)
     pdf.set_font("Times", "B", 15)
-    pdf.set_text_color(0, 0, 0)
-    pdf.cell(0, 9, text=_safe(text), new_x="LMARGIN", new_y="NEXT")
+    spaced = " ".join(text.upper())
+    pdf.set_xy(pdf.l_margin, pdf.get_y())
+    pdf.cell(0, 9, text=_safe(spaced), align="C", new_x="LMARGIN", new_y="NEXT")
+    # Ornamental rules with a diamond, like a chapter heading.
+    y = pdf.get_y() + 0.5
+    mid_x = pdf.l_margin + CARD_TOTAL_WIDTH / 2.0
+    pdf.set_draw_color(*INK_SOFT)
+    pdf.set_line_width(0.35)
+    pdf.line(pdf.l_margin + 15.0, y, mid_x - 7.0, y)
+    pdf.line(mid_x + 7.0, y, pdf.l_margin + CARD_TOTAL_WIDTH - 15.0, y)
+    pdf.set_fill_color(*INK)
+    pdf.polygon(
+        [(mid_x, y - 1.6), (mid_x + 1.6, y), (mid_x, y + 1.6), (mid_x - 1.6, y)],
+        style="F",
+    )
+    pdf.ln(3.5)
 
 
 def _summary_line(pdf: _WarbandPDF, label: str, value: str = "") -> None:
     pdf.set_font("Times", "B", 12)
-    pdf.set_text_color(0, 0, 0)
+    pdf.set_text_color(*INK)
     pdf.cell(0, 7, text=_safe(f"{label} {value}"), new_x="LMARGIN", new_y="NEXT")
 
 
 def _summary_box(pdf: _WarbandPDF, x: float, y: float, w: float, h: float, title: str, lines: list[str]) -> None:
-    pdf.set_draw_color(0, 0, 0)
+    pdf.set_draw_color(*INK)
     pdf.set_line_width(0.45)
+    pdf.set_fill_color(255, 255, 255)
     pdf.rect(x, y, w, h, round_corners=True, corner_radius=3.0)
+    pdf.set_line_width(0.15)
+    pdf.set_draw_color(*INK_SOFT)
+    pdf.rect(x + 1.0, y + 1.0, w - 2.0, h - 2.0, round_corners=True, corner_radius=2.2)
     pdf.set_xy(x + 4.0, y + 3.0)
     pdf.set_font("Times", "B", 12)
-    pdf.set_text_color(0, 0, 0)
+    pdf.set_text_color(*INK)
     pdf.cell(w - 8.0, 6.0, text=_safe(title))
-    pdf.set_xy(x + 4.0, y + 10.5)
+    pdf.set_draw_color(*INK_SOFT)
+    pdf.set_line_width(0.25)
+    pdf.line(x + 4.0, y + 9.8, x + w - 4.0, y + 9.8)
+    pdf.set_xy(x + 4.0, y + 11.0)
     pdf.set_font("Times", "", 10.5)
+    pdf.set_text_color(*INK)
     if lines:
         pdf.multi_cell(w - 8.0, 5.4, text=_safe("\n".join(lines)), new_x="LMARGIN", new_y="NEXT")
 
@@ -366,7 +428,7 @@ def _summary_data(campaign: CampaignVM, snapshot) -> dict:
 def _render_summary_page(pdf: _WarbandPDF, campaign: CampaignVM, inventory, snapshot, moment: str) -> None:
     pdf.add_page()
     pdf.set_font("Times", "I", 8.5)
-    pdf.set_text_color(90, 90, 90)
+    pdf.set_text_color(*INK_SOFT)
     pdf.cell(0, 5.0, text=_safe(moment), align="R", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(1)
 
@@ -429,15 +491,27 @@ def export_warband_pdf(path, campaign: CampaignVM, *, state_number: int | None =
     card_area_bottom = pdf.h - 22.0
 
     def _render_group(warriors: list[WarriorVM], card_height: float) -> None:
+        # Homogeneous spacing: when a group fills exactly one page, the gap
+        # grows so the cards spread evenly from top margin to area bottom;
+        # otherwise the minimum gap keeps multi-page flow compact.
+        area = card_area_bottom - pdf.t_margin
+        count = len(warriors)
+        gap = CARD_GAP
+        if 1 < count and count * (card_height + CARD_GAP) - CARD_GAP <= area:
+            gap = min(8.0, (area - count * card_height) / (count - 1))
         for warrior in warriors:
-            if pdf.get_y() + card_height > card_area_bottom:
+            y0 = pdf.get_y()
+            if y0 + card_height > card_area_bottom:
                 pdf.add_page()
-            _warrior_card(pdf, warrior, pdf.get_y(), card_height)
-            pdf.set_y(pdf.get_y() + card_height + CARD_GAP)
+                y0 = pdf.get_y()
+            _warrior_card(pdf, warrior, y0, card_height)
+            # The card drawing moves the cursor (multi_cell in the EQUIPO /
+            # HABILIDADES cells), so the next position must be computed from
+            # the card's own origin — not from the cursor left behind — or
+            # the spacing between cards becomes irregular.
+            pdf.set_y(y0 + card_height + gap)
 
-    _render_group(heroes, HERO_CARD_HEIGHT)
-    # Hired Swords earn experience like heroes: same card, own group.
-    _render_group(hirelings, HERO_CARD_HEIGHT)
+    _render_group(heroes + hirelings, HERO_CARD_HEIGHT)
     _render_group(henchmen, HENCHMAN_CARD_HEIGHT)
 
     _render_summary_page(pdf, campaign, inventory, snapshot, _moment_label(campaign, state_number))

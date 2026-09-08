@@ -7,6 +7,7 @@ roll scenarios.
 """
 from __future__ import annotations
 
+from mordheim_campaign.application.knowledge_port import KnowledgePort
 from mordheim_campaign.application.post_battle_engine import PostBattleEngine
 from mordheim_campaign.application.state import make_example_state
 from tests.campaign.test_post_battle_engine import _pending
@@ -233,8 +234,44 @@ def test_roll_10_offers_the_promotion_option():
     assert ok and "Lad's Got Talent" in message
     options = engine.advance_options("novices")
     assert [(o.kind, o.label) for o in options] == [("promote_henchman", "Promote a member")]
-    # Not auto-committed: the player must promote explicitly.
-    assert not engine.post.pending_advance_for("novices")["committed"]
+    # Not auto-committed: the player must promote explicitly.    assert not engine.post.pending_advance_for("novices")["committed"]
+
+
+# -------------------------------------------------- forbid-skill-categories
+
+
+def test_forbid_skill_categories_contract_is_loadable_for_banned_profiles():
+    port = KnowledgePort()
+    assert port.banned_skill_categories("chaos-streets-undead-bloodlines", "necrarch-vampire") == {"strength"}
+    assert port.banned_skill_categories("lustria-lizardmen", "saurus-totem-warrior") == {"academic"}
+    # applies_to filter: the saurus brave shares the band but not the rule.
+    assert port.banned_skill_categories("lustria-lizardmen", "saurus-braves") == set()
+    # profiles without the contract are never banned by access alone.
+    assert port.banned_skill_categories("sisters-of-sigmar", "matriarch") == set()
+
+
+def test_advance_commit_rejects_banned_category_even_when_access_granted(monkeypatch):
+    engine, state, port = _pending()
+    matriarch = next(w for w in state.campaign.warriors if w.id == "matriarch")
+    # Simulate a campaign grant that adds Strength to the tables: the ban
+    # must still block it (it is decoupled from skill_access).
+    matriarch.skill_access.append("strength")
+    real = port.banned_skill_categories
+    monkeypatch.setattr(
+        port, "banned_skill_categories",
+        lambda band, pid: (real(band, pid) | {"strength"}) if pid == matriarch.profile_id else real(band, pid),
+    )
+    engine.sync_pending_advances()
+    engine.resolve_pending_advance("matriarch", 11)
+    ok, message = engine.commit_pending_advance("matriarch", option_kind="choose_skill", skill_name="Mighty Blow")
+    assert not ok and "forbidden" in message
+    # The same advance still commits an allowed table skill.
+    ok, _ = engine.commit_pending_advance("matriarch", option_kind="choose_skill", skill_name="Combat Master")
+    assert ok
+
+
+
+
 
 
 def test_promotion_splits_the_group_and_preserves_state():

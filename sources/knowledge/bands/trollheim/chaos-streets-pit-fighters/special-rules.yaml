@@ -865,3 +865,57 @@ rules:
   - dwarf-troll-slayer
   applies_to:
     band: true
+- id: dwarf-troll-slayer--no-armour
+  name: No Armour
+  effect: >-
+    A Dwarf Troll Slayer may never wear any form of armour.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 123
+    section: Heroes / 0-1 Dwarf Troll Slayer / Special Rules / No Armour
+  name_i18n:
+    es: Sin Armadura
+  effect_i18n:
+    es: >-
+      Un Asesatrolls Enano jamás puede llevar ningún tipo de armadura.
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayer
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: armour
+- id: dwarf-troll-slayer--no-missile-weapons
+  name: No Missile Weapons
+  effect: >-
+    A Dwarf Troll Slayer may never use missile weapons.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 123
+    section: Heroes / 0-1 Dwarf Troll Slayer / Special Rules / No Missile Weapons
+  name_i18n:
+    es: Sin Armas de Proyectil
+  effect_i18n:
+    es: >-
+      Un Asesatrolls Enano jamás puede usar armas de proyectil.
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayer
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.no-missile-weapons
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.no-missile-weapons

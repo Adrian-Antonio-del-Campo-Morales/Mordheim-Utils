@@ -7,6 +7,7 @@ from mordheim_campaign.application.state import POST_BATTLE_STEPS
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import ScrollableFrame
 from mordheim_ui.i18n import tr
+from mordheim_ui.icons import ui_icon
 
 
 class CampaignTimeline(tk.Frame):
@@ -94,11 +95,14 @@ class CampaignTimeline(tk.Frame):
         else:
             tk.Frame(row, bg=bg, width=3).pack(side="left", fill="y")
 
-        icon_wrap = tk.Frame(row, bg=bg, width=48, height=40 if major else 34)
+        icon_wrap = tk.Frame(row, bg=bg, width=54, height=48)
         icon_wrap.pack(side="left")
         icon_wrap.pack_propagate(False)
         color = COLORS.get(tone or "text", COLORS["text"])
-        tk.Label(icon_wrap, text=icon, bg=bg, fg=color, font=("Segoe UI Symbol", 11 if major else 9)).pack(expand=True)
+        tk.Label(
+            icon_wrap, image=ui_icon(self, icon, 27 if major else 23),
+            bg=bg, fg=color,
+        ).pack(expand=True)
 
         if action_label:
             action = tk.Button(
@@ -131,9 +135,9 @@ class CampaignTimeline(tk.Frame):
 
     def _draft_node(self) -> None:
         c = self.controller.state.campaign
-        subtitle = tr('{}/{} models  ·  {} gc remaining').format(c.draft_model_count, c.maximum_models, c.draft_treasury)
+        subtitle = tr('{}/{} models  ·  {} gc remaining').format(c.draft_warband_member_count, c.effective_maximum_models, c.draft_treasury)
         row = self._base_node(
-            "draft:0", "●", tr('INITIAL WARBAND  ·  DRAFT'), subtitle,
+            "draft:0", "campaign_navigation_initial_warband", tr('INITIAL WARBAND  ·  DRAFT'), subtitle,
             major=True, tone="accent", action_label=tr('CONFIRM'),
             action_command=self.controller.commit_initial_warband,
             action_enabled=c.draft_is_legal,
@@ -148,12 +152,13 @@ class CampaignTimeline(tk.Frame):
         else:
             title = tr('STATE #{}').format(state.number)
         subtitle = tr('Rating {}  ·  {}/{} models').format(state.rating, state.models, state.max_models)
-        row = self._base_node(state.node_id, "●", title, subtitle, major=True, tone="accent" if current else "text")
+        icon = "campaign_navigation_current_warband" if current else "campaign_navigation_warriors"
+        row = self._base_node(state.node_id, icon, title, subtitle, major=True, tone="accent" if current else "text")
         self._bind(row, lambda n=state.number: self.controller.select_state(n))
 
     def _pending_battle_node(self, number: int) -> None:
         row = self._base_node(
-            f"new-battle:{number}", "⚔",
+            f"new-battle:{number}", "campaign_battle_in_progress",
             tr('BATTLE #{}  ·  IN PROGRESS').format(number),
             tr('Record the battle results to continue'),
             major=False, tone="accent", action_label=tr('ADD BATTLE'),
@@ -162,10 +167,12 @@ class CampaignTimeline(tk.Frame):
         self._bind(row, lambda: self.controller.select_battle_entry(number))
 
     def _battle_node(self, battle) -> None:
-        result_tone = "success" if battle.result.lower() == "victory" else "danger"
+        result = battle.result.lower()
+        result_tone = "success" if result == "victory" else ("danger" if result == "defeat" else "text")
+        icon = "campaign_battle_victory" if result == "victory" else ("campaign_battle_defeat" if result == "defeat" else "campaign_battle_draw")
         title = tr('BATTLE #{}  ·  {}').format(battle.number, battle.result.upper())
         subtitle = f"{battle.scenario} vs. {battle.opponent}"
-        row = self._base_node(f"battle:{battle.number}", "⚔", title, subtitle, major=False, tone=result_tone)
+        row = self._base_node(f"battle:{battle.number}", icon, title, subtitle, major=False, tone=result_tone)
         self._bind(row, lambda n=battle.number: self.controller.select_battle(n))
 
     def _post_node(self, post) -> None:
@@ -177,8 +184,9 @@ class CampaignTimeline(tk.Frame):
             title = tr('POST-BATTLE #{}  ·  IN PROGRESS').format(post.battle_number)
             subtitle = (tr('Final Review') if post.review_open else tr('Step {}/8  ·  {}').format(post.active_step + 1, POST_BATTLE_STEPS[post.active_step]))
             tone = "accent"
+        icon = "campaign_battle_completed" if post.complete else "campaign_battle_post_battle"
         row = self._base_node(
-            post.node_id, "✦", title, subtitle, major=False, tone=tone,
+            post.node_id, icon, title, subtitle, major=False, tone=tone,
             action_label=tr('CONTINUE') if not post.complete else None,
             action_command=(lambda n=post.battle_number: self.controller.select_post_battle(n)) if not post.complete else None,
         )

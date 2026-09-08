@@ -1,4 +1,4 @@
-"""verification.scenarios: responsibility extracted without altering the rules."""
+"""verification: Semantic scenario runner over tests/specs."""
 from __future__ import annotations
 import mordheim_combat.modular.pools as pools
 

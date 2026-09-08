@@ -6,6 +6,7 @@ from tkinter import ttk
 from mordheim_campaign.application.controller import AppController
 from mordheim_ui.i18n import tr
 from mordheim_ui.theme import COLORS
+from mordheim_ui.windowing import center_on_application
 from mordheim_ui.widgets import BorderedFrame, ScrollableFrame
 
 
@@ -92,10 +93,19 @@ class DraftStashDialog(tk.Toplevel):
             for offer in offers:
                 row = tk.Frame(self.available_rows, bg=COLORS["panel_alt"])
                 row.pack(fill="x", pady=1, padx=(7, 0))
-                tk.Label(row, text=f"{offer.name}  ·  {offer.price_label}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(side="left", fill="x", expand=True)
+                label = f"{offer.name}  ·  {offer.price_label}"
+                restriction_notes = tuple(getattr(offer, "restriction_notes", ()) or ())
+                if restriction_notes:
+                    label += f"  ·  {'; '.join(restriction_notes)}"
+                tk.Label(row, text=label, bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(side="left", fill="x", expand=True)
                 button = ttk.Button(row, text=tr('BUY'), style="Mini.TButton", width=6, command=lambda value=offer: self._buy(value))
                 button.pack(side="right")
-                if offer.price_gc is None or offer.price_gc > treasury:
+                unresolvable = (
+                    offer.price_gc is None
+                    and getattr(offer, "price_dice", None) is None
+                    and getattr(offer, "price_upgrade_multiplier", None) is None
+                )
+                if unresolvable or (offer.price_gc is not None and offer.price_gc > treasury):
                     button.state(["disabled"])
         if not campaign.inventory:
             tk.Label(self.stash_rows, text=tr('The stash is empty.'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
@@ -131,19 +141,65 @@ class DraftStashDialog(tk.Toplevel):
         self._refresh()
 
     def _run(self, action, item_id: str) -> None:
-        ok, message = action(item_id, 1)
+        ok, message = self.controller.perform_undoable(
+            tr('Change stash'), lambda: action(item_id, 1))
         self.status_var.set(("✓ " if ok else "! ") + message)
         self._refresh()
 
     def _buy(self, offer) -> None:
         if self.mode == "draft":
+            if getattr(offer, "price_dice", None) is not None:
+                from mordheim_campaign.ui.dialogs.variable_price import VariablePriceDialog
+                VariablePriceDialog(
+                    self, offer=offer,
+                    buy=lambda price: self._buy_draft_variable(offer.item_id, price),
+                )
+                return
+            if getattr(offer, "price_upgrade_multiplier", None) is not None:
+                from mordheim_campaign.ui.dialogs.variable_price import UpgradePriceDialog
+                UpgradePriceDialog(
+                    self, offer=offer, campaign=self.controller.state.campaign,
+                    buy=lambda price: self._buy_draft_variable(offer.item_id, price),
+                )
+                return
             self._run(self.controller.buy_draft_stash_item, offer.item_id)
             return
-        result = self.controller.post_battle_engine().buy_item(
-            offer.item_id, 1, offer.price_gc, category=offer.category, rarity=offer.rarity,
-        )
+        engine = self.controller.post_battle_engine()
+        if getattr(offer, "price_dice", None) is not None:
+            from mordheim_campaign.ui.dialogs.variable_price import VariablePriceDialog
+
+            VariablePriceDialog(
+                self, offer=offer,
+                buy=lambda price: self.controller.perform_undoable(
+                    tr('Buy item'), lambda: engine.buy_item(
+                        offer.item_id, 1, price, category=offer.category, rarity=offer.rarity,
+                    )),
+            )
+            return
+        if getattr(offer, "price_upgrade_multiplier", None) is not None:
+            from mordheim_campaign.ui.dialogs.variable_price import UpgradePriceDialog
+
+            UpgradePriceDialog(
+                self, offer=offer, campaign=self.controller.state.campaign,
+                buy=lambda price: self.controller.perform_undoable(
+                    tr('Buy item'), lambda: engine.buy_item(
+                        offer.item_id, 1, price, category=offer.category, rarity=offer.rarity,
+                    )),
+            )
+            return
+        result = self.controller.perform_undoable(
+            tr('Buy item'), lambda: engine.buy_item(
+                offer.item_id, 1, offer.price_gc, category=offer.category, rarity=offer.rarity,
+            ))
         self.status_var.set(("✓ " if result[0] else "! ") + result[1])
         self._refresh()
+
+    def _buy_draft_variable(self, item_id: str, price: int):
+        result = self.controller.perform_undoable(
+            tr('Buy item'), lambda: self.controller.buy_draft_stash_item(item_id, 1, price))
+        self.status_var.set(("✓ " if result[0] else "! ") + result[1])
+        self._refresh()
+        return result
 
     def _sell(self, item_id: str) -> None:
         action = self.controller.remove_draft_stash_item if self.mode == "draft" else self.controller.post_battle_engine().sell_item
@@ -154,8 +210,4 @@ class DraftStashDialog(tk.Toplevel):
         self.controller.notify()
 
     def _center(self) -> None:
-        self.update_idletasks()
-        parent = self.master.winfo_toplevel()
-        x = parent.winfo_rootx() + max(0, (parent.winfo_width() - self.winfo_width()) // 2)
-        y = parent.winfo_rooty() + max(0, (parent.winfo_height() - self.winfo_height()) // 2)
-        self.geometry(f"+{x}+{y}")
+        center_on_application(self)

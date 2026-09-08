@@ -22,6 +22,7 @@ class AwardRow:
     amount: int
     amount_dice: str | None
     manual: bool
+    selection: str = "single"  # single | multiple | distributed
 
 
 class ScenarioRewards:
@@ -36,6 +37,29 @@ class ScenarioRewards:
         catalog = self.port.campaign_catalog()
         document = catalog.catalogue("experience-and-advances.yaml")
         return {str(row.get("id") or ""): dict(row) for row in document.get("awards") or ()}
+
+    @staticmethod
+    def _manual_selection(entry: dict) -> str:
+        """Choose the UI control from reward semantics, not one exact wording."""
+        declared = str(entry.get("selection") or "").strip().casefold()
+        if declared in {"single", "multiple", "distributed"}:
+            return declared
+        effect = str(entry.get("effect") or "").casefold()
+        if "distributed" in effect or "freely distributed" in effect:
+            return "distributed"
+        multiple_markers = (
+            "any ", "each ", "every ", "all units", "all surviving",
+            "leader and heroes", "surviving heroes or henchman",
+            "a hero or henchman carrying", "a fighter earns",
+            "a hero earns +1 experience for each", "if a hero or henchman group survives",
+        )
+        return "multiple" if any(marker in effect for marker in multiple_markers) else "single"
+
+    def additional(self, scenario_id: str) -> tuple[dict, ...]:
+        """Executable additional rewards declared by the KB for a scenario."""
+        document = self.port.campaign_catalog().catalogue("scenario-rewards.yaml")
+        entry = next((row for row in document.get("scenarios") or () if row.get("scenario_id") == scenario_id), None)
+        return tuple(dict(row) for row in (entry or {}).get("rewards") or ())
 
     def plan(self, scenario_id: str) -> tuple[AwardRow, ...]:
         """The ordered award rows of one scenario."""
@@ -61,6 +85,7 @@ class ScenarioRewards:
                     amount=int(award.get("amount") or 0),
                     amount_dice=None,
                     manual=False,
+                    selection="single",
                 ))
                 continue
             rows.append(AwardRow(
@@ -71,6 +96,7 @@ class ScenarioRewards:
                 amount=int(entry.get("amount") or 0),
                 amount_dice=str(entry.get("amount_dice")) if entry.get("amount_dice") else None,
                 manual=True,
+                selection=self._manual_selection(entry),
             ))
         return tuple(rows)
 
@@ -82,7 +108,7 @@ class ScenarioRewards:
         warriors,
         *,
         result: str,
-        enemy_out_of_action: int = 0,
+        enemy_out_of_action: int | dict[str, int] = 0,
     ) -> dict[str, int]:
         """Per-warrior XP totals from the battle facts (manual rows excluded)."""
         totals: dict[str, int] = {}
@@ -98,11 +124,16 @@ class ScenarioRewards:
                 if result == "Victory" and leader is not None:
                     totals[leader.id] = totals.get(leader.id, 0) + row.amount
             elif trigger == "enemy_put_out_of_action":
-                if enemy_out_of_action > 0:
-                    for warrior in warriors:
-                        if warrior.kind == "hero":
-                            totals[warrior.id] = totals.get(warrior.id, 0) + row.amount * enemy_out_of_action
+                counts = enemy_out_of_action if isinstance(enemy_out_of_action, dict) else {
+                    warrior.id: int(enemy_out_of_action)
+                    for warrior in warriors if warrior.kind == "hero"
+                }
+                for warrior in warriors:
+                    count = max(0, int(counts.get(warrior.id, 0)))
+                    if warrior.kind == "hero" and count:
+                        totals[warrior.id] = totals.get(warrior.id, 0) + row.amount * count
         return totals
 
-    def compute_for(self, scenario_id: str, warriors, *, result: str, enemy_out_of_action: int = 0) -> dict[str, int]:
+    def compute_for(self, scenario_id: str, warriors, *, result: str,
+                    enemy_out_of_action: int | dict[str, int] = 0) -> dict[str, int]:
         return self.compute(self.plan(scenario_id), warriors, result=result, enemy_out_of_action=enemy_out_of_action)

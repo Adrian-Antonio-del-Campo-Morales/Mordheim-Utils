@@ -1,4 +1,4 @@
-"""ui.theme: responsibility extracted without altering the rules."""
+"""ui: Combat Lab Tkinter theme and colour tokens."""
 from __future__ import annotations
 
 from tkinter import ttk

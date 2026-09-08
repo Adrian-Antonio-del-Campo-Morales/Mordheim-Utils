@@ -1,4 +1,4 @@
-"""verification.specifications: responsibility extracted without altering the rules."""
+"""verification: Specification loading and digest pinning."""
 from __future__ import annotations
 
 from mordheim_knowledge.loader import read_yaml

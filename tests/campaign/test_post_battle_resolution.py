@@ -26,7 +26,7 @@ def test_hero_serious_injury_rows_are_kb_rows():
         outcome = resolver.resolve_hero_serious_injury(d66)
         assert outcome.result == expected, (d66, outcome)
     dead = resolver.resolve_hero_serious_injury(11)
-    assert dead.effects == ("removes the warrior from the roster",)
+    assert dead.effects == ("The warrior is permanently removed from the roster.",)
     leg = resolver.resolve_hero_serious_injury(22)
     assert "movement" in leg.effects[0] and "-1" in leg.effects[0]
     multiple = resolver.resolve_hero_serious_injury(21)
@@ -34,6 +34,22 @@ def test_hero_serious_injury_rows_are_kb_rows():
     # Madness needs the follow-up D6 subtable.
     madness = resolver.resolve_hero_serious_injury(24)
     assert madness.follow_up is not None
+
+
+def test_serious_injury_effects_expose_concrete_details_and_kb_notes():
+    resolver = _resolver()
+
+    old_wound = resolver.resolve_hero_serious_injury(32)
+    assert "Before each battle roll D6" in old_wound.effects[0]
+    assert "on 1" in old_wound.effects[0]
+
+    blinded = resolver.resolve_hero_serious_injury(31)
+    assert "ballistic skill" in blinded.effects[0]
+    assert "remaining good eye" in blinded.note
+
+    captured = resolver.resolve_hero_serious_injury(61)
+    assert "equipment remains" in captured.effects[0]
+    assert "ransomed" in captured.note
 
 
 def test_advance_thresholds_rating_and_racial_maximums_come_from_the_kb():

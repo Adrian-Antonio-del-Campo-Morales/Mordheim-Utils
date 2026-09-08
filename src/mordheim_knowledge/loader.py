@@ -1,4 +1,4 @@
-"""knowledge.loader: responsibility extracted without altering the rules."""
+"""knowledge: Knowledge-base document loading and validation."""
 from __future__ import annotations
 from mordheim_knowledge.paths import project_root
 

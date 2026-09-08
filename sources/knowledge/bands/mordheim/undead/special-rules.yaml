@@ -510,3 +510,30 @@ rules:
       reason: >-
         Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
         construction.
+- id: necromancer--no-armoured-casting
+  name: No Armour Casting
+  effect: >-
+    A Necromancer may not cast spells while wearing armour or carrying a shield or buckler unless the Necromancer has a rule such as Warrior Wizard that explicitly allows it.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Necromancer / Special Rules / No Armour Casting
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
+  name_i18n:
+    es: Sin Conjuros con Armadura
+  effect_i18n:
+    es: >-
+      Un Nigromante no puede lanzar conjuros mientras lleva armadura, escudo o rodela, salvo que tenga una regla como Guerrero Mago que lo permita explícitamente.
+  applies_to:
+    profile_ids:
+    - necromancer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.undead.necromancer.no-armoured-casting
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic.

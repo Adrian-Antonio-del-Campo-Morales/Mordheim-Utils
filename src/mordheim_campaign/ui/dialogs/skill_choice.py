@@ -5,6 +5,7 @@ from tkinter import ttk
 
 from mordheim_campaign.application.post_battle_engine import PostBattleEngine
 from mordheim_ui.theme import COLORS
+from mordheim_ui.windowing import center_on_application
 from mordheim_ui.widgets import BorderedFrame
 from mordheim_ui.i18n import tr
 
@@ -104,10 +105,13 @@ class SkillChoiceDialog(tk.Toplevel):
 
     def _skill_entries(self, warrior) -> list[tuple[str, str]]:
         allowed = set(self.engine.promotion_hero_tables(self.warrior_id) or ()) if self.promotion else set(warrior.skill_access or ())
+        banned = self.engine.port.banned_skill_categories(self.engine.campaign.band_id, warrior.profile_id)
         entries: list[tuple[str, str]] = []
         for skill in self.engine.port.skills():
             name = str(skill.get("name") or "")
             table = self.engine.port.skill_table_label(skill)
+            if str(skill.get("category") or "") in banned:
+                continue
             if allowed and table not in allowed:
                 continue
             known = name in warrior.skills
@@ -121,7 +125,7 @@ class SkillChoiceDialog(tk.Toplevel):
         if not selection:
             self._detail_var.set("")
             return
-        _payload, label = self._entries[selection[0]]
+        payload, label = self._entries[selection[0]]
         if label.startswith("✓"):
             if self.want_spells:
                 known_id, known_name = payload, label.removeprefix("✓ ")
@@ -189,8 +193,4 @@ class SkillChoiceDialog(tk.Toplevel):
         self.destroy()
 
     def _center(self) -> None:  # mirrors AddWarriorDialog._center
-        self.update_idletasks()
-        parent = self.master.winfo_toplevel()
-        x = parent.winfo_rootx() + max(0, (parent.winfo_width() - self.winfo_width()) // 2)
-        y = parent.winfo_rooty() + max(0, (parent.winfo_height() - self.winfo_height()) // 2)
-        self.geometry(f"+{x}+{y}")
+        center_on_application(self)

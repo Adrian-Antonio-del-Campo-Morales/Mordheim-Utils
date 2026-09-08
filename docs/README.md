@@ -29,6 +29,7 @@ Three kinds of documents, kept apart on purpose:
 | Document | Content |
 | --- | --- |
 | [Design rulings](decisions/design-rulings.md) | Permanent development decisions that bind the KB, engines or applications. |
+| [Verification history](decisions/verification-history.md) | Development record of the verification layers: the round-ledger convention, the mutation survivor and the case against pair explosion. |
 | [Modular source audit](decisions/modular-audit.md) | Audit record: findings M01–M28 status, additional findings, NumPy/native porting backlog. Retire once resolved. |
 
 ## Generated reports

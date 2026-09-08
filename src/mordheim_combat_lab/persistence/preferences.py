@@ -1,4 +1,4 @@
-"""persistence.preferences: responsibility extracted without altering the rules."""
+"""persistence: Versioned user preferences persistence."""
 from __future__ import annotations
 
 import json as json

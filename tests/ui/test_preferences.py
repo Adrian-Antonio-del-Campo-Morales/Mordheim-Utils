@@ -1,4 +1,4 @@
-"""external.test_preferences: responsibility extracted without altering the rules."""
+"""external.test_preferences: Preferences persistence tests."""
 from __future__ import annotations
 
 from mordheim_combat_lab.persistence.preferences import load_preferences

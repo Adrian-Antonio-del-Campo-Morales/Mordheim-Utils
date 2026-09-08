@@ -1,4 +1,4 @@
-"""ui.tabs: responsibility extracted without altering the rules."""
+"""ui: Combat Lab UI tabs."""
 from __future__ import annotations
 
 

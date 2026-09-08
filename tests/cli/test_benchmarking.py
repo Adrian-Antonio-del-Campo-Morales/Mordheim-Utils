@@ -35,12 +35,18 @@ def test_deep_suite_extends_the_five_core_scenarios():
 def test_deep_pair_sets_are_stable_and_fast_is_a_full_subset():
     full = deep_test_scenarios("full")
     fast = deep_test_scenarios("fast")
+    mini = deep_test_scenarios("mini")
     full_ids = tuple(item.id for item in full)
     fast_ids = tuple(item.id for item in fast)
+    mini_ids = tuple(item.id for item in mini)
 
     assert len(full) == 42
     assert len(fast) == 30
+    assert len(mini) == 10
     assert set(fast_ids) <= set(full_ids)
+    # mini keeps the cheap baseline/mirror pairs that fast drops on purpose:
+    # they measure fixed per-batch overhead, so it is only a full subset.
+    assert set(mini_ids) <= set(full_ids)
     assert len(set(full_ids)) == len(full_ids)
     assert fast_ids == (
         "defences", "stateful", "sigmarite-vs-undead", "regen-vs-fire",
@@ -56,7 +62,7 @@ def test_deep_pair_sets_are_stable_and_fast_is_a_full_subset():
         "first-round-opener", "random-characteristics-vs-stable",
         "trained-bear-vs-scarecrow", "silent-walker-vs-cold-one",
     )
-    with pytest.raises(ValueError, match="choose 'fast' or 'full'"):
+    with pytest.raises(ValueError, match="choose 'mini', 'fast' or 'full'"):
         deep_test_scenarios("unknown")
 
 

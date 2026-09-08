@@ -1,4 +1,4 @@
-"""external.test_improvements: responsibility extracted without altering the rules."""
+"""external.test_improvements: Improvements tab behaviour tests."""
 from __future__ import annotations
 
 from mordheim_combat_lab.application.catalogue import CombatCatalogue

@@ -29,11 +29,12 @@ class ScrollableFrame(ttk.Frame):
         self.canvas.bind("<Configure>", lambda e: self.canvas.itemconfigure(self.window_id, width=e.width))
         self.canvas.bind("<Enter>", lambda _e: self._bind_mousewheel())
         self.canvas.bind("<Leave>", lambda _e: self._unbind_mousewheel())
+        self.bind("<Destroy>", self._on_destroy, add=True)
 
     def _bind_mousewheel(self) -> None:
         self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
-        self.canvas.bind_all("<Button-4>", lambda _e: self.canvas.yview_scroll(-1, "units"))
-        self.canvas.bind_all("<Button-5>", lambda _e: self.canvas.yview_scroll(1, "units"))
+        self.canvas.bind_all("<Button-4>", lambda _e: self._scroll_units(-1))
+        self.canvas.bind_all("<Button-5>", lambda _e: self._scroll_units(1))
 
     def _unbind_mousewheel(self) -> None:
         self.canvas.unbind_all("<MouseWheel>")
@@ -41,7 +42,19 @@ class ScrollableFrame(ttk.Frame):
         self.canvas.unbind_all("<Button-5>")
 
     def _on_mousewheel(self, event: tk.Event) -> None:
-        self.canvas.yview_scroll(int(-event.delta / 120), "units")
+        self._scroll_units(int(-event.delta / 120))
+
+    def _scroll_units(self, units: int) -> None:
+        """Ignore wheel events already queued when this view was destroyed."""
+        try:
+            if self.winfo_exists() and self.canvas.winfo_exists():
+                self.canvas.yview_scroll(units, "units")
+        except tk.TclError:
+            return
+
+    def _on_destroy(self, event: tk.Event) -> None:
+        if event.widget is self:
+            self._unbind_mousewheel()
 
 
 class SectionBox(BorderedFrame):

@@ -14,6 +14,7 @@ treasury checks and purchases remain application/persistence work.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 from mordheim_campaign.application.hire_eligibility import DecisionKind, WarbandHireContext, context_from_roster, dynamic_rules_for_profile, evaluate_rule
@@ -67,6 +68,17 @@ class TradingPostOffer:
     price_gc: int | None  # flat price the write side can apply; None = variable/multiplier
     source: str  # trading-post entry id
     category: str = "other"
+    #: Structured variable-price parts from the KB entry (None = flat price).
+    #: ``price_gc`` is flat only when all four are None.
+    price_base_gc: int | None = None
+    price_dice: tuple[int, int] | None = None  # (count, sides) of the variable part
+    price_variable_multiplier: int | None = None  # applied to the rolled dice
+    price_upgrade_multiplier: int | None = None  # applied to the base record's price
+    #: Remaining restriction surface: hero-only flag, warband limit and the
+    #: prose-only notes (``condition``/``profile_only``) kept as text.
+    heroes_only: bool = False
+    limit_per_warband: int | None = None
+    restriction_notes: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -80,6 +92,7 @@ class HirelingOffer:
     availability_label: str
     fee_label: str | None
     upkeep_label: str | None
+    upkeep_resources: tuple[tuple[str, int], ...] = ()
     #: Result of the 18 dynamic campaign-eligibility rules: "eligible",
     #: "conditional" (acceptance roll), "variant" (Mercenary variant needed)
     #: or "ineligible". Ineligible offers are not returned.
@@ -91,6 +104,10 @@ class HirelingOffer:
     #: Full per-resource hiring fee declared by the KB (resource -> flat
     #: cost). Dice-declared amounts are omitted; the engine rejects them.
     fee_resources: tuple[tuple[str, int], ...] = ()
+    #: Variable gold fee, e.g. the ninja's "70+3D6": base gc plus a dice roll.
+    #: When set, ``fee_gc`` is None and the engine needs ``fee_roll``.
+    fee_base_gc: int | None = None
+    fee_dice: tuple[int, int] | None = None  # (count, sides)
     #: Acceptance roll for ``eligibility == "conditional"``: succeed on D6
     #: >= ``roll_ge``. None when the entry is unconditional.
     roll_ge: int | None = None
@@ -146,6 +163,52 @@ def _price_gc(price: dict | None, override: int | None) -> int | None:
     return int(price["base_gc"])
 
 
+def _price_parts(price: dict | None) -> dict:
+    """Structured parts of a trading-post price block.
+
+    ``base_gc`` is the fixed part; ``dice`` the variable (count, sides);
+    ``variable_multiplier`` applies to the rolled dice; ``upgrade_multiplier``
+    is a multiplier-only price (applies to the record being upgraded).
+    """
+    if not isinstance(price, dict):
+        return {}
+    parts: dict = {}
+    base = price.get("base_gc")
+    if isinstance(base, int):
+        parts["base_gc"] = base
+    variable = price.get("optional_variable_cost")
+    if isinstance(variable, dict):
+        dice = variable.get("dice")
+        if isinstance(dice, dict):
+            parts["dice"] = (int(dice.get("count") or 1), int(dice.get("sides") or 6))
+        multiplier = variable.get("multiplier")
+        if isinstance(multiplier, int):
+            parts["variable_multiplier"] = multiplier
+    elif isinstance(price.get("multiplier"), int):
+        parts["upgrade_multiplier"] = price["multiplier"]
+    return parts
+
+
+def resolve_offer_price(offer: TradingPostOffer, dice_total: int | None = None) -> int | None:
+    """Final unit price in gc of one offer, or None when it cannot resolve.
+
+    Flat offers resolve to ``price_gc``; variable offers need the rolled dice
+    total; upgrade-multiplier offers need a base record the caller picks.
+    """
+    if offer.price_gc is not None:
+        return offer.price_gc
+    if offer.price_upgrade_multiplier is not None:
+        return None
+    if offer.price_base_gc is None and offer.price_dice is None:
+        return None
+    total = offer.price_base_gc or 0
+    if offer.price_dice is not None:
+        if dice_total is None:
+            return None
+        total += dice_total * (offer.price_variable_multiplier or 1)
+    return total
+
+
 def _trading_category(entry: dict) -> str:
     """Printed Trading Post section, rather than the item's storage kind."""
     for source in entry.get("source_refs") or ():
@@ -167,14 +230,36 @@ def _resource_costs(resources: dict | None) -> tuple[tuple[str, int], ...]:
     return tuple(costs)
 
 
+#: Gold fees transcribed by the collation pass may store a variable amount as
+#: the string "<base>+<count>D<sides>" (e.g. the ninja's "70+3D6").
+_GOLD_FEE_DICE = re.compile(r"^(\d+)\+(\d+)D(\d+)$")
+
+
+def _gold_fee_parts(amount) -> tuple[int | None, tuple[int, int] | None]:
+    """(flat gc, dice) of one gold_crowns fee amount."""
+    if not isinstance(amount, dict):
+        return None, None
+    cost = amount.get("cost")
+    if isinstance(cost, int) and not amount.get("dice"):
+        return cost, None
+    if isinstance(cost, str):
+        match = _GOLD_FEE_DICE.match(cost.strip())
+        if match:
+            return int(match.group(1)), (int(match.group(2)), int(match.group(3)))
+    if isinstance(amount.get("dice"), dict) and isinstance(cost, int):
+        dice = amount["dice"]
+        return cost, (int(dice.get("count") or 1), int(dice.get("sides") or 6))
+    return None, None
+
+
 def _gold_fee(resources: dict | None) -> int | None:
     """Flat gold-crowns hiring fee, when the entry declares one."""
     for name, amount in (resources or {}).items():
         if name != "gold_crowns" or not isinstance(amount, dict):
             continue
-        cost = amount.get("cost")
-        if isinstance(cost, int) and not amount.get("dice"):
-            return cost
+        flat, dice = _gold_fee_parts(amount)
+        if flat is not None and dice is None:
+            return flat
     return None
 
 
@@ -186,6 +271,7 @@ def _resource_label(resources: dict) -> str | None:
         if not isinstance(amount, dict) or amount.get("cost") is None:
             continue
         unit = _RESOURCE_LABELS.get(name, name.replace("_", " "))
+        # Variable amounts ("70+3D6") render as transcribed.
         pieces.append(f"{amount['cost']} {unit}")
     return " + ".join(pieces)
 
@@ -336,6 +422,20 @@ class PostBattleCatalogue:
             override = self.port.price_override(self.collection, self.band_id, item_id)
             if override is not None:
                 price_label = f"{override} gc"  # confirmed market exception
+            parts = _price_parts(entry.get("price"))
+            heroes_only = any(
+                restriction.get("type") == "heroes_only"
+                for restriction in entry.get("restrictions") or ()
+            )
+            limit = next(
+                (int(restriction.get("value")) for restriction in entry.get("restrictions") or ()
+                 if restriction.get("type") == "limit_per_warband" and restriction.get("value") is not None),
+                None,
+            )
+            notes = tuple(
+                str(restriction.get("note")) for restriction in entry.get("restrictions") or ()
+                if restriction.get("type") in ("condition", "profile_only") and restriction.get("note")
+            )
             offers.append(TradingPostOffer(
                 item_id=item_id,
                 name=str(self.port.item_name(item_id) or item_id),
@@ -345,6 +445,13 @@ class PostBattleCatalogue:
                 price_gc=_price_gc(entry.get("price"), override),
                 source=str(entry.get("id") or ""),
                 category=_trading_category(entry),
+                price_base_gc=parts.get("base_gc"),
+                price_dice=parts.get("dice"),
+                price_variable_multiplier=parts.get("variable_multiplier"),
+                price_upgrade_multiplier=parts.get("upgrade_multiplier"),
+                heroes_only=heroes_only,
+                limit_per_warband=limit,
+                restriction_notes=notes,
             ))
         ordering = (lambda offer: (offer.rarity or 0, offer.name.casefold())) if kind == "rare" \
             else (lambda offer: offer.name.casefold())
@@ -371,6 +478,8 @@ class PostBattleCatalogue:
         offers = []
         for entry in entries or ():
             profile_id = str(entry.get("profile_id") or "")
+            if profile_id in self._hire_context.hired_sword_profile_ids:
+                continue
             if not self._entry_static_allows(entry):
                 continue
             decisions = self._dynamic_decisions(profile_id)
@@ -385,7 +494,15 @@ class PostBattleCatalogue:
                 decision.note for decision in decisions
                 if decision.kind in (DecisionKind.CONDITIONAL, DecisionKind.NEEDS_VARIANT)
             )
-            fee_gc = _gold_fee((entry.get("hiring_fee") or {}).get("resources"))
+            fee_resources = (entry.get("hiring_fee") or {}).get("resources")
+            fee_gc = _gold_fee(fee_resources)
+            fee_base, fee_dice = None, None
+            if fee_gc is None:
+                for name, amount in (fee_resources or {}).items():
+                    if name == "gold_crowns" and isinstance(amount, dict):
+                        fee_base, fee_dice = _gold_fee_parts(amount)
+                        if fee_dice is not None:
+                            break
             roll_ge = next(
                 (decision.roll_ge for decision in decisions
                  if decision.kind == DecisionKind.CONDITIONAL and decision.roll_ge is not None),
@@ -399,10 +516,13 @@ class PostBattleCatalogue:
                 availability_label=availability_label,
                 fee_label=_resource_label((entry.get("hiring_fee") or {}).get("resources")),
                 upkeep_label=_resource_label((entry.get("upkeep") or {}).get("resources")),
+                upkeep_resources=_resource_costs((entry.get("upkeep") or {}).get("resources")),
                 eligibility=eligibility,
                 eligibility_note=note.strip(),
                 fee_gc=fee_gc,
-                fee_resources=_resource_costs((entry.get("hiring_fee") or {}).get("resources")),
+                fee_resources=_resource_costs(fee_resources),
+                fee_base_gc=fee_base if fee_dice else None,
+                fee_dice=fee_dice,
                 roll_ge=roll_ge,
             ))
         return tuple(sorted(offers, key=lambda offer: (offer.eligibility != "eligible", offer.name.casefold())))

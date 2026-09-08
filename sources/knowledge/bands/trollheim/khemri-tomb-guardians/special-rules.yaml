@@ -847,3 +847,31 @@ rules:
       binding: null
       reason: >-
         Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+- id: mortuary-priest--no-armour
+  name: No Armour
+  effect: >-
+    A Mortuary Priest may never wear armour because it interferes with the Priest's powers.
+  source:
+    manual: khemri
+    printed_page: 44
+    section: Heroes / 0-1 Mortuary Priest / No Armour
+  name_i18n:
+    es: Sin Armadura
+  effect_i18n:
+    es: >-
+      Un Sacerdote Funerario jamás puede llevar armadura porque interfiere con los poderes del Sacerdote.
+  applies_to:
+    profile_ids:
+    - mortuary-priest
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: armour

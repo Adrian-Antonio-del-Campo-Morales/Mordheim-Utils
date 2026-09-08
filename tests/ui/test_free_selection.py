@@ -1,4 +1,4 @@
-"""external.test_free_selection: responsibility extracted without altering the rules."""
+"""external.test_free_selection: Free-selection fighter build editor tests."""
 from __future__ import annotations
 
 from mordheim_combat_lab.application.catalogue import CombatCatalogue

@@ -1,4 +1,4 @@
-"""domain.models: responsibility extracted without altering the rules."""
+"""domain: Core domain types: fighters, builds, duel requests and results."""
 from __future__ import annotations
 
 from dataclasses import dataclass

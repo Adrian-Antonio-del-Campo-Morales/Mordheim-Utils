@@ -430,3 +430,29 @@ rules:
       binding: null
       reason: >-
         Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+- id: shadow-weaver--no-armoured-casting
+  name: No Armour Casting
+  effect: >-
+    A Shadow Weaver may not cast spells while wearing armour.
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 140
+    section: Heroes / 0-1 Shadow Weaver / Special Rules / No Armour Casting
+  name_i18n:
+    es: Sin Conjuros con Armadura
+  effect_i18n:
+    es: >-
+      Un Tejedor de Sombras no puede lanzar conjuros mientras lleva armadura.
+  applies_to:
+    profile_ids:
+    - shadow-weaver
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.chaos-streets-sons-of-nagarythe.shadow-weaver.no-armoured-casting
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic.

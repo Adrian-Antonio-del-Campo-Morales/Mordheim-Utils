@@ -159,6 +159,9 @@ def _campaign_from_payload(payload: dict) -> CampaignVM:
         rare_finds=int(payload.get("rare_finds") or 0),
         treasures=int(payload.get("treasures") or 0),
         campaign_points=int(payload.get("campaign_points") or 0),
+        special_rules=[dict(row) for row in payload.get("special_rules") or ()],
+        unique_reward_ids=[str(value) for value in payload.get("unique_reward_ids") or ()],
+        manual_log=[dict(row) for row in payload.get("manual_log") or ()],
         is_draft=bool(payload.get("is_draft") or False),
         starting_gold=int(payload.get("starting_gold") or 500),
         minimum_models=int(payload.get("minimum_models") or 3),
@@ -197,6 +200,16 @@ def _warrior_from_payload(row: dict) -> WarriorVM:
             str(key): int(value)
             for key, value in dict(row.get("spell_difficulty_modifiers") or {}).items()
         },
+        hireling_rating=int(row.get("hireling_rating") or 0),
+        maximum_models_modifier=int(row.get("maximum_models_modifier") or 0),
+        upkeep_resources=[(str(key), int(value)) for key, value in row.get("upkeep_resources") or ()],
+        games_to_miss=max(0, int(row.get("games_to_miss") or 0)),
+        absence_reason=str(row.get("absence_reason") or ""),
+        hatreds=[str(value) for value in row.get("hatreds") or ()],
+        battle_start_checks=[dict(value) for value in row.get("battle_start_checks") or ()],
+        injury_records=[dict(value) for value in row.get("injury_records") or ()],
+        lost_eyes=[str(value) for value in row.get("lost_eyes") or ()],
+        special_rules=[str(value) for value in row.get("special_rules") or ()],
     )
 
 
@@ -206,6 +219,7 @@ def _battle_from_payload(row: dict) -> BattleVM:
         date=str(row.get("date") or ""),
         scenario=str(row.get("scenario") or ""),
         opponent=str(row.get("opponent") or ""),
+        opponent_band_id=str(row.get("opponent_band_id") or ""),
         result=str(row.get("result") or ""),
         gold_delta=int(row.get("gold_delta") or 0),
         wyrdstone=int(row.get("wyrdstone") or 0),
@@ -232,6 +246,7 @@ def _battle_from_payload(row: dict) -> BattleVM:
             for key, value in dict(row.get("xp_awards") or {}).items()
         },
         scenario_results=dict(row.get("scenario_results") or {}),
+        absentees=[dict(item) for item in row.get("absentees") or ()],
     )
 
 
@@ -288,6 +303,7 @@ def _inventory_from_payload(row: dict) -> InventoryItemVM:
         stash=int(row.get("stash") or 0),
         value=int(row.get("value") or 0),
         rarity=row.get("rarity"),
+        special_rules=[str(value) for value in row.get("special_rules") or ()],
     )
 
 
