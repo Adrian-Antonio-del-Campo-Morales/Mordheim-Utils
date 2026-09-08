@@ -1,4 +1,4 @@
-"""ui.widgets.progress: responsibility extracted without altering the rules."""
+"""ui: Progress and cancellation widgets for long runs."""
 from __future__ import annotations
 
 from threading import Event

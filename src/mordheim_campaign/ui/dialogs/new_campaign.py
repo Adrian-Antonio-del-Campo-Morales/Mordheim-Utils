@@ -5,6 +5,7 @@ from tkinter import ttk
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_ui.theme import COLORS
+from mordheim_ui.windowing import center_on_application
 from mordheim_ui.widgets import BorderedFrame
 from mordheim_ui.i18n import tr
 
@@ -105,11 +106,7 @@ class NewCampaignDialog(tk.Toplevel):
         self._update_caption()
 
     def _center(self) -> None:
-        self.update_idletasks()
-        parent = self.master.winfo_toplevel()
-        x = parent.winfo_rootx() + max(0, (parent.winfo_width() - self.winfo_width()) // 2)
-        y = parent.winfo_rooty() + max(0, (parent.winfo_height() - self.winfo_height()) // 2)
-        self.geometry(f"+{x}+{y}")
+        center_on_application(self)
 
     def _create(self) -> None:
         name = self.name_var.get().strip() or tr('New Mordheim Campaign')

@@ -1,4 +1,4 @@
-"""ui: responsibility extracted without altering the rules."""
+"""Combat Lab interface package."""
 from __future__ import annotations
 
 

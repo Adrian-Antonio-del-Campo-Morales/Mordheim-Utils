@@ -1,4 +1,4 @@
-"""combat.modular.duel: responsibility extracted without altering the rules."""
+"""combat: Public simulate_duel API of the modular engine."""
 from __future__ import annotations
 
 import numpy as np

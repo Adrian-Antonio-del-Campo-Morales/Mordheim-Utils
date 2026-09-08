@@ -1,4 +1,4 @@
-"""verification.audit: responsibility extracted without altering the rules."""
+"""verification: Per-rule audit status assembly from inventory, scope and evidence."""
 from __future__ import annotations
 
 from dataclasses import replace

@@ -1,4 +1,4 @@
-"""ui.widgets: responsibility extracted without altering the rules."""
+"""ui: Reusable Combat Lab widgets."""
 from __future__ import annotations
 
 

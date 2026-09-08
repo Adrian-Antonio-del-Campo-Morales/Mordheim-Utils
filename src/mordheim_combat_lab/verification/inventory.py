@@ -1,4 +1,4 @@
-"""verification.inventory: responsibility extracted without altering the rules."""
+"""verification: Editorial inventory of rules and their classification."""
 from __future__ import annotations
 
 from dataclasses import dataclass

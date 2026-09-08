@@ -1,4 +1,4 @@
-"""ui.tabs.configuration: responsibility extracted without altering the rules."""
+"""ui: Configuration tab: execution settings."""
 from __future__ import annotations
 
 

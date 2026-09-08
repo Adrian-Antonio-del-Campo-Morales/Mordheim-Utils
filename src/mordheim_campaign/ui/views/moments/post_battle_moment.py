@@ -2,15 +2,19 @@ from __future__ import annotations
 
 from dataclasses import replace
 import tkinter as tk
-from tkinter import messagebox, simpledialog, ttk
+from tkinter import ttk
+
+from mordheim_ui import themed_dialogs as messagebox
+from mordheim_ui import themed_dialogs as simpledialog
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.application.state import POST_BATTLE_GROUPS, POST_BATTLE_STEPS
-from mordheim_campaign.ui.components import DiceResolutionCard, PostBattleSequence
+from mordheim_campaign.ui.components import DiceResolutionCard, PostBattleSequence, ask_dice
 from mordheim_campaign.ui.panels import InventoryWorkspace
 from mordheim_campaign.ui.views.moments.initial_warband_draft import DraftWarriorCard
 from mordheim_ui.i18n import tr
 from mordheim_ui.theme import COLORS
+from mordheim_ui.windowing import center_on_application
 from mordheim_ui.widgets import BorderedFrame, ExperienceTrack, ScrollableFrame, SegmentedTabs, SummaryStrip
 
 
@@ -18,12 +22,22 @@ def _injury_card(dice: list[int], resolver, *, hero: bool) -> tuple[str, str, st
     """Live KB resolution for an injury card's roll."""
     outcome = (resolver.resolve_hero_serious_injury(10 * dice[0] + dice[1]) if hero
                else resolver.resolve_henchman_serious_injury(dice[0]))
-    parts = list(outcome.effects)
-    if outcome.follow_up:
-        parts.append(outcome.follow_up)
-    detail = " · ".join(parts) or tr('No lasting effect.')
+    detail = _injury_detail(outcome)
     tone = "danger" if outcome.result in ("Dead", "Removed", "Multiple Injuries") else "accent"
     return outcome.result, detail, tone
+
+
+def _injury_detail(outcome) -> str:
+    parts = list(outcome.effects)
+    if outcome.note:
+        parts.append(outcome.note)
+    if outcome.follow_up:
+        parts.append(outcome.follow_up)
+    return "  •  ".join(parts) or tr('No lasting effect.')
+
+
+def _injury_history(outcome, roll: int) -> str:
+    return f"{outcome.result} ({roll}) — {_injury_detail(outcome)}"
 
 
 def _injury_store(dice: list[int], resolver, *, hero: bool, holder: dict) -> tuple[str, str, str]:
@@ -47,7 +61,7 @@ def _exploration_store(dice: list[int], resolver, holder: dict) -> tuple[str, st
 
 def _rarity_card(dice: list[int], resolver, item_id: str, name: str, holder: dict) -> tuple[str, str, str]:
     """Live KB rarity-test resolution for a rare-item search."""
-    search = resolver.resolve_rarity_search(item_id, sum(dice))
+    search = resolver.resolve_rarity_search(item_id, sum(dice), modifiers=int(holder.get("modifiers") or 0))
     holder["dice"] = list(dice)
     holder["success"] = search.success
     title = "Available" if search.success else tr('Not found')
@@ -75,6 +89,7 @@ class PostBattleMoment(tk.Frame):
         self.number = number
         self._scroll: ScrollableFrame | None = None
         self._scroll_pos = 0.0
+        self._scroll_y = 0.0
         self._status_text = ""
         self._sell_var: tk.IntVar | None = None
         self._search_assignments: dict[str, tk.StringVar] = {}
@@ -100,6 +115,7 @@ class PostBattleMoment(tk.Frame):
         """Rebuilds the current step in place, preserving scroll position."""
         if self._scroll is not None:
             self._scroll_pos = self._scroll.canvas.yview()[0]
+            self._scroll_y = max(0.0, float(self._scroll.canvas.canvasy(0)))
         post = self.controller.state.campaign.post_battle(self.number)
         for child in self.winfo_children():
             child.destroy()
@@ -108,11 +124,24 @@ class PostBattleMoment(tk.Frame):
         else:
             self._build_pending(post)
         if self._scroll is not None:
-            self._scroll.canvas.after_idle(lambda: self._scroll.canvas.yview_moveto(self._scroll_pos))
+            scroll = self._scroll
+            offset = self._scroll_y
+
+            def restore_scroll() -> None:
+                scroll.canvas.update_idletasks()
+                bounds = scroll.canvas.bbox("all")
+                if bounds is None:
+                    return
+                content_height = max(1, bounds[3] - bounds[1])
+                scroll.canvas.yview_moveto(min(1.0, offset / content_height))
+
+            # Scrollregion is updated by the inner frame's <Configure> event;
+            # wait one additional idle cycle before restoring the viewport.
+            scroll.canvas.after_idle(lambda: scroll.canvas.after_idle(restore_scroll))
 
     def _run(self, action) -> None:
         """Runs one engine action; reports and rebuilds on success."""
-        ok, message = action()
+        ok, message = self.controller.perform_undoable(tr("Post-battle action"), action)
         self._status_text = ("✓ " if ok else "⚠ ") + message
         if ok:
             self._rebuild()
@@ -196,7 +225,6 @@ class PostBattleMoment(tk.Frame):
                 tr('Rating: {} → {}').format(before.rating, after.rating),
             ])
         if post.event_log:
-            names = {row.get("id"): row for row in POST_BATTLE_STEPS}
             for index, entry in enumerate(post.event_log):
                 step = int(entry.get("step") or 0)
                 title = tr(POST_BATTLE_STEPS[step]) if 0 <= step < len(POST_BATTLE_STEPS) else f"#{step}"
@@ -312,6 +340,13 @@ class PostBattleMoment(tk.Frame):
         if post.active_step in post.completed_steps:
             self.controller.advance_post_battle_step()
             return
+        description = tr("Complete {} ").format(tr(POST_BATTLE_STEPS[post.active_step])).strip()
+        self.controller.perform_undoable(description, self._advance_step_impl)
+
+    def _advance_step_impl(self) -> None:
+        post = self.controller.state.campaign.pending_post_battle
+        if post is None:
+            return
         engine = self._engine()
         battle = self.controller.state.campaign.battle(post.battle_number)
         if post.active_step == 0:
@@ -363,11 +398,13 @@ class PostBattleMoment(tk.Frame):
             if not dice:
                 messagebox.showerror(tr('Incomplete step'), tr('Resolve the exploration roll before continuing.'), parent=self)
                 return
-            if not post.wyrdstone_delta:
-                ok, message = engine.apply_exploration(tuple(dice))
-                if not ok:
-                    messagebox.showerror(tr('Cannot apply result'), message, parent=self)
-                    return
+            if not self._pending_exploration.get("applied"):
+                messagebox.showerror(
+                    tr('Incomplete step'),
+                    tr('Finish the pending Exploration discard or re-roll decision before continuing.'),
+                    parent=self,
+                )
+                return
         elif post.active_step == 3 and not post.sale_resolved:
             quantity = max(0, int(self._sell_var.get())) if self._sell_var is not None else 0
             ok, message = engine.sell_wyrdstone(quantity)
@@ -499,7 +536,8 @@ class PostBattleMoment(tk.Frame):
             notation=notation or ("D66" if hero else "D6"), dice_count=count,
             dice_sides=dice_sides,
             demo_dice=(2, 4) if count == 2 else (3,), combine="d66" if count == 2 else "sum",
-            on_resolved=lambda dice: self._store_injury_roll(resolver, hero, holder, mode, dice),
+            on_resolved=lambda dice: self.controller.perform_undoable(
+                tr('Injury roll'), lambda: self._store_injury_roll(resolver, hero, holder, mode, dice)),
             outcome_actions=(),
         ).pack(fill="x", pady=(5, 0))
 
@@ -527,7 +565,7 @@ class PostBattleMoment(tk.Frame):
             if outcome is None:
                 return tr('Invalid result'), tr('This subtable result could not be resolved from the KB.'), "danger"
             holder.setdefault("finals", []).append({"mode": "subtable", "parent": followup["result_id"], "roll": roll})
-            holder.setdefault("history", []).append(f"{outcome.result} ({roll})")
+            holder.setdefault("history", []).append(_injury_history(outcome, roll))
             remaining = max(0, int(followup.get("resume_repeat") or 0))
             holder["followup"] = {
                 "type": "repeat_results",
@@ -536,14 +574,14 @@ class PostBattleMoment(tk.Frame):
             } if remaining else {}
             holder["complete"] = remaining == 0
             self.after_idle(self._rebuild)
-            return outcome.result, " · ".join(outcome.effects) or tr('No lasting effect.'), "accent"
+            return outcome.result, _injury_detail(outcome), "accent"
         if mode == "repeat_result":
             outcome = resolver.resolve_repeat_reroll(kind, str(followup.get("result_id") or ""), roll)
             if outcome is None:
                 holder.setdefault("history", []).append(tr('Rolled {}: excluded result — roll again').format(roll))
                 self.after_idle(self._rebuild)
                 return tr('Roll again'), tr('This result is excluded from Multiple Injuries.'), "danger"
-            holder.setdefault("history", []).append(f"{outcome.result} ({roll})")
+            holder.setdefault("history", []).append(_injury_history(outcome, roll))
             remaining = max(0, int(followup.get("remaining") or 1) - 1)
             if outcome.follow_up:
                 holder["followup"] = {
@@ -567,12 +605,12 @@ class PostBattleMoment(tk.Frame):
                     holder["followup"] = {**followup, "remaining": remaining} if remaining else {}
                     holder["complete"] = remaining == 0
             self.after_idle(self._rebuild)
-            return outcome.result, " · ".join(outcome.effects) or tr('No lasting effect.'), "accent"
+            return outcome.result, _injury_detail(outcome), "accent"
 
         outcome = resolver.resolve_hero_serious_injury(roll) if hero else resolver.resolve_henchman_serious_injury(roll)
         holder["dice"] = list(dice)
         holder["initial_resolved"] = True
-        holder.setdefault("history", []).append(f"{outcome.result} ({roll})")
+        holder.setdefault("history", []).append(_injury_history(outcome, roll))
         if outcome.follow_up:
             repeated = bool(resolver.repeat_reroll_exclusions(kind, outcome.result_id))
             holder["followup"] = {"type": "repeat_count" if repeated else "subtable", "result_id": outcome.result_id}
@@ -689,7 +727,8 @@ class PostBattleMoment(tk.Frame):
                 card, title=tr('Advance roll'), subtitle=tr('Roll in app or enter physical dice'),
                 notation="2D6", dice_count=2, demo_dice=(4, 3), combine="sum",
                 outcome_title=tr('Pending advance'), outcome_detail=tr('The result will be applied automatically when possible.'),
-                on_resolved=lambda dice, _e=engine, _w=warrior_id, _t=threshold, _x=holder: self._advance_roll_result(_e, _w, _t, _x, dice),
+                on_resolved=lambda dice, _e=engine, _w=warrior_id, _t=threshold, _x=holder: self.controller.perform_undoable(
+                    tr('Advance roll'), lambda: self._advance_roll_result(_e, _w, _t, _x, dice)),
                 outcome_actions=((tr('RESOLVE ADVANCE'), lambda: self._resolve_advance(engine, warrior_id, threshold, holder), "Accent.TButton"),),
             ).pack(fill="x", pady=(8, 0))
             return
@@ -715,6 +754,11 @@ class PostBattleMoment(tk.Frame):
             elif option.kind == "promote_henchman":
                 ttk.Button(actions, text=tr("THE LAD'S GOT TALENT…"), style="Accent.TButton",
                            command=lambda w=warrior_id, t=threshold: self._promote_member(w, threshold=t)).pack(side="left", padx=(0, 6))
+            elif option.kind == "external_resolution":
+                ttk.Button(actions, text=tr('CONFIRM TABLE-SIDE RESOLUTION'), style="Accent.TButton",
+                           command=lambda w=warrior_id, t=threshold: self._commit_advance(
+                               w, threshold=t, option_kind="external_resolution"
+                           )).pack(side="left", padx=(0, 6))
         if not outcome.options:
             tk.Label(
                 actions,
@@ -775,23 +819,15 @@ class PostBattleMoment(tk.Frame):
             self._rebuild()
 
     def _ask_subroll(self, total: int) -> int | None:
-        dialog = tk.Toplevel(self)
-        dialog.title("D6 sub-roll")
-        dialog.transient(self.winfo_toplevel())
-        dialog.grab_set()
-        tk.Label(dialog, text=tr('The advance row {} needs a D6 sub-roll.').format(total), bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 10)).pack(padx=18, pady=(14, 6))
-        var = tk.IntVar(value=3)
-        ttk.Spinbox(dialog, from_=1, to=6, width=5, textvariable=var).pack(pady=4)
-        result: list[int] = []
-        ttk.Button(dialog, text=tr('OK'), style="Accent.TButton", command=lambda: (result.append(int(var.get())), dialog.destroy())).pack(pady=(4, 12))
-        dialog.wait_window()
-        return result[0] if result else None
+        dice = ask_dice(self, title=tr('The advance row {} needs a D6 sub-roll.').format(total), dice_count=1)
+        return dice[0] if dice else None
 
     def _commit_advance(self, warrior_id: str, *, threshold: int | None = None, option_kind: str, characteristic: str | None = None) -> None:
         engine = self._engine()
-        ok, message = engine.commit_pending_advance(
-            warrior_id, option_kind=option_kind, characteristic=characteristic, threshold=threshold,
-        )
+        ok, message = self.controller.perform_undoable(
+            tr('Apply advance'), lambda: engine.commit_pending_advance(
+                warrior_id, option_kind=option_kind, characteristic=characteristic, threshold=threshold,
+            ))
         self._status_text = ("✓ " if ok else "⚠ ") + message
         self._rebuild()
 
@@ -814,7 +850,8 @@ class PostBattleMoment(tk.Frame):
 
         def confirm() -> None:
             selected = [tables[index] for index in choices.curselection()]
-            ok, message = engine.set_promotion_skill_tables(warrior_id, selected)
+            ok, message = self.controller.perform_undoable(
+                tr('Choose Hero skill lists'), lambda: engine.set_promotion_skill_tables(warrior_id, selected))
             if not ok:
                 status.set(message)
                 return
@@ -824,6 +861,7 @@ class PostBattleMoment(tk.Frame):
 
         ttk.Button(dialog, text=tr('CONFIRM LISTS'), style="Accent.TButton", command=confirm).pack(pady=(2, 14))
         dialog.bind("<Escape>", lambda _e: dialog.destroy())
+        dialog.after_idle(lambda: center_on_application(dialog))
 
     def _reroll_advance(self, warrior_id: str, threshold: int, outcome) -> None:
         reason = tr('Rolled {}: {} — this result cannot be applied and must be rerolled.').format(outcome.roll, outcome.title)
@@ -859,6 +897,7 @@ class PostBattleMoment(tk.Frame):
         ttk.Button(dialog, text=tr('PROMOTE'), style="Accent.TButton", command=_confirm).pack(pady=(6, 14))
         dialog.bind("<Return>", lambda _e: _confirm())
         dialog.bind("<Escape>", lambda _e: dialog.destroy())
+        dialog.after_idle(lambda: center_on_application(dialog))
         dialog.wait_window()
         if not result:
             return
@@ -883,21 +922,293 @@ class PostBattleMoment(tk.Frame):
         resolver = self.controller.post_battle_resolver()
         engine = self._engine()
         self._title(parent, tr('03 · Exploration'), tr('Roll once for each eligible Hero, plus one die when the warband won. Shards come from the KB shard chart; matching dice open the KB special-result table. {}').format(self._kb_provenance(2)))
-        if engine.post is not None and engine.post.wyrdstone_delta:
-            SummaryStrip(parent, [(tr('Shards found'), f"+{engine.post.wyrdstone_delta}"), (tr('In hoard'), f"{engine.projected_shards()}")]).pack(fill="x", pady=(0, 12))
-            return
         surviving = max(0, engine.projected_heroes() - battle.casualties)
         won = battle.result == "Victory"
-        dice_count = resolver.exploration_dice(surviving_heroes=surviving, warband_won=won)
+        scenario_rule = (engine.post.step_state.get("scenario_exploration") or {}) if engine.post is not None else {}
+        extra_dice = max(0, int(scenario_rule.get("extra_dice") or 0))
+        campaign_rules = [str(rule.get("text") or "") for rule in engine.campaign.special_rules]
+        straggler_rule = next((text for text in campaign_rules if "extra die" in text and "discard" in text), "")
+        persistent_reroll = any("re-roll one die" in text for text in campaign_rules)
+        if straggler_rule:
+            extra_dice += 1
+        dice_count = resolver.exploration_dice(surviving_heroes=surviving, warband_won=won) + extra_dice
         demo = ((3, 3, 5, 6) + (1,) * 6)[:dice_count]
         holder = self._pending_exploration
+        reroll_note = tr(' · the scenario allows one complete reroll') if scenario_rule.get("reroll_all") else ""
+        dice = holder.get("dice")
+        if not dice:
+            DiceResolutionCard(
+                parent, title=tr('Exploration Dice'), subtitle=tr('Eligible Heroes: {} · {}D6 from the KB allocation').format(surviving, dice_count) + reroll_note,
+                notation=f"{dice_count}D6", dice_count=dice_count, demo_dice=demo, combine="list",
+                outcome_title="Exploration resolved", outcome_detail=tr('Resolve the roll to reveal the shard total.'),
+                on_resolved=lambda values, _r=resolver, _x=holder: self.controller.perform_undoable(
+                    tr('Exploration roll'), lambda: self._apply_exploration_roll(values, _r, _x)),
+                outcome_actions=(),
+            ).pack(fill="x")
+            return
+
+        if not holder.get("applied") and straggler_rule and not holder.get("discarded"):
+            self._exploration_discard_choice(parent, holder, straggler_rule)
+            return
+        if not holder.get("applied") and scenario_rule.get("reroll_all") and not holder.get("scenario_reroll_decided"):
+            self._exploration_full_reroll_choice(parent, holder, resolver)
+            return
+        if not holder.get("applied") and persistent_reroll and not holder.get("reroll_decided"):
+            self._exploration_reroll_choice(parent, holder, resolver)
+            return
+        if not holder.get("applied"):
+            self._commit_exploration_dice(holder, resolver)
+            return
+
+        resolved = resolver.resolve_exploration(tuple(dice))
+        SummaryStrip(parent, [
+            (tr('Dice total'), str(resolved.total)),
+            (tr('Wyrdstone from roll'), f"+{resolved.shards}"),
+            (tr('In hoard'), str(engine.projected_shards())),
+        ]).pack(fill="x", pady=(0, 12))
+        event = resolver.exploration_followup_row(tuple(dice))
+        if event is None:
+            card = self._section(parent, tr('EXPLORATION EVENT'), tr('No matching-dice event was obtained.'))
+            tk.Label(card, text=tr('No special event.'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
+            return
+        self._exploration_event(parent, event)
+
+    def _apply_exploration_roll(self, dice: list[int], resolver, holder: dict) -> tuple[str, str, str]:
+        holder["dice"] = list(dice)
+        campaign_rules = [str(rule.get("text") or "") for rule in self._engine().campaign.special_rules]
+        scenario_rule = (self._engine().post.step_state.get("scenario_exploration") or {}) if self._engine().post else {}
+        needs_choice = (
+            any("extra die" in text and "discard" in text for text in campaign_rules)
+            or any("re-roll one die" in text for text in campaign_rules)
+            or bool(scenario_rule.get("reroll_all"))
+        )
+        if needs_choice:
+            self.after_idle(self._rebuild)
+        if not holder.get("applied") and not needs_choice:
+            ok, message = self._engine().apply_exploration(tuple(dice))
+            if ok:
+                holder["applied"] = True
+                self._status_text = "✓ " + message
+                self.after_idle(self._rebuild)
+            else:
+                self._status_text = "⚠ " + message
+        return _exploration_card(dice, resolver)
+
+    def _commit_exploration_dice(self, holder: dict, resolver) -> None:
+        dice = list(holder.get("dice") or ())
+        ok, message = self._engine().apply_exploration(tuple(dice))
+        if ok:
+            holder["applied"] = True
+            if holder.get("discarded"):
+                campaign = self._engine().campaign
+                campaign.special_rules[:] = [rule for rule in campaign.special_rules
+                    if not ("extra die" in str(rule.get("text") or "") and "discard" in str(rule.get("text") or ""))]
+        self._status_text = ("✓ " if ok else "⚠ ") + message
+        self.after_idle(self._rebuild)
+
+    def _exploration_discard_choice(self, parent: tk.Misc, holder: dict, _rule: str) -> None:
+        card = self._section(parent, tr('STRAGGLER BONUS'), tr('Choose one die to discard before resolving Exploration.'))
+        dice = list(holder.get("dice") or ())
+        selected = tk.IntVar(value=0)
+        for index, value in enumerate(dice):
+            ttk.Radiobutton(card, text=f"D{index + 1}: {value}", variable=selected, value=index).pack(side="left", padx=(0, 8))
+        ttk.Button(card, text=tr('DISCARD'), style="Accent.TButton", command=lambda: self._discard_exploration_die(
+            holder, selected.get()
+        )).pack(side="left")
+
+    def _discard_exploration_die(self, holder: dict, index: int) -> None:
+        def discard() -> None:
+            dice = list(holder.get("dice") or ())
+            if 0 <= index < len(dice):
+                dice.pop(index)
+            holder["dice"], holder["discarded"] = dice, True
+        self.controller.perform_undoable(tr('Discard Exploration die'), discard)
+        self._rebuild()
+
+    def _exploration_reroll_choice(self, parent: tk.Misc, holder: dict, resolver) -> None:
+        card = self._section(parent, tr('CATACOMBS RE-ROLL'), tr('You may re-roll one Exploration die.'))
+        dice = list(holder.get("dice") or ())
+        selected = tk.IntVar(value=0)
+        picks = tk.Frame(card, bg=COLORS["panel_alt"]); picks.pack(fill="x", pady=(0, 4))
+        for index, value in enumerate(dice):
+            ttk.Radiobutton(picks, text=f"D{index + 1}: {value}", variable=selected, value=index).pack(side="left", padx=(0, 8))
+        # A compact die card keeps Roll in app / Enter manually consistent.
+        DiceResolutionCard(card, title=tr('Replacement die'), subtitle=tr('Roll in app or enter physical dice'),
+            notation="D6", dice_count=1, demo_dice=(3,), combine="sum",
+            on_resolved=lambda values: self.controller.perform_undoable(
+                tr('Exploration re-roll'), lambda: self._replace_exploration_die(holder, selected.get(), values[0], resolver)),
+            outcome_actions=()).pack(fill="x", pady=(5, 0))
+        ttk.Button(card, text=tr('KEEP ORIGINAL ROLL'), style="Mini.TButton",
+                   command=lambda: (self.controller.perform_undoable(
+                       tr('Keep Exploration roll'), lambda: holder.update(reroll_decided=True)), self._rebuild())).pack(anchor="e", pady=(5, 0))
+
+    def _exploration_full_reroll_choice(self, parent: tk.Misc, holder: dict, resolver) -> None:
+        dice = list(holder.get("dice") or ())
+        card = self._section(parent, tr('SCENARIO RE-ROLL'), tr('The scenario permits one complete Exploration re-roll.'))
         DiceResolutionCard(
-            parent, title=tr('Exploration Dice'), subtitle=tr('Eligible Heroes: {} · {}D6 from the KB allocation').format(surviving, dice_count),
-            notation=f"{dice_count}D6", dice_count=dice_count, demo_dice=demo, combine="list",
-            outcome_title="Exploration resolved", outcome_detail=tr('Resolve the roll to reveal the shard total.'),
-            on_resolved=lambda dice, _r=resolver, _x=holder: _exploration_store(dice, _r, holder=_x),
+            card, title=tr('Re-roll all Exploration dice'), subtitle=tr('Roll in app or enter physical dice'),
+            notation=f"{len(dice)}D6", dice_count=len(dice), demo_dice=tuple(1 for _ in dice), combine="list",
+            on_resolved=lambda values: self.controller.perform_undoable(
+                tr('Exploration re-roll'), lambda: self._replace_full_exploration_roll(holder, values, resolver)),
             outcome_actions=(),
         ).pack(fill="x")
+        ttk.Button(card, text=tr('KEEP ORIGINAL ROLL'), style="Mini.TButton",
+                   command=lambda: (self.controller.perform_undoable(
+                       tr('Keep Exploration roll'), lambda: holder.update(scenario_reroll_decided=True)), self._rebuild())).pack(anchor="e", pady=(5, 0))
+
+    def _replace_full_exploration_roll(self, holder: dict, values: list[int], resolver) -> tuple[str, str, str]:
+        holder["dice"] = list(values)
+        holder["scenario_reroll_decided"] = True
+        self.after_idle(self._rebuild)
+        return _exploration_card(list(values), resolver)
+
+    def _replace_exploration_die(self, holder: dict, index: int, value: int, resolver) -> tuple[str, str, str]:
+        dice = list(holder.get("dice") or ())
+        if dice:
+            dice[max(0, min(index, len(dice) - 1))] = int(value)
+        holder["dice"], holder["reroll_decided"] = dice, True
+        self.after_idle(self._rebuild)
+        return _exploration_card(dice, resolver)
+
+    def _exploration_event(self, parent: tk.Misc, event: dict) -> None:
+        pattern = str(event.get("dice_pattern") or "").replace(",", " · ")
+        card = self._section(parent, tr('EXPLORATION EVENT'), f"{pattern}  ·  {event.get('outcome')}")
+        rewards = self._exploration_reward_labels(event.get("follow_up") or {})
+        if rewards:
+            tk.Label(card, text=tr('Possible effects and rewards'), bg=COLORS["panel_alt"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 3))
+            for reward in rewards:
+                tk.Label(card, text=f"• {reward}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), wraplength=760, justify="left").pack(anchor="w", padx=(7, 0))
+
+        engine = self._engine()
+        pending = engine.exploration_followup_pending()
+        row = engine._exploration_followup_row()
+        for message in (row or {}).get("messages") or ():
+            tk.Label(card, text=f"✓ {message}", bg=COLORS["panel_alt"], fg=COLORS["success"], font=("Segoe UI", 8)).pack(anchor="w", pady=1)
+        if row is None:
+            completed = [entry for entry in (engine.post.event_log if engine.post else ()) if entry.get("step") == 2 and entry.get("action") == "exploration_followup"]
+            if completed:
+                tk.Label(card, text=str(completed[-1].get("message") or ""), bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), wraplength=760, justify="left").pack(anchor="w", pady=(6, 0))
+            tk.Label(card, text=tr('Event resolved.'), bg=COLORS["panel_alt"], fg=COLORS["success"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(6, 0))
+            return
+        if (pending or {}).get("kind") == "choose_hero":
+            self._exploration_hero_choice(card, row)
+        elif (pending or {}).get("kind") == "choose_option":
+            self._exploration_option_choice(card, pending)
+        elif (pending or {}).get("kind") == "choose_warriors":
+            self._exploration_warrior_choice(card, pending)
+        else:
+            count = int((pending or {}).get("dice_count") or 1)
+            sides = int((pending or {}).get("dice_sides") or 6)
+            DiceResolutionCard(
+                card,
+                title=self._exploration_prompt(pending),
+                subtitle=tr('Roll in app or enter physical dice'),
+                notation=f"{count if count > 1 else ''}D{sides}",
+                dice_count=count,
+                dice_sides=sides,
+                demo_dice=(1,) * count,
+                combine="sum",
+                on_resolved=lambda dice: self.controller.perform_undoable(
+                    tr('Exploration event roll'), lambda: self._apply_exploration_event_roll(dice)),
+                outcome_actions=(),
+            ).pack(fill="x", pady=(8, 0))
+
+    def _exploration_hero_choice(self, card: tk.Misc, row: dict) -> None:
+        heroes = [warrior for warrior in self.controller.state.campaign.warriors if warrior.kind == "hero"]
+        action = tk.Frame(card, bg=COLORS["panel_alt"]); action.pack(fill="x", pady=(8, 0))
+        tk.Label(action, text=tr('Choose a Hero'), bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI Semibold", 8)).pack(side="left")
+        labels = [hero.name for hero in heroes]
+        selected = tk.StringVar(value=labels[0] if labels else "")
+        ttk.Combobox(action, state="readonly", values=labels, textvariable=selected, width=25).pack(side="left", padx=8)
+        ttk.Button(
+            action, text=tr('CONFIRM'), style="Accent.TButton",
+            command=lambda: self._apply_exploration_hero(heroes[labels.index(selected.get())].id) if selected.get() in labels else None,
+        ).pack(side="left")
+
+    def _apply_exploration_hero(self, hero_id: str) -> None:
+        self._run(lambda: self._engine().advance_exploration_followup(hero_id=hero_id))
+
+    def _exploration_option_choice(self, card: tk.Misc, pending: dict) -> None:
+        action = tk.Frame(card, bg=COLORS["panel_alt"]); action.pack(fill="x", pady=(8, 0))
+        tk.Label(action, text=str(pending.get("label") or tr('Choose an outcome')), bg=COLORS["panel_alt"],
+                 fg=COLORS["text"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 4))
+        buttons = tk.Frame(action, bg=COLORS["panel_alt"]); buttons.pack(fill="x")
+        for option in pending.get("options") or ():
+            ttk.Button(buttons, text=str(option.get("label") or option.get("id")), style="Accent.TButton",
+                       command=lambda oid=str(option.get("id")): self._run(
+                           lambda: self._engine().advance_exploration_followup(option_id=oid)
+                       )).pack(side="left", padx=(0, 6))
+
+    def _exploration_warrior_choice(self, card: tk.Misc, pending: dict) -> None:
+        action = tk.Frame(card, bg=COLORS["panel_alt"]); action.pack(fill="x", pady=(8, 0))
+        maximum = int(pending.get("maximum") or 1)
+        tk.Label(action, text=f"{pending.get('label') or tr('Choose warriors')} · {tr('maximum')} {maximum}",
+                 bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI Semibold", 8)).pack(anchor="w")
+        choices = []
+        for option in pending.get("options") or ():
+            variable = tk.BooleanVar(value=False); choices.append((str(option.get("id")), variable))
+            ttk.Checkbutton(action, text=str(option.get("label")), variable=variable).pack(anchor="w", pady=1)
+        ttk.Button(action, text=tr('CONFIRM'), style="Accent.TButton", command=lambda: self._run(
+            lambda: self._engine().advance_exploration_followup(
+                warrior_ids=[warrior_id for warrior_id, variable in choices if variable.get()]
+            ))).pack(anchor="e", pady=(5, 0))
+
+    def _apply_exploration_event_roll(self, dice: list[int]) -> tuple[str, str, str]:
+        ok, message = self._engine().advance_exploration_followup(roll=sum(dice))
+        self._status_text = ("✓ " if ok else "⚠ ") + message
+        if ok:
+            self.after_idle(self._rebuild)
+        return (tr('Result recorded') if ok else tr('Cannot apply result'), message, "success" if ok else "danger")
+
+    def _exploration_prompt(self, pending: dict | None) -> str:
+        label = str((pending or {}).get("label") or "")
+        replacements = {
+            "gold_crowns roll": tr('Gold crowns roll'),
+            "wyrdstone_fragments roll": tr('Wyrdstone roll'),
+            "follow-up roll": tr('Event result roll'),
+            "toughness test": tr('Toughness test'),
+            "leadership test": tr('Leadership test'),
+        }
+        if label in replacements:
+            return replacements[label]
+        if label.endswith(" quantity roll"):
+            item_id = label.removesuffix(" quantity roll")
+            return tr('{} quantity roll').format(self.controller.port.item_name(item_id) or item_id.replace("_", " ").title())
+        return label.replace("_", " ").strip().title() or tr('Event result roll')
+
+    def _exploration_reward_labels(self, node) -> list[str]:
+        labels: list[str] = []
+        if isinstance(node, list):
+            for child in node:
+                labels.extend(self._exploration_reward_labels(child))
+            return list(dict.fromkeys(labels))
+        if not isinstance(node, dict):
+            return labels
+        for resource, amount in (node.get("resources") or {}).items():
+            resource_name = {
+                "gold_crowns": tr('Gold crowns'),
+                "wyrdstone_fragments": tr('Wyrdstone shards'),
+                "experience": tr('Experience'),
+            }.get(resource, resource.replace("_", " ").title())
+            labels.append(f"{resource_name}: {self._reward_amount_label(amount)}")
+        for item in node.get("items") or ():
+            item_id = str(item.get("item_id") or "")
+            labels.append(f"{self.controller.port.item_name(item_id) or item_id}: {self._reward_amount_label(item.get('quantity'))}")
+        if node.get("note"):
+            labels.append(str(node["note"]))
+        for value in node.values():
+            if isinstance(value, (dict, list)):
+                labels.extend(self._exploration_reward_labels(value))
+        return list(dict.fromkeys(labels))
+
+    @staticmethod
+    def _reward_amount_label(amount) -> str:
+        if not isinstance(amount, dict):
+            return str(amount)
+        if amount.get("kind") == "fixed":
+            return str(amount.get("value") or 0)
+        dice = amount.get("dice") or {}
+        return f"{dice.get('count', 1)}D{dice.get('sides', 6)}"
 
     # 04 · sell wyrdstone ---------------------------------------------------
 
@@ -926,7 +1237,7 @@ class PostBattleMoment(tk.Frame):
                 quantity = max(0, min(available, int(self._sell_var.get())))
             except (ValueError, tk.TclError):
                 quantity = 0
-            value_var.set(f"{resolver.wyrdstone_sale_value(quantity, engine.projected_models())} gc")
+            value_var.set(f"{resolver.wyrdstone_sale_value(quantity, engine.projected_warband_members())} gc")
             self._sell_state["quantity"] = quantity
         self._sell_var.trace_add("write", update_value)
         update_value()
@@ -944,7 +1255,9 @@ class PostBattleMoment(tk.Frame):
             parent, title=tr('Veteran Experience Pool'), subtitle=tr('Availability check before recruitment · current pool {} XP').format(pool),
             notation="2D6", dice_count=2, demo_dice=(4, 3), combine="sum",
             outcome_title=tr('Pool rolled'), outcome_detail=tr('This pool is used later in Recruitment'),
-            on_resolved=lambda dice, _x=holder: (_x.update(dice=list(dice)), tr('{} XP available').format(sum(dice)), tr('Veteran pool of {} XP').format(sum(dice)), "accent")[1:],
+            on_resolved=lambda dice, _x=holder: self.controller.perform_undoable(
+                tr('Veteran experience roll'),
+                lambda: (_x.update(dice=list(dice)), tr('{} XP available').format(sum(dice)), tr('Veteran pool of {} XP').format(sum(dice)), "accent")[1:]),
             outcome_actions=(),
         ).pack(fill="x")
 
@@ -961,7 +1274,10 @@ class PostBattleMoment(tk.Frame):
             tr('06 · Rare Items & Dramatis'),
             tr('Assign each available Hero to one rare item or Dramatis search. A Hero can perform at most one search in this sequence. {}').format(self._kb_provenance(5)),
         )
-        section = self._section(parent, tr('HERO SEARCH ASSIGNMENTS'), tr('{} Heroes available · {} rare items · {} Dramatis Personae').format(len(heroes), len(rare), len(dramatis)))
+        section = self._section(
+            parent, tr('HERO SEARCH ASSIGNMENTS'),
+            tr('{} Heroes available · {} rare items · {} Dramatis Personae').format(len(heroes), len(rare), len(dramatis)),
+        )
         post = self._post
         no_search = tr('No search')
         targets = {no_search: ("none", None)}
@@ -1004,7 +1320,9 @@ class PostBattleMoment(tk.Frame):
         if reset:
             holder.clear()
             if kind == "rare":
-                holder.update(kind="rare", target_id=f"rare:{offer.item_id}", item_id=offer.item_id, label=variable.get(), modifiers=0, hero_id=hero.id)
+                jewel_bonus = 1 if any("+1 to rolls for locating rare items" in rule for rule in hero.special_rules) else 0
+                holder.update(kind="rare", target_id=f"rare:{offer.item_id}", item_id=offer.item_id,
+                              label=variable.get(), modifiers=jewel_bonus, hero_id=hero.id)
             elif kind == "dramatis":
                 holder.update(kind="dramatis", target_id=f"dramatis:{offer.profile_id}", profile_id=offer.profile_id, label=variable.get(), modifiers=0, hero_id=hero.id)
         if kind == "none":
@@ -1014,7 +1332,8 @@ class PostBattleMoment(tk.Frame):
                 host, title=offer.name, subtitle=tr('{} searches for a Rare {} item').format(hero.name, offer.rarity),
                 notation="2D6", dice_count=2, demo_dice=(5, 4), combine="sum",
                 outcome_title=tr('Rare item search'), outcome_detail=tr('Resolve the roll to test the selected item.'),
-                on_resolved=lambda dice, o=offer, h=holder: _rarity_card(dice, resolver, o.item_id, o.name, h),
+                on_resolved=lambda dice, o=offer, h=holder: self.controller.perform_undoable(
+                    tr('Rare item search roll'), lambda: _rarity_card(dice, resolver, o.item_id, o.name, h)),
                 outcome_actions=(("BUY", lambda o=offer, h=holder: self._buy_rare_offer(o, h), "Accent.TButton"),),
             ).pack(fill="x", pady=(7, 0))
         else:
@@ -1022,7 +1341,9 @@ class PostBattleMoment(tk.Frame):
                 host, title=offer.name, subtitle=tr('{} searches for this Dramatis Persona').format(hero.name),
                 notation="D6", dice_count=1, demo_dice=(3,), combine="sum",
                 outcome_title=tr('Dramatis search'), outcome_detail=tr('Resolve the roll to locate the character. For conditional entries the acceptance roll reuses the same die.'),
-                on_resolved=lambda dice, h=holder: (h.update(dice=list(dice), success=True), tr('Located'), tr('Character found · hiring remains optional'), "success")[1:],
+                on_resolved=lambda dice, h=holder: self.controller.perform_undoable(
+                    tr('Dramatis search roll'),
+                    lambda: (h.update(dice=list(dice), success=True), tr('Located'), tr('Character found · hiring remains optional'), "success")[1:]),
                 outcome_actions=(("HIRE", lambda o=offer, h=holder: self._hire_dramatis(o, h), "Accent.TButton"),),
             ).pack(fill="x", pady=(7, 0))
 
@@ -1030,10 +1351,30 @@ class PostBattleMoment(tk.Frame):
         if not holder.get("success"):
             self._status_text = tr('⚠ The rarity test failed; the item is not available to buy.')
             return
-        if offer.price_gc is None:
-            self._status_text = tr('⚠ This item has no flat price; purchases are not supported yet.')
+        engine = self._engine()
+        if offer.price_dice is not None:
+            from mordheim_campaign.ui.dialogs.variable_price import VariablePriceDialog
+
+            VariablePriceDialog(
+                self, offer=offer,
+                buy=lambda price: self.controller.perform_undoable(
+                    tr('Buy rare item'), lambda: engine.buy_item(
+                        offer.item_id, 1, price, category=offer.category, rarity=offer.rarity,
+                    )),
+            )
             return
-        self._run(lambda: self._engine().buy_item(
+        if offer.price_upgrade_multiplier is not None:
+            from mordheim_campaign.ui.dialogs.variable_price import UpgradePriceDialog
+
+            UpgradePriceDialog(
+                self, offer=offer, campaign=self.controller.state.campaign,
+                buy=lambda price: self.controller.perform_undoable(
+                    tr('Buy rare item'), lambda: engine.buy_item(
+                        offer.item_id, 1, price, category=offer.category, rarity=offer.rarity,
+                    )),
+            )
+            return
+        self._run(lambda: engine.buy_item(
             offer.item_id, 1, offer.price_gc, category=offer.category, rarity=offer.rarity,
         ))
 
@@ -1056,14 +1397,18 @@ class PostBattleMoment(tk.Frame):
         SummaryStrip(parent, [
             (tr('Treasury'), f"{engine.projected_gold()} gc"),
             ("Veteran pool", f"{post.veteran_pool if post else 0} XP"),
-            (tr('Models'), f"{engine.projected_models()}/{campaign.maximum_models}"),
+            (tr('Models'), f"{engine.projected_warband_members()}/{engine.effective_maximum_models()}"),
         ]).pack(fill="x", pady=(0, 12))
 
         toolbar = tk.Frame(parent, bg=COLORS["bg"])
         toolbar.pack(fill="x", pady=(0, 8))
         SegmentedTabs(
             toolbar,
-            (("hero", tr('HEROES')), ("henchman", tr('HENCHMEN')), ("hireling", tr('HIRED SWORDS'))),
+            (
+                ("hero", tr('HEROES')),
+                ("henchman", tr('HENCHMEN')),
+                ("hireling", tr('HIRED SWORDS')),
+            ),
             self._recruitment_tab,
             self._set_recruitment_tab,
             prominent=True,
@@ -1108,7 +1453,13 @@ class PostBattleMoment(tk.Frame):
         if self._recruitment_tab == "hireling":
             offers = [row for row in self.controller.post_battle_content().hired_swords() if row.eligibility == "eligible"]
             for offer in offers:
-                menu.add_command(label=f"{offer.name}  ·  {offer.fee_label}", command=lambda o=offer: self._run(lambda: self._engine().hire_hireling(o)))
+                if offer.fee_dice is not None:
+                    menu.add_command(
+                        label=f"{offer.name}  ·  {offer.fee_label}",
+                        command=lambda o=offer: self._open_hireling_fee(o),
+                    )
+                else:
+                    menu.add_command(label=f"{offer.name}  ·  {offer.fee_label}", command=lambda o=offer: self._run(lambda: self._engine().hire_hireling(o)))
         else:
             for profile in self._available_recruitment_profiles():
                 menu.add_command(label=f"{profile.name}  ·  {profile.cost} gc", command=lambda p=profile: self._recruit_profile(p))
@@ -1119,9 +1470,21 @@ class PostBattleMoment(tk.Frame):
         finally:
             menu.grab_release()
 
+    def _open_hireling_fee(self, offer) -> None:
+        """Variable hiring fee: roll the declared dice, then hire."""
+        from mordheim_campaign.ui.dialogs.variable_price import HirelingFeeDialog
+
+        HirelingFeeDialog(
+            self, offer=offer,
+            hire=lambda fee_roll: self._engine().hire_hireling(offer, fee_roll=fee_roll),
+        )
+
     def _recruitment_warrior_menu(self, warrior):
         def popup() -> None:
             menu = tk.Menu(self, tearoff=False, bg=COLORS["panel"], fg=COLORS["text"], activebackground=COLORS["panel_soft"], activeforeground=COLORS["text"])
+            if warrior.kind != "hireling":
+                menu.add_command(label=tr('Edit skills…'), command=lambda: self._edit_manual_skills(warrior))
+                menu.add_separator()
             if warrior.kind == "henchman":
                 menu.add_command(label=tr('+ 1 member'), command=lambda: self._confirm_group_recruit(warrior))
                 menu.add_command(label=tr('Dismiss 1 member'), command=lambda: self._confirm_dismiss(warrior, one_member=True))
@@ -1132,6 +1495,10 @@ class PostBattleMoment(tk.Frame):
             finally:
                 menu.grab_release()
         return popup
+
+    def _edit_manual_skills(self, warrior) -> None:
+        from mordheim_campaign.ui.dialogs.manual_management import ManualSkillsDialog
+        ManualSkillsDialog(self, self.controller, warrior)
 
     def _confirm_group_recruit(self, warrior) -> None:
         ok, result = self._engine().group_recruitment_quote(warrior.id)
@@ -1188,7 +1555,10 @@ class PostBattleMoment(tk.Frame):
         ]).pack(fill="x", pady=(0, 8))
         obligations = [row for row in (engine.post.equipment_obligations if engine.post else [])]
         if obligations:
-            box = self._section(parent, tr('EQUIPMENT OBLIGATIONS'), tr('Members recruited this sequence still need this equipment.'))
+            box = self._section(
+                parent, tr('EQUIPMENT OBLIGATIONS'),
+                tr('Members recruited this sequence still need this equipment.'),
+            )
             for row in obligations:
                 tk.Label(
                     box,
@@ -1200,9 +1570,11 @@ class PostBattleMoment(tk.Frame):
     def _follow_ups(self, parent: tk.Misc, post) -> None:
         """Pending follow-up actions of the active step, with acknowledgement."""
         pending = [row for row in post.pending_follow_ups if int(row.get("step") or -1) == post.active_step]
+        if post.active_step == 2:
+            pending = [row for row in pending if row.get("type") != "exploration_followup"]
         if not pending:
             return
-        section = self._section(parent, tr('PENDING FOLLOW-UPS'), tr('Resolve these effects here or acknowledge them as resolved at the table.'))
+        section = self._section(parent, tr('PENDING FOLLOW-UPS'), tr('Resolve every required effect before continuing.'))
         for row in pending:
             row_frame = tk.Frame(section, bg=COLORS["panel_alt"])
             row_frame.pack(fill="x", pady=2)
@@ -1219,15 +1591,60 @@ class PostBattleMoment(tk.Frame):
                         row_frame, text=tr('RESOLVE…'), style="Accent.TButton",
                         command=lambda r=row: self._resolve_injury_followup(r),
                     ).pack(side="right", padx=(0, 6))
+                elif row.get("type") == "encounter" and row.get("encounter_id") == "campaign.encounter.sold-to-the-pits":
+                    ttk.Button(
+                        row_frame, text=tr('WON'), style="Accent.TButton",
+                        command=lambda r=row: self._resolve_sold_to_pits(r, won=True),
+                    ).pack(side="right", padx=(0, 6))
+                    ttk.Button(
+                        row_frame, text=tr('LOST'), style="Mini.TButton",
+                        command=lambda r=row: self._resolve_sold_to_pits(r, won=False),
+                    ).pack(side="right", padx=(0, 6))
+                elif row.get("type") == "prisoner":
+                    ttk.Button(
+                        row_frame, text=tr('LOST'), style="Mini.TButton",
+                        command=lambda r=row: self._resolve_captured(r, "lost"),
+                    ).pack(side="right", padx=(0, 6))
+                    ttk.Button(
+                        row_frame, text=tr('EXCHANGED'), style="Mini.TButton",
+                        command=lambda r=row: self._resolve_captured(r, "exchange"),
+                    ).pack(side="right", padx=(0, 6))
+                    ttk.Button(
+                        row_frame, text=tr('RANSOM…'), style="Accent.TButton",
+                        command=lambda r=row: self._resolve_captured(r, "ransom"),
+                    ).pack(side="right", padx=(0, 6))
+                elif row.get("type") == "relationship":
+                    ttk.Button(
+                        row_frame, text=tr('SET TARGET…'), style="Accent.TButton",
+                        command=lambda r=row: self._resolve_hatred_target(r),
+                    ).pack(side="right", padx=(0, 6))
+                elif row.get("type") == "eye_injury":
+                    ttk.Button(row_frame, text=tr('RIGHT EYE'), style="Mini.TButton", command=lambda r=row: self._resolve_eye(r, "right")).pack(side="right", padx=(0, 6))
+                    ttk.Button(row_frame, text=tr('LEFT EYE'), style="Accent.TButton", command=lambda r=row: self._resolve_eye(r, "left")).pack(side="right", padx=(0, 6))
+                elif row.get("type") == "hireling_upkeep":
+                    ttk.Button(row_frame, text=tr('DISMISS'), style="Mini.TButton",
+                               command=lambda r=row: self._run(lambda: self._engine().resolve_hireling_upkeep(str(r.get("id")), pay=False))).pack(side="right", padx=(0, 6))
+                    ttk.Button(row_frame, text=tr('PAY UPKEEP'), style="Accent.TButton",
+                               command=lambda r=row: self._run(lambda: self._engine().resolve_hireling_upkeep(str(r.get("id")), pay=True))).pack(side="right", padx=(0, 6))
+                elif row.get("type") == "scenario_spell_reward":
+                    ttk.Button(row_frame, text=tr('CHOOSE HERO AND SPELLS…'), style="Accent.TButton",
+                               command=lambda r=row: self._resolve_tome_of_magic(r)).pack(side="right", padx=(0, 6))
+                elif row.get("type") == "scenario_encampment":
+                    ttk.Button(row_frame, text=tr('OCCUPY'), style="Accent.TButton",
+                               command=lambda r=row: self._run(lambda: self._engine().resolve_scenario_encampment(str(r.get("id")), "occupy"))).pack(side="right", padx=(0, 6))
+                    ttk.Button(row_frame, text=tr('DESTROY'), style="Mini.TButton",
+                               command=lambda r=row: self._run(lambda: self._engine().resolve_scenario_encampment(str(r.get("id")), "destroy"))).pack(side="right", padx=(0, 6))
                 elif row.get("type") == "exploration_followup":
                     ttk.Button(
                         row_frame, text=tr('RESOLVE…'), style="Accent.TButton",
                         command=lambda r=row: self._resolve_exploration_followup(r),
                     ).pack(side="right", padx=(0, 6))
-                ttk.Button(
-                    row_frame, text=tr('RESOLVED AT THE TABLE'), style="Mini.TButton",
-                    command=lambda r=row: self._acknowledge_follow_up(r),
-                ).pack(side="right")
+                interactive = {"prisoner", "relationship", "eye_injury", "hireling_upkeep", "injury_followup", "exploration_followup", "scenario_spell_reward", "scenario_encampment"}
+                if row.get("type") not in interactive and not (row.get("type") == "encounter" and row.get("encounter_id") == "campaign.encounter.sold-to-the-pits"):
+                    ttk.Button(
+                        row_frame, text=tr('RESOLVED AT THE TABLE'), style="Mini.TButton",
+                        command=lambda r=row: self._acknowledge_follow_up(r),
+                    ).pack(side="right")
 
     def _resolve_injury_followup(self, row) -> None:
         """Ask the subtable/repeat die and apply the follow-up outcome."""
@@ -1240,25 +1657,118 @@ class PostBattleMoment(tk.Frame):
         self._run(lambda: engine.resolve_injury_followup(str(row.get("id")), roll))
 
     def _ask_roll(self, count: int, sides: int, title: str) -> int | None:
+        dice = ask_dice(self, title=title, dice_count=count, dice_sides=sides)
+        return sum(dice) if dice else None
+
+    def _resolve_sold_to_pits(self, row: dict, *, won: bool) -> None:
+        roll = None
+        if not won:
+            dice = ask_dice(
+                self,
+                title=tr('Serious injury after losing in the pits'),
+                dice_count=2,
+                dice_sides=6,
+            )
+            if not dice:
+                return
+            roll = 10 * dice[0] + dice[1]
+        self._run(lambda: self._engine().resolve_sold_to_pits(str(row.get("id")), won=won, injury_roll=roll))
+
+    def _resolve_captured(self, row: dict, resolution: str) -> None:
+        ransom = 0
+        disposition = "other"
+        if resolution == "ransom":
+            value = simpledialog.askinteger(
+                tr('Ransom'), tr('Gold crowns paid to the captor:'), parent=self,
+                initialvalue=0, minvalue=0,
+            )
+            if value is None:
+                return
+            ransom = value
+        elif resolution == "lost":
+            disposition = self._choose_capture_disposition()
+            if not disposition:
+                return
+        self._run(lambda: self._engine().resolve_captured(
+            str(row.get("id")), resolution=resolution, ransom=ransom, disposition=disposition,
+        ))
+
+    def _choose_capture_disposition(self) -> str:
         dialog = tk.Toplevel(self)
-        dialog.title(tr('Follow-up roll'))
-        dialog.transient(self.winfo_toplevel())
-        dialog.grab_set()
-        tk.Label(dialog, text=tr('{} ({}D{})').format(title, count, sides), bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 10), wraplength=340, justify="left").pack(padx=18, pady=(14, 6))
-        high = sides ** count if (count > 1 and sides == 6) else sides * count
-        low = 1 if count == 1 else count + 1 if sides == 6 else count
-        var = tk.IntVar(value=max(low, 1))
-        ttk.Spinbox(dialog, from_=low, to=max(high, low), width=5, textvariable=var).pack(pady=4)
-        result: list[int] = []
+        dialog.configure(bg=COLORS["bg"]); dialog.title(tr('Captured warrior'))
+        dialog.transient(self.winfo_toplevel()); dialog.grab_set(); dialog.resizable(False, False)
+        panel = tk.Frame(dialog, bg=COLORS["panel"], padx=16, pady=14); panel.pack(padx=1, pady=1)
+        tk.Label(panel, text=tr('WHAT HAPPENED TO THE CAPTURED WARRIOR?'), bg=COLORS["panel"],
+                 fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 9))
+        result = []
+        choices = (
+            ("enslaved", tr('SOLD INTO SLAVERY')), ("executed", tr('EXECUTED')),
+            ("zombie", tr('RAISED AS A ZOMBIE')), ("sacrificed", tr('SACRIFICED')),
+            ("other", tr('OTHER PERMANENT LOSS')),
+        )
+        for value, label in choices:
+            ttk.Button(panel, text=label, command=lambda choice=value: (result.append(choice), dialog.destroy())).pack(fill="x", pady=2)
+        ttk.Button(panel, text=tr('CANCEL'), command=dialog.destroy).pack(fill="x", pady=(8, 0))
+        dialog.bind("<Escape>", lambda _e: dialog.destroy())
+        dialog.after_idle(lambda: center_on_application(dialog)); dialog.wait_window()
+        return result[0] if result else ""
 
-        def _ok() -> None:
-            result.append(int(var.get()))
-            dialog.destroy()
+    def _resolve_hatred_target(self, row: dict) -> None:
+        selector = str(row.get("target_selector") or "").replace("_", " ")
+        target = simpledialog.askstring(
+            tr('Bitter Enmity'),
+            tr('Enter the specific hated target required by this result ({}):').format(selector),
+            parent=self,
+        )
+        if target is None:
+            return
+        self._run(lambda: self._engine().resolve_hatred_target(str(row.get("id")), target))
 
-        ttk.Button(dialog, text=tr('OK'), style="Accent.TButton", command=_ok).pack(pady=(4, 12))
-        dialog.bind("<Return>", lambda _e: _ok())
-        dialog.wait_window()
-        return result[0] if result else None
+    def _resolve_eye(self, row: dict, eye: str) -> None:
+        self._run(lambda: self._engine().resolve_lost_eye(str(row.get("id")), eye))
+
+    def _resolve_tome_of_magic(self, row: dict) -> None:
+        engine = self._engine()
+        heroes = [warrior for warrior in engine.campaign.warriors if warrior.kind == "hero"]
+        if not heroes:
+            return
+        dialog = tk.Toplevel(self); dialog.configure(bg=COLORS["panel"])
+        dialog.title(tr('Tome of Magic')); dialog.transient(self.winfo_toplevel()); dialog.grab_set()
+        tk.Label(dialog, text=tr('Choose a Hero and exactly two spells.'), bg=COLORS["panel"], fg=COLORS["text"],
+                 font=("Segoe UI Semibold", 9)).pack(anchor="w", padx=16, pady=(14, 7))
+        hero_var = tk.StringVar(value=heroes[0].name)
+        hero_box = ttk.Combobox(dialog, state="readonly", values=[hero.name for hero in heroes],
+                                textvariable=hero_var, width=42)
+        hero_box.pack(fill="x", padx=16)
+        spells = tk.Listbox(dialog, selectmode="multiple", exportselection=False, width=58, height=12,
+                            bg=COLORS["entry"], fg=COLORS["text"], selectbackground=COLORS["accent"],
+                            selectforeground=COLORS["black"], bd=0)
+        spells.pack(fill="both", expand=True, padx=16, pady=8)
+        option_rows = []
+
+        def refresh(_event=None) -> None:
+            nonlocal option_rows
+            hero = heroes[[value.name for value in heroes].index(hero_var.get())]
+            option_rows = list(engine.scenario_spell_options(hero.id))
+            spells.delete(0, "end")
+            for option in option_rows:
+                known = str(option.get("name") or "") in hero.skills
+                spells.insert("end", f"{'✓ ' if known else ''}{option.get('name')}  ·  {str(option.get('lore_id')).replace('lore.', '').replace('-', ' ').title()}")
+                if known: spells.itemconfig("end", fg=COLORS["muted"])
+
+        def confirm() -> None:
+            hero = heroes[[value.name for value in heroes].index(hero_var.get())]
+            ids = [str(option_rows[index].get("id") or "") for index in spells.curselection()]
+            ok, message = self.controller.perform_undoable(
+                tr('Assign scenario spell reward'),
+                lambda: engine.resolve_scenario_spell_reward(str(row.get("id")), hero.id, ids))
+            if not ok:
+                messagebox.showerror(tr('Cannot apply result'), message, parent=dialog); return
+            dialog.destroy(); self._status_text = "✓ " + message; self._rebuild()
+
+        hero_box.bind("<<ComboboxSelected>>", refresh); refresh()
+        ttk.Button(dialog, text=tr('CONFIRM'), style="Accent.TButton", command=confirm).pack(anchor="e", padx=16, pady=(0, 14))
+        dialog.after_idle(lambda: center_on_application(dialog))
 
     def _resolve_exploration_followup(self, row) -> None:
         """Interactive resolution of the KB exploration special result."""
@@ -1269,14 +1779,18 @@ class PostBattleMoment(tk.Frame):
                 hero_id = self._choose_hero(pending.get("label") or tr('Choose a Hero'))
                 if hero_id is None:
                     return
-                ok, message = engine.advance_exploration_followup(hero_id=hero_id)
+                ok, message = self.controller.perform_undoable(
+                    tr('Resolve Exploration event'),
+                    lambda: engine.advance_exploration_followup(hero_id=hero_id))
             else:
                 count = int(pending.get("dice_count") or 1)
                 sides = int(pending.get("dice_sides") or 6)
                 roll = self._ask_roll(count, sides, str(pending.get("label") or tr('Follow-up roll')))
                 if roll is None:
                     return
-                ok, message = engine.advance_exploration_followup(roll=roll)
+                ok, message = self.controller.perform_undoable(
+                    tr('Exploration event roll'),
+                    lambda: engine.advance_exploration_followup(roll=roll))
             if not ok:
                 messagebox.showerror(tr('Cannot apply result'), message, parent=self)
                 return
@@ -1303,6 +1817,7 @@ class PostBattleMoment(tk.Frame):
             dialog.destroy()
 
         ttk.Button(dialog, text=tr('OK'), style="Accent.TButton", command=_ok).pack(pady=(6, 12))
+        dialog.after_idle(lambda: center_on_application(dialog))
         dialog.wait_window()
         return result[0] if result else None
 

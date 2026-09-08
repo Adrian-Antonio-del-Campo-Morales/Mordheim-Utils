@@ -562,3 +562,30 @@ rules:
       Oscuros guardan sus secretos con gran celo.
   applies_to:
     band: true
+- id: dark-elf-sorceress--no-armoured-casting
+  name: No Armour Casting
+  effect: >-
+    The Dark Elf Sorceress may not cast spells while wearing armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Dark Elf Sorceress / Special Rules / No Armour Casting
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    es: Sin Conjuros con Armadura
+  effect_i18n:
+    es: >-
+      La Hechicera Elfa Oscura no puede lanzar conjuros mientras lleva armadura.
+  applies_to:
+    profile_ids:
+    - dark-elf-sorceress
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elves.dark-elf-sorceress.no-armoured-casting
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic.

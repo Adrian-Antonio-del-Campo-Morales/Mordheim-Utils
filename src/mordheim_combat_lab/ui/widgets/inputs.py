@@ -1,4 +1,4 @@
-"""ui.widgets.inputs: responsibility extracted without altering the rules."""
+"""ui: Input widgets (numeric fields, selectors)."""
 from __future__ import annotations
 
 

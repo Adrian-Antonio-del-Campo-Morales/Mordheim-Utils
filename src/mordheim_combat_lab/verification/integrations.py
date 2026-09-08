@@ -1,4 +1,4 @@
-"""verification.integrations: responsibility extracted without altering the rules."""
+"""verification: Cross-layer integration verification."""
 from __future__ import annotations
 
 from contextlib import ExitStack

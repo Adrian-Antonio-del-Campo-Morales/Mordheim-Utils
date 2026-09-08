@@ -16,6 +16,8 @@ class EquipmentEntryVM:
     unit_cost: int = 0
     per_model: bool = False
     transferable: bool = True
+    special_rules: list[str] = field(default_factory=list)
+    base_item_id: str = ""
 
     @property
     def total_cost(self) -> int:
@@ -49,6 +51,19 @@ class WarriorVM:
     #: generation result lowers the duplicate spell's difficulty by 1 (KB
     #: rule); one entry per spell name, value -1.
     spell_difficulty_modifiers: dict[str, int] = field(default_factory=dict)
+    hireling_rating: int = 0
+    maximum_models_modifier: int = 0
+    upkeep_resources: list[tuple[str, int]] = field(default_factory=list)
+    #: Future battles this warrior must sit out. Decremented only when a
+    #: battle is recorded, never while navigating the post-battle sequence.
+    games_to_miss: int = 0
+    absence_reason: str = ""
+    hatreds: list[str] = field(default_factory=list)
+    battle_start_checks: list[dict] = field(default_factory=list)
+    #: Structured lasting characteristic injuries for roster presentation.
+    injury_records: list[dict] = field(default_factory=list)
+    lost_eyes: list[str] = field(default_factory=list)
+    special_rules: list[str] = field(default_factory=list)
 
 
 @dataclass(slots=True)
@@ -87,6 +102,12 @@ class BattleVM:
     #: Answers recorded for the structured scenario result fields
     #: (award id or question id -> value). Free-form, award-plan driven.
     scenario_results: dict = field(default_factory=dict)
+    #: Roster members unavailable for this battle, snapshotted before their
+    #: remaining absence counter is decremented.
+    absentees: list[dict] = field(default_factory=list)
+    #: Stable KB identity when the opponent was selected from the catalogue.
+    #: The visible name remains available for custom/unlisted opponents.
+    opponent_band_id: str = ""
 
 
 @dataclass(slots=True)
@@ -99,6 +120,8 @@ class InventoryItemVM:
     stash: int
     value: int = 0
     rarity: str | None = None
+    special_rules: list[str] = field(default_factory=list)
+    base_item_id: str = ""
 
 
 @dataclass(slots=True)
@@ -184,9 +207,20 @@ class PostBattleVM:
 
     def unacknowledged_follow_ups(self, step: int) -> list[dict]:
         """Pending follow-ups of one step the player has not acknowledged yet."""
+        mandatory_types = {
+            "injury_followup", "exploration_followup", "prisoner", "relationship",
+            "eye_injury", "hireling_upkeep",
+            "scenario_spell_reward", "scenario_encampment",
+        }
         return [
             row for row in self.pending_follow_ups
-            if int(row.get("step") or -1) == int(step) and not self.is_acknowledged(step, str(row.get("id")))
+            if int(row.get("step") or -1) == int(step)
+            and (
+                row.get("mandatory") is True
+                or row.get("type") in mandatory_types
+                or (row.get("type") == "encounter" and row.get("encounter_id") == "campaign.encounter.sold-to-the-pits")
+                or not self.is_acknowledged(step, str(row.get("id")))
+            )
         ]
 
     def pending_advance_for(self, warrior_id: str, threshold: int | None = None) -> dict | None:
@@ -225,6 +259,13 @@ class CampaignVM:
     #: these pools are campaign-level counters.
     treasures: int = 0
     campaign_points: int = 0
+    special_rules: list[dict] = field(default_factory=list)
+    #: Unique rewards already generated in this campaign. This history is
+    #: intentionally independent from current ownership: losing the bearer
+    #: must not make a unique magical artefact available again.
+    unique_reward_ids: list[str] = field(default_factory=list)
+    #: User-authored corrections made outside normal campaign resolution.
+    manual_log: list[dict] = field(default_factory=list)
 
     # Draft-only construction metadata. In the real application these values
     # are supplied by the selected warband rules rather than the GUI.
@@ -272,6 +313,15 @@ class CampaignVM:
         return sum(w.quantity for w in self.warriors)
 
     @property
+    def draft_warband_member_count(self) -> int:
+        """Own-band models; Hired Swords never consume roster capacity."""
+        return sum(w.quantity for w in self.warriors if w.kind != "hireling")
+
+    @property
+    def effective_maximum_models(self) -> int:
+        return self.maximum_models + sum(w.maximum_models_modifier for w in self.warriors if w.kind == "hireling")
+
+    @property
     def draft_hero_count(self) -> int:
         return sum(w.quantity for w in self.warriors if w.kind == "hero")
 
@@ -281,7 +331,7 @@ class CampaignVM:
 
     @property
     def draft_experience(self) -> int:
-        return sum(w.experience * w.quantity for w in self.warriors)
+        return sum(w.experience * w.quantity for w in self.warriors if w.kind != "hireling")
 
     @property
     def draft_recruitment_cost(self) -> int:
@@ -297,13 +347,15 @@ class CampaignVM:
 
     @property
     def draft_rating(self) -> int:
-        return self.draft_model_count * 5 + self.draft_experience
+        members = self.draft_warband_member_count * 5 + self.draft_experience
+        hirelings = sum(w.hireling_rating for w in self.warriors if w.kind == "hireling")
+        return members + hirelings
 
     @property
     def draft_is_legal(self) -> bool:
         return (
-            self.draft_model_count >= self.minimum_models
-            and self.draft_model_count <= self.maximum_models
+            self.draft_warband_member_count >= self.minimum_models
+            and self.draft_warband_member_count <= self.effective_maximum_models
             and 1 <= self.draft_hero_count <= self.hero_limit
             and self.draft_treasury >= 0
         )
@@ -610,7 +662,7 @@ def warrior_vm(
         name=name or profile.name,
         profile_name=profile.name,
         kind=profile.kind,
-        stats={**profile.characteristics, **(stat_modifiers or {})},
+        stats=dict(profile.characteristics),
         equipment=entries,
         skills=list(profile.inherent_rules) + list(extra_skills or []),
         experience=profile.experience if experience is None else experience,

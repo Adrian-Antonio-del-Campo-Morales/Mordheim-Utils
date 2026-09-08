@@ -961,3 +961,84 @@ rules:
       binding:
         kind: mechanic
         id: mechanic.mark-of-the-old-ones
+- id: saurus-totem-warrior--no-missile-weapons
+  name: No Missile Weapons
+  effect: >-
+    Saurus Totem Warriors may never use missile weapons.
+  source:
+    manual: lustria
+    printed_page: 54
+    section: Heroes / 0-1 Saurus Totem Warrior / No Missile Weapons
+  name_i18n:
+    es: Sin Armas de Proyectil
+  effect_i18n:
+    es: >-
+      Los Guerreros Tótem Saurus jamás pueden usar armas de proyectil.
+  applies_to:
+    profile_ids:
+    - saurus-totem-warrior
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.no-missile-weapons
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.no-missile-weapons
+- id: saurus-braves--no-missile-weapons
+  name: No Missile Weapons
+  effect: >-
+    Saurus may never use missile weapons.
+  source:
+    manual: lustria
+    printed_page: 56
+    section: Henchmen / 0-4 Saurus Braves / No Missile Weapons
+  name_i18n:
+    es: Sin Armas de Proyectil
+  effect_i18n:
+    es: >-
+      Los Saurus jamás pueden usar armas de proyectil.
+  applies_to:
+    profile_ids:
+    - saurus-braves
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.no-missile-weapons
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.no-missile-weapons
+- id: saurus-totem-warrior--no-academic-skills
+  name: No Academic Skills
+  effect: >-
+    Saurus Totem Warriors may never gain Academic skills.
+  source:
+    manual: lustria
+    printed_page: 54
+    section: Heroes / 0-1 Saurus Totem Warrior / No Academic Skills
+  name_i18n:
+    es: Sin Habilidades Académicas
+  effect_i18n:
+    es: >-
+      Los Guerreros Tótem Saurus jamás pueden obtener habilidades Académicas.
+  applies_to:
+    profile_ids:
+    - saurus-totem-warrior
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.forbid-skill-categories
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.forbid-skill-categories
+        parameters:
+          categories:
+          - academic

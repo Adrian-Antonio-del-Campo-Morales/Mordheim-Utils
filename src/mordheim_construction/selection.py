@@ -1,4 +1,4 @@
-"""construction.selection: responsibility extracted without altering the rules."""
+"""construction: Free-selection and profile-based fighter build construction."""
 from __future__ import annotations
 
 from mordheim_core.models import Characteristics

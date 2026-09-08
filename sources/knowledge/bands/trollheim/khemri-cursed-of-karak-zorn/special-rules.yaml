@@ -671,3 +671,57 @@ rules:
   - troll-slayer
   applies_to:
     band: true
+- id: troll-slayer--no-armour
+  name: No Armour
+  effect: >-
+    A Troll Slayer may never wear any form of armour.
+  source:
+    manual: khemri
+    printed_page: 68
+    section: Heroes / 0-1 Troll Slayer / No Armour
+  name_i18n:
+    es: Sin Armadura
+  effect_i18n:
+    es: >-
+      Un Matatrolles jamás puede llevar ningún tipo de armadura.
+  applies_to:
+    profile_ids:
+    - troll-slayer
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: armour
+- id: troll-slayer--no-missile-weapons
+  name: No Missile Weapons
+  effect: >-
+    A Troll Slayer may never use missile weapons.
+  source:
+    manual: khemri
+    printed_page: 68
+    section: Heroes / 0-1 Troll Slayer / No Missile Weapons
+  name_i18n:
+    es: Sin Armas de Proyectil
+  effect_i18n:
+    es: >-
+      Un Matatrolles jamás puede usar armas de proyectil.
+  applies_to:
+    profile_ids:
+    - troll-slayer
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.no-missile-weapons
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.no-missile-weapons

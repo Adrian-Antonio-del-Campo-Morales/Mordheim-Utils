@@ -610,7 +610,24 @@ FAST_DEEP_SCENARIO_IDS: tuple[str, ...] = (
     "silent-walker-vs-cold-one",
 )
 
+# Mini selection: one cheap pair for every cost/behaviour axis a numpy<->native
+# performance sweep should observe without paying for a full certification
+# matrix. Expressed as ids, like the fast set.
+MINI_DEEP_SCENARIO_IDS: tuple[str, ...] = (
+    "basic",                      # cheapest duel: per-batch fixed overhead
+    "multiattack",                # typical mid-size attack pool
+    "heavy-grind",                # 75-round grind: the most expensive scenario
+    "sigmarite-vs-undead",        # conditional extra attacks + undead interaction
+    "regen-vs-fire",              # special saves (regeneration blocked by fire)
+    "natural-armour-vs-magic",    # stacked save layers + extra bite
+    "paired-poison-vs-undead",    # auto-wound poison + paired weapons
+    "frenzy-vs-w2",               # frenzy doubles the pool size
+    "entangle-vs-fencer",         # pool manipulation with reaction logic
+    "random-characteristics-vs-stable",  # per-duel random characteristics path
+)
+
 DEEP_SCENARIO_SET_IDS: dict[str, tuple[str, ...]] = {
+    "mini": MINI_DEEP_SCENARIO_IDS,
     "fast": FAST_DEEP_SCENARIO_IDS,
     "full": FULL_DEEP_SCENARIO_IDS,
 }
@@ -628,6 +645,12 @@ def deep_test_scenarios(pair_set: str = "full") -> tuple[BenchmarkScenario, ...]
     keeps ``heavy-grind`` and ``ithilmar-duel`` because they add the only
     long-round and Ithilmar axes otherwise lost from the fast set.
 
+    ``mini`` is a 10-pair performance-survey subset: one cheap-to-expensive
+    representative per cost axis (batch overhead, typical pool, 75-round
+    grind) and per behaviour family (conditional attacks, special saves,
+    stacked saves, poison, frenzy, pool manipulation, random
+    characteristics).
+
     The set selection is benchmark metadata only. It does not alter fighter
     construction or any combat/KB implementation. ``blessed-vs-regen`` still
     uses the benchmark-only ``attack.blessed`` tag described above.
@@ -636,7 +659,7 @@ def deep_test_scenarios(pair_set: str = "full") -> tuple[BenchmarkScenario, ...]
         selected_ids = DEEP_SCENARIO_SET_IDS[pair_set]
     except KeyError as error:
         raise ValueError(
-            f"unknown deep pair set {pair_set!r}; choose 'fast' or 'full'"
+            f"unknown deep pair set {pair_set!r}; choose 'mini', 'fast' or 'full'"
         ) from error
     by_id = {scenario.id: scenario for scenario in DEEP_SCENARIOS}
     return tuple(by_id[scenario_id] for scenario_id in selected_ids)

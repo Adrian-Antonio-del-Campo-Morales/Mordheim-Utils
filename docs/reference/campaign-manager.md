@@ -116,8 +116,17 @@ the `BattleVM` plus its pending `PostBattleVM`, and is refused while a
 post-battle is pending or the warband is still a draft. Recording is
 unblocked once COMMIT STATE runs. The participants tab lists the real roster
 with current conditions. Recovery (step 1) offers injury cards only for the
-warriors recorded Out of Action; battles recorded before that feature (or
-with none marked) offer every warrior.
+warriors recorded Out of Action; battles recorded with none marked offer
+every warrior.
+
+**Scenario progression is applied at battle recording.**
+`application/scenario_rewards.py` builds the award plan from the scenario's
+`progression:` block and the canonical awards of
+`experience-and-advances.yaml`; the dialog computes per-warrior XP totals
+(`xp_awards`) from the battle facts and records prose-only rewards as manual
+entries. `controller._apply_recorded_scenario_loot` applies the structured
+additional rewards to the pending post-battle: gold crowns, wyrdstone
+fragments, exploration-die modifiers, items and special results.
 
 **Post-battle mutations.** Injuries mutate the roster, XP and
 purchases/trades move the projected treasury and stash, exploration and the
@@ -163,8 +172,6 @@ table (fragments × warband size) and is one-shot per sequence.
 ## Still open
 
 - Per-warrior skill editing outside advances.
-- Scenario progression rolls (battles do not yet roll the transcribed
-  `progression:` rewards).
 - Out-of-sequence purchases and resource corrections (would reuse the same
   stored IDs).
 - Campaign library ("Manage Campaigns…" header entry), inventory ADD ITEM and
@@ -179,7 +186,7 @@ mordheim-campaign-manager
 python tools/mordheim-utils.py warband-manager
 ```
 
-Python 3.11+ and Tkinter are sufficient.
+Python 3.10+ and Tkinter are sufficient.
 
 See [Architecture](architecture.md) for the package map and
 [the KB guide](knowledge-base.md) for the catalogues it reads.

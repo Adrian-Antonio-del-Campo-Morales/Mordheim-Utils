@@ -1,4 +1,4 @@
-"""application.settings: responsibility extracted without altering the rules."""
+"""application: Execution settings use cases."""
 from __future__ import annotations
 
 from dataclasses import dataclass

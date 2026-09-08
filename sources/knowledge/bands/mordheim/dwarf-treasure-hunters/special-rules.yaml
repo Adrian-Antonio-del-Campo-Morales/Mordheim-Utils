@@ -487,3 +487,59 @@ rules:
       turno en que carga.
   applies_to:
     band: true
+- id: dwarf-troll-slayers--no-armour
+  name: No Armour
+  effect: >-
+    Dwarf Troll Slayers may never wear any form of armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 2 Dwarf Troll Slayers / Special Rules / No Armour
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    es: Sin Armadura
+  effect_i18n:
+    es: >-
+      Los Matatrolles Enanos jamás pueden llevar ningún tipo de armadura.
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayers
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: armour
+- id: dwarf-troll-slayers--no-missile-weapons
+  name: No Missile Weapons
+  effect: >-
+    Troll Slayers may never use missile weapons.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 2 Dwarf Troll Slayers / Special Rules / No Missile Weapons
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
+  name_i18n:
+    es: Sin Armas de Proyectil
+  effect_i18n:
+    es: >-
+      Los Matatrolles Enanos jamás pueden usar armas de proyectil.
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayers
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.no-missile-weapons
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.no-missile-weapons

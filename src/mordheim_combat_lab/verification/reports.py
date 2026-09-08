@@ -1,4 +1,4 @@
-"""verification.reports: responsibility extracted without altering the rules."""
+"""verification: Verification report assembly and formatting."""
 from __future__ import annotations
 
 from dataclasses import dataclass

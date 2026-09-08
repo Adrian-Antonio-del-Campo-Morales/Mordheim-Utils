@@ -2577,6 +2577,19 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
                                 attacker_py, None, None) < 0:
                 rc = -1
                 return rc
+            # Force of Will rescue is an immediate response to going Out of
+            # Action, before the next prepared hit resolves (the oracle's
+            # _react_to_wound contract).  Rescuing only after the whole pool
+            # lets a rescued fighter skip the remaining attacks of the same
+            # pool and inflated the FoW side's survival.
+            if rescue_force_of_will_c(defender, s_def, rows,
+                                      rows_n, rng) < 0:
+                rc = -1
+                return rc
+            if rescue_force_of_will_c(atk, s_atk, rows,
+                                      rows_n, rng) < 0:
+                rc = -1
+                return rc
     finally:
         if prepared is not NULL:
             for i in range(max_prepared):
@@ -2916,7 +2929,10 @@ cdef int rescue_force_of_will_c(FighterC* f, StateC* s, const int* rows,
         for i in range(m):
             s.force_of_will_used[eligible[i]] = 1
             targets[i] = s.toughness[eligible[i]]
-        characteristic_tests_c(f, eligible, m, targets, rng, 0, results)
+        # Natural 6 always fails (six_always_fails=1), like the oracle and
+        # the NumPy _characteristic_test default; the broken port passed 0
+        # and rescued fights on a 6, inflating Force of Will survival.
+        characteristic_tests_c(f, eligible, m, targets, rng, 1, results)
         for i in range(m):
             if results[i]:
                 s.condition[eligible[i]] = STANDING
@@ -2956,10 +2972,13 @@ cdef int sustain_force_of_will_c(FighterC* f, StateC* s, Rng* rng,
             targets[i] = s.toughness[row] - s.force_of_will_penalty[row]
             if targets[i] < 0:
                 targets[i] = 0
+        # Same contract as the rescue: natural 6 always fails and Blessed
+        # Sight rerolls.  The broken port used raw ``roll > target`` with no
+        # six-fails rule and no reroll, sustaining fighters that should have
+        # dropped (results below hold pass=1, so removal inverts them).
+        characteristic_tests_c(f, active, m, targets, rng, 1, results)
         for i in range(m):
-            results[i] = 1 if rng_draw_safe(rng, 1, 6) > targets[i] else 0
-        for i in range(m):
-            if results[i]:
+            if not results[i]:
                 row = active[i]
                 s.condition[row] = OUT
                 s.force_of_will_active[row] = 0
@@ -3187,14 +3206,29 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
                                            n_active) < 0:
                     rc = -1
                     return rc
+                # Fire recovery is player-turn scoped like the oracle's
+                # _fire_recovery (and vectorized._resolve_fire): only the
+                # burning fighter's own turn rolls the extinguish test and
+                # applies the S4 hit.  A round-scoped fire extinguishes
+                # twice as fast and skews both matchup orientations.
                 if d.first.can_burn:
-                    if resolve_fire_c(d, 0, &s1, &s2, &rng, active_rows,
-                                      n_active) < 0:
+                    m = 0
+                    for i in range(n_active):
+                        row = active_rows[i]
+                        if (first_charges[row] != 0) == (round_index % 2 == 0):
+                            rows[m] = row
+                            m += 1
+                    if resolve_fire_c(d, 0, &s1, &s2, &rng, rows, m) < 0:
                         rc = -1
                         return rc
                 if d.second.can_burn:
-                    if resolve_fire_c(d, 1, &s2, &s1, &rng, active_rows,
-                                      n_active) < 0:
+                    m = 0
+                    for i in range(n_active):
+                        row = active_rows[i]
+                        if (first_charges[row] != 0) != (round_index % 2 == 0):
+                            rows[m] = row
+                            m += 1
+                    if resolve_fire_c(d, 1, &s2, &s1, &rng, rows, m) < 0:
                         rc = -1
                         return rc
                 if rescue_force_of_will_c(&d.first, &s1, active_rows, n_active,

@@ -1,4 +1,4 @@
-"""application.catalogue: responsibility extracted without altering the rules."""
+"""application: Catalogue options read model for the UI."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -111,15 +111,17 @@ class CombatCatalogue:
         """Return every general category plus the selected band's special skills."""
         profile = self.profile(choice) if choice else None
         allowed_categories = set(profile.get("skill_access") or ()) if profile else None
+        banned = self._banned_skill_categories(choice)
         general = tuple(
             SkillChoice(
                 str(skill["id"]),
                 str(skill["name"]),
                 str(skill["category"]),
                 str(skill.get("effect") or ""),
-                self._skill_unavailable_reason(skill),
+                banned.get(str(skill.get("category") or "")) or self._skill_unavailable_reason(skill),
                 runtime_available=(
                     (allowed_categories is None or str(skill.get("category") or "") in allowed_categories)
+                    and str(skill.get("category") or "") not in banned
                     and self._catalogue_skill_is_available(skill)
                 ),
             )
@@ -127,6 +129,34 @@ class CombatCatalogue:
             if str(skill.get("category") or "") != "special"
         )
         return (*general, *self._warband_skills(choice))
+
+    def _banned_skill_categories(self, choice: ProfileChoice | None) -> dict[str, str]:
+        """Skill categories a profile may never acquire, with the KB reason.
+
+        Profile rules with an implemented ``compiler.forbid-skill-categories``
+        binding forbid whole categories independently of ``skill_access``, so
+        the editor disables them even if a campaign advance would later grant
+        the list."""
+        if choice is None:
+            return {}
+        package = self._packages[(choice.collection, choice.band_id)]
+        profile = self.profile(choice)
+        profile_id = str(profile.get("id") or "")
+        banned: dict[str, str] = {}
+        for rule in package.special_rules:
+            runtime = rule.get("runtime") or {}
+            if runtime.get("grant") != "profile" or runtime.get("implemented") != "YES":
+                continue
+            if profile_id not in set((rule.get("applies_to") or {}).get("profile_ids") or ()):
+                continue
+            reason = self._rule_text(rule)
+            for effect in runtime.get("effects") or ():
+                binding = effect.get("binding") or {}
+                if binding.get("id") != "compiler.forbid-skill-categories":
+                    continue
+                for category in (binding.get("parameters") or {}).get("categories") or ():
+                    banned.setdefault(str(category), reason)
+        return banned
 
     def in_scope_skill_ids(self, skills) -> set[str]:
         """Return skill IDs executable by the current one-against-one runtime."""

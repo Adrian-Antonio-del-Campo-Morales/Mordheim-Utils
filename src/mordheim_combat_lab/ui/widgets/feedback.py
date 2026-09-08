@@ -1,4 +1,4 @@
-"""ui.widgets.feedback: responsibility extracted without altering the rules."""
+"""ui: Status and error feedback widgets."""
 from __future__ import annotations
 
 from mordheim_ui.lab_theme import COLORS
