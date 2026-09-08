@@ -43,6 +43,19 @@ def test_projections_match_the_base_state():
     assert engine.projected_rating() == 125
 
 
+def test_exploration_eligibility_subtracts_only_out_of_action_heroes():
+    engine, state, _ = _pending()
+    battle = state.campaign.battle(8)
+    hero = next(row for row in state.campaign.warriors if row.kind == "hero")
+    henchmen = next(row for row in state.campaign.warriors if row.kind == "henchman")
+
+    battle.out_of_action_ids = [henchmen.id, henchmen.id]
+    assert engine.eligible_exploration_heroes(battle) == engine.projected_heroes()
+
+    battle.out_of_action_ids.append(hero.id)
+    assert engine.eligible_exploration_heroes(battle) == engine.projected_heroes() - 1
+
+
 def test_projections_follow_roster_and_deltas():
     engine, _, _ = _pending()
     engine.add_xp("matriarch", 1)

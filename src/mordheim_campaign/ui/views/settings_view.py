@@ -29,10 +29,8 @@ class SettingsView(tk.Frame):
         ttk.Button(folder, textvariable=self.folder_var, command=lambda: self._folder(controller)).pack(side="right")
 
     def _set_locale(self, controller, value: str) -> None:
-        from mordheim_knowledge.i18n import set_locale as set_kb_locale
-        from mordheim_ui.i18n import set_locale as set_ui_locale
         locale = "es" if value == "Español" else "en"
-        set_ui_locale(locale); set_kb_locale(locale); controller.notify()
+        controller.set_locale(locale)
 
     def _folder(self, controller) -> None:
         from pathlib import Path

@@ -517,7 +517,7 @@ class BattleEntryMoment(tk.Frame):
                 ttk.Checkbutton(row, text=tr('OUT OF ACTION'), variable=var, command=self._update_hint, style="Panel.TCheckbutton").pack(side="right")
         tk.Label(
             body,
-            text=tr("Marked warriors roll on the serious-injury charts in Recovery (post-battle step 1). Henchman groups: ticking marks the whole group's survival roll."),
+            text=tr("Marked warriors roll on the serious-injury charts in Recovery (post-battle step 1). For Henchman groups, choose exactly how many members went Out of Action."),
             bg=COLORS["panel"], fg=COLORS["muted_dark"], font=("Segoe UI", 7), wraplength=430, justify="left",
         ).pack(anchor="w")
 

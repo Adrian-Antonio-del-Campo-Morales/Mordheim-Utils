@@ -3,7 +3,6 @@ from __future__ import annotations
 import tkinter as tk
 from tkinter import ttk
 
-from mordheim_campaign.application.post_battle_engine import PostBattleEngine
 from mordheim_ui.theme import COLORS
 from mordheim_ui.windowing import center_on_application
 from mordheim_ui.widgets import BorderedFrame
@@ -18,9 +17,10 @@ class SkillChoiceDialog(tk.Toplevel):
     engine (duplicates, tables, lore) and reports its message.
     """
 
-    def __init__(self, parent: tk.Misc, engine: PostBattleEngine, warrior_id: str, *, want_spells: bool, promotion: bool = False, threshold: int | None = None) -> None:
+    def __init__(self, parent: tk.Misc, controller, warrior_id: str, *, want_spells: bool, promotion: bool = False, threshold: int | None = None) -> None:
         super().__init__(parent)
-        self.engine = engine
+        self.controller = controller
+        self.engine = controller.post_battle_engine()
         self.warrior_id = warrior_id
         self.want_spells = want_spells
         self.promotion = promotion
@@ -175,18 +175,23 @@ class SkillChoiceDialog(tk.Toplevel):
             if not self.want_spells:
                 return
             # Duplicate spell: the advance is spent lowering its difficulty.
-            ok, message = self.engine.commit_pending_advance(
-                self.warrior_id, option_kind="duplicate_spell", spell_id=payload, threshold=self.threshold,
-            )
+            ok, message = self.controller.perform_undoable(
+                tr('Commit duplicate spell'), lambda: self.engine.commit_pending_advance(
+                    self.warrior_id, option_kind="duplicate_spell", spell_id=payload, threshold=self.threshold,
+                ))
             if not ok:
                 self._detail_var.set(message)
                 return
             self.destroy()
             return
         if self.want_spells:
-            ok, message = self.engine.commit_pending_advance(self.warrior_id, option_kind="generate_spell", spell_id=payload, threshold=self.threshold)
+            ok, message = self.controller.perform_undoable(
+                tr('Commit spell'), lambda: self.engine.commit_pending_advance(
+                    self.warrior_id, option_kind="generate_spell", spell_id=payload, threshold=self.threshold))
         else:
-            ok, message = self.engine.commit_pending_advance(self.warrior_id, option_kind="choose_skill", skill_name=payload, threshold=self.threshold)
+            ok, message = self.controller.perform_undoable(
+                tr('Commit skill'), lambda: self.engine.commit_pending_advance(
+                    self.warrior_id, option_kind="choose_skill", skill_name=payload, threshold=self.threshold))
         if not ok:
             self._detail_var.set(message)
             return

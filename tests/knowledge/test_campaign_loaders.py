@@ -37,8 +37,8 @@ SEQUENCE_STEP_IDS = (
 CAMPAIGN_STEMS = {
     "experience-and-advances", "exploration-and-income",
     "hired-swords-and-dramatis", "magic", "mutations",
-    "post-battle-sequence", "recruitment-and-veterans", "scenarios",
-    "serious-injuries", "trading-and-rarity", "trading-post",
+    "post-battle-sequence", "recruitment-and-veterans", "scenario-rewards",
+    "scenarios", "serious-injuries", "trading-and-rarity", "trading-post",
     "warband-rating",
 }
 

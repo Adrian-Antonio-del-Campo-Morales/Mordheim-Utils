@@ -39,9 +39,11 @@ class CampaignView(tk.Frame):
             variant_var = tk.StringVar(value=current or "—")
             box = ttk.Combobox(vbox, textvariable=variant_var, values=("—", *labels), state="readonly", width=11)
             box.pack(side="left")
-            box.bind("<<ComboboxSelected>>", lambda _e: self.controller.set_mercenary_variant(
-                None if variant_var.get() == "—" else next(identifier for identifier, label in variants if label == variant_var.get())
-            ))
+            box.bind("<<ComboboxSelected>>", lambda _e: self.controller.perform_undoable(
+                tr('Change mercenary variant'), lambda: self.controller.set_mercenary_variant(
+                    None if variant_var.get() == "—" else next(
+                        identifier for identifier, label in variants if label == variant_var.get())
+                )))
 
     def _timeline(self) -> tk.Frame:
         frame = tk.Frame(self, bg=COLORS["bg"])

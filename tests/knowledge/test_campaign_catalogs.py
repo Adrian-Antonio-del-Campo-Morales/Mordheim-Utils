@@ -103,7 +103,7 @@ def test_campaign_catalogs_all_published_and_hired_swords_is_schema_v2():
                 for path in campaign_files()}
     published = [name for name, status in statuses.items() if status == "published"]
     drafts = [name for name, status in statuses.items() if status == "draft"]
-    assert len(published) == 12
+    assert len(published) == 13
     assert drafts == []
     # hired-swords-and-dramatis uses schema v2 (availability resources and
     # procedures); the rest of the campaign catalogues stay on v1.

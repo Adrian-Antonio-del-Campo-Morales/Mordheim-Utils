@@ -91,7 +91,7 @@ class AppShell(tk.Frame):
 
         self.undo_button = ttk.Button(
             actions, text=tr('Undo'), image=ui_icon(self, "campaign_dice_undo", 17), compound="left",
-            style="Ghost.TButton", command=self.controller.undo,
+            style="Ghost.TButton", command=self._undo,
         )
         self.undo_button.pack(side="left", pady=13, padx=2, before=self.action_buttons[-1][0])
 
@@ -118,11 +118,29 @@ class AppShell(tk.Frame):
 
     def _undo_shortcut(self, _event=None):
         if self.controller.can_undo:
-            self.controller.undo()
+            self._undo()
         return "break"
 
+    def _undo(self) -> None:
+        # Modal editors retain references to the state they opened with. They
+        # must close before a snapshot replaces that complete object graph.
+        root = self.winfo_toplevel()
+        def close_dialogs(widget) -> None:
+            for child in tuple(widget.winfo_children()):
+                if isinstance(child, tk.Toplevel) and child.winfo_exists():
+                    child.destroy()
+                else:
+                    close_dialogs(child)
+        close_dialogs(root)
+        self.controller.undo()
+
     def _refresh_undo(self) -> None:
+        label = self.controller.undo_label
+        if label.startswith("Undo:"):
+            label = f"{tr('Undo')}:{label.removeprefix('Undo:')}"
+        else:
+            label = tr(label)
         self.undo_button.configure(
-            text=tr(self.controller.undo_label),
+            text=label,
             state="normal" if self.controller.can_undo else "disabled",
         )
