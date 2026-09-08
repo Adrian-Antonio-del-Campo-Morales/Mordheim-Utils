@@ -449,3 +449,30 @@ rules:
       reason: >-
         Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
         construction.
+- id: shadow-weaver--no-armoured-casting
+  name: No Armour Casting
+  effect: >-
+    A Shadow Weaver may not cast spells while wearing armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Shadow Weaver / Special Rules / No Armour Casting
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/shadow-warriors
+  name_i18n:
+    es: Sin Conjuros con Armadura
+  effect_i18n:
+    es: >-
+      Un Tejedor de Sombras no puede lanzar conjuros mientras lleva armadura.
+  applies_to:
+    profile_ids:
+    - shadow-weaver
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.shadow-warriors.shadow-weaver.no-armoured-casting
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic.

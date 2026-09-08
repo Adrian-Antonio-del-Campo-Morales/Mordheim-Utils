@@ -1,4 +1,4 @@
-"""ui.tabs.analysis: responsibility extracted without altering the rules."""
+"""ui: Analysis tab: batch duel comparison and results."""
 from __future__ import annotations
 
 

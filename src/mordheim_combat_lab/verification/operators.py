@@ -1,4 +1,4 @@
-"""verification.operators: responsibility extracted without altering the rules."""
+"""verification: Per-operator semantic verification of phase contracts."""
 from __future__ import annotations
 
 from itertools import product

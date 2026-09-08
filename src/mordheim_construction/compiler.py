@@ -1,4 +1,4 @@
-"""construction.compiler: responsibility extracted without altering the rules."""
+"""construction: Compiles FighterBuilds into CompiledFighter, enforcing legality."""
 from __future__ import annotations
 
 from dataclasses import fields

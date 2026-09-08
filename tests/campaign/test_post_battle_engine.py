@@ -8,12 +8,15 @@ actual roster experience (models × 5 + XP), so the narrative State #7 rating
 """
 from __future__ import annotations
 
+from dataclasses import replace
+
 from mordheim_campaign.application.knowledge_port import KnowledgePort
 from mordheim_campaign.application.post_battle_catalogue import HirelingOffer, PostBattleCatalogue
 from mordheim_campaign.application.post_battle_engine import PostBattleEngine
 from mordheim_campaign.application.post_battle_resolution import PostBattleResolver
-from mordheim_campaign.application.state import make_example_state
+from mordheim_campaign.application.state import EquipmentEntryVM, make_example_state
 from mordheim_campaign.persistence import load_campaign, save_campaign
+from mordheim_campaign.ui.panels.warrior_card import effective_stat, injury_lines
 
 
 def _pending():
@@ -47,6 +50,161 @@ def test_projections_follow_roster_and_deltas():
     assert engine.projected_rating() == 126
     assert engine.projected_experience() == 86
     assert engine.projected_shards() > 4  # exploration added shards
+
+
+def test_exploration_variable_grants_apply_and_resume_the_reward():
+    engine, state, _ = _pending()
+    post = engine.post
+    assert post is not None
+    post.pending_follow_ups.clear()
+    stock = state.campaign.inventory[0]
+    starting_gold = engine.projected_gold()
+    starting_owned = stock.owned
+    starting_stash = stock.stash
+    post.pending_follow_ups.append({
+        "type": "exploration_followup",
+        "queue": [{
+            "type": "grant",
+            "recipient": "warband",
+            "resources": {"gold_crowns": {"kind": "dice", "dice": {"count": 2, "sides": 6}}},
+            "items": [{"item_id": stock.id, "quantity": {"kind": "dice", "dice": {"count": 1, "sides": 3}}}],
+            "note": "special reward complete",
+        }],
+        "messages": [],
+    })
+
+    pending = engine.exploration_followup_pending()
+    assert pending is not None and pending["resource"] == "gold_crowns"
+    ok, _ = engine.advance_exploration_followup(roll=7)
+    assert ok and engine.projected_gold() == starting_gold + 7
+
+    pending = engine.exploration_followup_pending()
+    assert pending is not None and pending["resource"] == f"item:{stock.id}"
+    ok, message = engine.advance_exploration_followup(roll=2)
+    assert ok
+    assert stock.owned == starting_owned + 2
+    assert stock.stash == starting_stash + 2
+    assert "special reward complete" in message
+    assert engine.exploration_followup_pending() is None
+
+
+def test_exploration_applies_dice_multiplier_and_offset():
+    engine, _, _ = _pending()
+    engine.post.pending_follow_ups[:] = [{
+        "type": "exploration_followup", "messages": [],
+        "queue": [{"type": "grant", "recipient": "warband", "resources": {
+            "gold_crowns": {"kind": "dice", "dice": {"count": 1, "sides": 6}, "multiplier": 10},
+            "wyrdstone_fragments": {"kind": "dice", "dice": {"count": 1, "sides": 6}, "offset": 1},
+        }}],
+    }]
+    gold = engine.projected_gold()
+    shards = engine.projected_shards()
+    engine.exploration_followup_pending()
+    engine.advance_exploration_followup(roll=4)
+    engine.advance_exploration_followup(roll=2)
+    assert engine.projected_gold() == gold + 40
+    assert engine.projected_shards() == shards + 3
+
+
+def test_exploration_single_hero_reward_requires_and_uses_selection():
+    engine, state, _ = _pending()
+    heroes = [warrior for warrior in state.campaign.warriors if warrior.kind == "hero"]
+    before = {hero.id: hero.experience for hero in heroes}
+    engine.post.pending_follow_ups[:] = [{
+        "type": "exploration_followup", "messages": [],
+        "queue": [{"type": "grant", "recipient": "hero",
+                   "resources": {"experience": {"kind": "fixed", "value": 2}}}],
+    }]
+    assert engine.exploration_followup_pending()["kind"] == "choose_hero"
+    engine.advance_exploration_followup(hero_id=heroes[-1].id)
+    assert heroes[-1].experience == before[heroes[-1].id] + 2
+    assert all(hero.experience == before[hero.id] for hero in heroes[:-1])
+
+
+def test_exploration_option_applies_selected_branch():
+    engine, _, _ = _pending()
+    start = engine.projected_gold()
+    engine.post.pending_follow_ups[:] = [{
+        "type": "exploration_followup", "messages": [],
+        "queue": [{"type": "choose_option", "options": [
+            {"id": "sell", "label": "Sell", "then": [{"type": "grant", "recipient": "warband",
+             "resources": {"gold_crowns": {"kind": "fixed", "value": 100}}}]},
+        ]}],
+    }]
+    assert engine.exploration_followup_pending()["kind"] == "choose_option"
+    engine.advance_exploration_followup(option_id="sell")
+    assert engine.projected_gold() == start + 100
+
+
+def test_returning_a_favour_adds_the_selected_hired_sword_for_free():
+    engine, state, _ = _pending()
+    engine.post.pending_follow_ups.clear()
+    before = len(state.campaign.warriors)
+    ok, _ = engine.apply_exploration((6, 6, 6))
+    assert ok
+    pending = engine.exploration_followup_pending()
+    assert pending is not None and pending["kind"] == "choose_option"
+    ok, _ = engine.advance_exploration_followup(option_id=pending["options"][0]["id"])
+    assert ok and len(state.campaign.warriors) == before + 1
+    assert state.campaign.warriors[-1].kind == "hireling"
+    assert any("Returning a Favour" in rule for rule in state.campaign.warriors[-1].special_rules)
+
+
+def test_hired_sword_upkeep_must_be_paid_or_the_hireling_leaves():
+    engine, state, _ = _pending()
+    hero = next(row for row in state.campaign.warriors if row.kind == "hero")
+    hireling = replace(hero, id="upkeep-hireling", name="Test Hireling", kind="hireling",
+                       upkeep_resources=[("gold_crowns", 15)], special_rules=["Returning a Favour: free"])
+    state.campaign.warriors.append(hireling)
+    engine.post.pending_follow_ups.append({
+        "id": "upkeep:test", "step": 6, "type": "hireling_upkeep",
+        "warrior_id": hireling.id, "costs": [["gold_crowns", 15]],
+    })
+    before = engine.projected_gold()
+    ok, _ = engine.resolve_hireling_upkeep("upkeep:test", pay=True)
+    assert ok and engine.projected_gold() == before - 15
+    assert not any(rule.startswith("Returning a Favour:") for rule in hireling.special_rules)
+
+
+def test_unique_magical_artefact_remains_unique_after_bearer_is_lost():
+    engine, state, _ = _pending()
+    hero = next(row for row in state.campaign.warriors if row.kind == "hero")
+    reward = {"type": "grant_special_item", "recipient": "hero", "item_id": "magical_artefact.test",
+              "name": "Test Artefact", "text": "A unique effect"}
+    engine.post.pending_follow_ups[:] = [{"type": "exploration_followup", "messages": [], "queue": [reward]}]
+    assert engine.exploration_followup_pending()["kind"] == "choose_hero"
+    assert engine.advance_exploration_followup(hero_id=hero.id)[0]
+    assert "magical_artefact.test" in state.campaign.unique_reward_ids
+    state.campaign.warriors.remove(hero)
+    engine.post.pending_follow_ups[:] = [{"type": "exploration_followup", "messages": [], "queue": [reward]}]
+    other = next(row for row in state.campaign.warriors if row.kind == "hero")
+    engine.exploration_followup_pending()
+    engine.advance_exploration_followup(hero_id=other.id)
+    assert not any(item.item_id == "magical_artefact.test" for item in other.equipment)
+
+
+def test_gromril_reward_is_one_compound_transferable_item():
+    engine, state, _ = _pending()
+    engine.post.pending_follow_ups[:] = [{"type": "exploration_followup", "messages": [], "queue": [{
+        "type": "grant_compound_item", "reward_id": "scenario_reward.gromril_axe",
+        "base_item_id": "axe", "name": "Gromril Axe", "category": "Weapon",
+        "rules": ["Gromril weapon"],
+    }]}]
+    assert engine.exploration_followup_pending() is None
+    item = next(row for row in state.campaign.inventory if row.id == "scenario_reward.gromril_axe")
+    assert item.stash == 1 and item.base_item_id == "axe" and item.special_rules == ["Gromril weapon"]
+
+
+def test_prisoner_choice_excludes_non_roster_and_intrinsic_attack_groups():
+    engine, state, _ = _pending()
+    group = next(row for row in state.campaign.warriors if row.kind == "henchman")
+    animal = replace(group, id="animal-group", name="Warhounds", profile_id="missing-animal-profile")
+    state.campaign.warriors.append(animal)
+    engine.post.pending_follow_ups[:] = [{"type": "exploration_followup", "messages": [],
+                                          "queue": [{"type": "choose_henchman_group"}]}]
+    pending = engine.exploration_followup_pending()
+    ids = {row["id"] for row in pending["options"]}
+    assert group.id in ids and animal.id not in ids
 
 
 # -------------------------------------------------------------- sale of wyrdstone
@@ -113,6 +271,8 @@ def test_injury_characteristic_modifier_applies():
     ok, _ = engine.apply_serious_injury(hero.id, outcome)
     assert ok
     assert hero.stat_modifiers.get("M") == -1
+    assert effective_stat(hero, "M") == hero.stats["M"] - 1
+    assert "Injury: Leg Wound · -1 M" in injury_lines(hero)
 
 
 def test_full_recovery_leaves_roster_untouched():
@@ -124,6 +284,116 @@ def test_full_recovery_leaves_roster_untouched():
     assert ok
     assert hero in state.campaign.warriors
     assert hero.condition is None
+
+
+def test_miss_games_injury_creates_a_persistent_absence_counter():
+    engine, state, _ = _pending()
+    resolver = PostBattleResolver(engine.port)
+    hero = next(row for row in state.campaign.warriors if row.kind == "hero")
+    deep_wound = resolver.resolve_hero_serious_injury(35)
+    fixed_effects = tuple(
+        {**effect, "games": {"kind": "fixed", "value": 2}}
+        if effect.get("type") == "warrior.miss_games" else effect
+        for effect in deep_wound.effects_raw
+    )
+
+    ok, message = engine.apply_serious_injury(hero.id, replace(deep_wound, effects_raw=fixed_effects))
+
+    assert ok, message
+    assert hero.games_to_miss == 2
+    assert hero.absence_reason == "Deep Wound"
+
+
+def _sold_to_pits(engine, hero):
+    outcome = PostBattleResolver(engine.port).resolve_hero_serious_injury(65)
+    ok, message = engine.apply_serious_injury(hero.id, outcome)
+    assert ok, message
+    return next(row for row in engine.post.pending_follow_ups if row.get("encounter_id") == "campaign.encounter.sold-to-the-pits")
+
+
+def test_sold_to_pits_win_grants_gold_and_experience():
+    engine, state, _ = _pending()
+    hero = next(row for row in state.campaign.warriors if row.kind == "hero")
+    followup = _sold_to_pits(engine, hero)
+    gold = engine.post.gold_delta
+    experience = hero.experience
+
+    ok, message = engine.resolve_sold_to_pits(followup["id"], won=True)
+
+    assert ok, message
+    assert engine.post.gold_delta == gold + 50
+    assert hero.experience == experience + 2
+    assert followup not in engine.post.pending_follow_ups
+
+
+def test_sold_to_pits_loss_applies_injury_and_discards_weapons_and_armour():
+    engine, state, _ = _pending()
+    hero = next(row for row in state.campaign.warriors if row.kind == "hero")
+    followup = _sold_to_pits(engine, hero)
+    hero.equipment.append(EquipmentEntryVM("lucky_charm", "Lucky Charm", 1))
+    before_movement = hero.stat_modifiers.get("M", 0)
+
+    ok, message = engine.resolve_sold_to_pits(followup["id"], won=False, injury_roll=22)
+
+    assert ok, message
+    assert hero.stat_modifiers["M"] == before_movement - 1
+    assert all(
+        next((row.category for row in state.campaign.inventory if row.id == item.item_id), "").casefold() not in {"weapon", "armour"}
+        for item in hero.equipment
+    )
+    assert any(item.item_id == "lucky_charm" for item in hero.equipment)
+    assert followup not in engine.post.pending_follow_ups
+
+
+def test_captured_can_be_ransomed_or_permanently_lost():
+    engine, state, _ = _pending()
+    hero = next(row for row in state.campaign.warriors if row.kind == "hero")
+    captured = PostBattleResolver(engine.port).resolve_hero_serious_injury(61)
+    ok, message = engine.apply_serious_injury(hero.id, captured)
+    assert ok, message
+    followup = next(row for row in engine.post.pending_follow_ups if row.get("type") == "prisoner")
+    gold = engine.post.gold_delta
+
+    ok, message = engine.resolve_captured(followup["id"], resolution="ransom", ransom=12)
+    assert ok, message
+    assert hero in state.campaign.warriors
+    assert engine.post.gold_delta == gold - 12
+
+    other = next(row for row in state.campaign.warriors if row.kind == "hero" and row is not hero)
+    engine.apply_serious_injury(other.id, captured)
+    followup = next(row for row in engine.post.pending_follow_ups if row.get("type") == "prisoner")
+    ok, message = engine.resolve_captured(followup["id"], resolution="lost")
+    assert ok, message
+    assert other not in state.campaign.warriors
+    assert not other.equipment
+
+
+def test_bitter_enmity_records_the_selected_target():
+    engine, state, _ = _pending()
+    hero = next(row for row in state.campaign.warriors if row.kind == "hero")
+    resolver = PostBattleResolver(engine.port)
+    hatred = resolver.resolve_injury_subtable("hero", resolver.resolve_hero_serious_injury(56).result_id, 4)
+    assert hatred is not None
+    engine.apply_serious_injury(hero.id, hatred)
+    followup = next(row for row in engine.post.pending_follow_ups if row.get("type") == "relationship")
+
+    ok, message = engine.resolve_hatred_target(followup["id"], "Reiklander Captain")
+
+    assert ok, message
+    assert hero.hatreds == ["Reiklander Captain"]
+    assert followup not in engine.post.pending_follow_ups
+
+
+def test_old_battle_wound_becomes_a_persistent_pre_battle_check():
+    engine, state, _ = _pending()
+    hero = next(row for row in state.campaign.warriors if row.kind == "hero")
+    outcome = PostBattleResolver(engine.port).resolve_hero_serious_injury(32)
+
+    ok, message = engine.apply_serious_injury(hero.id, outcome)
+
+    assert ok, message
+    assert hero.battle_start_checks[0]["check_id"] == "campaign.check.old-battle-wound"
+    assert not any(row.get("type") == "battle_start_check" for row in engine.post.pending_follow_ups)
 
 
 # ----------------------------------------------------------------- experience
@@ -263,9 +533,72 @@ def test_employed_hired_sword_on_the_roster_blocks_its_counterpart_in_content():
     assert not any(
         o.profile_id == "hireling.hired-sword.roadwarden" for o in content.hired_swords()
     )
-    assert any(
+    assert not any(
         o.profile_id == "hireling.hired-sword.highwayman" for o in content.hired_swords()
     )
+
+
+def test_hired_swords_use_separate_capacity_income_and_rating_counts():
+    engine, state, _ = _pending()
+    campaign = state.campaign
+    henchmen = next(row for row in campaign.warriors if row.kind == "henchman")
+    henchmen.quantity += campaign.maximum_models - engine.projected_warband_members()
+    offer = HirelingOffer(
+        entry_id="campaign.hireling.ogre",
+        profile_id="hireling.hired-sword.ogre-bodyguard",
+        kind="hired-sword", name="Ogre Bodyguard",
+        availability_label="", fee_label="0 gc", upkeep_label="", fee_gc=0,
+    )
+    models = engine.projected_models()
+    rating = engine.projected_rating()
+
+    ok, message = engine.hire_hireling(offer)
+
+    assert ok, message
+    assert engine.projected_warband_members() == campaign.maximum_models
+    assert engine.projected_models() == models + 1
+    assert engine.projected_rating() == rating + 25
+    ok, message = engine.hire_hireling(offer)
+    assert not ok and "Only one" in message
+
+
+def test_halfling_scout_increases_only_the_own_member_limit():
+    engine, state, _ = _pending()
+    offer = HirelingOffer(
+        entry_id="campaign.hireling.halfling",
+        profile_id="hireling.hired-sword.halfling-scout",
+        kind="hired-sword", name="Halfling Scout",
+        availability_label="", fee_label="0 gc", upkeep_label="", fee_gc=0,
+    )
+    row = engine.hireling_warrior(offer)
+    assert row is not None
+    state.campaign.warriors.append(row)
+    assert engine.effective_maximum_models() == state.campaign.maximum_models + 1
+
+
+def test_losing_capacity_modifier_blocks_commit_until_roster_is_legal():
+    engine, state, _ = _pending()
+    campaign = state.campaign
+    post = engine.post
+    assert post is not None
+    offer = HirelingOffer(
+        entry_id="campaign.hireling.halfling",
+        profile_id="hireling.hired-sword.halfling-scout",
+        kind="hired-sword", name="Halfling Scout",
+        availability_label="", fee_label="0 gc", upkeep_label="", fee_gc=0,
+    )
+    scout = engine.hireling_warrior(offer)
+    assert scout is not None
+    campaign.warriors.append(scout)
+    group = next(row for row in campaign.warriors if row.kind == "henchman")
+    group.quantity += engine.effective_maximum_models() - engine.projected_warband_members()
+    assert engine.dismiss_warrior(scout.id)[0]
+    post.completed_steps = set(range(8))
+
+    ok, message = engine.commit()
+
+    assert not ok
+    assert "dismiss members" in message
 
 
 def test_dramatis_catalogue_marks_william_conditional_for_other_good_bands():

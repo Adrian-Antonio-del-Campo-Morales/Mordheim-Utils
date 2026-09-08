@@ -1,4 +1,4 @@
-"""ui.widgets.skills: responsibility extracted without altering the rules."""
+"""ui: Skill selection widgets."""
 from __future__ import annotations
 
 from mordheim_ui.lab_theme import COLORS

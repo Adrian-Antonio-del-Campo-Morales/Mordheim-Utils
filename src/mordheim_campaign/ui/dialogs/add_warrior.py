@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import ttk
+
+from mordheim_ui import themed_dialogs as messagebox
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.application.knowledge_port import WarbandProfile
 from mordheim_ui.theme import COLORS
+from mordheim_ui.windowing import center_on_application
 from mordheim_ui.widgets import BorderedFrame
 from mordheim_ui.i18n import tr
 
@@ -118,7 +121,7 @@ class AddWarriorDialog(tk.Toplevel):
         """Maximum quantity for a new row according to the roster limits."""
         campaign = self.controller.state.campaign
         taken, member_max = self.controller.profile_allowance(profile)
-        capacity = campaign.maximum_models - campaign.draft_model_count
+        capacity = campaign.effective_maximum_models - campaign.draft_warband_member_count
         limits = [capacity]
         if member_max is not None:
             limits.append(member_max - taken)
@@ -155,15 +158,12 @@ class AddWarriorDialog(tk.Toplevel):
             self.destroy()
             return
         quantity = 1 if self.kind == "hero" else int(self.quantity_var.get())
-        ok, message = self.controller.add_draft_warriors(profile.profile_id, quantity)
+        ok, message = self.controller.perform_undoable(
+            tr('Hire warrior'), lambda: self.controller.add_draft_warriors(profile.profile_id, quantity))
         if not ok:
             messagebox.showerror(tr('Cannot add warrior'), message, parent=self)
             return
         self.destroy()
 
     def _center(self) -> None:
-        self.update_idletasks()
-        parent = self.master.winfo_toplevel()
-        x = parent.winfo_rootx() + max(0, (parent.winfo_width() - self.winfo_width()) // 2)
-        y = parent.winfo_rooty() + max(0, (parent.winfo_height() - self.winfo_height()) // 2)
-        self.geometry(f"+{x}+{y}")
+        center_on_application(self)

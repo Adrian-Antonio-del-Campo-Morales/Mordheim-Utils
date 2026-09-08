@@ -161,3 +161,29 @@ rules:
       binding: null
       reason: >-
         Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+- id: flagellants--no-missile-weapons
+  name: No Missile Weapons
+  effect: >-
+    Flagellants may never use missile weapons, even if an Advance would otherwise allow access to them.
+  source:
+    manual: trollheim
+    printed_page: 81
+    section: Henchmen / 0-5 Flagellants / No Missile Weapons
+  name_i18n:
+    es: Sin Armas de Proyectil
+  effect_i18n:
+    es: >-
+      Los Flagelantes jamás pueden usar armas de proyectil, incluso si una Mejora les permitiera acceder a ellas.
+  applies_to:
+    profile_ids:
+    - flagellants
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.no-missile-weapons
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.no-missile-weapons

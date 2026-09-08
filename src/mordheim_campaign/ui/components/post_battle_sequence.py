@@ -5,22 +5,19 @@ from collections.abc import Callable, Sequence
 
 from mordheim_ui.i18n import tr
 from mordheim_ui.theme import COLORS
+from mordheim_ui.icons import ui_icon
 
 
-class _StepDot(tk.Canvas):
-    """Compact state marker used inside one post-battle chapter."""
-
-    def __init__(self, master: tk.Misc, number: int, *, state: str, **kwargs) -> None:
-        bg = master.cget("bg")
-        super().__init__(master, width=23, height=23, bg=bg, bd=0, highlightthickness=0, **kwargs)
-        if state == "complete":
-            fill, outline, fg, text = COLORS["success_dark"], COLORS["success"], COLORS["success"], "✓"
-        elif state == "active":
-            fill, outline, fg, text = COLORS["accent_dark"], COLORS["accent"], COLORS["white"], str(number)
-        else:
-            fill, outline, fg, text = COLORS["panel_soft"], COLORS["border"], COLORS["muted_dark"], str(number)
-        self.create_oval(2, 2, 21, 21, fill=fill, outline=outline, width=2)
-        self.create_text(11.5, 11.5, text=text, fill=fg, font=("Segoe UI Semibold", 7))
+STEP_ICONS = (
+    "campaign_postbattle_injuries",
+    "campaign_postbattle_experience",
+    "campaign_postbattle_exploration",
+    "campaign_postbattle_sell_wyrdstone",
+    "campaign_postbattle_veterans",
+    "campaign_postbattle_rare_search",
+    "campaign_warband_recruit",
+    "campaign_inventory_equip",
+)
 
 
 class PostBattleSequence(tk.Frame):
@@ -42,6 +39,7 @@ class PostBattleSequence(tk.Frame):
         on_select: Callable[[int], None] | None = None,
         *,
         review_active: bool = False,
+        icons: Sequence[str] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -57,6 +55,7 @@ class PostBattleSequence(tk.Frame):
         self.completed = completed or set()
         self.on_select = on_select
         self.review_active = review_active
+        self.icons = list(icons or STEP_ICONS)
         self._build()
 
     def _step_state(self, index: int) -> str:
@@ -122,7 +121,13 @@ class PostBattleSequence(tk.Frame):
                     cursor="hand2" if state in {"complete", "active"} and self.on_select else "arrow",
                 )
                 row.pack(fill="x", pady=2)
-                _StepDot(row, index + 1, state=state).pack(side="left")
+                marker = tk.Frame(row, bg=COLORS["panel_deep"], width=48, height=48)
+                marker.pack(side="left")
+                marker.pack_propagate(False)
+                tk.Label(
+                    marker, image=ui_icon(self, self.icons[index], 23),
+                    bg=COLORS["panel_deep"],
+                ).pack(expand=True)
                 text = tk.Frame(row, bg=COLORS["panel_deep"])
                 text.pack(side="left", fill="x", expand=True, padx=(6, 0))
                 fg = COLORS["success"] if state == "complete" else (COLORS["accent"] if state == "active" else COLORS["muted_dark"])

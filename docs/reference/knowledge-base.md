@@ -352,7 +352,7 @@ run combat tests, parity, or benchmarks for a formatting-only change.
 
 The KB has no `verification/` area of its own: the verification corpus — the
 structural contract (`tests/specs/structural/phase-verification.yaml`) and the
-semantic scenarios (`tests/specs/semantic/`, ~160 files) — lives in `tests/`.
+semantic scenarios (`tests/specs/semantic/`, ~170 files) — lives in `tests/`.
 It is test material and is never distributed with the applications.
 
 Semantic scenarios reference KB targets by canonical path and **content

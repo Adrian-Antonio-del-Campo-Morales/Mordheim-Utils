@@ -148,10 +148,10 @@ def _deep_benchmark_command(args, scenarios, installed) -> int:
     over large sizes and batch sizes (see deep_benchmark_plan for the policy)."""
     pair_set = getattr(args, "pair_set", "full")
     if not args.output:
-        args.output = (
-            "outputs/benchmarks/deep-fast.json"
-            if pair_set == "fast" else "outputs/benchmarks/deep.json"
-        )
+        args.output = {
+            "mini": "outputs/benchmarks/deep-mini.json",
+            "fast": "outputs/benchmarks/deep-fast.json",
+        }.get(pair_set, "outputs/benchmarks/deep.json")
     from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
     from mordheim_combat_lab.cli.benchmarking import deep_benchmark_plan
     from mordheim_combat_lab.cli.benchmarking import print_deep_benchmark_header
@@ -177,7 +177,14 @@ def _deep_benchmark_command(args, scenarios, installed) -> int:
               file=sys.stderr)
         return 2
     by_id = {scenario.id: scenario for scenario in scenarios}
-    progress = None if args.json else BenchmarkProgress(len(plan.runs))
+    # The bar advances once per executed sample, not per planned run: each
+    # optimized run performs warmups + repeats executions, the modular
+    # reference only one. Counting runs would show a bogus 100% while most
+    # of the sweep is still executing.
+    progress = None if args.json else BenchmarkProgress(
+        sum(1 if backend == "modular" else args.warmups + args.repeats
+            for _s, backend, _n, _b in plan.runs)
+    )
     results = []
     unavailable = list(plan.excluded)
     for scenario_id, backend, simulations, batch_size in plan.runs:
@@ -391,10 +398,10 @@ def parity_command(args) -> int:
         )
         return 2
     if args.deep and not args.output:
-        args.output = (
-            "outputs/parity/deep-fast.json"
-            if pair_set == "fast" else "outputs/parity/deep.json"
-        )
+        args.output = {
+            "mini": "outputs/parity/deep-mini.json",
+            "fast": "outputs/parity/deep-fast.json",
+        }.get(pair_set, "outputs/parity/deep.json")
     started = time.perf_counter()
     from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
     from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
@@ -987,8 +994,9 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
              "sizes while measuring the modular oracle only at a small reference size",
     )
     deep_options.add_argument(
-        "--pair-set", choices=("fast", "full"), default="full", metavar="SET",
-        help="pair set for --deep: fast is the 30-pair coverage-oriented set "
+        "--pair-set", choices=("mini", "fast", "full"), default="full", metavar="SET",
+        help="pair set for --deep: mini is the 10-pair performance-survey set; "
+             "fast is the 30-pair coverage-oriented set "
              "for a roughly 10-15 minute pooled profile; full is the 42-pair "
              "matrix (default)",
     )
@@ -1049,8 +1057,9 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
              "(equivalent to the historical --statistical / --deep flags)",
     )
     parity_samples.add_argument(
-        "--pair-set", choices=("fast", "full"), default="full", metavar="SET",
-        help="pair set for --deep/--truncations: fast is the 30-pair "
+        "--pair-set", choices=("mini", "fast", "full"), default="full", metavar="SET",
+        help="pair set for --deep/--truncations: mini is the 10-pair "
+             "performance-survey set; fast is the 30-pair "
              "coverage-oriented set for a roughly 10-15 minute pooled run; "
              "full is the 42-pair deep matrix (default)",
     )
@@ -1112,7 +1121,8 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
                                help="fail unless the certificate is complete")
     parity_output.add_argument("--output", metavar="PATH",
                                help="save the report as .json or .md (deep defaults to "
-                                    "deep.json for full or deep-fast.json for fast)")
+                                    "deep.json for full, deep-fast.json for fast "
+                                    "or deep-mini.json for mini)")
     parity_output.add_argument("--help-all", action="store_true",
                                help="also document the advanced sample-tuning options")
     parity.set_defaults(handler=parity_command)

@@ -289,3 +289,32 @@ rules:
       binding: null
       reason: >-
         Deferred subsystem: psychology or mounts.
+- id: augur--no-armour
+  name: No Armour
+  effect: >-
+    The Augur never wears armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroines / 0 – 1 Augur / Special Rules / No Armour
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
+  name_i18n:
+    es: Sin Armadura
+  effect_i18n:
+    es: >-
+      La Vidente nunca lleva armadura.
+  applies_to:
+    profile_ids:
+    - augur
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: armour

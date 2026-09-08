@@ -321,15 +321,19 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         i1,i2=effective_initiative(first,state1),effective_initiative(second,state2)
         first_acts=(p1>p2)|((p1==p2)&(i1>i2));ties=(p1==p2)&(i1==i2)
         first_acts[ties]=rng.random(int(ties.sum()))<.5
+        # Acting order per row: the fighter that won priority acts first, then
+        # the opponent replies; whipcrack events keep their own Strike First
+        # tier.  Scores are computed in int32: priority() returns int8, and
+        # p * 100 overflows it for any tier above 1 (Frantic's 10 became -24,
+        # silently demoting Strike-First fighters behind ordinary weapons —
+        # the frenzy-vs-w2 deep-matrix divergence).
+        priority_tie = (p1 == p2) & (i1 == i2)
         event_scores = np.stack((
-            p1 * 100 + i1,
-            p2 * 100 + i2,
+            p1.astype(np.int32) * 100 + i1 + (priority_tie & first_acts),
+            p2.astype(np.int32) * 100 + i2 + (priority_tie & ~first_acts),
             np.where(whip1_rows, 100 + i1, -10000),
             np.where(whip2_rows, 100 + i2, -10000),
-        ))
-        priority_tie = (p1 == p2) & (i1 == i2)
-        event_scores[0] += (priority_tie & first_acts).astype(np.int16)
-        event_scores[1] += (priority_tie & ~first_acts).astype(np.int16)
+        )).astype(np.int32)
         event_order = np.argsort(-event_scores, axis=0, kind="stable")
         whip1_fighter = (
             replace(first, main_weapon=whip1, off_hand=None,

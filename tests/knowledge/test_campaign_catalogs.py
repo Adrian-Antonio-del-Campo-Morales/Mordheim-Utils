@@ -592,6 +592,18 @@ def test_scenario_progression_shape_and_reference_integrity():
             assert all(isinstance(note, str) and note for note in progression["notes"])
 
 
+def test_every_material_scenario_reward_has_an_executable_entry():
+    scenarios = campaign("scenarios.yaml")["scenarios"]
+    rewards = campaign("scenario-rewards.yaml")["scenarios"]
+    covered = {row["scenario_id"] for row in rewards}
+    material_keys = {"income", "wyrdstone", "loot", "exploration"}
+    expected = {
+        row["id"] for row in scenarios
+        if material_keys.intersection((row.get("progression") or {}).keys())
+    }
+    assert covered == expected
+
+
 # --------------------------------------------------------------------------
 # Magic
 # --------------------------------------------------------------------------

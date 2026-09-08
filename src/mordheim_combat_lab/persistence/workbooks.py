@@ -1,4 +1,4 @@
-"""persistence.workbooks: responsibility extracted without altering the rules."""
+"""persistence: Workbook save/load for builds and duel results."""
 from __future__ import annotations
 
 from dataclasses import asdict

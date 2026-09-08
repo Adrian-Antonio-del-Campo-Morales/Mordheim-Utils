@@ -6,7 +6,9 @@ through :class:`AppController`.
 """
 from __future__ import annotations
 
-from tkinter import filedialog, messagebox
+from tkinter import filedialog
+
+from mordheim_ui import themed_dialogs as messagebox
 from mordheim_ui.i18n import tr
 
 from mordheim_campaign.application.controller import AppController
@@ -35,6 +37,7 @@ def save_current_campaign(parent, controller: AppController):
         path = filedialog.asksaveasfilename(
             parent=parent,
             title=tr('Save Mordheim campaign'),
+            initialdir=controller.campaign_library_path if controller.campaign_library_path.exists() else None,
             defaultextension=".mordheim",
             initialfile=suggest_filename(controller.state.campaign),
             filetypes=_FILE_TYPES,
@@ -47,6 +50,8 @@ def save_current_campaign(parent, controller: AppController):
         _report_error(parent, "save", exc)
         return None
     controller.persist_path = path
+    controller.clear_undo_history()
+    controller.notify()
     return path
 
 
@@ -67,12 +72,17 @@ def save_campaign_copy(parent, controller: AppController):
         _report_error(parent, "save", exc)
         return None
     controller.persist_path = path
+    controller.clear_undo_history()
+    controller.notify()
     return path
 
 
 def load_campaign_file(parent, controller: AppController):
     """Loads a saved campaign and makes it the active state."""
-    path = filedialog.askopenfilename(parent=parent, title=tr('Load Mordheim campaign'), filetypes=_FILE_TYPES)
+    path = filedialog.askopenfilename(
+        parent=parent, title=tr('Load Mordheim campaign'), filetypes=_FILE_TYPES,
+        initialdir=controller.campaign_library_path if controller.campaign_library_path.exists() else None,
+    )
     if not path:
         return None
     try:

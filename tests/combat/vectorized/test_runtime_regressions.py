@@ -116,6 +116,41 @@ def test_frenzy_persists_and_pistols_only_fire_in_the_first_round():
     assert attack_count(sword_and_pistol, flags, first_round=False).tolist() == [2]
 
 
+def test_frantic_priority_score_does_not_overflow_int8():
+    """Regression: priority() returns int8, and the driver's event score used
+    to multiply it by 100 *in int8*, so Frantic's tier 10 wrapped to -24 and
+    silently demoted Strike-First fanatics behind ordinary weapons — the
+    frenzy-vs-w2 deep-matrix divergence (-15 pp vs the oracle).  Scores must
+    be computed in int32, and the frantic fanatic must beat a plain fighter
+    with higher Initiative in every duel of a scripted batch.
+    """
+    from mordheim_construction.compiler import compile_fighter
+    from mordheim_combat.vectorized import priority
+    from mordheim_combat.vectorized._driver import _simulate_batch_core
+
+    flags = np.zeros(1, dtype=bool)
+    fanatic = compile_fighter(FighterBuild(
+        ruleset="mordheim", band_id="night-goblins-mic", profile_id="fanatics",
+    ))
+    veteran = compile_fighter(FighterBuild(
+        ruleset="mordheim",
+        characteristics=Characteristics(5, 4, 4, 2, 5, 2),
+        main_weapon_id="weapon.axe",
+    ))
+    assert priority(fanatic, veteran, False, flags, flags, flags).tolist() == [10]
+
+    # Deterministic seeded batch: with the overflow the fanatic acts last
+    # and wins far less often than the oracle's ~22% rate; the fix restores
+    # it (measured 74/512 fixed vs 25/512 broken on this seed — the margins
+    # keep the pin deterministic but not brittle).
+    first_wins, second_wins, unresolved = _simulate_batch_core(
+        fanatic, veteran, 512, np.random.default_rng(20260907), 50,
+    )
+    assert unresolved == 0
+    assert 55 <= first_wins <= 95, (first_wins, second_wins)
+    assert 410 <= second_wins <= 450, (first_wins, second_wins)
+
+
 def test_frenzy_doubling_is_gated_on_the_live_state_not_the_effect():
     """Regression: the driver always passes the frenzy *state* array, so an
     all-False state must not double even when the fighter carries a constant

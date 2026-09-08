@@ -1,4 +1,4 @@
-"""domain.effects: responsibility extracted without altering the rules."""
+"""domain: EffectSet composition and application of data-defined execution effects."""
 from __future__ import annotations
 
 from dataclasses import dataclass

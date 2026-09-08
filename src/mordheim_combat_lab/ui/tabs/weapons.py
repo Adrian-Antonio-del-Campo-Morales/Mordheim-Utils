@@ -1,4 +1,4 @@
-"""ui.tabs.weapons: responsibility extracted without altering the rules."""
+"""ui: Weapons tab: weapon catalogue and pairing."""
 from __future__ import annotations
 
 from dataclasses import replace

@@ -1,4 +1,4 @@
-"""ui.app: responsibility extracted without altering the rules."""
+"""ui: Combat Lab Tkinter application shell."""
 from __future__ import annotations
 
 from mordheim_combat_lab.application.catalogue import CombatCatalogue

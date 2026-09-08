@@ -39,6 +39,20 @@ def configure_theme(root: tk.Misc) -> ttk.Style:
 
     root.option_add("*Font", ("Segoe UI", 9))
     root.option_add("*tearOff", False)
+    # ttk combobox pop-downs are native Tk listboxes and therefore do not
+    # inherit the ttk field style on Windows.
+    root.option_add("*TCombobox*Listbox.background", COLORS["entry"])
+    root.option_add("*TCombobox*Listbox.foreground", COLORS["text"])
+    root.option_add("*TCombobox*Listbox.selectBackground", COLORS["accent"])
+    root.option_add("*TCombobox*Listbox.selectForeground", COLORS["black"])
+    root.option_add("*TCombobox*Listbox.highlightThickness", 0)
+    root.option_add("*TCombobox*Listbox.font", ("Segoe UI", 9))
+    root.option_add("*Menu.background", COLORS["panel_alt"])
+    root.option_add("*Menu.foreground", COLORS["text"])
+    root.option_add("*Menu.activeBackground", COLORS["accent"])
+    root.option_add("*Menu.activeForeground", COLORS["black"])
+    root.option_add("*Menu.selectColor", COLORS["accent"])
+    root.option_add("*Menu.borderWidth", 0)
 
     style.configure("App.TFrame", background=COLORS["bg"])
     style.configure("Panel.TFrame", background=COLORS["panel"])
@@ -114,8 +128,64 @@ def configure_theme(root: tk.Misc) -> ttk.Style:
     style.configure("TEntry", fieldbackground=COLORS["entry"], foreground=COLORS["text"], bordercolor=COLORS["border"], insertcolor=COLORS["text"], padding=7)
     style.map("TEntry", bordercolor=[("focus", COLORS["accent"])])
     style.configure("TCombobox", fieldbackground=COLORS["entry"], background=COLORS["entry"], foreground=COLORS["text"], bordercolor=COLORS["border"], arrowcolor=COLORS["muted"], padding=6)
-    style.map("TCombobox", fieldbackground=[("readonly", COLORS["entry"])], foreground=[("readonly", COLORS["text"])], bordercolor=[("focus", COLORS["accent"])])
+    style.map(
+        "TCombobox",
+        fieldbackground=[("readonly", COLORS["entry"]), ("disabled", COLORS["panel_deep"])],
+        background=[("readonly", COLORS["entry"]), ("active", COLORS["panel_soft"])],
+        foreground=[("readonly", COLORS["text"]), ("disabled", COLORS["muted_dark"])],
+        bordercolor=[("focus", COLORS["accent"])],
+        arrowcolor=[("active", COLORS["accent"]), ("disabled", COLORS["muted_dark"])],
+    )
     style.configure("TSpinbox", fieldbackground=COLORS["entry"], foreground=COLORS["text"], bordercolor=COLORS["border"], arrowcolor=COLORS["muted"], padding=5)
+    style.map(
+        "TSpinbox",
+        fieldbackground=[("disabled", COLORS["panel_deep"])],
+        foreground=[("disabled", COLORS["muted_dark"])],
+        bordercolor=[("focus", COLORS["accent"])],
+        arrowcolor=[("active", COLORS["accent"]), ("disabled", COLORS["muted_dark"])],
+    )
+    style.configure(
+        "TRadiobutton", background=COLORS["panel"], foreground=COLORS["text"],
+        indicatorbackground=COLORS["entry"], indicatorforeground=COLORS["accent"],
+        bordercolor=COLORS["border"], padding=(4, 3),
+    )
+    style.map(
+        "TRadiobutton",
+        background=[("active", COLORS["panel"]), ("pressed", COLORS["panel"])],
+        foreground=[("active", COLORS["text"]), ("disabled", COLORS["muted_dark"])],
+        indicatorbackground=[("selected", COLORS["accent"]), ("active", COLORS["panel_soft"])],
+    )
+    style.configure(
+        "TCheckbutton", background=COLORS["panel"], foreground=COLORS["text"],
+        indicatorbackground=COLORS["entry"], indicatorforeground=COLORS["accent"],
+        bordercolor=COLORS["border"], padding=(4, 2),
+    )
+    style.map(
+        "TCheckbutton",
+        background=[("active", COLORS["panel"]), ("pressed", COLORS["panel"])],
+        foreground=[("active", COLORS["text"]), ("disabled", COLORS["muted_dark"])],
+        indicatorbackground=[("selected", COLORS["accent"]), ("active", COLORS["panel_soft"])],
+    )
+    style.configure(
+        "Panel.TCheckbutton", background=COLORS["panel"], foreground=COLORS["text"],
+        indicatorbackground=COLORS["entry"], indicatorforeground=COLORS["accent"],
+        bordercolor=COLORS["border"], padding=(4, 2),
+    )
+    style.map(
+        "Panel.TCheckbutton", background=[("active", COLORS["panel"])],
+        foreground=[("active", COLORS["text"])],
+        indicatorbackground=[("selected", COLORS["accent"]), ("active", COLORS["panel_soft"])],
+    )
+    style.configure(
+        "PanelAlt.TCheckbutton", background=COLORS["panel_alt"], foreground=COLORS["text"],
+        indicatorbackground=COLORS["entry"], indicatorforeground=COLORS["accent"],
+        bordercolor=COLORS["border"], padding=(4, 2),
+    )
+    style.map(
+        "PanelAlt.TCheckbutton", background=[("active", COLORS["panel_alt"])],
+        foreground=[("active", COLORS["text"])],
+        indicatorbackground=[("selected", COLORS["accent"]), ("active", COLORS["panel_soft"])],
+    )
 
     style.configure("TNotebook", background=COLORS["bg"], borderwidth=0, tabmargins=(0, 0, 0, 0))
     style.configure("TNotebook.Tab", background=COLORS["panel"], foreground=COLORS["muted"], bordercolor=COLORS["border"], padding=(18, 9), font=("Segoe UI Semibold", 9))

@@ -6,6 +6,7 @@ from tkinter import ttk
 from mordheim_campaign.application.controller import AppController
 from mordheim_ui.i18n import tr
 from mordheim_ui.theme import COLORS
+from mordheim_ui.windowing import center_on_application
 from mordheim_ui.widgets import BorderedFrame, ScrollableFrame
 
 
@@ -83,11 +84,12 @@ class DraftEquipmentDialog(tk.Toplevel):
             row = tk.Frame(self.available_rows, bg=COLORS["panel_alt"])
             row.pack(fill="x", pady=1)
             total = offer.cost * multiplier if offer.cost is not None else None
-            label = f"{offer.name}  ·  {total} gc" if total is not None else f"{offer.name}  ·  —"
+            label = f"{offer.name}  ·  {total} gc" if total is not None else f"{offer.name}  ·  {offer.price_label} each"
             tk.Label(row, text=label, bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(side="left", fill="x", expand=True)
-            button = ttk.Button(row, text=tr('BUY'), style="Mini.TButton", width=6, command=lambda item=offer.item_id: self._run(self.controller.buy_draft_equipment, item))
+            button = ttk.Button(row, text=tr('BUY'), style="Mini.TButton", width=6,
+                                command=lambda value=offer: self._buy(value))
             button.pack(side="right")
-            if total is None or total > campaign.draft_treasury:
+            if (total is None and offer.price_dice is None) or (total is not None and total > campaign.draft_treasury):
                 button.state(["disabled"])
 
         purchased = [item for item in self.warrior.equipment if item.acquisition == "purchase"]
@@ -102,17 +104,31 @@ class DraftEquipmentDialog(tk.Toplevel):
             ttk.Button(row, text=tr('SELL'), style="Mini.TButton", width=8, command=lambda item_id=item.item_id: self._run(self.controller.remove_draft_equipment, item_id)).pack(side="right")
 
     def _run(self, action, item_id: str) -> None:
-        ok, message = action(self.warrior_id, item_id)
+        ok, message = self.controller.perform_undoable(
+            tr('Change equipment'), lambda: action(self.warrior_id, item_id))
         self.status_var.set(("✓ " if ok else "! ") + message)
         self._refresh()
+
+    def _buy(self, offer) -> None:
+        if offer.price_dice is not None:
+            from mordheim_campaign.ui.dialogs.variable_price import VariablePriceDialog
+            VariablePriceDialog(
+                self, offer=offer,
+                buy=lambda price: self._buy_variable(offer.item_id, price),
+            )
+            return
+        self._run(self.controller.buy_draft_equipment, offer.item_id)
+
+    def _buy_variable(self, item_id: str, price: int):
+        result = self.controller.perform_undoable(
+            tr('Buy equipment'), lambda: self.controller.buy_draft_equipment(self.warrior_id, item_id, price))
+        self.status_var.set(("✓ " if result[0] else "! ") + result[1])
+        self._refresh()
+        return result
 
     def _close(self) -> None:
         self.destroy()
         self.controller.notify()
 
     def _center(self) -> None:
-        self.update_idletasks()
-        parent = self.master.winfo_toplevel()
-        x = parent.winfo_rootx() + max(0, (parent.winfo_width() - self.winfo_width()) // 2)
-        y = parent.winfo_rooty() + max(0, (parent.winfo_height() - self.winfo_height()) // 2)
-        self.geometry(f"+{x}+{y}")
+        center_on_application(self)

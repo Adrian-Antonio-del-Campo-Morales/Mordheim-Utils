@@ -1,4 +1,4 @@
-"""external.test_catalog: responsibility extracted without altering the rules."""
+"""external.test_catalog: Catalogue loading tests: items, skills and mechanics records."""
 from __future__ import annotations
 
 from mordheim_construction.compiler import compile_fighter
@@ -335,7 +335,7 @@ def test_special_rule_runtime_metadata_is_canonical_and_binary():
             classified+=1
             assert runtime["implemented"] in {"YES","NO"}
             assert runtime["scope"] in {"YES","NO","LATER"}
-    assert classified==1537
+    assert classified == 1572  # 1551 + 21 hidden profile restrictions modelled as rules
 
 
 def test_every_selectable_rule_has_an_explicit_selection_kind():

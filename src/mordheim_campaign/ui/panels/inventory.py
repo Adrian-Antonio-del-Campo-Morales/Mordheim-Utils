@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import ttk
+
+from mordheim_ui import themed_dialogs as messagebox
 
 from mordheim_campaign.application.controller import AppController
+from mordheim_campaign.ui.equipment_display import equipment_quantity_suffix
 from mordheim_ui.i18n import tr
 from mordheim_ui.theme import COLORS
+from mordheim_ui.icons import ui_icon
 from mordheim_ui.widgets import BorderedFrame, ScrollableFrame, SummaryStrip
 
 
@@ -36,7 +40,14 @@ class InventoryWorkspace(tk.Frame):
         toolbar.grid(row=row, column=0, sticky="ew", pady=(0, 6))
         tk.Label(toolbar, text=tr('Drag items between warriors and stash.'), bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(side="left")
         if (campaign.is_draft or purchase_mode == "post_battle") and not read_only:
-            ttk.Button(toolbar, text=tr('BUY AND SELL'), style="Accent.TButton", command=self._open_stash).pack(side="right")
+            ttk.Button(
+                toolbar, text=tr('BUY AND SELL'), image=ui_icon(self, "campaign_inventory_resources", 20),
+                compound="left", style="Accent.TButton", command=self._open_stash,
+            ).pack(side="right")
+            ttk.Button(toolbar, text=tr('MANAGE RESOURCES'), style="Mini.TButton",
+                       command=self._manage_resources).pack(side="right", padx=(0, 5))
+            ttk.Button(toolbar, text=tr('ADD ITEM'), style="Mini.TButton",
+                       command=self._add_item).pack(side="right", padx=(0, 5))
 
         board = tk.Frame(self, bg=COLORS["bg"])
         board.grid(row=row + 1, column=0, sticky="nsew")
@@ -66,7 +77,7 @@ class InventoryWorkspace(tk.Frame):
                 locked = not equipment.transferable
                 item = tk.Frame(card, bg=COLORS["panel_alt"], cursor="arrow" if locked else "hand2")
                 item.pack(fill="x", pady=1)
-                suffix = f" ×{equipment.quantity}" if equipment.quantity > 1 else ""
+                suffix = equipment_quantity_suffix(warrior, equipment)
                 if equipment.acquisition == "starting_grant":
                     note = tr(' · free starting equipment')
                 elif equipment.acquisition == "hireling_grant":
@@ -77,6 +88,9 @@ class InventoryWorkspace(tk.Frame):
                 rarity = next((row.rarity for row in self.controller.state.campaign.inventory if row.id == equipment.item_id), None)
                 rare_note = f"  ·  {rarity}" if rarity else ""
                 tk.Label(item, text=f"{icon}  {equipment.name}{suffix}{note}{rare_note}", bg=COLORS["panel_alt"], fg=COLORS["muted"] if locked else COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(fill="x")
+                for rule in equipment.special_rules:
+                    tk.Label(item, text=f"    {rule}", bg=COLORS["panel_alt"], fg=COLORS["accent"],
+                             font=("Segoe UI", 7), anchor="w", wraplength=430, justify="left").pack(fill="x")
                 if not self.read_only and not locked:
                     self._make_draggable(item, ("warrior", equipment.item_id, warrior.id), equipment.name)
         return outer
@@ -100,6 +114,9 @@ class InventoryWorkspace(tk.Frame):
             item._equipment_drop_stash = True
             rare_note = f"  ·  {inventory.rarity}" if inventory.rarity else ""
             tk.Label(item, text=f"≡  {inventory.name} ×{inventory.stash}{rare_note}", bg=COLORS["panel_alt"], fg=COLORS["accent"] if inventory.rarity else COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(fill="x")
+            for rule in inventory.special_rules:
+                tk.Label(item, text=f"    {rule}", bg=COLORS["panel_alt"], fg=COLORS["accent"],
+                         font=("Segoe UI", 7), anchor="w", wraplength=330, justify="left").pack(fill="x")
             if not self.read_only:
                 self._make_draggable(item, ("stash", inventory.id, None), inventory.name)
         return outer
@@ -145,12 +162,15 @@ class InventoryWorkspace(tk.Frame):
         if source == "stash" and warrior_id:
             self._apply(self.controller.assign_stash_item, item_id, warrior_id)
         elif source == "warrior" and warrior_id and warrior_id != source_warrior:
-            self._finish(self.controller.transfer_equipped_item(item_id, source_warrior, warrior_id))
+            self._finish(self.controller.perform_undoable(
+                tr('Transfer equipment'),
+                lambda: self.controller.transfer_equipped_item(item_id, source_warrior, warrior_id)))
         elif source == "warrior" and stash:
             self._apply(self.controller.return_equipped_item, item_id, source_warrior)
 
     def _apply(self, action, item_id: str, warrior_id: str) -> None:
-        self._finish(action(item_id, warrior_id))
+        self._finish(self.controller.perform_undoable(
+            tr('Move equipment'), lambda: action(item_id, warrior_id)))
 
     def _finish(self, result) -> None:
         ok, message = result
@@ -163,6 +183,14 @@ class InventoryWorkspace(tk.Frame):
         from mordheim_campaign.ui.dialogs.draft_stash import DraftStashDialog
 
         DraftStashDialog(self, self.controller, mode=self.purchase_mode or "draft")
+
+    def _manage_resources(self) -> None:
+        from mordheim_campaign.ui.dialogs.manual_management import ResourceCorrectionDialog
+        ResourceCorrectionDialog(self, self.controller)
+
+    def _add_item(self) -> None:
+        from mordheim_campaign.ui.dialogs.manual_management import AddInventoryItemDialog
+        AddInventoryItemDialog(self, self.controller)
 
 
 ResourcesPanel = InventoryWorkspace

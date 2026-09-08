@@ -4,9 +4,51 @@ import tkinter as tk
 from tkinter import ttk
 
 from mordheim_campaign.application.state import WarriorVM
+from mordheim_campaign.ui.equipment_display import equipment_quantity_suffix
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import BorderedFrame, ExperienceTrack
 from mordheim_ui.i18n import tr
+
+
+_INJURY_BY_CHARACTERISTIC = {
+    "M": "Leg Wound", "T": "Chest Wound", "BS": "Blinded In One Eye",
+    "I": "Nervous Condition", "WS": "Hand Injury",
+}
+
+
+def effective_stat(warrior: WarriorVM, key: str) -> int:
+    return int(warrior.stats.get(key, 0)) + int(warrior.stat_modifiers.get(key, 0))
+
+
+def injury_lines(warrior: WarriorVM) -> list[str]:
+    lines = []
+    recorded_totals: dict[str, int] = {}
+    for record in warrior.injury_records:
+        key = str(record.get("characteristic") or "")
+        modifier = int(record.get("modifier") or 0)
+        name = str(record.get("name") or _INJURY_BY_CHARACTERISTIC.get(key) or "Lasting Injury")
+        lines.append(f"Injury: {name} · {modifier:+d} {key}")
+        recorded_totals[key] = recorded_totals.get(key, 0) + modifier
+    for key, modifier in warrior.stat_modifiers.items():
+        remainder = int(modifier) - recorded_totals.get(key, 0)
+        if remainder:
+            lines.append(f"Injury: {_INJURY_BY_CHARACTERISTIC.get(key, 'Lasting Injury')} · {remainder:+d} {key}")
+    known_names = [str(record.get("name") or "") for record in warrior.injury_records]
+    known_names.extend(_INJURY_BY_CHARACTERISTIC.get(key, "") for key, value in warrior.stat_modifiers.items() if value)
+    if warrior.condition_detail and not any(name and name.casefold() in warrior.condition_detail.casefold() for name in known_names):
+        detail = warrior.condition_detail.rsplit(".", 1)[-1].replace("-", " ").strip()
+        lines.append(f"Injury: {detail}")
+    if warrior.games_to_miss > 0:
+        name = warrior.absence_reason or "Recovery"
+        lines.append(f"Injury: {name} · misses {warrior.games_to_miss} more battle(s)")
+    for target in warrior.hatreds:
+        lines.append(f"Injury: Bitter Enmity · Hatred: {target}")
+    for check in warrior.battle_start_checks:
+        if check.get("check_id") == "campaign.check.old-battle-wound":
+            lines.append("Injury: Old Battle Wound · roll D6 before each battle; misses it on 1")
+    if warrior.lost_eyes:
+        lines.append(f"Injury: Blinded In One Eye · lost {', '.join(warrior.lost_eyes)} eye")
+    return list(dict.fromkeys(lines))
 
 
 class WarriorCard(BorderedFrame):
@@ -39,28 +81,37 @@ class WarriorCard(BorderedFrame):
         for i, key in enumerate(keys):
             stats.columnconfigure(i, weight=1)
             tk.Label(stats, text=key, bg=COLORS["black"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7), pady=3).grid(row=0, column=i, sticky="ew", padx=(1 if i else 0, 0))
-            tk.Label(stats, text=str(warrior.stats[key]), bg=COLORS["panel_soft"], fg=COLORS["text"], font=("Segoe UI", 9), pady=4).grid(row=1, column=i, sticky="ew", padx=(1 if i else 0, 0), pady=(1, 0))
+            value = effective_stat(warrior, key)
+            changed = bool(warrior.stat_modifiers.get(key))
+            tk.Label(stats, text=str(value), bg=COLORS["panel_soft"], fg=COLORS["danger"] if changed else COLORS["text"], font=("Segoe UI Semibold" if changed else "Segoe UI", 9), pady=4).grid(row=1, column=i, sticky="ew", padx=(1 if i else 0, 0), pady=(1, 0))
 
         exp = tk.Frame(identity, bg=COLORS["panel_alt"])
         exp.pack(fill="x", pady=(8, 0))
         previous = warrior.previous_experience if warrior.previous_experience is not None else warrior.experience
         tk.Label(exp, text=tr('EXP  {} → {}').format(previous, warrior.experience) if previous != warrior.experience else f"EXP  {warrior.experience}", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8)).pack(anchor="w")
         ExperienceTrack(exp, warrior.experience, previous_experience=previous, track_type=warrior.kind).pack(fill="x", pady=(3, 0))
-        if warrior.condition_detail:
-            tk.Label(identity, text=warrior.condition_detail, bg=COLORS["panel_alt"], fg=COLORS["danger"], font=("Segoe UI", 8)).pack(anchor="w", pady=(5, 0))
-
         equip = tk.Frame(body, bg=COLORS["panel_alt"], padx=12, pady=9)
         equip.grid(row=0, column=1, sticky="nsew", padx=(1, 0))
         tk.Label(equip, text=tr('EQUIPMENT'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 5))
         for item in warrior.equipment[:5]:
-            suffix = f" ×{item.quantity}" if item.quantity > 1 else ""
+            suffix = equipment_quantity_suffix(warrior, item)
             tk.Label(equip, text=f"• {item.name}{suffix}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(fill="x", pady=1)
+            for rule in item.special_rules:
+                tk.Label(equip, text=f"  {rule}", bg=COLORS["panel_alt"], fg=COLORS["accent"],
+                         font=("Segoe UI", 7), anchor="w", wraplength=300, justify="left").pack(fill="x")
 
         skills = tk.Frame(body, bg=COLORS["panel_alt"], padx=12, pady=9)
         skills.grid(row=0, column=2, sticky="nsew", padx=(1, 0))
-        tk.Label(skills, text=tr('SKILLS / RULES'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 5))
+        tk.Label(skills, text=tr('SKILLS / INJURIES'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 5))
         if warrior.skills:
             for skill in warrior.skills[:5]:
                 tk.Label(skills, text=f"• {skill}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(fill="x", pady=1)
         else:
             tk.Label(skills, text="None", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
+        for line in injury_lines(warrior):
+            tk.Label(
+                skills, text=f"• {line}", bg=COLORS["panel_alt"], fg=COLORS["danger"],
+                font=("Segoe UI", 8), anchor="w", wraplength=300, justify="left",
+            ).pack(fill="x", pady=1)
+        for rule in warrior.special_rules:
+            tk.Label(skills, text=f"• {rule}", bg=COLORS["panel_alt"], fg=COLORS["accent"], font=("Segoe UI", 8), anchor="w", wraplength=300, justify="left").pack(fill="x", pady=1)

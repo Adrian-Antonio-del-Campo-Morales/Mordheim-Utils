@@ -1,4 +1,4 @@
-"""ui.tabs.improvements: responsibility extracted without altering the rules."""
+"""ui: Improvements tab: added skills and effects."""
 from __future__ import annotations
 
 from mordheim_combat_lab.application.analyses import (

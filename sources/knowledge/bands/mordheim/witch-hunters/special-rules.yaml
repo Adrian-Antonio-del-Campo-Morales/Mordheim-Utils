@@ -188,3 +188,30 @@ rules:
       reason: >-
         Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
         construction.
+- id: flagellants--no-missile-weapons
+  name: No Missile Weapons
+  effect: >-
+    Flagellants may never use missile weapons, even if an Advance would otherwise allow access to them.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0 – 5 Flagellants / Special Rules / No Missile Weapons
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/witch-hunters
+  name_i18n:
+    es: Sin Armas de Proyectil
+  effect_i18n:
+    es: >-
+      Los Flagelantes jamás pueden usar armas de proyectil, incluso si una Mejora les permitiera acceder a ellas.
+  applies_to:
+    profile_ids:
+    - flagellants
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.no-missile-weapons
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.no-missile-weapons

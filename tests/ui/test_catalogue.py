@@ -1,4 +1,4 @@
-"""external.test_catalogue: responsibility extracted without altering the rules."""
+"""external.test_catalogue: Catalogue option read-model tests for the UI."""
 from __future__ import annotations
 
 from mordheim_combat_lab.application.catalogue import CombatCatalogue

@@ -4,7 +4,9 @@ import tkinter as tk
 from tkinter import ttk
 
 from mordheim_campaign.application.controller import AppController
+from mordheim_campaign.ui.equipment_display import equipment_quantity_suffix
 from mordheim_ui.theme import COLORS
+from mordheim_ui.windowing import center_on_application
 from mordheim_ui.widgets import BorderedFrame, ScrollableFrame
 from mordheim_ui.i18n import tr
 
@@ -85,15 +87,15 @@ class EquipmentEditorDialog(tk.Toplevel):
         label = warrior.name + (f"  ·  ×{warrior.quantity}" if warrior.quantity > 1 else "")
         tk.Label(head, text=label, bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI Semibold", 9)).pack(side="left")
         if warrior.equipment:
-            for item_id, name, quantity, transferable in self._equipped_items(warrior):
+            for item in warrior.equipment:
                 row = tk.Frame(block, bg=COLORS["panel_alt"])
                 row.pack(fill="x", pady=1)
-                suffix = f" ×{quantity}" if quantity > 1 else ""
-                tk.Label(row, text=f"• {name}{suffix}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(side="left", fill="x", expand=True)
-                action = ttk.Button(row, text="RETURN" if transferable else "LOCKED", style="Mini.TButton", width=8,
-                                    command=lambda i=item_id, w=warrior: self._move(self.controller.return_equipped_item, i, w.id))
+                suffix = equipment_quantity_suffix(warrior, item)
+                tk.Label(row, text=f"• {item.name}{suffix}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(side="left", fill="x", expand=True)
+                action = ttk.Button(row, text="RETURN" if item.transferable else "LOCKED", style="Mini.TButton", width=8,
+                                    command=lambda i=item.item_id, w=warrior: self._move(self.controller.return_equipped_item, i, w.id))
                 action.pack(side="right")
-                if not transferable:
+                if not item.transferable:
                     action.state(["disabled"])
         else:
             tk.Label(block, text=tr('No equipment'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
@@ -148,14 +150,13 @@ class EquipmentEditorDialog(tk.Toplevel):
         ttk.Button(dialog, text=tr('ASSIGN'), style="Accent.TButton", command=_confirm).pack(pady=(4, 12))
         dialog.bind("<Return>", lambda _e: _confirm())
         dialog.bind("<Escape>", lambda _e: dialog.destroy())
+        dialog.after_idle(lambda: center_on_application(dialog))
 
     # --------------------------------------------------------------- plumbing
 
-    def _equipped_items(self, warrior) -> list[tuple[str, str, int, bool]]:
-        return [(item.item_id, item.name, item.quantity, item.transferable) for item in warrior.equipment]
-
     def _move(self, action, item_id: str, warrior_id: str) -> None:
-        ok, message = action(item_id, warrior_id)
+        ok, message = self.controller.perform_undoable(
+            tr('Move equipment'), lambda: action(item_id, warrior_id))
         self._status.set(("✓ " if ok else "⚠ ") + message)
         self._refresh()
 
@@ -173,8 +174,4 @@ class EquipmentEditorDialog(tk.Toplevel):
         self.controller.notify()
 
     def _center(self) -> None:
-        self.update_idletasks()
-        parent = self.master.winfo_toplevel()
-        x = parent.winfo_rootx() + max(0, (parent.winfo_width() - self.winfo_width()) // 2)
-        y = parent.winfo_rooty() + max(0, (parent.winfo_height() - self.winfo_height()) // 2)
-        self.geometry(f"+{x}+{y}")
+        center_on_application(self)

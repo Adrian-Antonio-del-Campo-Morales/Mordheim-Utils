@@ -1,4 +1,4 @@
-"""ui.widgets.results: responsibility extracted without altering the rules."""
+"""ui: Duel result presentation widgets."""
 from __future__ import annotations
 
 from tkinter import StringVar

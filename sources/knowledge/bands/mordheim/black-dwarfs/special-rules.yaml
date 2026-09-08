@@ -561,3 +561,30 @@ rules:
       Derribado, 4-5 como Aturdido y 6 como Fuera de combate.
   applies_to:
     band: true
+- id: bull-centaur--no-missile-weapons
+  name: No Missile Weapons
+  effect: >-
+    A Bull Centaur may never use missile weapons.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Bull Centaur / Special Rules / No Missile Weapons
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/black-dwarfs
+  name_i18n:
+    es: Sin Armas de Proyectil
+  effect_i18n:
+    es: >-
+      Un Centauro Toro jamás puede usar armas de proyectil.
+  applies_to:
+    profile_ids:
+    - bull-centaur
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.no-missile-weapons
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.no-missile-weapons

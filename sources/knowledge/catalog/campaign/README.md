@@ -76,10 +76,10 @@ is therefore not itself an exception: an amount is recorded as a
 `price_override` only when the warband's own source confirms that the warband
 pays that amount as a market price too.
 
-First-run result: 18 rows carry a `price_override`, all source-confirmed; 14
-differing rows are page-verified as plain creation prices (the committed
-sidecar `tools/kb/price-collation-resolutions.csv`), and 119 rows remain in
-the review queue:
+First-run result: 18 rows carry a `price_override`, all source-confirmed; the
+committed sidecar `tools/kb/price-collation-resolutions.csv` holds 55 rows
+page-verified as plain creation prices (and 23 deferred), and the remaining
+differing rows stay in the review queue:
 
 - `gunnery-school-of-nuln` — the black-powder weapons of both lists
   (Impeccable Care: "always use the reduced … costs listed in its starting

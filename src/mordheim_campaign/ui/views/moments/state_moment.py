@@ -86,6 +86,14 @@ class WarbandStateMoment(tk.Frame):
                 tk.Label(xb, text=tr('Select the Post-Battle node in the timeline to continue.'), bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8), wraplength=430, justify="left").pack(anchor="w")
             else:
                 tk.Label(xb, text=tr('No pending actions.'), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9)).pack(anchor="w", pady=(10, 12))
+            if self.controller.state.campaign.special_rules:
+                tk.Label(xb, text=tr('ACTIVE CAMPAIGN EFFECTS'), bg=COLORS["panel"], fg=COLORS["accent"],
+                         font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(10, 3))
+                for rule in self.controller.state.campaign.special_rules:
+                    duration = rule.get("expires_after_battles")
+                    suffix = f" · {duration} battle(s)" if duration is not None else ""
+                    tk.Label(xb, text=f"• {rule.get('text')}{suffix}", bg=COLORS["panel"], fg=COLORS["text"],
+                             font=("Segoe UI", 8), wraplength=430, justify="left").pack(anchor="w", pady=1)
         else:
             tk.Label(xb, text=tr('THIS STATE IN THE TIMELINE'), bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w")
             text = tr('This is the immutable starting point from which the campaign begins.') if state.number == 0 else tr('This snapshot was created when Post-Battle #{} was committed. Open the adjacent transition nodes to see why the warband changed.').format(state.number)

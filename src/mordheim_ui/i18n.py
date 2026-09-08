@@ -267,6 +267,14 @@ STRINGS: dict[str, dict[str, str]] = {
         "es": "{} guerrero(s) registrado(s) Fuera de combate"
     },
     "Cannot record battle": {"es": "No se puede registrar la batalla"},
+    "EXTRA REWARDS": {"es": "RECOMPENSAS EXTRA"},
+    "Optional rewards granted by house rules or the campaign organiser.": {
+        "es": "Recompensas opcionales concedidas por reglas de la casa o por el organizador de la campaña."
+    },
+    "GOLD CROWNS": {"es": "CORONAS DE ORO"},
+    "WYRDSTONE": {"es": "PIEDRA BRUJA"},
+    "ADD": {"es": "AÑADIR"},
+    "REMOVE": {"es": "QUITAR"},
     # ------------------------------------------------------------------
     # Post-battle sequence chrome (post_battle_moment.py, post_battle_sequence.py)
     # ------------------------------------------------------------------
@@ -792,6 +800,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "es": "¿CÓMO QUIERES RESOLVER ESTA TIRADA?"
     },
     "🎲  ROLL IN APP": {"es": "🎲  TIRAR EN LA APP"},
+    "ROLL IN APP": {"es": "TIRAR EN LA APP"},
     "ENTER MANUALLY": {"es": "INTRODUCIR MANUALMENTE"},
     "ENTER {} RESULT": {"es": "INTRODUCIR RESULTADO {}"},
     "CHANGE METHOD": {"es": "CAMBIAR MÉTODO"},
@@ -803,6 +812,24 @@ STRINGS: dict[str, dict[str, str]] = {
     "You can use physical dice at the table and enter exactly what you rolled.": {
         "es": "Puedes usar dados físicos en la mesa e introducir exactamente lo que sacaste."
     },
+    "Dice total": {"es": "Total de los dados"},
+    "Wyrdstone from roll": {"es": "Piedra bruja de la tirada"},
+    "EXPLORATION EVENT": {"es": "EVENTO DE EXPLORACIÓN"},
+    "No matching-dice event was obtained.": {"es": "No se obtuvo ningún evento por dados coincidentes."},
+    "No special event.": {"es": "Sin evento especial."},
+    "Possible effects and rewards": {"es": "Posibles efectos y recompensas"},
+    "Event resolved.": {"es": "Evento resuelto."},
+    "Choose a Hero": {"es": "Elige un héroe"},
+    "Gold crowns": {"es": "Coronas de oro"},
+    "Gold crowns roll": {"es": "Tirada de coronas de oro"},
+    "Wyrdstone roll": {"es": "Tirada de piedra bruja"},
+    "Wyrdstone shards": {"es": "Fragmentos de piedra bruja"},
+    "Experience": {"es": "Experiencia"},
+    "Event result roll": {"es": "Tirada de resultado del evento"},
+    "Toughness test": {"es": "Chequeo de Resistencia"},
+    "Leadership test": {"es": "Chequeo de Liderazgo"},
+    "{} quantity roll": {"es": "Tirada de cantidad de {}"},
+    "Result recorded": {"es": "Resultado registrado"},
     # ------------------------------------------------------------------
     # Dialogs: new campaign (new_campaign.py)
     # ------------------------------------------------------------------

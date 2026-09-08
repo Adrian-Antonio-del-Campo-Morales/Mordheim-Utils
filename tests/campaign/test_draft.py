@@ -122,7 +122,9 @@ def test_example_state_profiles_are_canonical():
     }
     for warrior in campaign.warriors:
         profile = canonical[warrior.profile_id]
-        assert warrior.stats == {**profile.characteristics, **warrior.stat_modifiers}
+        # Base characteristics stay canonical; lasting injuries are stored
+        # separately and combined only when presenting the effective value.
+        assert warrior.stats == profile.characteristics
         assert warrior.cost == profile.cost
         assert warrior.kind == profile.kind
         assert warrior.profile_name == profile.name

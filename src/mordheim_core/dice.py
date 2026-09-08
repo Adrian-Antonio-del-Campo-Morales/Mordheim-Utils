@@ -1,4 +1,4 @@
-"""domain.dice: responsibility extracted without altering the rules."""
+"""domain: Injectable dice sources and roll requests."""
 from __future__ import annotations
 
 from collections import Counter

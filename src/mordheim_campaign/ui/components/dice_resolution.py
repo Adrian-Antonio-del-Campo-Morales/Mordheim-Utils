@@ -7,6 +7,7 @@ from collections.abc import Callable, Sequence
 
 from mordheim_ui.theme import COLORS
 from mordheim_ui.i18n import tr
+from mordheim_ui.windowing import center_on_application
 
 
 def roll_dice(count: int, sides: int = 6) -> list[int]:
@@ -16,6 +17,39 @@ def roll_dice(count: int, sides: int = 6) -> list[int]:
 
 def roll_d6(count: int) -> list[int]:
     return roll_dice(count, 6)
+
+
+def ask_dice(master: tk.Misc, *, title: str, dice_count: int, dice_sides: int = 6) -> list[int] | None:
+    """Show the standard dice card modally and return its individual dice."""
+    dialog = tk.Toplevel(master)
+    dialog.title(title)
+    dialog.configure(bg=COLORS["panel"])
+    dialog.transient(master.winfo_toplevel())
+    dialog.grab_set()
+    result: list[list[int]] = []
+    notation = f"{dice_count if dice_count > 1 else ''}D{dice_sides}"
+
+    def finish(values: list[int]) -> tuple[str, str, str]:
+        result.append(values)
+        dialog.after_idle(dialog.destroy)
+        return tr('Result recorded'), "  ·  ".join(str(value) for value in values), "accent"
+
+    DiceResolutionCard(
+        dialog,
+        title=title,
+        subtitle=tr('Roll in app or enter physical dice'),
+        notation=notation,
+        dice_count=dice_count,
+        dice_sides=dice_sides,
+        demo_dice=(1,) * dice_count,
+        combine="sum",
+        on_resolved=finish,
+        outcome_actions=(),
+    ).pack(fill="both", expand=True, padx=12, pady=12)
+    dialog.bind("<Escape>", lambda _event: dialog.destroy())
+    dialog.after_idle(lambda: center_on_application(dialog))
+    dialog.wait_window()
+    return result[0] if result else None
 
 
 class DiceResolutionCard(tk.Frame):

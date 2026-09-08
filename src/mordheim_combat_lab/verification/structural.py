@@ -1,4 +1,4 @@
-"""verification.structural: responsibility extracted without altering the rules."""
+"""verification: Structural contract verification (effects, phases, consumers)."""
 from __future__ import annotations
 
 from dataclasses import dataclass
