@@ -111,8 +111,9 @@ tasks:
 ## 5. Campaign catalogue → runtime integration
 
 Loaders are done (`mordheim_knowledge/campaign.py`); the Campaign Manager
-consumes them end to end for the record-battle → commit-state loop. Remaining
-work:
+consumes them end to end for the record-battle → commit-state loop. The
+published `scenario-rewards.yaml` catalogue (13 published campaign
+documents) feeds the battle-recording reward plan. Remaining work:
 
 - [ ] Confirm canonical handling of hireling cost resources (`gold_crowns`,
       `wyrdstone_fragments`, `treasures`, `campaign_points`).

@@ -111,7 +111,9 @@ acceptance roll; rejected offers are not shown.
 by the KB scenario catalogue (1v1 first): opponent, result (Victory/Defeat/
 Draw), XP granted, Out of Action checklist (the casualties count is derived
 from it) and optional opponent rating. `AppController.record_battle`
-validates the scenario, snapshots `rating_before`/`models_before`, appends
+validates the scenario, ignores unknown warrior ids in the submitted lists
+(the post-battle filter skips them too) and refuses only known warriors that
+cannot receive results, snapshots `rating_before`/`models_before`, appends
 the `BattleVM` plus its pending `PostBattleVM`, and is refused while a
 post-battle is pending or the warband is still a draft. Recording is
 unblocked once COMMIT STATE runs. The participants tab lists the real roster
@@ -126,7 +128,25 @@ every warrior.
 (`xp_awards`) from the battle facts and records prose-only rewards as manual
 entries. `controller._apply_recorded_scenario_loot` applies the structured
 additional rewards to the pending post-battle: gold crowns, wyrdstone
-fragments, exploration-die modifiers, items and special results.
+fragments, exploration-die modifiers, items and special results. The
+material reward rules themselves live in the published
+`catalog/campaign/scenario-rewards.yaml` catalogue, validated by
+`mordheim_knowledge` and consumed through the `KnowledgePort`.
+
+**Undo is application-wide and undoable actions carry real labels.**
+`AppController.perform_undoable` retains the previous state snapshot for the
+latest twenty actions and names each entry with the caller's description or
+the action's own result message; the shell Undo button (and Ctrl+Z) shows a
+translated `Undo: <label>`, closes any modal editor before restoring the
+snapshot, and the post-battle sequence, skill/spell commits, advance rolls,
+henchman promotions, recruitment and the mercenary-variant switch all flow
+through it.
+
+**Locale switching goes through the application layer.** The Settings view
+never imports `mordheim_knowledge` (the layer rule forbids it):
+`AppController.set_locale` switches both the UI string reader
+(`mordheim_ui.i18n`) and the KB display-name reader
+(`mordheim_knowledge.i18n`) and notifies the shell to rebuild.
 
 **Post-battle mutations.** Injuries mutate the roster, XP and
 purchases/trades move the projected treasury and stash, exploration and the

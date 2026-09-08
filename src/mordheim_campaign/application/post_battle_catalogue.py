@@ -289,11 +289,13 @@ class PostBattleCatalogue:
         member_profile_ids: frozenset[str] = frozenset(),
         hired_sword_profile_ids: frozenset[str] = frozenset(),
         variant: str | None = None,
+        phase: str = "post_battle",
     ) -> None:
         self.port = port
         self.collection = collection
         self.band_id = band_id
         self.ruleset = ruleset
+        self.phase = phase
         #: Roster facts the dynamic eligibility rules read. ``member_profile_ids``
         #: are the warband members; ``hired_sword_profile_ids`` are the Hired
         #: Swords/Dramatis already employed (also roster members), so the
@@ -320,6 +322,9 @@ class PostBattleCatalogue:
     def _restriction_allows(self, restrictions: list | None) -> bool:
         """True when no warband-level restriction excludes this warband."""
         for restriction in restrictions or ():
+            note = str(restriction.get("note") or "").casefold()
+            if "may only be purchased when the warband is created" in note and self.phase != "creation":
+                return False
             if restriction.get("type") not in _WARBAND_RESTRICTIONS:
                 continue
             if restriction["type"] == "warband_forbidden":
@@ -332,9 +337,8 @@ class PostBattleCatalogue:
                 groups = set(restriction.get("groups") or ())
                 if not band_ids and not groups:
                     continue
-                if self.band_id in band_ids or self._band_group_ids() & groups:
-                    return True
-                return False
+                if not (self.band_id in band_ids or self._band_group_ids() & groups):
+                    return False
         return True
 
     def _entry_static_allows(self, entry: dict) -> bool:

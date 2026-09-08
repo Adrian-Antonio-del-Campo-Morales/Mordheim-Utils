@@ -141,7 +141,7 @@ class PostBattleMoment(tk.Frame):
 
     def _run(self, action) -> None:
         """Runs one engine action; reports and rebuilds on success."""
-        ok, message = self.controller.perform_undoable(tr("Post-battle action"), action)
+        ok, message = self.controller.perform_undoable("", action)
         self._status_text = ("✓ " if ok else "⚠ ") + message
         if ok:
             self._rebuild()
@@ -188,30 +188,56 @@ class PostBattleMoment(tk.Frame):
 
         affected = len(battle.out_of_action_ids or ())
         advances = [str(row.get("applied_label") or tr('Unresolved advance')) for row in post.pending_advances]
+        injury_lines = [
+            str(result)
+            for holder in (post.step_state.get("injuries") or {}).values()
+            for result in holder.get("history") or ()
+        ]
+        exploration = post.step_state.get("exploration") or {}
+        exploration_lines = []
+        if exploration.get("dice"):
+            exploration_lines.append(tr('Dice: {}').format(' · '.join(map(str, exploration["dice"]))))
+        exploration_lines.extend(
+            str(entry.get("message") or "") for entry in post.event_log
+            if int(entry.get("step") or -1) == 2 and entry.get("message")
+        )
+        veterans = post.step_state.get("veterans") or {}
+        veteran_lines = ([tr('Dice: {}').format(' · '.join(map(str, veterans["dice"]))) ]
+                         if veterans.get("dice") else [])
+        search_lines = []
+        for search in post.searches.values():
+            dice = search.get("dice") or []
+            search_lines.append(
+                f"{search.get('hero_name') or search.get('hero_id')}: "
+                f"{search.get('label') or search.get('target_id')}"
+                + (f" · {tr('Dice')}: {' · '.join(map(str, dice))}" if dice else "")
+            )
+        recruitment_lines = [
+            str(entry.get("message") or "") for entry in post.event_log
+            if int(entry.get("step") or -1) == 6 and entry.get("message")
+        ]
+        equipment_lines = [
+            str(entry.get("message") or "") for entry in post.event_log
+            if int(entry.get("step") or -1) == 7 and entry.get("message")
+        ]
         self._history_step(body, "01", tr('INJURIES'), tr('{} warrior result(s) were marked Out of Action.').format(affected or battle.casualties), [
             tr('Serious-injury rolls were completed before the new roster state was created.'),
-            tr('Exact historical injury outcomes were not stored for this sequence.'),
+            *(injury_lines or [tr('No detailed injury rolls were recorded.')]),
         ])
         self._history_step(body, "02", tr('EXPERIENCE'), tr('The recorded battle award was +{} XP.').format(battle.xp_delta),
                            advances or [tr('No advances were recorded in this sequence.')])
-        self._history_step(body, "03", tr('EXPLORATION'), tr('{} wyrdstone shard(s) were added by exploration.').format(post.wyrdstone_delta), [
-            tr('The exploration total and any matching-dice result were resolved before income.'),
-            tr('The exact dice and special-result effects were not retained.'),
-        ])
+        self._history_step(body, "03", tr('EXPLORATION'), tr('{} wyrdstone shard(s) were added by exploration.').format(post.wyrdstone_delta),
+                           exploration_lines or [tr('No detailed exploration result was recorded.')])
         sale = tr('{} shard(s) were sold.').format(post.wyrdstone_sold) if post.sale_resolved else tr('No wyrdstone sale was recorded.')
         self._history_step(body, "04", tr('SELL WYRDSTONE'), sale, [tr('Sale income is included in the final treasury change.')])
-        self._history_step(body, "05", tr('VETERAN EXPERIENCE'), tr('{} Veteran XP remained after recruitment.').format(post.veteran_pool), [
-            tr('The original roll and XP spent by individual recruits were not retained.'),
-        ])
-        self._history_step(body, "06", tr('RARE ITEMS & DRAMATIS'), tr('Searches assigned during this sequence were completed.'), [
-            tr('Searcher, target and availability-roll history were not retained.'),
-        ])
-        self._history_step(body, "07", tr('RECRUITMENT'), tr('The final roster contains {} models.').format(battle.models_after), [
-            tr('Recruitment and dismissal events were applied directly to the roster.'),
-        ])
-        self._history_step(body, "08", tr('EQUIPMENT'), tr('Purchases, sales and assignments produced the final inventory.'), [
-            tr('Individual equipment transactions were not retained.'),
-        ])
+        self._history_step(body, "05", tr('VETERAN EXPERIENCE'), tr('{} Veteran XP remained after recruitment.').format(post.veteran_pool),
+                           veteran_lines or [tr('No veteran roll was recorded.')])
+        self._history_step(body, "06", tr('RARE ITEMS & DRAMATIS'), tr('Searches assigned during this sequence were completed.'),
+                           search_lines or [tr('No searches were recorded.')])
+        self._history_step(body, "07", tr('RECRUITMENT'), tr('The final roster contains {} models.').format(battle.models_after),
+                           recruitment_lines or [tr('No recruitment changes were recorded.')])
+        self._history_step(body, "08", tr('EQUIPMENT'), tr('Purchases, sales and assignments produced the final inventory.'),
+                           equipment_lines or [tr('No equipment transactions were recorded.')])
         try:
             before = campaign.state(post.battle_number - 1)
             after = campaign.state(post.battle_number)
@@ -340,7 +366,7 @@ class PostBattleMoment(tk.Frame):
         if post.active_step in post.completed_steps:
             self.controller.advance_post_battle_step()
             return
-        description = tr("Complete {} ").format(tr(POST_BATTLE_STEPS[post.active_step])).strip()
+        description = tr(POST_BATTLE_STEPS[post.active_step])
         self.controller.perform_undoable(description, self._advance_step_impl)
 
     def _advance_step_impl(self) -> None:
@@ -379,6 +405,10 @@ class PostBattleMoment(tk.Frame):
                     if not ok:
                         messagebox.showerror(tr('Cannot apply result'), message, parent=self)
                         return
+            ok, message = engine.apply_battle_experience()
+            if not ok:
+                messagebox.showerror(tr('Cannot apply result'), message, parent=self)
+                return
         elif post.active_step == 1:
             unresolved = [row for row in post.pending_advances if not row.get("committed")]
             if unresolved:
@@ -640,9 +670,7 @@ class PostBattleMoment(tk.Frame):
 
     def _experience(self, parent: tk.Misc, battle) -> None:
         engine = self._engine()
-        engine.apply_battle_experience()
         self._title(parent, tr('02 · Experience'), tr('Allocate the experience Battle #{} granted (+{} XP). Crossed thresholds earn advance rolls resolved against the KB advancement tables; stat increases and skill/spell picks are committed here. {}').format(battle.number, battle.xp_delta, self._kb_provenance(1)))
-        engine.sync_pending_advances()
         for warrior in self.controller.state.campaign.warriors:
             card = tk.Frame(parent, bg=COLORS["panel_alt"], padx=12, pady=10)
             card.pack(fill="x", pady=(0, 7))
@@ -803,7 +831,9 @@ class PostBattleMoment(tk.Frame):
         if not dice:
             return
         total = sum(dice)
-        ok, message = engine.resolve_pending_advance(warrior_id, total, threshold=threshold)
+        ok, message = self.controller.perform_undoable(
+            tr('Resolve advance'),
+            lambda: engine.resolve_pending_advance(warrior_id, total, threshold=threshold))
         self._status_text = ("✓ " if ok else "⚠ ") + message
         if not ok:
             self._rebuild()
@@ -901,14 +931,19 @@ class PostBattleMoment(tk.Frame):
         dialog.wait_window()
         if not result:
             return
-        ok, message = self._engine().promote_henchman(warrior.id, member_name=result[0], threshold=threshold)
+        ok, message = self.controller.perform_undoable(
+            tr("The Lad's Got Talent"),
+            lambda: self._engine().promote_henchman(warrior.id, member_name=result[0], threshold=threshold))
         self._status_text = ("✓ " if ok else "⚠ ") + message
         self._rebuild()
 
     def _open_skill_dialog(self, warrior_id: str, *, want_spells: bool, promotion: bool = False, threshold: int | None = None) -> None:
         from mordheim_campaign.ui.dialogs.skill_choice import SkillChoiceDialog
 
-        dialog = SkillChoiceDialog(self, self._engine(), warrior_id, want_spells=want_spells, promotion=promotion, threshold=threshold)
+        dialog = SkillChoiceDialog(
+            self, self.controller, warrior_id,
+            want_spells=want_spells, promotion=promotion, threshold=threshold,
+        )
         self.wait_window(dialog)
         engine = self._engine()
         row = engine.post.pending_advance_for(warrior_id, threshold) if engine.post is not None else None
@@ -922,7 +957,7 @@ class PostBattleMoment(tk.Frame):
         resolver = self.controller.post_battle_resolver()
         engine = self._engine()
         self._title(parent, tr('03 · Exploration'), tr('Roll once for each eligible Hero, plus one die when the warband won. Shards come from the KB shard chart; matching dice open the KB special-result table. {}').format(self._kb_provenance(2)))
-        surviving = max(0, engine.projected_heroes() - battle.casualties)
+        surviving = engine.eligible_exploration_heroes(battle)
         won = battle.result == "Victory"
         scenario_rule = (engine.post.step_state.get("scenario_exploration") or {}) if engine.post is not None else {}
         extra_dice = max(0, int(scenario_rule.get("extra_dice") or 0))
@@ -1308,7 +1343,7 @@ class PostBattleMoment(tk.Frame):
             picker.pack(side="left", fill="x", expand=True)
             result_host = tk.Frame(card, bg=COLORS["panel_alt"])
             result_host.pack(fill="x")
-            picker.bind("<<ComboboxSelected>>", lambda _event, h=hero, v=variable, host=result_host: self._render_hero_search(h, v, host, targets, resolver))
+            picker.bind("<<ComboboxSelected>>", lambda _event, h=hero, v=variable, host=result_host: self._select_hero_search(h, v, host, targets, resolver))
             if variable.get() != no_search:
                 self._render_hero_search(hero, variable, result_host, targets, resolver, reset=False)
 
@@ -1336,6 +1371,7 @@ class PostBattleMoment(tk.Frame):
                     tr('Rare item search roll'), lambda: _rarity_card(dice, resolver, o.item_id, o.name, h)),
                 outcome_actions=(("BUY", lambda o=offer, h=holder: self._buy_rare_offer(o, h), "Accent.TButton"),),
             ).pack(fill="x", pady=(7, 0))
+
         else:
             DiceResolutionCard(
                 host, title=offer.name, subtitle=tr('{} searches for this Dramatis Persona').format(hero.name),
@@ -1346,6 +1382,26 @@ class PostBattleMoment(tk.Frame):
                     lambda: (h.update(dice=list(dice), success=True), tr('Located'), tr('Character found · hiring remains optional'), "success")[1:]),
                 outcome_actions=(("HIRE", lambda o=offer, h=holder: self._hire_dramatis(o, h), "Accent.TButton"),),
             ).pack(fill="x", pady=(7, 0))
+
+    def _select_hero_search(self, hero, variable, host, targets, resolver) -> None:
+        """Store a search target as a proper undoable campaign action."""
+        selected = variable.get()
+
+        def change() -> tuple[bool, str]:
+            kind, offer = targets.get(selected, ("none", None))
+            holder = self._post.searches.setdefault(hero.id, {})
+            holder.clear()
+            if kind == "rare":
+                jewel_bonus = 1 if any("+1 to rolls for locating rare items" in rule for rule in hero.special_rules) else 0
+                holder.update(kind="rare", target_id=f"rare:{offer.item_id}", item_id=offer.item_id,
+                              label=selected, modifiers=jewel_bonus, hero_id=hero.id)
+            elif kind == "dramatis":
+                holder.update(kind="dramatis", target_id=f"dramatis:{offer.profile_id}", profile_id=offer.profile_id,
+                              label=selected, modifiers=0, hero_id=hero.id)
+            return True, f"{hero.name}: {selected}"
+
+        self.controller.perform_undoable(tr('Choose search target'), change)
+        self._render_hero_search(hero, variable, host, targets, resolver, reset=False)
 
     def _buy_rare_offer(self, offer, holder: dict) -> None:
         if not holder.get("success"):

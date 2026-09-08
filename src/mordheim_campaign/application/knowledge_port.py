@@ -505,17 +505,23 @@ class KnowledgePort:
             if str(entry.get("item_id") or "") != item_id:
                 continue
             restrictions = entry.get("restrictions") or ()
+            notes = tuple(
+                str(r.get("note")) for r in restrictions
+                if r.get("type") in ("condition", "profile_only") and r.get("note")
+            )
+            inferred_one = any(
+                r.get("type") == "profile_only" and str(r.get("note") or "").casefold().startswith("one ")
+                for r in restrictions
+            )
             return {
-                "heroes_only": any(r.get("type") == "heroes_only" for r in restrictions),
+                "heroes_only": any(r.get("type") == "heroes_only" for r in restrictions)
+                or any("heroes only" in note.casefold() for note in notes),
                 "limit_per_warband": next(
                     (int(r.get("value")) for r in restrictions
                      if r.get("type") == "limit_per_warband" and r.get("value") is not None),
-                    None,
+                    1 if inferred_one else None,
                 ),
-                "notes": tuple(
-                    str(r.get("note")) for r in restrictions
-                    if r.get("type") in ("condition", "profile_only") and r.get("note")
-                ),
+                "notes": notes,
             }
         return {"heroes_only": False, "limit_per_warband": None, "notes": ()}
 
