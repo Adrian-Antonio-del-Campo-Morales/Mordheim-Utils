@@ -87,7 +87,9 @@ def test_inventory_covers_every_public_kb_read_of_the_port() -> None:
     """Each ``KnowledgePort`` public method that reads a new catalogue must be
     matched by an inventory row; scans the port source for loader/catalogue
     access points and cross-checks the documented source paths."""
-    port_source = (ROOT / "src" / "mordheim_campaign" / "application" / "knowledge_port.py").read_text(encoding="utf-8")
+    import mordheim_campaign.application.knowledge_port as _port_module
+
+    port_source = Path(_port_module.__file__).resolve().read_text(encoding="utf-8")
     documented = set(re.findall(r"([a-z0-9\-/]+\.yaml)", _inventory_text()))
     consumed = set(re.findall(r'catalogue\("([a-z0-9\-]+)(?:\.yaml)?"\)', port_source))
     consumed = {f"catalog/campaign/{name}.yaml" for name in consumed}
