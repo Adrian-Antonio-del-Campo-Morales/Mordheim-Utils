@@ -22,6 +22,12 @@ class CampaignManagerApp(tk.Tk):
         self.minsize(1280, 760)
         self.controller = AppController()
         AppShell(self, self.controller)
+        self.protocol("WM_DELETE_WINDOW", self._close)
+
+    def _close(self) -> None:
+        from mordheim_campaign.ui.file_actions import confirm_discard_changes
+        if confirm_discard_changes(self, self.controller):
+            self.destroy()
 
 
 def main() -> int:

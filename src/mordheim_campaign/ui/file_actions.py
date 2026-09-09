@@ -6,7 +6,7 @@ through :class:`AppController`.
 """
 from __future__ import annotations
 
-from tkinter import filedialog
+from tkinter import filedialog, messagebox as native_messagebox
 
 from mordheim_ui import themed_dialogs as messagebox
 from mordheim_ui.i18n import tr
@@ -30,6 +30,19 @@ def _report_error(parent, action: str, exc: Exception) -> None:
     messagebox.showerror(tr('Campaign {} error').format(action), str(exc), parent=parent)
 
 
+def confirm_discard_changes(parent, controller: AppController) -> bool:
+    """Save, discard or cancel before replacing the active campaign."""
+    if not controller.has_unsaved_changes:
+        return True
+    decision = native_messagebox.askyesnocancel(
+        tr('Unsaved changes'), tr('Save campaign changes before continuing?'), parent=parent)
+    if decision is None:
+        return False
+    if decision:
+        return save_current_campaign(parent, controller) is not None
+    return True
+
+
 def save_current_campaign(parent, controller: AppController):
     """Saves the active campaign; asks for a path only the first time."""
     path = controller.persist_path
@@ -50,6 +63,7 @@ def save_current_campaign(parent, controller: AppController):
         _report_error(parent, "save", exc)
         return None
     controller.persist_path = path
+    controller.mark_saved()
     controller.clear_undo_history()
     controller.notify()
     return path
@@ -72,6 +86,7 @@ def save_campaign_copy(parent, controller: AppController):
         _report_error(parent, "save", exc)
         return None
     controller.persist_path = path
+    controller.mark_saved()
     controller.clear_undo_history()
     controller.notify()
     return path
@@ -85,6 +100,8 @@ def load_campaign_file(parent, controller: AppController):
     )
     if not path:
         return None
+    if not confirm_discard_changes(parent, controller):
+        return None
     try:
         state = load_campaign(path)
     except (CampaignFileError, OSError) as exc:
@@ -92,6 +109,7 @@ def load_campaign_file(parent, controller: AppController):
         return None
     controller.persist_path = path
     controller.replace_state(state)
+    controller.mark_saved()
     return path
 
 

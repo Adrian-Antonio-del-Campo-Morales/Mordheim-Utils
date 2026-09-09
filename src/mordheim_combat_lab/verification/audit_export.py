@@ -235,6 +235,7 @@ def generate_audit(*, knowledge: Path | None = None, specs: Path | None = None,
                    status: str | None = None, review_status: str | None = None) -> Path:
     rows = filter_audit_rows(build_audit_rows(knowledge, specs), scope, status, review_status)
     output = Path(output) if output else project_root() / "outputs/audit"
-    path = output / "rules-audit.csv"
+    from mordheim_combat_lab.report_naming import timestamped_report_path
+    path = timestamped_report_path(output, "rules-audit", ".csv") if output == project_root() / "outputs/audit" else output / "rules-audit.csv"
     write_csv(rows, path)
     return path

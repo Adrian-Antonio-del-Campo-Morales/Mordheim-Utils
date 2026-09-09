@@ -422,8 +422,9 @@ def test_deep_benchmark_saves_the_report_by_default(monkeypatch, tmp_path):
     assert main(["benchmark", "--deep", "--simulation-sizes", "1k", "--batch-sizes", "1k",
                  "--scenario", "basic", "--backend", "numpy",
                  "--deep-modular-simulations", "100", "--warmups", "0", "--repeats", "1"]) == 0
-    path = tmp_path / "outputs" / "benchmarks" / "deep.json"
-    assert path.is_file()
+    reports = list((tmp_path / "outputs" / "benchmarks").glob("deep-*.json"))
+    assert len(reports) == 1
+    path = reports[0]
     payload = json.loads(path.read_text(encoding="utf-8"))
     assert payload["mode"] == "deep"
     assert payload["schema"] == "mordheim-combat-benchmark-sweep/v1"
@@ -545,9 +546,9 @@ def test_deep_parity_saves_the_report_by_default(monkeypatch, tmp_path):
     monkeypatch.chdir(tmp_path)
     assert main(["parity", "--deep", "--deep-simulations", "30",
                  "--deep-cross-simulations", "50", "--seed", "3"]) == 0
-    path = tmp_path / "outputs" / "parity" / "deep.json"
-    assert path.is_file()
-    payload = json.loads(path.read_text(encoding="utf-8"))
+    reports = list((tmp_path / "outputs" / "parity").glob("deep-*.json"))
+    assert len(reports) == 1
+    payload = json.loads(reports[0].read_text(encoding="utf-8"))
     assert payload["schema"] == "mordheim-combat-parity/v2"
     assert payload["deep"] is not None
     assert payload["elapsed_seconds"] > 0
