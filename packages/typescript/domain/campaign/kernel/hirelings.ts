@@ -38,9 +38,21 @@ const STAT_KEYS = ["M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"] as const;
  * a resulting rating the caller must accept explicitly (rating itself is
  * never capped, mirroring the desktop).
  */
+export interface HireHirelingInput {
+  readonly profile_id: IdString;
+  /**
+   * Hiring fee in gold crowns from the catalogue offer (P6.7 listings). The
+   * profile row itself carries no fee — the offer does — so the application
+   * passes the resolved fee here. Optional for callers without listings.
+   */
+  readonly fee?: number;
+  /** Non-gold upkeep pairs from the offer (`[resource_id, amount]`). */
+  readonly upkeep_resources?: readonly (readonly [IdString, number])[];
+}
+
 export function hireHireling(
   document: CampaignDocument,
-  input: { readonly profile_id: IdString },
+  input: HireHirelingInput,
   knowledge: KnowledgeReader,
 ): UseCaseResult {
   const { campaign } = document;
@@ -57,14 +69,27 @@ export function hireHireling(
   if (campaign.warriors.some((w) => w.profile_id === input.profile_id)) {
     return rejected("conflict", `A ${result.record.names["en"] ?? input.profile_id} is already hired.`);
   }
-  const cost = typeof data["cost"] === "number" ? data["cost"] : 0;
-  const rating = typeof data["rating"] === "number" ? data["rating"] : cost;
-  const upkeep = Array.isArray(data["upkeep_resources"])
-    ? (data["upkeep_resources"] as unknown[]).filter(
-        (row): row is [IdString, number] =>
-          Array.isArray(row) && typeof row[0] === "string" && typeof row[1] === "number",
-      )
-    : [];
+  // Rating: the profile's `warband_rating` block — `fixed` value or the
+  // `base` of a base+experience rating (XP 0 at hiring time), mirroring the
+  // desktop `hireling_roster_values`. Cost: the offer's hiring fee when the
+  // caller knows it, else the rating base (never silently 0).
+  const ratingBlock =
+    data["warband_rating"] && typeof data["warband_rating"] === "object"
+      ? (data["warband_rating"] as OpenPayload)
+      : {};
+  const ratingFixed = typeof ratingBlock["value"] === "number" ? ratingBlock["value"] : null;
+  const ratingBase = typeof ratingBlock["base"] === "number" ? ratingBlock["base"] : 0;
+  const rating = ratingFixed ?? ratingBase;
+  const cost = typeof input.fee === "number" ? input.fee : rating;
+  const upkeep =
+    input.upkeep_resources && input.upkeep_resources.length > 0
+      ? input.upkeep_resources
+      : Array.isArray(data["upkeep_resources"])
+        ? (data["upkeep_resources"] as unknown[]).filter(
+            (row): row is [IdString, number] =>
+              Array.isArray(row) && typeof row[0] === "string" && typeof row[1] === "number",
+          )
+        : [];
   const characteristics =
     data["characteristics"] && typeof data["characteristics"] === "object"
       ? (data["characteristics"] as OpenPayload)

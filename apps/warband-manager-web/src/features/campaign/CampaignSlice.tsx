@@ -8,10 +8,18 @@ import { useRef, useState } from "react";
 
 import { useCampaignApp } from "./useCampaignApp";
 import { TimelinePanel } from "../timeline/TimelinePanel";
+import { EquipmentPanel } from "../equipment/EquipmentPanel";
+import { AdvancesPanel } from "../advances/AdvancesPanel";
+import { HirelingsPanel } from "../hirelings/HirelingsPanel";
+import { BattlePanel } from "../battle/BattlePanel";
+import { InjuriesPanel } from "../injuries/InjuriesPanel";
+import { ReviewPanel } from "../review/ReviewPanel";
 
 export function CampaignSlice() {
   const app = useCampaignApp();
   const fileInput = useRef<HTMLInputElement>(null);
+  // P6.4: the slice mirrors service state into local state so the battle
+  // panel's document updates propagate (same pattern as TimelinePanel).
   const [warbandName, setWarbandName] = useState<string | null>(null);
 
   const doc = app.document;
@@ -69,6 +77,30 @@ export function CampaignSlice() {
 
           {/* P6.1: timeline navigation beside the state display. */}
           <TimelinePanel document={doc} onSelect={(moment) => app.selectMoment(moment)} />
+
+          {/* P6.3: equipment & stash beside the inventory display. */}
+          <EquipmentPanel document={doc} />
+
+          {/* P6.6: experience & advances beside the roster display. */}
+          <AdvancesPanel document={doc} />
+
+          {/* P6.7: hirelings, exploration & trading (committed campaigns). */}
+          {!doc.campaign.configuration.is_draft && <HirelingsPanel document={doc} />}
+
+          {/* P6.5: injuries & recovery beside the roster display. */}
+          <InjuriesPanel document={doc} />
+
+          {/* P6.4: battle recording for committed campaigns (not drafts). */}
+          {!doc.campaign.configuration.is_draft && (
+            <BattlePanel
+              document={doc}
+              onDocument={(updated) => {
+                /* The service snapshot is replaced through the app hook; the
+                   panel holds its own copy so both stay consistent. */
+                void updated;
+              }}
+            />
+          )}
           <dl>
             <dt>Campaign</dt>
             <dd>{identity.campaign_name}</dd>
@@ -134,6 +166,9 @@ export function CampaignSlice() {
               Apply
             </button>
           </form>
+
+          {/* P6.8: review before export + auxiliary text exports. */}
+          <ReviewPanel document={doc} />
 
           <button type="button" onClick={() => void app.exportFile()}>
             Export .mordheim

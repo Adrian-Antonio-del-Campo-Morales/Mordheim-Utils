@@ -70,6 +70,8 @@ const fakeUseCases: CampaignUseCases = {
   applyAdvance: () => rejected("not_found", "no advance"),
   assignEquipment: () => rejected("not_found", "no item"),
   hireHireling: () => rejected("not_found", "no hireling"),
+  buyTradingItem: () => rejected("not_found", "no item"),
+  sellStashItem: () => rejected("not_found", "no item"),
   validateForExport: () => ({ ok: true, state: document }),
 };
 

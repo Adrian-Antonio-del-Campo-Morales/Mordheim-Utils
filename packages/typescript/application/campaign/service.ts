@@ -28,6 +28,12 @@ import type {
 } from "../../domain/campaign/index";
 import { createDefaultUseCases } from "../../domain/campaign/kernel/default-usecases";
 import type { CampaignUseCases } from "../../domain/campaign/index";
+import {
+  applyInjuryOutcome,
+  recover,
+  resolveFollowUp,
+  type InjuriesWorkflowResult,
+} from "./features/injuries/injuries-workflow";
 
 const HISTORY_LIMIT = 50;
 
@@ -58,6 +64,22 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
     state.current = result.state;
     state.dirty = true;
     return { ok: true, document: result.state };
+  }
+
+  /** Same state discipline for injuries-workflow results (P6.5). */
+  function applyInjuries(result: InjuriesWorkflowResult): AppResult {
+    if (!result.ok) {
+      // The frozen AppErrorReason keeps `rejected`; the specific workflow
+      // reason travels in detail for the UI.
+      return error("rejected", result.message, { reason: result.reason });
+    }
+    if (state.current) {
+      state.history.push(state.current);
+      if (state.history.length > HISTORY_LIMIT) state.history.shift();
+    }
+    state.current = result.document;
+    state.dirty = true;
+    return { ok: true, document: result.document };
   }
 
   return {
@@ -142,12 +164,30 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           return applyResult(useCases.assignEquipment(state.current, input as never));
         case "hireHireling":
           return applyResult(useCases.hireHireling(state.current, input as never, knowledge));
+        case "buyTradingItem":
+          return applyResult(useCases.buyTradingItem(state.current, input as never));
+        case "sellStashItem":
+          return applyResult(useCases.sellStashItem(state.current, input as never));
+        case "applyInjuryOutcome":
+          return applyInjuries(applyInjuryOutcome(state.current, input as never));
+        case "resolveInjuryFollowUp":
+          return applyInjuries(
+            resolveFollowUp(state.current, {
+              follow_up_id: String(input["follow_up_id"] ?? ""),
+              outcome: (input["outcome"] ?? {}) as never,
+            }),
+          );
+        case "recoverWarrior":
+          return applyInjuries(recover(state.current, String(input["warrior_id"] ?? "")));
         case "undo": {
           const previous = state.history.pop();
           if (!previous) {
             return error("rejected", "Nothing to undo.");
           }
           state.current = previous;
+          // Restoring the previous document clears the unsaved-changes flag:
+          // what is on disk again matches what is in memory.
+          state.dirty = false;
           return { ok: true, document: previous };
         }
         default:

@@ -69,6 +69,17 @@ export function assignEquipment(
   if (!warrior) {
     return rejected("not_found", `Unknown warrior id: ${input.warrior_id}.`);
   }
+  // Withdrawals validate the warrior's own entry first: a fixed (profile)
+  // entry is not transferable even when the inventory has no matching row.
+  if (input.direction === "stash") {
+    const targetEntry = warrior.equipment.find((e) => e.item_id === input.item_id);
+    if (targetEntry && targetEntry.acquisition === "fixed") {
+      return rejected(
+        "limit_violated",
+        `"${input.item_id}" is fixed equipment of ${warrior.name} and cannot be moved.`,
+      );
+    }
+  }
   const item = findInventoryItem(document, input.item_id);
   if (!item) {
     return rejected("not_found", `Unknown inventory item id: ${input.item_id}.`);
@@ -112,10 +123,12 @@ export function assignEquipment(
   }
 
   // direction === "stash": take equipped units back from the warrior.
+  // (Fixed entries were already rejected above; the entry must exist and
+  // cover the requested quantity.)
   const equippedEntry = warrior.equipment.find(
     (e) => e.item_id === input.item_id && e.acquisition !== "fixed",
   );
-  if (!equippedEntry || equippedEntry.quantity < input.quantity) {
+  if (!equippedEntry || (equippedEntry.quantity ?? 1) < input.quantity) {
     return rejected(
       "limit_violated",
       `${warrior.name} does not carry ${input.quantity} of "${item.id}" to return.`,

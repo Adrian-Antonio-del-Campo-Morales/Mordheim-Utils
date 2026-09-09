@@ -114,8 +114,9 @@ function makeKnowledge(): KnowledgeReader {
       id: "warrior-undead-hunter",
       name: "Undead Hunter",
       names: { en: "Undead Hunter" },
-      cost: 55,
-      rating: 15,
+      // P6.7: artefact hireling profiles carry a `warband_rating` block
+      // (fixed value or base+experience), not a flat rating field.
+      warband_rating: { kind: "fixed", value: 15 },
       characteristics: { M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7 },
       upkeep_resources: [["gold", 15]],
       skills: ["skill.undead-hatred"],

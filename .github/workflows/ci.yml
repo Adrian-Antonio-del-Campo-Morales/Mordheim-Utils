@@ -1,0 +1,110 @@
+name: CI
+
+# P8.1 (web-migration-parallel-plan.md §9): validation workflow.
+# A failure of the KB validation, the v4 contract checks, the Python tests,
+# the TypeScript tests or the web build must block the pipeline. Publishing
+# is a separate, gated workflow (deploy-pages.yml) that runs only after this
+# one succeeds on the default branch.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Python — contract, KB and regression tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install package (reproducible)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Validate the KB sources build a clean artefact
+        run: |
+          python tools/knowledge/generate_knowledge_web.py
+          python tools/knowledge/generate_knowledge_web.py --check
+
+      - name: Run the Python regression net
+        run: python -m pytest tests/web tests/contracts tests/campaign tests/architecture tests/knowledge -q
+
+      - name: Verify the artefact is deterministic and untouched by a rebuild
+        run: python tools/knowledge/generate_knowledge_web.py --check
+
+  typescript:
+    name: TypeScript — packages and web app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            packages/typescript/package-lock.json
+            apps/warband-manager-web/package-lock.json
+
+      - name: Install packages (reproducible, lockfile-driven)
+        run: |
+          cd packages/typescript && npm ci
+          cd ../../apps/warband-manager-web && npm ci
+
+      - name: Generate the KB artefact for the tests and the browser
+        run: |
+          pip install -e .
+          python tools/knowledge/generate_knowledge_web.py
+          python tools/knowledge/generate_knowledge_web.py --check
+
+      - name: Copy the artefact to the app's public assets
+        run: |
+          mkdir -p apps/warband-manager-web/public/knowledge
+          cp build/generated/knowledge-web/knowledge-web.json \
+             apps/warband-manager-web/public/knowledge/knowledge-web.json
+
+      - name: Typecheck and test the packages
+        run: cd packages/typescript && npm run typecheck && npm test
+
+      - name: Typecheck, lint, test and build the web app
+        run: |
+          cd apps/warband-manager-web
+          npm run typecheck
+          npm run lint
+          npm test
+          npm run build
+
+      - name: Upload the built app for inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: apps/warband-manager-web/dist/
+          retention-days: 7
+
+  # Gate: everything above must be green. deploy-pages.yml re-runs the build
+  # in its own workflow; this check name is what it awaits.
+  ci-green:
+    name: CI green
+    needs: [python, typescript]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Fail if any job failed
+        if: needs.python.result != 'success' || needs.typescript.result != 'success'
+        run: exit 1
+      - name: All green
+        run: echo "Python and TypeScript pipelines passed."

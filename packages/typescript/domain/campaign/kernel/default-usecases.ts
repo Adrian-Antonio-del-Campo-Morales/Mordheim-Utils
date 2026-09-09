@@ -27,6 +27,10 @@ import { resolvePostBattleStep } from "./post-battle-steps";
 import { assignEquipment } from "./equipment";
 import type { AssignEquipmentInput } from "./equipment";
 import { applyAdvance, hireHireling } from "./hirelings";
+import { buyTradingItem, sellStashItem } from "./trading";
+import type { BuyTradingItemInput, SellStashItemInput } from "./trading";
+
+export type { BuyTradingItemInput, SellStashItemInput };
 
 export type { AssignEquipmentInput };
 
@@ -77,6 +81,12 @@ export function createDefaultUseCases(knowledge: KnowledgeReader = nullReader): 
       input: { profile_id: IdString },
       reader: KnowledgeReader,
     ): UseCaseResult => hireHireling(document, input, reader),
+
+    buyTradingItem: (document: CampaignDocument, input: BuyTradingItemInput): UseCaseResult =>
+      buyTradingItem(document, input),
+
+    sellStashItem: (document: CampaignDocument, input: SellStashItemInput): UseCaseResult =>
+      sellStashItem(document, input),
 
     validateForExport: (document: CampaignDocument): UseCaseResult => validateStructure(document),
   };

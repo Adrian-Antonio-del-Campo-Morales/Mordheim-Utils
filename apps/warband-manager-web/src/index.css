@@ -1,0 +1,51 @@
+/*
+ * P7.4 (web-migration-parallel-plan.md §8): base styles for accessibility
+ * and small screens. Kept minimal and framework-free:
+ *  - a strong, visible focus ring for keyboard users;
+ *  - comfortable touch targets on coarse pointers / small viewports;
+ *  - wide tables scroll horizontally instead of overflowing the page;
+ *  - text stays readable on narrow screens (no fixed layout widths).
+ */
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0 auto;
+  max-width: 60rem;
+  padding: 0.5rem;
+  font-family: system-ui, sans-serif;
+  line-height: 1.4;
+}
+
+/* Visible keyboard focus everywhere (never removed). */
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Comfortable touch targets on coarse pointers. */
+@media (pointer: coarse) {
+  button,
+  select,
+  input[type="file"] {
+    min-height: 44px;
+  }
+}
+
+/* Wide tables scroll within the page on small viewports instead of
+   overflowing; table semantics stay intact for assistive tech. */
+@media (max-width: 640px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}
+
+/* Error and status outputs block-level with clear separation. */
+output[role="alert"],
+output[role="status"] {
+  margin: 0.25rem 0;
+}
