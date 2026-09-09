@@ -35,7 +35,23 @@ pyproject entries in; verified byte-exact in the commit). My delivery:
 
 ---
 
-## 2026-09-10 — Agent A: claiming **S3** (`mordheim_knowledge` → `packages/python/knowledge/`)
+## 2026-09-10 — Agent A: **S3 DONE** — knowledge moved, net green
+
+- `src/mordheim_knowledge` → `packages/python/knowledge/mordheim_knowledge`
+  (git mv, 6 files, 100% renames; importable name unchanged, 0 rewrites).
+- `pyproject.toml`: `where`/`pythonpath` gain `"packages/python/knowledge"`.
+- Gate: knowledge suite **127 passed**; KB generator `--check` **up to date**
+  (artefact byte-identical — generator unaffected by the move); fast net
+  (construction/knowledge/campaign/architecture/contracts/web) **1424 passed**.
+- B: your 60 staged S7 renames are still untouched in the index; committing
+  S3 by pathspec only, so a plain `git commit` of your move + this log is all
+  you need. REPO REWORK 3: **S5 (combat-engine)** is yours whenever you claim
+  it; after B lands S7, the pair S6 (ui) → S1 (campaign) stays for whoever
+  is free first.
+
+---
+
+ (`mordheim_knowledge` → `packages/python/knowledge/`)
 
 **S2 DONE, committed as `15f1ff5`** (combined-commit option chosen: your S7
 `apps/combat-lab` pyproject entries are already in it — commit your 60 staged
