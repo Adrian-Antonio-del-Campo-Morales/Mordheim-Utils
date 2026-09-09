@@ -6,6 +6,26 @@ the other agent needs. Append entries; never rewrite another agent's entry.
 
 ---
 
+## 2026-09-10 — Agent B: claiming **S5** (`mordheim_combat` → `packages/python/combat-engine/`)
+
+Sync done with A (S6+S1 pair claimed, serial — I stay out of `mordheim_ui`
+and `mordheim_campaign` entirely) and the tree (S3 committed as `af49247`).
+Per the R3 schedule step 3, S5 is mine. Also repairing a small log mangle:
+A's concurrent claim edit had replaced the S3 DONE header line — restored
+verbatim above; the log is append-only, edit only your own entries.
+
+S5 execution (same pattern as S4/S7): `git mv
+src/mordheim_combat packages/python/combat-engine/mordheim_combat`,
+importable name unchanged, zero import-site rewrites (425 sites keep
+resolving via the new `where` entry). Gate: `tests/combat` explicit run
+(baseline on `ab97d2c`: **10 pre-existing failures** in
+parity/mutation/coverage/reporting — these must not multiply; I'll compare
+failure NAMES, not just counts) + fast net green. `pyproject.toml` entry
+batched into my commit; A's S6/S1 entries stay theirs. Claimed before
+touching files.
+
+---
+
 ## 2026-09-10 — Agent B: **S7 DONE** — combat-lab moved, gate green (re-verified post-S2)
 
 Delivery of the claim in my sync entry below. A committed S2 as `15f1ff5`
@@ -32,6 +52,36 @@ pyproject entries in; verified byte-exact in the commit). My delivery:
   (yours `packages/python/knowledge`, mine already landed in `15f1ff5`); I
   am deliberately NOT committing it — the file is yours to include with your
   S3 commit so it never holds two agents' edits in one commit.
+
+---
+
+## 2026-09-10 — Agent A: **S6 DONE** — desktop-ui moved, gates green
+
+- `src/mordheim_ui` → `packages/python/adapters/desktop-ui/mordheim_ui`
+  (git mv, 13 files, 100% renames; importable name unchanged, 0 rewrites —
+  `mordheim_campaign` imports `mordheim_ui` by name in ~15 places and they
+  all resolve via the new path entry).
+- `pyproject.toml`: `where`/`pythonpath` gain
+  `"packages/python/adapters/desktop-ui"`.
+- Gate: `tests/ui` **37 passed** (run explicitly — excluded from fast net);
+  fast net **1424 passed**.
+
+---
+
+ (ui then campaign, serial)
+
+All four step-1/2 moves are in (`S4 ecc4900`, `S2 15f1ff5`, `S7 ab97d2c`,
+`S3 af49247`) — log history intact through both concurrent commits. Next per
+the R3 schedule: I take the coupled **S6 (`mordheim_ui` →
+`packages/python/adapters/desktop-ui/`) then S1 (`mordheim_campaign` →
+`packages/python/campaign/`)** pair, in that order. REPO REWORK 3: **S5
+(combat-engine)** is yours — different package, only shared file is
+`pyproject.toml` (batch your entry into your commit; I do the same, pathspec
+commits keep us safe). S8 (contracts/knowledge decision + docs) after.
+
+Same pattern as S2/S3/S7: `git mv`, importable name unchanged, zero
+import-site rewrites, `where`/`pythonpath` entry per move. Gates: ui suite
+run explicitly for S6 (excluded from fast net), full fast net + ui for S1.
 
 ---
 
