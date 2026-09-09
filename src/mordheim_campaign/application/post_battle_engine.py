@@ -116,6 +116,9 @@ class PostBattleEngine:
     def eligible_exploration_heroes(self, battle) -> int:
         """Heroes still able to explore after this battle's Out of Action results."""
         heroes = {row.id for row in self.campaign.warriors if row.kind == "hero"}
+        heroes.difference_update(str(row.get("id")) for row in battle.absentees)
+        if battle.participants:
+            heroes.intersection_update(str(row.get("id")) for row in battle.participants)
         if battle.out_of_action_ids is None:
             # Old/incomplete battle records cannot identify which casualties
             # were heroes, so do not subtract unrelated models.
@@ -197,11 +200,27 @@ class PostBattleEngine:
             kind = str(effect.get("type") or "")
             if kind == "roster.remove_warrior":
                 if warrior.kind == "henchman" and warrior.quantity > 1:
+                    old_quantity = warrior.quantity
+                    for item in list(warrior.equipment):
+                        if not item.per_model:
+                            continue
+                        removed = min(item.quantity, max(1, item.quantity // old_quantity))
+                        removed_costs = item.copy_costs[:removed]
+                        item.acquisition_costs = item.copy_costs[removed:]
+                        item.quantity -= removed
+                        inventory = next((r for r in self.campaign.inventory if r.id == item.item_id), None)
+                        if inventory is not None and item.transferable:
+                            inventory.equipped = max(0, inventory.equipped - removed)
+                            for cost in removed_costs:
+                                if inventory.owned:
+                                    inventory.remove_stock(1, unit_cost=cost)
+                        if item.quantity == 0:
+                            warrior.equipment.remove(item)
                     warrior.quantity -= 1
                     notes.append("the group loses one member")
                 else:
                     self._discard_carried_equipment(warrior, weapons_and_armour_only=False)
-                    self.campaign.warriors.remove(warrior)
+                    self._remove_warrior(warrior)
                     notes.append(f"{warrior.name} leaves the roster")
             elif kind == "warrior.characteristic_modifier":
                 key = _CHARACTERISTIC_KEYS.get(str(effect.get("characteristic") or ""))
@@ -232,6 +251,9 @@ class PostBattleEngine:
                 notes.append(f"misses the next {value} game{'s' if value != 1 else ''} ({warrior.games_to_miss} pending in total)")
             elif kind == "warrior.equipment_limit":
                 limit = effect.get("maximum_one_handed_weapons")
+                if limit is not None:
+                    key = "maximum_one_handed_weapons"
+                    warrior.equipment_limits[key] = min(warrior.equipment_limits.get(key, int(limit)), int(limit))
                 detail = f"max {limit} one-handed weapon(s)" if limit is not None else str(effect.get("type"))
                 warrior.condition = "Injured"
                 warrior.condition_detail = f"Arm wound ({detail})"
@@ -300,7 +322,12 @@ class PostBattleEngine:
         """Append one pending follow-up row with a unique id."""
         if self.post is None:
             return payload
-        identifier = f"{payload.get('type')}:{len(self.post.pending_follow_ups) + 1}"
+        existing_ids = {str(row.get("id")) for row in self.post.pending_follow_ups}
+        index = 1
+        identifier = f"{payload.get('type')}:{index}"
+        while identifier in existing_ids:
+            index += 1
+            identifier = f"{payload.get('type')}:{index}"
         row = {"id": identifier, "step": step, **payload}
         self.post.pending_follow_ups.append(row)
         return row
@@ -320,7 +347,7 @@ class PostBattleEngine:
             outcome = resolver.resolve_repeat_reroll(table, result_id, roll)
             if outcome is None:
                 return False, f"Roll {roll} lands on an excluded result; roll again."
-        self.post.pending_follow_ups.remove(row)
+        self.post.pending_follow_ups.remove(row) if row in self.post.pending_follow_ups else None
         warrior = next((item for item in self.campaign.warriors if item.id == str(row.get("warrior_id"))), None)
         if warrior is None:
             return True, f"Follow-up resolved: {outcome.result} (the warrior is no longer on the roster)."
@@ -343,7 +370,7 @@ class PostBattleEngine:
         if warrior is None:
             return False, "The warrior is no longer on the roster."
 
-        self.post.pending_follow_ups.remove(row)
+        self.post.pending_follow_ups.remove(row) if row in self.post.pending_follow_ups else None
         if won:
             self.post.gold_delta += 50
             warrior.experience += 2
@@ -400,12 +427,12 @@ class PostBattleEngine:
             if disposition not in dispositions:
                 return False, "Choose what happened to the captured warrior."
             lost = self._discard_carried_equipment(warrior, weapons_and_armour_only=False)
-            self.campaign.warriors.remove(warrior)
+            self._remove_warrior(warrior)
             message = (f"{warrior.name} was {dispositions[disposition]}; "
                        f"captured equipment: {', '.join(lost) if lost else 'none'}.")
         else:
             return False, "Choose ransom, exchange, or permanent loss."
-        self.post.pending_follow_ups.remove(row)
+        self.post.pending_follow_ups.remove(row) if row in self.post.pending_follow_ups else None
         self._log(self.STEP_INJURIES, "captured", message, warrior_id=warrior.id,
                   resolution=resolution, disposition=disposition if resolution == "lost" else "")
         return True, message
@@ -424,7 +451,7 @@ class PostBattleEngine:
             return False, "The warrior is no longer on the roster."
         if target not in warrior.hatreds:
             warrior.hatreds.append(target)
-        self.post.pending_follow_ups.remove(row)
+        self.post.pending_follow_ups.remove(row) if row in self.post.pending_follow_ups else None
         message = f"{warrior.name} permanently hates {target}."
         self._log(self.STEP_INJURIES, "bitter_enmity", message, warrior_id=warrior.id, target=target)
         return True, message
@@ -442,10 +469,10 @@ class PostBattleEngine:
         if eye not in {"left", "right"} or eye in warrior.lost_eyes:
             return False, "Choose the warrior's remaining eye."
         warrior.lost_eyes.append(eye)
-        self.post.pending_follow_ups.remove(row)
+        self.post.pending_follow_ups.remove(row) if row in self.post.pending_follow_ups else None
         if len(warrior.lost_eyes) >= 2:
             self._discard_carried_equipment(warrior, weapons_and_armour_only=False)
-            self.campaign.warriors.remove(warrior)
+            self._remove_warrior(warrior)
             message = f"{warrior.name} lost the remaining eye and retires from the warband."
         else:
             message = f"{warrior.name} lost the {eye} eye."
@@ -458,17 +485,31 @@ class PostBattleEngine:
         kept = []
         for equipment in warrior.equipment:
             category = categories.get(equipment.item_id, "")
-            loses_item = not weapons_and_armour_only or category in {"weapon", "weapons", "armour", "armor"}
+            item_kind = self.port.item_kind(equipment.base_item_id or equipment.item_id)
+            loses_item = (not weapons_and_armour_only
+                          or item_kind in {"close-combat-weapon", "ranged-weapon", "armour", "armor", "shield-or-defence"}
+                          or category in {"weapon", "weapons", "armour", "armor"})
             if not loses_item:
                 kept.append(equipment)
                 continue
             discarded.append(equipment.name)
             inventory = next((row for row in self.campaign.inventory if row.id == equipment.item_id), None)
-            if inventory is not None:
+            if inventory is not None and equipment.transferable:
                 inventory.equipped = max(0, inventory.equipped - equipment.quantity)
-                inventory.owned = max(0, inventory.owned - equipment.quantity)
+                for cost in equipment.copy_costs:
+                    if inventory.owned:
+                        inventory.remove_stock(1, unit_cost=cost)
         warrior.equipment = kept
         return discarded
+
+    def _remove_warrior(self, warrior) -> None:
+        self.campaign.warriors.remove(warrior)
+        if self.post is not None:
+            self.post.pending_advances[:] = [r for r in self.post.pending_advances
+                                            if r.get("warrior_id") != warrior.id or r.get("committed")]
+            self.post.pending_follow_ups[:] = [r for r in self.post.pending_follow_ups if r.get("warrior_id") != warrior.id]
+            self.post.equipment_obligations[:] = [r for r in self.post.equipment_obligations if r.get("warrior_id") != warrior.id]
+            self.post.searches.pop(warrior.id, None)
 
     def _resolver(self):
         from mordheim_campaign.application.post_battle_resolution import PostBattleResolver
@@ -488,14 +529,16 @@ class PostBattleEngine:
         if battle.xp_awards:
             for warrior in self.campaign.warriors:
                 award = int(battle.xp_awards.get(warrior.id, 0))
-                if award > 0:
+                if award > 0 and self.port.can_gain_experience(self.campaign.band_id, warrior.profile_id):
                     warrior.experience += award
             self.sync_pending_advances()
             self._log(self.STEP_EXPERIENCE, "experience", "Per-warrior scenario awards applied.")
             return True, "Per-warrior scenario awards applied (see the battle record)."
         amount = max(0, int(battle.xp_delta))
+        absent = {str(row.get("id")) for row in battle.absentees}
         for warrior in self.campaign.warriors:
-            warrior.experience += amount
+            if warrior.id not in absent and self.port.can_gain_experience(self.campaign.band_id, warrior.profile_id):
+                warrior.experience += amount
         self.sync_pending_advances()
         self._log(self.STEP_EXPERIENCE, "experience", f"{amount} XP awarded to every surviving warrior.")
         return True, f"{amount} XP applied to each surviving warrior."
@@ -506,6 +549,8 @@ class PostBattleEngine:
         warrior = next((row for row in self.campaign.warriors if row.id == warrior_id), None)
         if warrior is None:
             return False, f"Unknown warrior: {warrior_id}"
+        if not self.port.can_gain_experience(self.campaign.band_id, warrior.profile_id):
+            return False, "This profile cannot gain experience."
         amount = max(0, int(amount))
         warrior.experience += amount
         message = f"{warrior.name} gains {amount} XP (now {warrior.experience})."
@@ -552,19 +597,33 @@ class PostBattleEngine:
         rows = list(self.campaign.warriors if warriors is None else warriors)
         added = 0
         for warrior in rows:
+            if not self.port.can_gain_experience(self.campaign.band_id, warrior.profile_id):
+                continue
+            if warrior.kind == "hireling":
+                for pending in self.post.pending_advances:
+                    if pending.get("warrior_id") == warrior.id and not pending.get("committed"):
+                        pending["table"] = "hero"
+                        pending.pop("promotion_offer", None)
+            baseline = warrior.advance_experience
+            if baseline is None:
+                base = self._base_state()
+                previous = next((w for w in base.roster if w.id == warrior.id), None) if base else None
+                baseline = previous.experience if previous is not None else (warrior.previous_experience or 0)
+                warrior.advance_experience = baseline
             kind = "hero" if warrior.kind == "hero" else "henchman"
             thresholds = resolver.advance_thresholds(kind)
             existing_rungs = {
                 int(row.get("threshold"))
-                for row in self.post.pending_advances
-                if str(row.get("warrior_id")) == warrior.id and row.get("threshold") is not None
+                for post in self.campaign.post_battles
+                for row in post.pending_advances
+                if (post is self.post or row.get("committed")) and str(row.get("warrior_id")) == warrior.id and row.get("threshold") is not None
             }
             for threshold in thresholds:
-                if warrior.experience >= threshold and threshold not in existing_rungs:
+                if baseline < threshold <= warrior.experience and threshold not in existing_rungs:
                     self.post.pending_advances.append({
                         "warrior_id": warrior.id,
                         "warrior_name": warrior.name,
-                        "table": kind,
+                        "table": "hero" if warrior.kind == "hireling" else kind,
                         "threshold": int(threshold),
                         "roll_total": None,
                         "subroll": None,
@@ -603,7 +662,7 @@ class PostBattleEngine:
             outcome = resolver.resolve_advancement_subroll(kind, int(roll_total), int(subroll))
             row["subroll"] = int(subroll)
         row["promotion_offer"] = bool(outcome.final and outcome.note == "promotion")
-        if outcome.final and len(outcome.options) == 1 and outcome.options[0].kind != "promote_henchman":
+        if outcome.final and len(outcome.options) == 1 and outcome.options[0].kind not in {"promote_henchman", "choose_skill", "generate_spell"}:
             # Single deterministic option (one characteristic): commit directly.
             ok, message = self.commit_pending_advance(warrior_id, option_kind=outcome.options[0].kind, threshold=threshold)
             if not ok and ("advance cap" in message or "racial maximum" in message):
@@ -731,6 +790,12 @@ class PostBattleEngine:
         if outcome is None or not outcome.final:
             return False, "The advance roll is not resolved yet."
 
+        required_option = "generate_spell" if option_kind == "duplicate_spell" else option_kind
+        if required_option in {"choose_skill", "generate_spell", "promote_henchman"} and not any(
+            option.kind == required_option for option in outcome.options
+        ):
+            return False, "This choice is not offered by the resolved advance."
+
         if option_kind == "characteristic_increase":
             options = [option for option in outcome.options if option.kind == "characteristic_increase"]
             if not options:
@@ -818,7 +883,7 @@ class PostBattleEngine:
             return True, f"{warrior.name} deepens {name}: casting difficulty reduced by 1."
 
         if option_kind == "promote_henchman":
-            return self.promote_henchman(warrior_id)
+            return self.promote_henchman(warrior_id, threshold=threshold)
 
         if option_kind == "external_resolution":
             row["committed"] = True
@@ -910,7 +975,7 @@ class PostBattleEngine:
         promoted_name = member_name or f"{warrior.profile_name} Champion"
         non_uniform = [
             item for item in warrior.equipment
-            if item.per_model and item.quantity not in (0, warrior.quantity)
+            if item.per_model and item.quantity % warrior.quantity != 0
         ]
         if non_uniform:
             names = " · ".join(item.name for item in non_uniform)
@@ -922,10 +987,16 @@ class PostBattleEngine:
         promoted_equipment = []
         for item in warrior.equipment:
             if item.per_model and item.quantity > 0:
-                promoted_equipment.append(EquipmentEntryVM(item.item_id, item.name, 1, item.acquisition, item.unit_cost, True, item.transferable))
-                item.quantity -= 1
+                promoted_item = copy.deepcopy(item)
+                costs = item.copy_costs
+                promoted_item.quantity = item.quantity // warrior.quantity
+                promoted_item.acquisition_costs = costs[:promoted_item.quantity]
+                item.acquisition_costs = costs[promoted_item.quantity:]
+                promoted_item.per_model = False
+                promoted_equipment.append(promoted_item)
+                item.quantity -= promoted_item.quantity
         hero_row = WarriorVM(
-            id=f"{warrior.profile_id}#promoted{sum(1 for r in campaign.warriors if r.profile_id == warrior.profile_id)}",
+            id=campaign.next_warrior_id(f"{warrior.profile_id}#promoted"),
             name=promoted_name,
             profile_name=warrior.profile_name,
             kind="hero",
@@ -934,6 +1005,7 @@ class PostBattleEngine:
             skills=[skill for skill in warrior.skills if skill not in profile.inherent_rules],
             experience=warrior.experience,  # preserve experience
             previous_experience=warrior.previous_experience,
+            advance_experience=warrior.experience,
             quantity=1,
             cost=profile.cost,
             skill_access=[],
@@ -955,8 +1027,8 @@ class PostBattleEngine:
                 row["promotion_offer"] = False
                 row["reroll_exclude_promotion"] = True
         else:
-            campaign.warriors.remove(warrior)
-            if row is not None:
+            self._remove_warrior(warrior)
+            if row is not None and row in self.post.pending_advances:
                 self.post.pending_advances.remove(row)
         self.post.pending_advances.append({
             "warrior_id": hero_row.id, "warrior_name": hero_row.name,
@@ -1019,13 +1091,26 @@ class PostBattleEngine:
         if row is None:
             return None
         if isinstance(row.get("pending"), dict):
-            return row["pending"]
+            current = row["pending"]
+            if current.get("kind") == "choose_hero" and not any(w.kind == "hero" for w in self.campaign.warriors):
+                continuation = current.get("continuation")
+                if isinstance(continuation, dict):
+                    row["queue"] = [continuation, *list(row.get("queue") or ())]
+                    row.pop("pending", None)
+                    row.pop("hero_id", None)
+                else:
+                    row["pending"] = {"kind": "choose_option", "label": "No Hero is available.",
+                                      "options": [{"id": "no-hero-resolution", "label": "Record resolution at the table", "then": []}],
+                                      "applied": []}
+                    return row["pending"]
+            else:
+                return current
         queue = list(row.get("queue") or ())
         messages = list(row.get("messages") or [])
         pending = self._process_followup_queue(row, queue, messages)
         if pending is None:
             text = "; ".join(row.get("messages") or []) or "follow-up complete"
-            self.post.pending_follow_ups.remove(row)
+            self.post.pending_follow_ups.remove(row) if row in self.post.pending_follow_ups else None
             self._log(self.STEP_EXPLORATION, "exploration_followup", text)
         return pending
 
@@ -1042,10 +1127,14 @@ class PostBattleEngine:
         if current.get("kind") == "roll":
             if roll is None:
                 return False, "A die roll is required."
-            queue.insert(0, {"type": "_rolled", "spec": current, "value": int(roll)})
+            count = int(current.get("dice_count") or 1)
+            sides = int(current.get("dice_sides") or 6)
+            if type(roll) is not int or not count <= roll <= count * sides:
+                return False, f"Roll must be between {count} and {count * sides}."
+            queue.insert(0, {"type": "_rolled", "spec": current, "value": roll})
         elif current.get("kind") == "choose_hero":
-            if hero_id is None:
-                return False, "Choose a Hero."
+            if not any(w.id == hero_id and w.kind == "hero" for w in self.campaign.warriors):
+                return False, "Choose a Hero still present in the warband."
             row["hero_id"] = str(hero_id)
             continuation = current.get("continuation")
             if isinstance(continuation, dict):
@@ -1060,7 +1149,8 @@ class PostBattleEngine:
             queue[:0] = list(option.get("then") or ())
         elif current.get("kind") == "choose_warriors":
             selected = list(dict.fromkeys(warrior_ids or ()))
-            eligible = {str(item.get("id")) for item in current.get("options") or ()}
+            live_ids = {w.id for w in self.campaign.warriors}
+            eligible = {str(item.get("id")) for item in current.get("options") or ()} & live_ids
             maximum = int(current.get("maximum") or 1)
             if len(selected) > maximum or any(item not in eligible for item in selected):
                 return False, f"Choose at most {maximum} eligible warriors."
@@ -1075,7 +1165,7 @@ class PostBattleEngine:
         pending = self._process_followup_queue(row, queue, messages)
         if pending is None:
             text = "; ".join(row.get("messages") or []) or "follow-up complete"
-            self.post.pending_follow_ups.remove(row)
+            self.post.pending_follow_ups.remove(row) if row in self.post.pending_follow_ups else None
             self._log(self.STEP_EXPLORATION, "exploration_followup", text)
             return True, text
         return True, "; ".join(row.get("messages") or []) or "Follow-up continues."
@@ -1107,8 +1197,8 @@ class PostBattleEngine:
                     item_id = str(artefact.get("id") or "").removeprefix("campaign.magical-artefact.")
                     item_id = f"magical_artefact.{item_id}"
                     owned = any(item.id == item_id and item.owned > 0 for item in self.campaign.inventory)
-                    if owned:
-                        messages.append(f"{name} is already owned; roll again")
+                    if owned or item_id in self.campaign.unique_reward_ids:
+                        messages.append(f"{name} already appeared; roll again")
                         queue.insert(0, {"type": "magical_artefact_table"})
                     else:
                         queue.insert(0, {"type": "grant_special_item", "recipient": "hero",
@@ -1146,6 +1236,18 @@ class PostBattleEngine:
                         queue[:0] = list(branch.get("then") or ())
                         break
                 continue
+            needs_hero = (kind in {"grant", "reward.grant", "grant_rule"} and node.get("recipient") == "hero"
+                          or kind == "grant_special_item" and node.get("recipient") != "stash")
+            if needs_hero and not any(w.kind == "hero" for w in self.campaign.warriors):
+                continuation = copy.deepcopy(node)
+                continuation["recipient"] = "stash"
+                item_reward = kind == "grant_special_item"
+                pending = {"kind": "choose_option", "label": "No Hero is available for this reward.",
+                           "options": [{"id": "no-hero-resolution",
+                                        "label": "Keep the item in the stash" if item_reward else "Record resolution at the table",
+                                        "then": [continuation] if item_reward else []}], "applied": []}
+                row["queue"], row["messages"], row["pending"] = queue, messages, pending
+                return pending
             if kind == "sequence":
                 queue[:0] = list(node.get("steps") or ())
                 continue
@@ -1264,14 +1366,8 @@ class PostBattleEngine:
                 if warrior is None or self.projected_warband_members() >= self.effective_maximum_models():
                     messages.append("The prisoner cannot join that group")
                     continue
-                warrior.quantity += 1
-                for item in warrior.equipment:
-                    if item.per_model and not item.transferable:
-                        item.quantity += 1
-                    elif item.per_model:
-                        self.post.equipment_obligations.append({"warrior_id": warrior.id, "item_id": item.item_id,
-                            "item_name": item.name, "quantity": 1})
-                messages.append(f"The prisoner joins {warrior.name}; matching equipment is required")
+                ok, message = self.add_member_to_group(warrior.id, free=True)
+                messages.append(message)
                 continue
             if kind == "grant_free_profile":
                 wanted = str(node.get("profile_name") or "").casefold()
@@ -1283,13 +1379,10 @@ class PostBattleEngine:
                 existing = next((w for w in self.campaign.warriors
                                  if w.kind == "henchman" and w.profile_id == profile.profile_id), None)
                 if existing is not None:
-                    existing.quantity += 1
+                    ok, message = self.add_member_to_group(existing.id, free=True)
                 else:
-                    count = sum(1 for w in self.campaign.warriors if w.profile_id == profile.profile_id)
-                    self.campaign.warriors.append(warrior_vm(self.port, profile,
-                        row_id=f"{profile.profile_id}#reward{count + 1}",
-                        name=unique_warrior_name(self.campaign.warriors, f"{profile.name} Group")))
-                messages.append(f"One {profile.name} joins the warband for free")
+                    ok, message = self.recruit_band_profile(profile.profile_id, free=True)
+                messages.append(message)
                 continue
             if kind == "characteristic_test":
                 spec = {
@@ -1321,6 +1414,16 @@ class PostBattleEngine:
                 row["pending"] = spec
                 return spec
             if kind == "magical_artefact_table":
+                document = self.port.campaign_catalog().catalogue("exploration-and-income.yaml")
+                identifiers = {"magical_artefact." + str(item.get("id") or "").removeprefix("campaign.magical-artefact.")
+                               for item in document.get("magical_artefacts", {}).get("results", ())}
+                unavailable = set(self.campaign.unique_reward_ids) | {item.id for item in self.campaign.inventory if item.owned > 0}
+                if identifiers and identifiers <= unavailable:
+                    pending = {"kind": "choose_option", "label": "No unique artefacts remain available.",
+                               "options": [{"id": "artefacts-exhausted", "label": "Record resolution at the table", "then": []}],
+                               "applied": []}
+                    row["queue"], row["messages"], row["pending"] = queue, messages, pending
+                    return pending
                 spec = {"kind": "roll", "dice_count": 1, "dice_sides": 6,
                         "magical_artefact": True, "label": "Magical artefact roll", "applied": []}
                 row["queue"], row["messages"], row["pending"] = queue, messages, spec
@@ -1337,8 +1440,8 @@ class PostBattleEngine:
             if kind == "roster.remove_warrior":
                 warrior = self._followup_actor(row, node.get("subject"))
                 if warrior is not None:
-                    self._discard_carried_equipment(warrior, return_to_stash=False)
-                    self.campaign.warriors.remove(warrior)
+                    self._discard_carried_equipment(warrior, weapons_and_armour_only=False)
+                    self._remove_warrior(warrior)
                     messages.append(f"{warrior.name} was removed from the roster")
                 continue
             if kind == "grant_rule":
@@ -1370,7 +1473,8 @@ class PostBattleEngine:
                 continue
             if kind == "grant_special_item":
                 hero = self._followup_actor(row, "$hero_id")
-                if hero is None:
+                to_stash = node.get("recipient") == "stash"
+                if hero is None and not to_stash:
                     pending = {"kind": "choose_hero", "label": str(node.get("label") or "Choose a bearer"),
                                "continuation": copy.deepcopy(node), "applied": []}
                     row["queue"], row["messages"], row["pending"] = queue, messages, pending
@@ -1379,13 +1483,14 @@ class PostBattleEngine:
                 if item_id in self.campaign.unique_reward_ids:
                     messages.append(f"{name} already appeared in this campaign; reward skipped")
                     continue
-                stock = InventoryItemVM(item_id, name, "Magical Artefact", 1, 1, 0, 0,
+                stock = InventoryItemVM(item_id, name, "Magical Artefact", 1, 0 if to_stash else 1, 1 if to_stash else 0, 0,
                                         "Unique", [rule] if rule else [])
                 self.campaign.inventory.append(stock)
-                hero.equipment.append(EquipmentEntryVM(item_id, name, 1, "scenario_reward", 0,
-                                                        False, True, list(stock.special_rules)))
+                if not to_stash:
+                    hero.equipment.append(EquipmentEntryVM(item_id, name, 1, "scenario_reward", 0,
+                                                            False, True, list(stock.special_rules)))
                 self.campaign.unique_reward_ids.append(item_id)
-                messages.append(f"{hero.name} receives {name}")
+                messages.append(f"{name} kept in the stash" if to_stash else f"{hero.name} receives {name}")
                 continue
             if kind == "grant_compound_item":
                 item_id, name = str(node.get("reward_id")), str(node.get("name"))
@@ -1565,7 +1670,7 @@ class PostBattleEngine:
         if cost > self.projected_gold():
             return False, f"Not enough gold: {cost} gc needed, {self.projected_gold()} gc available."
         row = self._inventory_row(item_id, name=self.port.item_name(item_id) or item_id, price_gc=price_gc)
-        row.owned += quantity
+        row.add_stock(quantity, price_gc)
         row.stash += quantity
         row.value = price_gc
         row.category = category or row.category
@@ -1575,11 +1680,68 @@ class PostBattleEngine:
         self._log(self.STEP_EQUIPMENT, "buy_item", message, item_id=item_id, quantity=quantity)
         return True, message
 
+    def buy_weapon_upgrade(self, offer, target_id: str, price_gc: int) -> tuple[bool, str]:
+        """Consume one stashed weapon and replace it with its upgraded record."""
+        from mordheim_campaign.application.post_battle_catalogue import PostBattleCatalogue
+
+        target = next((row for row in self.campaign.inventory if row.id == target_id), None)
+        if target is None or target.stash < 1:
+            return False, "The selected base weapon is not available in the stash."
+        catalogue = PostBattleCatalogue(
+            self.port, self.campaign.collection, self.campaign.band_id,
+            ruleset=self.campaign.ruleset,
+            member_profile_ids=frozenset(row.profile_id for row in self.campaign.warriors if row.profile_id),
+            hired_sword_profile_ids=frozenset(
+                row.profile_id for row in self.campaign.warriors
+                if row.profile_id and row.profile_id.startswith("hireling.")
+            ),
+            variant=self.campaign.mercenary_variant, phase="post_battle",
+        )
+        available = next(
+            (row for row in (*catalogue.common_items(), *catalogue.rare_items()) if row.item_id == offer.item_id),
+            None,
+        )
+        if available is None or available.price_upgrade_multiplier is None:
+            return False, "This weapon upgrade is not available to the warband in this phase."
+        base_id = target.base_item_id or target.id
+        if offer.name in target.special_rules or target.id.startswith(f"{offer.item_id}:"):
+            return False, f"{target.name} already has the {offer.name} upgrade."
+        if self.port.weapon_hands(base_id) is None:
+            return False, "Only weapons can receive this upgrade."
+        expected_price = target.value * available.price_upgrade_multiplier
+        if price_gc <= 0 or price_gc != expected_price:
+            return False, f"Invalid upgrade price: expected {expected_price} gc."
+        if price_gc > self.projected_gold():
+            return False, f"Not enough gold: {price_gc} gc needed."
+        base_cost = target.remove_stock(1)
+        target.stash -= 1
+        upgraded_id = f"{offer.item_id}:{target.id}"
+        upgraded = next((row for row in self.campaign.inventory if row.id == upgraded_id), None)
+        if upgraded is None:
+            upgraded = InventoryItemVM(upgraded_id, f"{offer.name} {target.name}", target.category, 0, 0, 0,
+                                       target.value + price_gc, f"Rare {offer.rarity}" if offer.rarity else None,
+                                       [*target.special_rules, offer.name], base_id)
+            self.campaign.inventory.append(upgraded)
+        upgraded.add_stock(1, base_cost + price_gc)
+        upgraded.stash += 1
+        self.post.gold_delta -= price_gc
+        message = f"{target.name} upgraded to {upgraded.name} for {price_gc} gc."
+        self._log(self.STEP_EQUIPMENT, "upgrade_weapon", message, item_id=offer.item_id, base_item_id=base_id)
+        return True, message
+
     def assign_item(self, item_id: str, warrior_id: str) -> tuple[bool, str]:
         """Post-battle assign; delegates to the always-available stash move."""
         return self.move_stash_to_warrior(item_id, warrior_id)
 
     # ------------------------------------------------- equipment moves (any time)
+
+    @staticmethod
+    def assignment_quantity(warrior, item_id: str) -> int:
+        if warrior.kind != "henchman":
+            return 1
+        carried = sum(item.quantity for item in warrior.equipment
+                      if item.transferable and item.item_id == item_id)
+        return warrior.quantity - carried % warrior.quantity
 
     def move_stash_to_warrior(self, item_id: str, warrior_id: str) -> tuple[bool, str]:
         """Assign one stash copy to a warrior; legal at any campaign moment.
@@ -1596,29 +1758,23 @@ class PostBattleEngine:
             return False, f"Unknown warrior: {warrior_id}"
         if self.port.trading_post_restriction(item_id).get("heroes_only") and warrior.kind != "hero":
             return False, f"{self.port.item_name(item_id) or item_id} may only be assigned to heroes."
-        restriction = self._profile_assignment_violation(item_id, warrior)
+        restriction = self.port.equipment_profile_blocker(self.campaign.band_id, warrior.profile_id, row.base_item_id or item_id)
         if restriction:
             return False, restriction
-        violation = self.loadout_violation(warrior, row.base_item_id or item_id)
-        if violation:
-            return False, violation
-        existing = next(
-            (
-                item for item in warrior.equipment
-                if item.item_id == item_id
-                and item.acquisition == "stash_assignment"
-                and item.transferable
-                and item.per_model == (warrior.kind == "henchman")
-            ),
-            None,
-        )
-        amount = max(0, warrior.quantity - existing.quantity) if warrior.kind == "henchman" and existing else (
-            warrior.quantity if warrior.kind == "henchman" else 1
-        )
+        restriction = self._profile_assignment_violation(row.base_item_id or item_id, warrior)
+        if restriction:
+            return False, restriction
+        amount = self.assignment_quantity(warrior, item_id)
         if amount == 0:
             return False, f"Every member of {warrior.name} already carries {row.name}."
+        violation = self.loadout_violation(warrior, row.base_item_id or item_id, amount=amount)
+        if violation:
+            return False, violation
         if row.stash < amount:
             return False, f"{warrior.name} needs {amount}× {row.name}; only {row.stash} in stash."
+        costs = self.campaign.stash_acquisition_costs(row)[:amount]
+        if len(costs) != amount:
+            return False, "Inventory costs do not match the available stash copies."
         per_model = warrior.kind == "henchman"
         row.stash -= amount
         row.equipped += amount
@@ -1626,20 +1782,53 @@ class PostBattleEngine:
             (item for item in warrior.equipment if item.item_id == item_id and item.acquisition == "stash_assignment" and item.per_model == per_model),
             None,
         )
+        if entry is None and warrior.kind == "henchman":
+            entry = next((item for item in warrior.equipment if item.item_id == item_id and item.transferable), None)
         if entry is None:
-            warrior.equipment.append(EquipmentEntryVM(item_id, row.name, amount, "stash_assignment", row.value,
-                                                       per_model, True, list(row.special_rules), row.base_item_id))
+            warrior.equipment.append(EquipmentEntryVM(item_id, row.name, amount, "stash_assignment", costs[0],
+                                                       per_model, True, list(row.special_rules), row.base_item_id, costs))
         else:
+            entry.acquisition_costs = entry.copy_costs + costs
             entry.quantity += amount
+        self._reconcile_equipment_obligations()
         message = f"{amount}× {row.name} assigned to {warrior.name}."
         if self.post is not None:
             self._log(self.STEP_EQUIPMENT, "assign_item", message, item_id=item_id, warrior_id=warrior.id)
         return True, message
 
+    def _reconcile_equipment_obligations(self) -> None:
+        """Derive outstanding group equipment from the current roster."""
+        if self.post is None:
+            return
+        remaining = []
+        for obligation in self.post.equipment_obligations:
+            warrior = next((row for row in self.campaign.warriors if row.id == obligation.get("warrior_id")), None)
+            if warrior is None:
+                continue
+            item_id = str(obligation.get("item_id") or "")
+            carried = sum(item.quantity for item in warrior.equipment if item.item_id == item_id)
+            missing = max(0, warrior.quantity * int(obligation.get("copies_per_model", 1)) - carried)
+            if missing:
+                obligation["quantity"] = missing
+                remaining.append(obligation)
+        self.post.equipment_obligations[:] = remaining
+
     def _profile_assignment_violation(self, item_id: str, warrior) -> str | None:
         """Enforce the Trading Post's profile-specific bearer restrictions."""
+        category = self.port.item_kind(item_id)
+        if category in {"close-combat-weapon", "ranged-weapon"} and not warrior.profile_id.startswith("hireling."):
+            try:
+                profile = self.port.profile(self.campaign.collection, self.campaign.band_id, warrior.profile_id)
+            except (KeyError, ValueError):
+                profile = None
+            if profile is not None:
+                allowed = {offer.item_id for offer in self.port.items_for_profile(profile)}
+                skill_id = "skill.weapons-expert" if category == "ranged-weapon" else "skill.weapons-training"
+                learned = {str((self.port.skill_by_name(name) or {}).get("id")) for name in warrior.skills}
+                if item_id not in allowed and skill_id not in learned:
+                    return "This weapon is outside the warrior's equipment access."
         identity = " ".join(
-            (warrior.name, warrior.profile_name, warrior.profile_id, *warrior.skills, *warrior.special_rules)
+            (warrior.profile_name, warrior.profile_id, *warrior.skills, *warrior.special_rules)
         ).replace("-", " ").replace("_", " ").casefold()
         equipped = " ".join(
             item.name + " " + item.item_id + " " + item.base_item_id
@@ -1686,22 +1875,26 @@ class PostBattleEngine:
             return note or f"{self.port.item_name(item_id) or item_id} cannot be assigned to this warrior."
         return None
 
-    def loadout_violation(self, warrior: "WarriorVM", item_id: str) -> str | None:
+    def loadout_violation(self, warrior: "WarriorVM", item_id: str, *, amount: int | None = None) -> str | None:
         """Validate structured hand and duplicate limits for one assignment."""
+        amount = amount if amount is not None else (warrior.quantity if warrior.kind == "henchman" else 1)
         hands = self.port.weapon_hands(item_id)
-        if hands is not None:
-            used = sum(
-                (self.port.weapon_hands(item.base_item_id or item.item_id) or 1) * item.quantity
-                for item in warrior.equipment
-                if self.port.weapon_hands(item.base_item_id or item.item_id) is not None
-            )
-            amount = warrior.quantity if warrior.kind == "henchman" else 1
-            budget = 2 * warrior.quantity
-            if used + hands * amount > budget:
-                return f"Not enough hands: the new weapon needs {hands} per model, {used} of {budget} already used."
+        limit = warrior.equipment_limits.get("maximum_one_handed_weapons")
+        if hands == 1 and limit is not None:
+            carried = sum(item.quantity for item in warrior.equipment
+                          if item.acquisition != "starting_grant" and self.port.weapon_hands(item.base_item_id or item.item_id) == 1)
+            if carried + amount > limit * warrior.quantity:
+                return f"Injury limits this warrior to {limit} one-handed weapon(s) per model."
+        category = self.port.item_kind(item_id)
+        if category in {"close-combat-weapon", "ranged-weapon"}:
+            carried = sum(item.quantity for item in warrior.equipment
+                          if item.acquisition != "starting_grant"
+                          and self.port.item_kind(item.base_item_id or item.item_id) == category)
+            if carried + amount > 2 * warrior.quantity:
+                return "A warrior can carry at most two weapons of this category, besides the free starting dagger."
         kind = self.port.item_kind(item_id)
         if kind not in ("close-combat-weapon", "ranged-weapon"):
-            if any(item.item_id == item_id for item in warrior.equipment):
+            if sum(item.quantity for item in warrior.equipment if item.item_id == item_id) + amount > warrior.quantity:
                 return f"{self.port.item_name(item_id) or item_id} is already carried; a warrior carries one of these."
         return None
 
@@ -1719,6 +1912,7 @@ class PostBattleEngine:
             return False, f"{warrior.name} does not carry {row.name}."
         amount = warrior.quantity if warrior.kind == "henchman" and entry.per_model else 1
         amount = min(amount, entry.quantity)
+        entry.acquisition_costs = entry.copy_costs[amount:]
         entry.quantity -= amount
         if entry.quantity <= 0:
             warrior.equipment.remove(entry)
@@ -1740,7 +1934,7 @@ class PostBattleEngine:
             return False, f"Only {row.stash} unassigned copy/copies in the stash."
         price = max(0, row.value // 2)
         row.stash -= quantity
-        row.owned -= quantity
+        row.remove_stock(quantity)
         if row.owned <= 0:
             self.campaign.inventory.remove(row)
         self.post.gold_delta += price * quantity
@@ -1768,9 +1962,13 @@ class PostBattleEngine:
                 or self.port.trading_post_price(item.item_id)
                 or item.unit_cost
             )
+            pending = sum(int(row.get("quantity", 0)) for row in (self.post.equipment_obligations if self.post else [])
+                          if row.get("warrior_id") == warrior.id and row.get("item_id") == item.item_id)
+            copies = max(1, (item.quantity + pending) // warrior.quantity)
             requirements.append({
                 "item_id": item.item_id, "name": item.name,
-                "in_stash": min(1, in_stash), "to_buy": 0 if in_stash else 1,
+                "in_stash": min(copies, in_stash), "to_buy": max(0, copies - in_stash),
+                "copies_per_model": copies,
                 "unit_cost": max(0, unit_cost),
             })
         required_xp = max(0, warrior.experience)
@@ -1792,7 +1990,7 @@ class PostBattleEngine:
                 return int(cost)
         return 0
 
-    def add_member_to_group(self, warrior_id: str) -> tuple[bool, str]:
+    def add_member_to_group(self, warrior_id: str, *, free: bool = False) -> tuple[bool, str]:
         """Recruit one model; equipment purchases remain for the Equipment step."""
         if self.post is None:
             return False, "No pending post-battle."
@@ -1801,9 +1999,9 @@ class PostBattleEngine:
             return False, str(result)
         quote = result
         warrior = quote["warrior"]
-        if quote["required_xp"] > quote["available_xp"]:
+        if not free and quote["required_xp"] > quote["available_xp"]:
             return False, f"{warrior.name} needs {quote['required_xp']} Veteran XP; only {quote['available_xp']} available."
-        total_gc = warrior.cost + quote["experience_gc"]
+        total_gc = 0 if free else warrior.cost + quote["experience_gc"]
         if total_gc > self.projected_gold():
             return False, f"Not enough gold: {total_gc} gc needed (recruit + experience cost), {self.projected_gold()} gc available."
         if self.projected_warband_members() + 1 > self.effective_maximum_models():
@@ -1818,19 +2016,22 @@ class PostBattleEngine:
         if profile.group_maximum is not None and warrior.quantity + 1 > profile.group_maximum:
             return False, f"{warrior.name} holds at most {profile.group_maximum} models."
 
+        old_quantity = warrior.quantity
         warrior.quantity += 1
         for item in warrior.equipment:
             if item.per_model and not item.transferable:
-                item.quantity += 1
-        self.post.veteran_pool -= quote["required_xp"]
+                item.quantity += max(1, item.quantity // old_quantity)
+        if not free:
+            self.post.veteran_pool -= quote["required_xp"]
         self.post.gold_delta -= total_gc
-        for item in warrior.equipment:
-            if item.per_model and item.transferable and item.quantity < warrior.quantity:
-                missing = warrior.quantity - item.quantity
-                self.post.equipment_obligations.append({
-                    "warrior_id": warrior.id, "item_id": item.item_id,
-                    "item_name": item.name, "quantity": missing,
-                })
+        for requirement in quote["requirements"]:
+            self.post.equipment_obligations[:] = [row for row in self.post.equipment_obligations
+                if (row.get("warrior_id"), row.get("item_id")) != (warrior.id, requirement["item_id"])]
+            self.post.equipment_obligations.append({
+                "warrior_id": warrior.id, "item_id": requirement["item_id"],
+                "item_name": requirement["name"], "copies_per_model": requirement["copies_per_model"],
+            })
+        self._reconcile_equipment_obligations()
         self._log(self.STEP_RECRUITMENT, "recruit_member", f"One member joined {warrior.name} for {total_gc} gc.", warrior_id=warrior.id)
         return True, f"One member joined {warrior.name} for {total_gc} gc; equipment remains pending."
 
@@ -1870,21 +2071,33 @@ class PostBattleEngine:
         removing_member = warrior.kind == "henchman" and one_member and warrior.quantity > 1
         amount = 1 if removing_member else warrior.quantity
         for item in list(warrior.equipment):
-            returned = min(amount if item.per_model else item.quantity, item.quantity)
+            pending = sum(
+                int(row.get("quantity") or 0) for row in self.post.equipment_obligations
+                if row.get("warrior_id") == warrior.id and row.get("item_id") == item.item_id
+            )
+            # Missing copies belong to the newly recruited, unequipped members;
+            # dismiss those before stripping equipment from veteran members.
+            copies_per_model = max(1, (item.quantity + pending) // warrior.quantity)
+            removable_models = (max(0, amount * copies_per_model - pending)
+                                 if item.per_model and removing_member else item.quantity)
+            returned = min(removable_models, item.quantity)
             if item.transferable and returned:
                 inventory = self._inventory_row(item.item_id, name=item.name, price_gc=item.unit_cost)
                 inventory.equipped = max(0, inventory.equipped - returned)
                 inventory.stash += returned
                 inventory.owned = max(inventory.owned, inventory.equipped + inventory.stash)
+            item.acquisition_costs = item.copy_costs[returned:]
             item.quantity -= returned
             if item.quantity <= 0:
                 warrior.equipment.remove(item)
         if removing_member:
             warrior.quantity -= 1
+            self._reconcile_equipment_obligations()
             message = f"One member dismissed from {warrior.name}; transferable equipment returned to stash."
             self._log(self.STEP_RECRUITMENT, "dismiss_member", message, warrior_id=warrior.id)
             return True, message
-        self.campaign.warriors.remove(warrior)
+        self._remove_warrior(warrior)
+        self._reconcile_equipment_obligations()
         message = f"{warrior.name} dismissed; transferable equipment returned to stash."
         self._log(self.STEP_RECRUITMENT, "dismiss_warrior", message, warrior_id=warrior.id)
         return True, message
@@ -1898,7 +2111,7 @@ class PostBattleEngine:
             return False, "Unknown Hired Sword upkeep."
         warrior = next((item for item in self.campaign.warriors if item.id == row.get("warrior_id")), None)
         if warrior is None:
-            self.post.pending_follow_ups.remove(row)
+            self.post.pending_follow_ups.remove(row) if row in self.post.pending_follow_ups else None
             return True, "The Hired Sword already left the warband."
         if pay:
             costs = [(str(key), int(value)) for key, value in row.get("costs") or ()]
@@ -1911,9 +2124,9 @@ class PostBattleEngine:
             message = f"{warrior.name}'s upkeep paid: {paid}."
         else:
             self._discard_carried_equipment(warrior, weapons_and_armour_only=False)
-            self.campaign.warriors.remove(warrior)
+            self._remove_warrior(warrior)
             message = f"{warrior.name} leaves because upkeep was not paid."
-        self.post.pending_follow_ups.remove(row)
+        self.post.pending_follow_ups.remove(row) if row in self.post.pending_follow_ups else None
         self._log(self.STEP_RECRUITMENT, "hireling_upkeep", message, warrior_id=warrior.id)
         return True, message
 
@@ -1974,11 +2187,11 @@ class PostBattleEngine:
             message = "The warband occupies the captured camp. Add the captured stash during Equipment."
         else:
             message = "The captured camp is destroyed. Add any claimed stash during Equipment."
-        self.post.pending_follow_ups.remove(row)
+        self.post.pending_follow_ups.remove(row) if row in self.post.pending_follow_ups else None
         self._log(self.STEP_EXPLORATION, "scenario_encampment", message, choice=choice)
         return True, message
 
-    def recruit_band_profile(self, profile_id: str, quantity: int = 1, name: str | None = None) -> tuple[bool, str]:
+    def recruit_band_profile(self, profile_id: str, quantity: int = 1, name: str | None = None, *, free: bool = False) -> tuple[bool, str]:
         """Recruit a hero or henchman group from the warband's KB roster."""
         if self.post is None:
             return False, "No pending post-battle."
@@ -1988,7 +2201,9 @@ class PostBattleEngine:
         except Exception:
             return False, f"Unknown profile: {profile_id}"
         quantity = max(1, int(quantity))
-        cost = profile.cost * quantity
+        if profile.kind == "hero" and quantity != 1:
+            return False, "Recruit Heroes individually."
+        cost = 0 if free else profile.cost * quantity
         if cost > self.projected_gold():
             return False, f"Not enough gold: {cost} gc needed, {self.projected_gold()} gc available."
         if self.projected_warband_members() + quantity > self.effective_maximum_models():
@@ -2003,8 +2218,13 @@ class PostBattleEngine:
         occurrences = sum(1 for row in campaign.warriors if row.profile_id == profile_id and row.kind == profile.kind)
         base_name = profile.name if profile.kind == "hero" else f"{profile.name} Group"
         unique_name = unique_warrior_name(campaign.warriors, name.strip() if name and name.strip() else base_name)
-        row = warrior_vm(self.port, profile, row_id=f"{profile_id}#recruit{occurrences + 1}", name=unique_name, quantity=quantity)
+        row = warrior_vm(self.port, profile, row_id=campaign.next_warrior_id(f"{profile_id}#recruit"), name=unique_name, quantity=quantity)
         campaign.warriors.append(row)
+        for item in row.equipment:
+            if item.transferable:
+                stock = self._inventory_row(item.item_id, name=item.name, price_gc=item.unit_cost)
+                stock.add_stock(item.quantity, 0)
+                stock.equipped += item.quantity
         self.post.gold_delta -= cost
         message = f"{profile.name} ×{quantity} recruited for {cost} gc."
         self._log(self.STEP_RECRUITMENT, "recruit", message, warrior_id=row.id, profile_id=profile_id)
@@ -2126,7 +2346,7 @@ class PostBattleEngine:
         )
         rating, maximum_modifier = self.port.hireling_roster_values(offer.profile_id)
         return WarriorVM(
-            id=f"{offer.profile_id}#hire{occurrences + 1}",
+            id=self.campaign.next_warrior_id(f"{offer.profile_id}#hire"),
             name=offer.name,
             profile_name=offer.name,
             kind="hireling",
@@ -2134,6 +2354,7 @@ class PostBattleEngine:
             equipment=equipment,
             skills=[],
             experience=0,
+            advance_experience=0,
             quantity=1,
             cost=offer.fee_gc or 0,
             skill_access=[],
@@ -2153,12 +2374,21 @@ class PostBattleEngine:
             return False, "This post-battle is already committed."
         if len(self.post.completed_steps) < NEW_STATE_STEPS:
             return False, f"Only {len(self.post.completed_steps)} of {NEW_STATE_STEPS} actions completed."
+        if any(self.post.unacknowledged_follow_ups(step) for step in range(NEW_STATE_STEPS)):
+            return False, "Resolve every pending follow-up before committing."
+        self._reconcile_equipment_obligations()
+        if self.post.equipment_obligations:
+            return False, "Required matching Henchmen equipment is still pending."
         if self.projected_warband_members() > self.effective_maximum_models():
             return False, (
                 f"The warband has {self.projected_warband_members()} own members but its current maximum "
                 f"is {self.effective_maximum_models()}; dismiss members before committing."
             )
+        if any(not row.get("committed") for row in self.post.pending_advances):
+            return False, "Resolve every earned advance before committing."
         campaign = self.campaign
+        for warrior in campaign.warriors:
+            warrior.advance_experience = warrior.experience
         number = self.post.battle_number
         # A battle recorded from the table may not have a State #N-1 snapshot
         # (the previous post-battle was skipped): fall back to the current state.

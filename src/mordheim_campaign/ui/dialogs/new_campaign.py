@@ -83,7 +83,7 @@ class NewCampaignDialog(tk.Toplevel):
         actions = tk.Frame(body, bg=COLORS["panel"])
         actions.grid(row=7, column=0, columnspan=2, sticky="e", pady=(22, 0))
         ttk.Button(actions, text=tr('Cancel'), command=self.destroy).pack(side="left", padx=(0, 8))
-        ttk.Button(actions, text="CREATE", style="Accent.TButton", command=self._create).pack(side="left")
+        ttk.Button(actions, text=tr('CREATE'), style="Accent.TButton", command=self._create).pack(side="left")
         body.columnconfigure(0, weight=1)
 
         self.bind("<Return>", lambda _e: self._create())
@@ -111,5 +111,8 @@ class NewCampaignDialog(tk.Toplevel):
     def _create(self) -> None:
         name = self.name_var.get().strip() or tr('New Mordheim Campaign')
         option = self._current_option()
+        from mordheim_campaign.ui.file_actions import confirm_discard_changes
+        if not confirm_discard_changes(self, self.controller):
+            return
         self.controller.new_campaign(name, option.band_id)
         self.destroy()

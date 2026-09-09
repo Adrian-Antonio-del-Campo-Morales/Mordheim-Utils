@@ -27,6 +27,12 @@ class CampaignManagerApp(tk.Tk):
         self.controller.subscribe_locale(set_ui_locale)
         self.controller.subscribe_locale(set_kb_locale)
         AppShell(self, self.controller)
+        self.protocol("WM_DELETE_WINDOW", self._close)
+
+    def _close(self) -> None:
+        from mordheim_campaign.ui.file_actions import confirm_discard_changes
+        if confirm_discard_changes(self, self.controller):
+            self.destroy()
 
 
 def main() -> int:

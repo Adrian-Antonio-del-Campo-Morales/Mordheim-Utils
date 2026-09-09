@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import tkinter as tk
 from tkinter import ttk
+from mordheim_campaign.ui.input_validation import IntegerVar, numeric_action, numeric_preview
 
 from mordheim_ui import themed_dialogs as messagebox
 
@@ -10,7 +11,7 @@ from mordheim_campaign.application.knowledge_port import WarbandProfile
 from mordheim_ui.theme import COLORS
 from mordheim_ui.windowing import center_on_application
 from mordheim_ui.widgets import BorderedFrame
-from mordheim_ui.i18n import tr
+from mordheim_ui.i18n import tr, tr_message
 
 
 class AddWarriorDialog(tk.Toplevel):
@@ -101,7 +102,7 @@ class AddWarriorDialog(tk.Toplevel):
         ).pack(anchor="w", pady=(9, 0))
 
     def _build_quantity(self, body: tk.Frame) -> None:
-        self.quantity_var = tk.IntVar(value=1)
+        self.quantity_var = IntegerVar(value=1)
         row = tk.Frame(body, bg=COLORS["panel"])
         row.pack(fill="x", pady=(10, 0))
         tk.Label(row, text=tr('MODELS IN GROUP'), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8)).pack(side="left")
@@ -129,6 +130,7 @@ class AddWarriorDialog(tk.Toplevel):
             limits.append(profile.group_maximum)
         return max(1, min(limits))
 
+    @numeric_preview
     def _update_detail(self, _event=None) -> None:
         profile = self._current_profile()
         if profile is None:
@@ -152,6 +154,7 @@ class AddWarriorDialog(tk.Toplevel):
                 self.quantity_var.set(1)
             self.quantity_hint.set(tr('at most {} models').format(high))
 
+    @numeric_action
     def _add(self) -> None:
         profile = self._current_profile()
         if profile is None:
@@ -161,7 +164,7 @@ class AddWarriorDialog(tk.Toplevel):
         ok, message = self.controller.perform_undoable(
             tr('Hire warrior'), lambda: self.controller.add_draft_warriors(profile.profile_id, quantity))
         if not ok:
-            messagebox.showerror(tr('Cannot add warrior'), message, parent=self)
+            messagebox.showerror(tr('Cannot add warrior'), tr_message(message), parent=self)
             return
         self.destroy()
 

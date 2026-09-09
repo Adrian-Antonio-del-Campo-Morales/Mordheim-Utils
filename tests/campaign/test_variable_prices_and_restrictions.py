@@ -60,6 +60,35 @@ def test_upgrade_multiplier_offer_resolves_from_a_base_record():
     assert resolve_offer_price(offer, 5) is None  # needs the base record price
 
 
+def test_same_weapon_upgrade_cannot_be_purchased_twice():
+    engine, state, port = _pending()
+    offer = next(
+        row for row in (*_catalogue(state, port).common_items(), *_catalogue(state, port).rare_items())
+        if row.price_upgrade_multiplier is not None
+    )
+    base = next(row for row in state.campaign.inventory if row.stash and port.weapon_hands(row.base_item_id or row.id) is not None)
+    price = base.value * offer.price_upgrade_multiplier
+    assert engine.buy_weapon_upgrade(offer, base.id, price)[0]
+    upgraded = next(row for row in state.campaign.inventory if offer.name in row.special_rules)
+
+    ok, _ = engine.buy_weapon_upgrade(offer, upgraded.id, upgraded.value * offer.price_upgrade_multiplier)
+
+    assert not ok
+
+
+def test_weapon_upgrade_rejects_a_forged_price():
+    engine, state, port = _pending()
+    offer = next(
+        row for row in (*_catalogue(state, port).common_items(), *_catalogue(state, port).rare_items())
+        if row.price_upgrade_multiplier is not None
+    )
+    base = next(row for row in state.campaign.inventory if row.stash and port.weapon_hands(row.base_item_id or row.id) is not None)
+
+    ok, _ = engine.buy_weapon_upgrade(offer, base.id, -100)
+
+    assert not ok
+
+
 def test_buy_with_rolled_variable_price_charges_base_plus_dice():
     engine, state, _ = _pending()
     gold_before = engine.projected_gold()
