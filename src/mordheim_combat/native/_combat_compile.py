@@ -358,7 +358,12 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
             or bool(off and has(off, "weapon.chained-squig"))
         ),
         "can_burn": None,  # filled by compile_duel with the foe's ignition view
-        "serpent_whip": has(main, "weapon.serpent-whip"),
+        "serpent_whip": any(
+            has(weapon, tag)
+            for weapon in (main, off)
+            if weapon is not None
+            for tag in ("weapon.steel-whip", "weapon.beastlash", "weapon.pirate-scourge", "weapon.serpent-whip")
+        ),
         "boar_spear": has(main, "weapon.boar-spear"),
         "sigmar_effective": bool(
             has(g, "skill.sigmar-s-sign") and has(foe.global_effects, "undead_or_possessed")

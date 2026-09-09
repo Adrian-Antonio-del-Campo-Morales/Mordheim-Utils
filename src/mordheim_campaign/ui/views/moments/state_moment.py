@@ -20,6 +20,7 @@ class WarbandStateMoment(tk.Frame):
         self.rowconfigure(3, weight=1)
         c = controller.state.campaign
         state = c.state(number)
+        self.snapshot = state
         current = number == c.current_state_number
 
         top = tk.Frame(self, bg=COLORS["bg"])
@@ -44,7 +45,7 @@ class WarbandStateMoment(tk.Frame):
         if controller.state.state_section == "warriors":
             content = self._warriors()
         elif controller.state.state_section == "inventory":
-            content = InventoryWorkspace(self, controller, show_summary=False, read_only=True)
+            content = InventoryWorkspace(self, controller, show_summary=False, read_only=True, snapshot=state)
         else:
             content = self._overview(state, current)
         content.grid(row=3, column=0, sticky="nsew")
@@ -104,6 +105,6 @@ class WarbandStateMoment(tk.Frame):
         frame = tk.Frame(self, bg=COLORS["bg"])
         frame.columnconfigure(0, weight=1); frame.rowconfigure(0, weight=1)
         scroll = ScrollableFrame(frame, background=COLORS["bg"]); scroll.grid(row=0, column=0, sticky="nsew")
-        for warrior in self.controller.state.campaign.warriors:
+        for warrior in self.snapshot.roster:
             WarriorCard(scroll.inner, warrior).pack(fill="x", pady=(0, 7))
         return frame

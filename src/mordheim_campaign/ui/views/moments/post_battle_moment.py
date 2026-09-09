@@ -12,7 +12,7 @@ from mordheim_campaign.application.state import POST_BATTLE_GROUPS, POST_BATTLE_
 from mordheim_campaign.ui.components import DiceResolutionCard, PostBattleSequence, ask_dice
 from mordheim_campaign.ui.panels import InventoryWorkspace
 from mordheim_campaign.ui.views.moments.initial_warband_draft import DraftWarriorCard
-from mordheim_ui.i18n import tr
+from mordheim_ui.i18n import tr, tr_message
 from mordheim_ui.theme import COLORS
 from mordheim_ui.windowing import center_on_application
 from mordheim_ui.widgets import BorderedFrame, ExperienceTrack, ScrollableFrame, SegmentedTabs, SummaryStrip
@@ -24,20 +24,20 @@ def _injury_card(dice: list[int], resolver, *, hero: bool) -> tuple[str, str, st
                else resolver.resolve_henchman_serious_injury(dice[0]))
     detail = _injury_detail(outcome)
     tone = "danger" if outcome.result in ("Dead", "Removed", "Multiple Injuries") else "accent"
-    return outcome.result, detail, tone
+    return tr(outcome.result), detail, tone
 
 
 def _injury_detail(outcome) -> str:
-    parts = list(outcome.effects)
+    parts = [tr_message(part) for part in outcome.effects]
     if outcome.note:
-        parts.append(outcome.note)
+        parts.append(tr_message(outcome.note))
     if outcome.follow_up:
-        parts.append(outcome.follow_up)
+        parts.append(tr_message(outcome.follow_up))
     return "  •  ".join(parts) or tr('No lasting effect.')
 
 
 def _injury_history(outcome, roll: int) -> str:
-    return f"{outcome.result} ({roll}) — {_injury_detail(outcome)}"
+    return tr("{} ({}) — {}").format(tr(outcome.result), roll, _injury_detail(outcome))
 
 
 def _injury_store(dice: list[int], resolver, *, hero: bool, holder: dict) -> tuple[str, str, str]:
@@ -50,7 +50,7 @@ def _exploration_card(dice: list[int], resolver) -> tuple[str, str, str]:
     resolved = resolver.resolve_exploration(tuple(dice))
     detail = tr('Total {} → {} wyrdstone shard(s)').format(resolved.total, resolved.shards)
     if resolved.matching_dice_note:
-        detail += f" · {resolved.matching_dice_note}"
+        detail += f" · {tr_message(resolved.matching_dice_note)}"
     return tr('Exploration resolved · {} shard(s)').format(resolved.shards), detail, "accent"
 
 
@@ -66,7 +66,7 @@ def _rarity_card(dice: list[int], resolver, item_id: str, name: str, holder: dic
     holder["success"] = search.success
     title = "Available" if search.success else tr('Not found')
     tone = "success" if search.success else "neutral"
-    return title, f"{name}: {search.note}", tone
+    return title, f"{name}: {tr_message(search.note)}", tone
 
 
 class PostBattleMoment(tk.Frame):
@@ -368,6 +368,7 @@ class PostBattleMoment(tk.Frame):
             return
         description = tr(POST_BATTLE_STEPS[post.active_step])
         self.controller.perform_undoable(description, self._advance_step_impl)
+        self._rebuild()
 
     def _advance_step_impl(self) -> None:
         post = self.controller.state.campaign.pending_post_battle
@@ -376,39 +377,41 @@ class PostBattleMoment(tk.Frame):
         engine = self._engine()
         battle = self.controller.state.campaign.battle(post.battle_number)
         if post.active_step == 0:
-            marked = self._out_of_action_warriors(battle)
-            rolls = [self._pending_injury_rolls.get(f"{warrior.id}:{index}") for index, warrior in self._numbered_warriors(marked)]
-            if any(not holder or not holder.get("complete") for holder in rolls):
-                messagebox.showerror(tr('Incomplete step'), tr('Resolve every injury roll before continuing.'), parent=self)
-                return
-            resolver = self.controller.post_battle_resolver()
-            for warrior, holder in zip(marked, rolls):
-                kind = "hero" if warrior.kind == "hero" else "henchman"
-                for result in holder.get("finals") or ():
-                    if result.get("mode") == "subtable":
-                        outcome = resolver.resolve_injury_subtable(kind, str(result.get("parent") or ""), int(result["roll"]))
-                    else:
-                        outcome = (resolver.resolve_hero_serious_injury(int(result["roll"])) if warrior.kind == "hero"
-                                   else resolver.resolve_henchman_serious_injury(int(result["roll"])))
-                    if outcome is None:
-                        messagebox.showerror(tr('Cannot apply result'), tr('A stored injury result can no longer be resolved from the KB.'), parent=self)
-                        return
-                    if result.get("effect_roll") is not None:
-                        effects = []
-                        for effect in outcome.effects_raw:
-                            effect = dict(effect)
-                            if effect.get("type") == "warrior.miss_games" and isinstance(effect.get("games"), dict) and effect["games"].get("kind") == "dice":
-                                effect["games"] = {"kind": "fixed", "value": int(result["effect_roll"])}
-                            effects.append(effect)
-                        outcome = replace(outcome, effects_raw=tuple(effects))
-                    ok, message = engine.apply_serious_injury(warrior.id, outcome)
-                    if not ok:
-                        messagebox.showerror(tr('Cannot apply result'), message, parent=self)
-                        return
-            ok, message = engine.apply_battle_experience()
-            if not ok:
-                messagebox.showerror(tr('Cannot apply result'), message, parent=self)
-                return
+            if not post.step_state.get("injuries_applied"):
+                marked = self._out_of_action_warriors(battle)
+                rolls = [self._pending_injury_rolls.get(f"{warrior.id}:{index}") for index, warrior in self._numbered_warriors(marked)]
+                if any(not holder or not holder.get("complete") for holder in rolls):
+                    messagebox.showerror(tr('Incomplete step'), tr('Resolve every injury roll before continuing.'), parent=self)
+                    return False, tr('Resolve every injury roll before continuing.')
+                resolver = self.controller.post_battle_resolver()
+                for warrior, holder in zip(marked, rolls):
+                    kind = "hero" if warrior.kind == "hero" else "henchman"
+                    for result in holder.get("finals") or ():
+                        if result.get("mode") == "subtable":
+                            outcome = resolver.resolve_injury_subtable(kind, str(result.get("parent") or ""), int(result["roll"]))
+                        else:
+                            outcome = (resolver.resolve_hero_serious_injury(int(result["roll"])) if warrior.kind == "hero"
+                                       else resolver.resolve_henchman_serious_injury(int(result["roll"])))
+                        if outcome is None:
+                            messagebox.showerror(tr('Cannot apply result'), tr('A stored injury result can no longer be resolved from the KB.'), parent=self)
+                            return False, tr('A stored injury result can no longer be resolved from the KB.')
+                        if result.get("effect_roll") is not None:
+                            effects = []
+                            for effect in outcome.effects_raw:
+                                effect = dict(effect)
+                                if effect.get("type") == "warrior.miss_games" and isinstance(effect.get("games"), dict) and effect["games"].get("kind") == "dice":
+                                    effect["games"] = {"kind": "fixed", "value": int(result["effect_roll"])}
+                                effects.append(effect)
+                            outcome = replace(outcome, effects_raw=tuple(effects))
+                        ok, message = engine.apply_serious_injury(warrior.id, outcome)
+                        if not ok:
+                            messagebox.showerror(tr('Cannot apply result'), tr_message(message), parent=self)
+                            return False, message
+                ok, message = engine.apply_battle_experience()
+                if not ok:
+                    messagebox.showerror(tr('Cannot apply result'), tr_message(message), parent=self)
+                    return False, message
+                post.step_state["injuries_applied"] = True
         elif post.active_step == 1:
             unresolved = [row for row in post.pending_advances if not row.get("committed")]
             if unresolved:
@@ -422,36 +425,40 @@ class PostBattleMoment(tk.Frame):
                     tr('Resolve and apply every earned advance before continuing to Exploration. Pending: {}').format(' · '.join(names)),
                     parent=self,
                 )
-                return
+                return False, tr('Resolve and apply every earned advance before continuing to Exploration.')
         elif post.active_step == 2:
             dice = self._pending_exploration.get("dice")
-            if not dice:
+            if dice is None:
                 messagebox.showerror(tr('Incomplete step'), tr('Resolve the exploration roll before continuing.'), parent=self)
-                return
+                return False, tr('Resolve the exploration roll before continuing.')
             if not self._pending_exploration.get("applied"):
                 messagebox.showerror(
                     tr('Incomplete step'),
                     tr('Finish the pending Exploration discard or re-roll decision before continuing.'),
                     parent=self,
                 )
-                return
+                return False, tr('Finish the pending Exploration decision before continuing.')
         elif post.active_step == 3 and not post.sale_resolved:
             quantity = max(0, int(self._sell_var.get())) if self._sell_var is not None else 0
             ok, message = engine.sell_wyrdstone(quantity)
             if not ok:
-                messagebox.showerror(tr('Cannot apply result'), message, parent=self)
-                return
+                messagebox.showerror(tr('Cannot apply result'), tr_message(message), parent=self)
+                return False, message
         elif post.active_step == 4:
             dice = self._pending_veterans.get("dice")
             if not dice:
                 messagebox.showerror(tr('Incomplete step'), tr('Resolve the veteran roll before continuing.'), parent=self)
-                return
+                return False, tr('Resolve the veteran roll before continuing.')
             engine.apply_veteran_pool(sum(dice))
         elif post.active_step == 5:
             assigned = [hero_id for hero_id, variable in self._search_assignments.items() if variable.get() != tr('No search')]
             if any(not post.searches.get(hero_id, {}).get("dice") for hero_id in assigned):
                 messagebox.showerror(tr('Incomplete step'), tr('Resolve every assigned search before continuing.'), parent=self)
-                return
+                return False, tr('Resolve every assigned search before continuing.')
+        elif post.active_step == 7 and post.equipment_obligations:
+            message = tr('Equip every newly recruited Henchman with the required matching equipment before continuing.')
+            messagebox.showerror(tr('Incomplete step'), tr_message(message), parent=self)
+            return False, message
         open_follow_ups = post.unacknowledged_follow_ups(post.active_step)
         if open_follow_ups:
             messagebox.showerror(
@@ -461,8 +468,10 @@ class PostBattleMoment(tk.Frame):
                 ),
                 parent=self,
             )
-            return
+            # Keep applied injuries and their decisions; remain on Recovery.
+            return post.active_step == 0 and bool(post.step_state.get("injuries_applied")), tr('Resolve or acknowledge every follow-up before continuing.')
         self.controller.advance_post_battle_step()
+        return True, tr('Step completed')
 
     @staticmethod
     def _numbered_warriors(warriors) -> list[tuple[int, object]]:
@@ -604,7 +613,7 @@ class PostBattleMoment(tk.Frame):
             } if remaining else {}
             holder["complete"] = remaining == 0
             self.after_idle(self._rebuild)
-            return outcome.result, _injury_detail(outcome), "accent"
+            return tr(outcome.result), _injury_detail(outcome), "accent"
         if mode == "repeat_result":
             outcome = resolver.resolve_repeat_reroll(kind, str(followup.get("result_id") or ""), roll)
             if outcome is None:
@@ -635,7 +644,7 @@ class PostBattleMoment(tk.Frame):
                     holder["followup"] = {**followup, "remaining": remaining} if remaining else {}
                     holder["complete"] = remaining == 0
             self.after_idle(self._rebuild)
-            return outcome.result, _injury_detail(outcome), "accent"
+            return tr(outcome.result), _injury_detail(outcome), "accent"
 
         outcome = resolver.resolve_hero_serious_injury(roll) if hero else resolver.resolve_henchman_serious_injury(roll)
         holder["dice"] = list(dice)
@@ -828,7 +837,7 @@ class PostBattleMoment(tk.Frame):
 
     def _resolve_advance(self, engine, warrior_id: str, threshold: int, holder: dict) -> None:
         dice = holder.get("dice")
-        if not dice:
+        if dice is None:
             return
         total = sum(dice)
         ok, message = self.controller.perform_undoable(
@@ -971,7 +980,10 @@ class PostBattleMoment(tk.Frame):
         holder = self._pending_exploration
         reroll_note = tr(' · the scenario allows one complete reroll') if scenario_rule.get("reroll_all") else ""
         dice = holder.get("dice")
-        if not dice:
+        if dice is None and dice_count == 0:
+            self.controller.perform_undoable(tr('Exploration roll'), lambda: self._apply_exploration_roll([], resolver, holder))
+            return
+        if dice is None:
             DiceResolutionCard(
                 parent, title=tr('Exploration Dice'), subtitle=tr('Eligible Heroes: {} · {}D6 from the KB allocation').format(surviving, dice_count) + reroll_note,
                 notation=f"{dice_count}D6", dice_count=dice_count, demo_dice=demo, combine="list",
@@ -1230,7 +1242,7 @@ class PostBattleMoment(tk.Frame):
             item_id = str(item.get("item_id") or "")
             labels.append(f"{self.controller.port.item_name(item_id) or item_id}: {self._reward_amount_label(item.get('quantity'))}")
         if node.get("note"):
-            labels.append(str(node["note"]))
+            labels.append(tr_message(str(node["note"])))
         for value in node.values():
             if isinstance(value, (dict, list)):
                 labels.extend(self._exploration_reward_labels(value))
@@ -1362,6 +1374,17 @@ class PostBattleMoment(tk.Frame):
                 holder.update(kind="dramatis", target_id=f"dramatis:{offer.profile_id}", profile_id=offer.profile_id, label=variable.get(), modifiers=0, hero_id=hero.id)
         if kind == "none":
             return
+        if holder.get("dice"):
+            status = tr('Consumed') if holder.get("used") else (tr('Available') if holder.get("success") else tr('Not found'))
+            tk.Label(host, text=f"{offer.name} · {status}", bg=COLORS["panel_alt"],
+                     fg=COLORS["success"] if holder.get("success") else COLORS["muted"],
+                     font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(7, 0))
+            if holder.get("success") and not holder.get("used"):
+                command = (lambda o=offer, h=holder: self._buy_rare_offer(o, h)) if kind == "rare" else (
+                    lambda o=offer, h=holder: self._hire_dramatis(o, h))
+                ttk.Button(host, text=tr('BUY') if kind == "rare" else tr('HIRE'),
+                           style="Accent.TButton", command=command).pack(anchor="e", pady=(5, 0))
+            return
         if kind == "rare":
             DiceResolutionCard(
                 host, title=offer.name, subtitle=tr('{} searches for a Rare {} item').format(hero.name, offer.rarity),
@@ -1404,6 +1427,9 @@ class PostBattleMoment(tk.Frame):
         self._render_hero_search(hero, variable, host, targets, resolver, reset=False)
 
     def _buy_rare_offer(self, offer, holder: dict) -> None:
+        if holder.get("used"):
+            self._status_text = tr('⚠ This successful search has already been used.')
+            return
         if not holder.get("success"):
             self._status_text = tr('⚠ The rarity test failed; the item is not available to buy.')
             return
@@ -1414,9 +1440,9 @@ class PostBattleMoment(tk.Frame):
             VariablePriceDialog(
                 self, offer=offer,
                 buy=lambda price: self.controller.perform_undoable(
-                    tr('Buy rare item'), lambda: engine.buy_item(
+                    tr('Buy rare item'), lambda: self._consume_rare_purchase(holder, lambda: engine.buy_item(
                         offer.item_id, 1, price, category=offer.category, rarity=offer.rarity,
-                    )),
+                    ))),
             )
             return
         if offer.price_upgrade_multiplier is not None:
@@ -1424,20 +1450,33 @@ class PostBattleMoment(tk.Frame):
 
             UpgradePriceDialog(
                 self, offer=offer, campaign=self.controller.state.campaign,
-                buy=lambda price: self.controller.perform_undoable(
-                    tr('Buy rare item'), lambda: engine.buy_item(
-                        offer.item_id, 1, price, category=offer.category, rarity=offer.rarity,
-                    )),
+                weapon_hands=self.controller.port.weapon_hands,
+                buy=lambda price, target: self.controller.perform_undoable(
+                    tr('Upgrade weapon'), lambda: self._consume_rare_purchase(
+                        holder, lambda: engine.buy_weapon_upgrade(offer, target.id, price))),
             )
             return
-        self._run(lambda: engine.buy_item(
+        self._run(lambda: self._consume_rare_purchase(holder, lambda: engine.buy_item(
             offer.item_id, 1, offer.price_gc, category=offer.category, rarity=offer.rarity,
-        ))
+        )))
+
+    @staticmethod
+    def _consume_rare_purchase(holder: dict, purchase) -> tuple[bool, str]:
+        if holder.get("used"):
+            return False, "This successful search has already been used."
+        result = purchase()
+        if result[0]:
+            holder["used"] = True
+        return result
 
     def _hire_dramatis(self, offer, holder: dict) -> None:
+        if holder.get("used"):
+            self._status_text = tr('⚠ This successful search has already been used.')
+            return
         dice = holder.get("dice")
         acceptance = int(dice[0]) if (offer.eligibility == "conditional" and dice) else None
-        self._run(lambda: self._engine().hire_hireling(offer, acceptance_roll=acceptance))
+        self._run(lambda: self._consume_rare_purchase(
+            holder, lambda: self._engine().hire_hireling(offer, acceptance_roll=acceptance)))
 
     # 07 · recruitment ------------------------------------------------------
 
@@ -1625,7 +1664,7 @@ class PostBattleMoment(tk.Frame):
 
     def _follow_ups(self, parent: tk.Misc, post) -> None:
         """Pending follow-up actions of the active step, with acknowledgement."""
-        pending = [row for row in post.pending_follow_ups if int(row.get("step") or -1) == post.active_step]
+        pending = post.follow_ups_for_step(post.active_step)
         if post.active_step == 2:
             pending = [row for row in pending if row.get("type") != "exploration_followup"]
         if not pending:
@@ -1819,7 +1858,7 @@ class PostBattleMoment(tk.Frame):
                 tr('Assign scenario spell reward'),
                 lambda: engine.resolve_scenario_spell_reward(str(row.get("id")), hero.id, ids))
             if not ok:
-                messagebox.showerror(tr('Cannot apply result'), message, parent=dialog); return
+                messagebox.showerror(tr('Cannot apply result'), tr_message(message), parent=dialog); return
             dialog.destroy(); self._status_text = "✓ " + message; self._rebuild()
 
         hero_box.bind("<<ComboboxSelected>>", refresh); refresh()
@@ -1848,7 +1887,7 @@ class PostBattleMoment(tk.Frame):
                     tr('Exploration event roll'),
                     lambda: engine.advance_exploration_followup(roll=roll))
             if not ok:
-                messagebox.showerror(tr('Cannot apply result'), message, parent=self)
+                messagebox.showerror(tr('Cannot apply result'), tr_message(message), parent=self)
                 return
             pending = engine.exploration_followup_pending()
         self._status_text = "✓ " + tr('Exploration follow-up resolved.')
@@ -1908,5 +1947,5 @@ class PostBattleMoment(tk.Frame):
         """Saves the campaign (with the pending post-battle) and returns to the current state."""
         from mordheim_campaign.ui.file_actions import save_current_campaign
 
-        save_current_campaign(self, self.controller)
-        self.controller.go_to_current_state()
+        if save_current_campaign(self, self.controller) is not None:
+            self.controller.go_to_current_state()

@@ -366,8 +366,10 @@ def main() -> None:
     args.outdir.mkdir(parents=True, exist_ok=True)
     resolutions = load_resolutions(args.outdir)
     apply_resolutions(rows, resolutions)
-    markdown = args.outdir / "price-collation.md"
-    csv_path = args.outdir / "price-collation.csv"
+    from mordheim_combat_lab.report_naming import execution_stamp
+    stamp = execution_stamp()
+    markdown = args.outdir / f"price-collation-{stamp}.md"
+    csv_path = args.outdir / f"price-collation-{stamp}.csv"
     write_markdown(rows, markdown)
     write_csv(rows, csv_path)
 

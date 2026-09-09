@@ -6,6 +6,7 @@ from mordheim_combat_lab.application.motta import motta_score
 from mordheim_combat_lab.application.analyses import ComparisonCandidate, compare_builds
 from mordheim_core.models import SimulationCancelled
 from mordheim_combat_lab.ui.widgets.progress import AnalysisProgress
+from mordheim_ui.i18n import tr
 import threading as threading
 from tkinter import StringVar
 from tkinter import ttk
@@ -26,13 +27,13 @@ class WeaponAnalysisTab(ttk.Frame):
         self._build_gui()
 
     def _build_gui(self) -> None:
-        ttk.Label(self, text="Weapon analysis", style="Heading.TLabel").pack(anchor="w")
-        ttk.Label(self, text="Each legal main weapon is simulated against the current enemy configuration.", style="Muted.TLabel").pack(anchor="w", pady=(2, 12))
+        ttk.Label(self, text=tr("Weapon analysis"), style="Heading.TLabel").pack(anchor="w")
+        ttk.Label(self, text=tr("Each legal main weapon is simulated against the current enemy configuration."), style="Muted.TLabel").pack(anchor="w", pady=(2, 12))
         controls = ttk.Frame(self)
         controls.pack(fill="x", pady=(0, 10))
-        ttk.Label(controls, text="Simulations").pack(side="left", padx=(0, 5))
+        ttk.Label(controls, text=tr("Simulations")).pack(side="left", padx=(0, 5))
         ttk.Spinbox(controls, from_=1_000, to=10_000_000, increment=10_000, textvariable=self.simulations, width=12).pack(side="left", padx=(0, 12))
-        self.run_button = ttk.Button(controls, text="Compare weapons", style="Accent.TButton", command=self.run)
+        self.run_button = ttk.Button(controls, text=tr("Compare weapons"), style="Accent.TButton", command=self.run)
         self.run_button.pack(side="left")
         self.progress = AnalysisProgress(self)
         self.progress.pack(fill="x", pady=(0, 10))
@@ -93,18 +94,19 @@ class WeaponAnalysisTab(ttk.Frame):
         for item in self.tree.get_children():
             self.tree.delete(item)
         configured_candidate = self.candidate_editor.build()
-        off_hand = self.candidate_editor.off_hand_name.get() or "Free hand"
+        off_hand_id = self.candidate_editor.off_hand.get()
+        off_hand_label = self.candidate_editor.catalogue.localized_name(off_hand_id, "Free hand") if off_hand_id else tr("Free hand")
         for name, candidate, impact in sorted(rows, key=lambda row: row[1], reverse=True):
             weapon_id = next((item_id for item_id, item_name in self.candidate_editor.main_weapon_options() if item_name == name), "")
             if self.catalogue.mechanic(weapon_id).get("hands") == 2:
                 mode = "two_hand"
                 displayed_off_hand = "—"
-            elif off_hand == "Free hand":
+            elif off_hand_id is None:
                 mode, displayed_off_hand = "single", "—"
-            elif weapon_id and self.candidate_editor._active_off_hands.get(off_hand, "").startswith("weapon."):
-                mode, displayed_off_hand = "dual", off_hand
+            elif weapon_id and off_hand_id and off_hand_id.startswith("weapon."):
+                mode, displayed_off_hand = "dual", off_hand_label
             else:
-                mode, displayed_off_hand = "shield", off_hand
+                mode, displayed_off_hand = "shield", off_hand_label
             mode_cells = ["", "", "", ""]
             mode_cells[("single", "shield", "dual", "two_hand").index(mode)] = f"{candidate:.2f}% ({impact:+.2f}%)"
             cost = 0.0 if weapon_id == configured_candidate.main_weapon_id else self.catalogue.cost(weapon_id, self.candidate_editor.choice)

@@ -117,6 +117,10 @@ class AppShell(tk.Frame):
         view_type(self.content, self.controller).pack(fill="both", expand=True)
 
     def _undo_shortcut(self, _event=None):
+        if _event is not None and _event.widget.winfo_class() in {
+            "Entry", "TEntry", "Text", "Spinbox", "TSpinbox", "TCombobox"
+        }:
+            return None
         if self.controller.can_undo:
             self._undo()
         return "break"

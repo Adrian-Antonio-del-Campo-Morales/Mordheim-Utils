@@ -12,6 +12,8 @@ from mordheim_combat_lab.ui.editors import FighterEditor
 from mordheim_combat_lab.ui.tabs.equipment import EquipmentAnalysisTab
 from mordheim_combat_lab.ui.tabs.improvements import ImprovementAnalysisTab
 from mordheim_combat_lab.ui.tabs.weapons import WeaponAnalysisTab
+from mordheim_ui.i18n import current_locale
+from mordheim_ui.i18n import tr
 from mordheim_ui.lab_theme import apply_theme
 from mordheim_combat_lab.ui.widgets.feedback import destroy_tooltips
 import os as os
@@ -22,6 +24,10 @@ from tkinter import ttk
 
 
 WINDOW_MOVE_THROTTLE_MS = 12 if os.name == "nt" else 0
+
+# Display locales offered by the runtime language switcher.  Menu entries use
+# their native name so the current locale is always recognizable.
+LOCALES = (("en", "English"), ("es", "Español"))
 
 
 def _preference_int(preferences: dict, key: str, default: int, minimum: int = 0) -> int:
@@ -45,15 +51,16 @@ class CombatLabApp(tk.Tk):
 
     def __init__(self):
         super().__init__()
-        # Display locale of KB names and interface strings (MORDHEIM_LOCALE).
+        self._preferences = load_preferences()
+        # Display locale of KB names and interface strings: the saved
+        # preference wins, otherwise MORDHEIM_LOCALE, otherwise English.
         from mordheim_knowledge.i18n import set_locale as set_kb_locale
         from mordheim_ui.i18n import set_locale as set_ui_locale
-        set_kb_locale()
-        set_ui_locale()
+        set_kb_locale(self._preferences.get("locale"))
+        set_ui_locale(self._preferences.get("locale"))
         apply_theme(self)
         self.title("Mordheim Combat Lab")
         self.minsize(900, 700)
-        self._preferences = load_preferences()
         self.geometry(str(self._preferences.get("window_geometry") or "1180x800"))
         self.catalogue = CombatCatalogue()
         self.collection_categories = {
@@ -68,7 +75,7 @@ class CombatLabApp(tk.Tk):
             tab: tk.IntVar(value=self.simulations.get())
             for tab in ("improvements", "weapons", "equipment")
         }
-        self.status = tk.StringVar(value="Configure the candidate and enemy, then use an analysis tab.")
+        self.status = tk.StringVar(value=tr("Configure the candidate and enemy, then use an analysis tab."))
         self._last_result = None
         self.enemy_editor = None
         self._build_gui()
@@ -81,45 +88,51 @@ class CombatLabApp(tk.Tk):
         header.pack(fill="x")
         branding = ttk.Frame(header)
         branding.pack(side="left")
-        ttk.Label(branding, text="Mordheim Combat Lab", style="Title.TLabel").pack(anchor="w")
-        ttk.Label(branding, text="Simulation Workbook", style="Muted.TLabel").pack(anchor="w")
+        ttk.Label(branding, text=tr("Mordheim Combat Lab"), style="Title.TLabel").pack(anchor="w")
+        ttk.Label(branding, text=tr("Simulation Workbook"), style="Muted.TLabel").pack(anchor="w")
         actions = ttk.Frame(header)
         actions.pack(side="right")
-        self.collections_button = ttk.Menubutton(actions, text="Collections ▾")
+        self.collections_button = ttk.Menubutton(actions, text=tr("Collections ▾"))
         collections_menu = tk.Menu(self.collections_button, tearoff=False)
         for category, label in (("core", "Mordheim Core"), ("1a", "1A"), ("1b", "1B"), ("1c", "1C"), ("trollheim", "Trollheim")):
             collections_menu.add_checkbutton(label=label, variable=self.collection_categories[category], command=self._collections_changed)
         self.collections_button.configure(menu=collections_menu)
         self.collections_button.pack(side="left", padx=(0, 10))
-        import_button = ttk.Menubutton(actions, text="Import ▾")
+        import_button = ttk.Menubutton(actions, text=tr("Import ▾"))
         import_menu = tk.Menu(import_button, tearoff=False)
-        import_menu.add_command(label="Load candidate", command=lambda: self._load_workbook("candidate"))
-        import_menu.add_command(label="Load enemy", command=lambda: self._load_workbook("enemy"))
+        import_menu.add_command(label=tr("Load candidate"), command=lambda: self._load_workbook("candidate"))
+        import_menu.add_command(label=tr("Load enemy"), command=lambda: self._load_workbook("enemy"))
         import_button.configure(menu=import_menu)
         import_button.pack(side="left", padx=(0, 6))
-        ttk.Button(actions, text="Load", command=self._load_workbook).pack(side="left", padx=(0, 6))
-        ttk.Button(actions, text="Save", style="Accent.TButton", command=self._save_workbook).pack(side="left")
+        self.locale_button = ttk.Menubutton(actions, text=f"{tr('Language')} ▾")
+        locale_menu = tk.Menu(self.locale_button, tearoff=False)
+        for code, name in LOCALES:
+            locale_menu.add_command(label=name, command=lambda code=code: self._apply_locale(code))
+        self.locale_button.configure(menu=locale_menu)
+        self.locale_button.pack(side="left", padx=(0, 6))
+        ttk.Button(actions, text=tr("Load"), command=self._load_workbook).pack(side="left", padx=(0, 6))
+        ttk.Button(actions, text=tr("Save"), style="Accent.TButton", command=self._save_workbook).pack(side="left")
         self.notebook = ttk.Notebook(self)
         self.notebook.pack(fill="both", expand=True)
         candidate_tab = ttk.Frame(self.notebook, padding=12)
         enemy_tab = ttk.Frame(self.notebook, padding=12)
-        self.notebook.add(candidate_tab, text="Candidate")
-        self.notebook.add(enemy_tab, text="Enemy")
+        self.notebook.add(candidate_tab, text=tr("Candidate"))
+        self.notebook.add(enemy_tab, text=tr("Enemy"))
         self._build_candidate_tab(candidate_tab)
         self._enemy_tab = enemy_tab
         self.notebook.bind("<<NotebookTabChanged>>", self._build_enemy_tab_on_selection, add="+")
         self._lazy_analysis_tabs = {}
         for tab_type, tab_key, title in (
-            (ImprovementAnalysisTab, "improvements", "Improvements"),
-            (WeaponAnalysisTab, "weapons", "Weapons"),
-            (EquipmentAnalysisTab, "equipment", "Equipment"),
+            (ImprovementAnalysisTab, "improvements", tr("Improvements")),
+            (WeaponAnalysisTab, "weapons", tr("Weapons")),
+            (EquipmentAnalysisTab, "equipment", tr("Equipment")),
         ):
             tab = ttk.Frame(self.notebook)
             self.notebook.add(tab, text=title)
             self._lazy_analysis_tabs[str(tab)] = (tab, tab_type, tab_key)
         self.notebook.bind("<<NotebookTabChanged>>", self._build_selected_analysis_tab, add="+")
         rules_tab = ttk.Frame(self.notebook, padding=20)
-        self.notebook.add(rules_tab, text="House Rules")
+        self.notebook.add(rules_tab, text=tr("House Rules"))
         self._build_rules_tab(rules_tab)
 
     def _build_selected_analysis_tab(self, _event=None) -> None:
@@ -142,8 +155,8 @@ class CombatLabApp(tk.Tk):
         view.pack(fill="both", expand=True)
 
     def _build_candidate_tab(self, parent) -> None:
-        ttk.Label(parent, text="Candidate", style="Heading.TLabel").pack(anchor="w")
-        ttk.Label(parent, text="Choose a warrior and their legal combat configuration.", style="Muted.TLabel").pack(anchor="w", pady=(2, 12))
+        ttk.Label(parent, text=tr("Candidate"), style="Heading.TLabel").pack(anchor="w")
+        ttk.Label(parent, text=tr("Choose a warrior and their legal combat configuration."), style="Muted.TLabel").pack(anchor="w", pady=(2, 12))
         self.candidate_editor = FighterEditor(parent, "Candidate", self.catalogue, self._editor_changed)
         self.candidate_editor.pack(fill="x")
 
@@ -157,8 +170,8 @@ class CombatLabApp(tk.Tk):
         if self.enemy_editor is not None:
             return self.enemy_editor
 
-        ttk.Label(self._enemy_tab, text="Enemy", style="Heading.TLabel").pack(anchor="w")
-        ttk.Label(self._enemy_tab, text="Configure the opposing warrior used by every simulation and analysis.", style="Muted.TLabel").pack(anchor="w", pady=(2, 12))
+        ttk.Label(self._enemy_tab, text=tr("Enemy"), style="Heading.TLabel").pack(anchor="w")
+        ttk.Label(self._enemy_tab, text=tr("Configure the opposing warrior used by every simulation and analysis."), style="Muted.TLabel").pack(anchor="w", pady=(2, 12))
         self.enemy_editor = FighterEditor(self._enemy_tab, "Enemy", self.catalogue, self._editor_changed)
         self.enemy_editor.pack(fill="x")
         return self.enemy_editor
@@ -171,17 +184,14 @@ class CombatLabApp(tk.Tk):
             self.enemy_editor.set_categories(categories)
 
     def _build_rules_tab(self, parent) -> None:
-        ttk.Label(parent, text="House Rules", style="Heading.TLabel").pack(anchor="w")
+        ttk.Label(parent, text=tr("House Rules"), style="Heading.TLabel").pack(anchor="w")
         ttk.Label(
             parent,
-            text=("The executable rules are selected by the knowledge base. "
-                  "This version deliberately does not restore the legacy checkboxes: "
-                  "they altered the retired engine and could silently produce a duel "
-                  "that the new runtime cannot represent."),
+            text=tr("The executable rules are selected by the knowledge base. This version deliberately does not restore the legacy checkboxes: they altered the retired engine and could silently produce a duel that the new runtime cannot represent."),
             style="Muted.TLabel", wraplength=820, justify="left",
         ).pack(anchor="w", pady=(8, 16))
-        ttk.Label(parent, text="Active runtime", style="Section.TLabel").pack(anchor="w")
-        ttk.Label(parent, text="Mordheim close combat · KB-backed legal equipment · deterministic seed support", style="Muted.TLabel").pack(anchor="w", pady=(4, 0))
+        ttk.Label(parent, text=tr("Active runtime"), style="Section.TLabel").pack(anchor="w")
+        ttk.Label(parent, text=tr("Mordheim close combat · KB-backed legal equipment · deterministic seed support"), style="Muted.TLabel").pack(anchor="w", pady=(4, 0))
 
     def _restore_geometry(self) -> None:
         """Use the former centred-window behaviour unless a size was saved."""
@@ -217,7 +227,7 @@ class CombatLabApp(tk.Tk):
             time.sleep(WINDOW_MOVE_THROTTLE_MS / 1000.0)
 
     def _editor_changed(self) -> None:
-        self.status.set("Ready for an analysis with the selected fighters.")
+        self.status.set(tr("Ready for an analysis with the selected fighters."))
 
     def execution_settings(self) -> DuelExecutionSettings:
         """Snapshot the execution controls for one simulation or analysis run."""
@@ -238,10 +248,10 @@ class CombatLabApp(tk.Tk):
             enemy = self._ensure_enemy_editor().build()
             settings = self.execution_settings()
         except (KeyError, TypeError, ValueError) as exc:
-            self.status.set(f"Configuration error: {exc}")
+            self.status.set(tr("Configuration error: {}").format(exc))
             return
         path = filedialog.asksaveasfilename(
-            parent=self, title="Save Mordheim Combat Lab workbook", defaultextension=".xlsx",
+            parent=self, title=tr("Save Mordheim Combat Lab workbook"), defaultextension=".xlsx",
             filetypes=(("Excel workbook", "*.xlsx"),),
         )
         if not path:
@@ -249,12 +259,12 @@ class CombatLabApp(tk.Tk):
         try:
             save_workbook(path, candidate, enemy, settings, self._last_result)
         except OSError as exc:
-            self.status.set(f"Workbook save error: {exc}")
+            self.status.set(tr("Workbook save error: {}").format(exc))
         else:
-            self.status.set(f"Saved workbook: {path}")
+            self.status.set(tr("Saved workbook: {}").format(path))
 
     def _load_workbook(self, target: str = "both") -> None:
-        path = filedialog.askopenfilename(parent=self, title="Load Mordheim Combat Lab workbook", filetypes=(("Excel workbook", "*.xlsx"),))
+        path = filedialog.askopenfilename(parent=self, title=tr("Load Mordheim Combat Lab workbook"), filetypes=(("Excel workbook", "*.xlsx"),))
         if not path:
             return
         try:
@@ -271,15 +281,42 @@ class CombatLabApp(tk.Tk):
                 self.batch_size.set(settings.batch_size)
                 self.maximum_rounds.set(settings.maximum_rounds)
         except (CombatLabWorkbookError, KeyError, TypeError, ValueError) as exc:
-            self.status.set(f"Workbook load error: {exc}")
+            self.status.set(tr("Workbook load error: {}").format(exc))
             return
         self._last_result = result if target == "both" else self._last_result
         description = {"both": "workbook", "candidate": "candidate", "enemy": "enemy"}[target]
-        self.status.set(f"Loaded {description}: {path}")
+        self.status.set(tr("Loaded {} : {}").format(description, path))
+
+    def _apply_locale(self, locale: str) -> None:
+        """Switch the interface language at runtime and rebuild the UI."""
+        from mordheim_knowledge.i18n import set_locale as set_kb_locale
+        from mordheim_ui.i18n import set_locale as set_ui_locale
+        if set_ui_locale(locale) != locale or set_kb_locale(locale) != locale:
+            return  # unsupported selection keeps the current locale
+        self._preferences["locale"] = locale
+        self._rebuild_ui()
+
+    def _rebuild_ui(self) -> None:
+        """Recreate every widget so static texts pick up the new locale.
+
+        The workbook state survives: both editor builds are captured before
+        the teardown and restored afterwards.
+        """
+        candidate = self.candidate_editor.build()
+        enemy = self._ensure_enemy_editor().build()
+        for child in self.winfo_children():
+            child.destroy()
+        self.enemy_editor = None
+        self.status.set(tr("Configure the candidate and enemy, then use an analysis tab."))
+        self._build_gui()
+        self._restore_geometry()
+        self.candidate_editor.load_build(candidate)
+        self.enemy_editor.load_build(enemy)
 
     def _close(self) -> None:
         save_preferences({
             "window_geometry": self.geometry(),
+            "locale": current_locale(),
             "simulations": self.simulations.get(),
             "seed": self.seed.get(),
             "batch_size": self.batch_size.get(),

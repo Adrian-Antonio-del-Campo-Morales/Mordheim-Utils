@@ -6,6 +6,7 @@ from mordheim_combat_lab.application.analyses import (
 )
 from mordheim_core.models import SimulationCancelled
 from mordheim_combat_lab.ui.widgets.progress import AnalysisProgress
+from mordheim_ui.i18n import tr
 import threading as threading
 from tkinter import StringVar
 from tkinter import ttk
@@ -21,18 +22,18 @@ class ImprovementAnalysisTab(ttk.Frame):
         self.enemy_editor = enemy_editor
         self.settings_provider = settings_provider
         self.simulations = simulations
-        self.status = StringVar(value="Compare each legal additional skill against the candidate baseline.")
+        self.status = StringVar(value=tr("Compare each legal additional skill against the candidate baseline."))
         self._running = False
         self._build_gui()
 
     def _build_gui(self) -> None:
-        ttk.Label(self, text="Improvement analysis", style="Heading.TLabel").pack(anchor="w")
-        ttk.Label(self, text="Each result adds one currently unselected, profile-legal skill to the candidate configuration.", style="Muted.TLabel").pack(anchor="w", pady=(2, 12))
+        ttk.Label(self, text=tr("Improvement analysis"), style="Heading.TLabel").pack(anchor="w")
+        ttk.Label(self, text=tr("Each result adds one currently unselected, profile-legal skill to the candidate configuration."), style="Muted.TLabel").pack(anchor="w", pady=(2, 12))
         controls = ttk.Frame(self)
         controls.pack(fill="x", pady=(0, 10))
-        ttk.Label(controls, text="Simulations").pack(side="left", padx=(0, 5))
+        ttk.Label(controls, text=tr("Simulations")).pack(side="left", padx=(0, 5))
         ttk.Spinbox(controls, from_=1_000, to=10_000_000, increment=10_000, textvariable=self.simulations, width=12).pack(side="left", padx=(0, 12))
-        self.run_button = ttk.Button(controls, text="Compare improvements", style="Accent.TButton", command=self.run)
+        self.run_button = ttk.Button(controls, text=tr("Compare improvements"), style="Accent.TButton", command=self.run)
         self.run_button.pack(side="left")
         self.progress = AnalysisProgress(self)
         self.progress.pack(fill="x", pady=(0, 10))
@@ -42,10 +43,10 @@ class ImprovementAnalysisTab(ttk.Frame):
         columns = ("improvement1", "improvement2", "improvement3", "improvement4", "improvement5", "optimal", "equipment")
         self.tree = ttk.Treeview(self, columns=columns, show="headings", height=15)
         definitions = (
-            ("improvement1", "Improvement 1", 210), ("improvement2", "Improvement 2", 160),
-            ("improvement3", "Improvement 3", 160), ("improvement4", "Improvement 4", 160),
-            ("improvement5", "Improvement 5", 160), ("optimal", "Best Result", 170),
-            ("equipment", "Equipment Used", 230),
+            ("improvement1", tr("Improvement {}").format(1), 210), ("improvement2", tr("Improvement {}").format(2), 160),
+            ("improvement3", tr("Improvement {}").format(3), 160), ("improvement4", tr("Improvement {}").format(4), 160),
+            ("improvement5", tr("Improvement {}").format(5), 160), ("optimal", tr("Best Result"), 170),
+            ("equipment", tr("Equipment Used"), 230),
         )
         for column, heading, width in definitions:
             self.tree.heading(column, text=heading)
@@ -64,11 +65,11 @@ class ImprovementAnalysisTab(ttk.Frame):
                 self.catalogue, self.candidate_editor.choice, candidate,
             )
         except (KeyError, TypeError, ValueError) as exc:
-            self.status.set(f"Configuration error: {exc}")
+            self.status.set(tr("Configuration error: {}").format(exc))
             return
         self._running = True
         self.run_button.configure(state="disabled")
-        self.status.set(f"Comparing {len(skills)} additional skills…")
+        self.status.set(tr("Comparing {} additional skills…").format(len(skills)))
         cancel_event = self.progress.start(len(skills) + 1)
         threading.Thread(target=self._compare, args=(candidate, enemy, skills, settings, cancel_event), daemon=True).start()
 
@@ -94,20 +95,20 @@ class ImprovementAnalysisTab(ttk.Frame):
         for skill, candidate, impact, _enemy, _unresolved in sorted(rows, key=lambda row: row[2], reverse=True):
             self.tree.insert("", "end", values=(
                 skill, "—", "—", "—", "—",
-                f"{candidate:.2f}% ({impact:+.2f}%)", "Current configuration",
+                f"{candidate:.2f}% ({impact:+.2f}%)", tr("Current configuration"),
             ))
-        self.status.set(f"Baseline: {baseline:.2f}% candidate win rate. Compared {len(rows)} skills across {(len(rows) + 1) * simulations:,} duels.")
-        self.progress.finish("Complete")
+        self.status.set(tr("Baseline: {}% candidate win rate. Compared {} skills across {} duels.").format(f"{baseline:.2f}", len(rows), f"{(len(rows) + 1) * simulations:,}"))
+        self.progress.finish(tr("Complete"))
         self._done()
 
     def _failed(self, error: str) -> None:
-        self.status.set(f"Improvement analysis error: {error}")
-        self.progress.finish("Error")
+        self.status.set(tr("Improvement analysis error: {}").format(error))
+        self.progress.finish(tr("Error"))
         self._done()
 
     def _cancelled(self) -> None:
-        self.status.set("Improvement analysis cancelled.")
-        self.progress.finish("Cancelled")
+        self.status.set(tr("Improvement analysis cancelled."))
+        self.progress.finish(tr("Cancelled"))
         self._done()
 
     def _done(self) -> None:

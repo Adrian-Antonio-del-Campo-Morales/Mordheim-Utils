@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 from collections.abc import Callable
+from dataclasses import fields, is_dataclass
 from datetime import date
 from pathlib import Path
 
@@ -10,6 +11,49 @@ from .state import AppState, BattleVM, EquipmentEntryVM, InventoryItemVM, PostBa
 
 
 _ROMAN = ((10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I"))
+
+
+def _restore_in_place(target, source) -> None:
+    """Restore a snapshot while preserving references held by open editors."""
+    if is_dataclass(target) and is_dataclass(source) and type(target) is type(source):
+        for field in fields(target):
+            current, saved = getattr(target, field.name), getattr(source, field.name)
+            if (is_dataclass(current) and is_dataclass(saved)) or (
+                isinstance(current, (dict, list, set)) and isinstance(saved, type(current))
+            ):
+                _restore_in_place(current, saved)
+            else:
+                setattr(target, field.name, copy.deepcopy(saved))
+        return
+    if isinstance(target, dict):
+        for key in tuple(target):
+            if key not in source:
+                del target[key]
+        for key, saved in source.items():
+            current = target.get(key)
+            if (is_dataclass(current) and is_dataclass(saved)) or (
+                isinstance(current, (dict, list, set)) and isinstance(saved, type(current))
+            ):
+                _restore_in_place(current, saved)
+            else:
+                target[key] = copy.deepcopy(saved)
+        return
+    if isinstance(target, list):
+        by_id = {getattr(row, "id", object()): row for row in target if is_dataclass(row) and hasattr(row, "id")}
+        restored = []
+        for index, saved in enumerate(source):
+            current = by_id.get(getattr(saved, "id", None)) if is_dataclass(saved) else None
+            if current is None and index < len(target) and (
+                is_dataclass(saved) or isinstance(saved, (dict, list, set))
+            ) and type(target[index]) is type(saved):
+                current = target[index]
+            if current is not None and type(current) is type(saved):
+                _restore_in_place(current, saved); restored.append(current)
+            else:
+                restored.append(copy.deepcopy(saved))
+        target[:] = restored; return
+    if isinstance(target, set):
+        target.clear(); target.update(copy.deepcopy(source))
 
 #: Mercenary variants (Reikland/Middenheim/Marienburg/Ostermark) selectable by
 #: variant-capable warbands, as (stable id, label).
@@ -41,6 +85,9 @@ class AppController:
     def __init__(self, state: AppState | None = None, *, port: KnowledgePort | None = None) -> None:
         self.port = port or KnowledgePort()
         self.state = state if state is not None else make_draft_state(self.port, "sisters-of-sigmar")
+        if self.state.campaign.is_draft:
+            campaign = self.state.campaign
+            campaign.required_profiles = {p.profile_id: p.member_minimum for p in self.port.profiles(campaign.collection, campaign.band_id) if p.required}
         self.persist_path: Path | None = None
         self.campaign_library_path = Path.home() / "Documents" / "Mordheim Campaigns"
         self._listeners: list[Callable[[], None]] = []
@@ -48,6 +95,22 @@ class AppController:
         self._resolver = None
         self._undo_history: list[tuple[AppState, str]] = []
         self._undo_limit = 20
+        self.mark_saved()
+
+    @property
+    def persist_path(self) -> Path | None:
+        return self._persist_path
+
+    @persist_path.setter
+    def persist_path(self, value) -> None:
+        self._persist_path = Path(value).resolve() if value else None
+
+    def mark_saved(self) -> None:
+        self._saved_content = copy.deepcopy((self.state.campaign, self.state.pending_battle_draft))
+
+    @property
+    def has_unsaved_changes(self) -> bool:
+        return (self.state.campaign, self.state.pending_battle_draft) != self._saved_content
 
     def subscribe(self, listener: Callable[[], None]) -> None:
         self._listeners.append(listener)
@@ -92,14 +155,55 @@ class AppController:
     def perform_undoable(self, description: str, action):
         """Run one domain mutation and retain its previous state on success."""
         before = copy.deepcopy(self.state)
-        result = action()
+        try:
+            result = action()
+        except Exception:
+            _restore_in_place(self.state, before)
+            self._notify_undo()
+            raise
         succeeded = result[0] if isinstance(result, tuple) and result else result is not False
+        if not succeeded:
+            _restore_in_place(self.state, before)
+            self._notify_undo()
+            return result
         if succeeded and self.state != before:
             result_description = str(result[1]) if isinstance(result, tuple) and len(result) > 1 else ""
             self._undo_history.append((before, description.strip() or result_description or "Change"))
             del self._undo_history[:-self._undo_limit]
             self._notify_undo()
         return result
+
+    def buy_draft_weapon_upgrade(self, offer, target_id: str, price: int) -> tuple[bool, str]:
+        """Replace one stashed base weapon with its purchased upgraded form."""
+        campaign = self._campaign()
+        target = next((row for row in campaign.inventory if row.id == target_id), None)
+        if not campaign.is_draft or target is None or target.stash < 1:
+            return False, "The selected base weapon is not available in the stash."
+        available = next((row for row in self.draft_stash_offers() if row.item_id == offer.item_id), None)
+        if available is None or available.price_upgrade_multiplier is None:
+            return False, "This weapon upgrade is not available during warband creation."
+        if self.port.weapon_hands(target.base_item_id or target.id) is None:
+            return False, "Only weapons can receive this upgrade."
+        if offer.name in target.special_rules or target.id.startswith(f"{offer.item_id}:"):
+            return False, f"{target.name} already has the {offer.name} upgrade."
+        expected_price = target.value * available.price_upgrade_multiplier
+        if price <= 0 or price != expected_price:
+            return False, f"Invalid upgrade price: expected {expected_price} gc."
+        if price > campaign.draft_treasury:
+            return False, f"Not enough gold: {price} gc needed."
+        base_cost = target.remove_stock(1)
+        target.stash -= 1
+        base_id = target.base_item_id or target.id
+        upgraded_id = f"{offer.item_id}:{target.id}"
+        upgraded = next((row for row in campaign.inventory if row.id == upgraded_id), None)
+        if upgraded is None:
+            upgraded = InventoryItemVM(upgraded_id, f"{offer.name} {target.name}", target.category, 0, 0, 0,
+                                       target.value + price, special_rules=[*target.special_rules, offer.name],
+                                       base_item_id=base_id)
+            campaign.inventory.append(upgraded)
+        upgraded.add_stock(1, base_cost + price)
+        upgraded.stash += 1
+        return True, f"{target.name} upgraded to {upgraded.name} for {price} gc."
 
     def undo(self) -> tuple[bool, str]:
         if not self._undo_history:
@@ -113,6 +217,8 @@ class AppController:
     def replace_state(self, state: AppState) -> None:
         self.clear_undo_history()
         self.state = state
+        if state.campaign.is_draft:
+            state.campaign.required_profiles = {p.profile_id: p.member_minimum for p in self.port.profiles(state.campaign.collection, state.campaign.band_id) if p.required}
         self.notify()
 
     def navigate(self, view: str) -> None:
@@ -222,7 +328,7 @@ class AppController:
         """Award planner of the KB scenario catalogue."""
         from mordheim_campaign.application.scenario_rewards import ScenarioRewards
 
-        return ScenarioRewards(self.port)
+        return ScenarioRewards(self.port, band_id=self.state.campaign.band_id)
 
     def scenario_options(self):
         """(id, name, player_mode) triples of the KB scenario catalogue."""
@@ -642,7 +748,10 @@ class AppController:
 
     def commit_initial_warband(self) -> None:
         campaign = self.state.campaign
-        if not campaign.is_draft or not campaign.draft_is_legal:
+        if not campaign.is_draft:
+            return
+        campaign.required_profiles = {p.profile_id: p.member_minimum for p in self.port.profiles(campaign.collection, campaign.band_id) if p.required}
+        if not campaign.draft_is_legal:
             return
         for warrior in campaign.warriors:
             for equipment in warrior.equipment:
@@ -652,7 +761,7 @@ class AppController:
                 if row is None:
                     row = InventoryItemVM(equipment.item_id, equipment.name, "Equipment", 0, 0, 0, equipment.unit_cost)
                     campaign.inventory.append(row)
-                row.owned += equipment.quantity
+                row.add_stock(equipment.quantity, equipment.unit_cost)
                 row.equipped += equipment.quantity
         campaign.is_draft = False
         campaign.started = date.today().strftime("%d %b %Y")
@@ -692,7 +801,10 @@ class AppController:
             campaign.inventory.append(row)
         if row is None:
             return
-        row.owned += amount
+        if amount >= 0:
+            row.add_stock(amount, equipment.unit_cost)
+        else:
+            row.remove_stock(-amount, unit_cost=equipment.unit_cost)
         row.equipped += amount
         if row.owned <= 0:
             campaign.inventory.remove(row)
@@ -774,7 +886,7 @@ class AppController:
             row = InventoryItemVM(item_id, offer.name, offer.category, 0, 0, 0,
                                   offer.price_gc or 0, offer.rarity)
             campaign.inventory.append(row)
-        row.owned += quantity
+        row.add_stock(quantity, 0)
         row.stash += quantity
         if campaign.pending_post_battle is not None:
             campaign.pending_post_battle.log_event(
@@ -900,6 +1012,8 @@ class AppController:
         except StopIteration:
             return False, f"Unknown profile: {profile_id}"
         quantity = max(1, int(quantity))
+        if profile.kind == "hero" and quantity != 1:
+            return False, "Recruit Heroes individually."
         if profile.kind == "henchman" and profile.group_maximum is not None and quantity > profile.group_maximum:
             return False, f"Groups of {profile.name} hold at most {profile.group_maximum} models."
         taken, maximum = self.profile_allowance(profile)
@@ -914,7 +1028,7 @@ class AppController:
         if profile.kind == "hero" and campaign.draft_hero_count + quantity > campaign.hero_limit:
             return False, f"Cannot exceed {campaign.hero_limit} heroes."
         occurrences = sum(1 for row in campaign.warriors if row.profile_id == profile_id)
-        row_id = f"{profile_id}#{occurrences + 1}"
+        row_id = campaign.next_warrior_id(f"{profile_id}#")
         base_name = profile.name if profile.kind == "hero" else f"{profile.name} Group"
         name = unique_warrior_name(campaign.warriors, base_name)
         campaign.warriors.append(warrior_vm(self.port, profile, row_id=row_id, name=name, quantity=quantity))
@@ -935,6 +1049,7 @@ class AppController:
         )
         if profile is None:
             return False, "Profile is no longer available in the knowledge base."
+        old_quantity = row.quantity
         new_quantity = row.quantity + int(delta)
         if new_quantity < 1:
             return False, "A henchman group keeps at least one member."
@@ -945,7 +1060,7 @@ class AppController:
             taken, maximum = self.profile_allowance(profile)
             if maximum is not None and taken + added > maximum:
                 return False, f"Roster limit for {profile.name} reached."
-            equipment_per_member = sum(item.unit_cost for item in row.equipment if item.per_model)
+            equipment_per_member = sum(item.unit_cost * (item.quantity // old_quantity) for item in row.equipment if item.per_model and item.acquisition == "purchase")
             if added * (profile.cost + equipment_per_member) > campaign.draft_treasury:
                 return False, "Not enough gold for the added members."
             if campaign.draft_warband_member_count + added > campaign.effective_maximum_models:
@@ -953,18 +1068,31 @@ class AppController:
             for item in row.equipment:
                 if item.per_model and item.acquisition == "stash_assignment":
                     inventory = next((entry for entry in campaign.inventory if entry.id == item.item_id), None)
-                    if inventory is None or inventory.stash < added:
+                    required_copies = added * (item.quantity // old_quantity)
+                    if inventory is None or inventory.stash < required_copies:
                         return False, f"The stash needs {added} more {item.name} for the whole group."
+        stash_costs = {inventory.id: campaign.stash_acquisition_costs(inventory)
+                       for inventory in campaign.inventory}
         row.quantity = new_quantity
         for item in row.equipment:
             if item.per_model:
-                item.quantity += added
+                copies = added * (item.quantity // old_quantity)
+                costs = item.copy_costs
+                if copies > 0:
+                    extra = (stash_costs.get(item.item_id, [])[:copies]
+                             if item.acquisition == "stash_assignment" else [item.unit_cost] * copies)
+                    item.acquisition_costs = costs + extra
+                    if item.acquisition == "stash_assignment":
+                        del stash_costs[item.item_id][:copies]
+                elif copies < 0:
+                    item.acquisition_costs = costs[:copies]
+                item.quantity += copies
                 if item.acquisition == "purchase":
-                    self._change_inventory(campaign, item, added)
+                    self._change_inventory(campaign, item, copies)
                 elif item.acquisition == "stash_assignment":
                     inventory = next(entry for entry in campaign.inventory if entry.id == item.item_id)
-                    inventory.stash -= added
-                    inventory.equipped += added
+                    inventory.stash -= copies
+                    inventory.equipped += copies
         self.notify()
         return True, f"{row.name} now has {new_quantity} member{'s' if new_quantity != 1 else ''}."
 
@@ -1177,7 +1305,7 @@ class AppController:
         if row is None:
             row = InventoryItemVM(item_id, offer.name, offer.category, 0, 0, 0, price)
             campaign.inventory.append(row)
-        row.owned += quantity
+        row.add_stock(quantity, price)
         row.stash += quantity
         row.value = price
         return True, f"{quantity}× {offer.name} bought for {total} gc (stash)."
@@ -1188,9 +1316,11 @@ class AppController:
         quantity = max(1, int(quantity))
         if not campaign.is_draft or row is None or row.stash < quantity:
             return False, "That quantity is not available in the draft stash."
+        available_costs = campaign.stash_acquisition_costs(row)
+        if len(available_costs) < quantity:
+            return False, "Inventory costs do not match the available stash copies."
         row.stash -= quantity
-        row.owned -= quantity
-        refund = row.value * quantity
+        refund = sum(row.remove_stock(1, unit_cost=cost) for cost in available_costs[:quantity])
         if row.owned <= 0:
             campaign.inventory.remove(row)
         return True, f"{quantity}× {row.name} sold; {refund} gc refunded."

@@ -148,10 +148,11 @@ def _deep_benchmark_command(args, scenarios, installed) -> int:
     over large sizes and batch sizes (see deep_benchmark_plan for the policy)."""
     pair_set = getattr(args, "pair_set", "full")
     if not args.output:
+        from mordheim_combat_lab.report_naming import timestamped_report_path
         args.output = {
-            "mini": "outputs/benchmarks/deep-mini.json",
-            "fast": "outputs/benchmarks/deep-fast.json",
-        }.get(pair_set, "outputs/benchmarks/deep.json")
+            "mini": timestamped_report_path("outputs/benchmarks", "deep-mini", ".json"),
+            "fast": timestamped_report_path("outputs/benchmarks", "deep-fast", ".json"),
+        }.get(pair_set, timestamped_report_path("outputs/benchmarks", "deep", ".json"))
     from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
     from mordheim_combat_lab.cli.benchmarking import deep_benchmark_plan
     from mordheim_combat_lab.cli.benchmarking import print_deep_benchmark_header
@@ -398,10 +399,11 @@ def parity_command(args) -> int:
         )
         return 2
     if args.deep and not args.output:
+        from mordheim_combat_lab.report_naming import timestamped_report_path
         args.output = {
-            "mini": "outputs/parity/deep-mini.json",
-            "fast": "outputs/parity/deep-fast.json",
-        }.get(pair_set, "outputs/parity/deep.json")
+            "mini": timestamped_report_path("outputs/parity", "deep-mini", ".json"),
+            "fast": timestamped_report_path("outputs/parity", "deep-fast", ".json"),
+        }.get(pair_set, timestamped_report_path("outputs/parity", "deep", ".json"))
     started = time.perf_counter()
     from mordheim_combat_lab.cli.benchmarking import BenchmarkProgress
     from mordheim_combat_lab.cli.benchmarking import benchmark_scenarios
@@ -662,7 +664,9 @@ def test_report_command(args) -> int:
 
     # One unit per semantic specification, plus one per statistical scenario.
     # The bar closes before the pytest phase, which prints its own dots.
-    output = Path(args.output).resolve()
+    from mordheim_combat_lab.report_naming import timestamped_report_path
+    output = (Path(args.output).resolve() if args.output else
+              timestamped_report_path("outputs", "test-report", "")).resolve()
     units = len(load_fixtures()) + (
         len(benchmark_scenarios()) if args.statistical else 0
     )
@@ -855,7 +859,10 @@ def _apply_help_policy(parser: ArgumentParser, *, advanced: bool) -> None:
 
 
 def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = False) -> ArgumentParser:
-    from mordheim_combat_lab.cli.benchmarking import DEEP_SCENARIOS
+    # Light import on purpose: scenario definitions carry no combat-engine
+    # imports, so parsing argument choices never pre-loads mordheim_combat
+    # into sys.modules (which would break the coverage-gate measurement).
+    from mordheim_combat_lab.cli.scenarios import DEEP_SCENARIOS
 
     parser = ArgumentParser(prog=prog, formatter_class=_HelpFormatter)
     deep_scenario_ids = tuple(item.id for item in DEEP_SCENARIOS)
@@ -1149,7 +1156,7 @@ def build_parser(prog: str = "mordheim-combat-lab", *, advanced_help: bool = Fal
              "1 disables the pool (also from MORDHEIM_PARALLEL_ORACLE_WORKERS)",
     )
     test_report_output = test_report.add_argument_group("output and strictness")
-    test_report_output.add_argument("--output", default="outputs/test-report", metavar="PATH",
+    test_report_output.add_argument("--output", metavar="PATH",
                                     help="directory for the two CSVs (default: outputs/test-report)")
     test_report_output.add_argument("--require-complete", action="store_true",
                                     help="fail when pending items or missing backends "
