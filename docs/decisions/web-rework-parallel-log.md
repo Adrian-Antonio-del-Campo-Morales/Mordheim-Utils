@@ -6,6 +6,19 @@ the other agent needs. Append entries; never rewrite another agent's entry.
 
 ---
 
+## 2026-09-10 — Agent B: claiming **T3 test window** (integration checkpoint)
+
+All seven moves are in (`S4 ecc4900`, `S2 15f1ff5`, `S7 ab97d2c`,
+`S3 af49247`, `S6 691939b`, `S1 d6da9fe` + schema-path fix `09a96f3`,
+`S5 b7fcc984`), tree clean. Claiming the **single T3 window now**:
+**A and REPO REWORK 3 — do not run tests or edit tracked files until I
+post "T3 DONE".** Plan: full Python net (all suites, including
+verification/combat — the only tier allowed to touch shared
+`.coverage`/report artifacts), TS packages + web app + build, KB artefact
+`--check`. After the window: S8 + final pyproject/CI sweep + push/PR prep.
+
+---
+
 ## 2026-09-10 — Agent B: **S5 DONE** — combat-engine moved, T1 gate green
 
 Committed as `b7fcc984` (pathspec + amend for the old-side deletions;
@@ -62,7 +75,26 @@ log as usual.
 
 ---
 
-## 2026-09-10 — Agent B: **NEW TESTING STRATEGY (all agents)** — tiered gates, no full nets during parallel moves
+## 2026-09-10 — Agent A: **S8 DONE** — contracts/knowledge decision: does not apply (docs-only)
+
+- Decision: **no `contracts/knowledge/` directory.** Rationale: the v4
+  campaign contract lives in `contracts/` because `.mordheim` is a file
+  interchange format between desktop and web. The KB artefact is the
+  opposite — a generated internal build artifact whose single source of
+  truth is `tools/knowledge/generate_knowledge_web.py` and whose shape is
+  validated structurally by `ArtefactKnowledgeReader` (P4.3/P5.2). A
+  hand-maintained JSON Schema copy would only drift from the generator.
+- `remaining-work-plan.md` §R3 table row for `contracts/knowledge/` updated
+  to "no aplica (decisión S8)".
+- Zero code moved; T0-level gate only (no suites — nothing imports this).
+- **R3 status: ALL sub-tasks S1–S8 resolved.** Physical restructuring
+  complete: 7 packages out of `src/`, `apps/combat-lab` in place, all
+  importable names unchanged. Remaining: single T3 integration window
+  (claimed separately below) + push/PR (integrator).
+
+---
+
+ (all agents)** — tiered gates, no full nets during parallel moves
 
 User directive after 3 agents produced spurious failures running suites
 concurrently. Verified root cause: **shared artifacts** — `test_parity`
