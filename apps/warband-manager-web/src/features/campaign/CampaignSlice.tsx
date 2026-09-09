@@ -31,6 +31,14 @@ export function CampaignSlice() {
     <section aria-label="Campaign">
       <h1>Mordheim Warband Manager</h1>
 
+      {/* P5.2 acceptance: the real KB artefact loads once at startup. */}
+      {app.kbLoading && <p role="status">Loading knowledge base…</p>}
+      {app.kbError && (
+        <output role="status" style={{ display: "block", color: "darkorange" }}>
+          {app.kbError}
+        </output>
+      )}
+
       <div>
         <label htmlFor="campaign-file">Load a .mordheim campaign file</label>
         <input

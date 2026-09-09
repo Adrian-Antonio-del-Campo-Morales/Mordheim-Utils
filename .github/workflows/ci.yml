@@ -88,6 +88,13 @@ jobs:
           npm test
           npm run build
 
+      # P7.3 bundle guardrails: src/architecture/boundaries.test.ts only
+      # runs with dist/ present, so it executes here — after the build —
+      # asserting the bundle excludes NumPy/Cython/Tkinter/Combat Lab and
+      # ships no .mordheim files (the pre-build `npm test` run skips it).
+      - name: Post-build bundle guardrails (boundaries.test.ts)
+        run: cd apps/warband-manager-web && npx vitest run src/architecture/boundaries.test.ts
+
       - name: Upload the built app for inspection
         uses: actions/upload-artifact@v4
         with:

@@ -195,7 +195,10 @@ describe("HirelingsPanel (P6.7) — user interaction wiring", () => {
     // Full panel against the harness (the panel's internal default service
     // is the same composition; the harness keeps the rendered doc in sync).
     render(<Harness service={service} />);
-    const buyButtons = screen.getAllByRole("button", { name: "Buy" });
+    // P7.4 finding applied: Buy buttons carry row context in their
+    // accessible names ("Buy Axe", "Buy Rope").
+    const buyButtons = screen.getAllByRole("button", { name: /^Buy / });
+    expect(buyButtons.length).toBeGreaterThanOrEqual(2);
     await user.click(buyButtons[0]!);
     // The harness syncs on success; the stash section appears with the Axe.
     await screen.findByText("Stash sales");
