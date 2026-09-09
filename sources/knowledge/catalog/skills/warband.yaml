@@ -5,47 +5,57 @@ skills:
 - id: skill.always-strikes-first
   name: Always Strikes First
   category: special
-  summary: Strikes first in close combat.
+  effect: Strikes first in close combat.
+  effect_i18n:
+    es: >-
+      Golpea primero en combate cuerpo a cuerpo.
   kind: warband
   engine_option: Always Strikes First
   source_refs: []
   name_i18n:
-    en: Always Strikes First
-    es: Siempre golpea primero
+    es: Siempre Golpea Primero
 - id: skill.unarmed-fighting
   name: Unarmed Fighting
   category: special
-  summary: Fights unarmed without penalties and gains +1 Attack while unarmed.
+  effect: Fights unarmed without penalties and gains +1 Attack while unarmed.
+  effect_i18n:
+    es: >-
+      Lucha desarmado sin penalizaciones y gana +1 Ataque mientras va desarmado.
   kind: warband
   engine_option: Unarmed Fighting
   source_refs: []
   name_i18n:
-    en: Unarmed Fighting
-    es: Combate desarmado
+    es: Combate sin Armas
 - id: skill.axe-expert
   name: Axe Expert
   category: special
-  summary: Re-rolls missed axe attacks when charging.
+  effect: Re-rolls missed axe attacks when charging.
+  effect_i18n:
+    es: >-
+      Repite los ataques de hacha fallados al cargar.
   kind: warband
   engine_option: Axe Expert
   source_refs: []
   name_i18n:
-    en: Axe Expert
-    es: Experto en hachas
+    es: Experto en Hachas
 - id: skill.axe-master
   name: Axe Master
   category: special
-  summary: May parry with normal axes.
+  effect: May parry with normal axes.
+  effect_i18n:
+    es: >-
+      Puede parar con hachas normales.
   kind: warband
   engine_option: Axe Master
   source_refs: []
   name_i18n:
-    en: Axe Master
-    es: Maestro del hacha
+    es: Maestro del Hacha
 - id: skill.bellowing-battle-roar
   name: Bellowing Battle Roar
   category: special
-  summary: Enemies suffer -1 to hit in the first round.
+  effect: >-
+    The Saurus' roar is so deafening that enemy models in base contact suffer -1 to hit in the first
+    round of combat against them.
   kind: warband
   engine_option: Bellowing Battle Roar
   source_refs:
@@ -54,12 +64,17 @@ skills:
     section: Lizardmen special skills / Saurus Only / Bellowing Battle Roar
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/lizardmen
   name_i18n:
-    en: Bellowing Battle Roar
-    es: Rugido de batalla atronador
+    es: Rugido de Batalla Atronador
+  effect_i18n:
+    es: >-
+      El rugido del Saurus es tan ensordecedor que los modelos enemigos en contacto de peana sufren
+      -1 para impactar en el primer asalto de combate contra ellos.
 - id: skill.berserker
   name: Berserker
   category: special
-  summary: +1 to hit while charging.
+  effect: >-
+    The Slayer may add +1 to his close combat to hit rolls during the turn which he charges (may not
+    be used with Ferocious Charge).
   kind: warband
   engine_option: Berserker
   source_refs:
@@ -76,12 +91,18 @@ skills:
     section: Troll Slayer Special Skills / Berserker
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Berserker
     es: Berserker
+  effect_i18n:
+    es: >-
+      El Matatrolles puede sumar +1 a sus tiradas de impactar en el combate cuerpo a cuerpo durante
+      el asalto en el que carga (no puede usarse con Carga feroz).
 - id: skill.crushing-blow
   name: Crushing Blow
   category: special
-  summary: Attacks cannot be parried.
+  effect: Attacks cannot be parried.
+  effect_i18n:
+    es: >-
+      Los ataques no pueden pararse.
   kind: warband
   engine_option: Crushing Blow
   source_refs:
@@ -90,42 +111,57 @@ skills:
     section: Norse special skills / crushing blow
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
   name_i18n:
-    en: Crushing Blow
-    es: Golpe aplastante
+    es: Golpe Aplastante
 - id: skill.defensive-stance
   name: Defensive Stance
   category: special
-  summary: May parry with any weapon; Parry weapons match the roll.
+  effect: >-
+    The Hero may parry with any weapon it carries. If that weapon already has the Parry rule, the
+    Hero may successfully parry by equalling the attack roll instead of having to exceed it.
   kind: warband
   engine_option: Defensive Stance
   source_refs: []
   name_i18n:
-    en: Defensive Stance
-    es: Postura defensiva
+    es: Postura Defensiva
+  effect_i18n:
+    es: >-
+      El Héroe puede emparañar con cualquier arma que lleve. Si esa arma ya tiene la regla
+      Emparañar, el Héroe puede emparañar con éxito igualando la tirada de ataque en lugar de tener
+      que superarla.
 - id: skill.elven-agility
   name: Elven Agility
   category: special
-  summary: 6+ special save in close combat; improves to 4+ with Step Aside.
+  effect: >-
+    The warrior avoids close-combat and missile attacks on a 6+. If he also has Dodge or Step Aside,
+    the corresponding save improves to 4+ for the attack type covered by that skill.
   kind: warband
   engine_option: Elven Agility
   source_refs: []
   name_i18n:
-    en: Elven Agility
-    es: Agilidad élfica
+    es: Agilidad Élfica
+  effect_i18n:
+    es: >-
+      El guerrero evita ataques cuerpo a cuerpo y de misil con un 6+. Si además tiene Esquiva o
+      Apartarse, la salvación correspondiente mejora a 4+ para el tipo de ataque que cubre esa
+      habilidad.
 - id: skill.expert-fighter
   name: Expert Fighter
   category: special
-  summary: +1 to wound rolls.
+  effect: +1 to wound rolls.
+  effect_i18n:
+    es: >-
+      +1 a las tiradas para herir.
   kind: warband
   engine_option: Expert Fighter
   source_refs: []
   name_i18n:
-    en: Expert Fighter
-    es: Luchador experto
+    es: Luchador Experto
 - id: skill.ferocious-charge
   name: Ferocious Charge
   category: special
-  summary: Doubles Attacks while charging, with -1 to hit that turn.
+  effect: >-
+    The Slayer may double his attacks on the turn in which he charges. He will suffer a –1 to hit
+    penalty on that turn.
   kind: warband
   engine_option: Ferocious Charge
   source_refs:
@@ -142,12 +178,17 @@ skills:
     section: Troll Slayer Special Skills / Ferocious Charge
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Ferocious Charge
-    es: Carga feroz
+    es: Carga Feroz
+  effect_i18n:
+    es: >-
+      El Matatrolles puede doblar sus ataques en el turno en que carga. Sufrirá una penalización de
+      -1 para impactar en ese turno.
 - id: skill.hard-to-kill
   name: Hard to Kill
   category: special
-  summary: Injury rolls of 1-3 cause Knocked Down, 4-5 cause Stunned, and 6 causes Out of Action.
+  effect: >-
+    Dwarfs are taken out of action only on a 6 on the Injury chart; 1–2 is Knocked Down and 3–5 is
+    Stunned.
   kind: warband
   engine_option: Hard to Kill
   source_refs:
@@ -164,12 +205,17 @@ skills:
     section: Special Rules / Hard to Kill
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
-    en: Hard to Kill
-    es: Difíciles de matar
+    es: Difíciles de Matar
+  effect_i18n:
+    es: >-
+      Los enanos se retiran del combate solo con un 6 en la tabla de Heridas; 1–2 es Derribado y 3–5
+      es Aturdido.
 - id: skill.hardy-constitution
   name: Hardy Constitution
   category: special
-  summary: Ignores a critical hit on 5+.
+  effect: >-
+    When the Hero suffers a critical hit, roll D6. On 5+ the critical effect is ignored and the
+    wound is resolved normally; on a failure, resolve the critical hit normally.
   kind: warband
   engine_option: Hardy Constitution
   source_refs:
@@ -178,22 +224,29 @@ skills:
     section: Pirate Special Skills / Hardy Constitution
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pirates
   name_i18n:
-    en: Hardy Constitution
-    es: Constitución recia
+    es: Constitución Recia
+  effect_i18n:
+    es: >-
+      Cuando el Héroe sufre un golpe crítico, tira 1D6. Con 5+ se ignora el efecto crítico y la
+      herida se resuelve con normalidad; si falla, resuelve el golpe crítico con normalidad.
 - id: skill.head-crusher
   name: Head Crusher
   category: special
-  summary: Knocked Down results caused by the warrior become Stunned.
+  effect: Knocked Down results caused by the warrior become Stunned.
+  effect_i18n:
+    es: >-
+      Los resultados de Derribado causados por el guerrero se convierten en Aturdido.
   kind: warband
   engine_option: Head Crusher
   source_refs: []
   name_i18n:
-    en: Head Crusher
     es: Aplastacabezas
 - id: skill.ignore-pain
   name: Ignore Pain
   category: special
-  summary: Stunned results become Knocked Down.
+  effect: >-
+    Requires the Resilient Strength skill. The Hero treats a Stunned result on the Injury chart as
+    Knocked Down.
   kind: warband
   engine_option: Ignore Pain
   source_refs:
@@ -202,93 +255,124 @@ skills:
     section: Clan Pestilens Special Skills / ignore pain
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/skaven-pestilens
   name_i18n:
-    en: Ignore Pain
-    es: Ignorar el dolor
+    es: Ignorar el Dolor
+  effect_i18n:
+    es: >-
+      Requiere la habilidad Fuerza resiliente. El Héroe trata un resultado Aturdido de la tabla de
+      Heridas como Derribado.
 - id: skill.infallible
   name: Infallible
   category: special
-  summary: Re-rolls failed hit rolls while charging.
+  effect: The Vampire may re-roll failed To Hit rolls during the turn in which it charges.
   kind: warband
   engine_option: Infallible
   source_refs: []
   name_i18n:
-    en: Infallible
     es: Infalible
+  effect_i18n:
+    es: El Vampiro puede repetir las tiradas de impactar falladas durante el asalto en el que carga.
 - id: skill.infinite-hatred
   name: Infinite Hatred
   category: special
-  summary: Re-rolls failed hit rolls.
+  effect: The Vampire may re-roll failed To Hit rolls; a roll may never be re-rolled more than once.
   kind: warband
   engine_option: Infinite Hatred
   source_refs: []
   name_i18n:
-    en: Infinite Hatred
-    es: Odio infinito
+    es: Odio Infinito
+  effect_i18n:
+    es: >-
+      El Vampiro puede repetir las tiradas de impactar falladas; una tirada jamás puede repetirse
+      más de una vez.
 - id: skill.inspiring-sermon
   name: Inspiring Sermon
   category: special
-  summary: +1 Attack for the turn.
+  effect: +1 Attack for the turn.
+  effect_i18n:
+    es: >-
+      +1 Ataque durante el turno.
   kind: warband
   engine_option: Inspiring Sermon
   source_refs: []
   name_i18n:
-    en: Inspiring Sermon
-    es: Sermón inspirador
+    es: Sermón Inspirador
 - id: skill.iron-sinews
   name: Iron Sinews
   category: special
-  summary: +1 Strength.
+  effect: >-
+    The Vampire gains +1 Strength. This does not count toward its normal characteristic maximum.
   kind: warband
   engine_option: Iron Sinews
   source_refs: []
   name_i18n:
-    en: Iron Sinews
-    es: Tirones de hierro
+    es: Tirones de Hierro
+  effect_i18n:
+    es: El Vampiro gana +1 Fuerza. Esto no cuenta para su máximo normal de características.
 - id: skill.knife-fighting
   name: Knife Fighting
   category: special
-  summary: +1 WS and +1 on the Injury table with a dagger or yambiya.
+  effect: >-
+    While using a Dagger or Yambiya, the warrior gains +1 WS and +1 on the Injury roll. The opponent
+    still receives the normal +1 armour-save modifier for being attacked with such a weapon.
   kind: warband
   engine_option: Knife Fighting
   source_refs: []
   name_i18n:
-    en: Knife Fighting
-    es: Pelea con cuchillos
+    es: Pelea con Cuchillos
+  effect_i18n:
+    es: >-
+      Mientras use una Daga o una Yambiya, el guerrero gana +1 HA y +1 en la tirada de heridas. El
+      oponente sigue recibiendo el modificador normal de +1 a la salvación por armadura por ser
+      atacado con tal arma.
 - id: skill.luck
   name: Luck
   category: special
-  summary: Re-roll one of your own rolls once per battle.
+  effect: >-
+    Once per battle, the warrior may re-roll any roll made by himself, but may not re-roll a roll
+    made by another warband member.
   kind: warband
   engine_option: Luck
   source_refs: []
   name_i18n:
-    en: Luck
     es: Suerte
+  effect_i18n:
+    es: >-
+      Una vez por batalla, el guerrero puede repetir cualquier tirada realizada por él mismo, pero
+      no puede repetir una tirada realizada por otro miembro de la banda.
 - id: skill.mighty-biceps
   name: Mighty Biceps
   category: special
-  summary: Retains the Strength bonus of heavy weapons.
+  effect: Retains the Strength bonus of heavy weapons.
+  effect_i18n:
+    es: >-
+      Conserva el bono de Fuerza de las armas pesadas.
   kind: warband
   engine_option: Mighty Biceps
   source_refs: []
   name_i18n:
-    en: Mighty Biceps
-    es: Bíceps poderosos
+    es: Bíceps Poderosos
 - id: skill.miniath
   name: Miniath
   category: special
-  summary: May parry with any weapon; when using a weapon that normally allows parrying, re-rolls one
+  effect: >-
+    May parry with any weapon; when using a weapon that normally allows parrying, re-rolls one
     failed parry.
+  effect_i18n:
+    es: >-
+      Puede parar con cualquier arma; al usar un arma que normalmente permite parar, repite
+      una parada fallida.
   kind: warband
   engine_option: Miniath
   source_refs: []
   name_i18n:
-    en: Miniath
     es: Miniath
 - id: skill.monster-slayer
   name: Monster Slayer
   category: special
-  summary: Always wounds on at least 4+.
+  effect: >-
+    The Slayer always wounds any opponent on a roll of 4+, regardless of Toughness, unless his own
+    Strength (after all modifiers due to weapon bonuses, etc.) would mean that a lower roll than
+    this is needed.
   kind: warband
   engine_option: Monster Slayer
   source_refs:
@@ -305,32 +389,42 @@ skills:
     section: Troll Slayer Special Skills / Monster Slayer
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
   name_i18n:
-    en: Monster Slayer
     es: Matamostro
+  effect_i18n:
+    es: >-
+      El Matatrolles siempre hiere a cualquier oponente con un resultado de 4+, independientemente de
+      su Resistencia, salvo que su propia Fuerza (tras todos los modificadores debidos a
+      bonificadores de armas, etc.) signifique que se necesita una tirada menor.
 - id: skill.monstrous
   name: Monstrous
   category: special
-  summary: +1 Wound.
+  effect: +1 Wound.
+  effect_i18n:
+    es: >-
+      +1 Herida.
   kind: warband
   engine_option: Monstrous
   source_refs: []
   name_i18n:
-    en: Monstrous
     es: Monstruoso
 - id: skill.red-fury
   name: Red Fury
   category: special
-  summary: +1 Attack.
+  effect: The Vampire gains +1 Attack. This does not count toward its normal characteristic maximum.
   kind: warband
   engine_option: Red Fury
   source_refs: []
   name_i18n:
-    en: Red Fury
-    es: Furia roja
+    es: Furia Roja
+  effect_i18n:
+    es: El Vampiro gana +1 Ataque. Esto no cuenta para su máximo normal de características.
 - id: skill.regeneration
   name: Regeneration
   category: special
-  summary: Regenerates unsaved wounds on 4+.
+  effect: Regenerates unsaved wounds on 4+.
+  effect_i18n:
+    es: >-
+      Regenera con 4+ las heridas no salvadas.
   kind: warband
   engine_option: Regeneration
   source_refs:
@@ -347,83 +441,114 @@ skills:
     section: Henchmen / 0 – 1 Troll / Special Rules / Regeneration
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins-web
   name_i18n:
-    en: Regeneration
     es: Regeneración
 - id: skill.shield-mastery
   name: Shield Mastery
   category: special
-  summary: A shield can parry and retains its armour save.
+  effect: >-
+    The Hero may parry with a Shield as if it were a Buckler while still receiving the Shield's
+    normal armour-save bonus.
   kind: warband
   engine_option: Shield Mastery
   source_refs: []
   name_i18n:
-    en: Shield Mastery
-    es: Maestro del escudo
+    es: Maestría con el Escudo
+  effect_i18n:
+    es: >-
+      El Héroe puede efectuar una estocada con un Escudo como si fuera una Rodela, mientras sigue
+      recibiendo el bono normal de salvación por armadura del Escudo.
 - id: skill.shield-strike
   name: Shield Strike
   category: special
-  summary: Gains an additional attack at the user’s Strength with poor armour penetration.
+  effect: >-
+    Gains an additional attack at the user's Strength; armour is modified normally according to that
+    Strength.
+  effect_i18n:
+    es: >-
+      Gana un ataque adicional a la Fuerza del usuario; la armadura se modifica con
+      normalidad según esa Fuerza.
   kind: warband
   engine_option: Shield Strike
   source_refs: []
   name_i18n:
-    en: Shield Strike
-    es: Golpe de escudo
+    es: Golpe de Escudo
 - id: skill.sigmar-s-sign
   name: Sigmar's Sign
   category: special
-  summary: Undead and Possessed enemies lose one attack in the first round.
+  effect: Undead and Possessed enemies lose one attack in the first round.
+  effect_i18n:
+    es: >-
+      Los enemigos No Muertos y Poseídos pierden un ataque en el primer turno.
   kind: warband
   engine_option: Sigmar's Sign
   source_refs: []
   name_i18n:
-    en: Sigmar's Sign
     es: Señal de Sigmar
 - id: skill.strength-of-steel
   name: Strength of Steel
   category: special
-  summary: +1 Strength while charging.
+  effect: >-
+    The Vampire gains +1 Strength during the turn in which it charges. This does not count toward
+    its normal characteristic maximum.
   kind: warband
   engine_option: Strength of Steel
   source_refs: []
   name_i18n:
-    en: Strength of Steel
-    es: Fuerza del acero
+    es: Fuerza del Acero
+  effect_i18n:
+    es: >-
+      El Vampiro gana +1 Fuerza durante el asalto en el que carga. Esto no cuenta para su máximo
+      normal de características.
 - id: skill.sure-strike
   name: Sure Strike
   category: special
-  summary: Re-rolls failed wound rolls.
+  effect: Re-rolls failed wound rolls.
+  effect_i18n:
+    es: >-
+      Repite las tiradas para herir falladas.
   kind: warband
   engine_option: Sure Strike
   source_refs: []
   name_i18n:
-    en: Sure Strike
-    es: Golpe certero
+    es: Golpe Certero
 - id: skill.sweep
   name: Sweep
   category: special
-  summary: With a double-handed weapon, replaces all attacks with one automatic hit if the opponent fails
+  effect: >-
+    With a double-handed weapon, replaces all attacks with one automatic hit if the opponent fails
     an Initiative test.
+  effect_i18n:
+    es: >-
+      Con un arma a dos manos, sustituye todos los ataques por un único golpe automático si
+      el oponente falla un chequeo de Iniciativa.
   kind: warband
   engine_option: Sweep
   source_refs: []
   name_i18n:
-    en: Sweep
     es: Barrido
 - id: skill.sword-master
   name: Sword Master
   category: special
-  summary: Parries matching rolls and re-rolls one failed parry.
+  effect: >-
+    When parrying, the Vampire only needs to equal the opponent's roll and may therefore parry a
+    roll of 6. The Vampire may also re-roll one failed parry, but may not re-roll the re-roll and
+    may not parry more than one attack.
   kind: warband
   engine_option: Sword Master
   source_refs: []
   name_i18n:
-    en: Sword Master
-    es: Maestro de la espada
+    es: Maestro de la Espada
+  effect_i18n:
+    es: >-
+      Al emparañar, el Vampiro solo necesita igualar la tirada del oponente y puede por tanto
+      emparañar un 6. El Vampiro también puede repetir una parada fallada, pero no puede repetir la
+      repetición ni emparañar más de un ataque.
 - id: skill.thick-skull
   name: Thick Skull
   category: special
-  summary: Turns Stunned into Knocked Down on 3+, or 2+ with a Helmet.
+  effect: >-
+    The Hero has a 3+ save to turn a Stunned result into Knocked Down. If wearing a Helmet this
+    becomes 2+ and replaces the Helmet's normal rule.
   kind: warband
   engine_option: Thick Skull
   source_refs:
@@ -440,53 +565,70 @@ skills:
     section: Dwarf Special Skills / Thick Skull
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/dwarf-treasure-hunters
   name_i18n:
-    en: Thick Skull
-    es: Craneo grueso
+    es: Cráneo Grueso
+  effect_i18n:
+    es: >-
+      El Héroe tiene una salvación de 3+ para convertir un resultado de Aturdido en Derribado. Si
+      lleva Casco, esta se convierte en 2+ y sustituye a la regla normal del Casco.
 - id: skill.tireless
   name: Tireless
   category: special
-  summary: Retains the Strength bonus of heavy weapons in later rounds.
+  effect: Retains the Strength bonus of heavy weapons in later rounds.
+  effect_i18n:
+    es: >-
+      Conserva el bono de Fuerza de las armas pesadas en turnos posteriores.
   kind: warband
   engine_option: Tireless
   source_refs: []
   name_i18n:
-    en: Tireless
     es: Incansable
 - id: skill.tough-as-steel
   name: Tough as Steel
   category: special
-  summary: Only goes Out of Action on a 6 on the Injury table.
+  effect: Only goes Out of Action on a 6 on the Injury table.
+  effect_i18n:
+    es: >-
+      Solo cae fuera de combate con un 6 en la tabla de Heridas.
   kind: warband
   engine_option: Tough as Steel
   source_refs: []
   name_i18n:
-    en: Tough as Steel
-    es: Duro como el acero
+    es: Duro Como el Acero
 - id: skill.unbeatable-warrior
   name: Unbeatable Warrior
   category: special
-  summary: Improves parries and allows two parries with two Parry weapons.
+  effect: Improves parries and allows two parries with two Parry weapons.
+  effect_i18n:
+    es: >-
+      Mejora las paradas y permite dos paradas con dos armas con Parada.
   kind: warband
   engine_option: Unbeatable Warrior
   source_refs: []
   name_i18n:
-    en: Unbeatable Warrior
-    es: Guerrero imbatible
+    es: Guerrero Imbatible
 - id: skill.vampire-reflexes
   name: Vampire Reflexes
   category: special
-  summary: Unmodifiable 6+ save against wounds, rolled before multiplying Wounds; combines with Step Aside
-    to 4+.
+  effect: >-
+    The Vampire has an unmodifiable 6+ save against any Wound. If an attack causes multiple Wounds,
+    make this save before multiplying the Wounds. This ability may be combined with Step Aside or
+    Dodge to improve the save to 4+.
   kind: warband
   engine_option: Vampire Reflexes
   source_refs: []
   name_i18n:
-    en: Vampire Reflexes
-    es: Reflejos de vampiro
+    es: Reflejos de Vampiro
+  effect_i18n:
+    es: >-
+      El Vampiro tiene una tirada de salvación inmodificable de 6+ contra cualquier Herida. Si un
+      ataque causa varias Heridas, realiza esta tirada antes de multiplicar las Heridas. Esta
+      habilidad puede combinarse con Apartarse o Esquivar para mejorar la salvación a 4+.
 - id: skill.virtue-of-valour
   name: Virtue of Valour
   category: special
-  summary: Re-rolls hit rolls against enemies with higher Strength.
+  effect: >-
+    When fighting a model with a higher Strength characteristic, the warrior may re-roll failed
+    hand-to-hand hit rolls.
   kind: warband
   engine_option: Virtue of Valour
   source_refs:
@@ -495,15 +637,20 @@ skills:
     section: Bretonnian Knight Virtues
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/bretonnian
   name_i18n:
-    en: Virtue of Valour
     es: Virtud del Valor
+  effect_i18n:
+    es: >-
+      Cuando combate contra un modelo con una característica de Fuerza superior, el guerrero puede
+      repetir las tiradas para impactar fallidas en combate cuerpo a cuerpo.
 - id: skill.weapons-of-the-north
   name: Weapons of the North
   category: special
-  summary: Re-rolls failed hit rolls with an axe or double-handed weapon.
+  effect: Re-rolls failed hit rolls with an axe or double-handed weapon.
+  effect_i18n:
+    es: >-
+      Repite las tiradas para impactar falladas con un hacha o un arma a dos manos.
   kind: warband
   engine_option: Weapons of the North
   source_refs: []
   name_i18n:
-    en: Weapons of the North
-    es: Armas del norte
+    es: Armas del Norte

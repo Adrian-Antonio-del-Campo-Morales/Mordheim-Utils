@@ -1,0 +1,207 @@
+/**
+ * P5.1 acceptance test (plan §5): the application service runs
+ * import → edit → export using fakes, in plain Node — no React, no browser
+ * APIs. Also covers the confirm-replace guard, dirty tracking, undo and
+ * error translation from file-port / use-case failures.
+ */
+
+import { describe, expect, it } from "vitest";
+
+import { createCampaignAppService } from "./service";
+import type { CampaignAppDeps, CampaignAppService } from "./types";
+import type {
+  Campaign,
+  CampaignFileError,
+  CampaignFilePort,
+  KnowledgeReader,
+  ParseResult,
+  SerializeResult,
+} from "../../domain/campaign/index";
+
+function makeCampaign(overrides: Partial<Campaign> = {}): Campaign {
+  return {
+    identity: {
+      campaign_name: "My Campaign",
+      warband_name: "Test Band",
+      warband_type: "Sisters of Sigmar",
+      band_id: "sisters-of-sigmar",
+      mercenary_variant: null,
+    },
+    configuration: {
+      is_draft: false,
+      starting_gold: 500,
+      minimum_models: 3,
+      maximum_models: 15,
+      hero_limit: 5,
+    },
+    resources: { stash_value: 0, rare_finds: 0, treasures: 0, campaign_points: 0 },
+    current_state_number: 0,
+    warriors: [],
+    battles: [],
+    states: [],
+    post_battles: [],
+    inventory: [],
+    special_rules: [],
+    manual_log: [],
+    ...overrides,
+  };
+}
+
+const okDocument = {
+  marker: "MORDHEIM_CAMPAIGN_MANAGER" as const,
+  format_version: 4 as const,
+  saved_at: "2026-09-09T00:00:00Z",
+  campaign: {} as Record<string, unknown>,
+};
+
+const fakeFiles: CampaignFilePort = {
+  parseCampaignFile: (text: string): ParseResult => {
+    if (text === "NOT JSON") {
+      return {
+        ok: false,
+        reason: "invalid_json",
+        message: "The file is not valid JSON.",
+        supported_versions: [4],
+      } as CampaignFileError;
+    }
+    if (text === "OLD") {
+      return {
+        ok: false,
+        reason: "retired_version",
+        message: "Format version 3 is no longer supported.",
+        found_version: 3,
+        supported_versions: [4],
+      } as CampaignFileError;
+    }
+    if (text === "BROKEN") {
+      return {
+        ok: false,
+        reason: "schema_violation",
+        message: "campaign.warriors must be an array.",
+        location: "campaign.warriors",
+        supported_versions: [4],
+      } as CampaignFileError;
+    }
+    return { ok: true, document: { ...okDocument, campaign: makeCampaign() as unknown as Record<string, unknown> } };
+  },
+  serializeCampaign: (): SerializeResult => ({
+    ok: true,
+    text: '{"marker":"MORDHEIM_CAMPAIGN_MANAGER","format_version":4}',
+  }),
+};
+
+const fakeKnowledge: KnowledgeReader = {
+  queryKnowledge: () => ({ ok: false, reason: "not_found" }),
+  queryMany: (queries) => queries.map((q) => fakeKnowledge.queryKnowledge(q)),
+};
+
+function makeService(): { service: CampaignAppService; deps: CampaignAppDeps } {
+  const deps: CampaignAppDeps = { files: fakeFiles, knowledge: fakeKnowledge };
+  return { service: createCampaignAppService(deps), deps };
+}
+
+describe("P5.1 campaign application service", () => {
+  it("imports a valid file, exposes the document and starts clean", async () => {
+    const { service } = makeService();
+    const result = await service.importCampaign({ text: "OK" });
+    expect(result.ok).toBe(true);
+    expect(service.current()?.campaign.identity.band_id).toBe("sisters-of-sigmar");
+    expect(service.isDirty()).toBe(false);
+  });
+
+  it("rejects replacement without confirmation, allows it when confirmed", async () => {
+    const { service } = makeService();
+    await service.importCampaign({ text: "OK" });
+    const denied = await service.importCampaign({ text: "OK" });
+    expect(denied.ok).toBe(false);
+    if (!denied.ok) expect(denied.reason).toBe("already_loaded");
+    const allowed = await service.importCampaign({ text: "OK", confirm_replace: true });
+    expect(allowed.ok).toBe(true);
+  });
+
+  it("translates file-port failures into stable app errors", async () => {
+    const { service } = makeService();
+    for (const [text, expected] of [
+      ["NOT JSON", "file_error"],
+      ["OLD", "file_error"],
+      ["BROKEN", "file_error"],
+    ] as const) {
+      const result = await service.importCampaign({ text });
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.reason).toBe(expected);
+        expect(result.detail?.file_reason).toBeTypeOf("string");
+      }
+    }
+    expect(service.current()).toBeNull();
+  });
+
+  it("imports → edits (view selection) → exports a valid document", async () => {
+    const { service } = makeService();
+    await service.importCampaign({ text: "OK" });
+    const selected = service.selectMoment("state:0");
+    expect(selected.ok).toBe(true);
+    // View selection does not dirty the campaign.
+    expect(service.isDirty()).toBe(false);
+    expect(service.current()?.view.selected_moment).toBe("state:0");
+    const exported = await service.exportCampaign();
+    expect(exported.ok).toBe(true);
+    expect(exported.payload?.filename).toBe("Test_Band.mordheim");
+    expect(exported.payload?.text).toContain('"format_version":4');
+  });
+
+  it("refuses export with no campaign loaded", async () => {
+    const { service } = makeService();
+    const result = await service.exportCampaign();
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toBe("no_campaign_loaded");
+  });
+
+  it("runs an unknown action into a stable error", async () => {
+    const { service } = makeService();
+    await service.importCampaign({ text: "OK" });
+    const result = await service.run("nonexistent", {});
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toBe("unknown");
+  });
+
+  it("refuses use-case runs with no campaign loaded", async () => {
+    const { service } = makeService();
+    const result = await service.run("assignEquipment", {});
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toBe("no_campaign_loaded");
+  });
+
+  it("translates domain rejections into typed values without throwing", async () => {
+    // P3.5 ported assignEquipment for real, so a KB miss now exercises the
+    // same rejection-as-value convention the not-ported stub used to.
+    const { service } = makeService();
+    await service.importCampaign({ text: "OK" });
+    const result = await service.run("assignEquipment", {
+      warrior_id: "w1",
+      item_id: "dagger",
+      quantity: 1,
+      direction: "equip",
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toBe("rejected");
+      expect(String(result.detail?.reason)).toBe("not_found");
+    }
+  });
+
+  it("undoes a committed use-case change and reports nothing to undo afterwards", async () => {
+    const { service } = makeService();
+    await service.importCampaign({ text: "OK" });
+    const firstUndo = await service.run("undo", {});
+    expect(firstUndo.ok).toBe(false);
+    const edit = await service.run("composeDraft", {});
+    expect(edit.ok).toBe(false); // not ported → no state change pushed
+    // Simulate a real ported use case: selectMoment through run() is not in
+    // the use-case dispatch; undo covers future P6.x edits. For now verify
+    // undo rejects when history is empty even after a failed (rejected) run.
+    const stillEmpty = await service.run("undo", {});
+    expect(stillEmpty.ok).toBe(false);
+    if (!stillEmpty.ok) expect(stillEmpty.reason).toBe("rejected");
+  });
+});

@@ -31,7 +31,29 @@ def build(*, attacks=1, strength=3, toughness=3, wounds=1, **changes):
     return compile_fighter(FighterBuild(**options))
 
 
-def test_audited_weapon_contracts_expose_their_missing_numeric_effects():
+def test_steel_whip_charge_bonus_matches_modular_round_modifier():
+    from mordheim_combat.modular.rounds import apply_round_weapon_attack_modifiers
+    from mordheim_combat.vectorized import round_weapon_attack_count
+
+    attacker = build(main_weapon_id="weapon.steel-whip")
+    defender = build()
+    charging = np.array([False])
+    charged = np.array([True])
+    base = np.array([2], dtype=np.int16)
+
+    expected = apply_round_weapon_attack_modifiers(
+        attacker, defender, int(base[0]), first_round=True,
+        charging=False, charged=True,
+    )
+    actual = round_weapon_attack_count(
+        attacker, defender, base, first_round=True,
+        charging=charging, charged=charged,
+    )
+
+    assert expected == 3
+    assert actual.tolist() == [expected]
+
+
     from mordheim_combat.vectorized import attack_count
     from mordheim_combat.vectorized import priority
 
@@ -92,6 +114,41 @@ def test_frenzy_persists_and_pistols_only_fire_in_the_first_round():
     assert attack_count(pistol_and_sword, flags, first_round=False).tolist() == [1]
     assert attack_count(sword_and_pistol, flags, first_round=True).tolist() == [3]
     assert attack_count(sword_and_pistol, flags, first_round=False).tolist() == [2]
+
+
+def test_frantic_priority_score_does_not_overflow_int8():
+    """Regression: priority() returns int8, and the driver's event score used
+    to multiply it by 100 *in int8*, so Frantic's tier 10 wrapped to -24 and
+    silently demoted Strike-First fanatics behind ordinary weapons — the
+    frenzy-vs-w2 deep-matrix divergence (-15 pp vs the oracle).  Scores must
+    be computed in int32, and the frantic fanatic must beat a plain fighter
+    with higher Initiative in every duel of a scripted batch.
+    """
+    from mordheim_construction.compiler import compile_fighter
+    from mordheim_combat.vectorized import priority
+    from mordheim_combat.vectorized._driver import _simulate_batch_core
+
+    flags = np.zeros(1, dtype=bool)
+    fanatic = compile_fighter(FighterBuild(
+        ruleset="mordheim", band_id="night-goblins-mic", profile_id="fanatics",
+    ))
+    veteran = compile_fighter(FighterBuild(
+        ruleset="mordheim",
+        characteristics=Characteristics(5, 4, 4, 2, 5, 2),
+        main_weapon_id="weapon.axe",
+    ))
+    assert priority(fanatic, veteran, False, flags, flags, flags).tolist() == [10]
+
+    # Deterministic seeded batch: with the overflow the fanatic acts last
+    # and wins far less often than the oracle's ~22% rate; the fix restores
+    # it (measured 74/512 fixed vs 25/512 broken on this seed — the margins
+    # keep the pin deterministic but not brittle).
+    first_wins, second_wins, unresolved = _simulate_batch_core(
+        fanatic, veteran, 512, np.random.default_rng(20260907), 50,
+    )
+    assert unresolved == 0
+    assert 55 <= first_wins <= 95, (first_wins, second_wins)
+    assert 410 <= second_wins <= 450, (first_wins, second_wins)
 
 
 def test_frenzy_doubling_is_gated_on_the_live_state_not_the_effect():

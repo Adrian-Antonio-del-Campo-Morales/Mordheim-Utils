@@ -3,7 +3,8 @@ band_id: undead
 rules:
 - id: vampire--leader
   name: Leader
-  effect: Any model in the warband within 6" of the Vampire may use the Vampire's Leadership instead of
+  effect: >-
+    Any model in the warband within 6" of the Vampire may use the Vampire's Leadership instead of
     its own.
   source:
     manual: mordheimer.net
@@ -11,12 +12,10 @@ rules:
     section: heroes / 1 Vampire / Special Rules / Leader
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: Leader
     es: Líder
   effect_i18n:
-    en: Any model in the warband within 6" of the Vampire may use the Vampire's Leadership instead of
-      its own.
-    es: Cualquier miniatura de la banda a 6" del Vampiro puede usar el Liderazgo del Vampiro en lugar
+    es: >-
+      Cualquier miniatura de la banda a 6" del Vampiro puede usar el Liderazgo del Vampiro en lugar
       del suyo propio.
   applies_to:
     profile_ids:
@@ -29,21 +28,17 @@ rules:
     - id: unimplemented.undead.vampire.leader
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: vampire--cause-fear
   name: Cause Fear
-  effect: The Vampire causes Fear.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 1 Vampire / Special Rules / Cause Fear
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: Cause Fear
-    es: Provocar miedo
-  effect_i18n:
-    en: The Vampire causes Fear.
-    es: El Vampiro provoca Miedo.
+    es: Causan Miedo
   applies_to:
     profile_ids:
     - vampire
@@ -55,21 +50,18 @@ rules:
     - id: unimplemented.undead.vampire.cause-fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
+  rule_ref: shared-rule.fear
 - id: vampire--immune-to-psychology
   name: Immune to Psychology
-  effect: The Vampire is immune to Psychology and never leaves combat because of Psychology.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 1 Vampire / Special Rules / Immune to Psychology
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: Immune to Psychology
-    es: Inmune a la psicología
-  effect_i18n:
-    en: The Vampire is immune to Psychology and never leaves combat because of Psychology.
-    es: El Vampiro es inmune a la Psicología y nunca abandona el combate a causa de la Psicología.
+    es: Inmune a la Psicología
   applies_to:
     profile_ids:
     - vampire
@@ -81,7 +73,9 @@ rules:
     - id: unimplemented.undead.vampire.immune-to-psychology
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
+  rule_ref: shared-rule.immune-to-psychology
 - id: vampire--immune-to-poison
   runtime:
     scope: 'YES'
@@ -96,21 +90,17 @@ rules:
         parameters:
           value: true
   name: Immune to Poison
-  effect: The Vampire is immune to poison.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 1 Vampire / Special Rules / Immune to Poison
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: Immune to Poison
-    es: Inmune al veneno
-  effect_i18n:
-    en: The Vampire is immune to poison.
-    es: El Vampiro es inmune al veneno.
+    es: Inmune al Veneno
   applies_to:
     profile_ids:
     - vampire
+  rule_ref: shared-rule.immune-to-poison
 - id: vampire--no-pain
   runtime:
     scope: 'YES'
@@ -123,38 +113,26 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 1 Vampire / Special Rules / No Pain
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: No Pain
-    es: Sin dolor
-  effect_i18n:
-    en: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
-    es: El Vampiro trata un resultado de Aturdido en la tabla de Heridas como Derribado.
+    es: Sin Dolor
   applies_to:
     profile_ids:
     - vampire
+  rule_ref: shared-rule.no-pain
 - id: necromancer--wizard
   name: Wizard
-  effect: The Necromancer is a Wizard and may use Necromantic magic. The Necromancy spell list itself
-    is intentionally not modelled in this file.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 0 – 1 Necromancer / Special Rules / Wizard
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: Wizard
     es: Mago
-  effect_i18n:
-    en: The Necromancer is a Wizard and may use Necromantic magic. The Necromancy spell list itself is
-      intentionally not modelled in this file.
-    es: El Nigromante es un Mago y puede usar la magia Nigromántica. La propia lista de hechizos de Nigromancia
-      no está modelada intencionadamente en este fichero.
   applies_to:
     profile_ids:
     - necromancer
@@ -166,21 +144,18 @@ rules:
     - id: unimplemented.undead.necromancer.wizard
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+  rule_ref: shared-rule.wizard
 - id: ghouls--cause-fear
   name: Cause Fear
-  effect: Ghouls cause Fear.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Ghouls / Special Rules / Cause Fear
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: Cause Fear
-    es: Provocar miedo
-  effect_i18n:
-    en: Ghouls cause Fear.
-    es: Los Gulles provocan Miedo.
+    es: Causan Miedo
   applies_to:
     profile_ids:
     - ghouls
@@ -192,21 +167,18 @@ rules:
     - id: unimplemented.undead.ghouls.cause-fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
+  rule_ref: shared-rule.fear-4
 - id: dire-wolves--charge
   name: Charge
-  effect: A Dire Wolf has 2 Attacks instead of 1 during a turn in which it charges.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 5 Dire wolves / Special Rules / Charge
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: Charge
     es: Carga
-  effect_i18n:
-    en: A Dire Wolf has 2 Attacks instead of 1 during a turn in which it charges.
-    es: Un Lobo terrible tiene 2 Ataques en lugar de 1 durante el turno en el que carga.
   applies_to:
     profile_ids:
     - dire-wolves
@@ -222,20 +194,16 @@ rules:
         id: trait.charge-attack-bonus
         parameters:
           value: true
+  rule_ref: shared-rule.charge
 - id: dire-wolves--may-not-run
-  name: May not Run
-  effect: Dire Wolves may not run, but may charge normally.
+  name: May Not Run
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 5 Dire wolves / Special Rules / May not Run
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: May not Run
-    es: No pueden correr
-  effect_i18n:
-    en: Dire Wolves may not run, but may charge normally.
-    es: Los Lobos terrible no pueden correr, pero pueden cargar normalmente.
+    es: No Pueden Correr
   applies_to:
     profile_ids:
     - dire-wolves
@@ -247,21 +215,18 @@ rules:
     - id: unimplemented.undead.dire-wolves.may-not-run
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+  rule_ref: shared-rule.may-not-run
 - id: dire-wolves--cause-fear
   name: Cause Fear
-  effect: Dire Wolves cause Fear.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 5 Dire wolves / Special Rules / Cause Fear
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: Cause Fear
-    es: Provocar miedo
-  effect_i18n:
-    en: Dire Wolves cause Fear.
-    es: Los Lobos terrible provocan Miedo.
+    es: Causan Miedo
   applies_to:
     profile_ids:
     - dire-wolves
@@ -273,21 +238,18 @@ rules:
     - id: unimplemented.undead.dire-wolves.cause-fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
+  rule_ref: shared-rule.fear-3
 - id: dire-wolves--immune-to-psychology
   name: Immune to Psychology
-  effect: Dire Wolves are immune to Psychology and never leave combat because of Psychology.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 5 Dire wolves / Special Rules / Immune to Psychology
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: Immune to Psychology
-    es: Inmune a la psicología
-  effect_i18n:
-    en: Dire Wolves are immune to Psychology and never leave combat because of Psychology.
-    es: Los Lobos terrible son inmunes a la Psicología y nunca abandonan el combate a causa de la Psicología.
+    es: Inmune a la Psicología
   applies_to:
     profile_ids:
     - dire-wolves
@@ -299,7 +261,9 @@ rules:
     - id: unimplemented.undead.dire-wolves.immune-to-psychology
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
+  rule_ref: shared-rule.immune-to-psychology-3
 - id: dire-wolves--immune-to-poison
   runtime:
     scope: 'YES'
@@ -314,35 +278,26 @@ rules:
         parameters:
           value: true
   name: Immune to Poison
-  effect: Dire Wolves are immune to poison.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 5 Dire wolves / Special Rules / Immune to Poison
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: Immune to Poison
-    es: Inmune al veneno
-  effect_i18n:
-    en: Dire Wolves are immune to poison.
-    es: Los Lobos terrible son inmunes al veneno.
+    es: Inmune al Veneno
   applies_to:
     profile_ids:
     - dire-wolves
+  rule_ref: shared-rule.immune-to-poison-2
 - id: dire-wolves--unliving
   name: Unliving
-  effect: Dire Wolves never gain Experience.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 5 Dire wolves / Special Rules / Unliving
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: Unliving
-    es: Sin vida
-  effect_i18n:
-    en: Dire Wolves never gain Experience.
-    es: Los Lobos terrible nunca ganan Experiencia.
+    es: Sin Vida
   applies_to:
     profile_ids:
     - dire-wolves
@@ -354,7 +309,9 @@ rules:
     - id: unimplemented.undead.dire-wolves.unliving
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+  rule_ref: shared-rule.dead
 - id: dire-wolves--no-pain
   runtime:
     scope: 'YES'
@@ -367,35 +324,26 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Dire Wolves treat a Stunned result on the Injury chart as Knocked Down.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 5 Dire wolves / Special Rules / No Pain
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: No Pain
-    es: Sin dolor
-  effect_i18n:
-    en: Dire Wolves treat a Stunned result on the Injury chart as Knocked Down.
-    es: Los Lobos terrible tratan un resultado de Aturdido en la tabla de Heridas como Derribado.
+    es: Sin Dolor
   applies_to:
     profile_ids:
     - dire-wolves
+  rule_ref: shared-rule.no-pain-2
 - id: zombies--cause-fear
   name: Cause Fear
-  effect: Zombies cause Fear.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Zombies / Special Rules / Cause Fear
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: Cause Fear
-    es: Provocar miedo
-  effect_i18n:
-    en: Zombies cause Fear.
-    es: Los Zombis provocan Miedo.
+    es: Causan Miedo
   applies_to:
     profile_ids:
     - zombies
@@ -407,21 +355,18 @@ rules:
     - id: unimplemented.undead.zombies.cause-fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
+  rule_ref: shared-rule.fear-6
 - id: zombies--may-not-run
-  name: May not run
-  effect: Zombies may not run, but may charge normally.
+  name: May Not Run
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Zombies / Special Rules / May not run
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: May not run
-    es: No pueden correr
-  effect_i18n:
-    en: Zombies may not run, but may charge normally.
-    es: Los Zombis no pueden correr, pero pueden cargar normalmente.
+    es: No Pueden Correr
   applies_to:
     profile_ids:
     - zombies
@@ -433,21 +378,18 @@ rules:
     - id: unimplemented.undead.zombies.may-not-run
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+  rule_ref: shared-rule.may-not-run-3
 - id: zombies--immune-to-psychology
   name: Immune to Psychology
-  effect: Zombies are immune to Psychology and never leave combat because of Psychology.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Zombies / Special Rules / Immune to Psychology
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: Immune to Psychology
-    es: Inmune a la psicología
-  effect_i18n:
-    en: Zombies are immune to Psychology and never leave combat because of Psychology.
-    es: Los Zombis son inmunes a la Psicología y nunca abandonan el combate a causa de la Psicología.
+    es: Inmune a la Psicología
   applies_to:
     profile_ids:
     - zombies
@@ -459,7 +401,9 @@ rules:
     - id: unimplemented.undead.zombies.immune-to-psychology
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
+  rule_ref: shared-rule.immune-to-psychology-5
 - id: zombies--immune-to-poison
   runtime:
     scope: 'YES'
@@ -474,21 +418,17 @@ rules:
         parameters:
           value: true
   name: Immune to Poison
-  effect: Zombies are immune to poison.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Zombies / Special Rules / Immune to Poison
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: Immune to Poison
-    es: Inmune al veneno
-  effect_i18n:
-    en: Zombies are immune to poison.
-    es: Los Zombis son inmunes al veneno.
+    es: Inmune al Veneno
   applies_to:
     profile_ids:
     - zombies
+  rule_ref: shared-rule.immune-to-poison-4
 - id: zombies--no-pain
   runtime:
     scope: 'YES'
@@ -501,35 +441,26 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Zombies treat a Stunned result on the Injury chart as Knocked Down.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Zombies / Special Rules / No Pain
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: No Pain
-    es: Sin dolor
-  effect_i18n:
-    en: Zombies treat a Stunned result on the Injury chart as Knocked Down.
-    es: Los Zombis tratan un resultado de Aturdido en la tabla de Heridas como Derribado.
+    es: Sin Dolor
   applies_to:
     profile_ids:
     - zombies
+  rule_ref: shared-rule.no-pain-3
 - id: zombies--no-brain
   name: No Brain
-  effect: Zombies never gain Experience.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Zombies / Special Rules / No Brain
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
   name_i18n:
-    en: No Brain
-    es: Sin cerebro
-  effect_i18n:
-    en: Zombies never gain Experience.
-    es: Los Zombis nunca ganan Experiencia.
+    es: Sin Cerebro
   applies_to:
     profile_ids:
     - zombies
@@ -541,30 +472,31 @@ rules:
     - id: unimplemented.undead.zombies.no-brain
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+  rule_ref: shared-rule.brainless
 - id: band--undead-maximum-characteristics
   name: Undead Maximum Characteristics
-  effect: Vampires use the Vampire racial maximum profile (campaign.limit.racial-maximum.vampire). Necromancers
-    and Dregs use the Human racial maximum profile (campaign.limit.racial-maximum.human). Ghouls use the
-    Ghoul racial maximum profile (campaign.limit.racial-maximum.ghoul). Dire Wolves and Zombies do not
-    gain Experience and therefore do not use advancement maximums.
+  effect: >-
+    Vampires use the Vampire racial maximum profile (campaign.limit.racial-maximum.vampire).
+    Necromancers and Dregs use the Human racial maximum profile
+    (campaign.limit.racial-maximum.human). Ghouls use the Ghoul racial maximum profile
+    (campaign.limit.racial-maximum.ghoul). Dire Wolves and Zombies do not gain Experience and
+    therefore do not use advancement maximums.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Racial Maximum Characteristics / Vampire; Human; Ghoul
     url: https://mordheimer.net/docs/campaigns/experience
   name_i18n:
-    en: Undead Maximum Characteristics
-    es: Características máximas de los Muertos Vivientes
+    es: Características Máximas de los Muertos Vivientes
   effect_i18n:
-    en: Vampires use the Vampire racial maximum profile (campaign.limit.racial-maximum.vampire). Necromancers
-      and Dregs use the Human racial maximum profile (campaign.limit.racial-maximum.human). Ghouls use
-      the Ghoul racial maximum profile (campaign.limit.racial-maximum.ghoul). Dire Wolves and Zombies
-      do not gain Experience and therefore do not use advancement maximums.
-    es: Los Vampiros usan el perfil racial máximo de Vampiro (campaign.limit.racial-maximum.vampire).
-      Los Nigromantes y los Secuaces usan el perfil racial máximo Humano (campaign.limit.racial-maximum.human).
-      Los Gulles usan el perfil racial máximo de Gul (campaign.limit.racial-maximum.ghoul). Los Lobos
-      terrible y los Zombis no ganan Experiencia y por tanto no usan máximos de progresión.
+    es: >-
+      Los Vampiros usan el perfil racial máximo de Vampiro (campaign.limit.racial-maximum.vampire).
+      Los Nigromantes y los Secuaces usan el perfil racial máximo Humano
+      (campaign.limit.racial-maximum.human). Los Gulles usan el perfil racial máximo de Gul
+      (campaign.limit.racial-maximum.ghoul). Los Lobos terrible y los Zombis no ganan Experiencia y
+      por tanto no usan máximos de progresión.
   applies_to:
     band: true
   runtime:
@@ -578,3 +510,30 @@ rules:
       reason: >-
         Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
         construction.
+- id: necromancer--no-armoured-casting
+  name: No Armour Casting
+  effect: >-
+    A Necromancer may not cast spells while wearing armour or carrying a shield or buckler unless the Necromancer has a rule such as Warrior Wizard that explicitly allows it.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Necromancer / Special Rules / No Armour Casting
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/undead
+  name_i18n:
+    es: Sin Conjuros con Armadura
+  effect_i18n:
+    es: >-
+      Un Nigromante no puede lanzar conjuros mientras lleva armadura, escudo o rodela, salvo que tenga una regla como Guerrero Mago que lo permita explícitamente.
+  applies_to:
+    profile_ids:
+    - necromancer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.undead.necromancer.no-armoured-casting
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic.

@@ -1,0 +1,179 @@
+from __future__ import annotations
+
+import tkinter as tk
+from tkinter import ttk
+from mordheim_campaign.ui.modality import make_modal
+
+from mordheim_campaign.application.controller import AppController
+from mordheim_campaign.ui.equipment_display import equipment_quantity_suffix
+from mordheim_ui.theme import COLORS
+from mordheim_ui.windowing import center_on_application
+from mordheim_ui.widgets import BorderedFrame, ScrollableFrame
+from mordheim_ui.i18n import tr, tr_message
+
+
+class EquipmentEditorDialog(tk.Toplevel):
+    """Per-warrior equipment editor: reassign between roster and stash.
+
+    Left: every warrior with their carried equipment (RETURN buttons). Right:
+    the unassigned stash (ASSIGN buttons). Changes apply immediately through
+    the controller and are legal outside the post-battle sequence too.
+    """
+
+    def __init__(self, parent: tk.Misc, controller: AppController, *, warrior_id: str | None = None) -> None:
+        super().__init__(parent)
+        self.controller = controller
+        self.configure(bg=COLORS["bg"])
+        self.title(tr('Equipment Editor'))
+        self.resizable(False, False)
+        self.transient(parent.winfo_toplevel())
+        self.grab_set()
+
+        outer = BorderedFrame(self, background=COLORS["panel"], padding=1)
+        outer.pack(fill="both", expand=True, padx=18, pady=18)
+        body = outer.body
+        body.configure(padx=16, pady=16)
+
+        tk.Label(body, text=tr('EQUIPMENT'), bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 15)).pack(anchor="w")
+        tk.Label(
+            body,
+            text=tr('Reassign equipment between the roster and the stash. Nothing is bought or sold here; the warband total stays the same.'),
+            bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9), wraplength=560, justify="left",
+        ).pack(anchor="w", pady=(4, 10))
+
+        columns = tk.Frame(body, bg=COLORS["panel"])
+        columns.pack(fill="both", expand=True)
+        columns.columnconfigure(0, weight=3)
+        columns.columnconfigure(1, weight=2)
+
+        roster = BorderedFrame(columns, background=COLORS["panel_alt"], padding=1)
+        roster.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
+        rb = roster.body
+        rb.configure(padx=10, pady=10)
+        tk.Label(rb, text=tr('CARRIED BY THE WARBAND'), bg=COLORS["panel_alt"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 6))
+        scroll = ScrollableFrame(rb, background=COLORS["panel_alt"], height=330)
+        scroll.pack(fill="both", expand=True)
+        self._scroll = scroll
+        for warrior in controller.state.campaign.warriors:
+            self._warrior_block(scroll.inner, warrior, highlighted=warrior.id == warrior_id)
+
+        stash = BorderedFrame(columns, background=COLORS["panel_alt"], padding=1)
+        stash.grid(row=0, column=1, sticky="nsew")
+        sb = stash.body
+        sb.configure(padx=10, pady=10)
+        tk.Label(sb, text=tr('STASH (UNASSIGNED)'), bg=COLORS["panel_alt"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 6))
+        self._stash_box = tk.Frame(sb, bg=COLORS["panel_alt"])
+        self._stash_box.pack(fill="both", expand=True)
+
+        actions = tk.Frame(body, bg=COLORS["panel"])
+        actions.pack(fill="x", pady=(12, 0))
+        self._status = tk.StringVar(value="")
+        tk.Label(actions, textvariable=self._status, bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8), wraplength=380, justify="left").pack(side="left")
+        ttk.Button(actions, text=tr('Done'), command=self._close).pack(side="right")
+
+        self._refresh()
+        self.protocol("WM_DELETE_WINDOW", self._close)
+        self.bind("<Escape>", lambda _e: self._close())
+        self.after_idle(self._center)
+
+    # ----------------------------------------------------------------- blocks
+
+    def _warrior_block(self, parent: tk.Misc, warrior, *, highlighted: bool) -> None:
+        block = tk.Frame(parent, bg=COLORS["panel_alt"], pady=6)
+        block.pack(fill="x")
+        if highlighted:
+            block.configure(highlightthickness=1, highlightbackground=COLORS["accent"])
+        head = tk.Frame(block, bg=COLORS["panel_alt"])
+        head.pack(fill="x")
+        label = warrior.name + (f"  ·  ×{warrior.quantity}" if warrior.quantity > 1 else "")
+        tk.Label(head, text=label, bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI Semibold", 9)).pack(side="left")
+        if warrior.equipment:
+            for item in warrior.equipment:
+                row = tk.Frame(block, bg=COLORS["panel_alt"])
+                row.pack(fill="x", pady=1)
+                suffix = equipment_quantity_suffix(warrior, item)
+                tk.Label(row, text=f"• {item.name}{suffix}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(side="left", fill="x", expand=True)
+                action = ttk.Button(row, text=tr("RETURN") if item.transferable else tr("LOCKED"), style="Mini.TButton", width=8,
+                                    command=lambda i=item.item_id, w=warrior: self._move(self.controller.return_equipped_item, i, w.id))
+                action.pack(side="right")
+                if not item.transferable:
+                    action.state(["disabled"])
+        else:
+            tk.Label(block, text=tr('No equipment'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
+
+    def _stash_rows(self, parent: tk.Misc) -> None:
+        stash_rows = [item for item in self.controller.state.campaign.inventory if item.stash > 0]
+        if not stash_rows:
+            tk.Label(parent, text=tr('The stash is empty.'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
+            return
+        for item in stash_rows:
+            row = tk.Frame(parent, bg=COLORS["panel_alt"], pady=4)
+            row.pack(fill="x")
+            tk.Label(row, text=f"{item.name} ×{item.stash}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI Semibold", 8), anchor="w").pack(side="left", fill="x", expand=True)
+            ttk.Button(row, text=tr('ASSIGN…'), style="Mini.TButton", width=9,
+                       command=lambda i=item.id: self._assign_pick(i)).pack(side="right")
+
+    def _assign_pick(self, item_id: str) -> None:
+        """Pick the warrior receiving the stash item."""
+        campaign = self.controller.state.campaign
+        stock = next((item.stash for item in campaign.inventory if item.id == item_id), 0)
+        from mordheim_campaign.application.post_battle_engine import PostBattleEngine
+        warriors = [warrior for warrior in campaign.warriors
+                    if PostBattleEngine.assignment_quantity(warrior, item_id) <= stock]
+        if campaign.is_draft:
+            warriors = [
+                warrior for warrior in warriors
+                if item_id in {offer.item_id for offer in self.controller.draft_equipment_offers(warrior.id)}
+            ]
+        if not warriors:
+            self._status.set(tr('No eligible group or warrior has enough copies available.'))
+            return
+        dialog = tk.Toplevel(self)
+        dialog.title(tr('Assign to…'))
+        make_modal(dialog, self)
+        tk.Label(dialog, text=tr('Assign to which warrior?'), bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 9)).pack(padx=16, pady=(12, 6))
+        listbox = tk.Listbox(dialog, height=min(10, len(warriors)), width=34, bg=COLORS["entry"], fg=COLORS["text"],
+                             selectbackground=COLORS["accent"], selectforeground=COLORS["black"], bd=0, font=("Segoe UI", 9), activestyle="none")
+        listbox.pack(padx=16, pady=4)
+        for warrior in warriors:
+            label = warrior.name + (f"  ·  ×{warrior.quantity}" if warrior.quantity > 1 else "")
+            listbox.insert("end", label)
+        listbox.selection_set(0)
+
+        def _confirm() -> None:
+            selection = listbox.curselection()
+            if not selection:
+                dialog.destroy()
+                return
+            warrior = warriors[selection[0]]
+            dialog.destroy()
+            self._move(self.controller.assign_stash_item, item_id, warrior.id)
+
+        ttk.Button(dialog, text=tr('ASSIGN'), style="Accent.TButton", command=_confirm).pack(pady=(4, 12))
+        dialog.bind("<Return>", lambda _e: _confirm())
+        dialog.bind("<Escape>", lambda _e: dialog.destroy())
+        dialog.after_idle(lambda: center_on_application(dialog))
+
+    # --------------------------------------------------------------- plumbing
+
+    def _move(self, action, item_id: str, warrior_id: str) -> None:
+        ok, message = self.controller.perform_undoable(
+            tr('Move equipment'), lambda: action(item_id, warrior_id))
+        self._status.set(("✓ " if ok else "⚠ ") + tr_message(message))
+        self._refresh()
+
+    def _refresh(self) -> None:
+        """Rebuild lists in place (the dialog edits live campaign state)."""
+        for frame in (self._scroll.inner, self._stash_box):
+            for child in frame.winfo_children():
+                child.destroy()
+        for warrior in self.controller.state.campaign.warriors:
+            self._warrior_block(self._scroll.inner, warrior, highlighted=False)
+        self._stash_rows(self._stash_box)
+
+    def _close(self) -> None:
+        self.destroy()
+        self.controller.notify()
+
+    def _center(self) -> None:
+        center_on_application(self)

@@ -1,0 +1,1082 @@
+from __future__ import annotations
+
+import copy
+from collections.abc import Callable
+from dataclasses import fields, is_dataclass
+from pathlib import Path
+
+from mordheim_campaign.application.knowledge_port import KnowledgePort, WarbandProfile
+from mordheim_campaign.domain import (
+    AppState,
+    BattleVM,
+    CampaignVM,
+    EquipmentEntryVM,
+    InventoryItemVM,
+    PostBattleVM,
+    WarbandStateVM,
+)
+from mordheim_campaign.domain.battle_service import (
+    battle_availability as _battle_availability_domain,
+    pending_battle_start_checks as _pending_battle_start_checks_domain,
+    record_battle as _record_battle_domain,
+)
+from mordheim_campaign.domain.builders import make_draft_state, make_example_state, warrior_vm
+from mordheim_campaign.domain.models import unique_warrior_name
+from mordheim_campaign.domain.timeline_service import (
+    advance_step as _advance_post_battle_step,
+    open_review as _open_post_battle_review,
+    select_step as _select_post_battle_step,
+)
+from mordheim_campaign.domain.warband_service import commit_initial_warband as _commit_initial_warband_domain
+
+
+_ROMAN = ((10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I"))
+
+
+def _restore_in_place(target, source) -> None:
+    """Restore a snapshot while preserving references held by open editors."""
+    if is_dataclass(target) and is_dataclass(source) and type(target) is type(source):
+        for field in fields(target):
+            current, saved = getattr(target, field.name), getattr(source, field.name)
+            if (is_dataclass(current) and is_dataclass(saved)) or (
+                isinstance(current, (dict, list, set)) and isinstance(saved, type(current))
+            ):
+                _restore_in_place(current, saved)
+            else:
+                setattr(target, field.name, copy.deepcopy(saved))
+        return
+    if isinstance(target, dict):
+        for key in tuple(target):
+            if key not in source:
+                del target[key]
+        for key, saved in source.items():
+            current = target.get(key)
+            if (is_dataclass(current) and is_dataclass(saved)) or (
+                isinstance(current, (dict, list, set)) and isinstance(saved, type(current))
+            ):
+                _restore_in_place(current, saved)
+            else:
+                target[key] = copy.deepcopy(saved)
+        return
+    if isinstance(target, list):
+        by_id = {getattr(row, "id", object()): row for row in target if is_dataclass(row) and hasattr(row, "id")}
+        restored = []
+        for index, saved in enumerate(source):
+            current = by_id.get(getattr(saved, "id", None)) if is_dataclass(saved) else None
+            if current is None and index < len(target) and (
+                is_dataclass(saved) or isinstance(saved, (dict, list, set))
+            ) and type(target[index]) is type(saved):
+                current = target[index]
+            if current is not None and type(current) is type(saved):
+                _restore_in_place(current, saved); restored.append(current)
+            else:
+                restored.append(copy.deepcopy(saved))
+        target[:] = restored; return
+    if isinstance(target, set):
+        target.clear(); target.update(copy.deepcopy(source))
+
+#: Mercenary variants (Reikland/Middenheim/Marienburg/Ostermark) selectable by
+#: variant-capable warbands, as (stable id, label).
+VARIANT_CHOICES = (
+    ("reikland", "Reikland"),
+    ("middenheim", "Middenheim"),
+    ("marienburg", "Marienburg"),
+    ("ostermark", "Ostermark"),
+)
+
+
+def _roman(number: int) -> str:
+    result = []
+    for value, numeral in _ROMAN:
+        while number >= value:
+            result.append(numeral)
+            number -= value
+    return "".join(result)
+
+
+class AppController:
+    """Thin UI controller for the timeline-first campaign manager.
+
+    The campaign timeline owns navigation between immutable states and the
+    transitions that produce them. Band and profile data come from the KB
+    through :class:`KnowledgePort`; Tk widgets never read YAML or the loaders.
+    """
+
+    def __init__(self, state: AppState | None = None, *, port: KnowledgePort | None = None) -> None:
+        self.port = port or KnowledgePort()
+        self.state = state if state is not None else make_draft_state(self.port, "sisters-of-sigmar")
+        if self.state.campaign.is_draft:
+            campaign = self.state.campaign
+            campaign.required_profiles = {p.profile_id: p.member_minimum for p in self.port.profiles(campaign.collection, campaign.band_id) if p.required}
+        #: Session file-targeting state of the desktop adapter. The controller
+        #: only carries it so the UI file actions have one object to read;
+        #: the domain and the use cases never touch these paths.
+        self.persist_path = None
+        self.campaign_library_path: str | None = None
+        self._listeners: list[Callable[[], None]] = []
+        self._undo_listeners: list[Callable[[], None]] = []
+        self._locale_callbacks: list[Callable[[str], None]] = []
+        self._resolver = None
+        self._undo_history: list[tuple[AppState, str]] = []
+        self._undo_limit = 20
+        self.mark_saved()
+
+    @property
+    def persist_path(self) -> Path | None:
+        return self._persist_path
+
+    @persist_path.setter
+    def persist_path(self, value) -> None:
+        self._persist_path = Path(value).resolve() if value else None
+
+    def mark_saved(self) -> None:
+        self._saved_content = copy.deepcopy((self.state.campaign, self.state.pending_battle_draft))
+
+    @property
+    def has_unsaved_changes(self) -> bool:
+        return (self.state.campaign, self.state.pending_battle_draft) != self._saved_content
+
+    def subscribe(self, listener: Callable[[], None]) -> None:
+        self._listeners.append(listener)
+
+    def subscribe_locale(self, callback: Callable[[str], None]) -> None:
+        """Register a callback invoked with every locale switch."""
+        self._locale_callbacks.append(callback)
+
+    def subscribe_undo(self, listener: Callable[[], None]) -> None:
+        self._undo_listeners.append(listener)
+
+    def _notify_undo(self) -> None:
+        for listener in list(self._undo_listeners):
+            listener()
+
+    def notify(self) -> None:
+        for listener in list(self._listeners):
+            listener()
+
+    def set_locale(self, locale: str) -> None:
+        """Switch the display locale for UI strings and KB names.
+
+        The application layer does not import locale singletons itself: the
+        desktop UI and the KB readers register their own switch callbacks and
+        this method only fans the choice out to them (``app.py`` wires the
+        desktop pair). The web application registers its own or ignores it.
+        """
+        for callback in self._locale_callbacks:
+            callback(locale)
+        self.notify()
+
+    @property
+    def can_undo(self) -> bool:
+        return bool(self._undo_history)
+
+    @property
+    def undo_label(self) -> str:
+        return f"Undo: {self._undo_history[-1][1]}" if self._undo_history else "Undo"
+
+    def clear_undo_history(self) -> None:
+        self._undo_history.clear()
+        self._notify_undo()
+
+    def perform_undoable(self, description: str, action):
+        """Run one domain mutation and retain its previous state on success."""
+        before = copy.deepcopy(self.state)
+        try:
+            result = action()
+        except Exception:
+            _restore_in_place(self.state, before)
+            self._notify_undo()
+            raise
+        succeeded = result[0] if isinstance(result, tuple) and result else result is not False
+        if not succeeded:
+            _restore_in_place(self.state, before)
+            self._notify_undo()
+            return result
+        if succeeded and self.state != before:
+            result_description = str(result[1]) if isinstance(result, tuple) and len(result) > 1 else ""
+            self._undo_history.append((before, description.strip() or result_description or "Change"))
+            del self._undo_history[:-self._undo_limit]
+            self._notify_undo()
+        return result
+
+    def buy_draft_weapon_upgrade(self, offer, target_id: str, price: int) -> tuple[bool, str]:
+        """Replace one stashed base weapon with its purchased upgraded form."""
+        campaign = self._campaign()
+        target = next((row for row in campaign.inventory if row.id == target_id), None)
+        if not campaign.is_draft or target is None or target.stash < 1:
+            return False, "The selected base weapon is not available in the stash."
+        available = next((row for row in self.draft_stash_offers() if row.item_id == offer.item_id), None)
+        if available is None or available.price_upgrade_multiplier is None:
+            return False, "This weapon upgrade is not available during warband creation."
+        if self.port.weapon_hands(target.base_item_id or target.id) is None:
+            return False, "Only weapons can receive this upgrade."
+        if offer.name in target.special_rules or target.id.startswith(f"{offer.item_id}:"):
+            return False, f"{target.name} already has the {offer.name} upgrade."
+        expected_price = target.value * available.price_upgrade_multiplier
+        if price <= 0 or price != expected_price:
+            return False, f"Invalid upgrade price: expected {expected_price} gc."
+        if price > campaign.draft_treasury:
+            return False, f"Not enough gold: {price} gc needed."
+        base_cost = target.remove_stock(1)
+        target.stash -= 1
+        base_id = target.base_item_id or target.id
+        upgraded_id = f"{offer.item_id}:{target.id}"
+        upgraded = next((row for row in campaign.inventory if row.id == upgraded_id), None)
+        if upgraded is None:
+            upgraded = InventoryItemVM(upgraded_id, f"{offer.name} {target.name}", target.category, 0, 0, 0,
+                                       target.value + price, special_rules=[*target.special_rules, offer.name],
+                                       base_item_id=base_id)
+            campaign.inventory.append(upgraded)
+        upgraded.add_stock(1, base_cost + price)
+        upgraded.stash += 1
+        return True, f"{target.name} upgraded to {upgraded.name} for {price} gc."
+
+    def undo(self) -> tuple[bool, str]:
+        if not self._undo_history:
+            return False, "There is nothing to undo."
+        state, description = self._undo_history.pop()
+        self.state = state
+        self._notify_undo()
+        self.notify()
+        return True, f"Undone: {description}."
+
+    def replace_state(self, state: AppState) -> None:
+        self.clear_undo_history()
+        self.state = state
+        if state.campaign.is_draft:
+            state.campaign.required_profiles = {p.profile_id: p.member_minimum for p in self.port.profiles(state.campaign.collection, state.campaign.band_id) if p.required}
+        self.notify()
+
+    def navigate(self, view: str) -> None:
+        self.state.active_view = view
+        self.notify()
+
+    def set_campaign_mode(self, mode: str) -> None:
+        self.state.campaign_mode = mode
+        self.state.active_view = "campaign"
+        self.notify()
+
+    def select_moment(self, node_id: str) -> None:
+        self.state.selected_moment = node_id
+        self.state.active_view = "campaign"
+        self.state.campaign_mode = "timeline"
+        self.notify()
+
+    def select_draft(self) -> None:
+        self.select_moment("draft:0")
+
+    def select_state(self, number: int) -> None:
+        self.select_moment(f"state:{number}")
+
+    def select_battle(self, number: int) -> None:
+        self.select_moment(f"battle:{number}")
+
+    def select_battle_entry(self, number: int) -> None:
+        self.select_moment(f"new-battle:{number}")
+
+    def select_post_battle(self, number: int) -> None:
+        self.select_moment(f"post:{number}")
+
+    def set_state_section(self, section: str) -> None:
+        self.state.state_section = section
+        self.notify()
+
+    def set_battle_section(self, section: str) -> None:
+        self.state.battle_section = section
+        self.notify()
+
+    def set_inventory_mode(self, mode: str) -> None:
+        self.state.inventory_mode = mode
+        self.notify()
+
+    def set_draft_warrior_tab(self, tab: str) -> None:
+        self.state.draft_warrior_tab = tab
+        self.state.selected_moment = "draft:0"
+        self.notify()
+
+    def set_post_battle_step(self, index: int) -> None:
+        pending = self.state.campaign.pending_post_battle
+        if pending is None or not _select_post_battle_step(pending, index):
+            return
+        self.state.selected_moment = pending.node_id
+        self.state.active_view = "campaign"
+        self.state.campaign_mode = "timeline"
+        self.notify()
+
+    def advance_post_battle_step(self) -> None:
+        pending = self.state.campaign.pending_post_battle
+        if pending is None:
+            return
+        _advance_post_battle_step(pending)
+        self.state.selected_moment = pending.node_id
+        self.state.active_view = "campaign"
+        self.state.campaign_mode = "timeline"
+        self.notify()
+
+    def open_post_battle_review(self) -> None:
+        pending = self.state.campaign.pending_post_battle
+        if pending is None or not _open_post_battle_review(pending):
+            return
+        self.state.selected_moment = pending.node_id
+        self.notify()
+
+    def resume_pending_post_battle(self) -> None:
+        pending = self.state.campaign.pending_post_battle
+        if pending is not None:
+            self.select_post_battle(pending.battle_number)
+
+    # --------------------------------------------------------------- battles
+
+    def scenario_rewards(self):
+        """Award planner of the KB scenario catalogue."""
+        from mordheim_campaign.application.scenario_rewards import ScenarioRewards
+
+        return ScenarioRewards(self.port, band_id=self.state.campaign.band_id)
+
+    def scenario_options(self):
+        """(id, name, player_mode) triples of the KB scenario catalogue."""
+        return self.port.scenario_options()
+
+    # ------------------------------------------------- equipment moves (any time)
+
+    def assign_stash_item(self, item_id: str, warrior_id: str) -> tuple[bool, str]:
+        """Assign one stash copy to a warrior (legal outside post-battle too)."""
+        campaign = self.state.campaign
+        if campaign.is_draft:
+            allowed = {offer.item_id for offer in self.draft_equipment_offers(warrior_id)}
+            if item_id not in allowed:
+                return False, "This warrior cannot use that item during creation."
+        from mordheim_campaign.application.post_battle_engine import PostBattleEngine
+
+        engine = PostBattleEngine(self.port, self.state.campaign, self.state.campaign.pending_post_battle)
+        return engine.move_stash_to_warrior(item_id, warrior_id)
+
+    def return_equipped_item(self, item_id: str, warrior_id: str) -> tuple[bool, str]:
+        """Return one equipped copy to the stash (legal outside post-battle too)."""
+        from mordheim_campaign.application.post_battle_engine import PostBattleEngine
+
+        engine = PostBattleEngine(self.port, self.state.campaign, self.state.campaign.pending_post_battle)
+        return engine.return_warrior_to_stash(item_id, warrior_id)
+
+    def transfer_equipped_item(self, item_id: str, source_id: str, target_id: str) -> tuple[bool, str]:
+        """Move one complete loadout set between warriors without partial state."""
+        if source_id == target_id:
+            return False, "Source and destination are the same warrior."
+        campaign = self.state.campaign
+        source = next((row for row in campaign.warriors if row.id == source_id), None)
+        target = next((row for row in campaign.warriors if row.id == target_id), None)
+        if source is None or target is None:
+            return False, "Unknown source or destination warrior."
+        equipment = next(
+            (item for item in source.equipment if item.item_id == item_id and item.transferable),
+            None,
+        )
+        if equipment is None:
+            return False, "This item cannot be transferred."
+        if campaign.is_draft:
+            allowed = {offer.item_id for offer in self.draft_equipment_offers(target_id)}
+            if item_id not in allowed:
+                return False, "The destination warrior cannot use that item during creation."
+        inventory = next((row for row in campaign.inventory if row.id == item_id), None)
+        released = source.quantity if source.kind == "henchman" and equipment.per_model else 1
+        needed = target.quantity if target.kind == "henchman" else 1
+        available = (inventory.stash if inventory is not None else 0) + released
+        if available < needed:
+            return False, f"The destination needs {needed} copies; only {available} are available."
+
+        ok, message = self.return_equipped_item(item_id, source_id)
+        if not ok:
+            return False, message
+        ok, message = self.assign_stash_item(item_id, target_id)
+        if not ok:
+            self.assign_stash_item(item_id, source_id)
+            return False, message
+        return True, f"{equipment.name} transferred from {source.name} to {target.name}."
+
+    def record_battle(
+        self,
+        *,
+        scenario_id: str,
+        scenario_name: str,
+        opponent: str,
+        opponent_band_id: str = "",
+        result: str,
+        xp_delta: int,
+        casualties: int,
+        gold_delta: int = 0,
+        wyrdstone: int = 0,
+        opponent_rating: int | None = None,
+        notes: str = "",
+        out_of_action_ids: list[str] | None = None,
+        per_group_casualties: dict[str, int] | None = None,
+        xp_awards: dict[str, int] | None = None,
+        scenario_results: dict | None = None,
+    ) -> tuple[bool, str]:
+        """Record a played battle and open its pending post-battle.
+
+        Table facts only: the scenario comes from the KB catalogue and the
+        derived numbers (rating, models) snapshot the warband *before* the
+        post-battle mutations. The resulting ``PostBattleVM`` is the node the
+        eight-step sequence then transforms into the next immutable state.
+        """
+        campaign = self.state.campaign
+        if campaign.is_draft:
+            return False, "Commit the initial warband before recording battles."
+        if self.pending_battle_start_checks():
+            return False, "Resolve every pre-battle injury check before recording the battle."
+        resolved = dict(self.state.pending_battle_draft.get("battle_start_checks") or {})
+        available, unavailable_rows = _battle_availability_domain(campaign, resolved)
+        ok, message = _record_battle_domain(
+            campaign,
+            self.port,
+            scenario_id=scenario_id,
+            scenario_name=scenario_name,
+            opponent=opponent,
+            opponent_band_id=opponent_band_id,
+            result=result,
+            xp_delta=xp_delta,
+            casualties=casualties,
+            gold_delta=gold_delta,
+            wyrdstone=wyrdstone,
+            opponent_rating=opponent_rating,
+            notes=notes,
+            out_of_action_ids=out_of_action_ids,
+            per_group_casualties=per_group_casualties,
+            xp_awards=xp_awards,
+            scenario_results=scenario_results,
+            available_warriors=available,
+            unavailable_rows=unavailable_rows,
+        )
+        if ok:
+            self.select_battle(campaign.battles[-1].number)
+        return ok, message
+
+    def pending_battle_start_checks(self) -> list[tuple[object, dict]]:
+        resolved = dict(self.state.pending_battle_draft.get("battle_start_checks") or {})
+        return _pending_battle_start_checks_domain(self.state.campaign, resolved)
+
+    def resolve_battle_start_check(self, warrior_id: str, check_id: str, roll: int) -> tuple[bool, str]:
+        warrior = next((row for row in self.state.campaign.warriors if row.id == warrior_id), None)
+        check = next((row for row in (warrior.battle_start_checks if warrior else ()) if row.get("check_id") == check_id), None)
+        if warrior is None or check is None:
+            return False, "Unknown pre-battle injury check."
+        dice = check.get("dice") or {}
+        sides = int(dice.get("sides") or 6)
+        if not 1 <= int(roll) <= sides:
+            return False, f"Enter a result from 1 to {sides}."
+        failure = check.get("failure_when") or {}
+        misses = int(failure.get("min") or 0) <= int(roll) <= int(failure.get("max") or failure.get("min") or 0)
+        key = f"{warrior.id}:{check_id}"
+        self.state.pending_battle_draft.setdefault("battle_start_checks", {})[key] = {
+            "roll": int(roll), "misses_battle": misses, "reason": "Old Battle Wound",
+        }
+        return True, f"{warrior.name}: {'misses this battle' if misses else 'available for this battle'}."
+
+    def battle_availability(self) -> tuple[list, list[tuple[object, str, bool]]]:
+        checks = dict(self.state.pending_battle_draft.get("battle_start_checks") or {})
+        return _battle_availability_domain(self.state.campaign, checks)
+
+    def latest_battle_number(self) -> int | None:
+        """Number of the most recent battle (the one a dialog may extend)."""
+        battles = self.state.campaign.battles
+        return battles[-1].number if battles else None
+
+    def go_to_current_state(self) -> None:
+        if self.state.campaign.is_draft:
+            self.select_draft()
+        else:
+            self.select_state(self.state.campaign.current_state_number)
+
+    # ------------------------------------------------------------- campaigns
+
+    def warband_options(self):
+        """Canonical selectable warbands (read-only DTOs)."""
+        return self.port.options()
+
+    # ------------------------------------------------------- mercenary variant
+
+    def variant_options(self):
+        """(variant id, label) pairs when the warband may pick a variant."""
+        from mordheim_campaign.application.hire_eligibility import VARIANT_CAPABLE_BANDS
+
+        if self._campaign().band_id not in VARIANT_CAPABLE_BANDS:
+            return ()
+        return VARIANT_CHOICES
+
+    def set_mercenary_variant(self, variant: str | None) -> None:
+        """Stores the warband's Mercenary variant (``None`` clears it)."""
+        variant = variant.strip().casefold() if variant else None
+        if variant is not None and variant not in {identifier for identifier, _ in VARIANT_CHOICES}:
+            return
+        self._campaign().mercenary_variant = variant
+        self.notify()
+
+    def new_campaign(self, campaign_name: str, band_id: str) -> None:
+        self.persist_path = None
+        self.replace_state(make_draft_state(self.port, band_id, campaign_name=campaign_name))
+
+    def open_creation_example(self) -> None:
+        self.persist_path = None
+        self.replace_state(make_draft_state(self.port, "sisters-of-sigmar", campaign_name="The Sisters of Morr"))
+
+    def open_campaign_example(self) -> None:
+        self.persist_path = None
+        self.replace_state(make_example_state(self.port))
+
+    def commit_initial_warband(self) -> None:
+        campaign = self.state.campaign
+        if campaign.is_draft:
+            campaign.required_profiles = {p.profile_id: p.member_minimum for p in self.port.profiles(campaign.collection, campaign.band_id) if p.required}
+        ok, _message = _commit_initial_warband_domain(campaign)
+        if not ok:
+            return
+        self.state.selected_moment = "state:0"
+        self.state.state_section = "overview"
+        self.clear_undo_history()
+        self.notify()
+
+    # ------------------------------------------------------- draft roster edits
+
+    def _campaign(self):
+        return self.state.campaign
+
+    @staticmethod
+    def _change_inventory(campaign, equipment: EquipmentEntryVM, amount: int) -> None:
+        row = next((item for item in campaign.inventory if item.id == equipment.item_id), None)
+        if row is None and amount > 0:
+            row = InventoryItemVM(equipment.item_id, equipment.name, "Equipment", 0, 0, 0, equipment.unit_cost)
+            campaign.inventory.append(row)
+        if row is None:
+            return
+        if amount >= 0:
+            row.add_stock(amount, equipment.unit_cost)
+        else:
+            row.remove_stock(-amount, unit_cost=equipment.unit_cost)
+        row.equipped += amount
+        if row.owned <= 0:
+            campaign.inventory.remove(row)
+
+    def post_battle_resolver(self):
+        """KB-backed post-battle dice resolution (cached per controller)."""
+        from mordheim_campaign.application.post_battle_resolution import PostBattleResolver
+
+        if self._resolver is None:
+            self._resolver = PostBattleResolver(self.port)
+        return self._resolver
+
+    def post_battle_engine(self):
+        """Write side of the pending post-battle, bound to the live campaign.
+
+        Returns an engine whose post may be None when no sequence is pending;
+        engine actions guard on that.
+        """
+        from mordheim_campaign.application.post_battle_engine import PostBattleEngine
+
+        campaign = self._campaign()
+        return PostBattleEngine(self.port, campaign, campaign.pending_post_battle)
+
+    def adjust_resource(self, resource: str, delta: int, reason: str) -> tuple[bool, str]:
+        """Controlled manual correction during draft or post-battle."""
+        campaign = self._campaign()
+        delta = int(delta)
+        reason = reason.strip()
+        if not reason:
+            return False, "Enter a reason for the correction."
+        if resource == "gold_crowns":
+            current = campaign.draft_treasury if campaign.is_draft else self.post_battle_engine().projected_gold()
+        elif resource == "wyrdstone_fragments":
+            current = 0 if campaign.is_draft else self.post_battle_engine().projected_shards()
+        elif resource == "treasures":
+            current = campaign.treasures
+        elif resource == "campaign_points":
+            current = campaign.campaign_points
+        else:
+            return False, f"Unknown resource: {resource}"
+        if current + delta < 0:
+            return False, f"The correction would leave a negative balance ({current + delta})."
+        if campaign.is_draft:
+            if resource != "gold_crowns":
+                return False, "Only gold crowns are available during creation."
+            campaign.starting_gold += delta
+        else:
+            post = campaign.pending_post_battle
+            if post is None:
+                return False, "Resources can be corrected only during creation or post-battle."
+            if resource == "gold_crowns":
+                post.gold_delta += delta
+            elif resource == "wyrdstone_fragments":
+                post.wyrdstone_delta += delta
+            elif resource == "treasures":
+                campaign.treasures += delta
+            else:
+                campaign.campaign_points += delta
+            post.log_event(post.active_step, "manual_resource_correction",
+                           f"{resource}: {delta:+d} ({reason})", resource=resource)
+        return True, f"{resource.replace('_', ' ').title()} corrected by {delta:+d}."
+
+    def manually_add_item(self, item_id: str, quantity: int, reason: str) -> tuple[bool, str]:
+        """Add a known KB item to stash as an auditable correction."""
+        campaign = self._campaign()
+        if not campaign.is_draft and campaign.pending_post_battle is None:
+            return False, "Items can be corrected only during creation or post-battle."
+        reason = reason.strip()
+        if not reason:
+            return False, "Enter a reason for adding the item."
+        quantity = max(1, int(quantity))
+        offers = {row.item_id: row for row in (*self.post_battle_content().common_items(),
+                                                *self.post_battle_content().rare_items())}
+        offer = offers.get(item_id)
+        if offer is None:
+            return False, "Select an item from the KB catalogue."
+        row = next((value for value in campaign.inventory if value.id == item_id), None)
+        if row is None:
+            row = InventoryItemVM(item_id, offer.name, offer.category, 0, 0, 0,
+                                  offer.price_gc or 0, offer.rarity)
+            campaign.inventory.append(row)
+        row.add_stock(quantity, 0)
+        row.stash += quantity
+        if campaign.pending_post_battle is not None:
+            campaign.pending_post_battle.log_event(
+                campaign.pending_post_battle.active_step, "manual_item_correction",
+                f"+{quantity} {offer.name} ({reason})", item_id=item_id,
+            )
+        return True, f"{quantity}× {offer.name} added to stash."
+
+    def set_manual_skill(self, warrior_id: str, skill_name: str, present: bool, reason: str = "") -> tuple[bool, str]:
+        """Add/remove a legal learned skill outside an advance roll."""
+        campaign = self._campaign()
+        reason = reason.strip()
+        if not reason:
+            return False, "Enter a reason for the skill correction."
+        if not campaign.is_draft and campaign.pending_post_battle is None:
+            return False, "Skills can be edited only during creation or post-battle."
+        warrior = next((row for row in campaign.warriors if row.id == warrior_id), None)
+        skill = self.port.skill_by_name(skill_name)
+        if warrior is None or skill is None:
+            return False, "Unknown warrior or skill."
+        try:
+            profile = self.port.profile(campaign.collection, campaign.band_id, warrior.profile_id)
+            fixed = set(profile.inherent_rules) | set(profile.starting_skills)
+        except Exception:
+            fixed = set()
+        if not present:
+            if skill_name in fixed:
+                return False, "An inherent or starting skill cannot be removed."
+            if skill_name in warrior.skills:
+                warrior.skills.remove(skill_name)
+            message = f"{skill_name} removed from {warrior.name}."
+            self._log_manual_change(campaign, warrior, skill_name, "removed", reason)
+            return True, message
+        table = self.port.skill_table_label(skill)
+        if warrior.skill_access and table not in set(warrior.skill_access):
+            return False, f"{skill_name} is not in {warrior.name}'s skill access."
+        if str(skill.get("category") or "") in self.port.banned_skill_categories(campaign.band_id, warrior.profile_id):
+            return False, f"{skill_name} is forbidden for this profile."
+        if skill_name not in warrior.skills:
+            warrior.skills.append(skill_name)
+        self._log_manual_change(campaign, warrior, skill_name, "added", reason)
+        return True, f"{warrior.name} now knows {skill_name}."
+
+    @staticmethod
+    def _log_manual_change(campaign, warrior, skill_name: str, action: str, reason: str) -> None:
+        entry = {
+            "type": "manual_skill_correction", "warrior_id": warrior.id,
+            "warrior": warrior.name, "skill": skill_name, "action": action, "reason": reason,
+        }
+        campaign.manual_log.append(entry)
+        if campaign.pending_post_battle is not None:
+            campaign.pending_post_battle.log_event(
+                campaign.pending_post_battle.active_step, "manual_skill_correction",
+                f"{skill_name} {action} for {warrior.name} ({reason})", warrior_id=warrior.id,
+            )
+
+    def commit_post_battle(self) -> tuple[bool, str]:
+        """Commits the pending post-battle and navigates to its new State."""
+        engine = self.post_battle_engine()
+        ok, message = engine.commit()
+        if ok:
+            self.clear_undo_history()
+            self.select_state(engine.post.battle_number)
+            return True, message
+        self.notify()
+        return False, message
+
+    def post_battle_content(self):
+        """KB-fed offers and provenance for the pending post-battle screens."""
+        from mordheim_campaign.application.post_battle_catalogue import PostBattleCatalogue
+
+        campaign = self._campaign()
+        return PostBattleCatalogue(
+            self.port,
+            campaign.collection,
+            campaign.band_id,
+            ruleset=campaign.ruleset,
+            member_profile_ids=frozenset(
+                row.profile_id for row in campaign.warriors if row.profile_id
+            ),
+            # Employed Hired Swords/Dramatis are roster members whose canonical
+            # profile ids live under ``hireling.*``; the mutual-exclusion rules
+            # (Highwayman/Roadwarden, Shadow Warrior, …) read them from here.
+            hired_sword_profile_ids=frozenset(
+                row.profile_id for row in campaign.warriors
+                if row.profile_id and row.profile_id.startswith("hireling.")
+            ),
+            variant=campaign.mercenary_variant,
+            phase="creation" if campaign.is_draft else "post_battle",
+        )
+
+    def addable_profiles(self, kind: str) -> tuple[WarbandProfile, ...]:
+        """Profiles that can still be added to the draft (within the roster)."""
+        campaign = self._campaign()
+        if not campaign.is_draft or not campaign.band_id:
+            return ()
+        candidates = self.port.profiles(campaign.collection, campaign.band_id, kind=kind)
+        result = []
+        for profile in candidates:
+            if profile.random_characteristics:
+                continue
+            _, maximum = self.profile_allowance(profile)
+            if maximum is not None and maximum <= 0:
+                continue
+            result.append(profile)
+        return tuple(result)
+
+    def profile_allowance(self, profile: WarbandProfile) -> tuple[int, int | None]:
+        """(models already taken, member cap) for a draft profile."""
+        campaign = self._campaign()
+        taken = sum(row.quantity for row in campaign.warriors if row.profile_id == profile.profile_id)
+        return taken, profile.member_maximum
+
+    def add_draft_warriors(self, profile_id: str, quantity: int = 1) -> tuple[bool, str]:
+        """Add a warrior or group to the draft, validating canonical limits."""
+        campaign = self._campaign()
+        if not campaign.is_draft:
+            return False, "Only the initial warband draft can be edited."
+        try:
+            profile = next(
+                p for p in self.port.profiles(campaign.collection, campaign.band_id) if p.profile_id == profile_id
+            )
+        except StopIteration:
+            return False, f"Unknown profile: {profile_id}"
+        quantity = max(1, int(quantity))
+        if profile.kind == "hero" and quantity != 1:
+            return False, "Recruit Heroes individually."
+        if profile.kind == "henchman" and profile.group_maximum is not None and quantity > profile.group_maximum:
+            return False, f"Groups of {profile.name} hold at most {profile.group_maximum} models."
+        taken, maximum = self.profile_allowance(profile)
+        if maximum is not None and taken + quantity > maximum:
+            remaining = maximum - taken
+            return False, f"Roster limit for {profile.name} reached ({remaining} remaining)."
+        cost = profile.cost * quantity
+        if cost > campaign.draft_treasury:
+            return False, f"Not enough gold: {profile.name} costs {cost} gc, treasury is {campaign.draft_treasury} gc."
+        if campaign.draft_warband_member_count + quantity > campaign.effective_maximum_models:
+            return False, f"Cannot exceed {campaign.effective_maximum_models} warband members."
+        if profile.kind == "hero" and campaign.draft_hero_count + quantity > campaign.hero_limit:
+            return False, f"Cannot exceed {campaign.hero_limit} heroes."
+        occurrences = sum(1 for row in campaign.warriors if row.profile_id == profile_id)
+        row_id = campaign.next_warrior_id(f"{profile_id}#")
+        base_name = profile.name if profile.kind == "hero" else f"{profile.name} Group"
+        name = unique_warrior_name(campaign.warriors, base_name)
+        campaign.warriors.append(warrior_vm(self.port, profile, row_id=row_id, name=name, quantity=quantity))
+        self.notify()
+        return True, f"{name}{f' ×{quantity}' if quantity > 1 else ''} added to the draft."
+
+    def adjust_draft_group(self, warrior_id: str, delta: int) -> tuple[bool, str]:
+        """Resizes a henchman row keeping the limits in force."""
+        campaign = self._campaign()
+        row = next((w for w in campaign.warriors if w.id == warrior_id), None)
+        if row is None or not campaign.is_draft:
+            return False, "Only the initial warband draft can be edited."
+        if row.kind == "hero":
+            return False, "Heroes are individuals; add or remove them instead."
+        profile = next(
+            (p for p in self.port.profiles(campaign.collection, campaign.band_id) if p.profile_id == row.profile_id),
+            None,
+        )
+        if profile is None:
+            return False, "Profile is no longer available in the knowledge base."
+        old_quantity = row.quantity
+        new_quantity = row.quantity + int(delta)
+        if new_quantity < 1:
+            return False, "A henchman group keeps at least one member."
+        if profile.group_maximum is not None and new_quantity > profile.group_maximum:
+            return False, f"Groups of {profile.name} hold at most {profile.group_maximum} models."
+        added = new_quantity - row.quantity
+        if added > 0:
+            taken, maximum = self.profile_allowance(profile)
+            if maximum is not None and taken + added > maximum:
+                return False, f"Roster limit for {profile.name} reached."
+            equipment_per_member = sum(item.unit_cost * (item.quantity // old_quantity) for item in row.equipment if item.per_model and item.acquisition == "purchase")
+            if added * (profile.cost + equipment_per_member) > campaign.draft_treasury:
+                return False, "Not enough gold for the added members."
+            if campaign.draft_warband_member_count + added > campaign.effective_maximum_models:
+                return False, f"Cannot exceed {campaign.effective_maximum_models} warband members."
+            for item in row.equipment:
+                if item.per_model and item.acquisition == "stash_assignment":
+                    inventory = next((entry for entry in campaign.inventory if entry.id == item.item_id), None)
+                    required_copies = added * (item.quantity // old_quantity)
+                    if inventory is None or inventory.stash < required_copies:
+                        return False, f"The stash needs {added} more {item.name} for the whole group."
+        stash_costs = {inventory.id: campaign.stash_acquisition_costs(inventory)
+                       for inventory in campaign.inventory}
+        row.quantity = new_quantity
+        for item in row.equipment:
+            if item.per_model:
+                copies = added * (item.quantity // old_quantity)
+                costs = item.copy_costs
+                if copies > 0:
+                    extra = (stash_costs.get(item.item_id, [])[:copies]
+                             if item.acquisition == "stash_assignment" else [item.unit_cost] * copies)
+                    item.acquisition_costs = costs + extra
+                    if item.acquisition == "stash_assignment":
+                        del stash_costs[item.item_id][:copies]
+                elif copies < 0:
+                    item.acquisition_costs = costs[:copies]
+                item.quantity += copies
+                if item.acquisition == "purchase":
+                    self._change_inventory(campaign, item, copies)
+                elif item.acquisition == "stash_assignment":
+                    inventory = next(entry for entry in campaign.inventory if entry.id == item.item_id)
+                    inventory.stash -= copies
+                    inventory.equipped += copies
+        self.notify()
+        return True, f"{row.name} now has {new_quantity} member{'s' if new_quantity != 1 else ''}."
+
+    def remove_draft_warrior(self, warrior_id: str) -> tuple[bool, str]:
+        """Removes a draft row; legality is re-evaluated instantly."""
+        campaign = self._campaign()
+        if not campaign.is_draft:
+            return False, "Only the initial warband draft can be edited."
+        row = next((w for w in campaign.warriors if w.id == warrior_id), None)
+        if row is None:
+            return False, "Warrior not found in the draft."
+        for item in row.equipment:
+            if item.acquisition == "purchase":
+                self._change_inventory(campaign, item, -item.quantity)
+            elif item.acquisition == "stash_assignment":
+                inventory = next((entry for entry in campaign.inventory if entry.id == item.item_id), None)
+                if inventory is not None:
+                    inventory.equipped = max(0, inventory.equipped - item.quantity)
+                    inventory.stash += item.quantity
+        campaign.warriors.remove(row)
+        self.notify()
+        return True, f"{row.name} removed from the draft."
+
+    def rename_draft_warrior(self, warrior_id: str, name: str) -> tuple[bool, str]:
+        campaign = self._campaign()
+        row = next((warrior for warrior in campaign.warriors if warrior.id == warrior_id), None)
+        name = name.strip()
+        if row is None or not campaign.is_draft:
+            return False, "Only draft warriors and groups can be renamed here."
+        if not name:
+            return False, "Name cannot be empty."
+        if any(other.id != row.id and other.name.casefold() == name.casefold() for other in campaign.warriors):
+            return False, "Another warrior or group already uses that name."
+        row.name = name
+        self.notify()
+        return True, f"Renamed to {name}."
+
+    def draft_equipment_offers(self, warrior_id: str):
+        campaign = self._campaign()
+        warrior = next((row for row in campaign.warriors if row.id == warrior_id), None)
+        if warrior is None or not campaign.is_draft:
+            return ()
+        if warrior.kind == "hireling" or warrior.profile_id.startswith("hireling."):
+            return ()
+        profile = self.port.profile(campaign.collection, campaign.band_id, warrior.profile_id)
+        return self.port.items_for_profile(profile)
+
+    def buy_draft_equipment(self, warrior_id: str, item_id: str,
+                            unit_price: int | None = None) -> tuple[bool, str]:
+        campaign = self._campaign()
+        warrior = next((row for row in campaign.warriors if row.id == warrior_id), None)
+        if warrior is None or not campaign.is_draft:
+            return False, "Only draft warriors can buy creation equipment."
+        offer = next((row for row in self.draft_equipment_offers(warrior_id) if row.item_id == item_id), None)
+        if offer is None:
+            return False, "This warrior cannot buy that item."
+        price = offer.cost if offer.cost is not None else unit_price
+        if price is None:
+            return False, "This item has no supported creation price."
+        violation = self._loadout_violation(warrior, offer.item_id)
+        if violation:
+            return False, violation
+        price = max(0, int(price))
+        if offer.price_dice is not None:
+            count, sides = offer.price_dice
+            multiplier = offer.price_variable_multiplier or 1
+            low, high = (offer.price_base_gc or 0) + count * multiplier, (offer.price_base_gc or 0) + count * sides * multiplier
+            if not low <= price <= high:
+                return False, f"Resolved price must be between {low} and {high} gc."
+        total = price * warrior.quantity
+        if total > campaign.draft_treasury:
+            return False, f"Not enough gold: {total} gc needed, {campaign.draft_treasury} gc available."
+        existing = next(
+            (item for item in warrior.equipment if item.item_id == offer.item_id and item.acquisition == "purchase" and item.per_model),
+            None,
+        )
+        if existing is None:
+            existing = EquipmentEntryVM(offer.item_id, offer.name, warrior.quantity, "purchase", price, True)
+            warrior.equipment.append(existing)
+        else:
+            existing.quantity += warrior.quantity
+        self._change_inventory(campaign, existing, warrior.quantity)
+        return True, f"{offer.name} bought for {total} gc."
+
+    def _loadout_violation(self, warrior, item_id: str) -> str | None:
+        """Hands-per-model and duplicate-item limits from the KB mechanics."""
+        from mordheim_campaign.application.post_battle_engine import PostBattleEngine
+
+        return PostBattleEngine(self.port, self._campaign(), self._campaign().pending_post_battle).loadout_violation(warrior, item_id)
+
+    def remove_draft_equipment(self, warrior_id: str, item_id: str) -> tuple[bool, str]:
+        campaign = self._campaign()
+        warrior = next((row for row in campaign.warriors if row.id == warrior_id), None)
+        purchased = next(
+            (item for item in warrior.equipment if item.item_id == item_id and item.acquisition == "purchase"),
+            None,
+        ) if warrior is not None else None
+        if warrior is None or not campaign.is_draft or purchased is None:
+            return False, "Purchased item not found on this draft warrior."
+        removed = min(warrior.quantity, purchased.quantity)
+        self._change_inventory(campaign, purchased, -removed)
+        purchased.quantity -= removed
+        if purchased.quantity <= 0:
+            warrior.equipment.remove(purchased)
+        return True, f"{purchased.name} sold; {purchased.unit_cost * removed} gc refunded."
+
+    def draft_stash_offers(self):
+        campaign = self._campaign()
+        if not campaign.is_draft:
+            return ()
+        offers = {offer.item_id: offer for offer in self.post_battle_content().common_items()}
+        # Band equipment lists are authoritative creation offers: inclusion
+        # grants availability and the list cost overrides the global market.
+        band_offers = {}
+        for offer in self.port.equipment(campaign.collection, campaign.band_id):
+            current = band_offers.get(offer.item_id)
+            if current is None or (offer.cost is not None and (current.cost is None or offer.cost < current.cost)):
+                band_offers[offer.item_id] = offer
+        offers.update(band_offers)
+        return tuple(sorted(offers.values(), key=lambda offer: (offer.category, offer.name.casefold())))
+
+    def draft_hired_swords(self):
+        if not self._campaign().is_draft:
+            return ()
+        return self.post_battle_content().hired_swords()
+
+    def hire_draft_hired_sword(self, profile_id: str, acceptance_roll: int | None = None,
+                               fee_roll: int | None = None) -> tuple[bool, str]:
+        campaign = self._campaign()
+        if not campaign.is_draft:
+            return False, "Hired Swords can be added here only during warband creation."
+        offer = next((row for row in self.draft_hired_swords() if row.profile_id == profile_id), None)
+        if offer is None:
+            return False, "This Hired Sword is not available to the warband."
+        if offer.eligibility == "variant":
+            return False, "Select the warband's Mercenary variant first."
+        if offer.eligibility == "conditional":
+            if offer.roll_ge is None or acceptance_roll is None:
+                return False, f"An acceptance roll of {offer.roll_ge or '?'}+ is required."
+            if int(acceptance_roll) < offer.roll_ge:
+                return False, f"Acceptance roll failed; {offer.roll_ge}+ was required."
+        from mordheim_campaign.application.post_battle_engine import PostBattleEngine
+
+        engine = PostBattleEngine(self.port, campaign, None)
+        costs = list(offer.fee_resources)
+        rolled_fee = None
+        if offer.fee_dice is not None:
+            if fee_roll is None:
+                count, sides = offer.fee_dice
+                return False, f"Roll the hiring fee ({count}D{sides} + {offer.fee_base_gc or 0} gc)."
+            low, high = offer.fee_dice[0], offer.fee_dice[0] * offer.fee_dice[1]
+            if not low <= int(fee_roll) <= high:
+                return False, f"Fee roll must be between {low} and {high}."
+            rolled_fee = int(offer.fee_base_gc or 0) + int(fee_roll)
+            costs.append(("gold_crowns", rolled_fee))
+        elif offer.fee_gc is not None and not any(resource == "gold_crowns" for resource, _ in costs):
+            costs.append(("gold_crowns", offer.fee_gc))
+        if not costs:
+            return False, f"{offer.name} has no payable hiring fee."
+        for resource, amount in costs:
+            label = engine.RESOURCE_LABELS.get(resource, resource)
+            available = campaign.draft_treasury if resource == "gold_crowns" else (
+                campaign.treasures if resource == "treasures"
+                else campaign.campaign_points if resource == "campaign_points"
+                else 0
+            )
+            if amount > available:
+                return False, f"Not enough {label}: {amount} needed, {available} available."
+        if any(row.kind == "hireling" and row.profile_id == profile_id for row in campaign.warriors):
+            return False, f"Only one {offer.name} may be employed by the warband."
+        warrior = engine.hireling_warrior(offer)
+        if warrior is None:
+            return False, f"Hireling profile not found in the KB: {offer.profile_id}"
+        if rolled_fee is not None:
+            warrior.cost = rolled_fee
+        campaign.warriors.append(warrior)
+        pieces: list[str] = []
+        for resource, amount in costs:
+            if resource == "gold_crowns":
+                pass  # gold fee is part of the draft recruitment cost already
+            elif resource == "treasures":
+                campaign.treasures -= amount
+            elif resource == "campaign_points":
+                campaign.campaign_points -= amount
+            pieces.append(f"{amount} {engine.RESOURCE_LABELS.get(resource, resource)}")
+        return True, f"{offer.name} hired for {' + '.join(pieces)}."
+
+    def buy_draft_stash_item(self, item_id: str, quantity: int, unit_price: int | None = None) -> tuple[bool, str]:
+        campaign = self._campaign()
+        if not campaign.is_draft:
+            return False, "Items can be bought for the draft stash only during creation."
+        offer = next((row for row in self.draft_stash_offers() if row.item_id == item_id), None)
+        quantity = max(1, int(quantity))
+        if offer is None:
+            return False, "This warband cannot buy that item."
+        price = offer.price_gc if offer.price_gc is not None else unit_price
+        if price is None:
+            return False, "This item has no supported creation price."
+        price = max(0, int(price))
+        if getattr(offer, "price_dice", None) is not None:
+            count, sides = offer.price_dice
+            multiplier = offer.price_variable_multiplier or 1
+            low, high = (offer.price_base_gc or 0) + count * multiplier, (offer.price_base_gc or 0) + count * sides * multiplier
+            if not low <= price <= high:
+                return False, f"Resolved price must be between {low} and {high} gc."
+        total = price * quantity
+        if total > campaign.draft_treasury:
+            return False, f"Not enough gold: {total} gc needed, {campaign.draft_treasury} gc available."
+        row = next((item for item in campaign.inventory if item.id == item_id), None)
+        if row is None:
+            row = InventoryItemVM(item_id, offer.name, offer.category, 0, 0, 0, price)
+            campaign.inventory.append(row)
+        row.add_stock(quantity, price)
+        row.stash += quantity
+        row.value = price
+        return True, f"{quantity}× {offer.name} bought for {total} gc (stash)."
+
+    def remove_draft_stash_item(self, item_id: str, quantity: int = 1) -> tuple[bool, str]:
+        campaign = self._campaign()
+        row = next((item for item in campaign.inventory if item.id == item_id), None)
+        quantity = max(1, int(quantity))
+        if not campaign.is_draft or row is None or row.stash < quantity:
+            return False, "That quantity is not available in the draft stash."
+        available_costs = campaign.stash_acquisition_costs(row)
+        if len(available_costs) < quantity:
+            return False, "Inventory costs do not match the available stash copies."
+        row.stash -= quantity
+        refund = sum(row.remove_stock(1, unit_cost=cost) for cost in available_costs[:quantity])
+        if row.owned <= 0:
+            campaign.inventory.remove(row)
+        return True, f"{quantity}× {row.name} sold; {refund} gc refunded."
+
+    def _unique_hero_name(self, base: str) -> str:
+        taken = {row.name for row in self._campaign().warriors if row.kind == "hero"}
+        if base not in taken:
+            return base
+        index = 2
+        while f"{base} {_roman(index)}" in taken:
+            index += 1
+        return f"{base} {_roman(index)}"

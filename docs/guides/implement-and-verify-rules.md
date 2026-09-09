@@ -174,11 +174,11 @@ records the construction evidence instead of a pair spec.
 
 Pairs that are not overridden are closed by authored interaction specs
 (`semantic/interactions/`), one per pair, with composition + boundary cases
-and a detected mutation. As of 2026-09-04 the matrix is complete:
-`verify` reports 217/217 required interactions covered, 0 required pending,
-and `parity` reports 0 divergences. The per-cluster case patterns are
-summarized in the [verification reference](../reference/verification.md) and
-detailed in `tests/specs/README.md`.
+and a detected mutation. The per-cluster case patterns are summarized in the
+[verification reference](../reference/verification.md) and detailed in
+`tests/specs/README.md`; the live matrix status is whatever `verify` reports
+when you run it — the executable reports are the source of truth, not any
+number written here.
 
 ## Diagnose a failure
 

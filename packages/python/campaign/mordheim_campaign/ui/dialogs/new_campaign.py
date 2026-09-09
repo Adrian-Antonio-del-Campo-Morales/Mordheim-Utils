@@ -1,0 +1,118 @@
+from __future__ import annotations
+
+import tkinter as tk
+from tkinter import ttk
+
+from mordheim_campaign.application.controller import AppController
+from mordheim_ui.theme import COLORS
+from mordheim_ui.windowing import center_on_application
+from mordheim_ui.widgets import BorderedFrame
+from mordheim_ui.i18n import tr
+
+
+def _category_label(option) -> str:
+    values = option.categories or ((option.grade,) if option.grade else ())
+    if not values:
+        values = (option.source_label,)
+    return " · ".join(value.upper() if value[:1].isdigit() else value.replace("-", " ").title() for value in values)
+
+
+class NewCampaignDialog(tk.Toplevel):
+    """Small campaign creation dialog.
+
+    It deliberately asks only for the identity of the campaign and warband. The
+    warband list comes from the canonical KB through ``KnowledgePort``; rules,
+    KB validation and the initial roster are resolved after creation without
+    enlarging the onboarding flow.
+    """
+
+    DEFAULT_BAND_ID = "sisters-of-sigmar"
+
+    def __init__(self, parent: tk.Misc, controller: AppController) -> None:
+        super().__init__(parent)
+        self.controller = controller
+        self.options = controller.warband_options()
+        self.configure(bg=COLORS["bg"])
+        self.title(tr('Create Campaign'))
+        self.resizable(False, False)
+        self.transient(parent.winfo_toplevel())
+        self.grab_set()
+
+        outer = BorderedFrame(self, background=COLORS["panel"], padding=1)
+        outer.pack(fill="both", expand=True, padx=18, pady=18)
+        body = outer.body
+        body.configure(padx=20, pady=18)
+
+        tk.Label(body, text=tr('CREATE CAMPAIGN'), bg=COLORS["panel"], fg=COLORS["text"], font=("Georgia", 15)).grid(row=0, column=0, columnspan=2, sticky="w")
+        tk.Label(body, text=tr('Start with the minimum information. The initial warband is built next.'), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 9)).grid(row=1, column=0, columnspan=2, sticky="w", pady=(4, 18))
+
+        tk.Label(body, text=tr('CAMPAIGN NAME'), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8)).grid(row=2, column=0, sticky="w")
+        self.name_var = tk.StringVar(value=tr('New Mordheim Campaign'))
+        ttk.Entry(body, textvariable=self.name_var, width=38).grid(row=3, column=0, columnspan=2, sticky="ew", pady=(5, 14))
+
+        tk.Label(body, text=tr('WARBAND'), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI Semibold", 8)).grid(row=4, column=0, sticky="w")
+        self._selected = next(
+            (index for index, option in enumerate(self.options) if option.band_id == self.DEFAULT_BAND_ID and option.collection == "mordheim"),
+            0,
+        )
+        picker = tk.Frame(body, bg=COLORS["panel"])
+        picker.grid(row=5, column=0, columnspan=2, sticky="ew", pady=(5, 6))
+        self.warband_box = ttk.Treeview(
+            picker, columns=("warband", "category"), show="headings",
+            height=min(12, max(6, len(self.options))), selectmode="browse",
+        )
+        self.warband_box.heading("warband", text=tr('WARBAND'), anchor="w")
+        self.warband_box.heading("category", text=tr('CATEGORY'), anchor="e")
+        self.warband_box.column("warband", width=300, minwidth=220, anchor="w", stretch=True)
+        self.warband_box.column("category", width=90, minwidth=70, anchor="e", stretch=False)
+        scrollbar = ttk.Scrollbar(picker, orient="vertical", command=self.warband_box.yview)
+        self.warband_box.configure(yscrollcommand=scrollbar.set)
+        self.warband_box.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+        for index, option in enumerate(self.options):
+            self.warband_box.insert("", "end", iid=str(index), values=(option.name, _category_label(option)))
+        if self.options:
+            self.warband_box.selection_set(str(self._selected))
+            self.warband_box.see(str(self._selected))
+        self.warband_box.bind("<<TreeviewSelect>>", self._on_warband_change)
+        self.warband_box.bind("<Double-Button-1>", lambda _event: self._create())
+        self.caption_var = tk.StringVar()
+        tk.Label(body, textvariable=self.caption_var, bg=COLORS["panel"], fg=COLORS["muted_dark"], font=("Segoe UI", 8), justify="left", wraplength=330).grid(row=6, column=0, columnspan=2, sticky="w")
+        self._update_caption()
+
+        actions = tk.Frame(body, bg=COLORS["panel"])
+        actions.grid(row=7, column=0, columnspan=2, sticky="e", pady=(22, 0))
+        ttk.Button(actions, text=tr('Cancel'), command=self.destroy).pack(side="left", padx=(0, 8))
+        ttk.Button(actions, text=tr('CREATE'), style="Accent.TButton", command=self._create).pack(side="left")
+        body.columnconfigure(0, weight=1)
+
+        self.bind("<Return>", lambda _e: self._create())
+        self.bind("<Escape>", lambda _e: self.destroy())
+        self.after_idle(self._center)
+
+    def _current_option(self):
+        selection = self.warband_box.selection()
+        index = int(selection[0]) if selection else self._selected
+        return self.options[index]
+
+    def _update_caption(self) -> None:
+        option = self._current_option()
+        source = f" · {option.source_label}" if option.collection != "mordheim" else ""
+        self.caption_var.set(
+            tr('{}–{} models · {} gc starting{} · {}').format(option.minimum_models, option.maximum_models, option.starting_gold, source, option.publication)
+        )
+
+    def _on_warband_change(self, _event=None) -> None:
+        self._update_caption()
+
+    def _center(self) -> None:
+        center_on_application(self)
+
+    def _create(self) -> None:
+        name = self.name_var.get().strip() or tr('New Mordheim Campaign')
+        option = self._current_option()
+        from mordheim_campaign.ui.file_actions import confirm_discard_changes
+        if not confirm_discard_changes(self, self.controller):
+            return
+        self.controller.new_campaign(name, option.band_id)
+        self.destroy()

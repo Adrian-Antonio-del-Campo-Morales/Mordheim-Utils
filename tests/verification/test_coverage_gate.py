@@ -9,7 +9,7 @@ def _file(module: str, area: str, covered: tuple[int, ...], statements: tuple[in
     return CoverageFile(
         module=module, area=area, statements=len(statements),
         covered=covered, missing=tuple(sorted(set(statements) - set(covered))),
-        path=f"src/mordheim_combat/{area}/{module.rsplit('.', 1)[-1]}.py",
+        path=f"packages/python/combat-engine/mordheim_combat/{area}/{module.rsplit('.', 1)[-1]}.py",
     )
 
 
@@ -23,11 +23,11 @@ def _budget(areas):
 
 
 def test_area_mapping():
-    assert coverage_gate._area_for("src/mordheim_combat/vectorized/_driver.py") == "vectorized"
-    assert coverage_gate._area_for("src/mordheim_combat/modular/duel.py") == "modular"
-    assert coverage_gate._area_for("src/mordheim_combat/phases.py") == "phases"
-    assert coverage_gate._area_for("src/mordheim_combat/vector_dice.py") == "phases"
-    assert coverage_gate._area_for("src/mordheim_combat/native/_combat_native.pyx") is None
+    assert coverage_gate._area_for("packages/python/combat-engine/mordheim_combat/vectorized/_driver.py") == "vectorized"
+    assert coverage_gate._area_for("packages/python/combat-engine/mordheim_combat/modular/duel.py") == "modular"
+    assert coverage_gate._area_for("packages/python/combat-engine/mordheim_combat/phases.py") == "phases"
+    assert coverage_gate._area_for("packages/python/combat-engine/mordheim_combat/vector_dice.py") == "phases"
+    assert coverage_gate._area_for("packages/python/combat-engine/mordheim_combat/native/_combat_native.pyx") is None
 
 
 def test_gate_passes_when_every_budgeted_line_is_still_covered():

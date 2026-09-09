@@ -9,7 +9,6 @@ profiles:
   publication: Fanatic Online 94
   name: Beggar
   name_i18n:
-    en: Beggar
     es: Mendigo
   normalization_status: normalized
   characteristics:
@@ -39,15 +38,19 @@ profiles:
   - id: hireling.hired-sword.beggar.rule.scrounge
     name: Scrounge
     effect: Adds an exploration die when eligible.
+    effect_i18n:
+      es: >-
+        Añade un dado de exploración cuando es elegible.
     name_i18n:
-      en: Scrounge
       es: Hurgar
   - id: hireling.hired-sword.beggar.rule.not-a-threat
     name: Not a Threat
     effect: May be ignored for source target/charge restrictions.
+    effect_i18n:
+      es: >-
+        Puede ser ignorado para las restricciones de objetivo/carga de la fuente.
     name_i18n:
-      en: Not a Threat
-      es: No es una amenaza
+      es: No Es una Amenaza
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -59,8 +62,7 @@ profiles:
   publication: Mordheim Facebook Group
   name: Chaos Fury
   name_i18n:
-    en: Chaos Fury
-    es: Furia del caos
+    es: Furia del Caos
   normalization_status: normalized
   characteristics:
     M: 4
@@ -81,38 +83,51 @@ profiles:
   - id: hireling.hired-sword.chaos-fury.rule.fear
     name: Fear
     effect: Causes fear.
+    effect_i18n:
+      es: >-
+        Causa miedo.
     name_i18n:
-      en: Fear
       es: Miedo
   - id: hireling.hired-sword.chaos-fury.rule.daemonic-flesh
     name: Daemonic Flesh
     effect: Has a 5+ unmodifiable save with source magic/blessed exceptions.
+    effect_i18n:
+      es: >-
+        Tiene una salvación de 5+ no modificable con las excepciones mágicas/bendecidas de la
+        fuente.
     name_i18n:
-      en: Daemonic Flesh
-      es: Carne demoníaca
+      es: Carne Demoníaca
   - id: hireling.hired-sword.chaos-fury.rule.daemonic-mind
     name: Daemonic Mind
     effect: Does not gain Experience and is immune to psychology.
+    effect_i18n:
+      es: >-
+        No gana Experiencia y es inmune a la psicología.
     name_i18n:
-      en: Daemonic Mind
-      es: Mente demoníaca
+      es: Mente Demoníaca
   - id: hireling.hired-sword.chaos-fury.rule.instability
     name: Instability
     effect: Uses the source banishment rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de destierro de la fuente.
     name_i18n:
-      en: Instability
       es: Inestabilidad
   - id: hireling.hired-sword.chaos-fury.rule.fly
     name: Fly
     effect: May fly according to source.
+    effect_i18n:
+      es: >-
+        Puede volar según la fuente.
     name_i18n:
-      en: Fly
       es: Volar
   - id: hireling.hired-sword.chaos-fury.rule.malicious
     name: Malicious
     effect: Uses source malicious behaviour rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de comportamiento malicioso de la fuente.
     name_i18n:
-      en: Malicious
       es: Malicioso
   source_refs:
   - manual: mordheimer.net
@@ -125,8 +140,7 @@ profiles:
   publication: Fanatic Online 49
   name: Cursed Hillman
   name_i18n:
-    en: Cursed Hillman
-    es: Montañés maldito
+    es: Montañés Maldito
   normalization_status: normalized
   characteristics:
     M: 4
@@ -160,8 +174,7 @@ profiles:
     - id: hireling.hired-sword.cursed-hillman.item.fur-cloak
       name: Fur Cloak
       name_i18n:
-        en: Fur Cloak
-        es: Capa de piel
+        es: Capa de Piel
   skill_access:
   - shooting
   - speed
@@ -171,20 +184,26 @@ profiles:
   - id: hireling.hired-sword.cursed-hillman.rule.hunter
     name: Hunter
     effect: Uses source hunter rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de cazador de la fuente.
     name_i18n:
-      en: Hunter
       es: Cazador
   - id: hireling.hired-sword.cursed-hillman.rule.thin-flesh
     name: Thin Flesh
     effect: Uses source vulnerability rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de vulnerabilidad de la fuente.
     name_i18n:
-      en: Thin Flesh
-      es: Carne flaca
+      es: Carne Flaca
   - id: hireling.hired-sword.cursed-hillman.rule.lycanthrope
     name: Lycanthrope
     effect: Transforms between Man and Wolf forms.
+    effect_i18n:
+      es: >-
+        Se transforma entre formas de Hombre y de Lobo.
     name_i18n:
-      en: Lycanthrope
       es: Licántropo
   unresolved_references:
   - kind: alternate_profile
@@ -200,8 +219,7 @@ profiles:
   publication: Letters of the Damned 6
   name: Dark Mage
   name_i18n:
-    en: Dark Mage
-    es: Mago oscuro
+    es: Mago Oscuro
   normalization_status: normalized
   characteristics:
     M: 4
@@ -230,21 +248,27 @@ profiles:
   - id: hireling.hired-sword.dark-mage.rule.wizard
     name: Wizard
     effect: Uses the Dark Magic spell list.
+    effect_i18n:
+      es: >-
+        Usa la lista de hechizos de Magia Oscura.
     name_i18n:
-      en: Wizard
       es: Mago
   - id: hireling.hired-sword.dark-mage.rule.despise-despoilers
     name: Despise Despoilers
     effect: Uses source hatred/attitude rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de odio/actitud de la fuente.
     name_i18n:
-      en: Despise Despoilers
-      es: Desprecio a los saqueadores
+      es: Desprecio a los Saqueadores
   - id: hireling.hired-sword.dark-mage.rule.self-assured
     name: Self Assured
     effect: Uses source psychology rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de psicología de la fuente.
     name_i18n:
-      en: Self Assured
-      es: Seguro de sí mismo
+      es: Seguro de Sí Mismo
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -256,8 +280,7 @@ profiles:
   publication: Fanatic Online 45
   name: Dwarf Slayer Pirate
   name_i18n:
-    en: Dwarf Slayer Pirate
-    es: Pirata matador enano
+    es: Pirata Matador Enano
   normalization_status: normalized
   characteristics:
     M: 3
@@ -291,9 +314,11 @@ profiles:
   - id: hireling.hired-sword.dwarf-slayer-pirate.rule.slayer-pirate
     name: Slayer Pirate
     effect: Uses the source Slayer/Pirate special rules.
+    effect_i18n:
+      es: >-
+        Usa las reglas especiales de Matatroles/Pirata de la fuente.
     name_i18n:
-      en: Slayer Pirate
-      es: Pirata matador
+      es: Pirata Matador
   unresolved_references:
   - kind: equipment_loadout
     source_name: multiple Pistols as defined by source
@@ -308,8 +333,7 @@ profiles:
   publication: Fanatic Online 94
   name: Emissary of Chaos
   name_i18n:
-    en: Emissary of Chaos
-    es: Emisario del caos
+    es: Emisario del Caos
   normalization_status: normalized
   characteristics:
     M: 4
@@ -343,8 +367,7 @@ profiles:
     - id: hireling.hired-sword.emissary-of-chaos.item.chaos-armour
       name: Chaos Armour
       name_i18n:
-        en: Chaos Armour
-        es: Armadura del caos
+        es: Armadura del Caos
   skill_access:
   - combat
   - strength
@@ -353,8 +376,10 @@ profiles:
   - id: hireling.hired-sword.emissary-of-chaos.rule.patron
     name: Patron
     effect: Receives source-defined effects for Khorne, Tzeentch, Nurgle or Slaanesh.
+    effect_i18n:
+      es: >-
+        Recibe los efectos definidos por la fuente para Khorne, Tzeentch, Nurgle o Slaanesh.
     name_i18n:
-      en: Patron
       es: Patrón
   unresolved_references:
   - kind: patron_branch
@@ -370,8 +395,7 @@ profiles:
   publication: Letters of the Damned 2
   name: Estalian Diestro
   name_i18n:
-    en: Estalian Diestro
-    es: Diestro estaliano
+    es: Diestro Estaliano
   normalization_status: normalized
   characteristics:
     M: 4
@@ -409,15 +433,19 @@ profiles:
   - id: hireling.hired-sword.estalian-diestro.rule.rapier
     name: Rapier
     effect: Uses source Rapier rules.
+    effect_i18n:
+      es: >-
+        Usa las reglas de Estoque de la fuente.
     name_i18n:
-      en: Rapier
       es: Estoque
   - id: hireling.hired-sword.estalian-diestro.rule.main-gauche
     name: Main Gauche
     effect: Uses source Main Gauche rules.
+    effect_i18n:
+      es: >-
+        Usa las reglas de Daga Izquierda de la fuente.
     name_i18n:
-      en: Main Gauche
-      es: Daga principal
+      es: Main Gauche
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -429,8 +457,7 @@ profiles:
   publication: Fanatic Online 25
   name: The Fallen Sister
   name_i18n:
-    en: The Fallen Sister
-    es: La Hermana caída
+    es: La Hermana Caída
   normalization_status: normalized
   characteristics:
     M: 4
@@ -473,21 +500,27 @@ profiles:
   - id: hireling.hired-sword.the-fallen-sister.rule.wizard
     name: Wizard
     effect: May use Lesser Magic according to source.
+    effect_i18n:
+      es: >-
+        Puede usar Magia Menor según la fuente.
     name_i18n:
-      en: Wizard
       es: Mago
   - id: hireling.hired-sword.the-fallen-sister.rule.warrior-wizard
     name: Warrior Wizard
     effect: Uses source warrior-wizard rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de guerrero-hechicero de la fuente.
     name_i18n:
-      en: Warrior Wizard
-      es: Mago guerrero
+      es: Guerrero Mago
   - id: hireling.hired-sword.the-fallen-sister.rule.ashamed-and-afraid
     name: Ashamed and Afraid
     effect: Uses source psychology rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de psicología de la fuente.
     name_i18n:
-      en: Ashamed and Afraid
-      es: Avergonzado y asustado
+      es: Avergonzado y Asustado
   unresolved_references:
   - kind: equipment_mapping
     source_name: Sling
@@ -502,8 +535,7 @@ profiles:
   publication: Fanatic Online 89
   name: Goblin Lantern Bearer
   name_i18n:
-    en: Goblin Lantern Bearer
-    es: Portador de linterna goblin
+    es: Portador de Linterna Goblin
   normalization_status: normalized
   characteristics:
     M: 4
@@ -532,21 +564,27 @@ profiles:
   - id: hireling.hired-sword.goblin-lantern-bearer.rule.smart
     name: Smart
     effect: Uses source Smart rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de Listo de la fuente.
     name_i18n:
-      en: Smart
       es: Listo
   - id: hireling.hired-sword.goblin-lantern-bearer.rule.very-lucky
     name: Very Lucky
     effect: Uses special post-battle injury table 1 Lost, 2-6 Survives.
+    effect_i18n:
+      es: >-
+        Usa la tabla especial de lesiones tras la batalla: 1 Desaparece, 2-6 Sobrevive.
     name_i18n:
-      en: Very Lucky
-      es: Muy afortunado
+      es: Muy Afortunado
   - id: hireling.hired-sword.goblin-lantern-bearer.rule.small-size
     name: Small Size
     effect: Adds +3 to exploration total according to source.
+    effect_i18n:
+      es: >-
+        Suma +3 al total de exploración según la fuente.
     name_i18n:
-      en: Small Size
-      es: Tamaño pequeño
+      es: Tamaño Pequeño
   unresolved_references:
   - kind: equipment_mapping
     source_name: Lantern
@@ -561,7 +599,6 @@ profiles:
   publication: Letters of the Damned 5
   name: Gravesman
   name_i18n:
-    en: Gravesman
     es: Sepulturero
   normalization_status: normalized
   characteristics:
@@ -589,12 +626,10 @@ profiles:
       name: Shovel
       counts_as: halberd
       name_i18n:
-        en: Shovel
         es: Pala
     - id: hireling.hired-sword.gravesman.item.pry-bar
       name: Pry Bar
       name_i18n:
-        en: Pry Bar
         es: Palanqueta
   skill_access:
   - combat
@@ -604,8 +639,10 @@ profiles:
   - id: hireling.hired-sword.gravesman.rule.gravesman
     name: Gravesman
     effect: May retain a dead Hero's equipment on the source 4+ result.
+    effect_i18n:
+      es: >-
+        Puede conservar el equipo de un Héroe muerto con el resultado de 4+ de la fuente.
     name_i18n:
-      en: Gravesman
       es: Sepulturero
   source_notes:
   - Mordheimer's profile row is labelled 'Diestro'; retained data values but not the apparent label typo.
@@ -620,8 +657,7 @@ profiles:
   publication: Fanatic Online 94
   name: Halfling Knight
   name_i18n:
-    en: Halfling Knight
-    es: Caballero halfling
+    es: Caballero Halfling
   normalization_status: normalized
   characteristics:
     M: 4
@@ -663,8 +699,7 @@ profiles:
     - id: hireling.hired-sword.halfling-knight.item.cavalry-spear
       name: Cavalry Spear
       name_i18n:
-        en: Cavalry Spear
-        es: Lanza de caballería
+        es: Lanza de Caballería
   skill_access:
   - combat
   - speed
@@ -673,9 +708,11 @@ profiles:
   - id: hireling.hired-sword.halfling-knight.rule.slay-large-creature
     name: Slay Large Creature
     effect: Uses source large-creature combat rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de combate con criaturas grandes de la fuente.
     name_i18n:
-      en: Slay Large Creature
-      es: Matar criatura grande
+      es: Matar Criatura Grande
   unresolved_references:
   - kind: companion_profile
     source_name: Hound M5* WS4 BS0 S4 T3 W1 I4 A1 Ld5
@@ -690,8 +727,7 @@ profiles:
   publication: Fanatic Online 94
   name: Imperial Tactician
   name_i18n:
-    en: Imperial Tactician
-    es: Táctico imperial
+    es: Táctico Imperial
   normalization_status: normalized
   characteristics:
     M: 4
@@ -719,17 +755,15 @@ profiles:
         value: 1
     unique_equipment:
     - id: hireling.hired-sword.imperial-tactician.item.two-handed-sword
-      name: Two-handed Sword
+      name: Two-Handed Sword
       name_i18n:
-        en: Two-handed Sword
-        es: Espada a dos manos
+        es: Espada a Dos Manos
     - id: hireling.hired-sword.imperial-tactician.item.plate-armour
       name: Plate Armour
       save: 4+
       movement_modifier: -1
       name_i18n:
-        en: Plate Armour
-        es: Armadura de placas
+        es: Armadura de Placas
   skill_access:
   - combat
   - strength
@@ -738,27 +772,35 @@ profiles:
   - id: hireling.hired-sword.imperial-tactician.rule.expert-tactician
     name: Expert Tactician
     effect: Uses source tactical rule.
+    effect_i18n:
+      es: >-
+        Usa la regla táctica de la fuente.
     name_i18n:
-      en: Expert Tactician
-      es: Táctico experto
+      es: Táctico Experto
   - id: hireling.hired-sword.imperial-tactician.rule.read-the-battle
     name: Read the Battle
     effect: Uses source tactical rule.
+    effect_i18n:
+      es: >-
+        Usa la regla táctica de la fuente.
     name_i18n:
-      en: Read the Battle
-      es: Leer la batalla
+      es: Leer la Batalla
   - id: hireling.hired-sword.imperial-tactician.rule.organized-search-party
     name: Organized Search Party
     effect: Uses post-battle search rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de búsqueda tras la batalla.
     name_i18n:
-      en: Organized Search Party
-      es: Partida de búsqueda organizada
+      es: Partida de Búsqueda Organizada
   - id: hireling.hired-sword.imperial-tactician.rule.send-false-signals
     name: Send False Signals
     effect: Uses source scenario/tactical rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de escenario/táctica de la fuente.
     name_i18n:
-      en: Send False Signals
-      es: Enviar señales falsas
+      es: Enviar Señales Falsas
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -770,7 +812,6 @@ profiles:
   publication: Mordheim Facebook Group
   name: Knight of the White Wolf
   name_i18n:
-    en: Knight of the White Wolf
     es: Caballero del Lobo Blanco
   normalization_status: normalized
   characteristics:
@@ -799,10 +840,9 @@ profiles:
         value: 1
     unique_equipment:
     - id: hireling.hired-sword.knight-of-the-white-wolf.item.huge-hammer
-      name: Huge Two-handed Hammer
+      name: Huge Two-Handed Hammer
       name_i18n:
-        en: Huge Two-handed Hammer
-        es: Martillo a dos manos enorme
+        es: Martillo a Dos Manos Enorme
   skill_access:
   - combat
   - strength
@@ -813,28 +853,38 @@ profiles:
   - id: hireling.hired-sword.knight-of-the-white-wolf.rule.pride
     name: Pride
     effect: Uses source pride rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de orgullo de la fuente.
     name_i18n:
-      en: Pride
       es: Orgullo
   - id: hireling.hired-sword.knight-of-the-white-wolf.rule.cavalryman
     name: Cavalryman
     effect: Uses source cavalry rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de caballería de la fuente.
     name_i18n:
-      en: Cavalryman
       es: Jinete
   - id: hireling.hired-sword.knight-of-the-white-wolf.rule.among-wolves
     name: Among Wolves
     effect: Uses source wolf-related rule.
+    effect_i18n:
+      es: >-
+        Usa la regla relacionada con lobos de la fuente.
     name_i18n:
-      en: Among Wolves
-      es: Entre lobos
+      es: Entre Lobos
   - id: hireling.hired-sword.knight-of-the-white-wolf.rule.campaign-eligibility
-    name: Dynamic hiring eligibility — Warrior Priest incompatibility
-    effect: The Knight of the White Wolf will not join or remain with a warband whose current roster contains
-      a Warrior Priest.
+    name: Dynamic Hiring Eligibility — Warrior Priest Incompatibility
+    effect: >-
+      The Knight of the White Wolf will not join or remain with a warband whose current roster
+      contains a Warrior Priest.
+    effect_i18n:
+      es: >-
+        El Caballero del Lobo Blanco no se unirá a una banda cuya plantilla actual incluya un
+        Sacerdote Guerrero, ni permanecerá en ella.
     name_i18n:
-      en: Dynamic hiring eligibility — Warrior Priest incompatibility
-      es: Elegibilidad de contratación dinámica — incompatibilidad con Sacerdote guerrero
+      es: Elegibilidad de Contratación Dinámica — Incompatibilidad con Sacerdote Guerrero
   unresolved_references:
   - kind: skill
     source_name: Ride Warhorse
@@ -849,8 +899,7 @@ profiles:
   publication: Mordheimer Information Centre
   name: Ninja Gnoblar
   name_i18n:
-    en: Ninja Gnoblar
-    es: Gnoblar ninja
+    es: Gnoblar Ninja
   normalization_status: normalized
   characteristics:
     M: 4
@@ -879,12 +928,10 @@ profiles:
         item_id: toughened_leathers
         context: rules
       name_i18n:
-        en: Ninja Robe
-        es: Túnica ninja
+        es: Túnica Ninja
     - id: hireling.hired-sword.ninja-gnoblar.item.bo
       name: Bo
       name_i18n:
-        en: Bo
         es: Bo
   skill_access:
   - shooting
@@ -895,27 +942,37 @@ profiles:
   - id: hireling.hired-sword.ninja-gnoblar.rule.stealthy
     name: Stealthy
     effect: Uses source stealth rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de sigilo de la fuente.
     name_i18n:
-      en: Stealthy
       es: Sigiloso
   - id: hireling.hired-sword.ninja-gnoblar.rule.rooftop-to-rooftop
     name: Rooftop to Rooftop
     effect: Uses source rooftop movement rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de movimiento por tejados de la fuente.
     name_i18n:
-      en: Rooftop to Rooftop
-      es: De tejado en tejado
+      es: De Tejado en Tejado
   - id: hireling.hired-sword.ninja-gnoblar.rule.expert-rooftop-jumper
     name: Expert Rooftop Jumper
     effect: Special skill option.
+    effect_i18n:
+      es: >-
+        Opción de habilidad especial.
     name_i18n:
-      en: Expert Rooftop Jumper
-      es: Saltador de tejados experto
+      es: Saltador de Tejados Experto
   - id: hireling.hired-sword.ninja-gnoblar.rule.campaign-eligibility
-    name: Dynamic hiring eligibility — Fear-causing roster
-    effect: The Ninja Gnoblar may only be hired if the current warband contains no fear-causing creatures.
+    name: Dynamic Hiring Eligibility — Fear-Causing Roster
+    effect: >-
+      The Ninja Gnoblar may only be hired if the current warband contains no fear-causing creatures.
+    effect_i18n:
+      es: >-
+        El Gnoblar Ninja solo puede ser contratado si la banda actual no contiene criaturas que
+        causen miedo.
     name_i18n:
-      en: Dynamic hiring eligibility — Fear-causing roster
-      es: Elegibilidad de contratación dinámica — lista que causa Miedo
+      es: Elegibilidad de Contratación Dinámica — Lista que Causa Miedo
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -927,8 +984,7 @@ profiles:
   publication: Fanatic Online 89
   name: Ogre Slave Master
   name_i18n:
-    en: Ogre Slave Master
-    es: Señor de esclavos ogro
+    es: Señor de Esclavos Ogro
   normalization_status: normalized
   characteristics:
     M: 6
@@ -966,21 +1022,27 @@ profiles:
   - id: hireling.hired-sword.ogre-slave-master.rule.slave-master
     name: Slave Master
     effect: Uses source slave-master campaign rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de campaña de tratante de esclavos de la fuente.
     name_i18n:
-      en: Slave Master
-      es: Señor de esclavos
+      es: Señor de Esclavos
   - id: hireling.hired-sword.ogre-slave-master.rule.fear
     name: Fear
     effect: Causes fear.
+    effect_i18n:
+      es: >-
+        Causa miedo.
     name_i18n:
-      en: Fear
       es: Miedo
   - id: hireling.hired-sword.ogre-slave-master.rule.large-target
     name: Large Target
     effect: Counts as a large target.
+    effect_i18n:
+      es: >-
+        Cuenta como objetivo grande.
     name_i18n:
-      en: Large Target
-      es: Objetivo grande
+      es: Objetivo Grande
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -992,8 +1054,7 @@ profiles:
   publication: Fanatic Online 94
   name: Slaver
   name_i18n:
-    en: Slaver
-    es: Tratante de esclavos
+    es: Tratante de Esclavos
   normalization_status: normalized
   characteristics:
     M: 4
@@ -1039,9 +1100,11 @@ profiles:
   - id: hireling.hired-sword.slaver.rule.slaver
     name: Slaver
     effect: Uses the source automatic-capture and slave-sale rules.
+    effect_i18n:
+      es: >-
+        Usa las reglas de captura automática y venta de esclavos de la fuente.
     name_i18n:
-      en: Slaver
-      es: Tratante de esclavos
+      es: Tratante de Esclavos
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1053,7 +1116,6 @@ profiles:
   publication: Fanatic Online 94
   name: Swashbuckler
   name_i18n:
-    en: Swashbuckler
     es: Esgrimista
   normalization_status: normalized
   characteristics:
@@ -1097,20 +1159,26 @@ profiles:
   - id: hireling.hired-sword.swashbuckler.rule.acrobatic
     name: Acrobatic
     effect: Uses source acrobatic rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de acrobático de la fuente.
     name_i18n:
-      en: Acrobatic
       es: Acrobático
   - id: hireling.hired-sword.swashbuckler.rule.nimble
     name: Nimble
     effect: Uses source nimble rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de agilidad de la fuente.
     name_i18n:
-      en: Nimble
       es: Ágil
   - id: hireling.hired-sword.swashbuckler.rule.charismatic
     name: Charismatic
     effect: Uses source charismatic rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de carismático de la fuente.
     name_i18n:
-      en: Charismatic
       es: Carismático
   source_refs:
   - manual: mordheimer.net
@@ -1123,8 +1191,7 @@ profiles:
   publication: Mordheim Facebook Group
   name: Ungor Trapper
   name_i18n:
-    en: Ungor Trapper
-    es: Trampero ungor
+    es: Trampero Ungor
   normalization_status: normalized
   characteristics:
     M: 5
@@ -1167,27 +1234,35 @@ profiles:
   - id: hireling.hired-sword.ungor-trapper.rule.set-traps
     name: Set Traps
     effect: Uses source trap rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de trampas de la fuente.
     name_i18n:
-      en: Set Traps
-      es: Tender trampas
+      es: Colocar Trampas
   - id: hireling.hired-sword.ungor-trapper.rule.hunter-s-eye
     name: Hunter's Eye
     effect: Uses source hunter rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de cazador de la fuente.
     name_i18n:
-      en: Hunter's Eye
-      es: Ojo de cazador
+      es: Ojo de Cazador
   - id: hireling.hired-sword.ungor-trapper.rule.excellent-sight
     name: Excellent Sight
     effect: Uses source sight rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de visión de la fuente.
     name_i18n:
-      en: Excellent Sight
-      es: Vista excepcional
+      es: Vista Excepcional
   - id: hireling.hired-sword.ungor-trapper.rule.just-a-twit
     name: Just a Twit
     effect: Uses source limitation rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de limitación de la fuente.
     name_i18n:
-      en: Just a Twit
-      es: Solo un tonto
+      es: Solo un Tonto
   unresolved_references:
   - kind: special_skill_options
     source_name: Mutant/Fearless/Manhater
@@ -1202,7 +1277,6 @@ profiles:
   publication: Emanuele Intrieri
   name: Weaponsmith
   name_i18n:
-    en: Weaponsmith
     es: Armero
   normalization_status: normalized
   characteristics:
@@ -1249,8 +1323,10 @@ profiles:
   - id: hireling.hired-sword.weaponsmith.rule.maintenance
     name: Maintenance
     effect: After battle uses the source D6 equipment-maintenance improvement table.
+    effect_i18n:
+      es: >-
+        Tras la batalla usa la tabla de mejora de mantenimiento de equipo de 1D6 de la fuente.
     name_i18n:
-      en: Maintenance
       es: Manutención
   source_refs:
   - manual: mordheimer.net
@@ -1263,8 +1339,7 @@ profiles:
   publication: Letters of the Damned 2
   name: Wood Elf Hunter
   name_i18n:
-    en: Wood Elf Hunter
-    es: Cazador elfo silvano
+    es: Cazador Elfo Silvano
   normalization_status: normalized
   characteristics:
     M: 5
@@ -1302,21 +1377,27 @@ profiles:
   - id: hireling.hired-sword.wood-elf-hunter.rule.stalk
     name: Stalk
     effect: Uses source stalking rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de acecho de la fuente.
     name_i18n:
-      en: Stalk
       es: Acechar
   - id: hireling.hired-sword.wood-elf-hunter.rule.hunted
     name: Hunted
     effect: Uses source hunted/retention rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de cacería/retención de la fuente.
     name_i18n:
-      en: Hunted
       es: Cazado
   - id: hireling.hired-sword.wood-elf-hunter.rule.keen-eyed
     name: Keen Eyed
     effect: Uses source spotting rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de avistamiento de la fuente.
     name_i18n:
-      en: Keen Eyed
-      es: Vista aguda
+      es: Vista Aguda
   unresolved_references:
   - kind: equipment_mapping
     source_name: Hunting Arrows

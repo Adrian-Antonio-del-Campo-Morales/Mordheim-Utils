@@ -8,7 +8,7 @@ only those warriors. Battles recorded before this feature carry
 from __future__ import annotations
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_campaign.application.state import make_example_state
+from mordheim_campaign.domain.builders import make_example_state
 from mordheim_campaign.ui.views.moments.post_battle_moment import PostBattleMoment
 
 
@@ -43,7 +43,10 @@ def test_empty_record_keeps_casualties_zero_and_ids_empty():
     ok, _ = _record(controller, out_of_action_ids=[])
     assert ok
     battle = controller.state.campaign.battle(9)
-    assert battle.out_of_action_ids is None and battle.casualties == 0
+    assert battle.out_of_action_ids == [] and battle.casualties == 0
+    moment = PostBattleMoment.__new__(PostBattleMoment)
+    moment.controller = controller
+    assert moment._out_of_action_warriors(battle) == []
 
 
 def test_recovery_prefilter_offers_only_recorded_warriors():
@@ -54,6 +57,17 @@ def test_recovery_prefilter_offers_only_recorded_warriors():
     moment.controller = controller
     marked = moment._out_of_action_warriors(battle)
     assert [w.id for w in marked] == ["marta", "novices"]
+
+
+def test_henchman_group_casualties_are_preserved_individually():
+    controller = _settled()
+    _record(controller, out_of_action_ids=["novices", "novices"])
+    battle = controller.state.campaign.battle(9)
+    moment = PostBattleMoment.__new__(PostBattleMoment)
+    moment.controller = controller
+    marked = moment._out_of_action_warriors(battle)
+    assert [warrior.id for warrior in marked] == ["novices", "novices"]
+    assert battle.casualties == 2
 
 
 def test_recovery_falls_back_to_every_warrior_for_legacy_battles():

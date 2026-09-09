@@ -53,5 +53,8 @@ def test_post_battle_chrome_translates_under_spanish():
 
 def test_every_catalogue_key_translates_in_spanish():
     set_locale("es")
-    untranslated = [key for key in STRINGS if tr(key) == key]
+    # Locale-neutral templates (identical Spanish rendering, e.g. "{} ({}) — {}")
+    # are exempt: tr() returning the key IS the correct Spanish text.
+    NEUTRAL = {"{} ({}) — {}"}
+    untranslated = [key for key in STRINGS if tr(key) == key and key not in NEUTRAL]
     assert untranslated == [], untranslated

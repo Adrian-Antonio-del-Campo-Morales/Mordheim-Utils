@@ -22,9 +22,9 @@ applications. Rules of the road:
 
 The cross-reference audit (2026-09-03) found **no in-scope rules missing an
 executable contract**: every scope-`YES` effect is bound and verified. The
-interaction matrix is closed (2026-09-04): 217/217 required interactions
-covered — 207 pair specs + 10 `illegal` overrides — and parity reports 0
-divergences.
+interaction matrix is closed: every required interaction is covered — 207
+pair specs + 10 `illegal` overrides — and `parity` reports 0 divergences.
+Run `python tools/mordheim-utils.py verify --inventory` for the live status.
 
 - [ ] **Replace the 41 transitional `compiler` families** with shared
       `mechanic`/`trait` bindings (schema invariant in `runtime-schema.yaml`);
@@ -111,22 +111,22 @@ tasks:
 ## 5. Campaign catalogue → runtime integration
 
 Loaders are done (`mordheim_knowledge/campaign.py`); the Campaign Manager
-consumes them end to end for the record-battle → commit-state loop. Remaining
-work:
+consumes them end to end for the record-battle → commit-state loop. The
+published `scenario-rewards.yaml` catalogue (13 published campaign
+documents) feeds the battle-recording reward plan. Remaining work:
 
 - [ ] Confirm canonical handling of hireling cost resources (`gold_crowns`,
       `wyrdstone_fragments`, `treasures`, `campaign_points`).
-- [ ] **Price collation review queue** — the first run confirmed 18
+- [ ] **Price collation review queue** — the runs so far confirmed 18
       `price_override` exceptions (Nuln black-powder weapons, Hochland Duelist
-      pistol, Lizardmen light armour) and page-verified 14 creation prices;
-      119 differing rows remain in the review queue until each printed source
-      is verified (Trollheim/Lustria/Khemri rows lack recorded source URLs).
-      See `catalog/campaign/README.md`; regenerate the report with
+      pistol, Lizardmen light armour) and page-verified 55 creation prices
+      (committed sidecar `tools/kb/price-collation-resolutions.csv`, 23 rows
+      deferred); differing rows remain in the review queue until each printed
+      source is verified (Trollheim/Lustria/Khemri rows lack recorded source
+      URLs). Regenerate the report with
       `python tools/kb/price-collation.py` (writes `outputs/knowledge/`,
-      git-ignored; verdicts sidecar `tools/kb/price-collation-resolutions.csv`).
+      git-ignored) for the current queue size.
 - [ ] **Per-warrior skill editing outside advances** (Campaign Manager).
-- [ ] **Scenario progression rolls** — battles do not yet roll the transcribed
-      `progression:` rewards.
 - [ ] Out-of-sequence purchases and resource corrections (would reuse the
       stored `band_id`/`profile_id`/`item_id`).
 - [ ] Campaign library UI ("Manage Campaigns…"), inventory ADD ITEM and
@@ -144,12 +144,13 @@ items have no engine option), but it is not documented per record.
 - [ ] Keep the three layers in sync per item when adding a new weapon: item
       record → `mechanic_id` → simulation mapping → `engine_option`.
 
-## 7. Translation (prepared, not started at scale)
+## 7. Translation (prepared; band pass complete)
 
-- [ ] Translate the remaining UI keys (~370, concentrated in
-      `mordheim_campaign/ui`).
-- [ ] Review-fill `name_i18n.es` for the other 80 warbands (the Bretonnian
-      pilot band is complete; follow its in-file glossary).
+- [ ] Translate the remaining UI keys — 216 of the 623 `tr()` keys used in
+      `mordheim_campaign/ui` lack `es` (see `src/mordheim_ui/i18n.py`);
+      ~204 more are defined there but no longer used by any widget (cleanup).
+- [x] Band `name_i18n.es` / `effect_i18n.es` translation complete: 81/81
+      warbands at 100% (`python tools/band_translation_status.py`).
 
 Locale policy and the sanctioned i18n readers:
 [the KB guide](docs/reference/knowledge-base.md) and

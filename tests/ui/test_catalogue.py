@@ -1,4 +1,4 @@
-"""external.test_catalogue: responsibility extracted without altering the rules."""
+"""external.test_catalogue: Catalogue option read-model tests for the UI."""
 from __future__ import annotations
 
 from mordheim_combat_lab.application.catalogue import CombatCatalogue
@@ -13,7 +13,7 @@ def test_catalogue_exposes_kb_profiles_and_profile_equipment():
     choices = catalogue.profiles("mordheim", "mercenaries")
     captain = next(choice for choice in choices if choice.profile_id == "mercenary-captain")
 
-    assert captain.name == "Mercenary captain"
+    assert captain.name == "Mercenary Captain"
     assert ("weapon.sword", "Sword") in catalogue.weapons(captain)
     assert catalogue.profile(captain)["characteristics"]["WS"] == 4
     assert (None, "Free hand") in catalogue.off_hand_options(captain)
@@ -147,7 +147,7 @@ def test_catalogue_exposes_new_first_batch_choices_and_pirate_mercenary_equipmen
 
     assert "band--horned-hunter-special-skills-animal-friendship" in {skill.rule_id for skill in catalogue.skills(horned)}
     assert "band--ogres-special-skills-master-of-arms" in {skill.rule_id for skill in catalogue.skills(ogre)}
-    assert ("armour.heavy-armour", "Heavy armour") in catalogue.armours(pirate)
+    assert ("armour.heavy-armour", "Heavy Armour") in catalogue.armours(pirate)
 
 
 def test_profile_lists_every_special_skill_from_its_band_only():

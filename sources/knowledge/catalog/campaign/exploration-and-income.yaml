@@ -158,13 +158,16 @@ exploration:
             experience: { kind: fixed, value: 1 }
       - when: { field: context.band_id, operator: in, value: [undead, restless-dead] }
         then:
-        - type: grant
-          recipient: warband
-          note: Gain a Zombie for no cost
+        - type: grant_free_profile
+          profile_name: Zombie
       default:
-      - type: grant
+      - type: grant_rule
         recipient: warband
-        note: Next exploration roll gains one extra dice and discards any one dice
+        text: Next exploration roll gains one extra die; discard any one die after rolling.
+        text_i18n:
+          es: >-
+            La siguiente tirada de exploración gana un dado extra; descarta cualquier dado tras la tirada.
+        expires_after_battles: 1
     source_refs:
     - manual: mordheimer.net
       printed_page: 0
@@ -220,8 +223,16 @@ exploration:
     dice_pattern: '1,1,1'
     outcome: Tavern
     follow_up:
-      type: sequence
-      steps:
+      type: conditional
+      cases:
+      - when: { field: context.band_id, operator: in, value: [undead, restless-dead, witch-hunters, sisters-of-sigmar] }
+        then:
+        - type: grant
+          recipient: warband
+          resources:
+            gold_crowns: { kind: dice, dice: { count: 4, sides: 6 } }
+          note: The warband automatically passes the test.
+      default:
       - type: characteristic_test
         actor: leader
         characteristic: leadership
@@ -237,14 +248,6 @@ exploration:
           recipient: warband
           resources:
             gold_crowns: { kind: dice, dice: { count: 1, sides: 6 } }
-      - type: conditional
-        cases:
-        - when: { field: context.band_id, operator: in, value: [undead, restless-dead, witch-hunters, sisters-of-sigmar] }
-          then:
-          - type: grant
-            recipient: warband
-            note: Automatically pass the test; not tempted by alcohol
-        default: []
     source_refs:
     - manual: mordheimer.net
       printed_page: 0
@@ -307,9 +310,20 @@ exploration:
             experience: { kind: dice, dice: { count: 1, sides: 3 } }
       - when: { field: context.band_id, operator: in, value: [undead, restless-dead, trollheim-undead] }
         then:
-        - type: grant
-          recipient: warband
-          note: Gain D3 Zombies at no cost
+        - type: roll_table
+          dice: { count: 1, sides: 3 }
+          branches:
+          - when: { min: 1, max: 1 }
+            then: [{ type: grant_free_profile, profile_name: Zombie }]
+          - when: { min: 2, max: 2 }
+            then:
+            - { type: grant_free_profile, profile_name: Zombie }
+            - { type: grant_free_profile, profile_name: Zombie }
+          - when: { min: 3, max: 3 }
+            then:
+            - { type: grant_free_profile, profile_name: Zombie }
+            - { type: grant_free_profile, profile_name: Zombie }
+            - { type: grant_free_profile, profile_name: Zombie }
       - when: { field: context.band_id, operator: in, value: [skaven-clan-eshin, skaven-clan-pestilens, trollheim-skaven-clan-eshin] }
         then:
         - type: grant
@@ -321,7 +335,9 @@ exploration:
         recipient: warband
         resources:
           gold_crowns: { kind: dice, dice: { count: 2, sides: 6 } }
-        note: One prisoner may join a human Henchman group if equipped.
+      - type: choose_henchman_group
+        label: Choose a human Henchman group for the prisoner, or decline
+        allow_decline: true
     source_refs:
     - manual: mordheimer.net
       printed_page: 0
@@ -381,10 +397,8 @@ exploration:
     dice_pattern: '6,6,6'
     outcome: Returning a Favour
     follow_up:
-      type: grant
-      recipient: warband
-      note: Free Hired Sword of choice (from those available to the warband)
-        for the duration of the next battle; upkeep may be paid afterwards.
+      type: choose_hireling
+      label: Choose the Hired Sword who returns the favour
     source_refs:
     - manual: mordheimer.net
       printed_page: 0
@@ -447,10 +461,12 @@ exploration:
             recipient: warband
             resources:
               gold_crowns: { kind: dice, dice: { count: 3, sides: 6 } }
-          - type: grant
-            recipient: warband
-            note: One chosen weapon is blessed; it always wounds Undead or
-              Possessed models on a to-wound roll of 2+.
+          - type: choose_equipment
+            label: Choose the weapon to bless
+            text: "Blessed weapon ({item}): wounds Undead and Possessed on 2+."
+            text_i18n:
+              es: >-
+                Arma bendecida ({item}): hiere a No-muertos y Endemoniados con 2+.
         default:
         - type: grant
           recipient: warband
@@ -483,10 +499,21 @@ exploration:
       branches:
       - when: { min: 1, max: 2 }
         then:
-        - type: grant
-          recipient: warband
-          items: [{ item_id: shield, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
-          note: D3 Shields or Bucklers, chosen by the player
+        - type: choose_option
+          label: Choose the armour found
+          options:
+          - id: shields
+            label: D3 Shields
+            then:
+            - type: grant
+              recipient: warband
+              items: [{ item_id: shield, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
+          - id: bucklers
+            label: D3 Bucklers
+            then:
+            - type: grant
+              recipient: warband
+              items: [{ item_id: buckler, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
       - when: { min: 3, max: 3 }
         then:
         - type: grant
@@ -530,9 +557,15 @@ exploration:
         recipient: warband
         resources:
           gold_crowns: { kind: dice, dice: { count: 1, sides: 6 }, multiplier: 10 }
-        note: Looting the graveyard means the entire enemy warband will hate all
-          models in this warband the next time they fight Sisters of Sigmar or
-          Witch Hunters.
+      - type: grant_rule
+        recipient: warband
+        text: The entire enemy warband hates this warband in its next battle against Sisters of Sigmar or Witch Hunters.
+        text_i18n:
+          es: >-
+            Toda la banda enemiga odia a esta banda en su siguiente batalla contra Hermanas de Sigmar o
+            Cazadores de Brujas.
+        expires_after_battles: 1
+        consume_when_opponent_contains: [sisters, sigmar, witch hunter]
     source_refs:
     - manual: mordheimer.net
       printed_page: 0
@@ -542,11 +575,16 @@ exploration:
     dice_pattern: '6,6,6,6'
     outcome: Catacombs
     follow_up:
-      type: grant
-      recipient: warband
-      note: Up to three fighters (not Rat Ogres or the Possessed) may deploy
-        anywhere at ground level in the next battle, at the end of the first
-        turn and not within 8" of enemy models.
+      type: choose_warriors
+      label: Choose up to three fighters for the Catacombs deployment
+      maximum: 3
+      exclude_profiles: [Rat Ogre, The Possessed, Possessed]
+      text: "Catacombs deployment next battle: {warriors}. Deploy at ground level at the end of turn one, more than 8 inches from enemies."
+      text_i18n:
+        es: >-
+          Despliegue en las catacumbas la próxima batalla: {warriors}. Despliega a nivel del suelo al final
+          del primer turno, a más de 8 pulgadas de los enemigos.
+      expires_after_battles: 1
     source_refs:
     - manual: mordheimer.net
       printed_page: 0
@@ -578,8 +616,14 @@ exploration:
           gold_crowns: { kind: dice, dice: { count: 3, sides: 6 } }
       - type: grant
         recipient: hero
-        note: One Hero may study the Alchemist's notebook and may choose from
-          Academic skills whenever he gains a new skill.
+        note: Alchemist's notebook
+      - type: grant_rule
+        recipient: hero
+        label: Choose the Hero who studies the notebook
+        text: Academic skill access (Alchemist's notebook)
+        text_i18n:
+          es: >-
+            Acceso a habilidades académicas (cuaderno del Alquimista)
     source_refs:
     - manual: mordheimer.net
       printed_page: 0
@@ -589,48 +633,33 @@ exploration:
     dice_pattern: '3,3,3,3,3'
     outcome: Jewelsmith
     follow_up:
-      type: sequence
-      steps:
-      - type: roll_table
-        dice: { count: 1, sides: 6 }
-        branches:
-        - when: { min: 1, max: 2 }
-          then:
-          - type: grant
-            recipient: warband
-            resources:
-              gold_crowns: { kind: dice, dice: { count: 1, sides: 6 }, multiplier: 5 }
-            note: Quartz stones
-        - when: { min: 3, max: 4 }
-          then:
-          - type: grant
-            recipient: warband
-            resources:
-              gold_crowns: { kind: fixed, value: 20 }
-            note: Amethyst
-        - when: { min: 5, max: 5 }
-          then:
-          - type: grant
-            recipient: warband
-            resources:
-              gold_crowns: { kind: fixed, value: 50 }
-            note: Necklace
-        - when: { min: 6, max: 6 }
-          then:
-          - type: grant
-            recipient: warband
-            resources:
-              gold_crowns: { kind: dice, dice: { count: 1, sides: 6 }, multiplier: 15 }
-            note: Ruby
-      - type: conditional
-        cases:
-        - when: { field: kept_by_hero, operator: equals, value: true }
-          then:
-          - type: grant
-            recipient: hero
-            note: If the gems are not sold, one Hero may keep them and gains +1
-              to rolls for locating rare items.
-        default: []
+      type: choose_option
+      label: Sell the jewels or let one Hero keep them?
+      options:
+      - id: jewelsmith-sell
+        label: Sell the jewels
+        then:
+        - type: roll_table
+          dice: { count: 1, sides: 6 }
+          branches:
+          - when: { min: 1, max: 2 }
+            then: [{ type: grant, recipient: warband, resources: { gold_crowns: { kind: dice, dice: { count: 1, sides: 6 }, multiplier: 5 } }, note: Quartz stones }]
+          - when: { min: 3, max: 4 }
+            then: [{ type: grant, recipient: warband, resources: { gold_crowns: { kind: fixed, value: 20 } }, note: Amethyst }]
+          - when: { min: 5, max: 5 }
+            then: [{ type: grant, recipient: warband, resources: { gold_crowns: { kind: fixed, value: 50 } }, note: Necklace }]
+          - when: { min: 6, max: 6 }
+            then: [{ type: grant, recipient: warband, resources: { gold_crowns: { kind: dice, dice: { count: 1, sides: 6 }, multiplier: 15 } }, note: Ruby }]
+      - id: jewelsmith-keep
+        label: Give the jewels to a Hero
+        then:
+        - type: grant_rule
+          recipient: hero
+          label: Choose the Hero who keeps the jewels
+          text: +1 to rolls for locating rare items (Jewelsmith's gems)
+          text_i18n:
+            es: >-
+              +1 a las tiradas para localizar objetos raros (gemas del Joyero)
     source_refs:
     - manual: mordheimer.net
       printed_page: 0
@@ -653,10 +682,13 @@ exploration:
               gold_crowns: { kind: dice, dice: { count: 2, sides: 6 }, multiplier: 5 }
         - when: { min: 12, max: 12 }
           then:
-          - type: grant
+          - type: grant_rule
             recipient: hero
-            note: Symbol of the Order of Freetraders; a Hero in possession of
-              it gains the Haggle skill.
+            label: Choose the Hero who keeps the symbol
+            text: Haggle (Symbol of the Order of Freetraders)
+            text_i18n:
+              es: >-
+                Regateo (Símbolo de la Orden de Mercaderes Libres)
         default: []
     source_refs:
     - manual: mordheimer.net
@@ -693,10 +725,13 @@ exploration:
     dice_pattern: '6,6,6,6,6'
     outcome: Entrance to the Catacombs
     follow_up:
-      type: grant
+      type: grant_rule
       recipient: warband
-      note: From now on the warband may re-roll one dice when rolling on the
-        Exploration chart. Second entrances grant no additional re-rolls.
+      text: Once per exploration roll, re-roll one die. Additional entrances grant no further re-rolls.
+      text_i18n:
+        es: >-
+          Una vez por tirada de exploración, repite un dado. Las entradas adicionales no conceden más
+          repeticiones.
     source_refs:
     - manual: mordheimer.net
       printed_page: 0
@@ -717,9 +752,8 @@ exploration:
         branches:
         - when: { min: 1, max: 1 }
           then:
-          - type: warrior.miss_games
+          - type: roster.remove_warrior
             subject: $searching_hero
-            games: { kind: fixed, value: 999 }
             note: The Hero is devoured by the guardians of the Pit and never seen again.
         - when: { min: 2, max: 6 }
           then:
@@ -805,9 +839,7 @@ exploration:
         branches:
         - when: { min: 5, max: 6 }
           then:
-          - type: grant
-            recipient: warband
-            note: Magical artefact; roll on the Magical Artefacts table.
+          - type: magical_artefact_table
         default: []
     source_refs:
     - manual: mordheimer.net
@@ -834,22 +866,17 @@ exploration:
           items: [{ item_id: heavy_armour, quantity: { kind: dice, dice: { count: 1, sides: 3 } } }]
       - when: { min: 3, max: 3 }
         then:
-        - type: grant
-          recipient: warband
-          items: [{ item_id: axe, quantity: { kind: fixed, value: 1 } }]
-          note: Gromril Axe
+        - { type: grant_compound_item, reward_id: scenario_reward.gromril_axe, base_item_id: axe, name: Gromril Axe,
+            category: Weapon, rules: [Gromril weapon] }
       - when: { min: 4, max: 4 }
         then:
-        - type: grant
-          recipient: warband
-          items: [{ item_id: hammer, quantity: { kind: fixed, value: 1 } }]
-          note: Gromril Hammer
+        - { type: grant_compound_item, reward_id: scenario_reward.gromril_hammer, base_item_id: hammer, name: Gromril Hammer,
+            category: Weapon, rules: [Gromril weapon] }
       - when: { min: 5, max: 5 }
         then:
-        - type: grant
-          recipient: warband
-          items: [{ item_id: two_handed_weapon, quantity: { kind: fixed, value: 1 } }]
-          note: Double-handed Gromril Axe
+        - { type: grant_compound_item, reward_id: scenario_reward.gromril_two_handed_axe,
+            base_item_id: two_handed_weapon, name: Double-handed Gromril Axe, category: Weapon,
+            rules: [Two-handed weapon, Gromril weapon] }
       - when: { min: 6, max: 6 }
         then:
         - type: grant
@@ -956,11 +983,25 @@ exploration:
     dice_pattern: '5,5,5,5,5,5'
     outcome: Fighting Arena
     follow_up:
-      type: grant
-      recipient: warband
-      note: A training manual is found. It may be sold for 100 gc, or one Hero
-        may read it to choose from Combat skills when gaining new skills and to
-        increase his WS one extra point above his racial maximum.
+      type: choose_option
+      label: What will the warband do with the training manual?
+      options:
+      - id: fighting-arena-sell
+        label: Sell it for 100 gc
+        then:
+        - type: grant
+          recipient: warband
+          resources: { gold_crowns: { kind: fixed, value: 100 } }
+      - id: fighting-arena-study
+        label: Give it to a Hero
+        then:
+        - type: grant_rule
+          recipient: hero
+          label: Choose the Hero who studies the manual
+          text: Combat skill access; WS racial maximum increased by 1 (Fighting Arena manual)
+          text_i18n:
+            es: >-
+              Acceso a habilidades de combate; máximo racial de HA aumentado en 1 (manual de la Arena de Combate)
     source_refs:
     - manual: mordheimer.net
       printed_page: 0
@@ -986,9 +1027,7 @@ exploration:
           items: [{ item_id: crimson_shade, quantity: { kind: dice, dice: { count: 1, sides: 6 } } }]
       - when: { min: 5, max: 6 }
         then:
-        - type: grant
-          recipient: warband
-          note: Magical artefact; roll on the Magical Artefacts table.
+        - type: magical_artefact_table
     source_refs:
     - manual: mordheimer.net
       printed_page: 0
@@ -1216,42 +1255,65 @@ magical_artefacts:
   - id: campaign.magical-artefact.boots-and-rope-of-pieter
     roll: '1'
     result: The Boots and Rope of Pieter
-    summary: The wearer may move normally (including running, charging, etc) on
-      any kind of terrain, including vertical surfaces, with no Initiative test
-      needed (except to jump across gaps).
+    effect: >-
+      The wearer may move normally (including running, charging, etc) on any kind of terrain,
+      including vertical surfaces, with no Initiative test needed (except to jump across gaps).
+    effect_i18n:
+      es: >-
+        El portador puede moverse con normalidad (incluyendo correr, cargar, etc.) sobre cualquier tipo de terreno, incluso superficies verticales, sin necesidad de superación de Iniciativa (excepto para saltar huecos).
   - id: campaign.magical-artefact.count-of-ventimiglias-misericordia
     roll: '2'
     result: The Count of Ventimiglia's Misericordia
-    summary: Treated as a sword. Opponents wounded by it are stunned on a
-      result of 1-3 (Undead are knocked down as normal) and put out of action
-      on a 4-6.
+    effect: >-
+      Treated as a sword. Opponents wounded by it are stunned on a result of 1-3 (Undead are knocked
+      down as normal) and put out of action on a 4-6.
+    effect_i18n:
+      es: >-
+        Se considera una espada.
+        Los oponentes heridos por ella quedan aturdidos con un resultado de 1-3 (los No Muertos son derribados con normalidad) y fuera de combate con un 4-6.
   - id: campaign.magical-artefact.attlas-plate-mail
     roll: '3'
     result: Att'la's Plate Mail
-    summary: A suit of Gromril Armour with Rune of Spell Eating (immune to all
-      spells), Rune of Passage (move through solid objects) and Rune of
-      Fortitude (an extra wound, possibly above the race's maximum).
+    effect: >-
+      A suit of Gromril Armour with Rune of Spell Eating (immune to all spells), Rune of Passage
+      (move through solid objects) and Rune of Fortitude (an extra wound, possibly above the race's
+      maximum).
+    effect_i18n:
+      es: >-
+        Una coraza de gromril con Runa de Devorahechizos (inmune a todos los hechizos), Runa del Pasaje (atraviesa objetos sólidos) y Runa de Fortaleza (una herida adicional, posiblemente por encima del máximo de la raza).
   - id: campaign.magical-artefact.bow-of-seeking
     roll: '4'
     result: Bow of Seeking
-    summary: Treated as an Elven Bow that always hits on a 2+, regardless of to
-      hit modifiers; all arrows count as Hunting Arrows (+1 on all Injury
-      rolls). May pick any visible enemy model in range, not just the closest.
-      Cannot be used to shoot at Elves.
+    effect: >-
+      Treated as an Elven Bow that always hits on a 2+, regardless of to hit modifiers; all arrows
+      count as Hunting Arrows (+1 on all Injury rolls). May pick any visible enemy model in range,
+      not just the closest. Cannot be used to shoot at Elves.
+    effect_i18n:
+      es: >-
+        Se considera un Arco Élfico que siempre impacta con un 2+, sin importar los modificadores al impactar; todas las flechas cuentan como Flechas de Caza (+1 en todas las tiradas de herida).
+        Puede elegir cualquier miniatura enemiga visible al alcance, no solo la más cercana.
+        No puede dispararse contra Elfos.
   - id: campaign.magical-artefact.executioners-hood
     roll: '5'
     result: Executioner's Hood
-    summary: The wearer is always frenzied even if knocked down or stunned, and
-      adds +1 to his Strength in close combat. He never leaves combat and
-      always attacks opponents in base contact until they are taken out of
-      action.
+    effect: >-
+      The wearer is always frenzied even if knocked down or stunned, and adds +1 to his Strength in
+      close combat. He never leaves combat and always attacks opponents in base contact until they
+      are taken out of action.
+    effect_i18n:
+      es: >-
+        El portador está siempre frenético incluso si es derribado o aturdido, y suma +1 a su Fuerza en combate cerrado.
+        Nunca abandona el combate y siempre ataca a los oponentes en contacto de base hasta dejarlos fuera de combate.
   - id: campaign.magical-artefact.all-seeing-eye-of-numas
     roll: '6'
     result: All-seeing Eye of Numas
-    summary: The bearer can see all models on the table top, may roll two dice
-      after battle when rolling on the Exploration chart, and has an additional
-      6+ save against all shooting attacks and strikes in close combat that is
-      not modified by Strength or weapon modifiers.
+    effect: >-
+      The bearer can see all models on the table top, may roll two dice after battle when rolling on
+      the Exploration chart, and has an additional 6+ save against all shooting attacks and strikes
+      in close combat that is not modified by Strength or weapon modifiers.
+    effect_i18n:
+      es: >-
+        El portador puede ver todas las miniaturas de la mesa, puede tirar dos dados tras la batalla al tirar en la tabla de Exploración, y tiene una tirada de salvación adicional de 6+ contra todos los ataques de disparo y golpes en combate cerrado que no se ve modificada por la Fuerza ni por modificadores de armas.
 effect_ids:
 - campaign.exploration.dice
 - campaign.exploration.reroll

@@ -20,8 +20,8 @@ def _restore_locale():
     set_locale(CANONICAL_LOCALE)
 
 
-# Bretonnian rules are the one record family with reviewed Spanish
-# translations in the KB (name_i18n.es / effect_i18n.es).
+# Bretonnian rules carry reviewed Spanish translations in the KB
+# (name_i18n.es / effect_i18n.es) and are used as the fixture family.
 _BRETONNIAN_RULES = "bands/mordheim/bretonnian-knights/special-rules.yaml"
 
 
@@ -96,3 +96,31 @@ def test_display_effect_prefers_the_canonical_prose_under_english_and_the_transl
 
 def test_supported_locales_is_english_and_spanish():
     assert SUPPORTED_LOCALES == frozenset({"en", "es"})
+
+
+def _walk_no_en_mirror(node: object, path: str, problems: list[str]) -> None:
+    """Flag any locale block that still stores an ``en`` mirror: English is
+    canonical in the ``name`` / ``effect`` fields and the ``name_i18n`` /
+    ``effect_i18n`` blocks carry only translations."""
+    if isinstance(node, dict):
+        for block_key in ("name_i18n", "effect_i18n"):
+            block = node.get(block_key)
+            if isinstance(block, dict) and "en" in block:
+                problems.append(f"{path}: {block_key} still stores an 'en' mirror")
+        for key, value in node.items():
+            _walk_no_en_mirror(value, f"{path}/{key}", problems)
+    elif isinstance(node, list):
+        for index, value in enumerate(node):
+            _walk_no_en_mirror(value, f"{path}[{index}]", problems)
+
+
+def test_no_locale_block_stores_an_en_mirror():
+    import yaml
+
+    from mordheim_knowledge.loader import knowledge_root
+
+    problems: list[str] = []
+    for path in sorted(knowledge_root().rglob("*.yaml")):
+        document = yaml.safe_load(path.read_text(encoding="utf-8"))
+        _walk_no_en_mirror(document, path.name, problems)
+    assert problems == []

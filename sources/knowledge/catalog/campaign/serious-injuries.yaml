@@ -28,7 +28,8 @@ tables:
     resolution: direct
     effects:
     - type: roster.remove_warrior
-      reason: dead
+      reason: >-
+        dead
   - id: campaign.serious-injury.hero.16-21-multiple-injuries
     roll: '16-21'
     result: Multiple Injuries
@@ -162,6 +163,9 @@ tables:
     - type: warrior.miss_games
       games: { kind: dice, dice: { count: 1, sides: 3 } }
     note: The warrior may do nothing at all while recovering.
+    note_i18n:
+      es: >-
+        El guerrero no puede hacer absolutamente nada mientras se recupera.
   - id: campaign.serious-injury.hero.36-robbed
     roll: '36'
     result: Robbed
@@ -275,7 +279,8 @@ tables:
     resolution: direct
     effects:
     - type: roster.remove_warrior
-      reason: severe_injuries_or_died
+      reason: >-
+        severe_injuries_or_died
   - id: campaign.serious-injury.henchman.3-6-fine
     roll: '3-6'
     result: Full Recovery

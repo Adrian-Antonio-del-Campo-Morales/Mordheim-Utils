@@ -9,7 +9,6 @@ profiles:
   publication: Mordheim Facebook Group
   name: Aksho'akhash the Vile Dreadwing, Lord of the Carrion Throne
   name_i18n:
-    en: Aksho'akhash the Vile Dreadwing, Lord of the Carrion Throne
     es: Aksho'akhash el Vill Aladroca, Señor del Trono de la Carroña
   normalization_status: normalized
   characteristics:
@@ -31,39 +30,52 @@ profiles:
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.fear
     name: Fear
     effect: Causes fear.
+    effect_i18n:
+      es: >-
+        Causa miedo.
     name_i18n:
-      en: Fear
       es: Miedo
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-flesh
     name: Daemonic Flesh
     effect: Has source 5+ daemonic save and magical attacks.
+    effect_i18n:
+      es: >-
+        Tiene la salvación demoníaca de 5+ de la fuente y ataques mágicos.
     name_i18n:
-      en: Daemonic Flesh
-      es: Carne demoníaca
+      es: Carne Demoníaca
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-instability
     name: Daemonic Instability
     effect: Can be banished when OOA or if summoner is lost.
+    effect_i18n:
+      es: >-
+        Puede ser desterrado si queda Fuera de combate o si su invocador se pierde.
     name_i18n:
-      en: Daemonic Instability
-      es: Inestabilidad demoníaca
+      es: Inestabilidad Demoníaca
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.coward-king
     name: Coward King
     effect: Not immune to psychology/fear despite causing fear.
+    effect_i18n:
+      es: >-
+        No es inmune a la psicología/miedo a pesar de causar miedo.
     name_i18n:
-      en: Coward King
-      es: Rey cobarde
+      es: Rey Cobarde
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.fly
     name: Fly
     effect: Uses source flying movement.
+    effect_i18n:
+      es: >-
+        Usa el movimiento volador de la fuente.
     name_i18n:
-      en: Fly
       es: Volar
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.aethereal-hoarder
     name: Aethereal Hoarder
     effect: After eligible games may reroll exploration, search rare item at +1, or find 2D6 gc.
+    effect_i18n:
+      es: >-
+        Tras las batallas elegibles puede repetir la exploración, buscar objetos raros con +1, o encontrar
+        2D6 gc.
     name_i18n:
-      en: Aethereal Hoarder
-      es: Acumulador etéreo
+      es: Acumulador Etéreo
   unresolved_references:
   - kind: summoning_procedure
     source_name: Chaos spell-caster + Macabre Tome + Leadership test
@@ -78,7 +90,6 @@ profiles:
   publication: Fanatic Online 89
   name: “Busty” Gwen
   name_i18n:
-    en: “Busty” Gwen
     es: Gwen «la Busto»
   normalization_status: normalized
   characteristics:
@@ -100,7 +111,6 @@ profiles:
     - id: hireling.dramatis.busty-gwen.item.knives
       name: Knives
       name_i18n:
-        en: Knives
         es: Cuchillos
     - id: hireling.dramatis.busty-gwen.item.rolling-pin
       name: Rolling Pin
@@ -109,8 +119,7 @@ profiles:
         context: rules
       strength_bonus: 1
       name_i18n:
-        en: Rolling Pin
-        es: Rodillo de amasar
+        es: Rodillo de Amasar
   skill_access: []
   starting_skill_ids:
   - skill.step-aside
@@ -120,15 +129,21 @@ profiles:
   - id: hireling.dramatis.busty-gwen.rule.massively-built
     name: Massively Built
     effect: Uses source leadership-distraction rule against eligible targets.
+    effect_i18n:
+      es: >-
+        Usa la regla de distracción de Liderazgo de la fuente contra objetivos elegibles.
     name_i18n:
-      en: Massively Built
-      es: Complexión masiva
+      es: Complexión Masiva
   - id: hireling.dramatis.busty-gwen.rule.not-hired-muscle
     name: Not Hired Muscle
-    effect: Is found automatically, then requires the source special scenario and outcome/payment procedure.
+    effect: >-
+      Is found automatically, then requires the source special scenario and outcome/payment procedure.
+    effect_i18n:
+      es: >-
+        Se encuentra automáticamente y después requiere el escenario especial y el procedimiento de
+        resultado/pago de la fuente.
     name_i18n:
-      en: Not Hired Muscle
-      es: No es músculo alquilado
+      es: No Es Músculo Alquilado
   source_notes:
   - The standard campaign rating is +40 plus experience according to Mordheimer; the one-off game rule
     instead uses 85 gc and +65 rating.
@@ -143,7 +158,6 @@ profiles:
   publication: Fanatic Online 17
   name: The Dark Jester in Mordheim
   name_i18n:
-    en: The Dark Jester in Mordheim
     es: El Bufón Oscuro en Mordheim
   normalization_status: normalized
   characteristics:
@@ -180,32 +194,42 @@ profiles:
   - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.loner
     name: Loner
     effect: Does not test All Alone.
+    effect_i18n:
+      es: >-
+        No realiza la prueba de Totalmente Solo.
     name_i18n:
-      en: Loner
       es: Solitario
   - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.confound-and-confuse
     name: Confound and Confuse
     effect: Chooses a source combat trick each combat turn.
+    effect_i18n:
+      es: >-
+        Elige un truco de combate de la fuente en cada turno de combate.
     name_i18n:
-      en: Confound and Confuse
-      es: Confundir y trastornar
+      es: Confundir y Trastornar
   - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.sidestepper
     name: Sidestepper
     effect: May use the source 4+ special dodge.
+    effect_i18n:
+      es: >-
+        Puede usar la esquiva especial de 4+ de la fuente.
     name_i18n:
-      en: Sidestepper
       es: Apartador
   - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.babbling-banter
     name: Babbling Banter
     effect: Applies source to-hit modifiers.
+    effect_i18n:
+      es: >-
+        Aplica los modificadores para impactar de la fuente.
     name_i18n:
-      en: Babbling Banter
       es: Charlatanería
   - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.trip
     name: Trip
     effect: May replace a wound attempt with a source 2+ trip.
+    effect_i18n:
+      es: >-
+        Puede sustituir un intento de herir por un derribo de 2+ de la fuente.
     name_i18n:
-      en: Trip
       es: Viaje
   source_notes:
   - Source equipment is a skeleton hobby horse counting as club and a sack of spikes counting as morning
@@ -221,8 +245,7 @@ profiles:
   publication: Sylvania Supplement
   name: The Headless Horseman
   name_i18n:
-    en: The Headless Horseman
-    es: El Jinete sin cabeza
+    es: El Jinete sin Cabeza
   normalization_status: out_of_scope
   warband_rating:
     kind: fixed
@@ -253,8 +276,7 @@ profiles:
     - id: hireling.dramatis.the-headless-horseman.item.double-handed-axe
       name: Double Handed Axe
       name_i18n:
-        en: Double Handed Axe
-        es: Hacha a dos manos
+        es: Hacha a Dos Manos
   skill_access: []
   starting_skill_ids:
   - skill.pistolier
@@ -265,56 +287,74 @@ profiles:
   - id: hireling.dramatis.the-headless-horseman.rule.causes-fear
     name: Causes Fear
     effect: Causes fear.
+    effect_i18n:
+      es: >-
+        Causa miedo.
     name_i18n:
-      en: Causes Fear
       es: Causa Miedo
   - id: hireling.dramatis.the-headless-horseman.rule.immune-to-psychology
     name: Immune to Psychology
     effect: Horseman and steed are immune to psychology.
+    effect_i18n:
+      es: >-
+        El jinete y la montura son inmunes a la psicología.
     name_i18n:
-      en: Immune to Psychology
       es: Inmune a la Psicología
   - id: hireling.dramatis.the-headless-horseman.rule.immune-to-poison
     name: Immune to Poison
     effect: Horseman and steed are immune to poison.
+    effect_i18n:
+      es: >-
+        El jinete y la montura son inmunes al veneno.
     name_i18n:
-      en: Immune to Poison
-      es: Inmune al veneno
+      es: Inmune al Veneno
   - id: hireling.dramatis.the-headless-horseman.rule.faithful-steed
     name: Faithful Steed
     effect: May never dismount.
+    effect_i18n:
+      es: >-
+        Nunca puede desmontar.
     name_i18n:
-      en: Faithful Steed
-      es: Corcel fiel
+      es: Corcel Fiel
   - id: hireling.dramatis.the-headless-horseman.rule.undead
     name: Undead
     effect: Horseman and steed count as Undead.
+    effect_i18n:
+      es: >-
+        El jinete y la montura cuentan como No-muertos.
     name_i18n:
-      en: Undead
-      es: No muerto
+      es: No Muerto
   - id: hireling.dramatis.the-headless-horseman.rule.expert-rider
     name: Expert Rider
     effect: Counts as stationary for shooting after moving.
+    effect_i18n:
+      es: >-
+        Cuenta como estático para disparar después de moverse.
     name_i18n:
-      en: Expert Rider
-      es: Jinete experto
+      es: Jinete Experto
   - id: hireling.dramatis.the-headless-horseman.rule.rapid-reload
     name: Rapid Reload
     effect: Can fire both duelling pistols each shooting phase.
+    effect_i18n:
+      es: >-
+        Puede disparar ambas pistolas de duelo en cada fase de disparo.
     name_i18n:
-      en: Rapid Reload
-      es: Recarga rápida
+      es: Recarga Rápida
   - id: hireling.dramatis.the-headless-horseman.rule.head-hewer
     name: Head Hewer
     effect: Source charge attacks with unique axe modify injury/critical results.
+    effect_i18n:
+      es: >-
+        Los ataques de carga de la fuente con su hacha única modifican los resultados de herida/crítico.
     name_i18n:
-      en: Head Hewer
       es: Cortacabezas
   - id: hireling.dramatis.the-headless-horseman.rule.wanderer
     name: Wanderer
     effect: Only stays one battle and cannot be rehired immediately.
+    effect_i18n:
+      es: >-
+        Solo permanece una batalla y no puede volver a contratarse inmediatamente.
     name_i18n:
-      en: Wanderer
       es: Errante
   unresolved_references:
   - kind: multi_profile_entity
@@ -333,7 +373,6 @@ profiles:
   publication: Fanatic Online 89
   name: The Foole
   name_i18n:
-    en: The Foole
     es: El Bufón
   normalization_status: normalized
   characteristics:
@@ -363,8 +402,7 @@ profiles:
     - id: hireling.dramatis.the-foole.item.poison-ring
       name: Poison Ring
       name_i18n:
-        en: Poison Ring
-        es: Anillo de veneno
+        es: Anillo de Veneno
   skill_access: []
   starting_skill_ids:
   - skill.acrobat
@@ -373,33 +411,43 @@ profiles:
   - id: hireling.dramatis.the-foole.rule.unhinged
     name: Unhinged
     effect: Immune to psychology and All Alone.
+    effect_i18n:
+      es: >-
+        Inmune a la psicología y a Totalmente Solo.
     name_i18n:
-      en: Unhinged
       es: Desquiciado
   - id: hireling.dramatis.the-foole.rule.bored-now
     name: Bored Now
     effect: Cannot work for the same warband consecutively.
+    effect_i18n:
+      es: >-
+        No puede trabajar para la misma banda dos veces seguidas.
     name_i18n:
-      en: Bored Now
-      es: Me aburro
+      es: Me Aburro
   - id: hireling.dramatis.the-foole.rule.poison-ring
     name: Poison Ring
     effect: Once per battle may use source Giggle Juice attack.
+    effect_i18n:
+      es: >-
+        Una vez por batalla puede usar el ataque de Zumo de Risas de la fuente.
     name_i18n:
-      en: Poison Ring
-      es: Anillo de veneno
+      es: Anillo de Veneno
   - id: hireling.dramatis.the-foole.rule.sadist
     name: Sadist
     effect: Uses source captured-warrior rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de guerrero capturado de la fuente.
     name_i18n:
-      en: Sadist
       es: Sádico
   - id: hireling.dramatis.the-foole.rule.master-craftsman
     name: Master Craftsman
     effect: May attempt a source random weapon improvement after battle.
+    effect_i18n:
+      es: >-
+        Puede intentar una mejora de arma aleatoria de la fuente después de la batalla.
     name_i18n:
-      en: Master Craftsman
-      es: Maestro artesano
+      es: Maestro Artesano
   unresolved_references:
   - kind: item_instance_modifier
     source_name: Master Craftsman weapon modifications
@@ -414,7 +462,6 @@ profiles:
   publication: Sylvania Supplement
   name: Sigmund Spindle, the Harvester of Flesh
   name_i18n:
-    en: Sigmund Spindle, the Harvester of Flesh
     es: Sigmund Spindle, el Segador de Carne
   normalization_status: normalized
   characteristics:
@@ -448,27 +495,35 @@ profiles:
   - id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.maddened
     name: Maddened
     effect: Subject to Frenzy.
+    effect_i18n:
+      es: >-
+        Sujeto a Frenesí.
     name_i18n:
-      en: Maddened
       es: Enajenado
   - id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.causes-fear
     name: Causes Fear
     effect: Causes fear.
+    effect_i18n:
+      es: >-
+        Causa miedo.
     name_i18n:
-      en: Causes Fear
       es: Causa Miedo
   - id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.immune-to-poison
     name: Immune to Poison
     effect: Immune to poison.
+    effect_i18n:
+      es: >-
+        Inmune al veneno.
     name_i18n:
-      en: Immune to Poison
-      es: Inmune al veneno
+      es: Inmune al Veneno
   - id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.no-pain
     name: No Pain
     effect: Ignores Knocked Down and Stunned until last Wound is lost.
+    effect_i18n:
+      es: >-
+        Ignora Derribado y Aturdido hasta perder su última Herida.
     name_i18n:
-      en: No Pain
-      es: Sin dolor
+      es: Sin Dolor
   unresolved_references:
   - kind: alternate_hire_payment
     source_name: one Hero body part / Severe Arm Wound
@@ -483,7 +538,6 @@ profiles:
   publication: Letters of the Damned 4
   name: William Schäkestange, Master Bard
   name_i18n:
-    en: William Schäkestange, Master Bard
     es: William Schäkestange, Bardo Maestre
   normalization_status: normalized
   characteristics:
@@ -517,8 +571,7 @@ profiles:
     - id: hireling.dramatis.william-schakestange-master-bard.item.lucky-rabbits-foot
       name: Lucky Rabbit's Foot
       name_i18n:
-        en: Lucky Rabbit's Foot
-        es: Pata de conejo de la suerte
+        es: Pata de Conejo de la Suerte
   skill_access: []
   starting_skill_ids:
   - skill.jump-up
@@ -527,30 +580,42 @@ profiles:
   rules:
   - id: hireling.dramatis.william-schakestange-master-bard.rule.songster
     name: Songster
-    effect: Nearby friendly models may reroll failed Leadership tests with source +1 modifier, including
-      rout tests.
+    effect: >-
+      Nearby friendly models may reroll failed Leadership tests with source +1 modifier, including rout tests.
+    effect_i18n:
+      es: >-
+        Las miniaturas amigas cercanas pueden repetir las pruebas de Liderazgo fallidas con el modificador
+        +1 de la fuente, incluidas las pruebas de huida.
     name_i18n:
-      en: Songster
       es: Cantador
   - id: hireling.dramatis.william-schakestange-master-bard.rule.pantomime-horse
     name: Pantomime Horse
     effect: Optional mount treated as Warhorse except it never bolts.
+    effect_i18n:
+      es: >-
+        Montura opcional tratada como Corcel de Guerra, excepto porque nunca se desboca.
     name_i18n:
-      en: Pantomime Horse
-      es: Caballo de mimoteca
+      es: Caballo de Mimoteca
   - id: hireling.dramatis.william-schakestange-master-bard.rule.pages-of-couragio
     name: Pages of Couragio
-    effect: When not highest-rated warband, records source heroic acts and awards extra post-battle Experience.
+    effect: >-
+      When not highest-rated warband, records source heroic acts and awards extra post-battle Experience.
+    effect_i18n:
+      es: >-
+        Cuando no es la banda de mayor valoración, registra los actos heroicos de la fuente y concede
+        Experiencia extra en la postbatalla.
     name_i18n:
-      en: Pages of Couragio
       es: Páginas de Couragio
   - id: hireling.dramatis.william-schakestange-master-bard.rule.campaign-eligibility
-    name: Conditional acceptance — good-aligned employers
-    effect: Mercenaries, Sisters of Sigmar and Witch Hunters may hire William automatically. Any other
-      good-aligned warband may hire him only on a D6 roll of 4+.
+    name: Conditional Acceptance — Good-Aligned Employers
+    effect: >-
+      Mercenaries, Sisters of Sigmar and Witch Hunters may hire William automatically. Any other good-aligned warband may hire him only on a D6 roll of 4+.
+    effect_i18n:
+      es: >-
+        Mercenarios, Hermanas de Sigmar y Cazadores de Brujas pueden contratar a William automáticamente.
+        Cualquier otra banda alineada con el bien solo puede contratarlo con una tirada de D6 de 4+.
     name_i18n:
-      en: Conditional acceptance — good-aligned employers
-      es: Aceptación condicional — contratistas buenos
+      es: Aceptación Condicional — Contratistas Buenos
   unresolved_references:
   - kind: skill
     source_name: Ride Pantomime Horse

@@ -3,22 +3,13 @@ band_id: tileans
 rules:
 - id: captain--leader
   name: Leader
-  effect: Any warrior within 6" of the Captain may use his Leadership characteristic when taking Leadership
-    tests.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 1 Captain / Special Rules / Leader
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
-    en: Leader
     es: Líder
-  effect_i18n:
-    en: 'Any warrior within 6" of the Captain may use his Leadership characteristic when
-
-      taking Leadership tests.'
-    es: Cualquier guerrero a 6" del Capitán puede usar su característica de Liderazgo al realizar chequeos
-      de Liderazgo.
   applies_to:
     profile_ids:
     - captain
@@ -30,7 +21,9 @@ rules:
     - id: unimplemented.tileans.captain.leader
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
+  rule_ref: shared-rule.leader-2
 - id: duelists--cloak-dagger
   runtime:
     scope: 'YES'
@@ -45,18 +38,18 @@ rules:
         parameters:
           value: true
   name: Cloak & Dagger
-  effect: A Duellist counts as using a buckler in close combat because of the defensive use of the cloak.
+  effect: >-
+    A Duellist counts as using a buckler in close combat because of the defensive use of the cloak.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 – 5 Duelists / Special Rules / Cloak & Dagger
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
-    en: Cloak & Dagger
-    es: Capa y daga
+    es: Capa y Daga
   effect_i18n:
-    en: A Duellist counts as using a buckler in close combat because of the defensive use of the cloak.
-    es: Un Duelista cuenta como si usara una rodela en combate cuerpo a cuerpo debido al uso defensivo
+    es: >-
+      Un Duelista cuenta como si usara una rodela en combate cuerpo a cuerpo debido al uso defensivo
       de la capa.
   applies_to:
     profile_ids:
@@ -70,10 +63,8 @@ rules:
     section: Racial Maximum Characteristics / Human
     url: https://mordheimer.net/docs/campaigns/experience
   name_i18n:
-    en: Human Maximum Characteristics
-    es: Características máximas humanas
+    es: Máximos de Características Humanos
   effect_i18n:
-    en: Tileans use the Human racial maximum profile (campaign.limit.racial-maximum.human).
     es: Los Tileanos usan el perfil racial máximo humano (campaign.limit.racial-maximum.human).
   applies_to:
     band: true
@@ -97,11 +88,11 @@ rules:
     section: Special Rules / Miragleans
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
-    en: Miraglean — Crossbow Mastery
-    es: Miragleo — Maestría con la ballesta
+    es: Miragleo — Maestría con la Ballesta
   effect_i18n:
-    en: Miraglean Heroes gain +1 to hit when using crossbows. The bonus applies only to crossbows.
-    es: Los Héroes miragleos obtienen +1 para impactar al usar ballestas. El bonus solo aplica a ballestas.
+    es: >-
+      Los Héroes miragleos obtienen +1 para impactar al usar ballestas. El bonus solo aplica a
+      ballestas.
   applies_to:
     band: true
   runtime:
@@ -112,7 +103,8 @@ rules:
     - id: unimplemented.tileans.band.miraglean-crossbow-mastery
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: band--miraglean-marksman-accuracy
   name: Miraglean — Marksman Accuracy
   effect: Miraglean Marksmen gain +1 to hit with any missile weapon they use.
@@ -122,10 +114,8 @@ rules:
     section: Special Rules / Miragleans
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
-    en: Miraglean — Marksman Accuracy
-    es: Miragleo — Precisión de tirador
+    es: Miragleo — Precisión de Tirador
   effect_i18n:
-    en: Miraglean Marksmen gain +1 to hit with any missile weapon they use.
     es: Los Tiradores miragleos obtienen +1 para impactar con cualquier arma arrojadiza que usen.
   applies_to:
     band: true
@@ -137,10 +127,12 @@ rules:
     - id: unimplemented.tileans.band.miraglean-marksman-accuracy
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: band--miraglean-hatred-skaven
   name: Miraglean — Hatred of Skaven
-  effect: All Miraglean warband members are subject to Hatred against Skaven. Hired Swords do not gain
+  effect: >-
+    All Miraglean warband members are subject to Hatred against Skaven. Hired Swords do not gain
     this Hatred.
   source:
     manual: mordheimer.net
@@ -148,12 +140,10 @@ rules:
     section: Special Rules / Miragleans
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
-    en: Miraglean — Hatred of Skaven
-    es: Miragleo — Odio a los skaven
+    es: Miragleo — Odio a los Skaven
   effect_i18n:
-    en: All Miraglean warband members are subject to Hatred against Skaven. Hired Swords do not gain this
-      Hatred.
-    es: Todos los miembros de una banda miraglea están sujetos a Odio contra los skaven. Las Espadas a
+    es: >-
+      Todos los miembros de una banda miraglea están sujetos a Odio contra los skaven. Las Espadas a
       sueldo no ganan este Odio.
   applies_to:
     band: true
@@ -165,7 +155,8 @@ rules:
     - id: unimplemented.tileans.band.miraglean-hatred-skaven
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: band--miraglean-hired-sword-restriction
   name: Miraglean — Hired Sword Restriction
   effect: A Miraglean warband may not hire Skaven Hired Swords.
@@ -175,10 +166,8 @@ rules:
     section: Special Rules / Miragleans
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
-    en: Miraglean — Hired Sword Restriction
-    es: Miragleo — Restricción de Espadas a sueldo
+    es: Miragleo — Restricción de Espadas a Sueldo
   effect_i18n:
-    en: A Miraglean warband may not hire Skaven Hired Swords.
     es: Una banda miraglea no puede contratar Espadas a sueldo skaven.
   applies_to:
     band: true
@@ -195,7 +184,8 @@ rules:
         construction.
 - id: band--remasen-dark-elf-rout
   name: Remasen — Defiance Against Dark Elves
-  effect: When fighting a Dark Elf warband, a Remasen warband may re-roll one failed Rout test. The second
+  effect: >-
+    When fighting a Dark Elf warband, a Remasen warband may re-roll one failed Rout test. The second
     result must be accepted.
   source:
     manual: mordheimer.net
@@ -203,13 +193,11 @@ rules:
     section: Special Rules / Remasens
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
-    en: Remasen — Defiance Against Dark Elves
-    es: Remasén — Desafío contra los elfos oscuros
+    es: Remasén — Desafío contra los Elfos Oscuros
   effect_i18n:
-    en: When fighting a Dark Elf warband, a Remasen warband may re-roll one failed Rout test. The second
-      result must be accepted.
-    es: Al luchar contra una banda de elfos oscuros, una banda remasén puede repetir un chequeo de Huida
-      fallido. El segundo resultado debe aceptarse.
+    es: >-
+      Al luchar contra una banda de elfos oscuros, una banda remasén puede repetir un chequeo de
+      Huida fallido. El segundo resultado debe aceptarse.
   applies_to:
     band: true
   runtime:
@@ -220,22 +208,23 @@ rules:
     - id: unimplemented.tileans.band.remasen-dark-elf-rout
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: band--remasen-officer-leadership
   name: Remasen — Steadfast Officers
-  effect: The Captain, Champions and Youngbloods in a Remasen warband have +1 Leadership at all times.
+  effect: >-
+    The Captain, Champions and Youngbloods in a Remasen warband have +1 Leadership at all times.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Special Rules / Remasens
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
-    en: Remasen — Steadfast Officers
-    es: Remasén — Oficiales firmes
+    es: Remasén — Oficiales Firmes
   effect_i18n:
-    en: The Captain, Champions and Youngbloods in a Remasen warband have +1 Leadership at all times.
-    es: El Capitán, los Campeones y los Jóvenes Promesas de una banda remasén tienen +1 de Liderazgo en
-      todo momento.
+    es: >-
+      El Capitán, los Campeones y los Jóvenes Promesas de una banda remasén tienen +1 de Liderazgo
+      en todo momento.
   applies_to:
     band: true
   runtime:
@@ -246,7 +235,8 @@ rules:
     - id: unimplemented.tileans.band.remasen-officer-leadership
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: band--remasen-hired-sword-restriction
   name: Remasen — Hired Sword Restriction
   effect: A Remasen warband may not hire Dark Elf Hired Swords.
@@ -256,10 +246,8 @@ rules:
     section: Special Rules / Remasens
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
-    en: Remasen — Hired Sword Restriction
-    es: Remasén — Restricción de Espadas a sueldo
+    es: Remasén — Restricción de Espadas a Sueldo
   effect_i18n:
-    en: A Remasen warband may not hire Dark Elf Hired Swords.
     es: Una banda remasén no puede contratar Espadas a sueldo elfos oscuros.
   applies_to:
     band: true
@@ -276,7 +264,8 @@ rules:
         construction.
 - id: band--trantio-wealth
   name: Trantio — Wealth and Experience
-  effect: A Trantio warband starts a one-off match with an extra 100 gc. In a Lustrian campaign it starts
+  effect: >-
+    A Trantio warband starts a one-off match with an extra 100 gc. In a Lustrian campaign it starts
     with 20% more gold crowns, which is 600 gc when the normal starting amount is 500 gc.
   source:
     manual: mordheimer.net
@@ -284,14 +273,12 @@ rules:
     section: Special Rules / Trantios
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tileans
   name_i18n:
-    en: Trantio — Wealth and Experience
-    es: Trantio — Riqueza y experiencia
+    es: Trantio — Riqueza y Experiencia
   effect_i18n:
-    en: A Trantio warband starts a one-off match with an extra 100 gc. In a Lustrian campaign it starts
-      with 20% more gold crowns, which is 600 gc when the normal starting amount is 500 gc.
-    es: Una banda trantina comienza un enfrentamiento puntual con 100 coronas extra. En una campaña de
-      Lustria comienza con un 20% más de coronas de oro, es decir, 600 coronas cuando la cantidad inicial
-      normal es de 500 coronas.
+    es: >-
+      Una banda trantina comienza un enfrentamiento puntual con 100 coronas extra. En una campaña de
+      Lustria comienza con un 20% más de coronas de oro, es decir, 600 coronas cuando la cantidad
+      inicial normal es de 500 coronas.
   applies_to:
     band: true
   runtime:
@@ -302,4 +289,5 @@ rules:
     - id: unimplemented.tileans.band.trantio-wealth
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.

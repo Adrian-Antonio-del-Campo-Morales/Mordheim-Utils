@@ -64,12 +64,14 @@ on L1–L5.
   `test_vectorized_parity_inventory_is_complete_and_exact_checks_pass`) compare
   the engines field-by-field on small exhaustive domains: hit/wound 11×11,
   armour across strengths, injury 1..12, attack pools, priority, keyed-dice
-  replay. These checks exercise the **engine's real operators** — a gap in the
-  past let a check test a delegating helper while the duplicated projection
-  was never exercised (see L4, `hit-much-weaker-flip`).
-- Per-rule evidence is tied to the knowledge inventory by `verify`
-  (617/617 obligations verified, 0 pending) and every rule-family mutation
-  detected by at least one spec.
+  replay. These checks exercise the **engine's real operators** — the exact
+  checks must drive the engine's own code, not a delegating helper, so a
+  duplicated projection cannot hide untested (see L4 and
+  [the verification history](../decisions/verification-history.md)).
+- Per-rule evidence is tied to the knowledge inventory by `verify` — the
+  live status is whatever `verify --inventory` reports (all obligations
+  verified, 0 pending, at the time the corpus was closed) — and every
+  rule-family mutation is detected by at least one spec.
 
 New rules land here first. This layer is why adding a rule does **not**
 require adding a statistical pair.
@@ -94,17 +96,14 @@ exactly the class of divergence the aggregate gate cannot see. Default budget
 is 10 000 duels per engine, scenario and horizon (`--truncation-simulations`);
 the oracle leg is shared per horizon and poolable with `--workers`.
 
-**Round-ledger caveat.** The first attempt compared per-duel *resolution
-rounds* via a χ² over a winner×round histogram and diverged on the
-`stateful` scenario while aggregate rates passed. Triage showed the
-divergence was a ledger-convention artifact: duels resolved by round-start
-phases (fire, Force-of-Will sustain) are attributed to different round
-numbers by each driver. The oracle's observed mode
-(`simulate_duel_observed`) keeps per-duel records and mirrors the vectorized
-ledger, but **resolution round is not an engine-agnostic observable**.
-Outcome *after exactly h rounds* is — an unresolved duel counts as unresolved
-in both drivers whatever internal ledger they keep — which is why the
-truncation sweep replaced the histogram.
+**Round-ledger convention.** Resolution round is not an engine-agnostic
+observable: duels resolved by round-start phases (fire, Force-of-Will
+sustain) are attributed to different round numbers by each driver's ledger.
+Outcome *after exactly h rounds* is engine-agnostic — an unresolved duel
+counts as unresolved in both drivers — which is why the truncation sweep
+compares outcomes at each horizon rather than resolution-round histograms.
+See [the verification history](../decisions/verification-history.md) for the
+failed first attempt that motivated this convention.
 
 ## L3 — interaction, statistical, at scale
 
@@ -206,11 +205,10 @@ oracle — and every survivor is a directive to add one deterministic test,
 
 The catalogue (wound-ramp off-by-one, wound-impossible tail, armour strength
 modifier, injury stun threshold, paired extra attack, hit much-weaker flip)
-started at 5/6 killed. The survivor paid for itself immediately:
-`hit-much-weaker-flip` survived because the exact-check inventory exercised
-`vectorized.to_hit`, which delegates to the shared scalar, while the engine's
-own duplicated `hit_targets` formula was untested. The check now drives the
-real operator and all six mutants are killed:
+is fully killed — every mutant is detected. The one survivor the catalogue
+ever had (`hit-much-weaker-flip`) exposed an untested duplicated formula and
+led to the exact-check rewrite that closed it; the story is recorded in
+[the verification history](../decisions/verification-history.md):
 
 ```bash
 python tools/mutate-engine.py                 # full catalogue (≈3–5 min)
@@ -262,10 +260,10 @@ pair before it. A thousand pairs is ≈ 10⁸ oracle duels ≈ weeks of compute,
 keep resolving the same ±1.3 pp. Worse, any rare branch (`p < 10⁻³`) is
 invisible to any sample that fits in a working day.
 
-The empirical history agrees: every real defect found so far — the reply-phase
-suppression, the native port drifts, the automatic-wound dice-stream shift —
-surfaced through **few deterministic cases designed for coverage**, not
-through enumeration. Several "failing" pairs shared one root cause.
+The empirical history behind this conclusion — every real defect found so far
+surfaced through few deterministic cases designed for coverage, not through
+enumeration — is recorded in
+[the verification history](../decisions/verification-history.md).
 
 ## When to add a pair
 
@@ -290,5 +288,7 @@ corpus README (`tests/specs/README.md`): the nine cluster files of
 with composition + boundary cases, strict dice, ≥1 detected mutation) and the
 10 reviewed `illegal` overrides in `tests/specs/interaction-policy.yaml`
 (body-armour × body-armour pairs that can never co-occur in legal
-construction). As of 2026-09-04 the matrix is complete: 217/217 required
-interactions covered, 0 required pending, `parity` 0 divergences.
+construction). The matrix is complete — run `python tools/mordheim-utils.py
+verify --inventory` for the live status (required interactions covered,
+pending, divergences); the executable reports are the source of truth, not a
+number written here.

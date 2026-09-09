@@ -2,49 +2,60 @@ schema_version: 2
 ruleset: mordheim
 rules:
 - id: combat-order
-  name: Combat order
-  effect: Charge and other strike-first effects resolve before normal Initiative order; a warrior who
-    stood up in the Recovery phase strikes last. This standing-up penalty applies only to the turn in
-    which the warrior stood up.
-  source_url: https://mordheimer.net/docs/rules/close-combat
+  name: Combat Order
+  effect: >-
+    Charge and other strike-first effects resolve before normal Initiative order; a warrior who
+    stood up in the Recovery phase strikes last. This standing-up penalty applies only to the turn
+    in which the warrior stood up.
+  effect_i18n:
+    es: >-
+      La carga y otros efectos de golpear primero se resuelven antes del orden normal de Iniciativa; un guerrero que se haya levantado en la fase de Recuperación golpea el último.      Esta penalización por levantarse solo se aplica al turno en el que el guerrero se levantó.  source_url: https://mordheimer.net/docs/rules/close-combat
   name_i18n:
-    en: Combat order
-    es: Orden de combate
+    es: Orden de Combate
 - id: combat-two-weapons
-  name: Fighting with two weapons
-  effect: Two one-handed weapons grant one additional Attack after other modifiers. When weapons differ,
+  name: Fighting with Two Weapons
+  effect: >-
+    Two one-handed weapons grant one additional Attack after other modifiers. When weapons differ,
     choose one for a single attack and use the other for all remaining attacks.
-  source_url: https://mordheimer.net/docs/rules/close-combat
+  effect_i18n:
+    es: >-
+      Dos armas de una mano otorgan un Ataque adicional tras otros modificadores.      Cuando las armas sean distintas, elige una para un único ataque y usa la otra para el resto de ataques.  source_url: https://mordheimer.net/docs/rules/close-combat
   name_i18n:
-    en: Fighting with two weapons
-    es: Combate con dos armas
+    es: Combate con Dos Armas
 - id: combat-parry
   name: Parry
-  effect: A sword or buckler can parry one hit by beating the attacker's hit roll, provided the attacker's
-    Strength is less than double the defender's. A natural 6 cannot be parried. Sword plus buckler rerolls
-    a failed parry, but two swords do not grant two attempts (one attempt per phase regardless of the
-    number of parrying weapons).
-  source_url: https://mordheimer.net/docs/rules/close-combat
+  effect: >-
+    A sword or buckler can parry one hit by beating the attacker's hit roll, provided the attacker's
+    Strength is less than double the defender's. A natural 6 cannot be parried. Sword plus buckler
+    rerolls a failed parry, but two swords do not grant two attempts (one attempt per phase
+    regardless of the number of parrying weapons).
+  effect_i18n:
+    es: >-
+      Una espada o rodela puede parar un impacto superando la tirada de impacto del atacante, siempre que la Fuerza del atacante sea menor que el doble de la del defensor.      Un 6 natural no puede pararse.      Espada más rodela repite una parada fallida, pero dos espadas no otorgan dos intentos (un intento por fase sin importar el número de armas de parada).  source_url: https://mordheimer.net/docs/rules/close-combat
   name_i18n:
-    en: Parry
     es: Estocada
 - id: combat-critical-hits
-  name: Critical hits
-  effect: A natural 6 to wound is critical unless a 6 was required. A warrior causes at most one critical
-    hit per close-combat phase. Resolve the basic critical table on D6 with critical-table modifiers;
-    all results cause two wounds, 3+ ignores armour, and 5+ adds two to Injury. For 1-2 save before doubling.
-    Use the higher damage instead of multiplying another multiple-wound effect.
-  source_url: https://mordheimer.net/docs/rules/close-combat
+  name: Critical Hits
+  effect: >-
+    A natural 6 to wound is critical unless a 6 was required. A warrior causes at most one critical
+    hit per close-combat phase. Resolve the basic critical table on D6 with critical-table
+    modifiers; all results cause two wounds, 3+ ignores armour, and 5+ adds two to Injury. For 1-2
+    save before doubling. Use the higher damage instead of multiplying another multiple-wound
+    effect.
+  effect_i18n:
+    es: >-
+      Un 6 natural para herir es crítico salvo que se necesitara un 6.      Un guerrero causa como máximo un impacto crítico por fase de combate cerrado.      Resuelve la tabla básica de críticos con 1D6 y los modificadores de tabla de críticos; todos los resultados causan dos heridas, con 3+ se ignora la armadura y con 5+ se suman dos a la Herida.      Con 1-2, salva antes de doblar.      Usa el daño mayor en lugar de multiplicar otro efecto de heridas múltiples.  source_url: https://mordheimer.net/docs/rules/close-combat
   name_i18n:
-    en: Critical hits
-    es: Golpes críticos
+    es: Golpes Críticos
 - id: combat-injury-states
-  name: Injury states
-  effect: 'At zero Wounds, resolve each injury and apply the highest result: 1-2 knocked down, 3-4 stunned,
-    5-6 out of action. The same highest-result rule applies when several unsaved wounds force more than
-    one injury roll. A knocked-down warrior that stands up strikes last only on the turn it stood up (see
-    Combat order).'
-  source_url: https://mordheimer.net/docs/rules/wounds-and-injuries
+  name: Injury States
+  effect: >-
+    At zero Wounds, resolve each injury and apply the highest result: 1-2 knocked down, 3-4 stunned,
+    5-6 out of action. The same highest-result rule applies when several unsaved wounds force more
+    than one injury roll. A knocked-down warrior that stands up strikes last only on the turn it
+    stood up (see Combat order).
+  effect_i18n:
+    es: >-
+      Con cero Heridas, resuelve cada lesión y aplica el resultado más alto: 1-2 derribado, 3-4 aturdido, 5-6 fuera de combate.      La misma regla del resultado más alto se aplica cuando varias heridas no salvadas fuerzan más de una tirada de lesión.      Un guerrero derribado que se levanta solo golpea el último en el turno en el que se levantó (ver Orden de combate).  source_url: https://mordheimer.net/docs/rules/wounds-and-injuries
   name_i18n:
-    en: Injury states
-    es: Estados de herida
+    es: Estados de Herida

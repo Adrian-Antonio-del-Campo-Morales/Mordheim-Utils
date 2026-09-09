@@ -5,8 +5,13 @@ skills:
 - id: skill.acrobat
   name: Acrobat
   category: speed
-  summary: Pass an Initiative test to avoid damage from falls or jumps up to 12 inches; re-roll failed
+  effect: >-
+    Pass an Initiative test to avoid damage from falls or jumps up to 12 inches; re-roll failed
     Diving Charge rolls.
+  effect_i18n:
+    es: >-
+      Supera un chequeo de Iniciativa para evitar daño por caídas o saltos de hasta 12";
+      repite las tiradas fallidas de Carga en Picado.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -22,15 +27,21 @@ skills:
     - id: unimplemented.skill.acrobat
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: movement, falling and diving-charge rules are outside
-        the current scope.'
+      reason: >-
+        Does not impact duel simulations: movement, falling and diving-charge rules are outside the
+        current scope.
   name_i18n:
-    en: Acrobat
     es: Acróbata
 - id: skill.arcane-lore
   name: Arcane Lore
   category: academic
-  summary: A warrior may learn Lesser Magic when they own a Tome of Magic, subject to the listed restrictions.
+  effect: >-
+    A warrior may learn Lesser Magic when they own a Tome of Magic, subject to the listed
+    restrictions.
+  effect_i18n:
+    es: >-
+      Un guerrero puede aprender Magia Menor cuando posee un Grimorio de Magia, sujeto a las
+      restricciones indicadas.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -46,15 +57,20 @@ skills:
     - id: unimplemented.skill.arcane-lore
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: magic progression and Tome of Magic rules are outside
-        the current scope.'
+      reason: >-
+        Does not impact duel simulations: magic progression and Tome of Magic rules are outside the
+        current scope.
   name_i18n:
-    en: Arcane Lore
-    es: Sabiduría arcana
+    es: Sabiduría Arcana
 - id: skill.battle-tongue
   name: Battle Tongue
   category: academic
-  summary: A leader increases the range of their Leader ability by 6 inches, except for Undead leaders.
+  effect: >-
+    A leader increases the range of their Leader ability by 6 inches, except for Undead leaders.
+  effect_i18n:
+    es: >-
+      Un líder aumenta el alcance de su habilidad de Líder en 6", excepto los líderes No
+      Muertos.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -70,15 +86,18 @@ skills:
     - id: unimplemented.skill.battle-tongue
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: warband leadership-range rules are outside the current
-        scope.'
+      reason: >-
+        Does not impact duel simulations: warband leadership-range rules are outside the current
+        scope.
   name_i18n:
-    en: Battle Tongue
-    es: Lengua de batalla
+    es: Lengua de Batalla
 - id: skill.dodge
   name: Dodge
   category: speed
-  summary: Avoid a missile hit on a 5+ before rolling to wound.
+  effect: Avoid a missile hit on a 5+ before rolling to wound.
+  effect_i18n:
+    es: >-
+      Evita un golpe de misil con 5+ antes de tirar para herir.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -94,15 +113,18 @@ skills:
     - id: unimplemented.skill.dodge
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: missile attacks are outside the current close-combat-only
-        scope.'
+      reason: >-
+        Does not impact duel simulations: missile attacks are outside the current close-combat-only
+        scope.
   name_i18n:
-    en: Dodge
     es: Esquivar
 - id: skill.eagle-eyes
   name: Eagle Eyes
   category: shooting
-  summary: Add 6 inches to the range of every missile weapon used by the warrior.
+  effect: Add 6 inches to the range of every missile weapon used by the warrior.
+  effect_i18n:
+    es: >-
+      Añade 6" al alcance de toda arma de misil que use el guerrero.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -118,15 +140,18 @@ skills:
     - id: unimplemented.skill.eagle-eyes
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: missile-weapon range rules are outside the current close-combat-only
-        scope.'
+      reason: >-
+        Does not impact duel simulations: missile-weapon range rules are outside the current
+        close-combat-only scope.
   name_i18n:
-    en: Eagle Eyes
-    es: Ojos de águila
+    es: Ojos de Águila
 - id: skill.fearsome
   name: Fearsome
   category: strength
-  summary: The warrior causes fear in opposing models.
+  effect: The warrior causes fear in opposing models.
+  effect_i18n:
+    es: >-
+      El guerrero provoca Miedo en los modelos enemigos.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -142,15 +167,20 @@ skills:
     - id: unimplemented.skill.fearsome
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: psychology rules are outside the current one-against-one
-        combat scope.'
+      reason: >-
+        Does not impact duel simulations: psychology rules are outside the current one-against-one
+        combat scope.
   name_i18n:
-    en: Fearsome
     es: Temible
 - id: skill.haggle
   name: Haggle
   category: academic
-  summary: Once per post-battle sequence, reduce one item's cost by 2D6 gold crowns to a minimum of 1.
+  effect: >-
+    Once per post-battle sequence, reduce one item's cost by 2D6 gold crowns to a minimum of 1.
+  effect_i18n:
+    es: >-
+      Una vez por secuencia posbatalla, reduce el coste de un objeto en 2D6 coronas de oro
+      hasta un mínimo de 1.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -166,14 +196,17 @@ skills:
     - id: unimplemented.skill.haggle
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: post-battle trading rules are outside the current scope.'
+      reason: >-
+        Does not impact duel simulations: post-battle trading rules are outside the current scope.
   name_i18n:
-    en: Haggle
     es: Regatear
 - id: skill.hunter
   name: Hunter
   category: shooting
-  summary: Fire a handgun or Hochland long rifle in every Shooting phase.
+  effect: Fire a handgun or Hochland long rifle in every Shooting phase.
+  effect_i18n:
+    es: >-
+      Dispara una pistola de mano o un rifle largo de Hochland en cada fase de Disparo.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -189,15 +222,20 @@ skills:
     - id: unimplemented.skill.hunter
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: shooting and reload rules are outside the current close-combat-only
-        scope.'
+      reason: >-
+        Does not impact duel simulations: shooting and reload rules are outside the current
+        close-combat-only scope.
   name_i18n:
-    en: Hunter
     es: Cazador
 - id: skill.knife-fighter
   name: Knife-Fighter
   category: shooting
-  summary: Throw up to three throwing knives or stars per Shooting phase, dividing shots among targets.
+  effect: >-
+    Throw up to three throwing knives or stars per Shooting phase, dividing shots among targets.
+  effect_i18n:
+    es: >-
+      Lanza hasta tres cuchillos o estrellas arrojadizas por fase de Disparo, repartiendo
+      los disparos entre los objetivos.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -213,15 +251,18 @@ skills:
     - id: unimplemented.skill.knife-fighter
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: shooting attacks and target selection are outside the
-        current scope.'
+      reason: >-
+        Does not impact duel simulations: shooting attacks and target selection are outside the
+        current scope.
   name_i18n:
-    en: Knife-Fighter
-    es: Luchador de cuchillos
+    es: Luchador de Cuchillos
 - id: skill.leap
   name: Leap
   category: speed
-  summary: Leap D6 inches once per Movement phase in addition to normal movement.
+  effect: Leap D6 inches once per Movement phase in addition to normal movement.
+  effect_i18n:
+    es: >-
+      Salta D6" una vez por fase de Movimiento además del movimiento normal.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -237,16 +278,21 @@ skills:
     - id: unimplemented.skill.leap
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: movement and terrain traversal are outside the current
-        one-against-one combat scope.'
+      reason: >-
+        Does not impact duel simulations: movement and terrain traversal are outside the current
+        one-against-one combat scope.
   name_i18n:
-    en: Leap
     es: Salto
 - id: skill.nimble
   name: Nimble
   category: shooting
-  summary: Move and fire with weapons that normally require the shooter not to move; cannot combine with
+  effect: >-
+    Move and fire with weapons that normally require the shooter not to move; cannot combine with
     Quick Shot.
+  effect_i18n:
+    es: >-
+      Puede moverse y disparar con armas que normalmente exigen al tirador no moverse; no
+      puede combinarse con Disparo Rápido.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -262,15 +308,19 @@ skills:
     - id: unimplemented.skill.nimble
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: shooting movement restrictions are outside the current
-        close-combat-only scope.'
+      reason: >-
+        Does not impact duel simulations: shooting movement restrictions are outside the current
+        close-combat-only scope.
   name_i18n:
-    en: Nimble
     es: Ágil
 - id: skill.pistolier
   name: Pistolier
   category: shooting
-  summary: A brace of pistols may fire twice, and a single pistol may fire in the turn it reloads.
+  effect: A brace of pistols may fire twice, and a single pistol may fire in the turn it reloads.
+  effect_i18n:
+    es: >-
+      Un par de pistolas puede disparar dos veces, y una pistola sola puede disparar en el
+      turno en que se recarga.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -286,15 +336,19 @@ skills:
     - id: unimplemented.skill.pistolier
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: shooting and reload rules are outside the current close-combat-only
-        scope.'
+      reason: >-
+        Does not impact duel simulations: shooting and reload rules are outside the current
+        close-combat-only scope.
   name_i18n:
-    en: Pistolier
     es: Pistolero
 - id: skill.pit-fighter
   name: Pit Fighter
   category: strength
-  summary: Gain +1 Weapon Skill and +1 Attack while fighting inside a building or ruin.
+  effect: Gain +1 Weapon Skill and +1 Attack while fighting inside a building or ruin.
+  effect_i18n:
+    es: >-
+      Gana +1 a la Habilidad de Armas y +1 Ataque mientras lucha dentro de un edificio o una
+      ruina.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -310,15 +364,19 @@ skills:
     - id: unimplemented.skill.pit-fighter
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: terrain and building state are outside the current one-against-one
-        combat scope.'
+      reason: >-
+        Does not impact duel simulations: terrain and building state are outside the current
+        one-against-one combat scope.
   name_i18n:
-    en: Pit Fighter
-    es: Luchador de foso
+    es: Luchador de Foso
 - id: skill.quick-shot
   name: Quick Shot
   category: shooting
-  summary: Shoot twice per Shooting phase with a bow or crossbow, excluding crossbow pistols.
+  effect: Shoot twice per Shooting phase with a bow or crossbow, excluding crossbow pistols.
+  effect_i18n:
+    es: >-
+      Dispara dos veces por fase de Disparo con un arco o una ballesta, excluidas las
+      pistolas de ballesta.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -334,15 +392,19 @@ skills:
     - id: unimplemented.skill.quick-shot
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: shooting attacks are outside the current close-combat-only
-        scope.'
+      reason: >-
+        Does not impact duel simulations: shooting attacks are outside the current close-combat-only
+        scope.
   name_i18n:
-    en: Quick Shot
-    es: Disparo rápido
+    es: Disparo Rápido
 - id: skill.scale-sheer-surfaces
   name: Scale Sheer Surfaces
   category: speed
-  summary: Climb up or down up to twice the warrior's Movement without Initiative tests.
+  effect: Climb up or down up to twice the warrior's Movement without Initiative tests.
+  effect_i18n:
+    es: >-
+      Escala hacia arriba o hacia abajo hasta el doble del Movimiento del guerrero sin
+      chequeos de Iniciativa.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -358,15 +420,19 @@ skills:
     - id: unimplemented.skill.scale-sheer-surfaces
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: climbing and terrain traversal are outside the current
-        scope.'
+      reason: >-
+        Does not impact duel simulations: climbing and terrain traversal are outside the current
+        scope.
   name_i18n:
-    en: Scale Sheer Surfaces
-    es: Escalar superficies escarpadas
+    es: Escalar Superficies Escarpadas
 - id: skill.sorcery
   name: Sorcery
   category: academic
-  summary: A spellcasting Hero gains +1 to cast spells, except Sisters of Sigmar and Warrior-Priests.
+  effect: A spellcasting Hero gains +1 to cast spells, except Sisters of Sigmar and Warrior-Priests.
+  effect_i18n:
+    es: >-
+      Un Héroe lanzador de conjuros gana +1 para lanzar conjuros, excepto las Hermanas de
+      Sigmar y los Sacerdotes Guerreros.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -382,15 +448,18 @@ skills:
     - id: unimplemented.skill.sorcery
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: spellcasting rules are outside the current one-against-one
-        combat scope.'
+      reason: >-
+        Does not impact duel simulations: spellcasting rules are outside the current one-against-one
+        combat scope.
   name_i18n:
-    en: Sorcery
     es: Hechicería
 - id: skill.sprint
   name: Sprint
   category: speed
-  summary: Triple Movement when running or charging instead of doubling it.
+  effect: Triple Movement when running or charging instead of doubling it.
+  effect_i18n:
+    es: >-
+      Triplica el Movimiento al correr o cargar en lugar de duplicarlo.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -406,15 +475,18 @@ skills:
     - id: unimplemented.skill.sprint
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: movement and charge-distance rules are outside the current
-        scope.'
+      reason: >-
+        Does not impact duel simulations: movement and charge-distance rules are outside the current
+        scope.
   name_i18n:
-    en: Sprint
     es: Esprintar
 - id: skill.streetwise
   name: Streetwise
   category: academic
-  summary: Add +2 to the chance of finding rare items.
+  effect: Add +2 to the chance of finding rare items.
+  effect_i18n:
+    es: >-
+      Añade +2 a la probabilidad de encontrar objetos raros.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -430,15 +502,18 @@ skills:
     - id: unimplemented.skill.streetwise
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: trading and rare-item availability are outside the current
-        scope.'
+      reason: >-
+        Does not impact duel simulations: trading and rare-item availability are outside the current
+        scope.
   name_i18n:
-    en: Streetwise
-    es: Conocimiento callejero
+    es: Conocimiento Callejero
 - id: skill.trick-shooter
   name: Trick Shooter
   category: shooting
-  summary: Ignore cover modifiers when using missile weapons.
+  effect: Ignore cover modifiers when using missile weapons.
+  effect_i18n:
+    es: >-
+      Ignora los modificadores por cobertura al usar armas de misil.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -454,15 +529,18 @@ skills:
     - id: unimplemented.skill.trick-shooter
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: shooting and cover rules are outside the current close-combat-only
-        scope.'
+      reason: >-
+        Does not impact duel simulations: shooting and cover rules are outside the current
+        close-combat-only scope.
   name_i18n:
-    en: Trick Shooter
-    es: Tirador con trucos
+    es: Tirador con Trucos
 - id: skill.warrior-wizard
   name: Warrior Wizard
   category: academic
-  summary: A spellcaster may wear armour and cast spells.
+  effect: A spellcaster may wear armour and cast spells.
+  effect_i18n:
+    es: >-
+      Un lanzador de conjuros puede llevar armadura y lanzar conjuros.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -478,15 +556,19 @@ skills:
     - id: unimplemented.skill.warrior-wizard
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: spellcasting rules are outside the current one-against-one
-        combat scope.'
+      reason: >-
+        Does not impact duel simulations: spellcasting rules are outside the current one-against-one
+        combat scope.
   name_i18n:
-    en: Warrior Wizard
-    es: Mago guerrero
+    es: Guerrero Mago
 - id: skill.weapons-expert
   name: Weapons Expert
   category: shooting
-  summary: Use any missile weapon, not only weapons in the warrior's normal equipment options.
+  effect: Use any missile weapon, not only weapons in the warrior's normal equipment options.
+  effect_i18n:
+    es: >-
+      Puede usar cualquier arma de misil, no solo las armas de las opciones de equipo
+      normales del guerrero.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -502,15 +584,19 @@ skills:
     - id: unimplemented.skill.weapons-expert
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: missile-equipment access is outside the current close-combat-only
-        scope.'
+      reason: >-
+        Does not impact duel simulations: missile-equipment access is outside the current
+        close-combat-only scope.
   name_i18n:
-    en: Weapons Expert
-    es: Experto en armas
+    es: Experto en Armas
 - id: skill.weapons-training
   name: Weapons Training
   category: combat
-  summary: Use any hand-to-hand weapon, not only weapons in the warrior's normal equipment options.
+  effect: Use any hand-to-hand weapon, not only weapons in the warrior's normal equipment options.
+  effect_i18n:
+    es: >-
+      Puede usar cualquier arma cuerpo a cuerpo, no solo las armas de las opciones de equipo
+      normales del guerrero.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -526,15 +612,18 @@ skills:
     - id: unimplemented.skill.weapons-training
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: dynamic equipment-access changes are outside the current
-        scope.'
+      reason: >-
+        Does not impact duel simulations: dynamic equipment-access changes are outside the current
+        scope.
   name_i18n:
-    en: Weapons Training
-    es: Adiestramiento en armas
+    es: Adiestramiento en Armas
 - id: skill.wyrdstone-hunter
   name: Wyrdstone Hunter
   category: academic
-  summary: Re-roll one Exploration chart die when the Hero searches the ruins.
+  effect: Re-roll one Exploration chart die when the Hero searches the ruins.
+  effect_i18n:
+    es: >-
+      Repite un dado de la tabla de Exploración cuando el Héroe registra las ruinas.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -550,14 +639,17 @@ skills:
     - id: unimplemented.skill.wyrdstone-hunter
       scope: 'NO'
       binding: null
-      reason: 'Does not impact duel simulations: exploration rules are outside the current scope.'
+      reason: >-
+        Does not impact duel simulations: exploration rules are outside the current scope.
   name_i18n:
-    en: Wyrdstone Hunter
-    es: Cazador de piedra bruja
+    es: Cazador de Piedra Bruja
 - id: skill.combat-master
   name: Combat Master
   category: combat
-  summary: +1 Attack while fighting two or more enemies; immune to All Alone tests.
+  effect: +1 Attack while fighting two or more enemies; immune to All Alone tests.
+  effect_i18n:
+    es: >-
+      +1 Ataque mientras lucha contra dos o más enemigos; inmune a los chequeos de Soledad.
   kind: general
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs:
@@ -566,12 +658,14 @@ skills:
     section: Dwarf Special Skills / Combat Master
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
   name_i18n:
-    en: Combat Master
-    es: Maestro del combate
+    es: Maestro de Combate
 - id: skill.expert-swordsman
   name: Expert Swordsman
   category: combat
-  summary: Re-roll missed attacks with normal swords or weeping blades when charging.
+  effect: >-
+    Swordsmen are so skilled with their weapons that they may re-roll any failed hits when charging.
+    Note that this only applies when they are armed with normal swords, and not with doublehanded
+    swords or any other weapons.
   kind: general
   engine_option: Expert Swordsman
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
@@ -581,24 +675,34 @@ skills:
     section: Heroes / 0 – 2 Companions / Special Rules / Expert Swordsman
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
   name_i18n:
-    en: Expert Swordsman
-    es: Espadachín experto
+    es: Espadachín Experto
+  effect_i18n:
+    es: >-
+      Los Espadachines son tan hábiles con sus armas que pueden repetir los impactos fallidos cuando
+      cargan. Ten en cuenta que esto solo se aplica cuando van armados con espadas normales, y no
+      con espadas a dos manos ni cualquier otra arma.
 - id: skill.jump-up
   name: Jump Up
   category: speed
-  summary: Ignores knocked-down Injury results, except those caused by No Pain or a successful helmet
-    save.
+  effect: >-
+    Ignores knocked-down Injury results, except those caused by No Pain or a successful helmet save.
+  effect_i18n:
+    es: >-
+      Ignora los resultados de Derribado en la tabla de Heridas, excepto los causados por
+      Sin Dolor o una salvación de yelmo exitosa.
   kind: general
   engine_option: Jump Up
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs: []
   name_i18n:
-    en: Jump Up
-    es: Ponerse en pie
+    es: Ponerse en Pie
 - id: skill.lightning-reflexes
   name: Lightning Reflexes
   category: speed
-  summary: When charged, strikes first and resolves ties by Initiative.
+  effect: >-
+    If the warrior is charged, he will strike first against those that charged that turn. As the
+    charger(s) will also normally strike first (for charging), the order of attack between the
+    charger(s) and the warrior will be determined by comparing Initiative values.
   kind: general
   engine_option: Lightning Reflexes
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
@@ -608,56 +712,73 @@ skills:
     section: Heroes / 0 – 2 Knights Vanguard / Special Rules / Lightning Reflexes
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
   name_i18n:
-    en: Lightning Reflexes
-    es: Reflejos de relámpago
+    es: Reflejos Relámpago
+  effect_i18n:
+    es: >-
+      Si el guerrero es cargado, golpeará primero contra quienes cargaron ese asalto. Como el/los
+      cargador(es) normalmente también golpearán primero (por cargar), el orden de ataque entre
+      el/los cargador(es) y el guerrero se determinará comparando los valores de Iniciativa.
 - id: skill.mighty-blow
   name: Mighty Blow
   category: strength
-  summary: +1 Strength in close combat, excluding pistols.
+  effect: +1 Strength in close combat, excluding pistols.
+  effect_i18n:
+    es: >-
+      +1 a la Fuerza en combate cuerpo a cuerpo, excluidas las pistolas.
   kind: general
   engine_option: Mighty Blow
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs: []
   name_i18n:
-    en: Mighty Blow
-    es: Golpe poderoso
+    es: Golpe Poderoso
 - id: skill.resilient
   name: Resilient
   category: strength
-  summary: Close-combat hits against the warrior suffer -1 Strength without changing save modifiers.
+  effect: Close-combat hits against the warrior suffer -1 Strength without changing save modifiers.
+  effect_i18n:
+    es: >-
+      Los golpes de combate cuerpo a cuerpo contra el guerrero sufren -1 a la Fuerza sin
+      cambiar los modificadores de salvación.
   kind: general
   engine_option: Resilient
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs: []
   name_i18n:
-    en: Resilient
     es: Resiliente
 - id: skill.step-aside
   name: Step Aside
   category: combat
-  summary: Unmodified 5+ save against close-combat wounds after armour saves.
+  effect: Unmodified 5+ save against close-combat wounds after armour saves.
+  effect_i18n:
+    es: >-
+      Salvación de 5+ sin modificar contra heridas de combate cuerpo a cuerpo después de las
+      salvaciones de armadura.
   kind: general
   engine_option: Step Aside
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs: []
   name_i18n:
-    en: Step Aside
     es: Apartarse
 - id: skill.strike-to-injure
   name: Strike to Injure
   category: combat
-  summary: +1 to Injury rolls caused in close combat.
+  effect: +1 to Injury rolls caused in close combat.
+  effect_i18n:
+    es: >-
+      +1 a las tiradas de Heridas causadas en combate cuerpo a cuerpo.
   kind: general
   engine_option: Strike to Injure
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs: []
   name_i18n:
-    en: Strike to Injure
-    es: Golpear para herir
+    es: Golpear para Herir
 - id: skill.strongman
   name: Strongman
   category: strength
-  summary: Double-handed weapons not longer strike last.
+  effect: >-
+    Blackguards are capable of great feats of strength. They may use a double-handed weapon without
+    the usual penalty of always striking last. Work out the order of battle as you would with other
+    weapons.
   kind: general
   engine_option: Strongman
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
@@ -667,27 +788,35 @@ skills:
     section: Henchmen / 0 – 3 Blackguards / Special Rules / Strongman
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
   name_i18n:
-    en: Strongman
     es: Forzudo
+  effect_i18n:
+    es: >-
+      Los Villanos son capaces de grandes hazañas de fuerza. Pueden usar un arma a dos manos sin la
+      penalización habitual de golpear siempre el último. Resuelve el orden de batalla como lo
+      harías con otras armas.
 - id: skill.unstoppable-charge
   name: Unstoppable Charge
   category: strength
-  summary: +1 WS when charging.
+  effect: +1 WS when charging.
+  effect_i18n:
+    es: >-
+      +1 HA al cargar.
   kind: general
   engine_option: Unstoppable Charge
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs: []
   name_i18n:
-    en: Unstoppable Charge
-    es: Carga imparable
+    es: Carga Imparable
 - id: skill.web-of-steel
   name: Web of Steel
   category: combat
-  summary: +1 on close-combat Critical Hit tables.
+  effect: +1 on close-combat Critical Hit tables.
+  effect_i18n:
+    es: >-
+      +1 en las tablas de golpes críticos de combate cuerpo a cuerpo.
   kind: general
   engine_option: Web of Steel
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs: []
   name_i18n:
-    en: Web of Steel
-    es: Telaraña de acero
+    es: Telaraña de Acero

@@ -224,29 +224,28 @@ So the layers of the same weapon are: item record (`items/`, snake_case id)
 
 ## Locale policy
 
-The KB is **canonical English only** by convention: every record carries a
-`name_i18n` / `effect_i18n` block for forward compatibility, but the
-non-English fields (e.g. `name_i18n.es`) stay `null`. Do not fill them
-casually — a translation pass would be a dedicated, reviewed project (and the
-few existing Spanish strings in the Bretonnian band are historical exceptions,
-not the convention).
+English is **canonical and stored once**: the `name` field (and the `effect`
+prose). The `name_i18n` / `effect_i18n` blocks store only *translations* for
+non-canonical locales (`es`) and never carry an `en` mirror of the canonical
+English — duplicating long English prose invites silent drift, and nothing
+renders the copy anyway. `tools/normalize_names.py` enforces this (it strips
+any `en` mirror and drops a locale block left without a real translation),
+and `tests/knowledge/test_kb_i18n.py` guards the invariant independently.
 
-The KB is nevertheless **prepared for a Spanish translation**:
-`mordheim_knowledge.i18n` is the single sanctioned reader of the i18n blocks
-(`set_locale` / `display_name` / `display_effect`, canonical-English-first,
-locale fallback); it is already wired into the Campaign Manager's read model
-(`KnowledgePort` band/profile/skill/item/hireling names). Filling an
-`es` field is therefore a data-only change that surfaces immediately in the
-applications, and reviewed entries (such as the Bretonnian ones) take effect
-without any code change. Until a reviewed pass fills the fields, the display
-locale renders the canonical English names.
+The KB carries a **reviewed Spanish translation**: every warband's rules,
+profiles and band names, the hired swords and campaign catalogues, and the
+skill / item / mechanic catalogues fill `name_i18n.es` / `effect_i18n.es`
+with text reviewed against the same printed sources as the English. `es`
+fields are data-only: `mordheim_knowledge.i18n` — the single sanctioned
+reader (`set_locale` / `display_name` / `display_effect`, translation-first,
+canonical-English-fallback) — is wired into both applications, so a filled
+`es` surfaces immediately under `MORDHEIM_LOCALE=es`. An unfilled record
+simply renders its canonical English.
 
-The **pilot band** for the reviewed Spanish pass is `bands/mordheim/bretonnian-knights`:
-all ten of its rules carry complete `name_i18n.es` / `effect_i18n.es` entries
-reviewed against the same printed source as the English text. New bands should
-follow its in-file glossary (Caballero Andante = Questing Knight, Caballero
-Novel = Knight Errant, chequeo = test, 1D6 = D6) so translations stay
-consistent across the KB.
+Canonical glossary terms and the resolved edge cases live in
+`sources/knowledge/catalog/translation-glossary.md`; new translations should
+follow it (Caballero Andante = Questing Knight, Caballero Novel = Knight
+Errant, chequeo = test, 1D6 = D6) so Spanish stays consistent across the KB.
 
 ### Binding-based name consistency
 
@@ -267,8 +266,31 @@ exception (the trait is shared but the flavour rule name is band-specific).
 (`test_equivalent_rules_share_the_same_spanish_name`) enforces exactly this:
 consistency gated on `(binding kind, binding id, English name)`.
 
-Canonical glossary terms and the edge cases resolved so far live in
-`sources/knowledge/catalog/translation-glossary.md`.
+### Name capitalization
+
+Every display name — the canonical `name` field and the `name_i18n.es`
+translation — is **title case**: the first letter of every significant word
+is capitalised, while minor words (English and Spanish prepositions, articles
+and conjunctions) stay lowercase unless they open or close the name
+(`A Night in the Graveyard`, `Flechas de Plata de Arha`). Hyphenated
+compounds capitalise each segment except preposition-like parts
+(`Men-at-Arms`, `Two-Handed Sword`). All-caps abbreviations, digits, proper
+nouns, Orcish-dialect names (`Waaagh!`, `'Ere We Go!`) and domains
+(`mordheimer.net`) are preserved.
+
+Scalar quoting of names is canonicalised too — safe values are plain, quotes
+are kept only when YAML requires them.
+
+Ingestion artifacts such as `true grit` vs `True Grit` are normalised away by
+this rule. Run it idempotently after editing any maintained YAML names::
+
+```powershell
+python tools/normalize_names.py --check sources/knowledge
+python tools/normalize_names.py --write sources/knowledge
+```
+
+It edits only name scalars lexically — comments, anchors, aliases and key
+order are preserved — and verifies that only name fields changed.
 
 ## YAML formatting policy
 
@@ -277,11 +299,41 @@ whitespace, and a target line width of **100 characters**. Lines up to **120
 characters** are accepted. URLs and unavoidable long identifiers are the only
 expected exceptions.
 
-Descriptive fields such as `effect`, `summary`, `description`, `notes`, and
-`reason` use folded blocks (`>-`) when they need wrapping. This keeps source
-text readable while loading it as one logical line. Literal blocks (`|`) remain
-reserved for text where line breaks are meaningful. Formatting must preserve
-key order, anchors, aliases, IDs, URLs, scalar types, and parsed values.
+Rule prose has **one key: `effect`** (plus its locale block `effect_i18n`).
+There is no `summary` key anywhere in `sources/knowledge` — the display text
+of a rule, item, skill, condition, scenario, spell or mutation is always its
+`effect`, and shared rules are defined once in the catalog with band rules
+referencing them (`rule_ref`) instead of restating the prose (see
+"Shared rule text" below). `tools/rename_summary_keys.py` performed the
+one-time migration of the old prose `summary` keys (and renamed the count
+metadata block of `implemented-canonical-families.yaml` to `counts`); a test
+guards that no `summary` key returns.
+
+Descriptive fields such as `effect`, `description`, `notes`, and `reason` use
+folded blocks (`>-`) when they need wrapping. This keeps source text readable
+while loading it as one logical line. Literal blocks (`|`) remain reserved for
+text where line breaks are meaningful. Formatting must preserve key order,
+anchors, aliases, IDs, URLs, scalar types, and parsed values.
+
+Effect prose is **never quoted**: `effect` and `effect_i18n.es` values written
+as single-line or multi-line quoted scalars (an ingestion artefact — quoting
+was needed only for content such as `: ` or `"`) are migrated by the formatter
+to `>-` blocks rewrapped at the target width, which make the same content
+plain-safe. Plain values that spill across continuation lines — and single
+lines that exceed the target width — are folded the same way, so every effect
+value ends up as either a plain single line within the target width or a `>-`
+block; `python tools/format_yaml.py --check sources/knowledge` reports zero
+residual quoted or continuation-wrapped effect prose, and the pass is
+idempotent.
+
+`reason` strings — the audit-taxonomy metadata such as `Deferred subsystem:
+psychology.`, `Out of scope: campaign.` or `dead` — are uniformly folded `>-`
+blocks, quoted or plain, short or long, so every reason value shares one
+style. `description` and `notes` fold only when the prose genuinely needs
+wrapping: short values that fit the accepted line width keep their single-line
+quotes (required for content such as `: `), while values longer than the
+target width — or a hard line past 120 characters — are folded. Plain-safe
+short values of the other keys stay as plain single lines.
 
 Use the repository formatter after changing maintained YAML:
 
@@ -300,7 +352,7 @@ run combat tests, parity, or benchmarks for a formatting-only change.
 
 The KB has no `verification/` area of its own: the verification corpus — the
 structural contract (`tests/specs/structural/phase-verification.yaml`) and the
-semantic scenarios (`tests/specs/semantic/`, ~160 files) — lives in `tests/`.
+semantic scenarios (`tests/specs/semantic/`, ~170 files) — lives in `tests/`.
 It is test material and is never distributed with the applications.
 
 Semantic scenarios reference KB targets by canonical path and **content

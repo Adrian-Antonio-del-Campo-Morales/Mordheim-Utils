@@ -1,6 +1,6 @@
 """KnowledgePort: canonical warband/profile reads for the Campaign Manager."""
 from mordheim_campaign.application.knowledge_port import CHARACTERISTIC_KEYS, KnowledgePort
-from mordheim_campaign.application.state import make_draft_state
+from mordheim_campaign.domain.builders import make_draft_state
 
 
 def test_options_expose_every_canonical_warband():
@@ -35,7 +35,7 @@ def test_sisters_roster_is_canonical():
     assert matriarch.skill_tables == ("Combat", "Academic", "Strength", "Speed", "Special")
 
     augur = profiles["augur"]
-    assert augur.inherent_rules == ("Blessed Sight",)
+    assert augur.inherent_rules == ("Blessed Sight", "No Armour")
 
     sisters = profiles["sigmarite-sister"]
     assert sisters.kind == "henchman"
@@ -114,7 +114,7 @@ def test_port_exposes_the_kb_post_battle_sequence():
     catalog = port.campaign_catalog()
     for resolves in sequence.resolved_catalogues:
         assert catalog.has_catalogue(resolves)
-    assert len(catalog.documents) == 12
+    assert len(catalog.documents) == 13
     assert len(catalog.catalogue("trading-post.yaml")["items"]) == 338
 
 

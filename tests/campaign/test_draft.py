@@ -1,7 +1,7 @@
 """Draft and example: canonical profiles + controller edit actions."""
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.application.knowledge_port import KnowledgePort
-from mordheim_campaign.application.state import make_example_state
+from mordheim_campaign.domain.builders import make_example_state
 
 
 def _controller() -> AppController:
@@ -41,7 +41,7 @@ def test_henchmen_groups_respect_group_limits():
 
 
 def test_treasury_guard_blocks_unaffordable_additions():
-    from mordheim_campaign.application.state import make_draft_state
+    from mordheim_campaign.domain.builders import make_draft_state
 
     port = KnowledgePort()
     controller = AppController(port=port, state=make_draft_state(port, "lustrian-reavers"))
@@ -73,6 +73,17 @@ def test_hero_names_are_unique():
     names = [w.name for w in controller.state.campaign.warriors if w.kind == "hero"]
     assert len(names) == len(set(names))
     assert "Sister Superior II" in names
+
+
+def test_new_henchmen_groups_get_unique_names_and_can_be_renamed():
+    controller = _controller()
+    assert controller.add_draft_warriors("novices")[0]
+    assert controller.add_draft_warriors("novices")[0]
+    added = [w for w in controller.state.campaign.warriors if w.id.startswith("novices#")][-2:]
+    assert [w.name for w in added] == ["Novices Group", "Novices Group II"]
+    assert controller.rename_draft_warrior(added[0].id, "The Faithful")[0]
+    assert added[0].name == "The Faithful"
+    assert not controller.rename_draft_warrior(added[1].id, "The Faithful")[0]
 
 
 def test_commit_initial_warband_creates_state_zero():
@@ -111,7 +122,9 @@ def test_example_state_profiles_are_canonical():
     }
     for warrior in campaign.warriors:
         profile = canonical[warrior.profile_id]
-        assert warrior.stats == {**profile.characteristics, **warrior.stat_modifiers}
+        # Base characteristics stay canonical; lasting injuries are stored
+        # separately and combined only when presenting the effective value.
+        assert warrior.stats == profile.characteristics
         assert warrior.cost == profile.cost
         assert warrior.kind == profile.kind
         assert warrior.profile_name == profile.name

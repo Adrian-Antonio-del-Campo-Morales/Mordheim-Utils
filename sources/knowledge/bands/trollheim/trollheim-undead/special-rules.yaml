@@ -9,11 +9,11 @@ rules:
     printed_page: 88
     section: Heroes / 1 Vampire / Leader
   name_i18n:
-    en: Leader
     es: Líder
   effect_i18n:
-    en: Any warband model within 6" of the Vampire may use its Leadership instead of its own.
-    es: Cualquier modelo de la banda a 6" del Vampiro puede usar su Liderazgo en lugar del suyo propio.
+    es: >-
+      Cualquier modelo de la banda a 6" del Vampiro puede usar su Liderazgo en lugar del suyo
+      propio.
   applies_to:
     profile_ids:
     - vampire
@@ -25,7 +25,8 @@ rules:
     - id: unimplemented.trollheim-undead.vampire.leader
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: vampire--fear
   name: Fear
   effect: The Vampire causes Fear.
@@ -34,10 +35,8 @@ rules:
     printed_page: 88
     section: Heroes / 1 Vampire / Fear
   name_i18n:
-    en: Fear
     es: Miedo
   effect_i18n:
-    en: The Vampire causes Fear.
     es: El Vampiro causa Miedo.
   applies_to:
     profile_ids:
@@ -50,7 +49,8 @@ rules:
     - id: unimplemented.trollheim-undead.vampire.fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: vampire--immune-to-psychology
   name: Immune to Psychology
   effect: The Vampire is immune to Psychology and never leaves close combat because of Psychology.
@@ -59,11 +59,10 @@ rules:
     printed_page: 88
     section: Heroes / 1 Vampire / Immune to Psychology
   name_i18n:
-    en: Immune to Psychology
     es: Inmune a la Psicología
   effect_i18n:
-    en: The Vampire is immune to Psychology and never leaves close combat because of Psychology.
-    es: El Vampiro es inmune a la Psicología y nunca abandona el combate cuerpo a cuerpo a causa de la
+    es: >-
+      El Vampiro es inmune a la Psicología y nunca abandona el combate cuerpo a cuerpo a causa de la
       Psicología.
   applies_to:
     profile_ids:
@@ -76,7 +75,8 @@ rules:
     - id: unimplemented.trollheim-undead.vampire.immune-to-psychology
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: vampire--immune-to-poison
   runtime:
     scope: 'YES'
@@ -97,10 +97,8 @@ rules:
     printed_page: 88
     section: Heroes / 1 Vampire / Immune to Poison
   name_i18n:
-    en: Immune to Poison
-    es: Inmune al veneno
+    es: Inmune al Veneno
   effect_i18n:
-    en: The Vampire is immune to poison.
     es: El Vampiro es inmune al veneno.
   applies_to:
     profile_ids:
@@ -123,30 +121,27 @@ rules:
     printed_page: 88
     section: Heroes / 1 Vampire / No Pain
   name_i18n:
-    en: No Pain
-    es: Sin dolor
+    es: Sin Dolor
   effect_i18n:
-    en: The Vampire treats a Stunned result on the Injury chart as Knocked Down.
     es: El Vampiro trata un resultado Aturdido de la tabla de Heridas como Derribado.
   applies_to:
     profile_ids:
     - vampire
 - id: necromancer--spellcaster
   name: Spellcaster
-  effect: The Necromancer is a spellcaster and may use Necromantic Magic. The spell list and spell effects
+  effect: >-
+    The Necromancer is a spellcaster and may use Necromantic Magic. The spell list and spell effects
     are intentionally not modelled in this file.
   source:
     manual: trollheim
     printed_page: 88
     section: Heroes / 0-1 Necromancer / Spellcaster
   name_i18n:
-    en: Spellcaster
-    es: Lanzador de hechizos
+    es: Lanzador de Hechizos
   effect_i18n:
-    en: The Necromancer is a spellcaster and may use Necromantic Magic. The spell list and spell effects
-      are intentionally not modelled in this file.
-    es: El Nigromante es un lanzador de hechizos y puede usar la Magia nigromántica. La lista de hechizos
-      y sus efectos no se modelan intencionadamente en este archivo.
+    es: >-
+      El Nigromante es un lanzador de hechizos y puede usar la Magia nigromántica. La lista de
+      hechizos y sus efectos no se modelan intencionadamente en este archivo.
   applies_to:
     profile_ids:
     - necromancer
@@ -158,7 +153,8 @@ rules:
     - id: unimplemented.trollheim-undead.necromancer.spellcaster
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
 - id: zombies--may-not-run
   name: May Not Run
   effect: Zombies may not run, but may charge normally.
@@ -167,10 +163,8 @@ rules:
     printed_page: 89
     section: Henchmen / Zombies / May Not Run
   name_i18n:
-    en: May Not Run
-    es: No pueden correr
+    es: No Pueden Correr
   effect_i18n:
-    en: Zombies may not run, but may charge normally.
     es: Los Zombis no pueden correr, pero pueden cargar con normalidad.
   applies_to:
     profile_ids:
@@ -183,7 +177,8 @@ rules:
     - id: unimplemented.trollheim-undead.zombies.may-not-run
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
 - id: zombies--fear
   name: Fear
   effect: Zombies cause Fear.
@@ -192,10 +187,8 @@ rules:
     printed_page: 89
     section: Henchmen / Zombies / Fear
   name_i18n:
-    en: Fear
     es: Miedo
   effect_i18n:
-    en: Zombies cause Fear.
     es: Los Zombis causan Miedo.
   applies_to:
     profile_ids:
@@ -208,7 +201,8 @@ rules:
     - id: unimplemented.trollheim-undead.zombies.fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: zombies--immune-to-psychology
   name: Immune to Psychology
   effect: Zombies are immune to Psychology and never leave close combat because of Psychology.
@@ -217,11 +211,10 @@ rules:
     printed_page: 89
     section: Henchmen / Zombies / Immune to Psychology
   name_i18n:
-    en: Immune to Psychology
-    es: Inmunes a la Psicología
+    es: Inmune a la Psicología
   effect_i18n:
-    en: Zombies are immune to Psychology and never leave close combat because of Psychology.
-    es: Los Zombis son inmunes a la Psicología y nunca abandonan el combate cuerpo a cuerpo a causa de
+    es: >-
+      Los Zombis son inmunes a la Psicología y nunca abandonan el combate cuerpo a cuerpo a causa de
       la Psicología.
   applies_to:
     profile_ids:
@@ -234,7 +227,8 @@ rules:
     - id: unimplemented.trollheim-undead.zombies.immune-to-psychology
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: zombies--immune-to-poison
   runtime:
     scope: 'YES'
@@ -255,10 +249,8 @@ rules:
     printed_page: 89
     section: Henchmen / Zombies / Immune to Poison
   name_i18n:
-    en: Immune to Poison
-    es: Inmunes al veneno
+    es: Inmune al Veneno
   effect_i18n:
-    en: Zombies are immune to poison.
     es: Los Zombis son inmunes al veneno.
   applies_to:
     profile_ids:
@@ -281,10 +273,8 @@ rules:
     printed_page: 89
     section: Henchmen / Zombies / No Pain
   name_i18n:
-    en: No Pain
-    es: Sin dolor
+    es: Sin Dolor
   effect_i18n:
-    en: Zombies treat a Stunned result on the Injury chart as Knocked Down.
     es: Los Zombis tratan un resultado Aturdido de la tabla de Heridas como Derribado.
   applies_to:
     profile_ids:
@@ -297,10 +287,8 @@ rules:
     printed_page: 89
     section: Henchmen / Zombies / Brainless
   name_i18n:
-    en: Brainless
-    es: Carentes de mente
+    es: Descerebrados
   effect_i18n:
-    en: Zombies never gain Experience.
     es: Los Zombis nunca ganan Experiencia.
   applies_to:
     profile_ids:
@@ -313,7 +301,8 @@ rules:
     - id: unimplemented.trollheim-undead.zombies.brainless
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
 - id: ghouls--fear
   name: Fear
   effect: Ghouls cause Fear.
@@ -322,10 +311,8 @@ rules:
     printed_page: 89
     section: Henchmen / Ghouls / Fear
   name_i18n:
-    en: Fear
     es: Miedo
   effect_i18n:
-    en: Ghouls cause Fear.
     es: Los Ghouls causan Miedo.
   applies_to:
     profile_ids:
@@ -338,7 +325,8 @@ rules:
     - id: unimplemented.trollheim-undead.ghouls.fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: dire-wolves--charge
   name: Charge
   effect: A Dire Wolf has 2 Attacks instead of 1 during a turn in which it charges.
@@ -347,10 +335,8 @@ rules:
     printed_page: 89
     section: Henchmen / 0-5 Dire Wolves / Charge
   name_i18n:
-    en: Charge
     es: Carga
   effect_i18n:
-    en: A Dire Wolf has 2 Attacks instead of 1 during a turn in which it charges.
     es: Un Lobo dire tiene 2 Ataques en lugar de 1 durante un turno en el que cargue.
   applies_to:
     profile_ids:
@@ -375,10 +361,8 @@ rules:
     printed_page: 89
     section: Henchmen / 0-5 Dire Wolves / May Not Run
   name_i18n:
-    en: May Not Run
-    es: No pueden correr
+    es: No Pueden Correr
   effect_i18n:
-    en: Dire Wolves may not run, but may charge normally.
     es: Los Lobos dire no pueden correr, pero pueden cargar con normalidad.
   applies_to:
     profile_ids:
@@ -391,8 +375,9 @@ rules:
     - id: unimplemented.trollheim-undead.dire-wolves.may-not-run
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.'
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
 - id: dire-wolves--fear
   name: Fear
   effect: Dire Wolves cause Fear.
@@ -401,10 +386,8 @@ rules:
     printed_page: 89
     section: Henchmen / 0-5 Dire Wolves / Fear
   name_i18n:
-    en: Fear
     es: Miedo
   effect_i18n:
-    en: Dire Wolves cause Fear.
     es: Los Lobos dire causan Miedo.
   applies_to:
     profile_ids:
@@ -417,7 +400,8 @@ rules:
     - id: unimplemented.trollheim-undead.dire-wolves.fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: dire-wolves--immune-to-psychology
   name: Immune to Psychology
   effect: Dire Wolves are immune to Psychology and never leave close combat because of Psychology.
@@ -426,12 +410,11 @@ rules:
     printed_page: 89
     section: Henchmen / 0-5 Dire Wolves / Immune to Psychology
   name_i18n:
-    en: Immune to Psychology
-    es: Inmunes a la Psicología
+    es: Inmune a la Psicología
   effect_i18n:
-    en: Dire Wolves are immune to Psychology and never leave close combat because of Psychology.
-    es: Los Lobos dire son inmunes a la Psicología y nunca abandonan el combate cuerpo a cuerpo a causa
-      de la Psicología.
+    es: >-
+      Los Lobos dire son inmunes a la Psicología y nunca abandonan el combate cuerpo a cuerpo a
+      causa de la Psicología.
   applies_to:
     profile_ids:
     - dire-wolves
@@ -443,7 +426,8 @@ rules:
     - id: unimplemented.trollheim-undead.dire-wolves.immune-to-psychology
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: dire-wolves--immune-to-poison
   runtime:
     scope: 'YES'
@@ -464,10 +448,8 @@ rules:
     printed_page: 89
     section: Henchmen / 0-5 Dire Wolves / Immune to Poison
   name_i18n:
-    en: Immune to Poison
-    es: Inmunes al veneno
+    es: Inmune al Veneno
   effect_i18n:
-    en: Dire Wolves are immune to poison.
     es: Los Lobos dire son inmunes al veneno.
   applies_to:
     profile_ids:
@@ -480,10 +462,8 @@ rules:
     printed_page: 89
     section: Henchmen / 0-5 Dire Wolves / Dead
   name_i18n:
-    en: Dead
     es: Muertos
   effect_i18n:
-    en: Dire Wolves never gain Experience.
     es: Los Lobos dire nunca ganan Experiencia.
   applies_to:
     profile_ids:
@@ -496,7 +476,8 @@ rules:
     - id: unimplemented.trollheim-undead.dire-wolves.dead
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
 - id: dire-wolves--no-pain
   runtime:
     scope: 'YES'
@@ -515,10 +496,8 @@ rules:
     printed_page: 89
     section: Henchmen / 0-5 Dire Wolves / No Pain
   name_i18n:
-    en: No Pain
-    es: Sin dolor
+    es: Sin Dolor
   effect_i18n:
-    en: Dire Wolves treat a Stunned result on the Injury chart as Knocked Down.
     es: Los Lobos dire tratan un resultado Aturdido de la tabla de Heridas como Derribado.
   applies_to:
     profile_ids:

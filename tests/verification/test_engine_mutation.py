@@ -11,7 +11,7 @@ def test_catalogue_ids_are_unique_and_anchors_apply_to_current_source():
     assert len(ids) == len(set(ids))
     assert len(CATALOG) >= 5
     for mutant in CATALOG:
-        path = engine_mutation.ROOT / "src" / "mordheim_combat" / mutant.file
+        path = engine_mutation.ROOT / "packages/python/combat-engine/mordheim_combat" / mutant.file
         source = path.read_text(encoding="utf-8")
         assert mutant.old in source, f"stale anchor for {mutant.id}"
         assert mutant.new != mutant.old
@@ -25,7 +25,7 @@ def test_mutants_target_distinct_decision_families():
 
 def test_staging_applies_the_mutant_without_touching_the_live_tree():
     mutant = next(item for item in CATALOG if item.id == "wound-ramp-off-by-one")
-    live = engine_mutation.ROOT / "src" / "mordheim_combat" / mutant.file
+    live = engine_mutation.ROOT / "packages/python/combat-engine/mordheim_combat" / mutant.file
     live_before = live.read_text(encoding="utf-8")
     try:
         stage_root, target = _stage_src(mutant)

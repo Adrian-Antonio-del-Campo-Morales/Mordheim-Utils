@@ -94,9 +94,9 @@ until the roll resolves successfully.
 **KB-backed warbands and campaign files.** The warband picker lists every
 canonical warband (collections `mordheim`/`trollheim`, ruleset `mordheim`)
 with model range and starting gold; band selection derives a draft roster from
-the KB (required members, legal minimum starter, canonical profiles,
-roster limits). Header file actions save/load `.mordheim` files and export a
-Markdown summary.
+the KB (required members, legal minimum starter, canonical profiles,roster limits). Header file actions save/load `.mordheim` files and export a Markdown summary plus a **PDF warband sheet** of the moment selected in the timeline.
+
+**PDF warband export.** `Export PDF` renders the warband at the selected timeline moment (`persistence/warband_pdf.py`, `fpdf2`): campaign/warband identity, the state's aggregates, the full roster with statlines, equipment, skills and advances, the battles recorded up to that moment and the inventory ledger. Every committed state deep-copies its roster and inventory at commit time (`WarbandStateVM.roster`/`inventory`), so any past State #N exports exactly as it was; the draft exports the live roster. The campaign file format is v3 (old files are rejected, no migration), and display labels follow `MORDHEIM_LOCALE` through the shared i18n reader.
 
 **Hiring.** Offers merge static eligibility (fee, upkeep, availability) with
 the 18 dynamic rules. Variant-capable warbands pick their Mercenary variant
@@ -111,13 +111,42 @@ acceptance roll; rejected offers are not shown.
 by the KB scenario catalogue (1v1 first): opponent, result (Victory/Defeat/
 Draw), XP granted, Out of Action checklist (the casualties count is derived
 from it) and optional opponent rating. `AppController.record_battle`
-validates the scenario, snapshots `rating_before`/`models_before`, appends
+validates the scenario, ignores unknown warrior ids in the submitted lists
+(the post-battle filter skips them too) and refuses only known warriors that
+cannot receive results, snapshots `rating_before`/`models_before`, appends
 the `BattleVM` plus its pending `PostBattleVM`, and is refused while a
 post-battle is pending or the warband is still a draft. Recording is
 unblocked once COMMIT STATE runs. The participants tab lists the real roster
 with current conditions. Recovery (step 1) offers injury cards only for the
-warriors recorded Out of Action; battles recorded before that feature (or
-with none marked) offer every warrior.
+warriors recorded Out of Action; battles recorded with none marked offer
+every warrior.
+
+**Scenario progression is applied at battle recording.**
+`application/scenario_rewards.py` builds the award plan from the scenario's
+`progression:` block and the canonical awards of
+`experience-and-advances.yaml`; the dialog computes per-warrior XP totals
+(`xp_awards`) from the battle facts and records prose-only rewards as manual
+entries. `controller._apply_recorded_scenario_loot` applies the structured
+additional rewards to the pending post-battle: gold crowns, wyrdstone
+fragments, exploration-die modifiers, items and special results. The
+material reward rules themselves live in the published
+`catalog/campaign/scenario-rewards.yaml` catalogue, validated by
+`mordheim_knowledge` and consumed through the `KnowledgePort`.
+
+**Undo is application-wide and undoable actions carry real labels.**
+`AppController.perform_undoable` retains the previous state snapshot for the
+latest twenty actions and names each entry with the caller's description or
+the action's own result message; the shell Undo button (and Ctrl+Z) shows a
+translated `Undo: <label>`, closes any modal editor before restoring the
+snapshot, and the post-battle sequence, skill/spell commits, advance rolls,
+henchman promotions, recruitment and the mercenary-variant switch all flow
+through it.
+
+**Locale switching goes through the application layer.** The Settings view
+never imports `mordheim_knowledge` (the layer rule forbids it):
+`AppController.set_locale` switches both the UI string reader
+(`mordheim_ui.i18n`) and the KB display-name reader
+(`mordheim_knowledge.i18n`) and notifies the shell to rebuild.
 
 **Post-battle mutations.** Injuries mutate the roster, XP and
 purchases/trades move the projected treasury and stash, exploration and the
@@ -163,8 +192,6 @@ table (fragments × warband size) and is one-shot per sequence.
 ## Still open
 
 - Per-warrior skill editing outside advances.
-- Scenario progression rolls (battles do not yet roll the transcribed
-  `progression:` rewards).
 - Out-of-sequence purchases and resource corrections (would reuse the same
   stored IDs).
 - Campaign library ("Manage Campaigns…" header entry), inventory ADD ITEM and
@@ -179,7 +206,7 @@ mordheim-campaign-manager
 python tools/mordheim-utils.py warband-manager
 ```
 
-Python 3.11+ and Tkinter are sufficient.
+Python 3.10+ and Tkinter are sufficient.
 
 See [Architecture](architecture.md) for the package map and
 [the KB guide](knowledge-base.md) for the catalogues it reads.

@@ -3,7 +3,8 @@ band_id: restless-dead
 rules:
 - id: liche--wizard
   name: Wizard
-  effect: The Liche is a Wizard and starts with two randomly generated Necromantic spells. The spell list
+  effect: >-
+    The Liche is a Wizard and starts with two randomly generated Necromantic spells. The spell list
     itself is not modelled here.
   source:
     manual: mordheimer.net
@@ -11,13 +12,11 @@ rules:
     section: heroes / 1 Liche / Special Rules / Wizard
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Wizard
     es: Mago
   effect_i18n:
-    en: The Liche is a Wizard and starts with two randomly generated Necromantic spells. The spell list
-      itself is not modelled here.
-    es: El Liche es un Mago y comienza con dos hechizos Nigrománticos generados aleatoriamente. La propia
-      lista de hechizos no está modelada aquí.
+    es: >-
+      El Liche es un Mago y comienza con dos hechizos Nigrománticos generados aleatoriamente. La
+      propia lista de hechizos no está modelada aquí.
   applies_to:
     profile_ids:
     - liche
@@ -29,7 +28,8 @@ rules:
     - id: unimplemented.restless-dead.liche.wizard
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: liche--cause-fear
   name: Cause Fear
   effect: A Liche is a horrible abomination and causes fear.
@@ -39,10 +39,8 @@ rules:
     section: heroes / 1 Liche / Special Rules / Cause Fear
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Cause Fear
-    es: Provocar miedo
+    es: Causan Miedo
   effect_i18n:
-    en: A Liche is a horrible abomination and causes fear.
     es: Un Liche es una abominación horrible y provoca miedo.
   applies_to:
     profile_ids:
@@ -55,7 +53,8 @@ rules:
     - id: unimplemented.restless-dead.liche.cause-fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: liche--immune-to-psychology
   name: Immune to Psychology
   effect: A Liche is not affected by psychology and never leaves combat.
@@ -65,10 +64,8 @@ rules:
     section: heroes / 1 Liche / Special Rules / Immune to Psychology
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Immune to Psychology
-    es: Inmune a la psicología
+    es: Inmune a la Psicología
   effect_i18n:
-    en: A Liche is not affected by psychology and never leaves combat.
     es: Un Liche no se ve afectado por la psicología y nunca abandona el combate.
   applies_to:
     profile_ids:
@@ -81,7 +78,8 @@ rules:
     - id: unimplemented.restless-dead.liche.immune-to-psychology
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: liche--no-pain
   runtime:
     scope: 'YES'
@@ -101,10 +99,8 @@ rules:
     section: heroes / 1 Liche / Special Rules / No Pain
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: No Pain
-    es: Sin dolor
+    es: Sin Dolor
   effect_i18n:
-    en: A Liche treats a stunned result on the injury chart as knocked down.
     es: Un Liche trata un resultado de Aturdido en la tabla de heridas como Derribado.
   applies_to:
     profile_ids:
@@ -130,45 +126,34 @@ rules:
     section: heroes / 1 Liche / Special Rules / Immune to Poison
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Immune to Poison
-    es: Inmune al veneno
+    es: Inmune al Veneno
   effect_i18n:
-    en: A Liche is not affected by poison.
     es: Un Liche no se ve afectado por el veneno.
   applies_to:
     profile_ids:
     - liche
 - id: liche--eternal
   name: Eternal
-  effect: A Liche can choose to ignore any result on the Hero's Serious Injury chart except Killed by
-    taking a permanent -1 on their starting Wound profile. Obviously, a Liche with 1 Wound remaining on
-    their starting profile does not have this option. A Liche that gets a Killed result instead takes
-    a permanent -D3 Wounds on their starting profile. If this takes their starting Wound total to 0 or
-    less, the Liche is Killed as normal.
+  effect: >-
+    A Liche can choose to ignore any result on the Hero's Serious Injury chart except Killed by
+    taking a permanent -1 on their starting Wound profile. Obviously, a Liche with 1 Wound remaining
+    on their starting profile does not have this option. A Liche that gets a Killed result instead
+    takes a permanent -D3 Wounds on their starting profile. If this takes their starting Wound total
+    to 0 or less, the Liche is Killed as normal.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 1 Liche / Special Rules / Eternal
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Eternal
     es: Eterno
   effect_i18n:
-    en: 'A Liche can choose to ignore any result on the Hero''s Serious Injury chart except Killed by
-      taking a permanent -1 on their starting Wound profile. Obviously, a Liche with 1 Wound remaining
-      on their
-
-      starting profile does not have this option. A Liche that
-
-      gets a Killed result instead takes a permanent -D3 Wounds on their starting profile. If this takes
-      their
-
-      starting Wound total to 0 or less, the Liche is Killed as normal.'
-    es: Un Liche puede elegir ignorar cualquier resultado de la tabla de Heridas Graves de Héroes excepto
-      Muerto, tomando un -1 permanente en su perfil inicial de Heridas. Obviamente, un Liche con 1 Herida
-      restante en su perfil inicial no tiene esta opción. Un Liche que obtenga un resultado de Muerto
-      en su lugar toma un -D3 de Heridas permanente en su perfil inicial. Si esto lleva su total inicial
-      de Heridas a 0 o menos, el Liche muere con normalidad.
+    es: >-
+      Un Liche puede elegir ignorar cualquier resultado de la tabla de Heridas Graves de Héroes
+      excepto Muerto, tomando un -1 permanente en su perfil inicial de Heridas. Obviamente, un Liche
+      con 1 Herida restante en su perfil inicial no tiene esta opción. Un Liche que obtenga un
+      resultado de Muerto en su lugar toma un -D3 de Heridas permanente en su perfil inicial. Si
+      esto lleva su total inicial de Heridas a 0 o menos, el Liche muere con normalidad.
   applies_to:
     profile_ids:
     - liche
@@ -185,34 +170,26 @@ rules:
         construction.
 - id: liche--feed-upon-magic
   name: Feed Upon Magic
-  effect: A Liche can perform spells that, with the consumption of D3 Treasures, can give the Liche a
-    permanent +1 Wound on their starting profile. This can only be used in between battles and cannot
-    be used if the Liche searches for rare items or was put out of action in the previous battle. If the
-    warband does not have enough Treasures to complete the spell, then the Treasures are consumed anyway
-    and the Liche does not gain the Wound.
+  effect: >-
+    A Liche can perform spells that, with the consumption of D3 Treasures, can give the Liche a
+    permanent +1 Wound on their starting profile. This can only be used in between battles and
+    cannot be used if the Liche searches for rare items or was put out of action in the previous
+    battle. If the warband does not have enough Treasures to complete the spell, then the Treasures
+    are consumed anyway and the Liche does not gain the Wound.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 1 Liche / Special Rules / Feed Upon Magic
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Feed Upon Magic
-    es: Alimentarse de magia
+    es: Alimentarse de Magia
   effect_i18n:
-    en: 'A Liche can perform spells that, with the consumption of D3 Treasures, can give the
-
-      Liche a permanent +1 Wound on their starting profile.
-
-      This can only be used in between battles and cannot
-
-      be used if the Liche searches for rare items or was put out of action in the previous battle. If
-      the warband does not have enough Treasures to complete the spell, then the Treasures are consumed
-      anyway and the Liche does not gain the Wound.'
-    es: Un Liche puede realizar hechizos que, con el consumo de D3 Tesoros, pueden darle al Liche un +1
-      permanente de Heridas en su perfil inicial. Esto solo puede usarse entre batallas y no puede usarse
-      si el Liche busca objetos raros o fue puesto fuera de combate en la batalla anterior. Si la banda
-      no tiene suficientes Tesoros para completar el hechizo, los Tesoros se consumen de todos modos y
-      el Liche no gana la Herida.
+    es: >-
+      Un Liche puede realizar hechizos que, con el consumo de D3 Tesoros, pueden darle al Liche un
+      +1 permanente de Heridas en su perfil inicial. Esto solo puede usarse entre batallas y no
+      puede usarse si el Liche busca objetos raros o fue puesto fuera de combate en la batalla
+      anterior. Si la banda no tiene suficientes Tesoros para completar el hechizo, los Tesoros se
+      consumen de todos modos y el Liche no gana la Herida.
   applies_to:
     profile_ids:
     - liche
@@ -224,10 +201,12 @@ rules:
     - id: unimplemented.restless-dead.liche.feed-upon-magic
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: liche--warrior-wizard
   name: Warrior Wizard
-  effect: The Liche may wear armour and cast spells. Indeed, it is often the clothing and armour alone
+  effect: >-
+    The Liche may wear armour and cast spells. Indeed, it is often the clothing and armour alone
     that gives the Liche substance and form!
   source:
     manual: mordheimer.net
@@ -235,13 +214,10 @@ rules:
     section: heroes / 1 Liche / Special Rules / Warrior Wizard
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Warrior Wizard
-    es: Guerrero mago
+    es: Guerrero Mago
   effect_i18n:
-    en: 'The Liche may wear armour and cast spells. Indeed, it is often the clothing and armour
-
-      alone that gives the Liche substance and form!'
-    es: El Liche puede llevar armadura y lanzar hechizos. De hecho, ¡a menudo son solo las ropas y la
+    es: >-
+      El Liche puede llevar armadura y lanzar hechizos. De hecho, ¡a menudo son solo las ropas y la
       armadura las que dan al Liche sustancia y forma!
   applies_to:
     profile_ids:
@@ -258,22 +234,20 @@ rules:
         id: compiler.warrior-wizard
 - id: liche--advancement
   name: Advancement
-  effect: If a Liche gets an advance roll of +1 Wound, they may instead pick a new skill from their available
-    lists.
+  effect: >-
+    If a Liche gets an advance roll of +1 Wound, they may instead pick a new skill from their
+    available lists.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 1 Liche / Special Rules / Advancement
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Advancement
     es: Progresión
   effect_i18n:
-    en: 'If a Liche gets an advance roll of +1 Wound, they may instead pick a new skill from their
-
-      available lists.'
-    es: Si un Liche obtiene una tirada de progreso de +1 Herida, puede en su lugar elegir una nueva habilidad
-      de sus listas disponibles.
+    es: >-
+      Si un Liche obtiene una tirada de progreso de +1 Herida, puede en su lugar elegir una nueva
+      habilidad de sus listas disponibles.
   applies_to:
     profile_ids:
     - liche
@@ -285,24 +259,17 @@ rules:
     - id: unimplemented.restless-dead.liche.advancement
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: necromancer--wizard
   name: Wizard
-  effect: The Necromancer is a Wizard and starts knowing one of the Liche's two Necromantic spells. The
-    spell list itself is not modelled here.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 0 - 1 Necromancer / Special Rules / Wizard
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Wizard
     es: Mago
-  effect_i18n:
-    en: The Necromancer is a Wizard and starts knowing one of the Liche's two Necromantic spells. The
-      spell list itself is not modelled here.
-    es: El Nigromante es un Mago y comienza conociendo uno de los dos hechizos Nigrománticos del Liche.
-      La propia lista de hechizos no está modelada aquí.
   applies_to:
     profile_ids:
     - necromancer
@@ -314,35 +281,29 @@ rules:
     - id: unimplemented.restless-dead.necromancer.wizard
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+  rule_ref: shared-rule.wizard
 - id: necromancer--apprentices
   name: Apprentices
-  effect: Necromancers may only ever know spells known by their Liche masters. Even if they did know spells
-    the Liche didn't, they wouldn't dare use them for fear of their master's response for their arrogance!
-    If the Liche is ever killed, the Necromancer can continue to learn magic spells as a normal wizard,
-    ignoring the Apprentice rule.
+  effect: >-
+    Necromancers may only ever know spells known by their Liche masters. Even if they did know
+    spells the Liche didn't, they wouldn't dare use them for fear of their master's response for
+    their arrogance! If the Liche is ever killed, the Necromancer can continue to learn magic spells
+    as a normal wizard, ignoring the Apprentice rule.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 0 - 1 Necromancer / Special Rules / Apprentices
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Apprentices
     es: Aprendices
   effect_i18n:
-    en: 'Necromancers may only ever know spells known by their Liche masters. Even if they did know
-
-      spells the Liche didn''t, they wouldn''t dare use them
-
-      for fear of their master''s response for their arrogance!
-
-      If the Liche is ever killed, the Necromancer can continue to learn magic spells as a normal wizard,
-
-      ignoring the Apprentice rule.'
-    es: Los Nigromantes solo pueden conocer jamás los hechizos conocidos por sus amos liches. ¡Aunque
-      conocieran hechizos que el Liche no, no se atreverían a usarlos por temor a la respuesta de su amo
-      ante su arrogancia! Si el Liche muere alguna vez, el Nigromante puede continuar aprendiendo hechizos
-      de magia como un mago normal, ignorando la regla de Aprendiz.
+    es: >-
+      Los Nigromantes solo pueden conocer jamás los hechizos conocidos por sus amos liches. ¡Aunque
+      conocieran hechizos que el Liche no, no se atreverían a usarlos por temor a la respuesta de su
+      amo ante su arrogancia! Si el Liche muere alguna vez, el Nigromante puede continuar
+      aprendiendo hechizos de magia como un mago normal, ignorando la regla de Aprendiz.
   applies_to:
     profile_ids:
     - necromancer
@@ -354,29 +315,26 @@ rules:
     - id: unimplemented.restless-dead.necromancer.apprentices
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: necromancer--gofer
   name: Gofer
-  effect: as an Apprentice, the Necromancer spends much of their time running errands for their Liche
-    masters and over the years get exceptionally good at it. When a Necromancer searches for rare items,
-    they roll 3D6 and pick the two highest.
+  effect: >-
+    as an Apprentice, the Necromancer spends much of their time running errands for their Liche
+    masters and over the years get exceptionally good at it. When a Necromancer searches for rare
+    items, they roll 3D6 and pick the two highest.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 0 - 1 Necromancer / Special Rules / Gofer
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Gofer
     es: Recadero
   effect_i18n:
-    en: 'as an Apprentice, the Necromancer spends much of their time running errands for their Liche
-
-      masters and over the years get exceptionally good at it.
-
-      When a Necromancer searches for rare items, they roll 3D6 and pick the two highest.'
-    es: Como aprendiz, el Nigromante pasa gran parte de su tiempo haciendo recados para sus amos liches
-      y con los años se vuelve excepcionalmente bueno en ello. Cuando un Nigromante busca objetos raros,
-      tira 3D6 y elige los dos más altos.
+    es: >-
+      Como aprendiz, el Nigromante pasa gran parte de su tiempo haciendo recados para sus amos
+      liches y con los años se vuelve excepcionalmente bueno en ello. Cuando un Nigromante busca
+      objetos raros, tira 3D6 y elige los dos más altos.
   applies_to:
     profile_ids:
     - necromancer
@@ -388,28 +346,27 @@ rules:
     - id: unimplemented.restless-dead.necromancer.gofer
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: grave-guards--wight-blades
   name: Wight Blades
-  effect: Grave Guards carry weapons laden with evil magic. All close combat 'to hit' rolls of a 6 will
-    automatically wound. You may roll 'to wound' as normal to determine if it is a 'critical hit', but
-    even a failed 'to wound' roll will still cause a wound if a 6 was rolled first 'to hit'.
+  effect: >-
+    Grave Guards carry weapons laden with evil magic. All close combat 'to hit' rolls of a 6 will
+    automatically wound. You may roll 'to wound' as normal to determine if it is a 'critical hit',
+    but even a failed 'to wound' roll will still cause a wound if a 6 was rolled first 'to hit'.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: heroes / 0 - 3 Grave Guards / Special Rules / Wight Blades
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Wight Blades
-    es: Hojas de espectro
+    es: Hojas de Espectro
   effect_i18n:
-    en: Grave Guards carry weapons laden with evil magic. All close combat 'to hit' rolls of a 6 will
-      automatically wound. You may roll 'to wound' as normal to determine if it is a 'critical hit', but
-      even a failed 'to wound' roll will still cause a wound if a 6 was rolled first 'to hit'.
-    es: Los Guardianes de la Tumba portan armas cargadas de magia maligna. Todas las tiradas de 'impactar'
-      de combate cuerpo a cuerpo de un 6 hieren automáticamente. Puedes tirar 'para herir' con normalidad
-      para determinar si es un 'golpe crítico', pero incluso una tirada de 'herir' fallida seguirá causando
-      una herida si primero se sacó un 6 'para impactar'.
+    es: >-
+      Los Guardianes de la Tumba portan armas cargadas de magia maligna. Todas las tiradas de
+      'impactar' de combate cuerpo a cuerpo de un 6 hieren automáticamente. Puedes tirar 'para
+      herir' con normalidad para determinar si es un 'golpe crítico', pero incluso una tirada de
+      'herir' fallida seguirá causando una herida si primero se sacó un 6 'para impactar'.
   applies_to:
     profile_ids:
     - grave-guards
@@ -434,11 +391,11 @@ rules:
     section: heroes / 0 - 3 Grave Guards / Special Rules / Cause Fear
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Cause Fear
-    es: Provocar miedo
+    es: Causan Miedo
   effect_i18n:
-    en: Grave Guards are terrifying undead creatures and so cause fear.
-    es: Los Guardianes de la Tumba son criaturas muertas vivientes terroríficas y por tanto provocan miedo.
+    es: >-
+      Los Guardianes de la Tumba son criaturas muertas vivientes terroríficas y por tanto provocan
+      miedo.
   applies_to:
     profile_ids:
     - grave-guards
@@ -450,7 +407,8 @@ rules:
     - id: unimplemented.restless-dead.grave-guards.cause-fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: grave-guards--immune-to-poison
   runtime:
     scope: 'YES'
@@ -472,10 +430,8 @@ rules:
     section: heroes / 0 - 3 Grave Guards / Special Rules / Immune to Poison
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Immune to Poison
-    es: Inmune al veneno
+    es: Inmune al Veneno
   effect_i18n:
-    en: Grave Guards are not affected by poison.
     es: Los Guardianes de la Tumba no se ven afectados por el veneno.
   applies_to:
     profile_ids:
@@ -489,11 +445,10 @@ rules:
     section: heroes / 0 - 3 Grave Guards / Special Rules / Immune to Psychology
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Immune to Psychology
-    es: Inmune a la psicología
+    es: Inmune a la Psicología
   effect_i18n:
-    en: Grave Guards are not affected by psychology and never leave combat.
-    es: Los Guardianes de la Tumba no se ven afectados por la psicología y nunca abandonan el combate.
+    es: >-
+      Los Guardianes de la Tumba no se ven afectados por la psicología y nunca abandonan el combate.
   applies_to:
     profile_ids:
     - grave-guards
@@ -505,7 +460,8 @@ rules:
     - id: unimplemented.restless-dead.grave-guards.immune-to-psychology
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: grave-guards--no-pain
   runtime:
     scope: 'YES'
@@ -525,16 +481,16 @@ rules:
     section: heroes / 0 - 3 Grave Guards / Special Rules / No Pain
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: No Pain
-    es: Sin dolor
+    es: Sin Dolor
   effect_i18n:
-    en: Grave Guards treat a stunned result on the injury chart as knocked down.
-    es: Los Guardianes de la Tumba tratan un resultado de Aturdido en la tabla de heridas como Derribado.
+    es: >-
+      Los Guardianes de la Tumba tratan un resultado de Aturdido en la tabla de heridas como
+      Derribado.
   applies_to:
     profile_ids:
     - grave-guards
 - id: grave-guards--may-not-run
-  name: May not Run
+  name: May Not Run
   effect: Grave Guards are slow undead creatures and may not run (but can charge normally).
   source:
     manual: mordheimer.net
@@ -542,12 +498,11 @@ rules:
     section: heroes / 0 - 3 Grave Guards / Special Rules / May not Run
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: May not Run
-    es: No pueden correr
+    es: No Pueden Correr
   effect_i18n:
-    en: Grave Guards are slow undead creatures and may not run (but can charge normally).
-    es: Los Guardianes de la Tumba son criaturas muertas vivientes lentas y no pueden correr (pero pueden
-      cargar normalmente).
+    es: >-
+      Los Guardianes de la Tumba son criaturas muertas vivientes lentas y no pueden correr (pero
+      pueden cargar normalmente).
   applies_to:
     profile_ids:
     - grave-guards
@@ -559,9 +514,10 @@ rules:
     - id: unimplemented.restless-dead.grave-guards.may-not-run
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: grave-guards--no-deal
-  name: No deal
+  name: No Deal
   effect: Grave Guards may not search for rare items.
   source:
     manual: mordheimer.net
@@ -569,10 +525,8 @@ rules:
     section: heroes / 0 - 3 Grave Guards / Special Rules / No deal
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: No deal
-    es: Sin trato
+    es: Sin Trato
   effect_i18n:
-    en: Grave Guards may not search for rare items.
     es: Los Guardianes de la Tumba no pueden buscar objetos raros.
   applies_to:
     profile_ids:
@@ -585,21 +539,17 @@ rules:
     - id: unimplemented.restless-dead.grave-guards.no-deal
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: zombies--cause-fear
   name: Cause Fear
-  effect: Zombies are horrible abominations and so cause fear.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Zombies / Special Rules / Cause Fear
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Cause Fear
-    es: Provocar miedo
-  effect_i18n:
-    en: Zombies are horrible abominations and so cause fear.
-    es: Los Zombis son abominaciones horribles y por tanto provocan miedo.
+    es: Causan Miedo
   applies_to:
     profile_ids:
     - zombies
@@ -611,21 +561,18 @@ rules:
     - id: unimplemented.restless-dead.zombies.cause-fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
+  rule_ref: shared-rule.fear-6
 - id: zombies--may-not-run
-  name: May not run
-  effect: Zombies are slow undead creatures and may not run (but may charge normally).
+  name: May Not Run
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Zombies / Special Rules / May not run
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: May not run
-    es: No pueden correr
-  effect_i18n:
-    en: Zombies are slow undead creatures and may not run (but may charge normally).
-    es: Los Zombis son criaturas muertas vivientes lentas y no pueden correr (pero pueden cargar normalmente).
+    es: No Pueden Correr
   applies_to:
     profile_ids:
     - zombies
@@ -637,21 +584,18 @@ rules:
     - id: unimplemented.restless-dead.zombies.may-not-run
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
+  rule_ref: shared-rule.may-not-run-3
 - id: zombies--immune-to-psychology
   name: Immune to Psychology
-  effect: A Zombie is not affected by psychology and never leaves combat.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Zombies / Special Rules / Immune to Psychology
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Immune to Psychology
-    es: Inmune a la psicología
-  effect_i18n:
-    en: A Zombie is not affected by psychology and never leaves combat.
-    es: Un Zombi no se ve afectado por la psicología y nunca abandona el combate.
+    es: Inmune a la Psicología
   applies_to:
     profile_ids:
     - zombies
@@ -663,7 +607,9 @@ rules:
     - id: unimplemented.restless-dead.zombies.immune-to-psychology
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
+  rule_ref: shared-rule.immune-to-psychology-5
 - id: zombies--immune-to-poison
   runtime:
     scope: 'YES'
@@ -678,21 +624,17 @@ rules:
         parameters:
           value: true
   name: Immune to Poison
-  effect: A Zombie is not affected by poison.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Zombies / Special Rules / Immune to Poison
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Immune to Poison
-    es: Inmune al veneno
-  effect_i18n:
-    en: A Zombie is not affected by poison.
-    es: Un Zombi no se ve afectado por el veneno.
+    es: Inmune al Veneno
   applies_to:
     profile_ids:
     - zombies
+  rule_ref: shared-rule.immune-to-poison-4
 - id: zombies--no-pain
   runtime:
     scope: 'YES'
@@ -705,35 +647,26 @@ rules:
         kind: mechanic
         id: skill.ignore-pain
   name: No Pain
-  effect: Zombies treat stunned results on the injury chart as knocked down.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Zombies / Special Rules / No Pain
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: No Pain
-    es: Sin dolor
-  effect_i18n:
-    en: Zombies treat stunned results on the injury chart as knocked down.
-    es: Los Zombis tratan los resultados de Aturdido en la tabla de heridas como Derribado.
+    es: Sin Dolor
   applies_to:
     profile_ids:
     - zombies
+  rule_ref: shared-rule.no-pain-3
 - id: zombies--no-brain
   name: No Brain
-  effect: Zombies never gain experience.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / Zombies / Special Rules / No Brain
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: No Brain
-    es: Sin cerebro
-  effect_i18n:
-    en: Zombies never gain experience.
-    es: Los Zombis nunca ganan experiencia.
+    es: Sin Cerebro
   applies_to:
     profile_ids:
     - zombies
@@ -745,7 +678,9 @@ rules:
     - id: unimplemented.restless-dead.zombies.no-brain
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+  rule_ref: shared-rule.brainless
 - id: skeletons--cause-fear
   name: Cause Fear
   effect: Skeletons are horrible abominations and so cause fear.
@@ -755,10 +690,8 @@ rules:
     section: henchmen / 0 - 8 Skeletons / Special Rules / Cause Fear
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Cause Fear
-    es: Provocar miedo
+    es: Causan Miedo
   effect_i18n:
-    en: Skeletons are horrible abominations and so cause fear.
     es: Los Esqueletos son abominaciones horribles y por tanto provocan miedo.
   applies_to:
     profile_ids:
@@ -771,9 +704,10 @@ rules:
     - id: unimplemented.restless-dead.skeletons.cause-fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: skeletons--may-not-run
-  name: May not run
+  name: May Not Run
   effect: Skeletons are slow undead creatures and may not run (but may charge normally).
   source:
     manual: mordheimer.net
@@ -781,11 +715,11 @@ rules:
     section: henchmen / 0 - 8 Skeletons / Special Rules / May not run
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: May not run
-    es: No pueden correr
+    es: No Pueden Correr
   effect_i18n:
-    en: Skeletons are slow undead creatures and may not run (but may charge normally).
-    es: Los Esqueletos son criaturas muertas vivientes lentas y no pueden correr (pero pueden cargar normalmente).
+    es: >-
+      Los Esqueletos son criaturas muertas vivientes lentas y no pueden correr (pero pueden cargar
+      normalmente).
   applies_to:
     profile_ids:
     - skeletons
@@ -797,7 +731,8 @@ rules:
     - id: unimplemented.restless-dead.skeletons.may-not-run
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: skeletons--immune-to-psychology
   name: Immune to Psychology
   effect: Skeletons are not affected by psychology and never leaves combat.
@@ -807,10 +742,8 @@ rules:
     section: henchmen / 0 - 8 Skeletons / Special Rules / Immune to Psychology
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Immune to Psychology
-    es: Inmune a la psicología
+    es: Inmune a la Psicología
   effect_i18n:
-    en: Skeletons are not affected by psychology and never leaves combat.
     es: Los Esqueletos no se ven afectados por la psicología y nunca abandonan el combate.
   applies_to:
     profile_ids:
@@ -823,7 +756,8 @@ rules:
     - id: unimplemented.restless-dead.skeletons.immune-to-psychology
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: skeletons--immune-to-poison
   runtime:
     scope: 'YES'
@@ -845,10 +779,8 @@ rules:
     section: henchmen / 0 - 8 Skeletons / Special Rules / Immune to Poison
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Immune to Poison
-    es: Inmune al veneno
+    es: Inmune al Veneno
   effect_i18n:
-    en: Skeletons are not affected by poison.
     es: Los Esqueletos no se ven afectados por el veneno.
   applies_to:
     profile_ids:
@@ -872,10 +804,8 @@ rules:
     section: henchmen / 0 - 8 Skeletons / Special Rules / No Pain
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: No Pain
-    es: Sin dolor
+    es: Sin Dolor
   effect_i18n:
-    en: Skeletons treat stunned results on the injury chart as knocked down.
     es: Los Esqueletos tratan los resultados de Aturdido en la tabla de heridas como Derribado.
   applies_to:
     profile_ids:
@@ -889,10 +819,8 @@ rules:
     section: henchmen / 0 - 8 Skeletons / Special Rules / No Brain
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: No Brain
-    es: Sin cerebro
+    es: Sin Cerebro
   effect_i18n:
-    en: Skeletons never gain experience.
     es: Los Esqueletos nunca ganan experiencia.
   applies_to:
     profile_ids:
@@ -905,7 +833,8 @@ rules:
     - id: unimplemented.restless-dead.skeletons.no-brain
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: wights--cause-fear
   name: Cause Fear
   effect: Wights are horrible abominations and so cause fear.
@@ -915,10 +844,8 @@ rules:
     section: henchmen / 0 - 3 Wights / Special Rules / Cause Fear
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Cause Fear
-    es: Provocar miedo
+    es: Causan Miedo
   effect_i18n:
-    en: Wights are horrible abominations and so cause fear.
     es: Los Espectros son abominaciones horribles y por tanto provocan miedo.
   applies_to:
     profile_ids:
@@ -931,9 +858,10 @@ rules:
     - id: unimplemented.restless-dead.wights.cause-fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: wights--may-not-run
-  name: May not run
+  name: May Not Run
   effect: Wights are slow undead creatures and may not run (but may charge normally).
   source:
     manual: mordheimer.net
@@ -941,11 +869,11 @@ rules:
     section: henchmen / 0 - 3 Wights / Special Rules / May not run
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: May not run
-    es: No pueden correr
+    es: No Pueden Correr
   effect_i18n:
-    en: Wights are slow undead creatures and may not run (but may charge normally).
-    es: Los Espectros son criaturas muertas vivientes lentas y no pueden correr (pero pueden cargar normalmente).
+    es: >-
+      Los Espectros son criaturas muertas vivientes lentas y no pueden correr (pero pueden cargar
+      normalmente).
   applies_to:
     profile_ids:
     - wights
@@ -957,7 +885,8 @@ rules:
     - id: unimplemented.restless-dead.wights.may-not-run
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: wights--immune-to-psychology
   name: Immune to Psychology
   effect: Wights are not affected by psychology and never leaves combat.
@@ -967,10 +896,8 @@ rules:
     section: henchmen / 0 - 3 Wights / Special Rules / Immune to Psychology
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Immune to Psychology
-    es: Inmune a la psicología
+    es: Inmune a la Psicología
   effect_i18n:
-    en: Wights are not affected by psychology and never leaves combat.
     es: Los Espectros no se ven afectados por la psicología y nunca abandonan el combate.
   applies_to:
     profile_ids:
@@ -983,7 +910,8 @@ rules:
     - id: unimplemented.restless-dead.wights.immune-to-psychology
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: wights--immune-to-poison
   runtime:
     scope: 'YES'
@@ -1005,10 +933,8 @@ rules:
     section: henchmen / 0 - 3 Wights / Special Rules / Immune to Poison
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Immune to Poison
-    es: Inmune al veneno
+    es: Inmune al Veneno
   effect_i18n:
-    en: Wights are not affected by poison.
     es: Los Espectros no se ven afectados por el veneno.
   applies_to:
     profile_ids:
@@ -1032,34 +958,30 @@ rules:
     section: henchmen / 0 - 3 Wights / Special Rules / No Pain
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: No Pain
-    es: Sin dolor
+    es: Sin Dolor
   effect_i18n:
-    en: Wights treat stunned results on the injury chart as knocked down.
     es: Los Espectros tratan los resultados de Aturdido en la tabla de heridas como Derribado.
   applies_to:
     profile_ids:
     - wights
 - id: wights--experience
   name: Experience
-  effect: Wights gain Experience. If a Wight becomes a Hero through The Lad's Got Talent, it may not search
-    for rare items, must choose Combat and Strength as its two skill lists, and gains the Wight Blades
-    special rule.
+  effect: >-
+    Wights gain Experience. If a Wight becomes a Hero through The Lad's Got Talent, it may not
+    search for rare items, must choose Combat and Strength as its two skill lists, and gains the
+    Wight Blades special rule.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 - 3 Wights / Special Rules / Experience
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Experience
     es: Experiencia
   effect_i18n:
-    en: Wights gain Experience. If a Wight becomes a Hero through The Lad's Got Talent, it may not search
-      for rare items, must choose Combat and Strength as its two skill lists, and gains the Wight Blades
-      special rule.
-    es: Los Espectros ganan Experiencia. Si un Espectro se convierte en Héroe mediante The Lad's Got Talent
-      (El muchacho tiene talento), no puede buscar objetos raros, debe elegir Combate y Fuerza como sus
-      dos listas de habilidades, y gana la regla especial Hojas de espectro.
+    es: >-
+      Los Espectros ganan Experiencia. Si un Espectro se convierte en Héroe mediante The Lad's Got
+      Talent (El muchacho tiene talento), no puede buscar objetos raros, debe elegir Combate y
+      Fuerza como sus dos listas de habilidades, y gana la regla especial Hojas de espectro.
   applies_to:
     profile_ids:
     - wights
@@ -1076,20 +998,18 @@ rules:
         construction.
 - id: scarecrows--cause-fear
   name: Cause Fear
-  effect: The sight of a tall, lanky and silent scarecrow moving is highly unnatural and so causes fear.
+  effect: >-
+    The sight of a tall, lanky and silent scarecrow moving is highly unnatural and so causes fear.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 - 2 Scarecrows / Special Rules / Cause Fear
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Cause Fear
-    es: Provocar miedo
+    es: Causan Miedo
   effect_i18n:
-    en: 'The sight of a tall, lanky and silent scarecrow moving is highly unnatural and so causes
-
-      fear.'
-    es: La visión de un espantapájaros alto, enjuto y silencioso moviéndose es altamente antinatural y
+    es: >-
+      La visión de un espantapájaros alto, enjuto y silencioso moviéndose es altamente antinatural y
       por tanto provoca miedo.
   applies_to:
     profile_ids:
@@ -1102,7 +1022,8 @@ rules:
     - id: unimplemented.restless-dead.scarecrows.cause-fear
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: scarecrows--immune-to-psychology
   name: Immune to Psychology
   effect: The scarecrow is immune to all psychology and will never leave combat.
@@ -1112,10 +1033,8 @@ rules:
     section: henchmen / 0 - 2 Scarecrows / Special Rules / Immune to Psychology
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Immune to Psychology
-    es: Inmune a la psicología
+    es: Inmune a la Psicología
   effect_i18n:
-    en: The scarecrow is immune to all psychology and will never leave combat.
     es: El espantapájaros es inmune a toda la psicología y nunca abandonará el combate.
   applies_to:
     profile_ids:
@@ -1128,7 +1047,8 @@ rules:
     - id: unimplemented.restless-dead.scarecrows.immune-to-psychology
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: scarecrows--immune-to-poison
   runtime:
     scope: 'YES'
@@ -1150,10 +1070,8 @@ rules:
     section: henchmen / 0 - 2 Scarecrows / Special Rules / Immune to Poison
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Immune to Poison
-    es: Inmune al veneno
+    es: Inmune al Veneno
   effect_i18n:
-    en: The scarecrow is immune to all poisons.
     es: El espantapájaros es inmune a todos los venenos.
   applies_to:
     profile_ids:
@@ -1177,11 +1095,11 @@ rules:
     section: henchmen / 0 - 2 Scarecrows / Special Rules / No Pain
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: No Pain
-    es: Sin dolor
+    es: Sin Dolor
   effect_i18n:
-    en: The scarecrow treats all stunned results on the injury chart as knocked down.
-    es: El espantapájaros trata todos los resultados de Aturdido en la tabla de heridas como Derribado.
+    es: >-
+      El espantapájaros trata todos los resultados de Aturdido en la tabla de heridas como
+      Derribado.
   applies_to:
     profile_ids:
     - scarecrows
@@ -1194,10 +1112,8 @@ rules:
     section: henchmen / 0 - 2 Scarecrows / Special Rules / No Brain
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: No Brain
-    es: Sin cerebro
+    es: Sin Cerebro
   effect_i18n:
-    en: The scarecrow never gain experience.
     es: El espantapájaros nunca gana experiencia.
   applies_to:
     profile_ids:
@@ -1210,31 +1126,29 @@ rules:
     - id: unimplemented.restless-dead.scarecrows.no-brain
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: scarecrows--no-substance
   name: No Substance
-  effect: The scarecrow is incredibly difficult to take down with shooting as there are few vital parts
-    to hit. The scarecrow counts as having a T6 against all shooting and magical missiles, likewise, a
-    scarecrow is immune to critical hits caused by shooting. The exception to this rule is missile weapons
-    or spells that are fire based which deal damage as normal.
+  effect: >-
+    The scarecrow is incredibly difficult to take down with shooting as there are few vital parts to
+    hit. The scarecrow counts as having a T6 against all shooting and magical missiles, likewise, a
+    scarecrow is immune to critical hits caused by shooting. The exception to this rule is missile
+    weapons or spells that are fire based which deal damage as normal.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 - 2 Scarecrows / Special Rules / No Substance
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: No Substance
-    es: Sin sustancia
+    es: Sin Sustancia
   effect_i18n:
-    en: The scarecrow is incredibly difficult to take down with shooting as there are few vital parts
-      to hit. The scarecrow counts as having a T6 against all shooting and magical missiles, likewise,
-      a scarecrow is immune to critical hits caused by shooting. The exception to this rule is missile
-      weapons or spells that are fire based which deal damage as normal.
-    es: El espantapájaros es increíblemente difícil de derribar con disparos, ya que hay pocas partes
-      vitales a las que golpear. El espantapájaros cuenta como si tuviera R6 contra todos los disparos
-      y proyectiles mágicos; asimismo, un espantapájaros es inmune a los golpes críticos causados por
-      disparos. La excepción a esta regla son las armas arrojadizas o hechizos de base fuego, que causan
-      daño con normalidad.
+    es: >-
+      El espantapájaros es increíblemente difícil de derribar con disparos, ya que hay pocas partes
+      vitales a las que golpear. El espantapájaros cuenta como si tuviera R6 contra todos los
+      disparos y proyectiles mágicos; asimismo, un espantapájaros es inmune a los golpes críticos
+      causados por disparos. La excepción a esta regla son las armas arrojadizas o hechizos de base
+      fuego, que causan daño con normalidad.
   applies_to:
     profile_ids:
     - scarecrows
@@ -1246,7 +1160,8 @@ rules:
     - id: unimplemented.restless-dead.scarecrows.no-substance
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: scarecrows--flammable
   runtime:
     scope: 'YES'
@@ -1268,25 +1183,22 @@ rules:
         parameters:
           value: 3
   name: Flammable
-  effect: The scarecrow is primarily ratty cloth, straw and preserved body parts so as a result they burn
-    very easily. Scarecrows count as being flammable. In addition, a scarecrow will be 'caught fire' on
-    the roll of a 3+ as opposed to the normal 4+.
+  effect: >-
+    The scarecrow is primarily ratty cloth, straw and preserved body parts so as a result they burn
+    very easily. Scarecrows count as being flammable. In addition, a scarecrow will be 'caught fire'
+    on the roll of a 3+ as opposed to the normal 4+.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 - 2 Scarecrows / Special Rules / Flammable
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Flammable
     es: Inflamable
   effect_i18n:
-    en: 'The scarecrow is primarily ratty cloth, straw and preserved body parts so as a result they
-
-      burn very easily. Scarecrows count as being flammable. In addition, a scarecrow will be ''caught
-      fire'' on the roll of a 3+ as opposed to the normal 4+.'
-    es: El espantapájaros es principalmente trapo raído, paja y partes del cuerpo conservadas, por lo
-      que arde con mucha facilidad. Los Espantapájaros cuentan como inflamables. Además, un espantapájaros
-      'prenderá fuego' con una tirada de 3+ en lugar de los 4+ normales.
+    es: >-
+      El espantapájaros es principalmente trapo raído, paja y partes del cuerpo conservadas, por lo
+      que arde con mucha facilidad. Los Espantapájaros cuentan como inflamables. Además, un
+      espantapájaros 'prenderá fuego' con una tirada de 3+ en lugar de los 4+ normales.
   applies_to:
     profile_ids:
     - scarecrows
@@ -1304,7 +1216,8 @@ rules:
         parameters:
           value: true
   name: Construct
-  effect: The scarecrow is an undead construct and may re-roll any rolls on the injury table except for
+  effect: >-
+    The scarecrow is an undead construct and may re-roll any rolls on the injury table except for
     wounds caused by fire.
   source:
     manual: mordheimer.net
@@ -1312,43 +1225,38 @@ rules:
     section: henchmen / 0 - 2 Scarecrows / Special Rules / Construct
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Construct
     es: Construcción
   effect_i18n:
-    en: The scarecrow is an undead construct and may re-roll any rolls on the injury table except for
-      wounds caused by fire.
-    es: El espantapájaros es una construcción muerta viviente y puede repetir cualquier tirada en la tabla
-      de heridas excepto las heridas causadas por el fuego.
+    es: >-
+      El espantapájaros es una construcción muerta viviente y puede repetir cualquier tirada en la
+      tabla de heridas excepto las heridas causadas por el fuego.
   applies_to:
     profile_ids:
     - scarecrows
 - id: scarecrows--animated-construct
   name: Animated Construct
-  effect: Each Scarecrow must be assigned to either the Liche or the Necromancer as its controller, and
-    each controller may control only one Scarecrow. Therefore two Scarecrows may only be fielded if both
-    a Liche and a Necromancer are present. If a controller cannot participate in a battle, its Scarecrow
-    cannot participate either. Whenever the controller loses a Wound, it must pass an unmodified Leadership
-    test or the magical bond is broken and the Scarecrow is immediately taken Out of Action.
+  effect: >-
+    Each Scarecrow must be assigned to either the Liche or the Necromancer as its controller, and
+    each controller may control only one Scarecrow. Therefore two Scarecrows may only be fielded if
+    both a Liche and a Necromancer are present. If a controller cannot participate in a battle, its
+    Scarecrow cannot participate either. Whenever the controller loses a Wound, it must pass an
+    unmodified Leadership test or the magical bond is broken and the Scarecrow is immediately taken
+    Out of Action.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: henchmen / 0 - 2 Scarecrows / Special Rules / Animated Construct
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Animated Construct
-    es: Construcción animada
+    es: Construcción Animada
   effect_i18n:
-    en: Each Scarecrow must be assigned to either the Liche or the Necromancer as its controller, and
-      each controller may control only one Scarecrow. Therefore two Scarecrows may only be fielded if
-      both a Liche and a Necromancer are present. If a controller cannot participate in a battle, its
-      Scarecrow cannot participate either. Whenever the controller loses a Wound, it must pass an unmodified
-      Leadership test or the magical bond is broken and the Scarecrow is immediately taken Out of Action.
-    es: Cada Espantapájaros debe ser asignado al Liche o al Nigromante como su controlador, y cada controlador
-      solo puede controlar un Espantapájaros. Por tanto, solo pueden desplegarse dos Espantapájaros si
-      están presentes tanto un Liche como un Nigromante. Si un controlador no puede participar en una
-      batalla, su Espantapájaros tampoco puede participar. Siempre que el controlador pierda una Herida,
-      debe superar un chequeo de Liderazgo sin modificadores o el vínculo mágico se romperá y el Espantapájaros
-      será inmediatamente puesto Fuera de combate.
+    es: >-
+      Cada Espantapájaros debe ser asignado al Liche o al Nigromante como su controlador, y cada
+      controlador solo puede controlar un Espantapájaros. Por tanto, solo pueden desplegarse dos
+      Espantapájaros si están presentes tanto un Liche como un Nigromante. Si un controlador no
+      puede participar en una batalla, su Espantapájaros tampoco puede participar. Siempre que el
+      controlador pierda una Herida, debe superar un chequeo de Liderazgo sin modificadores o el
+      vínculo mágico se romperá y el Espantapájaros será inmediatamente puesto Fuera de combate.
   applies_to:
     profile_ids:
     - scarecrows
@@ -1360,27 +1268,26 @@ rules:
     - id: unimplemented.restless-dead.scarecrows.animated-construct
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: band--bone-goliath-access
   name: Bone Goliath
-  effect: Only the Restless Dead may build the unique Bone Goliath Hired Sword, including during warband
-    creation. Its separate Hired Sword profile and construction rules are not embedded in this warband
-    file.
+  effect: >-
+    Only the Restless Dead may build the unique Bone Goliath Hired Sword, including during warband
+    creation. Its separate Hired Sword profile and construction rules are not embedded in this
+    warband file.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Choice of warriors / Bone Goliath
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Bone Goliath
-    es: Goliat de huesos
+    es: Goliat de Huesos
   effect_i18n:
-    en: Only the Restless Dead may build the unique Bone Goliath Hired Sword, including during warband
-      creation. Its separate Hired Sword profile and construction rules are not embedded in this warband
-      file.
-    es: Solo los Muertos Inquietos pueden construir la única Espada a sueldo Goliat de huesos, incluido
-      durante la creación de la banda. Su perfil de Espada a sueldo y sus reglas de construcción independientes
-      no están integrados en este fichero de banda.
+    es: >-
+      Solo los Muertos Inquietos pueden construir la única Espada a sueldo Goliat de huesos,
+      incluido durante la creación de la banda. Su perfil de Espada a sueldo y sus reglas de
+      construcción independientes no están integrados en este fichero de banda.
   applies_to:
     band: true
   runtime:
@@ -1391,7 +1298,8 @@ rules:
     - id: unimplemented.restless-dead.band.bone-goliath-access
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: band--scarecrow-controller-limit
   name: Scarecrow Controllers
   effect: >-
@@ -1403,14 +1311,12 @@ rules:
     section: Scarecrows / Animated Construct
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Scarecrow Controllers
-    es: Controladores de espantapájaros
+    es: Controladores de Espantapájaros
   effect_i18n:
-    en: 'Each Scarecrow requires a controller: either the Liche or the Necromancer. Each controller may
-      control at most one Scarecrow, so two Scarecrows require both Heroes to be present.'
-    es: 'Cada Espantapájaros requiere un controlador: el Liche o el Nigromante. Cada controlador puede
-      controlar como máximo un Espantapájaros, por lo que dos Espantapájaros requieren que ambos Héroes
-      estén presentes.'
+    es: >-
+      Cada Espantapájaros requiere un controlador: el Liche o el Nigromante. Cada controlador puede
+      controlar como máximo un Espantapájaros, por lo que dos Espantapájaros requieren que ambos
+      Héroes estén presentes.
   applies_to:
     band: true
   runtime:
@@ -1421,30 +1327,31 @@ rules:
     - id: unimplemented.restless-dead.band.scarecrow-controller-limit
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: band--restless-dead-maximum-characteristics
   name: Restless Dead Maximum Characteristics
-  effect: The Liche uses the Liche racial maximum profile (campaign.limit.racial-maximum.liche-restless-dead).
-    Grave Guard use the Grave Guard racial maximum profile (campaign.limit.racial-maximum.grave-guard).
-    Wights use the Grave Guard racial maximum profile (campaign.limit.racial-maximum.grave-guard) and
-    the Necromancer uses the Human racial maximum profile (campaign.limit.racial-maximum.human).
+  effect: >-
+    The Liche uses the Liche racial maximum profile
+    (campaign.limit.racial-maximum.liche-restless-dead). Grave Guard use the Grave Guard racial
+    maximum profile (campaign.limit.racial-maximum.grave-guard). Wights use the Grave Guard racial
+    maximum profile (campaign.limit.racial-maximum.grave-guard) and the Necromancer uses the Human
+    racial maximum profile (campaign.limit.racial-maximum.human).
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Characteristic increase
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Restless Dead Maximum Characteristics
-    es: Características máximas de los Muertos Inquietos
+    es: Características Máximas de los Muertos Inquietos
   effect_i18n:
-    en: The Liche uses the Liche racial maximum profile (campaign.limit.racial-maximum.liche-restless-dead).
-      Grave Guard use the Grave Guard racial maximum profile (campaign.limit.racial-maximum.grave-guard).
-      Wights use the Grave Guard racial maximum profile (campaign.limit.racial-maximum.grave-guard) and
-      the Necromancer uses the Human racial maximum profile (campaign.limit.racial-maximum.human).
-    es: El Liche usa el perfil racial máximo de Liche (campaign.limit.racial-maximum.liche-restless-dead).
-      Los Guardianes de la Tumba usan el perfil racial máximo de Guardián de la Tumba (campaign.limit.racial-maximum.grave-guard).
-      Los Espectros usan el perfil racial máximo de Guardián de la Tumba (campaign.limit.racial-maximum.grave-guard)
-      y el Nigromante usa el perfil racial máximo Humano (campaign.limit.racial-maximum.human).
+    es: >-
+      El Liche usa el perfil racial máximo de Liche
+      (campaign.limit.racial-maximum.liche-restless-dead). Los Guardianes de la Tumba usan el perfil
+      racial máximo de Guardián de la Tumba (campaign.limit.racial-maximum.grave-guard). Los
+      Espectros usan el perfil racial máximo de Guardián de la Tumba
+      (campaign.limit.racial-maximum.grave-guard) y el Nigromante usa el perfil racial máximo Humano
+      (campaign.limit.racial-maximum.human).
   applies_to:
     band: true
   runtime:
@@ -1461,49 +1368,29 @@ rules:
 - id: band--restless-dead-special-skills-corpse-bomb
   kind: warband_skill
   name: Corpse Bomb
-  effect: Special magics and rituals can cause a Zombie to explode when they are near the enemy. Secretly
-    nominate one Zombie at the beginning of the battle to be a Corpse Bomb. If the enemy charges or is
-    charged by the Zombie, it immediately detonates. All models within D6 inches take D3 Strength 4 hits.
-    The detonated Zombie may never be used again as it is splattered in a million pieces! Corpse bombs
-    killed by shooting do not detonate. Only one Zombie at a time can be a corpse bomb although the skill
-    can be taken by both the Necromancer and the Liche.
+  effect: >-
+    Special magics and rituals can cause a Zombie to explode when they are near the enemy. Secretly
+    nominate one Zombie at the beginning of the battle to be a Corpse Bomb. If the enemy charges or
+    is charged by the Zombie, it immediately detonates. All models within D6 inches take D3 Strength
+    4 hits. The detonated Zombie may never be used again as it is splattered in a million pieces!
+    Corpse bombs killed by shooting do not detonate. Only one Zombie at a time can be a corpse bomb
+    although the skill can be taken by both the Necromancer and the Liche.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Restless Dead special skills / corpse bomb
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Corpse Bomb
-    es: Bomba de cadáver
+    es: Bomba de Cadáver
   effect_i18n:
-    en: 'Special magics and rituals can cause a Zombie to
-
-      explode when they are near the enemy. Secretly
-
-      nominate one Zombie at the beginning of the battle to
-
-      be a Corpse Bomb. If the enemy charges or is charged
-
-      by the Zombie, it immediately detonates. All models
-
-      within D6 inches take D3 Strength 4 hits. The
-
-      detonated Zombie may never be used again as it is
-
-      splattered in a million pieces! Corpse bombs killed by
-
-      shooting do not detonate. Only one Zombie at a time
-
-      can be a corpse bomb although the skill can be taken
-
-      by both the Necromancer and the Liche.'
-    es: Magias y rituales especiales pueden hacer que un Zombi explote cuando está cerca del enemigo.
-      Designa en secreto un Zombi al comienzo de la batalla como Bomba de cadáver. Si el enemigo carga
-      o es cargado por el Zombi, este detona inmediatamente. Todas las miniaturas dentro de D6 pulgadas
-      sufren D3 impactos de Fuerza 4. ¡El Zombi detonado nunca puede usarse de nuevo, ya que queda salpicado
-      en un millón de trozos! Las bombas de cadáver muertas por disparo no detonan. Solo un Zombi a la
-      vez puede ser una bomba de cadáver, aunque la habilidad puede ser tomada tanto por el Nigromante
-      como por el Liche.
+    es: >-
+      Magias y rituales especiales pueden hacer que un Zombi explote cuando está cerca del enemigo.
+      Designa en secreto un Zombi al comienzo de la batalla como Bomba de cadáver. Si el enemigo
+      carga o es cargado por el Zombi, este detona inmediatamente. Todas las miniaturas dentro de D6
+      pulgadas sufren D3 impactos de Fuerza 4. ¡El Zombi detonado nunca puede usarse de nuevo, ya
+      que queda salpicado en un millón de trozos! Las bombas de cadáver muertas por disparo no
+      detonan. Solo un Zombi a la vez puede ser una bomba de cadáver, aunque la habilidad puede ser
+      tomada tanto por el Nigromante como por el Liche.
   eligibility:
   - liche
   - necromancer
@@ -1523,36 +1410,24 @@ rules:
 - id: band--restless-dead-special-skills-deathspeaker
   kind: warband_skill
   name: Deathspeaker
-  effect: At the start of the battle, the undead player may deploy D3 Zombies for free. These zombies
-    do not count towards the maximum number of models in the warband, but increase the warband's rating
-    as normal. Zombies created in this way may not be used as Corpse Bombs. These Zombies only last for
-    the duration of the battle.
+  effect: >-
+    At the start of the battle, the undead player may deploy D3 Zombies for free. These zombies do
+    not count towards the maximum number of models in the warband, but increase the warband's rating
+    as normal. Zombies created in this way may not be used as Corpse Bombs. These Zombies only last
+    for the duration of the battle.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Restless Dead special skills / deathspeaker
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Deathspeaker
-    es: Hablador con los muertos
+    es: Hablador con los Muertos
   effect_i18n:
-    en: 'At the start of the battle, the undead player may
-
-      deploy D3 Zombies for free. These zombies do not
-
-      count towards the maximum number of models in the
-
-      warband, but increase the warband''s rating as normal.
-
-      Zombies created in this way may not be used as
-
-      Corpse Bombs. These Zombies only last for the
-
-      duration of the battle.'
-    es: Al comienzo de la batalla, el jugador muerto viviente puede desplegar D3 Zombis gratis. Estos
-      zombis no cuentan contra el número máximo de miniaturas de la banda, pero aumentan la valoración
-      de la banda con normalidad. Los Zombis creados de esta manera no pueden usarse como Bombas de cadáver.
-      Estos Zombis solo duran durante la batalla.
+    es: >-
+      Al comienzo de la batalla, el jugador muerto viviente puede desplegar D3 Zombis gratis. Estos
+      zombis no cuentan contra el número máximo de miniaturas de la banda, pero aumentan la
+      valoración de la banda con normalidad. Los Zombis creados de esta manera no pueden usarse como
+      Bombas de cadáver. Estos Zombis solo duran durante la batalla.
   eligibility:
   - liche
   - necromancer
@@ -1566,48 +1441,34 @@ rules:
     - id: unimplemented.restless-dead.band.restless-dead-special-skills-deathspeaker
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: band--restless-dead-special-skills-wraith-touch
   kind: warband_skill
   name: Wraith Touch
-  effect: The hero may make a Wraith Touch attack instead of their normal attacks in close combat. The
-    hero making a Wraith Touch makes a single unarmed attack, if it hits, it wounds automatically, all
-    rules that apply to unarmed attacks apply to the Wraith Touch. If a Liche uses this skill and wounds,
-    then he may regain one lost wound. This may not take the hero beyond his starting total. Necromancers
-    do not regain wounds with this skill. This skill has no effect on the Possessed or Undead.
+  effect: >-
+    The hero may make a Wraith Touch attack instead of their normal attacks in close combat. The
+    hero making a Wraith Touch makes a single unarmed attack, if it hits, it wounds automatically,
+    all rules that apply to unarmed attacks apply to the Wraith Touch. If a Liche uses this skill
+    and wounds, then he may regain one lost wound. This may not take the hero beyond his starting
+    total. Necromancers do not regain wounds with this skill. This skill has no effect on the
+    Possessed or Undead.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Restless Dead special skills / wraith touch
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Wraith Touch
-    es: Toque de espectro
+    es: Toque de Espectro
   effect_i18n:
-    en: 'The hero may make a Wraith Touch attack instead of their normal attacks in close combat. The
-      hero making
-
-      a Wraith Touch makes a single unarmed attack, if it
-
-      hits, it wounds automatically, all rules that apply to
-
-      unarmed attacks apply to the Wraith Touch. If a Liche
-
-      uses this skill and wounds, then he may regain one
-
-      lost wound. This may not take the hero beyond his
-
-      starting total. Necromancers do not regain wounds
-
-      with this skill. This skill has no effect on the Possessed
-
-      or Undead.'
-    es: El héroe puede realizar un ataque de Toque de espectro en lugar de sus ataques normales en combate
-      cuerpo a cuerpo. El héroe que realiza un Toque de espectro hace un único ataque desarmado; si impacta,
-      hiere automáticamente; todas las reglas que aplican a los ataques desarmados aplican al Toque de
-      espectro. Si un Liche usa esta habilidad y hiere, puede recuperar una herida perdida. Esto no puede
-      llevar al héroe más allá de su total inicial. Los Nigromantes no recuperan heridas con esta habilidad.
-      Esta habilidad no tiene efecto sobre los Poseídos ni los Muertos Vivientes.
+    es: >-
+      El héroe puede realizar un ataque de Toque de espectro en lugar de sus ataques normales en
+      combate cuerpo a cuerpo. El héroe que realiza un Toque de espectro hace un único ataque
+      desarmado; si impacta, hiere automáticamente; todas las reglas que aplican a los ataques
+      desarmados aplican al Toque de espectro. Si un Liche usa esta habilidad y hiere, puede
+      recuperar una herida perdida. Esto no puede llevar al héroe más allá de su total inicial. Los
+      Nigromantes no recuperan heridas con esta habilidad. Esta habilidad no tiene efecto sobre los
+      Poseídos ni los Muertos Vivientes.
   eligibility:
   - liche
   - necromancer
@@ -1621,34 +1482,28 @@ rules:
     - id: unimplemented.restless-dead.band.restless-dead-special-skills-wraith-touch
       scope: LATER
       binding: null
-      reason: 'Deferred subsystem: psychology or mounts.'
+      reason: >-
+        Deferred subsystem: psychology or mounts.
 - id: band--restless-dead-special-skills-forbidden-rite
   kind: warband_skill
   name: Forbidden Rite
-  effect: If the hero with this skill did not search for rare items during their last exploration phase,
-    then they start the next battle with a pool of D3+1 (+1) modifiers they can use to increase their
-    casting rolls. They may use as many of these modifiers at a time as they desire.
+  effect: >-
+    If the hero with this skill did not search for rare items during their last exploration phase,
+    then they start the next battle with a pool of D3+1 (+1) modifiers they can use to increase
+    their casting rolls. They may use as many of these modifiers at a time as they desire.
   source:
     manual: mordheimer.net
     printed_page: 0
     section: Restless Dead special skills / forbidden rite
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Forbidden Rite
-    es: Rito prohibido
+    es: Rito Prohibido
   effect_i18n:
-    en: 'If the hero with this skill did not search for rare items
-
-      during their last exploration phase, then they start the
-
-      next battle with a pool of D3+1 (+1) modifiers they
-
-      can use to increase their casting rolls. They may use as
-
-      many of these modifiers at a time as they desire.'
-    es: Si el héroe con esta habilidad no buscó objetos raros durante su última fase de exploración, entonces
-      comienza la siguiente batalla con una reserva de D3+1 modificadores (+1) que puede usar para aumentar
-      sus tiradas de lanzamiento. Puede usar tantos de estos modificadores a la vez como desee.
+    es: >-
+      Si el héroe con esta habilidad no buscó objetos raros durante su última fase de exploración,
+      entonces comienza la siguiente batalla con una reserva de D3+1 modificadores (+1) que puede
+      usar para aumentar sus tiradas de lanzamiento. Puede usar tantos de estos modificadores a la
+      vez como desee.
   eligibility:
   - liche
   - necromancer
@@ -1662,7 +1517,8 @@ rules:
     - id: unimplemented.restless-dead.band.restless-dead-special-skills-forbidden-rite
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
 - id: band--restless-dead-special-skills-summoner
   kind: warband_skill
   name: Summoner
@@ -1673,10 +1529,8 @@ rules:
     section: Restless Dead special skills / summoner
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/restless-dead
   name_i18n:
-    en: Summoner
     es: Invocador
   effect_i18n:
-    en: The maximum warband size is increased by 1.
     es: El tamaño máximo de la banda se incrementa en 1.
   eligibility:
   - liche
@@ -1691,4 +1545,5 @@ rules:
     - id: unimplemented.restless-dead.band.restless-dead-special-skills-summoner
       scope: 'NO'
       binding: null
-      reason: 'Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.'
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.

@@ -9,8 +9,7 @@ profiles:
   publication: Border Town Burning Supplement
   name: Bone Goliath
   name_i18n:
-    en: Bone Goliath
-    es: Goliat de hueso
+    es: Goliat de Huesos
   normalization_status: normalized
   characteristics:
     M: 5
@@ -31,57 +30,75 @@ profiles:
   - id: hireling.hired-sword.bone-goliath.rule.cause-fear
     name: Cause Fear
     effect: Causes fear.
+    effect_i18n:
+      es: >-
+        Causa miedo.
     name_i18n:
-      en: Cause Fear
-      es: Causa Miedo
+      es: Causan Miedo
   - id: hireling.hired-sword.bone-goliath.rule.may-not-run
     name: May Not Run
     effect: May not run but may charge.
+    effect_i18n:
+      es: >-
+        No puede correr, pero puede cargar.
     name_i18n:
-      en: May Not Run
-      es: No puede correr
+      es: No Pueden Correr
   - id: hireling.hired-sword.bone-goliath.rule.immune-to-psychology
     name: Immune to Psychology
     effect: Immune to psychology.
+    effect_i18n:
+      es: >-
+        Inmune a la psicología.
     name_i18n:
-      en: Immune to Psychology
       es: Inmune a la Psicología
   - id: hireling.hired-sword.bone-goliath.rule.immune-to-poison
     name: Immune to Poison
     effect: Immune to poison.
+    effect_i18n:
+      es: >-
+        Inmune al veneno.
     name_i18n:
-      en: Immune to Poison
-      es: Inmune al veneno
+      es: Inmune al Veneno
   - id: hireling.hired-sword.bone-goliath.rule.undead-construct
     name: Undead Construct
     effect: May ignore Injury results on 4+ except source magical exceptions.
+    effect_i18n:
+      es: >-
+        Puede ignorar resultados de Herida con 4+, salvo las excepciones mágicas de la fuente.
     name_i18n:
-      en: Undead Construct
-      es: Constructo no muerto
+      es: Constructo No Muerto
   - id: hireling.hired-sword.bone-goliath.rule.assembly
     name: Assembly
     effect: Is constructed by a Liche with the source cost/consequences.
+    effect_i18n:
+      es: >-
+        Es construido por un Liche con el coste/consecuencias de la fuente.
     name_i18n:
-      en: Assembly
       es: Ensamblaje
   - id: hireling.hired-sword.bone-goliath.rule.large
     name: Large
     effect: Counts as a large target.
+    effect_i18n:
+      es: >-
+        Cuenta como objetivo grande.
     name_i18n:
-      en: Large
       es: Grande
   - id: hireling.hired-sword.bone-goliath.rule.no-pain
     name: No Pain
     effect: Treats Stunned as Knocked Down.
+    effect_i18n:
+      es: >-
+        Trata Aturdido como Derribado.
     name_i18n:
-      en: No Pain
-      es: Sin dolor
+      es: Sin Dolor
   - id: hireling.hired-sword.bone-goliath.rule.mindless
     name: Mindless
     effect: Never gains Experience.
+    effect_i18n:
+      es: >-
+        Nunca gana Experiencia.
     name_i18n:
-      en: Mindless
-      es: Carente de mente
+      es: Carente de Mente
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -93,7 +110,6 @@ profiles:
   publication: Border Town Burning Supplement
   name: Cathayan Merchant
   name_i18n:
-    en: Cathayan Merchant
     es: Mercader de Cathay
   normalization_status: normalized
   characteristics:
@@ -125,34 +141,46 @@ profiles:
   - id: hireling.hired-sword.cathayan-merchant.rule.pawnbroker
     name: Pawnbroker
     effect: Uses merchant sale-price rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de precio de venta del mercader.
     name_i18n:
-      en: Pawnbroker
       es: Prestamista
   - id: hireling.hired-sword.cathayan-merchant.rule.marketeer
     name: Marketeer
     effect: Uses special-market rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de mercado especial.
     name_i18n:
-      en: Marketeer
       es: Comerciante
   - id: hireling.hired-sword.cathayan-merchant.rule.stone-cutter
     name: Stone Cutter
     effect: Uses source stone-cutting rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de tallado de piedra de la fuente.
     name_i18n:
-      en: Stone Cutter
-      es: Cortador de piedra
+      es: Cortador de Piedra
   - id: hireling.hired-sword.cathayan-merchant.rule.guardian
     name: Guardian
     effect: Uses source guardian rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de guardián de la fuente.
     name_i18n:
-      en: Guardian
       es: Guardián
   - id: hireling.hired-sword.cathayan-merchant.rule.campaign-eligibility
-    name: Dynamic hiring eligibility — Human or Dwarf composition
-    effect: The Cathayan Merchant may only be hired when the current warband includes Humans or Dwarfs;
+    name: Dynamic Hiring Eligibility — Human or Dwarf Composition
+    effect: >-
+      The Cathayan Merchant may only be hired when the current warband includes Humans or Dwarfs;
       Battle Monks of Cathay are explicitly included by the source.
+    effect_i18n:
+      es: >-
+        El Mercader de Cathay solo puede ser contratado cuando la banda actual incluya Humanos o
+        Enanos; los Monjes Guerreros de Cathay están explícitamente incluidos por la fuente.
     name_i18n:
-      en: Dynamic hiring eligibility — Human or Dwarf composition
-      es: Elegibilidad de contratación dinámica — composición humana o enana
+      es: Elegibilidad de Contratación Dinámica — Composición Humana o Enana
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -164,8 +192,7 @@ profiles:
   publication: Border Town Burning Supplement
   name: Chaos Centaur
   name_i18n:
-    en: Chaos Centaur
-    es: Centauro del caos
+    es: Centauro del Caos
   normalization_status: normalized
   characteristics:
     M: 8
@@ -199,20 +226,26 @@ profiles:
   - id: hireling.hired-sword.chaos-centaur.rule.drunken
     name: Drunken
     effect: Uses source drunken rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de embriaguez de la fuente.
     name_i18n:
-      en: Drunken
-      es: Ebrio
+      es: Ebrios
   - id: hireling.hired-sword.chaos-centaur.rule.woodland
     name: Woodland
     effect: Uses source woodland/terrain rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de bosque/terreno de la fuente.
     name_i18n:
-      en: Woodland
       es: Arboleda
   - id: hireling.hired-sword.chaos-centaur.rule.trample
     name: Trample
     effect: Has source trample attack.
+    effect_i18n:
+      es: >-
+        Tiene el ataque de pisotear de la fuente.
     name_i18n:
-      en: Trample
       es: Pisotear
   unresolved_references:
   - kind: equipment_choice
@@ -230,7 +263,6 @@ profiles:
   publication: Border Town Burning Supplement
   name: Coachman
   name_i18n:
-    en: Coachman
     es: Cochero
   normalization_status: normalized
   characteristics:
@@ -268,14 +300,18 @@ profiles:
   - id: hireling.hired-sword.coachman.rule.driver
     name: Driver
     effect: Uses source vehicle-driving rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de conducción de vehículos de la fuente.
     name_i18n:
-      en: Driver
       es: Conductor
   - id: hireling.hired-sword.coachman.rule.handyman
     name: Handyman
     effect: Uses source repair rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de reparación de la fuente.
     name_i18n:
-      en: Handyman
       es: Manitas
   source_refs:
   - manual: mordheimer.net
@@ -288,8 +324,7 @@ profiles:
   publication: Border Town Burning Supplement
   name: Grave Robber
   name_i18n:
-    en: Grave Robber
-    es: Ladrón de tumbas
+    es: Ladrón de Tumbas
   normalization_status: normalized
   characteristics:
     M: 4
@@ -322,7 +357,6 @@ profiles:
         item_id: axe
         context: rules
       name_i18n:
-        en: Pickaxe
         es: Pico
   skill_access:
   - combat
@@ -332,22 +366,30 @@ profiles:
   - id: hireling.hired-sword.grave-robber.rule.hatred
     name: Hatred
     effect: Uses source hatred rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de odio de la fuente.
     name_i18n:
-      en: Hatred
       es: Odio
   - id: hireling.hired-sword.grave-robber.rule.grave-robbing
     name: Grave Robbing
     effect: Uses source post-battle grave-robbing table.
+    effect_i18n:
+      es: >-
+        Usa la tabla de profanación de tumbas tras la batalla de la fuente.
     name_i18n:
-      en: Grave Robbing
-      es: Saqueo de tumbas
+      es: Saqueo de Tumbas
   - id: hireling.hired-sword.grave-robber.rule.campaign-eligibility
-    name: Dynamic hiring eligibility — Necromantic roster
-    effect: The Grave Robber may only be hired when the current warband includes a Vampire, Necromancer
-      or Liche.
+    name: Dynamic Hiring Eligibility — Necromantic Roster
+    effect: >-
+      The Grave Robber may only be hired when the current warband includes a Vampire, Necromancer or
+      Liche.
+    effect_i18n:
+      es: >-
+        El Ladrón de Tumbas solo puede ser contratado cuando la banda actual incluya un Vampiro, un
+        Nigromante o un Liche.
     name_i18n:
-      en: Dynamic hiring eligibility — Necromantic roster
-      es: Elegibilidad de contratación dinámica — lista nigromántica
+      es: Elegibilidad de Contratación Dinámica — Lista Nigromántica
   unresolved_references:
   - kind: equipment_mapping
     source_name: Lantern
@@ -362,8 +404,7 @@ profiles:
   publication: Border Town Burning Supplement
   name: Hobgoblin Scout
   name_i18n:
-    en: Hobgoblin Scout
-    es: Explorador hobgoblin
+    es: Explorador Hobgoblin
   normalization_status: normalized
   characteristics:
     M: 4
@@ -402,33 +443,43 @@ profiles:
   - id: hireling.hired-sword.hobgoblin-scout.rule.ride
     name: Ride
     effect: Rides a Giant Wolf.
+    effect_i18n:
+      es: >-
+        Monta un Lobo Gigante.
     name_i18n:
-      en: Ride
       es: Montar
   - id: hireling.hired-sword.hobgoblin-scout.rule.loner
     name: Loner
     effect: Uses source loner rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de solitario de la fuente.
     name_i18n:
-      en: Loner
       es: Solitario
   - id: hireling.hired-sword.hobgoblin-scout.rule.traitor
     name: Traitor
     effect: Uses source traitor rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de traidor de la fuente.
     name_i18n:
-      en: Traitor
       es: Traidor
   - id: hireling.hired-sword.hobgoblin-scout.rule.spy
     name: Spy
     effect: Uses source spying rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de espionaje de la fuente.
     name_i18n:
-      en: Spy
       es: Espía
   - id: hireling.hired-sword.hobgoblin-scout.rule.potshot
     name: Potshot
     effect: Uses source shooting rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de disparo de la fuente.
     name_i18n:
-      en: Potshot
-      es: Disparo a bocajarro
+      es: Disparo a Bocajarro
   unresolved_references:
   - kind: mount_profile
     source_name: Giant Wolf profile M9 WS3 BS0 S3 T3 W1 I4 A1 Ld4
@@ -443,7 +494,6 @@ profiles:
   publication: Border Town Burning Supplement
   name: Ninja
   name_i18n:
-    en: Ninja
     es: Ninja
   normalization_status: normalized
   characteristics:
@@ -481,8 +531,7 @@ profiles:
     - id: hireling.hired-sword.ninja.item.smoke-bomb
       name: Smoke Bomb
       name_i18n:
-        en: Smoke Bomb
-        es: Bomba de humo
+        es: Bomba de Humo
   skill_access: []
   starting_skill_ids:
   - skill.expert-swordsman
@@ -492,21 +541,27 @@ profiles:
   - id: hireling.hired-sword.ninja.rule.strictly-business
     name: Strictly Business
     effect: Uses the source one-job hiring rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de contratación de un solo trabajo de la fuente.
     name_i18n:
-      en: Strictly Business
-      es: Solo negocios
+      es: Solo Negocios
   - id: hireling.hired-sword.ninja.rule.secrecy
     name: Secrecy
     effect: Uses the source secrecy rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de sigilo de la fuente.
     name_i18n:
-      en: Secrecy
       es: Secreto
   - id: hireling.hired-sword.ninja.rule.no-experience
     name: No Experience
     effect: Does not gain Experience.
+    effect_i18n:
+      es: >-
+        No gana Experiencia.
     name_i18n:
-      en: No Experience
-      es: Sin experiencia
+      es: Sin Experiencia
   unresolved_references:
   - kind: skill
     source_name: Art of Silent Death
@@ -525,7 +580,6 @@ profiles:
   publication: Border Town Burning Supplement
   name: Pyromaniac
   name_i18n:
-    en: Pyromaniac
     es: Piromaníaco
   normalization_status: normalized
   characteristics:
@@ -547,12 +601,10 @@ profiles:
     - id: hireling.hired-sword.pyromaniac.item.fireworks
       name: Fireworks
       name_i18n:
-        en: Fireworks
-        es: Fuegos artificiales
+        es: Fuegos Artificiales
     - id: hireling.hired-sword.pyromaniac.item.firecrackers
       name: Firecrackers
       name_i18n:
-        en: Firecrackers
         es: Petardos
   skill_access:
   - special
@@ -561,27 +613,35 @@ profiles:
   - id: hireling.hired-sword.pyromaniac.rule.crazed-firestarter
     name: Crazed Firestarter
     effect: Uses source pyromania rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de piromanía de la fuente.
     name_i18n:
-      en: Crazed Firestarter
-      es: Piromaníaco enajenado
+      es: Piromaníaco Enajenado
   - id: hireling.hired-sword.pyromaniac.rule.rockets
     name: Rockets
     effect: Uses source rocket rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de cohetes de la fuente.
     name_i18n:
-      en: Rockets
       es: Cohetes
   - id: hireling.hired-sword.pyromaniac.rule.rocket-science
     name: Rocket Science
     effect: Special skill option.
+    effect_i18n:
+      es: >-
+        Opción de habilidad especial.
     name_i18n:
-      en: Rocket Science
-      es: Ciencia de cohetes
+      es: Ciencia de Cohetes
   - id: hireling.hired-sword.pyromaniac.rule.display-artist
     name: Display Artist
     effect: Special skill option.
+    effect_i18n:
+      es: >-
+        Opción de habilidad especial.
     name_i18n:
-      en: Display Artist
-      es: Artista de exposiciones
+      es: Artista de Exposiciones
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -593,7 +653,6 @@ profiles:
   publication: Border Town Burning Supplement
   name: Swordsmith
   name_i18n:
-    en: Swordsmith
     es: Espadero
   normalization_status: normalized
   characteristics:
@@ -629,20 +688,26 @@ profiles:
   - id: hireling.hired-sword.swordsmith.rule.master-craftsman
     name: Master Craftsman
     effect: Uses source crafting rule.
+    effect_i18n:
+      es: >-
+        Usa la regla de artesanía de la fuente.
     name_i18n:
-      en: Master Craftsman
-      es: Maestro artesano
+      es: Maestro Artesano
   - id: hireling.hired-sword.swordsmith.rule.honing
     name: Honing
     effect: Special skill option.
+    effect_i18n:
+      es: >-
+        Opción de habilidad especial.
     name_i18n:
-      en: Honing
       es: Afilar
   - id: hireling.hired-sword.swordsmith.rule.farrier
     name: Farrier
     effect: Special skill option.
+    effect_i18n:
+      es: >-
+        Opción de habilidad especial.
     name_i18n:
-      en: Farrier
       es: Herrador
   source_refs:
   - manual: mordheimer.net
