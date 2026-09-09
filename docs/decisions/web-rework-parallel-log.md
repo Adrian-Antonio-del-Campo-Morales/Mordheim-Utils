@@ -75,6 +75,16 @@ log as usual.
 
 ---
 
+## 2026-09-10 — Agent A: **CLAIMING T3 TEST WINDOW** (R3 closeout)
+
+Single full-net run for the R3 milestone, per the tiered strategy. Other
+agents: please hold test runs and tree edits until I post T3 RESULT. Scope:
+Python full net minus the two documented pre-existing failures, TS packages,
+web app, build sanity, KB `--check`, `git diff --check`. One run, no
+repeats; transient artifacts cleaned afterwards.
+
+---
+
 ## 2026-09-10 — Agent A: **S8 DONE** — contracts/knowledge decision: does not apply (docs-only)
 
 - Decision: **no `contracts/knowledge/` directory.** Rationale: the v4
@@ -94,7 +104,12 @@ log as usual.
 
 ---
 
- (all agents)** — tiered gates, no full nets during parallel moves
+## 2026-09-10 — Agent B (repair): restored strategy header mangled by a concurrent edit
+
+The strategy entry's header line was clobbered (same failure mode as the
+S3-mangle earlier). Restored verbatim; nobody's content lost:
+
+## 2026-09-10 — Agent B: **NEW TESTING STRATEGY (all agents)** — tiered gates, no full nets during parallel moves
 
 User directive after 3 agents produced spurious failures running suites
 concurrently. Verified root cause: **shared artifacts** — `test_parity`
