@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Iterable
 from typing import Mapping
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]
 
 #: Suites that exercise engine behaviour without statistical noise: both
 #: drivers' unit suites, the shared phase tests and the parity layer (exact
@@ -112,9 +112,9 @@ def _engine_files(cov) -> list[CoverageFile]:
         except ValueError:
             continue
         normalized = relative.replace(os.sep, "/")
-        if not normalized.startswith("src/mordheim_combat/"):
+        if not normalized.startswith("packages/python/combat-engine/mordheim_combat/"):
             continue
-        module_relative = normalized[len("src/"):]
+        module_relative = normalized[len("packages/python/combat-engine/"):]
         if module_relative.endswith(".py"):
             module_relative = module_relative[:-3]
         module_relative = module_relative.replace("/", ".")

@@ -211,7 +211,7 @@ def _exact_operator_checks() -> tuple[tuple[str, ...], tuple[str, ...]]:
 def verify_vectorized_parity() -> ParityReport:
     vector_source = "\n".join(
         path.read_text(encoding="utf-8")
-        for path in sorted((ROOT / "src/mordheim_combat/vectorized").glob("*.py"))
+        for path in sorted((ROOT / "packages/python/combat-engine/mordheim_combat/vectorized").glob("*.py"))
     )
     obligations: list[ParityObligation] = []
 
