@@ -18,7 +18,8 @@ import { createCampaignAppService } from "@app/campaign/service";
 import type { CampaignAppService } from "@app/campaign/types";
 import type { CampaignDocument } from "@domain/campaign/index";
 
-import { TimelinePanel, enumerateMoments } from "./TimelinePanel";
+import { enumerateMoments } from "./moments";
+import { TimelinePanel } from "./TimelinePanel";
 
 const neutralKnowledge: KnowledgeReader = {
   queryKnowledge: () => ({ ok: false, reason: "not_found" }),

@@ -127,12 +127,14 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   private readonly items: Map<string, ArtefactRow>;
   private readonly skills: Map<string, ArtefactRow>;
   private readonly campaignMaps: CampaignMaps;
+  private readonly campaignRaw: Readonly<Record<string, unknown>>;
 
   private constructor(artefact: KnowledgeArtefact) {
     this.bands = ArtefactKnowledgeReader.indexById(artefact.bands, "id");
     this.profiles = ArtefactKnowledgeReader.indexProfiles(artefact.profiles);
     this.items = ArtefactKnowledgeReader.indexById(artefact.items, "item_id");
     this.skills = ArtefactKnowledgeReader.indexById(artefact.skills, "id");
+    this.campaignRaw = (artefact.campaign ?? {}) as Readonly<Record<string, unknown>>;
     this.campaignMaps = ArtefactKnowledgeReader.indexCampaignSections(
       artefact.campaign ?? {},
     );
@@ -320,5 +322,33 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
 
   queryMany(queries: readonly KnowledgeQuery[]): readonly KnowledgeResult[] {
     return queries.map((query) => this.queryKnowledge(query));
+  }
+
+  // ------------------------------------------------------------------
+  // P6.7 listings (additive, not part of the frozen KnowledgeReader port).
+  // Offers/collections live in the artefact's `campaign` section as raw
+  // rows; the feature layer (application/features/hirelings) applies the
+  // eligibility rules. Listings return the raw row plus resolved display
+  // names — never a name-based identity.
+  // ------------------------------------------------------------------
+
+  /** Raw rows of the artefact's `campaign` section, for listing features. */
+  campaignRows(section: string): readonly ArtefactRow[] {
+    const value = this.campaignRaw[section];
+    return Array.isArray(value) ? (value as ArtefactRow[]) : [];
+  }
+
+  /** Raw object sections (e.g. `trading-post`, `hirelings`). */
+  campaignSection(section: string): Readonly<Record<string, unknown>> {
+    const value = this.campaignRaw[section];
+    return value && typeof value === "object" ? (value as Readonly<Record<string, unknown>>) : {};
+  }
+
+  /** Display name of a stable KB item id (trading rows only carry ids). */
+  itemName(itemId: string, locale: Locale = "en"): string {
+    const row = this.items.get(itemId);
+    if (!row) return itemId;
+    const names = rowNames(row);
+    return names[locale] ?? names["en"] ?? itemId;
   }
 }

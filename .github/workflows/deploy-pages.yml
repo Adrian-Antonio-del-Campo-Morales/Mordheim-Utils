@@ -1,0 +1,102 @@
+name: Deploy to GitHub Pages
+
+# P8.1 (web-migration-parallel-plan.md §9): publication workflow.
+# Publishes ONLY the built `dist/` of the web app. It runs after CI is green
+# on the default branch — a contract, KB, test or build failure prevents
+# publishing. The Vite `GITHUB_PAGES` switch (set by P3.1) produces the
+# repository sub-path base; the app uses no history-based routing, so deep
+# links work under Pages. User campaign files never enter the artefact: the
+# image is built from a clean checkout and nothing under the user-data
+# directories is copied to `public/`.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build the web app for Pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install the package (needed by the KB generator)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            packages/typescript/package-lock.json
+            apps/warband-manager-web/package-lock.json
+
+      - name: Install packages (lockfile-driven)
+        run: |
+          cd packages/typescript && npm ci
+          cd ../../apps/warband-manager-web && npm ci
+
+      - name: Validate the KB artefact (generator --check must pass)
+        run: |
+          python tools/knowledge/generate_knowledge_web.py
+          python tools/knowledge/generate_knowledge_web.py --check
+
+      - name: Stage the artefact as a static asset
+        run: |
+          mkdir -p apps/warband-manager-web/public/knowledge
+          cp build/generated/knowledge-web/knowledge-web.json \
+             apps/warband-manager-web/public/knowledge/knowledge-web.json
+
+      - name: Run the TypeScript suites before publishing
+        run: |
+          cd packages/typescript && npm test
+          cd ../../apps/warband-manager-web && npm test
+
+      - name: Build (repository sub-path, hash routing)
+        env:
+          GITHUB_PAGES: "1"
+        run: cd apps/warband-manager-web && npm run build
+
+      - name: Guarantee no user campaign data is published
+        run: |
+          ! grep -rl --include='*.mordheim' . apps/warband-manager-web/dist \
+            || { echo 'A .mordheim file leaked into dist/'; exit 1; }
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload the Pages artefact (dist only)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/warband-manager-web/dist
+
+  deploy:
+    name: Publish to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
