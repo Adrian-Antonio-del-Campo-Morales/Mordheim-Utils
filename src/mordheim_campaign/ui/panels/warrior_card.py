@@ -3,7 +3,7 @@ from __future__ import annotations
 import tkinter as tk
 from tkinter import ttk
 
-from mordheim_campaign.application.state import WarriorVM
+from mordheim_campaign.domain.models import WarriorVM
 from mordheim_campaign.ui.equipment_display import equipment_quantity_suffix
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import BorderedFrame, ExperienceTrack

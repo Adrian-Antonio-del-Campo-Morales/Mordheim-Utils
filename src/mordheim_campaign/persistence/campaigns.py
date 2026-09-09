@@ -27,8 +27,7 @@ from pathlib import Path
 
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import SchemaError, ValidationError
-
-from mordheim_campaign.application.state import (
+from mordheim_campaign.domain.models import (
     AppState,
     BattleVM,
     CampaignVM,

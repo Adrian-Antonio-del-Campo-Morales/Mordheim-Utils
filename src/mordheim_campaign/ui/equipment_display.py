@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from mordheim_campaign.application.state import EquipmentEntryVM, WarriorVM
+from mordheim_campaign.domain.models import EquipmentEntryVM, WarriorVM
 
 
 def displayed_equipment_quantity(warrior: WarriorVM, item: EquipmentEntryVM) -> int:

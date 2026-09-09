@@ -26,11 +26,12 @@ from typing import TYPE_CHECKING
 
 from mordheim_campaign.application.knowledge_port import KnowledgePort
 from mordheim_campaign.application.post_battle_resolution import SeriousInjuryOutcome
-from mordheim_campaign.application.state import EquipmentEntryVM, InventoryItemVM, WarbandStateVM, WarriorVM, unique_warrior_name, warrior_vm
+from mordheim_campaign.domain.models import EquipmentEntryVM, InventoryItemVM, WarbandStateVM, WarriorVM, unique_warrior_name
+from mordheim_campaign.domain.builders import warrior_vm
 
 if TYPE_CHECKING:
     from mordheim_campaign.application.post_battle_catalogue import HirelingOffer
-    from mordheim_campaign.application.state import CampaignVM, PostBattleVM
+    from mordheim_campaign.domain.models import CampaignVM, PostBattleVM
 
 #: Full characteristic names used by the KB effect types -> display keys.
 _CHARACTERISTIC_KEYS = {

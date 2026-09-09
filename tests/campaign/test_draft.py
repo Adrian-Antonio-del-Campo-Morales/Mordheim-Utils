@@ -1,7 +1,7 @@
 """Draft and example: canonical profiles + controller edit actions."""
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.application.knowledge_port import KnowledgePort
-from mordheim_campaign.application.state import make_example_state
+from mordheim_campaign.domain.builders import make_example_state
 
 
 def _controller() -> AppController:
@@ -41,7 +41,7 @@ def test_henchmen_groups_respect_group_limits():
 
 
 def test_treasury_guard_blocks_unaffordable_additions():
-    from mordheim_campaign.application.state import make_draft_state
+    from mordheim_campaign.domain.builders import make_draft_state
 
     port = KnowledgePort()
     controller = AppController(port=port, state=make_draft_state(port, "lustrian-reavers"))

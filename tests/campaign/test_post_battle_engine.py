@@ -14,7 +14,8 @@ from mordheim_campaign.application.knowledge_port import KnowledgePort
 from mordheim_campaign.application.post_battle_catalogue import HirelingOffer, PostBattleCatalogue
 from mordheim_campaign.application.post_battle_engine import PostBattleEngine
 from mordheim_campaign.application.post_battle_resolution import PostBattleResolver
-from mordheim_campaign.application.state import EquipmentEntryVM, make_example_state
+from mordheim_campaign.domain.models import EquipmentEntryVM
+from mordheim_campaign.domain.builders import make_example_state
 from mordheim_campaign.persistence import load_campaign, save_campaign
 from mordheim_campaign.ui.panels.warrior_card import effective_stat, injury_lines
 
