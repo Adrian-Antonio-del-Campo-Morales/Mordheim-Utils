@@ -1,0 +1,18 @@
+{
+  "name": "mordheim-web-packages",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "description": "TypeScript packages of the web Warband Manager: domain, application and adapters. See web-migration-parallel-plan.md (tasks P3.4, P3.2, P3.5, P5.1, P4.3).",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && vite build --config vite.lib-placeholder.config.ts 2>/dev/null || tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "~5.8.3",
+    "vitest": "^3.2.0"
+  }
+}
