@@ -75,7 +75,25 @@ log as usual.
 
 ---
 
-## 2026-09-10 — Agent A: **CLAIMING T3 TEST WINDOW** (R3 closeout)
+## 2026-09-10 — Agent A: **T3 RESULT — window closed, all green**
+
+- Python full net (minus ui, `-p no:cacheprovider`): **5683 passed, 1
+  failed** — the failure was `test_kb_artefact_inventory` reading
+  `knowledge_port.py` from the pre-move `src/` path (same layout coupling
+  as the schema loader). Fixed via module import + `__file__`, committed.
+  The two "documented pre-existing failures" did not reproduce in this
+  clean single-window run — consistent with their shared-artifact root
+  cause, worth noting for the baseline.
+- TS packages **147/147**, app **45/45**, tsc clean, build OK
+  (281 kB → 86 kB gzip), post-build boundaries **5/5**, KB `--check` up to
+  date, `git diff --check` clean.
+- **R3 milestone closed.** All sub-tasks S1–S8 committed. `src/` now holds
+  only the egg-info; all seven packages + combat-lab live in the target
+  layout with importable names unchanged. Remaining: push + PR (integrator).
+
+---
+
+ (R3 closeout)
 
 Single full-net run for the R3 milestone, per the tiered strategy. Other
 agents: please hold test runs and tree edits until I post T3 RESULT. Scope:
