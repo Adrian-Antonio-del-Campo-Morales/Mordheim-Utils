@@ -28,8 +28,9 @@ class AwardRow:
 class ScenarioRewards:
     """Read-only award planner over the campaign catalogue."""
 
-    def __init__(self, port: KnowledgePort) -> None:
+    def __init__(self, port: KnowledgePort, *, band_id: str | None = None) -> None:
         self.port = port
+        self.band_id = band_id
 
     # ------------------------------------------------------------------ plan
 
@@ -102,6 +103,16 @@ class ScenarioRewards:
 
     # --------------------------------------------------------------- compute
 
+    def _band_for(self, warrior) -> str:
+        if self.band_id is not None:
+            return self.band_id
+        if warrior.profile_id.startswith("hireling."):
+            return ""
+        for option in self.port.options():
+            if any(p.profile_id == warrior.profile_id for p in self.port.profiles(option.collection, option.band_id)):
+                return option.band_id
+        return self.port.options()[0].band_id
+
     def compute(
         self,
         rows: tuple[AwardRow, ...],
@@ -111,6 +122,8 @@ class ScenarioRewards:
         enemy_out_of_action: int | dict[str, int] = 0,
     ) -> dict[str, int]:
         """Per-warrior XP totals from the battle facts (manual rows excluded)."""
+        warriors = [w for w in warriors if self.port.can_gain_experience(
+            self._band_for(w), w.profile_id)]
         totals: dict[str, int] = {}
         leader = next((w for w in warriors if w.kind == "hero"), None)
         for row in rows:

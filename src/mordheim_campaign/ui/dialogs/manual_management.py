@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import tkinter as tk
 from tkinter import ttk
+from mordheim_campaign.ui.input_validation import IntegerVar, numeric_action, numeric_preview
 
 from mordheim_ui import themed_dialogs as messagebox
-from mordheim_ui.i18n import tr
+from mordheim_ui.i18n import tr, tr_message
 from mordheim_ui.theme import COLORS
 from mordheim_ui.windowing import center_on_application
 from mordheim_ui.widgets import BorderedFrame
@@ -24,7 +25,7 @@ class ResourceCorrectionDialog(tk.Toplevel):
                    ("treasures", tr("Treasures")), ("campaign_points", tr("Campaign points"))]
         menu = ttk.OptionMenu(body, self.resource, self.resource.get(), *[key for key, _ in choices])
         menu.grid(row=1, column=0, sticky="ew", padx=(0, 8))
-        self.amount = tk.IntVar(value=0)
+        self.amount = IntegerVar(value=0)
         ttk.Spinbox(body, from_=-9999, to=9999, textvariable=self.amount, width=9).grid(row=1, column=1, sticky="e")
         self.reason = tk.StringVar()
         ttk.Entry(body, textvariable=self.reason, width=48).grid(row=2, column=0, columnspan=2, sticky="ew", pady=(8, 0))
@@ -32,12 +33,13 @@ class ResourceCorrectionDialog(tk.Toplevel):
         ttk.Button(body, text=tr("APPLY"), style="Accent.TButton", command=self._apply).grid(row=4, column=1, sticky="e", pady=(12, 0))
         self.after_idle(lambda: center_on_application(self))
 
+    @numeric_action
     def _apply(self) -> None:
         ok, message = self.controller.perform_undoable(
             tr('Correct resources'),
             lambda: self.controller.adjust_resource(self.resource.get(), self.amount.get(), self.reason.get()))
         if not ok:
-            messagebox.showerror(tr("Cannot apply correction"), message, parent=self); return
+            messagebox.showerror(tr("Cannot apply correction"), tr_message(message), parent=self); return
         self.destroy(); self.controller.notify()
 
 
@@ -60,12 +62,13 @@ class AddInventoryItemDialog(tk.Toplevel):
             self.listbox.insert("end", f"{offer.name}  ·  {offer.category}")
         if self.offers: self.listbox.selection_set(0)
         row = tk.Frame(body, bg=COLORS["panel"]); row.pack(fill="x", pady=(8, 0))
-        self.quantity = tk.IntVar(value=1); ttk.Spinbox(row, from_=1, to=99, width=5, textvariable=self.quantity).pack(side="left")
+        self.quantity = IntegerVar(value=1); ttk.Spinbox(row, from_=1, to=99, width=5, textvariable=self.quantity).pack(side="left")
         self.reason = tk.StringVar(); ttk.Entry(row, textvariable=self.reason, width=42).pack(side="left", fill="x", expand=True, padx=8)
         ttk.Button(row, text=tr("ADD"), style="Accent.TButton", command=self._apply).pack(side="right")
         tk.Label(body, text=tr("Quantity · reason for correction"), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
         self.after_idle(lambda: center_on_application(self))
 
+    @numeric_action
     def _apply(self) -> None:
         selected = self.listbox.curselection()
         if not selected: return
@@ -73,7 +76,7 @@ class AddInventoryItemDialog(tk.Toplevel):
             tr('Correct inventory'), lambda: self.controller.manually_add_item(
                 self.offers[selected[0]].item_id, self.quantity.get(), self.reason.get()))
         if not ok:
-            messagebox.showerror(tr("Cannot add item"), message, parent=self); return
+            messagebox.showerror(tr("Cannot add item"), tr_message(message), parent=self); return
         self.destroy(); self.controller.notify()
 
 
@@ -115,5 +118,5 @@ class ManualSkillsDialog(tk.Toplevel):
             tr('Correct skills'),
             lambda: self.controller.set_manual_skill(self.warrior.id, name, present, self.reason.get()))
         if not ok:
-            messagebox.showerror(tr("Cannot edit skill"), message, parent=self); return
+            messagebox.showerror(tr("Cannot edit skill"), tr_message(message), parent=self); return
         self._refresh()

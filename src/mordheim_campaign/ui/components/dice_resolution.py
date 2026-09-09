@@ -77,6 +77,7 @@ class DiceResolutionCard(tk.Frame):
         outcome_tone: str = "accent",
         outcome_actions: Sequence[tuple[str, Callable[[], None], str]] | None = None,
         on_resolved: Callable[[list[int]], tuple[str, str, str]] | None = None,
+        allow_reroll: bool = False,
         **kwargs,
     ) -> None:
         """
@@ -93,6 +94,7 @@ class DiceResolutionCard(tk.Frame):
         self.demo_dice = list(demo_dice)
         self.combine = combine
         self.on_resolved = on_resolved
+        self.allow_reroll = allow_reroll
         self.outcome_title = outcome_title
         self.outcome_detail = outcome_detail
         self.choices = list(choices or [])
@@ -170,7 +172,8 @@ class DiceResolutionCard(tk.Frame):
         header = tk.Frame(self.body, bg=COLORS["panel_alt"])
         header.pack(fill="x")
         tk.Label(header, text=source.upper(), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).pack(side="left")
-        ttk.Button(header, text=tr('ROLL AGAIN / EDIT'), style="Mini.TButton", command=self._show_method_choice).pack(side="right")
+        if self.allow_reroll:
+            ttk.Button(header, text=tr('ROLL AGAIN / EDIT'), style="Mini.TButton", command=self._show_method_choice).pack(side="right")
 
         result = tk.Frame(self.body, bg=COLORS["panel_alt"])
         result.pack(fill="x", pady=(8, 4))

@@ -13,7 +13,7 @@ from mordheim_campaign.ui.dialogs import AddWarriorDialog, HireSwordDialog
 from mordheim_campaign.ui.panels import InventoryWorkspace
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import BorderedFrame, ExperienceTrack, ScrollableFrame, SegmentedTabs
-from mordheim_ui.i18n import tr
+from mordheim_ui.i18n import tr, tr_message
 from mordheim_ui.icons import ui_icon
 
 
@@ -146,7 +146,7 @@ class InitialWarbandDraftMoment(tk.Frame):
         checks = tk.Frame(actions, bg=COLORS["panel_deep"])
         checks.pack(side="left")
         conditions = (
-            (self.campaign.draft_hero_count >= 1, tr('Leader / hero present')),
+            (self.campaign.draft_hero_count >= 1 and self.campaign.has_required_profiles, tr('Leader / hero present')),
             (self.campaign.draft_warband_member_count >= self.campaign.minimum_models, tr('Minimum {} models reached').format(self.campaign.minimum_models)),
             (self.campaign.draft_treasury >= 0, tr('Within starting treasury')),
         )
@@ -196,13 +196,13 @@ class InitialWarbandDraftMoment(tk.Frame):
         ok, message = self.controller.perform_undoable(
             tr('Resize henchman group'), lambda: self.controller.adjust_draft_group(warrior.id, delta))
         if not ok:
-            messagebox.showerror(tr('Cannot resize group'), message, parent=self)
+            messagebox.showerror(tr('Cannot resize group'), tr_message(message), parent=self)
 
     def _remove_warrior(self, warrior: WarriorVM) -> None:
         ok, message = self.controller.perform_undoable(
             tr('Dismiss warrior'), lambda: self.controller.remove_draft_warrior(warrior.id))
         if not ok:
-            messagebox.showerror(tr('Cannot remove warrior'), message, parent=self)
+            messagebox.showerror(tr('Cannot remove warrior'), tr_message(message), parent=self)
 
     def _rename_warrior(self, warrior: WarriorVM) -> None:
         name = simpledialog.askstring(tr('Rename'), tr('New name'), initialvalue=warrior.name, parent=self)
@@ -211,7 +211,7 @@ class InitialWarbandDraftMoment(tk.Frame):
         ok, message = self.controller.perform_undoable(
             tr('Rename warrior'), lambda: self.controller.rename_draft_warrior(warrior.id, name))
         if not ok:
-            messagebox.showerror(tr('Cannot rename'), message, parent=self)
+            messagebox.showerror(tr('Cannot rename'), tr_message(message), parent=self)
 
 class DraftWarriorCard(tk.Frame):
     def __init__(self, master: tk.Misc, warrior: WarriorVM, *, on_more, **kwargs) -> None:

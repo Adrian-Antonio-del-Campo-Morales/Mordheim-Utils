@@ -32,7 +32,7 @@ class SkillChoiceDialog(tk.Toplevel):
             return
 
         self.configure(bg=COLORS["bg"])
-        self.title(tr('Commit Spell') if want_spells else tr('Promotion Skill') if promotion else tr('Commit Skill'))
+        self.title(tr('Commit spell') if want_spells else tr('Promotion Skill') if promotion else tr('Commit skill'))
         self.resizable(False, False)
         self.transient(parent.winfo_toplevel())
         self.grab_set()
@@ -80,7 +80,7 @@ class SkillChoiceDialog(tk.Toplevel):
         actions = tk.Frame(body, bg=COLORS["panel"])
         actions.pack(fill="x", pady=(16, 0))
         ttk.Button(actions, text=tr('Cancel'), command=self.destroy).pack(side="right", padx=(0, 6))
-        ttk.Button(actions, text="COMMIT", style="Accent.TButton", command=self._commit).pack(side="right")
+        ttk.Button(actions, text=tr('COMMIT'), style="Accent.TButton", command=self._commit).pack(side="right")
 
         self._listbox.bind("<<ListboxSelect>>", lambda _e: self._update_detail())
         self.bind("<Escape>", lambda _e: self.destroy())

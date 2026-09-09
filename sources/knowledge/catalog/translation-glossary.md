@@ -45,6 +45,9 @@ Rules of engagement:
 | gold crowns (gc) | coronas de oro (gc) |
 | upkeep | manutención |
 | experience | experiencia |
+| Troll Slayer | Matatrolles (invariable; plural also Matatrolles) |
+| Dwarf Troll Slayer | Matatrolles Enano / Matatrolles Enanos |
+| sight | visión |
 
 ## Rules vocabulary (seeded from the pilot band)
 

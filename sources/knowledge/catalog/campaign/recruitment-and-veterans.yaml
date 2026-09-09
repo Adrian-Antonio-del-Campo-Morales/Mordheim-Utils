@@ -8,6 +8,9 @@ recruitment_policy:
 - id: campaign.recruitment.free-dagger
   applies_to: newly_hired_recruit
   effect: grant_item
+  effect_i18n:
+    es: >-
+      grant_item
   item_id: dagger
   source_refs:
   - manual: mordheimer.net
@@ -17,6 +20,9 @@ recruitment_policy:
 - id: campaign.recruitment.common-items-only-for-recruits
   applies_to: newly_hired_recruit
   effect: purchase_limit
+  effect_i18n:
+    es: >-
+      purchase_limit
   scope: common_items_only
   note: Newly hired recruits cannot buy rare items directly; they may only be
     equipped with rare items from the warband's stash in stage 9.
@@ -28,6 +34,9 @@ recruitment_policy:
 - id: campaign.recruitment.henchmen-armed-like-group
   applies_to: henchman_recruit
   effect: equipment_match
+  effect_i18n:
+    es: >-
+      equipment_match
   note: New Henchmen must be armed and equipped in the same way as existing
     members of the group they join.
   source_refs:

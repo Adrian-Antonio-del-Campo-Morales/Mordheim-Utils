@@ -449,6 +449,31 @@ def test_existing_group_recruit_uses_veteran_xp_and_leaves_equipment_pending():
     assert obligations and all(row["warrior_id"] == group.id for row in obligations)
 
 
+def test_matching_group_equipment_settles_obligation_and_commit_blocks_until_then():
+    engine, state, _ = _pending()
+    group = next(row for row in state.campaign.warriors if row.id == "sisters")
+    engine.apply_veteran_pool(group.experience)
+    assert engine.add_member_to_group(group.id)[0]
+    obligation = engine.post.equipment_obligations[0]
+    stock = next(row for row in state.campaign.inventory if row.id == obligation["item_id"])
+    stock.owned += 1; stock.stash += 1
+
+    assert engine.move_stash_to_warrior(stock.id, group.id)[0]
+    assert not any(row["item_id"] == stock.id for row in engine.post.equipment_obligations)
+
+
+def test_dismissing_new_group_member_clears_now_unneeded_obligations():
+    engine, state, _ = _pending()
+    group = next(row for row in state.campaign.warriors if row.id == "sisters")
+    engine.apply_veteran_pool(group.experience)
+    assert engine.add_member_to_group(group.id)[0]
+    assert engine.post.equipment_obligations
+
+    assert engine.dismiss_warrior(group.id, one_member=True)[0]
+
+    assert not engine.post.equipment_obligations
+
+
 def test_dismissing_one_group_member_returns_one_equipment_set_to_stash():
     engine, state, _ = _pending()
     group = next(row for row in state.campaign.warriors if row.id == "sisters")
@@ -628,7 +653,7 @@ def test_dramatis_catalogue_marks_william_conditional_for_other_good_bands():
 def test_buy_assign_sell_round_trip():
     engine, state, port = _pending()
     catalogue = PostBattleCatalogue(port, state.campaign.collection, state.campaign.band_id)
-    offer = next(o for o in catalogue.common_items() if o.price_gc is not None)
+    offer = next(o for o in catalogue.common_items() if o.item_id == "lantern")
     gold = engine.projected_gold()
     ok, _ = engine.buy_item(offer.item_id, 2, offer.price_gc)
     assert ok
@@ -675,6 +700,7 @@ def test_rare_purchase_keeps_its_inventory_marker():
 def test_commit_creates_the_next_state():
     engine, state, _ = _pending()
     engine.add_xp("matriarch", 1)
+    assert engine.resolve_pending_advance("matriarch", 8, subroll=2)[0]
     engine.sell_wyrdstone(1)
     engine.post.completed_steps = set(range(8))
     ok, _ = engine.commit()

@@ -10,10 +10,11 @@ from __future__ import annotations
 
 import tkinter as tk
 from tkinter import ttk
+from mordheim_campaign.ui.modality import make_modal
 
 from mordheim_campaign.application.post_battle_catalogue import resolve_offer_price
 from mordheim_campaign.ui.components import DiceResolutionCard
-from mordheim_ui.i18n import tr
+from mordheim_ui.i18n import tr, tr_message
 from mordheim_ui.theme import COLORS
 from mordheim_ui.windowing import center_on_application
 
@@ -28,8 +29,7 @@ class VariablePriceDialog(tk.Toplevel):
     def __init__(self, master: tk.Misc, *, offer, buy) -> None:
         super().__init__(master)
         self.title(tr('VARIABLE PRICE'))
-        self.transient(self.winfo_toplevel())
-        self.grab_set()
+        make_modal(self, master)
         count, sides = offer.price_dice or (1, 6)
         body = tk.Frame(self, bg=COLORS["panel"], padx=12, pady=10)
         body.pack(fill="both", expand=True)
@@ -41,6 +41,7 @@ class VariablePriceDialog(tk.Toplevel):
             font=("Segoe UI", 8), wraplength=430, justify="left",
         ).pack(anchor="w", pady=(2, 8))
         self._status = tk.StringVar()
+        resolved_price: dict[str, int] = {}
         tk.Label(
             body, textvariable=self._status, bg=COLORS["panel"], fg=COLORS["accent"],
             font=("Segoe UI Semibold", 8), wraplength=430, justify="left",
@@ -50,19 +51,28 @@ class VariablePriceDialog(tk.Toplevel):
             price = resolve_offer_price(offer, sum(dice))
             if price is None:
                 return tr('Cannot resolve'), tr('The offer price could not be computed.'), "warning"
-            ok, message = buy(price)
-            self._status.set(("✓ " if ok else "⚠ ") + message)
+            resolved_price["value"] = price
             return (
                 tr('Price resolved'),
                 tr('{} costs {} gc').format(offer.name, price),
-                "success" if ok else "warning",
+                "success",
             )
+
+        def purchase() -> None:
+            if resolved_price.get("used") or "value" not in resolved_price:
+                return
+            ok, message = buy(resolved_price["value"])
+            self._status.set(("✓ " if ok else "⚠ ") + tr_message(message))
+            if ok:
+                resolved_price["used"] = True
+                self.after_idle(self.destroy)
 
         DiceResolutionCard(
             body, title=tr('COST ROLL'), subtitle=tr('Roll the declared cost dice; the total fixes the price.'),
             notation=f"{count}D{sides}", dice_count=count, dice_sides=sides, demo_dice=tuple(sides // 2 for _ in range(count)),
             combine="sum", outcome_title=tr('Price resolved'), outcome_detail=tr('The buy uses the rolled total.'),
             on_resolved=resolved,
+            outcome_actions=((tr('BUY'), purchase, "Accent.TButton"),),
         ).pack(fill="x")
         ttk.Button(body, text=tr('CLOSE'), command=self.destroy).pack(anchor="e", pady=(8, 0))
         self.bind("<Escape>", lambda _e: self.destroy())
@@ -77,11 +87,10 @@ class UpgradePriceDialog(tk.Toplevel):
     dialog buys the upgrade at ``multiplier × base price``.
     """
 
-    def __init__(self, master: tk.Misc, *, offer, campaign, buy) -> None:
+    def __init__(self, master: tk.Misc, *, offer, campaign, buy, weapon_hands) -> None:
         super().__init__(master)
         self.title(tr('UPGRADE PRICE'))
-        self.transient(self.winfo_toplevel())
-        self.grab_set()
+        make_modal(self, master)
         multiplier = offer.price_upgrade_multiplier or 1
         body = tk.Frame(self, bg=COLORS["panel"], padx=12, pady=10)
         body.pack(fill="both", expand=True)
@@ -92,7 +101,8 @@ class UpgradePriceDialog(tk.Toplevel):
         ).pack(anchor="w", pady=(2, 8))
         rows = [
             row for row in campaign.inventory
-            if row.value is not None and row.value > 0 and (row.stash > 0 or row.owned > 0)
+            if row.value is not None and row.value > 0 and row.stash > 0
+            and weapon_hands(row.base_item_id or row.id) is not None
         ]
         if not rows:
             tk.Label(
@@ -120,8 +130,8 @@ class UpgradePriceDialog(tk.Toplevel):
         self.after_idle(lambda: center_on_application(self))
 
     def _buy(self, row, multiplier: int, buy) -> None:
-        ok, message = buy(row.value * multiplier)
-        self._status.set(("✓ " if ok else "⚠ ") + message)
+        ok, message = buy(row.value * multiplier, row)
+        self._status.set(("✓ " if ok else "⚠ ") + tr_message(message))
 
 
 class HirelingFeeDialog(tk.Toplevel):
@@ -134,8 +144,7 @@ class HirelingFeeDialog(tk.Toplevel):
     def __init__(self, master: tk.Misc, *, offer, hire) -> None:
         super().__init__(master)
         self.title(tr('HIRING FEE ROLL'))
-        self.transient(self.winfo_toplevel())
-        self.grab_set()
+        make_modal(self, master)
         count, sides = offer.fee_dice or (1, 6)
         body = tk.Frame(self, bg=COLORS["panel"], padx=12, pady=10)
         body.pack(fill="both", expand=True)
@@ -145,25 +154,35 @@ class HirelingFeeDialog(tk.Toplevel):
             bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8), wraplength=430, justify="left",
         ).pack(anchor="w", pady=(2, 8))
         self._status = tk.StringVar()
+        resolved_fee: dict[str, int] = {}
         tk.Label(
             body, textvariable=self._status, bg=COLORS["panel"], fg=COLORS["accent"],
             font=("Segoe UI Semibold", 8), wraplength=430, justify="left",
         ).pack(anchor="w", pady=(8, 0))
 
         def resolved(dice: list[int]) -> tuple[str, str, str]:
-            ok, message = hire(sum(dice))
-            self._status.set(("✓ " if ok else "⚠ ") + message)
+            resolved_fee["value"] = sum(dice)
             return (
                 tr('Fee resolved'),
-                tr('Total fee: {} gc').format((offer.fee_base_gc or 0) + sum(dice)) if ok else message,
-                "success" if ok else "warning",
+                tr('Total fee: {} gc').format((offer.fee_base_gc or 0) + sum(dice)),
+                "success",
             )
+
+        def confirm_hire() -> None:
+            if resolved_fee.get("used") or "value" not in resolved_fee:
+                return
+            ok, message = hire(resolved_fee["value"])
+            self._status.set(("✓ " if ok else "⚠ ") + tr_message(message))
+            if ok:
+                resolved_fee["used"] = True
+                self.after_idle(self.destroy)
 
         DiceResolutionCard(
             body, title=tr('FEE ROLL'), subtitle=tr('Roll the fee dice; the engine adds the flat base.'),
             notation=f"{count}D{sides}", dice_count=count, demo_dice=tuple(sides // 2 for _ in range(count)),
             combine="sum", outcome_title=tr('Fee resolved'), outcome_detail=tr('The hire charges base + roll.'),
             on_resolved=resolved,
+            outcome_actions=((tr('HIRE'), confirm_hire, "Accent.TButton"),),
         ).pack(fill="x")
         ttk.Button(body, text=tr('CLOSE'), command=self.destroy).pack(anchor="e", pady=(8, 0))
         self.bind("<Escape>", lambda _e: self.destroy())

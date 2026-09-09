@@ -1856,10 +1856,12 @@ cdef int parry_resolve_c(FighterC* defender, SourceC* src, int* hit_rows, int hi
         success1[i] = 0
     if selected_given:
         # Phase-level pipeline preselected the best one/two hits per row.
-        # An empty selection means no hit of this attack may be parried,
-        # mirroring NumPy's ``np.isin`` with an empty row array.
+        # Selection can contain rows whose surviving hit was filtered by a
+        # previous pool; membership must therefore be checked independently
+        # for each hit row, like NumPy's np.isin.
         for i in range(hit_n):
             row = hit_rows[i]
+            sel_pos = 0
             while sel_pos < selected_n and selected_rows[sel_pos] < row:
                 sel_pos += 1
             if (def_state.condition[row] == STANDING
@@ -1868,6 +1870,7 @@ cdef int parry_resolve_c(FighterC* defender, SourceC* src, int* hit_rows, int hi
                     and (hit_values[i] != 6 or defender.parry_can_parry_six)
                     and sel_pos < selected_n and selected_rows[sel_pos] == row):
                 eligible[i] = 1
+
     else:
         # Standalone path: keep the best hits per row, up to the parries the
         # row still has available.
@@ -2431,12 +2434,16 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
                 row = tmp_prep.hit_rows[i]
                 j = search_position_c(tmp_prep.active, tmp_prep.active_n, row)
                 any_c = tmp_prep.rolls[j]
+                # ``selected`` already encodes highest-hit ownership. Native
+                # must use same membership for every selected row; natural-six
+                # handling only removes that row from a single-parry pool.
                 # Mirror the modular oracle's offer-from-the-highest-downwards.
-                # A natural six closes this defender's parry capacity for the
-                # whole attack pool. It cannot be replaced by a lower hit.
+                # A natural six closes this defender's single-parry capacity
+                # for the whole attack pool. It cannot be replaced by a lower
+                # hit. With two parries, lower hits remain eligible.
                 if (any_c == 6 and not defender.parry_can_parry_six):
-                    # Natural six cannot occupy either exceptional-parry slot.
-                    # With two slots, lower hits remain eligible.
+                    if not two_parries:
+                        s_def.parry_remaining[row] = 0
                     continue
                 # A hit that cannot be parried (a cannot-be-parried effect or
                 # strength >= 2x the defender's strength) does not own a slot.
@@ -2714,7 +2721,7 @@ cdef int attack_count_c(FighterC* f, StateC* s, const int8_t* charging,
             elif not f.off_hand_attacks:
                 result = 1
         elif f.main_pistol and not first_round:
-            # phase_equipment() removes a spent main pistol.  If no off-hand
+            # phase_equipment() removes a spent main pistol. If no off-hand
             # weapon exists, it promotes the compiled unarmed fallback; that
             # fallback must receive its normal attack count rather than the
             # pistol's zero-attacks-after-opening-round rule.

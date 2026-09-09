@@ -7,7 +7,7 @@ from mordheim_ui import themed_dialogs as messagebox
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.ui.components import ask_dice
-from mordheim_ui.i18n import tr
+from mordheim_ui.i18n import tr, tr_message
 from mordheim_ui.theme import COLORS
 from mordheim_ui.windowing import center_on_application
 from mordheim_ui.icons import ui_icon
@@ -120,7 +120,7 @@ class HireSwordDialog(tk.Toplevel):
             tr('Hire Hired Sword'),
             lambda: self.controller.hire_draft_hired_sword(offer.profile_id, roll, fee_roll))
         if not ok:
-            messagebox.showerror(tr('Cannot hire Hired Sword'), message, parent=self)
+            messagebox.showerror(tr('Cannot hire Hired Sword'), tr_message(message), parent=self)
             return
         self.destroy()
         self.controller.notify()
