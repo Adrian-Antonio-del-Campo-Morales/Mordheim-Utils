@@ -47,8 +47,10 @@ RETIRED_FORMAT_VERSIONS = (1, 2, 3)
 
 FILE_EXTENSION = ".mordheim"
 
-_CONTRACT_SCHEMA_PATH = (
-    Path(__file__).resolve().parents[3] / "contracts" / "campaign-file-v4" / "campaign-file-v4.schema.json"
+_CONTRACT_SCHEMA_PATH = next(
+    parent / "contracts" / "campaign-file-v4" / "campaign-file-v4.schema.json"
+    for parent in Path(__file__).resolve().parents
+    if (parent / "contracts" / "campaign-file-v4" / "campaign-file-v4.schema.json").is_file()
 )
 
 
