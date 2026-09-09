@@ -177,7 +177,7 @@ def test_completion_introspects_lab_options_and_choices(cli):
     assert "--simulation-sizes" in options
     assert "--deep-simulation-sizes" in cli._command_candidates(["benchmark", "--deep-"])
     assert cli._command_candidates(["benchmark", "--backend", "nat"]) == ["native"]
-    assert "all" in cli._command_candidates(["benchmark", "--backend", ""])
+    assert cli._command_candidates(["benchmark", "--backend", ""]) == ["modular", "numpy", "native"]
 
 
 def test_completion_covers_tests_scope_values(cli):

@@ -152,7 +152,7 @@ class DeepBenchmarkPlan:
     vector_sizes: tuple[int, ...]
     batch_sizes: tuple[int, ...]
     modular_simulations: int
-    modular_backend: str
+    modular_backend: str | None
     vector_backends: tuple[str, ...]
     runs: tuple[tuple[str, str, int, int], ...]  # (scenario id, backend, simulations, batch_size)
     excluded: tuple[dict[str, str], ...]
@@ -168,10 +168,10 @@ def deep_benchmark_plan(
     Policy: the modular engine is measured only at ``modular_simulations``
     (a reference point; it is the slow oracle). The optimized backends
     (NumPy and, when compiled, native) are swept over the full size and
-    batch-size grid. ``backends`` is the requested set ("all" expands to
-    numpy + native); modular is never part of the large grid.
+    batch-size grid. Only requested backends are included; modular is never
+    part of the large grid.
     """
-    requested = ("numpy", "native") if backends == ("all",) else backends
+    requested = backends
     excluded = []
     vector_backends = []
     for backend in ("numpy", "native"):
@@ -184,15 +184,17 @@ def deep_benchmark_plan(
         vector_backends.append(backend)
     vector_backends = tuple(vector_backends)
     runs = []
-    for scenario in scenarios:
-        runs.append((scenario.id, "modular", modular_simulations, batch_sizes[0]))
+    if "modular" in requested:
+        for scenario in scenarios:
+            runs.append((scenario.id, "modular", modular_simulations, batch_sizes[0]))
     for scenario in scenarios:
         for simulations in vector_sizes:
             for batch_size in batch_sizes:
                 for backend in vector_backends:
                     runs.append((scenario.id, backend, simulations, batch_size))
     return DeepBenchmarkPlan(
-        vector_sizes, batch_sizes, modular_simulations, "modular",
+        vector_sizes, batch_sizes, modular_simulations,
+        "modular" if "modular" in requested else None,
         vector_backends, tuple(runs), tuple(excluded),
     )
 
@@ -202,9 +204,10 @@ def print_deep_benchmark_header(
 ) -> None:
     label = f"{pair_set} pair set; " if pair_set else ""
     print(
-        "Deep benchmark: " + label + "modular reference at "
-        f"{plan.modular_simulations:,} duels/scenario; "
-        f"{', '.join(plan.vector_backends)} swept over sizes "
+        "Deep benchmark: " + label
+        + (f"modular reference at {plan.modular_simulations:,} duels/scenario; "
+           if plan.modular_backend else "")
+        + f"{', '.join(plan.vector_backends)} swept over sizes "
         f"{', '.join(f'{size:,}' for size in plan.vector_sizes)} x batches "
         f"{', '.join(f'{size:,}' for size in plan.batch_sizes)} "
         f"across {sum(run[1] == 'modular' for run in plan.runs):,} scenarios."
