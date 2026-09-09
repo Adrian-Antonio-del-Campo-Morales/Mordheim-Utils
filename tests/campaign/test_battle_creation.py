@@ -8,7 +8,7 @@ campaign ships with Post-Battle #8 pending, so tests close it first.
 from __future__ import annotations
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_campaign.application.state import make_example_state
+from mordheim_campaign.domain.builders import make_example_state
 from mordheim_campaign.persistence import load_campaign, save_campaign
 
 

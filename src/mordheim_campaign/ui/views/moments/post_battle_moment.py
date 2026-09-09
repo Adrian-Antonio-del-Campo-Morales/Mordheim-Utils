@@ -8,7 +8,7 @@ from mordheim_ui import themed_dialogs as messagebox
 from mordheim_ui import themed_dialogs as simpledialog
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_campaign.application.state import POST_BATTLE_GROUPS, POST_BATTLE_STEPS
+from mordheim_campaign.domain.models import POST_BATTLE_GROUPS, POST_BATTLE_STEPS
 from mordheim_campaign.ui.components import DiceResolutionCard, PostBattleSequence, ask_dice
 from mordheim_campaign.ui.panels import InventoryWorkspace
 from mordheim_campaign.ui.views.moments.initial_warband_draft import DraftWarriorCard

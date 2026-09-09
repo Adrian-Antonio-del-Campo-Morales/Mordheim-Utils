@@ -7,7 +7,8 @@ inventory ledger counters (owned/equipped/stash) consistent.
 from __future__ import annotations
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_campaign.application.state import EquipmentEntryVM, WarriorVM, make_example_state
+from mordheim_campaign.domain.models import EquipmentEntryVM, WarriorVM
+from mordheim_campaign.domain.builders import make_example_state
 from mordheim_campaign.ui.equipment_display import equipment_quantity_suffix
 
 

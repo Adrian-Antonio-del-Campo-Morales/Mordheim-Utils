@@ -7,7 +7,7 @@ from mordheim_ui import themed_dialogs as messagebox
 from mordheim_ui import themed_dialogs as simpledialog
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_campaign.application.state import STAT_KEYS, WarriorVM
+from mordheim_campaign.domain.models import STAT_KEYS, WarriorVM
 from mordheim_campaign.ui.equipment_display import equipment_quantity_suffix
 from mordheim_campaign.ui.dialogs import AddWarriorDialog, HireSwordDialog
 from mordheim_campaign.ui.panels import InventoryWorkspace

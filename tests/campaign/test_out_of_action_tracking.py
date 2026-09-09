@@ -8,7 +8,7 @@ only those warriors. Battles recorded before this feature carry
 from __future__ import annotations
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_campaign.application.state import make_example_state
+from mordheim_campaign.domain.builders import make_example_state
 from mordheim_campaign.ui.views.moments.post_battle_moment import PostBattleMoment
 
 

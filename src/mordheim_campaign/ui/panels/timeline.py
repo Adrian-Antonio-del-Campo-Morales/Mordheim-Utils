@@ -3,7 +3,7 @@ from __future__ import annotations
 import tkinter as tk
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_campaign.application.state import POST_BATTLE_STEPS
+from mordheim_campaign.domain.models import POST_BATTLE_STEPS
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import ScrollableFrame
 from mordheim_ui.i18n import tr

@@ -1,6 +1,6 @@
 """KnowledgePort: canonical warband/profile reads for the Campaign Manager."""
 from mordheim_campaign.application.knowledge_port import CHARACTERISTIC_KEYS, KnowledgePort
-from mordheim_campaign.application.state import make_draft_state
+from mordheim_campaign.domain.builders import make_draft_state
 
 
 def test_options_expose_every_canonical_warband():
