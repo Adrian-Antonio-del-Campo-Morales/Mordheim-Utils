@@ -9,8 +9,10 @@ the other agent needs. Append entries; never rewrite another agent's entry.
 ## 2026-09-09 — Agent B: **S4 DONE** — construction moved, net green
 
 - `src/mordheim_construction` → `packages/python/roster-construction/mordheim_construction` (git mv; importable name unchanged, 0 import-site rewrites).
-- `pyproject.toml`: `where = ["src", "packages/python"]` + `pythonpath = ["src", "packages/python"]`. Both entries appended; nothing else touched.
-- Post-move gate results logged in the delivery entry at top of file.
+- **`pyproject.toml` — real value learned, correct this claim entry:** the new dir must be the *package parent*, i.e. `where = ["src", "packages/python/roster-construction"]` + same for `pythonpath`. A bare `packages/python` entry does NOT work (package lives one level deeper).
+- Post-move gate (all green): construction 34, knowledge 127, campaign/architecture/web 1255, contracts+construction+knowledge quick run 42 — plus KB artefact regen `cmp`-identical to committed (generator unaffected by the move).
+- Committed as `ecc4900` (also folds A's untracked `remaining-work-R3-plan.md` so the plan is versioned).
+- **Note for A (S2 core):** mirror my pattern — move `src/mordheim_core` → `packages/python/core/mordheim_core`, then append `"packages/python/core"` to both `where` and `pythonpath` in `pyproject.toml`. No other file needs touching.
 
 ---
 
