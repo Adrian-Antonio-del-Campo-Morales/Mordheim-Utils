@@ -24,12 +24,9 @@ mordheim-campaign-manager = "mordheim_campaign.app:main"
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "coverage>=7.0", "wheel>=0.43", "pyinstaller>=6.0"]
 
-[tool.setuptools]
-package-dir = {"" = "src"}
-
 [tool.setuptools.packages.find]
-where = ["packages/python/combat-engine", "src", "packages/python/roster-construction", "packages/python/core", "packages/python/knowledge", "packages/python/adapters/desktop-ui", "packages/python/campaign", "apps/combat-lab"]
+where = ["packages/python/combat-engine", "packages/python/roster-construction", "packages/python/core", "packages/python/knowledge", "packages/python/adapters/desktop-ui", "packages/python/campaign", "apps/combat-lab"]
 
 [tool.pytest.ini_options]
-pythonpath = ["packages/python/combat-engine", "src", "packages/python/roster-construction", "packages/python/core", "packages/python/knowledge", "packages/python/adapters/desktop-ui", "packages/python/campaign", "apps/combat-lab"]
+pythonpath = ["packages/python/combat-engine", "packages/python/roster-construction", "packages/python/core", "packages/python/knowledge", "packages/python/adapters/desktop-ui", "packages/python/campaign", "apps/combat-lab"]
 testpaths = ["tests"]
