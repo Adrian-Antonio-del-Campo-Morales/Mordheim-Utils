@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import tkinter as tk
 from tkinter import ttk
+from mordheim_campaign.ui.input_validation import IntegerVar, numeric_action, numeric_preview
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.ui.components import DiceResolutionCard, PostBattleSequence, ask_dice
 from mordheim_ui.theme import COLORS
 from mordheim_ui.widgets import BorderedFrame, ScrollableFrame
-from mordheim_ui.i18n import tr
+from mordheim_ui.i18n import tr, tr_message
 from mordheim_ui.windowing import center_on_application
 
 
@@ -204,7 +205,7 @@ class BattleEntryMoment(tk.Frame):
                 candidates = list(self._battle_warriors)
                 if "hero" in plan_row.label.casefold() and "henchman" not in plan_row.label.casefold():
                     candidates = [warrior for warrior in candidates if warrior.kind == "hero"]
-                amount_var = tk.IntVar(value=max(0, plan_row.amount))
+                amount_var = IntegerVar(value=max(0, plan_row.amount))
                 if plan_row.selection in {"multiple", "distributed"}:
                     selections = {}
                     checklist = tk.Frame(line, bg=COLORS["panel_alt"])
@@ -218,7 +219,7 @@ class BattleEntryMoment(tk.Frame):
                                 command=lambda: (self._recompute_awards(), self._save_draft()),
                             ).pack(anchor="w")
                         else:
-                            allocated = tk.IntVar(value=0)
+                            allocated = IntegerVar(value=0)
                             selections[warrior.id] = allocated
                             allocation = tk.Frame(checklist, bg=COLORS["panel_alt"])
                             allocation.pack(fill="x", anchor="e")
@@ -260,7 +261,7 @@ class BattleEntryMoment(tk.Frame):
             rule = str(reward.get("rule") or "")
             tk.Label(body, text=rule, bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 7), wraplength=535, justify="left").pack(anchor="w", pady=(5, 2))
             if reward.get("kind") == "resource":
-                variable = tk.IntVar(value=0)
+                variable = IntegerVar(value=0)
                 self._additional_reward_rows.append({"spec": reward, "quantity": variable})
                 line = tk.Frame(body, bg=COLORS["panel_alt"]); line.pack(fill="x")
                 unit = tr('GC AWARDED') if reward.get("resource") == "gold_crowns" else tr('SHARDS AWARDED')
@@ -275,7 +276,7 @@ class BattleEntryMoment(tk.Frame):
                     line = tk.Frame(body, bg=COLORS["panel_alt"]); line.pack(fill="x", pady=1)
                     line.columnconfigure(0, weight=1)
                     obtained = tk.BooleanVar(value=False)
-                    quantity = tk.IntVar(value=0)
+                    quantity = IntegerVar(value=0)
                     status = tk.StringVar(value=tr('Not resolved'))
                     reward_row = {"spec": reward, "content": content, "obtained": obtained, "quantity": quantity, "status": status}
                     self._additional_reward_rows.append(reward_row)
@@ -329,7 +330,7 @@ class BattleEntryMoment(tk.Frame):
         tk.Label(panel, text=tr('EXTRA REWARDS'), bg=COLORS["panel_alt"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w")
         tk.Label(panel, text=tr('Optional rewards granted by house rules or the campaign organiser.'), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 7)).pack(anchor="w", pady=(1, 7))
         resources = tk.Frame(panel, bg=COLORS["panel_alt"]); resources.pack(fill="x")
-        self._extra_gold_var = tk.IntVar(value=0); self._extra_wyrdstone_var = tk.IntVar(value=0)
+        self._extra_gold_var = IntegerVar(value=0); self._extra_wyrdstone_var = IntegerVar(value=0)
         for column, (label, variable) in enumerate(((tr('GOLD CROWNS'), self._extra_gold_var), (tr('WYRDSTONE'), self._extra_wyrdstone_var))):
             tk.Label(resources, text=label, bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI Semibold", 7)).grid(row=0, column=column * 2, sticky="w", padx=(0 if column == 0 else 18, 5))
             ttk.Spinbox(resources, from_=0, to=9999, width=6, textvariable=variable, command=self._save_draft).grid(row=0, column=column * 2 + 1)
@@ -342,7 +343,7 @@ class BattleEntryMoment(tk.Frame):
         self._extra_item_box = ttk.Combobox(picker, state="readonly", values=labels, width=42)
         self._extra_item_box.pack(side="left", fill="x", expand=True)
         if labels: self._extra_item_box.current(0)
-        self._extra_item_quantity = tk.IntVar(value=1)
+        self._extra_item_quantity = IntegerVar(value=1)
         ttk.Spinbox(picker, from_=1, to=99, width=4, textvariable=self._extra_item_quantity).pack(side="left", padx=5)
         ttk.Button(picker, text=tr('ADD'), style="Mini.TButton", command=self._add_extra_item).pack(side="left")
         self._extra_items_host = tk.Frame(panel, bg=COLORS["panel_alt"]); self._extra_items_host.pack(fill="x")
@@ -355,7 +356,7 @@ class BattleEntryMoment(tk.Frame):
         quantity = max(1, int(self._extra_item_quantity.get()))
         variable = self._extra_items.get(item_id)
         if variable is None:
-            self._extra_items[item_id] = tk.IntVar(value=quantity)
+            self._extra_items[item_id] = IntegerVar(value=quantity)
         else:
             variable.set(variable.get() + quantity)
         self._refresh_extra_items(); self._save_draft()
@@ -388,6 +389,7 @@ class BattleEntryMoment(tk.Frame):
         self._awards_host.pack(fill="x")
         self._recompute_awards()
 
+    @numeric_preview
     def _recompute_awards(self) -> None:
         """Rebuild the per-warrior XP editor from the scenario award plan."""
         rewards = self.controller.scenario_rewards()
@@ -399,7 +401,7 @@ class BattleEntryMoment(tk.Frame):
             try:
                 enemy_counts[warrior_id] = max(0, int(variable.get()))
             except (TypeError, ValueError, tk.TclError):
-                enemy_counts[warrior_id] = 0
+                return
         computed = rewards.compute_for(scenario_id, rows, result=self.result_var.get(), enemy_out_of_action=enemy_counts)
         for objective in self._objective_vars:
             if "selections" in objective:
@@ -440,12 +442,12 @@ class BattleEntryMoment(tk.Frame):
             tk.Label(row, text=label, bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").grid(row=0, column=0, sticky="ew")
             if per_enemy and warrior.kind == "hero":
                 tk.Label(row, text=tr('ENEMY OOA'), bg=COLORS["panel"], fg=COLORS["muted_dark"], font=("Segoe UI", 7)).grid(row=0, column=1, padx=(8, 3))
-                enemy_var = tk.IntVar(value=previous_enemy.get(warrior.id, 0))
+                enemy_var = IntegerVar(value=previous_enemy.get(warrior.id, 0))
                 self._enemy_ooa_vars[warrior.id] = enemy_var
                 ttk.Spinbox(row, from_=0, to=99, width=4, textvariable=enemy_var, command=self._recompute_awards).grid(row=0, column=2)
                 enemy_var.trace_add("write", lambda *_a: (self._recompute_awards(), self._save_draft()))
             value = self._xp_overrides.get(warrior.id, int(computed.get(warrior.id, 0)))
-            var = tk.IntVar(value=value)
+            var = IntegerVar(value=value)
             self._xp_vars[warrior.id] = var
             tk.Label(row, text=tr('XP'), bg=COLORS["panel"], fg=COLORS["muted_dark"], font=("Segoe UI", 7)).grid(row=0, column=3, padx=(12, 3))
             spin = ttk.Spinbox(row, from_=0, to=99, width=4, textvariable=var, state="normal" if self._xp_unlocked else "disabled")
@@ -478,7 +480,7 @@ class BattleEntryMoment(tk.Frame):
     def _build_manual_xp(self, body: tk.Frame) -> None:
         row = self._row(body, tr('EXPERIENCE ADJUSTMENT'))
         self._manual_xp_row = row
-        self.xp_var = tk.IntVar(value=1)
+        self.xp_var = IntegerVar(value=1)
         ttk.Spinbox(row, from_=0, to=99, width=5, textvariable=self.xp_var).pack(side="left")
         tk.Label(row, text=tr('manual per-warrior value for scenarios without a structured award plan'), bg=COLORS["panel"], fg=COLORS["muted_dark"], font=("Segoe UI", 7), wraplength=400, justify="left").pack(side="left", padx=(8, 0))
         scenario_id = self._scenario_ids[max(0, self.scenario_box.current())] if self._scenario_ids else ""
@@ -506,7 +508,7 @@ class BattleEntryMoment(tk.Frame):
             row.pack(fill="x", pady=1)
             tk.Label(row, text=warrior.name, bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 8)).pack(side="left")
             if warrior.kind == "henchman" and warrior.quantity > 1:
-                var = tk.IntVar(value=0)
+                var = IntegerVar(value=0)
                 self._ooa_vars[warrior.id] = (var, warrior.quantity)
                 tk.Label(row, text=tr('of {} models').format(warrior.quantity), bg=COLORS["panel"], fg=COLORS["muted_dark"], font=("Segoe UI", 7)).pack(side="right", padx=(5, 0))
                 ttk.Spinbox(row, from_=0, to=warrior.quantity, width=4, textvariable=var, command=self._update_hint).pack(side="right")
@@ -587,6 +589,7 @@ class BattleEntryMoment(tk.Frame):
             self.back_button.pack(side="left")
             self.record_button.pack(side="right")
 
+    @numeric_preview
     def _update_hint(self) -> None:
         count = len(self._out_of_action_ids())
         self._casualties_hint.configure(text=tr('{} warrior(s) recorded Out of Action').format(count))
@@ -665,7 +668,7 @@ class BattleEntryMoment(tk.Frame):
         self._extra_items.clear()
         for item_id, quantity in (house.get("items") or {}).items():
             if self.controller.port.item_name(item_id) and int(quantity) > 0:
-                self._extra_items[item_id] = tk.IntVar(value=int(quantity))
+                self._extra_items[item_id] = IntegerVar(value=int(quantity))
         self._refresh_extra_items()
         self._recompute_awards()
         for warrior_id, (var, maximum) in self._ooa_vars.items():
@@ -692,6 +695,7 @@ class BattleEntryMoment(tk.Frame):
         self.notes_text.edit_modified(False)
         self._save_draft()
 
+    @numeric_preview
     def _save_draft(self) -> None:
         draft = {
             "battle_number": self.number,
@@ -822,6 +826,7 @@ class BattleEntryMoment(tk.Frame):
         )
         return result
 
+    @numeric_action
     def _record(self) -> None:
         index = max(0, self.scenario_box.current())
         scenario_id = self._scenario_ids[index] if self._scenario_ids else ""
@@ -870,6 +875,6 @@ class BattleEntryMoment(tk.Frame):
         if not ok:
             from mordheim_ui import themed_dialogs as messagebox
 
-            messagebox.showerror(tr('Cannot record battle'), message, parent=self)
+            messagebox.showerror(tr('Cannot record battle'), tr_message(message), parent=self)
             return
         self.controller.state.pending_battle_draft.clear()

@@ -11,6 +11,7 @@ from mordheim_knowledge.loader import load_shared_rules
 from mordheim_knowledge.loader import load_simulation_mappings
 from mordheim_knowledge.loader import load_skills
 from mordheim_knowledge.i18n import display_effect
+from mordheim_knowledge.i18n import display_name
 
 
 @dataclass(frozen=True, slots=True)
@@ -106,6 +107,21 @@ class CombatCatalogue:
     def mechanic(self, mechanic_id: str) -> dict:
         """Return the normalized mechanic metadata used for UI constraints."""
         return self._mechanics[mechanic_id]
+
+    def localized_name(self, item_id: str | None, fallback: str | None = None) -> str:
+        """Display name of one mechanics record in the active KB locale.
+
+        Sentinel values (``None`` for "no selection") fall back to the provided
+        English literal, which the caller translates through the UI catalogue;
+        known ids resolve through ``name_i18n`` so the reviewed Spanish name
+        wins when it exists.
+        """
+        if item_id is None:
+            return str(fallback or "")
+        record = self._mechanics.get(item_id)
+        if record is None:
+            return str(fallback or item_id)
+        return display_name(record, fallback or item_id)
 
     def skills(self, choice: ProfileChoice | None) -> tuple[SkillChoice, ...]:
         """Return every general category plus the selected band's special skills."""

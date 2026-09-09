@@ -124,7 +124,12 @@
         "starting_gold": { "$ref": "#/$defs/nonnegative_int", "default": 500 },
         "minimum_models": { "$ref": "#/$defs/nonnegative_int", "default": 3 },
         "maximum_models": { "$ref": "#/$defs/nonnegative_int", "default": 15 },
-        "hero_limit": { "$ref": "#/$defs/nonnegative_int", "default": 5 }
+        "hero_limit": { "$ref": "#/$defs/nonnegative_int", "default": 5 },
+        "required_profiles": {
+          "description": "Draft-time minimum member counts per required KB profile id.",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/nonnegative_int" }
+        }
       }
     },
     "resources": {
@@ -161,6 +166,10 @@
         },
         "experience": { "$ref": "#/$defs/nonnegative_int" },
         "previous_experience": { "type": ["integer", "null"] },
+        "advance_experience": {
+          "description": "Experience baseline for the pending advance row; null when absent (legacy files).",
+          "type": ["integer", "null"]
+        },
         "quantity": { "$ref": "#/$defs/nonnegative_int" },
         "condition": { "type": ["string", "null"] },
         "condition_detail": { "type": ["string", "null"] },
@@ -176,6 +185,10 @@
         },
         "profile_id": { "type": "string" },
         "spell_difficulty_modifiers": { "$ref": "#/$defs/int_map" },
+        "equipment_limits": {
+          "description": "Remaining equip capacity by KB category key (post-battle equipment step).",
+          "$ref": "#/$defs/int_map"
+        },
         "hireling_rating": { "$ref": "#/$defs/nonnegative_int" },
         "maximum_models_modifier": { "type": "integer" },
         "upkeep_resources": {
@@ -212,7 +225,12 @@
         "per_model": { "type": "boolean" },
         "transferable": { "type": "boolean" },
         "special_rules": { "type": "array", "items": { "type": "string" } },
-        "base_item_id": { "type": "string" }
+        "base_item_id": { "type": "string" },
+        "acquisition_costs": {
+          "description": "Per-copy acquisition costs (oldest first); empty when absent.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/nonnegative_int" }
+        }
       }
     },
     "battle": {
@@ -359,7 +377,12 @@
         "value": { "$ref": "#/$defs/nonnegative_int" },
         "rarity": { "type": ["string", "null"] },
         "special_rules": { "type": "array", "items": { "type": "string" } },
-        "base_item_id": { "type": "string" }
+        "base_item_id": { "type": "string" },
+        "acquisition_costs": {
+          "description": "Per-copy acquisition costs (oldest first); empty when absent.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/nonnegative_int" }
+        }
       }
     },
     "view": {

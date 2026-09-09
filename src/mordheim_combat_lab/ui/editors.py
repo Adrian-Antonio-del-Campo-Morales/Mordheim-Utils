@@ -4,8 +4,11 @@ from __future__ import annotations
 from dataclasses import replace
 from mordheim_combat_lab.application.catalogue import CombatCatalogue
 from mordheim_combat_lab.application.catalogue import ProfileChoice
+from mordheim_combat_lab.ui.widgets.choice import ChoiceBox
+from mordheim_combat_lab.ui.widgets.choice import ChoiceVar
 from mordheim_core.models import Characteristics
 from mordheim_core.models import FighterBuild
+from mordheim_ui.i18n import tr
 from mordheim_combat_lab.ui.widgets.skills import SkillChecklist
 import re as re
 import tkinter as tk
@@ -24,9 +27,15 @@ class FighterEditor(ttk.Frame):
         super().__init__(parent)
         self.title, self.catalogue, self.on_change = title, catalogue, on_change
         self.name = tk.StringVar(value=title); self.band = tk.StringVar(); self.profile_name = tk.StringVar()
-        self.weapon_name = tk.StringVar(value="Free hand"); self.off_hand_name = tk.StringVar(value="Free hand")
-        self.armour_name = tk.StringVar(value="No armour"); self.main_material_name = tk.StringVar(value="Normal"); self.off_material_name = tk.StringVar(value="Normal")
-        self.main_poison_name = tk.StringVar(value="No poison"); self.off_poison_name = tk.StringVar(value="No poison")
+        # Equipment choices keep the KB item id as the stored value; the
+        # combobox renders the localized label for that id.
+        self.weapon = ChoiceVar("weapon.fist", master=self)
+        self.off_hand = ChoiceVar(None, master=self)
+        self.armour = ChoiceVar("armour.no-armour", master=self)
+        self.main_material = ChoiceVar("material.normal", master=self)
+        self.off_material = ChoiceVar("material.normal", master=self)
+        self.main_poison = ChoiceVar(None, master=self)
+        self.off_poison = ChoiceVar(None, master=self)
         self.energy_focus_attacks = tk.IntVar(value=0)
         self.equipment_summary = tk.StringVar(value="None")
         self.manual_characteristics = {key: tk.IntVar(value=value) for key, value in (("WS",3),("S",3),("T",3),("W",1),("I",3),("A",1))}
@@ -38,7 +47,7 @@ class FighterEditor(ttk.Frame):
         self._build_gui(); self.set_categories(self._categories)
 
     def _build_gui(self):
-        identity = ttk.LabelFrame(self, text="Identity and Source", padding=(10,8)); identity.pack(fill="x", pady=(0,10))
+        identity = ttk.LabelFrame(self, text=tr("Identity and Source"), padding=(10,8)); identity.pack(fill="x", pady=(0,10))
         for column in (1,3,5): identity.columnconfigure(column, weight=1)
         for column, label, variable in ((0,"Name:",self.name),(2,"Warband:",self.band),(4,"Warrior:",self.profile_name)):
             ttk.Label(identity,text=label).grid(row=0,column=column,sticky="w",padx=(0,6))
@@ -47,21 +56,30 @@ class FighterEditor(ttk.Frame):
             if column == 2: self.band_combo=widget; widget.bind("<<ComboboxSelected>>",self._band_changed)
             if column == 4: self.profile_combo=widget; widget.bind("<<ComboboxSelected>>",self._profile_changed)
         ttk.Label(identity,textvariable=self.summary,style="Muted.TLabel").grid(row=1,column=0,columnspan=6,sticky="w",pady=(6,0))
-        ttk.Label(self,text="BASIC ATTRIBUTES",style="Section.TLabel").pack(anchor="w",pady=(2,4)); self.stats_frame=ttk.Frame(self); self.stats_frame.pack(fill="x",pady=(0,12))
-        ttk.Label(self,text="EQUIPMENT",style="Section.TLabel").pack(anchor="w",pady=(0,4))
-        hands=ttk.Frame(self); hands.pack(fill="x"); hands.columnconfigure((0,1),weight=1,uniform="hands"); self._hand(hands,"Main Hand",0,True); self._hand(hands,"Off Hand",1,False)
+        ttk.Label(self,text=tr("BASIC ATTRIBUTES"),style="Section.TLabel").pack(anchor="w",pady=(2,4)); self.stats_frame=ttk.Frame(self); self.stats_frame.pack(fill="x",pady=(0,12))
+        ttk.Label(self,text=tr("EQUIPMENT"),style="Section.TLabel").pack(anchor="w",pady=(0,4))
+        hands=ttk.Frame(self); hands.pack(fill="x"); hands.columnconfigure((0,1),weight=1,uniform="hands"); self._hand(hands,tr("Main Hand"),0,True); self._hand(hands,tr("Off Hand"),1,False)
         lower=ttk.Frame(self,padding=(0,7,0,0)); lower.pack(fill="x"); lower.columnconfigure(1,weight=1); lower.columnconfigure(3,weight=1)
-        ttk.Label(lower,text="Armour").grid(row=0,column=0,sticky="w",padx=(0,7)); self.armour_combo=ttk.Combobox(lower,textvariable=self.armour_name,state="readonly"); self.armour_combo.grid(row=0,column=1,sticky="ew",padx=(0,18)); self.armour_combo.bind("<<ComboboxSelected>>",self._notify_change)
-        ttk.Label(lower,text="Equipment").grid(row=0,column=2,sticky="w",padx=(0,7)); self.equipment_button=ttk.Menubutton(lower,textvariable=self.equipment_summary); self.equipment_button.grid(row=0,column=3,sticky="ew")
-        ttk.Label(self,text="SKILLS",style="Section.TLabel").pack(anchor="w",pady=(14,4)); self.skill_checklist=SkillChecklist(self,self._skills_changed); self.skill_checklist.configure_inline_counter(ENERGY_FOCUS_RULE_ID, value=0, command=self._energy_focus_changed); self.skill_checklist.pack(fill="x")
+        ttk.Label(lower,text=tr("Armour")).grid(row=0,column=0,sticky="w",padx=(0,7)); self.armour_combo=ChoiceBox(lower,self.armour,self._notify_change); self.armour_combo.grid(row=0,column=1,sticky="ew",padx=(0,18))
+        ttk.Label(lower,text=tr("Equipment")).grid(row=0,column=2,sticky="w",padx=(0,7)); self.equipment_button=ttk.Menubutton(lower,textvariable=self.equipment_summary); self.equipment_button.grid(row=0,column=3,sticky="ew")
+        ttk.Label(self,text=tr("SKILLS"),style="Section.TLabel").pack(anchor="w",pady=(14,4)); self.skill_checklist=SkillChecklist(self,self._skills_changed); self.skill_checklist.configure_inline_counter(ENERGY_FOCUS_RULE_ID, value=0, command=self._energy_focus_changed); self.skill_checklist.pack(fill="x")
 
     def _hand(self,parent,title,column,main):
         panel=ttk.LabelFrame(parent,text=title,padding=(9,7)); panel.grid(row=0,column=column,sticky="ew",padx=(0,5) if column==0 else (5,0)); panel.columnconfigure(1,weight=1); panel.columnconfigure(3,weight=1)
-        ttk.Label(panel,text="Weapon").grid(row=0,column=0,sticky="w",padx=(0,6)); combo=ttk.Combobox(panel,textvariable=self.weapon_name if main else self.off_hand_name,state="readonly"); combo.grid(row=0,column=1,sticky="ew",padx=(0,12)); combo.bind("<<ComboboxSelected>>",self._main_weapon_changed if main else self._off_hand_changed)
-        ttk.Label(panel,text="Material").grid(row=0,column=2,sticky="w",padx=(0,6)); material=ttk.Combobox(panel,textvariable=self.main_material_name if main else self.off_material_name,state="readonly",width=14); material.grid(row=0,column=3,sticky="ew"); material.bind("<<ComboboxSelected>>",self._notify_change)
-        ttk.Label(panel,text="Poison").grid(row=1,column=2,sticky="w",padx=(0,6),pady=(4,0)); poison=ttk.Combobox(panel,textvariable=self.main_poison_name if main else self.off_poison_name,state="readonly",width=14); poison.grid(row=1,column=3,sticky="ew",pady=(4,0)); poison.bind("<<ComboboxSelected>>",self._notify_change)
-        if main: self.weapon_combo,self.main_material_combo,self.main_poison_combo=combo,material,poison
-        else: self.off_hand_combo,self.off_material_combo,self.off_poison_combo=combo,material,poison
+        ttk.Label(panel,text=tr("Weapon")).grid(row=0,column=0,sticky="w",padx=(0,6))
+        if main:
+            combo=ChoiceBox(panel,self.weapon,self._main_weapon_changed)
+            material=ChoiceBox(panel,self.main_material,self._notify_change,width=14)
+            poison=ChoiceBox(panel,self.main_poison,self._notify_change,width=14)
+            self.weapon_combo,self.main_material_combo,self.main_poison_combo=combo,material,poison
+        else:
+            combo=ChoiceBox(panel,self.off_hand,self._off_hand_changed)
+            material=ChoiceBox(panel,self.off_material,self._notify_change,width=14)
+            poison=ChoiceBox(panel,self.off_poison,self._notify_change,width=14)
+            self.off_hand_combo,self.off_material_combo,self.off_poison_combo=combo,material,poison
+        combo.grid(row=0,column=1,sticky="ew",padx=(0,12))
+        ttk.Label(panel,text=tr("Material")).grid(row=0,column=2,sticky="w",padx=(0,6)); material.grid(row=0,column=3,sticky="ew")
+        ttk.Label(panel,text=tr("Poison")).grid(row=1,column=2,sticky="w",padx=(0,6),pady=(4,0)); poison.grid(row=1,column=3,sticky="ew",pady=(4,0))
 
     def set_categories(self,categories:set[str]):
         self._categories=set(categories)
@@ -161,25 +179,35 @@ class FighterEditor(ttk.Frame):
         except (tk.TclError, ValueError): value = minimum
         self.manual_characteristics[key].set(min(self._stat_limits[key], max(minimum, value)))
         self._notify_change()
+    def _labelled(self, pairs):
+        """Map value → display label, resolving KB names for real ids."""
+        return {item_id: self.catalogue.localized_name(item_id, name) if item_id else name for item_id, name in pairs}
+
     def _configure_options(self,choice):
-        self._weapons={"Free hand":None, **{name:item_id for item_id,name in self.catalogue.weapons(choice)}}; self.weapon_combo.configure(values=tuple(self._weapons)); self.weapon_name.set("Free hand"); self._armours={name:item_id for item_id,name in self.catalogue.armours(choice)}; self.armour_combo.configure(values=tuple(self._armours)); self.armour_name.set("No armour"); self._materials={name:item_id for item_id,name in self.catalogue.materials(choice)}; self.main_material_combo.configure(values=tuple(self._materials)); self.off_material_combo.configure(values=tuple(self._materials)); self.main_material_name.set("Normal"); self.off_material_name.set("Normal"); self._poisons={name:item_id for item_id,name in self.catalogue.poisons(choice)}; self.main_poison_combo.configure(values=tuple(self._poisons)); self.off_poison_combo.configure(values=tuple(self._poisons)); self.main_poison_name.set("No poison"); self.off_poison_name.set("No poison"); self._configure_equipment(choice); self._main_weapon_changed()
+        self._weapon_options={None:"Free hand", **dict(self.catalogue.weapons(choice))}; self.weapon.set_options(self._labelled(self._weapon_options.items())); self.weapon.set("weapon.fist")
+        self._armour_options=dict(self.catalogue.armours(choice)); self.armour.set_options(self._labelled(self._armour_options.items())); self.armour.set("armour.no-armour")
+        self._material_options=dict(self.catalogue.materials(choice)); self.main_material.set_options(self._labelled(self._material_options.items())); self.off_material.set_options(self._labelled(self._material_options.items())); self.main_material.set("material.normal"); self.off_material.set("material.normal")
+        self._poison_options=dict(self.catalogue.poisons(choice)); self.main_poison.set_options(self._labelled(self._poison_options.items())); self.off_poison.set_options(self._labelled(self._poison_options.items())); self.main_poison.set(None); self.off_poison.set(None)
+        self._configure_equipment(choice); self._main_weapon_changed()
     def _configure_equipment(self,choice):
         self._equipment_options={f"{kind}:{item_id}":(item_id,name,kind) for kind,entries in (("helmet",self.catalogue.helmets(choice)),("preparation",self.catalogue.preparations(choice))) for item_id,name in entries if item_id}; menu=tk.Menu(self.equipment_button,tearoff=False); self._equipment_vars={}
         for option_id,(_item_id,name,kind) in self._equipment_options.items():
             variable=tk.BooleanVar(value=False); self._equipment_vars[option_id]=variable
             prefix={"helmet":"Helmet", "preparation":"Preparation"}[kind]
-            menu.add_checkbutton(label=f"{prefix}: {name}",variable=variable,command=lambda selected=option_id:self._equipment_changed(selected))
+            menu.add_checkbutton(label=f"{tr(prefix)}: {self.catalogue.localized_name(_item_id, name)}",variable=variable,command=lambda selected=option_id:self._equipment_changed(selected))
         self.equipment_button.configure(menu=menu); self._equipment_changed()
     def _main_weapon_changed(self,_event=None):
-        main=self._weapons.get(self.weapon_name.get()); options={name:item_id for item_id,name in self.catalogue.off_hand_options(self.choice)}
+        main=self.weapon.get(); options={None:"Free hand", **dict(self.catalogue.off_hand_options(self.choice)[1:])}
         selected_ids = self.skill_checklist.selected_ids()
         _ordinary_skills, selected_warband_skills = self.catalogue.skill_rule_ids(selected_ids)
         arms_master=bool({
             "band--pit-fighter-skill-arms-master",
             "band--ogres-special-skills-master-of-arms",
         } & (set(selected_warband_skills) | set(selected_ids).intersection(self._other_rule_ids)))
-        if main and self.catalogue.mechanic(main).get("hands")==2 and not arms_master: options={"Free hand":None}
-        self._active_off_hands=options; self.off_hand_combo.configure(values=tuple(options)); self.off_hand_name.set("Free hand" if "Free hand" in options else next(iter(options),"Free hand")); self._off_hand_changed()
+        if main and self.catalogue.mechanic(main).get("hands")==2 and not arms_master: options={None:"Free hand"}
+        self._active_off_hands=options; self.off_hand.set_options(self._labelled(options.items()))
+        self.off_hand.set(None if None in options else next(iter(options), None))
+        self._off_hand_changed()
     def _skills_changed(self):
         energy_focus = ENERGY_FOCUS_RULE_ID in self.catalogue.skill_rule_ids(self.skill_checklist.selected_ids())[1]
         if not energy_focus:
@@ -190,7 +218,7 @@ class FighterEditor(ttk.Frame):
         self.energy_focus_attacks.set(value)
         self._notify_change()
     def _off_hand_changed(self,_event=None):
-        item=self._active_off_hands.get(self.off_hand_name.get()); is_weapon=bool(item and item.startswith("weapon.")); self.off_material_combo.configure(state="readonly" if is_weapon else "disabled"); self.off_poison_combo.configure(state="readonly" if is_weapon else "disabled"); self._notify_change()
+        item=self.off_hand.get(); is_weapon=bool(item and item.startswith("weapon.")); self.off_material_combo.configure(state="readonly" if is_weapon else "disabled"); self.off_poison_combo.configure(state="readonly" if is_weapon else "disabled"); self._notify_change()
     def _equipment_changed(self, selected=None):
         if selected and self._equipment_vars[selected].get():
             _item_id, _name, kind = self._equipment_options[selected]
@@ -198,19 +226,19 @@ class FighterEditor(ttk.Frame):
                 for option_id, (_other_id, _other_name, other_kind) in self._equipment_options.items():
                     if option_id != selected and other_kind == kind:
                         self._equipment_vars[option_id].set(False)
-        names=[name for option_id,(_item_id,name,_kind) in self._equipment_options.items() if self._equipment_vars[option_id].get()]; self.equipment_summary.set(", ".join(names) if names else "None"); self._notify_change()
+        names=[self.catalogue.localized_name(item_id, name) for option_id,(item_id,name,_kind) in self._equipment_options.items() if self._equipment_vars[option_id].get()]; self.equipment_summary.set(", ".join(names) if names else tr("None")); self._notify_change()
     def _selected(self,kind): return tuple(item_id for option_id,(item_id,_name,item_kind) in self._equipment_options.items() if item_kind==kind and self._equipment_vars[option_id].get())
     def build(self):
         selected_ids = self.skill_checklist.selected_ids()
         skill_ids, warband_skill_ids = self.catalogue.skill_rule_ids(selected_ids)
         special_rule_ids = (*warband_skill_ids, *(rule_id for rule_id in selected_ids if rule_id in self._other_rule_ids))
-        main_weapon_id = "weapon.fist" if self.weapon_name.get() == "Free hand" else self._weapons.get(self.weapon_name.get(), "weapon.dagger")
-        values=dict(main_weapon_id=main_weapon_id,off_hand_id=self._active_off_hands.get(self.off_hand_name.get()),armour_id=self._armours.get(self.armour_name.get(),"armour.no-armour"),defence_ids=self._selected("helmet"),main_material_id=self._materials.get(self.main_material_name.get(),"material.normal"),off_material_id=self._materials.get(self.off_material_name.get(),"material.normal"),preparation_ids=self._selected("preparation"),main_poison_id=self._poisons.get(self.main_poison_name.get()),off_poison_id=self._poisons.get(self.off_poison_name.get()),skill_ids=skill_ids,special_rule_ids=special_rule_ids,energy_focus_attacks=self.energy_focus_attacks.get())
+        main_weapon_id = "weapon.fist" if self.weapon.get() in (None, "weapon.fist") else self.weapon.get()
+        values=dict(main_weapon_id=main_weapon_id,off_hand_id=self.off_hand.get(),armour_id=self.armour.get() or "armour.no-armour",defence_ids=self._selected("helmet"),main_material_id=self.main_material.get() or "material.normal",off_material_id=self.off_material.get() or "material.normal",preparation_ids=self._selected("preparation"),main_poison_id=self.main_poison.get(),off_poison_id=self.off_poison.get(),skill_ids=skill_ids,special_rule_ids=special_rule_ids,energy_focus_attacks=self.energy_focus_attacks.get())
         for key in self.manual_characteristics:self._normalise_stat(key)
         characteristics=Characteristics(*(self.manual_characteristics[key].get() for key in ("WS","S","T","W","I","A")))
         if self.choice is None:return FighterBuild(self.catalogue.ruleset,characteristics,**values)
         choice=self.choice; return FighterBuild(self.catalogue.ruleset,characteristics,collection=choice.collection,band_id=choice.band_id,profile_id=choice.profile_id,**values)
-    def main_weapon_options(self): return tuple((item_id,name) for name,item_id in self._weapons.items())
+    def main_weapon_options(self): return tuple((item_id,name) for item_id,name in self._weapon_options.items())
     def load_build(self,build):
         was_updating = self._begin_update()
         try:
@@ -223,10 +251,9 @@ class FighterEditor(ttk.Frame):
                 self.band.set(next(name for name,value in self._band_packages.items() if value == package)); self._band_changed(); self.profile_name.set(next(name for name,choice in self._profiles.items() if choice.profile_id==build.profile_id)); self._profile_changed()
                 if build.characteristics:
                     for key,value in zip(("WS","S","T","W","I","A"),(build.characteristics.weapon_skill,build.characteristics.strength,build.characteristics.toughness,build.characteristics.wounds,build.characteristics.initiative,build.characteristics.attacks)):self.manual_characteristics[key].set(value)
-            if build.main_weapon_id == "weapon.fist": self.weapon_name.set("Free hand")
-            else: self._set(self._weapons,self.weapon_name,build.main_weapon_id)
-            self._main_weapon_changed(); self._set(self._active_off_hands,self.off_hand_name,build.off_hand_id); self._off_hand_changed(); self._set(self._armours,self.armour_name,build.armour_id); self._set(self._materials,self.main_material_name,build.main_material_id); self._set(self._materials,self.off_material_name,build.off_material_id)
-            self._set(self._poisons,self.main_poison_name,build.main_poison_id); self._set(self._poisons,self.off_poison_name,build.off_poison_id)
+            self.weapon.set("weapon.fist" if build.main_weapon_id == "weapon.fist" else build.main_weapon_id)
+            self._main_weapon_changed(); self.off_hand.set_by_value(build.off_hand_id, default=None); self._off_hand_changed(); self.armour.set_by_value(build.armour_id, default="armour.no-armour"); self.main_material.set_by_value(build.main_material_id, default="material.normal"); self.off_material.set_by_value(build.off_material_id, default="material.normal")
+            self.main_poison.set_by_value(build.main_poison_id); self.off_poison.set_by_value(build.off_poison_id)
             selected=set(build.defence_ids)|set(build.preparation_ids)
             for option_id,var in self._equipment_vars.items():
                 item_id,_name,kind=self._equipment_options[option_id]
@@ -237,10 +264,17 @@ class FighterEditor(ttk.Frame):
             self.energy_focus_attacks.set(build.energy_focus_attacks); self._skills_changed()
         finally:
             self._finish_update(was_updating)
-    @staticmethod
-    def _set(values,variable,target):
-        for name,value in values.items():
-            if value==target:variable.set(name);return
+
+    def refresh_labels(self):
+        """Re-render every equipment label after a locale change."""
+        self.weapon.set_options(self._labelled(self._weapon_options.items()))
+        self.armour.set_options(self._labelled(self._armour_options.items()))
+        self.main_material.set_options(self._labelled(self._material_options.items()))
+        self.off_material.set_options(self._labelled(self._material_options.items()))
+        self.main_poison.set_options(self._labelled(self._poison_options.items()))
+        self.off_poison.set_options(self._labelled(self._poison_options.items()))
+        for combo in (self.weapon_combo, self.off_hand_combo, self.armour_combo, self.main_material_combo, self.off_material_combo, self.main_poison_combo, self.off_poison_combo):
+            combo.refresh_labels()
 
     def _begin_update(self):
         was_updating = self._updating
