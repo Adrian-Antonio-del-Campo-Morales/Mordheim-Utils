@@ -152,6 +152,42 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     return new ArtefactKnowledgeReader(artefact as KnowledgeArtefact);
   }
 
+  /**
+   * P5.2 acceptance (KB bundling decision, `docs/decisions/web-kb-bundling.md`):
+   * fetch the generated artefact from a URL once, validate it and build the
+   * reader. The browser bundle ships the artefact as a static asset
+   * (`public/knowledge/knowledge-web.json`, staged by CI); nothing is
+   * inlined into the JS chunk.
+   *
+   * Failure modes are typed and actionable — a load failure is a
+   * `KnowledgeReaderError` with the reason (`http`/`parse`/`invalid`), never
+   * a raw `Response` or a `SyntaxError` leaking into the UI.
+   */
+  static async fromUrl(url: string, fetchFn: typeof fetch = fetch): Promise<ArtefactKnowledgeReader> {
+    let response: Response;
+    try {
+      response = await fetchFn(url);
+    } catch (cause) {
+      throw new KnowledgeReaderError(`Could not fetch the knowledge artefact from "${url}": ${(cause as Error).message}`);
+    }
+    if (!response.ok) {
+      throw new KnowledgeReaderError(
+        `Knowledge artefact request failed: HTTP ${response.status} for "${url}".`,
+      );
+    }
+    let artefact: unknown;
+    try {
+      artefact = await response.json();
+    } catch (cause) {
+      throw new KnowledgeReaderError(
+        `Knowledge artefact at "${url}" is not valid JSON: ${(cause as Error).message}`,
+      );
+    }
+    // One validation pass (`from` re-validates; both are cheap relative to
+    // the network hop, and `from` stays the single entry point for fakes).
+    return ArtefactKnowledgeReader.from(artefact);
+  }
+
   private static indexById(
     rows: readonly ArtefactRow[],
     idField: string,

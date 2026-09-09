@@ -98,6 +98,8 @@ function defaultView() {
     document: null,
     error: null as string | null,
     dirty: false,
+    kbLoading: false,
+    kbError: null,
     importFile: vi.fn().mockResolvedValue(undefined),
     confirmReplace: vi.fn().mockResolvedValue(undefined),
     exportFile: vi.fn().mockResolvedValue(undefined),

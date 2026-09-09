@@ -90,12 +90,17 @@ export function HirelingsPanel({ document, listings }: HirelingsPanelProps) {
                 <td>{offer.rating}</td>
                 <td>
                   {offer.eligible ? (
-                    <button type="button" disabled={busy} onClick={() => hire(offer.profile_id)}>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      aria-label={`Hire ${offer.name}`}
+                      onClick={() => hire(offer.profile_id)}
+                    >
                       Hire
                     </button>
                   ) : (
-                    <span role="note" title={offer.ineligible_reason ?? ""}>
-                      Not eligible
+                    <span role="note">
+                      Not eligible: {offer.ineligible_reason ?? "excluded by warband rules"}
                     </span>
                   )}
                 </td>
@@ -126,6 +131,7 @@ export function HirelingsPanel({ document, listings }: HirelingsPanelProps) {
                 <button
                   type="button"
                   disabled={busy || good.base_price === null}
+                  aria-label={`Buy ${good.name}`}
                   onClick={() => buy(good.item_id, good.base_price)}
                 >
                   Buy
@@ -155,7 +161,12 @@ export function HirelingsPanel({ document, listings }: HirelingsPanelProps) {
                 <td>{row.name}</td>
                 <td>{row.stash}</td>
                 <td>
-                  <button type="button" disabled={busy} onClick={() => sell(row.id)}>
+                  <button
+                    type="button"
+                    disabled={busy}
+                    aria-label={`Sell 1 ${row.name} from stash`}
+                    onClick={() => sell(row.id)}
+                  >
                     Sell 1
                   </button>
                 </td>
