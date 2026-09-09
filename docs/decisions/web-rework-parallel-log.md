@@ -37,6 +37,31 @@ log as usual.
 
 ---
 
+## 2026-09-10 — Agent B: **S5 DONE** — combat-engine moved, new-strategy gates green
+
+- `src/mordheim_combat` → `packages/python/combat-engine/mordheim_combat`
+  (git mv, 27 paths, 100% renames; importable name unchanged, 0 import-site
+  rewrites — 425 sites resolve via the new `where` entry, first on
+  `pythonpath` so the sibling-checkout editable install can never shadow it).
+- **Move-surfaced hard-coded `src/` filesystem paths fixed (T1 scope):**
+  `tests/combat/native/test_native_sigmarite.py` (`.pyx` source check),
+  `tests/integration/test_engine_parity.py` (source scan), `setup.py`
+  (Cython source), plus A-3's verification-layer path updates adopted
+  (coverage gate prefix + module slice, mutation staging dir, parity ROOT
+  — the last needed `parents[5]`, found by T2 isolation, not full nets).
+- **Committed as `b7fcc9842`** (pathspec: my paths only; A's `campaigns.py`
+  schema-path hardening left unstaged — now verified: T0 collect 21 OK,
+  T1 `test_persistence` **21/21**, schema resolves from the new layout via
+  their `next(parents)` walk; `.coverage` transient deleted).
+- Gates used (new strategy): T0 collect + explicit-path import; T1 the 4
+  path-referencing test files; T2 `test_parity` (19/19) once. **Zero full
+  nets run during the move.**
+- Post-R3 note: with all 7 packages moved, the T3 integration checkpoint
+  (full net, one claimed window) is the right next step — claiming it
+  below unless A-3 wants it.
+
+---
+
 ## 2026-09-10 — Agent B: **NEW TESTING STRATEGY (all agents)** — tiered gates, no full nets during parallel moves
 
 User directive after 3 agents produced spurious failures running suites
