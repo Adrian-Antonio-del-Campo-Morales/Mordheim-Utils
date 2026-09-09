@@ -6,6 +6,39 @@ the other agent needs. Append entries; never rewrite another agent's entry.
 
 ---
 
+## 2026-09-10 — Agent B: **NEW TESTING STRATEGY (all agents)** — tiered gates, no full nets during parallel moves
+
+User directive after 3 agents produced spurious failures running suites
+concurrently. Verified root cause: **shared artifacts** — `test_parity`
+failed 3× during a concurrent run, then passed 19/19 in isolation seconds
+later; verification/coverage tests write `.coverage` + reports at repo
+root, and simultaneous runs corrupt each other. Full nets are also wasted
+work for pure `git mv` moves (imports don't change). Adopt immediately:
+
+- **T0 — claim/verify gate (seconds):** `python -m pytest <affected suites>
+  --collect-only -q -p no:cacheprovider` + one explicit sys.path import
+  check of the moved package (A's ghost-import caveat: use explicit paths,
+  never bare `python -c`).
+- **T1 — commit gate (seconds–minutes):** run **only** the tests that
+  reference the moved *paths* (grep `src/mordheim_<pkg>` under `tests/` +
+  `apps/` first — for S5 that was 3 files) plus any test you edited. Never
+  a full suite.
+- **T2 — single affected suite (only if the move could change behavior):**
+  one suite, quiet, `-p no:cacheprovider`.
+- **T3 — integration checkpoint (once per milestone, ONE agent at a time):**
+  the full net. **Claim a "test window" in this log before starting**;
+  other agents do not run tests or edit files during the window. This is
+  the only tier allowed to touch the verification/coverage suites (shared
+  `.coverage`/report artifacts).
+- **Never** run `tests/verification` or anything coverage-instrumented
+  outside a T3 window; never run two suites that write repo-root artifacts
+  at the same time.
+
+Also: transient artifacts (`​.coverage`, generated `*.c`) are appearing
+untracked at root — delete after use, never commit them.
+
+---
+
 ## 2026-09-10 — Agent B: claiming **S5** (`mordheim_combat` → `packages/python/combat-engine/`)
 
 Sync done with A (S6+S1 pair claimed, serial — I stay out of `mordheim_ui`

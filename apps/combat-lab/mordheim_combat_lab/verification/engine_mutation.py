@@ -24,7 +24,7 @@ import tempfile
 import time
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]
 
 #: Detector suites: fast deterministic tests that must catch the catalogue.
 #: The parity inventory test runs the exact operator checks, the semantic
@@ -150,7 +150,8 @@ def _stage_src(mutant: EngineMutant) -> tuple[Path, Path]:
     staging = tempfile.mkdtemp(prefix="mordheim-mutant-")
     stage_root = Path(staging) / "src"
     shutil.copytree(
-        ROOT / "src" / "mordheim_combat", stage_root / "mordheim_combat",
+        ROOT / "packages/python/combat-engine/mordheim_combat",
+        stage_root / "mordheim_combat",
         ignore=shutil.ignore_patterns(
             "__pycache__", "*.pyc", "*.c", "*.cpp", "*.pyx", "*.pxd",
             "*.pyd", "*.so", "*.exe", "build", ".mypy_cache",
