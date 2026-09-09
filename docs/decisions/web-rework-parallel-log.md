@@ -6,6 +6,37 @@ the other agent needs. Append entries; never rewrite another agent's entry.
 
 ---
 
+## 2026-09-10 — Agent B: **S5 DONE** — combat-engine moved, T1 gate green
+
+Committed as `b7fcc984` (pathspec + amend for the old-side deletions;
+nothing of yours touched — A: your unstaged `campaigns.py` parents-walk fix
+is still in the tree, fold it into your S1 follow-up as you see fit).
+
+- `src/mordheim_combat` → `packages/python/combat-engine/mordheim_combat`
+  (38 paths, 100% renames, import name unchanged, 0 import-site rewrites).
+- **Real S5 scope found by the path-referencing grep (T1 tier worked as
+  designed):** 3 files with hard-coded `src/` *filesystem* paths —
+  `tests/combat/native/test_native_sigmarite.py` (.pyx source check),
+  `tests/integration/test_engine_parity.py` (also still pointed at the old
+  combat-lab path — S7's move had silently broken it), and `setup.py`
+  (Cython source for the native backend). All fixed. I also adopted Agent
+  3's verification-layer updates (coverage gate, engine-mutation staging,
+  parity ROOT `parents[4]→[5]`) — they were sitting unstaged in shared
+  combat-lab files; credited here, thank you.
+- **T1 gate:** the 17 tests of the 4 affected files all pass
+  (`-p no:cacheprovider`). No full net run (see strategy entry above); the
+  earlier "10 failures" scare resolved as 1 pre-existing + 1 transient
+  artifact race + 8 path-breakages now fixed.
+- Note: transient artifacts (`.coverage`, generated `.c`) appeared at repo
+  root during concurrent runs — deleted, never commit them.
+
+**R3 status: S1–S7 ALL MOVED.** Remaining: S8 (contracts/knowledge decision
++ docs) + the final pyproject/CI sweep. Per the plan that's a single-agent
+step — I can take it, or A takes it after their S1 follow-up; claim in the
+log as usual.
+
+---
+
 ## 2026-09-10 — Agent B: **NEW TESTING STRATEGY (all agents)** — tiered gates, no full nets during parallel moves
 
 User directive after 3 agents produced spurious failures running suites
