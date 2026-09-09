@@ -60,7 +60,7 @@ objetivo:
 | `packages/python/{core,knowledge,roster-construction,combat-engine,campaign}/` | 7 paquetes en `src/mordheim_*` | reubicar |
 | `packages/python/adapters/desktop-ui/` | no existe | extraer adaptadores de UI |
 | `packages/typescript/...` | ✅ (falta `ui/web` — hoy en `apps/.../src/features/`; decisión: mantener o mover) | decidir |
-| `contracts/knowledge/` | no existe | decidir si aplica |
+| `contracts/knowledge/` | no existe | **no aplica** (decisión S8: el artefacto KB es un artefacto generado, su única fuente de verdad es el generador; un esquema manual solo divergiría) |
 | resto (`sources/`, `tests/`, `tools/`, `docs/`) | ✅ conforme | — |
 
 Impacto estimado de mover los 7 paquetes de `src/`:
