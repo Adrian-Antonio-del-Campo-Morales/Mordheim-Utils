@@ -20,6 +20,9 @@ def test_native_compile_preserves_sigmarite_and_ignore_pain_contract() -> None:
 
 
 def test_native_source_keeps_pool_phase_snapshot_for_stunned_followups() -> None:
-    source = open("src/mordheim_combat/native/_combat_native.pyx", encoding="utf-8").read()
+    source = open(
+        "packages/python/combat-engine/mordheim_combat/native/_combat_native.pyx",
+        encoding="utf-8",
+    ).read()
     assert "Do not finish STUNNED defenders here" in source
     assert "if phase_cond[row] == STUNNED:" in source

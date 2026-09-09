@@ -24,7 +24,7 @@ _extra = os.environ.get("COMBAT_NATIVE_CFLAGS", "").split()
 _extensions = [
     Extension(
         "mordheim_combat._combat_native",
-        sources=["src/mordheim_combat/native/_combat_native.pyx"],
+        sources=["packages/python/combat-engine/mordheim_combat/native/_combat_native.pyx"],
         language="c",
         optional=True,
         extra_compile_args=_extra,
