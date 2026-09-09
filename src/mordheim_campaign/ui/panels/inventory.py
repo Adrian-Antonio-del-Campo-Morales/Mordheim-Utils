@@ -7,7 +7,7 @@ from mordheim_ui import themed_dialogs as messagebox
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.ui.equipment_display import equipment_quantity_suffix
-from mordheim_ui.i18n import tr
+from mordheim_ui.i18n import tr, tr_message
 from mordheim_ui.theme import COLORS
 from mordheim_ui.icons import ui_icon
 from mordheim_ui.widgets import BorderedFrame, ScrollableFrame, SummaryStrip
@@ -16,21 +16,25 @@ from mordheim_ui.widgets import BorderedFrame, ScrollableFrame, SummaryStrip
 class InventoryWorkspace(tk.Frame):
     """Single equipment board: roster on the left, stash on the right."""
 
-    def __init__(self, master: tk.Misc, controller: AppController, *, show_summary: bool = True, read_only: bool = False, purchase_mode: str | None = None, **kwargs) -> None:
+    def __init__(self, master: tk.Misc, controller: AppController, *, show_summary: bool = True, read_only: bool = False, purchase_mode: str | None = None, snapshot=None, **kwargs) -> None:
         super().__init__(master, bg=COLORS["bg"], **kwargs)
         self.controller = controller
-        self.read_only = read_only
+        self.read_only = read_only or snapshot is not None
+        self.snapshot = snapshot
         self.purchase_mode = purchase_mode
         self._drag = None
         self._drag_badge: tk.Toplevel | None = None
         campaign = controller.state.campaign
+        self.roster = snapshot.roster if snapshot is not None else campaign.warriors
+        self.inventory = snapshot.inventory if snapshot is not None else campaign.inventory
         row = 0
         if show_summary:
+            totals = snapshot if snapshot is not None else campaign.current_state
             SummaryStrip(self, [
-                (tr('Gold crowns'), f"{campaign.current_state.gold} gc"),
-                ("Wyrdstone", tr('{} shards').format(campaign.current_state.wyrdstone)),
-                (tr('Inventory'), tr('{} items').format(sum(item.owned for item in campaign.inventory))),
-                (tr('In stash'), tr('{} items').format(sum(item.stash for item in campaign.inventory))),
+                (tr('Gold crowns'), f"{totals.gold} gc"),
+                ("Wyrdstone", tr('{} shards').format(totals.wyrdstone)),
+                (tr('Inventory'), tr('{} items').format(sum(item.owned for item in self.inventory))),
+                (tr('In stash'), tr('{} items').format(sum(item.stash for item in self.inventory))),
             ]).grid(row=0, column=0, sticky="ew", pady=(0, 7))
             row = 1
 
@@ -39,7 +43,7 @@ class InventoryWorkspace(tk.Frame):
         toolbar = tk.Frame(self, bg=COLORS["bg"])
         toolbar.grid(row=row, column=0, sticky="ew", pady=(0, 6))
         tk.Label(toolbar, text=tr('Drag items between warriors and stash.'), bg=COLORS["bg"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(side="left")
-        if (campaign.is_draft or purchase_mode == "post_battle") and not read_only:
+        if (campaign.is_draft or purchase_mode == "post_battle") and not self.read_only:
             ttk.Button(
                 toolbar, text=tr('BUY AND SELL'), image=ui_icon(self, "campaign_inventory_resources", 20),
                 compound="left", style="Accent.TButton", command=self._open_stash,
@@ -64,7 +68,7 @@ class InventoryWorkspace(tk.Frame):
         tk.Label(body, text=tr('WARBAND EQUIPMENT'), bg=COLORS["panel"], fg=COLORS["accent"], font=("Segoe UI Semibold", 8)).pack(anchor="w", pady=(0, 5))
         scroll = ScrollableFrame(body, background=COLORS["panel"])
         scroll.pack(fill="both", expand=True)
-        for warrior in self.controller.state.campaign.warriors:
+        for warrior in self.roster:
             card = tk.Frame(scroll.inner, bg=COLORS["panel_alt"], padx=8, pady=6)
             card.pack(fill="x", pady=(0, 5))
             if warrior.kind != "hireling":
@@ -85,7 +89,7 @@ class InventoryWorkspace(tk.Frame):
                 else:
                     note = ""
                 icon = "🔒" if locked else "≡"
-                rarity = next((row.rarity for row in self.controller.state.campaign.inventory if row.id == equipment.item_id), None)
+                rarity = next((row.rarity for row in self.inventory if row.id == equipment.item_id), None)
                 rare_note = f"  ·  {rarity}" if rarity else ""
                 tk.Label(item, text=f"{icon}  {equipment.name}{suffix}{note}{rare_note}", bg=COLORS["panel_alt"], fg=COLORS["muted"] if locked else COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(fill="x")
                 for rule in equipment.special_rules:
@@ -105,7 +109,7 @@ class InventoryWorkspace(tk.Frame):
         scroll.pack(fill="both", expand=True)
         scroll._equipment_drop_stash = True
         scroll.inner._equipment_drop_stash = True
-        rows = [item for item in self.controller.state.campaign.inventory if item.stash > 0]
+        rows = [item for item in self.inventory if item.stash > 0]
         if not rows:
             tk.Label(scroll.inner, text=tr('The stash is empty.'), bg=COLORS["panel"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
         for inventory in rows:
@@ -175,7 +179,7 @@ class InventoryWorkspace(tk.Frame):
     def _finish(self, result) -> None:
         ok, message = result
         if not ok:
-            messagebox.showerror(tr('Cannot move item'), message, parent=self)
+            messagebox.showerror(tr('Cannot move item'), tr_message(message), parent=self)
             return
         self.controller.notify()
 

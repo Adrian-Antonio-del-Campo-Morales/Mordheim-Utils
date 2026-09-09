@@ -30,6 +30,14 @@ class EquipmentEntryVM:
     transferable: bool = True
     special_rules: list[str] = field(default_factory=list)
     base_item_id: str = ""
+    #: Per-copy acquisition costs (oldest first). Empty = pre-acquisition-cost
+    #: file or fixed equipment: the unit cost stands in for every copy.
+    acquisition_costs: list[int] = field(default_factory=list)
+
+    @property
+    def copy_costs(self) -> list[int]:
+        return (list(self.acquisition_costs) if len(self.acquisition_costs) == self.quantity
+                else [self.unit_cost] * self.quantity)
 
     @property
     def total_cost(self) -> int:
@@ -47,6 +55,9 @@ class WarriorVM:
     skills: list[str]
     experience: int
     previous_experience: int | None = None
+    #: Experience baseline for the pending advance row (``0`` for hires made
+    #: after the campaign started). ``None`` = pre-advance-experience file.
+    advance_experience: int | None = None
     quantity: int = 1
     condition: str | None = None
     condition_detail: str | None = None
@@ -63,6 +74,9 @@ class WarriorVM:
     #: generation result lowers the duplicate spell's difficulty by 1 (KB
     #: rule); one entry per spell name, value -1.
     spell_difficulty_modifiers: dict[str, int] = field(default_factory=dict)
+    #: Remaining equip capacity by KB category key (post-battle equipment
+    #: step). Empty = unrestricted (pre-limit files).
+    equipment_limits: dict[str, int] = field(default_factory=dict)
     hireling_rating: int = 0
     maximum_models_modifier: int = 0
     upkeep_resources: list[tuple[str, int]] = field(default_factory=list)
@@ -134,6 +148,32 @@ class InventoryItemVM:
     rarity: str | None = None
     special_rules: list[str] = field(default_factory=list)
     base_item_id: str = ""
+    #: Per-copy acquisition costs (oldest first). Empty = pre-acquisition-cost
+    #: file: the item value stands in for every owned copy.
+    acquisition_costs: list[int] = field(default_factory=list)
+
+    @property
+    def total_acquisition_cost(self) -> int:
+        return sum(self.acquisition_costs) if len(self.acquisition_costs) == self.owned else self.value * self.owned
+
+    def add_stock(self, quantity: int, unit_cost: int) -> None:
+        if len(self.acquisition_costs) != self.owned:
+            self.acquisition_costs = [self.value] * self.owned
+        self.acquisition_costs.extend([unit_cost] * quantity)
+        self.owned += quantity
+
+    def remove_stock(self, quantity: int, *, unit_cost: int | None = None) -> int:
+        if not 0 <= quantity <= self.owned:
+            raise ValueError("Cannot remove more copies than the inventory owns.")
+        if len(self.acquisition_costs) != self.owned:
+            self.acquisition_costs = [self.value] * self.owned
+        refund = 0
+        for _ in range(quantity):
+            index = (self.acquisition_costs.index(unit_cost)
+                     if unit_cost is not None and unit_cost in self.acquisition_costs else 0)
+            refund += self.acquisition_costs.pop(index)
+        self.owned -= quantity
+        return refund
 
 
 @dataclass(slots=True)
@@ -217,6 +257,9 @@ class PostBattleVM:
     def is_acknowledged(self, step: int, item: str) -> bool:
         return item in self.acknowledgements.get(str(step), [])
 
+    def follow_ups_for_step(self, step: int) -> list[dict]:
+        return [row for row in self.pending_follow_ups if row.get("step") is not None and int(row["step"]) == int(step)]
+
     def unacknowledged_follow_ups(self, step: int) -> list[dict]:
         """Pending follow-ups of one step the player has not acknowledged yet."""
         mandatory_types = {
@@ -225,9 +268,8 @@ class PostBattleVM:
             "scenario_spell_reward", "scenario_encampment",
         }
         return [
-            row for row in self.pending_follow_ups
-            if int(row.get("step") or -1) == int(step)
-            and (
+            row for row in self.follow_ups_for_step(step)
+            if (
                 row.get("mandatory") is True
                 or row.get("type") in mandatory_types
                 or (row.get("type") == "encounter" and row.get("encounter_id") == "campaign.encounter.sold-to-the-pits")
@@ -286,7 +328,10 @@ class CampaignVM:
     minimum_models: int = 3
     maximum_models: int = 15
     hero_limit: int = 5
-
+    #: Draft-time minimum member counts per required KB profile id, seeded by
+    #: the controller when a draft is created/replaced and persisted with the
+    #: campaign (the v4 writer carries it). Consumed by ``has_required_profiles``.
+    required_profiles: dict[str, int] = field(default_factory=dict)
     # KB identity of the warband: later use cases resolve rules by these
     # stable ids, never by the visible name.
     collection: str = ""
@@ -296,6 +341,21 @@ class CampaignVM:
     #: middenheim / marienburg / ostermark); ``None`` elsewhere or before
     #: selection. Drives the variant-dependent hire-eligibility rules.
     mercenary_variant: str | None = None
+
+    def next_warrior_id(self, prefix: str) -> str:
+        occupied = {row.id for row in self.warriors}
+        occupied.update(row.id for state in self.states for row in state.roster)
+        occupied.update(str(row.get("id")) for battle in self.battles
+                        for row in (*battle.participants, *battle.absentees))
+        occupied.update(str(row.get("warrior_id")) for post in self.post_battles
+                        for row in post.pending_advances)
+        occupied.update(str(value) for post in self.post_battles for event in post.event_log
+                        for key, value in (event.get("ids") or {}).items()
+                        if key in {"warrior_id", "source_id", "target_id"})
+        index = 1
+        while f"{prefix}{index}" in occupied:
+            index += 1
+        return f"{prefix}{index}"
 
     def state(self, number: int) -> WarbandStateVM:
         return next(item for item in self.states if item.number == number)
@@ -349,9 +409,28 @@ class CampaignVM:
     def draft_recruitment_cost(self) -> int:
         return sum(w.cost * w.quantity for w in self.warriors)
 
+    def stash_acquisition_costs(self, stock: InventoryItemVM) -> list[int]:
+        """Per-copy costs of the stash copies, net of the copies equipped from
+        this stock (equipped copies were paid when they left the stash).
+        Legacy stocks without a per-copy ledger value every stash copy at the
+        item value."""
+        if len(stock.acquisition_costs) != stock.owned:
+            return [stock.value] * stock.stash
+        costs = list(stock.acquisition_costs)
+        for warrior in self.warriors:
+            for equipment in warrior.equipment:
+                if (equipment.item_id != stock.id or not equipment.transferable
+                        or (self.is_draft and equipment.acquisition == "fixed")):
+                    continue
+                for cost in equipment.copy_costs:
+                    if not costs:
+                        break
+                    costs.pop(costs.index(cost) if cost in costs else 0)
+        return costs
+
     @property
     def draft_equipment_cost(self) -> int:
-        return sum(item.owned * item.value for item in self.inventory)
+        return sum(item.total_acquisition_cost for item in self.inventory)
 
     @property
     def draft_treasury(self) -> int:
@@ -364,12 +443,21 @@ class CampaignVM:
         return members + hirelings
 
     @property
+    def has_required_profiles(self) -> bool:
+        """True when every required draft profile has its minimum member count."""
+        return all(
+            sum(w.quantity for w in self.warriors if w.profile_id == profile_id) >= minimum
+            for profile_id, minimum in self.required_profiles.items()
+        )
+
+    @property
     def draft_is_legal(self) -> bool:
         return (
             self.draft_warband_member_count >= self.minimum_models
             and self.draft_warband_member_count <= self.effective_maximum_models
             and 1 <= self.draft_hero_count <= self.hero_limit
             and self.draft_treasury >= 0
+            and self.has_required_profiles
         )
 
 

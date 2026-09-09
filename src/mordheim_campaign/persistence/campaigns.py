@@ -23,6 +23,8 @@ from __future__ import annotations
 from dataclasses import fields, is_dataclass
 from datetime import datetime, timezone
 import json as json
+import os
+import tempfile
 from pathlib import Path
 
 from jsonschema import Draft202012Validator
@@ -133,6 +135,7 @@ def _document(state: AppState, *, saved_at: str) -> dict:
                 "minimum_models": campaign.minimum_models,
                 "maximum_models": campaign.maximum_models,
                 "hero_limit": campaign.hero_limit,
+                **({"required_profiles": dict(campaign.required_profiles)} if campaign.required_profiles else {}),
             },
             "resources": {
                 "stash_value": campaign.stash_value,
@@ -174,6 +177,7 @@ def _warrior_document(warrior: WarriorVM) -> dict:
         "skills": list(warrior.skills),
         "experience": warrior.experience,
         "previous_experience": warrior.previous_experience,
+        **({"advance_experience": warrior.advance_experience} if warrior.advance_experience is not None else {}),
         "quantity": warrior.quantity,
         "condition": warrior.condition,
         "condition_detail": warrior.condition_detail,
@@ -183,6 +187,7 @@ def _warrior_document(warrior: WarriorVM) -> dict:
         "stat_advances": dict(warrior.stat_advances),
         "profile_id": warrior.profile_id,
         "spell_difficulty_modifiers": dict(warrior.spell_difficulty_modifiers),
+        **({"equipment_limits": dict(warrior.equipment_limits)} if warrior.equipment_limits else {}),
         "hireling_rating": warrior.hireling_rating,
         "maximum_models_modifier": warrior.maximum_models_modifier,
         "upkeep_resources": [[key, value] for key, value in warrior.upkeep_resources],
@@ -207,6 +212,7 @@ def _equipment_document(entry: EquipmentEntryVM) -> dict:
         "transferable": entry.transferable,
         "special_rules": list(entry.special_rules),
         "base_item_id": entry.base_item_id,
+        **({"acquisition_costs": list(entry.acquisition_costs)} if entry.acquisition_costs else {}),
     }
 
 
@@ -294,6 +300,7 @@ def _inventory_document(item: InventoryItemVM) -> dict:
         "rarity": item.rarity,
         "special_rules": list(item.special_rules),
         "base_item_id": item.base_item_id,
+        **({"acquisition_costs": list(item.acquisition_costs)} if item.acquisition_costs else {}),
     }
 
 
@@ -332,6 +339,8 @@ def _campaign_from_document(payload: dict) -> CampaignVM:
         minimum_models=int(configuration.get("minimum_models") or 3),
         maximum_models=int(configuration.get("maximum_models") or 15),
         hero_limit=int(configuration.get("hero_limit") or 5),
+        **({"required_profiles": {str(key): int(value) for key, value in dict(configuration.get("required_profiles") or {}).items()}}
+           if configuration.get("required_profiles") else {}),
         stash_value=int(resources.get("stash_value") or 0),
         rare_finds=int(resources.get("rare_finds") or 0),
         treasures=int(resources.get("treasures") or 0),
@@ -360,7 +369,8 @@ def _warrior_from_document(row: dict) -> WarriorVM:
         skills=[str(item) for item in row.get("skills") or ()],
         experience=int(row.get("experience") or 0),
         previous_experience=int(row["previous_experience"]) if row.get("previous_experience") is not None else None,
-        quantity=int(row.get("quantity") or 1),
+        advance_experience=int(row["advance_experience"]) if row.get("advance_experience") is not None else None,
+        quantity=_strict_integer(row.get("quantity", 1), "warrior quantity"),
         condition=row.get("condition"),
         condition_detail=row.get("condition_detail"),
         cost=int(row.get("cost") or 0),
@@ -369,6 +379,7 @@ def _warrior_from_document(row: dict) -> WarriorVM:
         stat_advances=_int_map(row, "stat_advances", context),
         profile_id=str(row.get("profile_id") or ""),
         spell_difficulty_modifiers=_int_map(row, "spell_difficulty_modifiers", context),
+        equipment_limits={str(key): int(value) for key, value in dict(row.get("equipment_limits") or {}).items()},
         hireling_rating=int(row.get("hireling_rating") or 0),
         maximum_models_modifier=int(row.get("maximum_models_modifier") or 0),
         upkeep_resources=[(str(key), int(value)) for key, value in row.get("upkeep_resources") or ()],
@@ -393,6 +404,7 @@ def _equipment_from_document(row: dict) -> EquipmentEntryVM:
         transferable=bool(row.get("transferable") if row.get("transferable") is not None else True),
         special_rules=[str(value) for value in row.get("special_rules") or ()],
         base_item_id=str(row.get("base_item_id") or ""),
+        acquisition_costs=[_strict_integer(value, "equipment acquisition cost") for value in row.get("acquisition_costs") or ()],
     )
 
 
@@ -474,14 +486,22 @@ def _inventory_from_document(row: dict) -> InventoryItemVM:
         id=str(_require(row, "id", "inventory item")),
         name=str(row.get("name") or ""),
         category=str(row.get("category") or ""),
-        owned=int(row.get("owned") or 0),
-        equipped=int(row.get("equipped") or 0),
-        stash=int(row.get("stash") or 0),
-        value=int(row.get("value") or 0),
+        owned=_strict_integer(row.get("owned", 0), "inventory owned"),
+        equipped=_strict_integer(row.get("equipped", 0), "inventory equipped"),
+        stash=_strict_integer(row.get("stash", 0), "inventory stash"),
+        value=_strict_integer(row.get("value", 0), "inventory value"),
         rarity=row.get("rarity"),
         special_rules=[str(value) for value in row.get("special_rules") or ()],
         base_item_id=str(row.get("base_item_id") or ""),
+        acquisition_costs=[_strict_integer(value, "inventory acquisition cost") for value in row.get("acquisition_costs") or ()],
     )
+
+
+def _strict_integer(value, label: str) -> int:
+    """Strict integer read: booleans and floats are refused, not coerced."""
+    if type(value) is not int:
+        raise CampaignFileError(f"Invalid {label}: counts and costs must be integers.")
+    return value
 
 
 # --------------------------------------------------------------------------
@@ -490,15 +510,29 @@ def _inventory_from_document(row: dict) -> InventoryItemVM:
 
 
 def save_campaign(path, state: AppState) -> Path:
-    """Saves the whole campaign (including the active view) as a v4 document."""
+    """Saves the whole campaign (including the active view) as a v4 document.
+
+    The write is atomic (temp file + fsync + replace): a failed save must
+    never truncate or corrupt the last valid file.
+    """
     destination = Path(path)
     payload = _document(state, saved_at=datetime.now(timezone.utc).isoformat())
     _validate_document(payload)  # never write a document the contract would reject
+    temporary = None
     try:
+        content = json.dumps(payload, ensure_ascii=False, indent=2)
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    except OSError as exc:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=destination.parent, delete=False) as handle:
+            temporary = Path(handle.name)
+            handle.write(content)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, destination)
+    except (OSError, TypeError, ValueError) as exc:
         raise CampaignFileError(f"Could not write campaign file: {exc}") from exc
+    finally:
+        if temporary is not None and temporary.exists():
+            temporary.unlink()
     return destination
 
 
@@ -511,7 +545,7 @@ def load_campaign(path) -> AppState:
     source = Path(path)
     try:
         payload = json.loads(source.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         raise CampaignFileError(f"Could not read campaign file: {exc}") from exc
     if not isinstance(payload, dict) or payload.get("marker") != CAMPAIGN_MARKER:
         raise CampaignFileError(f"{source} is not a Mordheim Campaign Manager file.")
@@ -543,32 +577,110 @@ def load_campaign(path) -> AppState:
         )
     except (KeyError, TypeError, ValueError) as exc:
         raise CampaignFileError(f"Invalid campaign payload: {exc}") from exc
+    _validate_document_integrity(state.campaign)
     _validate_selection(state)
     return state
 
 
+def _validate_document_integrity(campaign) -> None:
+    """Domain-reference validation of a loaded campaign (ported from the
+    desktop loader hardening): unique ids/numbers, nonnegative counts,
+    inventory conservation, and pending post-battle references."""
+
+    def unique(values, label):
+        values = list(values)
+        if len(values) != len(set(values)):
+            raise CampaignFileError(f"Duplicate {label} in campaign file.")
+        return set(values)
+
+    def nonnegative_integer(value, label):
+        if type(value) is not int or value < 0:
+            raise CampaignFileError(f"Invalid {label}: expected a nonnegative integer.")
+
+    def validate_roster(roster):
+        for warrior in roster:
+            if warrior.quantity < 1:
+                raise CampaignFileError("Warriors must have a positive model count.")
+            for equipment in warrior.equipment:
+                nonnegative_integer(equipment.quantity, "equipment quantity")
+                nonnegative_integer(equipment.unit_cost, "equipment cost")
+                if not isinstance(equipment.acquisition_costs, list):
+                    raise CampaignFileError("Invalid equipment acquisition costs.")
+                for cost in equipment.acquisition_costs:
+                    nonnegative_integer(cost, "equipment acquisition cost")
+
+    def validate_inventory(inventory):
+        unique((row.id for row in inventory), "inventory IDs")
+        for stock in inventory:
+            for value in (stock.owned, stock.equipped, stock.stash, stock.value):
+                nonnegative_integer(value, "inventory quantity or value")
+            if stock.owned != stock.equipped + stock.stash:
+                raise CampaignFileError("Inventory owned copies must equal equipped plus stash copies.")
+            for cost in stock.acquisition_costs:
+                nonnegative_integer(cost, "inventory acquisition cost")
+
+    validate_roster(campaign.warriors)
+    validate_inventory(campaign.inventory)
+    for snapshot in campaign.states:
+        validate_roster(snapshot.roster)
+        validate_inventory(snapshot.inventory)
+    states = unique((row.number for row in campaign.states), "state numbers")
+    battles = unique((row.number for row in campaign.battles), "battle numbers")
+    posts = unique((row.battle_number for row in campaign.post_battles), "post-battle numbers")
+    unique((row.id for row in campaign.warriors), "warrior IDs")
+    for snapshot in campaign.states:
+        unique((row.id for row in snapshot.roster), "snapshot warrior IDs")
+    live_ids = {warrior.id for warrior in campaign.warriors}
+    for post in campaign.post_battles:
+        if post.complete:
+            continue
+        followup_ids = []
+        for followup in post.pending_follow_ups:
+            identifier = followup.get("id")
+            if identifier is None:
+                continue  # Legacy queued exploration choices may not carry an ID.
+            if not isinstance(identifier, str) or not identifier:
+                raise CampaignFileError("Invalid pending follow-up identifier.")
+            followup_ids.append(identifier)
+        unique(followup_ids, "pending follow-up IDs")
+        advance_keys = []
+        for advance in post.pending_advances:
+            warrior_id = advance.get("warrior_id")
+            threshold = advance.get("threshold")
+            if not isinstance(warrior_id, str) or (threshold is not None and type(threshold) is not int):
+                raise CampaignFileError("Invalid pending advancement reference.")
+            if not advance.get("committed"):
+                if warrior_id not in live_ids:
+                    raise CampaignFileError("A pending advance references a missing warrior.")
+                advance_keys.append((warrior_id, threshold))
+        unique(advance_keys, "pending advancements")
+    if not posts <= battles:
+        raise CampaignFileError("A post-battle references a missing battle.")
+    if sum(not post.complete for post in campaign.post_battles) > 1:
+        raise CampaignFileError("Multiple pending post-battles are not supported.")
+    if any(not 0 <= post.active_step < 8 or not post.completed_steps <= set(range(8)) for post in campaign.post_battles):
+        raise CampaignFileError("Invalid post-battle step.")
+    if not campaign.is_draft and campaign.current_state_number not in states:
+        raise CampaignFileError("The current warband state is missing.")
+
+
 def _validate_selection(state: AppState) -> None:
-    """Ensures the view selection points at an existing node."""
+    """Validate domain references and normalize the optional UI selection."""
     campaign = state.campaign
-    node = state.selected_moment
-    kind = node.split(":", 1)[0] if ":" in node else node
-    valid_kinds = {"draft", "state", "battle", "post"}
-    if kind not in valid_kinds:
-        state.selected_moment = "draft:0" if campaign.is_draft else "state:0"
-        return
-    if kind == "draft" and not campaign.is_draft:
-        state.selected_moment = "state:0"
-    if kind == "state" and campaign.is_draft:
-        state.selected_moment = "draft:0"
-    if kind in {"battle", "post"}:
-        numbers = {battle.number for battle in campaign.battles}
-        wanted = node.split(":", 1)[1]
-        if wanted.isdigit() and int(wanted) not in numbers:
-            state.selected_moment = "draft:0" if campaign.is_draft else "state:0"
-        if kind == "post" and campaign.is_draft:
-            state.selected_moment = "draft:0"
-    if not campaign.states and not campaign.is_draft:
-        state.selected_moment = "draft:0"
+
+    states = {row.number for row in campaign.states}
+    battles = {row.number for row in campaign.battles}
+    posts = {row.battle_number for row in campaign.post_battles}
+    fallback = "draft:0" if campaign.is_draft else f"state:{campaign.current_state_number}"
+    valid = {"draft:0"} if campaign.is_draft else {
+        *(f"state:{n}" for n in states), *(f"battle:{n}" for n in battles), *(f"post:{n}" for n in posts)
+    }
+    if not campaign.is_draft and campaign.pending_post_battle is None:
+        valid.add(f"new-battle:{campaign.next_battle_number}")
+    if state.selected_moment not in valid:
+        state.selected_moment = fallback
+    if state.active_view not in {"campaign", "rules", "settings", "statistics"}:
+        state.active_view = "campaign"
 
 
 def export_campaign_summary(path, state: AppState) -> Path:

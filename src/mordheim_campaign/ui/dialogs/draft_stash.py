@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_ui.i18n import tr
+from mordheim_ui.i18n import tr, tr_message
 from mordheim_ui.theme import COLORS
 from mordheim_ui.windowing import center_on_application
 from mordheim_ui.widgets import BorderedFrame, ScrollableFrame
@@ -143,7 +143,7 @@ class DraftStashDialog(tk.Toplevel):
     def _run(self, action, item_id: str) -> None:
         ok, message = self.controller.perform_undoable(
             tr('Change stash'), lambda: action(item_id, 1))
-        self.status_var.set(("✓ " if ok else "! ") + message)
+        self.status_var.set(("✓ " if ok else "! ") + tr_message(message))
         self._refresh()
 
     def _buy(self, offer) -> None:
@@ -159,7 +159,9 @@ class DraftStashDialog(tk.Toplevel):
                 from mordheim_campaign.ui.dialogs.variable_price import UpgradePriceDialog
                 UpgradePriceDialog(
                     self, offer=offer, campaign=self.controller.state.campaign,
-                    buy=lambda price: self._buy_draft_variable(offer.item_id, price),
+                    weapon_hands=self.controller.port.weapon_hands,
+                    buy=lambda price, target: self.controller.perform_undoable(
+                        tr('Upgrade weapon'), lambda: self.controller.buy_draft_weapon_upgrade(offer, target.id, price)),
                 )
                 return
             self._run(self.controller.buy_draft_stash_item, offer.item_id)
@@ -181,10 +183,9 @@ class DraftStashDialog(tk.Toplevel):
 
             UpgradePriceDialog(
                 self, offer=offer, campaign=self.controller.state.campaign,
-                buy=lambda price: self.controller.perform_undoable(
-                    tr('Buy item'), lambda: engine.buy_item(
-                        offer.item_id, 1, price, category=offer.category, rarity=offer.rarity,
-                    )),
+                weapon_hands=self.controller.port.weapon_hands,
+                buy=lambda price, target: self.controller.perform_undoable(
+                    tr('Upgrade weapon'), lambda: engine.buy_weapon_upgrade(offer, target.id, price)),
             )
             return
         result = self.controller.perform_undoable(

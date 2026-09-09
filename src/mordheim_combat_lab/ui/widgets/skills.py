@@ -4,6 +4,7 @@ from __future__ import annotations
 from mordheim_ui.lab_theme import COLORS
 from mordheim_combat_lab.ui.widgets.feedback import tooltip_manager
 import tkinter as tk
+from mordheim_ui.i18n import tr
 
 
 class SkillChecklist(tk.Canvas):
@@ -263,7 +264,7 @@ class SkillChecklist(tk.Canvas):
         if int(self.cget("height")) != height:
             self.configure(height=height)
         if not groups:
-            self.create_text(6, height / 2, text="No selectable skills are available for this profile.", fill=COLORS["text_muted"], font=("Segoe UI", 9), anchor="w")
+            self.create_text(6, height / 2, text=tr("No selectable skills are available for this profile."), fill=COLORS["text_muted"], font=("Segoe UI", 9), anchor="w")
             return
         columns = self._column_count(len(groups))
         card_height = self._card_height(groups)

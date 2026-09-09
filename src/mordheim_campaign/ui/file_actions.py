@@ -6,7 +6,8 @@ through :class:`AppController`.
 """
 from __future__ import annotations
 
-from tkinter import filedialog
+from pathlib import Path
+from tkinter import filedialog, messagebox as native_messagebox
 
 from mordheim_ui import themed_dialogs as messagebox
 from mordheim_ui.i18n import tr
@@ -26,8 +27,31 @@ from mordheim_campaign.persistence.warband_pdf import export_warband_pdf as _exp
 _FILE_TYPES = (("Mordheim campaign", "*.mordheim"), (tr('JSON'), "*.json"), (tr('All files'), "*.*"))
 
 
+def _library_dir(controller: AppController):
+    """Initial directory for the file dialogs; the library path stays
+    controller-owned UI state (``str | None``) with the default owned by
+    the library dialog."""
+    library = controller.campaign_library_path
+    if library is None:
+        return None
+    return Path(library) if Path(library).exists() else None
+
+
 def _report_error(parent, action: str, exc: Exception) -> None:
     messagebox.showerror(tr('Campaign {} error').format(action), str(exc), parent=parent)
+
+
+def confirm_discard_changes(parent, controller: AppController) -> bool:
+    """Save, discard or cancel before replacing the active campaign."""
+    if not controller.has_unsaved_changes:
+        return True
+    decision = native_messagebox.askyesnocancel(
+        tr('Unsaved changes'), tr('Save campaign changes before continuing?'), parent=parent)
+    if decision is None:
+        return False
+    if decision:
+        return save_current_campaign(parent, controller) is not None
+    return True
 
 
 def save_current_campaign(parent, controller: AppController):
@@ -37,7 +61,7 @@ def save_current_campaign(parent, controller: AppController):
         path = filedialog.asksaveasfilename(
             parent=parent,
             title=tr('Save Mordheim campaign'),
-            initialdir=controller.campaign_library_path if controller.campaign_library_path.exists() else None,
+            initialdir=_library_dir(controller),
             defaultextension=".mordheim",
             initialfile=suggest_filename(controller.state.campaign),
             filetypes=_FILE_TYPES,
@@ -50,6 +74,7 @@ def save_current_campaign(parent, controller: AppController):
         _report_error(parent, "save", exc)
         return None
     controller.persist_path = path
+    controller.mark_saved()
     controller.clear_undo_history()
     controller.notify()
     return path
@@ -72,6 +97,7 @@ def save_campaign_copy(parent, controller: AppController):
         _report_error(parent, "save", exc)
         return None
     controller.persist_path = path
+    controller.mark_saved()
     controller.clear_undo_history()
     controller.notify()
     return path
@@ -81,9 +107,11 @@ def load_campaign_file(parent, controller: AppController):
     """Loads a saved campaign and makes it the active state."""
     path = filedialog.askopenfilename(
         parent=parent, title=tr('Load Mordheim campaign'), filetypes=_FILE_TYPES,
-        initialdir=controller.campaign_library_path if controller.campaign_library_path.exists() else None,
+        initialdir=_library_dir(controller),
     )
     if not path:
+        return None
+    if not confirm_discard_changes(parent, controller):
         return None
     try:
         state = load_campaign(path)
@@ -92,6 +120,7 @@ def load_campaign_file(parent, controller: AppController):
         return None
     controller.persist_path = path
     controller.replace_state(state)
+    controller.mark_saved()
     return path
 
 

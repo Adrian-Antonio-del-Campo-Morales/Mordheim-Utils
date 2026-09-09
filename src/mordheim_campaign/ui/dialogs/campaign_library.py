@@ -4,6 +4,7 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog, ttk
 
+from mordheim_campaign.ui.file_actions import confirm_discard_changes
 from mordheim_campaign.persistence import CampaignFileError, load_campaign
 from mordheim_campaign.ui.dialogs.new_campaign import NewCampaignDialog
 from mordheim_ui import themed_dialogs as messagebox
@@ -111,22 +112,28 @@ class CampaignLibraryDialog(tk.Toplevel):
     def _open(self) -> None:
         path = self._selected_path()
         if path is None: return
+        if not confirm_discard_changes(self, self.controller):
+            return
         try:
             state = load_campaign(path)
         except (CampaignFileError, OSError) as exc:
             messagebox.showerror(tr("Campaign load error"), str(exc), parent=self); return
         self.controller.persist_path = path; self.destroy(); self.controller.replace_state(state)
+        self.controller.mark_saved()
 
     def _browse(self) -> None:
         selected = filedialog.askopenfilename(parent=self, initialdir=self.controller.campaign_library_path,
                                               filetypes=((tr("Mordheim campaign"), "*.mordheim"),))
         if selected:
             path = Path(selected)
+            if not confirm_discard_changes(self, self.controller):
+                return
             try:
                 state = load_campaign(path)
             except (CampaignFileError, OSError) as exc:
                 messagebox.showerror(tr("Campaign load error"), str(exc), parent=self); return
             self.controller.persist_path = path; self.destroy(); self.controller.replace_state(state)
+            self.controller.mark_saved()
 
     def _rename(self) -> None:
         path = self._selected_path()

@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import tkinter as tk
 from tkinter import ttk
+from mordheim_campaign.ui.modality import make_modal
 
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.ui.equipment_display import equipment_quantity_suffix
 from mordheim_ui.theme import COLORS
 from mordheim_ui.windowing import center_on_application
 from mordheim_ui.widgets import BorderedFrame, ScrollableFrame
-from mordheim_ui.i18n import tr
+from mordheim_ui.i18n import tr, tr_message
 
 
 class EquipmentEditorDialog(tk.Toplevel):
@@ -92,7 +93,7 @@ class EquipmentEditorDialog(tk.Toplevel):
                 row.pack(fill="x", pady=1)
                 suffix = equipment_quantity_suffix(warrior, item)
                 tk.Label(row, text=f"• {item.name}{suffix}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(side="left", fill="x", expand=True)
-                action = ttk.Button(row, text="RETURN" if item.transferable else "LOCKED", style="Mini.TButton", width=8,
+                action = ttk.Button(row, text=tr("RETURN") if item.transferable else tr("LOCKED"), style="Mini.TButton", width=8,
                                     command=lambda i=item.item_id, w=warrior: self._move(self.controller.return_equipped_item, i, w.id))
                 action.pack(side="right")
                 if not item.transferable:
@@ -116,7 +117,9 @@ class EquipmentEditorDialog(tk.Toplevel):
         """Pick the warrior receiving the stash item."""
         campaign = self.controller.state.campaign
         stock = next((item.stash for item in campaign.inventory if item.id == item_id), 0)
-        warriors = [warrior for warrior in campaign.warriors if warrior.kind != "henchman" or warrior.quantity <= stock]
+        from mordheim_campaign.application.post_battle_engine import PostBattleEngine
+        warriors = [warrior for warrior in campaign.warriors
+                    if PostBattleEngine.assignment_quantity(warrior, item_id) <= stock]
         if campaign.is_draft:
             warriors = [
                 warrior for warrior in warriors
@@ -127,8 +130,7 @@ class EquipmentEditorDialog(tk.Toplevel):
             return
         dialog = tk.Toplevel(self)
         dialog.title(tr('Assign to…'))
-        dialog.transient(self)
-        dialog.grab_set()
+        make_modal(dialog, self)
         tk.Label(dialog, text=tr('Assign to which warrior?'), bg=COLORS["panel"], fg=COLORS["text"], font=("Segoe UI", 9)).pack(padx=16, pady=(12, 6))
         listbox = tk.Listbox(dialog, height=min(10, len(warriors)), width=34, bg=COLORS["entry"], fg=COLORS["text"],
                              selectbackground=COLORS["accent"], selectforeground=COLORS["black"], bd=0, font=("Segoe UI", 9), activestyle="none")
@@ -157,7 +159,7 @@ class EquipmentEditorDialog(tk.Toplevel):
     def _move(self, action, item_id: str, warrior_id: str) -> None:
         ok, message = self.controller.perform_undoable(
             tr('Move equipment'), lambda: action(item_id, warrior_id))
-        self._status.set(("✓ " if ok else "⚠ ") + message)
+        self._status.set(("✓ " if ok else "⚠ ") + tr_message(message))
         self._refresh()
 
     def _refresh(self) -> None:

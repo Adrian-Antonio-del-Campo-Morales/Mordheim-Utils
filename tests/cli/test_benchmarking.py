@@ -153,7 +153,7 @@ def test_deep_benchmark_plan_keeps_modular_at_the_reference_size_only():
     scenarios = benchmark_scenarios()
     plan = deep_benchmark_plan(
         scenarios, vector_sizes=(1_000, 10_000), batch_sizes=(1_000, 10_000),
-        modular_simulations=100, backends=("all",), installed=("numpy",),
+        modular_simulations=100, backends=("modular", "numpy", "native"), installed=("numpy",),
     )
     assert plan.vector_backends == ("numpy",)
     assert plan.excluded[0]["backend"] == "native"
@@ -175,6 +175,8 @@ def test_deep_benchmark_plan_respects_backend_restriction():
         modular_simulations=100, backends=("numpy",), installed=("numpy", "native"),
     )
     assert plan.vector_backends == ("numpy",)
+    assert plan.modular_backend is None
+    assert all(run[1] == "numpy" for run in plan.runs)
 
 
 def test_deep_parser_defaults_and_guards():
@@ -192,7 +194,10 @@ def test_deep_parser_defaults_and_guards():
     assert args.deep_modular_simulations == 10_000
 
     from mordheim_combat_lab.cli.commands import main
-    assert main(["benchmark", "--deep", "--backend", "modular"]) == 2
+    assert main([
+        "benchmark", "--deep", "--backend", "modular", "--scenario", "basic",
+        "--deep-modular-simulations", "1", "--warmups", "0", "--repeats", "1",
+    ]) == 0
 
 
 def test_benchmark_reports_raw_samples_and_median():
@@ -224,9 +229,11 @@ def test_benchmark_notifies_progress_after_every_warmup_and_repeat():
     assert len(updates) == 3
 
 
-def test_benchmark_defaults_to_all_engines():
+def test_benchmark_defaults_to_all_engines_and_accepts_a_selected_set():
     args = build_parser().parse_args(["benchmark"])
-    assert args.backend == "all"
+    assert args.backend == ("modular", "numpy", "native")
+    selected = build_parser().parse_args(["benchmark", "--backend", "modular", "numpy"])
+    assert selected.backend == ["modular", "numpy"]
 
 
 def test_benchmark_table_states_the_shared_simulation_count(capsys):
@@ -422,8 +429,9 @@ def test_deep_benchmark_saves_the_report_by_default(monkeypatch, tmp_path):
     assert main(["benchmark", "--deep", "--simulation-sizes", "1k", "--batch-sizes", "1k",
                  "--scenario", "basic", "--backend", "numpy",
                  "--deep-modular-simulations", "100", "--warmups", "0", "--repeats", "1"]) == 0
-    path = tmp_path / "outputs" / "benchmarks" / "deep.json"
-    assert path.is_file()
+    reports = list((tmp_path / "outputs" / "benchmarks").glob("deep-*.json"))
+    assert len(reports) == 1
+    path = reports[0]
     payload = json.loads(path.read_text(encoding="utf-8"))
     assert payload["mode"] == "deep"
     assert payload["schema"] == "mordheim-combat-benchmark-sweep/v1"
@@ -545,9 +553,9 @@ def test_deep_parity_saves_the_report_by_default(monkeypatch, tmp_path):
     monkeypatch.chdir(tmp_path)
     assert main(["parity", "--deep", "--deep-simulations", "30",
                  "--deep-cross-simulations", "50", "--seed", "3"]) == 0
-    path = tmp_path / "outputs" / "parity" / "deep.json"
-    assert path.is_file()
-    payload = json.loads(path.read_text(encoding="utf-8"))
+    reports = list((tmp_path / "outputs" / "parity").glob("deep-*.json"))
+    assert len(reports) == 1
+    payload = json.loads(reports[0].read_text(encoding="utf-8"))
     assert payload["schema"] == "mordheim-combat-parity/v2"
     assert payload["deep"] is not None
     assert payload["elapsed_seconds"] > 0

@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_ui.i18n import tr
+from mordheim_ui.i18n import tr, tr_message
 from mordheim_ui.theme import COLORS
 from mordheim_ui.windowing import center_on_application
 from mordheim_ui.widgets import BorderedFrame, ScrollableFrame
@@ -106,7 +106,7 @@ class DraftEquipmentDialog(tk.Toplevel):
     def _run(self, action, item_id: str) -> None:
         ok, message = self.controller.perform_undoable(
             tr('Change equipment'), lambda: action(self.warrior_id, item_id))
-        self.status_var.set(("✓ " if ok else "! ") + message)
+        self.status_var.set(("✓ " if ok else "! ") + tr_message(message))
         self._refresh()
 
     def _buy(self, offer) -> None:

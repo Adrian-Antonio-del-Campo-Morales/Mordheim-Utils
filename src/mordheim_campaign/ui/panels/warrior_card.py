@@ -21,33 +21,35 @@ def effective_stat(warrior: WarriorVM, key: str) -> int:
 
 
 def injury_lines(warrior: WarriorVM) -> list[str]:
+    """Human-readable injury summary lines; the fixed prefix is translated."""
     lines = []
     recorded_totals: dict[str, int] = {}
     for record in warrior.injury_records:
         key = str(record.get("characteristic") or "")
         modifier = int(record.get("modifier") or 0)
-        name = str(record.get("name") or _INJURY_BY_CHARACTERISTIC.get(key) or "Lasting Injury")
-        lines.append(f"Injury: {name} · {modifier:+d} {key}")
+        name = str(record.get("name") or _INJURY_BY_CHARACTERISTIC.get(key) or tr("Lasting Injury"))
+        lines.append(tr("Injury: {} · {} {}").format(name, modifier, key))
         recorded_totals[key] = recorded_totals.get(key, 0) + modifier
     for key, modifier in warrior.stat_modifiers.items():
         remainder = int(modifier) - recorded_totals.get(key, 0)
         if remainder:
-            lines.append(f"Injury: {_INJURY_BY_CHARACTERISTIC.get(key, 'Lasting Injury')} · {remainder:+d} {key}")
+            lines.append(tr("Injury: {} · {} {}").format(
+                tr(_INJURY_BY_CHARACTERISTIC.get(key, "Lasting Injury")), remainder, key))
     known_names = [str(record.get("name") or "") for record in warrior.injury_records]
     known_names.extend(_INJURY_BY_CHARACTERISTIC.get(key, "") for key, value in warrior.stat_modifiers.items() if value)
     if warrior.condition_detail and not any(name and name.casefold() in warrior.condition_detail.casefold() for name in known_names):
         detail = warrior.condition_detail.rsplit(".", 1)[-1].replace("-", " ").strip()
-        lines.append(f"Injury: {detail}")
+        lines.append(tr("Injury: {}").format(detail))
     if warrior.games_to_miss > 0:
-        name = warrior.absence_reason or "Recovery"
-        lines.append(f"Injury: {name} · misses {warrior.games_to_miss} more battle(s)")
+        name = warrior.absence_reason or tr("Recovery")
+        lines.append(tr("Injury: {} · misses {} more battle(s)").format(name, warrior.games_to_miss))
     for target in warrior.hatreds:
-        lines.append(f"Injury: Bitter Enmity · Hatred: {target}")
+        lines.append(tr("Injury: Bitter Enmity · Hatred: {}").format(target))
     for check in warrior.battle_start_checks:
         if check.get("check_id") == "campaign.check.old-battle-wound":
-            lines.append("Injury: Old Battle Wound · roll D6 before each battle; misses it on 1")
+            lines.append(tr("Injury: Old Battle Wound · roll D6 before each battle; misses it on 1"))
     if warrior.lost_eyes:
-        lines.append(f"Injury: Blinded In One Eye · lost {', '.join(warrior.lost_eyes)} eye")
+        lines.append(tr("Injury: Blinded In One Eye · lost {} eye").format(", ".join(warrior.lost_eyes)))
     return list(dict.fromkeys(lines))
 
 
@@ -107,7 +109,7 @@ class WarriorCard(BorderedFrame):
             for skill in warrior.skills[:5]:
                 tk.Label(skills, text=f"• {skill}", bg=COLORS["panel_alt"], fg=COLORS["text"], font=("Segoe UI", 8), anchor="w").pack(fill="x", pady=1)
         else:
-            tk.Label(skills, text="None", bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
+            tk.Label(skills, text=tr("None"), bg=COLORS["panel_alt"], fg=COLORS["muted"], font=("Segoe UI", 8)).pack(anchor="w")
         for line in injury_lines(warrior):
             tk.Label(
                 skills, text=f"• {line}", bg=COLORS["panel_alt"], fg=COLORS["danger"],

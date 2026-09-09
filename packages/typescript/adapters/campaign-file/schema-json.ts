@@ -221,6 +221,13 @@ export const SCHEMA_JSON: unknown = {
     "hero_limit": {
      "$ref": "#/$defs/nonnegative_int",
      "default": 5
+    },
+    "required_profiles": {
+     "description": "Draft-time minimum member counts per required KB profile id.",
+     "type": "object",
+     "additionalProperties": {
+      "$ref": "#/$defs/nonnegative_int"
+     }
     }
    }
   },
@@ -307,6 +314,13 @@ export const SCHEMA_JSON: unknown = {
       "null"
      ]
     },
+    "advance_experience": {
+     "description": "Experience baseline for the pending advance row; null when absent (legacy files).",
+     "type": [
+      "integer",
+      "null"
+     ]
+    },
     "quantity": {
      "$ref": "#/$defs/nonnegative_int"
     },
@@ -343,6 +357,10 @@ export const SCHEMA_JSON: unknown = {
      "type": "string"
     },
     "spell_difficulty_modifiers": {
+     "$ref": "#/$defs/int_map"
+    },
+    "equipment_limits": {
+     "description": "Remaining equip capacity by KB category key (post-battle equipment step).",
      "$ref": "#/$defs/int_map"
     },
     "hireling_rating": {
@@ -445,6 +463,13 @@ export const SCHEMA_JSON: unknown = {
     },
     "base_item_id": {
      "type": "string"
+    },
+    "acquisition_costs": {
+     "description": "Per-copy acquisition costs (oldest first); empty when absent.",
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/nonnegative_int"
+     }
     }
    }
   },
@@ -763,6 +788,13 @@ export const SCHEMA_JSON: unknown = {
     },
     "base_item_id": {
      "type": "string"
+    },
+    "acquisition_costs": {
+     "description": "Per-copy acquisition costs (oldest first); empty when absent.",
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/nonnegative_int"
+     }
     }
    }
   },
@@ -800,4 +832,4 @@ export const SCHEMA_JSON: unknown = {
    }
   }
  }
-} as const;
+};

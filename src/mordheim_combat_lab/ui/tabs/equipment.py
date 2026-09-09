@@ -7,6 +7,7 @@ from mordheim_combat_lab.application.motta import motta_score
 from mordheim_combat_lab.application.analyses import ComparisonCandidate, compare_builds
 from mordheim_core.models import SimulationCancelled
 from mordheim_combat_lab.ui.widgets.progress import AnalysisProgress
+from mordheim_ui.i18n import tr
 import threading as threading
 from tkinter import IntVar
 from tkinter import StringVar
@@ -26,29 +27,29 @@ class EquipmentAnalysisTab(ttk.Frame):
         self.settings_provider = settings_provider
         self.simulations = simulations
         self.maximum_changed_slots = IntVar(value=1)
-        self.status = StringVar(value="Compare the candidate's legal off-hand and armour configurations.")
+        self.status = StringVar(value=tr("Compare the candidate's legal off-hand and armour configurations."))
         self._running = False
         self._build_gui()
 
     def _build_gui(self) -> None:
-        ttk.Label(self, text="Equipment analysis", style="Heading.TLabel").pack(anchor="w")
-        ttk.Label(self, text="The selected main weapon and skills remain fixed while legal equipment configurations are simulated.", style="Muted.TLabel").pack(anchor="w", pady=(2, 12))
+        ttk.Label(self, text=tr("Equipment analysis"), style="Heading.TLabel").pack(anchor="w")
+        ttk.Label(self, text=tr("The selected main weapon and skills remain fixed while legal equipment configurations are simulated."), style="Muted.TLabel").pack(anchor="w", pady=(2, 12))
         controls = ttk.Frame(self)
         controls.pack(fill="x", pady=(0, 10))
-        ttk.Label(controls, text="Simulations").pack(side="left", padx=(0, 5))
+        ttk.Label(controls, text=tr("Simulations")).pack(side="left", padx=(0, 5))
         ttk.Spinbox(controls, from_=1_000, to=10_000_000, increment=10_000, textvariable=self.simulations, width=12).pack(side="left", padx=(0, 12))
-        self.run_button = ttk.Button(controls, text="Compare equipment", style="Accent.TButton", command=self.run)
+        self.run_button = ttk.Button(controls, text=tr("Compare equipment"), style="Accent.TButton", command=self.run)
         self.run_button.pack(side="left")
-        ttk.Label(controls, text="Maximum changed slots").pack(side="left", padx=(14, 5))
+        ttk.Label(controls, text=tr("Maximum changed slots")).pack(side="left", padx=(14, 5))
         ttk.Spinbox(controls, from_=1, to=8, textvariable=self.maximum_changed_slots, width=5).pack(side="left")
         self.progress = AnalysisProgress(self)
         self.progress.pack(fill="x", pady=(0, 10))
         columns = ("item1", "item2", "item3", "item4", "item5", "optimal", "motta", "cost", "equipment")
         self.tree = ttk.Treeview(self, columns=columns, show="headings", height=15)
         definitions = (
-            ("item1", "Item 1", 180), ("item2", "Item 2", 180), ("item3", "Item 3", 180),
-            ("item4", "Item 4", 180), ("item5", "Item 5", 180), ("optimal", "Best Result", 175),
-            ("motta", "MOTTA Score", 130), ("cost", "Cost", 130), ("equipment", "Equipment Used", 220),
+            ("item1", tr("Item {}").format(1), 180), ("item2", tr("Item {}").format(2), 180), ("item3", tr("Item {}").format(3), 180),
+            ("item4", tr("Item {}").format(4), 180), ("item5", tr("Item {}").format(5), 180), ("optimal", tr("Best Result"), 175),
+            ("motta", tr("MOTTA Score"), 130), ("cost", tr("Cost"), 130), ("equipment", tr("Equipment Used"), 220),
         )
         for column, heading, width in definitions:
             self.tree.heading(column, text=heading)
@@ -65,14 +66,14 @@ class EquipmentAnalysisTab(ttk.Frame):
             enemy = self.enemy_editor.build()
             configurations = self._configurations(candidate)
         except (KeyError, TypeError, ValueError) as exc:
-            self.status.set(f"Configuration error: {exc}")
+            self.status.set(tr("Configuration error: {}").format(exc))
             return
         if len(configurations) > self.MAX_CONFIGURATIONS:
-            self.status.set(f"{len(configurations):,} configurations exceed the {self.MAX_CONFIGURATIONS:,} safety limit. Reduce maximum changed slots.")
+            self.status.set(tr("{} configurations exceed the {} safety limit. Reduce maximum changed slots.").format(f"{len(configurations):,}", f"{self.MAX_CONFIGURATIONS:,}"))
             return
         self._running = True
         self.run_button.configure(state="disabled")
-        self.status.set(f"Comparing {len(configurations)} equipment configurations…")
+        self.status.set(tr("Comparing {} equipment configurations…").format(len(configurations)))
         cancel_event = self.progress.start(len(configurations))
         threading.Thread(target=self._compare, args=(candidate, enemy, configurations, settings, cancel_event), daemon=True).start()
 
@@ -124,7 +125,7 @@ class EquipmentAnalysisTab(ttk.Frame):
                     "off_material_id": all_ids[6],
                     "off_poison_id": all_ids[7],
                 }
-                labels = [f"{name}: {value}" for (name, _options, _baseline), value in zip(all_slots, selected_names)]
+                labels = [f"{tr(name)}: {value}" for (name, _options, _baseline), value in zip(all_slots, selected_names)]
                 configurations.append((updates, " · ".join(labels)))
         return tuple(configurations)
 
@@ -154,11 +155,11 @@ class EquipmentAnalysisTab(ttk.Frame):
             self.tree.insert("", "end", values=(
                 *items, f"{candidate:.2f}% ({impact:+.2f}%)",
                 f"{motta:.2f}" if motta is not None else "—",
-                f"{cost:g} gc" if cost is not None else "—", "Current configuration",
+                f"{cost:g} gc" if cost is not None else "—", tr("Current configuration"),
             ))
-        skipped_message = f" Skipped {skipped} invalid configurations." if skipped else ""
-        self.status.set(f"Compared {len(rows)} configurations across {len(rows) * simulations:,} duels.{skipped_message}")
-        self.progress.finish("Complete")
+        skipped_message = tr(" Skipped {} invalid configurations.").format(skipped) if skipped else ""
+        self.status.set(tr("Compared {} configurations across {} duels.").format(len(rows), f"{len(rows) * simulations:,}") + skipped_message)
+        self.progress.finish(tr("Complete"))
         self._done()
 
     def _acquisition_cost(self, label: str) -> float | None:
@@ -193,13 +194,13 @@ class EquipmentAnalysisTab(ttk.Frame):
         return total
 
     def _failed(self, error: str) -> None:
-        self.status.set(f"Equipment analysis error: {error}")
-        self.progress.finish("Error")
+        self.status.set(tr("Equipment analysis error: {}").format(error))
+        self.progress.finish(tr("Error"))
         self._done()
 
     def _cancelled(self) -> None:
-        self.status.set("Equipment analysis cancelled.")
-        self.progress.finish("Cancelled")
+        self.status.set(tr("Equipment analysis cancelled."))
+        self.progress.finish(tr("Cancelled"))
         self._done()
 
     def _done(self) -> None:

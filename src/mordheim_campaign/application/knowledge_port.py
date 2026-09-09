@@ -304,6 +304,40 @@ class KnowledgePort:
         except StopIteration as exc:
             raise KnowledgePortError(f"Unknown profile: {collection}/{band_id}/{profile_id}") from exc
 
+    def can_gain_experience(self, band_id: str, profile_id: str) -> bool:
+        if profile_id.startswith("hireling."):
+            return True
+        package = self.find_package(band_id)
+        profile = next((p for p in package.profiles if p.get("id") == profile_id), None)
+        if profile is None:
+            return True  # legacy custom profiles have no canonical prohibition
+        if profile.get("type") == "animal":
+            return False
+        forbidden_refs = {
+            "shared-rule.brainless", "shared-rule.dead", "shared-rule.never-gain-experience",
+            "shared-rule.experience", "shared-rule.animal", "shared-rule.animal-2",
+            "shared-rule.animals", "shared-rule.animals-2", "shared-rule.animals-3",
+        }
+        return not any(
+            profile_id in (rule.get("applies_to") or {}).get("profile_ids", ())
+            and rule.get("rule_ref") in forbidden_refs
+            for rule in package.special_rules
+        )
+
+    def equipment_profile_blocker(self, band_id: str, profile_id: str, item_id: str) -> str | None:
+        if not profile_id or profile_id.startswith("hireling."):
+            return None
+        package = self.find_package(band_id)
+        profile = next((p for p in package.profiles if p.get("id") == profile_id), None)
+        if profile is None:
+            return None
+        # Empty equipment access plus explicit restrictions denotes profiles
+        # whose intrinsic attacks are not purchased weapons (e.g. Zombies).
+        if not profile.get("equipment_lists") and profile.get("equipment_restrictions"):
+            if item_id not in (profile.get("fixed_equipment") or ()):
+                return "This profile cannot carry purchased equipment."
+        return None
+
     def _build_profiles(self, collection: str, band_id: str) -> tuple[WarbandProfile, ...]:
         package = self._packages[(collection, band_id)]
         rows = {str(row["id"]): row for row in package.profiles}
