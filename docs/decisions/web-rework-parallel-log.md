@@ -6,6 +6,173 @@ the other agent needs. Append entries; never rewrite another agent's entry.
 
 ---
 
+## 2026-09-09 — Agent A (update 24): P7.4 findings applied + CI bundle check added
+
+Both of your P7.4 findings on `HirelingsPanel` are fixed:
+1. **"Not eligible" is now visible text** — `Not eligible: {reason}` in a
+   `role="note"` span; the `title=`-only tooltip is gone (keyboard and
+   touch users get the reason).
+2. **Row-context accessible names** — `Hire {offer.name}`,
+   `Buy {good.name}`, `Sell 1 {row.name} from stash`. Panel test updated
+   to assert the contextual names (`getAllByRole("button", { name:
+   /^Buy / })`).
+
+**CI (your P7.3 request):** new post-build step in `ci.yml`'s typescript
+job — `npx vitest run src/architecture/boundaries.test.ts` after
+`npm run build`, so the bundle guardrails run with `dist/` present
+(verified locally: 5/5 against the staged dist, including the artefact).
+The pre-build `npm test` keeps skipping it as designed.
+
+**Verified:** app **45/45** + tsc + eslint clean; boundaries 5/5
+post-build; YAML parses; Python `web+contracts` 79 passed. Nothing
+committed.
+
+---
+
+## 2026-09-09 — Agent A (update 23): claiming **P7.4 findings + CI bundle check**
+
+Applying your two P7.4 findings to my `HirelingsPanel` (reason text instead
+of the `title=`-only tooltip; row-context `aria-label`s on Hire/Buy/Sell
+buttons) and adding your P7.3 request to `ci.yml`: run the architecture
+tests as a **post-build** step in the typescript job so the bundle
+checks execute with `dist/` present. Files: the panel, one CI step, and a
+test tweak — no shared surfaces.
+
+---
+
+## 2026-09-09 — Agent A (update 22): P5.2 final acceptance **completed** — real KB reader live
+
+**Claimed & delivered: the last open P5.2 item** (KB bundling decision):
+
+- **`ArtefactKnowledgeReader.fromUrl(url, fetchFn?)`** (additive, P4.3
+  adapter): fetch → validate → reader, with typed `KnowledgeReaderError`s
+  for network / HTTP / JSON / schema failures — the url and status are in
+  the message, never a raw `Response` or `SyntaxError` reaching the UI.
+- **`default-deps.ts`:** `createDefaultDepsAsync()` composes the real file
+  port + real KB reader (`knowledge/knowledge-web.json` static asset);
+  `createDefaultDeps()` stays as the synchronous fake fallback for tests
+  and first paint.
+- **Shell seam (`useCampaignApp`):** renders on the fake-composed service,
+  upgrades to the real reader when the artefact resolves (`kbLoading`
+  status), and **degrades gracefully on failure** — a `kbError` *status*
+  notice (orange, `role="status"`), deliberately NOT a `role="alert"` so a
+  degraded KB never competes with user-action alerts in the error seam.
+  Slice shows "Loading knowledge base…" during the fetch.
+- **Test env:** new `src/test-setup.ts` (vitest setupFiles) stubs `fetch`
+  to reject, so every existing test exercises the degradation path without
+  a serving layer; the upgrade tests stub a responding artefact.
+
+**Tests:** adapter `from-url` **5** (happy path resolves real ids, HTTP
+404 message, invalid JSON, schema-invalid artefact, network failure);
+app `kb-upgrade` **3** (upgrade clears loading, fetch failure → status
+notice not alert, HTTP 404 surfaces the status); all 45 app tests pass
+incl. the full P5.2 slice suite against the degradation path.
+
+**Verified:** packages **147/147** + tsc clean; app **45/45** + tsc +
+eslint clean; build OK (280 kB → 85.8 kB gzip) with the artefact in
+`dist/knowledge/`; Python **298 passed**. With this, P5.2's acceptance
+("display with real resolved ids") is fully met — the remaining planned
+work is CI/Pages activation (manual Settings → Pages → GitHub Actions).
+Nothing committed.
+
+---
+
+## 2026-09-09 — Agent A (update 21): claiming **P5.2 final acceptance** — real-KB swap
+
+Taking the one open P5.2 action item from my P7.5 bundling decision:
+`createArtefactKnowledgeReaderFromUrl(url)` wrapping the P4.3 adapter, and
+the `default-deps.ts` fake→real swap (`fetch()` of
+`/knowledge/knowledge-web.json`, staged by CI at build time). Files:
+`adapters/knowledge-reader/index.ts` (additive constructor),
+`features/campaign/default-deps.ts` + the async-init seam in the shell,
+a test fetching the real artefact. **Agent B:** your P9.3 rename touches
+`packages/typescript/package.json` — I won't touch that file; my work is
+in `adapters/` and `apps/`, disjoint from your P9.4 Python facade files.
+
+---
+
+## 2026-09-09 — Agent B: **integration sweep completed** — integrator-ready report
+
+**§12 minimum verification (all green on the current tree):**
+- Python `tests/campaign tests/architecture tests/contracts`: **227 passed**
+- Python `tests/web` (contract harness + corrupt corpus + P7.1 matrix + P3.2 round-trip): **71 passed**
+- TS packages: **147 passed** + tsc clean (includes your landing P5.2-final tests)
+- TS app: **45 passed** (includes your async-init seam)
+- `vite build`: OK (280.6 kB → 85.8 kB gzip)
+
+**§13 DoD checklist:**
+- Scope/API docs: every task delivered with a log entry; public surfaces documented in the P9.1 proposal
+- Purity: 0 forbidden imports (React/browser/storage) in domain/application — asserted continuously by `purity.test.ts` + my P7.3 `boundaries.test.ts`
+- Determinism: all suites run headless (jsdom only where the seam requires it)
+- Shared fixtures read from `contracts/campaign-file-v4/` on both sides (Python harness, TS adapter tests, corpus manifest)
+- No rule/data duplication from `sources/knowledge/` (KB travels only as the generated artefact)
+- No user data, secrets or unversionable artefacts: `build/generated/` and `public/knowledge/` gitignored; corpus is test-only (25 tracked files)
+- Python facades: `application/state.py` retired per P9.4 with full regression green (only the 2 pre-existing combat/verification failures remain)
+- Lint/typecheck/build/tests: green on both workspaces
+
+**Remaining for the integrator (not agent work):**
+1. Commit the pending 32-file set (my P9.3/P9.4 + your P5.2-final once landed) — selective staging, mixed ownership in the tree
+2. GitHub Pages activation: Settings → Pages → GitHub Actions (documented in `web-deployment.md`)
+3. PR to `main` when satisfied
+
+No file changes made by this sweep. Migration plan P3–P9: **complete**.
+
+---
+
+## 2026-09-09 — Agent B: claiming **integration verification sweep** (plan §12/§13)
+
+With every task P3–P9.4 delivered or claimed (your P5.2-final is the last
+in flight), I'm running the §12 integration protocol's minimum verification
+across the whole branch plus the §13 DoD checklist, and recording the
+result here as the integrator-ready report. Test runs and log entry only —
+**no file changes**, so your P5.2-final work is untouched. Note: my P9.3+
+P9.4 changes (32 files) are still uncommitted on top of `1c047d8` and mix
+in the tree with your in-flight files; a checkpoint commit needs your
+go-ahead to stage selectively.
+
+---
+
+## 2026-09-09 — Agent B: **P9.3 + P9.4 completed** — TS rename + facade retirement
+
+**P9.3**: `packages/typescript/package.json` name → `campaign-web-core`
+(+ both lockfile `name` fields; the P9.1 doc and log keep the old name as
+historical record, intentionally). Import paths unaffected, as proposed:
+packages 142/142 + tsc clean, app suites and build unchanged.
+
+**P9.4**: `application/state.py` **deleted**. The inventory's "~5
+consumers" turned out to be ~21 import sites (7 src incl. the
+`application/__init__.py` re-export, 12 test files, 1 tool) — all
+mechanically moved to `domain.models` / `domain.builders`. The multi-line
+import in `persistence/campaigns.py` needed a manual repair after the
+script rewrite (orphaned lines); caught by syntax check before running
+the suite. Grep `application.state` over src/tests/tools: **0 hits**.
+Full Python suite (minus UI): **4,704 passed**, only the 2 pre-existing
+failures (`test_rule_families_a`, `test_test_reporting` — confirmed in
+Phase 1, unrelated). Note for Agent A: `application/__init__.py` now
+exports only `KnowledgePort`.
+
+Migration phases P3–P9 are now complete on this branch. Nothing committed
+(checkpoint `1c047d8`).
+
+---
+
+## 2026-09-09 — Agent B: claiming **P9.3 + P9.4** (integrator sign-off received)
+
+The integrator approved the P9.1 proposal
+(`docs/decisions/web-namespace-proposal.md`). Executing now:
+- **P9.3**: rename workspace package `mordheim-web-packages` →
+  `campaign-web-core` (package.json field + doc references; import paths
+  are unaffected — consumers use `@domain/@app/@adapters` aliases and
+  relative imports);
+- **P9.4**: retire `application/state.py` — move its ~5 internal consumers
+  to `from mordheim_campaign.domain.models import …`, delete the shim,
+  full campaign regression net must stay green.
+
+Agent A: neither touches your P6.7 surface (kernel trading/hirelings are
+imported *by* consumers, never renamed).
+
+---
+
 ## 2026-09-09 — Agent B: **P9.1 completed** — namespace inventory & proposal
 
 Delivered `docs/decisions/web-namespace-proposal.md` (code-free, as

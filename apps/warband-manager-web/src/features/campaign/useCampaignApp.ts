@@ -7,7 +7,7 @@
  * out through a Blob download on explicit user action.
  */
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type {
   AppError,
@@ -16,7 +16,7 @@ import type {
   ExportPayload,
   MomentSelection,
 } from "./types";
-import { createDefaultDeps } from "./default-deps";
+import { createDefaultDeps, createDefaultDepsAsync } from "./default-deps";
 
 export interface CampaignAppView {
   /** Current document, or null before the first import. */
@@ -25,6 +25,10 @@ export interface CampaignAppView {
   error: string | null;
   /** True when there are unexported campaign changes. */
   dirty: boolean;
+  /** P5.2 acceptance: true while the real KB artefact is being fetched. */
+  kbLoading: boolean;
+  /** P5.2 acceptance: degraded-KB notice (fetch failed; fake data in use). */
+  kbError: string | null;
   importFile(file: File): Promise<void>;
   confirmReplace(): Promise<void>;
   exportFile(): Promise<void>;
@@ -70,7 +74,38 @@ function messageOf(err: AppError): string {
 }
 
 export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
-  const app = useMemo(() => service ?? createDefaultDeps(), [service]);
+  // P5.2 acceptance: when no service is injected, start on the synchronous
+  // fake-composed service (tests and first paint) and upgrade to the real
+  // KB reader once the artefact fetch resolves. A load failure surfaces
+  // through the error seam; the fake stays active so the app degrades
+  // gracefully (the artefact-shaped fake covers the same surfaces).
+  const [upgraded, setUpgraded] = useState<CampaignAppService | null>(null);
+  const [kbLoading, setKbLoading] = useState(!service);
+  const [kbError, setKbError] = useState<string | null>(null);
+  const fallback = useMemo(() => service ?? createDefaultDeps(), [service]);
+  useEffect(() => {
+    if (service) return; // injected service: nothing to upgrade
+    let cancelled = false;
+    createDefaultDepsAsync()
+      .then((real) => {
+        if (!cancelled) {
+          setUpgraded(real);
+          setKbLoading(false);
+        }
+      })
+      .catch((cause: Error) => {
+        if (!cancelled) {
+          setKbLoading(false);
+          // A degraded KB is a status notice, not a user-action error: it
+          // must never compete with import/operation alerts in the seam.
+          setKbError(`Knowledge base failed to load — running with the built-in sample data. (${cause.message})`);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [service]);
+  const app = upgraded ?? fallback;
   const [document, setDocument] = useState<CampaignDocument | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
@@ -164,6 +199,8 @@ export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
     document,
     error,
     dirty,
+    kbLoading,
+    kbError,
     importFile,
     confirmReplace,
     exportFile,
