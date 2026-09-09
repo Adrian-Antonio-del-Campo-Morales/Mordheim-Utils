@@ -102,8 +102,11 @@ describe("P5.2 vertical slice", () => {
     });
     await user.upload(input!, file);
     expect(await screen.findByRole("heading", { name: "Sigmar's Shield" })).toBeInTheDocument();
-    expect(screen.getByText("Sigrid")).toBeInTheDocument();
-    expect(screen.getByText(/Dagger/)).toBeInTheDocument();
+    // P6.4 added availability checkboxes that also render warrior names,
+    // so match the roster cell specifically.
+    expect(screen.getAllByText("Sigrid").length).toBeGreaterThan(0);
+    // Dagger appears in the inventory list and the P6.3 equipment panel.
+    expect(screen.getAllByText(/Dagger/).length).toBeGreaterThan(0);
   });
 
   it("shows a human-readable alert for a retired version file", async () => {

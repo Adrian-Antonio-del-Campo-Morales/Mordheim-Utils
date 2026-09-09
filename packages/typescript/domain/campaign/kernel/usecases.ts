@@ -109,6 +109,12 @@ export interface CampaignUseCases {
   /** Hirelings: resolve hiring eligibility and hire (P6.7). */
   hireHireling(document: CampaignDocument, input: { profile_id: IdString }, knowledge: KnowledgeReader): UseCaseResult;
 
+  /** Trading: buy an item into the stash (P6.7). */
+  buyTradingItem(document: CampaignDocument, input: BuyTradingItemInput): UseCaseResult;
+
+  /** Trading: sell from the stash, booking a manual-log entry (P6.7). */
+  sellStashItem(document: CampaignDocument, input: SellStashItemInput): UseCaseResult;
+
   /** Export preparation: validate the whole state before serialization (P6.8). */
   validateForExport(document: CampaignDocument): UseCaseResult;
 }
@@ -116,6 +122,10 @@ export interface CampaignUseCases {
 export interface OpenPayloadInput {
   readonly [key: string]: unknown;
 }
+
+/** P6.7 trading inputs (re-exported from the kernel implementation). */
+export type { BuyTradingItemInput, SellStashItemInput } from "./trading";
+import type { BuyTradingItemInput, SellStashItemInput } from "./trading";
 
 /** Re-export the state/ports types as the package's public surface. */
 export type {
