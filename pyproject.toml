@@ -19,14 +19,14 @@ dependencies = [
 
 [project.scripts]
 mordheim-combat-lab = "mordheim_combat_lab.cli.commands:main"
-mordheim-campaign-manager = "mordheim_campaign.app:main"
+mordheim-campaign-manager = "mordheim_desktop.app:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "coverage>=7.0", "wheel>=0.43", "pyinstaller>=6.0"]
 
 [tool.setuptools.packages.find]
-where = ["packages/python/combat-engine", "packages/python/roster-construction", "packages/python/core", "packages/python/knowledge", "packages/python/adapters/desktop-ui", "packages/python/campaign", "apps/combat-lab"]
+where = ["packages/python/combat-engine", "packages/python/roster-construction", "packages/python/core", "packages/python/knowledge", "packages/python/adapters/desktop-ui", "packages/python/campaign", "apps/combat-lab", "apps/warband-manager-desktop"]
 
 [tool.pytest.ini_options]
-pythonpath = ["packages/python/combat-engine", "packages/python/roster-construction", "packages/python/core", "packages/python/knowledge", "packages/python/adapters/desktop-ui", "packages/python/campaign", "apps/combat-lab"]
+pythonpath = ["packages/python/combat-engine", "packages/python/roster-construction", "packages/python/core", "packages/python/knowledge", "packages/python/adapters/desktop-ui", "packages/python/campaign", "apps/combat-lab", "apps/warband-manager-desktop"]
 testpaths = ["tests"]

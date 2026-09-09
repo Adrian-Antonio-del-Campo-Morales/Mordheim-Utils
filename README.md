@@ -64,7 +64,7 @@ Tab completion (bash/zsh): `source tools/completions/mordheim-utils.bash`
 
 ```powershell
 python -m mordheim_combat_lab          # Combat Lab
-python -m mordheim_campaign            # Campaign Manager
+python -m mordheim_desktop             # Campaign Manager
 ```
 
 ### Validation and verification (Combat Lab side)
