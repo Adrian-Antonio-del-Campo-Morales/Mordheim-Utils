@@ -13,7 +13,7 @@ import pytest
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.application.knowledge_port import KnowledgePort
 from mordheim_campaign.application.post_battle_engine import PostBattleEngine
-from mordheim_campaign.application.state import make_draft_state, make_example_state
+from mordheim_campaign.domain.builders import make_draft_state, make_example_state
 from mordheim_campaign.persistence import CampaignFileError, export_campaign_summary, load_campaign, save_campaign
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -112,7 +112,7 @@ def test_temporary_rules_and_pending_choice_resume_after_round_trip(tmp_path):
 
 
 def test_missing_band_id_is_rejected(tmp_path):
-    from mordheim_campaign.application.state import AppState, CampaignVM
+    from mordheim_campaign.domain.models import AppState, CampaignVM
 
     payload = {
         "marker": "MORDHEIM_CAMPAIGN_MANAGER",
@@ -220,7 +220,7 @@ def test_rejects_foreign_or_corrupt_files(tmp_path):
 
 
 def test_suggest_filename_slugifies_campaign_name():
-    from mordheim_campaign.application.state import CampaignVM
+    from mordheim_campaign.domain.models import CampaignVM
     from mordheim_campaign.persistence import suggest_filename
 
     campaign = CampaignVM("The Campaign of Morr!", "My Warband", "Sisters of Sigmar", "")

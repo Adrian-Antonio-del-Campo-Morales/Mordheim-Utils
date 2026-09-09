@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from mordheim_campaign.application.knowledge_port import KnowledgePort
 from mordheim_campaign.application.post_battle_engine import PostBattleEngine
-from mordheim_campaign.application.state import make_example_state
+from mordheim_campaign.domain.builders import make_example_state
 from tests.campaign.test_post_battle_engine import _pending
 
 

@@ -3,9 +3,9 @@ import copy
 from dataclasses import asdict
 
 from mordheim_campaign.application.controller import AppController
-from mordheim_campaign.application.state import InventoryItemVM
+from mordheim_campaign.domain.models import InventoryItemVM
 from mordheim_campaign.application.knowledge_port import KnowledgePort
-from mordheim_campaign.application.state import make_example_state
+from mordheim_campaign.domain.builders import make_example_state
 from mordheim_campaign.persistence import load_campaign, save_campaign
 from mordheim_campaign.persistence.warband_pdf import export_warband_pdf
 

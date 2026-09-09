@@ -17,7 +17,7 @@ from pathlib import Path
 from mordheim_campaign.application.controller import AppController
 from mordheim_campaign.application.knowledge_port import KnowledgePort
 from mordheim_campaign.application.post_battle_engine import PostBattleEngine
-from mordheim_campaign.application.state import make_draft_state, make_example_state
+from mordheim_campaign.domain.builders import make_draft_state, make_example_state
 from mordheim_campaign.persistence.campaigns import _document
 
 ROOT = Path(__file__).resolve().parents[1]

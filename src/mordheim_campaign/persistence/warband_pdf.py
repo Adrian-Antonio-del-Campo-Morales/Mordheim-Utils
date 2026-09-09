@@ -27,7 +27,7 @@ from pathlib import Path
 
 from fpdf import FPDF
 
-from mordheim_campaign.application.state import CampaignVM, WarriorVM
+from mordheim_campaign.domain.models import CampaignVM, WarriorVM
 from mordheim_ui.i18n import current_locale, tr
 
 #: Canonical storage order of the fighter characteristics and its per-locale

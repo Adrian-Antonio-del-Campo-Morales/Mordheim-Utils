@@ -1,5 +1,5 @@
 from mordheim_campaign.application.controller import AppController
-from mordheim_campaign.application.state import make_example_state
+from mordheim_campaign.domain.builders import make_example_state
 
 
 def test_successful_action_can_be_undone() -> None:

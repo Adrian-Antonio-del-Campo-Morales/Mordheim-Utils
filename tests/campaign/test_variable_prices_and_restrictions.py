@@ -119,7 +119,7 @@ def test_variable_hiring_fee_rejects_rolls_below_the_dice_count():
 
 def test_variable_price_item_can_be_bought_during_creation():
     from mordheim_campaign.application.controller import AppController
-    from mordheim_campaign.application.state import make_draft_state
+    from mordheim_campaign.domain.builders import make_draft_state
 
     controller = AppController()
     controller.replace_state(make_draft_state(controller.port, "lustria-pirates", collection="trollheim"))
