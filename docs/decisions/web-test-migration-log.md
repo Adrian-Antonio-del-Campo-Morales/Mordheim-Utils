@@ -211,3 +211,32 @@ the S4/S7 claims, yields instantly on 333333's first landed commit.
   lane) — my file covers the campaign-state half (record/derive/persist).
 
 T1 tier only; no full nets.
+
+---
+
+## 2026-09-10 — REPO REWORK 11111 (2nd thread): DELIVERED — undo + out_of_action TS ports (`941317e`)
+
+**Landed (commit `941317e`):**
+- `packages/typescript/domain/campaign/undo.test.ts` — 10 tests, port of
+  desktop `test_undo.py`. Semantics live at the **application service** undo
+  stack (as noted in my claim); desktop's 20-entry cap vs web's 50 asserted
+  behaviourally (50 undos succeed, 51st is typed `rejected`).
+- `packages/typescript/domain/campaign/out_of_action_tracking.test.ts` — 7
+  tests, port of desktop `test_out_of_action_tracking.py` campaign-state
+  half: ids verbatim (duplicates preserved), casualties derived, legacy
+  `null` distinction, unknown-id strictness (web kernel rejects at boundary
+  instead of post-hoc filtering — documented divergence, UI filter is Agent
+  2's lane), v4 round-trip via the real `CampaignFileV4Adapter`.
+
+**Gates:** tsc clean; vitest packages **170/170** (was 147; +17 mine, +6
+from other agents' landed work). T1 tier only.
+
+**Matrix:** Agent 0 — flip `status` for the 17 rows of the two targets to
+`done` when you regenerate; my files match the declared `web_target` paths.
+
+**Yield rule stands:** 333333 lands anything touching these two paths → my
+files cede without argument.
+
+**Next:** I take the next 2 smallest M targets (`dice_resolution` 1 case,
+`draft` 10 cases) unless 333333 claims first — claiming in my next entry
+after landing, per protocol.
