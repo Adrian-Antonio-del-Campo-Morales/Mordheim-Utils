@@ -6,6 +6,7 @@ import { AdvancesPanel } from "./AdvancesPanel";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { ExplorationPanel } from "../exploration/ExplorationPanel";
 import { WyrdstoneSalePanel } from "../economy/WyrdstoneSalePanel";
+import { VeteranPoolPanel } from "../recruitment/VeteranPoolPanel";
 
 export function PostBattleExperience({ document, knowledge }: { readonly document: CampaignDocument; readonly knowledge: ArtefactKnowledgeReader }) {
   const app = useCampaignApp();
@@ -23,7 +24,7 @@ export function PostBattleExperience({ document, knowledge }: { readonly documen
   }).length;
 
   if (post.experience_applied) {
-    return <><section aria-label="Experience and advances"><h3>02 · Experience and advances</h3><p role="status">Battle experience applied.</p><AdvancesPanel document={document} knowledge={knowledge} /></section><ExplorationPanel document={document} knowledge={knowledge}/><WyrdstoneSalePanel document={document} knowledge={knowledge}/></>;
+    return <><section aria-label="Experience and advances"><h3>02 · Experience and advances</h3><p role="status">Battle experience applied.</p><AdvancesPanel document={document} knowledge={knowledge} /></section><ExplorationPanel document={document} knowledge={knowledge}/><WyrdstoneSalePanel document={document} knowledge={knowledge}/><VeteranPoolPanel document={document}/></>;
   }
 
   return <section aria-label="Experience and advances">
