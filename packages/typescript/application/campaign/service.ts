@@ -37,6 +37,7 @@ import {
 import { createDraftWorkflow } from "./features/draft/draft-workflow";
 import { applyBattleExperience } from "./features/advances/experience-workflow";
 import { commitAdvanceChoice, promoteHenchman, resolveAdvanceRoll, setPromotionSkillTables } from "./features/advances/advance-resolution-workflow";
+import { applyExploration } from "./features/exploration/exploration-workflow";
 
 const HISTORY_LIMIT = 50;
 
@@ -250,6 +251,12 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         }
         case "setPromotionSkillTables": {
           const result = setPromotionSkillTables(state.current, knowledge, input as never);
+          if (!result.ok) return error("rejected", result.message);
+          return applyResult({ ok: true, state: result.document });
+        }
+        case "applyExploration": {
+          const dice = Array.isArray(input["dice"]) ? input["dice"].map(Number) : [];
+          const result = applyExploration(state.current, knowledge, dice);
           if (!result.ok) return error("rejected", result.message);
           return applyResult({ ok: true, state: result.document });
         }
