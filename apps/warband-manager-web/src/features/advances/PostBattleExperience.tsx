@@ -21,7 +21,7 @@ export function PostBattleExperience({ document, knowledge }: { readonly documen
   }).length;
 
   if (post.experience_applied) {
-    return <section aria-label="Experience and advances"><h3>02 · Experience and advances</h3><p role="status">Battle experience applied.</p><AdvancesPanel document={document} /></section>;
+    return <section aria-label="Experience and advances"><h3>02 · Experience and advances</h3><p role="status">Battle experience applied.</p><AdvancesPanel document={document} knowledge={knowledge} /></section>;
   }
 
   return <section aria-label="Experience and advances">
