@@ -308,6 +308,15 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const itemId = String(input["item_id"] ?? ""), name = String(input["name"] ?? itemId);
           const quantity = Number(input["quantity"]), unitPrice = Number(input["unit_price"]);
           if (!itemId || !Number.isInteger(quantity) || quantity <= 0 || !Number.isInteger(unitPrice) || unitPrice < 0) return error("rejected", "A valid item, quantity and price are required.");
+          const catalogue = (knowledge as typeof knowledge & { campaignSection?(section:string):Readonly<Record<string,unknown>> }).campaignSection?.("trading-post");
+          const catalogueItems = Array.isArray(catalogue?.["items"]) ? catalogue["items"] as Readonly<Record<string,unknown>>[] : [];
+          const catalogueEntry = catalogueItems.find((row) => row["item_id"] === itemId);
+          const restrictions = Array.isArray(catalogueEntry?.["restrictions"]) ? catalogueEntry["restrictions"] as Readonly<Record<string,unknown>>[] : [];
+          const inferredOne = restrictions.some((row) => row["type"] === "profile_only" && String(row["note"] ?? "").toLocaleLowerCase().startsWith("one "));
+          const declaredLimit = restrictions.find((row) => row["type"] === "limit_per_warband")?.["value"];
+          const limit = Number.isInteger(declaredLimit) ? Number(declaredLimit) : inferredOne ? 1 : null;
+          const owned = state.current.campaign.inventory.filter((row) => row.id === itemId).reduce((sum, row) => sum + row.owned, 0);
+          if (limit !== null && owned + quantity > limit) return error("rejected", `Warband limit reached: at most ${limit} of this item (own ${owned}).`);
           const snapshot = state.current.campaign.states.find((row) => row.number === state.current!.campaign.current_state_number) ?? state.current.campaign.states.at(-1);
           const available = (snapshot?.gold ?? 0) + (post.gold_delta ?? 0), total = quantity * unitPrice;
           if (total > available) return error("rejected", `Not enough gold: ${total} gc needed, ${available} available.`);

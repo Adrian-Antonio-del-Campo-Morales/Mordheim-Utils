@@ -115,13 +115,13 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
         <tbody>
           {goods.map((good) => (
             <tr key={good.offer_id}>
-              <td>{good.name}</td>
+              <td>{good.name}{good.restriction_notes.length > 0 && <small className="restriction-note">{good.restriction_notes.join(" · ")}</small>}</td>
               <td>{good.base_price === null ? t.dice : `${good.base_price} gc`}</td>
               <td>{good.availability}</td>
               <td>
                 <button
                   type="button"
-                  disabled={busy || good.base_price === null}
+                  disabled={busy || good.base_price === null || (good.limit_per_warband !== null && (document.campaign.inventory.find((row) => row.id === good.item_id)?.owned ?? 0) >= good.limit_per_warband)}
                   aria-label={`Buy ${good.name}`}
                   onClick={() => buy(good.item_id, good.base_price)}
                 >
