@@ -1,0 +1,22 @@
+{
+ "plan": "web-test-migration-plan.md §T2",
+ "kind": "shared-parity-vectors",
+ "source_family": "tests/campaign/test_knowledge_port.py",
+ "source_tests": 9,
+ "rules": [
+  "assertions run against the SAME generated KB artefact in both toolchains",
+  "the artefact is deterministic (byte-identical regeneration), so ids and counts are stable",
+  "counts asserted with >= where the desktop test itself allows growth"
+ ],
+ "vectors": [
+  {"id": "kb.options-count", "expect": {"min_bands": 80, "collections": ["mordheim", "trollheim"]}},
+  {"id": "kb.band-shape", "expect": {"every_band_has": ["id", "name", "collection"], "min_models": 3, "max_ge_min": true, "positive_gold": true}},
+  {"id": "kb.sisters-roster", "expect": {"collection": "mordheim", "band_id": "sisters-of-sigmar", "minimum_models": 3, "maximum_models": 15, "starting_gold": 500, "hero_limit": 5}},
+  {"id": "kb.matriarch-profile", "expect": {"profile_id": "sigmarite-matriarch", "cost": 70, "experience": 20, "characteristics": {"M": 4, "WS": 4, "BS": 4, "S": 3, "T": 3, "W": 1, "I": 4, "A": 1, "Ld": 8}, "required": true}},
+  {"id": "kb.every-band-usable-heroes", "expect": {"every_band_has_hero": true, "every_profile_has_all_characteristics": true}},
+  {"id": "kb.every-draft-starter-legal", "expect": {"kb_draft_legal_for_every_band": true}},
+  {"id": "kb.sisters-equipment", "expect": {"item_id": "sigmarite_hammer", "name": "Sigmarite Hammer"}},
+  {"id": "kb.unknown-warband", "input": {"collection": "mordheim", "band_id": "does-not-exist"}, "expect": {"error": true}},
+  {"id": "kb.post-battle-sequence", "expect": {"steps": 10, "first_step_ids": ["campaign.step.serious-injuries", "campaign.step.experience", "campaign.step.exploration"]}}
+ ]
+}

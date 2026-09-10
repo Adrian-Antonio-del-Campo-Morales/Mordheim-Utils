@@ -42,6 +42,7 @@ from mordheim_knowledge.loader import (  # noqa: E402
     load_racial_maximums,
     load_skills,
 )
+from mordheim_knowledge.rules_catalog import load_rules_catalog  # noqa: E402
 
 SCHEMA_VERSION = 1
 DEFAULT_RULESET = "mordheim"
@@ -153,6 +154,25 @@ def _build_bands(ruleset: str) -> tuple[list[dict], dict[str, list[str]]]:
     return sorted(bands, key=_sort_key), dict(sorted(indexes.items()))
 
 
+_EXPERIENCE_FORBIDDEN_RULE_REFS = frozenset({
+    "shared-rule.brainless", "shared-rule.dead", "shared-rule.never-gain-experience",
+    "shared-rule.experience", "shared-rule.animal", "shared-rule.animal-2",
+    "shared-rule.animals", "shared-rule.animals-2", "shared-rule.animals-3",
+})
+
+
+def _profile_can_gain_experience(package, profile: dict) -> bool:
+    """Materialize the same decision as desktop KnowledgePort.can_gain_experience."""
+    profile_id = str(profile.get("id") or "")
+    if str(profile.get("type") or "") == "animal":
+        return False
+    return not any(
+        profile_id in ((rule.get("applies_to") or {}).get("profile_ids") or ())
+        and rule.get("rule_ref") in _EXPERIENCE_FORBIDDEN_RULE_REFS
+        for rule in package.special_rules
+    )
+
+
 def _build_profiles(ruleset: str) -> list[dict]:
     profiles: list[dict] = []
     for collection in (row["id"] for row in load_collections() if ruleset in set(row.get("rulesets") or ())):
@@ -163,6 +183,7 @@ def _build_profiles(ruleset: str) -> list[dict]:
                 entry = _row(profile, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n"))
                 entry["collection"] = str(collection)
                 entry["band_id"] = str(package.band["id"])
+                entry["can_gain_experience"] = _profile_can_gain_experience(package, profile)
                 profiles.append(entry)
     return sorted(profiles, key=_sort_key)
 
@@ -191,6 +212,19 @@ def _build_weapon_hands(ruleset: str) -> dict[str, int]:
         if isinstance(value, int) and identifier:
             hands[identifier] = value
     return dict(sorted(hands.items()))
+
+
+def _build_rules_prose(ruleset: str) -> dict:
+    """Browsable rules prose catalogue (RULES browser parity, Agent 0 gap
+    `artefact-lacks-prose-catalogue`): every ruleset-tagged document of
+    ``catalog/rules`` with per-locale names and effects."""
+    catalog = load_rules_catalog(ruleset)
+    documents: dict[str, list[dict]] = {}
+    for stem in catalog.stems():
+        document = catalog.document(stem)
+        rows = document.get("rules") or document.get("conditions") or ()
+        documents[stem] = sorted((_row(row) for row in rows), key=_sort_key)
+    return dict(sorted(documents.items()))
 
 
 def _build_campaign_section(ruleset: str, item_ids: set[str]) -> dict:
@@ -270,6 +304,7 @@ def generate(ruleset: str = DEFAULT_RULESET) -> dict:
         artefact["items"] = _build_items(ruleset)
         artefact["skills"] = _build_skills(ruleset)
         artefact["weapon_hands"] = _build_weapon_hands(ruleset)
+        artefact["rules_prose"] = _build_rules_prose(ruleset)
         artefact["campaign"] = _build_campaign_section(ruleset, {str(item["item_id"]) for item in artefact["items"]})
     except GenerationError:
         raise

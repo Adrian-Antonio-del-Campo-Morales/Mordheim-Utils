@@ -19,6 +19,7 @@ import type { CampaignDocument } from "../campaign/types";
 
 interface ReviewPanelProps {
   readonly document: CampaignDocument;
+  readonly locale?: "es" | "en";
 }
 
 /** Client-side download of an auxiliary text export. */
@@ -32,56 +33,57 @@ function downloadText(filename: string, text: string): void {
   URL.revokeObjectURL(url);
 }
 
-export function ReviewPanel({ document }: ReviewPanelProps) {
+export function ReviewPanel({ document, locale = "en" }: ReviewPanelProps) {
   const summary = reviewSummary(document);
   const baseName = (summary.warband_name || summary.campaign_name || "campaign").replace(/[^\w-]+/g, "_");
 
+  const t = locale === "es" ? { title:"Revisar antes de exportar",summary:"Resumen de campaña",campaign:"Campaña",warband:"Banda",treasury:"Tesorería",shards:"fragmento(s)",stash:"reserva",roster:"Guerreros",models:"miniatura(s)",heroes:"héroe(s)",henchmen:"secuaces",hirelings:"mercenario(s)",timeline:"Cronología",battles:"batalla(s)",state:"estado",of:"de",inventory:"Inventario",rows:"fila(s)",owned:"objeto(s) en propiedad",draft:"todavía es un borrador",post:"hay una secuencia post-batalla sin terminar",rolls:"tirada(s) de heridas sin resolver",absent:"guerrero(s) ausentes",safe:"Nada pendiente: puede guardarse.",pending:"Pendiente",exports:"Exportaciones auxiliares",downloadRoster:"Descargar banda (.txt)",downloadLedger:"Descargar historial (.txt)" } : { title:"Review before export",summary:"Campaign summary",campaign:"Campaign",warband:"Warband",treasury:"Treasury",shards:"shard(s)",stash:"stash",roster:"Roster",models:"model(s)",heroes:"hero(es)",henchmen:"henchmen",hirelings:"hireling(s)",timeline:"Timeline",battles:"battle(s)",state:"state",of:"of",inventory:"Inventory",rows:"row(s)",owned:"item(s) owned",draft:"this is still a draft",post:"a post-battle sequence is unfinished",rolls:"unresolved injury roll(s)",absent:"warrior(s) absent",safe:"Nothing pending — safe to save.",pending:"Pending",exports:"Auxiliary exports",downloadRoster:"Download roster (.txt)",downloadLedger:"Download ledger (.txt)" };
   const pending: string[] = [];
-  if (summary.is_draft) pending.push("this is still a draft");
-  if (summary.post_battle_pending) pending.push("a post-battle sequence is unfinished");
-  if (summary.open_follow_ups > 0) pending.push(`${summary.open_follow_ups} unresolved injury roll(s)`);
-  if (summary.absent_warriors > 0) pending.push(`${summary.absent_warriors} warrior(s) absent`);
+  if (summary.is_draft) pending.push(t.draft);
+  if (summary.post_battle_pending) pending.push(t.post);
+  if (summary.open_follow_ups > 0) pending.push(`${summary.open_follow_ups} ${t.rolls}`);
+  if (summary.absent_warriors > 0) pending.push(`${summary.absent_warriors} ${t.absent}`);
 
   return (
     <section aria-label="Review">
-      <h3>Review before export</h3>
+      <h3>{t.title}</h3>
 
       <table>
-        <caption>Campaign summary</caption>
+        <caption>{t.summary}</caption>
         <tbody>
           <tr>
-            <th scope="row">Campaign</th>
+            <th scope="row">{t.campaign}</th>
             <td>{summary.campaign_name}</td>
           </tr>
           <tr>
-            <th scope="row">Warband</th>
+            <th scope="row">{t.warband}</th>
             <td>
               {summary.warband_name} ({summary.warband_type})
             </td>
           </tr>
           <tr>
-            <th scope="row">Treasury</th>
+            <th scope="row">{t.treasury}</th>
             <td>
-              {summary.gold} gc, {summary.wyrdstone_shards} shard(s), stash {summary.stash_value} gc
+              {summary.gold} gc, {summary.wyrdstone_shards} {t.shards}, {t.stash} {summary.stash_value} gc
             </td>
           </tr>
           <tr>
-            <th scope="row">Roster</th>
+            <th scope="row">{t.roster}</th>
             <td>
-              {summary.warriors} model(s) — {summary.heroes} hero(es), {summary.henchmen} henchmen,{" "}
-              {summary.hirelings} hireling(s)
+              {summary.warriors} {t.models} — {summary.heroes} {t.heroes}, {summary.henchmen} {t.henchmen},{" "}
+              {summary.hirelings} {t.hirelings}
             </td>
           </tr>
           <tr>
-            <th scope="row">Timeline</th>
+            <th scope="row">{t.timeline}</th>
             <td>
-              {summary.battles} battle(s), state {summary.current_state_number} of {summary.states}
+              {summary.battles} {t.battles}, {t.state} {summary.current_state_number} {t.of} {summary.states}
             </td>
           </tr>
           <tr>
-            <th scope="row">Inventory</th>
+            <th scope="row">{t.inventory}</th>
             <td>
-              {summary.inventory_items} row(s), {summary.inventory_owned} item(s) owned
+              {summary.inventory_items} {t.rows}, {summary.inventory_owned} {t.owned}
             </td>
           </tr>
         </tbody>
@@ -89,24 +91,24 @@ export function ReviewPanel({ document }: ReviewPanelProps) {
 
       <p role="status">
         {pending.length === 0
-          ? "Nothing pending — safe to save."
-          : `Pending: ${pending.join("; ")}.`}
+          ? t.safe
+          : `${t.pending}: ${pending.join("; ")}.`}
       </p>
 
-      <h4>Auxiliary exports</h4>
+      <h4>{t.exports}</h4>
       <button
         type="button"
         aria-label={`Download roster summary for ${summary.warband_name}`}
         onClick={() => downloadText(`${baseName}-roster.txt`, rosterSummaryText(document))}
       >
-        Download roster (.txt)
+        {t.downloadRoster}
       </button>{" "}
       <button
         type="button"
         aria-label={`Download campaign ledger for ${summary.warband_name}`}
         onClick={() => downloadText(`${baseName}-ledger.txt`, ledgerText(document))}
       >
-        Download ledger (.txt)
+        {t.downloadLedger}
       </button>
     </section>
   );

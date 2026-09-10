@@ -1,188 +1,51 @@
-/**
- * P5.2 vertical slice (plan §6): import → display → edit → export.
- * Deliberately minimal: proves the contract end to end, not the final UX.
- * Navigation and full Campaign Manager views arrive with P6.x.
- */
-
-import { useRef, useState } from "react";
-
+import { useState } from "react";
+import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { useCampaignApp } from "./useCampaignApp";
 import { TimelinePanel } from "../timeline/TimelinePanel";
 import { EquipmentPanel } from "../equipment/EquipmentPanel";
-import { AdvancesPanel } from "../advances/AdvancesPanel";
+import { PostBattleExperience } from "../advances/PostBattleExperience";
 import { HirelingsPanel } from "../hirelings/HirelingsPanel";
 import { BattlePanel } from "../battle/BattlePanel";
+import { BattleHistory } from "../battle/BattleHistory";
 import { InjuriesPanel } from "../injuries/InjuriesPanel";
 import { ReviewPanel } from "../review/ReviewPanel";
+import { PostBattleHistory } from "../review/PostBattleHistory";
+import { DraftWorkspace } from "../draft/DraftWorkspace";
+import { PostBattleInjuries } from "../injuries/PostBattleInjuries";
+import type { CampaignDocument } from "./types";
 
-export function CampaignSlice() {
-  const app = useCampaignApp();
-  const fileInput = useRef<HTMLInputElement>(null);
-  // P6.4: the slice mirrors service state into local state so the battle
-  // panel's document updates propagate (same pattern as TimelinePanel).
-  const [warbandName, setWarbandName] = useState<string | null>(null);
+function RosterOverview({ document, stateNumber, editable, locale }: { document: CampaignDocument; stateNumber: number; editable: boolean; locale: "es" | "en" }) {
+  const app = useCampaignApp(); const [name, setName] = useState("");
+  const { campaign } = document;
+  const snapshot = campaign.states.find((state) => state.number === stateNumber);
+  const warriors = snapshot?.roster ?? (editable ? campaign.warriors : []);
+  const t = locale === "es" ? { campaign:"Campaña",warband:"Banda",models:"Miniaturas",rating:"Valoración",treasury:"Tesorería",wyrdstone:"Piedra bruja",historical:"Histórico · solo lectura",roster:"Guerreros",missing:"Este estado no contiene una instantánea de guerreros.",members:"miembros",equipment:"Equipo",skills:"Habilidades / heridas",none:"Ninguno",recovery:"Recuperación",misses:"se pierde",battles:"batalla(s)",upkeep:"Mantenimiento",rename:"Renombrar banda",apply:"Aplicar" } : { campaign:"Campaign",warband:"Warband",models:"Models",rating:"Rating",treasury:"Treasury",wyrdstone:"Wyrdstone",historical:"Historical · read only",roster:"Roster",missing:"No roster snapshot is stored for this state.",members:"members",equipment:"Equipment",skills:"Skills / injuries",none:"None",recovery:"Recovery",misses:"misses",battles:"battle(s)",upkeep:"Upkeep",rename:"Rename warband",apply:"Apply" };
+  return <section aria-label="Warband overview"><dl className="campaign-metrics"><div><dt>{t.campaign}</dt><dd>{campaign.identity.campaign_name}</dd></div><div><dt>{t.warband}</dt><dd>{campaign.identity.warband_type}</dd></div><div><dt>{t.models}</dt><dd>{snapshot?.models ?? warriors.reduce((sum, warrior) => sum + (warrior.quantity ?? 1), 0)}</dd></div><div><dt>{t.rating}</dt><dd>{snapshot?.rating ?? 0}</dd></div><div><dt>{t.treasury}</dt><dd>{snapshot?.gold ?? 0} gc</dd></div><div><dt>{t.wyrdstone}</dt><dd>{snapshot?.wyrdstone ?? 0}</dd></div></dl>
+    {!editable && <p role="status">{t.historical}</p>}
+    <h3>{t.roster}</h3>{warriors.length === 0 ? <p>{t.missing}</p> : <div className="warrior-grid">{warriors.map((warrior) => <article className="warrior-card" key={warrior.id}><header><div><strong>{warrior.name}</strong><span>{warrior.profile_name}{warrior.kind !== "hero" ? ` · ${warrior.quantity ?? 1} ${t.members}` : ""}</span></div><b>{warrior.experience} XP</b></header>{warrior.condition && <p className="condition">{warrior.condition}{warrior.condition_detail ? ` · ${warrior.condition_detail}` : ""}</p>}<div className="stats">{Object.entries(warrior.stats).map(([key,value]) => { const modifier=warrior.stat_modifiers?.[key] ?? 0; return <span key={key}><small>{key}</small>{value + modifier}</span>; })}</div><h4>{t.equipment}</h4><p>{warrior.equipment.map((entry) => `${entry.quantity}× ${entry.name}`).join(", ") || t.none}</p><h4>{t.skills}</h4><p>{[...warrior.skills, ...(warrior.special_rules ?? [])].join(", ") || t.none}</p>{warrior.games_to_miss ? <p className="condition">{warrior.absence_reason ?? t.recovery} · {t.misses} {warrior.games_to_miss} {t.battles}</p> : null}{warrior.kind === "hireling" && <p>{t.rating} {warrior.hireling_rating ?? 0}{warrior.upkeep_resources?.length ? ` · ${t.upkeep} ${warrior.upkeep_resources.map(([resource, amount]) => `${amount} ${resource}`).join(" + ")}` : ""}</p>}</article>)}</div>}
+    {editable && <form className="inline-form" onSubmit={(event) => { event.preventDefault(); if(name.trim()) void app.runAction("renameWarband", { name: name.trim() }); setName(""); }}><label>{t.rename}<input value={name} onChange={(event) => setName(event.target.value)} /></label><button disabled={!name.trim()}>{t.apply}</button></form>}
+  </section>;
+}
 
-  const doc = app.document;
-  const identity = doc?.campaign.identity;
-  const roster = doc?.campaign.warriors ?? [];
-  const inventory = doc?.campaign.inventory ?? [];
-
-  return (
-    <section aria-label="Campaign">
-      <h1>Mordheim Warband Manager</h1>
-
-      {/* P5.2 acceptance: the real KB artefact loads once at startup. */}
-      {app.kbLoading && <p role="status">Loading knowledge base…</p>}
-      {app.kbError && (
-        <output role="status" style={{ display: "block", color: "darkorange" }}>
-          {app.kbError}
-        </output>
-      )}
-
-      <div>
-        <label htmlFor="campaign-file">Load a .mordheim campaign file</label>
-        <input
-          id="campaign-file"
-          ref={fileInput}
-          type="file"
-          accept=".mordheim,application/json"
-          onChange={(event) => {
-            const file = event.target.files?.[0];
-            if (file) void app.importFile(file);
-            event.target.value = "";
-          }}
-        />
-      </div>
-
-      {app.error && (
-        <output role="alert" style={{ color: "crimson", display: "block" }}>
-          {app.error}{" "}
-          {(app.error.startsWith("Replace") || app.error.includes("already loaded")) && (
-            <button
-              type="button"
-              onClick={() => {
-                void app.confirmReplace();
-              }}
-            >
-              Replace campaign
-            </button>
-          )}
-          <button type="button" onClick={app.clearError}>
-            Dismiss
-          </button>
-        </output>
-      )}
-
-      {app.dirty && (
-        <output role="status" style={{ display: "block" }}>
-          ⚠ Unsaved changes — export to keep them.
-        </output>
-      )}
-
-      {doc && identity && (
-        <>
-          <h2>{identity.warband_name}</h2>
-
-          {/* P6.1: timeline navigation beside the state display. */}
-          <TimelinePanel document={doc} onSelect={(moment) => app.selectMoment(moment)} />
-
-          {/* P6.3: equipment & stash beside the inventory display. */}
-          <EquipmentPanel document={doc} />
-
-          {/* P6.6: experience & advances beside the roster display. */}
-          <AdvancesPanel document={doc} />
-
-          {/* P6.7: hirelings, exploration & trading (committed campaigns). */}
-          {!doc.campaign.configuration.is_draft && <HirelingsPanel document={doc} />}
-
-          {/* P6.5: injuries & recovery beside the roster display. */}
-          <InjuriesPanel document={doc} />
-
-          {/* P6.4: battle recording for committed campaigns (not drafts). */}
-          {!doc.campaign.configuration.is_draft && (
-            <BattlePanel
-              document={doc}
-              onDocument={(updated) => {
-                /* The service snapshot is replaced through the app hook; the
-                   panel holds its own copy so both stay consistent. */
-                void updated;
-              }}
-            />
-          )}
-          <dl>
-            <dt>Campaign</dt>
-            <dd>{identity.campaign_name}</dd>
-            <dt>Warband</dt>
-            <dd>{app.dirty ? `${identity.warband_type}` : identity.warband_type}</dd>
-            <dt>Band</dt>
-            <dd>{identity.warband_type || identity.band_id}</dd>
-          </dl>
-
-          <h3>Roster ({roster.length})</h3>
-          {roster.length === 0 ? (
-            <p>No warriors.</p>
-          ) : (
-            <table>
-              <caption>Roster</caption>
-              <thead>
-                <tr>
-                  <th scope="col">Name</th>
-                  <th scope="col">Type</th>
-                  <th scope="col">XP</th>
-                  <th scope="col">Cost</th>
-                </tr>
-              </thead>
-              <tbody>
-                {roster.map((warrior) => (
-                  <tr key={warrior.id}>
-                    <td>{warrior.name}</td>
-                    <td>{warrior.profile_name}</td>
-                    <td>{warrior.experience}</td>
-                    <td>{warrior.cost}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-
-          <h3>Inventory ({inventory.length})</h3>
-          <ul>
-            {inventory.map((item) => (
-              <li key={item.id}>
-                {item.name} — equipped {item.equipped}, stash {item.stash}
-              </li>
-            ))}
-          </ul>
-
-          <h4>Rename warband (sample edit)</h4>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              if (warbandName && warbandName.trim().length > 0) {
-                void app.runAction("__rename_warband__", { name: warbandName.trim() });
-                setWarbandName(null);
-              }
-            }}
-          >
-            <label htmlFor="warband-name">New name</label>
-            <input
-              id="warband-name"
-              value={warbandName ?? ""}
-              onChange={(event) => setWarbandName(event.target.value)}
-            />
-            <button type="submit" disabled={!warbandName || warbandName.trim().length === 0}>
-              Apply
-            </button>
-          </form>
-
-          {/* P6.8: review before export + auxiliary text exports. */}
-          <ReviewPanel document={doc} />
-
-          <button type="button" onClick={() => void app.exportFile()}>
-            Export .mordheim
-          </button>
-        </>
-      )}
-    </section>
-  );
+export function CampaignSlice({ knowledge, locale = "en" }: { knowledge?: ArtefactKnowledgeReader; locale?: "es" | "en" }) {
+  const app = useCampaignApp(); const doc = app.document;
+  if (!doc) return null;
+  const selected = String(doc.view.selected_moment ?? `state:${doc.campaign.current_state_number}`);
+  const battleNumber = Number(selected.split(":")[1] ?? 0);
+  const battle = doc.campaign.battles.find((row) => row.number === battleNumber);
+  const selectedPost = doc.campaign.post_battles.find((row) => row.battle_number === battleNumber);
+  const currentState = selected === `state:${doc.campaign.current_state_number}`;
+  const selectedState = doc.campaign.states.find((state) => state.number === battleNumber);
+  const stateDocument = selectedState ? { ...doc, campaign: { ...doc.campaign, warriors: selectedState.roster ?? [], inventory: selectedState.inventory ?? [] } } : doc;
+  return <section aria-label="Campaign">
+    {app.error && <output className="global-error" role="alert">{app.error} <button onClick={app.clearError}>{locale === "es" ? "Cerrar" : "Dismiss"}</button></output>}
+    {app.dirty && <output className="dirty" role="status">{locale === "es" ? "Cambios sin exportar" : "Unsaved changes"}</output>}
+    {doc.campaign.configuration.is_draft && knowledge ? <DraftWorkspace document={doc} knowledge={knowledge} locale={locale} /> : <div className="campaign-layout">
+      <TimelinePanel document={doc} onSelect={app.selectMoment} locale={locale} />
+      <div className="moment-detail">
+        {selected.startsWith("state:") && <><RosterOverview document={doc} stateNumber={battleNumber} editable={currentState} locale={locale} /><EquipmentPanel document={stateDocument} readOnly={!currentState} locale={locale} />{currentState && <BattlePanel document={doc} knowledge={knowledge} locale={locale} />}</>}
+        {selected.startsWith("battle:") && <BattleHistory battle={battle} locale={locale} />}
+        {selected.startsWith("post:") && (selectedPost?.complete ? <PostBattleHistory document={doc} battleNumber={battleNumber} locale={locale} /> : <><BattlePanel document={doc} knowledge={knowledge} locale={locale} />{knowledge && <PostBattleInjuries document={doc} knowledge={knowledge} />}<InjuriesPanel document={doc} />{knowledge && <PostBattleExperience document={doc} knowledge={knowledge} />}<HirelingsPanel document={doc} listings={knowledge} locale={locale} /><ReviewPanel document={doc} locale={locale} /></>)}
+      </div></div>}
+  </section>;
 }

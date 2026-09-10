@@ -17,9 +17,11 @@ import type { CampaignDocument } from "../campaign/types";
 
 interface EquipmentPanelProps {
   readonly document: CampaignDocument;
+  readonly readOnly?: boolean;
+  readonly locale?: "es" | "en";
 }
 
-export function EquipmentPanel({ document }: EquipmentPanelProps) {
+export function EquipmentPanel({ document, readOnly = false, locale = "en" }: EquipmentPanelProps) {
   const app = useCampaignApp();
   const { campaign } = document;
   const [busy, setBusy] = useState(false);
@@ -34,10 +36,11 @@ export function EquipmentPanel({ document }: EquipmentPanelProps) {
 
   const stashRows = campaign.inventory.filter((item) => item.stash > 0);
   const equippedRows = campaign.inventory.filter((item) => item.equipped > 0);
+  const t = locale === "es" ? { title:"Equipo",stash:"En reserva",emptyStash:"No hay nada en la reserva.",item:"Objeto",equip:"Equipar a",choose:"Elige guerrero…",equipped:"Equipado",emptyEquipped:"No hay nada equipado.",carries:"lleva",return:"Devolver 1 a la reserva" } : { title:"Equipment",stash:"In stash",emptyStash:"Nothing in the stash.",item:"Item",equip:"Equip to",choose:"Choose warrior…",equipped:"Equipped",emptyEquipped:"Nothing equipped.",carries:"carries",return:"Return 1 to stash" };
 
   return (
     <section aria-label="Equipment">
-      <h3>Equipment</h3>
+      <h3>{t.title}</h3>
 
       {localError && (
         <output role="alert" style={{ color: "crimson", display: "block" }}>
@@ -45,17 +48,17 @@ export function EquipmentPanel({ document }: EquipmentPanelProps) {
         </output>
       )}
 
-      <h4>In stash</h4>
+      <h4>{t.stash}</h4>
       {stashRows.length === 0 ? (
-        <p>Nothing in the stash.</p>
+        <p>{t.emptyStash}</p>
       ) : (
         <table>
           <caption>Stash</caption>
           <thead>
             <tr>
-              <th scope="col">Item</th>
+              <th scope="col">{t.item}</th>
               <th scope="col">Stash</th>
-              <th scope="col">Equip to</th>
+              {!readOnly && <th scope="col">{t.equip}</th>}
             </tr>
           </thead>
           <tbody>
@@ -63,7 +66,7 @@ export function EquipmentPanel({ document }: EquipmentPanelProps) {
               <tr key={item.id}>
                 <td>{item.name}</td>
                 <td>{item.stash}</td>
-                <td>
+                {!readOnly && <td>
                   <select
                     aria-label={`Assign ${item.name} to warrior`}
                     defaultValue=""
@@ -77,7 +80,7 @@ export function EquipmentPanel({ document }: EquipmentPanelProps) {
                     }}
                   >
                     <option value="" disabled>
-                      Choose warrior…
+                      {t.choose}
                     </option>
                     {campaign.warriors.map((warrior) => (
                       <option key={warrior.id} value={warrior.id}>
@@ -85,16 +88,16 @@ export function EquipmentPanel({ document }: EquipmentPanelProps) {
                       </option>
                     ))}
                   </select>
-                </td>
+                </td>}
               </tr>
             ))}
           </tbody>
         </table>
       )}
 
-      <h4>Equipped</h4>
+      <h4>{t.equipped}</h4>
       {equippedRows.length === 0 ? (
-        <p>Nothing equipped.</p>
+        <p>{t.emptyEquipped}</p>
       ) : (
         <ul>
           {campaign.warriors.flatMap((warrior) =>
@@ -102,8 +105,8 @@ export function EquipmentPanel({ document }: EquipmentPanelProps) {
               .filter((entry) => entry.acquisition !== "fixed")
               .map((entry) => (
                 <li key={`${warrior.id}:${entry.item_id}`}>
-                  {warrior.name} carries {entry.quantity} × {entry.name}{" "}
-                  <button
+                  {warrior.name} {t.carries} {entry.quantity} × {entry.name}{" "}
+                  {!readOnly && <button
                     type="button"
                     disabled={busy}
                     aria-label={`Return ${entry.name} carried by ${warrior.name} to stash`}
@@ -111,8 +114,8 @@ export function EquipmentPanel({ document }: EquipmentPanelProps) {
                       void assign(warrior.id, entry.item_id, 1, "stash");
                     }}
                   >
-                    Return 1 to stash
-                  </button>
+                    {t.return}
+                  </button>}
                 </li>
               )),
           )}

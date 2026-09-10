@@ -122,7 +122,31 @@ repeats; transient artifacts cleaned afterwards.
 
 ---
 
-## 2026-09-10 — Agent A: **S8 DONE** — contracts/knowledge decision: does not apply (docs-only)
+## 2026-09-10 — Agent A: **R3 GAP CLOSED** — apps/warband-manager-desktop created; ui/web decision logged
+
+User audit caught two §R3 rows the S1–S8 split had not covered. Both done:
+
+- **`apps/warband-manager-desktop/mordheim_desktop/`**: the desktop
+  composition root (`CampaignManagerApp`, `main`, `__main__`) extracted from
+  `mordheim_campaign/app.py` (git mv, 2 renames + new `__init__`). The
+  campaign package is now UI-agnostic per §5; `mordheim_desktop` wires it
+  with `mordheim_ui`. Console script is now
+  `mordheim-campaign-manager = mordheim_desktop.app:main`;
+  `python -m mordheim_desktop` replaces `python -m mordheim_campaign`
+  (README updated). Zero test/tool import rewrites (nothing imported the GUI
+  root). Gates: explicit sys.path import check, `tests/ui` 37,
+  `tests/architecture` 12.
+- **TS `ui/web` decision: keep as-is.** Web feature components stay in
+  `apps/warband-manager-web/src/features/` — they are app-coupled React
+  surfaces, §5's tree is explicitly "orientativa", and `packages/typescript`
+  stays framework-free (domain/application/adapters only). Moving them would
+  break the purity boundary the packages enforce. Recorded here as final.
+
+**§R3 table now fully addressed: every row done or decided.**
+
+---
+
+ — contracts/knowledge decision: does not apply (docs-only)
 
 - Decision: **no `contracts/knowledge/` directory.** Rationale: the v4
   campaign contract lives in `contracts/` because `.mordheim` is a file

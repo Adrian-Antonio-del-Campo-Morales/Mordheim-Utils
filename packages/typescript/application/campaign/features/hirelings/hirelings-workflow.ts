@@ -70,6 +70,8 @@ export interface TradingOfferRow {
   /** Base price in gold crowns (null = dice-priced, resolved by the caller). */
   readonly base_price: number | null;
   readonly availability: string;
+  readonly limit_per_warband: number | null;
+  readonly restriction_notes: readonly string[];
 }
 
 /** Why a workflow step failed (stable reasons for the UI). */
@@ -259,8 +261,8 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
 
     /** Trading-post offers resolved to display names. */
     tradingOffers(document: CampaignDocument): TradingOfferRow[] {
-      void document;
       const items = listings.campaignSection("trading-post")["items"];
+      const bandGroups = groupIdsOf(listings.campaignRows("warband_groups"), document.campaign.identity.band_id);
       const rows: TradingOfferRow[] = [];
       if (!Array.isArray(items)) return rows;
       for (const entry of items as ArtefactRow[]) {
@@ -269,12 +271,30 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
         const price = entry["price"] as OpenPayload | undefined;
         const base = typeof price?.["base_gc"] === "number" ? price["base_gc"] : null;
         const availability = (entry["availability"] as OpenPayload | undefined)?.["kind"];
+        if (availability !== "common") continue;
+        const restrictions = Array.isArray(entry["restrictions"]) ? entry["restrictions"] as ArtefactRow[] : [];
+        const allowed = restrictions.every((restriction) => {
+          const type = restriction["type"];
+          const bandIds = new Set(Array.isArray(restriction["band_ids"]) ? restriction["band_ids"].map(String) : []);
+          const groups = new Set(Array.isArray(restriction["groups"]) ? restriction["groups"].map(String) : []);
+          const matches = bandIds.has(document.campaign.identity.band_id) || [...groups].some((group) => bandGroups.has(group));
+          if (type === "warband_forbidden") return !matches;
+          if (type === "warband_only" && (bandIds.size > 0 || groups.size > 0)) return matches;
+          return !String(restriction["note"] ?? "").toLocaleLowerCase().includes("may only be purchased when the warband is created");
+        });
+        if (!allowed) continue;
+        const inferredOne = restrictions.some((restriction) => restriction["type"] === "profile_only" && String(restriction["note"] ?? "").toLocaleLowerCase().startsWith("one "));
+        const declaredLimit = restrictions.find((restriction) => restriction["type"] === "limit_per_warband")?.["value"];
+        const limit = Number.isInteger(declaredLimit) ? Number(declaredLimit) : inferredOne ? 1 : null;
+        const notes = restrictions.filter((restriction) => ["condition", "profile_only"].includes(String(restriction["type"])) && restriction["note"]).map((restriction) => String(restriction["note"]));
         rows.push({
           offer_id: typeof entry["id"] === "string" ? entry["id"] : itemId,
           item_id: itemId,
           name: listings.itemName(itemId),
           base_price: base,
           availability: typeof availability === "string" ? availability : "unknown",
+          limit_per_warband: limit,
+          restriction_notes: notes,
         });
       }
       return rows;

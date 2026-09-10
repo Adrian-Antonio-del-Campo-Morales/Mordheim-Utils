@@ -64,6 +64,10 @@ export interface RecordBattleInput {
   readonly out_of_action_ids: readonly IdString[] | null;
   readonly participants?: readonly IdString[];
   readonly notes?: string;
+  /** Per-warrior XP awards (enemy OOA ownership, desktop `xp_awards`). */
+  readonly xp_awards?: Readonly<Record<string, number>>;
+  /** Structured scenario-reward payload, preserved in place (open payload). */
+  readonly scenario_results?: Record<string, unknown>;
 }
 
 export interface AdvanceChoiceInput {

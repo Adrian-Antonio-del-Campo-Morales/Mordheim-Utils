@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+"""Desktop composition root (Tkinter): wires the campaign application layer
+with the `mordheim_ui` adapter. Lives in `apps/warband-manager-desktop` per
+the target architecture; the campaign packages stay UI-agnostic."""
+
 import tkinter as tk
 
 from mordheim_campaign.application.controller import AppController

@@ -146,7 +146,7 @@ def test_cancelled_load_keeps_state_path_and_undo(tmp_path, monkeypatch):
 
 @pytest.mark.parametrize('allowed', [True, False])
 def test_close_application_respects_unsaved_decision(allowed, monkeypatch):
-    from mordheim_campaign.app import CampaignManagerApp
+    from mordheim_desktop.app import CampaignManagerApp
     app = SimpleNamespace(controller=Mock(), destroy=Mock())
     monkeypatch.setattr(file_actions, 'confirm_discard_changes', lambda *a: allowed)
     CampaignManagerApp._close(app)

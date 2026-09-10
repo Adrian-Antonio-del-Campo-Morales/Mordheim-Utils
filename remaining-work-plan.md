@@ -55,11 +55,11 @@ objetivo:
 | Objetivo (§5) | Estado actual | Acción |
 | --- | --- | --- |
 | `apps/combat-lab/` | no existe | mover/componer desde `mordheim_combat_lab` |
-| `apps/warband-manager-desktop/` | no existe; escritorio en `src/mordheim_campaign` | mover entry point + UI Tkinter |
+| `apps/warband-manager-desktop/` | ✅ `mordheim_desktop` (composition root extraído de `mordheim_campaign`; consola `mordheim-campaign-manager` apunta a él) | — |
 | `apps/warband-manager-web/` | ✅ | — |
 | `packages/python/{core,knowledge,roster-construction,combat-engine,campaign}/` | 7 paquetes en `src/mordheim_*` | reubicar |
 | `packages/python/adapters/desktop-ui/` | no existe | extraer adaptadores de UI |
-| `packages/typescript/...` | ✅ (falta `ui/web` — hoy en `apps/.../src/features/`; decisión: mantener o mover) | decidir |
+| `packages/typescript/...` | ✅ (decisión: `ui/web` se queda en `apps/.../src/features/` — componentes acoplados a la app; packages/typescript se mantiene libre de framework) | decidido |
 | `contracts/knowledge/` | no existe | **no aplica** (decisión S8: el artefacto KB es un artefacto generado, su única fuente de verdad es el generador; un esquema manual solo divergiría) |
 | resto (`sources/`, `tests/`, `tools/`, `docs/`) | ✅ conforme | — |
 

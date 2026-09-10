@@ -128,12 +128,14 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   private readonly skills: Map<string, ArtefactRow>;
   private readonly campaignMaps: CampaignMaps;
   private readonly campaignRaw: Readonly<Record<string, unknown>>;
+  private readonly rulesProse: Readonly<Record<string, readonly ArtefactRow[]>>;
 
   private constructor(artefact: KnowledgeArtefact) {
     this.bands = ArtefactKnowledgeReader.indexById(artefact.bands, "id");
     this.profiles = ArtefactKnowledgeReader.indexProfiles(artefact.profiles);
     this.items = ArtefactKnowledgeReader.indexById(artefact.items, "item_id");
     this.skills = ArtefactKnowledgeReader.indexById(artefact.skills, "id");
+    this.rulesProse = artefact.rules_prose ?? {};
     this.campaignRaw = (artefact.campaign ?? {}) as Readonly<Record<string, unknown>>;
     this.campaignMaps = ArtefactKnowledgeReader.indexCampaignSections(
       artefact.campaign ?? {},
@@ -283,11 +285,15 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
       if (Array.isArray(tables)) {
         const injuries = new Map<string, ArtefactRow>();
         for (const table of tables as ArtefactRow[]) {
-          const rows = table["rows"];
+          const rows = table["results"] ?? table["rows"];
           if (!Array.isArray(rows)) continue;
           for (const row of rows as ArtefactRow[]) {
             const id = row["id"];
-            if (typeof id === "string" && id && !injuries.has(id)) injuries.set(id, row);
+            if (typeof id === "string" && id && !injuries.has(id)) injuries.set(id, {
+              ...row,
+              applies_to: table["applies_to"],
+              table_id: table["id"],
+            });
           }
         }
         maps.injuries = injuries;
@@ -360,6 +366,11 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     return queries.map((query) => this.queryKnowledge(query));
   }
 
+  /** Catalogue rows, including scoped profiles once each. */
+  list(kind: KnowledgeKind): readonly ArtefactRow[] {
+    return [...new Set(this.mapFor(kind).values())];
+  }
+
   // ------------------------------------------------------------------
   // P6.7 listings (additive, not part of the frozen KnowledgeReader port).
   // Offers/collections live in the artefact's `campaign` section as raw
@@ -380,9 +391,14 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     return value && typeof value === "object" ? (value as Readonly<Record<string, unknown>>) : {};
   }
 
+  /** Browsable prose rows from one canonical rules document. */
+  rulesDocument(stem: string): readonly ArtefactRow[] {
+    return this.rulesProse[stem] ?? [];
+  }
+
   /** Display name of a stable KB item id (trading rows only carry ids). */
   itemName(itemId: string, locale: Locale = "en"): string {
-    const row = this.items.get(itemId);
+    const row = this.items.get(itemId) ?? this.campaignMaps.hirelings.get(itemId);
     if (!row) return itemId;
     const names = rowNames(row);
     return names[locale] ?? names["en"] ?? itemId;
