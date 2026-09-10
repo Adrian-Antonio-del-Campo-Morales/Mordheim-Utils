@@ -40,6 +40,7 @@ import { commitAdvanceChoice, promoteHenchman, resolveAdvanceRoll, setPromotionS
 import { applyExploration, continueExploration } from "./features/exploration/exploration-workflow";
 import { sellWyrdstone } from "./features/economy/wyrdstone-sale-workflow";
 import { applyVeteranPool } from "./features/recruitment/veteran-workflow";
+import { assignRareSearch, buyRareSearch, resolveRareSearch } from "./features/searches/search-workflow";
 
 const HISTORY_LIMIT = 50;
 
@@ -278,6 +279,9 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           if (!result.ok) return error("rejected", result.message);
           return applyResult({ ok: true, state: result.document });
         }
+        case "assignRareSearch": { const result=assignRareSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
+        case "resolveRareSearch": { const result=resolveRareSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
+        case "buyRareSearch": { const result=buyRareSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "assignEquipment":
           return applyResult(useCases.assignEquipment(state.current, input as never));
         case "hireHireling":
