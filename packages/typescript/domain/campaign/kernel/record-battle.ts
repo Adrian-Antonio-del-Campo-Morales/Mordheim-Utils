@@ -117,6 +117,8 @@ export function recordBattle(
     rating_after: baseRating,
     models_before: baseModels,
     models_after: baseModels,
+    ...(input.xp_awards ? { xp_awards: input.xp_awards } : {}),
+    ...(input.scenario_results ? { scenario_results: input.scenario_results } : {}),
     ...(input.notes ? { notes: input.notes } : {}),
     out_of_action_ids: [...outOfAction],
     ...(input.participants
@@ -142,6 +144,10 @@ export function recordBattle(
     active_step: 0,
     completed_steps: [],
     review_open: false,
+    // Desktop `record_battle` seeds the pending post-battle with the
+    // battle's resource deltas so the resolution steps start from them.
+    gold_delta: Math.max(0, Math.trunc(input.gold_delta)),
+    wyrdstone_delta: Math.max(0, Math.trunc(input.wyrdstone)),
     // Hireling upkeep follow-ups (Python `record_battle` tail).
     ...(campaign.warriors.some((w) => w.kind === "hireling" && w.upkeep_resources?.length)
       ? {
