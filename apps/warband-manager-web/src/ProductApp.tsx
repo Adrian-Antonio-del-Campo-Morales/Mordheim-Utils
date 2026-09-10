@@ -5,9 +5,10 @@ import { CampaignAppProvider } from "./features/campaign/useCampaignApp";
 import { CampaignSlice } from "./features/campaign/CampaignSlice";
 import { createService, loadKnowledge } from "./features/campaign/default-deps";
 import { ArtefactKnowledgeReader, resolveName } from "@adapters/knowledge-reader/index";
+import { CampaignStatistics } from "./features/statistics/CampaignStatistics";
 
 type Locale = "es" | "en";
-type Page = "home" | "campaign" | "library" | "rules" | "settings";
+type Page = "home" | "campaign" | "statistics" | "library" | "rules" | "settings";
 interface Session { id: string; service: CampaignAppService; source: string; }
 
 const copy = {
@@ -79,7 +80,7 @@ export function ProductApp() {
 
   return <div className="app-shell">
     <header className="topbar"><button className="brand" onClick={() => setPage("home")}><strong>MORDHEIM</strong><span>WARBAND MANAGER</span></button>
-      <nav aria-label="Primary">{(["home","campaign","library","rules","settings"] as Page[]).map((key) => <button key={key} className={page===key ? "active" : ""} disabled={key==="campaign"&&!active} onClick={() => setPage(key)}>{t[key]}</button>)}</nav>
+      <nav aria-label="Primary">{(["home","campaign","statistics","library","rules","settings"] as Page[]).map((key) => <button key={key} className={page===key ? "active" : ""} disabled={(key==="campaign"||key==="statistics")&&!active} onClick={() => setPage(key)}>{key === "statistics" ? locale === "es" ? "Estadísticas" : "Statistics" : t[key]}</button>)}</nav>
       <div className="actions"><button onClick={() => setShowCreate(true)} disabled={!knowledge}>{t.newCampaign}</button><button onClick={() => fileRef.current?.click()} disabled={!knowledge}>{t.load}</button><button onClick={undo} disabled={!active?.service.canUndo()}>{t.undo}</button><button onClick={exportActive} disabled={!active}>{t.save}</button><button onClick={() => void exportPdf()} disabled={!active}>{t.pdf}</button></div>
       <input hidden ref={fileRef} type="file" accept=".mordheim,application/json" onChange={(e) => { const f=e.target.files?.[0]; if(f) void importFile(f); e.target.value=""; }} />
     </header>
@@ -88,6 +89,7 @@ export function ProductApp() {
       {page==="home" && <section className="hero"><p>MORDHEIM CAMPAIGN MANAGER</p><h1>{t.welcome}</h1><p>{t.empty}</p><div><button className="primary" onClick={() => setShowCreate(true)} disabled={!knowledge}>{t.newWarband}</button><button onClick={() => fileRef.current?.click()} disabled={!knowledge}>{t.load}</button></div>{sessions.length>0 && <SessionCards />}</section>}
       {page==="library" && <section className="page"><div className="page-title"><p>SESSION</p><h1>{t.sessions}</h1><span>{t.sessionHelp}</span></div><SessionCards /></section>}
       {page==="campaign" && active && <CampaignAppProvider service={active.service}><CampaignSlice knowledge={knowledge ?? undefined} locale={locale} /></CampaignAppProvider>}
+      {page==="statistics" && active?.service.current() && <CampaignStatistics document={active.service.current()!} locale={locale} />}
       {page==="rules" && knowledge && <RulesPage knowledge={knowledge} locale={locale} />}
       {page==="settings" && <section className="page"><div className="page-title"><p>PREFERENCES</p><h1>{t.settings}</h1></div><label>{t.language}<select value={locale} onChange={(e) => setLocale(e.target.value as Locale)}><option value="es">Español</option><option value="en">English</option></select></label><p>{t.sessionHelp}</p></section>}
     </main>

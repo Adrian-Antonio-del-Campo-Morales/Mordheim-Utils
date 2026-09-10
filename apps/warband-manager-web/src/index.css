@@ -73,5 +73,9 @@ fieldset { border: 1px solid #4e4e42; }
 .inline-form { margin-top: 1rem; display: flex; align-items: end; gap: .5rem; }.inline-form label { flex: 1; }
 .dirty { display: block; color: #e1b662; text-transform: uppercase; font-size: .75rem; letter-spacing: .12em; }
 .dice-resolver, .injury-card { display: grid; gap: .65rem; padding: .85rem; border: 1px solid #45463b; background: #22241e; }.manual-dice { display: flex; align-items: end; gap: .5rem; }.manual-dice label { max-width: 90px; }
+.rating-progression { display: flex; flex-wrap: wrap; gap: .65rem; padding: 0; list-style: none; }
+.rating-progression li { display: grid; min-width: 4.5rem; gap: .2rem; padding: .7rem .9rem; border: 1px solid #45463b; background: #191b16; }
+.rating-progression small { color: #938b7b; }
+.rating-progression strong { font: 700 1.35rem Georgia, serif; }
 @media (max-width: 1050px) { .topbar { flex-wrap: wrap; padding-bottom: .5rem; }.actions { order: 3; width: 100%; margin: 0; overflow-x: auto; }.topbar nav { margin-left: auto; } }
 @media (max-width: 680px) { .topbar { position: static; }.brand { min-width: 145px; }.topbar nav { width: 100%; overflow-x: auto; order: 2; }.topbar nav button { flex: 1; }.rules-toolbar { display: grid; }.rules-layout, .campaign-layout, .draft-columns { grid-template-columns: 1fr; }.campaign-layout > nav { border-right: 0; border-bottom: 1px solid #45463b; padding: 0 0 .5rem; }.campaign-layout > nav ol { display: flex; overflow-x: auto; }.campaign-layout > nav li { flex: 0 0 auto; }.rule-list { max-height: 220px; border-right: 0; border-bottom: 1px solid #45463b; }.hero h1 { font-size: 2.8rem; } table { display:block; overflow-x:auto; } }
