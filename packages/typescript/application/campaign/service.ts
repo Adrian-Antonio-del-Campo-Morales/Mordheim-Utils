@@ -47,6 +47,7 @@ import { resolveHirelingUpkeep } from "./features/hirelings/upkeep-workflow";
 import { finalizePostBattle } from "./features/review/finalize-post-battle-workflow";
 import { transferEquippedItem } from "./features/equipment/transfer-workflow";
 import { setManualSkill } from "./features/advances/manual-skill-workflow";
+import { addManualStashItem, correctResource } from "./features/economy/manual-corrections-workflow";
 
 const HISTORY_LIMIT = 50;
 
@@ -211,6 +212,8 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           if (!result.ok) return error("rejected", result.message);
           return applyResult({ ok: true, state: result.document });
         }
+        case "correctResource": { const result=correctResource(state.current,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
+        case "addManualStashItem": { const result=addManualStashItem(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "composeDraft": {
           const result = useCases.composeDraft(state.current, input as never);
           if (!result.ok) return applyResult(result);
