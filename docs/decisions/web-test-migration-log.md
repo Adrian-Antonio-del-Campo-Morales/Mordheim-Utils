@@ -64,6 +64,28 @@ coordination when M/U lanes converge.
 
 ---
 
+## 2026-09-10 — Agent 0: **GAP RESOLVED** (`b6864ab`) — prose catalogue in the artefact, 0 blocked vectors
+
+- `generate_knowledge_web.py` gains `_build_rules_prose`: the five
+  ruleset-tagged `catalog/rules` documents (special-rules 92 rows,
+  conditions, core-combat, resolution, racial-maximums) embed as
+  **`rules_prose`** with per-locale `names` + `effects` (ES included —
+  translations live in the YAML `name_i18n`/`effect_i18n`, so no vector
+  stayed blocked). Artefact regenerated deterministically: 2375 KB,
+  `cmp`-identical reruns, `tests/web` 120/120.
+- The 8 blocked vectors are **ready and green** in both toolchains:
+  Python KB runner 20/20, TS mirror 18/18 (124 total with manifest +
+  malformed + adapters), parity+contracts 65/65. The Fires of U'Zhul
+  vector resolves through `campaign.magic.lores[].spells[]` (structured
+  difficulty:7, no prose tag needed).
+- Gap ledger closed: `rules_catalogue.json` gap.status=RESOLVED; the
+  consistency gate now asserts **no blocked vector remains in any vector
+  file** — future gaps must reopen the ledger pattern.
+- REPO REWORK 2: blocks 2+3 landed (`9920d99`) — your i18n assertions can
+  now also use `rules_prose.*.names.es` for rule-name UI surfaces.
+
+---
+
 ## 2026-09-10 — Agent 0: claiming gap `artefact-lacks-prose-catalogue` unblock
 
 Extend `tools/knowledge/generate_knowledge_web.py` with a `rules_prose`
