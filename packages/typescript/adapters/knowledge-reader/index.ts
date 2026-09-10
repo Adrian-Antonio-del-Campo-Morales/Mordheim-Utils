@@ -398,7 +398,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
 
   /** Display name of a stable KB item id (trading rows only carry ids). */
   itemName(itemId: string, locale: Locale = "en"): string {
-    const row = this.items.get(itemId);
+    const row = this.items.get(itemId) ?? this.campaignMaps.hirelings.get(itemId);
     if (!row) return itemId;
     const names = rowNames(row);
     return names[locale] ?? names["en"] ?? itemId;

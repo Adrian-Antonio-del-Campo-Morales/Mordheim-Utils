@@ -34,6 +34,7 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
   const offers = workflow.hiredSwordOffers(document);
   const goods = workflow.tradingOffers(document);
   const stashRows = document.campaign.inventory.filter((row) => row.stash > 0);
+  const displayName = (id: string, fallback: string) => listings?.itemName(id, locale) ?? fallback;
   const t = locale === "es" ? { hired:"Espadas de alquiler",none:"No hay mercenarios disponibles.",available:"Mercenarios disponibles",name:"Nombre",fee:"Tarifa",upkeep:"Mantenimiento",rating:"Valoración",action:"Acción",dice:"dados",hire:"Contratar",ineligible:"No disponible",excluded:"excluido por las reglas de la banda",trading:"Puesto de comercio",goods:"Objetos en venta",item:"Objeto",price:"Precio",availability:"Disponibilidad",buy:"Comprar",sales:"Vender reserva",nothing:"No hay objetos en la reserva para vender.",stash:"Reserva (una unidad por acción)",inStash:"En reserva",sell:"Vender 1",special:"precio especial" } : { hired:"Hired Swords",none:"No hireling offers available.",available:"Available hired swords",name:"Name",fee:"Fee",upkeep:"Upkeep",rating:"Rating",action:"Action",dice:"dice",hire:"Hire",ineligible:"Not eligible",excluded:"excluded by warband rules",trading:"Trading Post",goods:"Goods for sale",item:"Item",price:"Price",availability:"Availability",buy:"Buy",sales:"Stash sales",nothing:"Nothing in the stash to sell.",stash:"Stash (sell one unit per action)",inStash:"In stash",sell:"Sell 1",special:"special price" };
 
   const hire = async (profileId: string) => {
@@ -78,7 +79,7 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
           <tbody>
             {offers.map((offer) => (
               <tr key={offer.offer_id}>
-                <td>{offer.name}</td>
+                <td>{displayName(offer.profile_id, offer.name)}</td>
                 <td>{offer.fee === null ? t.special : `${offer.fee} gc`}</td>
                 <td>{offer.upkeep === null ? "—" : `${offer.upkeep} gc`}</td>
                 <td>{offer.rating}</td>
@@ -87,7 +88,7 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
                     <button
                       type="button"
                       disabled={busy || offer.fee === null}
-                      aria-label={`Hire ${offer.name}`}
+                      aria-label={`${t.hire} ${displayName(offer.profile_id, offer.name)}`}
                       onClick={() => hire(offer.profile_id)}
                     >
                       {offer.fee === null ? t.special : t.hire}
@@ -115,7 +116,7 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
         <tbody>
           {goods.map((good) => (
             <tr key={good.offer_id}>
-              <td>{good.name}{good.restriction_notes.length > 0 && <small className="restriction-note">{good.restriction_notes.join(" · ")}</small>}</td>
+              <td>{displayName(good.item_id, good.name)}{good.restriction_notes.length > 0 && <small className="restriction-note">{good.restriction_notes.join(" · ")}</small>}</td>
               <td>{good.base_price === null ? t.dice : `${good.base_price} gc`}</td>
               <td>{good.availability}</td>
               <td>
