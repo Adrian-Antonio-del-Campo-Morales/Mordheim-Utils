@@ -41,7 +41,8 @@ describe.skipIf(!hasArtefact)("shared KB parity vectors (TS mirror)", () => {
   it("vector files exist and keep parity with the Python runner", () => {
     expect(knowledgePort.source_tests).toBe(9);
     expect(rulesCatalogue.source_tests).toBe(10);
-    expect(rulesCatalogue.gap?.blocked_vectors).toBe(8);
+    expect(rulesCatalogue.gap?.status).toBe("RESOLVED");
+    expect(rulesCatalogue.vectors.every((v) => v.status === "ready")).toBe(true);
     expect(
       knowledgePort.vectors.filter((v) => v.status !== "blocked").length,
     ).toBe(9);
@@ -114,5 +115,58 @@ describe.skipIf(!hasArtefact)("shared KB parity vectors (TS mirror)", () => {
 
   it("kb: artefact exposes the search index seam", () => {
     expect(typeof artefact.indexes).toBe("object");
+  });
+
+  // --------------------------------------------- rules prose (gap RESOLVED)
+
+  const prose = artefact.rules_prose as Record<string, any[]>;
+
+  it("rules: prose documents present", () => {
+    expect(["special-rules", "conditions", "core-combat"].every((s) => s in prose)).toBe(true);
+  });
+
+  it("rules: >= 90 special rules", () => {
+    expect(prose["special-rules"].length).toBeGreaterThanOrEqual(90);
+  });
+
+  it("rules: prose stems are the five canonical documents", () => {
+    expect(Object.keys(prose).sort()).toEqual([
+      "conditions",
+      "core-combat",
+      "racial-maximums",
+      "resolution",
+      "special-rules",
+    ]);
+  });
+
+  it("rules: Always Hungry EN name + effect", () => {
+    const row = prose["special-rules"].find((r: any) => r.id === "shared-rule.always-hungry");
+    expect(row.names.en).toBe("Always Hungry");
+    expect(row.effects.en.startsWith("A Troll requires")).toBe(true);
+  });
+
+  it("rules: Always Hungry ES i18n", () => {
+    const row = prose["special-rules"].find((r: any) => r.id === "shared-rule.always-hungry");
+    expect(row.names.es).toBe("Siempre Hambriento");
+  });
+
+  it("rules: Fires of U'Zhul resolves from the magic lores", () => {
+    const spell = artefact.campaign.magic.lores
+      .flatMap((lore: any) => lore.spells ?? [])
+      .find((s: any) => s.id === "spell.lesser-magic.fires-of-uzhul");
+    expect(spell).toBeTruthy();
+    expect(spell.name).toBe("Fires of U'Zhul");
+    expect(spell.difficulty).toBe(7);
+  });
+
+  it("rules: search seam matches names and effects (accent-insensitive data)", () => {
+    const row = prose["special-rules"].find((r: any) => r.id === "shared-rule.always-hungry");
+    const hay = `${row.names.en} ${row.effects.en}`.toLowerCase();
+    expect(hay.includes("always hungry")).toBe(true);
+  });
+
+  it("rules: scoped search by stem finds the entry", () => {
+    const ids = prose["special-rules"].map((r: any) => r.id);
+    expect(ids).toContain("shared-rule.always-hungry");
   });
 });

@@ -42,6 +42,7 @@ from mordheim_knowledge.loader import (  # noqa: E402
     load_racial_maximums,
     load_skills,
 )
+from mordheim_knowledge.rules_catalog import load_rules_catalog  # noqa: E402
 
 SCHEMA_VERSION = 1
 DEFAULT_RULESET = "mordheim"
@@ -193,6 +194,19 @@ def _build_weapon_hands(ruleset: str) -> dict[str, int]:
     return dict(sorted(hands.items()))
 
 
+def _build_rules_prose(ruleset: str) -> dict:
+    """Browsable rules prose catalogue (RULES browser parity, Agent 0 gap
+    `artefact-lacks-prose-catalogue`): every ruleset-tagged document of
+    ``catalog/rules`` with per-locale names and effects."""
+    catalog = load_rules_catalog(ruleset)
+    documents: dict[str, list[dict]] = {}
+    for stem in catalog.stems():
+        document = catalog.document(stem)
+        rows = document.get("rules") or ()
+        documents[stem] = sorted((_row(row) for row in rows), key=_sort_key)
+    return dict(sorted(documents.items()))
+
+
 def _build_campaign_section(ruleset: str, item_ids: set[str]) -> dict:
     catalogue = load_campaign_catalog(ruleset)
     section: dict = {}
@@ -270,6 +284,7 @@ def generate(ruleset: str = DEFAULT_RULESET) -> dict:
         artefact["items"] = _build_items(ruleset)
         artefact["skills"] = _build_skills(ruleset)
         artefact["weapon_hands"] = _build_weapon_hands(ruleset)
+        artefact["rules_prose"] = _build_rules_prose(ruleset)
         artefact["campaign"] = _build_campaign_section(ruleset, {str(item["item_id"]) for item in artefact["items"]})
     except GenerationError:
         raise

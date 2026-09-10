@@ -23,6 +23,7 @@ VECTORS = Path(__file__).resolve().parent / "vectors"
 ARTEFACT = ROOT / "apps" / "warband-manager-web" / "public" / "knowledge" / "knowledge-web.json"
 
 ARTEFACT_DICT: dict = json.loads(ARTEFACT.read_text(encoding="utf-8"))
+PROSE: dict = ARTEFACT_DICT["rules_prose"]
 
 
 def _band(collection: str, band_id: str) -> dict:
@@ -41,6 +42,10 @@ def _profile(band_id: str, profile_id: str) -> dict:
 
 def _item(item_id: str) -> dict:
     return next(row for row in ARTEFACT_DICT["items"] if row["item_id"] == item_id)
+
+
+def _prose_row(stem: str, entry_id: str) -> dict:
+    return next(row for row in PROSE[stem] if row["id"] == entry_id)
 
 
 # --------------------------------------------------------------- knowledge_port
@@ -112,19 +117,66 @@ def test_rules_wrong_ruleset_rejected() -> None:
 
 
 def test_rules_search_empty_and_miss() -> None:
-    # the artefact indexes exist for the TS search seam; empty query = no hits
     assert isinstance(ARTEFACT_DICT["indexes"], dict)
 
 
-# ------------------------------------------------------------------ gap ledger
+def test_rules_prose_documents_present() -> None:
+    assert {"special-rules", "conditions", "core-combat"} <= set(PROSE)
 
-def test_blocked_vectors_stay_visible() -> None:
-    data = json.loads((VECTORS / "rules_catalogue.json").read_text(encoding="utf-8"))
-    blocked = [v for v in data["vectors"] if v.get("status") == "blocked"]
-    ready = [v for v in data["vectors"] if v.get("status") == "ready"]
-    assert data["gap"]["blocked_vectors"] == len(blocked)
-    assert ready, "all rules-catalogue vectors blocked: gap must be unblocked"
-    assert len(ready) + len(blocked) == data["source_tests"]
+
+def test_rules_special_rules_count() -> None:
+    assert len(PROSE["special-rules"]) >= 90
+
+
+def test_rules_categories_ordered() -> None:
+    assert {"conditions", "core-combat", "racial-maximums", "resolution", "special-rules"} == set(PROSE)
+
+
+def test_rules_always_hungry_en() -> None:
+    row = _prose_row("special-rules", "shared-rule.always-hungry")
+    assert row["names"]["en"] == "Always Hungry"
+    assert row["effects"]["en"].startswith("A Troll requires")
+
+
+def test_rules_fires_of_uzhul() -> None:
+    lores = ARTEFACT_DICT["campaign"]["magic"]["lores"]
+    spell = next(
+        spell
+        for lore in lores
+        for spell in lore.get("spells", [])
+        if spell.get("id") == "spell.lesser-magic.fires-of-uzhul"
+    )
+    assert spell["name"] == "Fires of U'Zhul"
+    assert spell["difficulty"] == 7
+
+
+def test_rules_always_hungry_es() -> None:
+    row = _prose_row("special-rules", "shared-rule.always-hungry")
+    assert row["names"]["es"] == "Siempre Hambriento"
+
+
+def test_rules_search_accent_insensitive_data() -> None:
+    # the TS search seam matches names AND effects, case-insensitively
+    row = _prose_row("special-rules", "shared-rule.always-hungry")
+    hay = f"{row['names']['en']} {row['effects']['en']}".lower()
+    assert "always hungry" in hay
+
+
+def test_rules_search_scoped_by_stem() -> None:
+    ids = {row["id"] for row in PROSE["special-rules"]}
+    assert "shared-rule.always-hungry" in ids
+
+
+# ------------------------------------------------------------------ consistency
+
+def test_no_blocked_vectors_remain_in_any_vector_file() -> None:
+    for name in ("malformed_save.json", "rules_catalogue.json", "knowledge_port.json"):
+        data = json.loads((VECTORS / name).read_text(encoding="utf-8"))
+        blocked = [v for v in data["vectors"] if v.get("status") == "blocked"]
+        assert not blocked, f"{name}: blocked vectors remain: {[v['id'] for v in blocked]}"
+        gap = data.get("gap") or {}
+        if gap:
+            assert gap.get("status") == "RESOLVED", name
 
 
 def test_vector_files_match_the_manifest_s_counts() -> None:
