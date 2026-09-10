@@ -3,7 +3,7 @@ import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { useCampaignApp } from "./useCampaignApp";
 import { TimelinePanel } from "../timeline/TimelinePanel";
 import { EquipmentPanel } from "../equipment/EquipmentPanel";
-import { AdvancesPanel } from "../advances/AdvancesPanel";
+import { PostBattleExperience } from "../advances/PostBattleExperience";
 import { HirelingsPanel } from "../hirelings/HirelingsPanel";
 import { BattlePanel } from "../battle/BattlePanel";
 import { InjuriesPanel } from "../injuries/InjuriesPanel";
@@ -36,7 +36,7 @@ export function CampaignSlice({ knowledge, locale = "en" }: { knowledge?: Artefa
       <div className="moment-detail">
         {selected.startsWith("state:") && <><RosterOverview document={doc} /><EquipmentPanel document={doc} />{currentState && <BattlePanel document={doc} knowledge={knowledge} locale={locale} />}</>}
         {selected.startsWith("battle:") && <section className="page"><div className="page-title"><p>BATTLE #{battleNumber}</p><h2>{battle?.scenario ?? "Battle"}</h2></div>{battle ? <dl className="campaign-metrics"><div><dt>Opponent</dt><dd>{battle.opponent}</dd></div><div><dt>Result</dt><dd>{battle.result}</dd></div><div><dt>Gold</dt><dd>{battle.gold_delta}</dd></div><div><dt>Wyrdstone</dt><dd>{battle.wyrdstone}</dd></div></dl> : <p>Battle not found.</p>}</section>}
-        {selected.startsWith("post:") && <><BattlePanel document={doc} knowledge={knowledge} locale={locale} />{knowledge && <PostBattleInjuries document={doc} knowledge={knowledge} />}<InjuriesPanel document={doc} /><AdvancesPanel document={doc} /><HirelingsPanel document={doc} listings={knowledge} /><ReviewPanel document={doc} /></>}
+        {selected.startsWith("post:") && <><BattlePanel document={doc} knowledge={knowledge} locale={locale} />{knowledge && <PostBattleInjuries document={doc} knowledge={knowledge} />}<InjuriesPanel document={doc} /><PostBattleExperience document={doc} /><HirelingsPanel document={doc} listings={knowledge} /><ReviewPanel document={doc} /></>}
       </div></div>}
   </section>;
 }

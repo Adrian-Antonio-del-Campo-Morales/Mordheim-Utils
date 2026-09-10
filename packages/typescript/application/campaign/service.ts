@@ -35,6 +35,7 @@ import {
   type InjuriesWorkflowResult,
 } from "./features/injuries/injuries-workflow";
 import { createDraftWorkflow } from "./features/draft/draft-workflow";
+import { applyBattleExperience } from "./features/advances/experience-workflow";
 
 const HISTORY_LIMIT = 50;
 
@@ -222,6 +223,14 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           );
         case "applyAdvance":
           return applyResult(useCases.applyAdvance(state.current, input as never));
+        case "applyBattleExperience": {
+          const result = applyBattleExperience(
+            state.current,
+            (input["awards"] ?? undefined) as Readonly<Record<string, number>> | undefined,
+          );
+          if (!result.ok) return error("rejected", result.message, { reason: result.reason });
+          return applyResult({ ok: true, state: result.document });
+        }
         case "assignEquipment":
           return applyResult(useCases.assignEquipment(state.current, input as never));
         case "hireHireling":
