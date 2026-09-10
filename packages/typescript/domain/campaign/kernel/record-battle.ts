@@ -76,10 +76,16 @@ export function recordBattle(
   if (result === null) {
     return rejected("invalid_input", "Result must be win, loss or draw.");
   }
+  if (!input.opponent.trim()) {
+    return rejected("invalid_input", "An opponent is required.");
+  }
   if (input.gold_delta < 0 || input.wyrdstone < 0 || input.xp_delta < 0 || input.casualties < 0) {
     return rejected("invalid_input", "Battle numbers must be non-negative.");
   }
   const outOfAction = input.out_of_action_ids ?? [];
+  if (input.casualties !== outOfAction.length) {
+    return rejected("invalid_input", "Casualties must match the recorded Out of Action results.");
+  }
   const submittedIds = new Set<IdString>(outOfAction);
   for (const id of submittedIds) {
     const warrior = findWarrior(document, id);
@@ -91,6 +97,13 @@ export function recordBattle(
         "not_available",
         `Unavailable warriors cannot receive battle results: ${warrior.name}.`,
       );
+    }
+    const casualtiesForWarrior = outOfAction.filter((item) => item === id).length;
+    if (casualtiesForWarrior > (warrior.quantity ?? 1)) {
+      return rejected("limit_violated", `${warrior.name} cannot have more Out of Action results than deployed models.`);
+    }
+    if (input.participants && !input.participants.includes(id)) {
+      return rejected("not_available", `Out of Action warrior was not deployed: ${warrior.name}.`);
     }
   }
 

@@ -161,8 +161,19 @@ export function hireHireling(
       : {}),
     profile_id: input.profile_id,
   };
+  const inventory = campaign.inventory.map((row) => ({ ...row }));
+  for (const entry of equipment) {
+    const stock = inventory.find((row) => row.id === entry.item_id);
+    if (stock) {
+      stock.owned += entry.quantity;
+      stock.equipped += entry.quantity;
+    } else {
+      inventory.push({ id: entry.item_id, name: entry.name, category: "Equipment", owned: entry.quantity, equipped: entry.quantity, stash: 0, value: entry.unit_cost ?? 0 });
+    }
+  }
   const campaign_next: Campaign = {
     ...campaign,
+    inventory,
     warriors: [...campaign.warriors, hireling],
   };
   return { ok: true, state: withCampaign(document, campaign_next) };
