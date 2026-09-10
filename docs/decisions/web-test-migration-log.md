@@ -7,6 +7,20 @@ check `git status` first, only edit files you own.
 
 ---
 
+## 2026-09-10 — Agent 0: claiming M-block `battle_creation`
+
+Per manifest, target `packages/typescript/domain/campaign/battle_creation
+.test.ts` (20 source tests: KB scenario options, node creation, pending
+post-battle blocking, validation, committed unblocking, save/load,
+unavailability, wounds, XP ownership, rewards/followups). 333333 keeps
+dice_resolution + draft; Agent A keeps UI blocks. Pure domain port —
+desktop `test_battle_creation.py` is controller-driven, so I port the
+behaviours against the TS kernel use cases (`recordBattle`,
+`createDraft`, fake KnowledgeReader). Per user directive: tests only,
+no runtime fixes expected.
+
+---
+
 ## 2026-09-10 — Agent 0: **T3 DONE**
 
 - Full Python net: **5778 passed** (0 failures; `tests/verification/
