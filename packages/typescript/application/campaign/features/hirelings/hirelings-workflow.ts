@@ -72,6 +72,9 @@ export interface TradingOfferRow {
   readonly name: string;
   /** Base price in gold crowns (null = dice-priced, resolved by the caller). */
   readonly base_price: number | null;
+  readonly price_base: number;
+  readonly price_dice: readonly [number, number] | null;
+  readonly price_multiplier: number;
   readonly availability: string;
   readonly limit_per_warband: number | null;
   readonly restriction_notes: readonly string[];
@@ -284,7 +287,9 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
         const itemId = typeof entry["item_id"] === "string" ? entry["item_id"] : null;
         if (!itemId) continue;
         const price = entry["price"] as OpenPayload | undefined;
-        const base = typeof price?.["base_gc"] === "number" ? price["base_gc"] : null;
+        const variable=price?.["optional_variable_cost"] as OpenPayload|undefined, dice=variable?.["dice"] as OpenPayload|undefined;
+        const priceDice=dice&&Number.isInteger(dice["count"])&&Number.isInteger(dice["sides"])?[Number(dice["count"]),Number(dice["sides"])] as const:null;
+        const base = priceDice ? null : typeof price?.["base_gc"] === "number" ? price["base_gc"] : null;
         const availability = (entry["availability"] as OpenPayload | undefined)?.["kind"];
         if (availability !== "common") continue;
         const restrictions = Array.isArray(entry["restrictions"]) ? entry["restrictions"] as ArtefactRow[] : [];
@@ -307,6 +312,9 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
           item_id: itemId,
           name: listings.itemName(itemId),
           base_price: base,
+          price_base: Number(price?.["base_gc"]??0),
+          price_dice: priceDice,
+          price_multiplier: Number(variable?.["multiplier"]??1),
           availability: typeof availability === "string" ? availability : "unknown",
           limit_per_warband: limit,
           restriction_notes: notes,

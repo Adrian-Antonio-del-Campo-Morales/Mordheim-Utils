@@ -17,7 +17,7 @@ import { useState } from "react";
 import { useCampaignApp } from "../campaign/useCampaignApp";
 import type { CampaignDocument } from "../campaign/types";
 import { useHirelingsWorkflow } from "./useHirelingsWorkflow";
-import type { KnowledgeListings } from "@app/campaign/features/hirelings/hirelings-workflow";
+import type { KnowledgeListings, TradingOfferRow } from "@app/campaign/features/hirelings/hirelings-workflow";
 import { DiceResolver } from "../dice/DiceResolver";
 
 interface HirelingsPanelProps {
@@ -31,6 +31,12 @@ function VariableFeeHire({ offer, name, busy, onHire }: { offer: ReturnType<Retu
   const [fee, setFee] = useState<number | null>(null);
   if (offer.fee_dice && fee === null) return <DiceResolver count={offer.fee_dice[0]} sides={offer.fee_dice[1]} label={`${name} hiring fee`} onResolve={(dice) => setFee(offer.fee_base + dice.reduce((total, die) => total + die, 0))} />;
   return <button type="button" disabled={busy || fee === null} aria-label={`Hire ${name}`} onClick={() => fee !== null && onHire(fee)}>Hire for {fee} gc</button>;
+}
+
+function VariableTradingPurchase({ offer, busy, onBuy }: { offer: TradingOfferRow; busy: boolean; onBuy: (price: number) => void }) {
+  const [price, setPrice] = useState<number | null>(null);
+  if (offer.price_dice && price === null) return <DiceResolver count={offer.price_dice[0]} sides={offer.price_dice[1]} label={`${offer.name} price`} onResolve={(dice) => setPrice(offer.price_base + dice.reduce((total, die) => total + die, 0) * offer.price_multiplier)} />;
+  return <button type="button" disabled={busy || price === null} onClick={() => price !== null && onBuy(price)}>Buy for {price} gc</button>;
 }
 
 export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsPanelProps) {
@@ -124,17 +130,17 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
           {goods.map((good) => (
             <tr key={good.offer_id}>
               <td>{displayName(good.item_id, good.name)}{good.restriction_notes.length > 0 && <small className="restriction-note">{good.restriction_notes.join(" · ")}</small>}</td>
-              <td>{good.base_price === null ? t.dice : `${good.base_price} gc`}</td>
+              <td>{good.price_dice ? `${good.price_base}+${good.price_dice[0]}D${good.price_dice[1]} gc` : good.base_price === null ? t.dice : `${good.base_price} gc`}</td>
               <td>{good.availability}</td>
               <td>
-                <button
+                {good.price_dice ? <VariableTradingPurchase offer={good} busy={busy} onBuy={(price) => void buy(good.item_id, price)} /> : <button
                   type="button"
                   disabled={busy || good.base_price === null || (good.limit_per_warband !== null && (document.campaign.inventory.find((row) => row.id === good.item_id)?.owned ?? 0) >= good.limit_per_warband)}
                   aria-label={`Buy ${good.name}`}
                   onClick={() => buy(good.item_id, good.base_price)}
                 >
                   {t.buy}
-                </button>
+                </button>}
               </td>
             </tr>
           ))}
