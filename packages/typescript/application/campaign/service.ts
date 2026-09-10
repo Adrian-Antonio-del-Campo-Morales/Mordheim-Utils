@@ -302,10 +302,32 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const changed = { ...resultPost, gold_delta: (resultPost.gold_delta ?? 0) - fee, event_log: [...(resultPost.event_log ?? []), { step: 6, type: "hire", profile_id: input["profile_id"], description: `Hired for ${fee} gc.` }] };
           return applyResult({ ok: true, state: { ...result.state, campaign: { ...result.state.campaign, post_battles: result.state.campaign.post_battles.map((row) => row === resultPost ? changed : row) } } });
         }
-        case "buyTradingItem":
-          return applyResult(useCases.buyTradingItem(state.current, input as never));
-        case "sellStashItem":
-          return applyResult(useCases.sellStashItem(state.current, input as never));
+        case "buyTradingItem": {
+          const post = state.current.campaign.post_battles.find((row) => !row.complete);
+          if (!post) return error("rejected", "Trading is only available during post-battle.");
+          const itemId = String(input["item_id"] ?? ""), name = String(input["name"] ?? itemId);
+          const quantity = Number(input["quantity"]), unitPrice = Number(input["unit_price"]);
+          if (!itemId || !Number.isInteger(quantity) || quantity <= 0 || !Number.isInteger(unitPrice) || unitPrice < 0) return error("rejected", "A valid item, quantity and price are required.");
+          const snapshot = state.current.campaign.states.find((row) => row.number === state.current!.campaign.current_state_number) ?? state.current.campaign.states.at(-1);
+          const available = (snapshot?.gold ?? 0) + (post.gold_delta ?? 0), total = quantity * unitPrice;
+          if (total > available) return error("rejected", `Not enough gold: ${total} gc needed, ${available} available.`);
+          const found = state.current.campaign.inventory.find((row) => row.id === itemId);
+          const inventory = found ? state.current.campaign.inventory.map((row) => row.id === itemId ? { ...row, owned: row.owned + quantity, stash: row.stash + quantity, value: unitPrice } : row) : [...state.current.campaign.inventory, { id: itemId, name, category: String(input["category"] ?? "Trading Post"), owned: quantity, equipped: 0, stash: quantity, value: unitPrice }];
+          const changed = { ...post, gold_delta: (post.gold_delta ?? 0) - total, event_log: [...(post.event_log ?? []), { step: 7, type: "buy_item", item_id: itemId, quantity, description: `${quantity}× ${name} bought for ${total} gc.` }] };
+          return applyResult({ ok: true, state: { ...state.current, campaign: { ...state.current.campaign, inventory, post_battles: state.current.campaign.post_battles.map((row) => row === post ? changed : row) } } });
+        }
+        case "sellStashItem": {
+          const post = state.current.campaign.post_battles.find((row) => !row.complete);
+          if (!post) return error("rejected", "Trading is only available during post-battle.");
+          const itemId = String(input["item_id"] ?? ""), quantity = Number(input["quantity"]);
+          const found = state.current.campaign.inventory.find((row) => row.id === itemId);
+          if (!found) return error("rejected", "Unknown inventory item.");
+          if (!Number.isInteger(quantity) || quantity <= 0 || found.stash < quantity) return error("rejected", `Only ${found.stash} unassigned copy/copies are available.`);
+          const unitPrice = Math.max(0, Math.floor((found.value ?? 0) / 2)), total = unitPrice * quantity;
+          const inventory = state.current.campaign.inventory.map((row) => row.id === itemId ? { ...row, owned: row.owned - quantity, stash: row.stash - quantity } : row).filter((row) => row.owned > 0);
+          const changed = { ...post, gold_delta: (post.gold_delta ?? 0) + total, event_log: [...(post.event_log ?? []), { step: 7, type: "sell_item", item_id: itemId, quantity, description: `${quantity}× ${found.name} sold for ${total} gc.` }] };
+          return applyResult({ ok: true, state: { ...state.current, campaign: { ...state.current.campaign, inventory, post_battles: state.current.campaign.post_battles.map((row) => row === post ? changed : row) } } });
+        }
         case "applyInjuryOutcome":
           return applyInjuries(applyInjuryOutcome(state.current, input as never));
         case "resolveInjuryFollowUp":

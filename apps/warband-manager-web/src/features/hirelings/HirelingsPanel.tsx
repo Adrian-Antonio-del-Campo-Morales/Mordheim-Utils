@@ -58,7 +58,7 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
 
   const sell = async (itemId: string) => {
     setBusy(true);
-    await app.runAction("sellStashItem", { item_id: itemId, quantity: 1, unit_price: 1 });
+    await app.runAction("sellStashItem", { item_id: itemId, quantity: 1 });
     setBusy(false);
   };
 
@@ -156,7 +156,7 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
                     aria-label={`Sell 1 ${row.name} from stash`}
                     onClick={() => sell(row.id)}
                   >
-                    {t.sell}
+                  {t.sell} · {Math.max(0, Math.floor((row.value ?? 0) / 2))} gc
                   </button>
                 </td>
               </tr>

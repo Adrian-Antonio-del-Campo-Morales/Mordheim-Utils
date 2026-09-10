@@ -269,6 +269,7 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
         const price = entry["price"] as OpenPayload | undefined;
         const base = typeof price?.["base_gc"] === "number" ? price["base_gc"] : null;
         const availability = (entry["availability"] as OpenPayload | undefined)?.["kind"];
+        if (availability !== "common") continue;
         rows.push({
           offer_id: typeof entry["id"] === "string" ? entry["id"] : itemId,
           item_id: itemId,
