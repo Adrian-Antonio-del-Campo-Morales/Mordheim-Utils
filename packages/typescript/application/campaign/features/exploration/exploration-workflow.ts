@@ -29,7 +29,8 @@ export function explorationDiceCount(document:CampaignDocument,reader:CatalogueR
     if(row["eligible_warrior"]==="hero"&&row["condition"]==="survived_battle") count+=Number(row["dice"]??0)*eligibleExplorationHeroes(document);
     if(row["eligible_warrior"]==="warband"&&row["condition"]==="warband_won_battle"&&battle.result==="win") count+=Number(row["dice"]??0);
   }
-  return Math.min(count,Number(exploration["max_dice"]??6));
+  const scenario=post.step_state?.["scenario_exploration"] as OpenPayload|undefined;
+  return Math.min(count,Number(exploration["max_dice"]??6))+Math.max(0,Number(scenario?.["extra_dice"]??0));
 }
 function matchingResult(exploration:Readonly<Record<string,unknown>>,dice:readonly number[]) {
   const counts=new Map<number,number>(); for(const die of dice)counts.set(die,(counts.get(die)??0)+1);
