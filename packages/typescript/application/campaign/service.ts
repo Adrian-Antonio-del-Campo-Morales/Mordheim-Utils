@@ -36,7 +36,7 @@ import {
 } from "./features/injuries/injuries-workflow";
 import { createDraftWorkflow } from "./features/draft/draft-workflow";
 import { applyBattleExperience } from "./features/advances/experience-workflow";
-import { commitAdvanceChoice, resolveAdvanceRoll } from "./features/advances/advance-resolution-workflow";
+import { commitAdvanceChoice, promoteHenchman, resolveAdvanceRoll, setPromotionSkillTables } from "./features/advances/advance-resolution-workflow";
 
 const HISTORY_LIMIT = 50;
 
@@ -240,6 +240,16 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         }
         case "commitAdvanceChoice": {
           const result = commitAdvanceChoice(state.current, knowledge, input as never);
+          if (!result.ok) return error("rejected", result.message);
+          return applyResult({ ok: true, state: result.document });
+        }
+        case "promoteHenchman": {
+          const result = promoteHenchman(state.current, input as never);
+          if (!result.ok) return error("rejected", result.message);
+          return applyResult({ ok: true, state: result.document });
+        }
+        case "setPromotionSkillTables": {
+          const result = setPromotionSkillTables(state.current, knowledge, input as never);
           if (!result.ok) return error("rejected", result.message);
           return applyResult({ ok: true, state: result.document });
         }
