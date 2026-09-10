@@ -128,12 +128,14 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   private readonly skills: Map<string, ArtefactRow>;
   private readonly campaignMaps: CampaignMaps;
   private readonly campaignRaw: Readonly<Record<string, unknown>>;
+  private readonly rulesProse: Readonly<Record<string, readonly ArtefactRow[]>>;
 
   private constructor(artefact: KnowledgeArtefact) {
     this.bands = ArtefactKnowledgeReader.indexById(artefact.bands, "id");
     this.profiles = ArtefactKnowledgeReader.indexProfiles(artefact.profiles);
     this.items = ArtefactKnowledgeReader.indexById(artefact.items, "item_id");
     this.skills = ArtefactKnowledgeReader.indexById(artefact.skills, "id");
+    this.rulesProse = artefact.rules_prose ?? {};
     this.campaignRaw = (artefact.campaign ?? {}) as Readonly<Record<string, unknown>>;
     this.campaignMaps = ArtefactKnowledgeReader.indexCampaignSections(
       artefact.campaign ?? {},
@@ -387,6 +389,11 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   campaignSection(section: string): Readonly<Record<string, unknown>> {
     const value = this.campaignRaw[section];
     return value && typeof value === "object" ? (value as Readonly<Record<string, unknown>>) : {};
+  }
+
+  /** Browsable prose rows from one canonical rules document. */
+  rulesDocument(stem: string): readonly ArtefactRow[] {
+    return this.rulesProse[stem] ?? [];
   }
 
   /** Display name of a stable KB item id (trading rows only carry ids). */

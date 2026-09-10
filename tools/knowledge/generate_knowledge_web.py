@@ -222,7 +222,7 @@ def _build_rules_prose(ruleset: str) -> dict:
     documents: dict[str, list[dict]] = {}
     for stem in catalog.stems():
         document = catalog.document(stem)
-        rows = document.get("rules") or ()
+        rows = document.get("rules") or document.get("conditions") or ()
         documents[stem] = sorted((_row(row) for row in rows), key=_sort_key)
     return dict(sorted(documents.items()))
 

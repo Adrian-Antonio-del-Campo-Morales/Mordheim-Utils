@@ -31,6 +31,7 @@ export interface KnowledgeArtefact {
   readonly items: readonly ArtefactRow[];
   readonly skills: readonly ArtefactRow[];
   readonly weapon_hands?: Readonly<Record<string, number>>;
+  readonly rules_prose?: Readonly<Record<string, readonly ArtefactRow[]>>;
   readonly campaign?: Readonly<Record<string, unknown>>;
   readonly indexes?: ArtefactIndexes;
 }
