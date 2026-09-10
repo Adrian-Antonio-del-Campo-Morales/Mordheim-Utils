@@ -116,6 +116,8 @@ function parseEnvelope(text: string): ParseResult {
  * Default file port. `parseCampaignFile` and `serializeCampaign` never throw:
  * every failure is a typed `CampaignFileError` value.
  */
+import { validateCampaignSemantics } from "./semantics";
+
 export class CampaignFileV4Adapter implements CampaignFilePort {
   parseCampaignFile(text: string): ParseResult {
     const envelope = parseEnvelope(text);
@@ -127,6 +129,14 @@ export class CampaignFileV4Adapter implements CampaignFilePort {
     if (schemaErrors.length > 0) {
       const first = schemaErrors[0];
       return error("schema_violation", first.message, { location: first.location });
+    }
+    // Semantic hardening (TS mirror of the desktop `_validate_domain`):
+    // cross-field invariants the JSON Schema cannot express.
+    const semanticErrors = validateCampaignSemantics(
+      (doc as { campaign?: unknown }).campaign as never,
+    );
+    if (semanticErrors.length > 0) {
+      return error("schema_violation", semanticErrors[0].message, { location: "campaign" });
     }
     return { ok: true, document: envelope.document };
   }
@@ -145,6 +155,14 @@ export class CampaignFileV4Adapter implements CampaignFilePort {
         "schema_violation",
         `Refusing to save: the document violates the contract (${first.message})`,
         { location: first.location },
+      );
+    }
+    const semanticErrors = validateCampaignSemantics(campaign as never);
+    if (semanticErrors.length > 0) {
+      return error(
+        "schema_violation",
+        `Refusing to save: the document violates the contract (${semanticErrors[0].message})`,
+        { location: "campaign" },
       );
     }
     return { ok: true, text: JSON.stringify(document, null, 1) + "\n" };
