@@ -1,0 +1,6 @@
+import { followUpNeedsResolution } from "@app/campaign/features/review/follow-up-acknowledgement-workflow";
+import type { CampaignDocument } from "../campaign/types";
+import { useCampaignApp } from "../campaign/useCampaignApp";
+
+const HANDLED=new Set(["injury_roll","injury_followup","exploration_followup","prisoner","relationship","eye_injury","hireling_upkeep","scenario_spell_reward","scenario_encampment","encounter"]);
+export function FollowUpAcknowledgements({document,locale="en"}:{readonly document:CampaignDocument;readonly locale?:"es"|"en"}){const app=useCampaignApp(),post=document.campaign.post_battles.find((row)=>!row.complete);if(!post)return null;const rows=(post.pending_follow_ups??[]).filter((row)=>!HANDLED.has(String(row["type"]))&&followUpNeedsResolution(row,post.acknowledgements??{}));if(!rows.length)return null;const t=locale==="es"?{title:"Seguimientos de mesa",done:"Resuelto en mesa"}:{title:"Table-side follow-ups",done:"Resolved at table"};return <section aria-label="Table-side follow-ups"><h3>{t.title}</h3>{rows.map((row)=><article key={String(row["id"])}><p>{String(row["description"]??row["id"])}</p><button onClick={()=>void app.runAction("acknowledgeFollowUp",{follow_up_id:row["id"]})}>{t.done}</button></article>)}</section>;}

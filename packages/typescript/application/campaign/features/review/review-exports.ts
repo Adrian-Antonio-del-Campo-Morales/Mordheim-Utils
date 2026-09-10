@@ -18,6 +18,7 @@ import type {
   OpenPayload,
 } from "../../../../domain/campaign/kernel/state";
 import { currentState } from "../../../../domain/campaign/kernel/document";
+import { followUpNeedsResolution } from "./follow-up-acknowledgement-workflow";
 
 /** Read model for the pre-export review panel. */
 export interface ReviewSummary {
@@ -68,10 +69,7 @@ export function reviewSummary(document: CampaignDocument): ReviewSummary {
     states: campaign.states.length,
     current_state_number: campaign.current_state_number,
     post_battle_pending: campaign.post_battles.some((post) => !post.complete),
-    open_follow_ups: campaign.post_battles.reduce(
-      (total, post) => total + (post.pending_follow_ups?.length ?? 0),
-      0,
-    ),
+    open_follow_ups: campaign.post_battles.reduce((total,post)=>total+(post.pending_follow_ups??[]).filter((row)=>followUpNeedsResolution(row,post.acknowledgements??{})).length,0),
     inventory_items: campaign.inventory.length,
     inventory_owned: campaign.inventory.reduce((total, item) => total + item.owned, 0),
     absent_warriors: campaign.warriors.filter((w) => (w.games_to_miss ?? 0) > 0).length,

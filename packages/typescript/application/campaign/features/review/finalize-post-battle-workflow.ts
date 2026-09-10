@@ -1,5 +1,6 @@
 import type { CampaignDocument, TimelineState } from "../../../../domain/campaign/index";
 import { currentState, effectiveMaximumModels, experienceTotal, heroCount, memberCount, modelCount, rating, withCampaign } from "../../../../domain/campaign/kernel/document";
+import { followUpNeedsResolution } from "./follow-up-acknowledgement-workflow";
 
 type Result={ok:true;document:CampaignDocument}|{ok:false;message:string};
 
@@ -9,7 +10,7 @@ export function finalizePostBattle(document:CampaignDocument):Result {
   if(!post||!base)return{ok:false,message:"No pending post-battle sequence."};
   if(!post.experience_applied||(post.pending_advances??[]).some((row)=>!row["committed"]))return{ok:false,message:"Resolve experience and every advance before confirming the next state."};
   if(!(post.step_state?.["exploration"] as Record<string,unknown>|undefined)?.["resolved"]||!post.sale_resolved||!(post.step_state?.["veterans"] as Record<string,unknown>|undefined)?.["resolved"])return{ok:false,message:"Complete exploration, wyrdstone sale and veteran availability first."};
-  if((post.pending_follow_ups??[]).length)return{ok:false,message:"Resolve all pending post-battle follow-ups first."};
+  if((post.pending_follow_ups??[]).some((row)=>followUpNeedsResolution(row,post.acknowledgements??{})))return{ok:false,message:"Resolve all pending post-battle follow-ups first."};
   if((post.equipment_obligations??[]).length)return{ok:false,message:"Equip newly recruited henchmen before confirming the next state."};
   const battle=document.campaign.battles.find((row)=>row.number===post.battle_number);
   const stateNumber=document.campaign.current_state_number+1;
