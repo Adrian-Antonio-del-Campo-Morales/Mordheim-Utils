@@ -18,12 +18,19 @@ import { useCampaignApp } from "../campaign/useCampaignApp";
 import type { CampaignDocument } from "../campaign/types";
 import { useHirelingsWorkflow } from "./useHirelingsWorkflow";
 import type { KnowledgeListings } from "@app/campaign/features/hirelings/hirelings-workflow";
+import { DiceResolver } from "../dice/DiceResolver";
 
 interface HirelingsPanelProps {
   readonly document: CampaignDocument;
   /** Listing-capable reader override (tests inject a fake). */
   readonly listings?: KnowledgeListings;
   readonly locale?: "es" | "en";
+}
+
+function VariableFeeHire({ offer, name, busy, onHire }: { offer: ReturnType<ReturnType<typeof useHirelingsWorkflow>["hiredSwordOffers"]>[number]; name: string; busy: boolean; onHire: (fee: number) => void }) {
+  const [fee, setFee] = useState<number | null>(null);
+  if (offer.fee_dice && fee === null) return <DiceResolver count={offer.fee_dice[0]} sides={offer.fee_dice[1]} label={`${name} hiring fee`} onResolve={(dice) => setFee(offer.fee_base + dice.reduce((total, die) => total + die, 0))} />;
+  return <button type="button" disabled={busy || fee === null} aria-label={`Hire ${name}`} onClick={() => fee !== null && onHire(fee)}>Hire for {fee} gc</button>;
 }
 
 export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsPanelProps) {
@@ -37,11 +44,11 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
   const displayName = (id: string, fallback: string) => listings?.itemName(id, locale) ?? fallback;
   const t = locale === "es" ? { hired:"Espadas de alquiler",none:"No hay mercenarios disponibles.",available:"Mercenarios disponibles",name:"Nombre",fee:"Tarifa",upkeep:"Mantenimiento",rating:"Valoración",action:"Acción",dice:"dados",hire:"Contratar",ineligible:"No disponible",excluded:"excluido por las reglas de la banda",trading:"Puesto de comercio",goods:"Objetos en venta",item:"Objeto",price:"Precio",availability:"Disponibilidad",buy:"Comprar",sales:"Vender reserva",nothing:"No hay objetos en la reserva para vender.",stash:"Reserva (una unidad por acción)",inStash:"En reserva",sell:"Vender 1",special:"precio especial" } : { hired:"Hired Swords",none:"No hireling offers available.",available:"Available hired swords",name:"Name",fee:"Fee",upkeep:"Upkeep",rating:"Rating",action:"Action",dice:"dice",hire:"Hire",ineligible:"Not eligible",excluded:"excluded by warband rules",trading:"Trading Post",goods:"Goods for sale",item:"Item",price:"Price",availability:"Availability",buy:"Buy",sales:"Stash sales",nothing:"Nothing in the stash to sell.",stash:"Stash (sell one unit per action)",inStash:"In stash",sell:"Sell 1",special:"special price" };
 
-  const hire = async (profileId: string) => {
+  const hire = async (profileId: string, resolvedFee?: number) => {
     const offer = offers.find((o) => o.profile_id === profileId);
     if (!offer || !offer.eligible) return;
     setBusy(true);
-    await app.runAction("hireHireling", { profile_id: profileId, fee: offer.fee, upkeep_resources: offer.upkeep ? [["gold_crowns", offer.upkeep]] : [] });
+    await app.runAction("hireHireling", { profile_id: profileId, fee: resolvedFee ?? offer.fee, upkeep_resources: offer.upkeep ? [["gold_crowns", offer.upkeep]] : [] });
     setBusy(false);
   };
 
@@ -80,11 +87,11 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
             {offers.map((offer) => (
               <tr key={offer.offer_id}>
                 <td>{displayName(offer.profile_id, offer.name)}</td>
-                <td>{offer.fee === null ? t.special : `${offer.fee} gc`}</td>
+                <td>{offer.fee_dice ? `${offer.fee_base}+${offer.fee_dice[0]}D${offer.fee_dice[1]} gc` : offer.fee === null ? t.special : `${offer.fee} gc`}</td>
                 <td>{offer.upkeep === null ? "—" : `${offer.upkeep} gc`}</td>
                 <td>{offer.rating}</td>
                 <td>
-                  {offer.eligible ? (
+                  {offer.eligible && offer.fee_dice ? <VariableFeeHire offer={offer} name={displayName(offer.profile_id, offer.name)} busy={busy} onHire={(fee) => void hire(offer.profile_id, fee)} /> : offer.eligible ? (
                     <button
                       type="button"
                       disabled={busy || offer.fee === null}

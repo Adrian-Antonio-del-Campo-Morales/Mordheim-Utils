@@ -48,6 +48,9 @@ export interface HirelingOfferRow {
   readonly kind: "hired-sword" | "dramatis-personae" | string;
   /** Hiring fee in gold crowns (0 = free entry, null = dice-rolled fee). */
   readonly fee: number | null;
+  /** Flat base and dice for a KB fee such as `70+3D6`; null for flat fees. */
+  readonly fee_base: number;
+  readonly fee_dice: readonly [number, number] | null;
   readonly upkeep: number | null;
   /** Intrinsic warband-rating contribution at hire time. */
   readonly rating: number;
@@ -139,6 +142,14 @@ function goldOf(resources: OpenPayload | undefined): number | null {
   return null;
 }
 
+function variableGoldOf(resources: OpenPayload | undefined): { base: number; dice: readonly [number, number] } | null {
+  const cost = (resources?.["gold_crowns"] as OpenPayload | undefined)?.["cost"];
+  if (typeof cost !== "string") return null;
+  const match = /^(\d+)\+(\d+)D(\d+)$/i.exec(cost.trim());
+  if (!match) return null;
+  return { base: Number(match[1]), dice: [Number(match[2]), Number(match[3])] };
+}
+
 export interface HirelingsWorkflowDeps {
   readonly listings: KnowledgeListings;
   readonly useCases: CampaignUseCases;
@@ -157,7 +168,9 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
       const profileId = typeof entry["profile_id"] === "string" ? entry["profile_id"] : null;
       if (!profileId) continue;
       const feeBlock = entry["hiring_fee"] as OpenPayload | undefined;
-      const fee = goldOf(feeBlock?.["resources"] as OpenPayload | undefined);
+      const feeResources = feeBlock?.["resources"] as OpenPayload | undefined;
+      const fee = goldOf(feeResources);
+      const variableFee = variableGoldOf(feeResources);
       const upkeep = goldOf((entry["upkeep"] as OpenPayload | undefined)?.["resources"] as OpenPayload | undefined);
       // Rating: resolve the profile's warband_rating through the reader.
       const profileResult = deps.useCases;
@@ -170,6 +183,8 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
         name: listings.itemName(profileId),
         kind,
         fee,
+        fee_base: variableFee?.base ?? 0,
+        fee_dice: variableFee?.dice ?? null,
         upkeep,
         rating,
         eligible: verdict.allowed,
