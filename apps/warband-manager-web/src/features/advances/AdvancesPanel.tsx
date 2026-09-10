@@ -3,6 +3,7 @@ import type { OpenPayload } from "@domain/campaign/index";
 import { DiceResolver } from "../dice/DiceResolver";
 import { useCampaignApp } from "../campaign/useCampaignApp";
 import type { CampaignDocument } from "../campaign/types";
+import { wizardLore } from "@app/campaign/features/advances/advance-resolution-workflow";
 
 export function AdvancesPanel({ document, knowledge }: { readonly document: CampaignDocument; readonly knowledge: ArtefactKnowledgeReader }) {
   const app = useCampaignApp();
@@ -14,6 +15,7 @@ export function AdvancesPanel({ document, knowledge }: { readonly document: Camp
     const committed = Boolean(row["committed"]); const total = row["roll_total"] == null ? null : Number(row["roll_total"]); const choices = (row["advance_options"] ?? []) as OpenPayload[];
     const needsSubroll = total !== null && !committed && choices.length === 0;
     const skills = knowledge.list("skill").filter((skill) => !warrior?.skill_access?.length || warrior.skill_access.includes(String(skill["category"] ?? "")));
+    const loreId = warrior ? wizardLore(knowledge, document, warrior) : null; const lore = loreId ? knowledge.queryKnowledge({ id: { kind: "lore_id", value: loreId } }) : null; const spells = lore?.ok ? (lore.record.data["spells"] ?? []) as readonly Record<string, unknown>[] : [];
     return <article className="warrior-card" key={`${id}:${String(threshold)}:${index}`}><header><div><strong>{warrior?.name ?? String(row["warrior_name"])}</strong><span>{String(row["table"] ?? "hero")} · {threshold === null ? "immediate advance" : `${threshold} XP threshold`}</span></div><b>{committed ? String(row["applied_label"] ?? "Committed") : "Pending"}</b></header>
       {((row["roll_history"] ?? []) as string[]).map((message) => <p className="global-error" key={message}>{message}</p>)}
       {!committed && total === null && <DiceResolver count={2} sides={6} label="Advance roll · 2D6" onResolve={(dice) => void app.runAction("resolveAdvanceRoll", { warrior_id: id, threshold, roll_total: dice[0] + dice[1] })} />}
@@ -21,7 +23,7 @@ export function AdvancesPanel({ document, knowledge }: { readonly document: Camp
       {!committed && choices.some((choice) => choice["kind"] === "characteristic_increase") && <div className="button-row">{choices.filter((choice) => choice["kind"] === "characteristic_increase").map((choice) => <button key={String(choice["characteristic"])} onClick={() => void app.runAction("commitAdvanceChoice", { warrior_id: id, threshold, kind: "characteristic_increase", characteristic: choice["characteristic"] })}>+{String(choice["amount"] ?? 1)} {String(choice["characteristic"])}</button>)}</div>}
       {!committed && choices.some((choice) => choice["kind"] === "choose_skill") && <label>Choose skill<select defaultValue="" onChange={(event) => { if (event.target.value) void app.runAction("commitAdvanceChoice", { warrior_id: id, threshold, kind: "choose_skill", skill_id: event.target.value }); }}><option value="" disabled>Select a permitted skill…</option>{skills.map((skill) => <option value={String(skill["id"])} key={String(skill["id"])}>{String((skill["names"] as Record<string, string>)?.["en"] ?? skill["name"] ?? skill["id"])}</option>)}</select></label>}
       {!committed && choices.some((choice) => choice["kind"] === "promote_henchman") && <p role="status">The Lad's Got Talent requires the desktop-equivalent promotion flow; this advance remains pending.</p>}
-      {!committed && choices.some((choice) => choice["kind"] === "generate_spell") && <p role="status">Spell generation requires the desktop lore picker; this advance remains pending.</p>}
+      {!committed && choices.some((choice) => choice["kind"] === "generate_spell") && <label>Generate spell<select defaultValue="" onChange={(event) => { const spell=spells.find((item)=>item["id"]===event.target.value); const duplicate=warrior?.skills.includes(String(spell?.["name"]??"")); if(event.target.value) void app.runAction("commitAdvanceChoice", { warrior_id:id,threshold,kind:duplicate?"duplicate_spell":"generate_spell",skill_id:event.target.value }); }}><option value="" disabled>Select a spell from {loreId}…</option>{spells.map((spell)=><option value={String(spell["id"])} key={String(spell["id"])}>{String(spell["name"]??spell["id"])}{warrior?.skills.includes(String(spell["name"]))?" · already known: −1 difficulty":""}</option>)}</select></label>}
     </article>;
   })}</section>;
 }
