@@ -223,8 +223,29 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         }
         case "commitInitialWarband":
           return applyResult(useCases.commitInitialWarband(state.current, knowledge));
-        case "recordBattle":
-          return applyResult(useCases.recordBattle(state.current, input as never, knowledge));
+        case "resolveBattleStartCheck": {
+          const warriorId = String(input["warrior_id"] ?? ""); const checkId = String(input["check_id"] ?? ""); const roll = Number(input["roll"]);
+          const warrior = state.current.campaign.warriors.find((row) => row.id === warriorId);
+          const check = warrior?.battle_start_checks?.find((row) => String(row["check_id"] ?? "") === checkId);
+          if (!warrior || !check) return error("rejected", "Unknown pre-battle injury check.");
+          const dice = (check["dice"] ?? {}) as Record<string, unknown>; const count = Number(dice["count"] ?? 1); const sides = Number(dice["sides"] ?? 6);
+          if (!Number.isInteger(roll) || roll < count || roll > count * sides) return error("rejected", `Enter a result from ${count} to ${count * sides}.`);
+          const failure = (check["failure_when"] ?? {}) as Record<string, unknown>; const min = Number(failure["min"] ?? 0); const max = Number(failure["max"] ?? min);
+          const checks = { ...((state.current.view.pending_battle_draft?.["battle_start_checks"] ?? {}) as Record<string, unknown>), [`${warriorId}:${checkId}`]: { roll, misses_battle: roll >= min && roll <= max, reason: "Old Battle Wound" } };
+          return applyResult({ ok: true, state: { ...state.current, view: { ...state.current.view, pending_battle_draft: { ...(state.current.view.pending_battle_draft ?? {}), battle_start_checks: checks } } });
+        }
+        case "recordBattle": {
+          const checks = (state.current.view.pending_battle_draft?.["battle_start_checks"] ?? {}) as Record<string, { misses_battle?: boolean }>;
+          const pendingChecks = state.current.campaign.warriors.filter((warrior) => (warrior.games_to_miss ?? 0) === 0).flatMap((warrior) => (warrior.battle_start_checks ?? []).map((check) => `${warrior.id}:${String(check["check_id"] ?? "")}`)).filter((key) => !checks[key]);
+          if (pendingChecks.length) return error("rejected", "Resolve all pre-battle injury checks before recording the battle.");
+          const unavailable = new Set(Object.entries(checks).filter(([, value]) => value.misses_battle).map(([key]) => key.split(":")[0]));
+          const outOfAction = Array.isArray(input["out_of_action_ids"]) ? input["out_of_action_ids"].map(String) : [];
+          if (outOfAction.some((id) => unavailable.has(id))) return error("rejected", "Warriors excluded by a pre-battle injury check cannot be taken out of action.");
+          const participants = state.current.campaign.warriors.filter((warrior) => (warrior.games_to_miss ?? 0) === 0 && !unavailable.has(warrior.id)).map((warrior) => warrior.id);
+          const result = useCases.recordBattle(state.current, { ...input, out_of_action_ids: outOfAction, participants } as never, knowledge);
+          if (!result.ok) return applyResult(result);
+          return applyResult({ ok: true, state: { ...result.state, view: { ...result.state.view, pending_battle_draft: undefined } } });
+        }
         case "resolvePostBattleStep":
           return applyResult(
             useCases.resolvePostBattleStep(
