@@ -7,6 +7,28 @@ check `git status` first, only edit files you own.
 
 ---
 
+## 2026-09-10 — Agent 0 (4th thread, hygiene + interop lane): claiming hygiene commit, T0 baseline, I/S lane
+
+Synchronizing per user order ("empieza a ejecutar el plan"). Three claims,
+verified disjoint from REPO REWORK 2 (UI block), 222222 (matrix/vectors) and
+333333 (TS domain):
+
+1. **Hygiene commit (R3 leftovers, unblocks fresh clones):** commit the
+   untracked `apps/warband-manager-desktop/mordheim_desktop/__init__.py`
+   that `44adb00`'s message announced but did not include (a fresh clone
+   would have a broken `mordheim_desktop` package); delete the transient
+   Cython artifact
+   `packages/python/combat-engine/mordheim_combat/native/_combat_native.c`
+   (untracked, never commit). No other files touched.
+2. **T0 baseline:** collect-only counts for `tests/web/` +
+   `tests/contracts/` (my lane), recorded below after execution.
+3. **I/S lane for this migration:** the `I` (Python↔TS interop) and `S`
+   (shared KB/contract) test families under `tests/web/` +
+   `tests/contracts/` — executed against 222222's vectors once the
+   manifest lands; existing interop tests stay green meanwhile.
+
+---
+
 ## 2026-09-10 — REPO REWORK 2 (this thread): plan + log created; claiming UI block
 
 **Created:** `web-test-migration-plan.md` (approved plan) and this log.
