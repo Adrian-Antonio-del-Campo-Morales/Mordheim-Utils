@@ -284,7 +284,8 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
             const post = state.current.campaign.post_battles.find((row) => !row.complete);
             const battle = post && state.current.campaign.battles.find((row) => row.number === post.battle_number);
             if (!post || !battle) return error("rejected", "There is no pending post-battle sequence.");
-            const unresolved = (post.pending_follow_ups ?? []).some((row) => followUpNeedsResolution(row, post.acknowledgements ?? {}));
+            const stepMatches = (row: Readonly<Record<string, unknown>>) => String(row["step"] ?? "") === String(post.active_step) || (post.active_step === 0 && row["step"] === "injuries") || (post.active_step === 2 && String(row["step"] ?? "") === "3");
+            const unresolved = (post.pending_follow_ups ?? []).some((row) => stepMatches(row) && followUpNeedsResolution(row, post.acknowledgements ?? {}));
             const injuries = new Map<string, number>();
             for (const id of battle.out_of_action_ids ?? []) injuries.set(id, (injuries.get(id) ?? 0) + 1);
             if (post.active_step === 0 && ([...injuries].some(([id, count]) => !Array.from({ length: count }, (_, index) => index + 1).every((casualtyIndex) => state.current!.campaign.warriors.find((warrior) => warrior.id === id)?.injury_records?.some((record) => Number(record["battle_number"]) === battle.number && Number(record["casualty_index"] ?? 1) === casualtyIndex))) || unresolved)) return error("rejected", "Resolve every serious injury and its follow-ups before continuing.");
@@ -390,8 +391,17 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const tradingEntry=(Array.isArray(trading?.["items"])?trading["items"] as Readonly<Record<string,unknown>>[]:[]).find((row)=>row["item_id"]===itemId);
           const heroesOnly=(Array.isArray(tradingEntry?.["restrictions"])?tradingEntry["restrictions"] as Readonly<Record<string,unknown>>[]:[]).some((row)=>row["type"]==="heroes_only");
           if(direction==="equip"&&heroesOnly&&warrior.kind!=="hero") return error("rejected", "This item may only be assigned to Heroes.");
-          const carried=warrior.equipment.filter((row)=>row.item_id===itemId&&row.acquisition!=="fixed").reduce((total,row)=>total+row.quantity,0);
-          const quantity=warrior.kind!=="henchman"?Number(input["quantity"]):direction==="equip"?Math.max(0,(warrior.quantity??1)-carried%(warrior.quantity??1)):carried;
+          if(direction==="equip"&&warrior.profile_id&&!warrior.profile_id.startsWith("hireling.")) {
+            const profile=knowledge.queryKnowledge({id:{kind:"profile_id",value:warrior.profile_id}}), item=knowledge.queryKnowledge({id:{kind:"item_id",value:itemId}});
+            if(profile.ok) {
+              const access=Array.isArray(profile.record.data["equipment_access"])?profile.record.data["equipment_access"] as Readonly<Record<string,unknown>>[]:[], fixed=Array.isArray(profile.record.data["fixed_equipment"])?profile.record.data["fixed_equipment"].map(String):[], restricted=Array.isArray(profile.record.data["equipment_restrictions"])?profile.record.data["equipment_restrictions"]:[];
+              if(!access.length&&restricted.length&&!fixed.includes(itemId)) return error("rejected", "This profile cannot carry purchased equipment.");
+              const weapon=item.ok&&["close-combat-weapon","ranged-weapon"].includes(String(item.record.data["kind"]??"")), allowed=access.some((row)=>String(row["item_id"]??"")===itemId), trained=warrior.skills.some((skill)=>/weapons? (training|expert)/i.test(skill));
+              if(weapon&&access.length&&!allowed&&!trained) return error("rejected", "This weapon is outside the warrior's equipment access.");
+            }
+          }
+          const carriedEntries=warrior.equipment.filter((row)=>row.item_id===itemId&&row.acquisition!=="fixed"), carried=carriedEntries.reduce((total,row)=>total+row.quantity,0), carriedPerModel=carriedEntries.some((row)=>row.per_model);
+          const quantity=warrior.kind!=="henchman"?Number(input["quantity"]):direction==="equip"?Math.max(0,(warrior.quantity??1)-carried%(warrior.quantity??1)):carriedPerModel?Math.min(warrior.quantity??1,carried):1;
           if(!Number.isInteger(quantity)||quantity<=0)return error("rejected", "This group has no transferable copies of that item.");
           return applyResult(useCases.assignEquipment(state.current, { warrior_id:warriorId,item_id:itemId,quantity,direction }));
         }
