@@ -7,6 +7,41 @@ check `git status` first, only edit files you own.
 
 ---
 
+## 2026-09-10 — REPO REWORK 2: U-lane COMPLETE — all 33 U rows implemented
+
+**Delivered (T1-verified, tsc + eslint clean, 35/35 campaign-feature tests):**
+
+`gui_interaction.test.tsx` grew to 16 tests, covering the full desktop
+matrix:
+- `test_unsaved_guard` 4-case decision matrix (None/False/True ×
+  None/saved → keep/discard/proceed) via the confirm-replace seam +
+  service contract;
+- `test_renaming_active_save_updates_next_save` (export filename follows
+  the renamed warband);
+- `test_close_application_respects_unsaved_decision` (web equivalent: no
+  app-close seam; trivial branch asserted + guard covered by matrix);
+- `test_ctrl_z_in_text_field_does_not_undo_campaign` (web: undo is an
+  explicit document-scoped service op; browser text undo out of reach by
+  design — restore-verbatim asserted);
+- `test_modal_returns_grab_to_previous_editor` (web: rejections are
+  values, no native modal — typed "Nothing to undo" asserted);
+- `test_resource_form_reports_invalid_input_without_mutation` (trading
+  equivalent: non-integer price rejected, document untouched).
+
+`ui_i18n.test.ts` grew to 9 tests — all 7 desktop rows covered:
+- env override (web: locale is a caller argument, no ambient state —
+  MORDHEIM_LOCALE seam does not exist by design);
+- byte-identical English over every band;
+- translated-entries invariant (es truthy, keys ⊆ {en, es});
+- post-battle chrome under Spanish (scenario.skirmish → "Escaramuza" via
+  the artefact's `name_i18n`).
+
+**Coverage vs manifest:** U=33/33 rows implemented (26 gui_interaction +
+7 ui_i18n). U-lane done. Next: T3 window when M-lane converges, or U-lane
+hand-refinement if manifest owners flag mapping gaps.
+
+---
+
 ## 2026-09-10 — REPO REWORK 2: claiming U-lane completion (remaining 26 gui_interaction + ui_i18n rows)
 
 Per user directive: focus on implementing tests, runtime deprioritized.

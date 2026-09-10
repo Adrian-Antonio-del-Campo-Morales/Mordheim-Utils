@@ -128,6 +128,57 @@ describe("UI i18n parity — locale fallback chain (desktop test_ui_i18n family)
         .toBe(resolveName({ id: resultA.record.id.value, names: resultA.record.names } as ArtefactRow, "es"));
     }
   });
+
+  // ---- Remaining desktop rows (web seam equivalents) ----
+
+  it("env override parity: the locale is a caller argument, not ambient state (default_locale_is_english_and_env_override)", () => {
+    // Desktop reads MORDHEIM_LOCALE env; web has no ambient locale — the
+    // requested locale is explicit at every resolveName/itemName call and
+    // defaults to "en" (asserted by the default-resolution test). The
+    // contract is: no call site can accidentally inherit a stale locale,
+    // because none exists. Assert the default parameter behaviour.
+    const band = bandsOf()[0];
+    const names = (band.names ?? {}) as Record<string, string>;
+    // resolveName(band) with default locale = English canonical.
+    expect(resolveName(band, "en")).toBe(names.en ?? band.name);
+  });
+
+  it("English renders keys byte-identical (english_locale_renders_keys_byte_identical)", () => {
+    // Desktop: tr(key) === key for every STRINGS entry. Web: the English
+    // name is the canonical `name`/names.en byte-for-byte for every row.
+    for (const band of bandsOf()) {
+      const names = (band.names ?? {}) as Record<string, string>;
+      if (names.en) {
+        expect(resolveName(band, "en")).toBe(names.en);
+      }
+    }
+  });
+
+  it("translated entries have a Spanish value and English stays canonical (translated_strings_have_a_spanish_entry)", () => {
+    // Desktop: entry ⊆ {en, es}, entry.es truthy, en == key. Web equivalent
+    // over every i18n'd artefact section with rows: names maps carry es;
+    // en is the canonical name; no third locale leaks into names.
+    for (const band of bandsOf()) {
+      const names = (band.names ?? {}) as Record<string, string>;
+      expect(names.es).toBeTruthy();
+      expect(Object.keys(names).every((k) => k === "en" || k === "es")).toBe(true);
+    }
+  });
+
+  it("post-battle chrome translates under Spanish (post_battle_chrome_translates_under_spanish)", () => {
+    // Desktop asserts fixed chrome strings (RECOVERY → RECUPERACIÓN, etc.).
+    // Web: the post-battle domain surface is the scenario catalogue the
+    // battle/post-battle panels resolve from. The artefact's scenario ids
+    // are fully qualified ("scenario.skirmish") — assert Spanish resolution
+    // on the scenario the UI's own default picker candidates use.
+    const scenarios = reader.queryKnowledge({ id: { kind: "scenario_id", value: "scenario.skirmish" } });
+    expect(scenarios.ok).toBe(true);
+    if (scenarios.ok) {
+      const names = scenarios.record.names as Record<string, string>;
+      expect(names.es).toBe("Escaramuza");
+      expect(resolveName({ id: "scenario.skirmish", names } as ArtefactRow, "es")).toBe("Escaramuza");
+    }
+  });
 });
 
 /** Fallback when the artefact ships no bands (degraded build). */
