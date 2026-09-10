@@ -111,6 +111,11 @@ export function commitAdvanceChoice(document: CampaignDocument, reader: Catalogu
     const label=input.kind==="generate_spell"?`Spell: ${name}`:`Duplicated spell: ${name} (difficulty -1)`; const post=document.campaign.post_battles.find((item)=>!item.complete)!; const committed={...row,committed:true,applied_label:label};
     return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?committed:item),document.campaign.warriors.map((item)=>item.id===warrior.id?changed:item))};
   }
+  if(input.kind==="external_resolution" && offered.some((item)=>item["kind"]==="external_resolution")) {
+    const post=document.campaign.post_battles.find((item)=>!item.complete)!;
+    const committed={...row,committed:true,applied_label:"Resolved outside the application"};
+    return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?committed:item))};
+  }
   return {ok:false,message:"This desktop advance option is not implemented yet."};
 }
 
