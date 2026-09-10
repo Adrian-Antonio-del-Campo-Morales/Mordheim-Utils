@@ -7,6 +7,7 @@ type Result={ok:true;document:CampaignDocument;summary:ExplorationSummary}|{ok:f
 type FollowUpResult={ok:true;document:CampaignDocument}|{ok:false;message:string};
 export interface ExplorationSummary { readonly dice_count:number; readonly total:number; readonly shards:number; readonly special:string|null }
 const HUMAN_WARBAND_GROUPS=new Set(["warband-group.human","warband-group.chaos-human","warband-group.human-mercenary","warband-group.undead"]);
+export function explorationDiscardRequired(document:CampaignDocument):boolean { return document.campaign.special_rules.some((row)=>String(row["text"]??"").includes("extra die")&&String(row["text"]??"").includes("discard")); }
 
 function catalogue(reader:CatalogueReader) {
   const document=reader.campaignSection?.("exploration-and-income");
@@ -30,7 +31,7 @@ export function explorationDiceCount(document:CampaignDocument,reader:CatalogueR
     if(row["eligible_warrior"]==="warband"&&row["condition"]==="warband_won_battle"&&battle.result==="win") count+=Number(row["dice"]??0);
   }
   const scenario=post.step_state?.["scenario_exploration"] as OpenPayload|undefined;
-  return Math.min(count,Number(exploration["max_dice"]??6))+Math.max(0,Number(scenario?.["extra_dice"]??0));
+  return Math.min(count,Number(exploration["max_dice"]??6))+Math.max(0,Number(scenario?.["extra_dice"]??0))+(explorationDiscardRequired(document)?1:0);
 }
 function matchingResult(exploration:Readonly<Record<string,unknown>>,dice:readonly number[]) {
   const counts=new Map<number,number>(); for(const die of dice)counts.set(die,(counts.get(die)??0)+1);
@@ -42,7 +43,7 @@ export function applyExploration(document:CampaignDocument,reader:CatalogueReade
   const post=document.campaign.post_battles.find((row)=>!row.complete); if(!post)return{ok:false,message:"No pending post-battle exploration."};
   if(!post.experience_applied||(post.pending_advances??[]).some((row)=>!row["committed"]))return{ok:false,message:"Resolve experience and every advance before exploration."};
   if((post.step_state?.["exploration"] as OpenPayload|undefined)?.["resolved"])return{ok:false,message:"Exploration has already been resolved."};
-  const required=explorationDiceCount(document,reader); if(dice.length!==required||dice.some((die)=>!Number.isInteger(die)||die<1||die>6))return{ok:false,message:`Exploration requires exactly ${required} valid D6 results.`};
+  const required=explorationDiceCount(document,reader),discarded=explorationDiscardRequired(document)&&dice.length===required-1; if((dice.length!==required&&!discarded)||dice.some((die)=>!Number.isInteger(die)||die<1||die>6))return{ok:false,message:`Exploration requires exactly ${required} valid D6 results.`};
   const exploration=catalogue(reader); const total=dice.reduce((sum,die)=>sum+die,0);
   const cell=((exploration["shards_chart"] as Readonly<Record<string,unknown>>)?.["cells"]??[]) as readonly Readonly<Record<string,unknown>>[];
   const shardRow=cell.find((row)=>{const bounds=((row["when"] as Readonly<Record<string,unknown>>)?.["dice_total"]??{}) as Readonly<Record<string,unknown>>;return total>=Number(bounds["min"]??0)&&(bounds["max"]==null||total<=Number(bounds["max"]));});
