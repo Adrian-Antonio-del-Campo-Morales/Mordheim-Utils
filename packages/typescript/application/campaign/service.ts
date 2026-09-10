@@ -27,7 +27,7 @@ import type {
   UseCaseResult,
 } from "../../domain/campaign/index";
 import { createDefaultUseCases } from "../../domain/campaign/kernel/default-usecases";
-import { buyDraftEquipment, removeDraftEquipment } from "../../domain/campaign/kernel/equipment";
+import { buyDraftEquipment, buyDraftStashItem, removeDraftEquipment, removeDraftStashItem } from "../../domain/campaign/kernel/equipment";
 import type { CampaignUseCases } from "../../domain/campaign/index";
 import {
   applyInjuryOutcome,
@@ -297,6 +297,10 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           return applyResult(buyDraftEquipment(state.current, input as never, knowledge));
         case "removeDraftEquipment":
           return applyResult(removeDraftEquipment(state.current, input as never));
+        case "buyDraftStashItem":
+          return applyResult(buyDraftStashItem(state.current, input as never, knowledge));
+        case "removeDraftStashItem":
+          return applyResult(removeDraftStashItem(state.current, input as never));
         case "hireHireling": {
           const post = state.current.campaign.post_battles.find((row) => !row.complete);
           if (!post) return error("rejected", "Hired Swords can only be hired during post-battle.");

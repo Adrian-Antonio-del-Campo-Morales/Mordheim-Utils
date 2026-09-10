@@ -35,6 +35,17 @@ export interface DraftEquipmentRemovalInput {
   readonly unit_price?: number;
 }
 
+export interface DraftStashPurchaseInput {
+  readonly item_id: IdString;
+  readonly quantity: number;
+  readonly unit_price?: number;
+}
+
+export interface DraftStashRemovalInput {
+  readonly item_id: IdString;
+  readonly quantity: number;
+}
+
 export interface AssignEquipmentInput {
   readonly warrior_id: IdString;
   readonly item_id: IdString;
@@ -249,4 +260,44 @@ export function removeDraftEquipment(
     inventory,
   };
   return { ok: true, state: withCampaign(document, campaign) };
+}
+
+/** Buy unassigned creation equipment from this warband's canonical lists. */
+export function buyDraftStashItem(
+  document: CampaignDocument,
+  input: DraftStashPurchaseInput,
+  knowledge: KnowledgeReader,
+): UseCaseResult {
+  if (!document.campaign.configuration.is_draft) return rejected("not_permitted_when_committed", "Draft stash is only available during initial creation.");
+  if (!Number.isInteger(input.quantity) || input.quantity <= 0) return rejected("invalid_input", "Purchase quantity must be a positive integer.");
+  const band = knowledge.queryKnowledge({ id: { kind: "band_id", value: document.campaign.identity.band_id } });
+  if (!band.ok) return rejected("not_found", `Unknown warband id: ${document.campaign.identity.band_id}.`);
+  const access = Array.isArray(band.record.data["equipment_access"]) ? band.record.data["equipment_access"] as Readonly<Record<string, unknown>>[] : [];
+  const offer = access.filter((row) => row["item_id"] === input.item_id).sort((left, right) => Number(left["cost"] ?? Infinity) - Number(right["cost"] ?? Infinity))[0];
+  if (!offer) return rejected("not_available", "This warband cannot buy that item during creation.");
+  const price = typeof offer["cost"] === "number" ? offer["cost"] : input.unit_price;
+  if (!Number.isInteger(price) || price < 0) return rejected("invalid_input", "Resolve a valid creation price before buying this item.");
+  const total = price * input.quantity;
+  if (total > treasury(document.campaign)) return rejected("limit_violated", `Not enough gold: ${total} gc needed, ${treasury(document.campaign)} gc available.`);
+  const item = knowledge.queryKnowledge({ id: { kind: "item_id", value: input.item_id } });
+  if (!item.ok) return rejected("not_found", `Unknown item id: ${input.item_id}.`);
+  const name = item.record.names["en"] ?? input.item_id;
+  const existing = findInventoryItem(document, input.item_id);
+  const inventory: InventoryItem[] = existing
+    ? document.campaign.inventory.map((entry) => entry.id === input.item_id ? { ...entry, owned: entry.owned + input.quantity, stash: entry.stash + input.quantity, value: price } : entry)
+    : [...document.campaign.inventory, { id: input.item_id, name, category: String(item.record.data["kind"] ?? "Equipment"), owned: input.quantity, equipped: 0, stash: input.quantity, value: price }];
+  return { ok: true, state: withCampaign(document, { ...document.campaign, inventory }) };
+}
+
+/** Refund unassigned draft stash copies at their recorded acquisition price. */
+export function removeDraftStashItem(document: CampaignDocument, input: DraftStashRemovalInput): UseCaseResult {
+  if (!document.campaign.configuration.is_draft) return rejected("not_permitted_when_committed", "Draft stash is only available during initial creation.");
+  if (!Number.isInteger(input.quantity) || input.quantity <= 0) return rejected("invalid_input", "Removal quantity must be a positive integer.");
+  const item = findInventoryItem(document, input.item_id);
+  if (!item) return rejected("not_found", `Unknown inventory item id: ${input.item_id}.`);
+  if (item.stash < input.quantity) return rejected("limit_violated", `Only ${item.stash} unassigned copy/copies are available.`);
+  const inventory = document.campaign.inventory
+    .map((entry) => entry.id === input.item_id ? { ...entry, owned: entry.owned - input.quantity, stash: entry.stash - input.quantity } : entry)
+    .filter((entry) => entry.owned > 0);
+  return { ok: true, state: withCampaign(document, { ...document.campaign, inventory }) };
 }

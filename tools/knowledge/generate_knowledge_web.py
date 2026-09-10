@@ -149,6 +149,21 @@ def _build_bands(ruleset: str) -> tuple[list[dict], dict[str, list[str]]]:
             band["roster"] = roster
             entry = _row(band)
             entry["collection"] = str(collection)
+            access: list[dict] = []
+            for equipment_list in package.equipment_lists:
+                list_id = str(equipment_list.get("id") or "")
+                for item in equipment_list.get("items") or ():
+                    item_id = str(item.get("item_id") or "")
+                    if not item_id:
+                        continue
+                    row = {"item_id": item_id, "list_id": list_id}
+                    if isinstance(item.get("cost"), int):
+                        row["cost"] = item["cost"]
+                    access.append(row)
+            entry["equipment_access"] = sorted(
+                access,
+                key=lambda row: (str(row["item_id"]), str(row["list_id"])),
+            )
             bands.append(entry)
             indexes.setdefault(str(collection), []).append(str(band["id"]))
     return sorted(bands, key=_sort_key), dict(sorted(indexes.items()))
