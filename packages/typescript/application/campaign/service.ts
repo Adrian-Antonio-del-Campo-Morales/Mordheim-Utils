@@ -45,6 +45,7 @@ import { dismissRecruit, recruitBandProfile, recruitGroupMember } from "./featur
 import { assignDramatisSearch, assignRareSearch, buyRareSearch, hireDramatisSearch, resolveDramatisSearch, resolveRareSearch } from "./features/searches/search-workflow";
 import { resolveHirelingUpkeep } from "./features/hirelings/upkeep-workflow";
 import { finalizePostBattle } from "./features/review/finalize-post-battle-workflow";
+import { transferEquippedItem } from "./features/equipment/transfer-workflow";
 
 const HISTORY_LIMIT = 50;
 
@@ -344,6 +345,11 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         case "hireDramatisSearch": { const result=hireDramatisSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "assignEquipment":
           return applyResult(useCases.assignEquipment(state.current, input as never));
+        case "transferEquippedItem": {
+          const result = transferEquippedItem(state.current, input as never);
+          if (!result.ok) return error("rejected", result.message);
+          return applyResult({ ok: true, state: result.document });
+        }
         case "buyDraftEquipment":
           return applyResult(buyDraftEquipment(state.current, input as never, knowledge));
         case "removeDraftEquipment":
