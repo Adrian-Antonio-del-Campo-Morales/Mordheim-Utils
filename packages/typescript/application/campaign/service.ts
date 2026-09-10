@@ -287,8 +287,21 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         case "hireDramatisSearch": { const result=hireDramatisSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "assignEquipment":
           return applyResult(useCases.assignEquipment(state.current, input as never));
-        case "hireHireling":
-          return applyResult(useCases.hireHireling(state.current, input as never, knowledge));
+        case "hireHireling": {
+          const post = state.current.campaign.post_battles.find((row) => !row.complete);
+          if (!post) return error("rejected", "Hired Swords can only be hired during post-battle.");
+          const fee = Number(input["fee"]);
+          if (!Number.isInteger(fee) || fee < 0) return error("rejected", "Resolve the hiring fee before hiring.");
+          const currentSnapshot = state.current.campaign.states.find((row) => row.number === state.current!.campaign.current_state_number) ?? state.current.campaign.states.at(-1);
+          const availableGold = (currentSnapshot?.gold ?? 0) + (post.gold_delta ?? 0);
+          if (fee > availableGold) return error("rejected", `Not enough gold: ${fee} gc needed, ${availableGold} available.`);
+          const result = useCases.hireHireling(state.current, input as never, knowledge);
+          if (!result.ok) return applyResult(result);
+          const resultPost = result.state.campaign.post_battles.find((row) => !row.complete);
+          if (!resultPost) return error("rejected", "Pending post-battle disappeared while hiring.");
+          const changed = { ...resultPost, gold_delta: (resultPost.gold_delta ?? 0) - fee, event_log: [...(resultPost.event_log ?? []), { step: 6, type: "hire", profile_id: input["profile_id"], description: `Hired for ${fee} gc.` }] };
+          return applyResult({ ok: true, state: { ...result.state, campaign: { ...result.state.campaign, post_battles: result.state.campaign.post_battles.map((row) => row === resultPost ? changed : row) } } });
+        }
         case "buyTradingItem":
           return applyResult(useCases.buyTradingItem(state.current, input as never));
         case "sellStashItem":

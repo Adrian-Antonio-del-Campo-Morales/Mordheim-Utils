@@ -42,7 +42,7 @@ export function CampaignSlice({ knowledge, locale = "en" }: { knowledge?: Artefa
       <div className="moment-detail">
         {selected.startsWith("state:") && <><RosterOverview document={doc} stateNumber={battleNumber} editable={currentState} locale={locale} /><EquipmentPanel document={stateDocument} readOnly={!currentState} locale={locale} />{currentState && <BattlePanel document={doc} knowledge={knowledge} locale={locale} />}</>}
         {selected.startsWith("battle:") && <section className="page"><div className="page-title"><p>BATTLE #{battleNumber}</p><h2>{battle?.scenario ?? "Battle"}</h2></div>{battle ? <dl className="campaign-metrics"><div><dt>Opponent</dt><dd>{battle.opponent}</dd></div><div><dt>Result</dt><dd>{battle.result}</dd></div><div><dt>Gold</dt><dd>{battle.gold_delta}</dd></div><div><dt>Wyrdstone</dt><dd>{battle.wyrdstone}</dd></div></dl> : <p>Battle not found.</p>}</section>}
-        {selected.startsWith("post:") && <><BattlePanel document={doc} knowledge={knowledge} locale={locale} />{knowledge && <PostBattleInjuries document={doc} knowledge={knowledge} />}<InjuriesPanel document={doc} />{knowledge && <PostBattleExperience document={doc} knowledge={knowledge} />}<HirelingsPanel document={doc} listings={knowledge} /><ReviewPanel document={doc} locale={locale} /></>}
+        {selected.startsWith("post:") && <><BattlePanel document={doc} knowledge={knowledge} locale={locale} />{knowledge && <PostBattleInjuries document={doc} knowledge={knowledge} />}<InjuriesPanel document={doc} />{knowledge && <PostBattleExperience document={doc} knowledge={knowledge} />}<HirelingsPanel document={doc} listings={knowledge} locale={locale} /><ReviewPanel document={doc} locale={locale} /></>}
       </div></div>}
   </section>;
 }
