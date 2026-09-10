@@ -107,6 +107,8 @@ export interface Warrior {
   readonly absence_reason?: string;
   readonly hatreds?: readonly string[];
   readonly battle_start_checks?: readonly OpenPayload[];
+  /** Lasting injuries may restrict carried equipment (for example arm wounds). */
+  readonly equipment_limits?: IntMap;
   readonly injury_records?: readonly OpenPayload[];
   readonly lost_eyes?: readonly string[];
   readonly special_rules?: readonly string[];

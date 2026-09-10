@@ -68,6 +68,9 @@ function equipmentViolation(document: CampaignDocument, knowledge: CampaignAppDe
   if(["familiar","arcane_familiar"].includes(itemId)&&!identity.includes("spellcaster"))return "A Familiar may only be assigned to a spellcaster.";
   if(itemId==="book_of_the_dead"&&!/(vampire|necromancer)/.test(identity))return "The Book of the Dead may only be assigned to Vampires or Necromancers.";
   const carried=warrior.equipment.filter((row)=>row.acquisition!=="fixed"), models=warrior.quantity??1;
+  const hands=(knowledge as typeof knowledge & { weaponHandsFor?(id:string):number|null }).weaponHandsFor?.(itemId);
+  const limit=warrior.equipment_limits?.["maximum_one_handed_weapons"];
+  if(hands===1&&limit!==undefined){const carriedHands=carried.filter((row)=>(knowledge as typeof knowledge & { weaponHandsFor?(id:string):number|null }).weaponHandsFor?.(row.base_item_id??row.item_id)===1).reduce((sum,row)=>sum+row.quantity,0);if(carriedHands+amount>limit*models)return `Injury limits this warrior to ${limit} one-handed weapon(s) per model.`;}
   if(["close-combat-weapon","ranged-weapon"].includes(category)){const count=carried.filter((row)=>{const known=knowledge.queryKnowledge({id:{kind:"item_id",value:row.base_item_id??row.item_id}});return known.ok&&String(known.record.data["kind"]??"")===category;}).reduce((sum,row)=>sum+row.quantity,0);if(count+amount>2*models)return "A warrior can carry at most two weapons of this category, besides the free starting dagger.";}
   if(!["close-combat-weapon","ranged-weapon"].includes(category)&&carried.filter((row)=>row.item_id===itemId).reduce((sum,row)=>sum+row.quantity,0)+amount>models)return `${item.record.names["en"]??itemId} is already carried; a warrior carries one of these.`;
   return null;

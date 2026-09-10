@@ -71,6 +71,7 @@ export type InjuryEffect =
   | { readonly kind: "discard_equipment" }
   | { readonly kind: "grant_experience"; readonly value: number }
   | { readonly kind: "battle_start_check"; readonly check: OpenPayload }
+  | { readonly kind: "equipment_limit"; readonly maximum_one_handed_weapons: number }
   | { readonly kind: "follow_up"; readonly type: string; readonly payload?: OpenPayload };
 
 /** Read-model row: one warrior's injury & recovery status. */
@@ -157,6 +158,7 @@ export function applyInjuryOutcome(
   let condition = warrior.condition ?? null;
   let conditionDetail = warrior.condition_detail ?? null;
   const statModifiers: Record<string, number> = { ...(warrior.stat_modifiers ?? {}) };
+  const equipmentLimits: Record<string, number> = { ...(warrior.equipment_limits ?? {}) };
   const lostEyes = [...(warrior.lost_eyes ?? [])];
   const uninterpreted: OpenPayload[] = [];
   const followUps: OpenPayload[] = [];
@@ -196,6 +198,8 @@ export function applyInjuryOutcome(
       const value=Number((effect as {value?:unknown}).value??0); if(!Number.isInteger(value)||value<0)return{ok:false,reason:"invalid_input",message:"grant_experience needs a non-negative integer."}; experience+=value;
     } else if (kind === "battle_start_check") {
       const check=(effect as {check?:OpenPayload}).check; if(!check)return{ok:false,reason:"invalid_input",message:"battle_start_check needs KB check data."}; battleChecks=[...battleChecks,check];
+    } else if (kind === "equipment_limit") {
+      const value=Number((effect as {maximum_one_handed_weapons?:unknown}).maximum_one_handed_weapons); if(!Number.isInteger(value)||value<0)return{ok:false,reason:"invalid_input",message:"equipment_limit needs a non-negative whole-number limit."}; equipmentLimits["maximum_one_handed_weapons"]=Math.min(equipmentLimits["maximum_one_handed_weapons"]??value,value); condition="Injured"; conditionDetail=`Arm wound (max ${value} one-handed weapon(s))`;
     } else if (kind === "follow_up") {
       const item=effect as {type?:unknown;payload?:OpenPayload}; if(typeof item.type!=="string"||!item.type)return{ok:false,reason:"invalid_input",message:"follow_up needs a type."}; followUps.push({id:`${item.type}:${warrior.id}:${input.result_id}:${casualtyIndex}`,step:"injuries",type:item.type,warrior_id:warrior.id,casualty_index:casualtyIndex,result_id:input.result_id,...(item.payload??{})});
     } else {
@@ -220,6 +224,7 @@ export function applyInjuryOutcome(
     ...(condition !== null ? { condition } : {}),
     ...(conditionDetail !== null ? { condition_detail: conditionDetail } : {}),
     ...(Object.keys(statModifiers).length > 0 ? { stat_modifiers: statModifiers } : {}),
+    ...(Object.keys(equipmentLimits).length > 0 ? { equipment_limits: equipmentLimits } : {}),
     ...(lostEyes.length > 0 ? { lost_eyes: lostEyes } : {}),
     ...(experience!==warrior.experience?{experience}:{}),
     ...(battleChecks.length?{battle_start_checks:battleChecks}:{}),

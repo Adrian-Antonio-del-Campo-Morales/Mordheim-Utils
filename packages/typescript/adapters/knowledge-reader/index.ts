@@ -129,6 +129,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   private readonly campaignMaps: CampaignMaps;
   private readonly campaignRaw: Readonly<Record<string, unknown>>;
   private readonly rulesProse: Readonly<Record<string, readonly ArtefactRow[]>>;
+  private readonly weaponHands: Readonly<Record<string, number>>;
 
   private constructor(artefact: KnowledgeArtefact) {
     this.bands = ArtefactKnowledgeReader.indexById(artefact.bands, "id");
@@ -136,6 +137,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     this.items = ArtefactKnowledgeReader.indexById(artefact.items, "item_id");
     this.skills = ArtefactKnowledgeReader.indexById(artefact.skills, "id");
     this.rulesProse = artefact.rules_prose ?? {};
+    this.weaponHands = artefact.weapon_hands ?? {};
     this.campaignRaw = (artefact.campaign ?? {}) as Readonly<Record<string, unknown>>;
     this.campaignMaps = ArtefactKnowledgeReader.indexCampaignSections(
       artefact.campaign ?? {},
@@ -413,4 +415,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     const names = rowNames(row);
     return names[locale] ?? names["en"] ?? itemId;
   }
+
+  /** Number of hands required by a canonical weapon, when the KB declares it. */
+  weaponHandsFor(itemId: string): number | null { const value=this.weaponHands[itemId]; return Number.isInteger(value) ? value : null; }
 }
