@@ -154,6 +154,25 @@ def _build_bands(ruleset: str) -> tuple[list[dict], dict[str, list[str]]]:
     return sorted(bands, key=_sort_key), dict(sorted(indexes.items()))
 
 
+_EXPERIENCE_FORBIDDEN_RULE_REFS = frozenset({
+    "shared-rule.brainless", "shared-rule.dead", "shared-rule.never-gain-experience",
+    "shared-rule.experience", "shared-rule.animal", "shared-rule.animal-2",
+    "shared-rule.animals", "shared-rule.animals-2", "shared-rule.animals-3",
+})
+
+
+def _profile_can_gain_experience(package, profile: dict) -> bool:
+    """Materialize the same decision as desktop KnowledgePort.can_gain_experience."""
+    profile_id = str(profile.get("id") or "")
+    if str(profile.get("type") or "") == "animal":
+        return False
+    return not any(
+        profile_id in ((rule.get("applies_to") or {}).get("profile_ids") or ())
+        and rule.get("rule_ref") in _EXPERIENCE_FORBIDDEN_RULE_REFS
+        for rule in package.special_rules
+    )
+
+
 def _build_profiles(ruleset: str) -> list[dict]:
     profiles: list[dict] = []
     for collection in (row["id"] for row in load_collections() if ruleset in set(row.get("rulesets") or ())):
@@ -164,6 +183,7 @@ def _build_profiles(ruleset: str) -> list[dict]:
                 entry = _row(profile, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n"))
                 entry["collection"] = str(collection)
                 entry["band_id"] = str(package.band["id"])
+                entry["can_gain_experience"] = _profile_can_gain_experience(package, profile)
                 profiles.append(entry)
     return sorted(profiles, key=_sort_key)
 

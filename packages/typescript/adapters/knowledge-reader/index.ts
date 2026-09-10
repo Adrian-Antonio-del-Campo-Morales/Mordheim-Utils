@@ -283,11 +283,15 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
       if (Array.isArray(tables)) {
         const injuries = new Map<string, ArtefactRow>();
         for (const table of tables as ArtefactRow[]) {
-          const rows = table["rows"];
+          const rows = table["results"] ?? table["rows"];
           if (!Array.isArray(rows)) continue;
           for (const row of rows as ArtefactRow[]) {
             const id = row["id"];
-            if (typeof id === "string" && id && !injuries.has(id)) injuries.set(id, row);
+            if (typeof id === "string" && id && !injuries.has(id)) injuries.set(id, {
+              ...row,
+              applies_to: table["applies_to"],
+              table_id: table["id"],
+            });
           }
         }
         maps.injuries = injuries;
@@ -358,6 +362,11 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
 
   queryMany(queries: readonly KnowledgeQuery[]): readonly KnowledgeResult[] {
     return queries.map((query) => this.queryKnowledge(query));
+  }
+
+  /** Catalogue rows, including scoped profiles once each. */
+  list(kind: KnowledgeKind): readonly ArtefactRow[] {
+    return [...new Set(this.mapFor(kind).values())];
   }
 
   // ------------------------------------------------------------------

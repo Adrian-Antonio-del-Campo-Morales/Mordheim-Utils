@@ -39,12 +39,14 @@ function asListings(reader: KnowledgeReader): KnowledgeListings {
   };
 }
 
-export function useHirelingsWorkflow(): ReturnType<typeof createHirelingsWorkflow> {
+export function useHirelingsWorkflow(source?: KnowledgeListings & Partial<KnowledgeReader>): ReturnType<typeof createHirelingsWorkflow> {
   return useMemo(() => {
     // The composition root owns the ports; the workflow reads the same
     // listing-capable reader the service dispatches against.
-    const knowledge: KnowledgeReader = new FakeKnowledgeReader();
+    const knowledge: KnowledgeReader = source && typeof source.queryKnowledge === "function" && typeof source.queryMany === "function"
+      ? source as KnowledgeReader
+      : new FakeKnowledgeReader();
     const useCases: CampaignUseCases = createDefaultUseCases(knowledge);
-    return createHirelingsWorkflow({ listings: asListings(knowledge), useCases });
-  }, []);
+    return createHirelingsWorkflow({ listings: source ?? asListings(knowledge), useCases });
+  }, [source]);
 }

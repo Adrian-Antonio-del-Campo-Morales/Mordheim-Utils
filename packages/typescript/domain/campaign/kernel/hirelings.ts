@@ -99,21 +99,66 @@ export function hireHireling(
     const value = characteristics[key];
     if (typeof value === "number") stats[key] = value;
   }
+  const equipmentBlock = data["equipment"] && typeof data["equipment"] === "object"
+    ? data["equipment"] as OpenPayload
+    : {};
+  const fixedItems = Array.isArray(equipmentBlock["fixed_items"])
+    ? equipmentBlock["fixed_items"] as OpenPayload[]
+    : [];
+  const equipment = fixedItems.flatMap((entry) => {
+    const itemId = typeof entry["item_id"] === "string" ? entry["item_id"] : null;
+    if (!itemId) return [];
+    const quantityBlock = entry["quantity"] && typeof entry["quantity"] === "object"
+      ? entry["quantity"] as OpenPayload
+      : {};
+    const quantity = Number.isInteger(quantityBlock["value"]) ? Number(quantityBlock["value"]) : 1;
+    const item = knowledge.queryKnowledge({ id: { kind: "item_id", value: itemId } });
+    return [{
+      item_id: itemId,
+      name: item.ok ? item.record.names["en"] ?? itemId : itemId,
+      quantity,
+      acquisition: "hireling_grant",
+      unit_cost: 0,
+      per_model: false,
+      transferable: false,
+    }];
+  });
+  const startingSkillIds = Array.isArray(data["starting_skill_ids"])
+    ? (data["starting_skill_ids"] as unknown[]).filter((id): id is string => typeof id === "string")
+    : [];
+  const skills = startingSkillIds.map((skillId) => {
+    const skill = knowledge.queryKnowledge({ id: { kind: "skill_id", value: skillId } });
+    return skill.ok ? skill.record.names["en"] ?? skillId : skillId;
+  });
+  const sectionReader = knowledge as KnowledgeReader & {
+    campaignSection?(section: string): Readonly<Record<string, unknown>>;
+  };
+  const rules = sectionReader.campaignSection?.("hirelings")?.["rules"];
+  const ruleIds = new Set(Array.isArray(data["rule_ids"]) ? data["rule_ids"].map(String) : []);
+  const maximumModelsModifier = Array.isArray(rules)
+    ? (rules as OpenPayload[])
+      .filter((rule) => ruleIds.has(String(rule["id"])))
+      .flatMap((rule) => Array.isArray(rule["mechanics"]) ? rule["mechanics"] as OpenPayload[] : [])
+      .filter((mechanic) => mechanic["type"] === "warband.maximum_models_modifier")
+      .reduce((sum, mechanic) => sum + Number(mechanic["value"] ?? 0), 0)
+    : 0;
   const hireling: Warrior = {
     id: `${input.profile_id}#1`,
     name: result.record.names["en"] ?? input.profile_id,
     profile_name: result.record.names["en"] ?? input.profile_id,
     kind: "hireling",
     stats,
-    equipment: [],
-    skills: Array.isArray(data["skills"])
-      ? (data["skills"] as unknown[]).filter((s): s is string => typeof s === "string")
-      : [],
+    equipment,
+    skills,
     experience: 0,
     quantity: 1,
     cost,
     hireling_rating: rating,
+    ...(maximumModelsModifier !== 0 ? { maximum_models_modifier: maximumModelsModifier } : {}),
     ...(upkeep.length > 0 ? { upkeep_resources: upkeep } : {}),
+    ...(Array.isArray(data["skill_access"])
+      ? { skill_access: (data["skill_access"] as unknown[]).filter((row): row is string => typeof row === "string") }
+      : {}),
     profile_id: input.profile_id,
   };
   const campaign_next: Campaign = {
