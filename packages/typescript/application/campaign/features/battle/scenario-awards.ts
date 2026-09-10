@@ -47,3 +47,12 @@ export function calculatedAwards(rows: readonly ScenarioAward[], warriors: reado
   }
   return totals;
 }
+
+export type ScenarioResourceReward = Readonly<{ id: string; resource: "gold_crowns" | "wyrdstone_fragments"; rule: string }>;
+
+/** Structured resource rows from desktop ScenarioRewards.additional. */
+export function scenarioResourceRewards(knowledge: CampaignKnowledge | undefined, scenarioId: string): readonly ScenarioResourceReward[] {
+  const document = knowledge?.campaignSection?.("scenario-rewards") ?? {};
+  const scenario = rows(document["scenarios"]).find((row) => String(row["scenario_id"] ?? "") === scenarioId);
+  return rows(scenario?.["rewards"]).flatMap((row) => row["kind"] === "resource" && (row["resource"] === "gold_crowns" || row["resource"] === "wyrdstone_fragments") ? [{ id: String(row["id"] ?? ""), resource: row["resource"], rule: String(row["rule"] ?? "") }] : []);
+}

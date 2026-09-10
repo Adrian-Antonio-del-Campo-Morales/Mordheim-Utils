@@ -11,7 +11,7 @@
  * display formatting belongs to the UI).
  */
 
-import type { IdString, OpenPayload } from "../index";
+import type { IdString, InventoryItem, OpenPayload } from "../index";
 import type { KnowledgeReader } from "./ports";
 import type {
   Battle,
@@ -40,6 +40,32 @@ export function normalizeResult(result: string): "win" | "loss" | "draw" | null 
   if (key === "loss" || key === "defeat") return "loss";
   if (key === "draw") return "draw";
   return null;
+}
+
+/** Applies normalized desktop scenario loot before the post-battle sequence starts. */
+function recordedRewards(input: RecordBattleInput, knowledge: KnowledgeReader, inventory: readonly InventoryItem[]) {
+  let gold = 0, wyrdstone = 0; let items = [...inventory]; const notes: OpenPayload[] = [];
+  const rewards = input.scenario_results?.["additional_rewards"];
+  if (!Array.isArray(rewards)) return { gold, wyrdstone, inventory: items, notes };
+  for (const value of rewards) {
+    if (!value || typeof value !== "object") continue;
+    const reward = value as OpenPayload; const quantity = Math.max(0, Math.trunc(Number(reward["quantity"] ?? 0)));
+    if (!quantity) continue;
+    if (reward["kind"] === "resource") {
+      if (reward["resource"] === "gold_crowns") gold += quantity;
+      if (reward["resource"] === "wyrdstone_fragments") wyrdstone += quantity;
+      continue;
+    }
+    if (reward["kind"] !== "item") continue;
+    const id = String(reward["item_id"] ?? ""); if (!id) continue;
+    const known = knowledge.queryKnowledge({ id: { kind: "item_id", value: id } });
+    const name = known.ok ? String(known.record.names["en"] ?? id) : String(reward["label"] ?? id);
+    const category = known.ok ? String(known.record.data["kind"] ?? "Scenario Reward") : "Scenario Reward";
+    const found = items.find((item) => item.id === id);
+    items = found ? items.map((item) => item.id === id ? { ...item, owned: item.owned + quantity, stash: item.stash + quantity } : item) : [...items, { id, name, category, owned: quantity, equipped: 0, stash: quantity, value: 0 }];
+    notes.push({ step: 2, type: "scenario_reward", description: `Scenario: +${quantity} ${name}.`, item_id: id, quantity });
+  }
+  return { gold, wyrdstone, inventory: items, notes };
 }
 
 /**
@@ -108,6 +134,7 @@ export function recordBattle(
   }
 
   const number = nextBattleNumber(document);
+  const rewards = recordedRewards(input, knowledge, campaign.inventory);
   const base = currentState(document);
   const baseRating = base?.rating ?? rating(campaign.warriors);
   const baseModels = base?.models ?? memberCount(campaign.warriors);
@@ -122,8 +149,8 @@ export function recordBattle(
     opponent: input.opponent,
     ...(input.opponent_band_id ? { opponent_band_id: input.opponent_band_id } : {}),
     result,
-    gold_delta: Math.trunc(input.gold_delta),
-    wyrdstone: Math.max(0, Math.trunc(input.wyrdstone)),
+    gold_delta: Math.trunc(input.gold_delta) + rewards.gold,
+    wyrdstone: Math.max(0, Math.trunc(input.wyrdstone)) + rewards.wyrdstone,
     xp_delta: Math.max(0, Math.trunc(input.xp_delta)),
     casualties,
     advances: 0,
@@ -162,8 +189,9 @@ export function recordBattle(
     review_open: false,
     // Desktop `record_battle` seeds the pending post-battle with the
     // battle's resource deltas so the resolution steps start from them.
-    gold_delta: Math.max(0, Math.trunc(input.gold_delta)),
-    wyrdstone_delta: Math.max(0, Math.trunc(input.wyrdstone)),
+    gold_delta: Math.max(0, Math.trunc(input.gold_delta)) + rewards.gold,
+    wyrdstone_delta: Math.max(0, Math.trunc(input.wyrdstone)) + rewards.wyrdstone,
+    ...(rewards.notes.length ? { event_log: rewards.notes } : {}),
     // Hireling upkeep follow-ups (Python `record_battle` tail).
     ...(campaign.warriors.some((w) => w.kind === "hireling" && w.upkeep_resources?.length)
       ? {
@@ -195,6 +223,7 @@ export function recordBattle(
     battles: [...campaign.battles, battle],
     post_battles: [...campaign.post_battles, postBattle],
     special_rules: specialRules,
+    inventory: rewards.inventory,
   };
   return { ok: true, state: withCampaign(document, nextCampaign) };
 }
