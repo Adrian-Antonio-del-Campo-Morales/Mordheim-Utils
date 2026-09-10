@@ -179,11 +179,36 @@ def _build_profiles(ruleset: str) -> list[dict]:
         for package in load_bands(str(collection)):
             if package.ruleset != ruleset:
                 continue
+            equipment_lists = {
+                str(equipment_list.get("id") or ""): equipment_list
+                for equipment_list in package.equipment_lists
+            }
             for profile in package.profiles:
                 entry = _row(profile, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n"))
                 entry["collection"] = str(collection)
                 entry["band_id"] = str(package.band["id"])
                 entry["can_gain_experience"] = _profile_can_gain_experience(package, profile)
+                # The desktop resolves a profile's initial purchases through
+                # its named equipment lists.  Materialise that relationship
+                # in the web artefact so UI readers can show both permitted
+                # equipment and reverse rule links without reopening YAML.
+                access: list[dict] = []
+                for list_id in profile.get("equipment_lists") or ():
+                    equipment_list = equipment_lists.get(str(list_id))
+                    if not equipment_list:
+                        continue
+                    for item in equipment_list.get("items") or ():
+                        item_id = str(item.get("item_id") or "")
+                        if not item_id:
+                            continue
+                        row = {"item_id": item_id, "list_id": str(list_id)}
+                        if isinstance(item.get("cost"), int):
+                            row["cost"] = item["cost"]
+                        access.append(row)
+                entry["equipment_access"] = sorted(
+                    access,
+                    key=lambda row: (str(row["item_id"]), str(row["list_id"])),
+                )
                 profiles.append(entry)
     return sorted(profiles, key=_sort_key)
 

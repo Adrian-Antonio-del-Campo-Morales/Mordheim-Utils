@@ -24,7 +24,7 @@ function download(filename: string, bytes: BlobPart, type: string) {
 
 type RuleCategory = "special-rules" | "conditions" | "core-rules" | "skills" | "equipment" | "spells" | "scenarios" | "injuries";
 
-function rulesRows(knowledge: ArtefactKnowledgeReader, category: RuleCategory) {
+function rulesRows(knowledge: ArtefactKnowledgeReader, category: RuleCategory): readonly Record<string, unknown>[] {
   if (category === "special-rules") return knowledge.rulesDocument("special-rules");
   if (category === "conditions") return knowledge.rulesDocument("conditions");
   if (category === "core-rules") return knowledge.rulesDocument("core-combat");
@@ -35,7 +35,9 @@ function rulesRows(knowledge: ArtefactKnowledgeReader, category: RuleCategory) {
     const lores = knowledge.campaignSection("magic")["lores"];
     return Array.isArray(lores) ? lores.flatMap((lore) => {
       const row = lore as Record<string, unknown>;
-      return Array.isArray(row["spells"]) ? row["spells"] as Record<string, unknown>[] : [];
+      return Array.isArray(row["spells"])
+        ? (row["spells"] as Record<string, unknown>[]).map((spell) => ({ ...spell, lore_id: row["id"] }))
+        : [];
     }) : [];
   }
   const tables = knowledge.campaignSection("serious-injuries")["tables"];
@@ -43,20 +45,30 @@ function rulesRows(knowledge: ArtefactKnowledgeReader, category: RuleCategory) {
 }
 
 function profileLinks(knowledge: ArtefactKnowledgeReader, category: RuleCategory, entry: Record<string, unknown>, locale: Locale) {
-  if (category !== "skills" && category !== "equipment") return [];
+  if (category !== "skills" && category !== "equipment" && category !== "special-rules" && category !== "spells") return [];
   const entryId = String(entry.id ?? entry.item_id ?? "");
   const skillCategory = String(entry.category ?? "").toLocaleLowerCase();
   const bands = new Map(knowledge.list("band").map((band) => [String(band.id), resolveName(band, locale)]));
+  const loreAssignments = knowledge.campaignSection("magic")["lore_assignments"] as Record<string, unknown> | undefined;
+  const assignedProfiles = Array.isArray(loreAssignments?.["rows"]) ? loreAssignments["rows"] as Record<string, unknown>[] : [];
+  const relationLabel = (relation: string) => locale === "es"
+    ? ({ "starting skill": "habilidad inicial", "skill table": "tabla de habilidades", "starting equipment": "equipo inicial", "permitted equipment": "equipo permitido", "package rule": "regla de banda", "spell lore": "saber mágico" }[relation] ?? relation)
+    : relation;
   return knowledge.list("profile").flatMap((profile) => {
     const access = Array.isArray(profile.skill_access) ? profile.skill_access.map((value) => String(value).toLocaleLowerCase()) : [];
     const traits = profile.combat_traits && typeof profile.combat_traits === "object" ? profile.combat_traits as Record<string, unknown> : {};
     const starting = Array.isArray(traits.starting_skills) ? traits.starting_skills.map(String) : [];
     const fixed = Array.isArray(profile.fixed_equipment) ? profile.fixed_equipment.map((value) => typeof value === "string" ? value : String((value as Record<string, unknown>).item_id ?? "")) : [];
+    const permitted = Array.isArray(profile.equipment_access) ? profile.equipment_access.map((value) => String((value as Record<string, unknown>).item_id ?? "")) : [];
+    const packageRules = Array.isArray(profile.rule_ids) ? profile.rule_ids.map(String) : [];
+    const assignedLore = assignedProfiles.some((assignment) => String(assignment.profile_id ?? "") === String(profile.id) && (assignment.band == null || String(assignment.band) === String(profile.band_id)) && String(assignment.lore ?? "") === String(entry.lore_id ?? ""));
     const relation = category === "skills"
       ? starting.includes(entryId) ? "starting skill" : skillCategory && access.includes(skillCategory) ? "skill table" : null
-      : fixed.includes(entryId) ? "equipment" : null;
+      : category === "equipment" ? fixed.includes(entryId) ? "starting equipment" : permitted.includes(entryId) ? "permitted equipment" : null
+      : category === "special-rules" ? packageRules.includes(entryId) ? "package rule" : null
+      : assignedLore ? "spell lore" : null;
     if (!relation) return [];
-    return [{ band: bands.get(String(profile.band_id)) ?? String(profile.band_id), profile: resolveName(profile, locale), relation, profileId: String(profile.id) }];
+    return [{ band: bands.get(String(profile.band_id)) ?? String(profile.band_id), profile: resolveName(profile, locale), relation: relationLabel(relation), profileId: String(profile.id) }];
   }).sort((left, right) => `${left.band}:${left.profile}`.localeCompare(`${right.band}:${right.profile}`, locale));
 }
 
