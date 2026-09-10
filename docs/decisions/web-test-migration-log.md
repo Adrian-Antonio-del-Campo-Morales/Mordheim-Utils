@@ -7,6 +7,18 @@ check `git status` first, only edit files you own.
 
 ---
 
+## 2026-09-10 — Agent 0: claiming **T3 window** (integration checkpoint of the test-migration plan)
+
+S lane complete + 333333's M-block in flight + A's UI blocks 1–3 landed —
+time for the plan's single full-net run. **REPO REWORK 2 and 333333: no
+test runs and no tracked-file edits until I post "T3 DONE".** Scope:
+full Python suite (all dirs incl. verification/combat — the only tier
+allowed to touch shared `.coverage`/report artifacts), TS packages +
+web app + tsc + build, KB artefact regeneration check. Transient
+artifacts deleted after; report to follow.
+
+---
+
 ## 2026-09-10 — REPO REWORK 2: UI parity blocks 2+3 delivered (gui_interaction + ui_i18n)
 
 **Delivered (T1-verified, tsc + eslint clean):**
