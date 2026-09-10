@@ -67,6 +67,13 @@ function equipmentViolation(document: CampaignDocument, knowledge: CampaignAppDe
   if(itemId==="reptile_venom"&&!(warrior.kind==="henchman"&&identity.includes("skink")))return "Reptile Venom may only be assigned to Skink Henchmen.";
   if(["familiar","arcane_familiar"].includes(itemId)&&!identity.includes("spellcaster"))return "A Familiar may only be assigned to a spellcaster.";
   if(itemId==="book_of_the_dead"&&!/(vampire|necromancer)/.test(identity))return "The Book of the Dead may only be assigned to Vampires or Necromancers.";
+  if(itemId==="nightmare"&&!/(vampire|necromancer|grave guard)/.test(identity))return "A Nightmare may only be assigned to Vampires, Necromancers or Grave Guards.";
+  if(itemId==="temple_dog"&&!/(dragon monk|sister|priest)/.test(identity))return "A Temple Dog may only be assigned to Dragon Monks, Sisters of Sigmar or Priests.";
+  if(["barding","bretonnian_barding"].includes(itemId)&&!warrior.equipment.some((row)=>/(warhorse|horse)/i.test(`${row.name} ${row.item_id}`)))return "Barding requires this warrior to have a Warhorse.";
+  if(["dark_elf_blade_weapon_upgrade","poisoned_weapon"].includes(itemId)&&!warrior.equipment.some((row)=>(knowledge as typeof knowledge & {weaponHandsFor?(id:string):number|null}).weaponHandsFor?.(row.base_item_id??row.item_id)!==null))return "This upgrade requires an equipped weapon.";
+  if(itemId==="sword_heroes_only"&&warrior.kind!=="hero")return "This Sword variant may only be assigned to Heroes.";
+  const restricted:Record<string,readonly string[]>={beastlash:["beastmaster"],broadsword:["chapel guard knight"],serpent_staff:["liche priest"],shortsword:["chapel guard knight"],nehekharan_javelin:["tomb lord"],swivel_gun:["gunner"],kite_shield:["chapel guard knight"],asp_arrows:["tomb lord"],conch_shell_horn:["piranha warrior"],elven_runestones:["weaver"],parrot:["captain","mate"]};
+  if(restricted[itemId]&&!restricted[itemId].some((term)=>identity.includes(term)))return `${item.record.names["en"]??itemId} cannot be assigned to this warrior.`;
   const carried=warrior.equipment.filter((row)=>row.acquisition!=="fixed"), models=warrior.quantity??1;
   const hands=(knowledge as typeof knowledge & { weaponHandsFor?(id:string):number|null }).weaponHandsFor?.(itemId);
   const limit=warrior.equipment_limits?.["maximum_one_handed_weapons"];

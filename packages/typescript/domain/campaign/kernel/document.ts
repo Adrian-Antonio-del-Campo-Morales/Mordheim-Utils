@@ -21,6 +21,16 @@ import type {
 import { rejected } from "./rejections";
 import type { UseCaseResult } from "../index";
 
+function equipmentCost(item: { readonly quantity: number; readonly unit_cost?: number; readonly acquisition_costs?: readonly number[] }): number {
+  return item.acquisition_costs?.length === item.quantity ? item.acquisition_costs.reduce((sum, cost) => sum + cost, 0) : (item.unit_cost ?? 0) * item.quantity;
+}
+
+function stashCost(campaign: CampaignDocument["campaign"], stock: InventoryItem): number {
+  const costs = stock.acquisition_costs?.length === stock.owned ? [...stock.acquisition_costs] : Array(stock.owned).fill(stock.value ?? 0);
+  for (const warrior of campaign.warriors) for (const item of warrior.equipment) if (item.item_id === stock.id && item.transferable !== false && !(campaign.configuration.is_draft && item.acquisition === "fixed")) for (const cost of item.acquisition_costs?.length === item.quantity ? item.acquisition_costs : Array(item.quantity).fill(item.unit_cost ?? 0)) costs.splice(Math.max(0, costs.indexOf(cost)), 1);
+  return costs.slice(0, stock.stash).reduce((sum, cost) => sum + cost, 0);
+}
+
 /** Deep-frozen structural clone (open payloads travel verbatim). */
 export function cloneDocument(document: CampaignDocument): CampaignDocument {
   return structuredClone(document);
@@ -79,12 +89,12 @@ export function treasury(campaign: CampaignDocument["campaign"]): number {
     // its single `value` for equipped copies loses profile-list prices.
     const equipped = campaign.warriors.reduce(
       (total, warrior) => total + warrior.equipment.reduce(
-        (sum, item) => sum + (item.acquisition === "purchase" ? (item.unit_cost ?? 0) * item.quantity : 0),
+        (sum, item) => sum + (item.acquisition === "purchase" ? equipmentCost(item) : 0),
         0,
       ),
       0,
     );
-    const stashed = campaign.inventory.reduce((total, item) => total + item.stash * (item.value ?? 0), 0);
+    const stashed = campaign.inventory.reduce((total, item) => total + stashCost(campaign, item), 0);
     return campaign.configuration.starting_gold - recruitment - equipped - stashed;
   }
   const equipment = campaign.inventory.reduce((t, item) => t + item.owned * (item.value ?? 0), 0);

@@ -73,6 +73,8 @@ export interface EquipmentEntry {
   readonly transferable?: boolean;
   readonly special_rules?: readonly string[];
   readonly base_item_id?: IdString;
+  /** Per-copy acquisition costs (oldest first); empty = unit_cost stands in. */
+  readonly acquisition_costs?: readonly number[];
 }
 
 export interface Warrior {
@@ -124,6 +126,8 @@ export interface InventoryItem {
   readonly equipped: number;
   readonly stash: number;
   readonly value?: number;
+  /** Per-copy acquisition costs (oldest first); empty = value stands in. */
+  readonly acquisition_costs?: readonly number[];
   readonly rarity?: string | null;
   readonly special_rules?: readonly string[];
   readonly base_item_id?: IdString;
