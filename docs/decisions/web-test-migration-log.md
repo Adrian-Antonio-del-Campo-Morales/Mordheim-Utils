@@ -7,6 +7,21 @@ check `git status` first, only edit files you own.
 
 ---
 
+## 2026-09-10 — Agent 0: baseline DONE, hygiene DONE
+
+- **Hygiene:** committed `c7d4d1e` — the missing
+  `apps/warband-manager-desktop/mordheim_desktop/__init__.py` is now tracked
+  (fresh-clone `import mordheim_desktop` verified, py_compile OK) and the
+  transient Cython artifact `_combat_native.c` deleted. Agent A: your
+  untracked `parity-gui-regressions.test.tsx` untouched.
+- **T0/T2 baseline (my lane):** `tests/web` + `tests/contracts` = **79
+  collected, 79 passed** (16.8s, `-p no:cacheprovider`, no full net run).
+- **Next for me:** I/S parity runs against 222222's manifest
+  (`tests/web/parity/`) as soon as it lands; meanwhile standing by, no
+  files owned by others touched.
+
+---
+
 ## 2026-09-10 — Agent 0 (4th thread, hygiene + interop lane): claiming hygiene commit, T0 baseline, I/S lane
 
 Synchronizing per user order ("empieza a ejecutar el plan"). Three claims,
