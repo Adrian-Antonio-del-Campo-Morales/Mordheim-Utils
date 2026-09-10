@@ -198,6 +198,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const name = String(input["name"] ?? "").trim();
           const id = String(input["warrior_id"] ?? "");
           if (!name || !state.current.campaign.warriors.some((warrior) => warrior.id === id)) return error("rejected", "A valid warrior and name are required.");
+          if (state.current.campaign.warriors.some((warrior) => warrior.id !== id && warrior.name.localeCompare(name, undefined, { sensitivity: "accent" }) === 0)) return error("rejected", "Another warrior or group already uses that name.");
           return applyResult({ ok: true, state: { ...state.current, campaign: { ...state.current.campaign, warriors: state.current.campaign.warriors.map((warrior) => warrior.id === id ? { ...warrior, name } : warrior) } } });
         }
         case "composeDraft": {

@@ -359,6 +359,11 @@ export function composeDraft(
     return rejected("invalid_input", "Composition batch needs at least one row.");
   }
 
+  const bandResult = knowledge.queryKnowledge({ id: { kind: "band_id", value: campaign.identity.band_id } });
+  const bandRoster = bandResult.ok && bandResult.record.data["roster"] && typeof bandResult.record.data["roster"] === "object"
+    ? bandResult.record.data["roster"] as OpenPayload : {};
+  const rosterMembers = Array.isArray(bandRoster["members"]) ? bandRoster["members"] as OpenPayload[] : [];
+
   const itemName = makeItemName(knowledge);
   const occurrences = new Map<IdString, number>();
   for (const row of campaign.warriors) {
@@ -392,6 +397,16 @@ export function composeDraft(
         `Profile "${rowInput.profile_id}" is a ${kind} row, not ${rowInput.kind}.`,
       );
     }
+    const member = rosterMembers.find((candidate) => candidate["profile_id"] === rowInput.profile_id);
+    if (!member) return rejected("not_available", `Profile "${rowInput.profile_id}" is not available to this warband.`);
+    if (kind === "hero" && rowInput.quantity !== 1) {
+      return rejected("limit_violated", "Heroes must be recruited individually.");
+    }
+    const groupSize = member["group_size"] && typeof member["group_size"] === "object" ? member["group_size"] as OpenPayload : {};
+    const groupMaximum = groupSize["maximum"];
+    if (kind === "henchman" && typeof groupMaximum === "number" && rowInput.quantity > groupMaximum) {
+      return rejected("limit_violated", `Groups of "${rowInput.profile_id}" hold at most ${groupMaximum} models.`);
+    }
     const occurrence = (occurrences.get(rowInput.profile_id) ?? 0) + 1;
     occurrences.set(rowInput.profile_id, occurrence);
     const warrior = warriorFromProfile(profile, rowInput, itemName, occurrence);
@@ -423,6 +438,13 @@ export function composeDraft(
 
   // Limit checks on the would-be roster (Python formulas).
   const warriors = [...campaign.warriors, ...planned.map((p) => p.warrior)];
+  for (const member of rosterMembers) {
+    const profileId = typeof member["profile_id"] === "string" ? member["profile_id"] : "";
+    const maximum = member["maximum"];
+    if (!profileId || typeof maximum !== "number") continue;
+    const taken = warriors.filter((warrior) => warrior.profile_id === profileId).reduce((total, warrior) => total + (warrior.quantity ?? 1), 0);
+    if (taken > maximum) return rejected("limit_reached", `Roster limit for "${profileId}" is ${maximum} models.`);
+  }
   const memberTotal = warriors.reduce(
     (t, w) => (w.kind === "hireling" ? t : t + (w.quantity ?? 1)),
     0,
