@@ -12,12 +12,15 @@ import { DraftWorkspace } from "../draft/DraftWorkspace";
 import { PostBattleInjuries } from "../injuries/PostBattleInjuries";
 import type { CampaignDocument } from "./types";
 
-function RosterOverview({ document }: { document: CampaignDocument }) {
+function RosterOverview({ document, stateNumber, editable }: { document: CampaignDocument; stateNumber: number; editable: boolean }) {
   const app = useCampaignApp(); const [name, setName] = useState("");
   const { campaign } = document;
-  return <section aria-label="Warband overview"><dl className="campaign-metrics"><div><dt>Campaign</dt><dd>{campaign.identity.campaign_name}</dd></div><div><dt>Warband</dt><dd>{campaign.identity.warband_type}</dd></div><div><dt>Models</dt><dd>{campaign.warriors.reduce((sum, warrior) => sum + (warrior.quantity ?? 1), 0)}</dd></div><div><dt>Battles</dt><dd>{campaign.battles.length}</dd></div></dl>
-    <h3>Roster</h3><div className="warrior-grid">{campaign.warriors.map((warrior) => <article className="warrior-card" key={warrior.id}><header><div><strong>{warrior.name}</strong><span>{warrior.profile_name}</span></div><b>{warrior.experience} XP</b></header><div className="stats">{Object.entries(warrior.stats).map(([key,value]) => <span key={key}><small>{key}</small>{value}</span>)}</div><p>{warrior.equipment.map((entry) => `${entry.quantity}× ${entry.name}`).join(", ") || "No equipment"}</p>{warrior.skills.length > 0 && <p>{warrior.skills.join(", ")}</p>}</article>)}</div>
-    <form className="inline-form" onSubmit={(event) => { event.preventDefault(); if(name.trim()) void app.runAction("renameWarband", { name: name.trim() }); setName(""); }}><label>Rename warband<input value={name} onChange={(event) => setName(event.target.value)} /></label><button disabled={!name.trim()}>Apply</button></form>
+  const snapshot = campaign.states.find((state) => state.number === stateNumber);
+  const warriors = snapshot?.roster ?? (editable ? campaign.warriors : []);
+  return <section aria-label="Warband overview"><dl className="campaign-metrics"><div><dt>Campaign</dt><dd>{campaign.identity.campaign_name}</dd></div><div><dt>Warband</dt><dd>{campaign.identity.warband_type}</dd></div><div><dt>Models</dt><dd>{snapshot?.models ?? warriors.reduce((sum, warrior) => sum + (warrior.quantity ?? 1), 0)}</dd></div><div><dt>Rating</dt><dd>{snapshot?.rating ?? 0}</dd></div><div><dt>Treasury</dt><dd>{snapshot?.gold ?? 0} gc</dd></div><div><dt>Wyrdstone</dt><dd>{snapshot?.wyrdstone ?? 0}</dd></div></dl>
+    {!editable && <p role="status">Historical · read only</p>}
+    <h3>Roster</h3>{warriors.length === 0 ? <p>No roster snapshot is stored for this state.</p> : <div className="warrior-grid">{warriors.map((warrior) => <article className="warrior-card" key={warrior.id}><header><div><strong>{warrior.name}</strong><span>{warrior.profile_name}{warrior.kind !== "hero" ? ` · ${warrior.quantity ?? 1} members` : ""}</span></div><b>{warrior.experience} XP</b></header>{warrior.condition && <p className="condition">{warrior.condition}{warrior.condition_detail ? ` · ${warrior.condition_detail}` : ""}</p>}<div className="stats">{Object.entries(warrior.stats).map(([key,value]) => { const modifier=warrior.stat_modifiers?.[key] ?? 0; return <span key={key}><small>{key}</small>{value + modifier}</span>; })}</div><h4>Equipment</h4><p>{warrior.equipment.map((entry) => `${entry.quantity}× ${entry.name}`).join(", ") || "None"}</p><h4>Skills / injuries</h4><p>{[...warrior.skills, ...(warrior.special_rules ?? [])].join(", ") || "None"}</p>{warrior.games_to_miss ? <p className="condition">{warrior.absence_reason ?? "Recovery"} · misses {warrior.games_to_miss} battle(s)</p> : null}{warrior.kind === "hireling" && <p>Rating {warrior.hireling_rating ?? 0}{warrior.upkeep_resources?.length ? ` · Upkeep ${warrior.upkeep_resources.map(([resource, amount]) => `${amount} ${resource}`).join(" + ")}` : ""}</p>}</article>)}</div>}
+    {editable && <form className="inline-form" onSubmit={(event) => { event.preventDefault(); if(name.trim()) void app.runAction("renameWarband", { name: name.trim() }); setName(""); }}><label>Rename warband<input value={name} onChange={(event) => setName(event.target.value)} /></label><button disabled={!name.trim()}>Apply</button></form>}
   </section>;
 }
 
@@ -28,13 +31,15 @@ export function CampaignSlice({ knowledge, locale = "en" }: { knowledge?: Artefa
   const battleNumber = Number(selected.split(":")[1] ?? 0);
   const battle = doc.campaign.battles.find((row) => row.number === battleNumber);
   const currentState = selected === `state:${doc.campaign.current_state_number}`;
+  const selectedState = doc.campaign.states.find((state) => state.number === battleNumber);
+  const stateDocument = selectedState ? { ...doc, campaign: { ...doc.campaign, warriors: selectedState.roster ?? [], inventory: selectedState.inventory ?? [] } } : doc;
   return <section aria-label="Campaign">
     {app.error && <output className="global-error" role="alert">{app.error} <button onClick={app.clearError}>Dismiss</button></output>}
     {app.dirty && <output className="dirty" role="status">Unsaved changes</output>}
     {doc.campaign.configuration.is_draft && knowledge ? <DraftWorkspace document={doc} knowledge={knowledge} locale={locale} /> : <div className="campaign-layout">
       <TimelinePanel document={doc} onSelect={app.selectMoment} />
       <div className="moment-detail">
-        {selected.startsWith("state:") && <><RosterOverview document={doc} /><EquipmentPanel document={doc} />{currentState && <BattlePanel document={doc} knowledge={knowledge} locale={locale} />}</>}
+        {selected.startsWith("state:") && <><RosterOverview document={doc} stateNumber={battleNumber} editable={currentState} /><EquipmentPanel document={stateDocument} readOnly={!currentState} />{currentState && <BattlePanel document={doc} knowledge={knowledge} locale={locale} />}</>}
         {selected.startsWith("battle:") && <section className="page"><div className="page-title"><p>BATTLE #{battleNumber}</p><h2>{battle?.scenario ?? "Battle"}</h2></div>{battle ? <dl className="campaign-metrics"><div><dt>Opponent</dt><dd>{battle.opponent}</dd></div><div><dt>Result</dt><dd>{battle.result}</dd></div><div><dt>Gold</dt><dd>{battle.gold_delta}</dd></div><div><dt>Wyrdstone</dt><dd>{battle.wyrdstone}</dd></div></dl> : <p>Battle not found.</p>}</section>}
         {selected.startsWith("post:") && <><BattlePanel document={doc} knowledge={knowledge} locale={locale} />{knowledge && <PostBattleInjuries document={doc} knowledge={knowledge} />}<InjuriesPanel document={doc} />{knowledge && <PostBattleExperience document={doc} knowledge={knowledge} />}<HirelingsPanel document={doc} listings={knowledge} /><ReviewPanel document={doc} /></>}
       </div></div>}

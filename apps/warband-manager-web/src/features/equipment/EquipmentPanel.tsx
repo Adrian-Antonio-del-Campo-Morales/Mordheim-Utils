@@ -17,9 +17,10 @@ import type { CampaignDocument } from "../campaign/types";
 
 interface EquipmentPanelProps {
   readonly document: CampaignDocument;
+  readonly readOnly?: boolean;
 }
 
-export function EquipmentPanel({ document }: EquipmentPanelProps) {
+export function EquipmentPanel({ document, readOnly = false }: EquipmentPanelProps) {
   const app = useCampaignApp();
   const { campaign } = document;
   const [busy, setBusy] = useState(false);
@@ -55,7 +56,7 @@ export function EquipmentPanel({ document }: EquipmentPanelProps) {
             <tr>
               <th scope="col">Item</th>
               <th scope="col">Stash</th>
-              <th scope="col">Equip to</th>
+              {!readOnly && <th scope="col">Equip to</th>}
             </tr>
           </thead>
           <tbody>
@@ -63,7 +64,7 @@ export function EquipmentPanel({ document }: EquipmentPanelProps) {
               <tr key={item.id}>
                 <td>{item.name}</td>
                 <td>{item.stash}</td>
-                <td>
+                {!readOnly && <td>
                   <select
                     aria-label={`Assign ${item.name} to warrior`}
                     defaultValue=""
@@ -85,7 +86,7 @@ export function EquipmentPanel({ document }: EquipmentPanelProps) {
                       </option>
                     ))}
                   </select>
-                </td>
+                </td>}
               </tr>
             ))}
           </tbody>
@@ -103,7 +104,7 @@ export function EquipmentPanel({ document }: EquipmentPanelProps) {
               .map((entry) => (
                 <li key={`${warrior.id}:${entry.item_id}`}>
                   {warrior.name} carries {entry.quantity} × {entry.name}{" "}
-                  <button
+                  {!readOnly && <button
                     type="button"
                     disabled={busy}
                     aria-label={`Return ${entry.name} carried by ${warrior.name} to stash`}
@@ -112,7 +113,7 @@ export function EquipmentPanel({ document }: EquipmentPanelProps) {
                     }}
                   >
                     Return 1 to stash
-                  </button>
+                  </button>}
                 </li>
               )),
           )}
