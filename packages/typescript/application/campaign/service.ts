@@ -57,6 +57,22 @@ import { mercenaryVariantsForBand } from "../../domain/campaign/hire-eligibility
 
 const HISTORY_LIMIT = 50;
 
+function equipmentViolation(document: CampaignDocument, knowledge: CampaignAppDeps["knowledge"], warriorId: string, itemId: string, amount: number): string | null {
+  const warrior=document.campaign.warriors.find((row)=>row.id===warriorId); const item=knowledge.queryKnowledge({id:{kind:"item_id",value:itemId}});
+  if(!warrior||!item)return "Choose a valid warrior and item.";
+  const category=String(item.record.data["kind"]??""); const identity=[warrior.profile_name,warrior.profile_id,...warrior.skills,...(warrior.special_rules??[])].join(" ").replace(/[-_]/g," ").toLowerCase();
+  if(["close-combat-weapon","ranged-weapon"].includes(category)&&warrior.profile_id&&!warrior.profile_id.startsWith("hireling.")){const profile=knowledge.queryKnowledge({id:{kind:"profile_id",value:warrior.profile_id}});const access=profile.ok&&Array.isArray(profile.record.data["equipment_access"])?profile.record.data["equipment_access"] as Readonly<Record<string,unknown>>[]:[];if(access.length&&!access.some((row)=>row["item_id"]===itemId)&&!/weapons? (training|expert)/.test(warrior.skills.join(" ").toLowerCase()))return "This weapon is outside the warrior's equipment access.";}
+  if(itemId==="barbed_whip"&&warrior.kind!=="hero")return "Barbed Whip may only be assigned to a Marauders of Chaos Hero.";
+  if(itemId==="great_axe"&&!(warrior.kind==="hero"&&identity.includes("chosen of chaos")))return "Great Axe requires a Marauders Hero with the Chosen of Chaos skill.";
+  if(itemId==="reptile_venom"&&!(warrior.kind==="henchman"&&identity.includes("skink")))return "Reptile Venom may only be assigned to Skink Henchmen.";
+  if(["familiar","arcane_familiar"].includes(itemId)&&!identity.includes("spellcaster"))return "A Familiar may only be assigned to a spellcaster.";
+  if(itemId==="book_of_the_dead"&&!/(vampire|necromancer)/.test(identity))return "The Book of the Dead may only be assigned to Vampires or Necromancers.";
+  const carried=warrior.equipment.filter((row)=>row.acquisition!=="fixed"), models=warrior.quantity??1;
+  if(["close-combat-weapon","ranged-weapon"].includes(category)){const count=carried.filter((row)=>{const known=knowledge.queryKnowledge({id:{kind:"item_id",value:row.base_item_id??row.item_id}});return known.ok&&String(known.record.data["kind"]??"")===category;}).reduce((sum,row)=>sum+row.quantity,0);if(count+amount>2*models)return "A warrior can carry at most two weapons of this category, besides the free starting dagger.";}
+  if(!["close-combat-weapon","ranged-weapon"].includes(category)&&carried.filter((row)=>row.item_id===itemId).reduce((sum,row)=>sum+row.quantity,0)+amount>models)return `${item.record.names["en"]??itemId} is already carried; a warrior carries one of these.`;
+  return null;
+}
+
 interface ServiceState {
   current: CampaignDocument | null;
   dirty: boolean;
@@ -403,9 +419,12 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const carriedEntries=warrior.equipment.filter((row)=>row.item_id===itemId&&row.acquisition!=="fixed"), carried=carriedEntries.reduce((total,row)=>total+row.quantity,0), carriedPerModel=carriedEntries.some((row)=>row.per_model);
           const quantity=warrior.kind!=="henchman"?Number(input["quantity"]):direction==="equip"?Math.max(0,(warrior.quantity??1)-carried%(warrior.quantity??1)):carriedPerModel?Math.min(warrior.quantity??1,carried):1;
           if(!Number.isInteger(quantity)||quantity<=0)return error("rejected", "This group has no transferable copies of that item.");
+          if(direction==="equip"){const violation=equipmentViolation(state.current,knowledge,warriorId,itemId,quantity);if(violation)return error("rejected",violation);}
           return applyResult(useCases.assignEquipment(state.current, { warrior_id:warriorId,item_id:itemId,quantity,direction }));
         }
         case "transferEquippedItem": {
+          const targetId=String(input["target_id"]??""),itemId=String(input["item_id"]??""),target=state.current.campaign.warriors.find((row)=>row.id===targetId),amount=target?.kind==="henchman"?(target.quantity??1):1;
+          const violation=target?equipmentViolation(state.current,knowledge,targetId,itemId,amount):"Choose a valid destination.";if(violation)return error("rejected",violation);
           const result = transferEquippedItem(state.current, input as never);
           if (!result.ok) return error("rejected", result.message);
           return applyResult({ ok: true, state: result.document });
