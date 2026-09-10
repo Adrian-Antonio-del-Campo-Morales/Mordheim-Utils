@@ -21,7 +21,7 @@ export function PostBattleExperience({ document, knowledge, locale="en" }: { rea
   }).length;
 
   const t=locale==="es"?{title:"Experiencia y avances",applied:"Experiencia de batalla aplicada.",locked:"Las recompensas calculadas quedan bloqueadas hasta que actives la edición manual.",lock:"Bloquear recompensas",edit:"Editar recompensas",warrior:"Guerrero",status:"Estado",award:"EXP",absent:"Ausente",eligible:"Elegible",none:"Sin avances",injuries:"Resuelve todas las heridas graves antes de aplicar experiencia",remaining:"pendientes",apply:"Aplicar experiencia una vez",xp:"EXP para"}:{title:"Experience and advances",applied:"Battle experience applied.",locked:"Calculated awards are locked unless manual editing is enabled.",lock:"Lock awards",edit:"Edit awards",warrior:"Warrior",status:"Status",award:"XP award",absent:"Absent",eligible:"Eligible",none:"No advances",injuries:"Resolve all serious injuries before applying experience",remaining:"remaining",apply:"Apply experience once",xp:"XP for"};
-  if (post.experience_applied) return <section aria-label={t.title}><h3>02 · {t.title}</h3><p role="status">{t.applied}</p><AdvancesPanel document={document} knowledge={knowledge} /></section>;
+  if (post.experience_applied) return <section aria-label={t.title}><h3>02 · {t.title}</h3><p role="status">{t.applied}</p><AdvancesPanel document={document} knowledge={knowledge} locale={locale} /></section>;
 
   return <section aria-label={t.title}>
     <div className="section-heading"><div><h3>02 · {t.title}</h3><p>{t.locked}</p></div><button type="button" onClick={() => setEditing((value) => !value)}>{editing ? t.lock : t.edit}</button></div>
