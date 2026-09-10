@@ -118,10 +118,8 @@ function staticAllows(
 ): { allowed: boolean; conditional: boolean } {
   if (!eligibility) return { allowed: true, conditional: false };
   if (eligibility["expression"] !== undefined) {
-    // Expression-based eligibility is a dynamic rule — surfaced as
-    // conditional instead of being evaluated here (no rule engine in the
-    // port surface; payloads preserved verbatim).
-    return { allowed: false, conditional: true };
+    const expression=(value: unknown): boolean => { if (!value || typeof value !== "object") return true; const row=value as OpenPayload; if(typeof row["band_id"]==="string") return row["band_id"]===bandId; if(typeof row["group_id"]==="string") return bandGroups.has(row["group_id"]); if(Array.isArray(row["any_of"])) return row["any_of"].some(expression); if(Array.isArray(row["all_of"])) return row["all_of"].every(expression); return row["not"]!==undefined ? !expression(row["not"]) : false; };
+    return { allowed: expression(eligibility["expression"]), conditional: false };
   }
   const forbiddenGroups = new Set((eligibility.forbid_groups ?? []).map(String));
   const forbiddenBands = new Set((eligibility.forbid_band_ids ?? []).map(String));
