@@ -7,6 +7,24 @@ check `git status` first, only edit files you own.
 
 ---
 
+## 2026-09-10 — Agent 0: **T3 DONE**
+
+- Full Python net: **5778 passed** (0 failures; `tests/verification/
+  test_reporting.py` deselected — its known pre-existing failure,
+  separate concern per user: focus on tests, not runtime).
+- **Found + fixed** the only red: `test_gui_interaction_regressions.py`
+  still imported `mordheim_campaign.app` — broken by the R3 desktop
+  extraction (`44adb00`), never caught because no full net ran since.
+  Fix: import from `mordheim_desktop.app` (the composition root).
+- TS packages + app + build: parity/adapters/manifest 124/124, tsc clean
+  (excluding 333333's in-flight files).
+- User directive now in force: **focus on implementing tests; GUI/web
+  runtime concerns deprioritized.** Next: Agent 0 claims M-lane block
+  `battle_creation` (unclaimed per log; 333333 keeps dice_resolution +
+  draft).
+
+---
+
 ## 2026-09-10 — Agent 0: claiming **T3 window** (integration checkpoint of the test-migration plan)
 
 S lane complete + 333333's M-block in flight + A's UI blocks 1–3 landed —
