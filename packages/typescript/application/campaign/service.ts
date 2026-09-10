@@ -44,6 +44,7 @@ import { applyVeteranPool } from "./features/recruitment/veteran-workflow";
 import { dismissRecruit, recruitGroupMember } from "./features/recruitment/recruitment-workflow";
 import { assignDramatisSearch, assignRareSearch, buyRareSearch, hireDramatisSearch, resolveDramatisSearch, resolveRareSearch } from "./features/searches/search-workflow";
 import { resolveHirelingUpkeep } from "./features/hirelings/upkeep-workflow";
+import { finalizePostBattle } from "./features/review/finalize-post-battle-workflow";
 
 const HISTORY_LIMIT = 50;
 
@@ -323,6 +324,12 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const result = resolveHirelingUpkeep(state.current, input as never);
           if (!result.ok) return error("rejected", result.message);
           return applyResult({ ok: true, state: result.document });
+        }
+        case "finalizePostBattle": {
+          const result = finalizePostBattle(state.current);
+          if (!result.ok) return error("rejected", result.message);
+          const number = result.document.campaign.current_state_number;
+          return applyResult({ ok: true, state: { ...result.document, view: { ...result.document.view, selected_moment: `state:${number}` } } });
         }
         case "assignRareSearch": { const result=assignRareSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "assignDramatisSearch": { const result=assignDramatisSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }

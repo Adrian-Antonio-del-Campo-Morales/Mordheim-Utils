@@ -16,6 +16,7 @@
  */
 import { reviewSummary, ledgerText, rosterSummaryText } from "@app/campaign/features/review/review-exports";
 import type { CampaignDocument } from "../campaign/types";
+import { useCampaignApp } from "../campaign/useCampaignApp";
 
 interface ReviewPanelProps {
   readonly document: CampaignDocument;
@@ -34,6 +35,7 @@ function downloadText(filename: string, text: string): void {
 }
 
 export function ReviewPanel({ document, locale = "en" }: ReviewPanelProps) {
+  const app = useCampaignApp();
   const summary = reviewSummary(document);
   const baseName = (summary.warband_name || summary.campaign_name || "campaign").replace(/[^\w-]+/g, "_");
 
@@ -94,6 +96,7 @@ export function ReviewPanel({ document, locale = "en" }: ReviewPanelProps) {
           ? t.safe
           : `${t.pending}: ${pending.join("; ")}.`}
       </p>
+      {summary.post_battle_pending && <button className="primary" onClick={() => void app.runAction("finalizePostBattle", {})}>{locale === "es" ? "Confirmar siguiente estado" : "Confirm next state"}</button>}
 
       <h4>{t.exports}</h4>
       <button
