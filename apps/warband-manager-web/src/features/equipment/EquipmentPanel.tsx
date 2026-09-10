@@ -18,9 +18,10 @@ import type { CampaignDocument } from "../campaign/types";
 interface EquipmentPanelProps {
   readonly document: CampaignDocument;
   readonly readOnly?: boolean;
+  readonly locale?: "es" | "en";
 }
 
-export function EquipmentPanel({ document, readOnly = false }: EquipmentPanelProps) {
+export function EquipmentPanel({ document, readOnly = false, locale = "en" }: EquipmentPanelProps) {
   const app = useCampaignApp();
   const { campaign } = document;
   const [busy, setBusy] = useState(false);
@@ -35,10 +36,11 @@ export function EquipmentPanel({ document, readOnly = false }: EquipmentPanelPro
 
   const stashRows = campaign.inventory.filter((item) => item.stash > 0);
   const equippedRows = campaign.inventory.filter((item) => item.equipped > 0);
+  const t = locale === "es" ? { title:"Equipo",stash:"En reserva",emptyStash:"No hay nada en la reserva.",item:"Objeto",equip:"Equipar a",choose:"Elige guerrero…",equipped:"Equipado",emptyEquipped:"No hay nada equipado.",carries:"lleva",return:"Devolver 1 a la reserva" } : { title:"Equipment",stash:"In stash",emptyStash:"Nothing in the stash.",item:"Item",equip:"Equip to",choose:"Choose warrior…",equipped:"Equipped",emptyEquipped:"Nothing equipped.",carries:"carries",return:"Return 1 to stash" };
 
   return (
     <section aria-label="Equipment">
-      <h3>Equipment</h3>
+      <h3>{t.title}</h3>
 
       {localError && (
         <output role="alert" style={{ color: "crimson", display: "block" }}>
@@ -46,17 +48,17 @@ export function EquipmentPanel({ document, readOnly = false }: EquipmentPanelPro
         </output>
       )}
 
-      <h4>In stash</h4>
+      <h4>{t.stash}</h4>
       {stashRows.length === 0 ? (
-        <p>Nothing in the stash.</p>
+        <p>{t.emptyStash}</p>
       ) : (
         <table>
           <caption>Stash</caption>
           <thead>
             <tr>
-              <th scope="col">Item</th>
+              <th scope="col">{t.item}</th>
               <th scope="col">Stash</th>
-              {!readOnly && <th scope="col">Equip to</th>}
+              {!readOnly && <th scope="col">{t.equip}</th>}
             </tr>
           </thead>
           <tbody>
@@ -78,7 +80,7 @@ export function EquipmentPanel({ document, readOnly = false }: EquipmentPanelPro
                     }}
                   >
                     <option value="" disabled>
-                      Choose warrior…
+                      {t.choose}
                     </option>
                     {campaign.warriors.map((warrior) => (
                       <option key={warrior.id} value={warrior.id}>
@@ -93,9 +95,9 @@ export function EquipmentPanel({ document, readOnly = false }: EquipmentPanelPro
         </table>
       )}
 
-      <h4>Equipped</h4>
+      <h4>{t.equipped}</h4>
       {equippedRows.length === 0 ? (
-        <p>Nothing equipped.</p>
+        <p>{t.emptyEquipped}</p>
       ) : (
         <ul>
           {campaign.warriors.flatMap((warrior) =>
@@ -103,7 +105,7 @@ export function EquipmentPanel({ document, readOnly = false }: EquipmentPanelPro
               .filter((entry) => entry.acquisition !== "fixed")
               .map((entry) => (
                 <li key={`${warrior.id}:${entry.item_id}`}>
-                  {warrior.name} carries {entry.quantity} × {entry.name}{" "}
+                  {warrior.name} {t.carries} {entry.quantity} × {entry.name}{" "}
                   {!readOnly && <button
                     type="button"
                     disabled={busy}
@@ -112,7 +114,7 @@ export function EquipmentPanel({ document, readOnly = false }: EquipmentPanelPro
                       void assign(warrior.id, entry.item_id, 1, "stash");
                     }}
                   >
-                    Return 1 to stash
+                    {t.return}
                   </button>}
                 </li>
               )),
