@@ -14,9 +14,13 @@ import { useState } from "react";
 import { useCampaignApp } from "../campaign/useCampaignApp";
 import type { CampaignDocument } from "../campaign/types";
 import { injuryOverview } from "@app/campaign/features/injuries/injuries-workflow";
+import { injuryFollowUpDice } from "@app/campaign/features/injuries/injury-followup-workflow";
+import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import { DiceResolver } from "../dice/DiceResolver";
 
 interface InjuriesPanelProps {
   readonly document: CampaignDocument;
+  readonly knowledge?: ArtefactKnowledgeReader;
 }
 
 export function InjuriesPanel({ document }: InjuriesPanelProps) {
@@ -91,6 +95,8 @@ export function InjuriesPanel({ document }: InjuriesPanelProps) {
                       if(type==="eye_injury")return <span key={id}>Choose eye: <button disabled={busy} onClick={()=>run("resolveEyeInjury",{follow_up_id:id,eye:"left"})}>Left</button><button disabled={busy} onClick={()=>run("resolveEyeInjury",{follow_up_id:id,eye:"right"})}>Right</button></span>;
                       if(type==="relationship")return <span key={id}><input aria-label={`Hatred target ${id}`} value={targets[id]??""} onChange={(event)=>setTargets((current)=>({...current,[id]:event.target.value}))}/><button disabled={busy||!(targets[id]??"").trim()} onClick={()=>run("resolveHatred",{follow_up_id:id,target:targets[id]})}>Set hatred</button></span>;
                       if(type==="prisoner")return <span key={id}><input aria-label={`Ransom ${id}`} type="number" min="0" value={ransoms[id]??0} onChange={(event)=>setRansoms((current)=>({...current,[id]:Math.max(0,Math.trunc(event.target.valueAsNumber||0))}))}/><button disabled={busy} onClick={()=>run("resolvePrisoner",{follow_up_id:id,resolution:"ransom",ransom:ransoms[id]??0})}>Ransom</button><button disabled={busy} onClick={()=>run("resolvePrisoner",{follow_up_id:id,resolution:"exchange"})}>Exchange</button><button disabled={busy} onClick={()=>run("resolvePrisoner",{follow_up_id:id,resolution:"lost",disposition:"other"})}>Lost</button></span>;
+                      const dice=knowledge&&injuryFollowUpDice(knowledge,followUp as Record<string,unknown>);
+                      if(dice)return <DiceResolver count={dice[0]} sides={dice[1]} label="Resolve injury follow-up" onResolve={(rolls)=>void run("resolveInjuryTableFollowUp",{follow_up_id:id,roll:rolls.reduce((total,value)=>total+value,0)})}/>;
                       return (
                         <button
                           key={id}

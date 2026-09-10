@@ -50,6 +50,7 @@ import { setManualSkill } from "./features/advances/manual-skill-workflow";
 import { addManualStashItem, correctResource } from "./features/economy/manual-corrections-workflow";
 import { resolveEyeInjury, resolveHatred, resolvePrisoner } from "./features/injuries/injury-decisions-workflow";
 import { resolveSoldToPits } from "./features/injuries/sold-to-pits-workflow";
+import { resolveInjuryTableFollowUp } from "./features/injuries/injury-followup-workflow";
 import { resolveScenarioEncampment, resolveScenarioSpellReward } from "./features/exploration/scenario-followups-workflow";
 import { acknowledgeFollowUp } from "./features/review/follow-up-acknowledgement-workflow";
 
@@ -222,6 +223,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         case "resolveHatred": { const result=resolveHatred(state.current,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "resolvePrisoner": { const result=resolvePrisoner(state.current,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "resolveSoldToPits": { const result=resolveSoldToPits(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
+        case "resolveInjuryTableFollowUp": { const result=resolveInjuryTableFollowUp(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "resolveScenarioSpellReward": { const result=resolveScenarioSpellReward(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "resolveScenarioEncampment": { const result=resolveScenarioEncampment(state.current,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "acknowledgeFollowUp": { const result=acknowledgeFollowUp(state.current,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
