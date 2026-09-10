@@ -65,8 +65,25 @@ PDF_REASON = (
     "export semantics are covered by the U/A rows of the review flow"
 )
 
-# tests/ui files are all desktop Tkinter UI behaviour → U
+# tests/ui files are all desktop Tkinter UI behaviour → U, except the
+# Combat Lab / Tkinter-only files with no web equivalent (correction
+# requested by REPO REWORK 2 in the coordination log, per plan §Alcance).
 UI_DISPOSITION = ("U", "desktop-ui", "REPO REWORK 2")
+UI_EXCLUSIONS: dict[str, tuple[str, str, str]] = {
+    name: ("X", "combat-lab-or-tkinter-only", "nobody")
+    for name in (
+        "test_execution.py",        # imports mordheim_combat_lab
+        "test_motta.py",            # imports mordheim_combat
+        "test_catalogue.py",        # imports mordheim_core
+        "test_workbooks.py",        # Combat Lab workbooks
+        "test_free_selection.py",   # Combat Lab free selection
+        "test_improvements.py",     # Combat Lab improvements
+        "test_preferences.py",      # Tkinter preferences persistence
+        "test_app_preferences.py",  # Tkinter app preferences
+        "test_no_untranslated_literals.py",  # Tkinter STRINGS scan
+    )
+}
+UI_EXCLUSION_REASON = "Combat Lab / Tkinter-only, no web equivalent (plan §Alcance exclusion)"
 
 
 def _family(file: str) -> str:
@@ -115,8 +132,13 @@ def build_rows() -> list[dict]:
     for file, test in collect_desktop_tests():
         basename = Path(file).name
         if file.startswith("tests/ui/"):
-            disposition, category, owner = UI_DISPOSITION
-            reason = None
+            exclusion = UI_EXCLUSIONS.get(basename)
+            if exclusion is not None:
+                disposition, category, owner = exclusion
+                reason = UI_EXCLUSION_REASON
+            else:
+                disposition, category, owner = UI_DISPOSITION
+                reason = None
         else:
             rule = FAMILY_RULES.get(basename)
             if rule is None:
