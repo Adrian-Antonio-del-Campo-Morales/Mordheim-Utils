@@ -360,6 +360,11 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     return queries.map((query) => this.queryKnowledge(query));
   }
 
+  /** Catalogue rows, including scoped profiles once each. */
+  list(kind: KnowledgeKind): readonly ArtefactRow[] {
+    return [...new Set(this.mapFor(kind).values())];
+  }
+
   // ------------------------------------------------------------------
   // P6.7 listings (additive, not part of the frozen KnowledgeReader port).
   // Offers/collections live in the artefact's `campaign` section as raw

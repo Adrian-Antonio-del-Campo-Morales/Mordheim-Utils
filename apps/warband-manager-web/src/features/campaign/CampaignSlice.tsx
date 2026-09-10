@@ -4,7 +4,7 @@
  * Navigation and full Campaign Manager views arrive with P6.x.
  */
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import { useCampaignApp } from "./useCampaignApp";
 import { TimelinePanel } from "../timeline/TimelinePanel";
@@ -14,10 +14,11 @@ import { HirelingsPanel } from "../hirelings/HirelingsPanel";
 import { BattlePanel } from "../battle/BattlePanel";
 import { InjuriesPanel } from "../injuries/InjuriesPanel";
 import { ReviewPanel } from "../review/ReviewPanel";
+import { DraftWorkspace } from "../draft/DraftWorkspace";
+import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 
-export function CampaignSlice() {
+export function CampaignSlice({ knowledge, locale = "en" }: { knowledge?: ArtefactKnowledgeReader; locale?: "es" | "en" }) {
   const app = useCampaignApp();
-  const fileInput = useRef<HTMLInputElement>(null);
   // P6.4: the slice mirrors service state into local state so the battle
   // panel's document updates propagate (same pattern as TimelinePanel).
   const [warbandName, setWarbandName] = useState<string | null>(null);
@@ -29,8 +30,6 @@ export function CampaignSlice() {
 
   return (
     <section aria-label="Campaign">
-      <h1>Mordheim Warband Manager</h1>
-
       {/* P5.2 acceptance: the real KB artefact loads once at startup. */}
       {app.kbLoading && <p role="status">Loading knowledge base…</p>}
       {app.kbError && (
@@ -38,21 +37,6 @@ export function CampaignSlice() {
           {app.kbError}
         </output>
       )}
-
-      <div>
-        <label htmlFor="campaign-file">Load a .mordheim campaign file</label>
-        <input
-          id="campaign-file"
-          ref={fileInput}
-          type="file"
-          accept=".mordheim,application/json"
-          onChange={(event) => {
-            const file = event.target.files?.[0];
-            if (file) void app.importFile(file);
-            event.target.value = "";
-          }}
-        />
-      </div>
 
       {app.error && (
         <output role="alert" style={{ color: "crimson", display: "block" }}>
@@ -83,6 +67,10 @@ export function CampaignSlice() {
         <>
           <h2>{identity.warband_name}</h2>
 
+          {doc.campaign.configuration.is_draft && knowledge ? (
+            <DraftWorkspace document={doc} knowledge={knowledge} locale={locale} />
+          ) : <>
+
           {/* P6.1: timeline navigation beside the state display. */}
           <TimelinePanel document={doc} onSelect={(moment) => app.selectMoment(moment)} />
 
@@ -102,6 +90,8 @@ export function CampaignSlice() {
           {!doc.campaign.configuration.is_draft && (
             <BattlePanel
               document={doc}
+              knowledge={knowledge}
+              locale={locale}
               onDocument={(updated) => {
                 /* The service snapshot is replaced through the app hook; the
                    panel holds its own copy so both stay consistent. */
@@ -177,6 +167,8 @@ export function CampaignSlice() {
 
           {/* P6.8: review before export + auxiliary text exports. */}
           <ReviewPanel document={doc} />
+
+          </>}
 
           <button type="button" onClick={() => void app.exportFile()}>
             Export .mordheim
