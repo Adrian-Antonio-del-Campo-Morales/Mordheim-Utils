@@ -73,6 +73,20 @@ export function rating(warriors: readonly Warrior[]): number {
 /** Treasury: starting gold minus recruitment and equipment cost. */
 export function treasury(campaign: CampaignDocument["campaign"]): number {
   const recruitment = campaign.warriors.reduce((t, w) => t + w.cost * (w.quantity ?? 1), 0);
+  if (campaign.configuration.is_draft) {
+    // Desktop drafts retain the actual acquisition cost on each equipped
+    // purchase.  The inventory row is only an ownership counter, so using
+    // its single `value` for equipped copies loses profile-list prices.
+    const equipped = campaign.warriors.reduce(
+      (total, warrior) => total + warrior.equipment.reduce(
+        (sum, item) => sum + (item.acquisition === "purchase" ? (item.unit_cost ?? 0) * item.quantity : 0),
+        0,
+      ),
+      0,
+    );
+    const stashed = campaign.inventory.reduce((total, item) => total + item.stash * (item.value ?? 0), 0);
+    return campaign.configuration.starting_gold - recruitment - equipped - stashed;
+  }
   const equipment = campaign.inventory.reduce((t, item) => t + item.owned * (item.value ?? 0), 0);
   return campaign.configuration.starting_gold - recruitment - equipment;
 }
