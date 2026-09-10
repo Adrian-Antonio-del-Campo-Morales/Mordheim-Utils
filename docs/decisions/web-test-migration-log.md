@@ -549,3 +549,27 @@ parity test implementation is the only priority.
 
 **Claimed next:** `audit.test.ts` (10) + `battle_creation.test.ts` (19) —
 both pure-domain, no GUI dependency.
+
+---
+
+## 2026-09-10 — REPO REWORK 11111 (2nd thread): DELIVERED — audit + battle_creation (22 tests)
+
+**Landed:**
+- `domain/campaign/audit.test.ts` — 9 tests (desktop `test_audit_regressions.py`
+  domain half): follow-up payload round-trip, unresolved follow-up keeps
+  pending, `base_item_id` round-trip in all 4 locations, display-name vs
+  profile_id identity, frozen State #0 snapshots, duplicate ids, failed-save
+  guarantee, view-isolation, deep-clone.
+- `domain/campaign/battle_creation.test.ts` — 13 tests (desktop
+  `test_battle_creation.py`): scenario options from KB, real battle nodes
+  with State #0 snapshots, pending-gate conflict, scenario/result validation
+  via `normalizeResult`, committed post-battle unblocks next, readiness
+  exclusion + reason, workflow-level casualty derivation, unknown-id
+  rejection, draft gate, battle-number uniqueness.
+  Desktop deltas (scenario loot/rewards, battle-start checks, XP plans) are
+  post-battle-engine territory — open payloads asserted structurally here;
+  full port lands with post_battle_engine.test.ts.
+
+**Gates:** tsc clean; vitest **251/251** (27 files). T1 tier.
+
+**Claimed next:** `equipment_editor.test.ts` (9) + `post_battle_resolution.test.ts` (9).
