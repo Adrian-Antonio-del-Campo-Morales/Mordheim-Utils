@@ -52,6 +52,11 @@ export interface ExportPayload {
  * implementation; the UI only sees results and `dirty` state.
  */
 export interface CampaignAppService {
+  createCampaign(input: { readonly band_id: string; readonly campaign_name: string; readonly warband_name: string }): Promise<AppResult>;
+  canUndo(): boolean;
+  subscribe(listener: () => void): () => void;
+  prepareExport(): Promise<AppResult & { payload?: ExportPayload }>;
+  markExported(document: CampaignDocument): void;
   /** Import a campaign file; rejects unconfirmed replacement. */
   importCampaign(request: ImportRequest): Promise<AppResult>;
 

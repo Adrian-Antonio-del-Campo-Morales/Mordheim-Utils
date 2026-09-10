@@ -7,7 +7,8 @@
  * out through a Blob download on explicit user action.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, createElement, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 
 import type {
   AppError,
@@ -17,6 +18,12 @@ import type {
   MomentSelection,
 } from "./types";
 import { createDefaultDeps, createDefaultDepsAsync } from "./default-deps";
+
+const CampaignServiceContext = createContext<CampaignAppService | null>(null);
+
+export function CampaignAppProvider({ service, children }: { service: CampaignAppService; children: ReactNode }) {
+  return createElement(CampaignServiceContext.Provider, { value: service }, children);
+}
 
 export interface CampaignAppView {
   /** Current document, or null before the first import. */
@@ -74,6 +81,8 @@ function messageOf(err: AppError): string {
 }
 
 export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
+  const sharedService = useContext(CampaignServiceContext);
+  service ??= sharedService ?? undefined;
   // P5.2 acceptance: when no service is injected, start on the synchronous
   // fake-composed service (tests and first paint) and upgrade to the real
   // KB reader once the artefact fetch resolves. A load failure surfaces
@@ -106,10 +115,15 @@ export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
     };
   }, [service]);
   const app = upgraded ?? fallback;
-  const [document, setDocument] = useState<CampaignDocument | null>(null);
+  const [document, setDocument] = useState<CampaignDocument | null>(() => app.current());
   const [error, setError] = useState<string | null>(null);
-  const [dirty, setDirty] = useState(false);
+  const [dirty, setDirty] = useState(() => app.isDirty());
   const pendingFile = useRef<File | null>(null);
+
+  useEffect(() => app.subscribe?.(() => {
+    setDocument(app.current());
+    setDirty(app.isDirty());
+  }), [app]);
 
   const loadText = useCallback(
     async (text: string, confirm: boolean) => {

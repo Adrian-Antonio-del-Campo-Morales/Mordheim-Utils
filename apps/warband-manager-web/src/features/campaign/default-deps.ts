@@ -32,6 +32,10 @@ function filePort(): CampaignFilePort {
   return new CampaignFileV4Adapter();
 }
 
+export function createService(knowledge: KnowledgeReader): CampaignAppService {
+  return createCampaignAppService({ files: filePort(), knowledge });
+}
+
 /**
  * Production composition: real file port + real KB reader fetched from the
  * static artefact. Rejects with `KnowledgeReaderError` on network, HTTP,
@@ -41,11 +45,17 @@ export async function createDefaultDepsAsync(
   url: string = KNOWLEDGE_ARTEFACT_URL,
 ): Promise<CampaignAppService> {
   const knowledge = await ArtefactKnowledgeReader.fromUrl(url);
-  return createCampaignAppService({ files: filePort(), knowledge });
+  return createService(knowledge);
 }
 
 /** Synchronous fallback (tests; pre-swap render). Fake reader, real files. */
 export function createDefaultDeps(): CampaignAppService {
   const knowledge: KnowledgeReader = new FakeKnowledgeReader();
-  return createCampaignAppService({ files: filePort(), knowledge });
+  return createService(knowledge);
+}
+
+export async function loadKnowledge(
+  url: string = KNOWLEDGE_ARTEFACT_URL,
+): Promise<ArtefactKnowledgeReader> {
+  return ArtefactKnowledgeReader.fromUrl(url);
 }
