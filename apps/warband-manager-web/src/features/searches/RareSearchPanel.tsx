@@ -15,6 +15,13 @@ function RarePurchase({ heroId, offer }: { heroId: string; offer: ReturnType<typ
   return <button className="primary" disabled={resolved === null} onClick={() => void app.runAction("buyRareSearch", { hero_id: heroId, unit_price: resolved })}>Buy for {resolved} gc</button>;
 }
 
+function DramatisHire({ heroId, offer }: { heroId: string; offer: ReturnType<typeof dramatisOffers>[number] }) {
+  const app = useCampaignApp();
+  const label = (resources: typeof offer.fee_resources) => resources.map(([resource, amount]) => `${amount} ${resource === "gold_crowns" ? "gc" : resource === "wyrdstone_fragments" ? "wyrdstone shard(s)" : resource === "treasures" ? "treasure(s)" : "campaign point(s)"}`).join(" + ");
+  if (offer.fee_resources.length === 0) return <p role="status">This Dramatis Persona declares no payable hiring fee.</p>;
+  return <button className="primary" onClick={() => void app.runAction("hireDramatisSearch", { hero_id: heroId })}>Hire for {label(offer.fee_resources)}{offer.upkeep_resources.length ? ` · upkeep ${label(offer.upkeep_resources)}` : ""}</button>;
+}
+
 export function RareSearchPanel({ document, knowledge }: { readonly document: CampaignDocument; readonly knowledge: ArtefactKnowledgeReader }) {
   const app = useCampaignApp();
   const post = document.campaign.post_battles.find((row) => !row.complete);
@@ -46,7 +53,7 @@ export function RareSearchPanel({ document, knowledge }: { readonly document: Ca
         {search && !search["dice"] && search["kind"] === "rare" && <DiceResolver count={2} sides={6} label={`${rareOffer?.name ?? "Rare item"} search`} onResolve={(dice) => void app.runAction("resolveRareSearch", { hero_id: hero.id, dice })} />}
         {search && !search["dice"] && search["kind"] === "dramatis" && <DiceResolver count={1} sides={6} label={`${dramatisOffer?.name ?? "Dramatis Persona"} search`} onResolve={(dice) => void app.runAction("resolveDramatisSearch", { hero_id: hero.id, die: dice[0] })} />}
         {Boolean(search?.["success"] && !search?.["used"] && rareOffer) && rareOffer && <RarePurchase heroId={hero.id} offer={rareOffer} />}
-        {Boolean(search?.["success"] && !search?.["used"] && dramatisOffer) && dramatisOffer && (dramatisOffer.fee === null ? <p role="status">This hiring fee needs a desktop rule not yet represented in web.</p> : <button className="primary" onClick={() => void app.runAction("hireDramatisSearch", { hero_id: hero.id })}>Hire for {dramatisOffer.fee} gc{dramatisOffer.upkeep > 0 ? ` · upkeep ${dramatisOffer.upkeep} gc` : ""}</button>)}
+        {Boolean(search?.["success"] && !search?.["used"] && dramatisOffer) && dramatisOffer && <DramatisHire heroId={hero.id} offer={dramatisOffer} />}
       </article>;
     })}
   </section>;
