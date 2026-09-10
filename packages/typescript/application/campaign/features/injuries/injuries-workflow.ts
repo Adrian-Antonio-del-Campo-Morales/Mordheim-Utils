@@ -46,6 +46,7 @@ export type InjuriesWorkflowResult =
 /** A serious-injury outcome as the UI's roll form produces it. */
 export interface InjuryOutcomeInput {
   readonly warrior_id: IdString;
+  readonly battle_number?: number;
   /** Stable KB id of the rolled result (e.g. `smashed_hand`). */
   readonly result_id: string;
   /** Volatile display text of the result. */
@@ -181,6 +182,7 @@ export function applyInjuryOutcome(
     result: input.result,
     effects: [...effects],
     applied_at_step: "injuries",
+    ...(input.battle_number !== undefined ? { battle_number: input.battle_number } : {}),
   };
   const nextWarrior: Warrior = {
     ...warrior,
