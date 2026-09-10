@@ -64,7 +64,12 @@ export type InjuryEffect =
   | { readonly kind: "miss_games"; readonly value: number }
   | { readonly kind: "add_condition"; readonly condition_id: string }
   | { readonly kind: "stat_modifier"; readonly stat: string; readonly value: number }
-  | { readonly kind: "lost_eye"; readonly side: "left" | "right" };
+  | { readonly kind: "lost_eye"; readonly side: "left" | "right" }
+  | { readonly kind: "remove_warrior" }
+  | { readonly kind: "discard_equipment" }
+  | { readonly kind: "grant_experience"; readonly value: number }
+  | { readonly kind: "battle_start_check"; readonly check: OpenPayload }
+  | { readonly kind: "follow_up"; readonly type: string; readonly payload?: OpenPayload };
 
 /** Read-model row: one warrior's injury & recovery status. */
 export interface InjuryRow {
@@ -137,6 +142,9 @@ export function applyInjuryOutcome(
   if (!warrior) {
     return { ok: false, reason: "not_found", message: `Unknown warrior id: ${input.warrior_id}.` };
   }
+  if (input.battle_number !== undefined && (warrior.injury_records ?? []).some((record) => Number(record["battle_number"]) === input.battle_number)) {
+    return { ok: false, reason: "conflict", message: `${warrior.name} already has a serious-injury result for this battle.` };
+  }
   const effects = [...(input.effects ?? []), ...(input.extra_effects ?? [])];
   let gamesToMiss = warrior.games_to_miss ?? 0;
   let absenceReason = warrior.absence_reason ?? null;
@@ -145,6 +153,9 @@ export function applyInjuryOutcome(
   const statModifiers: Record<string, number> = { ...(warrior.stat_modifiers ?? {}) };
   const lostEyes = [...(warrior.lost_eyes ?? [])];
   const uninterpreted: OpenPayload[] = [];
+  const followUps: OpenPayload[] = [];
+  let experience=warrior.experience, removeWarrior=false, discardEquipment=false;
+  let battleChecks=[...(warrior.battle_start_checks??[])];
 
   for (const effect of effects) {
     const kind = (effect as { kind?: string }).kind;
@@ -171,11 +182,22 @@ export function applyInjuryOutcome(
       statModifiers[stat] = (statModifiers[stat] ?? 0) + value;
     } else if (kind === "lost_eye") {
       lostEyes.push(String((effect as { side?: unknown }).side ?? "left"));
+    } else if (kind === "remove_warrior") {
+      removeWarrior=true;
+    } else if (kind === "discard_equipment") {
+      discardEquipment=true;
+    } else if (kind === "grant_experience") {
+      const value=Number((effect as {value?:unknown}).value??0); if(!Number.isInteger(value)||value<0)return{ok:false,reason:"invalid_input",message:"grant_experience needs a non-negative integer."}; experience+=value;
+    } else if (kind === "battle_start_check") {
+      const check=(effect as {check?:OpenPayload}).check; if(!check)return{ok:false,reason:"invalid_input",message:"battle_start_check needs KB check data."}; battleChecks=[...battleChecks,check];
+    } else if (kind === "follow_up") {
+      const item=effect as {type?:unknown;payload?:OpenPayload}; if(typeof item.type!=="string"||!item.type)return{ok:false,reason:"invalid_input",message:"follow_up needs a type."}; followUps.push({id:`${item.type}:${warrior.id}:${input.result_id}`,step:"injuries",type:item.type,warrior_id:warrior.id,result_id:input.result_id,...(item.payload??{})});
     } else {
       // Open-payload policy: preserve what this port does not interpret.
       uninterpreted.push(effect);
     }
   }
+  if(input.result_id.includes("blinded-in-one-eye"))followUps.push({id:`eye_injury:${warrior.id}:${input.result_id}`,step:"injuries",type:"eye_injury",warrior_id:warrior.id,result_id:input.result_id});
 
   const record: OpenPayload = {
     result_id: input.result_id,
@@ -192,14 +214,21 @@ export function applyInjuryOutcome(
     ...(conditionDetail !== null ? { condition_detail: conditionDetail } : {}),
     ...(Object.keys(statModifiers).length > 0 ? { stat_modifiers: statModifiers } : {}),
     ...(lostEyes.length > 0 ? { lost_eyes: lostEyes } : {}),
+    ...(experience!==warrior.experience?{experience}:{}),
+    ...(battleChecks.length?{battle_start_checks:battleChecks}:{}),
     injury_records: [...(warrior.injury_records ?? []), record],
   };
+  const lost=new Map<string,number>(); if((removeWarrior||discardEquipment))for(const item of warrior.equipment)if(item.transferable!==false)lost.set(item.item_id,(lost.get(item.item_id)??0)+item.quantity);
+  const inventory=document.campaign.inventory.map((item)=>{const quantity=lost.get(item.id)??0;return quantity?{...item,owned:Math.max(0,item.owned-quantity),equipped:Math.max(0,item.equipped-quantity),stash:Math.max(0,item.stash-quantity)}:item;}).filter((item)=>item.owned>0);
   let campaign = {
     ...document.campaign,
-    warriors: document.campaign.warriors.map((w) => (w.id === input.warrior_id ? nextWarrior : w)),
+    inventory,
+    warriors: removeWarrior?document.campaign.warriors.filter((w)=>w.id!==input.warrior_id):document.campaign.warriors.map((w) => (w.id === input.warrior_id ? {...nextWarrior,equipment:discardEquipment?nextWarrior.equipment.filter((item)=>item.transferable===false):nextWarrior.equipment} : w)),
   };
   let nextDocument: CampaignDocument = withCampaign(document, campaign);
 
+  if(removeWarrior) nextDocument=withCampaign(nextDocument,{...nextDocument.campaign,post_battles:nextDocument.campaign.post_battles.map((post)=>post.battle_number!==input.battle_number?post:{...post,pending_advances:(post.pending_advances??[]).filter((row)=>row["warrior_id"]!==warrior.id||row["committed"]),pending_follow_ups:(post.pending_follow_ups??[]).filter((row)=>row["warrior_id"]!==warrior.id),equipment_obligations:(post.equipment_obligations??[]).filter((row)=>row["warrior_id"]!==warrior.id),searches:Object.fromEntries(Object.entries(post.searches??{}).filter(([id])=>id!==warrior.id)}})});
+  if(followUps.length){const pending=pendingPostBattle(nextDocument);if(!pending)return{ok:false,reason:"conflict",message:"There is no pending post-battle for this injury follow-up."};nextDocument=withCampaign(nextDocument,{...nextDocument.campaign,post_battles:nextDocument.campaign.post_battles.map((post)=>post===pending?{...post,pending_follow_ups:[...(post.pending_follow_ups??[]),...followUps]}:post)});}
   if (input.follow_up || uninterpreted.length > 0) {
     const parked = recordFollowUp(nextDocument, {
       warrior_id: input.warrior_id,

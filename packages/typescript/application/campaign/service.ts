@@ -372,8 +372,19 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         case "buyRareSearch": { const result=buyRareSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "upgradeRareSearch": { const result=upgradeRareSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "hireDramatisSearch": { const result=hireDramatisSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
-        case "assignEquipment":
-          return applyResult(useCases.assignEquipment(state.current, input as never));
+        case "assignEquipment": {
+          const warriorId=String(input["warrior_id"]??""), itemId=String(input["item_id"]??""), direction=input["direction"];
+          const warrior=state.current.campaign.warriors.find((row)=>row.id===warriorId);
+          if(!warrior||!itemId||(direction!=="equip"&&direction!=="stash")) return error("rejected", "Choose a valid warrior, item and equipment move.");
+          const trading=(knowledge as typeof knowledge & { campaignSection?(section:string):Readonly<Record<string,unknown>> }).campaignSection?.("trading-post");
+          const tradingEntry=(Array.isArray(trading?.["items"])?trading["items"] as Readonly<Record<string,unknown>>[]:[]).find((row)=>row["item_id"]===itemId);
+          const heroesOnly=(Array.isArray(tradingEntry?.["restrictions"])?tradingEntry["restrictions"] as Readonly<Record<string,unknown>>[]:[]).some((row)=>row["type"]==="heroes_only");
+          if(direction==="equip"&&heroesOnly&&warrior.kind!=="hero") return error("rejected", "This item may only be assigned to Heroes.");
+          const carried=warrior.equipment.filter((row)=>row.item_id===itemId&&row.acquisition!=="fixed").reduce((total,row)=>total+row.quantity,0);
+          const quantity=warrior.kind!=="henchman"?Number(input["quantity"]):direction==="equip"?Math.max(0,(warrior.quantity??1)-carried%(warrior.quantity??1)):carried;
+          if(!Number.isInteger(quantity)||quantity<=0)return error("rejected", "This group has no transferable copies of that item.");
+          return applyResult(useCases.assignEquipment(state.current, { warrior_id:warriorId,item_id:itemId,quantity,direction }));
+        }
         case "transferEquippedItem": {
           const result = transferEquippedItem(state.current, input as never);
           if (!result.ok) return error("rejected", result.message);
@@ -412,13 +423,22 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         case "buyTradingItem": {
           const post = state.current.campaign.post_battles.find((row) => !row.complete);
           if (!post) return error("rejected", "Trading is only available during post-battle.");
-          const itemId = String(input["item_id"] ?? ""), name = String(input["name"] ?? itemId);
+          const itemId = String(input["item_id"] ?? "");
           const quantity = Number(input["quantity"]), unitPrice = Number(input["unit_price"]);
           if (!itemId || !Number.isInteger(quantity) || quantity <= 0 || !Number.isInteger(unitPrice) || unitPrice < 0) return error("rejected", "A valid item, quantity and price are required.");
           const catalogue = (knowledge as typeof knowledge & { campaignSection?(section:string):Readonly<Record<string,unknown>> }).campaignSection?.("trading-post");
           const catalogueItems = Array.isArray(catalogue?.["items"]) ? catalogue["items"] as Readonly<Record<string,unknown>>[] : [];
           const catalogueEntry = catalogueItems.find((row) => row["item_id"] === itemId);
+          if (!catalogueEntry) return error("rejected", "This item is not listed at the Trading Post.");
+          const availability=(catalogueEntry["availability"]??{}) as Readonly<Record<string,unknown>>;
+          if (availability["kind"]!=="common") return error("rejected", "Rare items must be obtained through a successful rare search.");
+          const price=(catalogueEntry["price"]??{}) as Readonly<Record<string,unknown>>, base=Number(price["base_gc"]??0), variable=(price["optional_variable_cost"]??{}) as Readonly<Record<string,unknown>>, dice=(variable["dice"]??{}) as Readonly<Record<string,unknown>>, count=Number(dice["count"]??0), sides=Number(dice["sides"]??0), multiplier=Number(variable["multiplier"]??1);
+          if (!Number.isInteger(base)||base<0) return error("rejected", "This Trading Post item has no supported price.");
+          if (count&&sides) { const rolled=(unitPrice-base)/multiplier; if(!Number.isInteger(rolled)||rolled<count||rolled>count*sides)return error("rejected", "The variable price does not match this item's dice range."); }
+          else if(unitPrice!==base) return error("rejected", `Invalid item price: expected ${base} gc.`);
           const restrictions = Array.isArray(catalogueEntry?.["restrictions"]) ? catalogueEntry["restrictions"] as Readonly<Record<string,unknown>>[] : [];
+          const groups=new Set(((knowledge as typeof knowledge & { list?(kind:string):readonly Readonly<Record<string,unknown>>[] }).list?.("warband_group")??[]).filter((row)=>Array.isArray(row["band_ids"])&&(row["band_ids"] as unknown[]).map(String).includes(state.current!.campaign.identity.band_id)).map((row)=>String(row["id"]??"")));
+          for(const restriction of restrictions) { const bandIds=(restriction["band_ids"]??[]) as unknown[], groupIds=(restriction["groups"]??[]) as unknown[],matches=bandIds.map(String).includes(state.current.campaign.identity.band_id)||groupIds.map(String).some((id)=>groups.has(id)); if(restriction["type"]==="warband_only"&&!matches)return error("rejected", "This item is not available to this warband."); if(restriction["type"]==="warband_forbidden"&&matches)return error("rejected", "This item is forbidden to this warband."); if(restriction["type"]==="condition")return error("rejected", String(restriction["note"]??"This item cannot be purchased at the Trading Post.")); }
           const inferredOne = restrictions.some((row) => row["type"] === "profile_only" && String(row["note"] ?? "").toLocaleLowerCase().startsWith("one "));
           const declaredLimit = restrictions.find((row) => row["type"] === "limit_per_warband")?.["value"];
           const limit = Number.isInteger(declaredLimit) ? Number(declaredLimit) : inferredOne ? 1 : null;
@@ -427,8 +447,9 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const snapshot = state.current.campaign.states.find((row) => row.number === state.current!.campaign.current_state_number) ?? state.current.campaign.states.at(-1);
           const available = (snapshot?.gold ?? 0) + (post.gold_delta ?? 0), total = quantity * unitPrice;
           if (total > available) return error("rejected", `Not enough gold: ${total} gc needed, ${available} available.`);
+          const known=knowledge.queryKnowledge({id:{kind:"item_id",value:itemId}}), name=known.ok?String(known.record.names["en"]??itemId):itemId, category=known.ok?String(known.record.data["kind"]??"Trading Post"):"Trading Post";
           const found = state.current.campaign.inventory.find((row) => row.id === itemId);
-          const inventory = found ? state.current.campaign.inventory.map((row) => row.id === itemId ? { ...row, owned: row.owned + quantity, stash: row.stash + quantity, value: unitPrice } : row) : [...state.current.campaign.inventory, { id: itemId, name, category: String(input["category"] ?? "Trading Post"), owned: quantity, equipped: 0, stash: quantity, value: unitPrice }];
+          const inventory = found ? state.current.campaign.inventory.map((row) => row.id === itemId ? { ...row, owned: row.owned + quantity, stash: row.stash + quantity, value: unitPrice } : row) : [...state.current.campaign.inventory, { id: itemId, name, category, owned: quantity, equipped: 0, stash: quantity, value: unitPrice }];
           const changed = { ...post, gold_delta: (post.gold_delta ?? 0) - total, event_log: [...(post.event_log ?? []), { step: 7, type: "buy_item", item_id: itemId, quantity, description: `${quantity}× ${name} bought for ${total} gc.` }] };
           return applyResult({ ok: true, state: { ...state.current, campaign: { ...state.current.campaign, inventory, post_battles: state.current.campaign.post_battles.map((row) => row === post ? changed : row) } } });
         }
