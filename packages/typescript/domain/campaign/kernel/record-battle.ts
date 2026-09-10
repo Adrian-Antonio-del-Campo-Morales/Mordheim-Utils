@@ -112,6 +112,9 @@ export function recordBattle(
   if (input.casualties !== outOfAction.length) {
     return rejected("invalid_input", "Casualties must match the recorded Out of Action results.");
   }
+  if (input.opponent_rating != null && (!Number.isInteger(input.opponent_rating) || input.opponent_rating < 0)) {
+    return rejected("invalid_input", "Opponent rating must be a non-negative whole number.");
+  }
   const submittedIds = new Set<IdString>(outOfAction);
   for (const id of submittedIds) {
     const warrior = findWarrior(document, id);
@@ -147,6 +150,7 @@ export function recordBattle(
     date,
     scenario: input.scenario,
     opponent: input.opponent,
+    ...(input.opponent_rating != null ? { opponent_rating: input.opponent_rating } : {}),
     ...(input.opponent_band_id ? { opponent_band_id: input.opponent_band_id } : {}),
     result,
     gold_delta: Math.trunc(input.gold_delta) + rewards.gold,

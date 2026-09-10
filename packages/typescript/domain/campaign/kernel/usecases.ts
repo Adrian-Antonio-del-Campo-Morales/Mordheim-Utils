@@ -56,6 +56,7 @@ export interface RecordBattleInput {
   readonly scenario: string;
   readonly opponent: string;
   readonly opponent_band_id?: IdString;
+  readonly opponent_rating?: number | null;
   readonly result: Battle["result"];
   readonly gold_delta: number;
   readonly wyrdstone: number;
