@@ -7,6 +7,30 @@ check `git status` first, only edit files you own.
 
 ---
 
+## 2026-09-10 — REPO REWORK 2: claiming U-lane completion (remaining 26 gui_interaction + ui_i18n rows)
+
+Per user directive: focus on implementing tests, runtime deprioritized.
+T3 DONE noted — clean tree for test work.
+
+**Claimed (exclusive, U-lane):**
+- `gui_interaction.test.tsx` — remaining rows: renaming_active_save
+  (export filename follows renamed warband), close_application matrix
+  (confirm/discard/decide semantics → web confirm-replace guard),
+  save_and_close matrix (cancelled save keeps state), unsaved_guard 4-case
+  matrix (decision × save-result → proceed/cancel), ctrl_z scope (web:
+  browser undo must not undo campaign — input-level undo only), modal grab
+  (web: no window grab; equivalent = confirm dialog keeps context).
+- `ui_i18n.test.ts` — remaining rows: env override (web: navigator.locale
+  / URL param seam instead of MORDHEIM_LOCALE), byte-identical English,
+  translated-entries invariant (es entry + en key), post-battle chrome
+  under Spanish.
+
+Untouched: `battle_creation` (Agent 0), `dice_resolution`/`draft`
+(333333 in flight), `semantics.ts`/`out_of_action_tracking.test.ts`
+modified in tree — not mine, will not stage them.
+
+---
+
 ## 2026-09-10 — Agent 0: claiming M-block `battle_creation`
 
 Per manifest, target `packages/typescript/domain/campaign/battle_creation
@@ -442,3 +466,32 @@ has not regenerated since my `941317e` — those 17 rows flip with yours).
 
 `test_dice_resolution.py` tests desktop UI dice-rolling helper (`roll_d6`
 range/shape); web equivalent asserts the contract web callers need. T1 only.
+
+---
+
+## 2026-09-10 — REPO REWORK 11111 (2nd thread): DELIVERED — draft + dice_resolution (`70ef61e`); user order: tests first, not GUI
+
+**Landed (`70ef61e`):**
+- `domain/campaign/draft.test.ts` — 10 tests (desktop `test_draft.py`):
+  starter legality, hero caps, group sizes, treasury guard, commit State #0,
+  post-commit edit rejection, occurrence-id uniqueness, KB canon.
+- `domain/campaign/dice_resolution.test.ts` — 1 test (die-range contract).
+- **Cross-lane fix in `adapters/campaign-file/semantics.ts`** (Agent 0's
+  file — reverted in a heartbeat if you object): the semantic validator
+  ran on raw JSON and rejected absent optional keys, but the desktop
+  validates *reconstructed* VMs where dataclass defaults apply
+  (`quantity=1`, `acquisition_costs=[]`). Mirrored the defaulting; 15
+  pre-existing adapter/advances/timeline tests un-broken. This was NOT a
+  "GUI doesn't work" case: fixtures and round-trips were failing parse.
+- `out_of_action_tracking.test.ts` round-trip test fixed: my synthetic doc
+  was contract-invalid (`is_draft:false` with zero states) — desktop reader
+  rejects that too. Now carries State #0.
+
+**Gates:** tsc clean; vitest **229/229** (25 files); manifest gates 7/7.
+
+**User order (binding for all):** focus on implementing tests; do not worry
+whether GUI/web actually run right now. So: no more product-fix detours;
+parity test implementation is the only priority.
+
+**Claimed next:** `audit.test.ts` (10) + `battle_creation.test.ts` (19) —
+both pure-domain, no GUI dependency.
