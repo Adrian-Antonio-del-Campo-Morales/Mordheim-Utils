@@ -33,6 +33,11 @@ function isWizard(reader: CatalogueReader, document: CampaignDocument, warrior: 
   const magic=reader.campaignSection?.("magic"); const assignments=(magic?.["lore_assignments"]??{}) as Readonly<Record<string,unknown>>;
   return ((assignments["rows"]??[]) as readonly Readonly<Record<string,unknown>>[]).some((row)=>row["profile_id"]===warrior.profile_id && (row["band"]==null||row["band"]===document.campaign.identity.band_id));
 }
+export function wizardLore(reader: CatalogueReader, document: CampaignDocument, warrior: Warrior): string | null {
+  const magic=reader.campaignSection?.("magic"); const assignments=(magic?.["lore_assignments"]??{}) as Readonly<Record<string,unknown>>;
+  const row=((assignments["rows"]??[]) as readonly Readonly<Record<string,unknown>>[]).find((item)=>item["profile_id"]===warrior.profile_id && (item["band"]==null||item["band"]===document.campaign.identity.band_id));
+  return row ? String(row["lore"] ?? "") || null : null;
+}
 function options(result: Readonly<Record<string,unknown>>, wizard: boolean): OpenPayload[] {
   const rows=result["type"] === "choose_one" ? (result["options"] ?? []) as readonly Readonly<Record<string,unknown>>[] : [result];
   return rows.filter((item)=>item["type"]!=="generate_spell"||wizard).map((item) => ({ kind:String(item["type"] ?? "external_resolution"), characteristic:CHARACTERISTICS[String(item["characteristic"] ?? "")] ?? null, amount:Number(item["amount"] ?? 1) }));
@@ -88,6 +93,18 @@ export function commitAdvanceChoice(document: CampaignDocument, reader: Catalogu
     const name=String(skill.record.names["en"]??input.skill_id); if(warrior.skills.includes(name)) return {ok:false,message:"The warrior already knows that skill."};
     const post=document.campaign.post_battles.find((item)=>!item.complete)!; const committed={...row,committed:true,applied_label:`Skill: ${name}`};
     return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?committed:item),document.campaign.warriors.map((item)=>item.id===warrior.id?{...item,skills:[...item.skills,name]}:item))};
+  }
+  if(input.kind==="generate_spell" || input.kind==="duplicate_spell") {
+    if(!offered.some((item)=>item["kind"]==="generate_spell") || !input.skill_id) return {ok:false,message:"A spell is not offered by this advance."};
+    const loreId=wizardLore(reader,document,warrior); const lore=loreId?reader.queryKnowledge({id:{kind:"lore_id",value:loreId}}):null;
+    const spell=lore?.ok ? ((lore.record.data["spells"]??[]) as readonly Readonly<Record<string,unknown>>[]).find((item)=>item["id"]===input.skill_id) : null;
+    if(!spell) return {ok:false,message:"That spell is not in this warrior's lore."};
+    const name=String(spell["name"]??input.skill_id); const duplicate=warrior.skills.includes(name);
+    if(input.kind==="generate_spell"&&duplicate) return {ok:false,message:"The warrior already knows that spell; commit it as a duplicate."};
+    if(input.kind==="duplicate_spell"&&!duplicate) return {ok:false,message:"The warrior does not know that spell yet."};
+    const changed=input.kind==="generate_spell" ? {...warrior,skills:[...warrior.skills,name]} : {...warrior,spell_difficulty_modifiers:{...(warrior.spell_difficulty_modifiers??{}),[input.skill_id]:(warrior.spell_difficulty_modifiers?.[input.skill_id]??0)-1}};
+    const label=input.kind==="generate_spell"?`Spell: ${name}`:`Duplicated spell: ${name} (difficulty -1)`; const post=document.campaign.post_battles.find((item)=>!item.complete)!; const committed={...row,committed:true,applied_label:label};
+    return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?committed:item),document.campaign.warriors.map((item)=>item.id===warrior.id?changed:item))};
   }
   return {ok:false,message:"This desktop advance option is not implemented yet."};
 }
