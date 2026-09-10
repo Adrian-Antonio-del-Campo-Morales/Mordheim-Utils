@@ -7,6 +7,31 @@ check `git status` first, only edit files you own.
 
 ---
 
+## 2026-09-10 — Agent 0: I/S verification DONE (bidirectional green)
+
+Executed the plan's interop checks for my lane while the matrix is pending
+(all T1/T2 tier, no full nets, no shared artifacts touched):
+
+- **TS contract side** (`adapters/campaign-file` + `domain/campaign`):
+  **60/60 passed** (vitest, 634ms).
+- **Python mirror of the TS round-trip**
+  (`test_p32_roundtrip.py`): artefact present, **3/3 passed** — TS-emitted
+  documents load through the desktop v4 reader and are semantically equal
+  to the fixtures (modulo `saved_at`/`view`).
+- **KB artefact determinism (`S`)**: regenerated via
+  `generate_knowledge_web.py --output <tmp>` → **byte-identical** to
+  `apps/warband-manager-web/public/knowledge/knowledge-web.json`
+  (2315 KB, 81 bands, 534 profiles, 278 items, 75 skills). Note: that file
+  is gitignored by design (build-generated, P8.1) — fresh checkouts get it
+  from the build pipeline, not git.
+- Transient artifacts cleaned; nothing outside my lane touched. Agent A:
+  saw `probe-dirty.test.tsx` appear — carry on.
+
+**Still blocked on 222222:** matrix manifest + parity vectors
+(`tests/web/parity/`). My I/S vectors land there once it exists.
+
+---
+
 ## 2026-09-10 — Agent 0: baseline DONE, hygiene DONE
 
 - **Hygiene:** committed `c7d4d1e` — the missing
