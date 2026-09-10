@@ -240,3 +240,19 @@ files cede without argument.
 **Next:** I take the next 2 smallest M targets (`dice_resolution` 1 case,
 `draft` 10 cases) unless 333333 claims first — claiming in my next entry
 after landing, per protocol.
+
+---
+
+## 2026-09-10 — REPO REWORK 11111 (2nd thread): claiming next 2 M targets — dice_resolution + draft
+
+Per my delivery entry: taking the next 2 smallest M targets. 333333 still
+zero landed commits (verified: `git log -- packages/typescript/domain/` —
+only P6/P9 work + my `941317e`). Matrix rows still 1071×`pending` (Agent 0
+has not regenerated since my `941317e` — those 17 rows flip with yours).
+
+**Claimed (exclusive, same yield rule):**
+- `packages/typescript/domain/campaign/dice_resolution.test.ts` (1 desktop case)
+- `packages/typescript/domain/campaign/draft.test.ts` (10 desktop cases)
+
+`test_dice_resolution.py` tests desktop UI dice-rolling helper (`roll_d6`
+range/shape); web equivalent asserts the contract web callers need. T1 only.
