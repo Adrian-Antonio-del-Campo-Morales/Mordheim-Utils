@@ -16,16 +16,17 @@ import { enumerateMoments, momentLabel } from "./moments";
 interface TimelinePanelProps {
   readonly document: CampaignDocument;
   readonly onSelect: (moment: MomentSelection) => void;
+  readonly locale?: "es" | "en";
 }
 
-export function TimelinePanel({ document, onSelect }: TimelinePanelProps) {
+export function TimelinePanel({ document, onSelect, locale = "en" }: TimelinePanelProps) {
   const { campaign, view } = document;
   const moments = enumerateMoments(campaign);
   const selected = (view.selected_moment ?? "draft:0") as string;
 
   return (
     <nav aria-label="Timeline">
-      <h3>Timeline</h3>
+      <h3>{locale === "es" ? "Cronología" : "Timeline"}</h3>
       <ol>
         {moments.map((moment) => {
           const isCurrent = moment === selected;
