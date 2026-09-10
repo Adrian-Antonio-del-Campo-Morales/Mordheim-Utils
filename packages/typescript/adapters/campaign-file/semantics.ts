@@ -41,7 +41,11 @@ interface RosterWarrior {
 
 function validateRoster(roster: readonly RosterWarrior[], errors: SemanticViolation[]): void {
   for (const warrior of roster) {
-    if (!isInt(warrior.quantity) || (warrior.quantity as number) < 1) {
+    // The desktop validates *reconstructed* domain objects, where missing
+    // fields carry dataclass defaults (quantity 1, equipment []) — mirror
+    // that on the raw JSON instead of rejecting absent optional keys.
+    const quantity = warrior.quantity ?? 1;
+    if (!isInt(quantity) || (quantity as number) < 1) {
       errors.push({ message: "Warriors must have a positive model count." });
     }
     for (const equipment of warrior.equipment ?? []) {

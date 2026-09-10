@@ -89,10 +89,32 @@ function record(document: CampaignDocument, out_of_action_ids: string[] | null) 
   }, fakeKnowledge);
 }
 
-/** Desktop `_settled()` + `_record()` equivalent: committed, non-draft band. */
+/** Desktop `_settled()` + `_record()` equivalent: committed, non-draft band.
+ * The synthetic base carries State #0 like `commitInitialWarband` would —
+ * a non-draft campaign with no committed states is contract-invalid (the
+ * desktop reader rejects it too). */
 function settledAndRecorded(out_of_action_ids: string[] | null): CampaignDocument {
   const base = makeDocument();
-  const result = record(base, out_of_action_ids);
+  const withState: CampaignDocument = {
+    campaign: {
+      ...base.campaign,
+      states: [{
+      number: 0,
+      date: "2026-09-10",
+      gold: 500,
+      wyrdstone: 0,
+      rating: 30,
+      models: 5,
+      max_models: 15,
+      heroes: 2,
+      henchmen: 3,
+      experience: 0,
+      label: "Initial Warband",
+      }],
+    },
+    view: base.view,
+  };
+  const result = record(withState, out_of_action_ids);
   if (!result.ok) throw new Error(result.message);
   return result.state;
 }
