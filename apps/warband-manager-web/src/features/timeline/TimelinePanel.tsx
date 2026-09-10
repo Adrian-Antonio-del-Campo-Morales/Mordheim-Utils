@@ -38,7 +38,7 @@ export function TimelinePanel({ document, onSelect, locale = "en" }: TimelinePan
                 style={isCurrent ? { fontWeight: "bold" } : undefined}
                 onClick={() => onSelect(moment)}
               >
-                {momentLabel(moment, campaign)}
+                {momentLabel(moment, campaign, locale)}
               </button>
             </li>
           );

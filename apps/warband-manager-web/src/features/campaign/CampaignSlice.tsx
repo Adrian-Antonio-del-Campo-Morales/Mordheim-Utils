@@ -9,6 +9,7 @@ import { BattlePanel } from "../battle/BattlePanel";
 import { BattleHistory } from "../battle/BattleHistory";
 import { InjuriesPanel } from "../injuries/InjuriesPanel";
 import { ReviewPanel } from "../review/ReviewPanel";
+import { PostBattleHistory } from "../review/PostBattleHistory";
 import { DraftWorkspace } from "../draft/DraftWorkspace";
 import { PostBattleInjuries } from "../injuries/PostBattleInjuries";
 import type { CampaignDocument } from "./types";
@@ -32,6 +33,7 @@ export function CampaignSlice({ knowledge, locale = "en" }: { knowledge?: Artefa
   const selected = String(doc.view.selected_moment ?? `state:${doc.campaign.current_state_number}`);
   const battleNumber = Number(selected.split(":")[1] ?? 0);
   const battle = doc.campaign.battles.find((row) => row.number === battleNumber);
+  const selectedPost = doc.campaign.post_battles.find((row) => row.battle_number === battleNumber);
   const currentState = selected === `state:${doc.campaign.current_state_number}`;
   const selectedState = doc.campaign.states.find((state) => state.number === battleNumber);
   const stateDocument = selectedState ? { ...doc, campaign: { ...doc.campaign, warriors: selectedState.roster ?? [], inventory: selectedState.inventory ?? [] } } : doc;
@@ -43,7 +45,7 @@ export function CampaignSlice({ knowledge, locale = "en" }: { knowledge?: Artefa
       <div className="moment-detail">
         {selected.startsWith("state:") && <><RosterOverview document={doc} stateNumber={battleNumber} editable={currentState} locale={locale} /><EquipmentPanel document={stateDocument} readOnly={!currentState} locale={locale} />{currentState && <BattlePanel document={doc} knowledge={knowledge} locale={locale} />}</>}
         {selected.startsWith("battle:") && <BattleHistory battle={battle} locale={locale} />}
-        {selected.startsWith("post:") && <><BattlePanel document={doc} knowledge={knowledge} locale={locale} />{knowledge && <PostBattleInjuries document={doc} knowledge={knowledge} />}<InjuriesPanel document={doc} />{knowledge && <PostBattleExperience document={doc} knowledge={knowledge} />}<HirelingsPanel document={doc} listings={knowledge} locale={locale} /><ReviewPanel document={doc} locale={locale} /></>}
+        {selected.startsWith("post:") && (selectedPost?.complete ? <PostBattleHistory document={doc} battleNumber={battleNumber} locale={locale} /> : <><BattlePanel document={doc} knowledge={knowledge} locale={locale} />{knowledge && <PostBattleInjuries document={doc} knowledge={knowledge} />}<InjuriesPanel document={doc} />{knowledge && <PostBattleExperience document={doc} knowledge={knowledge} />}<HirelingsPanel document={doc} listings={knowledge} locale={locale} /><ReviewPanel document={doc} locale={locale} /></>)}
       </div></div>}
   </section>;
 }
