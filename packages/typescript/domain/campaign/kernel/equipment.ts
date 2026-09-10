@@ -122,7 +122,12 @@ export function assignEquipment(
         `Only ${item.stash} of "${item.id}" in the stash; cannot equip ${input.quantity}.`,
       );
     }
-    const existingEntry = warrior.equipment.find((e) => e.item_id === input.item_id);
+    // A draft can carry a purchased copy and a later stash-assigned copy of
+    // same item. Keep acquisition provenance separate; never rewrite fixed
+    // or paid equipment into a stash assignment.
+    const existingEntry = warrior.equipment.find(
+      (e) => e.item_id === input.item_id && e.acquisition === "stash_assignment",
+    );
     const updated: EquipmentEntry = existingEntry
       ? { ...existingEntry, quantity: (existingEntry.quantity ?? 1) + input.quantity, acquisition: "stash_assignment" as const }
       : {
