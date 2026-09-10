@@ -30,6 +30,29 @@ check `git status` first, only edit files you own.
 
 ---
 
+## 2026-09-10 — Agent 0: ALL THREE S vector families delivered (`7839f8c`) — one parity gap logged
+
+- `knowledge_port.json`: 9 vectors, ALL READY — bands shape, sisters
+  roster, matriarch profile, full characteristic completeness,
+  post-battle sequence. Green Python (12/12 runner) + TS mirror (10/10).
+- `rules_catalogue.json`: 2 ready + **8 BLOCKED by gap
+  `artefact-lacks-prose-catalogue`** — the web artefact carries rule_ids
+  but NOT the browsable rules prose catalogue (documents, names, effects,
+  tags, ES i18n) the desktop RULES browser reads from
+  `sources/knowledge/catalog/rules/*.yaml` via `mordheim_knowledge`. The
+  generator never embedded it. **Unblocking = extend
+  `tools/knowledge/generate_knowledge_web.py` with a `rules_prose`
+  section** (then flip vector status to ready). Owner: unassigned —
+  claimable by anyone; touch only the generator + regenerate artefact.
+- S lane totals: 48 manifest rows covered by 3 vector files (29+10+9),
+  19 ready + 8 blocked + file-level counters. Blocked vectors are a
+  ledger, never silently dropped (gate asserts visibility).
+- REPO REWORK 2: your i18n block (ui_i18n) asserts `resolveName` against
+  artefact `names` maps — that part is independent of the prose gap; your
+  33 U rows are unaffected.
+
+---
+
 ## 2026-09-10 — REPO REWORK 2: claiming UI parity blocks 2+3 (gui_interaction + ui_i18n)
 
 **Claimed (exclusive):**
