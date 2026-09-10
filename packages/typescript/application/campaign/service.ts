@@ -362,17 +362,24 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         case "hireHireling": {
           const post = state.current.campaign.post_battles.find((row) => !row.complete);
           if (!post) return error("rejected", "Hired Swords can only be hired during post-battle.");
+          const listedCosts = Array.isArray(input["fee_resources"]) ? input["fee_resources"].filter((row): row is [string, number] => Array.isArray(row) && typeof row[0] === "string" && Number.isInteger(row[1])) : [];
           const fee = Number(input["fee"]);
-          if (!Number.isInteger(fee) || fee < 0) return error("rejected", "Resolve the hiring fee before hiring.");
+          if ((!Number.isInteger(fee) || fee < 0) && listedCosts.length === 0) return error("rejected", "Resolve the hiring fee before hiring.");
           const currentSnapshot = state.current.campaign.states.find((row) => row.number === state.current!.campaign.current_state_number) ?? state.current.campaign.states.at(-1);
           const availableGold = (currentSnapshot?.gold ?? 0) + (post.gold_delta ?? 0);
-          if (fee > availableGold) return error("rejected", `Not enough gold: ${fee} gc needed, ${availableGold} available.`);
-          const result = useCases.hireHireling(state.current, input as never, knowledge);
+          const gold = Number.isInteger(fee) ? fee : (listedCosts.find(([key]) => key === "gold_crowns")?.[1] ?? 0);
+          if (gold > availableGold) return error("rejected", `Not enough gold: ${gold} gc needed, ${availableGold} available.`);
+          const shards = listedCosts.find(([key]) => key === "wyrdstone_fragments")?.[1] ?? 0;
+          if (shards > (currentSnapshot?.wyrdstone ?? 0) + (post.wyrdstone_delta ?? 0)) return error("rejected", "Not enough wyrdstone shards for this hire.");
+          const result = useCases.hireHireling(state.current, { ...input, ...(Number.isInteger(fee) ? { fee } : {}) } as never, knowledge);
           if (!result.ok) return applyResult(result);
           const resultPost = result.state.campaign.post_battles.find((row) => !row.complete);
           if (!resultPost) return error("rejected", "Pending post-battle disappeared while hiring.");
-          const changed = { ...resultPost, gold_delta: (resultPost.gold_delta ?? 0) - fee, event_log: [...(resultPost.event_log ?? []), { step: 6, type: "hire", profile_id: input["profile_id"], description: `Hired for ${fee} gc.` }] };
-          return applyResult({ ok: true, state: { ...result.state, campaign: { ...result.state.campaign, post_battles: result.state.campaign.post_battles.map((row) => row === resultPost ? changed : row) } } });
+          const changed = { ...resultPost, gold_delta: (resultPost.gold_delta ?? 0) - gold, wyrdstone_delta: (resultPost.wyrdstone_delta ?? 0) - shards, event_log: [...(resultPost.event_log ?? []), { step: 6, type: "hire", profile_id: input["profile_id"], description: `Hired for ${listedCosts.map(([key,value]) => `${value} ${key}`).join(" + ") || `${gold} gc`}.` }] };
+          const treasures = listedCosts.find(([key]) => key === "treasures")?.[1] ?? 0;
+          const points = listedCosts.find(([key]) => key === "campaign_points")?.[1] ?? 0;
+          if (treasures > result.state.campaign.resources.treasures || points > result.state.campaign.resources.campaign_points) return error("rejected", "Not enough declared hiring resources.");
+          return applyResult({ ok: true, state: { ...result.state, campaign: { ...result.state.campaign, resources: { ...result.state.campaign.resources, treasures: result.state.campaign.resources.treasures - treasures, campaign_points: result.state.campaign.resources.campaign_points - points }, post_battles: result.state.campaign.post_battles.map((row) => row === resultPost ? changed : row) } } });
         }
         case "buyTradingItem": {
           const post = state.current.campaign.post_battles.find((row) => !row.complete);

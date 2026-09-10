@@ -52,6 +52,8 @@ export interface HirelingOfferRow {
   readonly fee_base: number;
   readonly fee_dice: readonly [number, number] | null;
   readonly upkeep: number | null;
+  readonly fee_resources: readonly (readonly [string, number])[];
+  readonly upkeep_resources: readonly (readonly [string, number])[];
   /** Intrinsic warband-rating contribution at hire time. */
   readonly rating: number;
   readonly eligible: boolean;
@@ -144,6 +146,7 @@ function goldOf(resources: OpenPayload | undefined): number | null {
   }
   return null;
 }
+function resourceCosts(resources: OpenPayload | undefined): readonly (readonly [string, number])[] { return Object.entries(resources ?? {}).flatMap(([key,value]) => { const cost=value&&typeof value==="object"?(value as OpenPayload)["cost"]:null; return Number.isInteger(cost)?[[key,Number(cost)] as const]:[]; }); }
 
 function variableGoldOf(resources: OpenPayload | undefined): { base: number; dice: readonly [number, number] } | null {
   const cost = (resources?.["gold_crowns"] as OpenPayload | undefined)?.["cost"];
@@ -174,7 +177,8 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
       const feeResources = feeBlock?.["resources"] as OpenPayload | undefined;
       const fee = goldOf(feeResources);
       const variableFee = variableGoldOf(feeResources);
-      const upkeep = goldOf((entry["upkeep"] as OpenPayload | undefined)?.["resources"] as OpenPayload | undefined);
+      const upkeepResources=(entry["upkeep"] as OpenPayload | undefined)?.["resources"] as OpenPayload | undefined;
+      const upkeep = goldOf(upkeepResources);
       // Rating: resolve the profile's warband_rating through the reader.
       const profileResult = deps.useCases;
       void profileResult;
@@ -188,6 +192,8 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
         fee,
         fee_base: variableFee?.base ?? 0,
         fee_dice: variableFee?.dice ?? null,
+        fee_resources: resourceCosts(feeResources),
+        upkeep_resources: resourceCosts(upkeepResources),
         upkeep,
         rating,
         eligible: verdict.allowed,

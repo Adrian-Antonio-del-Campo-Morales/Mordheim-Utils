@@ -48,13 +48,14 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
   const goods = workflow.tradingOffers(document);
   const stashRows = document.campaign.inventory.filter((row) => row.stash > 0);
   const displayName = (id: string, fallback: string) => listings?.itemName(id, locale) ?? fallback;
+  const resourceLabel = (rows: readonly (readonly [string, number])[]) => rows.map(([key, value]) => `${value} ${key === "gold_crowns" ? "gc" : key === "wyrdstone_fragments" ? "wyrdstone" : key}`).join(" + ");
   const t = locale === "es" ? { hired:"Espadas de alquiler",none:"No hay mercenarios disponibles.",available:"Mercenarios disponibles",name:"Nombre",fee:"Tarifa",upkeep:"Mantenimiento",rating:"Valoración",action:"Acción",dice:"dados",hire:"Contratar",ineligible:"No disponible",excluded:"excluido por las reglas de la banda",trading:"Puesto de comercio",goods:"Objetos en venta",item:"Objeto",price:"Precio",availability:"Disponibilidad",buy:"Comprar",sales:"Vender reserva",nothing:"No hay objetos en la reserva para vender.",stash:"Reserva (una unidad por acción)",inStash:"En reserva",sell:"Vender 1",special:"precio especial" } : { hired:"Hired Swords",none:"No hireling offers available.",available:"Available hired swords",name:"Name",fee:"Fee",upkeep:"Upkeep",rating:"Rating",action:"Action",dice:"dice",hire:"Hire",ineligible:"Not eligible",excluded:"excluded by warband rules",trading:"Trading Post",goods:"Goods for sale",item:"Item",price:"Price",availability:"Availability",buy:"Buy",sales:"Stash sales",nothing:"Nothing in the stash to sell.",stash:"Stash (sell one unit per action)",inStash:"In stash",sell:"Sell 1",special:"special price" };
 
   const hire = async (profileId: string, resolvedFee?: number) => {
     const offer = offers.find((o) => o.profile_id === profileId);
     if (!offer || !offer.eligible) return;
     setBusy(true);
-    await app.runAction("hireHireling", { profile_id: profileId, fee: resolvedFee ?? offer.fee, upkeep_resources: offer.upkeep ? [["gold_crowns", offer.upkeep]] : [] });
+    await app.runAction("hireHireling", { profile_id: profileId, fee: resolvedFee ?? offer.fee, fee_resources: offer.fee_resources, upkeep_resources: offer.upkeep_resources });
     setBusy(false);
   };
 
@@ -93,18 +94,18 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
             {offers.map((offer) => (
               <tr key={offer.offer_id}>
                 <td>{displayName(offer.profile_id, offer.name)}</td>
-                <td>{offer.fee_dice ? `${offer.fee_base}+${offer.fee_dice[0]}D${offer.fee_dice[1]} gc` : offer.fee === null ? t.special : `${offer.fee} gc`}</td>
-                <td>{offer.upkeep === null ? "—" : `${offer.upkeep} gc`}</td>
+                <td>{offer.fee_dice ? `${offer.fee_base}+${offer.fee_dice[0]}D${offer.fee_dice[1]} gc` : offer.fee_resources.length ? resourceLabel(offer.fee_resources) : t.special}</td>
+                <td>{offer.upkeep_resources.length ? resourceLabel(offer.upkeep_resources) : "—"}</td>
                 <td>{offer.rating}</td>
                 <td>
                   {offer.eligible && offer.fee_dice ? <VariableFeeHire offer={offer} name={displayName(offer.profile_id, offer.name)} busy={busy} onHire={(fee) => void hire(offer.profile_id, fee)} /> : offer.eligible ? (
                     <button
                       type="button"
-                      disabled={busy || offer.fee === null}
+                      disabled={busy || (offer.fee === null && offer.fee_resources.length === 0)}
                       aria-label={`${t.hire} ${displayName(offer.profile_id, offer.name)}`}
                       onClick={() => hire(offer.profile_id)}
                     >
-                      {offer.fee === null ? t.special : t.hire}
+                      {offer.fee === null && offer.fee_resources.length === 0 ? t.special : t.hire}
                     </button>
                   ) : (
                     <span role="note">
