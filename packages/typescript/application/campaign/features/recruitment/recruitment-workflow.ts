@@ -31,3 +31,22 @@ export function recruitGroupMember(document:CampaignDocument,reader:CatalogueRea
   const changed={...post,veteran_pool:pool-xp,gold_delta:(post.gold_delta??0)-total,equipment_obligations:[...(post.equipment_obligations??[]).filter((row)=>String(row["warrior_id"])!==warrior.id),...obligations],event_log:[...(post.event_log??[]),{step:7,type:"recruit_member",warrior_id:warrior.id,description:`One member joined ${warrior.name} for ${total} gc; matching equipment remains pending.`}]};
   return{ok:true,document:withCampaign(document,{...document.campaign,warriors:document.campaign.warriors.map((row)=>row.id===warrior.id?{...row,quantity:oldQuantity+1}:row),post_battles:document.campaign.post_battles.map((row)=>row===post?changed:row)})};
 }
+
+/** Desktop `dismiss_warrior`, including the one-member group variant. */
+export function dismissRecruit(document:CampaignDocument,input:{warrior_id:string;one_member?:boolean}):Result {
+  const post=document.campaign.post_battles.find((row)=>!row.complete), warrior=document.campaign.warriors.find((row)=>row.id===input.warrior_id);
+  if(!post||!warrior)return{ok:false,message:"Choose a current warrior during post-battle."};
+  const one=Boolean(input.one_member)&&warrior.kind==="henchman"&&(warrior.quantity??1)>1;
+  const quantity=warrior.quantity??1;
+  let inventory=[...document.campaign.inventory];
+  const equipment=warrior.equipment.flatMap((item)=>{
+    const returned=item.acquisition==="fixed"?0:one&&item.per_model?Math.min(item.quantity,Math.max(1,Math.ceil(item.quantity/quantity))):item.quantity;
+    if(returned>0){const index=inventory.findIndex((row)=>row.id===item.item_id);if(index>=0){const row=inventory[index];inventory[index]={...row,equipped:Math.max(0,row.equipped-returned),stash:row.stash+returned};}}
+    const remaining=item.quantity-returned; return remaining>0?[{...item,quantity:remaining}]:[];
+  });
+  const warriors=one?document.campaign.warriors.map((row)=>row.id===warrior.id?{...row,quantity:quantity-1,equipment}:row):document.campaign.warriors.filter((row)=>row.id!==warrior.id);
+  const obligations=(post.equipment_obligations??[]).filter((row)=>String(row["warrior_id"])!==warrior.id);
+  const description=one?`One member dismissed from ${warrior.name}; transferable equipment returned to stash.`:`${warrior.name} dismissed; transferable equipment returned to stash.`;
+  const changed={...post,equipment_obligations:obligations,event_log:[...(post.event_log??[]),{step:7,type:one?"dismiss_member":"dismiss_warrior",warrior_id:warrior.id,description}]};
+  return{ok:true,document:withCampaign(document,{...document.campaign,warriors,inventory,post_battles:document.campaign.post_battles.map((row)=>row===post?changed:row)})};
+}
