@@ -1,0 +1,11 @@
+import { useState } from "react";
+import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import type { CampaignDocument } from "../campaign/types";
+import { useCampaignApp } from "../campaign/useCampaignApp";
+
+export function RecruitProfilePanel({document,knowledge,locale="en"}:{readonly document:CampaignDocument;readonly knowledge:ArtefactKnowledgeReader;readonly locale?:"es"|"en"}) {
+  const app=useCampaignApp(); const post=document.campaign.post_battles.find((row)=>!row.complete); const band=knowledge.queryKnowledge({id:{kind:"band_id",value:document.campaign.identity.band_id}}); const members=band.ok&&Array.isArray((band.record.data["roster"] as Record<string,unknown>|undefined)?.["members"])?(band.record.data["roster"] as Record<string,unknown>)["members"] as Record<string,unknown>[]:[]; const [profileId,setProfileId]=useState(""); const [quantity,setQuantity]=useState(1); if(!post)return null;
+  const offers=members.flatMap((member)=>{const id=String(member["profile_id"]??"");const profile=knowledge.queryKnowledge({id:{kind:"profile_id",value:id}});return profile.ok?[{id,name:profile.record.names[locale]??profile.record.names.en??id,kind:profile.record.data["type"],cost:Number(profile.record.data["cost"]??0)}]:[];}); const selected=offers.find((offer)=>offer.id===profileId)??offers[0];
+  const t=locale==="es"?{title:"Nuevos reclutas",profile:"Perfil",quantity:"Cantidad",hire:"Reclutar grupo"}:{title:"New recruits",profile:"Profile",quantity:"Quantity",hire:"Recruit group"};
+  return <section aria-label="New recruits"><h3>{t.title}</h3>{offers.length===0?<p>No recruits available.</p>:<><label>{t.profile}<select value={selected?.id??""} onChange={(event)=>setProfileId(event.target.value)}>{offers.map((offer)=><option key={offer.id} value={offer.id}>{offer.name} · {offer.cost} gc</option>)}</select></label>{selected?.kind!=="hero"&&<label>{t.quantity}<input type="number" min="1" value={quantity} onChange={(event)=>setQuantity(Math.max(1,Math.trunc(event.target.valueAsNumber||1)))}/></label>}<button className="primary" onClick={()=>selected&&void app.runAction("recruitBandProfile",{profile_id:selected.id,quantity:selected.kind==="hero"?1:quantity})}>{t.hire}</button></>}</section>;
+}
