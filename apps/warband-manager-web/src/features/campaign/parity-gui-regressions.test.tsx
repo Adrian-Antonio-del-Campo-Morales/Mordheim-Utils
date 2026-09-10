@@ -62,6 +62,7 @@ function fixtureCampaign(): Campaign {
         skills: [],
         experience: 12,
         cost: 65,
+        quantity: 1,
       },
     ],
     battles: [],

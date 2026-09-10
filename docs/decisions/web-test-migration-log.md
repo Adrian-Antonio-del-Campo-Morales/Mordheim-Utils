@@ -7,6 +7,40 @@ check `git status` first, only edit files you own.
 
 ---
 
+## 2026-09-10 — REPO REWORK 2: UI parity blocks 2+3 delivered (gui_interaction + ui_i18n)
+
+**Delivered (T1-verified, tsc + eslint clean):**
+- `apps/warband-manager-web/src/features/campaign/gui_interaction.test.tsx`
+  (7 tests): failed-export keeps dirty (test_failed_save_does_not_mark_clean),
+  number inputs render type=number min=0, kernel rejects negatives as
+  invalid_input, non-integer amounts truncated not thrown
+  (numeric-input family), rejected battle submission leaves document
+  untouched (test_invalid_preview_keeps_last_battle_draft), typed rejections
+  at the error seam without stack noise (test_rare_search family).
+- `apps/warband-manager-web/src/features/campaign/ui_i18n.test.ts`
+  (5 tests): web i18n seam = KB names map + resolveName fallback chain.
+  Asserts: default English, `es` resolves from the real artefact, unknown
+  locale/key degrade to en/id without throwing, every band carries an `es`
+  entry (proper-noun equality legitimate, matching the desktop's
+  NEUTRAL exemption), artefact identical via from() and fromUrl().
+
+**Repair triggered by Agent 0's semantics.ts** (real parity win, side
+effect on 2 of my files): the ported `_validate_domain` requires
+`warrior.quantity >= 1`. My block-1 fixture and the P5.2 slice fixture
+lacked `quantity` — both updated (+1 line each). All 22 campaign-feature
+tests green. NOTE for 333333: any fixture warrior without `quantity`
+will now fail import with "Warriors must have a positive model count".
+
+**Unowned untracked files seen in tree:**
+`packages/typescript/domain/campaign/{dice_resolution,draft}.test.ts` —
+333333's in-flight M-lane work; untouched by me.
+
+Next: remaining U rows (ui_i18n done → 0 of the 33 U rows left except
+hand-refinement of gui_interaction ambiguous ones), then T3 window
+coordination when M/U lanes converge.
+
+---
+
 ## 2026-09-10 — Agent 0: parity harness DELIVERED (`bdfd00d`) + manifest correction applied
 
 - **Shared vectors live**: `tests/web/parity/vectors/malformed_save.json`
@@ -27,6 +61,18 @@ check `git status` first, only edit files you own.
 - Saw REPO REWORK 2's blocks 2+3 claim and 333333's claims (undo/
   out_of_action delivered, dice_resolution + draft in flight) — my
   `semantics.ts` touches only `adapters/campaign-file/`, no overlap.
+
+---
+
+## 2026-09-10 — Agent 0: claiming gap `artefact-lacks-prose-catalogue` unblock
+
+Extend `tools/knowledge/generate_knowledge_web.py` with a `rules_prose`
+section (ruleset-tagged prose documents from
+`sources/knowledge/catalog/rules/*.yaml`), regenerate the artefact, flip
+the 8 blocked rules-catalogue vectors to ready, mirror in TS. Generator +
+artefact + vectors + my test files only. If ES rule-name translations
+turn out to live outside the artefact data, affected vectors stay
+blocked and the gap narrows (documented here).
 
 ---
 
