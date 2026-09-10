@@ -42,7 +42,7 @@ import { applyExploration, continueExploration } from "./features/exploration/ex
 import { sellWyrdstone } from "./features/economy/wyrdstone-sale-workflow";
 import { applyVeteranPool } from "./features/recruitment/veteran-workflow";
 import { dismissRecruit, recruitBandProfile, recruitGroupMember } from "./features/recruitment/recruitment-workflow";
-import { assignDramatisSearch, assignRareSearch, buyRareSearch, hireDramatisSearch, resolveDramatisSearch, resolveRareSearch } from "./features/searches/search-workflow";
+import { assignDramatisSearch, assignRareSearch, buyRareSearch, hireDramatisSearch, resolveDramatisSearch, resolveRareSearch, upgradeRareSearch } from "./features/searches/search-workflow";
 import { resolveHirelingUpkeep } from "./features/hirelings/upkeep-workflow";
 import { finalizePostBattle } from "./features/review/finalize-post-battle-workflow";
 import { transferEquippedItem } from "./features/equipment/transfer-workflow";
@@ -342,6 +342,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         case "resolveRareSearch": { const result=resolveRareSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "resolveDramatisSearch": { const result=resolveDramatisSearch(state.current,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "buyRareSearch": { const result=buyRareSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
+        case "upgradeRareSearch": { const result=upgradeRareSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "hireDramatisSearch": { const result=hireDramatisSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "assignEquipment":
           return applyResult(useCases.assignEquipment(state.current, input as never));

@@ -6,10 +6,11 @@ import type { CampaignDocument } from "../campaign/types";
 import { useCampaignApp } from "../campaign/useCampaignApp";
 import { DiceResolver } from "../dice/DiceResolver";
 
-function RarePurchase({ heroId, offer }: { heroId: string; offer: ReturnType<typeof rareOffers>[number] }) {
+function RarePurchase({ heroId, offer, document }: { heroId: string; offer: ReturnType<typeof rareOffers>[number]; document: CampaignDocument }) {
   const app = useCampaignApp();
   const [price, setPrice] = useState<number | null>(null);
-  if (offer.upgrade_multiplier) return <p role="status">Weapon upgrade needs base-record selection; search remains available.</p>;
+  const [base, setBase] = useState("");
+  if (offer.upgrade_multiplier) { const weapons=document.campaign.inventory.filter((item)=>item.stash>0&&/weapon/i.test(item.category)); const selected=weapons.find((item)=>item.id===base); return <><label>Base weapon<select value={base} onChange={(event)=>setBase(event.target.value)}><option value="">Select…</option>{weapons.map((item)=><option value={item.id} key={item.id}>{item.name} · {item.value*offer.upgrade_multiplier} gc</option>)}</select></label><button className="primary" disabled={!selected} onClick={() => void app.runAction("upgradeRareSearch", { hero_id: heroId, base_item_id: base })}>Upgrade for {selected ? selected.value * offer.upgrade_multiplier : "?"} gc</button></> }
   if (offer.price_dice && price === null) return <DiceResolver count={offer.price_dice[0]} sides={offer.price_dice[1]} label={`${offer.name} cost roll`} onResolve={(dice) => setPrice(offer.price_base + dice.reduce((sum, item) => sum + item, 0) * offer.price_multiplier)} />;
   const resolved = price ?? offer.price;
   return <button className="primary" disabled={resolved === null} onClick={() => void app.runAction("buyRareSearch", { hero_id: heroId, unit_price: resolved })}>Buy for {resolved} gc</button>;
@@ -52,7 +53,7 @@ export function RareSearchPanel({ document, knowledge }: { readonly document: Ca
         </label>
         {search && !search["dice"] && search["kind"] === "rare" && <DiceResolver count={2} sides={6} label={`${rareOffer?.name ?? "Rare item"} search`} onResolve={(dice) => void app.runAction("resolveRareSearch", { hero_id: hero.id, dice })} />}
         {search && !search["dice"] && search["kind"] === "dramatis" && <DiceResolver count={1} sides={6} label={`${dramatisOffer?.name ?? "Dramatis Persona"} search`} onResolve={(dice) => void app.runAction("resolveDramatisSearch", { hero_id: hero.id, die: dice[0] })} />}
-        {Boolean(search?.["success"] && !search?.["used"] && rareOffer) && rareOffer && <RarePurchase heroId={hero.id} offer={rareOffer} />}
+        {Boolean(search?.["success"] && !search?.["used"] && rareOffer) && rareOffer && <RarePurchase heroId={hero.id} offer={rareOffer} document={document} />}
         {Boolean(search?.["success"] && !search?.["used"] && dramatisOffer) && dramatisOffer && <DramatisHire heroId={hero.id} offer={dramatisOffer} />}
       </article>;
     })}
