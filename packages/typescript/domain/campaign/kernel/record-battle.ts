@@ -44,9 +44,9 @@ export function normalizeResult(result: string): "win" | "loss" | "draw" | null 
 
 /** Applies normalized desktop scenario loot before the post-battle sequence starts. */
 function recordedRewards(input: RecordBattleInput, knowledge: KnowledgeReader, inventory: readonly InventoryItem[]) {
-  let gold = 0, wyrdstone = 0; let items = [...inventory]; const notes: OpenPayload[] = [];
+  let gold = 0, wyrdstone = 0; let items = [...inventory]; const notes: OpenPayload[] = []; const followUps: OpenPayload[] = [];
   const rewards = input.scenario_results?.["additional_rewards"];
-  if (!Array.isArray(rewards)) return { gold, wyrdstone, inventory: items, notes };
+  if (!Array.isArray(rewards)) return { gold, wyrdstone, inventory: items, notes, followUps };
   for (const value of rewards) {
     if (!value || typeof value !== "object") continue;
     const reward = value as OpenPayload; const quantity = Math.max(0, Math.trunc(Number(reward["quantity"] ?? 0)));
@@ -54,6 +54,14 @@ function recordedRewards(input: RecordBattleInput, knowledge: KnowledgeReader, i
     if (reward["kind"] === "resource") {
       if (reward["resource"] === "gold_crowns") gold += quantity;
       if (reward["resource"] === "wyrdstone_fragments") wyrdstone += quantity;
+      continue;
+    }
+    if (reward["kind"] === "special") {
+      const special=String(reward["special_id"]??"");
+      if(/magical-artefact/.test(special)) followUps.push({id:`scenario:artefact:${followUps.length+1}`,step:2,type:"exploration_followup",queue:[{type:"magical_artefact_table"}],messages:[]});
+      else if(special==="scenario.assault-on-the-rock.reward") followUps.push({id:"scenario:tome-of-magic",step:2,type:"scenario_spell_reward",mandatory:true,description:"Choose a Hero and two spells from the Tome of Magic."});
+      else if(special==="scenario.encampment-raid.reward") followUps.push({id:"scenario:encampment",step:2,type:"scenario_encampment",mandatory:true,description:"Choose whether to destroy or occupy the captured camp."});
+      else notes.push({step:2,type:"scenario_reward",description:String(reward["label"]??special)});
       continue;
     }
     if (reward["kind"] !== "item") continue;
@@ -65,7 +73,7 @@ function recordedRewards(input: RecordBattleInput, knowledge: KnowledgeReader, i
     items = found ? items.map((item) => item.id === id ? { ...item, owned: item.owned + quantity, stash: item.stash + quantity } : item) : [...items, { id, name, category, owned: quantity, equipped: 0, stash: quantity, value: 0 }];
     notes.push({ step: 2, type: "scenario_reward", description: `Scenario: +${quantity} ${name}.`, item_id: id, quantity });
   }
-  return { gold, wyrdstone, inventory: items, notes };
+  return { gold, wyrdstone, inventory: items, notes, followUps };
 }
 
 /**
@@ -199,7 +207,7 @@ export function recordBattle(
     // Hireling upkeep follow-ups (Python `record_battle` tail).
     ...(campaign.warriors.some((w) => w.kind === "hireling" && w.upkeep_resources?.length)
       ? {
-          pending_follow_ups: campaign.warriors
+          pending_follow_ups: [...campaign.warriors
             .filter((w) => w.kind === "hireling" && w.upkeep_resources?.length)
             .map((w) => ({
               id: `upkeep:${number}:${w.id}`,
@@ -208,9 +216,9 @@ export function recordBattle(
               warrior_id: w.id,
               costs: w.upkeep_resources?.map(([key, value]) => [key, value] as [string, number]),
               description: `Pay ${w.name}'s upkeep or dismiss the Hired Sword.`,
-            })),
+            })),...rewards.followUps],
         }
-      : {}),
+      : rewards.followUps.length ? { pending_follow_ups: rewards.followUps } : {}),
   };
 
   const opponentKey = `${input.opponent_band_id ?? ""} ${input.opponent}`.toLowerCase();
