@@ -22,6 +22,8 @@ interface InjuriesPanelProps {
 export function InjuriesPanel({ document }: InjuriesPanelProps) {
   const app = useCampaignApp();
   const [busy, setBusy] = useState(false);
+  const [targets, setTargets] = useState<Record<string,string>>({});
+  const [ransoms, setRansoms] = useState<Record<string,number>>({});
   const overview = injuryOverview(document);
 
   const run = async (action: string, input: Record<string, unknown>) => {
@@ -85,6 +87,10 @@ export function InjuriesPanel({ document }: InjuriesPanelProps) {
                   ? "—"
                   : row.pending_follow_ups.map((followUp) => {
                       const id = String((followUp as { id?: unknown }).id ?? "");
+                      const type=String((followUp as { type?: unknown }).type??"");
+                      if(type==="eye_injury")return <span key={id}>Choose eye: <button disabled={busy} onClick={()=>run("resolveEyeInjury",{follow_up_id:id,eye:"left"})}>Left</button><button disabled={busy} onClick={()=>run("resolveEyeInjury",{follow_up_id:id,eye:"right"})}>Right</button></span>;
+                      if(type==="relationship")return <span key={id}><input aria-label={`Hatred target ${id}`} value={targets[id]??""} onChange={(event)=>setTargets((current)=>({...current,[id]:event.target.value}))}/><button disabled={busy||!(targets[id]??"").trim()} onClick={()=>run("resolveHatred",{follow_up_id:id,target:targets[id]})}>Set hatred</button></span>;
+                      if(type==="prisoner")return <span key={id}><input aria-label={`Ransom ${id}`} type="number" min="0" value={ransoms[id]??0} onChange={(event)=>setRansoms((current)=>({...current,[id]:Math.max(0,Math.trunc(event.target.valueAsNumber||0))}))}/><button disabled={busy} onClick={()=>run("resolvePrisoner",{follow_up_id:id,resolution:"ransom",ransom:ransoms[id]??0})}>Ransom</button><button disabled={busy} onClick={()=>run("resolvePrisoner",{follow_up_id:id,resolution:"exchange"})}>Exchange</button><button disabled={busy} onClick={()=>run("resolvePrisoner",{follow_up_id:id,resolution:"lost",disposition:"other"})}>Lost</button></span>;
                       return (
                         <button
                           key={id}

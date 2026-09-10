@@ -48,6 +48,7 @@ import { finalizePostBattle } from "./features/review/finalize-post-battle-workf
 import { transferEquippedItem } from "./features/equipment/transfer-workflow";
 import { setManualSkill } from "./features/advances/manual-skill-workflow";
 import { addManualStashItem, correctResource } from "./features/economy/manual-corrections-workflow";
+import { resolveEyeInjury, resolveHatred, resolvePrisoner } from "./features/injuries/injury-decisions-workflow";
 
 const HISTORY_LIMIT = 50;
 
@@ -214,6 +215,9 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         }
         case "correctResource": { const result=correctResource(state.current,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "addManualStashItem": { const result=addManualStashItem(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
+        case "resolveEyeInjury": { const result=resolveEyeInjury(state.current,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
+        case "resolveHatred": { const result=resolveHatred(state.current,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
+        case "resolvePrisoner": { const result=resolvePrisoner(state.current,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "composeDraft": {
           const result = useCases.composeDraft(state.current, input as never);
           if (!result.ok) return applyResult(result);
