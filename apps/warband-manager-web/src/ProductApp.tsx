@@ -5,7 +5,6 @@ import { CampaignAppProvider } from "./features/campaign/useCampaignApp";
 import { CampaignSlice } from "./features/campaign/CampaignSlice";
 import { createService, loadKnowledge } from "./features/campaign/default-deps";
 import { ArtefactKnowledgeReader, resolveName } from "@adapters/knowledge-reader/index";
-import { createWarbandPdf } from "./features/export/warband-pdf";
 
 type Locale = "es" | "en";
 type Page = "home" | "campaign" | "library" | "rules" | "settings";
@@ -31,7 +30,16 @@ function RulesPage({ knowledge, locale }: { knowledge: ArtefactKnowledgeReader; 
   return <section className="page"><div className="page-title"><p>KNOWLEDGE BASE</p><h1>{copy[locale].rules}</h1></div>
     <div className="rules-toolbar"><div className="tabs">{(["band","profile","item","skill","scenario"] as const).map((value) => <button className={kind === value ? "active" : ""} onClick={() => { setKind(value); setSelected(null); }} key={value}>{value}</button>)}</div><input aria-label={copy[locale].search} placeholder={copy[locale].search} value={query} onChange={(e) => setQuery(e.target.value)} /></div>
     <div className="rules-layout"><div className="rule-list">{rows.map((row) => { const id=String(row.id ?? row.item_id); return <button className={id===String(selectedRow?.id ?? selectedRow?.item_id) ? "active" : ""} onClick={() => setSelected(id)} key={`${kind}:${id}`}>{resolveName(row, locale)}</button>; })}{rows.length===0 && <p>{copy[locale].noRules}</p>}</div>
-    <article className="rule-detail">{selectedRow && <><h2>{resolveName(selectedRow, locale)}</h2><p>{String(selectedRow.effect ?? selectedRow.description ?? selectedRow.text ?? "")}</p>{Array.isArray(selectedRow.source_refs) && <ul>{selectedRow.source_refs.map((source) => <li key={String(source)}>{String(source)}</li>)}</ul>}</>}</article></div></section>;
+    <article className="rule-detail">{selectedRow && <><h2>{resolveName(selectedRow, locale)}</h2><p>{localizedText(selectedRow, locale)}</p>{Array.isArray(selectedRow.tags) && <div className="rule-tags">{selectedRow.tags.map((tag) => <span key={String(tag)}>{String(tag)}</span>)}</div>}{Array.isArray(selectedRow.source_refs) && <><h3>{locale === "es" ? "Fuentes" : "Sources"}</h3><ul>{selectedRow.source_refs.map((source, index) => { const row=source as Record<string, unknown>; const label=String(row.section ?? row.manual ?? source); const url=typeof row.url === "string" ? row.url : null; return <li key={`${label}:${index}`}>{url ? <a href={url} target="_blank" rel="noreferrer">{label}</a> : label}</li>; })}</ul></>}</>}</article></div></section>;
+}
+
+function localizedText(row: Record<string, unknown>, locale: Locale): string {
+  for (const key of ["effect", "description", "text", "note"]) {
+    const translated = row[`${key}_i18n`];
+    if (translated && typeof translated === "object" && typeof (translated as Record<string, unknown>)[locale] === "string") return String((translated as Record<string, unknown>)[locale]);
+    if (typeof row[key] === "string") return String(row[key]);
+  }
+  return locale === "es" ? "No hay texto descriptivo disponible." : "No descriptive text is available.";
 }
 
 export function ProductApp() {
@@ -67,7 +75,7 @@ export function ProductApp() {
   const exportSession = async (session: Session) => { const result=await session.service.prepareExport(); if (result.ok && result.payload) { download(result.payload.filename, result.payload.text, "application/json"); session.service.markExported(result.document); return true; } return false; };
   const exportActive = async () => { if (active) await exportSession(active); };
   const undo = async () => { if (active) await active.service.run("undo", {}); };
-  const exportPdf = async () => { if (!active) return; const doc=active.service.current(); if (!doc) return; const bytes=await createWarbandPdf(doc, locale); download(`${doc.campaign.identity.warband_name.replace(/[^\w-]+/g, "_")}.pdf`, bytes, "application/pdf"); };
+  const exportPdf = async () => { if (!active) return; const doc=active.service.current(); if (!doc) return; const { createWarbandPdf } = await import("./features/export/warband-pdf"); const bytes=await createWarbandPdf(doc, locale); download(`${doc.campaign.identity.warband_name.replace(/[^\w-]+/g, "_")}.pdf`, bytes, "application/pdf"); };
 
   return <div className="app-shell">
     <header className="topbar"><button className="brand" onClick={() => setPage("home")}><strong>MORDHEIM</strong><span>WARBAND MANAGER</span></button>
