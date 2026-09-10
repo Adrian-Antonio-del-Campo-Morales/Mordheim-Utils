@@ -3,12 +3,13 @@ import { experienceAwards } from "@app/campaign/features/advances/experience-wor
 import type { CampaignDocument } from "../campaign/types";
 import { useCampaignApp } from "../campaign/useCampaignApp";
 import { AdvancesPanel } from "./AdvancesPanel";
+import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 
-export function PostBattleExperience({ document }: { readonly document: CampaignDocument }) {
+export function PostBattleExperience({ document, knowledge }: { readonly document: CampaignDocument; readonly knowledge: ArtefactKnowledgeReader }) {
   const app = useCampaignApp();
   const post = document.campaign.post_battles.find((row) => !row.complete);
   const battle = post && document.campaign.battles.find((row) => row.number === post.battle_number);
-  const calculated = useMemo(() => experienceAwards(document), [document]);
+  const calculated = useMemo(() => experienceAwards(document, knowledge), [document, knowledge]);
   const [editing, setEditing] = useState(false);
   const [awards, setAwards] = useState<Record<string, number>>({});
   if (!post) return null;

@@ -226,6 +226,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         case "applyBattleExperience": {
           const result = applyBattleExperience(
             state.current,
+            knowledge,
             (input["awards"] ?? undefined) as Readonly<Record<string, number>> | undefined,
           );
           if (!result.ok) return error("rejected", result.message, { reason: result.reason });
