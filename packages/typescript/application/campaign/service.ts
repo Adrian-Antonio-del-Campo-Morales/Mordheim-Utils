@@ -36,6 +36,7 @@ import {
 } from "./features/injuries/injuries-workflow";
 import { createDraftWorkflow } from "./features/draft/draft-workflow";
 import { applyBattleExperience } from "./features/advances/experience-workflow";
+import { commitAdvanceChoice, resolveAdvanceRoll } from "./features/advances/advance-resolution-workflow";
 
 const HISTORY_LIMIT = 50;
 
@@ -230,6 +231,16 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
             (input["awards"] ?? undefined) as Readonly<Record<string, number>> | undefined,
           );
           if (!result.ok) return error("rejected", result.message, { reason: result.reason });
+          return applyResult({ ok: true, state: result.document });
+        }
+        case "resolveAdvanceRoll": {
+          const result = resolveAdvanceRoll(state.current, knowledge, input as never);
+          if (!result.ok) return error("rejected", result.message);
+          return applyResult({ ok: true, state: result.document });
+        }
+        case "commitAdvanceChoice": {
+          const result = commitAdvanceChoice(state.current, knowledge, input as never);
+          if (!result.ok) return error("rejected", result.message);
           return applyResult({ ok: true, state: result.document });
         }
         case "assignEquipment":
