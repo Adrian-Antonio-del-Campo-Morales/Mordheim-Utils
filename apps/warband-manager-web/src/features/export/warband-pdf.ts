@@ -15,14 +15,15 @@ export async function createWarbandPdf(document: CampaignDocument, locale: "es" 
   const font = await pdf.embedFont(fontBytes);
   const { campaign } = document;
   const labels = locale === "es"
-    ? { roster: "Banda", treasury: "Tesorería", rating: "Valoración", inventory: "Almacén", xp: "EXP", equipment: "Equipo", skills: "Habilidades / heridas", state: "Estado", draft: "Borrador" }
-    : { roster: "Warband", treasury: "Treasury", rating: "Rating", inventory: "Stash", xp: "XP", equipment: "Equipment", skills: "Skills / injuries", state: "State", draft: "Draft" };
+    ? { roster: "Banda", treasury: "Tesorería", rating: "Valoración", inventory: "Almacén", xp: "EXP", equipment: "Equipo", skills: "Habilidades / heridas", state: "Estado", draft: "Borrador", post: "Postbatalla" }
+    : { roster: "Warband", treasury: "Treasury", rating: "Rating", inventory: "Stash", xp: "XP", equipment: "Equipment", skills: "Skills / injuries", state: "State", draft: "Draft", post: "Post-battle" };
   const selected = String(document.view.selected_moment ?? "draft:0");
   const stateNumber = /^state:\d+$/.test(selected) ? Number(selected.slice(6)) : null;
   const snapshot = stateNumber !== null && Number.isInteger(stateNumber) ? campaign.states.find((row) => row.number === stateNumber) : undefined;
-  const warriors = snapshot?.roster ?? (stateNumber === null ? campaign.warriors : []);
-  const inventory = snapshot?.inventory ?? (stateNumber === null ? campaign.inventory : []);
-  const moment = snapshot ? `${labels.state} #${snapshot.number} · ${snapshot.date}` : labels.draft;
+  const postNumber = /^post:\d+$/.test(selected) ? Number(selected.slice(5)) : null;
+  const warriors = snapshot?.roster ?? campaign.warriors;
+  const inventory = snapshot?.inventory ?? campaign.inventory;
+  const moment = snapshot ? `${labels.state} #${snapshot.number} · ${snapshot.date}` : postNumber === null ? labels.draft : `${labels.post} #${postNumber}`;
   let page = pdf.addPage(A4);
   let y = 790;
   const write = (text: string, size = 10, x = 42) => {

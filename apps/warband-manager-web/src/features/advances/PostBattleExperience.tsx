@@ -5,7 +5,7 @@ import { useCampaignApp } from "../campaign/useCampaignApp";
 import { AdvancesPanel } from "./AdvancesPanel";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 
-export function PostBattleExperience({ document, knowledge }: { readonly document: CampaignDocument; readonly knowledge: ArtefactKnowledgeReader }) {
+export function PostBattleExperience({ document, knowledge, locale="en" }: { readonly document: CampaignDocument; readonly knowledge: ArtefactKnowledgeReader; readonly locale?: "es" | "en" }) {
   const app = useCampaignApp();
   const post = document.campaign.post_battles.find((row) => !row.complete);
   const battle = post && document.campaign.battles.find((row) => row.number === post.battle_number);
@@ -20,14 +20,13 @@ export function PostBattleExperience({ document, knowledge }: { readonly documen
     return !recorded || followUp;
   }).length;
 
-  if (post.experience_applied) {
-    return <section aria-label="Experience and advances"><h3>02 · Experience and advances</h3><p role="status">Battle experience applied.</p><AdvancesPanel document={document} knowledge={knowledge} /></section>;
-  }
+  const t=locale==="es"?{title:"Experiencia y avances",applied:"Experiencia de batalla aplicada.",locked:"Las recompensas calculadas quedan bloqueadas hasta que actives la edición manual.",lock:"Bloquear recompensas",edit:"Editar recompensas",warrior:"Guerrero",status:"Estado",award:"EXP",absent:"Ausente",eligible:"Elegible",none:"Sin avances",injuries:"Resuelve todas las heridas graves antes de aplicar experiencia",remaining:"pendientes",apply:"Aplicar experiencia una vez",xp:"EXP para"}:{title:"Experience and advances",applied:"Battle experience applied.",locked:"Calculated awards are locked unless manual editing is enabled.",lock:"Lock awards",edit:"Edit awards",warrior:"Warrior",status:"Status",award:"XP award",absent:"Absent",eligible:"Eligible",none:"No advances",injuries:"Resolve all serious injuries before applying experience",remaining:"remaining",apply:"Apply experience once",xp:"XP for"};
+  if (post.experience_applied) return <section aria-label={t.title}><h3>02 · {t.title}</h3><p role="status">{t.applied}</p><AdvancesPanel document={document} knowledge={knowledge} /></section>;
 
-  return <section aria-label="Experience and advances">
-    <div className="section-heading"><div><h3>02 · Experience and advances</h3><p>Calculated awards are locked unless manual editing is enabled.</p></div><button type="button" onClick={() => setEditing((value) => !value)}>{editing ? "Lock awards" : "Edit awards"}</button></div>
-    <div className="table-scroll"><table><thead><tr><th>Warrior</th><th>Status</th><th>XP award</th></tr></thead><tbody>{calculated.map((row) => <tr key={row.warrior_id}><td>{row.warrior_name}</td><td>{row.absent ? "Absent" : row.eligible ? "Eligible" : "No advances"}</td><td>{editing && row.eligible && !row.absent ? <input aria-label={`XP for ${row.warrior_name}`} type="number" min={0} step={1} value={awards[row.warrior_id] ?? row.amount} onChange={(event) => setAwards((current) => ({ ...current, [row.warrior_id]: Math.max(0, Math.trunc(event.target.valueAsNumber || 0)) }))} /> : row.amount}</td></tr>)}</tbody></table></div>
-    {unresolvedInjuries > 0 && <p role="status">Resolve all serious injuries before applying experience ({unresolvedInjuries} remaining).</p>}
-    <button className="primary" type="button" disabled={unresolvedInjuries > 0} onClick={() => void app.runAction("applyBattleExperience", editing ? { awards: Object.fromEntries(calculated.map((row) => [row.warrior_id, awards[row.warrior_id] ?? row.amount])) } : {})}>Apply experience once</button>
+  return <section aria-label={t.title}>
+    <div className="section-heading"><div><h3>02 · {t.title}</h3><p>{t.locked}</p></div><button type="button" onClick={() => setEditing((value) => !value)}>{editing ? t.lock : t.edit}</button></div>
+    <div className="table-scroll"><table><thead><tr><th>{t.warrior}</th><th>{t.status}</th><th>{t.award}</th></tr></thead><tbody>{calculated.map((row) => <tr key={row.warrior_id}><td>{row.warrior_name}</td><td>{row.absent ? t.absent : row.eligible ? t.eligible : t.none}</td><td>{editing && row.eligible && !row.absent ? <input aria-label={`${t.xp} ${row.warrior_name}`} type="number" min={0} step={1} value={awards[row.warrior_id] ?? row.amount} onChange={(event) => setAwards((current) => ({ ...current, [row.warrior_id]: Math.max(0, Math.trunc(event.target.valueAsNumber || 0)) }))} /> : row.amount}</td></tr>)}</tbody></table></div>
+    {unresolvedInjuries > 0 && <p role="status">{t.injuries} ({unresolvedInjuries} {t.remaining}).</p>}
+    <button className="primary" type="button" disabled={unresolvedInjuries > 0} onClick={() => void app.runAction("applyBattleExperience", editing ? { awards: Object.fromEntries(calculated.map((row) => [row.warrior_id, awards[row.warrior_id] ?? row.amount])) } : {})}>{t.apply}</button>
   </section>;
 }
