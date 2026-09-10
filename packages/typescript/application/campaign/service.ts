@@ -52,7 +52,7 @@ import { resolveEyeInjury, resolveHatred, resolvePrisoner } from "./features/inj
 import { resolveSoldToPits } from "./features/injuries/sold-to-pits-workflow";
 import { resolveInjuryTableFollowUp } from "./features/injuries/injury-followup-workflow";
 import { resolveScenarioEncampment, resolveScenarioSpellReward } from "./features/exploration/scenario-followups-workflow";
-import { acknowledgeFollowUp } from "./features/review/follow-up-acknowledgement-workflow";
+import { acknowledgeFollowUp, followUpNeedsResolution } from "./features/review/follow-up-acknowledgement-workflow";
 import { mercenaryVariantsForBand } from "../../domain/campaign/hire-eligibility";
 
 const HISTORY_LIMIT = 50;
@@ -274,18 +274,28 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const outOfAction = Array.isArray(input["out_of_action_ids"]) ? input["out_of_action_ids"].map(String) : [];
           if (outOfAction.some((id) => unavailable.has(id))) return error("rejected", "Warriors excluded by a pre-battle injury check cannot be taken out of action.");
           const participants = state.current.campaign.warriors.filter((warrior) => (warrior.games_to_miss ?? 0) === 0 && !unavailable.has(warrior.id)).map((warrior) => warrior.id);
-          const result = useCases.recordBattle(state.current, { ...input, out_of_action_ids: outOfAction, participants } as never, knowledge);
+          const absentees = state.current.campaign.warriors.filter((warrior) => !participants.includes(warrior.id)).map((warrior) => ({ id: warrior.id, name: warrior.name, quantity: warrior.quantity ?? 1, reason: unavailable.has(warrior.id) ? "Old Battle Wound" : warrior.absence_reason ?? "Injury" }));
+          const result = useCases.recordBattle(state.current, { ...input, out_of_action_ids: outOfAction, participants, absentees } as never, knowledge);
           if (!result.ok) return applyResult(result);
           return applyResult({ ok: true, state: { ...result.state, view: { ...result.state.view, pending_battle_draft: undefined } } });
         }
         case "resolvePostBattleStep":
-          return applyResult(
-            useCases.resolvePostBattleStep(
-              state.current,
-              Number(input["battle_number"]),
-              input as never,
-            ),
-          );
+          {
+            const post = state.current.campaign.post_battles.find((row) => !row.complete);
+            const battle = post && state.current.campaign.battles.find((row) => row.number === post.battle_number);
+            if (!post || !battle) return error("rejected", "There is no pending post-battle sequence.");
+            const unresolved = (post.pending_follow_ups ?? []).some((row) => followUpNeedsResolution(row, post.acknowledgements ?? {}));
+            const injuries = new Map<string, number>();
+            for (const id of battle.out_of_action_ids ?? []) injuries.set(id, (injuries.get(id) ?? 0) + 1);
+            if (post.active_step === 0 && ([...injuries].some(([id, count]) => !Array.from({ length: count }, (_, index) => index + 1).every((casualtyIndex) => state.current!.campaign.warriors.find((warrior) => warrior.id === id)?.injury_records?.some((record) => Number(record["battle_number"]) === battle.number && Number(record["casualty_index"] ?? 1) === casualtyIndex))) || unresolved)) return error("rejected", "Resolve every serious injury and its follow-ups before continuing.");
+            if (post.active_step === 1 && (!post.experience_applied || (post.pending_advances ?? []).some((row) => !row["committed"]) || unresolved)) return error("rejected", "Resolve experience, every advance and follow-up before continuing.");
+            if (post.active_step === 2 && (!(post.step_state?.["exploration"] as Record<string, unknown> | undefined)?.["resolved"] || unresolved)) return error("rejected", "Resolve exploration and its follow-ups before continuing.");
+            if (post.active_step === 3 && !post.sale_resolved) return error("rejected", "Resolve the wyrdstone sale before continuing.");
+            if (post.active_step === 4 && !(post.step_state?.["veterans"] as Record<string, unknown> | undefined)?.["resolved"]) return error("rejected", "Resolve veteran availability before continuing.");
+            if (post.active_step === 5 && unresolved) return error("rejected", "Resolve every rare-search and Dramatis follow-up before continuing.");
+            if (post.active_step === 7) return error("rejected", "Confirm the next state from the review after resolving equipment obligations.");
+            return applyResult(useCases.resolvePostBattleStep(state.current, Number(input["battle_number"]), input as never));
+          }
         case "applyAdvance":
           return applyResult(useCases.applyAdvance(state.current, input as never));
         case "applyBattleExperience": {

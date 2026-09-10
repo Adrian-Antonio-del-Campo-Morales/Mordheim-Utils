@@ -63,6 +63,8 @@ export interface RecordBattleInput {
   readonly casualties: number;
   readonly out_of_action_ids: readonly IdString[] | null;
   readonly participants?: readonly IdString[];
+  /** Warriors excluded before deployment, with a display reason. */
+  readonly absentees?: readonly OpenPayload[];
   readonly notes?: string;
   /** Per-warrior XP awards (enemy OOA ownership, desktop `xp_awards`). */
   readonly xp_awards?: Readonly<Record<string, number>>;

@@ -25,6 +25,7 @@ interface HirelingsPanelProps {
   /** Listing-capable reader override (tests inject a fake). */
   readonly listings?: KnowledgeListings;
   readonly locale?: "es" | "en";
+  readonly mode?: "all" | "hirelings" | "trading";
 }
 
 function VariableFeeHire({ offer, name, busy, onHire }: { offer: ReturnType<ReturnType<typeof useHirelingsWorkflow>["hiredSwordOffers"]>[number]; name: string; busy: boolean; onHire: (fee: number) => void }) {
@@ -39,7 +40,7 @@ function VariableTradingPurchase({ offer, busy, onBuy }: { offer: TradingOfferRo
   return <button type="button" disabled={busy || price === null} onClick={() => price !== null && onBuy(price)}>Buy for {price} gc</button>;
 }
 
-export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsPanelProps) {
+export function HirelingsPanel({ document, listings, locale = "en", mode = "all" }: HirelingsPanelProps) {
   const app = useCampaignApp();
   const workflow = useHirelingsWorkflow(listings);
   const [busy, setBusy] = useState(false);
@@ -79,7 +80,7 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
 
   return (
     <section aria-label="Hirelings and Trading" aria-busy={busy}>
-      <h3>{t.hired}</h3>
+      {mode !== "trading" && <><h3>{t.hired}</h3>
       {offers.length === 0 ? (
         <p role="status">{t.none}</p>
       ) : (
@@ -117,9 +118,9 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
             ))}
           </tbody>
         </table>
-      )}
+      )}</>}
 
-      <h3>{t.trading}</h3>
+      {mode !== "hirelings" && <><h3>{t.trading}</h3>
       <table>
         <caption>{t.goods}</caption>
         <thead>
@@ -178,7 +179,7 @@ export function HirelingsPanel({ document, listings, locale = "en" }: HirelingsP
             ))}
           </tbody>
         </table>
-      )}
+      )}</>}
     </section>
   );
 }

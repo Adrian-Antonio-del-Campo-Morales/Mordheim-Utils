@@ -101,6 +101,7 @@ export function recordBattle(
   const date = new Date().toISOString().slice(0, 10);
 
   const casualties = outOfAction.length;
+  const perGroupCasualties = outOfAction.reduce<Record<string, number>>((counts, id) => ({ ...counts, [id]: (counts[id] ?? 0) + 1 }), {});
   const battle: Battle = {
     number,
     date,
@@ -121,6 +122,7 @@ export function recordBattle(
     ...(input.scenario_results ? { scenario_results: input.scenario_results } : {}),
     ...(input.notes ? { notes: input.notes } : {}),
     out_of_action_ids: [...outOfAction],
+    ...(Object.keys(perGroupCasualties).length ? { per_group_casualties: perGroupCasualties } : {}),
     ...(input.participants
       ? {
           participants: input.participants.map((id) => {
@@ -136,6 +138,7 @@ export function recordBattle(
           }),
         }
       : {}),
+    ...(input.absentees?.length ? { absentees: input.absentees } : {}),
   };
 
   const postBattle: PostBattle = {

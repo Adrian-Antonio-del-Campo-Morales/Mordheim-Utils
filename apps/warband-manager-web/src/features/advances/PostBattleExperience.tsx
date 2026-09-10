@@ -13,9 +13,12 @@ export function PostBattleExperience({ document, knowledge, locale="en" }: { rea
   const [editing, setEditing] = useState(false);
   const [awards, setAwards] = useState<Record<string, number>>({});
   if (!post) return null;
+  const injuryCounts = new Map<string, number>();
   const unresolvedInjuries = (battle?.out_of_action_ids ?? []).filter((warriorId) => {
+    const casualtyIndex = (injuryCounts.get(warriorId) ?? 0) + 1;
+    injuryCounts.set(warriorId, casualtyIndex);
     const warrior = document.campaign.warriors.find((row) => row.id === warriorId);
-    const recorded = (warrior?.injury_records ?? []).some((row) => Number(row["battle_number"]) === post.battle_number);
+    const recorded = (warrior?.injury_records ?? []).some((row) => Number(row["battle_number"]) === post.battle_number && Number(row["casualty_index"] ?? 1) === casualtyIndex);
     const followUp = (post.pending_follow_ups ?? []).some((row) => row["warrior_id"] === warriorId);
     return !recorded || followUp;
   }).length;

@@ -47,6 +47,8 @@ export type InjuriesWorkflowResult =
 export interface InjuryOutcomeInput {
   readonly warrior_id: IdString;
   readonly battle_number?: number;
+  /** One-based casualty ordinal for a henchman group recorded Out of Action more than once. */
+  readonly casualty_index?: number;
   /** Stable KB id of the rolled result (e.g. `smashed_hand`). */
   readonly result_id: string;
   /** Volatile display text of the result. */
@@ -142,8 +144,12 @@ export function applyInjuryOutcome(
   if (!warrior) {
     return { ok: false, reason: "not_found", message: `Unknown warrior id: ${input.warrior_id}.` };
   }
-  if (input.battle_number !== undefined && (warrior.injury_records ?? []).some((record) => Number(record["battle_number"]) === input.battle_number)) {
-    return { ok: false, reason: "conflict", message: `${warrior.name} already has a serious-injury result for this battle.` };
+  const casualtyIndex = input.casualty_index ?? 1;
+  if (!Number.isInteger(casualtyIndex) || casualtyIndex < 1) {
+    return { ok: false, reason: "invalid_input", message: "casualty_index must be a positive integer." };
+  }
+  if (input.battle_number !== undefined && (warrior.injury_records ?? []).some((record) => Number(record["battle_number"]) === input.battle_number && Number(record["casualty_index"] ?? 1) === casualtyIndex)) {
+    return { ok: false, reason: "conflict", message: `${warrior.name} already has this serious-injury result for this battle.` };
   }
   const effects = [...(input.effects ?? []), ...(input.extra_effects ?? [])];
   let gamesToMiss = warrior.games_to_miss ?? 0;
@@ -191,13 +197,13 @@ export function applyInjuryOutcome(
     } else if (kind === "battle_start_check") {
       const check=(effect as {check?:OpenPayload}).check; if(!check)return{ok:false,reason:"invalid_input",message:"battle_start_check needs KB check data."}; battleChecks=[...battleChecks,check];
     } else if (kind === "follow_up") {
-      const item=effect as {type?:unknown;payload?:OpenPayload}; if(typeof item.type!=="string"||!item.type)return{ok:false,reason:"invalid_input",message:"follow_up needs a type."}; followUps.push({id:`${item.type}:${warrior.id}:${input.result_id}`,step:"injuries",type:item.type,warrior_id:warrior.id,result_id:input.result_id,...(item.payload??{})});
+      const item=effect as {type?:unknown;payload?:OpenPayload}; if(typeof item.type!=="string"||!item.type)return{ok:false,reason:"invalid_input",message:"follow_up needs a type."}; followUps.push({id:`${item.type}:${warrior.id}:${input.result_id}:${casualtyIndex}`,step:"injuries",type:item.type,warrior_id:warrior.id,casualty_index:casualtyIndex,result_id:input.result_id,...(item.payload??{})});
     } else {
       // Open-payload policy: preserve what this port does not interpret.
       uninterpreted.push(effect);
     }
   }
-  if(input.result_id.includes("blinded-in-one-eye"))followUps.push({id:`eye_injury:${warrior.id}:${input.result_id}`,step:"injuries",type:"eye_injury",warrior_id:warrior.id,result_id:input.result_id});
+  if(input.result_id.includes("blinded-in-one-eye"))followUps.push({id:`eye_injury:${warrior.id}:${input.result_id}:${casualtyIndex}`,step:"injuries",type:"eye_injury",warrior_id:warrior.id,casualty_index:casualtyIndex,result_id:input.result_id});
 
   const record: OpenPayload = {
     result_id: input.result_id,
@@ -205,6 +211,7 @@ export function applyInjuryOutcome(
     effects: [...effects],
     applied_at_step: "injuries",
     ...(input.battle_number !== undefined ? { battle_number: input.battle_number } : {}),
+    ...(input.battle_number !== undefined ? { casualty_index: casualtyIndex } : {}),
   };
   const nextWarrior: Warrior = {
     ...warrior,
@@ -232,6 +239,7 @@ export function applyInjuryOutcome(
   if (input.follow_up || uninterpreted.length > 0) {
     const parked = recordFollowUp(nextDocument, {
       warrior_id: input.warrior_id,
+      casualty_index: casualtyIndex,
       result_id: input.result_id,
       description: input.follow_up ?? "Resolve the uninterpreted injury effect.",
       ...(uninterpreted.length > 0 ? { payload: { extra_effects: uninterpreted } } : {}),
@@ -247,6 +255,7 @@ export function recordFollowUp(
   document: CampaignDocument,
   input: {
     readonly warrior_id: IdString;
+    readonly casualty_index?: number;
     readonly result_id: string;
     readonly description: string;
     readonly payload?: OpenPayload;
@@ -261,10 +270,11 @@ export function recordFollowUp(
     };
   }
   const followUp: OpenPayload = {
-    id: `injury:${input.warrior_id}:${input.result_id}`,
+    id: `injury:${input.warrior_id}:${input.result_id}:${input.casualty_index ?? 1}`,
     step: "injuries",
     type: "injury_roll",
     warrior_id: input.warrior_id,
+    casualty_index: input.casualty_index ?? 1,
     result_id: input.result_id,
     description: input.description,
     ...(input.payload ? { payload: input.payload } : {}),

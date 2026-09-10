@@ -39,6 +39,28 @@ function RosterOverview({ document, stateNumber, editable, locale }: { document:
   </section>;
 }
 
+function PostBattleWorkspace({ document, knowledge, locale }: { document: CampaignDocument; knowledge?: ArtefactKnowledgeReader; locale: "es" | "en" }) {
+  const app = useCampaignApp();
+  const post = document.campaign.post_battles.find((row) => !row.complete);
+  if (!post) return null;
+  const labels = locale === "es"
+    ? ["Heridas", "Experiencia", "Exploración", "Vender piedra bruja", "Veteranos", "Objetos raros y Dramatis", "Reclutamiento", "Equipo"]
+    : ["Injuries", "Experience", "Exploration", "Sell wyrdstone", "Veterans", "Rare items & Dramatis", "Recruitment", "Equipment"];
+  const step = post.active_step;
+  const next = () => void app.runAction("resolvePostBattleStep", { battle_number: post.battle_number });
+  return <>
+    <section aria-label="Post-battle phase"><p role="status">{locale === "es" ? "Post-batalla" : "Post-battle"} #{post.battle_number} · {step + 1}/8 · {labels[step]}</p>{step < 7 && <button className="primary" type="button" onClick={next}>{locale === "es" ? `Continuar a ${labels[step + 1]}` : `Continue to ${labels[step + 1]}`}</button>}</section>
+    {step === 0 && <>{knowledge && <PostBattleInjuries document={document} knowledge={knowledge} locale={locale} />}<InjuriesPanel document={document} knowledge={knowledge} /><FollowUpAcknowledgements document={document} locale={locale} /></>}
+    {step === 1 && <>{knowledge && <PostBattleExperience document={document} knowledge={knowledge} locale={locale} />}{knowledge && <ManualSkillPanel document={document} knowledge={knowledge} locale={locale} />}<FollowUpAcknowledgements document={document} locale={locale} /></>}
+    {step === 2 && <>{knowledge && <ExplorationPanel document={document} knowledge={knowledge} locale={locale} />}{knowledge && <ScenarioFollowupsPanel document={document} knowledge={knowledge} locale={locale} />}<FollowUpAcknowledgements document={document} locale={locale} /></>}
+    {step === 3 && knowledge && <WyrdstoneSalePanel document={document} knowledge={knowledge} locale={locale} />}
+    {step === 4 && <VeteranPoolPanel document={document} locale={locale} />}
+    {step === 5 && knowledge && <RareSearchPanel document={document} knowledge={knowledge} locale={locale} />}
+    {step === 6 && <>{knowledge && <RecruitProfilePanel document={document} knowledge={knowledge} locale={locale} />}<GroupRecruitmentPanel document={document} locale={locale} />{knowledge && <HirelingsPanel document={document} listings={knowledge} locale={locale} mode="hirelings" />}<HirelingUpkeepPanel document={document} locale={locale} /></>}
+    {step === 7 && <>{knowledge && <HirelingsPanel document={document} listings={knowledge} locale={locale} mode="trading" />}<EquipmentPanel document={document} locale={locale} />{knowledge && <ManualCorrectionsPanel document={document} knowledge={knowledge} locale={locale} />}<ReviewPanel document={document} locale={locale} /></>}
+  </>;
+}
+
 export function CampaignSlice({ knowledge, locale = "en" }: { knowledge?: ArtefactKnowledgeReader; locale?: "es" | "en" }) {
   const app = useCampaignApp(); const doc = app.document;
   if (!doc) return null;
@@ -57,7 +79,7 @@ export function CampaignSlice({ knowledge, locale = "en" }: { knowledge?: Artefa
       <div className="moment-detail">
         {selected.startsWith("state:") && <><RosterOverview document={doc} stateNumber={battleNumber} editable={currentState} locale={locale} /><EquipmentPanel document={stateDocument} readOnly={!currentState} locale={locale} />{currentState && <BattlePanel document={doc} knowledge={knowledge} locale={locale} />}</>}
         {selected.startsWith("battle:") && <BattleHistory battle={battle} locale={locale} />}
-        {selected.startsWith("post:") && (selectedPost?.complete ? <PostBattleHistory document={doc} battleNumber={battleNumber} locale={locale} /> : <><BattlePanel document={doc} knowledge={knowledge} locale={locale} />{knowledge && <PostBattleInjuries document={doc} knowledge={knowledge} locale={locale} />}<InjuriesPanel document={doc} knowledge={knowledge} />{knowledge && <PostBattleExperience document={doc} knowledge={knowledge} locale={locale} />}{knowledge && <ExplorationPanel document={doc} knowledge={knowledge} locale={locale} />}{knowledge && <ScenarioFollowupsPanel document={doc} knowledge={knowledge} locale={locale} />}<FollowUpAcknowledgements document={doc} locale={locale}/>{knowledge && <WyrdstoneSalePanel document={doc} knowledge={knowledge} locale={locale} />}<VeteranPoolPanel document={doc} locale={locale} />{knowledge && <RecruitProfilePanel document={doc} knowledge={knowledge} locale={locale} />}<GroupRecruitmentPanel document={doc} locale={locale} />{knowledge && <RareSearchPanel document={doc} knowledge={knowledge} locale={locale} />}<HirelingsPanel document={doc} listings={knowledge} locale={locale} /><HirelingUpkeepPanel document={doc} locale={locale} /><EquipmentPanel document={doc} locale={locale} />{knowledge && <ManualSkillPanel document={doc} knowledge={knowledge} locale={locale} />}{knowledge && <ManualCorrectionsPanel document={doc} knowledge={knowledge} locale={locale} />}<ReviewPanel document={doc} locale={locale} /></>)}
+        {selected.startsWith("post:") && (selectedPost?.complete ? <PostBattleHistory document={doc} battleNumber={battleNumber} locale={locale} /> : <PostBattleWorkspace document={doc} knowledge={knowledge} locale={locale} />)}
       </div></div>}
   </section>;
 }
