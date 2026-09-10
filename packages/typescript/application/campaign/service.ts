@@ -86,7 +86,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
   const draftWorkflow = createDraftWorkflow({ knowledge: deps.knowledge, useCases });
   const state: ServiceState = { current: null, dirty: false, baseline: null, history: [] };
   const listeners = new Set<() => void>();
-  const fingerprint = (document: CampaignDocument): string => JSON.stringify(document.campaign);
+  const fingerprint = (document: CampaignDocument): string => JSON.stringify({ campaign: document.campaign, pending_battle_draft: document.view.pending_battle_draft ?? null });
   function notify(): void {
     state.dirty = state.current !== null && fingerprint(state.current) !== state.baseline;
     for (const listener of listeners) listener();
@@ -281,6 +281,11 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const failure = (check["failure_when"] ?? {}) as Record<string, unknown>; const min = Number(failure["min"] ?? 0); const max = Number(failure["max"] ?? min);
           const checks = { ...((state.current.view.pending_battle_draft?.["battle_start_checks"] ?? {}) as Record<string, unknown>), [`${warriorId}:${checkId}`]: { roll, misses_battle: roll >= min && roll <= max, reason: "Old Battle Wound" } };
           return applyResult({ ok: true, state: { ...state.current, view: { ...state.current.view, pending_battle_draft: { ...(state.current.view.pending_battle_draft ?? {}), battle_start_checks: checks } } });
+        }
+        case "saveBattleDraft": {
+          state.current = { ...state.current, view: { ...state.current.view, pending_battle_draft: { ...((input["draft"] as Record<string, unknown> | undefined) ?? {}), battle_start_checks: state.current.view.pending_battle_draft?.["battle_start_checks"] } } };
+          notify();
+          return { ok: true, document: state.current };
         }
         case "recordBattle": {
           const checks = (state.current.view.pending_battle_draft?.["battle_start_checks"] ?? {}) as Record<string, { misses_battle?: boolean }>;
