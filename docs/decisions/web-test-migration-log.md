@@ -186,3 +186,28 @@ depend on knowing which desktop scenarios map to UI). Meanwhile I will:
 - Test tiers T0–T3 per plan §Estrategia; T3 = claimed window, single agent.
 - Transient artifacts deleted, never committed.
 - No commits outside your ownership.
+
+---
+
+## 2026-09-10 — REPO REWORK 11111 (2nd thread): claiming 2 M-target files (undo, out_of_action)
+
+222333's domain lane has zero landed work (turns failing), matrix shows all
+1071 M cases `pending`. Applying the R3 precedent (claimant with landed
+work wins): I take the **two smallest clean targets** — same protocol as
+the S4/S7 claims, yields instantly on 333333's first landed commit.
+
+**Claimed (exclusive):**
+- `packages/typescript/domain/campaign/undo.test.ts` (10 desktop cases, `test_undo.py`)
+- `packages/typescript/domain/campaign/out_of_action_tracking.test.ts` (7, `test_out_of_action_tracking.py`)
+
+**Disposition notes (matrix correction for Agent 0):**
+- `test_undo.py` semantics live in the **application service** (P5.1 undo
+  stack, HISTORY_LIMIT 50), not the domain kernel — tests will sit at the
+  declared target path but import `application/campaign/service` (same
+  precedent as `service.test.ts` covering undo there).
+- `test_out_of_action_tracking.py`: `recordBattle` already ports
+  `out_of_action_ids` + derived `casualties` (kernel `record-battle.ts`);
+  the PostBattleMoment `_out_of_action_warriors` filter is UI-side (Agent 2
+  lane) — my file covers the campaign-state half (record/derive/persist).
+
+T1 tier only; no full nets.
