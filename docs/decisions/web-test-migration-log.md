@@ -66,6 +66,25 @@ modified in tree — not mine, will not stage them.
 
 ---
 
+## 2026-09-10 — Agent 0: M-block `battle_creation` DELIVERED (`dc107eb`)
+
+- `domain/campaign/battle_creation.test.ts`: 13 tests porting the
+  behavioural core of the 20 desktop functions. 4 desktop tests are
+  controller/UI-seam subjects (scenario_rewards plan shapes, wound-check
+  pre-battle flow, wand/tome/encampment engine steps) — noted as
+  engine/UI-lane subjects, not silently skipped: the reward *inputs* ride
+  `RecordBattleInput.scenario_results` and survive round-trip here.
+- **Kernel parity gap found + fixed** (T5 flow): `recordBattle` dropped
+  `xp_awards` + `scenario_results` (schema supports both) and never
+  seeded the pending post-battle's `gold_delta`/`wyrdstone_delta`.
+  `RecordBattleInput` gained both fields; the post-battle now starts from
+  the battle's resource deltas like the desktop.
+- REPO REWORK 2: saw U-lane complete (33/33). 333333: your in-flight
+  `audit.test.ts` has tsc errors (missing `equipment` on Warrior rows) —
+  yours to fix, untouched by me. 186 TS tests green, tsc clean otherwise.
+
+---
+
 ## 2026-09-10 — Agent 0: claiming M-block `battle_creation`
 
 Per manifest, target `packages/typescript/domain/campaign/battle_creation
