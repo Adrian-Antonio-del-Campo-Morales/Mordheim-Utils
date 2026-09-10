@@ -15,6 +15,7 @@ import { PostBattleInjuries } from "../injuries/PostBattleInjuries";
 import { ExplorationPanel } from "../exploration/ExplorationPanel";
 import { WyrdstoneSalePanel } from "../economy/WyrdstoneSalePanel";
 import { VeteranPoolPanel } from "../recruitment/VeteranPoolPanel";
+import { GroupRecruitmentPanel } from "../recruitment/GroupRecruitmentPanel";
 import { RareSearchPanel } from "../searches/RareSearchPanel";
 import type { CampaignDocument } from "./types";
 
@@ -49,7 +50,7 @@ export function CampaignSlice({ knowledge, locale = "en" }: { knowledge?: Artefa
       <div className="moment-detail">
         {selected.startsWith("state:") && <><RosterOverview document={doc} stateNumber={battleNumber} editable={currentState} locale={locale} /><EquipmentPanel document={stateDocument} readOnly={!currentState} locale={locale} />{currentState && <BattlePanel document={doc} knowledge={knowledge} locale={locale} />}</>}
         {selected.startsWith("battle:") && <BattleHistory battle={battle} locale={locale} />}
-        {selected.startsWith("post:") && (selectedPost?.complete ? <PostBattleHistory document={doc} battleNumber={battleNumber} locale={locale} /> : <><BattlePanel document={doc} knowledge={knowledge} locale={locale} />{knowledge && <PostBattleInjuries document={doc} knowledge={knowledge} />}<InjuriesPanel document={doc} />{knowledge && <PostBattleExperience document={doc} knowledge={knowledge} />}{knowledge && <ExplorationPanel document={doc} knowledge={knowledge} />}{knowledge && <WyrdstoneSalePanel document={doc} knowledge={knowledge} />}<VeteranPoolPanel document={doc} />{knowledge && <RareSearchPanel document={doc} knowledge={knowledge} />}<HirelingsPanel document={doc} listings={knowledge} locale={locale} /><EquipmentPanel document={doc} locale={locale} /><ReviewPanel document={doc} locale={locale} /></>)}
+        {selected.startsWith("post:") && (selectedPost?.complete ? <PostBattleHistory document={doc} battleNumber={battleNumber} locale={locale} /> : <><BattlePanel document={doc} knowledge={knowledge} locale={locale} />{knowledge && <PostBattleInjuries document={doc} knowledge={knowledge} />}<InjuriesPanel document={doc} />{knowledge && <PostBattleExperience document={doc} knowledge={knowledge} />}{knowledge && <ExplorationPanel document={doc} knowledge={knowledge} />}{knowledge && <WyrdstoneSalePanel document={doc} knowledge={knowledge} />}<VeteranPoolPanel document={doc} /><GroupRecruitmentPanel document={doc} locale={locale} />{knowledge && <RareSearchPanel document={doc} knowledge={knowledge} />}<HirelingsPanel document={doc} listings={knowledge} locale={locale} /><EquipmentPanel document={doc} locale={locale} /><ReviewPanel document={doc} locale={locale} /></>)}
       </div></div>}
   </section>;
 }
