@@ -70,7 +70,12 @@ function applyCharacteristic(document: CampaignDocument, reader: CatalogueReader
 export function resolveAdvanceRoll(document: CampaignDocument, reader: CatalogueReader, input: {warrior_id:string;threshold:number|null;roll_total:number;subroll?:number}): Result {
   const {post,warrior,row}=context(document,input.warrior_id,input.threshold); if(!post||!warrior||!row) return {ok:false,message:"No matching pending advance."};
   if(row["committed"]) return {ok:false,message:"This advance is already committed."};
+  if(row["promotion_setup_pending"]) return {ok:false,message:"Choose two Hero skill lists before rolling this advance."};
   if(!Number.isInteger(input.roll_total)||input.roll_total<2||input.roll_total>12) return {ok:false,message:"Advance roll must be between 2 and 12."};
+  if(row["reroll_exclude_promotion"] && input.roll_total>=10) {
+    const reset={...row,roll_total:null,subroll:null,advance_options:[],roll_history:[...((row["roll_history"] as string[]|undefined)??[]),`Rolled ${input.roll_total}: the remaining Henchmen must reroll results 10-12.`]};
+    return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?reset:item))};
+  }
   const result=outcome(reader,String(row["table"]??"hero"),input.roll_total,input.subroll);
   if(result["type"]==="roll_table" && input.subroll===undefined) {
     const changed={...row,roll_total:input.roll_total,subroll:null,advance_options:[]};
@@ -107,4 +112,47 @@ export function commitAdvanceChoice(document: CampaignDocument, reader: Catalogu
     return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?committed:item),document.campaign.warriors.map((item)=>item.id===warrior.id?changed:item))};
   }
   return {ok:false,message:"This desktop advance option is not implemented yet."};
+}
+
+function nextWarriorId(document: CampaignDocument, base: string): string {
+  const ids=new Set(document.campaign.warriors.map((row)=>row.id)); let candidate=`${base}#promoted`; let index=2;
+  while(ids.has(candidate)) candidate=`${base}#promoted-${index++}`;
+  return candidate;
+}
+
+export function promoteHenchman(document: CampaignDocument, input:{warrior_id:string;threshold:number|null;member_name?:string}): Result {
+  const {post,warrior,row}=context(document,input.warrior_id,input.threshold); if(!post||!warrior||!row) return {ok:false,message:"No matching pending promotion."};
+  const offered=((row["advance_options"]??[]) as OpenPayload[]).some((item)=>item["kind"]==="promote_henchman");
+  if(!offered||warrior.kind!=="henchman") return {ok:false,message:"The Lad's Got Talent is not offered for this warrior."};
+  const heroes=document.campaign.warriors.reduce((total,item)=>total+(item.kind==="hero"?(item.quantity??1):0),0);
+  if(heroes>=document.campaign.configuration.hero_limit) {
+    const reset={...row,roll_total:null,subroll:null,advance_options:[],promotion_offer:false,roll_history:[...((row["roll_history"] as string[]|undefined)??[]),`Hero maximum reached (${document.campaign.configuration.hero_limit}); reroll this advance.`]};
+    return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?reset:item))};
+  }
+  const quantity=warrior.quantity??1; const nonUniform=warrior.equipment.filter((item)=>item.per_model&&item.quantity%quantity!==0);
+  if(nonUniform.length) return {ok:false,message:`Normalize group equipment first: ${nonUniform.map((item)=>item.name).join(", ")}.`};
+  const heroEquipment=warrior.equipment.filter((item)=>item.per_model&&item.quantity>0).map((item)=>({...item,quantity:item.quantity/quantity,per_model:false}));
+  const groupEquipment=warrior.equipment.map((item)=>item.per_model?{...item,quantity:item.quantity-item.quantity/quantity}:item).filter((item)=>item.quantity>0);
+  const heroId=nextWarriorId(document,warrior.profile_id??warrior.id); const hero: Warrior={...warrior,id:heroId,name:String(input.member_name??"").trim()||`${warrior.profile_name} Champion`,kind:"hero",quantity:1,equipment:heroEquipment,skills:[],skill_access:[],previous_experience:warrior.previous_experience,stat_advances:{...(warrior.stat_advances??{})}};
+  const remaining=quantity-1; const warriors=remaining>0
+    ? document.campaign.warriors.map((item)=>item.id===warrior.id?{...item,quantity:remaining,equipment:groupEquipment,name:item.name.endsWith(" group")?item.name:`${item.profile_name} group`}:item).concat(hero)
+    : document.campaign.warriors.filter((item)=>item.id!==warrior.id).concat(hero);
+  let pending=(post.pending_advances??[]).filter((item)=>remaining>0||item!==row);
+  if(remaining>0) pending=pending.map((item)=>item===row?{...item,roll_total:null,subroll:null,advance_options:[],promotion_offer:false,reroll_exclude_promotion:true,roll_history:[...((item["roll_history"] as string[]|undefined)??[]),"Rolled 10-12: one member became a Hero; remaining group rerolls."]}:item);
+  pending=[...pending,{warrior_id:hero.id,warrior_name:hero.name,table:"hero",threshold:null,roll_total:null,subroll:null,committed:false,applied_label:"",promotion_immediate:true,promotion_setup_pending:true,promotion_tables:[]}];
+  return {ok:true,document:update(document,post.battle_number,pending,warriors)};
+}
+
+export function promotionHeroTables(document: CampaignDocument, reader: CatalogueReader): readonly string[] {
+  const tables=new Set<string>();
+  for(const profile of reader.list?.("profile")??[]) if(profile["band_id"]===document.campaign.identity.band_id&&profile["type"]==="hero") for(const table of (profile["skill_access"]??[]) as string[]) tables.add(table);
+  return [...tables];
+}
+
+export function setPromotionSkillTables(document: CampaignDocument, reader: CatalogueReader, input:{warrior_id:string;tables:readonly string[]}): Result {
+  const {post,warrior,row}=context(document,input.warrior_id,null); if(!post||!warrior||!row||!row["promotion_setup_pending"]) return {ok:false,message:"No pending promotion setup."};
+  const selected=[...new Set(input.tables)]; const available=new Set(promotionHeroTables(document,reader));
+  if(selected.length!==2||selected.some((item)=>!available.has(item))) return {ok:false,message:"Choose exactly two available Hero skill lists."};
+  const changed={...warrior,skill_access:selected}; const pending=post.pending_advances!.map((item)=>item===row?{...item,promotion_tables:selected,promotion_setup_pending:false}:item);
+  return {ok:true,document:update(document,post.battle_number,pending,document.campaign.warriors.map((item)=>item.id===warrior.id?changed:item))};
 }
