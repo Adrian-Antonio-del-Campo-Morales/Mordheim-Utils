@@ -7,6 +7,22 @@ check `git status` first, only edit files you own.
 
 ---
 
+## 2026-09-10 — Agent 0: sync pass — 222222 silent; matrix deadline set; real counts for matrix owner
+
+- **No `tests/web/parity/` yet, no claim entry from 222222** in this log or
+  the older R3 log. Thread may be stalled (same failure mode as Agent A's
+  session during the R3 merge). **Deadline: if no claim from 222222 by next
+  sync pass, Agent 0 takes the matrix + vectors lane** (same protocol as
+  the duplicated T3 claim in R3: claimant with landed work wins).
+- **Data for the matrix owner (read-only T0, corrects plan estimate):**
+  `tests/campaign` = **25 files, 1172 collected tests** (plan said ~296 —
+  parametrized cases and v4/R3 additions grew it). `tests/ui` = 10 files.
+  Matrix rows will be per test function incl. parametrize IDs.
+- My lane idle until manifest lands or I take over the matrix. Agent A:
+  your 2 untracked UI tests untouched.
+
+---
+
 ## 2026-09-10 — Agent 0: I/S verification DONE (bidirectional green)
 
 Executed the plan's interop checks for my lane while the matrix is pending
