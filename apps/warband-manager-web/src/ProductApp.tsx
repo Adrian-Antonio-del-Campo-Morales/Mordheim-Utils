@@ -42,6 +42,24 @@ function rulesRows(knowledge: ArtefactKnowledgeReader, category: RuleCategory) {
   return Array.isArray(tables) ? tables as Record<string, unknown>[] : [];
 }
 
+function profileLinks(knowledge: ArtefactKnowledgeReader, category: RuleCategory, entry: Record<string, unknown>, locale: Locale) {
+  if (category !== "skills" && category !== "equipment") return [];
+  const entryId = String(entry.id ?? entry.item_id ?? "");
+  const skillCategory = String(entry.category ?? "").toLocaleLowerCase();
+  const bands = new Map(knowledge.list("band").map((band) => [String(band.id), resolveName(band, locale)]));
+  return knowledge.list("profile").flatMap((profile) => {
+    const access = Array.isArray(profile.skill_access) ? profile.skill_access.map((value) => String(value).toLocaleLowerCase()) : [];
+    const traits = profile.combat_traits && typeof profile.combat_traits === "object" ? profile.combat_traits as Record<string, unknown> : {};
+    const starting = Array.isArray(traits.starting_skills) ? traits.starting_skills.map(String) : [];
+    const fixed = Array.isArray(profile.fixed_equipment) ? profile.fixed_equipment.map((value) => typeof value === "string" ? value : String((value as Record<string, unknown>).item_id ?? "")) : [];
+    const relation = category === "skills"
+      ? starting.includes(entryId) ? "starting skill" : skillCategory && access.includes(skillCategory) ? "skill table" : null
+      : fixed.includes(entryId) ? "equipment" : null;
+    if (!relation) return [];
+    return [{ band: bands.get(String(profile.band_id)) ?? String(profile.band_id), profile: resolveName(profile, locale), relation, profileId: String(profile.id) }];
+  }).sort((left, right) => `${left.band}:${left.profile}`.localeCompare(`${right.band}:${right.profile}`, locale));
+}
+
 function RulesPage({ knowledge, locale }: { knowledge: ArtefactKnowledgeReader; locale: Locale }) {
   const [query, setQuery] = useState("");
   const [kind, setKind] = useState<RuleCategory>("special-rules");
@@ -49,11 +67,12 @@ function RulesPage({ knowledge, locale }: { knowledge: ArtefactKnowledgeReader; 
   const rows = rulesRows(knowledge, kind).filter((row) => JSON.stringify(row).normalize("NFD").replace(/\p{Diacritic}/gu, "").toLocaleLowerCase().includes(needle));
   const [selected, setSelected] = useState<string | null>(null);
   const selectedRow = rows.find((row) => String(row.id ?? row.item_id) === selected) ?? rows[0];
+  const links = selectedRow ? profileLinks(knowledge, kind, selectedRow, locale) : [];
   const categories: readonly [RuleCategory, string][] = locale === "es" ? [["special-rules","Reglas especiales"],["conditions","Condiciones"],["core-rules","Reglas básicas"],["skills","Habilidades"],["equipment","Equipo"],["spells","Hechizos"],["scenarios","Escenarios"],["injuries","Heridas graves"]] : [["special-rules","Special rules"],["conditions","Conditions"],["core-rules","Core rules"],["skills","Skills"],["equipment","Equipment"],["spells","Spells"],["scenarios","Scenarios"],["injuries","Serious injuries"]];
   return <section className="page"><div className="page-title"><p>KNOWLEDGE BASE</p><h1>{copy[locale].rules}</h1></div>
     <div className="rules-toolbar"><div className="tabs">{categories.map(([value,label]) => <button className={kind === value ? "active" : ""} onClick={() => { setKind(value); setSelected(null); setQuery(""); }} key={value}>{label}</button>)}</div><input aria-label={copy[locale].search} placeholder={copy[locale].search} value={query} onChange={(e) => setQuery(e.target.value)} /></div>
     <div className="rules-layout"><div className="rule-list">{rows.map((row) => { const id=String(row.id ?? row.item_id); return <button className={id===String(selectedRow?.id ?? selectedRow?.item_id) ? "active" : ""} onClick={() => setSelected(id)} key={`${kind}:${id}`}>{resolveName(row, locale)}</button>; })}{rows.length===0 && <p>{copy[locale].noRules}</p>}</div>
-    <article className="rule-detail">{selectedRow && <><h2>{resolveName(selectedRow, locale)}</h2><p>{localizedText(selectedRow, locale)}</p>{Array.isArray(selectedRow.tags) && <div className="rule-tags">{selectedRow.tags.map((tag) => <span key={String(tag)}>{String(tag)}</span>)}</div>}{Array.isArray(selectedRow.source_refs) && <><h3>{locale === "es" ? "Fuentes" : "Sources"}</h3><ul>{selectedRow.source_refs.map((source, index) => { const row=source as Record<string, unknown>; const label=String(row.section ?? row.manual ?? source); const url=typeof row.url === "string" ? row.url : null; return <li key={`${label}:${index}`}>{url ? <a href={url} target="_blank" rel="noreferrer">{label}</a> : label}</li>; })}</ul></>}</>}</article></div></section>;
+    <article className="rule-detail">{selectedRow && <><h2>{resolveName(selectedRow, locale)}</h2><p>{localizedText(selectedRow, locale)}</p>{Array.isArray(selectedRow.tags) && <div className="rule-tags">{selectedRow.tags.map((tag) => <span key={String(tag)}>{String(tag)}</span>)}</div>}{Array.isArray(selectedRow.source_refs) && <><h3>{locale === "es" ? "Fuentes" : "Sources"}</h3><ul>{selectedRow.source_refs.map((source, index) => { const row=source as Record<string, unknown>; const label=String(row.section ?? row.manual ?? source); const url=typeof row.url === "string" ? row.url : null; return <li key={`${label}:${index}`}>{url ? <a href={url} target="_blank" rel="noreferrer">{label}</a> : label}</li>; })}</ul></>}{links.length > 0 && <><h3>{locale === "es" ? "Disponible para" : "Available to"}</h3><ul>{links.map((link) => <li key={`${link.band}:${link.profileId}:${link.relation}`}>{link.band} · {link.profile} ({link.relation})</li>)}</ul></>}</>}</article></div></section>;
 }
 
 function localizedText(row: Record<string, unknown>, locale: Locale): string {
