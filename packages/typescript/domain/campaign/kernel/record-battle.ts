@@ -165,10 +165,20 @@ export function recordBattle(
       : {}),
   };
 
+  const opponentKey = `${input.opponent_band_id ?? ""} ${input.opponent}`.toLowerCase();
+  const specialRules = campaign.special_rules.flatMap((rule) => {
+    const triggers = (rule.consume_when_opponent_contains ?? []).map((value) => String(value).toLowerCase());
+    const applies = triggers.length === 0 || triggers.some((value) => opponentKey.includes(value));
+    if (rule.expires_after_battles == null || !applies) return [rule];
+    const remaining = Number(rule.expires_after_battles) - 1;
+    return remaining > 0 ? [{ ...rule, expires_after_battles: remaining }] : [];
+  });
+
   const nextCampaign: Campaign = {
     ...campaign,
     battles: [...campaign.battles, battle],
     post_battles: [...campaign.post_battles, postBattle],
+    special_rules: specialRules,
   };
   return { ok: true, state: withCampaign(document, nextCampaign) };
 }
