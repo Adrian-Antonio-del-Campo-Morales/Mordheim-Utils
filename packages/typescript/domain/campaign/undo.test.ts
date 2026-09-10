@@ -43,8 +43,26 @@ function makeCampaign(overrides: Partial<Campaign> = {}): Campaign {
     current_state_number: 0,
     warriors: [],
     battles: [],
-    states: [],
-    post_battles: [],
+    // Pending post-battle (buy use cases require one) + snapshot carrying
+    // gold so the treasury guard passes — this file pins undo semantics,
+    // not economics.
+    post_battles: [
+      { battle_number: 0, complete: false, active_step: 0, completed_steps: [], review_open: false },
+    ],
+    states: [
+      {
+        number: 0,
+        date: "",
+        gold: 100000,
+        wyrdstone: 0,
+        rating: 0,
+        models: 0,
+        max_models: 0,
+        heroes: 0,
+        henchmen: 0,
+        experience: 0,
+      },
+    ],
     inventory: [],
     special_rules: [],
     manual_log: [],

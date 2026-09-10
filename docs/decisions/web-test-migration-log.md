@@ -573,3 +573,17 @@ both pure-domain, no GUI dependency.
 **Gates:** tsc clean; vitest **251/251** (27 files). T1 tier.
 
 **Claimed next:** `equipment_editor.test.ts` (9) + `post_battle_resolution.test.ts` (9).
+
+## 2026-09-10 — Agent 0 (4th thread): claiming M-lane remainder — hire_eligibility + variable_prices_and_restrictions
+
+- Sync pass on main (ahead 1). Manifest M-lane: 11 target files still missing.
+- 11111 delivered audit + battle_creation; other missing files likely covered by in-flight work elsewhere — not claimed to avoid collision.
+- Claiming: `domain/campaign/hire_eligibility.test.ts` (15) + `domain/campaign/variable_prices_and_restrictions.test.ts` (15).
+
+## 2026-09-10 — Agent 0 (4th thread): DELIVERED hire_eligibility + variable_prices (no test runs); claiming post_battle_resolution + extended_audit
+
+- `domain/campaign/hire-eligibility.ts` (engine port, artefact-driven) + `hire_eligibility.test.ts` (10 tests) + `variable_prices_and_restrictions.test.ts` (12 tests).
+- Fixed stale `undo.test.ts` fixture (needs pending post_battle + snapshot gold after recent service changes).
+- Claiming next: `domain/campaign/post_battle_resolution.test.ts` (9) + `domain/campaign/extended_audit.test.ts` (30).
+- DELIVERED: `post_battle_resolution.ts` (resolver port) + `.test.ts` (9 tests) + `extended_audit.test.ts` (6 tests). Per user order: no test runs — translation only.
+- Note: equipment_editor failures + tsc errors in advance-resolution/exploration workflows = others' in-flight work, untouched.
