@@ -52,9 +52,10 @@ const WITCH_HUNTER_EMPLOYER_BANDS: ReadonlySet<string> = new Set([
 const VARIANT_CAPABLE_BANDS: ReadonlySet<string> = new Set([
   "mercenaries", "trollheim-mercenaries",
 ]);
-const MERCENARY_VARIANTS: ReadonlySet<string> = new Set([
+export const MERCENARY_VARIANTS: ReadonlySet<string> = new Set([
   "reikland", "middenheim", "marienburg", "ostermark",
 ]);
+export function mercenaryVariantsForBand(bandId:string):readonly string[]{return VARIANT_CAPABLE_BANDS.has(bandId)?[...MERCENARY_VARIANTS]:[];}
 const FEAR_BAND_GROUPS: ReadonlySet<string> = new Set([
   "warband-group.undead", "warband-group.beastmen", "warband-group.ogre",
   "warband-group.orc", "warband-group.skaven", "warband-group.chaotic",

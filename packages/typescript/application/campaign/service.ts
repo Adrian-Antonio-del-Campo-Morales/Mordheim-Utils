@@ -53,6 +53,7 @@ import { resolveSoldToPits } from "./features/injuries/sold-to-pits-workflow";
 import { resolveInjuryTableFollowUp } from "./features/injuries/injury-followup-workflow";
 import { resolveScenarioEncampment, resolveScenarioSpellReward } from "./features/exploration/scenario-followups-workflow";
 import { acknowledgeFollowUp } from "./features/review/follow-up-acknowledgement-workflow";
+import { mercenaryVariantsForBand } from "../../domain/campaign/hire-eligibility";
 
 const HISTORY_LIMIT = 50;
 
@@ -211,6 +212,11 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           if (!name || !state.current.campaign.warriors.some((warrior) => warrior.id === id)) return error("rejected", "A valid warrior and name are required.");
           if (state.current.campaign.warriors.some((warrior) => warrior.id !== id && warrior.name.localeCompare(name, undefined, { sensitivity: "accent" }) === 0)) return error("rejected", "Another warrior or group already uses that name.");
           return applyResult({ ok: true, state: { ...state.current, campaign: { ...state.current.campaign, warriors: state.current.campaign.warriors.map((warrior) => warrior.id === id ? { ...warrior, name } : warrior) } } });
+        }
+        case "setMercenaryVariant": {
+          const variant=input["variant"]==null?null:String(input["variant"]).trim().toLowerCase(), allowed=mercenaryVariantsForBand(state.current.campaign.identity.band_id);
+          if(variant!==null&&!allowed.includes(variant))return error("rejected","Choose a valid Mercenary variant for this warband.");
+          return applyResult({ok:true,state:{...state.current,campaign:{...state.current.campaign,identity:{...state.current.campaign.identity,mercenary_variant:variant}}}});
         }
         case "setManualSkill": {
           const result = setManualSkill(state.current, knowledge, input as never);

@@ -23,7 +23,7 @@ interface InjuriesPanelProps {
   readonly knowledge?: ArtefactKnowledgeReader;
 }
 
-export function InjuriesPanel({ document }: InjuriesPanelProps) {
+export function InjuriesPanel({ document, knowledge }: InjuriesPanelProps) {
   const app = useCampaignApp();
   const [busy, setBusy] = useState(false);
   const [targets, setTargets] = useState<Record<string,string>>({});
