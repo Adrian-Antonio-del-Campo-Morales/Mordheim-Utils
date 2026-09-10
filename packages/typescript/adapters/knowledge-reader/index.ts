@@ -382,7 +382,17 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   /** Raw rows of the artefact's `campaign` section, for listing features. */
   campaignRows(section: string): readonly ArtefactRow[] {
     const value = this.campaignRaw[section];
-    return Array.isArray(value) ? (value as ArtefactRow[]) : [];
+    if (Array.isArray(value)) return value as ArtefactRow[];
+    // Listing workflows address nested catalogues as `section:sublist`
+    // (for example hired swords versus Dramatis Personae).  Keep the
+    // public reader structural while resolving that canonical shape here.
+    const separator = section.indexOf(":");
+    if (separator < 0) return [];
+    const parent = this.campaignRaw[section.slice(0, separator)];
+    const child = parent && typeof parent === "object"
+      ? (parent as Record<string, unknown>)[section.slice(separator + 1)]
+      : undefined;
+    return Array.isArray(child) ? child as ArtefactRow[] : [];
   }
 
   /** Raw object sections (e.g. `trading-post`, `hirelings`). */
