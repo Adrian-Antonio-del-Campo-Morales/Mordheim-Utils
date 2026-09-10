@@ -117,7 +117,7 @@ export function ProductApp() {
   const exportSession = async (session: Session) => { const result=await session.service.prepareExport(); if (result.ok && result.payload) { download(result.payload.filename, result.payload.text, "application/json"); session.service.markExported(result.document); return true; } return false; };
   const exportActive = async () => { if (active) await exportSession(active); };
   const undo = async () => { if (active) await active.service.run("undo", {}); };
-  const exportPdf = async () => { if (!active) return; const doc=active.service.current(); if (!doc) return; const { createWarbandPdf } = await import("./features/export/warband-pdf"); const bytes=await createWarbandPdf(doc, locale); download(`${doc.campaign.identity.warband_name.replace(/[^\w-]+/g, "_")}.pdf`, bytes, "application/pdf"); };
+  const exportPdf = async () => { if (!active) return; const doc=active.service.current(); if (!doc) return; const { createWarbandPdf } = await import("./features/export/warband-pdf"); const bytes=await createWarbandPdf(doc, locale); const selected=String(doc.view.selected_moment??"draft:0"); const suffix=selected.startsWith("state:")?`-state-${selected.slice(6)}`:"-draft"; download(`${doc.campaign.identity.warband_name.replace(/[^\w-]+/g, "_")}${suffix}.pdf`, bytes, "application/pdf"); };
 
   return <div className="app-shell">
     <header className="topbar"><button className="brand" onClick={() => setPage("home")}><strong>MORDHEIM</strong><span>WARBAND MANAGER</span></button>
