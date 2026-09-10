@@ -56,3 +56,9 @@ export function scenarioResourceRewards(knowledge: CampaignKnowledge | undefined
   const scenario = rows(document["scenarios"]).find((row) => String(row["scenario_id"] ?? "") === scenarioId);
   return rows(scenario?.["rewards"]).flatMap((row) => row["kind"] === "resource" && (row["resource"] === "gold_crowns" || row["resource"] === "wyrdstone_fragments") ? [{ id: String(row["id"] ?? ""), resource: row["resource"], rule: String(row["rule"] ?? "") }] : []);
 }
+
+export type ScenarioLootReward = Readonly<{ id:string; label:string; kind:"item"|"resource"|"special"; item_id?:string; resource?:string; special_id?:string; availability?:Row; when?:Row; quantity_dice?:Row }>;
+export function scenarioLootRewards(knowledge: CampaignKnowledge | undefined, scenarioId: string): readonly ScenarioLootReward[] {
+  const document=knowledge?.campaignSection?.("scenario-rewards")??{}; const scenario=rows(document["scenarios"]).find((row)=>String(row["scenario_id"]??"")===scenarioId);
+  return rows(scenario?.["rewards"]).flatMap((reward)=>rows(reward["contents"]).flatMap((content)=>{const grant=content["grant"] as Row|undefined,kind=String(grant?.["kind"]??"");return ["item","resource","special"].includes(kind)?[{id:String(content["id"]??""),label:String(content["label"]??content["id"]??"Reward"),kind:kind as ScenarioLootReward["kind"],...(typeof grant?.["item_id"]==="string"?{item_id:grant["item_id"]}:{}),...(typeof grant?.["resource"]==="string"?{resource:grant["resource"]}:{}),...(typeof grant?.["special_id"]==="string"?{special_id:grant["special_id"]}:{}),...(content["availability"]&&typeof content["availability"]==="object"?{availability:content["availability"] as Row}:{}),...(content["when"]&&typeof content["when"]==="object"?{when:content["when"] as Row}:{}),...(content["quantity_dice"]&&typeof content["quantity_dice"]==="object"?{quantity_dice:content["quantity_dice"] as Row}:{})}]:[];}));
+}
