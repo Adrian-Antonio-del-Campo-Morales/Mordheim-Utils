@@ -27,12 +27,8 @@ interface HirelingsPanelProps {
 
 export function HirelingsPanel({ document, listings }: HirelingsPanelProps) {
   const app = useCampaignApp();
-  const defaultWorkflow = useHirelingsWorkflow();
+  const workflow = useHirelingsWorkflow(listings);
   const [busy, setBusy] = useState(false);
-  const workflow = listings
-    ? // Test/di override: rebuild with the injected listings source.
-      defaultWorkflow
-    : defaultWorkflow;
 
   const offers = workflow.hiredSwordOffers(document);
   const goods = workflow.tradingOffers(document);
