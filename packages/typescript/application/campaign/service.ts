@@ -215,6 +215,11 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           if (!result.ok) return error("rejected", result.message, { reason: result.reason });
           return applyResult({ ok: true, state: result.document });
         }
+        case "adjustDraftGroup": {
+          const result = draftWorkflow.adjustGroup(state.current, String(input["warrior_id"] ?? ""), Number(input["delta"]));
+          if (!result.ok) return error("rejected", result.message, { reason: result.reason });
+          return applyResult({ ok: true, state: result.document });
+        }
         case "commitInitialWarband":
           return applyResult(useCases.commitInitialWarband(state.current, knowledge));
         case "recordBattle":

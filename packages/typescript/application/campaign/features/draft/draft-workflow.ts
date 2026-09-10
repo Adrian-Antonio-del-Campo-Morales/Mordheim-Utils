@@ -24,6 +24,7 @@ import type {
   UseCaseResult,
 } from "../../../../domain/campaign/index";
 import type { CampaignUseCases } from "../../../../domain/campaign/index";
+import { effectiveMaximumModels, memberCount, treasury } from "../../../../domain/campaign/kernel/document";
 
 /** Why a workflow step failed (stable reasons for the UI). */
 export type DraftWorkflowError =
@@ -146,25 +147,58 @@ export function createDraftWorkflow(deps: DraftWorkflowDeps) {
       }
       const removed = document.campaign.warriors.find((w) => w.id === rowId);
       const warriors = document.campaign.warriors.filter((w) => w.id !== rowId);
-      // Dropping a row frees its purchased (non-fixed) equipment back to the
-      // stash so the treasury/purchases are not lost; fixed equipment goes
-      // with the row (it was never a purchase).
+      // Desktop refunds creation purchases when their draft row disappears.
+      // Fixed equipment goes with the profile; it was never paid from the
+      // starting treasury.
       let inventory = document.campaign.inventory;
       if (removed) {
         const freed = removed.equipment.filter((e) => e.acquisition === "purchase");
         if (freed.length > 0) {
-          inventory = document.campaign.inventory.map((item) => {
-            const freedEntry = freed.find((e) => e.item_id === item.id);
-            return freedEntry
-              ? {
-                  ...item,
-                  equipped: item.equipped - freedEntry.quantity,
-                  stash: item.stash + freedEntry.quantity,
-                }
-              : item;
-          });
+          inventory = document.campaign.inventory
+            .map((item) => {
+              const refunded = freed.filter((entry) => entry.item_id === item.id).reduce((total, entry) => total + entry.quantity, 0);
+              return refunded > 0 ? { ...item, owned: item.owned - refunded, equipped: item.equipped - refunded } : item;
+            })
+            .filter((item) => item.owned > 0);
         }
       }
+      return { ok: true, document: { campaign: { ...document.campaign, warriors, inventory }, view: document.view } };
+    },
+
+    /** Resize an existing henchman group, mirroring desktop group controls. */
+    adjustGroup(document: CampaignDocument, rowId: IdString, delta: number): DraftWorkflowResult {
+      if (!document.campaign.configuration.is_draft) return { ok: false, reason: "rejected", message: "Only the initial warband draft can be edited." };
+      if (!Number.isInteger(delta) || !delta) return { ok: false, reason: "rejected", message: "Group adjustment must be a non-zero whole number." };
+      const warrior = document.campaign.warriors.find((row) => row.id === rowId);
+      if (!warrior) return { ok: false, reason: "not_found", message: "Warrior not found in the draft." };
+      if (warrior.kind !== "henchman" || !warrior.profile_id) return { ok: false, reason: "rejected", message: "Heroes are individuals; add or remove them instead." };
+      const profileResult = knowledge.queryKnowledge({ id: { kind: "profile_id", value: warrior.profile_id } });
+      if (!profileResult.ok || profileResult.record.data["band_id"] !== document.campaign.identity.band_id) return { ok: false, reason: "not_found", message: "Profile is no longer available in the knowledge base." };
+      const bandResult = knowledge.queryKnowledge({ id: { kind: "band_id", value: document.campaign.identity.band_id } });
+      const roster = bandResult.ok && bandResult.record.data["roster"] && typeof bandResult.record.data["roster"] === "object"
+        ? bandResult.record.data["roster"] as Record<string, unknown> : {};
+      const members = Array.isArray(roster["members"]) ? roster["members"] as readonly Record<string, unknown>[] : [];
+      const member = members.find((row) => row["profile_id"] === warrior.profile_id) ?? {};
+      const oldQuantity = warrior.quantity ?? 1;
+      const nextQuantity = oldQuantity + delta;
+      if (nextQuantity < 1) return { ok: false, reason: "rejected", message: "A henchman group keeps at least one member." };
+      const group = member["group_size"] as Record<string, unknown> | undefined;
+      const groupMaximum = typeof group?.["maximum"] === "number" ? group["maximum"] : null;
+      if (groupMaximum !== null && nextQuantity > groupMaximum) return { ok: false, reason: "rejected", message: `This group holds at most ${groupMaximum} models.` };
+      const profileMaximum = typeof member["maximum"] === "number" ? member["maximum"] : null;
+      const profileTaken = document.campaign.warriors.filter((row) => row.profile_id === warrior.profile_id).reduce((total, row) => total + (row.quantity ?? 1), 0);
+      if (delta > 0 && profileMaximum !== null && profileTaken + delta > profileMaximum) return { ok: false, reason: "rejected", message: "Roster limit for this profile reached." };
+      if (delta > 0 && memberCount(document.campaign.warriors) + delta > effectiveMaximumModels(document.campaign)) return { ok: false, reason: "rejected", message: `Cannot exceed ${effectiveMaximumModels(document.campaign)} warband members.` };
+      const perModelCost = warrior.equipment.filter((item) => item.acquisition === "purchase" && item.per_model).reduce((total, item) => total + (item.unit_cost ?? 0) * (item.quantity / oldQuantity), 0);
+      const additional = delta > 0 ? delta * (warrior.cost + perModelCost) : 0;
+      if (additional > treasury(document.campaign)) return { ok: false, reason: "rejected", message: "Not enough gold for added members and their equipment." };
+      if (warrior.equipment.some((item) => item.per_model && item.quantity % oldQuantity !== 0)) return { ok: false, reason: "rejected", message: "Normalize group equipment before changing its size." };
+      const equipment = warrior.equipment.map((item) => item.per_model ? { ...item, quantity: item.quantity + delta * (item.quantity / oldQuantity) } : item).filter((item) => item.quantity > 0);
+      const inventory = document.campaign.inventory.map((item) => {
+        const purchased = warrior.equipment.filter((entry) => entry.acquisition === "purchase" && entry.per_model && entry.item_id === item.id).reduce((total, entry) => total + delta * (entry.quantity / oldQuantity), 0);
+        return purchased ? { ...item, owned: item.owned + purchased, equipped: item.equipped + purchased } : item;
+      }).filter((item) => item.owned > 0);
+      const warriors = document.campaign.warriors.map((row) => row.id === warrior.id ? { ...row, quantity: nextQuantity, equipment } : row);
       return { ok: true, document: { campaign: { ...document.campaign, warriors, inventory }, view: document.view } };
     },
 
