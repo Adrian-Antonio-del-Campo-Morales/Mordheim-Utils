@@ -39,6 +39,7 @@ import { applyBattleExperience } from "./features/advances/experience-workflow";
 import { commitAdvanceChoice, promoteHenchman, resolveAdvanceRoll, setPromotionSkillTables } from "./features/advances/advance-resolution-workflow";
 import { applyExploration, continueExploration } from "./features/exploration/exploration-workflow";
 import { sellWyrdstone } from "./features/economy/wyrdstone-sale-workflow";
+import { applyVeteranPool } from "./features/recruitment/veteran-workflow";
 
 const HISTORY_LIMIT = 50;
 
@@ -268,6 +269,12 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         }
         case "sellWyrdstone": {
           const result = sellWyrdstone(state.current, knowledge, Number(input["quantity"]));
+          if (!result.ok) return error("rejected", result.message);
+          return applyResult({ ok: true, state: result.document });
+        }
+        case "applyVeteranPool": {
+          const dice = Array.isArray(input["dice"]) ? input["dice"].map(Number) : [];
+          const result = applyVeteranPool(state.current, dice);
           if (!result.ok) return error("rejected", result.message);
           return applyResult({ ok: true, state: result.document });
         }
