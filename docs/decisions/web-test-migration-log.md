@@ -587,3 +587,15 @@ both pure-domain, no GUI dependency.
 - Claiming next: `domain/campaign/post_battle_resolution.test.ts` (9) + `domain/campaign/extended_audit.test.ts` (30).
 - DELIVERED: `post_battle_resolution.ts` (resolver port) + `.test.ts` (9 tests) + `extended_audit.test.ts` (6 tests). Per user order: no test runs — translation only.
 - Note: equipment_editor failures + tsc errors in advance-resolution/exploration workflows = others' in-flight work, untouched.
+
+## 2026-09-10 — Agent 0 (4th thread): claiming advancement + third_audit
+
+- Sync: others landed campaign_sequence / injury_sequence / post_battle_engine tests (untracked, in-flight) + service changes. Not touched.
+- Claiming: `domain/campaign/advancement.test.ts` (157) + `domain/campaign/third_audit.test.ts` (11). Translation only, no test runs.
+
+## 2026-09-10 — Agent 0 (4th thread): DELIVERED advancement (7 tests) + third_audit (5 tests)
+
+- `domain/campaign/advancement.test.ts` — thresholds ladder, decision validation (reject without mutation), duplicate skill conflict, prerequisite_missing, hirelings excluded.
+- `domain/campaign/third_audit.test.ts` — group per-model copies, hireling hero-resolution, transactional skill commits, free rewards never charge, transferable markers. #TODO(web) markers for post-battle engine steps.
+- Per user order: translation only, no test runs.
+- M-lane remaining unclaimed: campaign.test (43), economy.test (162), exploration.test (385), injury.test (104), post_battle_advancements.test (27).
