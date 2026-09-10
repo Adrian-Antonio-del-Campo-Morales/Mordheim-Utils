@@ -599,3 +599,7 @@ both pure-domain, no GUI dependency.
 - `domain/campaign/third_audit.test.ts` — group per-model copies, hireling hero-resolution, transactional skill commits, free rewards never charge, transferable markers. #TODO(web) markers for post-battle engine steps.
 - Per user order: translation only, no test runs.
 - M-lane remaining unclaimed: campaign.test (43), economy.test (162), exploration.test (385), injury.test (104), post_battle_advancements.test (27).
+
+## 2026-09-10 — Agent 0 (4th thread): DELIVERED post_battle_advancements (9 tests)
+
+- `domain/campaign/post_battle_advancements.test.ts` — threshold idempotence, per-threshold resolution order, roll 8/9 stat commits, double-commit rejection, skill commit + duplicate conflict, invalid input ordering. #TODO(web): engine-side promotion splits.
