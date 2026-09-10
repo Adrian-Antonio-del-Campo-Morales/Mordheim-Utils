@@ -113,7 +113,23 @@ export function ProductApp() {
 
   const addSession = (service: CampaignAppService, source: string) => { const id = crypto.randomUUID(); setSessions((all) => [...all, { id, service, source }]); setActiveId(id); setPage("campaign"); };
   const create = async () => { if (!knowledge) return; const service=createService(knowledge); const result=await service.createCampaign({ band_id: bandId, campaign_name: campaignName, warband_name: warbandName }); if (result.ok) { addSession(service, "created"); setShowCreate(false); setCampaignName(""); setWarbandName(""); } };
-  const importFile = async (file: File) => { if (!knowledge) return; const service=createService(knowledge); const result=await service.importCampaign({ text: await file.text(), confirm_replace: true }); if (result.ok) addSession(service, file.name); else setKbError(result.message); };
+  const importFiles = async (files: readonly File[]) => {
+    if (!knowledge) return;
+    const imported: Session[] = [];
+    const failures: string[] = [];
+    for (const file of files) {
+      const service = createService(knowledge);
+      const result = await service.importCampaign({ text: await file.text(), confirm_replace: true });
+      if (result.ok) imported.push({ id: crypto.randomUUID(), service, source: file.name });
+      else failures.push(`${file.name}: ${result.message}`);
+    }
+    if (imported.length) {
+      setSessions((all) => [...all, ...imported]);
+      setActiveId(imported.at(-1)!.id);
+      setPage("campaign");
+    }
+    if (failures.length) setKbError(failures.join(" · "));
+  };
   const exportSession = async (session: Session) => { const result=await session.service.prepareExport(); if (result.ok && result.payload) { download(result.payload.filename, result.payload.text, "application/json"); session.service.markExported(result.document); return true; } return false; };
   const exportActive = async () => { if (active) await exportSession(active); };
   const undo = async () => { if (active) await active.service.run("undo", {}); };
@@ -123,7 +139,7 @@ export function ProductApp() {
     <header className="topbar"><button className="brand" onClick={() => setPage("home")}><strong>MORDHEIM</strong><span>WARBAND MANAGER</span></button>
       <nav aria-label="Primary">{(["home","campaign","statistics","library","rules","settings"] as Page[]).map((key) => <button key={key} className={page===key ? "active" : ""} disabled={(key==="campaign"||key==="statistics")&&!active} onClick={() => setPage(key)}>{key === "statistics" ? locale === "es" ? "Estadísticas" : "Statistics" : t[key]}</button>)}</nav>
       <div className="actions"><button onClick={() => setShowCreate(true)} disabled={!knowledge}>{t.newCampaign}</button><button onClick={() => fileRef.current?.click()} disabled={!knowledge}>{t.load}</button><button onClick={undo} disabled={!active?.service.canUndo()}>{t.undo}</button><button onClick={exportActive} disabled={!active}>{t.save}</button><button onClick={() => void exportPdf()} disabled={!active}>{t.pdf}</button></div>
-      <input hidden ref={fileRef} type="file" accept=".mordheim,application/json" onChange={(e) => { const f=e.target.files?.[0]; if(f) void importFile(f); e.target.value=""; }} />
+      <input hidden ref={fileRef} type="file" multiple accept=".mordheim,application/json" onChange={(e) => { const files=[...(e.target.files??[])]; if(files.length) void importFiles(files); e.target.value=""; }} />
     </header>
     {kbError && <output className="global-error" role="alert">{t.kbFail} {kbError} <button onClick={loadKb}>{t.retry}</button></output>}
     <main>
