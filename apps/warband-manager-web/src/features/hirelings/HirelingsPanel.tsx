@@ -34,16 +34,17 @@ function VariableFeeHire({ offer, name, busy, onHire }: { offer: ReturnType<Retu
   return <button type="button" disabled={busy || fee === null} aria-label={`Hire ${name}`} onClick={() => fee !== null && onHire(fee)}>Hire for {fee} gc</button>;
 }
 
-function VariableTradingPurchase({ offer, busy, onBuy }: { offer: TradingOfferRow; busy: boolean; onBuy: (price: number) => void }) {
+function VariableTradingPurchase({ offer, quantity, busy, onBuy }: { offer: TradingOfferRow; quantity: number; busy: boolean; onBuy: (price: number) => void }) {
   const [price, setPrice] = useState<number | null>(null);
   if (offer.price_dice && price === null) return <DiceResolver count={offer.price_dice[0]} sides={offer.price_dice[1]} label={`${offer.name} price`} onResolve={(dice) => setPrice(offer.price_base + dice.reduce((total, die) => total + die, 0) * offer.price_multiplier)} />;
-  return <button type="button" disabled={busy || price === null} onClick={() => price !== null && onBuy(price)}>Buy for {price} gc</button>;
+  return <button type="button" disabled={busy || price === null} onClick={() => price !== null && onBuy(price)}>Buy {quantity} for {(price ?? 0) * quantity} gc</button>;
 }
 
 export function HirelingsPanel({ document, listings, locale = "en", mode = "all" }: HirelingsPanelProps) {
   const app = useCampaignApp();
   const workflow = useHirelingsWorkflow(listings);
   const [busy, setBusy] = useState(false);
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
 
   const offers = workflow.hiredSwordOffers(document);
   const goods = workflow.tradingOffers(document);
@@ -60,6 +61,7 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
     setBusy(false);
   };
 
+  const amount = (id: string, maximum = Infinity) => Math.min(maximum, Math.max(1, quantities[id] ?? 1));
   const buy = async (itemId: string, basePrice: number | null) => {
     if (basePrice === null) return;
     setBusy(true);
@@ -67,14 +69,14 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
       item_id: itemId,
       name: goods.find((g) => g.item_id === itemId)?.name ?? itemId,
       unit_price: basePrice,
-      quantity: 1,
+      quantity: amount(`buy:${itemId}`),
     });
     setBusy(false);
   };
 
   const sell = async (itemId: string) => {
     setBusy(true);
-    await app.runAction("sellStashItem", { item_id: itemId, quantity: 1 });
+    await app.runAction("sellStashItem", { item_id: itemId, quantity: amount(`sell:${itemId}`, document.campaign.inventory.find((row) => row.id === itemId)?.stash ?? 1) });
     setBusy(false);
   };
 
@@ -134,14 +136,14 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
               <td>{displayName(good.item_id, good.name)}{good.restriction_notes.length > 0 && <small className="restriction-note">{good.restriction_notes.join(" · ")}</small>}</td>
               <td>{good.price_dice ? `${good.price_base}+${good.price_dice[0]}D${good.price_dice[1]} gc` : good.base_price === null ? t.dice : `${good.base_price} gc`}</td>
               <td>{good.availability}</td>
-              <td>
-                {good.price_dice ? <VariableTradingPurchase offer={good} busy={busy} onBuy={(price) => void buy(good.item_id, price)} /> : <button
+              <td><input aria-label={`Quantity ${good.name}`} type="number" min="1" value={amount(`buy:${good.item_id}`)} onChange={(event)=>setQuantities((current)=>({...current,[`buy:${good.item_id}`]:Math.max(1,Math.trunc(event.target.valueAsNumber||1))}))} />
+                {good.price_dice ? <VariableTradingPurchase offer={good} quantity={amount(`buy:${good.item_id}`)} busy={busy} onBuy={(price) => void buy(good.item_id, price)} /> : <button
                   type="button"
                   disabled={busy || good.base_price === null || (good.limit_per_warband !== null && (document.campaign.inventory.find((row) => row.id === good.item_id)?.owned ?? 0) >= good.limit_per_warband)}
                   aria-label={`Buy ${good.name}`}
                   onClick={() => buy(good.item_id, good.base_price)}
                 >
-                  {t.buy}
+                  {t.buy} {amount(`buy:${good.item_id}`)}
                 </button>}
               </td>
             </tr>
@@ -164,7 +166,7 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
             {stashRows.map((row) => (
               <tr key={row.id}>
                 <td>{row.name}</td>
-                <td>{row.stash}</td>
+                <td>{row.stash}<input aria-label={`Quantity ${row.name} from stash`} type="number" min="1" max={row.stash} value={amount(`sell:${row.id}`,row.stash)} onChange={(event)=>setQuantities((current)=>({...current,[`sell:${row.id}`]:Math.min(row.stash,Math.max(1,Math.trunc(event.target.valueAsNumber||1)))}))} /></td>
                 <td>
                   <button
                     type="button"
@@ -172,7 +174,7 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
                     aria-label={`Sell 1 ${row.name} from stash`}
                     onClick={() => sell(row.id)}
                   >
-                  {t.sell} · {Math.max(0, Math.floor((row.value ?? 0) / 2))} gc
+                  {t.sell} {amount(`sell:${row.id}`,row.stash)} · {Math.max(0, Math.floor((row.value ?? 0) / 2))*amount(`sell:${row.id}`,row.stash)} gc
                   </button>
                 </td>
               </tr>

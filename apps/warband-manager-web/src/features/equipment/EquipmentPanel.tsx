@@ -38,7 +38,7 @@ export function EquipmentPanel({ document, readOnly = false, locale = "en" }: Eq
 
   const stashRows = campaign.inventory.filter((item) => item.stash > 0);
   const equippedRows = campaign.inventory.filter((item) => item.equipped > 0);
-  const t = locale === "es" ? { title:"Equipo",stash:"En reserva",emptyStash:"No hay nada en la reserva.",item:"Objeto",equip:"Equipar a",choose:"Elige guerrero…",equipped:"Equipado",emptyEquipped:"No hay nada equipado.",carries:"lleva",return:"Devolver 1 a la reserva",transfer:"Transferir" } : { title:"Equipment",stash:"In stash",emptyStash:"Nothing in the stash.",item:"Item",equip:"Equip to",choose:"Choose warrior…",equipped:"Equipped",emptyEquipped:"Nothing equipped.",carries:"carries",return:"Return 1 to stash",transfer:"Transfer" };
+  const t = locale === "es" ? { title:"Equipo",stash:"En reserva",emptyStash:"No hay nada en la reserva.",item:"Objeto",equip:"Equipar a",choose:"Elige guerrero…",equipped:"Equipado",emptyEquipped:"No hay nada equipado.",carries:"lleva",return:"Devolver 1 a la reserva",returnSet:"Devolver juego a la reserva",transfer:"Transferir" } : { title:"Equipment",stash:"In stash",emptyStash:"Nothing in the stash.",item:"Item",equip:"Equip to",choose:"Choose warrior…",equipped:"Equipped",emptyEquipped:"Nothing equipped.",carries:"carries",return:"Return 1 to stash",returnSet:"Return set to stash",transfer:"Transfer" };
 
   return (
     <section aria-label="Equipment">
@@ -116,7 +116,7 @@ export function EquipmentPanel({ document, readOnly = false, locale = "en" }: Eq
                       void assign(warrior.id, entry.item_id, 1, "stash");
                     }}
                   >
-                    {t.return}
+                    {warrior.kind === "henchman" && entry.per_model ? t.returnSet : t.return}
                   </button>} {!readOnly && <><select aria-label={`Transfer ${entry.name} from ${warrior.name}`} value={transferTargets[`${warrior.id}:${entry.item_id}`] ?? ""} onChange={(event) => setTransferTargets((current) => ({ ...current, [`${warrior.id}:${entry.item_id}`]: event.target.value }))}><option value="">{t.choose}</option>{campaign.warriors.filter((target) => target.id !== warrior.id).map((target) => <option key={target.id} value={target.id}>{target.name}</option>)}</select><button disabled={busy || !(transferTargets[`${warrior.id}:${entry.item_id}`])} onClick={() => void transfer(warrior.id, transferTargets[`${warrior.id}:${entry.item_id}`], entry.item_id)}>{t.transfer}</button></>}
                 </li>
               )),

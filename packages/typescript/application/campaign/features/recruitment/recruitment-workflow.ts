@@ -27,9 +27,13 @@ export function recruitGroupMember(document:CampaignDocument,reader:CatalogueRea
   const total=warrior.cost+xp*rate, gold=(currentState(document)?.gold??0)+(post.gold_delta??0);
   if(total>gold)return{ok:false,message:`Not enough gold: ${total} gc needed, ${gold} available.`};
   const oldQuantity=warrior.quantity??1;
-  const obligations=warrior.equipment.filter((item)=>item.per_model&&item.acquisition!=="fixed").map((item)=>({warrior_id:warrior.id,item_id:item.item_id,item_name:item.name,copies_per_model:Math.max(1,Math.ceil(item.quantity/oldQuantity))}));
+  const inventory=document.campaign.inventory.map((item)=>({...item}));
+  const fixed=warrior.equipment.filter((item)=>item.per_model&&(item.acquisition==="fixed"||item.transferable===false));
+  for(const item of fixed){const copies=Math.max(1,Math.floor(item.quantity/oldQuantity)), stock=inventory.find((row)=>row.id===item.item_id);if(stock){stock.owned+=copies;stock.equipped+=copies;}else inventory.push({id:item.item_id,name:item.name,category:"Equipment",owned:copies,equipped:copies,stash:0,value:item.unit_cost??0});}
+  const equipment=warrior.equipment.map((item)=>fixed.includes(item)?{...item,quantity:item.quantity+Math.max(1,Math.floor(item.quantity/oldQuantity))}:item);
+  const obligations=warrior.equipment.filter((item)=>item.per_model&&item.acquisition!=="fixed"&&item.transferable!==false).map((item)=>({warrior_id:warrior.id,item_id:item.item_id,item_name:item.name,copies_per_model:Math.max(1,Math.ceil(item.quantity/oldQuantity))}));
   const changed={...post,veteran_pool:pool-xp,gold_delta:(post.gold_delta??0)-total,equipment_obligations:[...(post.equipment_obligations??[]).filter((row)=>String(row["warrior_id"])!==warrior.id),...obligations],event_log:[...(post.event_log??[]),{step:7,type:"recruit_member",warrior_id:warrior.id,description:`One member joined ${warrior.name} for ${total} gc; matching equipment remains pending.`}]};
-  return{ok:true,document:withCampaign(document,{...document.campaign,warriors:document.campaign.warriors.map((row)=>row.id===warrior.id?{...row,quantity:oldQuantity+1}:row),post_battles:document.campaign.post_battles.map((row)=>row===post?changed:row)})};
+  return{ok:true,document:withCampaign(document,{...document.campaign,inventory,warriors:document.campaign.warriors.map((row)=>row.id===warrior.id?{...row,quantity:oldQuantity+1,equipment}:row),post_battles:document.campaign.post_battles.map((row)=>row===post?changed:row)})};
 }
 
 /** Desktop `dismiss_warrior`, including the one-member group variant. */
@@ -40,9 +44,9 @@ export function dismissRecruit(document:CampaignDocument,input:{warrior_id:strin
   const quantity=warrior.quantity??1;
   let inventory=[...document.campaign.inventory];
   const equipment=warrior.equipment.flatMap((item)=>{
-    const returned=item.acquisition==="fixed"?0:one&&item.per_model?Math.min(item.quantity,Math.max(1,Math.ceil(item.quantity/quantity))):item.quantity;
-    if(returned>0){const index=inventory.findIndex((row)=>row.id===item.item_id);if(index>=0){const row=inventory[index];inventory[index]={...row,equipped:Math.max(0,row.equipped-returned),stash:row.stash+returned};}}
-    const remaining=item.quantity-returned; return remaining>0?[{...item,quantity:remaining}]:[];
+    const pending=(post.equipment_obligations??[]).filter((row)=>String(row["warrior_id"])===warrior.id&&String(row["item_id"])===item.item_id).reduce((sum,row)=>sum+Number(row["quantity"]??0),0), copies=Math.max(1,Math.floor((item.quantity+pending)/quantity)), removed=one&&item.per_model?Math.min(item.quantity,Math.max(0,copies-pending)):item.quantity, transferable=item.transferable!==false&&item.acquisition!=="fixed";
+    if(removed>0){const index=inventory.findIndex((row)=>row.id===item.item_id);if(index>=0){const row=inventory[index];inventory[index]=transferable?{...row,equipped:Math.max(0,row.equipped-removed),stash:row.stash+removed}:{...row,owned:Math.max(0,row.owned-removed),equipped:Math.max(0,row.equipped-removed)};}}
+    const remaining=item.quantity-removed; return remaining>0?[{...item,quantity:remaining}]:[];
   });
   const warriors=one?document.campaign.warriors.map((row)=>row.id===warrior.id?{...row,quantity:quantity-1,equipment}:row):document.campaign.warriors.filter((row)=>row.id!==warrior.id);
   const obligations=(post.equipment_obligations??[]).filter((row)=>String(row["warrior_id"])!==warrior.id);
@@ -66,11 +70,12 @@ export function recruitBandProfile(document:CampaignDocument,reader:KnowledgeRea
   const cost=Number(data["cost"]??0)*quantity, gold=(currentState(document)?.gold??0)+(post.gold_delta??0); if(cost>gold)return{ok:false,message:`Not enough gold: ${cost} gc needed, ${gold} available.`};
   const characteristics=(data["characteristics"]??{}) as OpenPayload, stats=Object.fromEntries(Object.entries(characteristics).filter(([,value])=>typeof value==="number"));
   const fixed=Array.isArray(data["fixed_equipment"])?data["fixed_equipment"].filter((id):id is string=>typeof id==="string"):[];
-  const equipment=fixed.map((item_id)=>{const item=reader.queryKnowledge({id:{kind:"item_id",value:item_id}});return{item_id,name:item.ok?item.record.names["en"]??item_id:item_id,quantity,acquisition:"fixed" as const,per_model:true};});
+  const equipment=fixed.map((item_id)=>{const item=reader.queryKnowledge({id:{kind:"item_id",value:item_id}});return{item_id,name:item.ok?item.record.names["en"]??item_id:item_id,quantity,acquisition:"fixed" as const,per_model:true,transferable:false};});
   const traits=(data["combat_traits"]??{}) as OpenPayload, skills=[...(Array.isArray(data["inherent_rules"])?data["inherent_rules"]:[]),...(Array.isArray(traits["starting_skills"])?traits["starting_skills"]:[])].filter((value):value is string=>typeof value==="string");
   const base=profile.record.names["en"]??input.profile_id, names=new Set(document.campaign.warriors.map((row)=>row.name)), wanted=String(input.name??"").trim()||(kind==="hero"?base:`${base} Group`); let name=wanted,index=2;while(names.has(name))name=`${wanted} ${index++}`;
   const occurrence=document.campaign.warriors.filter((row)=>row.profile_id===input.profile_id).length+1;
   const warrior={id:`${input.profile_id}#recruit-${occurrence}`,name,profile_name:base,kind,stats,equipment,skills,experience:Number(data["experience"]??0),quantity,cost:Number(data["cost"]??0),profile_id:input.profile_id,skill_access:Array.isArray(data["skill_access"])?data["skill_access"].filter((value):value is string=>typeof value==="string"):[]};
   const changed={...post,gold_delta:(post.gold_delta??0)-cost,event_log:[...(post.event_log??[]),{step:7,type:"recruit",warrior_id:warrior.id,profile_id:input.profile_id,description:`${base} ×${quantity} recruited for ${cost} gc.`}]};
-  return{ok:true,document:withCampaign(document,{...document.campaign,warriors:[...document.campaign.warriors,warrior],post_battles:document.campaign.post_battles.map((row)=>row===post?changed:row)})};
+  const inventory=document.campaign.inventory.map((row)=>({...row})); for(const item of equipment){const stock=inventory.find((row)=>row.id===item.item_id);if(stock){stock.owned+=item.quantity;stock.equipped+=item.quantity;}else inventory.push({id:item.item_id,name:item.name,category:"Equipment",owned:item.quantity,equipped:item.quantity,stash:0,value:0});}
+  return{ok:true,document:withCampaign(document,{...document.campaign,inventory,warriors:[...document.campaign.warriors,warrior],post_battles:document.campaign.post_battles.map((row)=>row===post?changed:row)})};
 }
