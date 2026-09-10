@@ -1,0 +1,10 @@
+import { useState } from "react";
+import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import type { CampaignDocument } from "../campaign/types";
+import { useCampaignApp } from "../campaign/useCampaignApp";
+
+export function ManualSkillPanel({document,knowledge,locale="en"}:{readonly document:CampaignDocument;readonly knowledge:ArtefactKnowledgeReader;readonly locale?:"es"|"en"}) {
+  const app=useCampaignApp(); const [warriorId,setWarriorId]=useState("");const [skillId,setSkillId]=useState("");const [reason,setReason]=useState(""); const warriors=document.campaign.warriors; const skills=knowledge.list("skill"); const warrior=warriors.find((row)=>row.id===warriorId)??warriors[0]; const skill=skills.find((row)=>String(row.id)===skillId)??skills[0]; const t=locale==="es"?{title:"Corrección manual de habilidades",warrior:"Guerrero",skill:"Habilidad",reason:"Motivo",add:"Añadir",remove:"Quitar"}:{title:"Manual skill correction",warrior:"Warrior",skill:"Skill",reason:"Reason",add:"Add",remove:"Remove"};
+  if(!warrior||!skill)return null; const run=(present:boolean)=>void app.runAction("setManualSkill",{warrior_id:warrior.id,skill_id:String(skill.id),present,reason});
+  return <section aria-label="Manual skill correction"><h3>{t.title}</h3><label>{t.warrior}<select value={warrior.id} onChange={(event)=>setWarriorId(event.target.value)}>{warriors.map((row)=><option key={row.id} value={row.id}>{row.name}</option>)}</select></label><label>{t.skill}<select value={String(skill.id)} onChange={(event)=>setSkillId(event.target.value)}>{skills.map((row)=><option key={String(row.id)} value={String(row.id)}>{String(row.names?.[locale]??row.names?.en??row.id)}</option>)}</select></label><label>{t.reason}<input value={reason} onChange={(event)=>setReason(event.target.value)}/></label><button className="primary" disabled={!reason.trim()} onClick={()=>run(true)}>{t.add}</button><button disabled={!reason.trim()} onClick={()=>run(false)}>{t.remove}</button></section>;
+}

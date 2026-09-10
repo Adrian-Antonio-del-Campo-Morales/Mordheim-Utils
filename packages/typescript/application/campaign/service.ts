@@ -46,6 +46,7 @@ import { assignDramatisSearch, assignRareSearch, buyRareSearch, hireDramatisSear
 import { resolveHirelingUpkeep } from "./features/hirelings/upkeep-workflow";
 import { finalizePostBattle } from "./features/review/finalize-post-battle-workflow";
 import { transferEquippedItem } from "./features/equipment/transfer-workflow";
+import { setManualSkill } from "./features/advances/manual-skill-workflow";
 
 const HISTORY_LIMIT = 50;
 
@@ -204,6 +205,11 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           if (!name || !state.current.campaign.warriors.some((warrior) => warrior.id === id)) return error("rejected", "A valid warrior and name are required.");
           if (state.current.campaign.warriors.some((warrior) => warrior.id !== id && warrior.name.localeCompare(name, undefined, { sensitivity: "accent" }) === 0)) return error("rejected", "Another warrior or group already uses that name.");
           return applyResult({ ok: true, state: { ...state.current, campaign: { ...state.current.campaign, warriors: state.current.campaign.warriors.map((warrior) => warrior.id === id ? { ...warrior, name } : warrior) } } });
+        }
+        case "setManualSkill": {
+          const result = setManualSkill(state.current, knowledge, input as never);
+          if (!result.ok) return error("rejected", result.message);
+          return applyResult({ ok: true, state: result.document });
         }
         case "composeDraft": {
           const result = useCases.composeDraft(state.current, input as never);
