@@ -17,8 +17,6 @@
 ## Other decisions
 
 - [Design rulings](decisions/design-rulings.md)
-- [Verification history](decisions/verification-history.md)
-- [Modular source audit](decisions/modular-audit.md)
 
 ## Generated reports
 

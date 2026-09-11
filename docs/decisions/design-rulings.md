@@ -3,10 +3,8 @@
 Permanent decisions taken during development that bind the KB, the engines or
 the applications. Each entry states the decision and its justification; the
 reviewed text that motivated it is linked where it lives (KB file, spec, or
-code). This page is consultable on its own and does not change when an audit
-closes — audit findings, evidence and pending backlogs live in
-[the modular audit record](modular-audit.md) and can be deleted once resolved;
-the rulings recorded here survive.
+code). This page is consultable on its own; audit findings and development
+history are not part of the permanent design record.
 
 Rulings that answer a specific spec `question` are additionally recorded next
 to the spec (`ruling:` field in `tests/specs/semantic/**`); this page collects

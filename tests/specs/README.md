@@ -38,8 +38,8 @@ written here.
 
 The design basis for every case pattern is documented in
 [the verification reference](../../docs/reference/verification.md) (layered
-strategy) and the per-finding rulings in
-[the modular audit record](../../docs/decisions/modular-audit.md).
+strategy) and the permanent
+[design rulings](../../docs/decisions/design-rulings.md).
 
 ```powershell
 python -m mordheim_combat_lab verify --inventory

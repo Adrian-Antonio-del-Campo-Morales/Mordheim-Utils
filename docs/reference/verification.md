@@ -66,8 +66,7 @@ on L1–L5.
   armour across strengths, injury 1..12, attack pools, priority, keyed-dice
   replay. These checks exercise the **engine's real operators** — the exact
   checks must drive the engine's own code, not a delegating helper, so a
-  duplicated projection cannot hide untested (see L4 and
-  [the verification history](../decisions/verification-history.md)).
+  duplicated projection cannot hide untested behavior (see L4).
 - Per-rule evidence is tied to the knowledge inventory by `verify` — the
   live status is whatever `verify --inventory` reports (all obligations
   verified, 0 pending, at the time the corpus was closed) — and every
@@ -102,8 +101,6 @@ sustain) are attributed to different round numbers by each driver's ledger.
 Outcome *after exactly h rounds* is engine-agnostic — an unresolved duel
 counts as unresolved in both drivers — which is why the truncation sweep
 compares outcomes at each horizon rather than resolution-round histograms.
-See [the verification history](../decisions/verification-history.md) for the
-failed first attempt that motivated this convention.
 
 ## L3 — interaction, statistical, at scale
 
@@ -207,8 +204,7 @@ The catalogue (wound-ramp off-by-one, wound-impossible tail, armour strength
 modifier, injury stun threshold, paired extra attack, hit much-weaker flip)
 is fully killed — every mutant is detected. The one survivor the catalogue
 ever had (`hit-much-weaker-flip`) exposed an untested duplicated formula and
-led to the exact-check rewrite that closed it; the story is recorded in
-[the verification history](../decisions/verification-history.md):
+led to the exact-check rewrite that closed it:
 
 ```bash
 python tools/mutate-engine.py                 # full catalogue (≈3–5 min)
@@ -260,10 +256,8 @@ pair before it. A thousand pairs is ≈ 10⁸ oracle duels ≈ weeks of compute,
 keep resolving the same ±1.3 pp. Worse, any rare branch (`p < 10⁻³`) is
 invisible to any sample that fits in a working day.
 
-The empirical history behind this conclusion — every real defect found so far
-surfaced through few deterministic cases designed for coverage, not through
-enumeration — is recorded in
-[the verification history](../decisions/verification-history.md).
+In practice, deterministic cases designed for coverage expose defects more
+efficiently than broad enumeration.
 
 ## When to add a pair
 

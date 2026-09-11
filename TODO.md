@@ -10,13 +10,9 @@ applications. Rules of the road:
   review queue), the `runtime` blocks themselves and the per-rule audit CSV
   `outputs/audit/rules-audit.csv` (regenerate with
   `python tools/mordheim-utils.py audit`).
-- Engine-level pending work (NumPy/native porting, modular certification) is
-  tracked in [the modular audit record](docs/decisions/modular-audit.md), not
-  here. Permanent design decisions live separately in
-  [Design rulings](docs/decisions/design-rulings.md) and survive the audit.
-- When the modular audit's backlog and checkpoints are fully resolved, retire
-  that document: move any still-open item here, keep the rulings page, and
-  delete the audit record.
+- NumPy and native engines are candidate implementations: rebuild and certify
+  them against the modular oracle before relying on either backend. Permanent
+  design decisions live in [Design rulings](docs/decisions/design-rulings.md).
 
 ## 1. In-scope executable backlog
 
