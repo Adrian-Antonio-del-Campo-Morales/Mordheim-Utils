@@ -23,7 +23,7 @@ const FIXED_CASES = [
   ["36\"", "90 cm"],
 ] as const;
 
-const UNADAPTED_DISTANCE = /(?:\b(?:\d+(?:[.,]\d+)?|(?:\d*)D[36])\s*(?:\"|″|”|inches?\b)|\b(?:inches?|pulgadas?)\b)/i;
+const UNADAPTED_DISTANCE = /(?:\b(?:\d+(?:[.,]\d+)?|(?:\d*)D[36])\s*(?:"|″|”|inches?\b)|\b(?:inches?|pulgadas?)\b)/i;
 
 describe("adaptDistanceText", () => {
   it.each(FIXED_CASES)("adapts %s to %s", (source, expected) => {
