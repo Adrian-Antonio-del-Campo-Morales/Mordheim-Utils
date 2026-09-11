@@ -247,15 +247,15 @@ describe("P6.2 draft creation and composition", () => {
     expect(shield).toBeUndefined();
   });
 
-  it("protects the last hero of a draft", () => {
+  it("allows removing the last hero from a draft", () => {
     const { workflow } = makeWorkflow();
     const started = workflow.startDraft("sisters-of-sigmar");
     if (!started.ok) throw new Error("start should succeed");
     const matriarch = started.document.campaign.warriors.find((w) => w.kind === "hero");
     if (!matriarch) throw new Error("fixture needs a hero");
     const result = workflow.removeRow(started.document, matriarch.id);
-    expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.message).toContain("at least one hero");
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.document.campaign.warriors.some((warrior) => warrior.id === matriarch.id)).toBe(false);
   });
 });
 

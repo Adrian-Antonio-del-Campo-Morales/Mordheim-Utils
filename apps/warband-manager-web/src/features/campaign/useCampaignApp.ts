@@ -39,7 +39,7 @@ export interface CampaignAppView {
   importFile(file: File): Promise<void>;
   confirmReplace(): Promise<void>;
   exportFile(): Promise<void>;
-  runAction(action: string, input: Record<string, unknown>): Promise<void>;
+  runAction(action: string, input: Record<string, unknown>): Promise<boolean>;
   /** P6.1: move the timeline selection (never dirties the document). */
   selectMoment(moment: MomentSelection): void;
   clearError(): void;
@@ -120,10 +120,17 @@ export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
   const [dirty, setDirty] = useState(() => app.isDirty());
   const pendingFile = useRef<File | null>(null);
 
-  useEffect(() => app.subscribe?.(() => {
+  useEffect(() => {
+    // A different session is a different service instance. Refresh immediately;
+    // otherwise the previous campaign remains visible until the new one emits.
     setDocument(app.current());
     setDirty(app.isDirty());
-  }), [app]);
+    setError(null);
+    return app.subscribe?.(() => {
+      setDocument(app.current());
+      setDirty(app.isDirty());
+    });
+  }, [app]);
 
   const loadText = useCallback(
     async (text: string, confirm: boolean) => {
@@ -181,13 +188,19 @@ export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
 
   const runAction = useCallback(
     async (action: string, input: Record<string, unknown>) => {
-      const result = await app.run(action, input);
-      if (result.ok) {
-        setDocument(result.document);
-        setError(null);
-        setDirty(app.isDirty());
-      } else {
+      try {
+        const result = await app.run(action, input);
+        if (result.ok) {
+          setDocument(result.document);
+          setError(null);
+          setDirty(app.isDirty());
+          return true;
+        }
         setError(messageOf(result));
+        return false;
+      } catch (cause) {
+        setError(cause instanceof Error ? cause.message : String(cause));
+        return false;
       }
     },
     [app],

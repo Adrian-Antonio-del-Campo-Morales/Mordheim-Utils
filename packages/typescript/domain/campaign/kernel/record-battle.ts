@@ -43,10 +43,17 @@ export function normalizeResult(result: string): "win" | "loss" | "draw" | null 
 }
 
 /** Applies normalized desktop scenario loot before the post-battle sequence starts. */
-function recordedRewards(input: RecordBattleInput, knowledge: KnowledgeReader, inventory: readonly InventoryItem[]) {
-  let gold = 0, wyrdstone = 0; let items = [...inventory]; const notes: OpenPayload[] = []; const followUps: OpenPayload[] = [];
+function recordedRewards(input: RecordBattleInput, knowledge: KnowledgeReader, inventory: readonly InventoryItem[], battleNumber: number, campaign: Campaign) {
+  let gold = 0, wyrdstone = 0; let items = [...inventory]; const notes: OpenPayload[] = []; const followUps: OpenPayload[] = []; const addedRules: OpenPayload[] = [];
+  let scenarioExploration: OpenPayload | undefined;
+  const addItem = (id: string, name: string, category: string, quantity: number, rule = "") => {
+    const found = items.find((item) => item.id === id);
+    items = found
+      ? items.map((item) => item.id === id ? { ...item, owned: item.owned + quantity, stash: item.stash + quantity, ...(rule && !(item.special_rules ?? []).includes(rule) ? { special_rules: [...(item.special_rules ?? []), rule] } : {}) } : item)
+      : [...items, { id, name, category, owned: quantity, equipped: 0, stash: quantity, value: 0, ...(rule ? { special_rules: [rule] } : {}) }];
+  };
   const rewards = input.scenario_results?.["additional_rewards"];
-  if (!Array.isArray(rewards)) return { gold, wyrdstone, inventory: items, notes, followUps };
+  if (!Array.isArray(rewards)) return { gold, wyrdstone, inventory: items, notes, followUps, addedRules, scenarioExploration };
   for (const value of rewards) {
     if (!value || typeof value !== "object") continue;
     const reward = value as OpenPayload; const quantity = Math.max(0, Math.trunc(Number(reward["quantity"] ?? 0)));
@@ -56,12 +63,31 @@ function recordedRewards(input: RecordBattleInput, knowledge: KnowledgeReader, i
       if (reward["resource"] === "wyrdstone_fragments") wyrdstone += quantity;
       continue;
     }
+    if (reward["kind"] === "exploration") {
+      scenarioExploration = { extra_dice: Math.max(0, Math.trunc(Number(reward["extra_dice"] ?? 0))), reroll_all: Boolean(reward["reroll_all"]) };
+      notes.push({ step: 2, type: "scenario_reward", description: String(reward["rule"] ?? "Scenario exploration rule enabled.") });
+      continue;
+    }
     if (reward["kind"] === "special") {
       const special=String(reward["special_id"]??"");
-      if(/magical-artefact/.test(special)) followUps.push({id:`scenario:artefact:${followUps.length+1}`,step:2,type:"exploration_followup",queue:[{type:"magical_artefact_table"}],messages:[]});
-      else if(special==="scenario.assault-on-the-rock.reward") followUps.push({id:"scenario:tome-of-magic",step:2,type:"scenario_spell_reward",mandatory:true,description:"Choose a Hero and two spells from the Tome of Magic."});
-      else if(special==="scenario.encampment-raid.reward") followUps.push({id:"scenario:encampment",step:2,type:"scenario_encampment",mandatory:true,description:"Choose whether to destroy or occupy the captured camp."});
-      else notes.push({step:2,type:"scenario_reward",description:String(reward["label"]??special)});
+      const label=String(reward["label"]??special), rule=String(reward["rule"]??label).trim();
+      if (["nothing", "failure", "illusions"].some((token) => special.includes(token))) notes.push({step:2,type:"scenario_reward",description:label});
+      else if(/magical-artefact/.test(special)) for(let index=0;index<quantity;index+=1) followUps.push({id:`scenario:${battleNumber}:${special}:${index+1}`,step:2,type:"exploration_followup",queue:[{type:"magical_artefact_table"}],messages:[label]});
+      else if(special==="scenario.assault-on-the-rock.reward") {
+        const forbidden = ["sisters-of-sigmar", "witch-hunters"].includes(campaign.identity.band_id) || campaign.warriors.some((warrior) => [warrior.name, warrior.profile_name, ...warrior.skills, ...(warrior.special_rules ?? [])].join(" ").toLowerCase().includes("priest of morr"));
+        if (forbidden) notes.push({step:2,type:"scenario_reward",description:"Tome of Magic cannot be used by this warband."});
+        else followUps.push({id:`scenario:${battleNumber}:tome-of-magic`,step:2,type:"scenario_spell_reward",mandatory:true,description:"Choose a Hero and exactly two spells granted by the Tome of Magic."});
+      }
+      else if(special==="scenario.the-item-lost.reward") followUps.push({id:`scenario:${battleNumber}:wand-of-phyrros`,step:2,type:"exploration_followup",mandatory:true,messages:[],queue:[{type:"grant_special_item",recipient:"hero",item_id:"scenario_reward.wand_of_phyrros",name:"Wand of Phyrros",text:rule}]});
+      else if(special==="scenario.encampment-raid.reward") followUps.push({id:`scenario:${battleNumber}:encampment`,step:2,type:"scenario_encampment",mandatory:true,description:"Choose whether to destroy or occupy the captured camp; add captured stash items in Equipment."});
+      else if(special==="scenario.the-night-of-the-headless-one.reward") addItem("scenario_reward.skull_of_the_headless_one","Skull of the Headless One","Scenario Reward",quantity,rule);
+      else if(["worthless-inventories", "straggler-", "encampment-raid"].some((token)=>special.includes(token))) addedRules.push({source:`scenario:${battleNumber}`,text:rule,expires_after_battles:null,consume_when_opponent_contains:[]});
+      else {
+        const canonical: Record<string,string>={"dispel-scroll":"dispelling_scroll","holy-or-unholy-relic":"holy_relic"};
+        const id=canonical[special]??`scenario_reward.${special||"special"}`;
+        const known=knowledge.queryKnowledge({id:{kind:"item_id",value:id}}); const name=known.ok?String(known.record.names["en"]??label):label;
+        addItem(id,name,"Scenario Reward",quantity,rule);
+      }
       continue;
     }
     if (reward["kind"] !== "item") continue;
@@ -69,11 +95,10 @@ function recordedRewards(input: RecordBattleInput, knowledge: KnowledgeReader, i
     const known = knowledge.queryKnowledge({ id: { kind: "item_id", value: id } });
     const name = known.ok ? String(known.record.names["en"] ?? id) : String(reward["label"] ?? id);
     const category = known.ok ? String(known.record.data["kind"] ?? "Scenario Reward") : "Scenario Reward";
-    const found = items.find((item) => item.id === id);
-    items = found ? items.map((item) => item.id === id ? { ...item, owned: item.owned + quantity, stash: item.stash + quantity } : item) : [...items, { id, name, category, owned: quantity, equipped: 0, stash: quantity, value: 0 }];
+    addItem(id,name,category,quantity);
     notes.push({ step: 2, type: "scenario_reward", description: `Scenario: +${quantity} ${name}.`, item_id: id, quantity });
   }
-  return { gold, wyrdstone, inventory: items, notes, followUps };
+  return { gold, wyrdstone, inventory: items, notes, followUps, addedRules, scenarioExploration };
 }
 
 /**
@@ -140,7 +165,7 @@ export function recordBattle(
   }
 
   const number = nextBattleNumber(document);
-  const rewards = recordedRewards(input, knowledge, campaign.inventory);
+  const rewards = recordedRewards(input, knowledge, campaign.inventory, number, campaign);
   const base = currentState(document);
   const baseRating = base?.rating ?? rating(campaign.warriors);
   const baseModels = base?.models ?? memberCount(campaign.warriors);
@@ -198,6 +223,7 @@ export function recordBattle(
     // battle's resource deltas so the resolution steps start from them.
     gold_delta: Math.max(0, Math.trunc(input.gold_delta)) + rewards.gold,
     wyrdstone_delta: Math.max(0, Math.trunc(input.wyrdstone)) + rewards.wyrdstone,
+    ...(rewards.scenarioExploration ? { step_state: { scenario_exploration: rewards.scenarioExploration } } : {}),
     ...(rewards.notes.length ? { event_log: rewards.notes } : {}),
     // Hireling upkeep follow-ups (Python `record_battle` tail).
     ...(campaign.warriors.some((w) => w.kind === "hireling" && w.upkeep_resources?.length)
@@ -217,7 +243,7 @@ export function recordBattle(
   };
 
   const opponentKey = `${input.opponent_band_id ?? ""} ${input.opponent}`.toLowerCase();
-  const specialRules = campaign.special_rules.flatMap((rule) => {
+  const specialRules = [...campaign.special_rules, ...rewards.addedRules].flatMap((rule) => {
     const rawTriggers = rule["consume_when_opponent_contains"];
     const triggers = Array.isArray(rawTriggers) ? rawTriggers.map((value: unknown) => String(value).toLowerCase()) : [];
     const applies = triggers.length === 0 || triggers.some((value) => opponentKey.includes(value));

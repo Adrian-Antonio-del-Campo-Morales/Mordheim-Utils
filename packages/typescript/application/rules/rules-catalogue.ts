@@ -15,6 +15,7 @@ import {
   resolveName,
 } from "../../adapters/knowledge-reader/index";
 import type { ArtefactRow } from "../../adapters/knowledge-reader/artefact-types";
+import { adaptDistanceText } from "./distance-display";
 
 /** Locale code used for display text (matches the KB artefact locales). */
 export type Locale = "en" | "es";
@@ -89,6 +90,13 @@ function localizedEffect(
   row: Readonly<Record<string, unknown>>,
   locale: Locale,
 ): string {
+  return adaptDistanceText(rawLocalizedEffect(row, locale), locale, entryIdOf(row));
+}
+
+function rawLocalizedEffect(
+  row: Readonly<Record<string, unknown>>,
+  locale: Locale,
+): string {
   for (const key of ["effect", "description", "text", "note"]) {
     const translated = row[`${key}_i18n`];
     if (
@@ -98,6 +106,12 @@ function localizedEffect(
     ) {
       return String((translated as Readonly<Record<string, unknown>>)[locale]);
     }
+  }
+  const effects = row.effects;
+  if (effects && typeof effects === "object" && typeof (effects as Readonly<Record<string, unknown>>)[locale] === "string") {
+    return String((effects as Readonly<Record<string, unknown>>)[locale]);
+  }
+  for (const key of ["effect", "description", "text", "note"]) {
     if (typeof row[key] === "string") return String(row[key]);
   }
   return locale === "es"
@@ -107,6 +121,24 @@ function localizedEffect(
 
 function sourceRefs(row: Readonly<Record<string, unknown>>): readonly Readonly<Record<string, unknown>>[] {
   return Array.isArray(row.source_refs) ? row.source_refs as Readonly<Record<string, unknown>>[] : [];
+}
+
+function translatedText(row: Readonly<Record<string, unknown>>, locale: Locale): string {
+  if (locale === "en") return localizedEffect(row, locale);
+  let text = "";
+  for (const key of ["effect", "description", "text", "note"]) {
+    const values = row[`${key}_i18n`];
+    if (values && typeof values === "object" && typeof (values as Readonly<Record<string, unknown>>)[locale] === "string") {
+      text = String((values as Readonly<Record<string, unknown>>)[locale]);
+      break;
+    }
+  }
+  if (!text) {
+    const effects = row.effects;
+    text = effects && typeof effects === "object" && typeof (effects as Readonly<Record<string, unknown>>)[locale] === "string"
+      ? String((effects as Readonly<Record<string, unknown>>)[locale]) : "";
+  }
+  return adaptDistanceText(text, locale, entryIdOf(row));
 }
 
 export class RulesCatalogue {
@@ -126,14 +158,9 @@ export class RulesCatalogue {
   entries(categoryId: string, locale: Locale = "en"): RuleEntry[] {
     const rows = this.rawRows(categoryId);
     const tagged = rows.map((row) => this.toEntry(categoryId, row, locale));
-    // Desktop ordering: skills/equipment grouped by tag then name; spells by name.
-    return categoryId === "skills" || categoryId === "equipment"
-      ? [...tagged].sort((left, right) =>
-          `${(left.tags[0] ?? "")}:${left.name}`.localeCompare(
-            `${(right.tags[0] ?? "")}:${right.name}`,
-            locale,
-          ))
-      : tagged;
+    return [...tagged].sort((left, right) =>
+      left.name.localeCompare(right.name, locale, { sensitivity: "base" }),
+    );
   }
 
   /** Look up one entry by stable id; `null` when absent. */
@@ -160,7 +187,8 @@ export class RulesCatalogue {
       for (const entry of this.entries(categoryId, locale)) {
         if (
           unaccentLower(entry.name).includes(needle) ||
-          unaccentLower(entry.effect).includes(needle)
+          unaccentLower(entry.effect).includes(needle) ||
+          unaccentLower(entry.tags.join(" ")).includes(needle)
         ) {
           hits.push(entry);
         }
@@ -257,30 +285,112 @@ export class RulesCatalogue {
     row: Readonly<Record<string, unknown>>,
     locale: Locale,
   ): RuleEntry {
-    const tags = this.tagsFor(categoryId, row);
+    const tags = this.tagsFor(categoryId, row, locale);
+    const effect = categoryId === "scenarios"
+      ? this.scenarioText(row, locale)
+      : categoryId === "injuries"
+        ? this.injuryTableText(row, locale)
+        : localizedEffect(row, locale);
     return {
       category_id: categoryId,
       entry_id: entryIdOf(row),
       name: resolveName(row as ArtefactRow, locale),
-      effect: localizedEffect(row, locale),
+      effect,
       tags,
       source_refs: sourceRefs(row),
       ...(categoryId === "spells" && row.lore_id !== undefined ? { lore_id: String(row.lore_id) } : {}),
     };
   }
 
+  private scenarioText(row: Readonly<Record<string, unknown>>, locale: Locale): string {
+    const parts = [localizedEffect(row, locale)];
+    parts.push(locale === "es"
+      ? `Ambientación: ${String(row.setting ?? "—")} · Modalidad: ${String(row.player_mode ?? "—")} · Autor: ${String(row.author ?? "—")}`
+      : `Setting: ${String(row.setting ?? "—")} · Mode: ${String(row.player_mode ?? "—")} · Author: ${String(row.author ?? "—")}`);
+    const progression = row.progression && typeof row.progression === "object"
+      ? row.progression as Readonly<Record<string, unknown>> : {};
+    const experience = Array.isArray(progression.experience)
+      ? progression.experience as Readonly<Record<string, unknown>>[] : [];
+    if (experience.length) {
+      parts.push(locale === "es" ? "Experiencia:" : "Experience:");
+      for (const award of experience) {
+        const standard: Readonly<Record<string, string>> = {
+          "campaign.experience.award.survives": "Sobrevive a la batalla",
+          "campaign.experience.award.winning-leader": "El jefe de la banda vencedora",
+          "campaign.experience.award.per-enemy-out-of-action": "Por cada enemigo dejado fuera de combate",
+        };
+        const text = translatedText(award, locale);
+        const fallback = locale === "es" ? standard[String(award.ref ?? "")] : titleCase(String(award.ref ?? "").split(".").pop() ?? "");
+        if (text || fallback) parts.push(`• ${text || fallback}`);
+      }
+    }
+    const loot = progression.loot && typeof progression.loot === "object"
+      ? progression.loot as Readonly<Record<string, unknown>> : null;
+    if (loot) {
+      const lootText = translatedText(loot, locale);
+      if (lootText) parts.push(`${locale === "es" ? "Botín" : "Loot"}: ${lootText}`);
+      if (locale === "en" && Array.isArray(loot.contents)) {
+        for (const content of loot.contents as Readonly<Record<string, unknown>>[]) {
+          parts.push(`• ${String(content.roll ?? "")} ${String(content.reward ?? "")}`.trim());
+        }
+      }
+    }
+    if (locale === "en" && typeof progression.wyrdstone === "string") {
+      parts.push(`Wyrdstone: ${progression.wyrdstone}`);
+    }
+    if (locale === "en" && Array.isArray(progression.notes)) {
+      parts.push(`Notes: ${(progression.notes as unknown[]).map(String).join(" ")}`);
+    }
+    return parts.filter(Boolean).join("\n\n");
+  }
+
+  private injuryTableText(row: Readonly<Record<string, unknown>>, locale: Locale): string {
+    const results = Array.isArray(row.results) ? row.results as Readonly<Record<string, unknown>>[] : [];
+    const es: Readonly<Record<string, string>> = {
+      Dead: "Muerto", "Multiple Injuries": "Heridas múltiples", "Leg Wound": "Herida en la pierna",
+      "Arm Wound": "Herida en el brazo", Madness: "Locura", "Smashed Leg": "Pierna aplastada",
+      "Chest Wound": "Herida en el pecho", "Blinded In One Eye": "Tuerto", "Old Battle Wound": "Vieja herida de guerra",
+      "Nervous Condition": "Problema nervioso", "Hand Injury": "Herida en la mano", "Deep Wound": "Herida profunda",
+      Robbed: "Robado", "Full Recovery": "Recuperación completa", "Bitter Enmity": "Enemistad acérrima",
+      Captured: "Capturado", Hardened: "Curtido", "Horrible Scars": "Cicatrices horribles",
+      "Sold To The Pits": "Vendido a los pozos", "Survives Against The Odds": "Sobrevive contra todo pronóstico",
+      Removed: "Eliminado",
+    };
+    const dice = row.dice && typeof row.dice === "object" ? row.dice as Readonly<Record<string, unknown>> : {};
+    const heading = locale === "es"
+      ? `Tabla de ${String(dice.count ?? "")}D${String(dice.sides ?? "")}. Resultados:`
+      : `${String(dice.count ?? "")}D${String(dice.sides ?? "")} table. Results:`;
+    return [heading, ...results.map((result) => {
+      const canonical = String(result.result ?? result.id ?? "");
+      const name = locale === "es" ? es[canonical] ?? canonical : canonical;
+      const note = translatedText(result, locale);
+      return `${String(result.roll ?? "")} — ${name}${note ? `: ${note}` : ""}`;
+    })].join("\n");
+  }
+
   private tagsFor(
     categoryId: string,
     row: Readonly<Record<string, unknown>>,
+    locale: Locale,
   ): readonly string[] {
+    const label = (value: string) => {
+      const canonical = titleCase(value);
+      if (locale !== "es") return canonical;
+      return ({
+        Speed: "Velocidad", Combat: "Combate", Shooting: "Disparo", Academic: "Académicas", Strength: "Fuerza", Special: "Especiales",
+        "Close Combat Weapon": "Arma de combate cuerpo a cuerpo", "Ranged Weapon": "Arma a distancia", Armour: "Armadura",
+        "Shield Or Defence": "Escudo o defensa", "Combat Equipment": "Equipo de combate", "Material Or Upgrade": "Material o mejora",
+        Hero: "Héroe", Henchman: "Secuaz", Multiplayer: "Multijugador",
+      } as Readonly<Record<string, string>>)[canonical] ?? canonical;
+    };
     switch (categoryId) {
       case "skills": {
         const table = String(row.category ?? "").trim();
-        return table && table !== "None" ? [titleCase(table)] : [];
+        return table && table !== "None" ? [label(table)] : [];
       }
       case "equipment": {
         const kind = String(row.kind ?? "").trim();
-        return kind ? [titleCase(kind)] : [];
+        return kind ? [label(kind)] : [];
       }
       case "spells": {
         const loreName = String(row._lore_name ?? "").trim() || titleCase(String(row.lore_id ?? ""));
@@ -291,11 +401,11 @@ export class RulesCatalogue {
       }
       case "scenarios": {
         const mode = String(row.player_mode ?? "").trim();
-        return mode ? [titleCase(mode)] : [];
+        return mode ? [label(mode)] : [];
       }
       case "injuries": {
         const applies = String(row.applies_to ?? "").trim();
-        return applies ? [titleCase(applies)] : [];
+        return applies ? [label(applies)] : [];
       }
       default:
         return [];

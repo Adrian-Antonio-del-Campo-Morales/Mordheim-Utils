@@ -162,7 +162,9 @@ export function applyInjuryOutcome(
   const lostEyes = [...(warrior.lost_eyes ?? [])];
   const uninterpreted: OpenPayload[] = [];
   const followUps: OpenPayload[] = [];
-  let experience=warrior.experience, removeWarrior=false, discardEquipment=false;
+  const pendingIds=new Set((pendingPostBattle(document)?.pending_follow_ups??[]).map((row)=>String(row["id"]??"")));
+  const queueFollowUp=(payload:OpenPayload)=>{const base=String(payload["id"]??payload["type"]??"injury-followup");let id=base,index=2;while(pendingIds.has(id)||followUps.some((row)=>row["id"]===id))id=`${base}:${index++}`;followUps.push({...payload,id});};
+  let experience=warrior.experience, removeWarrior=false, removeGroupMember=false, discardEquipment=false;
   let battleChecks=[...(warrior.battle_start_checks??[])];
 
   for (const effect of effects) {
@@ -191,23 +193,23 @@ export function applyInjuryOutcome(
     } else if (kind === "lost_eye") {
       lostEyes.push(String((effect as { side?: unknown }).side ?? "left"));
     } else if (kind === "remove_warrior") {
-      removeWarrior=true;
+      if(warrior.kind==="henchman"&&(warrior.quantity??1)>1)removeGroupMember=true;else removeWarrior=true;
     } else if (kind === "discard_equipment") {
       discardEquipment=true;
     } else if (kind === "grant_experience") {
       const value=Number((effect as {value?:unknown}).value??0); if(!Number.isInteger(value)||value<0)return{ok:false,reason:"invalid_input",message:"grant_experience needs a non-negative integer."}; experience+=value;
     } else if (kind === "battle_start_check") {
-      const check=(effect as {check?:OpenPayload}).check; if(!check)return{ok:false,reason:"invalid_input",message:"battle_start_check needs KB check data."}; battleChecks=[...battleChecks,check];
+      const check=(effect as {check?:OpenPayload}).check; if(!check)return{ok:false,reason:"invalid_input",message:"battle_start_check needs KB check data."}; if(!battleChecks.some((row)=>row["check_id"]===check["check_id"]))battleChecks=[...battleChecks,check];
     } else if (kind === "equipment_limit") {
       const value=Number((effect as {maximum_one_handed_weapons?:unknown}).maximum_one_handed_weapons); if(!Number.isInteger(value)||value<0)return{ok:false,reason:"invalid_input",message:"equipment_limit needs a non-negative whole-number limit."}; equipmentLimits["maximum_one_handed_weapons"]=Math.min(equipmentLimits["maximum_one_handed_weapons"]??value,value); condition="Injured"; conditionDetail=`Arm wound (max ${value} one-handed weapon(s))`;
     } else if (kind === "follow_up") {
-      const item=effect as {type?:unknown;payload?:OpenPayload}; if(typeof item.type!=="string"||!item.type)return{ok:false,reason:"invalid_input",message:"follow_up needs a type."}; followUps.push({id:`${item.type}:${warrior.id}:${input.result_id}:${casualtyIndex}`,step:"injuries",type:item.type,warrior_id:warrior.id,casualty_index:casualtyIndex,result_id:input.result_id,...(item.payload??{})});
+      const item=effect as {type?:unknown;payload?:OpenPayload}; if(typeof item.type!=="string"||!item.type)return{ok:false,reason:"invalid_input",message:"follow_up needs a type."}; queueFollowUp({id:`${item.type}:${warrior.id}:${input.result_id}:${casualtyIndex}`,step:"injuries",type:item.type,warrior_id:warrior.id,casualty_index:casualtyIndex,result_id:input.result_id,...(item.payload??{})});
     } else {
       // Open-payload policy: preserve what this port does not interpret.
       uninterpreted.push(effect);
     }
   }
-  if(input.result_id.includes("blinded-in-one-eye"))followUps.push({id:`eye_injury:${warrior.id}:${input.result_id}:${casualtyIndex}`,step:"injuries",type:"eye_injury",warrior_id:warrior.id,casualty_index:casualtyIndex,result_id:input.result_id});
+  if(input.result_id.includes("blinded-in-one-eye"))queueFollowUp({id:`eye_injury:${warrior.id}:${input.result_id}:${casualtyIndex}`,step:"injuries",type:"eye_injury",warrior_id:warrior.id,casualty_index:casualtyIndex,result_id:input.result_id});
 
   const record: OpenPayload = {
     result_id: input.result_id,
@@ -217,6 +219,11 @@ export function applyInjuryOutcome(
     ...(input.battle_number !== undefined ? { battle_number: input.battle_number } : {}),
     ...(input.battle_number !== undefined ? { casualty_index: casualtyIndex } : {}),
   };
+  const lost=new Map<string,number>(),lostCosts=new Map<string,number[]>();
+  const rememberLost=(item:Warrior["equipment"][number],quantity:number)=>{lost.set(item.item_id,(lost.get(item.item_id)??0)+quantity);lostCosts.set(item.item_id,[...(lostCosts.get(item.item_id)??[]),...(item.acquisition_costs?.slice(0,quantity)??Array.from({length:quantity},()=>item.unit_cost??0))]);};
+  let remainingEquipment=[...warrior.equipment];
+  if(removeGroupMember){const oldQuantity=warrior.quantity??1;remainingEquipment=warrior.equipment.flatMap((item)=>{if(!item.per_model)return[item];const removed=Math.min(item.quantity,Math.max(1,Math.trunc(item.quantity/oldQuantity)));if(item.transferable!==false)rememberLost(item,removed);const quantity=item.quantity-removed;return quantity?[{...item,quantity,...(item.acquisition_costs?{acquisition_costs:item.acquisition_costs.slice(removed)}:{})}]:[];});}
+  if(removeWarrior||discardEquipment)for(const item of warrior.equipment)if(item.transferable!==false)rememberLost(item,item.quantity);
   const nextWarrior: Warrior = {
     ...warrior,
     ...(gamesToMiss !== (warrior.games_to_miss ?? 0) ? { games_to_miss: gamesToMiss } : {}),
@@ -228,22 +235,24 @@ export function applyInjuryOutcome(
     ...(lostEyes.length > 0 ? { lost_eyes: lostEyes } : {}),
     ...(experience!==warrior.experience?{experience}:{}),
     ...(battleChecks.length?{battle_start_checks:battleChecks}:{}),
+    ...(removeGroupMember?{quantity:(warrior.quantity??1)-1,equipment:remainingEquipment}:{}),
     injury_records: [...(warrior.injury_records ?? []), record],
   };
-  const lost=new Map<string,number>(); if((removeWarrior||discardEquipment))for(const item of warrior.equipment)if(item.transferable!==false)lost.set(item.item_id,(lost.get(item.item_id)??0)+item.quantity);
-  const inventory=document.campaign.inventory.map((item)=>{const quantity=lost.get(item.id)??0;return quantity?{...item,owned:Math.max(0,item.owned-quantity),equipped:Math.max(0,item.equipped-quantity),stash:Math.max(0,item.stash-quantity)}:item;}).filter((item)=>item.owned>0);
+  const inventory=document.campaign.inventory.map((item)=>{const quantity=lost.get(item.id)??0;if(!quantity)return item;const costs=[...(item.acquisition_costs??[])];for(const cost of lostCosts.get(item.id)??[]){const index=costs.indexOf(cost);costs.splice(index>=0?index:0,1);}return{...item,owned:Math.max(0,item.owned-quantity),equipped:Math.max(0,item.equipped-quantity),...(item.acquisition_costs?{acquisition_costs:costs}:{})};}).filter((item)=>item.owned>0);
   let campaign = {
     ...document.campaign,
     inventory,
     warriors: removeWarrior?document.campaign.warriors.filter((w)=>w.id!==input.warrior_id):document.campaign.warriors.map((w) => (w.id === input.warrior_id ? {...nextWarrior,equipment:discardEquipment?nextWarrior.equipment.filter((item)=>item.transferable===false):nextWarrior.equipment} : w)),
   };
+  if(input.battle_number!==undefined){const key=`${warrior.id}:${casualtyIndex}`;campaign={...campaign,post_battles:campaign.post_battles.map((post)=>post.battle_number===input.battle_number?{...post,step_state:{...(post.step_state??{}),injuries:{...((post.step_state?.["injuries"] as OpenPayload|undefined)??{}),[key]:{resolved:true,result_id:input.result_id,result:input.result}}}}:post)};}
   let nextDocument: CampaignDocument = withCampaign(document, campaign);
 
   if (removeWarrior) {
+    const targetBattle=input.battle_number??pendingPostBattle(nextDocument)?.battle_number;
     nextDocument = withCampaign(nextDocument, {
       ...nextDocument.campaign,
       post_battles: nextDocument.campaign.post_battles.map((post) =>
-        post.battle_number !== input.battle_number
+        post.battle_number !== targetBattle
           ? post
           : {
               ...post,

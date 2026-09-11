@@ -138,13 +138,6 @@ export function createDraftWorkflow(deps: DraftWorkflowDeps) {
       if (!row) {
         return { ok: false, reason: "not_found", message: `Unknown roster row: ${rowId}.` };
       }
-      if (row.kind === "hero" && document.campaign.warriors.filter((w) => w.kind === "hero").length === 1) {
-        return {
-          ok: false,
-          reason: "rejected",
-          message: "A warband needs at least one hero — remove other heroes first or commit.",
-        };
-      }
       const removed = document.campaign.warriors.find((w) => w.id === rowId);
       const warriors = document.campaign.warriors.filter((w) => w.id !== rowId);
       // Desktop refunds creation purchases when their draft row disappears.
@@ -172,7 +165,11 @@ export function createDraftWorkflow(deps: DraftWorkflowDeps) {
       const warrior = document.campaign.warriors.find((row) => row.id === rowId);
       if (!warrior) return { ok: false, reason: "not_found", message: "Warrior not found in the draft." };
       if (warrior.kind !== "henchman" || !warrior.profile_id) return { ok: false, reason: "rejected", message: "Heroes are individuals; add or remove them instead." };
-      const profileResult = knowledge.queryKnowledge({ id: { kind: "profile_id", value: warrior.profile_id } });
+      const catalogue = knowledge as KnowledgeReader & { list?(kind: "profile"): readonly Record<string, unknown>[] };
+      const scopedProfile = catalogue.list?.("profile").find((profile) => profile["id"] === warrior.profile_id && profile["band_id"] === document.campaign.identity.band_id);
+      const profileResult = scopedProfile
+        ? { ok: true as const, record: { data: scopedProfile } }
+        : knowledge.queryKnowledge({ id: { kind: "profile_id", value: warrior.profile_id } });
       if (!profileResult.ok || profileResult.record.data["band_id"] !== document.campaign.identity.band_id) return { ok: false, reason: "not_found", message: "Profile is no longer available in the knowledge base." };
       const bandResult = knowledge.queryKnowledge({ id: { kind: "band_id", value: document.campaign.identity.band_id } });
       const roster = bandResult.ok && bandResult.record.data["roster"] && typeof bandResult.record.data["roster"] === "object"

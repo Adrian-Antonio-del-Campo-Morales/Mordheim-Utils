@@ -82,6 +82,35 @@ export class KnowledgeReaderError extends Error {
   }
 }
 
+const TITLE_CASE_MINOR_WORDS: Readonly<Set<string>> = new Set([
+  "a", "an", "the", "and", "but", "or", "nor", "for", "of", "on", "in", "at", "to", "from", "by", "as", "vs", "versus", "per", "over", "under", "with", "without",
+  "de", "del", "al", "y", "e", "o", "u", "ni", "en", "con", "sin", "por", "para", "que", "el", "la", "los", "las", "un", "una", "unos", "unas", "entre", "hasta", "desde", "sobre", "contra", "según", "segun",
+]);
+
+/** Project display policy: visible text uses title case without changing ids or URLs. */
+export function titleCaseDisplay(value: string): string {
+  if (!value || /:\/\//.test(value)) return value;
+  if (/^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}$/.test(value)) return value;
+  const words = value.split(/(\s+)/);
+  const indexes = words.flatMap((word, index) => /\S/.test(word) ? [index] : []);
+  return words.map((word, index) => {
+    if (!/\S/.test(word)) return word;
+    const position = indexes.indexOf(index);
+    return word.split("-").map((part) => {
+      const letters = part.replace(/[^\p{L}\p{N}]/gu, "");
+      if (!letters) return part;
+      if (/^[A-Z0-9]+$/.test(letters) && letters.length <= 3) return part;
+      const lower = part.toLocaleLowerCase();
+      const key = letters.toLocaleLowerCase();
+      if (TITLE_CASE_MINOR_WORDS.has(key) && position > 0 && position < indexes.length - 1) return lower;
+      return lower.split("'").map((segment) => {
+        const first = segment.search(/[\p{L}\p{N}]/u);
+        return first < 0 ? segment : segment.slice(0, first) + segment[first].toLocaleUpperCase() + segment.slice(first + 1);
+      }).join("'");
+    }).join("-");
+  }).join("");
+}
+
 function rowNames(row: ArtefactRow): Readonly<Record<string, string>> {
   const merged = row.names;
   const i18n = row.name_i18n;
@@ -118,7 +147,7 @@ export function resolveName(
   for (const value of Object.values(names)) {
     if (value) return value;
   }
-  return String(row.id ?? row.item_id ?? "");
+  return titleCaseDisplay(String(row.id ?? row.item_id ?? ""));
 }
 
 export class ArtefactKnowledgeReader implements KnowledgeReader {
@@ -412,7 +441,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     const row = this.items.get(itemId) ?? this.campaignMaps.hirelings.get(itemId);
     if (!row) return itemId;
     const names = rowNames(row);
-    return names[locale] ?? names["en"] ?? itemId;
+    return titleCaseDisplay(names[locale] ?? names["en"] ?? itemId);
   }
 
   /** Number of hands required by a canonical weapon, when the KB declares it. */

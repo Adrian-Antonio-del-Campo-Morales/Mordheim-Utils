@@ -10,10 +10,8 @@
  * - pending post-battle blocks the next battle → kernel `conflict`;
  * - unavailable warriors (games_to_miss) → readiness rows + kernel
  *   `not_available`; the kernel rejects results naming them;
- * - scenario loot/rewards, battle-start checks, scenario_rewards XP plans →
- *   desktop-only engines (post-battle engine, scenario rewards); their
- *   campaign-state hooks (`participants`, `absentees`, `xp_awards`) are
- *   open payloads the web preserves verbatim — asserted structurally.
+ * - scenario loot/rewards, battle-start checks and scenario XP plans →
+ *   application workflows backed by the generated campaign KB.
  *
  * Purity: plain Node, fake KnowledgeReader — no React, no DOM, no filesystem.
  */
@@ -116,6 +114,32 @@ describe("desktop test_battle_creation.py → web recordBattle parity", () => {
     const post = campaign.post_battles.at(-1)!;
     expect(post.battle_number).toBe(1);
     expect(post.complete).toBe(false);
+  });
+
+  it("applies scenario exploration and creates every deferred artefact roll", () => {
+    const result = recordBattle(settled(), recordInput({ scenario_results: { additional_rewards: [
+      { kind: "exploration", quantity: 1, extra_dice: 1, reroll_all: true },
+      { kind: "special", quantity: 2, special_id: "magical-artefact-found", label: "Artefact" },
+    ] } }), knowledge);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const post = result.state.campaign.post_battles.at(-1)!;
+    expect(post.step_state?.["scenario_exploration"]).toEqual({ extra_dice: 1, reroll_all: true });
+    expect(post.pending_follow_ups?.filter((row) => row["type"] === "exploration_followup")).toHaveLength(2);
+  });
+
+  it("enforces special scenario reward rules from the desktop flow", () => {
+    const result = recordBattle(settled(), recordInput({ scenario_results: { additional_rewards: [
+      { kind: "special", quantity: 1, special_id: "scenario.assault-on-the-rock.reward", label: "Tome of Magic" },
+      { kind: "special", quantity: 1, special_id: "scenario.the-item-lost.reward", label: "Wand", rule: "Bearer rule" },
+      { kind: "special", quantity: 1, special_id: "scenario.the-night-of-the-headless-one.reward", label: "Skull", rule: "Skull rule" },
+    ] } }), knowledge);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const post = result.state.campaign.post_battles.at(-1)!;
+    expect(post.pending_follow_ups?.some((row) => row["type"] === "scenario_spell_reward")).toBe(false);
+    expect(post.pending_follow_ups?.some((row) => row["id"] === "scenario:1:wand-of-phyrros")).toBe(true);
+    expect(result.state.campaign.inventory.find((row) => row.id === "scenario_reward.skull_of_the_headless_one")?.special_rules).toContain("Skull rule");
   });
 
   it("recordBattle blocks while a post-battle is pending", () => {

@@ -232,7 +232,7 @@ export interface Campaign {
 }
 
 /** Timeline node selection, e.g. `draft:0` | `state:3` | `battle:2` | `post:2`. */
-export type MomentSelection = `draft:0` | `state:${number}` | `battle:${number}` | `post:${number}`;
+export type MomentSelection = `draft:0` | `state:${number}` | `battle:${number}` | `post:${number}` | `new-battle:${number}`;
 
 /**
  * Reconstructible UI selection state. Readers may ignore or reset any part;

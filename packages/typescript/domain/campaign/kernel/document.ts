@@ -63,6 +63,19 @@ export function heroCount(warriors: readonly Warrior[]): number {
   return warriors.reduce((total, w) => (w.kind === "hero" ? total + (w.quantity ?? 1) : total), 0);
 }
 
+/** Stable, human-readable unique roster name using Roman suffixes. */
+export function uniqueWarriorName(warriors: readonly Warrior[], base: string): string {
+  const taken = new Set(warriors.map((warrior) => warrior.name.toLocaleLowerCase()));
+  if (!taken.has(base.toLocaleLowerCase())) return base;
+  const numerals: readonly (readonly [number, string])[] = [[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
+  for (let index = 2; ; index += 1) {
+    let value = index, suffix = "";
+    for (const [amount, numeral] of numerals) while (value >= amount) { suffix += numeral; value -= amount; }
+    const candidate = `${base} ${suffix}`;
+    if (!taken.has(candidate.toLocaleLowerCase())) return candidate;
+  }
+}
+
 /** Total experience of own-band members (hirelings excluded). */
 export function experienceTotal(warriors: readonly Warrior[]): number {
   return warriors.reduce(

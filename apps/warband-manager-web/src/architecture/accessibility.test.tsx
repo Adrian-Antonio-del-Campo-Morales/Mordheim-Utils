@@ -96,8 +96,8 @@ describe("P7.4 static accessibility audit", () => {
 
   it("every dynamically disabled action keeps a stable accessible name", () => {
     // Repeated per-row buttons must not rely on visible text alone.
-    expect(source("equipment/EquipmentPanel.tsx")).toMatch(/aria-label=\{`Return /);
-    expect(source("injuries/InjuriesPanel.tsx")).toMatch(/aria-label=\{`Recover /);
+    expect(source("equipment/EquipmentPanel.tsx")).toMatch(/aria-label=\{`\$\{locale/);
+    expect(source("injuries/InjuriesPanel.tsx")).toMatch(/aria-label=\{`\$\{locale/);
   });
 
   it("headings follow document order (h1 once, no skipped levels)", () => {

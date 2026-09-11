@@ -48,7 +48,7 @@ describe("P5.2 acceptance — real KB loading", () => {
     stubFetchWith(artefact);
     render(<ProductApp />);
     await waitFor(() =>
-      expect(screen.getAllByRole("button", { name: "Nueva campaña" })[0].hasAttribute("disabled")).toBe(false),
+      expect(screen.getAllByRole("button", { name: "Nueva Campaña" })[0].hasAttribute("disabled")).toBe(false),
     );
     expect(fetch).toHaveBeenCalledWith("knowledge/knowledge-web.json");
     expect(screen.queryByRole("alert")).toBeNull();
@@ -88,7 +88,7 @@ describe("P5.2 acceptance — real KB loading", () => {
     expect(alert).toHaveTextContent("offline");
     fireEvent.click(screen.getByRole("button", { name: "Reintentar" }));
     await waitFor(() =>
-      expect(screen.getAllByRole("button", { name: "Nueva campaña" })[0].hasAttribute("disabled")).toBe(false),
+      expect(screen.getAllByRole("button", { name: "Nueva Campaña" })[0].hasAttribute("disabled")).toBe(false),
     );
     expect(screen.queryByRole("alert")).toBeNull();
   });

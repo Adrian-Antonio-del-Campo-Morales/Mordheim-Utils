@@ -112,10 +112,10 @@ describe("hireHireling (desktop hire_hireling)", () => {
     if (!again.ok) expect(again.reason).toBe("conflict");
   });
 
-  it("rejects hiring in a draft and an unknown profile", () => {
+  it("allows hiring in a draft and rejects an unknown profile", () => {
     const draft = hireHireling(makeDoc(true), { profile_id: PROFILE }, makeReader());
-    expect(draft.ok).toBe(false);
-    if (!draft.ok) expect(draft.reason).toBe("not_permitted_in_draft");
+    expect(draft.ok).toBe(true);
+    if (draft.ok) expect(draft.state.campaign.warriors.some((warrior) => warrior.kind === "hireling")).toBe(true);
     const unknown = hireHireling(makeDoc(), { profile_id: "nope" }, makeReader());
     expect(unknown.ok).toBe(false);
     if (!unknown.ok) expect(unknown.reason).toBe("not_found");

@@ -26,6 +26,7 @@ describe("ManualCorrectionsPanel", () => {
   it("dispatches a resource correction with the entered reason", async () => {
     renderPanel();
     const user = userEvent.setup();
+    await user.selectOptions(screen.getByLabelText("Resource"), "gold_crowns");
     await user.type(screen.getByLabelText("Reason"), "Table correction");
     await user.clear(screen.getByLabelText("Adjustment"));
     await user.type(screen.getByLabelText("Adjustment"), "5");
@@ -42,6 +43,7 @@ describe("ManualCorrectionsPanel", () => {
     run.mockClear();
     renderPanel();
     const user = userEvent.setup();
+    await user.selectOptions(screen.getByLabelText("Resource"), "gold_crowns");
     await user.type(screen.getByLabelText("Reason"), "Zero");
     await user.clear(screen.getByLabelText("Adjustment"));
     await user.type(screen.getByLabelText("Adjustment"), "0");
@@ -53,6 +55,7 @@ describe("ManualCorrectionsPanel", () => {
   it("dispatches a negative integer correction", async () => {
     renderPanel();
     const user = userEvent.setup();
+    await user.selectOptions(screen.getByLabelText("Resource"), "gold_crowns");
     await user.type(screen.getByLabelText("Reason"), "Take three");
     await user.clear(screen.getByLabelText("Adjustment"));
     await user.type(screen.getByLabelText("Adjustment"), "-3");

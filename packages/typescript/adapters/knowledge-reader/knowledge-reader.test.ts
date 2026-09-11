@@ -159,7 +159,7 @@ describe("locale resolution chain", () => {
 
   it("falls back to any translated entry, then the id", () => {
     expect(resolveName({ id: "x", name: "", name_i18n: { es: "Hola" } }, "en")).toBe("Hola");
-    expect(resolveName({ id: "x" }, "en")).toBe("x");
+    expect(resolveName({ id: "x" }, "en")).toBe("X");
   });
 });
 

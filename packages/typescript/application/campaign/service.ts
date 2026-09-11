@@ -55,6 +55,7 @@ import { resolveInjuryTableFollowUp } from "./features/injuries/injury-followup-
 import { resolveScenarioEncampment, resolveScenarioSpellReward } from "./features/exploration/scenario-followups-workflow";
 import { acknowledgeFollowUp, followUpNeedsResolution } from "./features/review/follow-up-acknowledgement-workflow";
 import { mercenaryVariantsForBand } from "../../domain/campaign/hire-eligibility";
+import { treasury } from "../../domain/campaign/kernel/document";
 
 const HISTORY_LIMIT = 50;
 
@@ -80,7 +81,6 @@ function equipmentViolation(document: CampaignDocument, knowledge: CampaignAppDe
   const hands=(knowledge as typeof knowledge & { weaponHandsFor?(id:string):number|null }).weaponHandsFor?.(itemId);
   const limit=warrior.equipment_limits?.["maximum_one_handed_weapons"];
   if(hands===1&&limit!==undefined){const carriedHands=carried.filter((row)=>(knowledge as typeof knowledge & { weaponHandsFor?(id:string):number|null }).weaponHandsFor?.(row.base_item_id??row.item_id)===1).reduce((sum,row)=>sum+row.quantity,0);if(carriedHands+amount>limit*models)return `Injury limits this warrior to ${limit} one-handed weapon(s) per model.`;}
-  if(["close-combat-weapon","ranged-weapon"].includes(category)){const count=carried.filter((row)=>{const known=knowledge.queryKnowledge({id:{kind:"item_id",value:row.base_item_id??row.item_id}});return known.ok&&String(known.record.data["kind"]??"")===category;}).reduce((sum,row)=>sum+row.quantity,0);if(count+amount>2*models)return "A warrior can carry at most two weapons of this category, besides the free starting dagger.";}
   if(!["close-combat-weapon","ranged-weapon"].includes(category)&&carried.filter((row)=>row.item_id===itemId).reduce((sum,row)=>sum+row.quantity,0)+amount>models)return `${item.record.names["en"]??itemId} is already carried; a warrior carries one of these.`;
   return null;
 }
@@ -144,7 +144,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
       if (!input.campaign_name.trim() || !input.warband_name.trim()) return error("rejected", "Campaign and warband names are required.");
       const result = useCases.createDraft(input.band_id, deps.knowledge);
       if (!result.ok) return error("rejected", result.message, { reason: result.reason });
-      const document = { ...result.state, campaign: { ...result.state.campaign, identity: { ...result.state.campaign.identity, campaign_name: input.campaign_name.trim(), warband_name: input.warband_name.trim() } } };
+      const document = { ...result.state, campaign: { ...result.state.campaign, warriors: [], inventory: [], identity: { ...result.state.campaign.identity, campaign_name: input.campaign_name.trim(), warband_name: input.warband_name.trim() } } };
       state.current = document;
       state.history = [];
       state.baseline = null;
@@ -223,7 +223,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
       const knowledge = deps.knowledge;
       const selected = state.current.view.selected_moment;
       const pending = state.current.campaign.post_battles.find((post) => !post.complete);
-      const editable = !selected || selected === "draft:0" || selected === `state:${state.current.campaign.current_state_number}` || (pending && selected === `post:${pending.battle_number}`);
+      const editable = !selected || selected === "draft:0" || selected.startsWith("new-battle:") || selected === `state:${state.current.campaign.current_state_number}` || (pending && selected === `post:${pending.battle_number}`);
       if (action !== "undo" && action !== "renameCampaign" && action !== "renameWarband" && !editable) return error("rejected", "Historical moments are read-only.");
       switch (action) {
         case "renameCampaign":
@@ -324,7 +324,8 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
             const unresolved = (post.pending_follow_ups ?? []).some((row) => stepMatches(row) && followUpNeedsResolution(row, post.acknowledgements ?? {}));
             const injuries = new Map<string, number>();
             for (const id of battle.out_of_action_ids ?? []) injuries.set(id, (injuries.get(id) ?? 0) + 1);
-            if (post.active_step === 0 && ([...injuries].some(([id, count]) => !Array.from({ length: count }, (_, index) => index + 1).every((casualtyIndex) => state.current!.campaign.warriors.find((warrior) => warrior.id === id)?.injury_records?.some((record) => Number(record["battle_number"]) === battle.number && Number(record["casualty_index"] ?? 1) === casualtyIndex))) || unresolved)) return error("rejected", "Resolve every serious injury and its follow-ups before continuing.");
+            const resolvedInjuries=(post.step_state?.["injuries"]??{}) as Record<string,unknown>;
+            if (post.active_step === 0 && ([...injuries].some(([id, count]) => !Array.from({ length: count }, (_, index) => index + 1).every((casualtyIndex) => Boolean(resolvedInjuries[`${id}:${casualtyIndex}`])||state.current!.campaign.warriors.find((warrior) => warrior.id === id)?.injury_records?.some((record) => Number(record["battle_number"]) === battle.number && Number(record["casualty_index"] ?? 1) === casualtyIndex))) || unresolved)) return error("rejected", "Resolve every serious injury and its follow-ups before continuing.");
             if (post.active_step === 1 && (!post.experience_applied || (post.pending_advances ?? []).some((row) => !row["committed"]) || unresolved)) return error("rejected", "Resolve experience, every advance and follow-up before continuing.");
             if (post.active_step === 2 && (!(post.step_state?.["exploration"] as Record<string, unknown> | undefined)?.["resolved"] || unresolved)) return error("rejected", "Resolve exploration and its follow-ups before continuing.");
             if (post.active_step === 3 && !post.sale_resolved) return error("rejected", "Resolve the wyrdstone sale before continuing.");
@@ -440,7 +441,12 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const quantity=warrior.kind!=="henchman"?Number(input["quantity"]):direction==="equip"?Math.max(0,(warrior.quantity??1)-carried%(warrior.quantity??1)):carriedPerModel?Math.min(warrior.quantity??1,carried):1;
           if(!Number.isInteger(quantity)||quantity<=0)return error("rejected", "This group has no transferable copies of that item.");
           if(direction==="equip"){const violation=equipmentViolation(state.current,knowledge,warriorId,itemId,quantity);if(violation)return error("rejected",violation);}
-          return applyResult(useCases.assignEquipment(state.current, { warrior_id:warriorId,item_id:itemId,quantity,direction }));
+          const result=useCases.assignEquipment(state.current, { warrior_id:warriorId,item_id:itemId,quantity,direction });
+          if(!result.ok)return applyResult(result);
+          const resultPost=result.state.campaign.post_battles.find((row)=>!row.complete);
+          if(!resultPost)return applyResult(result);
+          const obligations=(resultPost.equipment_obligations??[]).flatMap((obligation)=>{const subject=result.state.campaign.warriors.find((row)=>row.id===String(obligation["warrior_id"]??""));if(!subject)return[];const required=(subject.quantity??1)*Number(obligation["copies_per_model"]??1),carried=subject.equipment.filter((row)=>row.item_id===String(obligation["item_id"]??"")).reduce((sum,row)=>sum+row.quantity,0),missing=Math.max(0,required-carried);return missing?[{...obligation,quantity:missing}]:[];});
+          return applyResult({ok:true,state:{...result.state,campaign:{...result.state.campaign,post_battles:result.state.campaign.post_battles.map((row)=>row===resultPost?{...row,equipment_obligations:obligations}:row)}}});
         }
         case "transferEquippedItem": {
           const targetId=String(input["target_id"]??""),itemId=String(input["item_id"]??""),target=state.current.campaign.warriors.find((row)=>row.id===targetId),amount=target?.kind==="henchman"?(target.quantity??1):1;
@@ -459,18 +465,20 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           return applyResult(removeDraftStashItem(state.current, input as never));
         case "hireHireling": {
           const post = state.current.campaign.post_battles.find((row) => !row.complete);
-          if (!post) return error("rejected", "Hired Swords can only be hired during post-battle.");
+          const draft = state.current.campaign.configuration.is_draft;
+          if (!post && !draft) return error("rejected", "Hired Swords can only be hired during warband creation or post-battle.");
           const listedCosts = Array.isArray(input["fee_resources"]) ? input["fee_resources"].filter((row): row is [string, number] => Array.isArray(row) && typeof row[0] === "string" && Number.isInteger(row[1])) : [];
           const fee = Number(input["fee"]);
           if ((!Number.isInteger(fee) || fee < 0) && listedCosts.length === 0) return error("rejected", "Resolve the hiring fee before hiring.");
           const currentSnapshot = state.current.campaign.states.find((row) => row.number === state.current!.campaign.current_state_number) ?? state.current.campaign.states.at(-1);
-          const availableGold = (currentSnapshot?.gold ?? 0) + (post.gold_delta ?? 0);
+          const availableGold = draft ? treasury(state.current.campaign) : (currentSnapshot?.gold ?? 0) + (post?.gold_delta ?? 0);
           const gold = Number.isInteger(fee) ? fee : (listedCosts.find(([key]) => key === "gold_crowns")?.[1] ?? 0);
           if (gold > availableGold) return error("rejected", `Not enough gold: ${gold} gc needed, ${availableGold} available.`);
           const shards = listedCosts.find(([key]) => key === "wyrdstone_fragments")?.[1] ?? 0;
-          if (shards > (currentSnapshot?.wyrdstone ?? 0) + (post.wyrdstone_delta ?? 0)) return error("rejected", "Not enough wyrdstone shards for this hire.");
+          if (shards > (currentSnapshot?.wyrdstone ?? 0) + (post?.wyrdstone_delta ?? 0)) return error("rejected", "Not enough wyrdstone shards for this hire.");
           const result = useCases.hireHireling(state.current, { ...input, ...(Number.isInteger(fee) ? { fee } : {}) } as never, knowledge);
           if (!result.ok) return applyResult(result);
+          if (draft) return applyResult(result);
           const resultPost = result.state.campaign.post_battles.find((row) => !row.complete);
           if (!resultPost) return error("rejected", "Pending post-battle disappeared while hiring.");
           const changed = { ...resultPost, gold_delta: (resultPost.gold_delta ?? 0) - gold, wyrdstone_delta: (resultPost.wyrdstone_delta ?? 0) - shards, event_log: [...(resultPost.event_log ?? []), { step: 6, type: "hire", profile_id: input["profile_id"], description: `Hired for ${listedCosts.map(([key,value]) => `${value} ${key}`).join(" + ") || `${gold} gc`}.` }] };

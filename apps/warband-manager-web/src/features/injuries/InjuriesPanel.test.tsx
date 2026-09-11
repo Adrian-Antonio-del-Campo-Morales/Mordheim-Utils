@@ -114,7 +114,7 @@ describe("InjuriesPanel", () => {
     harness();
     render(<InjuriesPanel document={document} />);
     expect(screen.getByRole("heading", { name: "Injuries & Recovery" })).toBeInTheDocument();
-    expect(screen.getByText("2 (Smashed hand)")).toBeInTheDocument();
+    expect(screen.getByText("2 (Smashed Hand)")).toBeInTheDocument();
     expect(screen.getByText("Injured", { exact: false })).toBeInTheDocument();
     expect(screen.getByText(/1 unresolved injury roll/)).toBeInTheDocument();
     // Wilhelm has no absence: recovery is disabled for him.

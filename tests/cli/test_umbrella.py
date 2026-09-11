@@ -76,7 +76,7 @@ def test_combat_lab_launches_the_lab_ui(cli, monkeypatch):
 def test_warband_manager_launches_the_campaign_app(cli, monkeypatch):
     calls = _record_run(cli, monkeypatch)
     assert cli.main(["warband-manager"]) == 0
-    assert calls == [[sys.executable, "-m", "mordheim_campaign"]]
+    assert calls == [[sys.executable, "-m", "mordheim_desktop"]]
 
 
 @pytest.mark.parametrize("name", LAB_COMMANDS)

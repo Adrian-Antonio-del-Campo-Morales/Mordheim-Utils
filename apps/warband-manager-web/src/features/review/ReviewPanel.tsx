@@ -17,10 +17,13 @@
 import { reviewSummary, ledgerText, rosterSummaryText } from "@app/campaign/features/review/review-exports";
 import type { CampaignDocument } from "../campaign/types";
 import { useCampaignApp } from "../campaign/useCampaignApp";
+import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import { knowledgeName } from "../campaign/displayText";
 
 interface ReviewPanelProps {
   readonly document: CampaignDocument;
   readonly locale?: "es" | "en";
+  readonly knowledge?: ArtefactKnowledgeReader;
 }
 
 /** Client-side download of an auxiliary text export. */
@@ -34,7 +37,7 @@ function downloadText(filename: string, text: string): void {
   URL.revokeObjectURL(url);
 }
 
-export function ReviewPanel({ document, locale = "en" }: ReviewPanelProps) {
+export function ReviewPanel({ document, locale = "en", knowledge }: ReviewPanelProps) {
   const app = useCampaignApp();
   const summary = reviewSummary(document);
   const baseName = (summary.warband_name || summary.campaign_name || "campaign").replace(/[^\w-]+/g, "_");
@@ -47,7 +50,7 @@ export function ReviewPanel({ document, locale = "en" }: ReviewPanelProps) {
   if (summary.absent_warriors > 0) pending.push(`${summary.absent_warriors} ${t.absent}`);
 
   return (
-    <section aria-label="Review">
+    <section aria-label={locale === "es" ? "Revisión" : "Review"}>
       <h3>{t.title}</h3>
 
       <table>
@@ -60,7 +63,7 @@ export function ReviewPanel({ document, locale = "en" }: ReviewPanelProps) {
           <tr>
             <th scope="row">{t.warband}</th>
             <td>
-              {summary.warband_name} ({summary.warband_type})
+              {summary.warband_name} ({knowledgeName(knowledge, "band", document.campaign.identity.band_id, locale, summary.warband_type)})
             </td>
           </tr>
           <tr>
@@ -101,7 +104,7 @@ export function ReviewPanel({ document, locale = "en" }: ReviewPanelProps) {
       <h4>{t.exports}</h4>
       <button
         type="button"
-        aria-label={`Download roster summary for ${summary.warband_name}`}
+        aria-label={`${locale === "es" ? "Descargar resumen de la banda de" : "Download roster summary for"} ${summary.warband_name}`}
         onClick={() => downloadText(`${baseName}-roster.txt`, rosterSummaryText(document))}
       >
         {t.downloadRoster}

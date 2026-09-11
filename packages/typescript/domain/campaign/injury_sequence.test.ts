@@ -7,7 +7,7 @@
 import { describe, expect, it } from "vitest";
 import { CampaignFileV4Adapter } from "../../adapters/campaign-file/index";
 import { resolvePrisoner } from "../../application/campaign/features/injuries/injury-decisions-workflow";
-import { resolveInjuryTableFollowUp } from "../../application/campaign/features/injuries/injury-followup-workflow";
+import { injuryEffects, resolveInjuryTableFollowUp } from "../../application/campaign/features/injuries/injury-followup-workflow";
 import { applyInjuryOutcome } from "../../application/campaign/features/injuries/injuries-workflow";
 import { resolveSoldToPits } from "../../application/campaign/features/injuries/sold-to-pits-workflow";
 import type { KnowledgeReader } from "./kernel/ports";
@@ -309,6 +309,41 @@ describe("injury subtable resolution", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+});
+
+describe("desktop chained injury resolution", () => {
+  it("rolls the number of Multiple Injuries and resolves each result as D66", () => {
+    const multiple:OpenPayload={id:"multiple",applies_to:"hero",roll:"16-21",result:"Multiple Injuries",resolution:{type:"repeat_table",dice:{count:1,sides:6},reroll_ids:["dead","multiple","captured"]}};
+    const leg:OpenPayload={id:"leg",applies_to:"hero",roll:"22",result:"Leg Wound",resolution:"direct",effects:[{type:"warrior.characteristic_modifier",characteristic:"movement",modifier:-1}]};
+    const applied=applyInjuryOutcome(fixture(),{warrior_id:"hero-1",result_id:"multiple",result:"Multiple Injuries",effects:injuryEffects(multiple)});
+    expect(applied.ok).toBe(true);if(!applied.ok)return;
+    const countId=String(applied.document.campaign.post_battles[0].pending_follow_ups?.[0]?.["id"]);
+    const counted=resolveInjuryTableFollowUp(applied.document,injuryReader([multiple,leg]),{follow_up_id:countId,roll:2});
+    expect(counted.ok).toBe(true);if(!counted.ok)return;
+    const repeats=counted.document.campaign.post_battles[0].pending_follow_ups??[];expect(repeats).toHaveLength(2);
+    const resolved=resolveInjuryTableFollowUp(counted.document,injuryReader([multiple,leg]),{follow_up_id:String(repeats[0]["id"]),roll:22});
+    expect(resolved.ok).toBe(true);if(!resolved.ok)return;
+    expect(resolved.document.campaign.warriors.find((row)=>row.id==="hero-1")?.stat_modifiers?.M).toBe(-1);
+    expect(resolved.document.campaign.post_battles[0].pending_follow_ups).toHaveLength(1);
+  });
+
+  it("uses the D3 result as the Deep Wound recovery duration", () => {
+    const deep:OpenPayload={id:"deep",applies_to:"hero",roll:"35",result:"Deep Wound",resolution:"direct",effects:[{type:"warrior.miss_games",games:{kind:"dice",dice:{count:1,sides:3}}}]};
+    const applied=applyInjuryOutcome(fixture(),{warrior_id:"hero-1",result_id:"deep",result:"Deep Wound",effects:injuryEffects(deep)});
+    expect(applied.ok).toBe(true);if(!applied.ok)return;
+    const id=String(applied.document.campaign.post_battles[0].pending_follow_ups?.[0]?.["id"]);
+    const resolved=resolveInjuryTableFollowUp(applied.document,injuryReader([deep]),{follow_up_id:id,roll:3});
+    expect(resolved.ok).toBe(true);if(!resolved.ok)return;
+    expect(resolved.document.campaign.warriors.find((row)=>row.id==="hero-1")?.games_to_miss).toBe(3);
+  });
+
+  it("removes one model and its per-model equipment from a henchman group", () => {
+    const base=fixture(),group={id:"group",name:"Novices",profile_name:"Novice",kind:"henchman" as const,quantity:3,stats:{M:4},equipment:[{item_id:"dagger",name:"Dagger",quantity:3,per_model:true,transferable:true,acquisition_costs:[2,2,2]}],skills:[],experience:0,cost:25};
+    const document={...base,campaign:{...base.campaign,warriors:[...base.campaign.warriors,group],inventory:[{id:"dagger",name:"Dagger",category:"weapon",owned:4,equipped:3,stash:1,acquisition_costs:[2,2,2,7]},...base.campaign.inventory.filter((row)=>row.id!=="dagger")]}};
+    const result=applyInjuryOutcome(document,{warrior_id:"group",result_id:"removed",result:"Removed",effects:[{kind:"remove_warrior"}]});
+    expect(result.ok).toBe(true);if(!result.ok)return;const survivor=result.document.campaign.warriors.find((row)=>row.id==="group")!;
+    expect(survivor.quantity).toBe(2);expect(survivor.equipment[0].quantity).toBe(2);expect(result.document.campaign.inventory.find((row)=>row.id==="dagger")).toMatchObject({owned:3,equipped:2,stash:1,acquisition_costs:[2,2,7]});
+  });
 });
 
 // Port of desktop `test_followup_ids_not_reused_while_another_is_pending`.

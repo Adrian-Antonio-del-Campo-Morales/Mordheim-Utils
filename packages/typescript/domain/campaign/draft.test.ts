@@ -22,7 +22,7 @@ import { describe, expect, it } from "vitest";
 import type { CampaignDocument, KnowledgeReader, KnowledgeResult } from "./kernel/usecases";
 import type { KnowledgeQuery } from "./kernel/ports";
 import { createDefaultUseCases } from "./kernel/default-usecases";
-import { createDraft } from "./kernel/create-draft";
+import { createDraft, warriorFromProfile } from "./kernel/create-draft";
 import { draftIsLegal, memberCount, treasury } from "./kernel/document";
 
 /** Fake KB rows mirroring the desktop test's Sisters of Sigmar fixtures. */
@@ -133,6 +133,22 @@ function starterDraft(): CampaignDocument {
 }
 
 describe("desktop test_draft.py → web draft parity", () => {
+  it("keeps profile rules, starting skills and the free dagger on a new hero", () => {
+    const hero = warriorFromProfile({
+      id: "captain",
+      name: "Captain",
+      type: "hero",
+      cost: 60,
+      characteristics: { M: 4 },
+      rule_ids: ["captain--leader"],
+      combat_traits: { starting_skills: ["skill.dodge"] },
+      equipment_access: [{ item_id: "dagger", cost: 2 }],
+    }, { profile_id: "captain", kind: "hero", quantity: 1 }, (id) => id === "dagger" ? "Dagger" : id, 1);
+
+    expect(hero.skills).toEqual(["captain--leader", "skill.dodge"]);
+    expect(hero.equipment).toContainEqual(expect.objectContaining({ item_id: "dagger", acquisition: "starting_grant", unit_cost: 0, transferable: false }));
+  });
+
   it("starter draft is a legal Sisters of Sigmar draft", () => {
     const draft = starterDraft();
     const { campaign } = draft;
@@ -264,7 +280,7 @@ describe("desktop test_draft.py → web draft parity", () => {
     if (!commit.ok) expect(commit.reason).toBe("limit_violated");
   });
 
-  it("hero rows stay unique (no duplicate occurrence ids)", () => {
+  it("hero rows get unique ids and Roman display names", () => {
     const knowledge = makeKnowledge();
     const useCases = createDefaultUseCases(knowledge);
     const batch = useCases.composeDraft(starterDraft(), {
@@ -279,9 +295,8 @@ describe("desktop test_draft.py → web draft parity", () => {
     const heroes = batch.state.campaign.warriors.filter((w) => w.profile_id === "sister-superior");
     const ids = new Set(heroes.map((w) => w.id));
     expect(ids.size).toBe(heroes.length);
-    // Occurrence suffixes keep ids unique (desktop appends " II" to display
-    // names; the web kernel keeps the canonical name and uniquifies ids).
     expect(heroes).toHaveLength(2);
+    expect(heroes.map((hero) => hero.name)).toEqual(["Sister Superior", "Sister Superior II"]);
   });
 
   it("commit creates State #0 with correct snapshot numbers", () => {

@@ -76,11 +76,11 @@ describe("ProductApp session removal", () => {
 
     const { container } = render(<ProductApp />);
     await waitFor(() =>
-      expect(screen.getAllByRole("button", { name: "Nueva campaña" })[0].hasAttribute("disabled")).toBe(false),
+      expect(screen.getAllByRole("button", { name: "Nueva Campaña" })[0].hasAttribute("disabled")).toBe(false),
     );
-    fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
-    fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Nueva Campaña" })[0]);
+    fireEvent.change(screen.getByLabelText("Nombre de Campaña"), { target: { value: "Campaña de prueba" } });
+    fireEvent.click(screen.getByRole("button", { name: "Crear" }));
     await screen.findByText("Campaign workspace");
 
     const input = container.querySelector<HTMLInputElement>('input[type="file"]')!;
@@ -106,11 +106,11 @@ describe("ProductApp session removal", () => {
 
     const { container } = render(<ProductApp />);
     await waitFor(() =>
-      expect(screen.getAllByRole("button", { name: "Nueva campaña" })[0].hasAttribute("disabled")).toBe(false),
+      expect(screen.getAllByRole("button", { name: "Nueva Campaña" })[0].hasAttribute("disabled")).toBe(false),
     );
-    fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
-    fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Nueva Campaña" })[0]);
+    fireEvent.change(screen.getByLabelText("Nombre de Campaña"), { target: { value: "Campaña de prueba" } });
+    fireEvent.click(screen.getByRole("button", { name: "Crear" }));
     await screen.findByText("Campaign workspace");
 
     const input = container.querySelector<HTMLInputElement>('input[type="file"]')!;
@@ -135,10 +135,10 @@ describe("ProductApp session removal", () => {
       .mockReturnValueOnce({ importCampaign: updatedImport, subscribe: () => () => {}, isDirty: () => false, canUndo: () => false, current: () => updatedDocument } as never);
 
     const { container } = render(<ProductApp />);
-    await waitFor(() => expect(screen.getAllByRole("button", { name: "Nueva campaña" })[0]).not.toBeDisabled());
-    fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
-    fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
+    await waitFor(() => expect(screen.getAllByRole("button", { name: "Nueva Campaña" })[0]).not.toBeDisabled());
+    fireEvent.click(screen.getAllByRole("button", { name: "Nueva Campaña" })[0]);
+    fireEvent.change(screen.getByLabelText("Nombre de Campaña"), { target: { value: "Campaña de prueba" } });
+    fireEvent.click(screen.getByRole("button", { name: "Crear" }));
     await screen.findByText("Campaign workspace");
 
     const input = container.querySelector<HTMLInputElement>('input[type="file"]')!;
@@ -154,12 +154,12 @@ describe("ProductApp session removal", () => {
   it("warns on reload and asks before discarding an unexported campaign", async () => {
     render(<ProductApp />);
     await waitFor(() =>
-      expect(screen.getAllByRole("button", { name: "Nueva campaña" })[0].hasAttribute("disabled")).toBe(false),
+      expect(screen.getAllByRole("button", { name: "Nueva Campaña" })[0].hasAttribute("disabled")).toBe(false),
     );
 
-    fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
-    fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Nueva Campaña" })[0]);
+    fireEvent.change(screen.getByLabelText("Nombre de Campaña"), { target: { value: "Campaña de prueba" } });
+    fireEvent.click(screen.getByRole("button", { name: "Crear" }));
 
     expect(await screen.findByText("Campaign workspace")).toBeInTheDocument();
     const beforeUnload = new Event("beforeunload", { cancelable: true });
@@ -168,7 +168,7 @@ describe("ProductApp session removal", () => {
     fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
     fireEvent.click(screen.getByRole("button", { name: "Retirar" }));
 
-    expect(screen.getByRole("dialog", { name: "Cambios sin exportar" })).toHaveTextContent("Cambios sin exportar");
+    expect(screen.getByRole("dialog", { name: "Cambios Sin Exportar" })).toHaveTextContent("Cambios Sin Exportar");
     expect(screen.getByText("Banda de prueba")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Descartar" }));
@@ -180,19 +180,19 @@ describe("ProductApp session removal", () => {
   it("keeps an unexported session when removal is cancelled", async () => {
     render(<ProductApp />);
     await waitFor(() =>
-      expect(screen.getAllByRole("button", { name: "Nueva campaña" })[0].hasAttribute("disabled")).toBe(false),
+      expect(screen.getAllByRole("button", { name: "Nueva Campaña" })[0].hasAttribute("disabled")).toBe(false),
     );
 
-    fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
-    fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Nueva Campaña" })[0]);
+    fireEvent.change(screen.getByLabelText("Nombre de Campaña"), { target: { value: "Campaña de prueba" } });
+    fireEvent.click(screen.getByRole("button", { name: "Crear" }));
     await screen.findByText("Campaign workspace");
 
     fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
     fireEvent.click(screen.getByRole("button", { name: "Retirar" }));
     fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
 
-    expect(screen.queryByRole("dialog", { name: "Cambios sin exportar" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog", { name: "Cambios Sin Exportar" })).not.toBeInTheDocument();
     expect(screen.getByText("Banda de prueba")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Retirar" })).toBeInTheDocument();
   });
@@ -200,12 +200,12 @@ describe("ProductApp session removal", () => {
   it("keeps a dirty session loaded when export fails", async () => {
     render(<ProductApp />);
     await waitFor(() =>
-      expect(screen.getAllByRole("button", { name: "Nueva campaña" })[0].hasAttribute("disabled")).toBe(false),
+      expect(screen.getAllByRole("button", { name: "Nueva Campaña" })[0].hasAttribute("disabled")).toBe(false),
     );
 
-    fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
-    fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Nueva Campaña" })[0]);
+    fireEvent.change(screen.getByLabelText("Nombre de Campaña"), { target: { value: "Campaña de prueba" } });
+    fireEvent.click(screen.getByRole("button", { name: "Crear" }));
     await screen.findByText("Campaign workspace");
 
     fireEvent.click(screen.getByRole("button", { name: "Guardar" }));
@@ -214,7 +214,7 @@ describe("ProductApp session removal", () => {
     expect(markExported).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
     expect(screen.getByText("Banda de prueba")).toBeInTheDocument();
-    expect(screen.getByText("Cambios sin exportar")).toBeInTheDocument();
+    expect(screen.getByText("Cambios Sin Exportar")).toBeInTheDocument();
   });
 
   it("exports before removing a dirty session", async () => {
@@ -230,11 +230,11 @@ describe("ProductApp session removal", () => {
 
     render(<ProductApp />);
     await waitFor(() =>
-      expect(screen.getAllByRole("button", { name: "Nueva campaña" })[0].hasAttribute("disabled")).toBe(false),
+      expect(screen.getAllByRole("button", { name: "Nueva Campaña" })[0].hasAttribute("disabled")).toBe(false),
     );
-    fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
-    fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Nueva Campaña" })[0]);
+    fireEvent.change(screen.getByLabelText("Nombre de Campaña"), { target: { value: "Campaña de prueba" } });
+    fireEvent.click(screen.getByRole("button", { name: "Crear" }));
     await screen.findByText("Campaign workspace");
 
     fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
@@ -250,17 +250,17 @@ describe("ProductApp session removal", () => {
   it("renames a session through the campaign service", async () => {
     render(<ProductApp />);
     await waitFor(() =>
-      expect(screen.getAllByRole("button", { name: "Nueva campaña" })[0].hasAttribute("disabled")).toBe(false),
+      expect(screen.getAllByRole("button", { name: "Nueva Campaña" })[0].hasAttribute("disabled")).toBe(false),
     );
 
-    fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
-    fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Nueva Campaña" })[0]);
+    fireEvent.change(screen.getByLabelText("Nombre de Campaña"), { target: { value: "Campaña de prueba" } });
+    fireEvent.click(screen.getByRole("button", { name: "Crear" }));
     await screen.findByText("Campaign workspace");
 
     fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
     fireEvent.click(screen.getByRole("button", { name: "Renombrar" }));
-    fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Renombrada" } });
+    fireEvent.change(screen.getByLabelText("Nombre de Campaña"), { target: { value: "Renombrada" } });
     fireEvent.click(screen.getByRole("button", { name: "OK" }));
 
     await waitFor(() => expect(run).toHaveBeenCalledWith("renameCampaign", { name: "Renombrada" }));

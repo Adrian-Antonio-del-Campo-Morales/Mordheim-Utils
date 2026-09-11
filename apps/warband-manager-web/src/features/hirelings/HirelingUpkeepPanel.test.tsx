@@ -13,7 +13,7 @@ describe("HirelingUpkeepPanel", () => {
   it("shows the cost and dispatches payment", async () => {
     const user = userEvent.setup();
     render(<CampaignAppProvider service={service}><HirelingUpkeepPanel document={document} locale="en" /></CampaignAppProvider>);
-    expect(screen.getByText("15 gold_crowns")).toBeInTheDocument();
+    expect(screen.getByText("15 Gold Crowns")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Pay" }));
     expect((service as unknown as { run: ReturnType<typeof vi.fn> }).run).toHaveBeenCalledWith("resolveHirelingUpkeep", { follow_up_id: "upkeep:1", pay: true });
   });

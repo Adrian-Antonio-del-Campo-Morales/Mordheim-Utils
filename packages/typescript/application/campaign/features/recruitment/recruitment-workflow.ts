@@ -1,5 +1,5 @@
 import type { CampaignDocument, KnowledgeReader, OpenPayload } from "../../../../domain/campaign/index";
-import { currentState, effectiveMaximumModels, heroCount, memberCount, withCampaign } from "../../../../domain/campaign/kernel/document";
+import { currentState, effectiveMaximumModels, heroCount, memberCount, uniqueWarriorName, withCampaign } from "../../../../domain/campaign/kernel/document";
 
 interface CatalogueReader extends KnowledgeReader { campaignSection?(section:string):Readonly<Record<string,unknown>> }
 type Result={ok:true;document:CampaignDocument}|{ok:false;message:string};
@@ -72,7 +72,7 @@ export function recruitBandProfile(document:CampaignDocument,reader:KnowledgeRea
   const fixed=Array.isArray(data["fixed_equipment"])?data["fixed_equipment"].filter((id):id is string=>typeof id==="string"):[];
   const equipment=fixed.map((item_id)=>{const item=reader.queryKnowledge({id:{kind:"item_id",value:item_id}});return{item_id,name:item.ok?item.record.names["en"]??item_id:item_id,quantity,acquisition:"fixed" as const,per_model:true,transferable:false};});
   const traits=(data["combat_traits"]??{}) as OpenPayload, skills=[...(Array.isArray(data["inherent_rules"])?data["inherent_rules"]:[]),...(Array.isArray(traits["starting_skills"])?traits["starting_skills"]:[])].filter((value):value is string=>typeof value==="string");
-  const base=profile.record.names["en"]??input.profile_id, names=new Set(document.campaign.warriors.map((row)=>row.name)), wanted=String(input.name??"").trim()||(kind==="hero"?base:`${base} Group`); let name=wanted,index=2;while(names.has(name))name=`${wanted} ${index++}`;
+  const base=profile.record.names["en"]??input.profile_id, wanted=String(input.name??"").trim()||(kind==="hero"?base:`${base} Group`), name=uniqueWarriorName(document.campaign.warriors,wanted);
   const occurrence=document.campaign.warriors.filter((row)=>row.profile_id===input.profile_id).length+1;
   const warrior:CampaignDocument["campaign"]["warriors"][number]={id:`${input.profile_id}#recruit-${occurrence}`,name,profile_name:base,kind,stats,equipment,skills,experience:Number(data["experience"]??0),quantity,cost:Number(data["cost"]??0),profile_id:input.profile_id,skill_access:Array.isArray(data["skill_access"])?data["skill_access"].filter((value):value is string=>typeof value==="string"):[]};
   const changed={...post,gold_delta:(post.gold_delta??0)-cost,event_log:[...(post.event_log??[]),{step:7,type:"recruit",warrior_id:warrior.id,profile_id:input.profile_id,description:`${base} ×${quantity} recruited for ${cost} gc.`}]};

@@ -29,5 +29,12 @@ describe("HirelingsPanel", () => {
     render(<CampaignAppProvider service={service}><HirelingsPanel document={document} listings={listings} mode="hirelings" /></CampaignAppProvider>);
     await user.click(screen.getByRole("button", { name: "Hire Hunter" }));
     expect(run).toHaveBeenCalledWith("hireHireling", expect.objectContaining({ profile_id: "hunter", fee: 25 }));
+    expect(screen.getByRole("status")).toHaveTextContent("Hired: Hunter");
+  });
+
+  it("shows the hired profile and disables hiring it again", () => {
+    const hired = { ...document, campaign: { ...document.campaign, warriors: [{ id:"hunter#1", profile_id:"hunter", profile_name:"Hunter", name:"Hunter", kind:"hireling", cost:25, hireling_rating:15, experience:0, stats:{ M:4, WS:3 }, equipment:[], skills:[] }] } } as CampaignDocument;
+    render(<CampaignAppProvider service={service}><HirelingsPanel document={hired} listings={listings} mode="hirelings" /></CampaignAppProvider>);
+    expect(screen.getByRole("button", { name: /Already hired/ })).toBeDisabled();
   });
 });

@@ -11,7 +11,7 @@ describe("App shell (P3.1)", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Campaña",
     );
-    const navigation = screen.getByRole("navigation", { name: "Primary" });
+    const navigation = screen.getByRole("navigation", { name: /Navegación Principal|Primary/ });
     expect(navigation).toContainElement(screen.getByRole("button", { name: "Campaña" }));
     expect(navigation).toContainElement(screen.getByRole("button", { name: "Reglas" }));
     expect(navigation).toContainElement(screen.getByRole("button", { name: "Ajustes" }));
