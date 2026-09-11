@@ -16,11 +16,9 @@ Included:
 
 Excluded by product decision: Combat Lab and combat simulation, NumPy/Cython/Tkinter, YAML loading in the browser, browser storage (`localStorage`, IndexedDB and `sessionStorage`), desktop PDF implementation unless a separate product decision adds it. An excluded desktop test must carry a reason in the parity manifest.
 
-## Current state
+## Traceability
 
-The repository already contains the v4 contract, Python and TypeScript file adapters, generated-KB pipeline, framework-free TypeScript domain/application layers, React feature surfaces, and CI/Pages workflows. This is not a completion claim: parity must be proven on the current tree.
-
-The test traceability manifest is generated at `tests/web/parity/campaign-test-manifest.json` by `tools/make_test_manifest.py`. Treat its rows as evidence only after regeneration and review. Each row must be classified as:
+The test traceability manifest is generated at `tests/web/parity/campaign-test-manifest.json` by `tools/make_test_manifest.py`. Each row is classified as:
 
 - `implemented`: equivalent behavior is tested;
 - `partial`: only a subset is covered, with a concrete follow-up;
@@ -28,7 +26,7 @@ The test traceability manifest is generated at `tests/web/parity/campaign-test-m
 - `excluded`: outside scope, with a reason;
 - `pending`: not yet assessed (not allowed at final acceptance).
 
-Do not infer parity from a file name or historical test count. A `TODO(web)` in a test records a missing seam or deliberate limitation; it is not a passing substitute for behavior.
+Do not infer parity from a file name or historical test count.
 
 ## Rules that must remain true
 
@@ -40,24 +38,11 @@ Do not infer parity from a file name or historical test count. A `TODO(web)` in 
 - The browser keeps campaigns in memory and exports explicitly.
 - The web bundle contains no Combat Lab, simulation runtime, NumPy, Cython, Tkinter, source YAML or user campaign files.
 
-## Remaining parity work
-
-Close or explicitly disposition every item below. Prefer a typed use case and a focused test over UI-only assertions.
-
-1. **Domain/application:** complete advancement tables and choices; henchman promotion/group splitting; per-copy equipment costs and obligations; serious injuries, pit loss, captives and subtables; recruitment, veterans and scenario rewards; exploration/search branches; post-battle commit projections; undo/reload behavior; seeded draft/post-battle sequences.
-2. **Knowledge:** every legal starter band; profile/item/rule/scenario cross-links; locale fallbacks; deterministic artefact generation and size budget; real artefact loading in production composition (not a fake reader).
-3. **UI:** library and multiple sessions; rename/remove; import/schema/version errors; export failures; dirty replacement and `beforeunload`; timeline read-only history; draft limits; battle participants and OOA; every post-battle step/follow-up; hirelings, searches, recruitment, upkeep, trading, rewards, rules, statistics and exports; keyboard, responsive and accessible behavior.
-4. **Interop:** draft, active, pending-post-battle and full-inventory fixtures in both directions; malformed documents, retired versions, unknown IDs and semantic violations; semantic comparison must ignore only documented `saved_at` volatility.
-
-## Coordination
-
-Before editing, consult and update [web-migration-coordination.md](web-migration-coordination.md). Reservations are temporary and limited to paths being changed now; they are not permanent ownership. Free work can be taken by anyone, and large areas may be split whenever paths do not overlap.
-
 ## Integration and verification gates
 
 ### G1 — clean integration
 
-Record the base commit and existing failures. When work is concurrent, check the coordination file before touching shared paths. Do not reset or stage another contributor's work.
+Run from a clean checkout. Do not reset or stage another contributor's work.
 
 ### G2 — traceability
 
