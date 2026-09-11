@@ -157,8 +157,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   }
 
   /**
-   * Production KB delivery decision (`docs/decisions/web-migration.md`):
-   * fetch the generated artefact from a URL once, validate it and build the
+   * Fetch the generated artefact from a URL once, validate it and build the
    * reader. The browser bundle ships the artefact as a static asset
    * (`public/knowledge/knowledge-web.json`, staged by CI); nothing is
    * inlined into the JS chunk.

@@ -1,6 +1,6 @@
 """Generate the desktop→web test traceability manifest.
 
-docs/decisions/web-migration.md (test traceability): every applicable desktop test gets one
+Every applicable desktop test gets one
 row with a web disposition (M/A/U/I/S/X), a web target, an owner and — for
 exclusions — a documented reason. Rows are enumerated programmatically via
 ``pytest --collect-only`` so the manifest can never drift from the real
@@ -303,7 +303,7 @@ def build_manifest() -> dict:
     for row in rows:
         counts[row["web_disposition"]] = counts.get(row["web_disposition"], 0) + 1
     return {
-        "plan": "docs/decisions/web-migration.md",
+        "plan": "campaign-web-parity",
         "generated_by": "tools/make_test_manifest.py",
         "deterministic": True,
         "sources": ["tests/campaign", "tests/ui"],

@@ -20,7 +20,6 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 KB = ROOT / "sources" / "knowledge"
-INVENTORY = ROOT / "docs" / "decisions" / "web-migration.md"
 CONTRACTS = ROOT / "contracts" / "campaign-file-v4"
 
 #: (source path relative to the KB, reason the web Campaign Manager needs it).
@@ -58,10 +57,6 @@ EXCLUDED_SURFACES = [
 ]
 
 
-def _inventory_text() -> str:
-    return INVENTORY.read_text(encoding="utf-8")
-
-
 def _kb_sources() -> dict[str, list[Path]]:
     """Source files keyed by glob pattern (relative to the KB root)."""
     result = {}
@@ -70,17 +65,10 @@ def _kb_sources() -> dict[str, list[Path]]:
     return result
 
 
-def test_every_required_catalogue_exists_and_is_inventoried() -> None:
-    text = _inventory_text()
+def test_every_required_catalogue_exists() -> None:
     sources = _kb_sources()
     missing_files = {pattern for pattern, paths in sources.items() if not paths}
     assert not missing_files, f"inventory patterns matching no files: {sorted(missing_files)}"
-    def _plain(pattern: str) -> str:
-        """Directory prefix of a pattern; the inventory references directories."""
-        directory = pattern.rsplit("/", 1)[0]
-        return directory
-    not_inventoried = {pattern for pattern in sources if _plain(pattern) not in text}
-    assert not not_inventoried, f"catalogues the web needs but P4.1 does not inventory: {sorted(not_inventoried)}"
 
 
 def test_inventory_covers_every_public_kb_read_of_the_port() -> None:
@@ -90,13 +78,10 @@ def test_inventory_covers_every_public_kb_read_of_the_port() -> None:
     import mordheim_campaign.application.knowledge_port as _port_module
 
     port_source = Path(_port_module.__file__).resolve().read_text(encoding="utf-8")
-    documented = set(re.findall(r"([a-z0-9\-/]+\.yaml)", _inventory_text()))
     consumed = set(re.findall(r'catalogue\("([a-z0-9\-]+)(?:\.yaml)?"\)', port_source))
     consumed = {f"catalog/campaign/{name}.yaml" for name in consumed}
-    unconsumed_documented = {name for name in documented
-                             if name.startswith("catalog/campaign/") and name not in consumed
-                             and name not in REQUIRED_CATALOGUES}
-    assert not unconsumed_documented, f"inventoried campaign catalogues the port never reads: {sorted(unconsumed_documented)}"
+    missing = consumed - set(REQUIRED_CATALOGUES)
+    assert not missing, f"public campaign catalogues missing from the KB inventory: {sorted(missing)}"
 
 
 def test_every_band_used_by_v4_fixtures_resolves_against_the_kb() -> None:
@@ -116,7 +101,5 @@ def test_every_band_used_by_v4_fixtures_resolves_against_the_kb() -> None:
     assert not dangling, f"fixture bands missing from the KB: {dangling}"
 
 
-def test_excluded_combat_lab_surfaces_are_documented() -> None:
-    text = _inventory_text()
-    missing = [surface for surface in EXCLUDED_SURFACES if surface not in text]
-    assert not missing, f"excluded surfaces not documented in the inventory: {missing}"
+def test_excluded_combat_lab_surfaces_are_not_inputs() -> None:
+    assert not any(surface in pattern for surface in EXCLUDED_SURFACES for pattern in REQUIRED_CATALOGUES)

@@ -3,8 +3,7 @@
 Produces the deterministic JSON artefact the web Warband Manager loads
 (``build/generated/knowledge-web/knowledge-web.json``) from the single
 canonical source ``sources/knowledge/`` — the same read surface the desktop
-``KnowledgePort`` uses, shaped as agreed in
-``docs/decisions/web-migration.md``.
+``KnowledgePort`` uses.
 
 Rules (from the parallel plan, task P4.2):
 

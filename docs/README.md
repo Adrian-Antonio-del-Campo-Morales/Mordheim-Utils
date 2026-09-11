@@ -14,10 +14,6 @@
 - [Modify an application](guides/modify-application.md)
 - [Develop and release](guides/develop-and-release.md)
 
-## Web migration
-
-- [Web migration](decisions/web-migration.md) — scope, compatibility contract and release gates.
-
 ## Other decisions
 
 - [Design rulings](decisions/design-rulings.md)

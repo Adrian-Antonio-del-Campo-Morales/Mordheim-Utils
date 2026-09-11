@@ -1,6 +1,6 @@
 """Gates for the desktop→web test traceability manifest (Agent 0, parity lane).
 
-Enforces the test traceability invariants in docs/decisions/web-migration.md:
+Enforces the test traceability invariants:
 
 1. regeneration identity — the committed manifest equals a fresh
    ``tools/make_test_manifest.py`` run (no drift from the desktop net);
@@ -35,7 +35,7 @@ def _manifest() -> dict:
 
 def test_manifest_exists_and_parses() -> None:
     data = _manifest()
-    assert data["plan"] == "docs/decisions/web-migration.md"
+    assert data["plan"] == "campaign-web-parity"
     assert data["deterministic"] is True
     assert isinstance(data["rows"], list) and data["rows"]
 

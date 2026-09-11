@@ -2,9 +2,6 @@
 
 Web port of the Mordheim Campaign Manager — React + Vite + TypeScript.
 
-The scope, architecture rules, remaining parity work and release gates are in
-[`docs/decisions/web-migration.md`](../../docs/decisions/web-migration.md).
-
 ## Commands
 
 | Command | Purpose |

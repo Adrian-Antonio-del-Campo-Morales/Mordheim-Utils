@@ -2,8 +2,7 @@
  * P5.2 stand-in knowledge reader, extended by P6.2 with an artefact-shaped
  * Sisters of Sigmar band (roster members, profiles, items) so the draft
  * workflow composes against the same record shapes the real P4.2 artefact
- * emits. Replaced by P4.3's real adapter in `default-deps.ts` (see
- * docs/decisions/web-migration.md).
+ * emits. Replaced by P4.3's real adapter in `default-deps.ts`.
  */
 import type { KnowledgeQuery, KnowledgeReader, KnowledgeResult } from "./types";
 

@@ -40,8 +40,8 @@ const VALID_STATUSES = new Set(["implemented", "partial", "blocked", "excluded",
 const manifest: Manifest = JSON.parse(readFileSync(MANIFEST, "utf-8"));
 
 describe("campaign test manifest (traceability matrix)", () => {
-  it("exists and declares the plan", () => {
-    expect(manifest.plan).toBe("docs/decisions/web-migration.md");
+  it("exists and declares its scope", () => {
+    expect(manifest.plan).toBe("campaign-web-parity");
     expect(manifest.deterministic).toBe(true);
     expect(manifest.rows.length).toBeGreaterThan(0);
   });

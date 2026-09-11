@@ -1,7 +1,7 @@
 """web.knowledge-artefact: the P4.2 generator is deterministic and complete.
 
 Tests the YAML → JSON web generator (`tools/knowledge/generate_knowledge_web.py`)
-against the Knowledge Base inventory in ``docs/decisions/web-migration.md``:
+against the Knowledge Base inventory:
 
 1. the artefact builds and contains every required top section;
 2. output is byte-identical across runs (no timestamps, stable order);

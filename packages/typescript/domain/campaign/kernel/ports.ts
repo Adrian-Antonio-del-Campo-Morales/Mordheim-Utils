@@ -48,8 +48,7 @@ export interface KnowledgeRecord {
 /** Stable id reference — a tagged union so callers cannot mix id spaces.
  *
  *  The kind discriminators cover every `KnowledgeKind` family emitted by the
- *  P4.2 generator (verified against the real artefact, see
- *  docs/decisions/web-migration.md). Field mapping in the raw
+ *  P4.2 generator (verified against the real artefact). Field mapping in the raw
  *  artefact: `items` rows use `item_id`; every other family uses `id`.
  */
 export type Id =

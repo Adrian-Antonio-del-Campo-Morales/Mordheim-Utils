@@ -1,6 +1,5 @@
 /**
- * Web migration architecture and bundle guardrails; see docs/decisions/web-migration.md
- * for the web shell — the checks the per-layer purity test
+ * Web architecture and bundle guardrails — the checks the per-layer purity test
  * (`packages/typescript/architecture/purity.test.ts`) does not cover:
  *
  *  1. the UI never loads YAML directly (knowledge arrives as the generated
@@ -22,14 +21,14 @@ import { describe, expect, it } from "vitest";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
-/** Walk up from cwd to the repo root (marker: the canonical migration guide). */
+/** Walk up from cwd to the repository root. */
 function repoRoot(): string {
   let dir = process.cwd();
   for (let i = 0; i < 8; i += 1) {
-    if (existsSync(join(dir, "docs", "decisions", "web-migration.md"))) return dir;
+    if (existsSync(join(dir, "apps", "warband-manager-web", "package.json"))) return dir;
     dir = join(dir, "..");
   }
-  throw new Error("Repository root not found (canonical migration guide missing).");
+  throw new Error("Repository root not found.");
 }
 
 const ROOT = repoRoot();

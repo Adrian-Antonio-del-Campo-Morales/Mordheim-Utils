@@ -22,7 +22,7 @@ import pytest
 
 ARTEFACT = Path("build/generated/knowledge-web/knowledge-web.json")
 
-# Delivery budget recorded in docs/decisions/web-migration.md:
+# Delivery budget:
 # the artefact must stay under 350 kB gzipped so GitHub Pages serves it in
 # well under one second on a mid-range connection. Measured today: ~209 kB.
 GZIP_BUDGET_BYTES = 350 * 1024

@@ -1,6 +1,5 @@
 /**
- * Web migration accessibility and small-viewport acceptance tests; see docs/decisions/web-migration.md.
- * acceptance tests.
+ * Web accessibility and small-viewport acceptance tests.
  *
  * Two layers:
  *  1. a static audit over the real UI sources — every control reachable by
@@ -32,7 +31,7 @@ vi.mock("../features/campaign/default-deps", () => ({
 function repoRoot(): string {
   let dir = process.cwd();
   for (let i = 0; i < 8; i += 1) {
-    if (existsSync(join(dir, "docs", "decisions", "web-migration.md"))) return dir;
+    if (existsSync(join(dir, "apps", "warband-manager-web", "package.json"))) return dir;
     dir = join(dir, "..");
   }
   throw new Error("Repository root not found.");

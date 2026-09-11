@@ -2,7 +2,7 @@ import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// Web migration React + Vite shell; see docs/decisions/web-migration.md.
+// React + Vite shell.
 // The GITHUB_PAGES switch lets CI (task P8.1, sole owner of workflows) publish
 // under the repository sub-path without touching this file again.
 export default defineConfig(() => ({
