@@ -39,6 +39,12 @@ jobs:
           python tools/knowledge/generate_knowledge_web.py
           python tools/knowledge/generate_knowledge_web.py --check
 
+      - name: Stage the artefact for repository-level parity tests
+        run: |
+          mkdir -p apps/warband-manager-web/public/knowledge
+          cp build/generated/knowledge-web/knowledge-web.json \
+             apps/warband-manager-web/public/knowledge/knowledge-web.json
+
       - name: Run the Python regression net
         run: python -m pytest tests/web tests/contracts tests/campaign tests/architecture tests/knowledge -q
 
