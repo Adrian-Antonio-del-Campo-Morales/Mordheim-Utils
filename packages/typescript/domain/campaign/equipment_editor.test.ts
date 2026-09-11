@@ -15,8 +15,8 @@
  * - bought dagger stays separate from the free starting dagger → entries
  *   keep distinct `acquisition` values; the fixed (starting) entry is not
  *   withdrawable;
- * - weapon-carriage limits live in the desktop post-battle engine (KB
- *   equip-capacity data) — not yet in the web kernel; documented gap.
+ * - profile and injury limits are enforced by the application service using
+ *   the same KB equipment data as desktop; ordinary weapon copies are unlimited.
  *
  * Purity: plain Node, real file adapter, fake KB — no React, no DOM, no fs.
  */

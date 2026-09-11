@@ -77,6 +77,7 @@ describe("P6.4 BattlePanel", () => {
       <CampaignAppProvider service={service}><BattlePanel document={current} knowledge={uiKnowledge as never} /></CampaignAppProvider>,
     );
 
+    await user.selectOptions(screen.getByLabelText("Scenario"), "skirmish");
     await user.type(screen.getByLabelText("Opponent", { exact: true }), "Reiklanders");
     await user.click(screen.getByRole("button", { name: /record battle/i }));
 

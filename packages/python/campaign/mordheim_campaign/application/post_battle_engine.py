@@ -1885,13 +1885,6 @@ class PostBattleEngine:
                           if item.acquisition != "starting_grant" and self.port.weapon_hands(item.base_item_id or item.item_id) == 1)
             if carried + amount > limit * warrior.quantity:
                 return f"Injury limits this warrior to {limit} one-handed weapon(s) per model."
-        category = self.port.item_kind(item_id)
-        if category in {"close-combat-weapon", "ranged-weapon"}:
-            carried = sum(item.quantity for item in warrior.equipment
-                          if item.acquisition != "starting_grant"
-                          and self.port.item_kind(item.base_item_id or item.item_id) == category)
-            if carried + amount > 2 * warrior.quantity:
-                return "A warrior can carry at most two weapons of this category, besides the free starting dagger."
         kind = self.port.item_kind(item_id)
         if kind not in ("close-combat-weapon", "ranged-weapon"):
             if sum(item.quantity for item in warrior.equipment if item.item_id == item_id) + amount > warrior.quantity:

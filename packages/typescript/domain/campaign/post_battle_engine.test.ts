@@ -5,8 +5,8 @@
  * open payloads, while the desktop engine also owns injuries, exploration,
  * recruitment and commit projections. The portable tests below pin the
  * behaviours available at the frozen domain boundary; the post-battle
- * workflows (exploration, injuries, recruitment, commit) now live on the
- * service, and the one remaining engine gap is noted in the closing comment.
+ * workflows (exploration, injuries, recruitment, equipment obligations and
+ * commit) now live on the service.
  */
 import { describe, expect, it } from "vitest";
 import { resolvePostBattleStep, POST_BATTLE_STEP_COUNT } from "./kernel/post-battle-steps";
@@ -113,6 +113,13 @@ describe("desktop test_post_battle_engine.py → post-battle state parity", () =
     if (result.ok) expect(result.state.campaign.post_battles[0].step_state?.["0"]).toEqual(payload);
   });
 
+  it("does not leave the injuries step while a casualty or follow-up is unresolved", () => {
+    const base=document(),blocked={...base,campaign:{...base.campaign,battles:[{number:1,date:"2026-09-10",scenario:"skirmish",opponent:"Undead",result:"loss",gold_delta:0,wyrdstone:0,xp_delta:0,casualties:1,advances:0,rating_before:15,rating_after:15,models_before:1,models_after:1,out_of_action_ids:["hero-1"]}],post_battles:[{...base.campaign.post_battles[0],pending_follow_ups:[{id:"injury:hero-1",step:"injuries",type:"injury_roll",warrior_id:"hero-1"}]}]}};
+    const unresolved=resolvePostBattleStep(blocked,1,{});expect(unresolved.ok).toBe(false);if(!unresolved.ok)expect(unresolved.reason).toBe("prerequisite_missing");
+    const ready={...blocked,campaign:{...blocked.campaign,post_battles:[{...blocked.campaign.post_battles[0],pending_follow_ups:[],step_state:{injuries:{"hero-1:1":{resolved:true}}}}]}};
+    expect(resolvePostBattleStep(ready,1,{}).ok).toBe(true);
+  });
+
   it("rejects resolving a different battle than the pending sequence", () => {
     const result = resolvePostBattleStep(document(), 99, {});
     expect(result.ok).toBe(false);
@@ -162,8 +169,6 @@ describe("desktop test_post_battle_engine.py → post-battle state parity", () =
     }
   });
 
-  // Exploration (applyExploration/continueExploration), injuries
-  // (injuries-workflow), recruitment (recruitBandProfile) and commit
-  // projection (finalizePostBattle) seams exist on the service. Remaining
-  // gap: equipment-obligation steps — no workflow exposes those yet.
+  // Exploration, injuries, recruitment, equipment obligations and commit
+  // projection are exposed through the application service.
 });

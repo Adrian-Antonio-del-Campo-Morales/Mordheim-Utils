@@ -109,10 +109,10 @@ export function assignEquipment(
     return rejected("not_found", `Unknown warrior id: ${input.warrior_id}.`);
   }
   if (input.direction === "stash") {
-    const transferable = warrior.equipment.find((entry) => entry.item_id === input.item_id && entry.acquisition !== "fixed");
-    const fixed = warrior.equipment.find((entry) => entry.item_id === input.item_id && entry.acquisition === "fixed");
-    if (!transferable && fixed) {
-      return rejected("limit_violated", `"${input.item_id}" is fixed equipment of ${warrior.name} and cannot be moved.`);
+    const transferable = warrior.equipment.find((entry) => entry.item_id === input.item_id && entry.acquisition !== "fixed" && entry.transferable !== false);
+    const blocked = warrior.equipment.find((entry) => entry.item_id === input.item_id && (entry.acquisition === "fixed" || entry.transferable === false));
+    if (!transferable && blocked) {
+      return rejected("limit_violated", `"${input.item_id}" is non-transferable equipment of ${warrior.name} and cannot be moved.`);
     }
   }
   const item = findInventoryItem(document, input.item_id);
@@ -169,7 +169,7 @@ export function assignEquipment(
   // (Fixed entries were already rejected above; the entry must exist and
   // cover the requested quantity.)
   const equippedEntry = warrior.equipment.find(
-    (e) => e.item_id === input.item_id && e.acquisition !== "fixed",
+    (e) => e.item_id === input.item_id && e.acquisition !== "fixed" && e.transferable !== false,
   );
   if (!equippedEntry || (equippedEntry.quantity ?? 1) < input.quantity) {
     return rejected(

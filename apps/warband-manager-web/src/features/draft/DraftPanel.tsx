@@ -19,7 +19,7 @@ export interface DraftPanelProps {
 
 export function DraftPanel({ onCommitted }: DraftPanelProps) {
   const workflow = useDraftWorkflow(onCommitted);
-  const [bandId, setBandId] = useState<string>(workflow.options[0]?.band_id ?? "");
+  const [bandId, setBandId] = useState<string>("");
   const [campaignName, setCampaignName] = useState("");
 
   const status = workflow.status;
@@ -42,7 +42,8 @@ export function DraftPanel({ onCommitted }: DraftPanelProps) {
             value={bandId}
             onChange={(event) => setBandId(event.target.value)}
           >
-            {workflow.options.map((option) => (
+            <option value="">Select a warband…</option>
+            {[...workflow.options].sort((a,b)=>a.name.localeCompare(b.name)).map((option) => (
               <option key={option.band_id} value={option.band_id}>
                 {option.name}
               </option>

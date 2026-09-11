@@ -27,7 +27,7 @@ import type {
   Warrior,
 } from "./usecases";
 import { rejected } from "./rejections";
-import { memberCount } from "./document";
+import { memberCount, uniqueWarriorName } from "./document";
 
 /** Characteristic display keys, in KB order. */
 export const STAT_KEYS = ["M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"] as const;
@@ -84,6 +84,14 @@ function profileRecord(
   bandId: IdString,
   profileId: IdString,
 ): OpenPayload | null {
+  const catalogue = knowledge as KnowledgeReader & {
+    list?(kind: "profile"): readonly OpenPayload[];
+  };
+  const scoped = catalogue.list?.("profile").find(
+    (profile) => profile["id"] === profileId && profile["band_id"] === bandId,
+  );
+  if (scoped) return scoped;
+
   const result = knowledge.queryKnowledge({ id: { kind: "profile_id", value: profileId } });
   if (!result.ok) return null;
   const data = result.record.data as OpenPayload;
@@ -138,6 +146,14 @@ export function warriorFromProfile(
     ? (profile["fixed_equipment"] as unknown[])
     : [];
   const equipmentIds = fixed.filter((id): id is IdString => typeof id === "string");
+  const equipmentAccess = Array.isArray(profile["equipment_access"])
+    ? profile["equipment_access"] as OpenPayload[]
+    : [];
+  const freeDagger = equipmentAccess.find((offer) => {
+    const itemId = offer["item_id"];
+    const note = typeof offer["notes"] === "string" ? offer["notes"].toLowerCase() : "";
+    return typeof itemId === "string" && itemId.includes("dagger") && (!note || ((note.includes("first") || note.includes("1st")) && note.includes("free")));
+  });
   const entries: EquipmentEntry[] = equipmentIds.map((itemId) => ({
     item_id: itemId,
     name: itemName(itemId),
@@ -145,6 +161,18 @@ export function warriorFromProfile(
     acquisition: "fixed",
     per_model: true,
   }));
+  const freeDaggerId = freeDagger?.["item_id"];
+  if (typeof freeDaggerId === "string" && !equipmentIds.includes(freeDaggerId)) {
+    entries.push({
+      item_id: freeDaggerId,
+      name: itemName(freeDaggerId),
+      quantity: input.quantity,
+      acquisition: "starting_grant",
+      unit_cost: 0,
+      per_model: true,
+      transferable: false,
+    });
+  }
   const combatTraits =
     profile["combat_traits"] && typeof profile["combat_traits"] === "object"
       ? (profile["combat_traits"] as OpenPayload)
@@ -157,6 +185,9 @@ export function warriorFromProfile(
   const inherent = Array.isArray(profile["inherent_rules"])
     ? (profile["inherent_rules"] as unknown[]).filter((s): s is string => typeof s === "string")
     : [];
+  const profileRules = Array.isArray(profile["rule_ids"])
+    ? (profile["rule_ids"] as unknown[]).filter((s): s is string => typeof s === "string")
+    : [];
   const skillAccess = Array.isArray(profile["skill_access"])
     ? (profile["skill_access"] as unknown[]).filter((s): s is string => typeof s === "string")
     : [];
@@ -167,7 +198,7 @@ export function warriorFromProfile(
     kind,
     stats: statMap(characteristics),
     equipment: entries,
-    skills: [...inherent, ...startingSkills],
+    skills: [...new Set([...inherent, ...profileRules, ...startingSkills])],
     experience: typeof profile["experience"] === "number" ? profile["experience"] : 0,
     quantity: input.quantity,
     cost: typeof profile["cost"] === "number" ? profile["cost"] : 0,
@@ -221,19 +252,18 @@ export function createDraft(
   const rows: Warrior[] = [];
   const add = (profile: OpenPayload, quantity: number, profileId: IdString): void => {
     if (quantity <= 0) return;
-    rows.push(
-      warriorFromProfile(
-        profile,
-        {
-          profile_id: profileId,
-          kind: profile["type"] === "hero" ? "hero" : "henchman",
-          quantity,
-          equipment: [],
-        },
-        itemName,
-        nextOccurrence(profileId),
-      ),
+    const warrior = warriorFromProfile(
+      profile,
+      {
+        profile_id: profileId,
+        kind: profile["type"] === "hero" ? "hero" : "henchman",
+        quantity,
+        equipment: [],
+      },
+      itemName,
+      nextOccurrence(profileId),
     );
+    rows.push({ ...warrior, name: uniqueWarriorName(rows, warrior.name) });
   };
 
   // 1. Mandatory members (roster minimums).
@@ -409,7 +439,8 @@ export function composeDraft(
     }
     const occurrence = (occurrences.get(rowInput.profile_id) ?? 0) + 1;
     occurrences.set(rowInput.profile_id, occurrence);
-    const warrior = warriorFromProfile(profile, rowInput, itemName, occurrence);
+    const created = warriorFromProfile(profile, rowInput, itemName, occurrence);
+    const warrior = { ...created, name: uniqueWarriorName([...campaign.warriors, ...planned.map((row) => row.warrior)], created.name) };
     // Fixed equipment comes from the profile; listed equipment is purchased.
     const fixedIds = warrior.equipment.map((entry) => entry.item_id);
     const purchased = rowInput.equipment

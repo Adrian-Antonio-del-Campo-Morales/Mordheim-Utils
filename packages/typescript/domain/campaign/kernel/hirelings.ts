@@ -69,9 +69,6 @@ export function hireHireling(
   knowledge: KnowledgeReader,
 ): UseCaseResult {
   const { campaign } = document;
-  if (campaign.configuration.is_draft) {
-    return rejected("not_permitted_in_draft", "Hire the hired sword after committing the warband.");
-  }
   const result = knowledge.queryKnowledge({
     id: { kind: "hireling_id", value: input.profile_id },
   });

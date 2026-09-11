@@ -72,6 +72,16 @@ def test_profiles_materialize_shared_special_rule_references() -> None:
     assert "shared-rule.leader" in profile["rule_ids"]
 
 
+def test_band_specific_special_rules_include_localized_prose() -> None:
+    artefact = _artefact()
+    rule = next(
+        row for row in artefact["rules_prose"]["special-rules"]
+        if row["id"] == "bergjaeger--set-traps"
+    )
+    assert rule["names"]["es"] == "Colocar Trampas"
+    assert "Bergjäger" in rule["effects"]["es"]
+
+
 def test_excluded_combat_lab_data_does_not_leak() -> None:
     artefact = _artefact()
     for item in artefact["items"]:

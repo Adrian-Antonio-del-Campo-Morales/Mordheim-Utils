@@ -41,6 +41,12 @@ export function resolvePostBattleStep(
     return rejected("invalid_input", "The post-battle sequence is already finished.");
   }
   const step = post.active_step;
+  if(step===0){
+    const battle=document.campaign.battles.find((row)=>row.number===battleNumber),resolved=(post.step_state?.["injuries"]??{}) as Record<string,unknown>,seen=new Map<string,number>();
+    const missing=(battle?.out_of_action_ids??[]).some((id)=>{const casualty=(seen.get(id)??0)+1;seen.set(id,casualty);return !resolved[`${id}:${casualty}`];});
+    const injuryFollowUp=(post.pending_follow_ups??[]).some((row)=>row["step"]===0||row["step"]==="injuries"||["injury_roll","injury_followup","eye_injury","prisoner","relationship","encounter"].includes(String(row["type"]??"")));
+    if(missing||injuryFollowUp)return rejected("prerequisite_missing","Resolve every serious-injury roll and follow-up before continuing.");
+  }
   const stepState = { ...(post.step_state ?? {}) };
   if (Object.keys(input).length > 0) {
     stepState[String(step)] = input;

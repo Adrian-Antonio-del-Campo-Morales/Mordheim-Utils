@@ -103,7 +103,7 @@ def combat_lab_command(_args: list[str]) -> int:
 
 
 def warband_manager_command(_args: list[str]) -> int:
-    return _run_module("mordheim_campaign")
+    return _run_module("mordheim_desktop")
 
 
 def lab_command(name: str, args: list[str]) -> int:

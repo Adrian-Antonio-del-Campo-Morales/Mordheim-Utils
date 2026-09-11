@@ -6,10 +6,7 @@
  * - **Hireling offers**: the catalogue's hired swords / dramatis personae,
  *   each with hiring fee, upkeep and static eligibility
  *   (`allow/forbid_groups` + `allow/forbid_band_ids` resolved through the
- *   artefact's `warband_groups`). Dynamic rule evaluation stays desktop-only
- *   (payloads travel verbatim per the open-payload policy); an offer whose
- *   eligibility uses an expression is surfaced as `conditional` rather than
- *   guessed.
+ *   artefact's `warband_groups`) plus the shared dynamic eligibility rules.
  * - **Exploration read model**: dice allocation from the artefact
    (`exploration-and-income`) projected onto the last battle's survivors —
    numbers for the UI, never a roll. Submission flows through the existing

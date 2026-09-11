@@ -175,6 +175,6 @@ describe("P6.1 TimelinePanel", () => {
   it("labels battles with their scenario and post-battles as pending", async () => {
     const service = await loadedService();
     render(<Harness service={service} />);
-    expect(screen.getByRole("button", { name: /Battle #1 — skirmish/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Battle #1 — Skirmish/i })).toBeInTheDocument();
   });
 });

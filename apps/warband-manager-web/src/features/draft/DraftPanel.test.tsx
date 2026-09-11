@@ -23,18 +23,19 @@ describe("P6.2 DraftPanel", () => {
     // The fake reader resolves "sisters-of-sigmar"; the other nine static
     // candidates are filtered out by the workflow (never guessed).
     expect(values).toContain("sisters-of-sigmar");
-    expect(values).toHaveLength(1);
+    expect(values).toEqual(["", "sisters-of-sigmar"]);
   });
 
   it("starts a draft and shows the live composition status", async () => {
     const user = userEvent.setup();
     render(<DraftPanel onCommitted={() => undefined} />);
+    await user.selectOptions(screen.getByLabelText(/warband/i), "sisters-of-sigmar");
     await user.click(screen.getByRole("button", { name: /start draft/i }));
 
     const status = await screen.findByText(/Models \d+\/\d+/);
     expect(status.textContent).toContain("Treasury");
 
-    // The starter draft from the fake KB is legal → commit enabled.
+    // The isolated legacy panel fixture still builds its legal starter roster.
     const commit = screen.getByRole("button", {
       name: /commit initial warband/i,
     }) as HTMLButtonElement;
@@ -44,6 +45,7 @@ describe("P6.2 DraftPanel", () => {
   it("exposes the live legality status before commit", async () => {
     const user = userEvent.setup();
     render(<DraftPanel onCommitted={() => undefined} />);
+    await user.selectOptions(screen.getByLabelText(/warband/i), "sisters-of-sigmar");
     await user.click(screen.getByRole("button", { name: /start draft/i }));
     const commit = screen.getByRole("button", { name: /commit initial warband/i }) as HTMLButtonElement;
     expect(commit.disabled).toBe(false);
@@ -57,9 +59,9 @@ describe("P6.2 DraftPanel", () => {
       received.document = document;
     };
     render(<DraftPanel onCommitted={onCommitted} />);
+    await user.selectOptions(screen.getByLabelText(/warband/i), "sisters-of-sigmar");
     await user.click(screen.getByRole("button", { name: /start draft/i }));
     await user.click(screen.getByRole("button", { name: /commit initial warband/i }));
-
     expect(received.document).not.toBeNull();
     const committed = received.document;
     if (!committed) return;

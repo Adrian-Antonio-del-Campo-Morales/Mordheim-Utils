@@ -136,7 +136,7 @@ def test_bought_dagger_stays_separate_from_free_starting_dagger():
     assert not warrior.equipment[0].transferable
 
 
-def test_stash_assignment_enforces_weapon_carriage_limit():
+def test_stash_assignment_allows_more_than_two_weapons():
     controller = _controller()
     campaign = controller.state.campaign
     warrior = campaign.warriors[0]
@@ -148,5 +148,6 @@ def test_stash_assignment_enforces_weapon_carriage_limit():
 
     ok, message = controller.assign_stash_item("dagger", warrior.id)
 
-    assert not ok and "two weapons" in message
-    assert dagger.stash == 1
+    assert ok, message
+    assert dagger.stash == 0
+    assert sum(item.quantity for item in warrior.equipment if item.item_id == "dagger") == 3

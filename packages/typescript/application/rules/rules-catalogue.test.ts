@@ -51,6 +51,28 @@ describe("desktop test_rules_catalogue.py → web RulesCatalogue", () => {
     const c = catalogue();
     const hungry = c.entry("special-rules", "shared-rule.always-hungry", "es");
     expect(hungry?.name).toBe("Siempre Hambriento");
+    expect(c.entry("skills", "skill.acrobat", "es")?.effect).toContain("Iniciativa");
+    expect(c.entry("equipment", "sword", "es")?.effect).toContain("combate cuerpo a cuerpo");
+    expect(c.entry("injuries", "campaign.serious-injuries.hero", "es")?.effect).toContain("11-15 — Muerto");
+    expect(c.entry("scenarios", "scenario.hidden-treasure", "es")?.effect).toContain("Experiencia:");
+    const names = c.entries("equipment", "es").map((row) => row.name);
+    expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" })));
+  });
+
+  it("adapts distances in Spanish entries and search results", () => {
+    const c = catalogue();
+    const english = c.entry("spells", "spell.lesser-magic.fires-of-uzhul");
+    const spanish = c.entry("spells", "spell.lesser-magic.fires-of-uzhul", "es");
+    const leader = c.entry("special-rules", "shared-rule.leader", "es");
+    const dread = c.entry("spells", "spell.lesser-magic.dread-of-aramar", "es");
+    const waaagh = c.entry("special-rules", "shared-rule.waaagh", "es");
+    expect(english?.effect).toContain('18"');
+    expect(spanish?.effect).toContain("45 cm");
+    expect(spanish?.effect).not.toContain('18"');
+    expect(leader?.effect).toContain("15 cm");
+    expect(dread?.effect).toContain("5D6 cm");
+    expect(waaagh?.effect).toContain("+1D6+2 cm");
+    expect(c.search("45 cm", { locale: "es" }).some((row) => row.entry_id === "spell.lesser-magic.fires-of-uzhul")).toBe(true);
   });
 
   it("search matches names and effects and ignores accents", () => {

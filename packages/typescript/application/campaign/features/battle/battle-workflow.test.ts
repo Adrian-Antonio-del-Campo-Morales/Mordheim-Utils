@@ -15,6 +15,7 @@ import type {
 import { createDefaultUseCases } from "../../../../domain/campaign/kernel/default-usecases";
 import { createDraftWorkflow } from "../draft/draft-workflow";
 import { createBattleWorkflow } from "./battle-workflow";
+import { calculatedAwards } from "./scenario-awards";
 
 function makeKnowledge(): KnowledgeReader {
   const rows: Record<string, Record<string, unknown>> = {
@@ -144,6 +145,14 @@ describe("P6.4 scenario options and readiness", () => {
 });
 
 describe("P6.4 recording battles", () => {
+  it("awards the victory bonus to the Hero with the Leader rule", () => {
+    const { document } = makeCommitted();
+    const ordinaryHero = { ...document.campaign.warriors[0], id: "hero-first", skills: [] };
+    const leader = { ...document.campaign.warriors[0], id: "hero-leader", skills: ["captain--leader"] };
+    const awards = calculatedAwards([{ id: "winning-leader", label: "Winning leader", amount: 1, trigger: "warband_won_battle", manual: false, selection: "single" }], [ordinaryHero, leader], "win", {}, {});
+    expect(awards).toEqual({ "hero-leader": 1 });
+  });
+
   it("records a battle, snapshots numbers and opens the pending post-battle", () => {
     const { document, knowledge } = makeCommitted();
     const battle = makeBattleWorkflow(knowledge);

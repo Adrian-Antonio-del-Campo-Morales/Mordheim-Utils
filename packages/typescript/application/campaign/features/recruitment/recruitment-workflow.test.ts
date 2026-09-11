@@ -194,12 +194,13 @@ describe("dismissRecruit one_member (desktop dismiss_warrior)", () => {
 
 describe("recruitBandProfile (desktop recruit_band_profile)", () => {
   it("adds a henchman, deducts gold and registers fixed equipment", () => {
-    const result = recruitBandProfile(makePending(), reader(), { profile_id: "sister", quantity: 1 });
+    const result = recruitBandProfile(makePending(), reader(), { profile_id: "sister", quantity: 1, name: "Sigrid" });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.document.campaign.warriors.filter((w) => w.profile_id === "sister")).toHaveLength(2);
     expect(result.document.campaign.post_battles[0].gold_delta).toBe(-45);
     expect(result.document.campaign.inventory.find((i) => i.id === "dagger")).toBeTruthy();
+    expect(result.document.campaign.warriors.at(-1)?.name).toBe("Sigrid II");
   });
 
   it("rejects multi-member hero rows", () => {

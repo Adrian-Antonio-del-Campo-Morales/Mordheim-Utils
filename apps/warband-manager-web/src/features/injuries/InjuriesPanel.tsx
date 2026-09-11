@@ -17,18 +17,21 @@ import { injuryOverview } from "@app/campaign/features/injuries/injuries-workflo
 import { injuryFollowUpDice } from "@app/campaign/features/injuries/injury-followup-workflow";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { DiceResolver } from "../dice/DiceResolver";
+import { knowledgeName, readableValue } from "../campaign/displayText";
 
 interface InjuriesPanelProps {
   readonly document: CampaignDocument;
   readonly knowledge?: ArtefactKnowledgeReader;
+  readonly locale?: "es" | "en";
 }
 
-export function InjuriesPanel({ document, knowledge }: InjuriesPanelProps) {
+export function InjuriesPanel({ document, knowledge, locale = "en" }: InjuriesPanelProps) {
   const app = useCampaignApp();
   const [busy, setBusy] = useState(false);
   const [targets, setTargets] = useState<Record<string,string>>({});
   const [ransoms, setRansoms] = useState<Record<string,number>>({});
   const overview = injuryOverview(document);
+  const t = locale === "es" ? { title: "Heridas", recoveryTitle: "Heridas y Recuperación", warrior: "Guerrero", condition: "Estado", missingGames: "Batallas que se Pierde", recovery: "Recuperación", pendingRolls: "Tiradas Pendientes", serve: "Hacer Perder 1 Batalla", chooseEye: "Elige Ojo", left: "Izquierdo", right: "Derecho", hatredTarget: "Objetivo del Odio", setHatred: "Establecer Odio", ransom: "Rescate", exchange: "Intercambiar", lost: "Perdido", followUp: "Resolver Seguimiento", resolve: "Resolver" } : { title: "Injuries", recoveryTitle: "Injuries & Recovery", warrior: "Warrior", condition: "Condition", missingGames: "Missing Games", recovery: "Recovery", pendingRolls: "Pending Rolls", serve: "Miss 1 Game", chooseEye: "Choose Eye", left: "Left", right: "Right", hatredTarget: "Hatred Target", setHatred: "Set Hatred", ransom: "Ransom", exchange: "Exchange", lost: "Lost", followUp: "Resolve Injury Follow-up", resolve: "Resolve" };
 
   const run = async (action: string, input: Record<string, unknown>) => {
     setBusy(true);
@@ -39,8 +42,8 @@ export function InjuriesPanel({ document, knowledge }: InjuriesPanelProps) {
   };
 
   return (
-    <section aria-label="Injuries">
-      <h3>Injuries &amp; Recovery</h3>
+    <section aria-label={t.title}>
+      <h3>{t.recoveryTitle}</h3>
 
       {app.error && (
         <output role="alert" style={{ color: "crimson", display: "block" }}>
@@ -50,20 +53,19 @@ export function InjuriesPanel({ document, knowledge }: InjuriesPanelProps) {
 
       {overview.open_rolls.length > 0 && (
         <p>
-          {overview.open_rolls.length} unresolved injury roll
-          {overview.open_rolls.length === 1 ? "" : "s"} on the pending post-battle.
+          {overview.open_rolls.length} {locale === "es" ? "tirada(s) de heridas sin resolver en el post-batalla pendiente." : `unresolved injury roll${overview.open_rolls.length === 1 ? "" : "s"} on the pending post-battle.`}
         </p>
       )}
 
       <table>
-        <caption>Warband injury status</caption>
+          <caption>{locale === "es" ? "Estado de heridas de la banda" : "Warband injury status"}</caption>
         <thead>
           <tr>
-            <th scope="col">Warrior</th>
-            <th scope="col">Condition</th>
-            <th scope="col">Missing games</th>
-            <th scope="col">Recovery</th>
-            <th scope="col">Pending rolls</th>
+            <th scope="col">{t.warrior}</th>
+            <th scope="col">{t.condition}</th>
+            <th scope="col">{t.missingGames}</th>
+            <th scope="col">{t.recovery}</th>
+            <th scope="col">{t.pendingRolls}</th>
           </tr>
         </thead>
         <tbody>
@@ -72,18 +74,19 @@ export function InjuriesPanel({ document, knowledge }: InjuriesPanelProps) {
               <td>{row.name}</td>
               <td>
                 {row.condition
-                  ? `${row.condition}${row.condition_detail ? ` (${row.condition_detail})` : ""}`
+                  ? `${readableValue(row.condition, locale)}${row.condition_detail ? ` (${knowledgeName(knowledge, "injury", row.condition_detail, locale, row.condition_detail)})` : ""}`
                   : "—"}
               </td>
-              <td>{row.games_to_miss > 0 ? `${row.games_to_miss} (${row.absence_reason ?? "Injury"})` : "0"}</td>
+              <td>{row.games_to_miss > 0 ? `${row.games_to_miss} (${readableValue(row.absence_reason ?? (locale === "es" ? "Lesión" : "Injury"), locale)})` : "0"}</td>
               <td>
                 <button
                   type="button"
                   disabled={busy || row.games_to_miss === 0}
-                  aria-label={`Recover ${row.name}`}
+                  data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : row.games_to_miss === 0 ? (locale === "es" ? "Este guerrero no tiene batallas pendientes que perder." : "This warrior has no missed games remaining.") : undefined}
+                  aria-label={`${locale === "es" ? "Recuperar" : "Recover"} ${row.name}`}
                   onClick={() => run("recoverWarrior", { warrior_id: row.warrior_id })}
                 >
-                  Serve 1 game
+                  {t.serve}
                 </button>
               </td>
               <td>
@@ -92,11 +95,11 @@ export function InjuriesPanel({ document, knowledge }: InjuriesPanelProps) {
                   : row.pending_follow_ups.map((followUp) => {
                       const id = String((followUp as { id?: unknown }).id ?? "");
                       const type=String((followUp as { type?: unknown }).type??"");
-                      if(type==="eye_injury")return <span key={id}>Choose eye: <button disabled={busy} onClick={()=>run("resolveEyeInjury",{follow_up_id:id,eye:"left"})}>Left</button><button disabled={busy} onClick={()=>run("resolveEyeInjury",{follow_up_id:id,eye:"right"})}>Right</button></span>;
-                      if(type==="relationship")return <span key={id}><input aria-label={`Hatred target ${id}`} value={targets[id]??""} onChange={(event)=>setTargets((current)=>({...current,[id]:event.target.value}))}/><button disabled={busy||!(targets[id]??"").trim()} onClick={()=>run("resolveHatred",{follow_up_id:id,target:targets[id]})}>Set hatred</button></span>;
-                      if(type==="prisoner")return <span key={id}><input aria-label={`Ransom ${id}`} type="number" min="0" value={ransoms[id]??0} onChange={(event)=>setRansoms((current)=>({...current,[id]:Math.max(0,Math.trunc(event.target.valueAsNumber||0))}))}/><button disabled={busy} onClick={()=>run("resolvePrisoner",{follow_up_id:id,resolution:"ransom",ransom:ransoms[id]??0})}>Ransom</button><button disabled={busy} onClick={()=>run("resolvePrisoner",{follow_up_id:id,resolution:"exchange"})}>Exchange</button><button disabled={busy} onClick={()=>run("resolvePrisoner",{follow_up_id:id,resolution:"lost",disposition:"other"})}>Lost</button></span>;
+                      if(type==="eye_injury")return <span key={id}>{t.chooseEye}: <button disabled={busy} onClick={()=>run("resolveEyeInjury",{follow_up_id:id,eye:"left"})}>{t.left}</button><button disabled={busy} onClick={()=>run("resolveEyeInjury",{follow_up_id:id,eye:"right"})}>{t.right}</button></span>;
+                      if(type==="relationship")return <span key={id}><input aria-label={`${t.hatredTarget} ${id}`} value={targets[id]??""} onChange={(event)=>setTargets((current)=>({...current,[id]:event.target.value}))}/><button disabled={busy||!(targets[id]??"").trim()} data-disabled-reason={busy ? (locale==="es"?"Se está resolviendo otra herida.":"Another injury is being resolved.") : !(targets[id]??"").trim() ? (locale==="es"?"Introduce el objetivo del odio.":"Enter the hatred target.") : undefined} onClick={()=>run("resolveHatred",{follow_up_id:id,target:targets[id]})}>{t.setHatred}</button></span>;
+                      if(type==="prisoner")return <span key={id}><input aria-label={`${t.ransom} ${id}`} type="number" min="0" value={ransoms[id]??0} onChange={(event)=>setRansoms((current)=>({...current,[id]:Math.max(0,Math.trunc(event.target.valueAsNumber||0))}))}/><button disabled={busy} onClick={()=>run("resolvePrisoner",{follow_up_id:id,resolution:"ransom",ransom:ransoms[id]??0})}>{t.ransom}</button><button disabled={busy} onClick={()=>run("resolvePrisoner",{follow_up_id:id,resolution:"exchange"})}>{t.exchange}</button><button disabled={busy} onClick={()=>run("resolvePrisoner",{follow_up_id:id,resolution:"lost",disposition:"other"})}>{t.lost}</button></span>;
                       const dice=knowledge&&injuryFollowUpDice(knowledge,followUp as Record<string,unknown>);
-                      if(dice)return <DiceResolver count={dice[0]} sides={dice[1]} label="Resolve injury follow-up" onResolve={(rolls)=>void run("resolveInjuryTableFollowUp",{follow_up_id:id,roll:rolls.reduce((total,value)=>total+value,0)})}/>;
+                      if(dice)return <DiceResolver locale={locale} count={dice[0]} sides={dice[1]} label={t.followUp} onResolve={(rolls)=>void run("resolveInjuryTableFollowUp",{follow_up_id:id,roll:dice[0]===2&&dice[1]===6?rolls[0]*10+rolls[1]:rolls.reduce((total,value)=>total+value,0)})}/>;
                       return (
                         <button
                           key={id}
@@ -115,7 +118,7 @@ export function InjuriesPanel({ document, knowledge }: InjuriesPanelProps) {
                             })
                           }
                         >
-                          Resolve
+                          {t.resolve}
                         </button>
                       );
                     })}

@@ -8,6 +8,23 @@ Tomar la GUI de `warband-manager-desktop` como referencia de navegación, organi
 
 Este documento registra la implementación y verificación de la paridad de GUI. Las capturas sirven para localizar funciones y comprobar que la información no se pierde; diferencias de color, medidas, tipografía o iconografía son aceptables cuando no cambian el uso.
 
+## Reauditoría de composición — 11 de septiembre de 2026
+
+La comparación directa con las 24 capturas de `artifacts/gui-captures/desktop/` detectó que la primera implementación conservaba los recorridos, pero todavía se alejaba de la organización de escritorio. Se han aplicado estas correcciones:
+
+- el área de campaña ocupa todo el ancho disponible y reserva aproximadamente 395 px para la cronología en ventanas de escritorio;
+- la cabecera recupera la altura, proporciones y separación entre identidad, navegación y acciones de la aplicación de escritorio;
+- la cronología alterna estado, batalla y postbatalla, distingue sus tipos mediante iconos y ofrece `Añadir batalla` como último nodo cuando corresponde;
+- el borrador muestra la lista de guerreros a ancho completo y abre el alta de héroes o grupos en un diálogo contextual;
+- Guerreros usa registros verticales densos, de modo que atributos, equipo, habilidades y heridas puedan compararse de un vistazo;
+- Inventario vuelve a separar visualmente equipo asignado y reserva en dos paneles;
+- la biblioteca usa una lista seleccionable y compacta con acciones, en lugar de una cuadrícula de tarjetas;
+- el histórico de batalla coloca primero el número de batalla y después escenario, rival y fecha;
+- Reglas mantiene categorías y búsqueda sobre una lista lateral y un detalle amplio; Ajustes elimina encabezados redundantes y conserva el formato de filas.
+- los identificadores persistentes de banda, perfil, escenario, objeto, habilidad, lesión y recurso se resuelven mediante la base de conocimiento antes de mostrarse; los valores antiguos desconocidos se convierten en frases legibles.
+
+Las diferencias aceptadas siguen siendo las propias del navegador: descarga en lugar de sobrescritura directa, biblioteca limitada a la sesión y controles HTML nativos. Ninguna de ellas cambia el orden del trabajo ni oculta una función de escritorio.
+
 Prioridades: **P1**, estructura y flujos que más afectan a la familiaridad; **P2**, presentación y coherencia; **P3**, ajuste visual final. «Confirmado» indica una diferencia identificada en el código; «por contrastar» indica un objetivo de revisión, no un fallo probado.
 
 ## Lista de cambios

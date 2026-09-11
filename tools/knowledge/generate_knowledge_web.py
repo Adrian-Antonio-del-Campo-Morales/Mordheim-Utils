@@ -212,7 +212,16 @@ def _build_profiles(ruleset: str) -> list[dict]:
                 # in the web artefact so UI readers can show both permitted
                 # equipment and reverse rule links without reopening YAML.
                 access: list[dict] = []
-                for list_id in profile.get("equipment_lists") or ():
+                # Every band may expose a common equipment list in addition
+                # to profile-specific lists.  The desktop resolver applies
+                # both; materialise both here so common grants (for example
+                # the first free dagger) reach every eligible profile.
+                profile_list_ids = list(profile.get("equipment_lists") or ())
+                profile_list_ids.extend(
+                    list_id for list_id in equipment_lists
+                    if list_id.endswith("-equipment-lists") and list_id not in profile_list_ids
+                )
+                for list_id in profile_list_ids:
                     equipment_list = equipment_lists.get(str(list_id))
                     if not equipment_list:
                         continue
@@ -223,6 +232,8 @@ def _build_profiles(ruleset: str) -> list[dict]:
                         row = {"item_id": item_id, "list_id": str(list_id)}
                         if isinstance(item.get("cost"), int):
                             row["cost"] = item["cost"]
+                        if isinstance(item.get("notes"), str) and item["notes"].strip():
+                            row["notes"] = item["notes"].strip()
                         access.append(row)
                 entry["equipment_access"] = sorted(
                     access,
@@ -233,13 +244,28 @@ def _build_profiles(ruleset: str) -> list[dict]:
 
 
 def _build_items(ruleset: str) -> list[dict]:
+    mechanics = {
+        str(row.get("id") or ""): row
+        for family in ("weapons", "armours", "defences", "materials", "preparations", "poisons")
+        for row in load_mechanics(ruleset).get(family) or ()
+    }
     items = []
     for row in load_items(ruleset):
         kind = str(row.get("kind") or "")
         if kind not in INCLUDED_ITEM_KINDS:
             continue  # 'out-of-scope' and other Combat Lab-only kinds stay out
-        entry = _row(row, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n", "effect", "effect_ids"))
+        entry = _row(row, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n", "effect_ids"))
         entry["item_id"] = entry.pop("id", "")
+        mechanic = mechanics.get(str(row.get("mechanic_id") or ""))
+        if mechanic and not entry.get("effect"):
+            if mechanic.get("effect"):
+                entry["effect"] = mechanic["effect"]
+            translations = mechanic.get("effect_i18n") or {}
+            if translations:
+                entry["effects"] = {
+                    CANONICAL_LOCALE: str(mechanic.get("effect") or ""),
+                    **{str(key): str(value) for key, value in translations.items() if value},
+                }
         items.append(entry)
     return sorted(items, key=_sort_key)
 
@@ -268,6 +294,34 @@ def _build_rules_prose(ruleset: str) -> dict:
         document = catalog.document(stem)
         rows = document.get("rules") or document.get("conditions") or ()
         documents[stem] = sorted((_row(row) for row in rows), key=_sort_key)
+    # A profile can grant a band-specific rule directly, rather than a shared
+    # ``rule_ref``. Publish those direct rules beside the shared special-rule
+    # catalogue so roster labels and tooltips resolve their localized prose.
+    special_rules = {str(row["id"]): row for row in documents.get("special-rules", ())}
+    band_rules: list[dict] = []
+    for collection in (row["id"] for row in load_collections() if ruleset in set(row.get("rulesets") or ())):
+        for package in load_bands(str(collection)):
+            if package.ruleset != ruleset:
+                continue
+            for rule in package.special_rules:
+                if rule.get("rule_ref"):
+                    continue
+                entry = _row(rule)
+                identifier = str(entry.get("id") or "")
+                if not identifier:
+                    raise GenerationError(f"band special rule without id: {package.band['id']!r}")
+                band_rules.append(entry)
+    direct_counts: dict[str, int] = {}
+    for entry in band_rules:
+        identifier = str(entry["id"])
+        direct_counts[identifier] = direct_counts.get(identifier, 0) + 1
+    for entry in band_rules:
+        identifier = str(entry["id"])
+        # An unscoped tooltip cannot safely select between same-id prose from
+        # different bands. Keep only globally unique direct rules here.
+        if direct_counts[identifier] == 1 and identifier not in special_rules:
+            special_rules[identifier] = entry
+    documents["special-rules"] = sorted(special_rules.values(), key=_sort_key)
     return dict(sorted(documents.items()))
 
 
