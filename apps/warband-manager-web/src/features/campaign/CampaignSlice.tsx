@@ -62,7 +62,7 @@ function PostBattleWorkspace({ document, knowledge, locale }: { document: Campai
   const post = document.campaign.post_battles.find((row) => !row.complete);
   const [selectedStep, setSelectedStep] = useState(post?.active_step ?? 0);
   const [reviewOpen, setReviewOpen] = useState(Boolean(post?.review_open));
-  useEffect(() => { if (post) { setSelectedStep(post.active_step); setReviewOpen(Boolean(post.review_open)); } }, [post?.active_step, post?.review_open]);
+  useEffect(() => { if (post) { setSelectedStep(post.active_step); setReviewOpen(Boolean(post.review_open)); } }, [post]);
   if (!post) return null;
   const labels = locale === "es"
     ? ["Heridas", "Experiencia", "Exploración", "Vender piedra bruja", "Veteranos", "Objetos raros y Dramatis", "Reclutamiento", "Equipo"]
