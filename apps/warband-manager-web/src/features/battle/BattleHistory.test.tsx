@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { BattleHistory } from "./BattleHistory";
 import type { CampaignDocument } from "../campaign/types";
@@ -16,9 +16,10 @@ const battle = {
 describe("BattleHistory", () => {
   it("shows participants, absentees and scenario consequences", () => {
     render(<BattleHistory battle={battle} locale="en" />);
-    expect(screen.getByText(/Sigrid.*Out of Action/)).toBeInTheDocument();
-    expect(screen.getByText(/Greta.*Did not participate/)).toBeInTheDocument();
     expect(screen.getByText(/Sigrid received \+2 XP/)).toBeInTheDocument();
     expect(screen.getByText("Scenario exploration rule applied.")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "PARTICIPANTS" }));
+    expect(screen.getByText(/Sigrid.*Out of Action/)).toBeInTheDocument();
+    expect(screen.getByText(/Greta.*Did not participate/)).toBeInTheDocument();
   });
 });

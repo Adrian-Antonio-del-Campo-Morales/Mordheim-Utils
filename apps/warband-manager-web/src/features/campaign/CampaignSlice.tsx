@@ -24,19 +24,33 @@ import { ManualSkillPanel } from "../advances/ManualSkillPanel";
 import { ManualCorrectionsPanel } from "../economy/ManualCorrectionsPanel";
 import { RareSearchPanel } from "../searches/RareSearchPanel";
 import type { CampaignDocument } from "./types";
+import { mercenaryVariantsForBand } from "@domain/campaign/hire-eligibility";
 
-function RosterOverview({ document, stateNumber, editable, locale }: { document: CampaignDocument; stateNumber: number; editable: boolean; locale: "es" | "en" }) {
+function RosterOverview({ document, stateNumber, editable, locale, section }: { document: CampaignDocument; stateNumber: number; editable: boolean; locale: "es" | "en"; section: "overview" | "warriors" }) {
   const app = useCampaignApp(); const [name, setName] = useState("");
   const { campaign } = document;
   const snapshot = campaign.states.find((state) => state.number === stateNumber);
   const warriors = snapshot?.roster ?? (editable ? campaign.warriors : []);
   const t = locale === "es" ? { campaign:"Campaña",warband:"Banda",models:"Miniaturas",rating:"Valoración",treasury:"Tesorería",wyrdstone:"Piedra bruja",historical:"Histórico · solo lectura",roster:"Guerreros",effects:"Efectos activos",missing:"Este estado no contiene una instantánea de guerreros.",members:"miembros",equipment:"Equipo",skills:"Habilidades / heridas",none:"Ninguno",recovery:"Recuperación",misses:"se pierde",battles:"batalla(s)",upkeep:"Mantenimiento",rename:"Renombrar banda",apply:"Aplicar" } : { campaign:"Campaign",warband:"Warband",models:"Models",rating:"Rating",treasury:"Treasury",wyrdstone:"Wyrdstone",historical:"Historical · read only",roster:"Roster",effects:"Active effects",missing:"No roster snapshot is stored for this state.",members:"members",equipment:"Equipment",skills:"Skills / injuries",none:"None",recovery:"Recovery",misses:"misses",battles:"battle(s)",upkeep:"Upkeep",rename:"Rename warband",apply:"Apply" };
-  return <section aria-label="Warband overview"><dl className="campaign-metrics"><div><dt>{t.campaign}</dt><dd>{campaign.identity.campaign_name}</dd></div><div><dt>{t.warband}</dt><dd>{campaign.identity.warband_type}</dd></div><div><dt>{t.models}</dt><dd>{snapshot?.models ?? warriors.reduce((sum, warrior) => sum + (warrior.quantity ?? 1), 0)}</dd></div><div><dt>{t.rating}</dt><dd>{snapshot?.rating ?? 0}</dd></div><div><dt>{t.treasury}</dt><dd>{snapshot?.gold ?? 0} gc</dd></div><div><dt>{t.wyrdstone}</dt><dd>{snapshot?.wyrdstone ?? 0}</dd></div></dl>
-    {!editable && <p role="status">{t.historical}</p>}
-    {editable&&campaign.special_rules.length>0&&<><h3>{t.effects}</h3><ul>{campaign.special_rules.map((rule)=><li key={`${String(rule.source)}:${String(rule.text)}`}>{String(rule.text)}{rule.expires_after_battles!=null?` · ${rule.expires_after_battles} ${t.battles}`:""}</li>)}</ul></>}
-    <h3>{t.roster}</h3>{warriors.length === 0 ? <p>{t.missing}</p> : <div className="warrior-grid">{warriors.map((warrior) => <article className="warrior-card" key={warrior.id}><header><div><strong>{warrior.name}</strong><span>{warrior.profile_name}{warrior.kind !== "hero" ? ` · ${warrior.quantity ?? 1} ${t.members}` : ""}</span></div><b>{warrior.experience} XP</b></header>{warrior.condition && <p className="condition">{warrior.condition}{warrior.condition_detail ? ` · ${warrior.condition_detail}` : ""}</p>}<div className="stats">{Object.entries(warrior.stats).map(([key,value]) => { const modifier=warrior.stat_modifiers?.[key] ?? 0; return <span key={key}><small>{key}</small>{Number(value) + modifier}</span>; })}</div><h4>{t.equipment}</h4><p>{warrior.equipment.map((entry) => `${entry.quantity}× ${entry.name}`).join(", ") || t.none}</p><h4>{t.skills}</h4><p>{[...warrior.skills, ...(warrior.special_rules ?? [])].join(", ") || t.none}</p>{warrior.games_to_miss ? <p className="condition">{warrior.absence_reason ?? t.recovery} · {t.misses} {warrior.games_to_miss} {t.battles}</p> : null}{warrior.kind === "hireling" && <p>{t.rating} {warrior.hireling_rating ?? 0}{warrior.upkeep_resources?.length ? ` · ${t.upkeep} ${warrior.upkeep_resources.map(([resource, amount]) => `${amount} ${resource}`).join(" + ")}` : ""}</p>}</article>)}</div>}
-    {editable && <form className="inline-form" onSubmit={(event) => { event.preventDefault(); if(name.trim()) void app.runAction("renameWarband", { name: name.trim() }); setName(""); }}><label>{t.rename}<input value={name} onChange={(event) => setName(event.target.value)} /></label><button disabled={!name.trim()}>{t.apply}</button></form>}
+  return <section aria-label={section === "overview" ? "Warband overview" : "Warriors"}>
+    {section === "overview" && <><dl className="campaign-metrics"><div><dt>{t.rating}</dt><dd>{snapshot?.rating ?? 0}</dd></div><div><dt>{t.models}</dt><dd>{snapshot?.models ?? warriors.reduce((sum, warrior) => sum + (warrior.quantity ?? 1), 0)}/{snapshot?.max_models ?? campaign.configuration.maximum_models}</dd></div><div><dt>{t.treasury}</dt><dd>{snapshot?.gold ?? 0} gc</dd></div><div><dt>{t.wyrdstone}</dt><dd>{snapshot?.wyrdstone ?? 0}</dd></div></dl>
+      <div className="overview-columns"><article><span>{locale === "es" ? "BANDA EN ESTE MOMENTO" : "WARBAND AT THIS POINT"}</span><h3>{campaign.identity.warband_name}</h3><p>{campaign.identity.warband_type} · {warriors.length} {t.roster.toLowerCase()}</p></article><article><span>{locale === "es" ? "POSICIÓN EN LA CAMPAÑA" : "CAMPAIGN POSITION"}</span><h3>{editable ? (locale === "es" ? "Banda actual" : "Current warband") : t.historical}</h3><p>{campaign.identity.campaign_name}</p></article></div>
+      {editable&&campaign.special_rules.length>0&&<><h3>{t.effects}</h3><ul>{campaign.special_rules.map((rule)=><li key={`${String(rule.source)}:${String(rule.text)}`}>{String(rule.text)}{rule.expires_after_battles!=null?` · ${rule.expires_after_battles} ${t.battles}`:""}</li>)}</ul></>}
+      {editable && <form className="inline-form" onSubmit={(event) => { event.preventDefault(); if(name.trim()) void app.runAction("renameWarband", { name: name.trim() }); setName(""); }}><label>{t.rename}<input value={name} onChange={(event) => setName(event.target.value)} /></label><button disabled={!name.trim()}>{t.apply}</button></form>}</>}
+    {section === "warriors" && <>{warriors.length === 0 ? <p>{t.missing}</p> : <div className="warrior-grid">{warriors.map((warrior) => <article className="warrior-card" key={warrior.id}><header><div><strong>{warrior.name}</strong><span>{warrior.profile_name}{warrior.kind !== "hero" ? ` · ${warrior.quantity ?? 1} ${t.members}` : ""}</span></div><b>{warrior.experience} XP</b></header>{warrior.condition && <p className="condition">{warrior.condition}{warrior.condition_detail ? ` · ${warrior.condition_detail}` : ""}</p>}<div className="stats">{Object.entries(warrior.stats).map(([key,value]) => { const modifier=warrior.stat_modifiers?.[key] ?? 0; return <span key={key}><small>{key}</small>{Number(value) + modifier}</span>; })}</div><h4>{t.equipment}</h4><p>{warrior.equipment.map((entry) => `${entry.quantity}× ${entry.name}`).join(", ") || t.none}</p><h4>{t.skills}</h4><p>{[...warrior.skills, ...(warrior.special_rules ?? [])].join(", ") || t.none}</p>{warrior.games_to_miss ? <p className="condition">{warrior.absence_reason ?? t.recovery} · {t.misses} {warrior.games_to_miss} {t.battles}</p> : null}{warrior.kind === "hireling" && <p>{t.rating} {warrior.hireling_rating ?? 0}{warrior.upkeep_resources?.length ? ` · ${t.upkeep} ${warrior.upkeep_resources.map(([resource, amount]) => `${amount} ${resource}`).join(" + ")}` : ""}</p>}</article>)}</div>}</>}
   </section>;
+}
+
+function StateWorkspace({ document, stateDocument, stateNumber, editable, locale, knowledge }: { document: CampaignDocument; stateDocument: CampaignDocument; stateNumber: number; editable: boolean; locale: "es" | "en"; knowledge?: ArtefactKnowledgeReader }) {
+  const [section, setSection] = useState<"overview" | "warriors" | "inventory">("overview");
+  const snapshot = document.campaign.states.find((state) => state.number === stateNumber);
+  const labels = locale === "es" ? { current:"BANDA ACTUAL", initial:"BANDA INICIAL", state:"ESTADO DE BANDA", historical:"HISTÓRICO · SOLO LECTURA", overview:"RESUMEN", warriors:"GUERREROS", inventory:"INVENTARIO", start:"Inicio de la campaña", after:"Después de la batalla" } : { current:"CURRENT WARBAND", initial:"INITIAL WARBAND", state:"WARBAND STATE", historical:"HISTORICAL · READ ONLY", overview:"OVERVIEW", warriors:"WARRIORS", inventory:"INVENTORY", start:"Campaign starting point", after:"After battle" };
+  const title = editable ? labels.current : stateNumber === 0 ? labels.initial : `${labels.state} #${stateNumber}`;
+  return <div className="state-workspace"><header className="moment-heading"><div><h2>{title}</h2><p>{stateNumber === 0 ? labels.start : `${labels.after} #${stateNumber}${snapshot?.date ? ` · ${snapshot.date}` : ""}`}</p></div>{!editable && <span>{labels.historical}</span>}</header>
+    <nav className="segmented-tabs" aria-label={locale === "es" ? "Secciones de la banda" : "Warband sections"}>{(["overview","warriors","inventory"] as const).map((key)=><button key={key} className={section===key ? "active" : ""} aria-pressed={section===key} onClick={()=>setSection(key)}>{labels[key]}</button>)}</nav>
+    {section !== "inventory" ? <RosterOverview document={document} stateNumber={stateNumber} editable={editable} locale={locale} section={section} /> : <EquipmentPanel document={stateDocument} readOnly={!editable} locale={locale} />}
+    {editable && <BattlePanel document={document} knowledge={knowledge} locale={locale} />}
+  </div>;
 }
 
 function PostBattleWorkspace({ document, knowledge, locale }: { document: CampaignDocument; knowledge?: ArtefactKnowledgeReader; locale: "es" | "en" }) {
@@ -48,8 +62,9 @@ function PostBattleWorkspace({ document, knowledge, locale }: { document: Campai
     : ["Injuries", "Experience", "Exploration", "Sell wyrdstone", "Veterans", "Rare items & Dramatis", "Recruitment", "Equipment"];
   const step = post.active_step;
   const next = () => void app.runAction("resolvePostBattleStep", { battle_number: post.battle_number });
+  const chapters = locale === "es" ? ["Supervivencia", "Progreso", "Comercio", "Banda"] : ["Survival", "Progress", "Trading", "Warband"];
   return <>
-    <section aria-label="Post-battle phase"><p role="status">{locale === "es" ? "Post-batalla" : "Post-battle"} #{post.battle_number} · {step + 1}/8 · {labels[step]}</p>{step < 7 && <button className="primary" type="button" onClick={next}>{locale === "es" ? `Continuar a ${labels[step + 1]}` : `Continue to ${labels[step + 1]}`}</button>}</section>
+    <section className="post-battle-sequence" aria-label="Post-battle phase"><header><div><span>{locale === "es" ? `PASO ${step + 1} DE 8` : `STEP ${step + 1} OF 8`}</span><h2>{labels[step]}</h2></div><b>{locale === "es" ? `${7-step} ACCIONES RESTANTES` : `${7-step} ACTIONS REMAIN`}</b></header><div className="post-battle-chapters">{chapters.map((chapter,index)=><div key={chapter}><strong>{chapter}</strong>{labels.slice(index*2,index*2+2).map((label,offset)=>{const position=index*2+offset;return <button key={label} className={position===step ? "active" : position<step ? "complete" : ""} disabled={position!==step}>{position<step ? "✓ " : ""}{label}</button>;})}</div>)}</div>{step < 7 && <button className="primary" type="button" onClick={next}>{locale === "es" ? `Continuar a ${labels[step + 1]}` : `Continue to ${labels[step + 1]}`}</button>}</section>
     {step === 0 && <>{knowledge && <PostBattleInjuries document={document} knowledge={knowledge} locale={locale} />}<InjuriesPanel document={document} knowledge={knowledge} /><FollowUpAcknowledgements document={document} locale={locale} /></>}
     {step === 1 && <>{knowledge && <PostBattleExperience document={document} knowledge={knowledge} locale={locale} />}{knowledge && <ManualSkillPanel document={document} knowledge={knowledge} locale={locale} />}<FollowUpAcknowledgements document={document} locale={locale} /></>}
     {step === 2 && <>{knowledge && <ExplorationPanel document={document} knowledge={knowledge} locale={locale} />}{knowledge && <ScenarioFollowupsPanel document={document} knowledge={knowledge} locale={locale} />}<FollowUpAcknowledgements document={document} locale={locale} /></>}
@@ -71,15 +86,22 @@ export function CampaignSlice({ knowledge, locale = "en" }: { knowledge?: Artefa
   const currentState = selected === `state:${doc.campaign.current_state_number}`;
   const selectedState = doc.campaign.states.find((state) => state.number === battleNumber);
   const stateDocument = selectedState ? { ...doc, campaign: { ...doc.campaign, warriors: selectedState.roster ?? [], inventory: selectedState.inventory ?? [] } } : doc;
+  const variants = mercenaryVariantsForBand(doc.campaign.identity.band_id);
   return <section aria-label="Campaign">
     {app.error && <output className="global-error" role="alert">{app.error} <button onClick={app.clearError}>{locale === "es" ? "Cerrar" : "Dismiss"}</button></output>}
     {app.dirty && <output className="dirty" role="status">{locale === "es" ? "Cambios sin exportar" : "Unsaved changes"}</output>}
-    {doc.campaign.configuration.is_draft && knowledge ? <DraftWorkspace document={doc} knowledge={knowledge} locale={locale} /> : <div className="campaign-layout">
+    {variants.length > 0 && <label className="variant-selector">{locale === "es" ? "VARIANTE DE MERCENARIOS" : "MERCENARY VARIANT"}<select value={doc.campaign.identity.mercenary_variant??""} onChange={(event)=>void app.runAction("setMercenaryVariant",{variant:event.target.value||null})}><option value="">—</option>{variants.map((variant)=><option key={variant} value={variant}>{variant}</option>)}</select></label>}
+    <div className="campaign-layout">
       <TimelinePanel document={doc} onSelect={app.selectMoment} locale={locale} />
       <div className="moment-detail">
-        {selected.startsWith("state:") && <><RosterOverview document={doc} stateNumber={battleNumber} editable={currentState} locale={locale} /><EquipmentPanel document={stateDocument} readOnly={!currentState} locale={locale} />{currentState && <BattlePanel document={doc} knowledge={knowledge} locale={locale} />}</>}
-        {selected.startsWith("battle:") && <BattleHistory battle={battle} locale={locale} />}
-        {selected.startsWith("post:") && (selectedPost?.complete ? <PostBattleHistory document={doc} battleNumber={battleNumber} locale={locale} /> : <PostBattleWorkspace document={doc} knowledge={knowledge} locale={locale} />)}
-      </div></div>}
+        {doc.campaign.configuration.is_draft && knowledge
+          ? <DraftWorkspace document={doc} knowledge={knowledge} locale={locale} />
+          : <>
+            {selected.startsWith("state:") && <StateWorkspace document={doc} stateDocument={stateDocument} stateNumber={battleNumber} editable={currentState} locale={locale} knowledge={knowledge} />}
+            {selected.startsWith("battle:") && <BattleHistory battle={battle} locale={locale} />}
+            {selected.startsWith("post:") && (selectedPost?.complete ? <PostBattleHistory document={doc} battleNumber={battleNumber} locale={locale} /> : <PostBattleWorkspace document={doc} knowledge={knowledge} locale={locale} />)}
+          </>}
+      </div>
+    </div>
   </section>;
 }

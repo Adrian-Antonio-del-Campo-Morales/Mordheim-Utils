@@ -80,8 +80,7 @@ describe("ProductApp session removal", () => {
     );
     fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
     fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.change(screen.getByLabelText("Nombre de banda"), { target: { value: "Banda de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "Crear borrador" }));
+    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
     await screen.findByText("Campaign workspace");
 
     const input = container.querySelector<HTMLInputElement>('input[type="file"]')!;
@@ -111,8 +110,7 @@ describe("ProductApp session removal", () => {
     );
     fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
     fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.change(screen.getByLabelText("Nombre de banda"), { target: { value: "Banda de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "Crear borrador" }));
+    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
     await screen.findByText("Campaign workspace");
 
     const input = container.querySelector<HTMLInputElement>('input[type="file"]')!;
@@ -121,7 +119,7 @@ describe("ProductApp session removal", () => {
     fireEvent.change(input, { target: { files: [file] } });
     await waitFor(() => expect(importCampaign).toHaveBeenCalledTimes(1));
 
-    fireEvent.click(screen.getByRole("button", { name: /MORDHEIM WARBAND MANAGER/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
     expect(screen.getByText("Banda de prueba")).toBeInTheDocument();
     const importedCard = screen.getByText("Banda importada").closest("article");
     expect(importedCard).toHaveClass("active");
@@ -140,8 +138,7 @@ describe("ProductApp session removal", () => {
     await waitFor(() => expect(screen.getAllByRole("button", { name: "Nueva campaña" })[0]).not.toBeDisabled());
     fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
     fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.change(screen.getByLabelText("Nombre de banda"), { target: { value: "Banda de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "Crear borrador" }));
+    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
     await screen.findByText("Campaign workspace");
 
     const input = container.querySelector<HTMLInputElement>('input[type="file"]')!;
@@ -150,7 +147,7 @@ describe("ProductApp session removal", () => {
       fireEvent.change(input, { target: { files: [file] } });
     }
     await waitFor(() => expect(updatedImport).toHaveBeenCalledWith({ text: "updated", confirm_replace: true }));
-    fireEvent.click(screen.getByRole("button", { name: /MORDHEIM WARBAND MANAGER/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
     expect(screen.getByText("Banda actualizada")).toBeInTheDocument();
   });
 
@@ -162,14 +159,13 @@ describe("ProductApp session removal", () => {
 
     fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
     fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.change(screen.getByLabelText("Nombre de banda"), { target: { value: "Banda de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "Crear borrador" }));
+    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
 
     expect(await screen.findByText("Campaign workspace")).toBeInTheDocument();
     const beforeUnload = new Event("beforeunload", { cancelable: true });
     expect(window.dispatchEvent(beforeUnload)).toBe(false);
 
-    fireEvent.click(screen.getByRole("button", { name: /MORDHEIM WARBAND MANAGER/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
     fireEvent.click(screen.getByRole("button", { name: "Retirar" }));
 
     expect(screen.getByRole("dialog", { name: "Cambios sin exportar" })).toHaveTextContent("Cambios sin exportar");
@@ -178,7 +174,7 @@ describe("ProductApp session removal", () => {
     fireEvent.click(screen.getByRole("button", { name: "Descartar" }));
 
     expect(screen.queryByText("Banda de prueba")).not.toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Campañas en esta sesión" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Campaña" })).toBeInTheDocument();
   });
 
   it("keeps an unexported session when removal is cancelled", async () => {
@@ -189,11 +185,10 @@ describe("ProductApp session removal", () => {
 
     fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
     fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.change(screen.getByLabelText("Nombre de banda"), { target: { value: "Banda de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "Crear borrador" }));
+    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
     await screen.findByText("Campaign workspace");
 
-    fireEvent.click(screen.getByRole("button", { name: /MORDHEIM WARBAND MANAGER/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
     fireEvent.click(screen.getByRole("button", { name: "Retirar" }));
     fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
 
@@ -210,15 +205,14 @@ describe("ProductApp session removal", () => {
 
     fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
     fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.change(screen.getByLabelText("Nombre de banda"), { target: { value: "Banda de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "Crear borrador" }));
+    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
     await screen.findByText("Campaign workspace");
 
-    fireEvent.click(screen.getByRole("button", { name: "Exportar .mordheim" }));
+    fireEvent.click(screen.getByRole("button", { name: "Guardar" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Export failed");
     expect(markExported).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole("button", { name: /MORDHEIM WARBAND MANAGER/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
     expect(screen.getByText("Banda de prueba")).toBeInTheDocument();
     expect(screen.getByText("Cambios sin exportar")).toBeInTheDocument();
   });
@@ -240,11 +234,10 @@ describe("ProductApp session removal", () => {
     );
     fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
     fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.change(screen.getByLabelText("Nombre de banda"), { target: { value: "Banda de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "Crear borrador" }));
+    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
     await screen.findByText("Campaign workspace");
 
-    fireEvent.click(screen.getByRole("button", { name: /MORDHEIM WARBAND MANAGER/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
     fireEvent.click(screen.getByRole("button", { name: "Retirar" }));
     fireEvent.click(screen.getByRole("button", { name: "Exportar y retirar" }));
 
@@ -262,11 +255,10 @@ describe("ProductApp session removal", () => {
 
     fireEvent.click(screen.getAllByRole("button", { name: "Nueva campaña" })[0]);
     fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Campaña de prueba" } });
-    fireEvent.change(screen.getByLabelText("Nombre de banda"), { target: { value: "Banda de prueba" } });
-    fireEvent.click(screen.getByRole("button", { name: "Crear borrador" }));
+    fireEvent.click(screen.getByRole("button", { name: "CREAR" }));
     await screen.findByText("Campaign workspace");
 
-    fireEvent.click(screen.getByRole("button", { name: /MORDHEIM WARBAND MANAGER/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
     fireEvent.click(screen.getByRole("button", { name: "Renombrar" }));
     fireEvent.change(screen.getByLabelText("Nombre de campaña"), { target: { value: "Renombrada" } });
     fireEvent.click(screen.getByRole("button", { name: "OK" }));

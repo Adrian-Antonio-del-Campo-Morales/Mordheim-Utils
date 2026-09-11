@@ -145,8 +145,8 @@ describe("P7.4 keyboard & announcement behaviour", () => {
   it("updates the import control name when the locale changes", async () => {
     render(<ProductApp />);
     fireEvent.click(screen.getByRole("button", { name: "Ajustes" }));
-    await waitFor(() => expect(screen.getByLabelText("Idioma")).toBeInTheDocument());
-    fireEvent.change(screen.getByLabelText("Idioma"), { target: { value: "en" } });
+    await waitFor(() => expect(screen.getByLabelText(/idioma/i)).toBeInTheDocument());
+    fireEvent.change(screen.getByLabelText(/idioma/i), { target: { value: "en" } });
     expect(screen.getByLabelText("Load .mordheim campaigns")).toBeInTheDocument();
   });
 

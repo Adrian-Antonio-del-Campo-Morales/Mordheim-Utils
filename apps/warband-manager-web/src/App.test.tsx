@@ -9,8 +9,12 @@ describe("App shell (P3.1)", () => {
   it("renders the empty shell without importing domain code", () => {
     render(<App />);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      "Tu banda a través del tiempo",
+      "Campaña",
     );
+    const navigation = screen.getByRole("navigation", { name: "Primary" });
+    expect(navigation).toContainElement(screen.getByRole("button", { name: "Campaña" }));
+    expect(navigation).toContainElement(screen.getByRole("button", { name: "Reglas" }));
+    expect(navigation).toContainElement(screen.getByRole("button", { name: "Ajustes" }));
   });
 
   it("navigates to settings from the primary navigation", async () => {
