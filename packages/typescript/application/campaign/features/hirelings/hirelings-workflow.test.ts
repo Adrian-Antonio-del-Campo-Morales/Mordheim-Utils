@@ -326,9 +326,7 @@ describe("P6.7 trading", () => {
     // Valuation honesty: owned × value enters the treasury accounting.
     expect(treasury(result.document.campaign)).toBe(goldBefore - 10);
     // Unaffordable purchases reject with the stable reason.
-    const armour = workflow.tradingOffers(document).find((o) => o.item_id === "gromril_armor");
-    if (!armour) throw new Error("armour offer missing");
-    const broke = workflow.buy(document, armour, 1000);
+    const broke = workflow.buy(document, axe, 1000);
     expect(broke.ok).toBe(false);
     if (!broke.ok) expect(broke.message).toContain("Not enough gold");
   });

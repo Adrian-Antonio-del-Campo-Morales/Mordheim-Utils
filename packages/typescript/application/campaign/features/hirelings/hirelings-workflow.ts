@@ -1,5 +1,5 @@
 /**
- * P6.7 (web-migration-parallel-plan.md §7): hirelings, exploration, searches
+ * Web migration hirelings workflow: hirelings, exploration, searches
  * and trading — the application feature block.
  *
  * Scope, mirroring the desktop surfaces this block ports:
@@ -31,6 +31,8 @@ import type {
   UseCaseResult,
 } from "../../../../domain/campaign/index";
 import type { CampaignUseCases } from "../../../../domain/campaign/index";
+import type { WarbandHireContext } from "../../../../domain/campaign/hire-eligibility";
+import { dynamicRulesForProfile, evaluateRule } from "../../../../domain/campaign/hire-eligibility";
 import type { ArtefactRow } from "../../../../adapters/knowledge-reader/artefact-types";
 
 /** What a listing-capable knowledge source provides (P4.3 adapter, or a fake). */
@@ -59,6 +61,8 @@ export interface HirelingOfferRow {
   readonly eligible: boolean;
   /** Why not eligible: human-readable, actionable. */
   readonly ineligible_reason: string | null;
+  /** Conditional hire: minimum D6 acceptance roll (desktop `roll_ge`), else null. */
+  readonly roll_ge: number | null;
 }
 
 export interface ExplorationDiceRow {
@@ -167,6 +171,19 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
     const entries = listings.campaignRows(section);
     const groups = listings.campaignRows("warband_groups");
     const bandGroups = groupIdsOf(groups, campaign.identity.band_id);
+    // Dynamic eligibility context (desktop hire-eligibility engine): the KB
+    // trait registry plus the warband roster drive conditional/rejected verdicts.
+    const hirelingSection = listings.campaignSection("hirelings");
+    const profiles = Array.isArray(hirelingSection["profiles"]) ? hirelingSection["profiles"] as readonly { id: string; rule_ids?: readonly string[]; rules?: readonly { id: string }[] }[] : [];
+    const traitsRaw = (hirelingSection["traits"] ?? {}) as Record<string, readonly string[]>;
+    const hireContext: WarbandHireContext = {
+      band_id: campaign.identity.band_id,
+      band_groups: bandGroups,
+      member_profile_ids: new Set(campaign.warriors.filter((w) => w.kind !== "hireling" && w.profile_id).map((w) => String(w.profile_id))),
+      hired_sword_profile_ids: new Set(campaign.warriors.filter((w) => w.kind === "hireling" && w.profile_id).map((w) => String(w.profile_id))),
+      variant: campaign.identity.mercenary_variant ?? null,
+      hireling_traits: new Map(Object.entries(traitsRaw).map(([id, list]) => [id, new Set(list)])),
+    };
     const rows: HirelingOfferRow[] = [];
     for (const entry of entries) {
       const profileId = typeof entry["profile_id"] === "string" ? entry["profile_id"] : null;
@@ -182,6 +199,10 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
       void profileResult;
       const rating = profileRating(profileId);
       const verdict = staticAllows(entry["eligibility"] as EligibilityBlock | undefined, campaign.identity.band_id, bandGroups);
+      const decisions = dynamicRulesForProfile(profileId, profiles).map((ruleId) => evaluateRule(ruleId, hireContext));
+      const blocked = decisions.find((decision) => decision.kind === "rejected" || decision.kind === "needs_variant");
+      const conditional = decisions.find((decision) => decision.kind === "conditional");
+      const eligible = verdict.allowed && !blocked;
       rows.push({
         profile_id: profileId,
         offer_id: typeof entry["id"] === "string" ? entry["id"] : profileId,
@@ -194,12 +215,15 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
         upkeep_resources: resourceCosts(upkeepResources),
         upkeep,
         rating,
-        eligible: verdict.allowed,
-        ineligible_reason: verdict.allowed
-          ? null
-          : verdict.conditional
-            ? "Eligibility depends on a dynamic campaign rule (resolve it in the desktop or record the outcome manually)."
-            : `Not available to ${campaign.identity.warband_name || campaign.identity.band_id}: band or warband group excluded.`,
+        eligible,
+        roll_ge: conditional?.roll_ge ?? null,
+        ineligible_reason: blocked
+          ? blocked.reason
+          : eligible
+            ? null
+            : verdict.conditional
+              ? "Eligibility depends on a dynamic campaign rule (resolve it in the desktop or record the outcome manually)."
+              : `Not available to ${campaign.identity.warband_name || campaign.identity.band_id}: band or warband group excluded.`,
       });
     }
     return rows;
@@ -236,10 +260,17 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
       document: CampaignDocument,
       offer: HirelingOfferRow,
       nonGoldUpkeep: readonly (readonly [IdString, number])[] = [],
+      options: { acceptanceRoll?: number; feeRoll?: number } = {},
     ): { ok: true; document: CampaignDocument } | HirelingsWorkflowError {
       const input = {
         profile_id: offer.profile_id,
         ...(offer.fee !== null ? { fee: offer.fee } : {}),
+        ...(offer.fee_dice
+          ? { fee_base: offer.fee_base, fee_dice: offer.fee_dice, ...(options.feeRoll !== undefined ? { fee_roll: options.feeRoll } : {}) }
+          : {}),
+        ...(offer.roll_ge !== null
+          ? { roll_ge: offer.roll_ge, ...(options.acceptanceRoll !== undefined ? { acceptance_roll: options.acceptanceRoll } : {}) }
+          : {}),
         ...(nonGoldUpkeep.length > 0 ? { upkeep_resources: nonGoldUpkeep } : {}),
       };
       return fromUseCase(useCases.hireHireling(document, input, listingsReader(deps.listings)));

@@ -1,5 +1,5 @@
 /**
- * P7.2 (web-migration-parallel-plan.md §P7.2): the corrupt corpus driven
+ * Web migration malformed-corpus matrix: the corrupt corpus driven
  * through the real TS file adapter. Every corpus file must be rejected with
  * the exact stable reason recorded in the manifest — the same manifest the
  * Python harness asserts against, so both implementations stay in lockstep.

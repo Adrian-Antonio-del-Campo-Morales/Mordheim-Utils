@@ -313,7 +313,7 @@ describe("P3.5 recordBattle and post-battle navigation", () => {
     if (next.ok) expect(next.state.campaign.battles[1].number).toBe(2);
   });
 
-  it("rejects drafts, unknown scenarios and unknown warriors with stable reasons", () => {
+  it("rejects drafts and unknown scenarios with stable reasons", () => {
     const knowledge = makeKnowledgeOf();
     const draft = createDraft("sisters-of-sigmar", knowledge);
     if (!draft.ok) throw new Error("draft should be legal");
@@ -333,13 +333,13 @@ describe("P3.5 recordBattle and post-battle navigation", () => {
     );
     if (badScenario.ok) throw new Error("unknown scenario must reject");
     expect(badScenario.reason).toBe("not_found");
-    const badWarrior = useCases.recordBattle(
+    const unknownWarrior = useCases.recordBattle(
       document,
       { scenario: "skirmish", opponent: "X", result: "win", gold_delta: 0, wyrdstone: 0, xp_delta: 0, casualties: 0, out_of_action_ids: ["ghost#1"] },
       knowledge,
     );
-    if (badWarrior.ok) throw new Error("unknown warrior must reject");
-    expect(badWarrior.reason).toBe("not_found");
+    expect(unknownWarrior.ok).toBe(true);
+    if (unknownWarrior.ok) expect(unknownWarrior.state.campaign.battles[0].out_of_action_ids).toEqual(["ghost#1"]);
   });
 });
 

@@ -6,10 +6,10 @@
  * error seam.
  */
 import { describe, expect, it, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 
-import { CampaignSlice } from "./CampaignSlice";
+import { ProductApp } from "../../ProductApp";
 
 /** Artefact subset big enough to prove real ids resolve (sisters band). */
 const artefact = {
@@ -43,38 +43,53 @@ function stubFetchWith(body: unknown, status = 200): void {
   );
 }
 
-describe("P5.2 acceptance — real KB upgrade", () => {
-  it("fetches the artefact URL and stops showing the loading state", async () => {
+describe("P5.2 acceptance — real KB loading", () => {
+  it("fetches the artefact URL and enables the shell", async () => {
     stubFetchWith(artefact);
-    render(<CampaignSlice />);
-    // The loading status appears first, then clears once the reader lands.
-    expect(screen.getByRole("status", { name: undefined })).toBeDefined();
-    await waitFor(() => {
-      expect(screen.queryByText("Loading knowledge base…")).toBeNull();
-    });
-    // No degraded-KB notice on success.
-    expect(screen.queryByText(/Knowledge base failed to load/)).toBeNull();
+    render(<ProductApp />);
+    await waitFor(() =>
+      expect(screen.getAllByRole("button", { name: "Nueva campaña" })[0].hasAttribute("disabled")).toBe(false),
+    );
+    expect(fetch).toHaveBeenCalledWith("knowledge/knowledge-web.json");
+    expect(screen.queryByRole("alert")).toBeNull();
   });
 
-  it("degrades to sample data with a status notice when the fetch fails", async () => {
+  it("announces a network error instead of silently using sample data", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(() => Promise.reject(new TypeError("offline"))),
     );
-    render(<CampaignSlice />);
+    render(<ProductApp />);
     await waitFor(() => {
-      expect(screen.getByText(/Knowledge base failed to load/)).toBeInTheDocument();
+      expect(screen.getByRole("alert")).toHaveTextContent("No se pudo cargar la base de conocimiento.");
     });
-    // The notice is a status, NOT a user-action alert seam entry.
-    expect(screen.queryByRole("alert")).toBeNull();
+    expect(screen.getByRole("alert")).toHaveTextContent("offline");
   });
 
-  it("shows the degraded notice for an HTTP failure too", async () => {
+  it("announces an HTTP failure", async () => {
     stubFetchWith({ error: "nope" }, 404);
-    render(<CampaignSlice />);
+    render(<ProductApp />);
     await waitFor(() => {
-      expect(screen.getByText(/Knowledge base failed to load/)).toBeInTheDocument();
+      expect(screen.getByRole("alert")).toHaveTextContent("No se pudo cargar la base de conocimiento.");
     });
-    expect(screen.getByText(/HTTP 404/)).toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent("HTTP 404");
+  });
+
+  it("retries a transient KB failure and restores the shell", async () => {
+    let attempts = 0;
+    vi.stubGlobal("fetch", vi.fn(() => {
+      attempts += 1;
+      return attempts === 1
+        ? Promise.reject(new TypeError("offline"))
+        : Promise.resolve(new Response(JSON.stringify(artefact), { status: 200, headers: { "content-type": "application/json" } }));
+    }));
+    render(<ProductApp />);
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent("offline");
+    fireEvent.click(screen.getByRole("button", { name: "Reintentar" }));
+    await waitFor(() =>
+      expect(screen.getAllByRole("button", { name: "Nueva campaña" })[0].hasAttribute("disabled")).toBe(false),
+    );
+    expect(screen.queryByRole("alert")).toBeNull();
   });
 });

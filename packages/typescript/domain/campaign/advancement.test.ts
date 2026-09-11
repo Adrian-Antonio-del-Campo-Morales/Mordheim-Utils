@@ -12,9 +12,9 @@
  * same behavioural guarantees: deterministic resolution, rejection without
  * mutation, round-trip stability.
  *
- * #TODO(web): the full desktop advance-dice table (2D6 roll → table choice)
- * is a post-battle-engine concern; the kernel currently models the decision
- * step only. These tests pin the kernel contract that exists today.
+ * The full desktop advance-dice table (2D6 roll → table choice) is
+ * implemented by the application `resolveAdvanceRoll`; the kernel models the
+ * decision step only. These tests pin the kernel contract.
  */
 
 import { describe, expect, it } from "vitest";
@@ -55,6 +55,7 @@ function makeDocument(): CampaignDocument {
           stats: { WS: 4 },
           equipment: [],
           skills: ["Weapons Training"],
+          learned_skills: [],
           experience: 0,
           quantity: 1,
           cost: 70,
@@ -88,15 +89,14 @@ function makeDocument(): CampaignDocument {
 describe("advancement thresholds (desktop matrix constants)", () => {
   it("hero and henchman thresholds come from the kernel tables", () => {
     // Desktop KB: hero [20,40,65,...], henchman [8,16,25,35,...]. The kernel
-    // models the per-threshold advance count with the canonical Mordheim
-    // ladder; both sides derive advances deterministically from XP.
-    expect(ADVANCE_THRESHOLDS.length).toBe(10);
-    expect(advancesForExperience(0)).toBe(0);
-    expect(advancesForExperience(ADVANCE_THRESHOLDS[0] - 1)).toBe(0);
-    expect(advancesForExperience(ADVANCE_THRESHOLDS[0])).toBe(1);
-    expect(advancesForExperience(ADVANCE_THRESHOLDS[2] - 1)).toBe(2);
-    expect(advancesForExperience(ADVANCE_THRESHOLDS[ADVANCE_THRESHOLDS.length - 1])).toBe(
-      ADVANCE_THRESHOLDS.length,
+    expect(ADVANCE_THRESHOLDS.hero.length).toBe(10);
+    expect(ADVANCE_THRESHOLDS.henchman.length).toBe(9);
+    expect(advancesForExperience(0, "hero")).toBe(0);
+    expect(advancesForExperience(ADVANCE_THRESHOLDS.hero[0] - 1, "hero")).toBe(0);
+    expect(advancesForExperience(ADVANCE_THRESHOLDS.hero[0], "hero")).toBe(1);
+    expect(advancesForExperience(ADVANCE_THRESHOLDS.henchman[2] - 1, "henchman")).toBe(2);
+    expect(advancesForExperience(ADVANCE_THRESHOLDS.henchman.at(-1)!, "henchman")).toBe(
+      ADVANCE_THRESHOLDS.henchman.length,
     );
   });
 
@@ -105,8 +105,8 @@ describe("advancement thresholds (desktop matrix constants)", () => {
     // pending advances. Kernel equivalent: advancesForExperience is a pure
     // function of total XP — same XP, same count, no accumulation drift.
     const xp = 12;
-    expect(advancesForExperience(xp)).toBe(advancesForExperience(xp));
-    expect(advancesForExperience(xp)).toBe(ADVANCE_THRESHOLDS.filter((t) => xp >= t).length);
+    expect(advancesForExperience(xp, "henchman")).toBe(advancesForExperience(xp, "henchman"));
+    expect(advancesForExperience(xp, "henchman")).toBe(ADVANCE_THRESHOLDS.henchman.filter((t) => xp >= t).length);
   });
 });
 
@@ -117,7 +117,7 @@ describe("advance decisions (desktop choice validation)", () => {
       campaign: {
         ...document.campaign,
         warriors: document.campaign.warriors.map((w) =>
-          w.id === "matriarch" ? { ...w, experience: 10 } : w,
+          w.id === "matriarch" ? { ...w, experience: 20 } : w,
         ),
       },
       view: document.view,
@@ -139,7 +139,7 @@ describe("advance decisions (desktop choice validation)", () => {
       campaign: {
         ...document.campaign,
         warriors: document.campaign.warriors.map((w) =>
-          w.id === "matriarch" ? { ...w, experience: 10 } : w,
+          w.id === "matriarch" ? { ...w, experience: 20 } : w,
         ),
       },
       view: document.view,
@@ -152,7 +152,7 @@ describe("advance decisions (desktop choice validation)", () => {
     // Desktop: same skill twice is rejected ("already knows").
     const duplicate = applyAdvance(first.state, { warrior_id: "matriarch", choice: "skill:Iron Will" });
     expect(duplicate.ok).toBe(false);
-    if (!duplicate.ok) expect(duplicate.reason).toBe("conflict");
+    if (!duplicate.ok) expect(duplicate.reason).toBe("prerequisite_missing");
   });
 
   it("a choice the resolved advance does not offer is rejected without mutation", () => {
@@ -215,8 +215,9 @@ describe("promotion preserves equipment (desktop promotion matrix)", () => {
     // quantity on both the promoted hero and the remaining group. The kernel
     // applyAdvance does not promote (post-battle engine concern) — the
     // invariant pinned here is that the equipment rows are structural values
-    // copied per-model, verified on the fixture itself. #TODO(web): port the
-    // promotion split once the post-battle engine lands in the kernel.
+    // copied per-model, verified on the fixture itself. Promotion splits are
+    // implemented by the application
+    // `advance-resolution-workflow.promoteHenchman`.
     const group = makeDocument().campaign.warriors.find((w) => w.id === "novices");
     expect(group?.equipment[0].quantity).toBe(4); // 2 models × 2 copies
     expect(group?.equipment[0].per_model).toBe(true);

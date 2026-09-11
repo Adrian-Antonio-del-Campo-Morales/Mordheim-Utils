@@ -1,5 +1,5 @@
 /**
- * P3.4 (web-migration-parallel-plan.md §4): frozen public use-case surface.
+ * Web migration public campaign use cases: frozen public use-case surface.
  * Operations return explicit results — rejected operations are values, not
  * thrown exceptions — so the application layer (P5.1) presents them without
  * try/catch discipline, and parallel feature blocks (P6.x) share one calling
@@ -13,6 +13,7 @@ import type {
   CampaignDocument,
   IdString,
   MomentSelection,
+  OpenPayload,
 } from "./state";
 import type { KnowledgeReader } from "./ports";
 
@@ -76,7 +77,7 @@ export interface RecordBattleInput {
 export interface AdvanceChoiceInput {
   readonly warrior_id: IdString;
   /** Which advance table/roll the player picks. */
-  readonly table: string;
+  readonly table?: string;
   readonly choice: string;
 }
 
@@ -144,6 +145,7 @@ export type {
   IdString,
   InventoryItem,
   MomentSelection,
+  OpenPayload,
   PostBattle,
   Warrior,
 } from "./state";

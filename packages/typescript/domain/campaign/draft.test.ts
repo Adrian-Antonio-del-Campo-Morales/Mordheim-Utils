@@ -159,19 +159,14 @@ describe("desktop test_draft.py → web draft parity", () => {
     });
     expect(batch.ok).toBe(true);
     if (!batch.ok) return;
-    // 5th hero fits; a 6th is a typed limit_reached.
-    const fits = useCases.composeDraft(batch.state, {
+    // The profile itself is capped at three Sisters Superior, so the fourth
+    // is rejected during composition (as in the desktop controller).
+    const overProfileLimit = useCases.composeDraft(batch.state, {
       band_id: "sisters-of-sigmar",
       rows: [{ profile_id: "sister-superior", kind: "hero", quantity: 1, equipment: [] }],
     });
-    expect(fits.ok).toBe(true);
-    if (!fits.ok) return;
-    const overLimit = useCases.composeDraft(fits.state, {
-      band_id: "sisters-of-sigmar",
-      rows: [{ profile_id: "sister-superior", kind: "hero", quantity: 1, equipment: [] }],
-    });
-    expect(overLimit.ok).toBe(false);
-    if (!overLimit.ok) expect(overLimit.reason).toBe("limit_reached");
+    expect(overProfileLimit.ok).toBe(false);
+    if (!overProfileLimit.ok) expect(overProfileLimit.reason).toBe("limit_reached");
     // A second augur row: the web kernel counts hero *rows* (quantity per
     // row) against hero_limit; the per-member cap of 1 lives in the roster
     // (desktop enforces "maximum 1 augur" at controller level). The web
@@ -193,24 +188,13 @@ describe("desktop test_draft.py → web draft parity", () => {
   it("henchmen groups respect group-size limits", () => {
     const knowledge = makeKnowledge();
     const useCases = createDefaultUseCases(knowledge);
-    // Desktop: quantity 6 rejected ("at most 5"), 5 accepted. The web kernel
-    // guards at commit; a 6-model group of sigmarite-sisters busts the
-    // group-size cap of 5.
+    // Desktop: quantity 6 is rejected ("at most 5") during addition.
     const oversize = useCases.composeDraft(starterDraft(), {
       band_id: "sisters-of-sigmar",
       rows: [{ profile_id: "sigmarite-sister", kind: "henchman", quantity: 6, equipment: [] }],
     });
-    expect(oversize.ok).toBe(true); // composition accepts the row quantity...
-    // ...but committing is refused: the group exceeds its size cap via the
-    // maximum-models arithmetic? No — group caps live in the roster; the
-    // web kernel expresses the guard as the model-count limit. Desktop's
-    // "at most 5" maps to quantity <= group cap at commit time; here the
-    // closest web equivalent is that a 6-row still passes compose but the
-    // committed warband must stay within maximum_models. Assert the draft
-    // stays legal only when quantities respect the cap.
-    if (oversize.ok) {
-      expect(oversize.state.campaign.warriors.find((w) => w.profile_id === "sigmarite-sister")?.quantity).toBe(6);
-    }
+    expect(oversize.ok).toBe(false);
+    if (!oversize.ok) expect(oversize.reason).toBe("limit_violated");
     const legal = useCases.composeDraft(starterDraft(), {
       band_id: "sisters-of-sigmar",
       rows: [{ profile_id: "sigmarite-sister", kind: "henchman", quantity: 5, equipment: [] }],

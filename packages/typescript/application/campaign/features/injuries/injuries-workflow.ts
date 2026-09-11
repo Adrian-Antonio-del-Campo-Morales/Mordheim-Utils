@@ -1,5 +1,5 @@
 /**
- * P6.5 (web-migration-parallel-plan.md §7): injuries & recovery feature —
+ * Web migration injuries workflow: injuries & recovery feature —
  * application-layer rules over the immutable document helpers of the P3.5
  * kernel (`withCampaign`, `pendingPostBattle`). The frozen use-case port has
  * no injury operation, so the transformations here are pure document maps —
@@ -239,7 +239,22 @@ export function applyInjuryOutcome(
   };
   let nextDocument: CampaignDocument = withCampaign(document, campaign);
 
-  if(removeWarrior) nextDocument=withCampaign(nextDocument,{...nextDocument.campaign,post_battles:nextDocument.campaign.post_battles.map((post)=>post.battle_number!==input.battle_number?post:{...post,pending_advances:(post.pending_advances??[]).filter((row)=>row["warrior_id"]!==warrior.id||row["committed"]),pending_follow_ups:(post.pending_follow_ups??[]).filter((row)=>row["warrior_id"]!==warrior.id),equipment_obligations:(post.equipment_obligations??[]).filter((row)=>row["warrior_id"]!==warrior.id),searches:Object.fromEntries(Object.entries(post.searches??{}).filter(([id])=>id!==warrior.id)}})});
+  if (removeWarrior) {
+    nextDocument = withCampaign(nextDocument, {
+      ...nextDocument.campaign,
+      post_battles: nextDocument.campaign.post_battles.map((post) =>
+        post.battle_number !== input.battle_number
+          ? post
+          : {
+              ...post,
+              pending_advances: (post.pending_advances ?? []).filter((row) => row["warrior_id"] !== warrior.id || row["committed"]),
+              pending_follow_ups: (post.pending_follow_ups ?? []).filter((row) => row["warrior_id"] !== warrior.id),
+              equipment_obligations: (post.equipment_obligations ?? []).filter((row) => row["warrior_id"] !== warrior.id),
+              searches: Object.fromEntries(Object.entries(post.searches ?? {}).filter(([id]) => id !== warrior.id)),
+            },
+      ),
+    });
+  }
   if(followUps.length){const pending=pendingPostBattle(nextDocument);if(!pending)return{ok:false,reason:"conflict",message:"There is no pending post-battle for this injury follow-up."};nextDocument=withCampaign(nextDocument,{...nextDocument.campaign,post_battles:nextDocument.campaign.post_battles.map((post)=>post===pending?{...post,pending_follow_ups:[...(post.pending_follow_ups??[]),...followUps]}:post)});}
   if (input.follow_up || uninterpreted.length > 0) {
     const parked = recordFollowUp(nextDocument, {

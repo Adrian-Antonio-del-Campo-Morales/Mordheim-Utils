@@ -1,5 +1,5 @@
 /**
- * P6.5 (web-migration-parallel-plan.md §P6.5): injuries & recovery UI.
+ * Web migration injuries surface: injuries & recovery UI.
  *
  * Renders the injuries read model (condition, missed games, pending rolls,
  * injury history per warrior) and dispatches through the campaign app

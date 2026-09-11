@@ -1,5 +1,5 @@
 /**
- * P6.7 (web-migration-parallel-plan.md §7): hirelings, exploration & trading —
+ * Web migration hirelings, exploration and trading: hirelings, exploration & trading —
  * kernel pieces the feature block needs beyond the P3.5 base.
  *
  * Trading rule (ported from the desktop `Controller.buy_draft_stash_item`,

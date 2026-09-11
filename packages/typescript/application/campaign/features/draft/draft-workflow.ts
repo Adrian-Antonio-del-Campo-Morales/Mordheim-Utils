@@ -1,5 +1,5 @@
 /**
- * P6.2 (web-migration-parallel-plan.md §7): draft & initial composition
+ * Web migration draft workflow: draft & initial composition
  * feature — application-layer orchestration over the P3.5 kernel use cases.
  *
  * Owns the *workflow* of building a warband draft:

@@ -1,5 +1,5 @@
 /**
- * P6.4 (web-migration-parallel-plan.md §7): battle recording feature —
+ * Web migration battle workflow: battle recording feature —
  * application-layer orchestration over the P3.5 kernel `recordBattle` and
  * `resolvePostBattleStep` use cases.
  *

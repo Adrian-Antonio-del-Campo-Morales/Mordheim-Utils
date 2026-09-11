@@ -5,7 +5,7 @@ import { resolveName } from "@adapters/knowledge-reader/index";
 import { DiceResolver } from "../dice/DiceResolver";
 import { useCampaignApp } from "../campaign/useCampaignApp";
 import type { CampaignDocument, IdString } from "../campaign/types";
-import { calculatedAwards, scenarioAwards, scenarioLootRewards, scenarioResourceRewards, type ScenarioLootReward } from "@app/features/battle/scenario-awards";
+import { calculatedAwards, scenarioAwards, scenarioLootRewards, scenarioResourceRewards, type ScenarioLootReward } from "@app/campaign/features/battle/scenario-awards";
 
 export interface BattlePanelProps {
   document: CampaignDocument;

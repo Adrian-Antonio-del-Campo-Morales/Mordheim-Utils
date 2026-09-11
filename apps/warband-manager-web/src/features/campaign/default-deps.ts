@@ -3,7 +3,7 @@
  *
  * Both ports are now **real**: the P3.2 v4 file adapter and the P4.3 KB
  * adapter (P5.2 final acceptance, per the KB bundling decision in
- * `docs/decisions/web-kb-bundling.md`). The artefact is a static asset under
+ * `docs/decisions/web-migration.md`). The artefact is a static asset under
  * `public/knowledge/knowledge-web.json` (staged by CI before the build,
  * gitignored in the repo) fetched once at startup.
  *

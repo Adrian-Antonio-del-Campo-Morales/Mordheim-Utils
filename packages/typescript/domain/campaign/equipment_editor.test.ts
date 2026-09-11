@@ -24,7 +24,6 @@
 import { describe, expect, it } from "vitest";
 
 import { assignEquipment } from "../../domain/campaign/kernel/equipment";
-import { cloneDocument } from "../../domain/campaign/kernel/document";
 import type { CampaignDocument } from "../../domain/campaign/kernel/usecases";
 import { CampaignFileV4Adapter } from "../../adapters/campaign-file/index";
 
@@ -100,7 +99,7 @@ describe("desktop test_equipment_editor.py → web assignEquipment parity", () =
     };
     const result = assignEquipment(emptied, { warrior_id: "marta", item_id: "herbs", quantity: 1, direction: "equip" });
     expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.reason).toBe("limit_violated");
+    if (!result.ok) expect(result.reason).toBe("conflict");
   });
 
   it("moves work without a pending post-battle", () => {

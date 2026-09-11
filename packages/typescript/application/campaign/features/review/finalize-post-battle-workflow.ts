@@ -1,5 +1,5 @@
 import type { CampaignDocument, TimelineState } from "../../../../domain/campaign/index";
-import { currentState, effectiveMaximumModels, experienceTotal, heroCount, memberCount, modelCount, rating, withCampaign } from "../../../../domain/campaign/kernel/document";
+import { currentState, effectiveMaximumModels, experienceTotal, heroCount, modelCount, rating, withCampaign } from "../../../../domain/campaign/kernel/document";
 import { followUpNeedsResolution } from "./follow-up-acknowledgement-workflow";
 
 type Result={ok:true;document:CampaignDocument}|{ok:false;message:string};

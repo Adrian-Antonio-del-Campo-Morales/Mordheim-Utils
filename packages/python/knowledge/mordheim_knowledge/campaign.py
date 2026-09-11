@@ -1,7 +1,7 @@
 """knowledge.campaign: runtime loaders for the published campaign catalogues.
 
-Implements the loading contract tracked as ``campaign.runtime-loaders`` in
-TODO.md section 5 (the ingestion that produced ``catalog/hirelings/**`` and
+Implements the loading contract of TODO.md section 5 (Campaign catalogue →
+runtime integration; the ingestion that produced ``catalog/hirelings/**`` and
 ``catalog/campaign/hired-swords-and-dramatis.yaml`` is documented in
 ``catalog/hirelings/README.md``).
 The KB campaign data under ``catalog/campaign/**`` is published and inert;

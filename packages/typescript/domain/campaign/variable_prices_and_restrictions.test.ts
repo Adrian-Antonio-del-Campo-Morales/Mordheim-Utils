@@ -6,11 +6,11 @@
  * Desktop semantics live in `post_battle_catalogue` + `post_battle_engine`
  * over the KB. The web read side is the real web KB artefact
  * (`campaign.trading-post`, `campaign.hired-swords-and-dramatis`); the write
- * side is the kernel `buyTradingItem` treasury guard. #TODO(web): the
- * engine-side guards (variable-price roll validation, weapon-upgrade
- * duplicate/forged-price rejection, heroes-only stash transfer) are part of
- * the post-battle engine port, not yet wired into the kernel use cases —
- * these tests pin the read side and the treasury guard that exists today.
+ * side is the kernel `buyTradingItem` treasury guard. The engine-side
+ * guards now exist: variable-price roll validation in the service's
+ * `buyTradingItem`, heroes-only transfer in `assignEquipment`, and
+ * weapon-upgrade duplicate/forged-price rejection in
+ * `application/campaign/features/economy/weapon-upgrade-workflow`.
  */
 
 import { readFileSync } from "node:fs";
@@ -93,9 +93,9 @@ describe("variable prices (desktop test_variable_prices_and_restrictions.py)", (
     // Desktop pins the engine rejecting a second upgrade on the same weapon.
     // The artefact-side invariant the rule reads: upgrade rows carry no flat
     // price, so a second application would need a fresh base record — the
-    // kernel's duplicate-id inventory rows make that detectable. #TODO(web):
-    // assert the full duplicate-upgrade rejection once the post-battle
-    // engine port lands in the kernel.
+    // kernel's duplicate-id inventory rows make that detectable. The full
+    // duplicate-upgrade rejection is asserted in
+    // weapon-upgrade-workflow.test.ts.
     const upgrade = ITEMS.find((x) => x.price?.multiplier !== undefined);
     expect(upgrade?.item_id).toBeDefined();
     expect(upgrade?.price?.base_gc).toBeUndefined();

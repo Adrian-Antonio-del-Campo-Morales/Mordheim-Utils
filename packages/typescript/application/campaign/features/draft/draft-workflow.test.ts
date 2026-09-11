@@ -225,7 +225,7 @@ describe("P6.2 draft creation and composition", () => {
     if (!overGold.ok) expect(overGold.message).toContain("gold");
   });
 
-  it("removes a purchased row and frees its equipment back to the stash", () => {
+  it("removes a purchased row and refunds its equipment", () => {
     const { workflow } = makeWorkflow();
     const started = workflow.startDraft("sisters-of-sigmar");
     if (!started.ok) throw new Error("start should succeed");
@@ -242,10 +242,9 @@ describe("P6.2 draft creation and composition", () => {
     expect(removed.ok).toBe(true);
     if (!removed.ok) return;
     expect(removed.document.campaign.warriors.some((w) => w.profile_id === "sister-superior")).toBe(false);
-    // The shield (purchased for this row) is back in the stash.
+    // Desktop refunds creation purchases; they do not become stash stock.
     const shield = removed.document.campaign.inventory.find((item) => item.id === "shield");
-    expect(shield?.stash).toBe(1);
-    expect(shield?.equipped).toBe(0);
+    expect(shield).toBeUndefined();
   });
 
   it("protects the last hero of a draft", () => {

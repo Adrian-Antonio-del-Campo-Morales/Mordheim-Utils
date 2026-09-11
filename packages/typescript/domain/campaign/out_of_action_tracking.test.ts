@@ -159,12 +159,11 @@ describe("desktop test_out_of_action_tracking.py → web recordBattle parity", (
     expect(legacyDocument.campaign.warriors.map((w) => w.id)).toEqual(["marta", "novices", "anna"]);
   });
 
-  it("unknown ids are rejected, not silently filtered", () => {
-    // Desktop's dialog filter ignores unknown ids post-hoc; the web kernel
-    // is stricter at the boundary: recordBattle rejects them (typed value).
-    const result = record(makeDocument(), ["marta", "ghost"]);
-    expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.reason).toBe("not_found");
+  it("preserves unknown ids for the UI-side post-hoc filter", () => {
+    const document = settledAndRecorded(["marta", "ghost"]);
+    const battle = document.campaign.battles.at(-1)!;
+    expect(battle.out_of_action_ids).toEqual(["marta", "ghost"]);
+    expect(battle.casualties).toBe(2);
   });
 
   it("out of action ids survive save/load (v4 round-trip)", () => {
@@ -181,12 +180,9 @@ describe("desktop test_out_of_action_tracking.py → web recordBattle parity", (
     expect(battle.casualties).toBe(1);
   });
 
-  it("stored ids match the roster warriors (filter preconditions)", () => {
-    const document = settledAndRecorded(["marta", "novices"]);
+  it("keeps duplicate group ids verbatim for the UI-side filter", () => {
+    const document = settledAndRecorded(["marta", "novices", "novices"]);
     const battle = document.campaign.battles.at(-1)!;
-    const known = new Set(document.campaign.warriors.map((w) => w.id));
-    for (const id of battle.out_of_action_ids ?? []) {
-      expect(known.has(id)).toBe(true);
-    }
+    expect(battle.out_of_action_ids).toEqual(["marta", "novices", "novices"]);
   });
 });

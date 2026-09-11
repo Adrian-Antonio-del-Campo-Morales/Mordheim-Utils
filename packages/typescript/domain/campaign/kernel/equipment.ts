@@ -21,7 +21,6 @@ import type {
 } from "./usecases";
 import { rejected } from "./rejections";
 import { findInventoryItem, findWarrior, treasury, withCampaign } from "./document";
-import { addStock, copyCosts, removeStockRefund, stashAcquisitionCosts } from "./acquisition-costs";
 
 export interface DraftEquipmentPurchaseInput {
   readonly warrior_id: IdString;
@@ -45,6 +44,12 @@ export interface DraftStashPurchaseInput {
 export interface DraftStashRemovalInput {
   readonly item_id: IdString;
   readonly quantity: number;
+}
+
+export interface DraftWeaponUpgradeInput {
+  readonly item_id: IdString;
+  readonly base_item_id: IdString;
+  readonly unit_price?: number;
 }
 
 export interface AssignEquipmentInput {
@@ -103,15 +108,11 @@ export function assignEquipment(
   if (!warrior) {
     return rejected("not_found", `Unknown warrior id: ${input.warrior_id}.`);
   }
-  // Withdrawals validate the warrior's own entry first: a fixed (profile)
-  // entry is not transferable even when the inventory has no matching row.
   if (input.direction === "stash") {
-    const targetEntry = warrior.equipment.find((e) => e.item_id === input.item_id);
-    if (targetEntry && targetEntry.acquisition === "fixed") {
-      return rejected(
-        "limit_violated",
-        `"${input.item_id}" is fixed equipment of ${warrior.name} and cannot be moved.`,
-      );
+    const transferable = warrior.equipment.find((entry) => entry.item_id === input.item_id && entry.acquisition !== "fixed");
+    const fixed = warrior.equipment.find((entry) => entry.item_id === input.item_id && entry.acquisition === "fixed");
+    if (!transferable && fixed) {
+      return rejected("limit_violated", `"${input.item_id}" is fixed equipment of ${warrior.name} and cannot be moved.`);
     }
   }
   const item = findInventoryItem(document, input.item_id);
@@ -227,7 +228,7 @@ export function buyDraftEquipment(
   }
   const listedPrice = offer["cost"];
   const price = typeof listedPrice === "number" ? listedPrice : input.unit_price;
-  if (!Number.isInteger(price) || price < 0) {
+  if (typeof price !== "number" || !Number.isInteger(price) || price < 0) {
     return rejected("invalid_input", "Resolve a valid creation price before buying this item.");
   }
   const item = knowledge.queryKnowledge({ id: { kind: "item_id", value: input.item_id } });
@@ -295,7 +296,7 @@ export function buyDraftStashItem(
   const offer = access.filter((row) => row["item_id"] === input.item_id).sort((left, right) => Number(left["cost"] ?? Infinity) - Number(right["cost"] ?? Infinity))[0];
   if (!offer) return rejected("not_available", "This warband cannot buy that item during creation.");
   const price = typeof offer["cost"] === "number" ? offer["cost"] : input.unit_price;
-  if (!Number.isInteger(price) || price < 0) return rejected("invalid_input", "Resolve a valid creation price before buying this item.");
+  if (typeof price !== "number" || !Number.isInteger(price) || price < 0) return rejected("invalid_input", "Resolve a valid creation price before buying this item.");
   const total = price * input.quantity;
   if (total > treasury(document.campaign)) return rejected("limit_violated", `Not enough gold: ${total} gc needed, ${treasury(document.campaign)} gc available.`);
   const item = knowledge.queryKnowledge({ id: { kind: "item_id", value: input.item_id } });
@@ -322,4 +323,31 @@ export function removeDraftStashItem(document: CampaignDocument, input: DraftSta
     .map((entry) => entry.id === input.item_id ? { ...entry, owned: entry.owned - input.quantity, stash: entry.stash - input.quantity, acquisition_costs: ledger } : entry)
     .filter((entry) => entry.owned > 0);
   return { ok: true, state: withCampaign(document, { ...document.campaign, inventory }) };
+}
+
+/** Desktop creation upgrade: replace one stashed weapon and retain its exact cost. */
+export function buyDraftWeaponUpgrade(document: CampaignDocument, input: DraftWeaponUpgradeInput, knowledge: KnowledgeReader): UseCaseResult {
+  if (!document.campaign.configuration.is_draft) return rejected("not_permitted_when_committed", "Weapon upgrades are only available during initial creation.");
+  const base = findInventoryItem(document, input.base_item_id);
+  const band = knowledge.queryKnowledge({ id: { kind: "band_id", value: document.campaign.identity.band_id } });
+  const offers = band.ok && Array.isArray(band.record.data["equipment_access"]) ? band.record.data["equipment_access"] as readonly Record<string, unknown>[] : [];
+  const offer = offers.find((row) => row["item_id"] === input.item_id);
+  const multiplier = typeof offer?.["price_upgrade_multiplier"] === "number" ? offer["price_upgrade_multiplier"] : null;
+  const hands = (knowledge as KnowledgeReader & { weaponHandsFor?(id: string): number | null }).weaponHandsFor?.(base?.base_item_id ?? base?.id ?? "");
+  if (!base || base.stash < 1) return rejected("not_found", "The selected base weapon is not available in the stash.");
+  if (multiplier === null) return rejected("not_available", "This weapon upgrade is not available during warband creation.");
+  if (hands === null || hands === undefined) return rejected("not_available", "Only weapons can receive this upgrade.");
+  if (base.special_rules?.includes(String(offer?.["name"] ?? input.item_id)) || base.id.startsWith(`${input.item_id}:`)) return rejected("limit_violated", `${base.name} already has this upgrade.`);
+  const price = base.value! * multiplier;
+  if (!Number.isInteger(price) || price <= 0 || input.unit_price !== undefined && input.unit_price !== price) return rejected("invalid_input", `Invalid upgrade price: expected ${price} gc.`);
+  if (price > treasury(document.campaign)) return rejected("limit_violated", `Not enough gold: ${price} gc needed.`);
+  const ledger = stockCosts(base), baseCost = ledger.shift() ?? base.value ?? 0;
+  const upgrade = knowledge.queryKnowledge({ id: { kind: "item_id", value: input.item_id } });
+  if (!upgrade.ok) return rejected("not_found", `Unknown upgrade item id: ${input.item_id}.`);
+  const name = `${upgrade.record.names["en"] ?? input.item_id} ${base.name}`, id = `${input.item_id}:${base.id}`, existing = findInventoryItem(document, id);
+  const inventory = document.campaign.inventory.map((item) => item.id === base.id ? { ...item, owned: item.owned - 1, stash: item.stash - 1, acquisition_costs: ledger } : item).filter((item) => item.owned > 0);
+  const upgraded: InventoryItem = existing
+    ? { ...existing, owned: existing.owned + 1, stash: existing.stash + 1, acquisition_costs: [...stockCosts(existing), baseCost + price] }
+    : { id, name, category: base.category, owned: 1, equipped: 0, stash: 1, value: (base.value ?? 0) + price, special_rules: [...(base.special_rules ?? []), String(upgrade.record.names["en"] ?? input.item_id)], base_item_id: base.base_item_id ?? base.id, acquisition_costs: [baseCost + price] };
+  return { ok: true, state: withCampaign(document, { ...document.campaign, inventory: [...inventory.filter((item) => item.id !== id), upgraded] }) };
 }

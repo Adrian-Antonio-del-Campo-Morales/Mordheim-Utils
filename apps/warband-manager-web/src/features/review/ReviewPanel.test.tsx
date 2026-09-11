@@ -98,6 +98,14 @@ describe("ReviewPanel", () => {
     expect(screen.getByText(/1 battle\(s\), state 2 of 1/)).toBeInTheDocument();
   });
 
+  it("reports the desktop-style post-battle pending state", () => {
+    const pending = structuredClone(document) as CampaignDocument;
+    (pending.campaign as unknown as { post_battles: unknown[] }).post_battles = [{ complete: false, pending_follow_ups: [] }];
+    render(<ReviewPanel document={pending} />);
+    expect(screen.getByRole("status")).toHaveTextContent(/post-battle sequence is unfinished/);
+    expect(screen.getByRole("button", { name: /Confirm next state/ })).toBeInTheDocument();
+  });
+
   it("surfaces pending work through the status seam", () => {
     const pending = structuredClone(document) as CampaignDocument;
     (pending.campaign.warriors[0] as { games_to_miss?: number }).games_to_miss = 2;

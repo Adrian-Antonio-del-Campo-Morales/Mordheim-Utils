@@ -1,5 +1,5 @@
 /**
- * P3.4 (web-migration-parallel-plan.md §2.2/§4): frozen public knowledge and
+ * Web migration public knowledge ports: frozen public knowledge and
  * file ports. These are the seams that let domain, application, UI and the
  * adapters (P3.2, P4.3) be developed and tested in parallel against fakes.
  *
@@ -49,7 +49,7 @@ export interface KnowledgeRecord {
  *
  *  The kind discriminators cover every `KnowledgeKind` family emitted by the
  *  P4.2 generator (verified against the real artefact, see
- *  docs/decisions/web-rework-parallel-log.md). Field mapping in the raw
+ *  docs/decisions/web-migration.md). Field mapping in the raw
  *  artefact: `items` rows use `item_id`; every other family uses `id`.
  */
 export type Id =

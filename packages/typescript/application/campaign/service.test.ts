@@ -119,6 +119,29 @@ describe("P5.1 campaign application service", () => {
     expect(allowed.ok).toBe(true);
   });
 
+  it("does not replace the loaded campaign when a replacement file is invalid", async () => {
+    const { service } = makeService();
+    const loaded = await service.importCampaign({ text: "OK" });
+    expect(loaded.ok).toBe(true);
+    const before = service.current();
+
+    const rejected = await service.importCampaign({ text: "BROKEN", confirm_replace: true });
+    expect(rejected.ok).toBe(false);
+    if (!rejected.ok) expect(rejected.reason).toBe("file_error");
+    expect(service.current()).toBe(before);
+    expect(service.isDirty()).toBe(false);
+  });
+
+  it("does not replace the loaded campaign when replacement JSON is invalid", async () => {
+    const { service } = makeService();
+    await service.importCampaign({ text: "OK" });
+    const before = service.current();
+
+    const rejected = await service.importCampaign({ text: "NOT JSON", confirm_replace: true });
+    expect(rejected.ok).toBe(false);
+    expect(service.current()).toBe(before);
+  });
+
   it("translates file-port failures into stable app errors", async () => {
     const { service } = makeService();
     for (const [text, expected] of [
@@ -148,6 +171,48 @@ describe("P5.1 campaign application service", () => {
     expect(exported.ok).toBe(true);
     expect(exported.payload?.filename).toBe("Test_Band.mordheim");
     expect(exported.payload?.text).toContain('"format_version":4');
+  });
+
+  it("marks a saved battle draft dirty while timeline navigation stays view-only", async () => {
+    const { service } = makeService();
+    await service.importCampaign({ text: "OK" });
+
+    const saved = await service.run("saveBattleDraft", { draft: { opponent: "Reiklanders" } });
+    expect(saved.ok).toBe(true);
+    expect(service.current()?.view.pending_battle_draft?.["opponent"]).toBe("Reiklanders");
+    expect(service.isDirty()).toBe(true);
+
+    service.selectMoment("state:0");
+    expect(service.isDirty()).toBe(true);
+  });
+
+  it("keeps the saved battle draft after rejecting an invalid battle", async () => {
+    const { service } = makeService();
+    await service.importCampaign({ text: "OK" });
+    await service.run("saveBattleDraft", { draft: { opponent: "Previously entered" } });
+
+    const rejected = await service.run("recordBattle", { scenario: "", opponent: "" });
+    expect(rejected.ok).toBe(false);
+    expect(service.current()?.view.pending_battle_draft?.["opponent"]).toBe("Previously entered");
+  });
+
+  it("keeps the document dirty after a failed export validation", async () => {
+    const deps = {
+      files: {
+        ...fakeFiles,
+        serializeCampaign: () => ({ ok: false as const, reason: "io_error" as const, message: "disk full", supported_versions: [4] }),
+      },
+      knowledge: fakeKnowledge,
+    };
+    const service = createCampaignAppService(deps);
+    await service.importCampaign({ text: "OK" });
+    const failed = await service.run("renameWarband", { name: "Changed Band" });
+    expect(failed.ok).toBe(true);
+    expect(service.isDirty()).toBe(true);
+    const exported = await service.exportCampaign();
+    expect(exported.ok).toBe(false);
+    expect(service.isDirty()).toBe(true);
+    expect(service.current()?.campaign.identity.warband_name).toBe("Changed Band");
   });
 
   it("refuses export with no campaign loaded", async () => {

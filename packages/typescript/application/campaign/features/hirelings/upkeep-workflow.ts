@@ -1,4 +1,4 @@
-import type { CampaignDocument, OpenPayload } from "../../../../domain/campaign/index";
+import type { CampaignDocument } from "../../../../domain/campaign/index";
 import { currentState, withCampaign } from "../../../../domain/campaign/kernel/document";
 
 type Resource="gold_crowns"|"wyrdstone_fragments"|"treasures"|"campaign_points";
@@ -21,5 +21,10 @@ export function resolveHirelingUpkeep(document:CampaignDocument,input:{follow_up
   const changed={...post,gold_delta:(post.gold_delta??0)-(input.pay?gold:0),wyrdstone_delta:(post.wyrdstone_delta??0)-(input.pay?shards:0),pending_follow_ups:pending,event_log:[...(post.event_log??[]),{step:7,type:"hireling_upkeep",warrior_id:warriorId,description}]};
   let inventory=document.campaign.inventory;
   if(!input.pay&&warrior){for(const item of warrior.equipment){inventory=inventory.map((row)=>row.id===item.item_id?{...row,owned:Math.max(0,row.owned-item.quantity),equipped:Math.max(0,row.equipped-item.quantity)}:row).filter((row)=>row.owned>0);}}
-  return{ok:true,document:withCampaign(document,{...document.campaign,resources:{...document.campaign.resources,treasures:document.campaign.resources.treasures-(input.pay?treasures:0),campaign_points:document.campaign.resources.campaign_points-(input.pay?points:0)},warriors:input.pay?document.campaign.warriors:document.campaign.warriors.filter((row)=>row.id!==warriorId),inventory,post_battles:document.campaign.post_battles.map((row)=>row===post?changed:row)})};
+  // Desktop strips `Returning a Favour:` once the upkeep is paid (the free
+  // hire is spent); the rule must not linger on the roster.
+  const warriors=input.pay
+    ? (warrior?document.campaign.warriors.map((row)=>row.id===warriorId?{...row,special_rules:(row.special_rules??[]).filter((rule)=>!rule.startsWith("Returning a Favour:"))}:row):document.campaign.warriors)
+    : document.campaign.warriors.filter((row)=>row.id!==warriorId);
+  return{ok:true,document:withCampaign(document,{...document.campaign,resources:{...document.campaign.resources,treasures:document.campaign.resources.treasures-(input.pay?treasures:0),campaign_points:document.campaign.resources.campaign_points-(input.pay?points:0)},warriors,inventory,post_battles:document.campaign.post_battles.map((row)=>row===post?changed:row)})};
 }

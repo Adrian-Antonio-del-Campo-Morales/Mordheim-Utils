@@ -1,5 +1,5 @@
 /**
- * P6.3 (web-migration-parallel-plan.md §P6.3): equipment, stash and
+ * Web migration equipment workflow: equipment, stash and
  * assignments — the application feature block over the kernel's
  * `assignEquipment` use case.
  *

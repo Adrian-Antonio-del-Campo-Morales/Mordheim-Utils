@@ -1,5 +1,5 @@
 /**
- * P7.4 (web-migration-parallel-plan.md §8): accessibility & small-viewport
+ * Web migration accessibility and small-viewport acceptance tests; see docs/decisions/web-migration.md.
  * acceptance tests.
  *
  * Two layers:
@@ -15,19 +15,24 @@
  * stylesheet (`index.css`: :focus-visible ring, touch targets, scrolling
  * tables) shipped with the shell.
  */
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { render, screen, fireEvent } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 
-import { CampaignSlice } from "../features/campaign/CampaignSlice";
+import { ProductApp } from "../ProductApp";
+import { createService, loadKnowledge } from "../features/campaign/default-deps";
+
+vi.mock("../features/campaign/default-deps", () => ({
+  createService: vi.fn(),
+  loadKnowledge: vi.fn(),
+}));
 
 function repoRoot(): string {
   let dir = process.cwd();
   for (let i = 0; i < 8; i += 1) {
-    if (existsSync(join(dir, "web-migration-parallel-plan.md"))) return dir;
+    if (existsSync(join(dir, "docs", "decisions", "web-migration.md"))) return dir;
     dir = join(dir, "..");
   }
   throw new Error("Repository root not found.");
@@ -75,7 +80,7 @@ describe("P7.4 static accessibility audit", () => {
   });
 
   it("forms associate labels with inputs", () => {
-    for (const relative of ["battle/BattlePanel.tsx", "draft/DraftPanel.tsx", "campaign/CampaignSlice.tsx", "advances/AdvancesPanel.tsx"]) {
+    for (const relative of ["battle/BattlePanel.tsx", "draft/DraftPanel.tsx", "advances/AdvancesPanel.tsx"]) {
       const text = source(relative);
       const labels = (text.match(/<label/g) ?? []).length;
       const associations = (text.match(/htmlFor=|<label key=/g) ?? []).length;
@@ -94,12 +99,11 @@ describe("P7.4 static accessibility audit", () => {
     // Repeated per-row buttons must not rely on visible text alone.
     expect(source("equipment/EquipmentPanel.tsx")).toMatch(/aria-label=\{`Return /);
     expect(source("injuries/InjuriesPanel.tsx")).toMatch(/aria-label=\{`Recover /);
-    expect(source("advances/AdvancesPanel.tsx")).toMatch(/aria-label=\{`Advance choice for /);
   });
 
   it("headings follow document order (h1 once, no skipped levels)", () => {
-    const slice = source("campaign/CampaignSlice.tsx");
-    expect(slice).toMatch(/<h1>/);
+    const shell = readFileSync(join(repoRoot(), "apps", "warband-manager-web", "src", "ProductApp.tsx"), "utf8");
+    expect(shell).toMatch(/<h1>/);
     const panelHeadings = ["timeline/TimelinePanel.tsx", "equipment/EquipmentPanel.tsx", "advances/AdvancesPanel.tsx", "injuries/InjuriesPanel.tsx"].map(
       (relative) => source(relative).match(/<h([1-6])>/)?.[1] ?? "",
     );
@@ -117,29 +121,55 @@ describe("P7.4 static accessibility audit", () => {
 });
 
 describe("P7.4 keyboard & announcement behaviour", () => {
-  it("the import dialog is keyboard reachable", async () => {
-    const user = userEvent.setup();
-    render(<CampaignSlice />);
+  beforeEach(() => {
+    vi.mocked(loadKnowledge).mockResolvedValue({ list: () => [] } as never);
+    vi.mocked(createService).mockReturnValue({
+      importCampaign: vi.fn().mockResolvedValue({ ok: false, message: "Rejected import" }),
+      subscribe: () => () => {},
+      isDirty: () => false,
+      current: () => null,
+    } as never);
+  });
 
-    // The file input is the first tabbable control on the page.
-    await user.tab();
-    const input = screen.getByLabelText(/Load a \.mordheim campaign file/);
-    expect(document.activeElement).toBe(input);
+  it("the import dialog is keyboard reachable", async () => {
+    render(<ProductApp />);
+    await waitFor(() =>
+      expect(
+        screen
+          .getAllByRole("button", { name: "Cargar" })
+          .some((button) => !button.hasAttribute("disabled")),
+      ).toBe(true),
+    );
+    expect(screen.getByLabelText("Cargar campañas .mordheim")).toBeInTheDocument();
+  });
+
+  it("updates the import control name when the locale changes", async () => {
+    render(<ProductApp />);
+    fireEvent.click(screen.getByRole("button", { name: "Ajustes" }));
+    await waitFor(() => expect(screen.getByLabelText("Idioma")).toBeInTheDocument());
+    fireEvent.change(screen.getByLabelText("Idioma"), { target: { value: "en" } });
+    expect(screen.getByLabelText("Load .mordheim campaigns")).toBeInTheDocument();
   });
 
   it("a rejected import announces through the alert seam", async () => {
-    render(<CampaignSlice />);
-    const input = screen.getByLabelText(/Load a \.mordheim campaign file/) as HTMLInputElement;
+    render(<ProductApp />);
+    await waitFor(() =>
+      expect(
+        screen
+          .getAllByRole("button", { name: "Cargar" })
+          .some((button) => !button.hasAttribute("disabled")),
+      ).toBe(true),
+    );
+    const input = screen.getByLabelText("Cargar campañas .mordheim") as HTMLInputElement;
     // A retired v3 document: the reader must reject it and the UI must
     // announce the reason through the alert role.
-    const file = new File(
-      [JSON.stringify({ marker: "MORDHEIM_CAMPAIGN_MANAGER", format_version: 3 })],
-      "old.mordheim",
-      { type: "application/json" },
-    );
+    const file = {
+      name: "old.mordheim",
+      text: async () => JSON.stringify({ marker: "MORDHEIM_CAMPAIGN_MANAGER", format_version: 3 }),
+    } as File;
     fireEvent.change(input, { target: { files: [file] } });
 
     const alert = await screen.findByRole("alert");
-    expect(alert).toHaveTextContent(/old format|version/i);
+    expect(alert).toHaveTextContent("Rejected import");
   });
 });

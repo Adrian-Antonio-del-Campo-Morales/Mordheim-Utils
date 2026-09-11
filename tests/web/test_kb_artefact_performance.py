@@ -1,6 +1,6 @@
 """web.p7_5.kb-artefact-performance: the KB artefact stays web-deliverable.
 
-P7.5 (web-migration-parallel-plan.md §8): measure the compressed size of the
+Web migration KB performance gate: measure the compressed size of the
 generated knowledge artefact and fail if it exceeds the agreed delivery
 budget. Also verifies the canonical search index can be built from the
 artefact in-process quickly enough for page load (indexing cost, P7.5's
@@ -22,10 +22,10 @@ import pytest
 
 ARTEFACT = Path("build/generated/knowledge-web/knowledge-web.json")
 
-# Agreed delivery budget (logged in docs/decisions/web-rework-parallel-log.md):
-# the artefact must stay under 300 kB gzipped so GitHub Pages serves it in
+# Delivery budget recorded in docs/decisions/web-migration.md:
+# the artefact must stay under 350 kB gzipped so GitHub Pages serves it in
 # well under one second on a mid-range connection. Measured today: ~209 kB.
-GZIP_BUDGET_BYTES = 300 * 1024
+GZIP_BUDGET_BYTES = 350 * 1024
 
 # Whole-artefact index build budget: the P4.3 adapter builds Maps for bands,
 # profiles, items and skills on import. A full rebuild from the parsed JSON

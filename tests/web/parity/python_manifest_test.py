@@ -1,6 +1,6 @@
 """Gates for the desktop→web test traceability manifest (Agent 0, parity lane).
 
-Enforces web-test-migration-plan.md §Matriz invariants:
+Enforces the test traceability invariants in docs/decisions/web-migration.md:
 
 1. regeneration identity — the committed manifest equals a fresh
    ``tools/make_test_manifest.py`` run (no drift from the desktop net);
@@ -26,6 +26,7 @@ MANIFEST = ROOT / "tests" / "web" / "parity" / "campaign-test-manifest.json"
 GENERATOR = ROOT / "tools" / "make_test_manifest.py"
 
 VALID_DISPOSITIONS = {"M", "A", "U", "I", "S", "X"}
+VALID_STATUSES = {"implemented", "partial", "blocked", "excluded", "pending"}
 
 
 def _manifest() -> dict:
@@ -34,7 +35,7 @@ def _manifest() -> dict:
 
 def test_manifest_exists_and_parses() -> None:
     data = _manifest()
-    assert data["plan"] == "web-test-migration-plan.md"
+    assert data["plan"] == "docs/decisions/web-migration.md"
     assert data["deterministic"] is True
     assert isinstance(data["rows"], list) and data["rows"]
 
@@ -56,9 +57,21 @@ def test_every_row_is_complete() -> None:
         assert row["source_test"], row
         assert row["behavior_id"], row
         assert row["web_disposition"] in VALID_DISPOSITIONS, row
+        assert row["status"] in VALID_STATUSES, row
+        assert row["status"] != "pending", row
         assert row["owner"], row
         if row["web_disposition"] != "X":
             assert row["web_target"], f"missing target: {row}"
+            assert (ROOT / row["web_target"]).is_file(), f"target does not exist: {row}"
+            assert row["status"] != "excluded", row
+        else:
+            assert row["status"] == "excluded", row
+        if row["status"] == "implemented":
+            assert row.get("evidence"), row
+            assert not row.get("follow_up"), row
+        if row["status"] in {"partial", "blocked"}:
+            assert row.get("evidence"), row
+            assert row.get("follow_up"), row
 
 
 def test_every_exclusion_carries_a_reason() -> None:

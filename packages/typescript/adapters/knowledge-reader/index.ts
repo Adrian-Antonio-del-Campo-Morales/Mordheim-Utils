@@ -1,5 +1,5 @@
 /**
- * P4.3 (web-migration-parallel-plan.md §4): KnowledgeReader adapter over the
+ * Web migration KnowledgeReader adapter over the
  * generated KB web artefact (tools/knowledge/generate_knowledge_web.py ->
  * build/generated/knowledge-web/knowledge-web.json).
  *
@@ -157,7 +157,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   }
 
   /**
-   * P5.2 acceptance (KB bundling decision, `docs/decisions/web-kb-bundling.md`):
+   * Production KB delivery decision (`docs/decisions/web-migration.md`):
    * fetch the generated artefact from a URL once, validate it and build the
    * reader. The browser bundle ships the artefact as a static asset
    * (`public/knowledge/knowledge-web.json`, staged by CI); nothing is

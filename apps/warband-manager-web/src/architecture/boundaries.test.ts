@@ -1,5 +1,5 @@
 /**
- * P7.3 (web-migration-parallel-plan.md §8): architecture & bundle guardrails
+ * Web migration architecture and bundle guardrails; see docs/decisions/web-migration.md
  * for the web shell — the checks the per-layer purity test
  * (`packages/typescript/architecture/purity.test.ts`) does not cover:
  *
@@ -22,14 +22,14 @@ import { describe, expect, it } from "vitest";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
-/** Walk up from cwd to the repo root (marker: the parallel-plan document). */
+/** Walk up from cwd to the repo root (marker: the canonical migration guide). */
 function repoRoot(): string {
   let dir = process.cwd();
   for (let i = 0; i < 8; i += 1) {
-    if (existsSync(join(dir, "web-migration-parallel-plan.md"))) return dir;
+    if (existsSync(join(dir, "docs", "decisions", "web-migration.md"))) return dir;
     dir = join(dir, "..");
   }
-  throw new Error("Repository root not found (web-migration-parallel-plan.md marker missing).");
+  throw new Error("Repository root not found (canonical migration guide missing).");
 }
 
 const ROOT = repoRoot();
@@ -118,7 +118,7 @@ describe("P7.3 bundle guardrails (post-build)", () => {
     const violations = violationsIn(bundles, [
       [/\bnumpy\b|\bnp\.array\b|\bndarray\b/, "numpy in bundle"],
       [/\bCython\b/, "Cython in bundle"],
-      [/\btkinter\b|\bTclTk|Tk\b/, "tkinter in bundle"],
+      [/\btkinter\b|\bTclTk\b/, "tkinter in bundle"],
       [/\bCombatLab\b|\bcombat_lab\b/, "Combat Lab in bundle"],
     ]);
     expect(violations).toEqual([]);

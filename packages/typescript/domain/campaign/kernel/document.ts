@@ -1,5 +1,5 @@
 /**
- * P3.5 (web-migration-parallel-plan.md §5): immutable document helpers and
+ * Web migration immutable campaign document helpers: immutable document helpers and
  * structural invariants of the campaign kernel.
  *
  * Every helper returns a new document; inputs are never mutated (plan §5.3).

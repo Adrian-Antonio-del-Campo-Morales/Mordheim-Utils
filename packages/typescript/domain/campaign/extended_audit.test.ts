@@ -13,11 +13,10 @@
 
 import { describe, expect, it } from "vitest";
 
-import {
-  parseCampaignFile,
-  serializeCampaign,
-} from "../../adapters/campaign-file";
+import { CampaignFileV4Adapter } from "../../adapters/campaign-file";
 import type { Campaign } from "./kernel/state";
+
+const files = new CampaignFileV4Adapter();
 
 function makeCampaign(): Campaign {
   return {
@@ -87,7 +86,7 @@ function makeCampaign(): Campaign {
 
 /** Round-trip the fixture through the real adapter to obtain valid text. */
 function validText(): string {
-  const result = serializeCampaign(makeCampaign());
+  const result = files.serializeCampaign(makeCampaign());
   expect(result.ok).toBe(true);
   return (result as { ok: true; text: string }).text;
 }
@@ -102,9 +101,9 @@ describe("extended audit regressions (desktop test_extended_audit_regressions.py
   it("draft identifiers stay unique after removal (round-trip invariant)", () => {
     // Desktop: remove + re-add keeps warrior ids unique. Web equivalent:
     // parse→serialize→parse preserves id uniqueness through the adapter.
-    const first = parseCampaignFile(validText());
+    const first = files.parseCampaignFile(validText());
     expect(first.ok).toBe(true);
-    const document = (first as { ok: true; document: { campaign: { warriors: { id: string }[] } } }).document;
+    const document = (first as unknown as { document: { campaign: { warriors: { id: string }[] } } }).document;
     const ids = document.campaign.warriors.map((w) => w.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
@@ -112,7 +111,7 @@ describe("extended audit regressions (desktop test_extended_audit_regressions.py
   it("duplicate warrior ids are rejected on load", () => {
     const payload = JSON.parse(validText()) as { campaign: { warriors: { id: string }[] } };
     payload.campaign.warriors[1].id = payload.campaign.warriors[0].id;
-    const result = parseCampaignFile(JSON.stringify(payload));
+    const result = files.parseCampaignFile(JSON.stringify(payload));
     expect(result.ok).toBe(false);
     if (!result.ok) {
       // Desktop message: 'Duplicate'. The adapter's semantic validator pins it.
@@ -126,7 +125,7 @@ describe("extended audit regressions (desktop test_extended_audit_regressions.py
     // application derives the selection — the adapter must accept the file
     // either way and never crash on the payload.
     for (const selection of ["state:99999", "state:bad", "post:99999", "post", "battle:x", "unknown:0"]) {
-      const result = parseCampaignFile(writeViewSelection(validText(), selection));
+      const result = files.parseCampaignFile(writeViewSelection(validText(), selection));
       // Desktop accepts the file (fallback happens in the view layer); the
       // contract only guarantees view is reconstructible, not validated.
       expect(result.ok, String(selection)).toBe(true);
@@ -137,7 +136,7 @@ describe("extended audit regressions (desktop test_extended_audit_regressions.py
     for (const version of ["invalid", null, [], 3.5]) {
       const payload = JSON.parse(validText()) as Record<string, unknown>;
       payload.format_version = version;
-      const result = parseCampaignFile(JSON.stringify(payload));
+      const result = files.parseCampaignFile(JSON.stringify(payload));
       expect(result.ok, JSON.stringify(version)).toBe(false);
       if (!result.ok) {
         // Integers other than 4 are retired/unsupported; non-integers are
@@ -152,10 +151,10 @@ describe("extended audit regressions (desktop test_extended_audit_regressions.py
     // never mutates its input and parse of the output is semantically equal.
     const campaign = makeCampaign();
     const snapshot = JSON.stringify(campaign);
-    const result = serializeCampaign(campaign);
+    const result = files.serializeCampaign(campaign);
     expect(result.ok).toBe(true);
     expect(JSON.stringify(campaign)).toBe(snapshot); // input untouched
-    const reparsed = parseCampaignFile((result as { ok: true; text: string }).text);
+    const reparsed = files.parseCampaignFile((result as { ok: true; text: string }).text);
     expect(reparsed.ok).toBe(true);
   });
 
@@ -163,7 +162,7 @@ describe("extended audit regressions (desktop test_extended_audit_regressions.py
     for (const version of [1, 2, 3]) {
       const payload = JSON.parse(validText()) as Record<string, unknown>;
       payload.format_version = version;
-      const result = parseCampaignFile(JSON.stringify(payload));
+      const result = files.parseCampaignFile(JSON.stringify(payload));
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.reason).toBe("retired_version");
     }

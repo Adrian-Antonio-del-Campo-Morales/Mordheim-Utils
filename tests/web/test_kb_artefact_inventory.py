@@ -20,7 +20,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 KB = ROOT / "sources" / "knowledge"
-INVENTORY = ROOT / "docs" / "decisions" / "web-knowledge-catalog-inventory.md"
+INVENTORY = ROOT / "docs" / "decisions" / "web-migration.md"
 CONTRACTS = ROOT / "contracts" / "campaign-file-v4"
 
 #: (source path relative to the KB, reason the web Campaign Manager needs it).

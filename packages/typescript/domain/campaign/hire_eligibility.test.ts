@@ -38,10 +38,6 @@ const ARTEFACT = JSON.parse(
 
 const PROFILES = ARTEFACT.campaign.hirelings.profiles;
 
-function profileRuleIds(profile: { id: string; rule_ids?: string[]; rules?: { id: string }[] }): string[] {
-  if (profile.rule_ids) return profile.rule_ids;
-  return (profile.rules ?? []).map((r) => r.id);
-}
 const TRAITS = new Map(
   Object.entries(ARTEFACT.campaign.hirelings.traits).map(([id, list]) => [id, new Set(list)]),
 );

@@ -166,16 +166,16 @@ const R = "rule.campaign-eligibility";
 /** Evaluate one `*.rule.campaign-eligibility` rule against a context. */
 export function evaluateRule(ruleId: string, ctx: WarbandHireContext): Decision {
   const f = buildFacts(ctx);
-  const dwarfRule = (id: string, name: string): Decision => {
+  const dwarfRule = (name: string): Decision => {
     if (f.isMercenaryEmployer || f.isWitchHunterEmployer || f.hasElfMember) {
       return allowed(ruleId, `Mercenaries and Witch Hunters may hire the ${name}; a roster that includes Elves may also hire him.`);
     }
     return rejected(ruleId, `Only Mercenaries, Witch Hunters or a roster that includes Elves may hire the ${name}.`);
   };
 
-  if (ruleId === `hireling.hired-sword.dwarf-troll-slayer.${R}`) return dwarfRule(ruleId, "Dwarf Troll Slayer");
-  if (ruleId === `hireling.hired-sword.dwarf-treasure-hunter.${R}`) return dwarfRule(ruleId, "Dwarf Treasure Hunter");
-  if (ruleId === `hireling.hired-sword.runesmith-journeyman.${R}`) return dwarfRule(ruleId, "Runesmith Journeyman");
+  if (ruleId === `hireling.hired-sword.dwarf-troll-slayer.${R}`) return dwarfRule("Dwarf Troll Slayer");
+  if (ruleId === `hireling.hired-sword.dwarf-treasure-hunter.${R}`) return dwarfRule("Dwarf Treasure Hunter");
+  if (ruleId === `hireling.hired-sword.runesmith-journeyman.${R}`) return dwarfRule("Runesmith Journeyman");
   if (ruleId === `hireling.hired-sword.elf-ranger.${R}`) {
     if (f.isMercenaryEmployer || f.isWitchHunterEmployer || f.hasDwarfMember) {
       return allowed(ruleId, "Mercenaries and Witch Hunters may hire the Elf Ranger; a roster that includes Dwarfs may also hire him.");

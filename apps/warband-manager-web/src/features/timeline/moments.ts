@@ -7,15 +7,14 @@ import type { CampaignDocument, MomentSelection } from "../campaign/types";
 /** The plan's moment enumeration, in timeline order. */
 export function enumerateMoments(campaign: CampaignDocument["campaign"]): MomentSelection[] {
   if (campaign.configuration.is_draft) return ["draft:0"];
-  const moments: MomentSelection[] = [];
-  const initial = campaign.states.find((state) => state.number === 0);
-  if (initial) moments.push("state:0");
-  for (const battle of campaign.battles) {
+  const moments: MomentSelection[] = ["draft:0"];
+  for (const state of [...campaign.states].sort((left, right) => left.number - right.number)) {
+    moments.push(`state:${state.number}` as MomentSelection);
+  }
+  for (const battle of [...campaign.battles].sort((left, right) => left.number - right.number)) {
     moments.push(`battle:${battle.number}` as MomentSelection);
     const post = campaign.post_battles.find((row) => row.battle_number === battle.number);
     if (post) moments.push(`post:${post.battle_number}` as MomentSelection);
-    const state = campaign.states.find((row) => row.number === battle.number);
-    if (state) moments.push(`state:${state.number}` as MomentSelection);
   }
   return moments;
 }

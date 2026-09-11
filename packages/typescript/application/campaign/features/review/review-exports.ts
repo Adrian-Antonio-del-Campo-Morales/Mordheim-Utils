@@ -1,5 +1,5 @@
 /**
- * P6.8 (web-migration-parallel-plan.md §7): final review & auxiliary
+ * Web migration review and export features: final review & auxiliary
  * exports — the read models the pre-export review panel renders and the
  * plain-text auxiliary exports (roster summary, campaign ledger) the user
  * can download beside the main `.mordheim` file.

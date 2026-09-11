@@ -126,11 +126,6 @@ documents) feeds the battle-recording reward plan. Remaining work:
       URLs). Regenerate the report with
       `python tools/kb/price-collation.py` (writes `outputs/knowledge/`,
       git-ignored) for the current queue size.
-- [ ] **Per-warrior skill editing outside advances** (Campaign Manager).
-- [ ] Out-of-sequence purchases and resource corrections (would reuse the
-      stored `band_id`/`profile_id`/`item_id`).
-- [ ] Campaign library UI ("Manage Campaigns…"), inventory ADD ITEM and
-      MANAGE RESOURCES toolbar actions.
 
 ## 6. Item/mechanic mapping coverage — make the intent explicit
 

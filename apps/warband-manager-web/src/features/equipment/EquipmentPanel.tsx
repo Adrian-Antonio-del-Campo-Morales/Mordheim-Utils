@@ -1,5 +1,5 @@
 /**
- * P6.3 (web-migration-parallel-plan.md §P6.3): equipment, stash and
+ * Web migration equipment surface: equipment, stash and
  * assignments UI.
  *
  * Renders the inventory read model (equipped/stash split per row) and the

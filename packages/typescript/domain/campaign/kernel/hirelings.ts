@@ -22,12 +22,15 @@ import type {
 import { rejected } from "./rejections";
 import { findWarrior, withCampaign } from "./document";
 
-/** XP thresholds between advances (canonical Mordheim table). */
-export const ADVANCE_THRESHOLDS = [2, 5, 8, 11, 14, 18, 22, 26, 31, 36] as const;
+/** XP thresholds from desktop's experience-and-advances catalogue. */
+export const ADVANCE_THRESHOLDS = {
+  hero: [20, 40, 65, 90, 120, 150, 180, 210, 240, 270],
+  henchman: [8, 16, 25, 35, 46, 58, 71, 85, 100],
+} as const;
 
 /** Advances earned for total XP (>=0). */
-export function advancesForExperience(experience: number): number {
-  return ADVANCE_THRESHOLDS.filter((threshold) => experience >= threshold).length;
+export function advancesForExperience(experience: number, kind: "hero" | "henchman"): number {
+  return ADVANCE_THRESHOLDS[kind].filter((threshold) => experience >= threshold).length;
 }
 
 const STAT_KEYS = ["M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"] as const;
@@ -48,6 +51,16 @@ export interface HireHirelingInput {
   readonly fee?: number;
   /** Non-gold upkeep pairs from the offer (`[resource_id, amount]`). */
   readonly upkeep_resources?: readonly (readonly [IdString, number])[];
+  /** Conditional hire: required D6 acceptance result (desktop `roll_ge`). */
+  readonly roll_ge?: number;
+  /** The rolled acceptance result; must be `>= roll_ge`. */
+  readonly acceptance_roll?: number;
+  /** Variable fee base (gold crowns) of a `base + dice` hiring fee. */
+  readonly fee_base?: number;
+  /** Variable fee dice, e.g. `[3, 6]` for `3D6`. */
+  readonly fee_dice?: readonly [number, number];
+  /** The rolled fee total; must be `>= fee_dice[0]`. */
+  readonly fee_roll?: number;
 }
 
 export function hireHireling(
@@ -66,8 +79,19 @@ export function hireHireling(
     return rejected("not_found", `Unknown hireling profile: ${input.profile_id}.`);
   }
   const data = result.record.data as OpenPayload;
+  const displayName = result.record.names["en"] ?? input.profile_id;
+  // Conditional hire (desktop `hire_hireling`): the caller must supply the
+  // acceptance roll; the engine never rolls by itself.
+  if (typeof input.roll_ge === "number") {
+    if (input.acceptance_roll === undefined) {
+      return rejected("prerequisite_missing", `An acceptance roll of ${input.roll_ge}+ is required before hiring ${displayName}.`);
+    }
+    if (input.acceptance_roll < input.roll_ge) {
+      return rejected("limit_violated", `Acceptance roll ${input.acceptance_roll} failed (needed ${input.roll_ge}+); the hire is declined.`);
+    }
+  }
   if (campaign.warriors.some((w) => w.profile_id === input.profile_id)) {
-    return rejected("conflict", `A ${result.record.names["en"] ?? input.profile_id} is already hired.`);
+    return rejected("conflict", `A ${displayName} is already hired.`);
   }
   // Rating: the profile's `warband_rating` block — `fixed` value or the
   // `base` of a base+experience rating (XP 0 at hiring time), mirroring the
@@ -80,7 +104,24 @@ export function hireHireling(
   const ratingFixed = typeof ratingBlock["value"] === "number" ? ratingBlock["value"] : null;
   const ratingBase = typeof ratingBlock["base"] === "number" ? ratingBlock["base"] : 0;
   const rating = ratingFixed ?? ratingBase;
-  const cost = typeof input.fee === "number" ? input.fee : rating;
+  // Variable fee (desktop `hire_hireling`): a `base + dice` fee needs the
+  // declared `fee_roll`; a flat `fee` and dice are mutually exclusive.
+  let cost: number;
+  if (input.fee_dice) {
+    const [count, sides] = input.fee_dice;
+    if (typeof input.fee === "number") {
+      return rejected("conflict", `${displayName} declares both a flat and a variable fee; the KB entry is inconsistent.`);
+    }
+    if (typeof input.fee_roll !== "number" || !Number.isInteger(input.fee_roll)) {
+      return rejected("prerequisite_missing", `Roll ${displayName}'s hiring fee (${count}D${sides} + ${input.fee_base ?? 0} gc) before hiring.`);
+    }
+    if (input.fee_roll < count) {
+      return rejected("invalid_input", `Fee roll ${input.fee_roll} is below the minimum ${count} of ${count}D${sides}.`);
+    }
+    cost = (input.fee_base ?? 0) + input.fee_roll;
+  } else {
+    cost = typeof input.fee === "number" ? input.fee : rating;
+  }
   const upkeep =
     input.upkeep_resources && input.upkeep_resources.length > 0
       ? input.upkeep_resources
@@ -213,7 +254,7 @@ export function applyAdvance(
       return rejected("invalid_input", `Unknown characteristic: ${statMatch[1]}.`);
     }
   }
-  const earned = advancesForExperience(warrior.experience);
+  const earned = advancesForExperience(warrior.experience, warrior.kind === "hero" ? "hero" : "henchman");
   const taken =
     (warrior.stat_advances ? Object.values(warrior.stat_advances).reduce((t, v) => t + v, 0) : 0) +
     warrior.skills.filter((s) => !warrior.skills.slice(0, warrior.skills.indexOf(s)).includes(s) && isLearnedSkill(warrior, s)).length;
@@ -240,7 +281,9 @@ export function applyAdvance(
       return rejected("conflict", `${warrior.name} already knows "${skill}".`);
     }
     const nextWarriors: Warrior[] = document.campaign.warriors.map((w) =>
-      w.id === input.warrior_id ? { ...w, skills: [...w.skills, skill] } : w,
+      w.id === input.warrior_id
+        ? { ...w, skills: [...w.skills, skill], learned_skills: [...(w.learned_skills ?? w.skills), skill] }
+        : w,
     );
     return { ok: true, state: withCampaign(document, { ...document.campaign, warriors: nextWarriors }) };
   }
@@ -252,5 +295,5 @@ export function applyAdvance(
 
 /** Skill that came from the profile's starting kit vs. one learned later. */
 function isLearnedSkill(warrior: Warrior, skill: string): boolean {
-  return (warrior as Warrior & { learned_skills?: readonly string[] }).learned_skills?.includes(skill) ?? true;
+  return warrior.learned_skills?.includes(skill) ?? true;
 }

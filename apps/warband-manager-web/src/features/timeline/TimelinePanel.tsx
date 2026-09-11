@@ -1,5 +1,5 @@
 /**
- * P6.1 (web-migration-parallel-plan.md §P6.1): timeline navigation UI.
+ * Web migration timeline surface: timeline navigation UI.
  *
  * Enumerates the document's moments (draft, committed states, battles,
  * pending post-battles) in timeline order, highlights the selected moment,

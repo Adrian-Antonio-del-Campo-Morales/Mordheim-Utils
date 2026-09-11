@@ -91,9 +91,20 @@ const fakeFiles: CampaignFilePort = {
   serializeCampaign: (): SerializeResult => ({ ok: true, text: "{}" }),
 };
 
-const fakeKnowledge: KnowledgeReader = {
+const fakeKnowledge: KnowledgeReader & { campaignSection(section: string): Readonly<Record<string, unknown>> } = {
   queryKnowledge: () => ({ ok: false, reason: "not_found" }),
   queryMany: (queries) => queries.map((q) => fakeKnowledge.queryKnowledge(q)),
+  campaignSection: (section) =>
+    section === "trading-post"
+      ? {
+          items: ["candle", "a", "b", "c", ...Array.from({ length: 55 }, (_, index) => `item-${index}`)].map((item_id) => ({
+            item_id,
+            availability: { kind: "common" },
+            price: { base_gc: item_id === "b" ? 20 : item_id === "c" ? 30 : item_id.startsWith("item-") ? 0 : 10 },
+            restrictions: [],
+          })),
+        }
+      : {},
 };
 
 function makeService(): CampaignAppService {

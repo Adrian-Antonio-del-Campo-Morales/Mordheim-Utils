@@ -4,7 +4,7 @@ Produces the deterministic JSON artefact the web Warband Manager loads
 (``build/generated/knowledge-web/knowledge-web.json``) from the single
 canonical source ``sources/knowledge/`` — the same read surface the desktop
 ``KnowledgePort`` uses, shaped as agreed in
-``docs/decisions/web-knowledge-catalog-inventory.md``.
+``docs/decisions/web-migration.md``.
 
 Rules (from the parallel plan, task P4.2):
 
@@ -203,6 +203,11 @@ def _build_profiles(ruleset: str) -> list[dict]:
                 entry["collection"] = str(collection)
                 entry["band_id"] = str(package.band["id"])
                 entry["can_gain_experience"] = _profile_can_gain_experience(package, profile)
+                entry["rule_ids"] = sorted({
+                    *map(str, entry.get("rule_ids") or ()),
+                    *(str(rule["rule_ref"]) for rule in package.special_rules
+                      if rule.get("rule_ref") and str(profile["id"]) in set((rule.get("applies_to") or {}).get("profile_ids") or ())),
+                })
                 # The desktop resolves a profile's initial purchases through
                 # its named equipment lists.  Materialise that relationship
                 # in the web artefact so UI readers can show both permitted

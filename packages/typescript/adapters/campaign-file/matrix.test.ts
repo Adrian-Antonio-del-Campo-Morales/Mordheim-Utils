@@ -1,5 +1,5 @@
 /**
- * P7.1 (web-migration-parallel-plan.md §8): the TS side of the full
+ * Web migration interoperability matrix: the TS side of the full
  * bidirectional round-trip matrix.
  *
  * Two duties:

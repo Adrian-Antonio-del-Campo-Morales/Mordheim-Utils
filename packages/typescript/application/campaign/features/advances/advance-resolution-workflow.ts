@@ -138,7 +138,7 @@ export function promoteHenchman(document: CampaignDocument, input:{warrior_id:st
   if(nonUniform.length) return {ok:false,message:`Normalize group equipment first: ${nonUniform.map((item)=>item.name).join(", ")}.`};
   const heroEquipment=warrior.equipment.filter((item)=>item.per_model&&item.quantity>0).map((item)=>({...item,quantity:item.quantity/quantity,per_model:false}));
   const groupEquipment=warrior.equipment.map((item)=>item.per_model?{...item,quantity:item.quantity-item.quantity/quantity}:item).filter((item)=>item.quantity>0);
-  const heroId=nextWarriorId(document,warrior.profile_id??warrior.id); const hero: Warrior={...warrior,id:heroId,name:String(input.member_name??"").trim()||`${warrior.profile_name} Champion`,kind:"hero",quantity:1,equipment:heroEquipment,skills:[],skill_access:[],previous_experience:warrior.previous_experience,stat_advances:{...(warrior.stat_advances??{})}};
+  const heroId=nextWarriorId(document,warrior.profile_id??warrior.id); const hero: Warrior={...warrior,id:heroId,name:String(input.member_name??"").trim()||`${warrior.profile_name} Champion`,kind:"hero",quantity:1,equipment:heroEquipment,skills:[],skill_access:[],...(warrior.previous_experience !== undefined ? { previous_experience: warrior.previous_experience } : {}),stat_advances:{...(warrior.stat_advances??{})}};
   const remaining=quantity-1; const warriors=remaining>0
     ? document.campaign.warriors.map((item)=>item.id===warrior.id?{...item,quantity:remaining,equipment:groupEquipment,name:item.name.endsWith(" group")?item.name:`${item.profile_name} group`}:item).concat(hero)
     : document.campaign.warriors.filter((item)=>item.id!==warrior.id).concat(hero);

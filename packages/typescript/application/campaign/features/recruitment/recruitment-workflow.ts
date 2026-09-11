@@ -1,5 +1,5 @@
 import type { CampaignDocument, KnowledgeReader, OpenPayload } from "../../../../domain/campaign/index";
-import { currentState, effectiveMaximumModels, memberCount, withCampaign } from "../../../../domain/campaign/kernel/document";
+import { currentState, effectiveMaximumModels, heroCount, memberCount, withCampaign } from "../../../../domain/campaign/kernel/document";
 
 interface CatalogueReader extends KnowledgeReader { campaignSection?(section:string):Readonly<Record<string,unknown>> }
 type Result={ok:true;document:CampaignDocument}|{ok:false;message:string};
@@ -68,13 +68,13 @@ export function recruitBandProfile(document:CampaignDocument,reader:KnowledgeRea
   if(memberCount(document.campaign.warriors)+quantity>effectiveMaximumModels(document.campaign))return{ok:false,message:`Cannot exceed ${effectiveMaximumModels(document.campaign)} warband members.`};
   if(kind==="hero"&&heroCount(document.campaign.warriors)+1>document.campaign.configuration.hero_limit)return{ok:false,message:`Cannot exceed ${document.campaign.configuration.hero_limit} heroes.`};
   const cost=Number(data["cost"]??0)*quantity, gold=(currentState(document)?.gold??0)+(post.gold_delta??0); if(cost>gold)return{ok:false,message:`Not enough gold: ${cost} gc needed, ${gold} available.`};
-  const characteristics=(data["characteristics"]??{}) as OpenPayload, stats=Object.fromEntries(Object.entries(characteristics).filter(([,value])=>typeof value==="number"));
+  const characteristics=(data["characteristics"]??{}) as OpenPayload, stats=Object.fromEntries(Object.entries(characteristics).filter(([,value])=>typeof value==="number")) as Record<string,number>;
   const fixed=Array.isArray(data["fixed_equipment"])?data["fixed_equipment"].filter((id):id is string=>typeof id==="string"):[];
   const equipment=fixed.map((item_id)=>{const item=reader.queryKnowledge({id:{kind:"item_id",value:item_id}});return{item_id,name:item.ok?item.record.names["en"]??item_id:item_id,quantity,acquisition:"fixed" as const,per_model:true,transferable:false};});
   const traits=(data["combat_traits"]??{}) as OpenPayload, skills=[...(Array.isArray(data["inherent_rules"])?data["inherent_rules"]:[]),...(Array.isArray(traits["starting_skills"])?traits["starting_skills"]:[])].filter((value):value is string=>typeof value==="string");
   const base=profile.record.names["en"]??input.profile_id, names=new Set(document.campaign.warriors.map((row)=>row.name)), wanted=String(input.name??"").trim()||(kind==="hero"?base:`${base} Group`); let name=wanted,index=2;while(names.has(name))name=`${wanted} ${index++}`;
   const occurrence=document.campaign.warriors.filter((row)=>row.profile_id===input.profile_id).length+1;
-  const warrior={id:`${input.profile_id}#recruit-${occurrence}`,name,profile_name:base,kind,stats,equipment,skills,experience:Number(data["experience"]??0),quantity,cost:Number(data["cost"]??0),profile_id:input.profile_id,skill_access:Array.isArray(data["skill_access"])?data["skill_access"].filter((value):value is string=>typeof value==="string"):[]};
+  const warrior:CampaignDocument["campaign"]["warriors"][number]={id:`${input.profile_id}#recruit-${occurrence}`,name,profile_name:base,kind,stats,equipment,skills,experience:Number(data["experience"]??0),quantity,cost:Number(data["cost"]??0),profile_id:input.profile_id,skill_access:Array.isArray(data["skill_access"])?data["skill_access"].filter((value):value is string=>typeof value==="string"):[]};
   const changed={...post,gold_delta:(post.gold_delta??0)-cost,event_log:[...(post.event_log??[]),{step:7,type:"recruit",warrior_id:warrior.id,profile_id:input.profile_id,description:`${base} ×${quantity} recruited for ${cost} gc.`}]};
   const inventory=document.campaign.inventory.map((row)=>({...row})); for(const item of equipment){const stock=inventory.find((row)=>row.id===item.item_id);if(stock){stock.owned+=item.quantity;stock.equipped+=item.quantity;}else inventory.push({id:item.item_id,name:item.name,category:"Equipment",owned:item.quantity,equipped:item.quantity,stash:0,value:0});}
   return{ok:true,document:withCampaign(document,{...document.campaign,inventory,warriors:[...document.campaign.warriors,warrior],post_battles:document.campaign.post_battles.map((row)=>row===post?changed:row)})};

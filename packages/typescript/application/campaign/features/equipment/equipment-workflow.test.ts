@@ -155,7 +155,7 @@ describe("P6.3: assign & withdraw via the service", () => {
     expect(item).toMatchObject({ owned: 3, equipped: 2, stash: 1 });
     const greta = result.document.campaign.warriors.find((w) => w.id === "w2");
     expect(greta?.equipment).toEqual([
-      { item_id: "mace", name: "Mace", quantity: 2, acquisition: "stash_assignment", unit_cost: 5 },
+      { item_id: "mace", name: "Mace", quantity: 2, acquisition: "stash_assignment", unit_cost: 5, acquisition_costs: [5, 5] },
     ]);
     // Real campaign mutation → dirty.
     expect(service.isDirty()).toBe(true);
@@ -185,7 +185,7 @@ describe("P6.3: assign & withdraw via the service", () => {
     expect(item).toMatchObject({ owned: 3, equipped: 1, stash: 2 });
     const greta = result.document.campaign.warriors.find((w) => w.id === "w2");
     expect(greta?.equipment).toEqual([
-      { item_id: "mace", name: "Mace", quantity: 1, acquisition: "stash_assignment", unit_cost: 5 },
+      { item_id: "mace", name: "Mace", quantity: 1, acquisition: "stash_assignment", unit_cost: 5, acquisition_costs: [5] },
     ]);
   });
 

@@ -1,4 +1,4 @@
-"""P7.2 (web-migration-parallel-plan.md §P7.2): the corrupt corpus driven
+"""Web migration malformed-corpus gate: the corrupt corpus driven
 through the desktop Python reader. Every corpus file must be rejected with a
 ``CampaignFileError`` whose message contains the manifest's stable substring —
 the same manifest the TS adapter harness asserts against.

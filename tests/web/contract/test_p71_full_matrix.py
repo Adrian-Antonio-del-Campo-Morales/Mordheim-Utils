@@ -1,4 +1,4 @@
-"""P7.1 (web-migration-parallel-plan.md §8): the full bidirectional
+"""Web migration interoperability gate: the full bidirectional
 round-trip matrix across every producer/consumer pair.
 
 Three producers exist today: the Python writer (`save_campaign`), the TS

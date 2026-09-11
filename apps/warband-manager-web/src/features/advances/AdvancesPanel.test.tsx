@@ -47,7 +47,7 @@ function campaign(): Campaign {
         stats: { M: 4, WS: 4, S: 3 },
         equipment: [],
         skills: [],
-        experience: 8,
+        experience: 20,
         cost: 65,
       },
       {

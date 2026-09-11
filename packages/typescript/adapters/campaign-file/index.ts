@@ -1,5 +1,5 @@
 /**
- * P3.2 (web-migration-parallel-plan.md §P3.2): the real `.mordheim` v4 file
+ * Web migration campaign-file adapter: the real `.mordheim` v4 file
  * adapter — reader, validator and writer of the neutral contract defined in
  * `contracts/campaign-file-v4/`.
  *

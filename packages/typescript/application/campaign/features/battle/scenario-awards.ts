@@ -43,7 +43,7 @@ export function calculatedAwards(rows: readonly ScenarioAward[], warriors: reado
     if (row.manual) { for (const [id, amount] of Object.entries(manual[row.id] ?? {})) add(id, amount); continue; }
     if (row.trigger === "survived_battle") warriors.forEach((warrior) => add(warrior.id, row.amount));
     if (row.trigger === "warband_won_battle" && result === "win" && leader) add(leader.id, row.amount);
-    if (row.trigger === "enemy_put_out_of_action") warriors.filter((warrior) => warrior.kind === "hero").forEach((warrior) => add(warrior.id, row.amount * (enemyOoa[warrior.id] ?? 0));
+    if (row.trigger === "enemy_put_out_of_action") warriors.filter((warrior) => warrior.kind === "hero").forEach((warrior) => add(warrior.id, row.amount * (enemyOoa[warrior.id] ?? 0)));
   }
   return totals;
 }

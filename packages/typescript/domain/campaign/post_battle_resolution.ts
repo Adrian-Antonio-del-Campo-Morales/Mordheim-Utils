@@ -7,7 +7,7 @@
  * desktop contract that no value is a Python constant.
  */
 
-import type { OpenPayload } from "../kernel/usecases";
+import type { OpenPayload } from "./kernel/state";
 
 export interface InjuryOutcome {
   readonly result: string;
@@ -176,7 +176,8 @@ export class PostBattleResolver {
   /** Rarity search against the Trading Post. */
   resolveRaritySearch(itemId: string, roll: number, modifiers = 0): RarityOutcome {
     const row = this.artefact.campaign["trading-post"].items.find((x) => x.item_id === itemId);
-    const rarity = row?.availability?.rarity ?? null;
+    if (row?.availability?.kind === "common") return { rarity: null, success: true };
+    const rarity = row?.availability?.kind === "rare" ? row.availability.rarity ?? null : null;
     if (rarity === null) return { rarity: null, success: false };
     return { rarity, success: roll + modifiers >= rarity };
   }

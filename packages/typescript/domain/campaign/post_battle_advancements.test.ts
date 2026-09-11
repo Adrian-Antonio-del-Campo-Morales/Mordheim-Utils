@@ -9,7 +9,8 @@
  * against KB tables, duplicates persist difficulty modifiers, racial
  * maximums block further increases. The web kernel models the decision
  * layer (`applyAdvance`) — the dice-table rows pin the kernel contract;
- * full engine-side promotion splits carry a #TODO(web).
+ * promotion splits are implemented by the application
+ * `advance-resolution-workflow.promoteHenchman` (not the kernel).
  */
 
 import { describe, expect, it } from "vitest";
@@ -90,13 +91,13 @@ describe("threshold crossing (desktop sync_pending_advances)", () => {
     // Desktop: matriarch at 23 XP → exactly one pending advance (20 rung);
     // re-sync adds nothing. Kernel: advancesForExperience is pure — same XP,
     // same count, no drift.
-    expect(advancesForExperience(23)).toBe(1);
-    expect(advancesForExperience(23)).toBe(advancesForExperience(23));
+    expect(advancesForExperience(23, "hero")).toBe(1);
+    expect(advancesForExperience(23, "hero")).toBe(advancesForExperience(23, "hero"));
     // Desktop: novices 4→8 XP crosses the first henchman rung.
-    expect(advancesForExperience(4)).toBe(0);
-    expect(advancesForExperience(8)).toBe(1);
+    expect(advancesForExperience(4, "henchman")).toBe(0);
+    expect(advancesForExperience(8, "henchman")).toBe(1);
     // Desktop: 12 XP earned at once earns both the 8 and 16 rungs.
-    expect(advancesForExperience(16)).toBe(2);
+    expect(advancesForExperience(16, "henchman")).toBe(2);
   });
 
   it("multiple advances for one warrior resolve by threshold order", () => {
@@ -169,10 +170,10 @@ describe("roll outcomes (desktop dice table)", () => {
     if (!result.ok) return;
     const matriarch = result.state.campaign.warriors.find((w) => w.id === "matriarch");
     expect(matriarch?.skills).toContain("Combat Master");
-    // Duplicate skill is rejected ("already knows").
+    // The pending advance was spent, so no second commitment is available.
     const duplicate = applyAdvance(result.state, { warrior_id: "matriarch", choice: "skill:Combat Master" });
     expect(duplicate.ok).toBe(false);
-    if (!duplicate.ok) expect(duplicate.reason).toBe("conflict");
+    if (!duplicate.ok) expect(duplicate.reason).toBe("prerequisite_missing");
   });
 });
 
@@ -199,7 +200,8 @@ describe("racial maximums and edge cases", () => {
     // Desktop: a choice not offered is rejected even when nothing is pending.
     const document = makeDocument();
     const anna = applyAdvance(document, { warrior_id: "anna", choice: "skill:Iron Will" });
-    // Anna has 19 XP — kernel thresholds give her pending count ≥ 1.
-    expect(anna.ok).toBe(true);
+    // Anna has not reached the first hero threshold (20 XP).
+    expect(anna.ok).toBe(false);
+    if (!anna.ok) expect(anna.reason).toBe("prerequisite_missing");
   });
 });

@@ -1,5 +1,5 @@
 /**
- * P6.6 (web-migration-parallel-plan.md §P6.6): experience & advances — the
+ * Web migration advances workflow: experience & advances — the
  * application feature block over the kernel's `applyAdvance` use case.
  *
  * What this adds beyond the kernel:
@@ -57,7 +57,7 @@ function learnedSkills(warrior: Warrior): readonly string[] {
 /** Read model for the advances panel. */
 export function advancesOverview(document: CampaignDocument): AdvancesOverview {
   const warriors = document.campaign.warriors.map((warrior: Warrior) => {
-    const earned = advancesForExperience(warrior.experience);
+    const earned = advancesForExperience(warrior.experience, warrior.kind === "hero" ? "hero" : "henchman");
     const statTaken = warrior.stat_advances
       ? Object.values(warrior.stat_advances).reduce((total, value) => total + value, 0)
       : 0;

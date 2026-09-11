@@ -38,7 +38,7 @@ function campaign(): Campaign {
     current_state_number: 1,
     warriors: [
       {
-        // XP 8 → 3 earned advances; none taken yet.
+        // Hero XP 40 reaches first two desktop thresholds.
         id: "w1",
         name: "Sigrid",
         profile_name: "Sigmarite Matriarch",
@@ -46,11 +46,11 @@ function campaign(): Campaign {
         stats: { M: 4, WS: 4, S: 3 },
         equipment: [],
         skills: [],
-        experience: 8,
+        experience: 40,
         cost: 65,
       },
       {
-        // XP 4 → 1 earned; 1 stat advance taken (WS).
+        // XP 4 is below first hero threshold.
         id: "w2",
         name: "Greta",
         profile_name: "Sister Superior",
@@ -125,19 +125,19 @@ describe("P6.6: pending-advance read model", () => {
     const overview = advancesOverview(service.current()!);
     const byId = new Map(overview.warriors.map((w) => [w.warrior_id, w]));
 
-    // Sigrid: XP 8 → 3 earned, 0 taken, 3 pending.
-    expect(byId.get("w1")).toMatchObject({ earned: 3, taken: 0, pending: 3, eligible: true });
-    // Greta: XP 4 → 1 earned (threshold 5 not reached), 1 stat + 1 skill
+    // Sigrid: XP 40 reaches hero thresholds 20 and 40.
+    expect(byId.get("w1")).toMatchObject({ earned: 2, taken: 0, pending: 2, eligible: true });
+    // Greta: XP 4 earns no advance; 1 stat + 1 skill
     // taken → 0 pending (over-taken clamps at 0).
     expect(byId.get("w2")).toMatchObject({
-      earned: 1,
+      earned: 0,
       taken: 2,
       pending: 0,
       learned_skills: ["strong-willed"],
     });
     // Hireling: never eligible, never pending.
     expect(byId.get("h1")).toMatchObject({ eligible: false, pending: 0 });
-    expect(overview.total_pending).toBe(3);
+    expect(overview.total_pending).toBe(2);
   });
 });
 
@@ -160,7 +160,7 @@ describe("P6.6: applying choices via the service", () => {
     const overview = advancesOverview(service.current()!);
     expect(overview.warriors.find((w) => w.warrior_id === "w1")).toMatchObject({
       taken: 1,
-      pending: 2,
+      pending: 1,
     });
   });
 

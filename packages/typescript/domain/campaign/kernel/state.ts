@@ -1,5 +1,5 @@
 /**
- * P3.4 (web-migration-parallel-plan.md §4): frozen public state model of the
+ * Web migration campaign state model: frozen public state model of the
  * campaign domain. Conceptually aligned with the `.mordheim` v4 contract
  * (contracts/campaign-file-v4) — the campaign/view split is deliberate:
  * persistent campaign state never mixes with reconstructible UI selection.
@@ -86,6 +86,8 @@ export interface Warrior {
   readonly stats: IntMap;
   readonly equipment: readonly EquipmentEntry[];
   readonly skills: readonly string[];
+  /** Skills learned through advances; omitted legacy rows count all skills as learned. */
+  readonly learned_skills?: readonly string[];
   readonly experience: number;
   readonly previous_experience?: number | null;
   /** Henchman group size; 1 for heroes and hirelings. */

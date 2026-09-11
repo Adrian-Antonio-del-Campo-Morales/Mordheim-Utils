@@ -142,18 +142,30 @@ describe("P6.1 TimelinePanel", () => {
     ]);
   });
 
+  it("keeps states ordered before battles even when source arrays are unordered", async () => {
+    const source = campaign();
+    (source as unknown as { states: unknown[] }).states = [...source.states].reverse();
+    (source as unknown as { battles: unknown[] }).battles = [...source.battles].reverse();
+    expect(enumerateMoments(source)).toEqual([
+      "draft:0",
+      "state:1",
+      "state:2",
+      "battle:1",
+    ]);
+  });
+
   it("selects a moment by clicking and marks it current without dirtying", async () => {
     const user = userEvent.setup();
     const service = await loadedService();
     render(<Harness service={service} />);
 
     // Draft is selected by default.
-    expect(screen.getByRole("button", { name: "Draft" })).toHaveAttribute("aria-current", "true");
+    expect(screen.getByRole("button", { name: /Initial warband.*draft/i })).toHaveAttribute("aria-current", "true");
 
     await user.click(screen.getByRole("button", { name: /State #2/ }));
     const fresh = screen.getByRole("button", { name: /State #2/ });
     expect(fresh).toHaveAttribute("aria-current", "true");
-    expect(screen.getByRole("button", { name: "Draft" })).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("button", { name: /Initial warband.*draft/i })).not.toHaveAttribute("aria-current");
 
     // Selection never dirties the document (P6.1 contract).
     expect(service.isDirty()).toBe(false);

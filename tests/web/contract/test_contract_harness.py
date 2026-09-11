@@ -1,4 +1,4 @@
-"""P3.3 (web-migration-parallel-plan.md §4): contract test harness.
+"""Web migration contract harness: contract test harness.
 
 Shared evidence for Python and TypeScript consumers of the `.mordheim` v4
 contract and the KB web artefact. This harness reads the contract sources

@@ -5,6 +5,7 @@ import { CampaignAppProvider } from "./features/campaign/useCampaignApp";
 import { CampaignSlice } from "./features/campaign/CampaignSlice";
 import { createService, loadKnowledge } from "./features/campaign/default-deps";
 import { ArtefactKnowledgeReader, resolveName } from "@adapters/knowledge-reader/index";
+import { RulesCatalogue } from "@app/rules/rules-catalogue";
 import { CampaignStatistics } from "./features/statistics/CampaignStatistics";
 
 type Locale = "es" | "en";
@@ -24,76 +25,21 @@ function download(filename: string, bytes: BlobPart, type: string) {
 
 type RuleCategory = "special-rules" | "conditions" | "core-rules" | "skills" | "equipment" | "spells" | "scenarios" | "injuries";
 
-function rulesRows(knowledge: ArtefactKnowledgeReader, category: RuleCategory): readonly Record<string, unknown>[] {
-  if (category === "special-rules") return knowledge.rulesDocument("special-rules");
-  if (category === "conditions") return knowledge.rulesDocument("conditions");
-  if (category === "core-rules") return knowledge.rulesDocument("core-combat");
-  if (category === "skills") return knowledge.list("skill");
-  if (category === "equipment") return knowledge.list("item");
-  if (category === "scenarios") return knowledge.list("scenario");
-  if (category === "spells") {
-    const lores = knowledge.campaignSection("magic")["lores"];
-    return Array.isArray(lores) ? lores.flatMap((lore) => {
-      const row = lore as Record<string, unknown>;
-      return Array.isArray(row["spells"])
-        ? (row["spells"] as Record<string, unknown>[]).map((spell) => ({ ...spell, lore_id: row["id"] }))
-        : [];
-    }) : [];
-  }
-  const tables = knowledge.campaignSection("serious-injuries")["tables"];
-  return Array.isArray(tables) ? tables as Record<string, unknown>[] : [];
-}
-
-function profileLinks(knowledge: ArtefactKnowledgeReader, category: RuleCategory, entry: Record<string, unknown>, locale: Locale) {
-  if (category !== "skills" && category !== "equipment" && category !== "special-rules" && category !== "spells") return [];
-  const entryId = String(entry.id ?? entry.item_id ?? "");
-  const skillCategory = String(entry.category ?? "").toLocaleLowerCase();
-  const bands = new Map(knowledge.list("band").map((band) => [String(band.id), resolveName(band, locale)]));
-  const loreAssignments = knowledge.campaignSection("magic")["lore_assignments"] as Record<string, unknown> | undefined;
-  const assignedProfiles = Array.isArray(loreAssignments?.["rows"]) ? loreAssignments["rows"] as Record<string, unknown>[] : [];
-  const relationLabel = (relation: string) => locale === "es"
-    ? ({ "starting skill": "habilidad inicial", "skill table": "tabla de habilidades", "starting equipment": "equipo inicial", "permitted equipment": "equipo permitido", "package rule": "regla de banda", "spell lore": "saber mágico" }[relation] ?? relation)
-    : relation;
-  return knowledge.list("profile").flatMap((profile) => {
-    const access = Array.isArray(profile.skill_access) ? profile.skill_access.map((value) => String(value).toLocaleLowerCase()) : [];
-    const traits = profile.combat_traits && typeof profile.combat_traits === "object" ? profile.combat_traits as Record<string, unknown> : {};
-    const starting = Array.isArray(traits.starting_skills) ? traits.starting_skills.map(String) : [];
-    const fixed = Array.isArray(profile.fixed_equipment) ? profile.fixed_equipment.map((value) => typeof value === "string" ? value : String((value as Record<string, unknown>).item_id ?? "")) : [];
-    const permitted = Array.isArray(profile.equipment_access) ? profile.equipment_access.map((value) => String((value as Record<string, unknown>).item_id ?? "")) : [];
-    const packageRules = Array.isArray(profile.rule_ids) ? profile.rule_ids.map(String) : [];
-    const assignedLore = assignedProfiles.some((assignment) => String(assignment.profile_id ?? "") === String(profile.id) && (assignment.band == null || String(assignment.band) === String(profile.band_id)) && String(assignment.lore ?? "") === String(entry.lore_id ?? ""));
-    const relation = category === "skills"
-      ? starting.includes(entryId) ? "starting skill" : skillCategory && access.includes(skillCategory) ? "skill table" : null
-      : category === "equipment" ? fixed.includes(entryId) ? "starting equipment" : permitted.includes(entryId) ? "permitted equipment" : null
-      : category === "special-rules" ? packageRules.includes(entryId) ? "package rule" : null
-      : assignedLore ? "spell lore" : null;
-    if (!relation) return [];
-    return [{ band: bands.get(String(profile.band_id)) ?? String(profile.band_id), profile: resolveName(profile, locale), relation: relationLabel(relation), profileId: String(profile.id) }];
-  }).sort((left, right) => `${left.band}:${left.profile}`.localeCompare(`${right.band}:${right.profile}`, locale));
-}
-
 function RulesPage({ knowledge, locale }: { knowledge: ArtefactKnowledgeReader; locale: Locale }) {
+  const catalogue = new RulesCatalogue(knowledge);
   const [query, setQuery] = useState("");
   const [kind, setKind] = useState<RuleCategory>("special-rules");
-  const needle = query.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLocaleLowerCase();
-  const rows = rulesRows(knowledge, kind).filter((row) => JSON.stringify(row).normalize("NFD").replace(/\p{Diacritic}/gu, "").toLocaleLowerCase().includes(needle));
+  const rows = query.trim()
+    ? catalogue.search(query, { category_id: kind, locale })
+    : catalogue.entries(kind, locale);
   const [selected, setSelected] = useState<string | null>(null);
-  const selectedRow = rows.find((row) => String(row.id ?? row.item_id) === selected) ?? rows[0];
-  const links = selectedRow ? profileLinks(knowledge, kind, selectedRow, locale) : [];
+  const selectedRow = rows.find((row) => row.entry_id === selected) ?? rows[0];
+  const links = selectedRow ? catalogue.profileLinks(kind, selectedRow, locale) : [];
   const categories: readonly [RuleCategory, string][] = locale === "es" ? [["special-rules","Reglas especiales"],["conditions","Condiciones"],["core-rules","Reglas básicas"],["skills","Habilidades"],["equipment","Equipo"],["spells","Hechizos"],["scenarios","Escenarios"],["injuries","Heridas graves"]] : [["special-rules","Special rules"],["conditions","Conditions"],["core-rules","Core rules"],["skills","Skills"],["equipment","Equipment"],["spells","Spells"],["scenarios","Scenarios"],["injuries","Serious injuries"]];
   return <section className="page"><div className="page-title"><p>KNOWLEDGE BASE</p><h1>{copy[locale].rules}</h1></div>
     <div className="rules-toolbar"><div className="tabs">{categories.map(([value,label]) => <button className={kind === value ? "active" : ""} onClick={() => { setKind(value); setSelected(null); setQuery(""); }} key={value}>{label}</button>)}</div><input aria-label={copy[locale].search} placeholder={copy[locale].search} value={query} onChange={(e) => setQuery(e.target.value)} /></div>
-    <div className="rules-layout"><div className="rule-list">{rows.map((row) => { const id=String(row.id ?? row.item_id); return <button className={id===String(selectedRow?.id ?? selectedRow?.item_id) ? "active" : ""} onClick={() => setSelected(id)} key={`${kind}:${id}`}>{resolveName(row, locale)}</button>; })}{rows.length===0 && <p>{copy[locale].noRules}</p>}</div>
-    <article className="rule-detail">{selectedRow && <><h2>{resolveName(selectedRow, locale)}</h2><p>{localizedText(selectedRow, locale)}</p>{Array.isArray(selectedRow.tags) && <div className="rule-tags">{selectedRow.tags.map((tag) => <span key={String(tag)}>{String(tag)}</span>)}</div>}{Array.isArray(selectedRow.source_refs) && <><h3>{locale === "es" ? "Fuentes" : "Sources"}</h3><ul>{selectedRow.source_refs.map((source, index) => { const row=source as Record<string, unknown>; const label=String(row.section ?? row.manual ?? source); const url=typeof row.url === "string" ? row.url : null; return <li key={`${label}:${index}`}>{url ? <a href={url} target="_blank" rel="noreferrer">{label}</a> : label}</li>; })}</ul></>}{links.length > 0 && <><h3>{locale === "es" ? "Disponible para" : "Available to"}</h3><ul>{links.map((link) => <li key={`${link.band}:${link.profileId}:${link.relation}`}>{link.band} · {link.profile} ({link.relation})</li>)}</ul></>}</>}</article></div></section>;
-}
-
-function localizedText(row: Record<string, unknown>, locale: Locale): string {
-  for (const key of ["effect", "description", "text", "note"]) {
-    const translated = row[`${key}_i18n`];
-    if (translated && typeof translated === "object" && typeof (translated as Record<string, unknown>)[locale] === "string") return String((translated as Record<string, unknown>)[locale]);
-    if (typeof row[key] === "string") return String(row[key]);
-  }
-  return locale === "es" ? "No hay texto descriptivo disponible." : "No descriptive text is available.";
+    <div className="rules-layout"><div className="rule-list">{rows.map((row) => <button className={row.entry_id===selectedRow?.entry_id ? "active" : ""} onClick={() => setSelected(row.entry_id)} key={`${kind}:${row.entry_id}`}>{row.name}</button>)}{rows.length===0 && <p>{copy[locale].noRules}</p>}</div>
+    <article className="rule-detail">{selectedRow && <><h2>{selectedRow.name}</h2><p>{selectedRow.effect}</p>{selectedRow.tags.length > 0 && <div className="rule-tags">{selectedRow.tags.map((tag) => <span key={String(tag)}>{String(tag)}</span>)}</div>}{selectedRow.source_refs.length > 0 && <><h3>{locale === "es" ? "Fuentes" : "Sources"}</h3><ul>{selectedRow.source_refs.map((source, index) => { const row=source as Record<string, unknown>; const label=String(row.section ?? row.manual ?? source); const url=typeof row.url === "string" ? row.url : null; return <li key={`${label}:${index}`}>{url ? <a href={url} target="_blank" rel="noreferrer">{label}</a> : label}</li>; })}</ul></>}{links.length > 0 && <><h3>{locale === "es" ? "Disponible para" : "Available to"}</h3><ul>{links.map((link) => <li key={`${link.band}:${link.profile_id}:${link.relation}`}>{link.band} · {link.profile} ({link.relation})</li>)}</ul></>}</>}</article></div></section>;
 }
 
 export function ProductApp() {
@@ -143,7 +89,7 @@ export function ProductApp() {
     }
     if (failures.length) setOperationError(failures.join(" · "));
   };
-  const exportSession = async (session: Session) => { const result=await session.service.prepareExport(); if (result.ok && result.payload) { download(result.payload.filename, result.payload.text, "application/json"); session.service.markExported(result.document); return true; } setOperationError(result.message); return false; };
+  const exportSession = async (session: Session) => { const result=await session.service.prepareExport(); if (result.ok && result.payload) { download(result.payload.filename, result.payload.text, "application/json"); session.service.markExported(result.document); return true; } setOperationError(result.ok ? "Export did not produce a file." : result.message); return false; };
   const exportActive = async () => { if (active) await exportSession(active); };
   const undo = async () => { if (active) await active.service.run("undo", {}); };
   const exportPdf = async () => { if (!active) return; const doc=active.service.current(); if (!doc) return; try { const { createWarbandPdf } = await import("./features/export/warband-pdf"); const bytes=await createWarbandPdf(doc, locale); const selected=String(doc.view.selected_moment??"draft:0"); const suffix=selected.startsWith("state:")?`-state-${selected.slice(6)}`:selected.startsWith("post:")?`-post-${selected.slice(5)}`:"-draft"; download(`${doc.campaign.identity.warband_name.replace(/[^\w-]+/g, "_")}${suffix}.pdf`, bytes, "application/pdf"); } catch (error) { setOperationError(error instanceof Error ? error.message : String(error)); } };
@@ -152,7 +98,7 @@ export function ProductApp() {
     <header className="topbar"><button className="brand" onClick={() => setPage("home")}><strong>MORDHEIM</strong><span>WARBAND MANAGER</span></button>
       <nav aria-label="Primary">{(["home","campaign","statistics","library","rules","settings"] as Page[]).map((key) => <button key={key} className={page===key ? "active" : ""} disabled={(key==="campaign"||key==="statistics")&&!active} onClick={() => setPage(key)}>{key === "statistics" ? locale === "es" ? "Estadísticas" : "Statistics" : t[key]}</button>)}</nav>
       <div className="actions"><button onClick={() => setShowCreate(true)} disabled={!knowledge}>{t.newCampaign}</button><button onClick={() => setShowCreate(true)} disabled={!knowledge}>{t.newWarband}</button><button onClick={() => fileRef.current?.click()} disabled={!knowledge}>{t.load}</button><button onClick={undo} disabled={!active?.service.canUndo()}>{t.undo}</button><button onClick={exportActive} disabled={!active}>{t.save}</button><button onClick={() => void exportPdf()} disabled={!active}>{t.pdf}</button></div>
-      <input hidden ref={fileRef} type="file" multiple accept=".mordheim,application/json" onChange={(e) => { const files=[...(e.target.files??[])]; if(files.length) void importFiles(files); e.target.value=""; }} />
+      <input hidden aria-label={locale === "es" ? "Cargar campañas .mordheim" : "Load .mordheim campaigns"} ref={fileRef} type="file" multiple accept=".mordheim,application/json" onChange={(e) => { const files=[...(e.target.files??[])]; if(files.length) void importFiles(files); e.target.value=""; }} />
     </header>
     {kbError && <output className="global-error" role="alert">{t.kbFail} {kbError} <button onClick={loadKb}>{t.retry}</button></output>}
     {operationError && <output className="global-error" role="alert">{operationError} <button onClick={() => setOperationError(null)}>{t.dismiss}</button></output>}
@@ -165,7 +111,7 @@ export function ProductApp() {
       {page==="settings" && <section className="page"><div className="page-title"><p>PREFERENCES</p><h1>{t.settings}</h1></div><label>{t.language}<select value={locale} onChange={(e) => setLocale(e.target.value as Locale)}><option value="es">Español</option><option value="en">English</option></select></label><p>{t.sessionHelp}</p></section>}
     </main>
     {showCreate && <div className="modal-backdrop" role="presentation"><section className="modal" role="dialog" aria-modal="true" aria-labelledby="new-title"><button className="close" aria-label={t.close} onClick={() => setShowCreate(false)}>×</button><h2 id="new-title">{t.newCampaign}</h2><label>{t.campaignName}<input value={campaignName} onChange={(e) => setCampaignName(e.target.value)} /></label><label>{t.warbandName}<input value={warbandName} onChange={(e) => setWarbandName(e.target.value)} /></label><label>{t.band}<select value={bandId} onChange={(e) => setBandId(e.target.value)}>{bands.map((row) => <option value={String(row.id)} key={String(row.id)}>{resolveName(row, locale)}</option>)}</select></label><button className="primary" disabled={!campaignName.trim()||!warbandName.trim()||!bandId} onClick={() => void create()}>{t.create}</button></section></div>}
-    {pendingRemove && <div className="modal-backdrop"><section className="modal" role="dialog" aria-modal="true"><h2>{locale === "es" ? "Cambios sin exportar" : "Unexported changes"}</h2><p>{locale === "es" ? "Esta campaña tiene cambios. Puedes exportarlos antes de retirarla de la sesión." : "This campaign has changes. You can export them before removing it from the session."}</p><div className="modal-actions"><button className="primary" onClick={() => void (async () => { const session=sessions.find((item) => item.id===pendingRemove); if(session && await exportSession(session)) removeSession(pendingRemove); })()}>{locale === "es" ? "Exportar y retirar" : "Export and remove"}</button><button onClick={() => removeSession(pendingRemove)}>{locale === "es" ? "Descartar" : "Discard"}</button><button onClick={() => setPendingRemove(null)}>{locale === "es" ? "Cancelar" : "Cancel"}</button></div></section></div>}
+    {pendingRemove && <div className="modal-backdrop"><section className="modal" role="dialog" aria-modal="true" aria-labelledby="discard-session-title"><h2 id="discard-session-title">{locale === "es" ? "Cambios sin exportar" : "Unexported changes"}</h2><p>{locale === "es" ? "Esta campaña tiene cambios. Puedes exportarlos antes de retirarla de la sesión." : "This campaign has changes. You can export them before removing it from the session."}</p><div className="modal-actions"><button className="primary" onClick={() => void (async () => { const session=sessions.find((item) => item.id===pendingRemove); if(session && await exportSession(session)) removeSession(pendingRemove); })()}>{locale === "es" ? "Exportar y retirar" : "Export and remove"}</button><button onClick={() => removeSession(pendingRemove)}>{locale === "es" ? "Descartar" : "Discard"}</button><button onClick={() => setPendingRemove(null)}>{locale === "es" ? "Cancelar" : "Cancel"}</button></div></section></div>}
   </div>;
 
   function removeSession(id: string) { const remaining=sessions.filter((item) => item.id!==id); setSessions(remaining); if(activeId===id) { setActiveId(remaining.at(-1)?.id??null); setPage(remaining.length ? "campaign" : "library"); } setPendingRemove(null); }

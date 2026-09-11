@@ -1,5 +1,5 @@
 /**
- * P6.7 (web-migration-parallel-plan.md §P6.7): hirelings, exploration and
+ * Web migration hirelings surface: hirelings, exploration and
  * trading UI.
  *
  * Shows the hireable offers (hired swords / dramatis personae) with their

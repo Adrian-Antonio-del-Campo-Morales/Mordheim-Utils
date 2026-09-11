@@ -1,6 +1,6 @@
 name: CI
 
-# P8.1 (web-migration-parallel-plan.md §9): validation workflow.
+# Web migration validation workflow; see docs/decisions/web-migration.md.
 # A failure of the KB validation, the v4 contract checks, the Python tests,
 # the TypeScript tests or the web build must block the pipeline. Publishing
 # is a separate, gated workflow (deploy-pages.yml) that runs only after this

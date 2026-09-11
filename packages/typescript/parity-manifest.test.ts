@@ -22,6 +22,8 @@ interface ManifestRow {
   status: string;
   parity_vector: string | null;
   exclusion_reason: string | null;
+  evidence: string | null;
+  follow_up: string | null;
 }
 
 interface Manifest {
@@ -33,11 +35,13 @@ interface Manifest {
   rows: ManifestRow[];
 }
 
+const VALID_STATUSES = new Set(["implemented", "partial", "blocked", "excluded", "pending"]);
+
 const manifest: Manifest = JSON.parse(readFileSync(MANIFEST, "utf-8"));
 
 describe("campaign test manifest (traceability matrix)", () => {
   it("exists and declares the plan", () => {
-    expect(manifest.plan).toBe("web-test-migration-plan.md");
+    expect(manifest.plan).toBe("docs/decisions/web-migration.md");
     expect(manifest.deterministic).toBe(true);
     expect(manifest.rows.length).toBeGreaterThan(0);
   });
@@ -57,8 +61,22 @@ describe("campaign test manifest (traceability matrix)", () => {
       expect(row.source_test).toBeTruthy();
       expect(row.behavior_id).toBeTruthy();
       expect(row.owner).toBeTruthy();
+      expect(VALID_STATUSES.has(row.status), row.source_test).toBe(true);
+      expect(row.status, row.source_test).not.toBe("pending");
       if (row.web_disposition !== "X") {
         expect(row.web_target, `${row.source_test} has no web_target`).toBeTruthy();
+        expect(existsSync(resolve(ROOT, row.web_target!)), row.web_target!).toBe(true);
+        expect(row.status).not.toBe("excluded");
+      } else {
+        expect(row.status).toBe("excluded");
+      }
+      if (row.status === "implemented") {
+        expect(row.evidence, row.source_test).toBeTruthy();
+        expect(row.follow_up, row.source_test).toBeNull();
+      }
+      if (row.status === "partial" || row.status === "blocked") {
+        expect(row.evidence, row.source_test).toBeTruthy();
+        expect(row.follow_up, row.source_test).toBeTruthy();
       }
     }
   });

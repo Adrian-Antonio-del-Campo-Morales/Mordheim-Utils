@@ -6,10 +6,10 @@
  * Tkinter-dialog rows (equipment picker) reduce to their kernel-level
  * guarantees on the web (no Tkinter): stash assignment honours group copies,
  * weapon access requires the skill and resolves upgrade base ids, and free
- * rewards never charge gold. #TODO(web): prisoner follow-ups and free
- * profile rewards are post-battle-engine steps; the invariants below pin
- * the kernel contract that exists today (skills, equipment structure,
- * treasury guard).
+ * rewards never charge gold. Prisoner follow-ups (`prisoner_join_group`)
+ * and free profile rewards (`grant_free_profile`) are handled by the
+ * application exploration workflow; the invariants below pin the kernel
+ * contract (skills, equipment structure, treasury guard).
  */
 
 import { describe, expect, it } from "vitest";

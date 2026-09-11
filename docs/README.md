@@ -1,48 +1,36 @@
 # Documentation
 
-Three kinds of documents, kept apart on purpose:
-
-- **Reference** — what things are and how they work. Descriptive, stable.
-- **Guides** — step-by-step procedures for frequent tasks.
-- **Decisions** — development records: audit ledgers, rulings and backlogs.
-
 ## Reference
 
-| Document | Content |
-| --- | --- |
-| [Architecture](reference/architecture.md) | Packages, layers, allowed dependencies, the three engines and the central CLI. |
-| [Knowledge base](reference/knowledge-base.md) | Layout of `sources/knowledge/`, rule classification, loaders, path of a rule, golden rules. |
-| [Campaign Manager](reference/campaign-manager.md) | The campaign application: timeline model, layers, post-battle pipeline, features. |
-| [Verification](reference/verification.md) | The layered testing strategy, the interaction matrix, reports and runtime budgets. |
+- [Architecture](reference/architecture.md) — packages, layers and dependency rules.
+- [Knowledge base](reference/knowledge-base.md) — `sources/knowledge/`, loaders and ownership.
+- [Campaign Manager](reference/campaign-manager.md) — campaign state, timeline and post-battle model.
+- [Verification](reference/verification.md) — testing strategy and reports.
 
 ## Guides
 
-| Document | Task |
-| --- | --- |
-| [Modify the knowledge base](guides/modify-knowledge-base.md) | Change rule/table data safely. |
-| [Implement and verify rules](guides/implement-and-verify-rules.md) | Add combat behaviour, author semantic evidence, resolve rulings, diagnose failures. |
-| [Modify an application](guides/modify-application.md) | Add a use case to Combat Lab or the Campaign Manager. |
-| [Develop and release](guides/develop-and-release.md) | Per-change loop, release gates, packaging, performance gate. |
+- [Modify the knowledge base](guides/modify-knowledge-base.md)
+- [Implement and verify rules](guides/implement-and-verify-rules.md)
+- [Modify an application](guides/modify-application.md)
+- [Develop and release](guides/develop-and-release.md)
 
-## Decisions
+## Current migration guide
 
-| Document | Content |
-| --- | --- |
-| [Design rulings](decisions/design-rulings.md) | Permanent development decisions that bind the KB, engines or applications. |
-| [Verification history](decisions/verification-history.md) | Development record of the verification layers: the round-ledger convention, the mutation survivor and the case against pair explosion. |
-| [Modular source audit](decisions/modular-audit.md) | Audit record: findings M01–M28 status, additional findings, NumPy/native porting backlog. Retire once resolved. |
-| [Web migration preparation](decisions/web-migration-preparation.md) | Phase 0 map for the Warband Manager web migration: module inventory, import boundaries, extraction candidates. |
+- [Web migration](decisions/web-migration.md) — the single source for desktop → web scope, current status, remaining parity work, parallel ownership, operational decisions and completion gates.
+
+## Other decisions and reports
+
+- [Web parity coverage map](decisions/web-parity-coverage-map.md) — desktop → web test port index.
+- [Web parity gap report](decisions/web-parity-gap-report.md) — desktop suite coverage and known behaviour gaps.
+- [Design rulings](decisions/design-rulings.md)
+- [Verification history](decisions/verification-history.md)
+- [Modular source audit](decisions/modular-audit.md)
 
 ## Generated reports
 
-- `outputs/` (git-ignored) — audit CSVs, parity certificates, test reports,
-  benchmarks, and the Trading Post price collation
-  (`python tools/kb/price-collation.py` regenerates `outputs/knowledge/price-collation.md`,
-  the surviving review queue of differing list prices).
-  Always regenerate; never hand-edit. Page-verified verdicts for the collation
-  live in the committed sidecar `tools/kb/price-collation-resolutions.csv`.
+- `outputs/` (git-ignored) — audit CSVs, parity certificates, test reports and benchmarks. Regenerate; never hand-edit.
 
 ## Project-level
 
-- Root [README](../README.md) — monorepo overview, install, central CLI.
-- [TODO](../TODO.md) — actionable backlog (KB gaps, campaign integration).
+- Root [README](../README.md) — monorepo overview, install and central CLI.
+- [TODO](../TODO.md) — actionable repository backlog.

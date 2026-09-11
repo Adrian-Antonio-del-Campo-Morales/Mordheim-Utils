@@ -81,6 +81,11 @@ function rejected(reason: UseCaseRejectionReason, message: string): UseCaseResul
 
 /** A fake app service showing the UI-facing seam. */
 const fakeApp: CampaignAppService = {
+  createCampaign: async () => ({ ok: true, document }),
+  canUndo: () => false,
+  subscribe: () => () => {},
+  prepareExport: async () => ({ ok: true, document, payload: { filename: "test.mordheim", text: "{}" } }),
+  markExported: () => {},
   importCampaign: async () => ({ ok: true, document }),
   exportCampaign: async () => ({
     ok: true,

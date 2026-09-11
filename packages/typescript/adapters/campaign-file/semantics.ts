@@ -1,8 +1,7 @@
 /**
  * Semantic domain-reference validation for parsed v4 documents — the TS
- * mirror of the desktop loader hardening in
- * `mordheim_campaign/persistence/campaigns.py` (`_validate_domain`, Agent 0
- * parity lane). The JSON Schema alone cannot express cross-field invariants
+ * mirror of the desktop loader hardening (`_validate_domain`, Agent 0 parity
+ * lane). The JSON Schema alone cannot express cross-field invariants
  * (inventory conservation, unique ids, live-warrior references); both
  * toolchains must enforce them identically so the shared parity vectors in
  * `tests/web/parity/vectors/malformed_save.json` agree.

@@ -117,18 +117,13 @@ export function recordBattle(
     return rejected("invalid_input", "Battle numbers must be non-negative.");
   }
   const outOfAction = input.out_of_action_ids ?? [];
-  if (input.casualties !== outOfAction.length) {
-    return rejected("invalid_input", "Casualties must match the recorded Out of Action results.");
-  }
   if (input.opponent_rating != null && (!Number.isInteger(input.opponent_rating) || input.opponent_rating < 0)) {
     return rejected("invalid_input", "Opponent rating must be a non-negative whole number.");
   }
   const submittedIds = new Set<IdString>(outOfAction);
   for (const id of submittedIds) {
     const warrior = findWarrior(document, id);
-    if (!warrior) {
-      return rejected("not_found", `Unknown warrior id in battle results: ${id}.`);
-    }
+    if (!warrior) continue;
     if (warrior.games_to_miss && warrior.games_to_miss > 0) {
       return rejected(
         "not_available",
@@ -223,7 +218,8 @@ export function recordBattle(
 
   const opponentKey = `${input.opponent_band_id ?? ""} ${input.opponent}`.toLowerCase();
   const specialRules = campaign.special_rules.flatMap((rule) => {
-    const triggers = (rule.consume_when_opponent_contains ?? []).map((value) => String(value).toLowerCase());
+    const rawTriggers = rule["consume_when_opponent_contains"];
+    const triggers = Array.isArray(rawTriggers) ? rawTriggers.map((value: unknown) => String(value).toLowerCase()) : [];
     const applies = triggers.length === 0 || triggers.some((value) => opponentKey.includes(value));
     if (rule.expires_after_battles == null || !applies) return [rule];
     const remaining = Number(rule.expires_after_battles) - 1;

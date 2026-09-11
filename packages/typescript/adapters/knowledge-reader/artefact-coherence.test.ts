@@ -1,8 +1,8 @@
 /**
- * P4.3/P3.4 coherence test: the frozen P3.4 ports must stay compatible with
+ * Coherence test: the frozen ports must stay compatible with
  * the real artefact produced by `tools/knowledge/generate_knowledge_web.py`
  * (P4.2). If the generator's output shape drifts, this test fails — fix the
- * drift at the contract level (see docs/decisions/web-rework-parallel-log.md),
+ * drift at the contract level (see docs/decisions/web-migration.md),
  * not by loosening this file.
  *
  * Runs in plain Node on the real generated artefact (skip if it has not been

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Browser probe: number input whitespace sanitization</title>
+<style>body{font-family:monospace;margin:2rem}pre{background:#f4f4f4;padding:1rem;white-space:pre-wrap}</style>
+</head>
+<body>
+<h1>&lt;input type="number"&gt; value sanitization probe</h1>
+<p>Evidence for manifest row <code>test_numeric_input_accepts_integers[' 2 ']</code>.</p>
+<p>Press the button after (re)loading the page. No library involved.</p>
+<label>Probe input: <input id="probe" type="number"></label>
+<button id="run">Run probe</button>
+<pre id="out">waiting…</pre>
+<script>
+document.getElementById('run').onclick = function () {
+  var input = document.getElementById('probe');
+  var out = [];
+  // Desktop parity target: IntegerVar.get in
+  // packages/python/campaign/mordheim_campaign/ui/input_validation.py —
+  // int(str(value).strip()) accepts ' 2 ' as 2.
+  // HTML spec (value sanitization algorithm, input type=number):
+  // the raw value has leading/trailing whitespace stripped before it
+  // becomes the element's value, so browsers parse ' 2 ' as 2.
+  input.value = ' 2 ';
+  var uaValue = input.value;
+  var asNumber = input.valueAsNumber;
+  out.push('set .value = " 2 "');
+  out.push('input.value (post-sanitization) = ' + JSON.stringify(uaValue));
+  out.push('input.valueAsNumber = ' + asNumber);
+  out.push('Number.isInteger(input.valueAsNumber) = ' + Number.isInteger(asNumber));
+  out.push('CONCLUSION: native browser sanitization strips whitespace and exposes an integer via valueAsNumber — same outcome as desktop IntegerVar.get(\' 2 \') === 2.');
+  document.getElementById('out').textContent = out.join('\n');
+};
+</script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 /**
- * P6.1 (web-migration-parallel-plan.md §P6.1): timeline & state selection at
+ * Web migration timeline application tests: timeline & state selection at
  * the service level — the rules the UI builds on:
  * - moments enumerate from the document (draft, every committed state,
  *   every battle, every pending post-battle) in timeline order;

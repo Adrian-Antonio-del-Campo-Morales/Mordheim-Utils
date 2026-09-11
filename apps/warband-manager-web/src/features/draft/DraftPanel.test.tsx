@@ -41,6 +41,15 @@ describe("P6.2 DraftPanel", () => {
     expect(commit.disabled).toBe(false);
   });
 
+  it("exposes the live legality status before commit", async () => {
+    const user = userEvent.setup();
+    render(<DraftPanel onCommitted={() => undefined} />);
+    await user.click(screen.getByRole("button", { name: /start draft/i }));
+    const commit = screen.getByRole("button", { name: /commit initial warband/i }) as HTMLButtonElement;
+    expect(commit.disabled).toBe(false);
+    expect(screen.getAllByRole("status")[0].textContent).toMatch(/Models/);
+  });
+
   it("commits a legal draft and hands State #0 to the shell", async () => {
     const user = userEvent.setup();
     const received: { document: CampaignDocument | null } = { document: null };

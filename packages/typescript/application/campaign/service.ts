@@ -1,5 +1,5 @@
 /**
- * P5.1 (web-migration-parallel-plan.md §5): application service implementing
+ * Web migration campaign application service: application service implementing
  * the frozen `CampaignAppService` interface (P3.4). Orchestrates the file
  * port (P3.2), the knowledge reader (P4.3) and the domain use cases
  * (P3.5/P6.x) — the UI never touches JSON, ports or domain internals.
@@ -48,6 +48,7 @@ import { finalizePostBattle } from "./features/review/finalize-post-battle-workf
 import { transferEquippedItem } from "./features/equipment/transfer-workflow";
 import { setManualSkill } from "./features/advances/manual-skill-workflow";
 import { addManualStashItem, correctResource } from "./features/economy/manual-corrections-workflow";
+import { buyWeaponUpgrade } from "./features/economy/weapon-upgrade-workflow";
 import { resolveEyeInjury, resolveHatred, resolvePrisoner } from "./features/injuries/injury-decisions-workflow";
 import { resolveSoldToPits } from "./features/injuries/sold-to-pits-workflow";
 import { resolveInjuryTableFollowUp } from "./features/injuries/injury-followup-workflow";
@@ -59,7 +60,8 @@ const HISTORY_LIMIT = 50;
 
 function equipmentViolation(document: CampaignDocument, knowledge: CampaignAppDeps["knowledge"], warriorId: string, itemId: string, amount: number): string | null {
   const warrior=document.campaign.warriors.find((row)=>row.id===warriorId); const item=knowledge.queryKnowledge({id:{kind:"item_id",value:itemId}});
-  if(!warrior||!item)return "Choose a valid warrior and item.";
+  if(!warrior)return "Choose a valid warrior and item.";
+  if(!item.ok||!item.record)return null;
   const category=String(item.record.data["kind"]??""); const identity=[warrior.profile_name,warrior.profile_id,...warrior.skills,...(warrior.special_rules??[])].join(" ").replace(/[-_]/g," ").toLowerCase();
   if(["close-combat-weapon","ranged-weapon"].includes(category)&&warrior.profile_id&&!warrior.profile_id.startsWith("hireling.")){const profile=knowledge.queryKnowledge({id:{kind:"profile_id",value:warrior.profile_id}});const access=profile.ok&&Array.isArray(profile.record.data["equipment_access"])?profile.record.data["equipment_access"] as Readonly<Record<string,unknown>>[]:[];if(access.length&&!access.some((row)=>row["item_id"]===itemId)&&!/weapons? (training|expert)/.test(warrior.skills.join(" ").toLowerCase()))return "This weapon is outside the warrior's equipment access.";}
   if(itemId==="barbed_whip"&&warrior.kind!=="hero")return "Barbed Whip may only be assigned to a Marauders of Chaos Hero.";
@@ -251,6 +253,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         }
         case "correctResource": { const result=correctResource(state.current,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "addManualStashItem": { const result=addManualStashItem(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
+        case "buyWeaponUpgrade": { const result=buyWeaponUpgrade(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "resolveEyeInjury": { const result=resolveEyeInjury(state.current,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "resolveHatred": { const result=resolveHatred(state.current,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "resolvePrisoner": { const result=resolvePrisoner(state.current,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
@@ -290,7 +293,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           if (!Number.isInteger(roll) || roll < count || roll > count * sides) return error("rejected", `Enter a result from ${count} to ${count * sides}.`);
           const failure = (check["failure_when"] ?? {}) as Record<string, unknown>; const min = Number(failure["min"] ?? 0); const max = Number(failure["max"] ?? min);
           const checks = { ...((state.current.view.pending_battle_draft?.["battle_start_checks"] ?? {}) as Record<string, unknown>), [`${warriorId}:${checkId}`]: { roll, misses_battle: roll >= min && roll <= max, reason: "Old Battle Wound" } };
-          return applyResult({ ok: true, state: { ...state.current, view: { ...state.current.view, pending_battle_draft: { ...(state.current.view.pending_battle_draft ?? {}), battle_start_checks: checks } } });
+          return applyResult({ ok: true, state: { ...state.current, view: { ...state.current.view, pending_battle_draft: { ...(state.current.view.pending_battle_draft ?? {}), battle_start_checks: checks } } } });
         }
         case "saveBattleDraft": {
           state.current = { ...state.current, view: { ...state.current.view, pending_battle_draft: { ...((input["draft"] as Record<string, unknown> | undefined) ?? {}), battle_start_checks: state.current.view.pending_battle_draft?.["battle_start_checks"] } } };
@@ -308,7 +311,9 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const absentees = state.current.campaign.warriors.filter((warrior) => !participants.includes(warrior.id)).map((warrior) => ({ id: warrior.id, name: warrior.name, quantity: warrior.quantity ?? 1, reason: unavailable.has(warrior.id) ? "Old Battle Wound" : warrior.absence_reason ?? "Injury" }));
           const result = useCases.recordBattle(state.current, { ...input, out_of_action_ids: outOfAction, participants, absentees } as never, knowledge);
           if (!result.ok) return applyResult(result);
-          return applyResult({ ok: true, state: { ...result.state, view: { ...result.state.view, pending_battle_draft: undefined } } });
+          const view = { ...result.state.view };
+          delete view.pending_battle_draft;
+          return applyResult({ ok: true, state: { ...result.state, view } });
         }
         case "resolvePostBattleStep":
           {
@@ -417,7 +422,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         case "assignEquipment": {
           const warriorId=String(input["warrior_id"]??""), itemId=String(input["item_id"]??""), direction=input["direction"];
           const warrior=state.current.campaign.warriors.find((row)=>row.id===warriorId);
-          if(!warrior||!itemId||(direction!=="equip"&&direction!=="stash")) return error("rejected", "Choose a valid warrior, item and equipment move.");
+          if(!warrior||!itemId||(direction!=="equip"&&direction!=="stash")) return error("rejected", "Choose a valid warrior, item and equipment move.", { reason: !warrior ? "not_found" : "invalid_input" });
           const trading=(knowledge as typeof knowledge & { campaignSection?(section:string):Readonly<Record<string,unknown>> }).campaignSection?.("trading-post");
           const tradingEntry=(Array.isArray(trading?.["items"])?trading["items"] as Readonly<Record<string,unknown>>[]:[]).find((row)=>row["item_id"]===itemId);
           const heroesOnly=(Array.isArray(tradingEntry?.["restrictions"])?tradingEntry["restrictions"] as Readonly<Record<string,unknown>>[]:[]).some((row)=>row["type"]==="heroes_only");

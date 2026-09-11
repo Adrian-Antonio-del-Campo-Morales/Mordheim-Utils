@@ -1,7 +1,7 @@
 """web.knowledge-artefact: the P4.2 generator is deterministic and complete.
 
 Tests the YAML → JSON web generator (`tools/knowledge/generate_knowledge_web.py`)
-against the contract in ``docs/decisions/web-knowledge-catalog-inventory.md``:
+against the Knowledge Base inventory in ``docs/decisions/web-migration.md``:
 
 1. the artefact builds and contains every required top section;
 2. output is byte-identical across runs (no timestamps, stable order);
@@ -64,6 +64,12 @@ def test_stable_references_resolve() -> None:
     assert artefact_item_ids <= all_item_ids
     # indexes stay coherent
     assert set(artefact["indexes"]["items_by_id"]) == artefact_item_ids
+
+
+def test_profiles_materialize_shared_special_rule_references() -> None:
+    artefact = _artefact()
+    profile = next(row for row in artefact["profiles"] if row["id"] == "serpent-priestess")
+    assert "shared-rule.leader" in profile["rule_ids"]
 
 
 def test_excluded_combat_lab_data_does_not_leak() -> None:

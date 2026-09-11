@@ -1,5 +1,5 @@
 /**
- * P6.8 (web-migration-parallel-plan.md §P6.8): final review & auxiliary
+ * Web migration review surface: final review & auxiliary
  * exports UI.
  *
  * Renders the review read model (identity, treasury, roster roll-up,

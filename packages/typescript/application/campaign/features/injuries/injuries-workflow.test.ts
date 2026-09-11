@@ -187,7 +187,9 @@ describe("follow-ups and recovery", () => {
     });
     expect(parked.ok).toBe(true);
     if (!parked.ok) return;
-    const id = "injury:w1:mangled_leg";
+    // The follow-up id is generated (warrior:result:casualty-index); read it
+    // back instead of hard-coding the scheme.
+    const id = String(parked.document.campaign.post_battles[0]?.pending_follow_ups?.[0]?.["id"]);
     const resolved = resolveFollowUp(parked.document, {
       follow_up_id: id,
       outcome: {

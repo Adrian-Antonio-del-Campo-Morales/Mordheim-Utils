@@ -3,7 +3,7 @@
  * Sisters of Sigmar band (roster members, profiles, items) so the draft
  * workflow composes against the same record shapes the real P4.2 artefact
  * emits. Replaced by P4.3's real adapter in `default-deps.ts` (see
- * docs/decisions/web-kb-bundling.md).
+ * docs/decisions/web-migration.md).
  */
 import type { KnowledgeQuery, KnowledgeReader, KnowledgeResult } from "./types";
 

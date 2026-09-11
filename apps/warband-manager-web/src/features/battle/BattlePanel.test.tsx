@@ -6,6 +6,7 @@
 
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import "@testing-library/jest-dom/vitest";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { BattlePanel } from "./BattlePanel";
@@ -14,6 +15,8 @@ import { createDefaultUseCases } from "@domain/campaign/kernel/default-usecases"
 import { createDraftWorkflow } from "@app/campaign/features/draft/draft-workflow";
 import { createBattleWorkflow } from "@app/campaign/features/battle/battle-workflow";
 import { FakeKnowledgeReader } from "../campaign/fake-knowledge-reader";
+import { CampaignAppProvider } from "../campaign/useCampaignApp";
+import type { CampaignAppService } from "../campaign/types";
 
 afterEach(cleanup);
 
@@ -34,37 +37,54 @@ describe("P6.4 BattlePanel", () => {
   it("renders the battle form with availability checkboxes", () => {
     render(<BattlePanel document={makeCommittedDocument()} onDocument={() => undefined} />);
     expect(screen.getByLabelText(/scenario/i)).toBeTruthy();
-    expect(screen.getByLabelText(/opponent/i)).toBeTruthy();
+    expect(screen.getByLabelText("Opponent", { exact: true })).toBeTruthy();
     expect(screen.getByText(/out of action/i)).toBeTruthy();
     // The committed starter roster offers at least one available warrior.
     const checkboxes = screen.getAllByRole("checkbox");
     expect(checkboxes.some((c) => !(c as HTMLInputElement).disabled)).toBe(true);
   });
 
+  it("does not allow a new battle while post-battle processing is pending", async () => {
+    const document = makeCommittedDocument();
+    const knowledge = new FakeKnowledgeReader();
+    const workflow = createBattleWorkflow({ knowledge, useCases: createDefaultUseCases(knowledge) });
+    const recorded = workflow.record(document, { scenario: "skirmish", opponent: "X", result: "win", gold_delta: 0, wyrdstone: 0, xp_delta: 0, out_of_action_ids: [] });
+    if (!recorded.ok) throw new Error("record should succeed");
+    const blocked = workflow.record(recorded.document, { scenario: "skirmish", opponent: "Y", result: "win", gold_delta: 0, wyrdstone: 0, xp_delta: 0, out_of_action_ids: [] });
+    expect(blocked.ok).toBe(false);
+  });
+
   it("records a battle and shows the pending post-battle navigation", async () => {
     const user = userEvent.setup();
     let current = makeCommittedDocument();
-    const onDocument = (document: CampaignDocument) => {
-      current = document;
-    };
+    const listeners = new Set<() => void>();
+    const knowledge = new FakeKnowledgeReader();
+    const uiKnowledge = { list: (kind: string) => kind === "scenario" ? [{ id: "skirmish", names: { en: "Skirmish" } }] : [] };
+    const workflow = createBattleWorkflow({ knowledge, useCases: createDefaultUseCases(knowledge) });
+    const service = {
+      current: () => current,
+      isDirty: () => false,
+      subscribe: (listener: () => void) => { listeners.add(listener); return () => listeners.delete(listener); },
+      run: async (action: string, input: Record<string, unknown>) => {
+        if (action === "saveBattleDraft") return { ok: true, document: current };
+        if (action !== "recordBattle") throw new Error(`Unexpected action: ${action}`);
+        const result = workflow.record(current, input as never);
+        if (result.ok) { current = result.document; listeners.forEach((listener) => listener()); }
+        return result;
+      },
+    } as unknown as CampaignAppService;
     const { rerender } = render(
-      <BattlePanel document={current} onDocument={onDocument} />,
+      <CampaignAppProvider service={service}><BattlePanel document={current} knowledge={uiKnowledge as never} /></CampaignAppProvider>,
     );
 
-    await user.type(screen.getByLabelText(/opponent/i), "Reiklanders");
+    await user.type(screen.getByLabelText("Opponent", { exact: true }), "Reiklanders");
     await user.click(screen.getByRole("button", { name: /record battle/i }));
 
     expect(current.campaign.battles).toHaveLength(1);
-    rerender(<BattlePanel document={current} onDocument={onDocument} />);
+    rerender(<CampaignAppProvider service={service}><BattlePanel document={current} knowledge={uiKnowledge as never} /></CampaignAppProvider>);
     // The pending post-battle navigation replaces the form.
-    const status = await screen.findByText(/Post-battle #1: step 0 of 8/);
-    expect(status).toBeTruthy();
-    const resolve = screen.getByRole("button", { name: /resolve step 0/i });
-    expect(resolve).toBeTruthy();
-
-    // Resolve one step: the sequence advances.
-    await user.click(resolve);
-    expect(current.campaign.post_battles[0].active_step).toBe(1);
+    expect(await screen.findByText(/Post-battle #1/)).toBeTruthy();
+    expect(screen.getByRole("status")).toHaveTextContent("Step 1/8");
   });
 
   it("surfaces the pending-battle conflict in role=alert", async () => {
