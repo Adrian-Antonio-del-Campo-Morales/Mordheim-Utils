@@ -37,4 +37,11 @@ describe("HirelingsPanel", () => {
     render(<CampaignAppProvider service={service}><HirelingsPanel document={hired} listings={listings} mode="hirelings" /></CampaignAppProvider>);
     expect(screen.getByRole("button", { name: /Already hired/ })).toBeDisabled();
   });
+
+  it("can embed buying and selling inside Equipment without a Trading Post heading", () => {
+    const reader = { campaignRows: () => [], campaignSection: () => ({}), itemName: (id: string) => id } as never;
+    render(<CampaignAppProvider service={service}><HirelingsPanel document={document} listings={reader} mode="trading" showTradingTitle={false} /></CampaignAppProvider>);
+    expect(screen.queryByRole("heading", { name: "Trading Post" })).not.toBeInTheDocument();
+    expect(screen.getByText("Goods for sale")).toBeInTheDocument();
+  });
 });

@@ -12,6 +12,13 @@ const translations: Record<Locale, Record<string, string>> = {
     gold_crowns: "Coronas de Oro", wyrdstone_fragments: "Fragmentos de Piedra Bruja",
     treasures: "Tesoros", campaign_points: "Puntos de Campaña",
     eye_injury: "Herida En el Ojo", smashed_hand: "Mano Aplastada", old_battle_wound: "Vieja Herida de Guerra",
+    multiple_injuries: "Heridas Múltiples", leg_wound: "Herida En la Pierna",
+    arm_wound: "Herida En el Brazo", madness: "Locura", smashed_leg: "Pierna Aplastada",
+    chest_wound: "Herida En el Pecho", blinded_in_one_eye: "Tuerto", nervous_condition: "Problema Nervioso",
+    hand_injury: "Herida En la Mano", deep_wound: "Herida Profunda", robbed: "Robado",
+    full_recovery: "Recuperación Completa", bitter_enmity: "Enemistad Acérrima", captured: "Capturado",
+    hardened: "Curtido", horrible_scars: "Cicatrices Horribles", sold_to_the_pits: "Vendido a los Pozos",
+    survives_against_the_odds: "Sobrevive Contra Todo Pronóstico", removed: "Eliminado",
   },
   en: {
     win: "Victory", victory: "Victory", loss: "Defeat", defeat: "Defeat", draw: "Draw",
@@ -38,16 +45,25 @@ export function readableValue(value: unknown, locale: Locale): string {
 
 export function knowledgeName(knowledge: ArtefactKnowledgeReader | undefined, kind: DisplayKind, id: unknown, locale: Locale, fallback?: unknown): string {
   const stableId = String(id ?? "");
+  const ruleDocuments = ["special-rules", "profile-special-rules", "core-combat", "conditions", "resolution", "localized-labels"];
   const catalogue = kind === "rule"
-    ? ["special-rules", "core-combat", "conditions", "resolution"].flatMap((section) => knowledge?.rulesDocument(section) ?? [])
+    ? ruleDocuments.flatMap((section) => knowledge?.rulesDocument(section) ?? [])
     : knowledge?.list(kind) ?? [];
-  let row = catalogue.find((entry) => String(entry.id ?? entry.item_id ?? entry.profile_id ?? "") === stableId);
+  const matches = (entry: Readonly<Record<string, unknown>>) => {
+    if (String(entry.id ?? entry.item_id ?? entry.profile_id ?? "") === stableId) return true;
+    const names = entry.names as Readonly<Record<string, unknown>> | undefined;
+    return [entry.name, names?.en].some((name) => typeof name === "string" && name.localeCompare(stableId, "en", { sensitivity: "accent" }) === 0);
+  };
+  let row = catalogue.find(matches);
   if (!row && kind === "skill") {
-    row = ["special-rules", "core-combat", "conditions", "resolution"]
+    row = ruleDocuments
       .flatMap((section) => knowledge?.rulesDocument(section) ?? [])
-      .find((entry) => String(entry.id ?? "") === stableId);
+      .find(matches);
   }
-  if (row) return resolveName(row, locale);
+  if (row) {
+    if (kind === "injury" && typeof row.result === "string") return readableValue(row.result, locale);
+    return resolveName(row, locale);
+  }
   return readableValue(fallback || stableId, locale);
 }
 

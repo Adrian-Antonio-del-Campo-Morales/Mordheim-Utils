@@ -82,6 +82,25 @@ def test_band_specific_special_rules_include_localized_prose() -> None:
     assert "Bergjäger" in rule["effects"]["es"]
 
 
+def test_every_translated_band_rule_publishes_a_legacy_name_label() -> None:
+    artefact = _artefact()
+    labels = {row["names"]["en"]: row["names"]["es"]
+              for row in artefact["rules_prose"]["localized-labels"]}
+    assert labels["No Armour"] == "Sin Armadura"
+    assert labels["No Missile Weapons"] == "Sin Armas de Proyectil"
+    assert labels["Slayer Skills"] == "Habilidades de Matatrolles"
+    assert len(labels) >= 700
+
+    labels_by_id = {row["id"]: row["names"]["es"]
+                    for row in artefact["rules_prose"]["localized-labels"]}
+    assert labels_by_id["dwarf-troll-slayers--no-armour"] == "Sin Armadura"
+    assert labels_by_id["dwarf-troll-slayers--no-missile-weapons"] == "Sin Armas de Proyectil"
+    assert labels_by_id["dwarf-troll-slayers--slayer-skills"] == "Habilidades de Matatrolles"
+    contextual = [row for row in artefact["rules_prose"]["profile-special-rules"]
+                  if row["id"] == "dwarf-troll-slayers--no-armour"]
+    assert any("Matatrolles Enanos" in row["effects"]["es"] for row in contextual)
+
+
 def test_excluded_combat_lab_data_does_not_leak() -> None:
     artefact = _artefact()
     for item in artefact["items"]:
@@ -97,6 +116,14 @@ def test_display_names_travel_per_locale_with_canonical_english() -> None:
     assert "names" in sample and sample["names"].get("en"), "canonical English name missing"
     translated = [item for item in artefact["items"] if "es" in item.get("names", {})]
     assert translated, "expected at least some Spanish translations in the KB"
+
+
+def test_serious_injury_tables_publish_reader_facing_names() -> None:
+    tables = {row["id"]: row for row in _artefact()["campaign"]["serious-injuries"]["tables"]}
+    assert tables["campaign.serious-injuries.hero"]["name"] == "Heroes' Serious Injuries Chart"
+    assert tables["campaign.serious-injuries.hero"]["name_i18n"]["es"] == "Tabla de Heridas Graves de Héroes"
+    assert tables["campaign.serious-injuries.henchman"]["name"] == "Henchmen's Serious Injuries Chart"
+    assert tables["campaign.serious-injuries.henchman"]["name_i18n"]["es"] == "Tabla de Heridas Graves de Secuaces"
 
 
 def test_unsupported_ruleset_fails_with_actionable_error() -> None:

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
 import type { CampaignDocument } from "../campaign/types";
 import { CampaignAppProvider } from "../campaign/useCampaignApp";
@@ -21,7 +22,28 @@ describe("ExplorationPanel", () => {
     post.experience_applied = true;
     post.step_state = { exploration: { resolved: true, dice_count: 2, total: 8, shards: 3 } };
     render(<CampaignAppProvider service={service}><ExplorationPanel document={resolved} knowledge={knowledge} locale="en" /></CampaignAppProvider>);
-    expect(screen.getByRole("status")).toHaveTextContent("2 dice");
-    expect(screen.getByRole("status")).toHaveTextContent("total 8");
+    expect(screen.getByText("3 wyrdstone shards")).toBeInTheDocument();
+    expect(screen.getByText("2 dice · total 8")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Exploration resolved");
+  });
+
+  it("applies the initial roll directly without a Resolve exploration step", async () => {
+    const user=userEvent.setup();
+    const document=structuredClone(base) as CampaignDocument;
+    Object.assign(document.campaign, {
+      identity: { band_id: "test" },
+      warriors: [{ id:"hero-1",name:"Hero",profile_name:"Hero",kind:"hero",stats:{},equipment:[],skills:[],experience:0,cost:0 }],
+      battles: [{ number:1,result:"loss",out_of_action_ids:[],participants:[{id:"hero-1"}] }],
+    });
+    Object.assign(document.campaign.post_battles[0], { battle_number:1,experience_applied:true });
+    const run=vi.fn().mockResolvedValue({ok:true,document});
+    const localService={current:()=>document,isDirty:()=>false,subscribe:()=>()=>{},run} as never;
+    const localKnowledge={list:()=>[],queryKnowledge:()=>({ok:false,reason:"not_found"}),queryMany:()=>[],campaignSection:()=>({exploration:{max_dice:6,dice_allocation:[{eligible_warrior:"hero",condition:"survived_battle",dice:1}]}})} as never;
+    render(<CampaignAppProvider service={localService}><ExplorationPanel document={document} knowledge={localKnowledge} locale="en" /></CampaignAppProvider>);
+
+    await user.click(screen.getByRole("button", {name:"Roll 1D6"}));
+
+    expect(run).toHaveBeenCalledWith("applyExploration", {dice:[expect.any(Number)]});
+    expect(screen.queryByRole("button", {name:"Resolve exploration"})).not.toBeInTheDocument();
   });
 });

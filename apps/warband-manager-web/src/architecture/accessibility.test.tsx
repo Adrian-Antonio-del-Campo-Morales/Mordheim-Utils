@@ -118,6 +118,11 @@ describe("P7.4 static accessibility audit", () => {
     expect(css).toMatch(/@media \(pointer: coarse\)/);
     expect(css).toMatch(/\.modal[^}]*100dvh[^}]*overflow-y:\s*auto/);
     expect(css).toMatch(/\.modal-actions[^}]*position:\s*sticky[^}]*bottom:\s*0/);
+    expect(css).toMatch(/\.mobile-nav[^}]*position:\s*fixed/);
+    expect(css).toMatch(/safe-area-inset-bottom/);
+    expect(css).toMatch(/\.mobile-cards td::before[^}]*attr\(data-label\)/);
+    expect(css).toMatch(/@media \(max-width: 680px\)[\s\S]*\.modal-backdrop\s*\{\s*z-index:\s*40/);
+    expect(css).toMatch(/\.moment-detail\s*>\s*section[^}]*width:\s*100%[^}]*min-width:\s*0/);
   });
 });
 

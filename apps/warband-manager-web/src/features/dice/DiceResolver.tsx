@@ -1,9 +1,13 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 export function DiceResolver({ count, sides, label, onResolve, locale="en" }: { count: number; sides: number; label: ReactNode; onResolve: (dice: number[]) => void; locale?:"es"|"en" }) {
   const [mode, setMode] = useState<"auto" | "manual">("auto");
   const [values, setValues] = useState<number[]>(Array.from({ length: count }, () => 1));
   const [result, setResult] = useState<number[] | null>(null);
+  useEffect(() => {
+    setValues(Array.from({ length: count }, () => 1));
+    setResult(null);
+  }, [count, sides, label]);
   const t=locale==="es"?{auto:"Tirar en la Aplicación",manual:"Introducir Dados Físicos",roll:"Tirar",die:"Dado",use:"Usar Resultado",result:"Resultado"}:{auto:"Roll in App",manual:"Enter Physical Dice",roll:"Roll",die:"Die",use:"Use Result",result:"Result"};
   const resolve = (dice: number[]) => { setResult(dice); onResolve(dice); };
   return <div className="dice-resolver"><strong>{label}</strong><div className="tabs"><button className={mode === "auto" ? "active" : ""} onClick={() => setMode("auto")}>{t.auto}</button><button className={mode === "manual" ? "active" : ""} onClick={() => setMode("manual")}>{t.manual}</button></div>

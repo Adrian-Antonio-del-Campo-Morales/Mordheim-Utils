@@ -198,7 +198,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   static async fromUrl(url: string, fetchFn: typeof fetch = fetch): Promise<ArtefactKnowledgeReader> {
     let response: Response;
     try {
-      response = await fetchFn(url);
+      response = await fetchFn(url, { cache: "no-cache" });
     } catch (cause) {
       throw new KnowledgeReaderError(`Could not fetch the knowledge artefact from "${url}": ${(cause as Error).message}`);
     }
@@ -221,7 +221,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
       const rulesUrl = new URL(document.rules_prose_url, new URL(url, pageUrl)).toString();
       let rulesResponse: Response;
       try {
-        rulesResponse = await fetchFn(rulesUrl);
+        rulesResponse = await fetchFn(rulesUrl, { cache: "no-cache" });
       } catch (cause) {
         throw new KnowledgeReaderError(`Could not fetch the rules prose artefact from "${rulesUrl}": ${(cause as Error).message}`);
       }

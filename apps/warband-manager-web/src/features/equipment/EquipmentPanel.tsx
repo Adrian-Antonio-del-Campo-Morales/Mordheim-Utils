@@ -17,6 +17,7 @@ import type { CampaignDocument } from "../campaign/types";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { knowledgeName } from "../campaign/displayText";
 import { KnowledgeHint } from "../campaign/KnowledgeHint";
+import { HirelingsPanel } from "../hirelings/HirelingsPanel";
 
 interface EquipmentPanelProps {
   readonly document: CampaignDocument;
@@ -24,9 +25,10 @@ interface EquipmentPanelProps {
   readonly locale?: "es" | "en";
   readonly knowledge?: ArtefactKnowledgeReader;
   readonly showTitle?: boolean;
+  readonly trading?: boolean;
 }
 
-export function EquipmentPanel({ document, readOnly = false, locale = "en", knowledge, showTitle = true }: EquipmentPanelProps) {
+export function EquipmentPanel({ document, readOnly = false, locale = "en", knowledge, showTitle = true, trading = false }: EquipmentPanelProps) {
   const app = useCampaignApp();
   const { campaign } = document;
   const [busy, setBusy] = useState(false);
@@ -81,7 +83,7 @@ export function EquipmentPanel({ document, readOnly = false, locale = "en", know
       {stashRows.length === 0 ? (
         <p>{t.emptyStash}</p>
       ) : (
-        <table>
+        <table className="mobile-cards">
           <caption>{t.stash}</caption>
           <thead>
             <tr>
@@ -93,9 +95,9 @@ export function EquipmentPanel({ document, readOnly = false, locale = "en", know
           <tbody>
             {stashRows.map((item) => (
               <tr key={item.id}>
-                <td><KnowledgeHint knowledge={knowledge} kind="item" id={item.id} locale={locale}>{knowledgeName(knowledge, "item", item.id, locale, item.name)}</KnowledgeHint></td>
-                <td>{item.stash}</td>
-                {!readOnly && <td>
+                <td data-label={t.item}><KnowledgeHint knowledge={knowledge} kind="item" id={item.id} locale={locale}>{knowledgeName(knowledge, "item", item.id, locale, item.name)}</KnowledgeHint></td>
+                <td data-label={t.stash}>{item.stash}</td>
+                {!readOnly && <td data-label={t.equip}>
                   <select
                     aria-label={`${locale === "es" ? "Asignar" : "Assign"} ${knowledgeName(knowledge, "item", item.id, locale, item.name)} ${locale === "es" ? "a un guerrero" : "to warrior"}`}
                     defaultValue=""
@@ -124,6 +126,7 @@ export function EquipmentPanel({ document, readOnly = false, locale = "en", know
           </tbody>
         </table>
       )}</div></div>
+      {trading && knowledge && <HirelingsPanel document={document} listings={knowledge} locale={locale} mode="trading" showTradingTitle={false} />}
     </section>
   );
 }

@@ -7,7 +7,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import type { CampaignDocument, Warrior } from "../../../../domain/campaign/index";
+import type { CampaignDocument, Warrior, OpenPayload } from "../../../../domain/campaign/index";
 import type { KnowledgeReader } from "../../../../domain/campaign/kernel/ports";
 import { applyBattleExperience, experienceAwards } from "./experience-workflow";
 
@@ -81,5 +81,16 @@ describe("applyBattleExperience (desktop apply_battle_experience)", () => {
     const hero2 = result.document.campaign.warriors.find((w) => w.id === "hero-2")!;
     expect(hero1.experience).toBe(10);
     expect(hero2.experience).toBe(7);
+  });
+
+  it("seeds the advance crossed by experience granted during injuries", () => {
+    const doc = makePending(0, [hero("hero-1", "Sigrid", 20)]);
+    (doc.campaign.post_battles[0] as { step_state?: Record<string, OpenPayload> }).step_state = { injury_experience_before: { "hero-1": 19 } };
+    const result = applyBattleExperience(doc, knowledge);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.document.campaign.post_battles[0].pending_advances).toEqual([
+      expect.objectContaining({ warrior_id: "hero-1", threshold: 20, committed: false }),
+    ]);
   });
 });

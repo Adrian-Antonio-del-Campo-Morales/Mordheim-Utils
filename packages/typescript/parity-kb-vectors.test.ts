@@ -132,10 +132,12 @@ describe.skipIf(!hasArtefact)("shared KB parity vectors (TS mirror)", () => {
     expect(prose["special-rules"].length).toBeGreaterThanOrEqual(90);
   });
 
-  it("rules: prose stems are the five canonical documents", () => {
+  it("rules: prose stems include canonical documents and generated localization indexes", () => {
     expect(Object.keys(prose).sort()).toEqual([
       "conditions",
       "core-combat",
+      "localized-labels",
+      "profile-special-rules",
       "racial-maximums",
       "resolution",
       "special-rules",

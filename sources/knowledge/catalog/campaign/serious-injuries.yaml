@@ -13,6 +13,9 @@ status: published
 # prisoner.create, relationship.add_hatred, encounter.trigger, reward.grant).
 tables:
 - id: campaign.serious-injuries.hero
+  name: Heroes' Serious Injuries Chart
+  name_i18n:
+    es: Tabla de Heridas Graves de Héroes
   applies_to: hero
   dice: { count: 2, sides: 6 }
   resolution: d66
@@ -25,6 +28,9 @@ tables:
   - id: campaign.serious-injury.hero.11-15-dead
     roll: '11-15'
     result: Dead
+    note: The warrior dies, is removed from the roster, and all carried equipment is lost.
+    note_i18n:
+      es: El guerrero muere, se elimina de la hoja de banda y pierde todas las armas y el equipo que llevaba.
     resolution: direct
     effects:
     - type: roster.remove_warrior
@@ -33,6 +39,9 @@ tables:
   - id: campaign.serious-injury.hero.16-21-multiple-injuries
     roll: '16-21'
     result: Multiple Injuries
+    note: Roll D6 times on this table, rerolling Dead, Captured, and further Multiple Injuries results.
+    note_i18n:
+      es: Tira 1D6 veces en esta tabla y repite los resultados de Muerto, Capturado y nuevas Heridas múltiples.
     resolution:
       type: repeat_table
       dice: { count: 1, sides: 6 }
@@ -44,6 +53,9 @@ tables:
   - id: campaign.serious-injury.hero.22-leg-wound
     roll: '22'
     result: Leg Wound
+    note: The broken leg permanently reduces the warrior's Movement by 1.
+    note_i18n:
+      es: La pierna rota reduce permanentemente en 1 el Movimiento del guerrero.
     resolution: direct
     effects:
     - type: warrior.characteristic_modifier
@@ -52,6 +64,9 @@ tables:
   - id: campaign.serious-injury.hero.23-arm-wound
     roll: '23'
     result: Arm Wound
+    note: Roll D6. On 1 the arm is amputated and the warrior may use only one one-handed weapon; on 2-6 he misses the next battle.
+    note_i18n:
+      es: Tira 1D6. Con un 1 se amputa el brazo y sólo podrá usar un arma de una mano; con 2-6 se pierde la próxima batalla.
     resolution:
       type: roll_table
       dice: { count: 1, sides: 6 }
@@ -71,6 +86,9 @@ tables:
   - id: campaign.serious-injury.hero.24-madness
     roll: '24'
     result: Madness
+    note: Roll D6. On 1-3 the warrior suffers Stupidity; on 4-6 he gains Frenzy permanently.
+    note_i18n:
+      es: Tira 1D6. Con 1-3 el guerrero sufre Estupidez; con 4-6 obtiene Furia de forma permanente.
     resolution:
       type: roll_table
       dice: { count: 1, sides: 6 }
@@ -92,6 +110,9 @@ tables:
   - id: campaign.serious-injury.hero.25-smashed-leg
     roll: '25'
     result: Smashed Leg
+    note: Roll D6. On 1 the warrior can no longer run but may still charge; on 2-6 he misses the next battle.
+    note_i18n:
+      es: Tira 1D6. Con un 1 ya no podrá correr, aunque sí cargar; con 2-6 se pierde la próxima batalla.
     resolution:
       type: roll_table
       dice: { count: 1, sides: 6 }
@@ -112,6 +133,9 @@ tables:
   - id: campaign.serious-injury.hero.26-chest-wound
     roll: '26'
     result: Chest Wound
+    note: The warrior recovers, but his Toughness is permanently reduced by 1.
+    note_i18n:
+      es: El guerrero se recupera, pero su Resistencia se reduce permanentemente en 1.
     resolution: direct
     effects:
     - type: warrior.characteristic_modifier
@@ -127,9 +151,14 @@ tables:
       modifier: -1
     note: Randomly determine which eye. If the warrior is subsequently blinded
       in his remaining good eye he must retire from the warband.
+    note_i18n:
+      es: Determina al azar qué ojo pierde; su Habilidad de Proyectiles se reduce en 1. Si pierde el otro ojo, deberá retirarse de la banda.
   - id: campaign.serious-injury.hero.32-old-battle-wound
     roll: '32'
     result: Old Battle Wound
+    note: Before every battle roll D6; on 1 the old wound prevents the warrior from taking part.
+    note_i18n:
+      es: Antes de cada batalla tira 1D6; con un 1 la vieja herida impide que el guerrero participe.
     resolution: direct
     effects:
     - type: warrior.battle_start_check
@@ -142,6 +171,9 @@ tables:
   - id: campaign.serious-injury.hero.33-nervous-condition
     roll: '33'
     result: Nervous Condition
+    note: The warrior's Initiative is permanently reduced by 1.
+    note_i18n:
+      es: La Iniciativa del guerrero se reduce permanentemente en 1.
     resolution: direct
     effects:
     - type: warrior.characteristic_modifier
@@ -150,6 +182,9 @@ tables:
   - id: campaign.serious-injury.hero.34-hand-injury
     roll: '34'
     result: Hand Injury
+    note: The injured hand permanently reduces the warrior's Weapon Skill by 1.
+    note_i18n:
+      es: La mano herida reduce permanentemente en 1 la Habilidad de Armas del guerrero.
     resolution: direct
     effects:
     - type: warrior.characteristic_modifier
@@ -169,6 +204,9 @@ tables:
   - id: campaign.serious-injury.hero.36-robbed
     roll: '36'
     result: Robbed
+    note: The warrior escapes, but loses all weapons, armour, and equipment he carried.
+    note_i18n:
+      es: El guerrero logra escapar, pero pierde todas las armas, armaduras y equipo que llevaba.
     resolution: direct
     effects:
     - type: equipment.disposition
@@ -177,11 +215,17 @@ tables:
   - id: campaign.serious-injury.hero.41-55-full-recovery
     roll: '41-55'
     result: Full Recovery
+    note: The warrior was knocked unconscious or lightly wounded and recovers completely.
+    note_i18n:
+      es: El guerrero sólo quedó inconsciente o sufrió una herida leve y se recupera por completo.
     resolution: direct
     effects: []
   - id: campaign.serious-injury.hero.56-bitter-enmity
     roll: '56'
     result: Bitter Enmity
+    note: The warrior recovers physically but permanently hates an enemy determined by a further D6 roll.
+    note_i18n:
+      es: El guerrero se recupera físicamente, pero odiará permanentemente a un enemigo determinado con otra tirada de 1D6.
     resolution:
       type: roll_table
       dice: { count: 1, sides: 6 }
@@ -227,9 +271,14 @@ tables:
       their warband who is held captive, or sold to slavers at D6x5 gc. Undead
       may kill the captive and gain a new Zombie; the Possessed may sacrifice
       the prisoner, granting the warband leader +1 Experience.
+    note_i18n:
+      es: Puede ser rescatado por el precio que fije el captor, intercambiado por otro cautivo o vendido como esclavo por 1D6×5 co. Los No Muertos pueden convertirlo en Zombi y los Poseídos sacrificarlo para otorgar +1 EXP a su líder.
   - id: campaign.serious-injury.hero.62-63-hardened
     roll: '62-63'
     result: Hardened
+    note: The warrior becomes permanently immune to fear.
+    note_i18n:
+      es: El guerrero queda permanentemente inmune al miedo.
     resolution: direct
     effects:
     - type: warrior.add_condition
@@ -238,6 +287,9 @@ tables:
   - id: campaign.serious-injury.hero.64-horrible-scars
     roll: '64'
     result: Horrible Scars
+    note: The warrior causes fear from now on.
+    note_i18n:
+      es: El guerrero causa miedo a partir de ahora.
     resolution: direct
     effects:
     - type: warrior.add_condition
@@ -254,9 +306,14 @@ tables:
     note: The warrior must fight a Pit Fighter. If he loses, roll D66 (11-35
       dead or injured) and he is thrown out without armour or weapons. If he
       wins he gains 50 gc and +2 Experience.
+    note_i18n:
+      es: Debe luchar contra un Luchador de Foso. Si pierde, tira 1D66 entre 11-35 y, si sobrevive, regresa sin armas ni armadura. Si gana, obtiene 50 co y +2 EXP y conserva su equipo.
   - id: campaign.serious-injury.hero.66-survives-against-the-odds
     roll: '66'
     result: Survives Against The Odds
+    note: The warrior survives, rejoins the warband, and gains 1 Experience.
+    note_i18n:
+      es: El guerrero sobrevive, vuelve a la banda y obtiene +1 EXP.
     resolution: direct
     effects:
     - type: reward.grant
@@ -264,6 +321,9 @@ tables:
       resources:
         experience: { kind: fixed, value: 1 }
 - id: campaign.serious-injuries.henchman
+  name: Henchmen's Serious Injuries Chart
+  name_i18n:
+    es: Tabla de Heridas Graves de Secuaces
   applies_to: henchman
   dice: { count: 1, sides: 6 }
   resolution: d6
@@ -276,6 +336,9 @@ tables:
   - id: campaign.serious-injury.henchman.1-2-removed
     roll: '1-2'
     result: Removed
+    note: The Henchman dies, suffers disabling injuries, or leaves and is permanently removed from the roster.
+    note_i18n:
+      es: El secuaz muere, queda incapacitado o abandona la banda y se elimina permanentemente de la hoja de banda.
     resolution: direct
     effects:
     - type: roster.remove_warrior
@@ -284,6 +347,9 @@ tables:
   - id: campaign.serious-injury.henchman.3-6-fine
     roll: '3-6'
     result: Full Recovery
+    note: The Henchman recovers and may fight normally in the next battle.
+    note_i18n:
+      es: El secuaz se recupera y puede combatir con normalidad en la próxima batalla.
     resolution: direct
     effects: []
 effect_ids:

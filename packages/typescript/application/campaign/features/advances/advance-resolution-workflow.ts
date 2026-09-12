@@ -12,7 +12,7 @@ const BAND_RACE: Record<string,string> = { "warband-group.human":"human", "warba
 function context(document: CampaignDocument, warriorId: string, threshold: number | null) {
   const post = document.campaign.post_battles.find((row) => !row.complete);
   const warrior = document.campaign.warriors.find((row) => row.id === warriorId);
-  const row = post?.pending_advances?.find((item) => String(item["warrior_id"]) === warriorId && (threshold === null || Number(item["threshold"]) === threshold));
+  const row = post?.pending_advances?.find((item) => String(item["warrior_id"]) === warriorId && (threshold === null ? item["threshold"] == null : Number(item["threshold"]) === threshold));
   return { post, warrior, row };
 }
 function inRange(branch: Readonly<Record<string, unknown>>, roll: number) {

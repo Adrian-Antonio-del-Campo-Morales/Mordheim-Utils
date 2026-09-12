@@ -300,11 +300,13 @@ def _build_rules_prose(ruleset: str) -> dict:
     # catalogue so roster labels and tooltips resolve their localized prose.
     special_rules = {str(row["id"]): row for row in documents.get("special-rules", ())}
     band_rules: list[dict] = []
+    label_rules: list[dict] = []
     for collection in (row["id"] for row in load_collections() if ruleset in set(row.get("rulesets") or ())):
         for package in load_bands(str(collection)):
             if package.ruleset != ruleset:
                 continue
             for rule in package.special_rules:
+                label_rules.append(_row(rule))
                 if rule.get("rule_ref"):
                     continue
                 entry = _row(rule)
@@ -323,6 +325,35 @@ def _build_rules_prose(ruleset: str) -> dict:
         if direct_counts[identifier] == 1 and identifier not in special_rules:
             special_rules[identifier] = entry
     documents["special-rules"] = sorted(special_rules.values(), key=_sort_key)
+    # Tooltips rendered from a warrior card know the profile id, so they can
+    # safely disambiguate direct rules whose ids are reused by several bands.
+    documents["profile-special-rules"] = sorted(band_rules, key=_sort_key)
+    # Duplicate direct-rule ids cannot safely expose one rule's prose globally,
+    # but their display names can still be localized when every occurrence
+    # agrees. Publish those labels separately for campaign files that store
+    # either the stable rule id or (in older files) the English name.
+    localized_labels: dict[str, dict] = {}
+    localized_ids: dict[str, dict] = {}
+    conflicting_ids: set[str] = set()
+    for entry in label_rules:
+        names = entry.get("names") or {}
+        english, spanish = str(names.get("en") or "").strip(), str(names.get("es") or "").strip()
+        if not english or not spanish:
+            continue
+        identifier = str(entry.get("id") or "").strip()
+        previous = localized_labels.get(english)
+        if previous and previous["names"]["es"] != spanish:
+            raise GenerationError(f"conflicting Spanish rule label for {english!r}")
+        localized_labels[english] = {"id": f"localized-label.{english}", "names": {"en": english, "es": spanish}}
+        if identifier and identifier not in conflicting_ids:
+            candidate = {"id": identifier, "names": {"en": english, "es": spanish}}
+            if identifier in localized_ids and localized_ids[identifier]["names"] != candidate["names"]:
+                localized_ids.pop(identifier)
+                conflicting_ids.add(identifier)
+            else:
+                localized_ids[identifier] = candidate
+    localized_labels.update({f"id:{key}": value for key, value in localized_ids.items()})
+    documents["localized-labels"] = sorted(localized_labels.values(), key=_sort_key)
     return dict(sorted(documents.items()))
 
 

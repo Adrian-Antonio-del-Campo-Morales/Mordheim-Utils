@@ -129,7 +129,7 @@ def test_rules_special_rules_count() -> None:
 
 
 def test_rules_categories_ordered() -> None:
-    assert {"conditions", "core-combat", "racial-maximums", "resolution", "special-rules"} == set(PROSE)
+    assert {"conditions", "core-combat", "localized-labels", "profile-special-rules", "racial-maximums", "resolution", "special-rules"} == set(PROSE)
 
 
 def test_rules_always_hungry_en() -> None:

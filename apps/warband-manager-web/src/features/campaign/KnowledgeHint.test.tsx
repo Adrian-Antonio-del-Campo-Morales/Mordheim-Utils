@@ -83,4 +83,25 @@ describe("KnowledgeHint", () => {
       expect(tooltip, entry.id).not.toContain("No hay una descripción");
     }
   });
+
+  it("resolves legacy rule names with the profile-specific Spanish description", () => {
+    const artefactPath = resolve(process.cwd(), "public/knowledge/knowledge-web.json");
+    const artefact = JSON.parse(readFileSync(artefactPath, "utf-8"));
+    artefact.rules_prose = JSON.parse(readFileSync(resolve(artefactPath, "..", artefact.rules_prose_url), "utf-8"));
+    const reader = ArtefactKnowledgeReader.from(artefact);
+
+    render(<KnowledgeHint knowledge={reader} kind="rule" id="dwarf-troll-slayers--no-armour" profileId="dwarf-troll-slayers" locale="es">Sin Armadura</KnowledgeHint>);
+
+    expect(screen.getByText("Sin Armadura")).toHaveAttribute("data-tooltip", "Los Matatrolles Enanos jamás pueden llevar ningún tipo de armadura.");
+  });
+
+  it("shows the localized serious-injury description from the knowledge base", () => {
+    const artefactPath = resolve(process.cwd(), "public/knowledge/knowledge-web.json");
+    const artefact = JSON.parse(readFileSync(artefactPath, "utf-8"));
+    const reader = ArtefactKnowledgeReader.from(artefact);
+
+    render(<KnowledgeHint knowledge={reader} kind="injury" id="campaign.serious-injury.hero.34-hand-injury" locale="es">Herida en la Mano</KnowledgeHint>);
+
+    expect(screen.getByText("Herida en la Mano")).toHaveAttribute("data-tooltip", "La mano herida reduce permanentemente en 1 la Habilidad de Armas del guerrero.");
+  });
 });
