@@ -100,6 +100,13 @@ export interface InjuriesOverview {
   readonly total_restricted: number;
 }
 
+export function recordInjuryExperienceBaseline(document: CampaignDocument, warriorId: string, experience: number): CampaignDocument {
+  const pending=pendingPostBattle(document);if(!pending)return document;
+  const existing=(pending.step_state?.["injury_experience_before"]??{}) as OpenPayload;
+  if(existing[warriorId]!==undefined)return document;
+  return withCampaign(document,{...document.campaign,post_battles:document.campaign.post_battles.map((post)=>post===pending?{...post,step_state:{...(post.step_state??{}),injury_experience_before:{...existing,[warriorId]:experience}}}:post)});
+}
+
 function injuryFollowUps(document: CampaignDocument): readonly OpenPayload[] {
   const pending = pendingPostBattle(document);
   if (pending === null) return [];
@@ -245,6 +252,10 @@ export function applyInjuryOutcome(
     warriors: removeWarrior?document.campaign.warriors.filter((w)=>w.id!==input.warrior_id):document.campaign.warriors.map((w) => (w.id === input.warrior_id ? {...nextWarrior,equipment:discardEquipment?nextWarrior.equipment.filter((item)=>item.transferable===false):nextWarrior.equipment} : w)),
   };
   if(input.battle_number!==undefined){const key=`${warrior.id}:${casualtyIndex}`;campaign={...campaign,post_battles:campaign.post_battles.map((post)=>post.battle_number===input.battle_number?{...post,step_state:{...(post.step_state??{}),injuries:{...((post.step_state?.["injuries"] as OpenPayload|undefined)??{}),[key]:{resolved:true,result_id:input.result_id,result:input.result}}}}:post)};}
+  if(experience!==warrior.experience){
+    const battleNumber=input.battle_number??pendingPostBattle(document)?.battle_number;
+    campaign={...campaign,post_battles:campaign.post_battles.map((post)=>post.battle_number===battleNumber?{...post,step_state:{...(post.step_state??{}),injury_experience_before:{...((post.step_state?.["injury_experience_before"] as OpenPayload|undefined)??{}),[warrior.id]:((post.step_state?.["injury_experience_before"] as OpenPayload|undefined)??{})[warrior.id]??warrior.experience}}}:post)};
+  }
   let nextDocument: CampaignDocument = withCampaign(document, campaign);
 
   if (removeWarrior) {

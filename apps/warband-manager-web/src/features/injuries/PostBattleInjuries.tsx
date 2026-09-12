@@ -1,20 +1,408 @@
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import { useState } from "react";
 import { DiceResolver } from "../dice/DiceResolver";
 import { useCampaignApp } from "../campaign/useCampaignApp";
 import type { CampaignDocument } from "../campaign/types";
-import { injuryEffects } from "@app/campaign/features/injuries/injury-followup-workflow";
+import {
+  injuryEffects,
+  injuryFollowUpDice,
+} from "@app/campaign/features/injuries/injury-followup-workflow";
+import { knowledgeName, readableValue } from "../campaign/displayText";
+import { KnowledgeHint } from "../campaign/KnowledgeHint";
 
 function inRange(spec: unknown, value: number): boolean {
-  const text = String(spec ?? ""); const [a, b] = text.split("-").map(Number); return Number.isFinite(a) && value >= a && value <= (Number.isFinite(b) ? b : a);
+  const text = String(spec ?? "");
+  const [a, b] = text.split("-").map(Number);
+  return (
+    Number.isFinite(a) && value >= a && value <= (Number.isFinite(b) ? b : a)
+  );
 }
 
-export function PostBattleInjuries({ document, knowledge, locale="en" }: { document: CampaignDocument; knowledge: ArtefactKnowledgeReader; locale?:"es"|"en" }) {
-  const app = useCampaignApp(); const post=document.campaign.post_battles.find((row) => !row.complete); const battle=post && document.campaign.battles.find((row) => row.number===post.battle_number);
+export function PostBattleInjuries({
+  document,
+  knowledge,
+  locale = "en",
+}: {
+  document: CampaignDocument;
+  knowledge: ArtefactKnowledgeReader;
+  locale?: "es" | "en";
+}) {
+  const app = useCampaignApp();
+  const post = document.campaign.post_battles.find((row) => !row.complete);
+  const battle =
+    post &&
+    document.campaign.battles.find((row) => row.number === post.battle_number);
+  const [busy, setBusy] = useState(false);
+  const [targets, setTargets] = useState<Record<string, string>>({});
+  const [ransoms, setRansoms] = useState<Record<string, number>>({});
+  const run = async (action: string, input: Record<string, unknown>) => {
+    setBusy(true);
+    await app.runAction(action, input);
+    setBusy(false);
+  };
   if (!post || !battle) return null;
-  const t=locale==="es"?{title:"Heridas graves",none:"No se registraron guerreros fuera de combate.",resolved:"Resuelto para batalla",follow:"Requiere resolver seguimiento.",hero:"Herida grave D66",henchman:"Herida de secuaz D6",warrior:"Guerrero",pits:"Vendido a los pozos",won:"Ganó",lost:"Perdió · herida grave D66"}:{title:"Serious injuries",none:"No warriors were recorded out of action.",resolved:"Resolved for Battle",follow:"Follow-up resolution required.",hero:"D66 serious injury",henchman:"D6 henchman injury",warrior:"Warrior",pits:"Sold to the Pits",won:"Won",lost:"Lost · D66 serious injury"};
+  const t =
+    locale === "es"
+      ? {
+          title: "Heridas graves",
+          none: "No se registraron guerreros fuera de combate.",
+          hero: "Herida grave D66",
+          henchman: "Herida de secuaz D6",
+          warrior: "Guerrero",
+          result: "Resultado y efectos",
+          action: "Tiradas y decisiones pendientes",
+          pits: "Vendido a los pozos",
+          won: "Ganó",
+          lost: "Perdió · herida grave D66",
+          chooseEye: "Elige ojo",
+          left: "Izquierdo",
+          right: "Derecho",
+          hatred: "Objetivo del odio",
+          setHatred: "Establecer odio",
+          ransom: "Rescate",
+          exchange: "Intercambiar",
+          lostPrisoner: "Perdido",
+          follow: "Resolver seguimiento",
+          resolved: "Sin acciones pendientes",
+        }
+      : {
+          title: "Serious injuries",
+          none: "No warriors were recorded out of action.",
+          hero: "D66 serious injury",
+          henchman: "D6 henchman injury",
+          warrior: "Warrior",
+          result: "Result and effects",
+          action: "Pending rolls and decisions",
+          pits: "Sold to the Pits",
+          won: "Won",
+          lost: "Lost · D66 serious injury",
+          chooseEye: "Choose eye",
+          left: "Left",
+          right: "Right",
+          hatred: "Hatred target",
+          setHatred: "Set hatred",
+          ransom: "Ransom",
+          exchange: "Exchange",
+          lostPrisoner: "Lost",
+          follow: "Resolve follow-up",
+          resolved: "No pending actions",
+        };
   const seen = new Map<string, number>();
-  const warriors=(battle.out_of_action_ids ?? []).flatMap((id) => { const warrior=document.campaign.warriors.find((row) => row.id===id); if(!warrior)return []; const casualtyIndex=(seen.get(id)??0)+1; seen.set(id,casualtyIndex); return [{ warrior, casualtyIndex }]; });
-  const injuries=knowledge.list("injury");
-  const pits=(post.pending_follow_ups??[]).filter((row)=>row["type"]==="encounter"&&row["encounter_id"]==="campaign.encounter.sold-to-the-pits");
-  return <section aria-label={t.title}><h3>01 · {t.title}</h3>{warriors.length===0 && <p role="status">{t.none}</p>}{warriors.map(({ warrior, casualtyIndex }) => { const unresolved=(post.pending_follow_ups ?? []).some((row) => row.warrior_id===warrior.id && Number(row.casualty_index??1)===casualtyIndex); const resolved=!unresolved && (warrior.injury_records ?? []).some((record) => Number(record.battle_number)===battle.number && Number(record.casualty_index??1)===casualtyIndex); const hero=warrior.kind==="hero"; return <article className="injury-card" key={`${warrior.id}:${casualtyIndex}`}><h4>{warrior.name}{casualtyIndex>1?` · ${casualtyIndex}`:""}</h4>{resolved ? <p>{t.resolved} #{battle.number}.</p> : unresolved ? <p role="status">{t.follow}</p> : <DiceResolver count={hero ? 2 : 1} sides={6} label={hero ? t.hero : t.henchman} locale={locale} onResolve={(dice) => { const roll=hero ? dice[0] * 10 + dice[1] : dice[0]; const outcome=injuries.find((row) => row.applies_to===warrior.kind && inRange(row.roll, roll)); if (!outcome) return; void app.runAction("applyInjuryOutcome", { warrior_id:warrior.id, battle_number:battle.number, casualty_index:casualtyIndex, result_id:String(outcome.id), result:String(outcome.result), effects:injuryEffects(outcome) }); }} />}</article>; })}{pits.map((follow)=>{const warrior=document.campaign.warriors.find((item)=>item.id===follow["warrior_id"]);return <article className="injury-card" key={String(follow["id"])}><h4>{warrior?.name??t.warrior} · {t.pits}</h4><button className="primary" onClick={()=>void app.runAction("resolveSoldToPits",{follow_up_id:follow["id"],won:true})}>{t.won}</button><DiceResolver count={2} sides={6} label={t.lost} locale={locale} onResolve={(dice)=>void app.runAction("resolveSoldToPits",{follow_up_id:follow["id"],won:false,injury_roll:dice[0]*10+dice[1]})}/></article>;})}</section>;
+  const participants = new Map(
+    (battle.participants ?? []).map((row) => [String(row.id), row]),
+  );
+  const resolvedInjuries = (post.step_state?.injuries ?? {}) as Record<
+    string,
+    Record<string, unknown>
+  >;
+  const warriors = (battle.out_of_action_ids ?? []).flatMap((id) => {
+    const casualtyIndex = (seen.get(id) ?? 0) + 1;
+    seen.set(id, casualtyIndex);
+    const live = document.campaign.warriors.find((row) => row.id === id);
+    const participant = participants.get(id);
+    const warrior =
+      live ??
+      ({
+        id,
+        name: String(participant?.name ?? id),
+        profile_name: String(participant?.profile_name ?? id),
+        kind: participant?.kind === "henchman" ? "henchman" : "hero",
+        stats: {},
+        equipment: [],
+        skills: [],
+        experience: 0,
+        cost: 0,
+      } as CampaignDocument["campaign"]["warriors"][number]);
+    return [{ warrior, casualtyIndex, live: Boolean(live) }];
+  });
+  const injuries = knowledge.list("injury");
+  return (
+    <section aria-label={t.title}>
+      <h3>01 · {t.title}</h3>
+      {warriors.length === 0 ? (
+        <p role="status">{t.none}</p>
+      ) : (
+        <table className="mobile-cards injury-results">
+          <caption>{t.title}</caption>
+          <thead>
+            <tr>
+              <th>{t.warrior}</th>
+              <th>{t.result}</th>
+              <th>{t.action}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {warriors.map(({ warrior, casualtyIndex, live }) => {
+              const storedRecord = (warrior.injury_records ?? []).find(
+                (row) =>
+                  Number(row.battle_number) === battle.number &&
+                  Number(row.casualty_index ?? 1) === casualtyIndex,
+              );
+              const resolved = resolvedInjuries[`${warrior.id}:${casualtyIndex}`];
+              const record = storedRecord ?? resolved;
+              const followUps = (post.pending_follow_ups ?? []).filter(
+                (row) =>
+                  row.warrior_id === warrior.id &&
+                  Number(row.casualty_index ?? 1) === casualtyIndex,
+              );
+              const hero = warrior.kind === "hero";
+              const resultId = String(record?.result_id ?? "");
+              const injury = injuries.find(
+                (row) => String(row.id) === resultId,
+              );
+              const effect =
+                (injury?.effects as Record<string, unknown> | undefined)?.[
+                  locale
+                ] ?? injury?.effect;
+              return (
+                <tr key={`${warrior.id}:${casualtyIndex}`}>
+                  <td data-label={t.warrior}>
+                    {warrior.name}
+                    {casualtyIndex > 1 ? ` · ${casualtyIndex}` : ""}
+                  </td>
+                  <td data-label={t.result}>
+                    {record ? (
+                      <>
+                        <strong>
+                          <KnowledgeHint knowledge={knowledge} kind="injury" id={resultId} locale={locale}>
+                            {knowledgeName(knowledge, "injury", resultId, locale, record.result)}
+                          </KnowledgeHint>
+                        </strong>
+                        {effect && <small>{String(effect)}</small>}
+                        {warrior.games_to_miss ? (
+                          <small>
+                            {locale === "es" ? "Pierde" : "Misses"}{" "}
+                            {warrior.games_to_miss}{" "}
+                            {locale === "es" ? "batalla(s)" : "game(s)"}
+                          </small>
+                        ) : null}
+                        {warrior.condition_detail && (
+                          <small>
+                            {readableValue(warrior.condition_detail, locale)}
+                          </small>
+                        )}
+                      </>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                  <td data-label={t.action}>
+                    {!record && !followUps.length && live ? (
+                      <DiceResolver
+                        key={`initial:${warrior.id}:${casualtyIndex}`}
+                        count={hero ? 2 : 1}
+                        sides={6}
+                        label={hero ? t.hero : t.henchman}
+                        locale={locale}
+                        onResolve={(dice) => {
+                          const roll = hero ? dice[0] * 10 + dice[1] : dice[0];
+                          const outcome = injuries.find(
+                            (row) =>
+                              row.applies_to === warrior.kind &&
+                              inRange(row.roll, roll),
+                          );
+                          if (outcome)
+                            void run("applyInjuryOutcome", {
+                              warrior_id: warrior.id,
+                              battle_number: battle.number,
+                              casualty_index: casualtyIndex,
+                              result_id: String(outcome.id),
+                              result: String(outcome.result),
+                              effects: injuryEffects(outcome),
+                            });
+                        }}
+                      />
+                    ) : followUps.length && live ? (
+                      followUps.map((follow) => {
+                        const id = String(follow.id ?? "");
+                        const type = String(follow.type ?? "");
+                        if (
+                          type === "encounter" &&
+                          follow.encounter_id ===
+                            "campaign.encounter.sold-to-the-pits"
+                        )
+                          return (
+                            <span key={id}>
+                              <b>{t.pits}</b>
+                              <button
+                                className="primary"
+                                disabled={busy}
+                                onClick={() =>
+                                  void run("resolveSoldToPits", {
+                                    follow_up_id: id,
+                                    won: true,
+                                  })
+                                }
+                              >
+                                {t.won}
+                              </button>
+                              <DiceResolver
+                                count={2}
+                                sides={6}
+                                label={t.lost}
+                                locale={locale}
+                                onResolve={(dice) =>
+                                  void run("resolveSoldToPits", {
+                                    follow_up_id: id,
+                                    won: false,
+                                    injury_roll: dice[0] * 10 + dice[1],
+                                  })
+                                }
+                              />
+                            </span>
+                          );
+                        if (type === "eye_injury")
+                          return (
+                            <span key={id}>
+                              {t.chooseEye}:{" "}
+                              <button
+                                disabled={busy}
+                                onClick={() =>
+                                  void run("resolveEyeInjury", {
+                                    follow_up_id: id,
+                                    eye: "left",
+                                  })
+                                }
+                              >
+                                {t.left}
+                              </button>
+                              <button
+                                disabled={busy}
+                                onClick={() =>
+                                  void run("resolveEyeInjury", {
+                                    follow_up_id: id,
+                                    eye: "right",
+                                  })
+                                }
+                              >
+                                {t.right}
+                              </button>
+                            </span>
+                          );
+                        if (type === "relationship")
+                          return (
+                            <span key={id}>
+                              <input
+                                aria-label={`${t.hatred} ${id}`}
+                                value={targets[id] ?? ""}
+                                onChange={(event) =>
+                                  setTargets((current) => ({
+                                    ...current,
+                                    [id]: event.target.value,
+                                  }))
+                                }
+                              />
+                              <button
+                                disabled={busy || !(targets[id] ?? "").trim()}
+                                onClick={() =>
+                                  void run("resolveHatred", {
+                                    follow_up_id: id,
+                                    target: targets[id],
+                                  })
+                                }
+                              >
+                                {t.setHatred}
+                              </button>
+                            </span>
+                          );
+                        if (type === "prisoner")
+                          return (
+                            <span key={id}>
+                              <input
+                                aria-label={`${t.ransom} ${id}`}
+                                type="number"
+                                min="0"
+                                value={ransoms[id] ?? 0}
+                                onChange={(event) =>
+                                  setRansoms((current) => ({
+                                    ...current,
+                                    [id]: Math.max(
+                                      0,
+                                      Math.trunc(
+                                        event.target.valueAsNumber || 0,
+                                      ),
+                                    ),
+                                  }))
+                                }
+                              />
+                              {(
+                                [
+                                  ["ransom", t.ransom],
+                                  ["exchange", t.exchange],
+                                  ["lost", t.lostPrisoner],
+                                ] as const
+                              ).map(([resolution, label]) => (
+                                <button
+                                  key={resolution}
+                                  disabled={busy}
+                                  onClick={() =>
+                                    void run("resolvePrisoner", {
+                                      follow_up_id: id,
+                                      resolution,
+                                      ...(resolution === "ransom"
+                                        ? { ransom: ransoms[id] ?? 0 }
+                                        : resolution === "lost"
+                                          ? { disposition: "other" }
+                                          : {}),
+                                    })
+                                  }
+                                >
+                                  {label}
+                                </button>
+                              ))}
+                            </span>
+                          );
+                        const dice = injuryFollowUpDice(knowledge, follow);
+                        return dice ? (
+                          <DiceResolver
+                            key={`${id}:${String(follow.resolution_phase ?? follow.type ?? "follow-up")}`}
+                            locale={locale}
+                            count={dice[0]}
+                            sides={dice[1]}
+                            label={t.follow}
+                            onResolve={(rolls) =>
+                              void run("resolveInjuryTableFollowUp", {
+                                follow_up_id: id,
+                                roll:
+                                  dice[0] === 2 && dice[1] === 6
+                                    ? rolls[0] * 10 + rolls[1]
+                                    : rolls.reduce(
+                                        (sum, value) => sum + value,
+                                        0,
+                                      ),
+                              })
+                            }
+                          />
+                        ) : (
+                          <button
+                            key={id}
+                            disabled={busy}
+                            onClick={() =>
+                              void run("resolveInjuryFollowUp", {
+                                follow_up_id: id,
+                                outcome: {
+                                  warrior_id: warrior.id,
+                                  result_id: follow.result_id ?? "",
+                                  result: "Resolved",
+                                  effects: [],
+                                },
+                              })
+                            }
+                          >
+                            {t.follow}
+                          </button>
+                        );
+                      })
+                    ) : (
+                      <span>{t.resolved}</span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+    </section>
+  );
 }

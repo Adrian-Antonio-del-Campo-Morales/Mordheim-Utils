@@ -50,7 +50,7 @@ describe("P5.2 acceptance — real KB loading", () => {
     await waitFor(() =>
       expect(screen.getAllByRole("button", { name: "Nueva Campaña" })[0].hasAttribute("disabled")).toBe(false),
     );
-    expect(fetch).toHaveBeenCalledWith("knowledge/knowledge-web.json");
+    expect(fetch).toHaveBeenCalledWith("knowledge/knowledge-web.json", { cache: "no-cache" });
     expect(screen.queryByRole("alert")).toBeNull();
   });
 

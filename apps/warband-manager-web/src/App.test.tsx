@@ -23,4 +23,17 @@ describe("App shell (P3.1)", () => {
     await user.click(screen.getByRole("button", { name: "Ajustes" }));
     expect(screen.getByRole("heading", { name: "Ajustes" })).toBeInTheDocument();
   });
+
+  it("offers mobile navigation and the compact actions menu", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    const mobileNavigation = screen.getByRole("navigation", { name: "Navegación móvil" });
+    expect(mobileNavigation).toContainElement(screen.getByRole("button", { name: "Campaña · móvil" }));
+    await user.click(screen.getByRole("button", { name: "Más acciones" }));
+
+    const menu = screen.getByRole("dialog", { name: "Más acciones" });
+    expect(menu).toHaveTextContent("Campañas");
+    expect(menu).toHaveTextContent("Exportar PDF");
+  });
 });

@@ -25,6 +25,7 @@ import {
   recover,
   resolveFollowUp,
 } from "./injuries-workflow";
+import { resolveSoldToPits } from "./sold-to-pits-workflow";
 
 function warrior(overrides: Partial<Warrior>): Warrior {
   return {
@@ -148,6 +149,19 @@ describe("applyInjuryOutcome", () => {
     expect(doc).toEqual(before);
   });
 
+  it("preserves the experience before an injury award", () => {
+    const result = applyInjuryOutcome(documentWith([warrior({ experience: 19 })]), {
+      warrior_id: "w1",
+      result_id: "campaign.serious-injury.hero.66-survives-against-the-odds",
+      result: "Survives Against The Odds",
+      effects: [{ kind: "grant_experience", value: 1 }],
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.document.campaign.warriors[0].experience).toBe(20);
+    expect(result.document.campaign.post_battles[0].step_state?.["injury_experience_before"]).toEqual({ w1: 19 });
+  });
+
   it("rejects unknown warriors and non-positive miss_games", () => {
     expect(applyInjuryOutcome(base(), { warrior_id: "nope", result_id: "x", result: "X" }).ok).toBe(false);
     const bad = applyInjuryOutcome(base(), {
@@ -179,6 +193,21 @@ describe("applyInjuryOutcome", () => {
 });
 
 describe("follow-ups and recovery", () => {
+  it("preserves the XP baseline when a Hero wins in the pits", () => {
+    const doc = documentWith([warrior({ experience: 19 })], [{
+      id: "pits:w1",
+      type: "encounter",
+      encounter_id: "campaign.encounter.sold-to-the-pits",
+      warrior_id: "w1",
+      step: "injuries",
+    }]);
+    const result = resolveSoldToPits(doc, { queryKnowledge: () => ({ ok: false, reason: "not_found" }), queryMany: () => [] }, { follow_up_id: "pits:w1", won: true });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.document.campaign.warriors[0].experience).toBe(21);
+    expect(result.document.campaign.post_battles[0].step_state?.["injury_experience_before"]).toEqual({ w1: 19 });
+  });
+
   it("records, resolves and clears a parked follow-up", () => {
     const parked = recordFollowUp(base(), {
       warrior_id: "w1",

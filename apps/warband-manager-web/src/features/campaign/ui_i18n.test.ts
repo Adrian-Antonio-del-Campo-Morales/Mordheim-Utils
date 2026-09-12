@@ -28,6 +28,7 @@ import {
   resolveName,
 } from "@adapters/knowledge-reader/index";
 import type { ArtefactRow } from "@adapters/knowledge-reader/artefact-types";
+import { knowledgeName } from "./displayText";
 
 /** Locate the repo root (walk up from cwd until the contract dir exists). */
 function repoRoot(): string {
@@ -44,6 +45,7 @@ function repoRoot(): string {
 import { existsSync } from "node:fs";
 
 const ARTEFACT_PATH = "apps/warband-manager-web/public/knowledge/knowledge-web.json";
+const RULES_PROSE_PATH = "apps/warband-manager-web/public/knowledge/rules-prose.json";
 
 interface RawArtefact {
   bands: ArtefactRow[];
@@ -55,7 +57,8 @@ let reader: ArtefactKnowledgeReader;
 
 beforeAll(() => {
   raw = JSON.parse(readFileSync(resolve(repoRoot(), ARTEFACT_PATH), "utf-8"));
-  reader = ArtefactKnowledgeReader.from(raw);
+  const rules_prose = JSON.parse(readFileSync(resolve(repoRoot(), RULES_PROSE_PATH), "utf-8"));
+  reader = ArtefactKnowledgeReader.from({ ...raw, rules_prose });
 });
 
 /** All band rows, via the reader's own index (public query surface). */
@@ -178,6 +181,18 @@ describe("UI i18n parity — locale fallback chain (desktop test_ui_i18n family)
       expect(names.es).toBe("Escaramuza");
       expect(resolveName({ id: "scenario.skirmish", names } as ArtefactRow, "es")).toBe("Escaramuza");
     }
+  });
+
+  it("translates legacy warrior rules stored by their English display name", () => {
+    expect([
+      "Death Oath", "No Armour", "No Missile Weapons", "Slayer Skills", "Hard to Kill",
+    ].map((name) => knowledgeName(reader, "skill", name, "es", name))).toEqual([
+      "Juramento de Muerte", "Sin Armadura", "Sin Armas de Proyectil", "Habilidades de Matatrolles", "Difíciles de Matar",
+    ]);
+  });
+
+  it("renders serious-injury result text instead of its technical id", () => {
+    expect(knowledgeName(reader, "injury", "campaign.serious-injury.hero.41-55-full-recovery", "es")).toBe("Recuperación Completa");
   });
 });
 

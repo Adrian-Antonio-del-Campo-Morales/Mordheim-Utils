@@ -58,6 +58,8 @@ describe("desktop test_rules_catalogue.py → web RulesCatalogue", () => {
     expect(c.entry("skills", "skill.acrobat", "es")?.effect).toContain("Iniciativa");
     expect(c.entry("equipment", "sword", "es")?.effect).toContain("combate cuerpo a cuerpo");
     expect(c.entry("injuries", "campaign.serious-injuries.hero", "es")?.effect).toContain("11-15 — Muerto");
+    expect(c.entry("injuries", "campaign.serious-injuries.hero", "es")?.name).toBe("Tabla de Heridas Graves de Héroes");
+    expect(c.entry("injuries", "campaign.serious-injuries.henchman", "es")?.name).toBe("Tabla de Heridas Graves de Secuaces");
     expect(c.entry("scenarios", "scenario.hidden-treasure", "es")?.effect).toContain("Experiencia:");
     const names = c.entries("equipment", "es").map((row) => row.name);
     expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" })));

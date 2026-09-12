@@ -26,11 +26,13 @@ export function TimelinePanel({ document, onSelect, locale = "en", knowledge }: 
   const { campaign, view } = document;
   const moments = enumerateMoments(campaign);
   const selected = (view.selected_moment ?? "draft:0") as string;
+  const selectedMoment = moments.find((moment) => moment === selected) ?? moments[0];
   const completed = Math.max(0, campaign.states.length - (campaign.configuration.is_draft ? 0 : 1));
 
   return (
     <nav aria-label={locale === "es" ? "Cronología" : "Timeline"} className="campaign-timeline">
       <header><h3>{locale === "es" ? "CRONOLOGÍA DE CAMPAÑA" : "CAMPAIGN TIMELINE"}</h3><p>{campaign.configuration.is_draft ? (locale === "es" ? "La campaña todavía no ha comenzado" : "Campaign has not started yet") : locale === "es" ? `${completed} estados de batalla completados` : `${completed} completed battle states`}</p></header>
+      <label className="mobile-timeline-picker"><span>{locale === "es" ? "Momento de campaña" : "Campaign moment"}</span><select aria-label={locale === "es" ? "Elegir momento de campaña" : "Choose campaign moment"} value={selectedMoment} onChange={(event) => onSelect(event.target.value as MomentSelection)}>{moments.map((moment) => <option key={moment} value={moment}>{momentLabel(moment, campaign, locale)}</option>)}</select></label>
       <ol>
         {moments.map((moment) => {
           const isCurrent = moment === selected;

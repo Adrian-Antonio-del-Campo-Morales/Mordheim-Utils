@@ -114,7 +114,8 @@ export function applyBattleExperience(
     }
   }
   const awards = new Map(calculated.map((row) => [row.warrior_id, overrides?.[row.warrior_id] ?? row.amount]));
-  const previous = new Map(document.campaign.warriors.map((warrior) => [warrior.id, warrior.experience]));
+  const injuryExperienceBefore=(post.step_state?.["injury_experience_before"]??{}) as Readonly<Record<string,unknown>>;
+  const previous = new Map(document.campaign.warriors.map((warrior) => [warrior.id, injuryExperienceBefore[warrior.id] == null ? warrior.experience : Number(injuryExperienceBefore[warrior.id])]));
   const warriors = document.campaign.warriors.map((warrior) => ({
     ...warrior,
     previous_experience: warrior.experience,

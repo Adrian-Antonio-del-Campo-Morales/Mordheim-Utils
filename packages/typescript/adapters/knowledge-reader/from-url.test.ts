@@ -55,7 +55,7 @@ describe("ArtefactKnowledgeReader.fromUrl", () => {
       .mockResolvedValueOnce(new Response(JSON.stringify({ ...validArtefact, rules_prose_url: "rules-prose.json" })))
       .mockResolvedValueOnce(new Response(JSON.stringify({ "special-rules": [] })));
     await ArtefactKnowledgeReader.fromUrl("https://example.test/knowledge/knowledge-web.json", fetchFn);
-    expect(fetchFn).toHaveBeenNthCalledWith(2, "https://example.test/knowledge/rules-prose.json");
+    expect(fetchFn).toHaveBeenNthCalledWith(2, "https://example.test/knowledge/rules-prose.json", { cache: "no-cache" });
   });
 
   it("rejects HTTP failures with a typed error naming the url and status", async () => {

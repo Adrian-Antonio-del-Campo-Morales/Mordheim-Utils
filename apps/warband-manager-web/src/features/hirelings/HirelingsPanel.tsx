@@ -27,6 +27,7 @@ interface HirelingsPanelProps {
   readonly listings?: KnowledgeListings;
   readonly locale?: "es" | "en";
   readonly mode?: "all" | "hirelings" | "trading";
+  readonly showTradingTitle?: boolean;
 }
 
 function VariableFeeHire({ offer, name, busy, locale, onHire }: { offer: ReturnType<ReturnType<typeof useHirelingsWorkflow>["hiredSwordOffers"]>[number]; name: string; busy: boolean; locale: "es" | "en"; onHire: (fee: number) => void }) {
@@ -41,7 +42,7 @@ function VariableTradingPurchase({ offer, quantity, busy, locale, onBuy }: { off
   return <button type="button" disabled={busy || price === null} data-disabled-reason={busy ? (locale === "es" ? "Espera a que termine la operación en curso." : "Wait for the current operation to finish.") : price === null ? (locale === "es" ? "Resuelve primero el precio del objeto." : "Resolve the item price first.") : undefined} onClick={() => price !== null && onBuy(price)}>{locale === "es" ? "Comprar" : "Buy"} {quantity} {locale === "es" ? "por" : "for"} {(price ?? 0) * quantity} gc</button>;
 }
 
-export function HirelingsPanel({ document, listings, locale = "en", mode = "all" }: HirelingsPanelProps) {
+export function HirelingsPanel({ document, listings, locale = "en", mode = "all", showTradingTitle = true }: HirelingsPanelProps) {
   const app = useCampaignApp();
   const workflow = useHirelingsWorkflow(listings);
   const [busy, setBusy] = useState(false);
@@ -92,7 +93,7 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
       {offers.length === 0 ? (
         <p role="status">{t.none}</p>
       ) : (
-        <table>
+          <table className="mobile-cards">
           <caption>{t.available}</caption>
           <thead>
             <tr>
@@ -102,11 +103,11 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
           <tbody>
             {offers.map((offer) => (
               <tr key={offer.offer_id}>
-                <td>{displayName(offer.profile_id, offer.name)}</td>
-                <td>{offer.fee_dice ? `${offer.fee_base}+${offer.fee_dice[0]}D${offer.fee_dice[1]} gc` : offer.fee_resources.length ? resourceLabel(offer.fee_resources) : t.special}</td>
-                <td>{offer.upkeep_resources.length ? resourceLabel(offer.upkeep_resources) : "—"}</td>
-                <td>{offer.rating}</td>
-                <td>
+                <td data-label={t.name}>{displayName(offer.profile_id, offer.name)}</td>
+                <td data-label={t.fee}>{offer.fee_dice ? `${offer.fee_base}+${offer.fee_dice[0]}D${offer.fee_dice[1]} gc` : offer.fee_resources.length ? resourceLabel(offer.fee_resources) : t.special}</td>
+                <td data-label={t.upkeep}>{offer.upkeep_resources.length ? resourceLabel(offer.upkeep_resources) : "—"}</td>
+                <td data-label={t.rating}>{offer.rating}</td>
+                <td data-label={t.action}>
                   {hired.some((row) => row.profile_id === offer.profile_id) ? <button type="button" disabled data-disabled-reason={t.already}>✓ {t.already}</button> : offer.eligible && offer.fee_dice ? <VariableFeeHire offer={offer} name={displayName(offer.profile_id, offer.name)} busy={busy} locale={locale} onHire={(fee) => void hire(offer.profile_id, fee)} /> : offer.eligible ? (
                     <button
                       type="button"
@@ -129,8 +130,8 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
         </table>
       )}</>}
 
-      {mode !== "hirelings" && <><h3>{t.trading}</h3>
-      <table>
+      {mode !== "hirelings" && <>{showTradingTitle && <h3>{t.trading}</h3>}
+      <table className="mobile-cards">
         <caption>{t.goods}</caption>
         <thead>
           <tr>
@@ -140,10 +141,10 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
         <tbody>
           {goods.map((good) => (
             <tr key={good.offer_id}>
-                <td><KnowledgeHint knowledge={listings as never} kind="item" id={good.item_id} locale={locale}>{displayName(good.item_id, good.name)}</KnowledgeHint>{good.restriction_notes.length > 0 && <small className="restriction-note">{good.restriction_notes.join(" · ")}</small>}</td>
-              <td>{good.price_dice ? `${good.price_base}+${good.price_dice[0]}D${good.price_dice[1]} gc` : good.base_price === null ? t.dice : `${good.base_price} gc`}</td>
-              <td>{good.availability}</td>
-              <td><input aria-label={`${locale === "es" ? "Cantidad" : "Quantity"} ${displayName(good.item_id, good.name)}`} type="number" min="1" value={amount(`buy:${good.item_id}`)} onChange={(event)=>setQuantities((current)=>({...current,[`buy:${good.item_id}`]:Math.max(1,Math.trunc(event.target.valueAsNumber||1))}))} />
+                <td data-label={t.item}><KnowledgeHint knowledge={listings as never} kind="item" id={good.item_id} locale={locale}>{displayName(good.item_id, good.name)}</KnowledgeHint>{good.restriction_notes.length > 0 && <small className="restriction-note">{good.restriction_notes.join(" · ")}</small>}</td>
+              <td data-label={t.price}>{good.price_dice ? `${good.price_base}+${good.price_dice[0]}D${good.price_dice[1]} gc` : good.base_price === null ? t.dice : `${good.base_price} gc`}</td>
+              <td data-label={t.availability}>{good.availability}</td>
+              <td data-label={t.action}><input aria-label={`${locale === "es" ? "Cantidad" : "Quantity"} ${displayName(good.item_id, good.name)}`} type="number" min="1" value={amount(`buy:${good.item_id}`)} onChange={(event)=>setQuantities((current)=>({...current,[`buy:${good.item_id}`]:Math.max(1,Math.trunc(event.target.valueAsNumber||1))}))} />
                 {good.price_dice ? <VariableTradingPurchase offer={good} quantity={amount(`buy:${good.item_id}`)} busy={busy} locale={locale} onBuy={(price) => void buy(good.item_id, price)} /> : <button
                   type="button"
                   disabled={busy || good.base_price === null || (good.limit_per_warband !== null && (document.campaign.inventory.find((row) => row.id === good.item_id)?.owned ?? 0) >= good.limit_per_warband)}
@@ -163,7 +164,7 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
       {stashRows.length === 0 ? (
         <p role="status">{t.nothing}</p>
       ) : (
-        <table>
+        <table className="mobile-cards">
           <caption>{t.stash}</caption>
           <thead>
             <tr>
@@ -173,9 +174,9 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
           <tbody>
             {stashRows.map((row) => (
               <tr key={row.id}>
-                <td><KnowledgeHint knowledge={listings as never} kind="item" id={row.id} locale={locale}>{displayName(row.id, row.name)}</KnowledgeHint></td>
-                <td>{row.stash}<input aria-label={`${locale === "es" ? "Cantidad" : "Quantity"} ${displayName(row.id, row.name)} ${locale === "es" ? "de la reserva" : "from stash"}`} type="number" min="1" max={row.stash} value={amount(`sell:${row.id}`,row.stash)} onChange={(event)=>setQuantities((current)=>({...current,[`sell:${row.id}`]:Math.min(row.stash,Math.max(1,Math.trunc(event.target.valueAsNumber||1)))}))} /></td>
-                <td>
+                <td data-label={t.item}><KnowledgeHint knowledge={listings as never} kind="item" id={row.id} locale={locale}>{displayName(row.id, row.name)}</KnowledgeHint></td>
+                <td data-label={t.inStash}>{row.stash}<input aria-label={`${locale === "es" ? "Cantidad" : "Quantity"} ${displayName(row.id, row.name)} ${locale === "es" ? "de la reserva" : "from stash"}`} type="number" min="1" max={row.stash} value={amount(`sell:${row.id}`,row.stash)} onChange={(event)=>setQuantities((current)=>({...current,[`sell:${row.id}`]:Math.min(row.stash,Math.max(1,Math.trunc(event.target.valueAsNumber||1)))}))} /></td>
+                <td data-label={t.action}>
                   <button
                     type="button"
                     disabled={busy}

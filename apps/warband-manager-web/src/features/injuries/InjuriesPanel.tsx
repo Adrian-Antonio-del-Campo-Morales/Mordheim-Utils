@@ -57,7 +57,7 @@ export function InjuriesPanel({ document, knowledge, locale = "en" }: InjuriesPa
         </p>
       )}
 
-      <table>
+        <table className="mobile-cards">
           <caption>{locale === "es" ? "Estado de heridas de la banda" : "Warband injury status"}</caption>
         <thead>
           <tr>
@@ -71,14 +71,14 @@ export function InjuriesPanel({ document, knowledge, locale = "en" }: InjuriesPa
         <tbody>
           {overview.warriors.map((row) => (
             <tr key={row.warrior_id} data-restricted={row.restricted || undefined}>
-              <td>{row.name}</td>
-              <td>
+              <td data-label={t.warrior}>{row.name}</td>
+              <td data-label={t.condition}>
                 {row.condition
                   ? `${readableValue(row.condition, locale)}${row.condition_detail ? ` (${knowledgeName(knowledge, "injury", row.condition_detail, locale, row.condition_detail)})` : ""}`
                   : "—"}
               </td>
-              <td>{row.games_to_miss > 0 ? `${row.games_to_miss} (${readableValue(row.absence_reason ?? (locale === "es" ? "Lesión" : "Injury"), locale)})` : "0"}</td>
-              <td>
+              <td data-label={t.missingGames}>{row.games_to_miss > 0 ? `${row.games_to_miss} (${readableValue(row.absence_reason ?? (locale === "es" ? "Lesión" : "Injury"), locale)})` : "0"}</td>
+              <td data-label={t.recovery}>
                 <button
                   type="button"
                   disabled={busy || row.games_to_miss === 0}
@@ -89,7 +89,7 @@ export function InjuriesPanel({ document, knowledge, locale = "en" }: InjuriesPa
                   {t.serve}
                 </button>
               </td>
-              <td>
+              <td data-label={t.pendingRolls}>
                 {row.pending_follow_ups.length === 0
                   ? "—"
                   : row.pending_follow_ups.map((followUp) => {
