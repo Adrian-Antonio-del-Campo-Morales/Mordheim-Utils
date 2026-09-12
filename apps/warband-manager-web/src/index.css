@@ -35,11 +35,11 @@ main { max-width: 1440px; margin: 0 auto; padding: clamp(1rem, 3vw, 2.6rem); }
 .session-card span { color: #b89a5e; font-size: .76rem; text-transform: uppercase; }
 .session-card h2 { font-family: Georgia, serif; margin: .45rem 0; }
 .modal-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 1rem; background: rgba(0,0,0,.76); }
-.modal { width: min(520px, 100%); display: grid; gap: 1rem; padding: 1.5rem; border: 1px solid #806b42; background: #22241e; box-shadow: 0 24px 80px #000; }
-.campaign-library { width: min(960px, 100%); max-height: 85vh; overflow: auto; }
+.modal { width: min(520px, 100%); max-height: calc(100dvh - 2rem); overflow-y: auto; overscroll-behavior: contain; display: grid; gap: 1rem; padding: 1.5rem; border: 1px solid #806b42; background: #22241e; box-shadow: 0 24px 80px #000; }
+.campaign-library { width: min(960px, 100%); }
 .modal h2 { font: 700 2rem Georgia, serif; margin: 0; }
 .modal .close { justify-self: end; border: 0; font-size: 1.5rem; padding: 0; background: transparent; }
-.modal-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.modal-actions { position: sticky; bottom: 0; z-index: 1; display: flex; flex-wrap: wrap; gap: .5rem; padding-block: .75rem max(.75rem, env(safe-area-inset-bottom)); background: inherit; }
 .band-picker { max-height: 320px; overflow: auto; padding: .45rem; }
 .band-picker label { display: flex; align-items: center; gap: .65rem; padding: .55rem; border-bottom: 1px solid #3b3d33; }
 .band-picker input { width: auto; }
