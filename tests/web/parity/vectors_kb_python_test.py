@@ -23,7 +23,7 @@ VECTORS = Path(__file__).resolve().parent / "vectors"
 ARTEFACT = ROOT / "apps" / "warband-manager-web" / "public" / "knowledge" / "knowledge-web.json"
 
 ARTEFACT_DICT: dict = json.loads(ARTEFACT.read_text(encoding="utf-8"))
-PROSE: dict = ARTEFACT_DICT["rules_prose"]
+PROSE: dict = json.loads((ARTEFACT.parent / ARTEFACT_DICT["rules_prose_url"]).read_text(encoding="utf-8"))
 
 
 def _band(collection: str, band_id: str) -> dict:

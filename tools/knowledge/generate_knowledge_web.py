@@ -46,6 +46,7 @@ from mordheim_knowledge.rules_catalog import load_rules_catalog  # noqa: E402
 SCHEMA_VERSION = 1
 DEFAULT_RULESET = "mordheim"
 OUTPUT_RELATIVE = Path("build") / "generated" / "knowledge-web" / "knowledge-web.json"
+RULES_PROSE_FILENAME = "rules-prose.json"
 
 #: Item kinds the web Campaign Manager consumes (inventory doc decision).
 INCLUDED_ITEM_KINDS = frozenset({
@@ -441,20 +442,26 @@ def main(argv: list[str] | None = None) -> int:
     output = Path(output).resolve()
 
     artefact = generate(args.ruleset)
+    rules_prose = artefact.pop("rules_prose")
+    artefact["rules_prose_url"] = RULES_PROSE_FILENAME
     text = json.dumps(artefact, ensure_ascii=False, indent=1, sort_keys=False) + "\n"
+    rules_text = json.dumps(rules_prose, ensure_ascii=False, indent=1, sort_keys=False) + "\n"
+    rules_output = output.with_name(RULES_PROSE_FILENAME)
     if args.check:
-        if not output.exists():
-            print(f"check failed: {output} does not exist", file=sys.stderr)
-            return 1
-        if output.read_text(encoding="utf-8") != text:
-            print(f"check failed: {output} is not up to date — regenerate it", file=sys.stderr)
-            return 1
+        for path, expected in ((output, text), (rules_output, rules_text)):
+            if not path.exists():
+                print(f"check failed: {path} does not exist", file=sys.stderr)
+                return 1
+            if path.read_text(encoding="utf-8") != expected:
+                print(f"check failed: {path} is not up to date — regenerate it", file=sys.stderr)
+                return 1
         print(f"check ok: {output} is up to date")
         return 0
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(text, encoding="utf-8")
+    rules_output.write_text(rules_text, encoding="utf-8")
     size_kb = output.stat().st_size / 1024
-    print(f"wrote {output} ({size_kb:.0f} KB, "
+    print(f"wrote {output} and {rules_output.name} ({size_kb:.0f} KB main, "
           f"{len(artefact['bands'])} bands, {len(artefact['profiles'])} profiles, "
           f"{len(artefact['items'])} items, {len(artefact['skills'])} skills)")
     return 0

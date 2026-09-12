@@ -42,8 +42,8 @@ jobs:
       - name: Stage the artefact for repository-level parity tests
         run: |
           mkdir -p apps/warband-manager-web/public/knowledge
-          cp build/generated/knowledge-web/knowledge-web.json \
-             apps/warband-manager-web/public/knowledge/knowledge-web.json
+          cp build/generated/knowledge-web/*.json \
+             apps/warband-manager-web/public/knowledge/
 
       - name: Run the Python regression net
         run: python -m pytest tests/web tests/contracts tests/campaign tests/architecture tests/knowledge -q
@@ -80,8 +80,8 @@ jobs:
       - name: Copy the artefact to the app's public assets
         run: |
           mkdir -p apps/warband-manager-web/public/knowledge
-          cp build/generated/knowledge-web/knowledge-web.json \
-             apps/warband-manager-web/public/knowledge/knowledge-web.json
+          cp build/generated/knowledge-web/*.json \
+             apps/warband-manager-web/public/knowledge/
 
       - name: Typecheck and test the packages
         run: cd packages/typescript && npm run typecheck && npm test

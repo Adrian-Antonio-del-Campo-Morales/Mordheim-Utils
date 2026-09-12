@@ -28,6 +28,9 @@ const hasArtefact = existsSync(ARTEFACT_PATH);
 const artefact: any = hasArtefact
   ? JSON.parse(readFileSync(ARTEFACT_PATH, "utf-8"))
   : null;
+if (artefact?.rules_prose_url) {
+  artefact.rules_prose = JSON.parse(readFileSync(resolve(ARTEFACT_PATH, "..", artefact.rules_prose_url), "utf-8"));
+}
 const vectorsRoot = resolve(ROOT, "tests/web/parity/vectors");
 
 function loadVectorFile(name: string): VectorFile {

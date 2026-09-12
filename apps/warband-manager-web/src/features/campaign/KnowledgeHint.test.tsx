@@ -59,9 +59,12 @@ describe("KnowledgeHint", () => {
   });
 
   it("resolves real artefact descriptions for items, skills and rules", () => {
-    const knowledge = ArtefactKnowledgeReader.from(
-      JSON.parse(readFileSync(resolve(process.cwd(), "public/knowledge/knowledge-web.json"), "utf-8")),
+    const artefactPath = resolve(process.cwd(), "public/knowledge/knowledge-web.json");
+    const artefact = JSON.parse(readFileSync(artefactPath, "utf-8"));
+    artefact.rules_prose = JSON.parse(
+      readFileSync(resolve(artefactPath, "..", artefact.rules_prose_url), "utf-8"),
     );
+    const knowledge = ArtefactKnowledgeReader.from(artefact);
     const cases = [
       { kind: "item" as const, id: "sword" },
       { kind: "skill" as const, id: "skill.acrobat" },
