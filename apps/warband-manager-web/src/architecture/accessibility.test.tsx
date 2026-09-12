@@ -116,6 +116,8 @@ describe("P7.4 static accessibility audit", () => {
     expect(css).toMatch(/:focus-visible/);
     expect(css).toMatch(/@media \(max-width: 640px\)/);
     expect(css).toMatch(/@media \(pointer: coarse\)/);
+    expect(css).toMatch(/\.modal[^}]*100dvh[^}]*overflow-y:\s*auto/);
+    expect(css).toMatch(/\.modal-actions[^}]*position:\s*sticky[^}]*bottom:\s*0/);
   });
 });
 
