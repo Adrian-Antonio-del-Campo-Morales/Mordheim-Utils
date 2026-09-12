@@ -71,7 +71,7 @@ export function EquipmentPanel({ document, readOnly = false, locale = "en", know
               <ul>
                 {entries.map((entry) => <li key={`${warrior.id}:${entry.item_id}`}>
                   <span><KnowledgeHint knowledge={knowledge} kind="item" id={entry.item_id} locale={locale}>{entry.quantity} × {knowledgeName(knowledge, "item", entry.item_id, locale, entry.name)}</KnowledgeHint></span>
-                  {!readOnly && <span className="equipment-actions"><button type="button" aria-label={`${locale === "es" ? "Devolver" : "Return"} ${knowledgeName(knowledge, "item", entry.item_id, locale, entry.name)} ${locale === "es" ? "llevado por" : "carried by"} ${warrior.name} ${locale === "es" ? "a la reserva" : "to stash"}`} disabled={busy || entry.transferable === false} data-disabled-reason={entry.transferable === false ? (locale === "es" ? "Este equipo inicial no se puede transferir." : "This starting equipment cannot be transferred.") : undefined} onClick={() => void assign(warrior.id, entry.item_id, 1, "stash")}>{warrior.kind === "henchman" && entry.per_model ? t.returnSet : t.return}</button></span>}
+                  {!readOnly && <span className="equipment-actions"><button type="button" aria-label={`${locale === "es" ? "Devolver" : "Return"} ${knowledgeName(knowledge, "item", entry.item_id, locale, entry.name)} ${locale === "es" ? "llevado por" : "carried by"} ${warrior.name} ${locale === "es" ? "a la reserva" : "to stash"}`} disabled={busy || entry.transferable === false} data-disabled-reason={busy ? (locale === "es" ? "Espera a que termine la transferencia en curso." : "Wait for the current transfer to finish.") : entry.transferable === false ? (locale === "es" ? "Este equipo inicial no se puede transferir." : "This starting equipment cannot be transferred.") : undefined} onClick={() => void assign(warrior.id, entry.item_id, 1, "stash")}>{warrior.kind === "henchman" && entry.per_model ? t.returnSet : t.return}</button></span>}
                 </li>)}
               </ul>
             </li>;
@@ -100,6 +100,7 @@ export function EquipmentPanel({ document, readOnly = false, locale = "en", know
                     aria-label={`${locale === "es" ? "Asignar" : "Assign"} ${knowledgeName(knowledge, "item", item.id, locale, item.name)} ${locale === "es" ? "a un guerrero" : "to warrior"}`}
                     defaultValue=""
                     disabled={busy}
+                    data-disabled-reason={busy ? (locale === "es" ? "Espera a que termine la transferencia en curso." : "Wait for the current transfer to finish.") : undefined}
                     onChange={(event) => {
                       const warriorId = event.target.value;
                       if (warriorId) {

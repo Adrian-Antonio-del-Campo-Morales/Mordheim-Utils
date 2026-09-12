@@ -12,10 +12,10 @@ function RarePurchase({ heroId, offer, document, knowledge, locale }: { heroId: 
   const [price, setPrice] = useState<number | null>(null);
   const [base, setBase] = useState("");
   const t=locale==="es"?{base:"Arma base",select:"Selecciona…",upgrade:"Mejorar por",cost:"Tirada de coste",buy:"Comprar por"}:{base:"Base weapon",select:"Select…",upgrade:"Upgrade for",cost:"cost roll",buy:"Buy for"};
-  if (offer.upgrade_multiplier) { const multiplier=offer.upgrade_multiplier; const weapons=document.campaign.inventory.filter((item)=>item.stash>0&&/weapon/i.test(item.category)).sort((a,b)=>a.name.localeCompare(b.name,locale)); const selected=weapons.find((item)=>item.id===base); return <><label>{t.base}<select value={base} onChange={(event)=>setBase(event.target.value)}><option value="">{t.select}</option>{weapons.map((item)=><option value={item.id} key={item.id}>{item.name} · {(item.value??0)*multiplier} gc</option>)}</select></label><button className="primary" disabled={!selected} onClick={() => void app.runAction("upgradeRareSearch", { hero_id: heroId, base_item_id: base })}>{t.upgrade} {selected ? (selected.value??0) * multiplier : "?"} gc</button></> }
+  if (offer.upgrade_multiplier) { const multiplier=offer.upgrade_multiplier; const weapons=document.campaign.inventory.filter((item)=>item.stash>0&&/weapon/i.test(item.category)).sort((a,b)=>a.name.localeCompare(b.name,locale)); const selected=weapons.find((item)=>item.id===base); return <><label>{t.base}<select value={base} onChange={(event)=>setBase(event.target.value)}><option value="">{t.select}</option>{weapons.map((item)=><option value={item.id} key={item.id}>{item.name} · {(item.value??0)*multiplier} gc</option>)}</select></label><button className="primary" disabled={!selected} data-disabled-reason={!selected ? (locale === "es" ? "Selecciona un arma de la reserva para mejorarla." : "Select a weapon from the stash to upgrade.") : undefined} onClick={() => void app.runAction("upgradeRareSearch", { hero_id: heroId, base_item_id: base })}>{t.upgrade} {selected ? (selected.value??0) * multiplier : "?"} gc</button></> }
   if (offer.price_dice && price === null) return <DiceResolver count={offer.price_dice[0]} sides={offer.price_dice[1]} label={<><KnowledgeHint knowledge={knowledge} kind="item" id={String(offer.item_id)} locale={locale}>{offer.name}</KnowledgeHint> {t.cost}</>} onResolve={(dice) => setPrice(offer.price_base + dice.reduce((sum, item) => sum + item, 0) * offer.price_multiplier)} />;
   const resolved = price ?? offer.price;
-  return <button className="primary" disabled={resolved === null} onClick={() => void app.runAction("buyRareSearch", { hero_id: heroId, unit_price: resolved })}>{t.buy} {resolved} gc</button>;
+  return <button className="primary" disabled={resolved === null} data-disabled-reason={resolved === null ? (locale === "es" ? "Resuelve primero el precio del objeto." : "Resolve the item price first.") : undefined} onClick={() => void app.runAction("buyRareSearch", { hero_id: heroId, unit_price: resolved })}>{t.buy} {resolved} gc</button>;
 }
 
 function DramatisHire({ heroId, offer, locale }: { heroId: string; offer: ReturnType<typeof dramatisOffers>[number]; locale:"es"|"en" }) {
@@ -43,7 +43,7 @@ export function RareSearchPanel({ document, knowledge, locale="en" }: { readonly
       return <article className="warrior-card" key={hero.id}>
         <header><strong>{hero.name}</strong><b>{search?.["dice"] ? search["success"] ? search["used"] ? t.consumed : t.available : t.notFound : t.one}</b></header>
         <label>{t.target}
-          <select value={String(search?.["target_id"] ?? "")} disabled={Boolean(search?.["dice"])} onChange={(event) => {
+          <select value={String(search?.["target_id"] ?? "")} disabled={Boolean(search?.["dice"])} data-disabled-reason={search?.["dice"] ? (locale === "es" ? "El objetivo queda fijado después de tirar los dados." : "The target is locked after rolling the dice.") : undefined} onChange={(event) => {
             const value = event.target.value;
             if (!value) void app.runAction("assignRareSearch", { hero_id: hero.id, item_id: null });
             else if (value.startsWith("rare:")) void app.runAction("assignRareSearch", { hero_id: hero.id, item_id: value.slice(5) });
@@ -51,7 +51,7 @@ export function RareSearchPanel({ document, knowledge, locale="en" }: { readonly
           }}>
             <option value="">{t.no}</option>
             <optgroup label={t.rare}>{rare.map((offer) => <option key={offer.item_id} value={`rare:${offer.item_id}`}>{offer.name} · {t.rare} {offer.rarity}</option>)}</optgroup>
-            <optgroup label={t.persona}>{dramatis.map((offer) => <option key={offer.profile_id} value={`dramatis:${offer.profile_id}`} disabled={!offer.eligible}>{offer.name} · {offer.fee === null ? t.special : `${offer.fee} gc`}{!offer.eligible ? ` · ${t.unavailable}` : ""}</option>)}</optgroup>
+            <optgroup label={t.persona}>{dramatis.map((offer) => <option key={offer.profile_id} value={`dramatis:${offer.profile_id}`} disabled={!offer.eligible}>{offer.name} · {offer.fee === null ? t.special : `${offer.fee} gc`}{!offer.eligible ? ` · ${t.unavailable}: ${locale === "es" ? "no cumple los requisitos" : "requirements not met"}` : ""}</option>)}</optgroup>
           </select>
         </label>
         {search && !search["dice"] && search["kind"] === "rare" && <DiceResolver count={2} sides={6} label={rareOffer ? <><KnowledgeHint knowledge={knowledge} kind="item" id={String(rareOffer.item_id)} locale={locale}>{rareOffer.name}</KnowledgeHint> {t.search}</> : `${t.rare} ${t.search}`} onResolve={(dice) => void app.runAction("resolveRareSearch", { hero_id: hero.id, dice })} />}
