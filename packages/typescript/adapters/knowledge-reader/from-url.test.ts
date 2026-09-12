@@ -4,7 +4,7 @@
  * (network / HTTP / JSON / schema), never a raw Response or SyntaxError.
  */
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { ArtefactKnowledgeReader, KnowledgeReaderError } from "./index";
 
@@ -48,6 +48,14 @@ describe("ArtefactKnowledgeReader.fromUrl", () => {
     }
     const missing = reader.queryKnowledge({ id: { kind: "band_id", value: "nope" } });
     expect(missing).toEqual({ ok: false, reason: "not_found" });
+  });
+
+  it("loads partitioned rules prose beside the main artefact", async () => {
+    const fetchFn = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ ...validArtefact, rules_prose_url: "rules-prose.json" })))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ "special-rules": [] })));
+    await ArtefactKnowledgeReader.fromUrl("https://example.test/knowledge/knowledge-web.json", fetchFn);
+    expect(fetchFn).toHaveBeenNthCalledWith(2, "https://example.test/knowledge/rules-prose.json");
   });
 
   it("rejects HTTP failures with a typed error naming the url and status", async () => {

@@ -63,8 +63,8 @@ jobs:
       - name: Stage the artefact as a static asset
         run: |
           mkdir -p apps/warband-manager-web/public/knowledge
-          cp build/generated/knowledge-web/knowledge-web.json \
-             apps/warband-manager-web/public/knowledge/knowledge-web.json
+          cp build/generated/knowledge-web/*.json \
+             apps/warband-manager-web/public/knowledge/
 
       - name: Run the TypeScript suites before publishing
         run: |

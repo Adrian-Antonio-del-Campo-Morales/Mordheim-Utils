@@ -215,9 +215,29 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
         `Knowledge artefact at "${url}" is not valid JSON: ${(cause as Error).message}`,
       );
     }
+    let document = artefact as KnowledgeArtefact;
+    if (typeof document.rules_prose_url === "string" && !document.rules_prose) {
+      const pageUrl = (globalThis as { location?: { href: string } }).location?.href ?? "http://localhost/";
+      const rulesUrl = new URL(document.rules_prose_url, new URL(url, pageUrl)).toString();
+      let rulesResponse: Response;
+      try {
+        rulesResponse = await fetchFn(rulesUrl);
+      } catch (cause) {
+        throw new KnowledgeReaderError(`Could not fetch the rules prose artefact from "${rulesUrl}": ${(cause as Error).message}`);
+      }
+      if (!rulesResponse.ok) {
+        throw new KnowledgeReaderError(`Rules prose artefact request failed: HTTP ${rulesResponse.status} for "${rulesUrl}".`);
+      }
+      try {
+        const rulesProse = await rulesResponse.json() as Readonly<Record<string, readonly ArtefactRow[]>>;
+        document = { ...document, rules_prose: rulesProse };
+      } catch (cause) {
+        throw new KnowledgeReaderError(`Rules prose artefact at "${rulesUrl}" is not valid JSON: ${(cause as Error).message}`);
+      }
+    }
     // One validation pass (`from` re-validates; both are cheap relative to
     // the network hop, and `from` stays the single entry point for fakes).
-    return ArtefactKnowledgeReader.from(artefact);
+    return ArtefactKnowledgeReader.from(document);
   }
 
   private static indexById(

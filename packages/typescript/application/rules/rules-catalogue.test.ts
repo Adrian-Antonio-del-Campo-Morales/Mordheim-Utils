@@ -11,12 +11,16 @@ import { describe, expect, it } from "vitest";
 import { ArtefactKnowledgeReader } from "../../adapters/knowledge-reader/index";
 import { RulesCatalogue } from "./rules-catalogue";
 
+const ARTEFACT_PATH = resolve(__dirname, "../../../../apps/warband-manager-web/public/knowledge/knowledge-web.json");
 const ARTEFACT = JSON.parse(
   readFileSync(
-    resolve(__dirname, "../../../../apps/warband-manager-web/public/knowledge/knowledge-web.json"),
+    ARTEFACT_PATH,
     "utf-8",
   ),
-) as unknown;
+) as Record<string, unknown>;
+ARTEFACT.rules_prose = JSON.parse(
+  readFileSync(resolve(ARTEFACT_PATH, "..", String(ARTEFACT.rules_prose_url)), "utf-8"),
+);
 
 function catalogue(): RulesCatalogue {
   return new RulesCatalogue(ArtefactKnowledgeReader.from(ARTEFACT));
