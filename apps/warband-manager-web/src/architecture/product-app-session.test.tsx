@@ -266,4 +266,21 @@ describe("ProductApp session removal", () => {
     await waitFor(() => expect(run).toHaveBeenCalledWith("renameCampaign", { name: "Renombrada" }));
     await waitFor(() => expect(screen.queryByRole("button", { name: "OK" })).not.toBeInTheDocument());
   });
+
+  it("keeps the rename form open and announces a rejected action", async () => {
+    run.mockResolvedValueOnce({ ok: false, message: "Rename rejected" });
+    render(<ProductApp />);
+    await waitFor(() => expect(screen.getAllByRole("button", { name: "Nueva Campaña" })[0]).not.toBeDisabled());
+    fireEvent.click(screen.getAllByRole("button", { name: "Nueva Campaña" })[0]);
+    fireEvent.click(screen.getByRole("button", { name: "Crear" }));
+    await screen.findByText("Campaign workspace");
+
+    fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
+    fireEvent.click(screen.getByRole("button", { name: "Renombrar" }));
+    fireEvent.change(screen.getByLabelText("Nombre de Campaña"), { target: { value: "Renombrada" } });
+    fireEvent.click(screen.getByRole("button", { name: "OK" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Rename rejected");
+    expect(screen.getByRole("button", { name: "OK" })).toBeInTheDocument();
+  });
 });

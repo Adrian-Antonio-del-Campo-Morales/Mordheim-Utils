@@ -32,13 +32,13 @@ interface HirelingsPanelProps {
 function VariableFeeHire({ offer, name, busy, locale, onHire }: { offer: ReturnType<ReturnType<typeof useHirelingsWorkflow>["hiredSwordOffers"]>[number]; name: string; busy: boolean; locale: "es" | "en"; onHire: (fee: number) => void }) {
   const [fee, setFee] = useState<number | null>(null);
   if (offer.fee_dice && fee === null) return <DiceResolver locale={locale} count={offer.fee_dice[0]} sides={offer.fee_dice[1]} label={`${name} ${locale === "es" ? "tarifa de contratación" : "hiring fee"}`} onResolve={(dice) => setFee(offer.fee_base + dice.reduce((total, die) => total + die, 0))} />;
-  return <button type="button" disabled={busy || fee === null} aria-label={`${locale === "es" ? "Contratar" : "Hire"} ${name}`} onClick={() => fee !== null && onHire(fee)}>{locale === "es" ? "Contratar por" : "Hire for"} {fee} gc</button>;
+  return <button type="button" disabled={busy || fee === null} data-disabled-reason={busy ? (locale === "es" ? "Espera a que termine la operación en curso." : "Wait for the current operation to finish.") : fee === null ? (locale === "es" ? "Resuelve primero la tarifa de contratación." : "Resolve the hiring fee first.") : undefined} aria-label={`${locale === "es" ? "Contratar" : "Hire"} ${name}`} onClick={() => fee !== null && onHire(fee)}>{locale === "es" ? "Contratar por" : "Hire for"} {fee} gc</button>;
 }
 
 function VariableTradingPurchase({ offer, quantity, busy, locale, onBuy }: { offer: TradingOfferRow; quantity: number; busy: boolean; locale: "es" | "en"; onBuy: (price: number) => void }) {
   const [price, setPrice] = useState<number | null>(null);
   if (offer.price_dice && price === null) return <DiceResolver locale={locale} count={offer.price_dice[0]} sides={offer.price_dice[1]} label={`${offer.name} ${locale === "es" ? "precio" : "price"}`} onResolve={(dice) => setPrice(offer.price_base + dice.reduce((total, die) => total + die, 0) * offer.price_multiplier)} />;
-  return <button type="button" disabled={busy || price === null} onClick={() => price !== null && onBuy(price)}>{locale === "es" ? "Comprar" : "Buy"} {quantity} {locale === "es" ? "por" : "for"} {(price ?? 0) * quantity} gc</button>;
+  return <button type="button" disabled={busy || price === null} data-disabled-reason={busy ? (locale === "es" ? "Espera a que termine la operación en curso." : "Wait for the current operation to finish.") : price === null ? (locale === "es" ? "Resuelve primero el precio del objeto." : "Resolve the item price first.") : undefined} onClick={() => price !== null && onBuy(price)}>{locale === "es" ? "Comprar" : "Buy"} {quantity} {locale === "es" ? "por" : "for"} {(price ?? 0) * quantity} gc</button>;
 }
 
 export function HirelingsPanel({ document, listings, locale = "en", mode = "all" }: HirelingsPanelProps) {
@@ -111,6 +111,7 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
                     <button
                       type="button"
                       disabled={busy || (offer.fee === null && offer.fee_resources.length === 0)}
+                      data-disabled-reason={busy ? (locale === "es" ? "Espera a que termine la operación en curso." : "Wait for the current operation to finish.") : offer.fee === null && offer.fee_resources.length === 0 ? (locale === "es" ? "Esta contratación exige una resolución especial." : "This hire requires a special resolution.") : undefined}
                       aria-label={`${t.hire} ${displayName(offer.profile_id, offer.name)}`}
                       onClick={() => hire(offer.profile_id)}
                     >
@@ -146,6 +147,7 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
                 {good.price_dice ? <VariableTradingPurchase offer={good} quantity={amount(`buy:${good.item_id}`)} busy={busy} locale={locale} onBuy={(price) => void buy(good.item_id, price)} /> : <button
                   type="button"
                   disabled={busy || good.base_price === null || (good.limit_per_warband !== null && (document.campaign.inventory.find((row) => row.id === good.item_id)?.owned ?? 0) >= good.limit_per_warband)}
+                  data-disabled-reason={busy ? (locale === "es" ? "Espera a que termine la operación en curso." : "Wait for the current operation to finish.") : good.base_price === null ? (locale === "es" ? "Resuelve primero el precio del objeto." : "Resolve the item price first.") : good.limit_per_warband !== null && (document.campaign.inventory.find((row) => row.id === good.item_id)?.owned ?? 0) >= good.limit_per_warband ? (locale === "es" ? "La banda ya ha alcanzado el límite de este objeto." : "The warband has reached this item's limit.") : undefined}
                   aria-label={`${t.buy} ${displayName(good.item_id, good.name)}`}
                   onClick={() => buy(good.item_id, good.base_price)}
                 >
@@ -177,6 +179,7 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
                   <button
                     type="button"
                     disabled={busy}
+                    data-disabled-reason={busy ? (locale === "es" ? "Espera a que termine la operación en curso." : "Wait for the current operation to finish.") : undefined}
                     aria-label={`${t.sell} ${displayName(row.id, row.name)} ${locale === "es" ? "de la reserva" : "from stash"}`}
                     onClick={() => sell(row.id)}
                   >

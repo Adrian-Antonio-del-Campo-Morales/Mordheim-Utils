@@ -59,7 +59,7 @@ export function DraftPanel({ onCommitted }: DraftPanelProps) {
             placeholder="New Mordheim Campaign"
           />
 
-          <button type="submit" disabled={!bandId}>
+          <button type="submit" disabled={!bandId} data-disabled-reason={!bandId ? "Select a warband first." : undefined}>
             Start draft
           </button>
         </form>
@@ -83,6 +83,7 @@ export function DraftPanel({ onCommitted }: DraftPanelProps) {
           <button
             type="button"
             disabled={!canCommit}
+            data-disabled-reason={!canCommit ? "The draft needs the required models, a Hero, and a non-negative treasury." : undefined}
             onClick={() => void workflow.commit()}
           >
             Commit initial warband (State #0)
