@@ -1,4 +1,5 @@
 import type { CampaignDocument } from "../campaign/types";
+import { localizedLabel } from "../campaign/displayText";
 
 export function PostBattleHistory({ document, battleNumber, locale }: { readonly document: CampaignDocument; readonly battleNumber: number; readonly locale: "es" | "en" }) {
   const post = document.campaign.post_battles.find((row) => row.battle_number === battleNumber);
@@ -7,6 +8,6 @@ export function PostBattleHistory({ document, battleNumber, locale }: { readonly
   return <section className="page" aria-label={`${t.title} #${battleNumber}`}>
     <div className="page-title"><p>{t.title} #{battleNumber}</p><h2>{t.complete}</h2></div>
     <dl className="campaign-metrics"><div><dt>{t.steps}</dt><dd>{post.completed_steps.length}/8</dd></div><div><dt>{t.gold}</dt><dd>{post.gold_delta ?? 0} gc</dd></div><div><dt>{t.wyrdstone}</dt><dd>{post.wyrdstone_delta ?? 0}</dd></div></dl>
-    <article className="rule-detail"><h3>{t.events}</h3>{post.event_log?.length ? <ol>{post.event_log.map((event, index) => <li key={`${index}:${String(event.type)}`}><strong>{String(event.type ?? "event")}</strong> — {String(event.description ?? "")}</li>)}</ol> : <p>{t.empty}</p>}</article>
+    <article className="rule-detail"><h3>{t.events}</h3>{post.event_log?.length ? <ol>{post.event_log.map((event, index) => <li key={`${index}:${String(event.type)}`}><strong>{localizedLabel(event.type ?? "event", locale)}</strong> — {String(event.description ?? "")}</li>)}</ol> : <p>{t.empty}</p>}</article>
   </section>;
 }

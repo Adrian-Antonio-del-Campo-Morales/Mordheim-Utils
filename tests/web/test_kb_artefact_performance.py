@@ -82,6 +82,6 @@ class TestKbArtefactPerformance:
         assert counts == {
             "bands": 81,
             "profiles": 534,
-            "items": 278,
+            "items": 281,
             "skills": 75,
         }

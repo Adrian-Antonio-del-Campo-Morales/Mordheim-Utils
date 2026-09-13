@@ -54,6 +54,16 @@ function syntheticArtefact() {
       { item_id: "mace", name: "Mace", kind: "close-combat-weapon" },
     ],
     skills: [{ id: "skill.acrobat", name: "Acrobat", category: "speed" }],
+    display_names: {
+      "skill.acrobat": { en: "Acrobat", es: "Acróbata" },
+      "augur--blessed-sight": { en: "Blessed Sight", es: "Vista Bendecida" },
+      "skill.blessed-sight": { en: "Blessed Sight", es: "Vista Bendecida" },
+    },
+    display_effects: {
+      "skill.acrobat": { en: "May fall safely.", es: "Puede caer sin sufrir daño." },
+      "augur--blessed-sight": { en: "May re-roll failed tests.", es: "Puede repetir chequeos fallidos." },
+      "skill.blessed-sight": { en: "May re-roll failed tests.", es: "Puede repetir chequeos fallidos." },
+    },
     campaign: {
       scenarios: {
         scenarios: [
@@ -160,6 +170,19 @@ describe("locale resolution chain", () => {
   it("falls back to any translated entry, then the id", () => {
     expect(resolveName({ id: "x", name: "", name_i18n: { es: "Hola" } }, "en")).toBe("Hola");
     expect(resolveName({ id: "x" }, "en")).toBe("X");
+  });
+});
+
+describe("central display names", () => {
+  it("resolves skills, profile rules, mechanics and an unknown id from one API", () => {
+    expect(reader.displayName("skill.acrobat", "es")).toBe("Acróbata");
+    expect(reader.displayName("augur--blessed-sight", "es")).toBe("Vista Bendecida");
+    expect(reader.displayName("skill.blessed-sight", "es")).toBe("Vista Bendecida");
+    expect(reader.displayName("missing.skill", "es")).toBe("Missing Skill");
+    expect(reader.displayDescription("skill.acrobat", "es")).toBe("Puede caer sin sufrir daño.");
+    expect(reader.displayDescription("augur--blessed-sight", "es")).toBe("Puede repetir chequeos fallidos.");
+    expect(reader.displayDescription("skill.blessed-sight", "es")).toBe("Puede repetir chequeos fallidos.");
+    expect(reader.displayDescription("missing.skill", "es")).toBeUndefined();
   });
 });
 

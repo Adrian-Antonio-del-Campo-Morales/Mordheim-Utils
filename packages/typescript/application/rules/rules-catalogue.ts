@@ -261,7 +261,7 @@ export class RulesCatalogue {
                 ? (spells as Readonly<Record<string, unknown>>[]).map((spell) => ({
                     ...spell,
                     lore_id: lore.id,
-                    _lore_name: resolveName(lore as ArtefactRow, "en"),
+                    _lore: lore,
                   }))
                 : [];
             })
@@ -393,7 +393,9 @@ export class RulesCatalogue {
         return kind ? [label(kind)] : [];
       }
       case "spells": {
-        const loreName = String(row._lore_name ?? "").trim() || titleCase(String(row.lore_id ?? ""));
+        const loreName = row._lore && typeof row._lore === "object"
+          ? resolveName(row._lore as ArtefactRow, locale)
+          : titleCase(String(row.lore_id ?? ""));
         const difficulty = row.difficulty;
         return [difficulty !== undefined && difficulty !== null
           ? `${loreName} · difficulty ${String(difficulty)}`

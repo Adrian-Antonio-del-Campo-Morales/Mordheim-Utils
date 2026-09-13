@@ -233,6 +233,11 @@ export function buyDraftEquipment(
   }
   const item = knowledge.queryKnowledge({ id: { kind: "item_id", value: input.item_id } });
   if (!item.ok) return rejected("not_found", `Unknown item id: ${input.item_id}.`);
+  if (["armour", "shield-or-defence"].includes(String(item.record.data["kind"] ?? ""))
+    && Array.isArray(profile.record.data["equipment_forbids"])
+    && profile.record.data["equipment_forbids"].includes("armour")) {
+    return rejected("not_available", "This warrior cannot wear armour, shields or bucklers.");
+  }
   const quantity = warrior.quantity ?? 1;
   const total = price * quantity;
   if (total > treasury(document.campaign)) {

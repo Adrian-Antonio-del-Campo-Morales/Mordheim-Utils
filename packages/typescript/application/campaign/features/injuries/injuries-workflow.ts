@@ -53,6 +53,9 @@ export interface InjuryOutcomeInput {
   readonly result_id: string;
   /** Volatile display text of the result. */
   readonly result: string;
+  /** Dice shown to the user and their interpreted table value (D6 or D66). */
+  readonly rolled_dice?: readonly number[];
+  readonly roll?: number;
   /** Typed effects this port understands (see `InjuryEffect`). */
   readonly effects?: readonly InjuryEffect[];
   /** Free-form payload for effects this port does not interpret. */
@@ -223,6 +226,8 @@ export function applyInjuryOutcome(
     result: input.result,
     effects: [...effects],
     applied_at_step: "injuries",
+    ...(input.rolled_dice?.length ? { rolled_dice: [...input.rolled_dice] } : {}),
+    ...(Number.isInteger(input.roll) ? { roll: input.roll } : {}),
     ...(input.battle_number !== undefined ? { battle_number: input.battle_number } : {}),
     ...(input.battle_number !== undefined ? { casualty_index: casualtyIndex } : {}),
   };
@@ -251,7 +256,7 @@ export function applyInjuryOutcome(
     inventory,
     warriors: removeWarrior?document.campaign.warriors.filter((w)=>w.id!==input.warrior_id):document.campaign.warriors.map((w) => (w.id === input.warrior_id ? {...nextWarrior,equipment:discardEquipment?nextWarrior.equipment.filter((item)=>item.transferable===false):nextWarrior.equipment} : w)),
   };
-  if(input.battle_number!==undefined){const key=`${warrior.id}:${casualtyIndex}`;campaign={...campaign,post_battles:campaign.post_battles.map((post)=>post.battle_number===input.battle_number?{...post,step_state:{...(post.step_state??{}),injuries:{...((post.step_state?.["injuries"] as OpenPayload|undefined)??{}),[key]:{resolved:true,result_id:input.result_id,result:input.result}}}}:post)};}
+  if(input.battle_number!==undefined){const key=`${warrior.id}:${casualtyIndex}`;campaign={...campaign,post_battles:campaign.post_battles.map((post)=>post.battle_number===input.battle_number?{...post,step_state:{...(post.step_state??{}),injuries:{...((post.step_state?.["injuries"] as OpenPayload|undefined)??{}),[key]:{resolved:true,result_id:input.result_id,result:input.result,...(input.rolled_dice?.length?{rolled_dice:[...input.rolled_dice]}:{}),...(Number.isInteger(input.roll)?{roll:input.roll}:{})}}}}:post)};}
   if(experience!==warrior.experience){
     const battleNumber=input.battle_number??pendingPostBattle(document)?.battle_number;
     campaign={...campaign,post_battles:campaign.post_battles.map((post)=>post.battle_number===battleNumber?{...post,step_state:{...(post.step_state??{}),injury_experience_before:{...((post.step_state?.["injury_experience_before"] as OpenPayload|undefined)??{}),[warrior.id]:((post.step_state?.["injury_experience_before"] as OpenPayload|undefined)??{})[warrior.id]??warrior.experience}}}:post)};

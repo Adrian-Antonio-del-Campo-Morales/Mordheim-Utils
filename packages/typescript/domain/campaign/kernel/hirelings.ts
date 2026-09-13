@@ -43,6 +43,8 @@ const STAT_KEYS = ["M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"] as const;
  */
 export interface HireHirelingInput {
   readonly profile_id: IdString;
+  /** Item ids selected from the profile's mandatory starting-equipment choice. */
+  readonly chosen_item_ids?: readonly IdString[];
   /**
    * Hiring fee in gold crowns from the catalogue offer (P6.7 listings). The
    * profile row itself carries no fee — the offer does — so the application
@@ -143,7 +145,33 @@ export function hireHireling(
   const fixedItems = Array.isArray(equipmentBlock["fixed_items"])
     ? equipmentBlock["fixed_items"] as OpenPayload[]
     : [];
-  const equipment = fixedItems.flatMap((entry) => {
+  const choiceBlocks = Array.isArray(equipmentBlock["choices"])
+    ? equipmentBlock["choices"] as OpenPayload[]
+    : [];
+  const chosenItemIds = input.chosen_item_ids ?? [];
+  const choiceItems = choiceBlocks.map((choice): OpenPayload[] | null => {
+    if (choice["choose"] !== 1 || !Array.isArray(choice["options"])) return null;
+    const matching = (choice["options"] as OpenPayload[]).find((option) => {
+      if (Array.isArray(option["items"])) {
+        const expected = (option["items"] as OpenPayload[]).flatMap((item) => {
+          const id = typeof item["item_id"] === "string" ? item["item_id"] : null;
+          const quantity = Number((item["quantity"] as OpenPayload | undefined)?.["value"] ?? 1);
+          return id ? Array.from({ length: quantity }, () => id) : [];
+        });
+        return expected.length === chosenItemIds.length && expected.every((id) => chosenItemIds.filter((value) => value === id).length === expected.filter((value) => value === id).length);
+      }
+      const count = option["choose_items"];
+      const allowed = Array.isArray(option["from_item_ids"]) ? option["from_item_ids"].filter((id): id is string => typeof id === "string") : [];
+      return Number.isInteger(count) && chosenItemIds.length === count && chosenItemIds.every((id) => allowed.includes(id)) && (option["repetition_allowed"] === true || new Set(chosenItemIds).size === chosenItemIds.length);
+    });
+    if (!matching) return null;
+    if (Array.isArray(matching["items"])) return matching["items"] as OpenPayload[];
+    return chosenItemIds.map((item_id) => ({ item_id, quantity: { value: 1 } }));
+  });
+  if (choiceBlocks.length > 0 && choiceItems.some((items) => items === null)) {
+    return rejected("prerequisite_missing", `Choose ${displayName}'s starting equipment before hiring.`);
+  }
+  const equipment = [...fixedItems, ...choiceItems.flatMap((items) => items ?? [])].flatMap((entry: OpenPayload) => {
     const itemId = typeof entry["item_id"] === "string" ? entry["item_id"] : null;
     if (!itemId) return [];
     const quantityBlock = entry["quantity"] && typeof entry["quantity"] === "object"
@@ -164,10 +192,15 @@ export function hireHireling(
   const startingSkillIds = Array.isArray(data["starting_skill_ids"])
     ? (data["starting_skill_ids"] as unknown[]).filter((id): id is string => typeof id === "string")
     : [];
-  const skills = startingSkillIds.map((skillId) => {
-    const skill = knowledge.queryKnowledge({ id: { kind: "skill_id", value: skillId } });
-    return skill.ok ? skill.record.names["en"] ?? skillId : skillId;
-  });
+  // Warrior cards resolve stable ids through the active locale. Keep both
+  // starting skills and inherent profile rules, but omit the hiring gate: it
+  // describes who may employ the warrior rather than an ability they possess.
+  const profileRuleIds = Array.isArray(data["rule_ids"])
+    ? (data["rule_ids"] as unknown[])
+      .filter((id): id is string => typeof id === "string")
+      .filter((id) => !id.endsWith(".rule.campaign-eligibility"))
+    : [];
+  const skills = [...new Set([...startingSkillIds, ...profileRuleIds])];
   const sectionReader = knowledge as KnowledgeReader & {
     campaignSection?(section: string): Readonly<Record<string, unknown>>;
   };

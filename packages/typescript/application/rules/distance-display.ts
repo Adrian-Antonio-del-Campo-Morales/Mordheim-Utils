@@ -23,7 +23,9 @@ const FIXED_DISTANCE_CM: Readonly<Record<string, string>> = {
   "18": "45",
   "20": "50",
   "24": "60",
+  "30": "75",
   "36": "90",
+  "48": "120",
 };
 
 const D6_DISTANCE_CM: Readonly<Record<string, string>> = {
@@ -88,7 +90,7 @@ export function adaptDistanceText(
   );
 
   const fixedPattern = new RegExp(
-    `(?<![A-Za-z0-9])((?:0[.,]4|36|24|20|18|16|12|10|9|8|7|6|5|4|3|2|1))\\s*${DISTANCE_UNIT}`,
+    `(?<![A-Za-z0-9])((?:0[.,]4|48|36|30|24|20|18|16|12|10|9|8|7|6|5|4|3|2|1))\\s*${DISTANCE_UNIT}`,
     "gi",
   );
   adapted = adapted.replace(

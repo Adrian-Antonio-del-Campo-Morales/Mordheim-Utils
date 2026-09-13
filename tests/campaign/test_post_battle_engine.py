@@ -424,6 +424,29 @@ def test_battle_experience_is_applied_once_to_current_survivors():
     assert all(warrior.experience == before[warrior.id] + amount for warrior in state.campaign.warriors)
 
 
+def test_underdog_bonus_is_added_only_for_participating_warriors():
+    engine, state, _ = _pending()
+    engine.post.experience_applied = False
+    battle = state.campaign.battle(8)
+    battle.rating_before = 100
+    battle.opponent_rating = 201
+    battle.xp_delta = 1
+    battle.xp_awards = {}
+    absentee = state.campaign.warriors[0]
+    battle.absentees = [{"id": absentee.id}]
+    before = {warrior.id: warrior.experience for warrior in state.campaign.warriors}
+
+    ok, message = engine.apply_battle_experience()
+
+    assert ok, message
+    assert absentee.experience == before[absentee.id]
+    for warrior in state.campaign.warriors:
+        if warrior.id == absentee.id:
+            continue
+        expected = before[warrior.id] + (4 if engine.port.can_gain_experience(state.campaign.band_id, warrior.profile_id) else 0)
+        assert warrior.experience == expected
+
+
 def test_add_xp_increases_rating():
     engine, _, _ = _pending()
     ok, _ = engine.add_xp("matriarch", 3)

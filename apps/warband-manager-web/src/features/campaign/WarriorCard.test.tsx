@@ -1,0 +1,44 @@
+import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom/vitest";
+import { describe, expect, it } from "vitest";
+
+import type { Warrior } from "./types";
+import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import { WarriorCard } from "./WarriorCard";
+
+describe("WarriorCard hireling abilities", () => {
+  it("shows localized inherent rules for a hireling loaded from an older campaign", () => {
+    const profileId = "hireling.hired-sword.elf-ranger";
+    const ruleId = `${profileId}.rule.seeker`;
+    const sightId = `${profileId}.rule.excellent-sight`;
+    const warrior = { id: `${profileId}#1`, name: "Elf Ranger", profile_name: "Elf Ranger", profile_id: profileId, kind: "hireling", stats: {}, equipment: [], skills: ["Hireling.hired-Sword.elf-Ranger.rule.excellent-Sight"], experience: 0, cost: 40 } as Warrior;
+    const knowledge = {
+      list: (kind: string) => kind === "hireling" ? [{ id: profileId, rule_ids: [ruleId, sightId, `${profileId}.rule.campaign-eligibility`] }] : [],
+      rulesDocument: () => [],
+      campaignSection: () => ({ rules: [
+        { id: ruleId, name: "Seeker", names: { en: "Seeker", es: "Buscador" }, effects: { es: "Permite modificar un dado de exploración." } },
+        { id: sightId, name: "Excellent Sight", names: { en: "Excellent Sight", es: "Vista Excepcional" }, effects: { es: "Detecta enemigos ocultos al doble de distancia." } },
+      ] }),
+    } as never;
+
+    render(<WarriorCard warrior={warrior} knowledge={knowledge} locale="es" />);
+    expect(screen.getByText("Buscador")).toHaveAttribute("data-tooltip", "Permite modificar un dado de exploración.");
+    expect(screen.getByText("Vista Excepcional")).toHaveAttribute("data-tooltip", "Detecta enemigos ocultos al doble de distancia.");
+    expect(screen.queryByText(/hireling\.hired-sword/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/campaign-eligibility/)).not.toBeInTheDocument();
+  });
+});
+
+describe("WarriorCard canonical ability labels", () => {
+  it("shows Blessed Sight once through either profile-rule or mechanic id", () => {
+    const warrior = { id: "augur#1", name: "Augur", profile_name: "Augur", profile_id: "augur", kind: "hero", stats: {}, equipment: [], skills: ["augur--blessed-sight", "skill.blessed-sight"], experience: 0, cost: 40 } as Warrior;
+    const knowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "mordheim", bands: [], profiles: [], items: [], skills: [], display_names: {
+      "augur--blessed-sight": { en: "Blessed Sight", es: "Vista Bendecida" },
+      "skill.blessed-sight": { en: "Blessed Sight", es: "Vista Bendecida" },
+    } });
+
+    render(<WarriorCard warrior={warrior} knowledge={knowledge} locale="es" />);
+    expect(screen.getAllByText("Vista Bendecida")).toHaveLength(1);
+    expect(screen.queryByText(/skill\.blessed-sight/i)).not.toBeInTheDocument();
+  });
+});

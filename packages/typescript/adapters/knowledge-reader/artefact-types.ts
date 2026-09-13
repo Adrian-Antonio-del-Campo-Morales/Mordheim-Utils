@@ -29,9 +29,12 @@ export interface KnowledgeArtefact {
   readonly profiles: readonly ArtefactRow[];
   readonly items: readonly ArtefactRow[];
   readonly skills: readonly ArtefactRow[];
+  readonly display_names?: Readonly<Record<string, LocaleText>>;
+  readonly display_effects?: Readonly<Record<string, LocaleText>>;
   readonly weapon_hands?: Readonly<Record<string, number>>;
   readonly rules_prose?: Readonly<Record<string, readonly ArtefactRow[]>>;
   readonly rules_prose_url?: string;
+  readonly display_text_url?: string;
   readonly campaign?: Readonly<Record<string, unknown>>;
   readonly indexes?: ArtefactIndexes;
 }

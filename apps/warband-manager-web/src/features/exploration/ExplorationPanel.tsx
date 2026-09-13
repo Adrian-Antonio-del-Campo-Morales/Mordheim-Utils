@@ -1,13 +1,57 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import {
   explorationDiceCount,
-  explorationDiscardRequired,
+  explorationDiscardCount,
+  explorationModifiers,
 } from "@app/campaign/features/exploration/exploration-workflow";
 import type { OpenPayload } from "@domain/campaign/index";
 import type { CampaignDocument } from "../campaign/types";
 import { useCampaignApp } from "../campaign/useCampaignApp";
 import { DiceResolver } from "../dice/DiceResolver";
+import { knowledgeName, localizedLabel, readableValue } from "../campaign/displayText";
+
+function visibleText(value: unknown, locale: "en" | "es", fallback: string): string {
+  if (!value) return fallback;
+  const text = String(value);
+  const es: Record<string, string> = { "Choose a Henchman group": "Elige un grupo de Secuaces", "Choose equipment": "Elige equipo", "Choose warriors": "Elige guerreros", "Do not recruit the prisoner": "No reclutar al prisionero" };
+  return locale === "es" ? es[text] ?? (text.includes(".") ? localizedLabel(text, locale) : readableValue(text, locale)) : (text.includes(".") ? localizedLabel(text, locale) : readableValue(text, locale));
+}
+
+function matchingDice(dice: readonly number[]): readonly [number, number] | undefined {
+  const counts = new Map<number, number>();
+  for (const die of dice) counts.set(die, (counts.get(die) ?? 0) + 1);
+  return [...counts].filter(([, count]) => count >= 2).sort((a, b) => b[1] - a[1] || b[0] - a[0])[0];
+}
+
+function describeCombination(dice: readonly number[], locale: "en" | "es"): string {
+  const match = matchingDice(dice);
+  if (!match) return locale === "es" ? "Sin resultados repetidos" : "No matching dice";
+  const names = locale === "es"
+    ? ["", "", "Doble", "Triple", "Cuádruple", "Quíntuple", "Séxtuple"]
+    : ["", "", "Double", "Triple", "Quadruple", "Quintuple", "Sextuple"];
+  return `${names[match[1]] ?? `${match[1]} iguales`} ${locale === "es" ? "de" : "of"} ${match[0]}`;
+}
+
+function eventDescription(knowledge: ArtefactKnowledgeReader, dice: readonly number[], locale: "en" | "es"): string {
+  const match = matchingDice(dice);
+  const rows = (knowledge.campaignSection("exploration-and-income")["exploration"] as OpenPayload | undefined)?.["results"] as OpenPayload[] | undefined;
+  const row = match && rows?.find((entry) => entry["dice_pattern"] === Array.from({ length: match[1] }, () => match[0]).join(","));
+  const translated = (row?.["description_i18n"] as OpenPayload | undefined)?.[locale];
+  const description = translated ?? row?.["description"];
+  return typeof description === "string" ? description : locale === "es" ? "No hay una descripción disponible para este evento." : "No description is available for this event.";
+}
+
+function eventLabel(knowledge: ArtefactKnowledgeReader, dice: readonly number[], locale: "en" | "es", fallback: string): string {
+  const match = matchingDice(dice);
+  const rows = (knowledge.campaignSection("exploration-and-income")["exploration"] as OpenPayload | undefined)?.["results"] as OpenPayload[] | undefined;
+  const row = match && rows?.find((entry) => entry["dice_pattern"] === Array.from({ length: match[1] }, () => match[0]).join(","));
+  return String((row?.["outcome_i18n"] as OpenPayload | undefined)?.[locale] ?? row?.["outcome"] ?? fallback);
+}
+
+function ExplorationDice({ dice, label, onSelect, controls }: { dice: readonly number[]; label: string; onSelect?: (index: number) => void; controls?: (index: number, die: number) => ReactNode }) {
+  return <ol className="exploration-dice" aria-label={label}>{dice.map((die, index) => <li key={`${index}:${die}`}>{onSelect ? <button type="button" className="exploration-die-button" aria-label={`${label} D${index + 1}: ${die}`} onClick={() => onSelect(index)}><small>D{index + 1}</small><strong>{die}</strong></button> : <><small>D{index + 1}</small><strong>{die}</strong></>}{controls?.(index, die)}</li>)}</ol>;
+}
 
 export function ExplorationPanel({
   document,
@@ -21,9 +65,10 @@ export function ExplorationPanel({
   const app = useCampaignApp();
   const [warriorIds, setWarriorIds] = useState<string[]>([]);
   const [rolled, setRolled] = useState<number[] | null>(null);
-  const [discarded, setDiscarded] = useState(false);
+  const [discarded, setDiscarded] = useState(0);
   const [fullReroll, setFullReroll] = useState(false);
-  const [dieReroll, setDieReroll] = useState(false);
+  const [dieReroll, setDieReroll] = useState(0);
+  const [adjusted, setAdjusted] = useState(0);
   const [rerollIndex, setRerollIndex] = useState<number | null>(null);
   const post = document.campaign.post_battles.find((row) => !row.complete);
   if (!post) return null;
@@ -54,6 +99,11 @@ export function ExplorationPanel({
           rerollDie: "Repetir dado",
           discardDie: "Descartar D",
           followUpRoll: "Tirada de seguimiento",
+          individualDice: "Resultados individuales de los dados",
+          event: "Evento especial",
+          modifiers: "Modificadores activos",
+          adjust: "Modifica un dado en 1",
+          consequence: "Consecuencia",
         }
       : {
           title: "Exploration",
@@ -80,35 +130,50 @@ export function ExplorationPanel({
           rerollDie: "Reroll exploration die",
           discardDie: "Discard D",
           followUpRoll: "Follow-up roll",
+          individualDice: "Individual dice results",
+          event: "Special event",
+          modifiers: "Active modifiers",
+          adjust: "Modify one die by 1",
+          consequence: "Consequence",
         };
   const advances = (post.pending_advances ?? []).some(
     (row) => !row["committed"],
   );
   const state = post.step_state?.["exploration"] as OpenPayload | undefined;
   const count = explorationDiceCount(document, knowledge);
-  const discard = explorationDiscardRequired(document);
+  const modifiers = explorationModifiers(document, knowledge);
+  const discard = explorationDiscardCount(document, knowledge);
   const scenario = post.step_state?.["scenario_exploration"] as
     | OpenPayload
     | undefined;
   const full = Boolean(scenario?.["reroll_all"]);
-  const reroll = document.campaign.special_rules.some((row) =>
+  const legacyReroll = document.campaign.special_rules.some((row) =>
     /re-roll one die|repite un dado/i.test(String(row["text"] ?? "")),
   );
+  const rerolls = modifiers.rerolls + (legacyReroll ? 1 : 0);
   const followup = post.pending_follow_ups?.find(
     (row) => row["type"] === "exploration_followup",
   );
   const pending = followup?.["pending"] as OpenPayload | undefined;
+  const resolvedDice = Array.isArray(state?.["dice"])
+    ? (state["dice"] as unknown[]).map(Number)
+    : [];
+  const specialEffects = Array.isArray(state?.["special_effects"])
+    ? (state["special_effects"] as unknown[]).filter((effect): effect is string => typeof effect === "string")
+    : [];
   const apply = (dice: readonly number[]) => {
     void app.runAction("applyExploration", { dice });
     setRolled(null);
-    setDiscarded(false);
+    setDiscarded(0);
     setFullReroll(false);
-    setDieReroll(false);
+    setDieReroll(0);
+    setAdjusted(0);
     setRerollIndex(null);
   };
   return (
     <section aria-label={t.title}>
       <h3>03 · {t.title}</h3>
+      {modifiers.sources.length > 0 && <aside className="exploration-modifiers"><strong>{t.modifiers}</strong><ul>{modifiers.sources.map((source) => <li key={source.id}><b>{knowledgeName(knowledge, "rule", source.id, locale, locale === "es" ? source.label_es ?? source.label : source.label)}</b>{(locale === "es" ? source.effect_es ?? source.effect : source.effect) && <small>{locale === "es" ? source.effect_es ?? source.effect : source.effect}</small>}</li>)}</ul></aside>}
       <table className="mobile-cards exploration-results">
         <caption>{t.title}</caption>
         <thead>
@@ -133,11 +198,8 @@ export function ExplorationPanel({
                     {locale === "es" ? "dados" : "dice"} · {t.total}{" "}
                     {String(state["total"])}
                   </small>
-                  {state["special"] && (
-                    <small>
-                      {t.special}: {String(state["special"])}
-                    </small>
-                  )}
+                  {resolvedDice.length > 0 && <ExplorationDice dice={resolvedDice} label={t.individualDice} />}
+                  {resolvedDice.length > 0 && <div className={`exploration-combination${state["special"] ? " special" : ""}`}><strong>{describeCombination(resolvedDice, locale)}</strong><span>{state["special"] ? <>{t.event}: <span className="knowledge-hint" tabIndex={0} data-tooltip={eventDescription(knowledge, resolvedDice, locale)}>{eventLabel(knowledge, resolvedDice, locale, String(state["special"]))}</span></> : t.special + ": —"}</span>{specialEffects.length > 0 && <ul className="exploration-effects">{specialEffects.map((effect, index) => <li key={`${index}:${effect}`}>{effect}</li>)}</ul>}</div>}
                 </>
               ) : (
                 <span>—</span>
@@ -150,41 +212,35 @@ export function ExplorationPanel({
             </td>
             <td data-label={t.action}>
               {state?.["resolved"] ? (
-                !followup && <span role="status">{t.resolved}</span>
+                !followup && <span role="status">{resolvedDice.length ? `${t.roll}: ${resolvedDice.join(", ")} → ${state["total"]}` : t.resolved}</span>
               ) : !post.experience_applied || advances ? (
                 <p role="status">{t.first}</p>
               ) : count === 0 ? (
                 <button className="primary" onClick={() => apply([])}>
                   {t.without}
                 </button>
-              ) : rolled && discard && !discarded ? (
+              ) : rolled && discarded < discard ? (
                 <div>
                   <p>{t.discard}</p>
-                  {rolled.map((die, index) => (
-                    <button
-                      key={`${index}:${die}`}
-                      onClick={() => {
+                  <ExplorationDice dice={rolled} label={t.discardDie} onSelect={(index) => {
                         const kept = rolled.filter((_, item) => item !== index);
-                        if (full || reroll) {
+                        if (discarded + 1 < discard || full || rerolls || modifiers.adjustments) {
                           setRolled(kept);
-                          setDiscarded(true);
+                          setDiscarded((value) => value + 1);
                         } else apply(kept);
-                      }}
-                    >
-                      {t.discardDie} D{index + 1}: {die}
-                    </button>
-                  ))}
+                      }} />
                 </div>
               ) : rolled && full && !fullReroll ? (
                 <div>
                   <p>{t.scenario}</p>
+                  <ExplorationDice dice={rolled} label={t.individualDice} />
                   <DiceResolver
                     locale={locale}
                     count={rolled.length}
                     sides={6}
                     label={t.rerollAll}
                     onResolve={(dice) => {
-                      if (reroll) {
+                      if (rerolls || modifiers.adjustments) {
                         setRolled(dice);
                         setFullReroll(true);
                       } else apply(dice);
@@ -192,24 +248,17 @@ export function ExplorationPanel({
                   />
                   <button
                     onClick={() =>
-                      reroll ? setFullReroll(true) : apply(rolled)
+                      rerolls || modifiers.adjustments ? setFullReroll(true) : apply(rolled)
                     }
                   >
                     {t.keep}
                   </button>
                 </div>
-              ) : rolled && reroll && !dieReroll ? (
+              ) : rolled && dieReroll < rerolls ? (
                 <div>
                   <p>{t.catacombs}</p>
                   {rerollIndex === null ? (
-                    rolled.map((die, index) => (
-                      <button
-                        key={`${index}:${die}`}
-                        onClick={() => setRerollIndex(index)}
-                      >
-                        {t.rerollDie} D{index + 1}: {die}
-                      </button>
-                    ))
+                    <ExplorationDice dice={rolled} label={t.rerollDie} onSelect={setRerollIndex} />
                   ) : (
                     <DiceResolver
                       locale={locale}
@@ -217,14 +266,19 @@ export function ExplorationPanel({
                       sides={6}
                       label={t.rerollDie}
                       onResolve={(dice) => {
-                        apply(
-                          rolled.map((die, index) =>
-                            index === rerollIndex ? dice[0] : die,
-                          ),
-                        );
+                        const next = rolled.map((die, index) => index === rerollIndex ? dice[0] : die);
+                        if (dieReroll + 1 >= rerolls && !modifiers.adjustments) apply(next);
+                        else { setRolled(next); setDieReroll((value) => value + 1); }
+                        setRerollIndex(null);
                       }}
                     />
                   )}
+                  <button onClick={() => modifiers.adjustments ? setDieReroll(rerolls) : apply(rolled)}>{t.keep}</button>
+                </div>
+              ) : rolled && adjusted < modifiers.adjustments ? (
+                <div className="exploration-adjustment">
+                  <p>{t.adjust} ({adjusted + 1}/{modifiers.adjustments})</p>
+                  <ExplorationDice dice={rolled} label={t.adjust} controls={(index, die) => <span className="exploration-die-controls">{([-1, 1] as const).map((delta) => { const blocked = delta < 0 ? die <= 1 : die >= 6; return <button key={delta} className="stepper-button" aria-label={`${delta < 0 ? (locale === "es" ? "Restar uno al dado" : "Subtract one from die") : (locale === "es" ? "Sumar uno al dado" : "Add one to die")} ${index + 1}`} disabled={blocked} data-disabled-reason={blocked ? delta < 0 ? (locale === "es" ? "El dado ya tiene el valor mínimo de 1." : "The die is already at the minimum value of 1.") : (locale === "es" ? "El dado ya tiene el valor máximo de 6." : "The die is already at the maximum value of 6.") : undefined} onClick={() => { const next = rolled.map((value, position) => position === index ? value + delta : value); if (adjusted + 1 >= modifiers.adjustments) apply(next); else { setRolled(next); setAdjusted((value) => value + 1); } }}>{delta < 0 ? "−" : "+"}</button>; })}</span>} />
                   <button onClick={() => apply(rolled)}>{t.keep}</button>
                 </div>
               ) : rolled ? null : (
@@ -238,7 +292,7 @@ export function ExplorationPanel({
                     sides={6}
                     label={t.roll}
                     onResolve={(dice) =>
-                      discard || full || reroll ? setRolled(dice) : apply(dice)
+                      discard || full || rerolls || modifiers.adjustments ? setRolled(dice) : apply(dice)
                     }
                   />
                 </>
@@ -248,7 +302,7 @@ export function ExplorationPanel({
                   locale={locale}
                   count={Number(pending["dice_count"] ?? 1)}
                   sides={Number(pending["dice_sides"] ?? 6)}
-                  label={String(pending["label"] ?? t.followUpRoll)}
+                  label={visibleText(pending["label"], locale, t.followUpRoll)}
                   onResolve={(dice) =>
                     void app.runAction("continueExploration", {
                       roll: dice.reduce((sum, item) => sum + item, 0),
@@ -258,7 +312,7 @@ export function ExplorationPanel({
               )}
               {pending?.["kind"] === "choose_hero" && (
                 <label>
-                  {String(pending["label"] ?? t.hero)}
+                  {visibleText(pending["label"], locale, t.hero)}
                   <select
                     defaultValue=""
                     onChange={(event) => {
@@ -284,7 +338,7 @@ export function ExplorationPanel({
               )}
               {pending?.["kind"] === "choose_option" && (
                 <div>
-                  <p>{String(pending["label"] ?? t.outcome)}</p>
+                  <p><strong>{t.consequence}:</strong> {visibleText(pending["label"], locale, t.outcome)}</p>
                   {((pending["options"] ?? []) as OpenPayload[]).map(
                     (option) => (
                       <button
@@ -295,7 +349,7 @@ export function ExplorationPanel({
                           })
                         }
                       >
-                        {String(option["label"] ?? option["id"])}
+                        {visibleText(option["label"] ?? option["id"], locale, t.outcome)}
                       </button>
                     ),
                   )}
@@ -303,7 +357,7 @@ export function ExplorationPanel({
               )}
               {pending?.["kind"] === "choose_warriors" && (
                 <fieldset>
-                  <legend>{String(pending["label"] ?? t.warriors)}</legend>
+                  <legend>{visibleText(pending["label"], locale, t.warriors)}</legend>
                   {((pending["options"] ?? []) as OpenPayload[]).map(
                     (option) => {
                       const id = String(option["id"]),
@@ -330,7 +384,7 @@ export function ExplorationPanel({
                               )
                             }
                           />
-                          {String(option["label"] ?? id)}
+                          {visibleText(option["label"] ?? id, locale, id)}
                         </label>
                       );
                     },
@@ -356,7 +410,7 @@ export function ExplorationPanel({
                     })
                   }
                 >
-                  {String(pending["label"] ?? t.external)}
+                  {visibleText(pending["label"], locale, t.external)}
                 </button>
               )}
             </td>

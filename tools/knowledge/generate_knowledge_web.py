@@ -47,6 +47,7 @@ SCHEMA_VERSION = 1
 DEFAULT_RULESET = "mordheim"
 OUTPUT_RELATIVE = Path("build") / "generated" / "knowledge-web" / "knowledge-web.json"
 RULES_PROSE_FILENAME = "rules-prose.json"
+DISPLAY_TEXT_FILENAME = "display-text.json"
 
 #: Item kinds the web Campaign Manager consumes (inventory doc decision).
 INCLUDED_ITEM_KINDS = frozenset({
@@ -208,6 +209,16 @@ def _build_profiles(ruleset: str) -> list[dict]:
                     *(str(rule["rule_ref"]) for rule in package.special_rules
                       if rule.get("rule_ref") and str(profile["id"]) in set((rule.get("applies_to") or {}).get("profile_ids") or ())),
                 })
+                entry["equipment_forbids"] = sorted({
+                    str(effect.get("binding", {}).get("parameters", {}).get("forbids"))
+                    for rule in package.special_rules
+                    if str(profile["id"]) in set((rule.get("applies_to") or {}).get("profile_ids") or ())
+                    for effect in (rule.get("runtime") or {}).get("effects") or ()
+                    if isinstance(effect, dict)
+                    and isinstance(effect.get("binding"), dict)
+                    and effect["binding"].get("id") == "profile.equipment-restrictions"
+                    and effect["binding"].get("parameters", {}).get("forbids")
+                })
                 # The desktop resolves a profile's initial purchases through
                 # its named equipment lists.  Materialise that relationship
                 # in the web artefact so UI readers can show both permitted
@@ -250,14 +261,15 @@ def _build_items(ruleset: str) -> list[dict]:
         for family in ("weapons", "armours", "defences", "materials", "preparations", "poisons")
         for row in load_mechanics(ruleset).get(family) or ()
     }
+    mechanics_by_name = {str(row.get("name") or "").casefold(): row for row in mechanics.values() if row.get("name")}
     items = []
     for row in load_items(ruleset):
         kind = str(row.get("kind") or "")
-        if kind not in INCLUDED_ITEM_KINDS:
-            continue  # 'out-of-scope' and other Combat Lab-only kinds stay out
+        if kind not in INCLUDED_ITEM_KINDS and str(row.get("id") or "") not in {"rope_hook", "healing_herbs", "elven_cloak"}:
+            continue  # campaign-only items are needed by web tooltips
         entry = _row(row, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n", "effect_ids"))
         entry["item_id"] = entry.pop("id", "")
-        mechanic = mechanics.get(str(row.get("mechanic_id") or ""))
+        mechanic = mechanics.get(str(row.get("mechanic_id") or "")) or mechanics_by_name.get(str(row.get("name") or "").casefold())
         if mechanic and not entry.get("effect"):
             if mechanic.get("effect"):
                 entry["effect"] = mechanic["effect"]
@@ -268,11 +280,94 @@ def _build_items(ruleset: str) -> list[dict]:
                     **{str(key): str(value) for key, value in translations.items() if value},
                 }
         items.append(entry)
+    by_id = {str(item["item_id"]): item for item in items}
+    aliases = {
+        "carronade": "swivel_gun",
+        "carronade_cannonball": "ball_shot",
+        "carronade_chain": "chain_shot",
+        "carronade_grapeshot": "grape_shot",
+        "horse_damsel_squire_only": "horse",
+        "magic_tattoos": "magic_tattoo",
+        "poisoned_darts": "poison_darts",
+        "throwing_axes_same_as_throwing_knives": "throwing_knives",
+    }
+    for item_id, base_id in aliases.items():
+        item, base = by_id.get(item_id), by_id.get(base_id)
+        if item and base and not item.get("effect") and not item.get("effects"):
+            if base.get("effect"): item["effect"] = base["effect"]
+            if base.get("effects"): item["effects"] = base["effects"]
+    kind_es = {
+        "armour": "armadura", "close-combat-weapon": "arma de combate cuerpo a cuerpo",
+        "combat-equipment": "equipo", "material-or-upgrade": "material o mejora",
+        "out-of-scope": "equipo de campaña", "ranged-weapon": "arma de proyectiles",
+        "shield-or-defence": "escudo o defensa", "trollheim-equipment": "equipo de suplemento",
+    }
+    for item in items:
+        if item.get("effect") or item.get("effects"):
+            continue
+        source = next((str(ref.get("section") or ref.get("manual") or "").strip()
+                       for ref in item.get("source_refs") or () if isinstance(ref, dict)), "Mordheimer")
+        name = (item.get("names") or {}).get("en") or item["item_id"]
+        spanish = (item.get("names") or {}).get("es") or name
+        item["effects"] = {
+            "en": f"{name}: campaign equipment. Rules reference: {source}.",
+            "es": f"{spanish}: {kind_es.get(str(item.get('kind')), 'equipo de campaña')}. Referencia de reglas: {source}.",
+        }
     return sorted(items, key=_sort_key)
 
 
 def _build_skills(ruleset: str) -> list[dict]:
     return sorted((_row(row, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n")) for row in load_skills(ruleset)), key=_sort_key)
+
+
+def _build_display_values(ruleset: str, skills: list[dict], rules_prose: dict, field: str) -> dict[str, dict[str, str]]:
+    """Compact canonical display values for every id that may appear on a roster."""
+    values: dict[str, dict[str, str]] = {}
+    conflicting: set[str] = set()
+
+    def add(row: dict, key: str | None = None) -> None:
+        identifier = str(row.get("id") or "")
+        localized_values = row.get(field) or (_names(row) if field == "names" else _effects(row))
+        if not identifier or not isinstance(localized_values, dict):
+            return
+        localized = {str(locale): str(value) for locale, value in localized_values.items() if str(value).strip()}
+        if not localized:
+            return
+        identifier = key or identifier
+        if identifier in conflicting:
+            return
+        existing = values.get(identifier)
+        if existing and existing != localized:
+            values.pop(identifier)
+            conflicting.add(identifier)
+            return
+        values[identifier] = localized
+
+    for row in skills:
+        add(row)
+    for rows in rules_prose.values():
+        for row in rows:
+            add(row)
+    for row in rules_prose.get("profile-special-rules", ()):
+        applies_to = row.get("applies_to") or {}
+        for profile_id in applies_to.get("profile_ids") or ():
+            add(row, f"{profile_id}:{row['id']}")
+            if row.get("band_id"):
+                add(row, f"{row['band_id']}:{profile_id}:{row['id']}")
+    for rows in load_mechanics(ruleset).values():
+        if isinstance(rows, list):
+            for row in rows:
+                if isinstance(row, dict):
+                    add(row)
+    return dict(sorted(values.items()))
+
+
+def _build_display_names(ruleset: str, skills: list[dict], rules_prose: dict) -> dict[str, dict[str, str]]:
+    return _build_display_values(ruleset, skills, rules_prose, "names")
+
+
+def _build_display_effects(ruleset: str, skills: list[dict], rules_prose: dict) -> dict[str, dict[str, str]]:
+    return _build_display_values(ruleset, skills, rules_prose, "effects")
 
 
 def _build_weapon_hands(ruleset: str) -> dict[str, int]:
@@ -309,7 +404,7 @@ def _build_rules_prose(ruleset: str) -> dict:
                 label_rules.append(_row(rule))
                 if rule.get("rule_ref"):
                     continue
-                entry = _row(rule)
+                entry = {**_row(rule), "band_id": str(package.band["id"])}
                 identifier = str(entry.get("id") or "")
                 if not identifier:
                     raise GenerationError(f"band special rule without id: {package.band['id']!r}")
@@ -435,6 +530,8 @@ def generate(ruleset: str = DEFAULT_RULESET) -> dict:
         artefact["skills"] = _build_skills(ruleset)
         artefact["weapon_hands"] = _build_weapon_hands(ruleset)
         artefact["rules_prose"] = _build_rules_prose(ruleset)
+        artefact["display_names"] = _build_display_names(ruleset, artefact["skills"], artefact["rules_prose"])
+        artefact["display_effects"] = _build_display_effects(ruleset, artefact["skills"], artefact["rules_prose"])
         artefact["campaign"] = _build_campaign_section(ruleset, {str(item["item_id"]) for item in artefact["items"]})
     except GenerationError:
         raise
@@ -474,12 +571,19 @@ def main(argv: list[str] | None = None) -> int:
 
     artefact = generate(args.ruleset)
     rules_prose = artefact.pop("rules_prose")
+    display_text = {
+        "display_names": artefact.pop("display_names"),
+        "display_effects": artefact.pop("display_effects"),
+    }
     artefact["rules_prose_url"] = RULES_PROSE_FILENAME
-    text = json.dumps(artefact, ensure_ascii=False, indent=1, sort_keys=False) + "\n"
-    rules_text = json.dumps(rules_prose, ensure_ascii=False, indent=1, sort_keys=False) + "\n"
+    artefact["display_text_url"] = DISPLAY_TEXT_FILENAME
+    text = json.dumps(artefact, ensure_ascii=False, separators=(",", ":")) + "\n"
+    rules_text = json.dumps(rules_prose, ensure_ascii=False, separators=(",", ":")) + "\n"
+    display_text_text = json.dumps(display_text, ensure_ascii=False, separators=(",", ":")) + "\n"
     rules_output = output.with_name(RULES_PROSE_FILENAME)
+    display_text_output = output.with_name(DISPLAY_TEXT_FILENAME)
     if args.check:
-        for path, expected in ((output, text), (rules_output, rules_text)):
+        for path, expected in ((output, text), (rules_output, rules_text), (display_text_output, display_text_text)):
             if not path.exists():
                 print(f"check failed: {path} does not exist", file=sys.stderr)
                 return 1
@@ -491,8 +595,9 @@ def main(argv: list[str] | None = None) -> int:
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(text, encoding="utf-8")
     rules_output.write_text(rules_text, encoding="utf-8")
+    display_text_output.write_text(display_text_text, encoding="utf-8")
     size_kb = output.stat().st_size / 1024
-    print(f"wrote {output} and {rules_output.name} ({size_kb:.0f} KB main, "
+    print(f"wrote {output}, {rules_output.name}, and {display_text_output.name} ({size_kb:.0f} KB main, "
           f"{len(artefact['bands'])} bands, {len(artefact['profiles'])} profiles, "
           f"{len(artefact['items'])} items, {len(artefact['skills'])} skills)")
     return 0

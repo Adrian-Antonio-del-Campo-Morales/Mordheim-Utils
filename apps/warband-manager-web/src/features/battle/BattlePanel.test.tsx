@@ -4,7 +4,7 @@
  * the pending post-battle; rejections surface in role=alert.
  */
 
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
 import { afterEach, describe, expect, it } from "vitest";
@@ -42,6 +42,38 @@ describe("P6.4 BattlePanel", () => {
     // The committed starter roster offers at least one available warrior.
     const checkboxes = screen.getAllByRole("checkbox");
     expect(checkboxes.some((c) => !(c as HTMLInputElement).disabled)).toBe(true);
+  });
+
+  it("shows eligible objective recipients as the Out of Action checklist does", async () => {
+    const user = userEvent.setup();
+    const document = makeCommittedDocument();
+    const hero = document.campaign.warriors.find((warrior) => warrior.kind === "hero")!;
+    const henchman = document.campaign.warriors.find((warrior) => warrior.kind === "henchman")!;
+    const knowledge = {
+      list: (kind: string) => kind === "scenario" ? [{ id: "hero-objective", names: { en: "Hero objective" } }] : [],
+      campaignSection: (section: string) => section === "scenarios" ? { scenarios: [{ id: "hero-objective", progression: { experience: [{ effect: "Any warrior earns +1 Experience" }] } }] } : {},
+    };
+    render(<BattlePanel document={document} knowledge={knowledge as never} />);
+    await user.selectOptions(screen.getByLabelText("Scenario"), "hero-objective");
+    const objectives = screen.getByRole("group", { name: "Scenario objectives" });
+    expect(within(objectives).getByLabelText(hero.name)).toHaveAttribute("type", "checkbox");
+    expect(within(objectives).getByLabelText(henchman.name)).toHaveAttribute("type", "checkbox");
+    await user.click(within(objectives).getByLabelText(hero.name));
+    expect(within(objectives).getByLabelText(hero.name)).toBeChecked();
+  });
+
+  it("uses compact increment and decrement controls for enemy casualties", async () => {
+    const user = userEvent.setup();
+    const document = makeCommittedDocument();
+    const hero = document.campaign.warriors.find((warrior) => warrior.kind === "hero")!;
+    const knowledge = {
+      list: (kind: string) => kind === "scenario" ? [{ id: "enemy-award", names: { en: "Enemy award" } }] : [],
+      campaignSection: (section: string) => section === "scenarios" ? { scenarios: [{ id: "enemy-award", progression: { experience: [{ ref: "campaign.experience.award.per-enemy-out-of-action" }] } }] } : section === "experience-and-advances" ? { awards: [{ id: "campaign.experience.award.per-enemy-out-of-action", amount: 1, trigger: "enemy_put_out_of_action" }] } : {},
+    };
+    render(<BattlePanel document={document} knowledge={knowledge as never} />);
+    await user.selectOptions(screen.getByLabelText("Scenario"), "enemy-award");
+    await user.click(screen.getByRole("button", { name: `Enemies put out of action ${hero.name} +` }));
+    expect(screen.getByLabelText(`Enemies put out of action ${hero.name}`)).toHaveTextContent("1");
   });
 
   it("does not allow a new battle while post-battle processing is pending", async () => {

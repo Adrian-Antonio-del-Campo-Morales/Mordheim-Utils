@@ -88,7 +88,7 @@ describe("ProductApp session removal", () => {
     Object.defineProperty(file, "text", { value: async () => "not a campaign" });
     fireEvent.change(input, { target: { files: [file] } });
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("broken.mordheim: Invalid campaign");
+    expect(await screen.findByRole("alert")).toHaveTextContent("No se pudo importar broken.mordheim: la campaña no es válida.");
     expect(rejectImport).toHaveBeenCalledTimes(1);
     expect(screen.getByText("Campaign workspace")).toBeInTheDocument();
   });
@@ -210,7 +210,7 @@ describe("ProductApp session removal", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Guardar" }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("Export failed");
+    expect(await screen.findByRole("alert")).toHaveTextContent("No se pudo exportar la campaña.");
     expect(markExported).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
     expect(screen.getByText("Banda de prueba")).toBeInTheDocument();
@@ -280,7 +280,7 @@ describe("ProductApp session removal", () => {
     fireEvent.change(screen.getByLabelText("Nombre de Campaña"), { target: { value: "Renombrada" } });
     fireEvent.click(screen.getByRole("button", { name: "OK" }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("Rename rejected");
+    expect(await screen.findByRole("alert")).toHaveTextContent("No se pudo cambiar el nombre.");
     expect(screen.getByRole("button", { name: "OK" })).toBeInTheDocument();
   });
 });
