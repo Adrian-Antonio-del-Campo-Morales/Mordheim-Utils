@@ -30,7 +30,7 @@ def _artefact() -> dict:
 def test_artefact_has_every_required_top_section() -> None:
     artefact = _artefact()
     for key in ("schema_version", "ruleset", "collections", "bands", "profiles",
-                "items", "skills", "weapon_hands", "campaign", "indexes"):
+                "items", "skills", "display_names", "display_effects", "weapon_hands", "campaign", "indexes"):
         assert key in artefact, f"missing top section {key!r}"
     assert artefact["schema_version"] == 1
     assert artefact["ruleset"] == "mordheim"
@@ -72,6 +72,11 @@ def test_profiles_materialize_shared_special_rule_references() -> None:
     assert "shared-rule.leader" in profile["rule_ids"]
 
 
+def test_profiles_materialize_equipment_forbids_from_special_rules() -> None:
+    profile = next(row for row in _artefact()["profiles"] if row["id"] == "augur")
+    assert profile["equipment_forbids"] == ["armour"]
+
+
 def test_band_specific_special_rules_include_localized_prose() -> None:
     artefact = _artefact()
     rule = next(
@@ -101,10 +106,20 @@ def test_every_translated_band_rule_publishes_a_legacy_name_label() -> None:
     assert any("Matatrolles Enanos" in row["effects"]["es"] for row in contextual)
 
 
-def test_excluded_combat_lab_data_does_not_leak() -> None:
+def test_campaign_items_include_entries_outside_combat_lab_scope() -> None:
     artefact = _artefact()
-    for item in artefact["items"]:
-        assert item["kind"] != "out-of-scope"
+    items = {item["item_id"]: item for item in artefact["items"]}
+    assert items["rope_hook"]["names"]["es"] == "Gancho de Cuerda"
+    assert items["healing_herbs"]["names"]["es"] == "Hierbas Curativas"
+    assert items["long_bow"]["effects"]["es"] == 'Alcance: 30". Fuerza: 3.'
+    assert items["elf_bow"]["effects"]["es"].startswith('Alcance: 36". Fuerza: 3.')
+    assert "-1 a la tirada para impactar" in items["elven_cloak"]["effects"]["es"]
+    assert all(item.get("effects", {}).get("en") and item.get("effects", {}).get("es")
+               for item in items.values())
+
+
+def test_excluded_combat_lab_surfaces_do_not_leak() -> None:
+    artefact = _artefact()
     text = json.dumps(artefact)
     for forbidden in ("simulation-mappings", "execution-contract", "runtime-scope"):
         assert forbidden not in text
@@ -116,6 +131,34 @@ def test_display_names_travel_per_locale_with_canonical_english() -> None:
     assert "names" in sample and sample["names"].get("en"), "canonical English name missing"
     translated = [item for item in artefact["items"] if "es" in item.get("names", {})]
     assert translated, "expected at least some Spanish translations in the KB"
+
+
+def test_every_profile_ability_with_a_canonical_id_has_a_display_name() -> None:
+    artefact = _artefact()
+    labels = artefact["display_names"]
+    canonical_ids = {str(row["id"]) for row in artefact["skills"]}
+    canonical_ids.update(
+        str(row["id"])
+        for rows in artefact["rules_prose"].values()
+        for row in rows
+    )
+    canonical_ids.update(
+        str(row["id"])
+        for rows in generator.load_mechanics(artefact["ruleset"]).values()
+        if isinstance(rows, list)
+        for row in rows
+        if isinstance(row, dict) and row.get("id")
+    )
+    for profile in artefact["profiles"]:
+        traits = profile.get("combat_traits") or {}
+        ability_ids = [*profile.get("inherent_rules", ()), *profile.get("rule_ids", ()), *traits.get("starting_skills", ())]
+        for ability_id in ability_ids:
+            identifier = str(ability_id)
+            if identifier not in canonical_ids:
+                continue
+            assert identifier in labels or f"{profile['id']}:{identifier}" in labels or f"{profile['band_id']}:{profile['id']}:{identifier}" in labels, f"missing display name for {ability_id!r} on {profile['id']!r}"
+    assert labels["skill.blessed-sight"]["es"] == "Vista Bendecida"
+    assert artefact["display_effects"]["skill.blessed-sight"]["es"].startswith("La Augur puede repetir")
 
 
 def test_serious_injury_tables_publish_reader_facing_names() -> None:

@@ -52,6 +52,8 @@ exploration:
   - id: campaign.exploration.result.11-well
     dice_pattern: '1,1'
     outcome: Well
+    description: "Choose a Hero and roll a D6. If it is no higher than their Toughness, gain one wyrdstone shard; otherwise the Hero misses the next battle."
+    description_i18n: { es: "Elige un Héroe y tira 1D6. Si no supera su Resistencia, obtienes un fragmento de piedra bruja; si falla, el Héroe se pierde la próxima batalla." }
     follow_up:
       type: sequence
       steps:
@@ -80,6 +82,8 @@ exploration:
   - id: campaign.exploration.result.22-shop
     dice_pattern: '2,2'
     outcome: Shop
+    description: "Gain D6 gc. If the roll is 1, also find a Lucky Charm."
+    description_i18n: { es: "Obtienes 1D6 co. Si el resultado es 1, también encuentras un Amuleto de la Suerte." }
     follow_up:
       type: sequence
       steps:
@@ -103,6 +107,8 @@ exploration:
   - id: campaign.exploration.result.33-corpse
     dice_pattern: '3,3'
     outcome: Corpse
+    description: "Roll a D6 to loot the corpse: find D6 gc, a dagger, an axe, a sword or light armour."
+    description_i18n: { es: "Tira 1D6 para registrar el cadáver: puedes encontrar 1D6 co, una daga, un hacha, una espada o una armadura ligera." }
     follow_up:
       type: roll_table
       dice: { count: 1, sides: 6 }
@@ -141,6 +147,8 @@ exploration:
   - id: campaign.exploration.result.44-straggler
     dice_pattern: '4,4'
     outcome: Straggler
+    description: "The reward depends on the warband: Skaven gain 2D6 gc, Possessed gain +1 XP for their leader, Undead gain a Zombie, and others gain an extra die to discard in their next exploration."
+    description_i18n: { es: "La recompensa depende de la banda: los Skaven obtienen 2D6 co, el líder de los Poseídos gana +1 XP, los No Muertos obtienen un Zombi y las demás bandas tiran y descartan un dado adicional en su próxima exploración." }
     follow_up:
       type: conditional
       cases:
@@ -176,6 +184,8 @@ exploration:
   - id: campaign.exploration.result.55-overturned-cart
     dice_pattern: '5,5'
     outcome: Overturned Cart
+    description: "Roll a D6 to find a Mordheim Map, 2D6 gc, or a jewelled sword and dagger."
+    description_i18n: { es: "Tira 1D6 para encontrar un Mapa de Mordheim, 2D6 co o una espada y una daga enjoyadas." }
     follow_up:
       type: roll_table
       dice: { count: 1, sides: 6 }
@@ -208,6 +218,8 @@ exploration:
   - id: campaign.exploration.result.66-ruined-hovels
     dice_pattern: '6,6'
     outcome: Ruined Hovels
+    description: "Find loot worth D6 gc among the ruins."
+    description_i18n: { es: "Encuentras entre las ruinas un botín por valor de 1D6 co." }
     follow_up:
       type: grant
       recipient: warband
@@ -222,6 +234,8 @@ exploration:
   - id: campaign.exploration.result.111-tavern
     dice_pattern: '1,1,1'
     outcome: Tavern
+    description: "Test the leader's Leadership: gain 4D6 gc on success or D6 gc on failure. Undead, Witch Hunters and Sisters of Sigmar succeed automatically."
+    description_i18n: { es: "Haz una prueba de Liderazgo con el líder: obtienes 4D6 co si tiene éxito o 1D6 co si falla. No Muertos, Cazadores de Brujas y Hermanas de Sigmar superan la prueba automáticamente." }
     follow_up:
       type: conditional
       cases:
@@ -256,6 +270,8 @@ exploration:
   - id: campaign.exploration.result.222-smithy
     dice_pattern: '2,2,2'
     outcome: Smithy
+    description: "Roll a D6 to find a sword, double-handed weapon, flail, D3 halberds, a lance or 2D6 gc."
+    description_i18n: { es: "Tira 1D6 para encontrar una espada, un arma a dos manos, un mayal, 1D3 alabardas, una lanza de caballería o 2D6 co." }
     follow_up:
       type: roll_table
       dice: { count: 1, sides: 6 }
@@ -299,6 +315,9 @@ exploration:
   - id: campaign.exploration.result.333-prisoners
     dice_pattern: '3,3,3'
     outcome: Prisoners
+    outcome_i18n: { es: Prisioneros }
+    description: "The reward depends on the warband: XP for Possessed, Zombies for Undead, gold for Skaven, or 2D6 gc and a possible free human Henchman for others."
+    description_i18n: { es: "La recompensa depende de la banda: XP para los Poseídos, Zombis para los No Muertos, oro para los Skaven, o 2D6 co y un posible Secuaz humano gratuito para las demás." }
     follow_up:
       type: conditional
       cases:
@@ -346,6 +365,8 @@ exploration:
   - id: campaign.exploration.result.444-fletcher
     dice_pattern: '4,4,4'
     outcome: Fletcher
+    description: "Roll a D6 to find D3 short bows, bows or long bows, hunting arrows, or D3 crossbows."
+    description_i18n: { es: "Tira 1D6 para encontrar 1D3 arcos cortos, arcos o arcos largos, flechas de caza, o 1D3 ballestas." }
     follow_up:
       type: roll_table
       dice: { count: 1, sides: 6 }
@@ -383,6 +404,8 @@ exploration:
   - id: campaign.exploration.result.555-market-hall
     dice_pattern: '5,5,5'
     outcome: Market Hall
+    description: "Find assorted valuables worth 2D6 gc."
+    description_i18n: { es: "Encuentras varios objetos valiosos por un valor total de 2D6 co." }
     follow_up:
       type: grant
       recipient: warband
@@ -396,6 +419,8 @@ exploration:
   - id: campaign.exploration.result.666-returning-a-favour
     dice_pattern: '6,6,6'
     outcome: Returning a Favour
+    description: "Choose one available Hired Sword to serve for the next battle without a hiring fee."
+    description_i18n: { es: "Elige una Espada de Alquiler disponible para que sirva durante la próxima batalla sin pagar su tarifa de contratación." }
     follow_up:
       type: choose_hireling
       label: Choose the Hired Sword who returns the favour
@@ -408,6 +433,8 @@ exploration:
   - id: campaign.exploration.result.1111-gunsmith
     dice_pattern: '1,1,1,1'
     outcome: Gunsmith
+    description: "Roll a D6 to find a blackpowder weapon or superior blackpowder."
+    description_i18n: { es: "Tira 1D6 para encontrar un arma de pólvora o pólvora superior." }
     follow_up:
       type: roll_table
       dice: { count: 1, sides: 6 }
@@ -450,6 +477,8 @@ exploration:
   - id: campaign.exploration.result.2222-shrine
     dice_pattern: '2,2,2,2'
     outcome: Shrine
+    description: "Gain 3D6 gc. Sisters of Sigmar and Witch Hunters also bless one weapon, which wounds Undead and Possessed on 2+."
+    description_i18n: { es: "Obtienes 3D6 co. Las Hermanas de Sigmar y los Cazadores de Brujas también bendicen un arma, que hiere a No Muertos y Poseídos con 2+." }
     follow_up:
       type: sequence
       steps:
@@ -480,6 +509,8 @@ exploration:
   - id: campaign.exploration.result.3333-townhouse
     dice_pattern: '3,3,3,3'
     outcome: Townhouse
+    description: "Find loot worth 3D6 gc in the surviving townhouse."
+    description_i18n: { es: "Encuentras en la casa superviviente un botín por valor de 3D6 co." }
     follow_up:
       type: grant
       recipient: warband
@@ -493,6 +524,8 @@ exploration:
   - id: campaign.exploration.result.4444-armourer
     dice_pattern: '4,4,4,4'
     outcome: Armourer
+    description: "Roll a D6 to find shields or bucklers, helmets, light armour, heavy armour or Ithilmar armour."
+    description_i18n: { es: "Tira 1D6 para encontrar escudos o rodelas, yelmos, armadura ligera, armadura pesada o armadura de Ithilmar." }
     follow_up:
       type: roll_table
       dice: { count: 1, sides: 6 }
@@ -542,6 +575,8 @@ exploration:
   - id: campaign.exploration.result.5555-graveyard
     dice_pattern: '5,5,5,5'
     outcome: Graveyard
+    description: "Sisters of Sigmar and Witch Hunters seal the graves and distribute D6 XP. Other warbands loot D6x10 gc but will be hated by those bands in their next battle."
+    description_i18n: { es: "Las Hermanas de Sigmar y los Cazadores de Brujas sellan las tumbas y reparten 1D6 XP. Las demás bandas saquean 1D6×10 co, pero serán odiadas por esas bandas en su próximo enfrentamiento." }
     follow_up:
       type: conditional
       cases:
@@ -574,6 +609,8 @@ exploration:
   - id: campaign.exploration.result.6666-catacombs
     dice_pattern: '6,6,6,6'
     outcome: Catacombs
+    description: "Choose up to three eligible fighters to deploy through the tunnels at the end of your first turn in the next battle."
+    description_i18n: { es: "Elige hasta tres guerreros válidos para desplegarlos desde los túneles al final de tu primer turno de la próxima batalla." }
     follow_up:
       type: choose_warriors
       label: Choose up to three fighters for the Catacombs deployment
@@ -594,6 +631,8 @@ exploration:
   - id: campaign.exploration.result.11111-moneylenders-house
     dice_pattern: '1,1,1,1,1'
     outcome: Moneylender's House
+    description: "Find D6x10 gc hidden among the debris."
+    description_i18n: { es: "Encuentras 1D6×10 co escondidas entre los escombros." }
     follow_up:
       type: grant
       recipient: warband
@@ -607,6 +646,8 @@ exploration:
   - id: campaign.exploration.result.22222-alchemists-laboratory
     dice_pattern: '2,2,2,2,2'
     outcome: Alchemist's Laboratory
+    description: "Gain 3D6 gc and choose a Hero to gain access to Academic skills from the alchemist's notebook."
+    description_i18n: { es: "Obtienes 3D6 co y eliges un Héroe para que el cuaderno del alquimista le dé acceso a habilidades Académicas." }
     follow_up:
       type: sequence
       steps:
@@ -632,6 +673,8 @@ exploration:
   - id: campaign.exploration.result.33333-jewelsmith
     dice_pattern: '3,3,3,3,3'
     outcome: Jewelsmith
+    description: "Choose whether to sell the gems for a random value or give them to a Hero for +1 when locating rare items."
+    description_i18n: { es: "Elige entre vender las gemas por un valor aleatorio o dárselas a un Héroe para obtener +1 al localizar objetos raros." }
     follow_up:
       type: choose_option
       label: Sell the jewels or let one Hero keep them?
@@ -668,6 +711,8 @@ exploration:
   - id: campaign.exploration.result.44444-merchants-house
     dice_pattern: '4,4,4,4,4'
     outcome: Merchant's House
+    description: "Roll 2D6: normally gain that roll x5 gc; on a double six, a Hero instead gains the Haggle skill."
+    description_i18n: { es: "Tira 2D6: normalmente obtienes el resultado ×5 co; con un doble seis, un Héroe obtiene en su lugar la habilidad Regateo." }
     follow_up:
       type: sequence
       steps:
@@ -698,6 +743,8 @@ exploration:
   - id: campaign.exploration.result.55555-shattered-building
     dice_pattern: '5,5,5,5,5'
     outcome: Shattered Building
+    description: "Gain D3 wyrdstone shards, then test the leader's Leadership; on success a wardog joins the warband."
+    description_i18n: { es: "Obtienes 1D3 fragmentos de piedra bruja y haces una prueba de Liderazgo con el líder; si tiene éxito, un perro de guerra se une a la banda." }
     follow_up:
       type: sequence
       steps:
@@ -724,6 +771,8 @@ exploration:
   - id: campaign.exploration.result.66666-entrance-to-the-catacombs
     dice_pattern: '6,6,6,6,6'
     outcome: Entrance to the Catacombs
+    description: "From now on, reroll one die in each exploration roll. Further entrances grant no additional rerolls."
+    description_i18n: { es: "A partir de ahora puedes repetir un dado en cada tirada de exploración. Encontrar más entradas no concede repeticiones adicionales." }
     follow_up:
       type: grant_rule
       recipient: warband
@@ -741,6 +790,8 @@ exploration:
   - id: campaign.exploration.result.111111-the-pit
     dice_pattern: '1,1,1,1,1,1'
     outcome: The Pit
+    description: "Choose a Hero and roll a D6. On a 1 the Hero is lost permanently; on 2+, gain D6+1 wyrdstone shards."
+    description_i18n: { es: "Elige un Héroe y tira 1D6. Con un 1 el Héroe se pierde para siempre; con 2+, obtienes 1D6+1 fragmentos de piedra bruja." }
     follow_up:
       type: sequence
       steps:
@@ -769,6 +820,8 @@ exploration:
   - id: campaign.exploration.result.222222-hidden-treasure
     dice_pattern: '2,2,2,2,2,2'
     outcome: Hidden Treasure
+    description: "Gain 5D6x5 gc and roll separately for wyrdstone, gems, armour, relics, tomes, an Elven cloak and a magical artefact."
+    description_i18n: { es: "Obtienes 5D6×5 co y tiras por separado para conseguir piedra bruja, gemas, armaduras, reliquias, tomos, una capa élfica y un artefacto mágico." }
     follow_up:
       type: sequence
       steps:
@@ -849,6 +902,8 @@ exploration:
   - id: campaign.exploration.result.333333-dwarf-smithy
     dice_pattern: '3,3,3,3,3,3'
     outcome: Dwarf Smithy
+    description: "Roll a D6 to find heavy weapons or armour, including Gromril equipment."
+    description_i18n: { es: "Tira 1D6 para encontrar armas pesadas o armaduras, incluido equipo de Gromril." }
     follow_up:
       type: roll_table
       dice: { count: 1, sides: 6 }
@@ -890,6 +945,8 @@ exploration:
   - id: campaign.exploration.result.444444-slaughtered-warband
     dice_pattern: '4,4,4,4,4,4'
     outcome: Slaughtered Warband
+    description: "Gain 3D6x5 gc and D6 daggers automatically, then roll separately for armour, weapons, bows, helmets and a Mordheim Map."
+    description_i18n: { es: "Obtienes automáticamente 3D6×5 co y 1D6 dagas; después tiras por separado para conseguir armaduras, armas, arcos, yelmos y un Mapa de Mordheim." }
     follow_up:
       type: sequence
       steps:
@@ -982,6 +1039,8 @@ exploration:
   - id: campaign.exploration.result.555555-fighting-arena
     dice_pattern: '5,5,5,5,5,5'
     outcome: Fighting Arena
+    description: "Sell the training manual for 100 gc or give it to a Hero for Combat skill access and +1 to their maximum Weapon Skill."
+    description_i18n: { es: "Vende el manual de entrenamiento por 100 co o dáselo a un Héroe para que acceda a habilidades de Combate y aumente en +1 su HA máxima." }
     follow_up:
       type: choose_option
       label: What will the warband do with the training manual?
@@ -1010,6 +1069,8 @@ exploration:
   - id: campaign.exploration.result.666666-nobles-villa
     dice_pattern: '6,6,6,6,6,6'
     outcome: Noble's Villa
+    description: "Roll a D6 to find D6x10 gc, D6 doses of Crimson Shade, or a magical artefact."
+    description_i18n: { es: "Tira 1D6 para encontrar 1D6×10 co, 1D6 dosis de Sombra Carmesí o un artefacto mágico." }
     follow_up:
       type: roll_table
       dice: { count: 1, sides: 6 }

@@ -15,6 +15,7 @@
  * application feature so this file only exports components (react-refresh).
  */
 import { reviewSummary, ledgerText, rosterSummaryText } from "@app/campaign/features/review/review-exports";
+import { followUpNeedsResolution } from "@app/campaign/features/review/follow-up-acknowledgement-workflow";
 import type { CampaignDocument } from "../campaign/types";
 import { useCampaignApp } from "../campaign/useCampaignApp";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
@@ -24,6 +25,7 @@ interface ReviewPanelProps {
   readonly document: CampaignDocument;
   readonly locale?: "es" | "en";
   readonly knowledge?: ArtefactKnowledgeReader;
+  readonly onReturnToStep?: (step: number) => void;
 }
 
 /** Client-side download of an auxiliary text export. */
@@ -37,15 +39,16 @@ function downloadText(filename: string, text: string): void {
   URL.revokeObjectURL(url);
 }
 
-export function ReviewPanel({ document, locale = "en", knowledge }: ReviewPanelProps) {
+export function ReviewPanel({ document, locale = "en", knowledge, onReturnToStep }: ReviewPanelProps) {
   const app = useCampaignApp();
   const summary = reviewSummary(document);
   const baseName = (summary.warband_name || summary.campaign_name || "campaign").replace(/[^\w-]+/g, "_");
 
-  const t = locale === "es" ? { title:"Revisar antes de exportar",summary:"Resumen de campaña",campaign:"Campaña",warband:"Banda",treasury:"Tesorería",shards:"fragmento(s)",stash:"reserva",roster:"Guerreros",models:"miniatura(s)",heroes:"héroe(s)",henchmen:"secuaces",hirelings:"mercenario(s)",timeline:"Cronología",battles:"batalla(s)",state:"estado",of:"de",inventory:"Inventario",rows:"fila(s)",owned:"objeto(s) en propiedad",draft:"todavía es un borrador",post:"hay una secuencia post-batalla sin terminar",rolls:"tirada(s) de heridas sin resolver",absent:"guerrero(s) ausentes",safe:"Nada pendiente: puede guardarse.",pending:"Pendiente",exports:"Exportaciones auxiliares",downloadRoster:"Descargar banda (.txt)",downloadLedger:"Descargar historial (.txt)" } : { title:"Review before export",summary:"Campaign summary",campaign:"Campaign",warband:"Warband",treasury:"Treasury",shards:"shard(s)",stash:"stash",roster:"Roster",models:"model(s)",heroes:"hero(es)",henchmen:"henchmen",hirelings:"hireling(s)",timeline:"Timeline",battles:"battle(s)",state:"state",of:"of",inventory:"Inventory",rows:"row(s)",owned:"item(s) owned",draft:"this is still a draft",post:"a post-battle sequence is unfinished",rolls:"unresolved injury roll(s)",absent:"warrior(s) absent",safe:"Nothing pending — safe to save.",pending:"Pending",exports:"Auxiliary exports",downloadRoster:"Download roster (.txt)",downloadLedger:"Download ledger (.txt)" };
+  const t = locale === "es" ? { title:"Revisar antes de exportar",summary:"Resumen de campaña",campaign:"Campaña",warband:"Banda",treasury:"Tesorería",shards:"fragmento(s)",stash:"reserva",roster:"Guerreros",models:"miniatura(s)",heroes:"héroe(s)",henchmen:"secuaces",hirelings:"mercenario(s)",timeline:"Cronología",battles:"batalla(s)",state:"estado",of:"de",inventory:"Inventario",rows:"fila(s)",owned:"objeto(s) en propiedad",draft:"todavía es un borrador",post:"hay una secuencia post-batalla sin terminar",rolls:"seguimiento(s) sin resolver",absent:"guerrero(s) ausentes",safe:"Nada pendiente: puede guardarse.",pending:"Pendiente",returnPending:"Volver al paso pendiente",blocked:"Resuelve los seguimientos pendientes antes de confirmar.",exports:"Exportaciones auxiliares",downloadRoster:"Descargar banda (.txt)",downloadLedger:"Descargar historial (.txt)" } : { title:"Review before export",summary:"Campaign summary",campaign:"Campaign",warband:"Warband",treasury:"Treasury",shards:"shard(s)",stash:"stash",roster:"Roster",models:"model(s)",heroes:"hero(es)",henchmen:"henchmen",hirelings:"hireling(s)",timeline:"Timeline",battles:"battle(s)",state:"state",of:"of",inventory:"Inventory",rows:"row(s)",owned:"item(s) owned",draft:"this is still a draft",post:"a post-battle sequence is unfinished",rolls:"unresolved follow-up(s)",absent:"warrior(s) absent",safe:"Nothing pending — safe to save.",pending:"Pending",returnPending:"Return to pending step",blocked:"Resolve pending follow-ups before confirming.",exports:"Auxiliary exports",downloadRoster:"Download roster (.txt)",downloadLedger:"Download ledger (.txt)" };
+  const openFollowUps = document.campaign.post_battles.flatMap((post) => (post.pending_follow_ups ?? []).filter((row) => followUpNeedsResolution(row, post.acknowledgements ?? {})));
+  const pendingStep = (() => { const step = openFollowUps[0]?.["step"]; if (step === "injuries") return 0; const value = Number(step); return Number.isInteger(value) && value >= 0 && value <= 7 ? value : 0; })();
   const pending: string[] = [];
   if (summary.is_draft) pending.push(t.draft);
-  if (summary.post_battle_pending) pending.push(t.post);
   if (summary.open_follow_ups > 0) pending.push(`${summary.open_follow_ups} ${t.rolls}`);
   if (summary.absent_warriors > 0) pending.push(`${summary.absent_warriors} ${t.absent}`);
 
@@ -99,7 +102,9 @@ export function ReviewPanel({ document, locale = "en", knowledge }: ReviewPanelP
           ? t.safe
           : `${t.pending}: ${pending.join("; ")}.`}
       </p>
-      {summary.post_battle_pending && <button className="primary" onClick={() => void app.runAction("finalizePostBattle", {})}>{locale === "es" ? "Confirmar siguiente estado" : "Confirm next state"}</button>}
+      {openFollowUps.length > 0 && onReturnToStep && <button type="button" onClick={() => onReturnToStep(pendingStep)}>{t.returnPending}</button>}
+      {openFollowUps.length > 0 && <p className="condition" role="alert">{t.blocked}</p>}
+      {summary.post_battle_pending && <button className="primary" disabled={openFollowUps.length > 0} data-disabled-reason={openFollowUps.length > 0 ? t.blocked : undefined} onClick={() => void app.runAction("finalizePostBattle", {})}>{locale === "es" ? "Confirmar siguiente estado" : "Confirm next state"}</button>}
 
       <h4>{t.exports}</h4>
       <button

@@ -38,6 +38,55 @@ describe("HirelingsPanel", () => {
     expect(screen.getByRole("button", { name: /Already hired/ })).toBeDisabled();
   });
 
+  it("sorts hired swords by their translated name for the active locale", () => {
+    const translated = {
+      campaignRows: (section: string) => section === "hired-swords-and-dramatis:hired_swords" ? [
+        { id: "offer-a", profile_id: "a", eligibility: {}, hiring_fee: { resources: { gold_crowns: { cost: 10 } } } },
+        { id: "offer-b", profile_id: "b", eligibility: {}, hiring_fee: { resources: { gold_crowns: { cost: 10 } } } },
+      ] : [],
+      campaignSection: () => ({ profiles: [
+        { id: "a", names: { en: "Archer", es: "Zorro" }, characteristics: {} },
+        { id: "b", names: { en: "Wizard", es: "Águila" }, characteristics: {} },
+      ] }),
+      itemName: (id: "a" | "b", locale: "es" | "en") => ({ a: { es: "Zorro", en: "Archer" }, b: { es: "Águila", en: "Wizard" } }[id][locale]),
+    } as never;
+    const { rerender } = render(<CampaignAppProvider service={service}><HirelingsPanel document={document} listings={translated} locale="es" mode="hirelings" /></CampaignAppProvider>);
+    expect(screen.getAllByRole("row").slice(1).map((row) => row.querySelector("td")?.textContent)).toEqual(["Águila", "Zorro"]);
+
+    rerender(<CampaignAppProvider service={service}><HirelingsPanel document={document} listings={translated} locale="en" mode="hirelings" /></CampaignAppProvider>);
+    expect(screen.getAllByRole("row").slice(1).map((row) => row.querySelector("td")?.textContent)).toEqual(["Archer", "Wizard"]);
+  });
+
+  it("shows hiring restrictions in the active language", () => {
+    const restricted = {
+      campaignRows: (section: string) => section === "hired-swords-and-dramatis:hired_swords" ? [
+        { id: "restricted-offer", profile_id: "restricted", eligibility: { forbid_band_ids: ["sisters-of-sigmar"] }, hiring_fee: { resources: { gold_crowns: { cost: 10 } } } },
+      ] : [],
+      campaignSection: () => ({ profiles: [{ id: "restricted", names: { en: "Restricted", es: "Restringido" }, characteristics: {} }] }),
+      itemName: (_id: string, locale: "es" | "en") => locale === "es" ? "Restringido" : "Restricted",
+    } as never;
+    const { rerender } = render(<CampaignAppProvider service={service}><HirelingsPanel document={document} listings={restricted} locale="es" mode="hirelings" /></CampaignAppProvider>);
+    expect(screen.getByRole("note")).toHaveTextContent("No disponible: La banda o su grupo están excluidos por las reglas de contratación.");
+    expect(screen.getByRole("note")).not.toHaveTextContent("Not available");
+
+    rerender(<CampaignAppProvider service={service}><HirelingsPanel document={document} listings={restricted} locale="en" mode="hirelings" /></CampaignAppProvider>);
+    expect(screen.getByRole("note")).toHaveTextContent("Not eligible: Not available to sisters-of-sigmar: band or warband group excluded.");
+  });
+
+  it("translates dynamic roster restrictions instead of exposing domain text", () => {
+    const profileId = "hireling.hired-sword.wolf-priest-of-ulric";
+    const dynamic = {
+      campaignRows: (section: string) => section === "hired-swords-and-dramatis:hired_swords" ? [
+        { id: "wolf-priest-offer", profile_id: profileId, eligibility: {}, hiring_fee: { resources: { gold_crowns: { cost: 40 } } } },
+      ] : [],
+      campaignSection: () => ({ profiles: [{ id: profileId, rule_ids: [`${profileId}.rule.campaign-eligibility`], characteristics: {} }] }),
+      itemName: () => "Sacerdote Lobo de Ulric",
+    } as never;
+    render(<CampaignAppProvider service={service}><HirelingsPanel document={document} listings={dynamic} locale="es" mode="hirelings" /></CampaignAppProvider>);
+    expect(screen.getByRole("note")).toHaveTextContent("No disponible: Solo los Mercenarios de Middenheim pueden contratarlo.");
+    expect(screen.getByRole("note")).not.toHaveTextContent("available only to Middenheim");
+  });
+
   it("can embed buying and selling inside Equipment without a Trading Post heading", () => {
     const reader = { campaignRows: () => [], campaignSection: () => ({}), itemName: (id: string) => id } as never;
     render(<CampaignAppProvider service={service}><HirelingsPanel document={document} listings={reader} mode="trading" showTradingTitle={false} /></CampaignAppProvider>);

@@ -526,22 +526,23 @@ class PostBattleEngine:
             return True, "Battle experience already applied."
         battle = self.campaign.battle(self.post.battle_number)
         self.post.experience_applied = True
+        absent = {str(row.get("id")) for row in battle.absentees}
+        bonus = self._resolver().underdog_bonus((battle.opponent_rating or battle.rating_before) - battle.rating_before)
         if battle.xp_awards:
             for warrior in self.campaign.warriors:
                 award = int(battle.xp_awards.get(warrior.id, 0))
-                if award > 0 and self.port.can_gain_experience(self.campaign.band_id, warrior.profile_id):
-                    warrior.experience += award
+                if warrior.id not in absent and self.port.can_gain_experience(self.campaign.band_id, warrior.profile_id):
+                    warrior.experience += award + bonus
             self.sync_pending_advances()
-            self._log(self.STEP_EXPERIENCE, "experience", "Per-warrior scenario awards applied.")
-            return True, "Per-warrior scenario awards applied (see the battle record)."
+            self._log(self.STEP_EXPERIENCE, "experience", "Per-warrior scenario awards and underdog bonus applied.")
+            return True, "Per-warrior scenario awards and underdog bonus applied (see the battle record)."
         amount = max(0, int(battle.xp_delta))
-        absent = {str(row.get("id")) for row in battle.absentees}
         for warrior in self.campaign.warriors:
             if warrior.id not in absent and self.port.can_gain_experience(self.campaign.band_id, warrior.profile_id):
-                warrior.experience += amount
+                warrior.experience += amount + bonus
         self.sync_pending_advances()
-        self._log(self.STEP_EXPERIENCE, "experience", f"{amount} XP awarded to every surviving warrior.")
-        return True, f"{amount} XP applied to each surviving warrior."
+        self._log(self.STEP_EXPERIENCE, "experience", f"{amount + bonus} XP awarded to every surviving warrior.")
+        return True, f"{amount + bonus} XP applied to each surviving warrior."
 
     def add_xp(self, warrior_id: str, amount: int) -> tuple[bool, str]:
         if self.post is None:

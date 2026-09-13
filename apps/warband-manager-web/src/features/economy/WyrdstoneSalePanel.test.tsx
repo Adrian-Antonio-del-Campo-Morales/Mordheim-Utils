@@ -27,9 +27,7 @@ describe("WyrdstoneSalePanel", () => {
       },
     } as CampaignDocument;
     render(<CampaignAppProvider service={service}><WyrdstoneSalePanel document={ready} knowledge={knowledge} locale="en" /></CampaignAppProvider>);
-    const input = screen.getByLabelText("Shards to sell");
-    await user.clear(input);
-    await user.type(input, "1");
+    await user.click(screen.getByRole("button", { name: "Shards to sell +" }));
     await user.click(screen.getByRole("button", { name: "Confirm sale once" }));
     expect(run).toHaveBeenCalledWith("sellWyrdstone", { quantity: 1 });
   });

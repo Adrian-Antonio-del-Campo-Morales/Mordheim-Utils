@@ -38,6 +38,12 @@ function amountDice(value: unknown): readonly [number, number] | undefined {
   return match ? [Number(match[1] || 1), Number(match[2])] : undefined;
 }
 
+function amount(row: Row, fallback: unknown): number {
+  const declared = Number(row["amount"] ?? fallback);
+  if (Number.isFinite(declared)) return Math.max(0, declared);
+  return Math.max(0, Number(/\+(\d+)\s+(?:experience|experiencia)\b/i.exec(String(row["effect"] ?? ""))?.[1] ?? 0));
+}
+
 /** Desktop ScenarioRewards port over generated web KB documents. */
 export function scenarioAwards(knowledge: CampaignKnowledge | undefined, scenarioId: string, locale: "es" | "en"): readonly ScenarioAward[] {
   const scenarioDocument = knowledge?.campaignSection?.("scenarios") ?? {};
@@ -50,7 +56,7 @@ export function scenarioAwards(knowledge: CampaignKnowledge | undefined, scenari
     if (ref && !source) return [];
     const effect = localizedText(locale === "es" ? entry["effect_i18n"] : entry["effect"], locale, entry["effect"]);
     const dice = !source ? amountDice(entry["amount_dice"]) : undefined;
-    return [{ id: ref || `${scenarioId}:manual:${index}`, label: source ? String(source["id"] ?? ref).split(".").at(-1)?.replaceAll("-", " ") ?? ref : effect, amount: Math.max(0, Number(source?.["amount"] ?? entry["amount"] ?? 0) || 0), trigger: String(source?.["trigger"] ?? "manual"), manual: !source, selection: source ? "single" : selection(entry), ...(dice ? { amountDice: dice } : {}) }];
+    return [{ id: ref || `${scenarioId}:manual:${index}`, label: source ? String(source["id"] ?? ref).split(".").at(-1)?.replaceAll("-", " ") ?? ref : effect, amount: amount(source ?? entry, source ? undefined : entry["amount"]), trigger: String(source?.["trigger"] ?? "manual"), manual: !source, selection: source ? "single" : selection(entry), ...(dice ? { amountDice: dice } : {}) }];
   });
 }
 

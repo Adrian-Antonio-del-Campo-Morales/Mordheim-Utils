@@ -20,6 +20,7 @@ import importlib.metadata
 import importlib.util
 import os
 import platform
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -66,6 +67,7 @@ COMMANDS = (
     ("audit", "generate the auditable rule inventory"),
     ("validate", "validate the KB and structural connections"),
     ("tests", "run the pytest suites, filtered by --scope"),
+    ("run-ci", "run the local equivalent of the CI validation gates before Pages publishing"),
     ("combine-kb", "combine the KB YAML files into one .txt per subdirectory"),
     ("build-native", "compile the native Cython backend (editable install)"),
     ("doctor", "report the environment, installed engines and KB location"),
@@ -76,10 +78,15 @@ COMMAND_GROUPS = (
     ("Graphical applications", ("combat-lab", "warband-manager")),
     ("Engines, parity and benchmarks", ("benchmark", "parity", "test-report", "coverage-gate")),
     ("Rules and knowledge base", ("verify", "audit", "validate")),
-    ("Development and testing", ("tests", "combine-kb", "build-native", "doctor")),
+    ("Development and testing", ("tests", "run-ci", "combine-kb", "build-native", "doctor")),
 )
 
 COMBINE_KB_SCRIPT = REPO_ROOT / "tools" / "kb" / "combine_kb_yaml.py"
+KNOWLEDGE_GENERATOR = REPO_ROOT / "tools" / "knowledge" / "generate_knowledge_web.py"
+GENERATED_KNOWLEDGE = REPO_ROOT / "build" / "generated" / "knowledge-web"
+WEB_KNOWLEDGE = REPO_ROOT / "apps" / "warband-manager-web" / "public" / "knowledge"
+TYPESCRIPT_PACKAGE = REPO_ROOT / "packages" / "typescript"
+WEB_APP = REPO_ROOT / "apps" / "warband-manager-web"
 
 
 def _environment() -> dict:
@@ -96,6 +103,13 @@ def _run(*argv: str) -> int:
 
 def _run_module(module: str, *args: str) -> int:
     return _run(sys.executable, "-m", module, *args)
+
+
+def _run_in(directory: Path, *argv: str) -> int:
+    """Run a child process in a repository subdirectory."""
+    env = _environment()
+    executable = shutil.which(argv[0], path=env.get("PATH")) or argv[0]
+    return subprocess.call([executable, *argv[1:]], cwd=directory, env=env)
 
 
 def combat_lab_command(_args: list[str]) -> int:
@@ -139,6 +153,43 @@ def tests_command(args: list[str]) -> int:
     if forwarded and forwarded[0] == "--":
         forwarded.pop(0)
     return _run_module("pytest", *SCOPE_PATHS[scope], *forwarded)
+
+
+def _stage_knowledge_assets() -> None:
+    WEB_KNOWLEDGE.mkdir(parents=True, exist_ok=True)
+    for source in GENERATED_KNOWLEDGE.glob("*.json"):
+        shutil.copy2(source, WEB_KNOWLEDGE / source.name)
+
+
+def run_ci_command(args: list[str]) -> int:
+    """Run the checks from .github/workflows/ci.yml using local dependencies."""
+    if args in (["-h"], ["--help"]):
+        print("usage: python tools/mordheim-utils.py run-ci")
+        print("\nRun the local CI validation gates before Pages publishing.")
+        return 0
+    if args:
+        print("run-ci: this command does not accept arguments", file=sys.stderr)
+        return 2
+    for command in ((sys.executable, str(KNOWLEDGE_GENERATOR)),
+                    (sys.executable, str(KNOWLEDGE_GENERATOR), "--check")):
+        if _run_in(REPO_ROOT, *command):
+            return 1
+    _stage_knowledge_assets()
+    if _run_module("pytest", "tests/web", "tests/contracts", "tests/campaign",
+                   "tests/architecture", "tests/knowledge", "-q"):
+        return 1
+    if _run(sys.executable, str(KNOWLEDGE_GENERATOR), "--check"):
+        return 1
+    if _run_in(TYPESCRIPT_PACKAGE, "npm", "run", "typecheck"):
+        return 1
+    if _run_in(TYPESCRIPT_PACKAGE, "npm", "test"):
+        return 1
+    for command in (("npm", "run", "typecheck"), ("npm", "run", "lint"),
+                    ("npm", "test"), ("npm", "run", "build"),
+                    ("npx", "vitest", "run", "src/architecture/boundaries.test.ts")):
+        if _run_in(WEB_APP, *command):
+            return 1
+    return 0
 
 
 def combine_kb_command(args: list[str]) -> int:
@@ -337,6 +388,8 @@ def main(argv: list[str] | None = None) -> int:
         return warband_manager_command(args)
     if name == "tests":
         return tests_command(args)
+    if name == "run-ci":
+        return run_ci_command(args)
     if name == "combine-kb":
         return combine_kb_command(args)
     if name == "build-native":

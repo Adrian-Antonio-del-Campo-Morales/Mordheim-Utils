@@ -106,6 +106,8 @@ describe("continueExploration — Returning a Favour", () => {
     expect(newcomer.special_rules?.some((rule) => rule.includes("Returning a Favour"))).toBe(true);
     // The follow-up closes once its queue drains.
     expect(hired.document.campaign.post_battles[0].pending_follow_ups).toEqual([]);
+    expect((hired.document.campaign.post_battles[0].step_state?.["exploration"] as OpenPayload)["special_effects"])
+      .toContain("Undead Hunter");
   });
 
   it("rejects an option that is not offered", () => {

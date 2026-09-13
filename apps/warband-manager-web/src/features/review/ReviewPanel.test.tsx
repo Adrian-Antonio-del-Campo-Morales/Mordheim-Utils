@@ -98,12 +98,30 @@ describe("ReviewPanel", () => {
     expect(screen.getByText(/1 battle\(s\), state 2 of 1/)).toBeInTheDocument();
   });
 
-  it("reports the desktop-style post-battle pending state", () => {
+  it("does not report the closing confirmation as unfinished work", () => {
     const pending = structuredClone(document) as CampaignDocument;
     (pending.campaign as unknown as { post_battles: unknown[] }).post_battles = [{ complete: false, pending_follow_ups: [] }];
     render(<ReviewPanel document={pending} />);
-    expect(screen.getByRole("status")).toHaveTextContent(/post-battle sequence is unfinished/);
+    expect(screen.getByRole("status")).toHaveTextContent("Nothing pending — safe to save.");
     expect(screen.getByRole("button", { name: /Confirm next state/ })).toBeInTheDocument();
+  });
+
+  it("names generic follow-ups correctly and returns to their post-battle step", () => {
+    const pending = structuredClone(document) as CampaignDocument;
+    (pending.campaign as unknown as { post_battles: unknown[] }).post_battles = [{
+      complete: false,
+      pending_follow_ups: [{ id: "upkeep:1:ranger", type: "hireling_upkeep", step: 6, warrior_id: "ranger" }],
+      acknowledgements: {},
+    }];
+    const onReturnToStep = vi.fn();
+    render(<ReviewPanel document={pending} locale="es" onReturnToStep={onReturnToStep} />);
+
+    expect(screen.getByRole("status")).toHaveTextContent("1 seguimiento(s) sin resolver");
+    expect(screen.queryByText(/tirada\(s\) de heridas/)).not.toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent("Resuelve los seguimientos pendientes antes de confirmar.");
+    expect(screen.getByRole("button", { name: "Confirmar siguiente estado" })).toBeDisabled();
+    fireEvent.click(screen.getByRole("button", { name: "Volver al paso pendiente" }));
+    expect(onReturnToStep).toHaveBeenCalledWith(6);
   });
 
   it("surfaces pending work through the status seam", () => {

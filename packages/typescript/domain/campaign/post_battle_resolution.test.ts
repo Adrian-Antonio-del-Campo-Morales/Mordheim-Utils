@@ -101,8 +101,8 @@ describe("KB looking-glass values", () => {
   it("advance thresholds, rating and racial maximums come from the KB", () => {
     const r = resolver();
     expect(r.advanceThresholds("hero").length).toBeGreaterThan(0);
-    expect(r.advanceThresholds("hero").slice(0, 4)).toEqual([20, 40, 65, 90]);
-    expect(r.advanceThresholds("henchman").slice(0, 4)).toEqual([8, 16, 25, 35]);
+    expect(r.advanceThresholds("hero")).toEqual([2, 4, 6, 8, 11, 14, 17, 20, 24, 28, 32, 36, 41, 46, 51, 57, 63, 69, 76, 83, 90]);
+    expect(r.advanceThresholds("henchman")).toEqual([2, 5, 9, 14]);
     // Warband rating: 5 per model + 1 per XP.
     expect(r.warbandRating(8, 85)).toBe(125);
     // Racial maximums caps keyed by race (artefact uses full stat names).

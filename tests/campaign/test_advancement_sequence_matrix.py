@@ -31,7 +31,7 @@ def test_advancement_rolls_roundtrip_and_undo(port,tmp_path,warrior_id,roll,subr
 def test_skill_choice_rejected_for_characteristic_roll(port,choice):
     c=AppController(make_example_state(port),port=port)
     engine=c.post_battle_engine()
-    engine.sync_pending_advances()
+    assert engine.add_xp('matriarch', 1)[0]
     assert engine.resolve_pending_advance('matriarch',7)[0]
     before=copy.deepcopy(c.state)
     result=c.perform_undoable('choice',lambda:engine.commit_pending_advance('matriarch',option_kind=choice,skill_name='Weapons Training'))
@@ -42,7 +42,7 @@ def test_skill_choice_rejected_for_characteristic_roll(port,choice):
 
 @pytest.mark.parametrize('quantity',range(1,6))
 @pytest.mark.parametrize('copies',[1,2])
-@pytest.mark.parametrize('threshold',[8,16])
+@pytest.mark.parametrize('threshold',[5,9])
 def test_promotion_selects_exact_threshold_and_preserves_equipment(port,tmp_path,quantity,copies,threshold):
     from mordheim_campaign.domain.models import EquipmentEntryVM, InventoryItemVM
     c=AppController(make_example_state(port),port=port)
@@ -52,7 +52,7 @@ def test_promotion_selects_exact_threshold_and_preserves_equipment(port,tmp_path
     group.equipment=[EquipmentEntryVM('hammer','Hammer',quantity*copies,'purchase',3,True,True)]
     c.state.campaign.inventory=[InventoryItemVM('hammer','Hammer','Weapon',quantity*copies,quantity*copies,0,3)]
     engine.add_xp(group.id,12)
-    for rung in (8,16):
+    for rung in (5,9):
         assert engine.resolve_pending_advance(group.id,10,threshold=rung)[0]
     before=copy.deepcopy(c.state)
     assert c.perform_undoable('promote',lambda:engine.commit_pending_advance(group.id,option_kind='promote_henchman',threshold=threshold))[0]
@@ -62,7 +62,7 @@ def test_promotion_selects_exact_threshold_and_preserves_equipment(port,tmp_path
         assert group.quantity==quantity-1
         assert group.equipment[0].quantity==(quantity-1)*copies
         assert engine.post.pending_advance_for(group.id,threshold)['roll_total'] is None
-        other=16 if threshold==8 else 8
+        other=9 if threshold==5 else 5
         assert engine.post.pending_advance_for(group.id,other)['roll_total']==10
     assert load_campaign(save_campaign(tmp_path/'promotion.mordheim',c.state)).campaign==c.state.campaign
     assert c.undo()[0]

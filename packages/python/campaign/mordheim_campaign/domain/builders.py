@@ -196,19 +196,26 @@ def make_example_state(port: "KnowledgePort"):
              condition: str | None = None, condition_detail: str | None = None,
              modifiers: dict[str, int] | None = None, row_id: str | None = None) -> WarriorVM:
         profile = port.profile(option.collection, option.band_id, profile_id)
-        return warrior_vm(
+        warrior = warrior_vm(
             port, profile, row_id=row_id or f"{profile_id}:1", name=name, experience=experience,
             previous_experience=previous, equipment=equipment or [],
             extra_skills=extra_skills or [], condition=condition, condition_detail=condition_detail,
             stat_modifiers=modifiers or {},
         )
+        # Example campaigns start with their current XP already accounted for;
+        # only XP earned after creation may cross an advance threshold.
+        warrior.advance_experience = experience
+        return warrior
 
     def group(profile_id: str, *, quantity: int, experience: int, equipment: list[str], row_id: str) -> WarriorVM:
         profile = port.profile(option.collection, option.band_id, profile_id)
-        return warrior_vm(
+        warrior = warrior_vm(
             port, profile, row_id=row_id, quantity=quantity, experience=experience,
             equipment=equipment,
         )
+        # The example roster's starting XP must not create retroactive rolls.
+        warrior.advance_experience = experience
+        return warrior
 
     warriors = [
         hero("sigmarite-matriarch", "Mother Superior", row_id="matriarch", experience=23, previous=20,
