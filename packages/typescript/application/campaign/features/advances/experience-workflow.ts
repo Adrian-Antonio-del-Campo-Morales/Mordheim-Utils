@@ -6,8 +6,9 @@ import type {
 } from "../../../../domain/campaign/index";
 import { withCampaign } from "../../../../domain/campaign/kernel/document";
 
-const HERO_THRESHOLDS = [20, 40, 65, 90, 120, 150, 180, 210, 240, 270] as const;
-const HENCHMAN_THRESHOLDS = [8, 16, 25, 35, 46, 58, 71, 85, 100] as const;
+const HERO_THRESHOLDS = [2, 4, 6, 8, 11, 14, 17, 20, 24, 28, 32, 36, 41, 46, 51, 57, 63, 69, 76, 83, 90] as const;
+const HENCHMAN_THRESHOLDS = [2, 5, 9, 14] as const;
+const UNDERDOG_BANDS = [[51, 75, 1], [76, 100, 2], [101, 150, 3], [151, 300, 4], [301, Infinity, 5]] as const;
 
 interface CampaignKnowledgeReader extends KnowledgeReader {
   campaignSection?(section: string): Readonly<Record<string, unknown>>;
@@ -31,6 +32,22 @@ function canGainExperience(warrior: Warrior, knowledge: KnowledgeReader): boolea
   return profile.record.data["type"] !== "animal";
 }
 
+export function underdogBonusForRatingDifference(difference: number, knowledge: CampaignKnowledgeReader): number {
+  const bands = (knowledge.campaignSection?.("experience-and-advances")?.["underdog_bonus"] as Readonly<Record<string, unknown>> | undefined)?.["bands"];
+  const table = Array.isArray(bands)
+    ? bands.flatMap((band) => {
+      const row = band as Readonly<Record<string, unknown>>;
+      const limits = (row["when"] as Readonly<Record<string, unknown>> | undefined)?.["rating_difference"] as Readonly<Record<string, unknown>> | undefined;
+      return limits && Number.isFinite(limits["min"]) ? [[Number(limits["min"]), limits["max"] == null ? Infinity : Number(limits["max"]), Number(row["amount"] ?? 0)] as const] : [];
+    })
+    : UNDERDOG_BANDS;
+  return table.find(([min, max]) => difference >= min && difference <= max)?.[2] ?? 0;
+}
+
+function underdogBonus(battle: CampaignDocument["campaign"]["battles"][number], knowledge: CampaignKnowledgeReader): number {
+  return underdogBonusForRatingDifference((battle.opponent_rating ?? 0) - battle.rating_before, knowledge);
+}
+
 export interface ExperienceAward {
   readonly warrior_id: string;
   readonly warrior_name: string;
@@ -50,18 +67,19 @@ function pendingContext(document: CampaignDocument) {
 }
 
 /** Calculated desktop-equivalent battle awards. This read model never mutates. */
-export function experienceAwards(document: CampaignDocument, knowledge: KnowledgeReader): readonly ExperienceAward[] {
+export function experienceAwards(document: CampaignDocument, knowledge: CampaignKnowledgeReader): readonly ExperienceAward[] {
   const { battle } = pendingContext(document);
   if (!battle) return [];
   const absent = new Set((battle.absentees ?? []).map((row) => String(row["id"] ?? "")));
   const individual = battle.xp_awards ?? {};
   const hasIndividualAwards = Object.keys(individual).length > 0;
+  const bonus = underdogBonus(battle, knowledge);
   return document.campaign.warriors.map((warrior) => {
     const eligible = canGainExperience(warrior, knowledge);
     const isAbsent = absent.has(warrior.id);
     const amount = !eligible || isAbsent
       ? 0
-      : Math.max(0, Math.trunc(hasIndividualAwards ? (individual[warrior.id] ?? 0) : battle.xp_delta));
+      : Math.max(0, Math.trunc(hasIndividualAwards ? (individual[warrior.id] ?? 0) : battle.xp_delta)) + bonus;
     return { warrior_id: warrior.id, warrior_name: warrior.name, amount, eligible, absent: isAbsent };
   });
 }

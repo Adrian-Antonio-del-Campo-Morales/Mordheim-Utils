@@ -405,6 +405,7 @@ interface RenderContext {
   readonly labels: Labels;
   readonly locale: Locale;
   readonly knowledge?: ArtefactKnowledgeReader;
+  readonly bandId: string;
 }
 
 function momentLabel(campaign: CampaignDocument["campaign"], stateNumber: number | null, labels: Labels): string {
@@ -441,8 +442,8 @@ function equipmentLines(warrior: Warrior, knowledge: ArtefactKnowledgeReader | u
     .join("\n");
 }
 
-function skillsLines(warrior: Warrior, labels: Labels, knowledge: ArtefactKnowledgeReader | undefined, locale: Locale): string {
-  const lines = warrior.skills.map((skill) => knowledgeName(knowledge, "skill", skill, locale, skill));
+function skillsLines(warrior: Warrior, labels: Labels, knowledge: ArtefactKnowledgeReader | undefined, locale: Locale, bandId: string): string {
+  const lines = warrior.skills.map((skill) => knowledgeName(knowledge, "skill", skill, locale, skill, warrior.profile_id, bandId));
   if (warrior.condition) {
     let line = readableValue(warrior.condition, locale);
     if (warrior.condition_detail) {
@@ -534,7 +535,7 @@ function xpBoxes(
 }
 
 function warriorCard(ctx: RenderContext, warrior: Warrior, y: number, height: number): void {
-  const { sheet, labels, locale, knowledge } = ctx;
+  const { sheet, labels, locale, knowledge, bandId } = ctx;
   const x = LM;
   const hero = warrior.kind === "hero";
   // Hero cards fit six per page, henchman cards eight.
@@ -585,7 +586,7 @@ function warriorCard(ctx: RenderContext, warrior: Warrior, y: number, height: nu
     y + 1.4,
     CARD_TOTAL_WIDTH - LEFT_COL_W - MID_COL_W - 5,
     labels.skills,
-    skillsLines(warrior, labels, knowledge, locale),
+    skillsLines(warrior, labels, knowledge, locale, bandId),
     x + LEFT_COL_W + MID_COL_W + 1,
     x + CARD_TOTAL_WIDTH - 1,
   );
@@ -761,7 +762,7 @@ export async function createWarbandPdf(
 
   const sheet = new Sheet(pdf, fonts);
   sheet.addPage();
-  const ctx: RenderContext = { sheet, labels, locale, knowledge };
+  const ctx: RenderContext = { sheet, labels, locale, knowledge, bandId: campaign.identity.band_id };
   // Card pages hold cards only: the moment identification lives on the summary.
   const heroes = roster.filter((warrior) => warrior.kind === "hero" || warrior.kind === "hireling");
   const henchmen = roster.filter((warrior) => warrior.kind !== "hero" && warrior.kind !== "hireling");

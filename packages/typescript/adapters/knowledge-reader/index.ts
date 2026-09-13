@@ -155,6 +155,8 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   private readonly profiles: Map<string, ArtefactRow>;
   private readonly items: Map<string, ArtefactRow>;
   private readonly skills: Map<string, ArtefactRow>;
+  private readonly displayNames: Readonly<Record<string, Readonly<Record<string, string>>>>;
+  private readonly displayEffects: Readonly<Record<string, Readonly<Record<string, string>>>>;
   private readonly campaignMaps: CampaignMaps;
   private readonly campaignRaw: Readonly<Record<string, unknown>>;
   private readonly rulesProse: Readonly<Record<string, readonly ArtefactRow[]>>;
@@ -165,6 +167,8 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     this.profiles = ArtefactKnowledgeReader.indexProfiles(artefact.profiles);
     this.items = ArtefactKnowledgeReader.indexById(artefact.items, "item_id");
     this.skills = ArtefactKnowledgeReader.indexById(artefact.skills, "id");
+    this.displayNames = artefact.display_names ?? {};
+    this.displayEffects = artefact.display_effects ?? {};
     this.rulesProse = artefact.rules_prose ?? {};
     this.weaponHands = artefact.weapon_hands ?? {};
     this.campaignRaw = (artefact.campaign ?? {}) as Readonly<Record<string, unknown>>;
@@ -233,6 +237,24 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
         document = { ...document, rules_prose: rulesProse };
       } catch (cause) {
         throw new KnowledgeReaderError(`Rules prose artefact at "${rulesUrl}" is not valid JSON: ${(cause as Error).message}`);
+      }
+    }
+    if (typeof document.display_text_url === "string" && !document.display_names && !document.display_effects) {
+      const pageUrl = (globalThis as { location?: { href: string } }).location?.href ?? "http://localhost/";
+      const displayUrl = new URL(document.display_text_url, new URL(url, pageUrl)).toString();
+      let displayResponse: Response;
+      try {
+        displayResponse = await fetchFn(displayUrl, { cache: "no-cache" });
+      } catch (cause) {
+        throw new KnowledgeReaderError(`Could not fetch the display text artefact from "${displayUrl}": ${(cause as Error).message}`);
+      }
+      if (!displayResponse.ok) {
+        throw new KnowledgeReaderError(`Display text artefact request failed: HTTP ${displayResponse.status} for "${displayUrl}".`);
+      }
+      try {
+        document = { ...document, ...await displayResponse.json() as Pick<KnowledgeArtefact, "display_names" | "display_effects"> };
+      } catch (cause) {
+        throw new KnowledgeReaderError(`Display text artefact at "${displayUrl}" is not valid JSON: ${(cause as Error).message}`);
       }
     }
     // One validation pass (`from` re-validates; both are cheap relative to
@@ -419,6 +441,26 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   /** Catalogue rows, including scoped profiles once each. */
   list(kind: KnowledgeKind): readonly ArtefactRow[] {
     return [...new Set(this.mapFor(kind).values())];
+  }
+
+  private displayValues(values: Readonly<Record<string, Readonly<Record<string, string>>>>, id: string, profileId?: string, bandId?: string): Readonly<Record<string, string>> | undefined {
+    const scoped = profileId && bandId ? values[`${bandId}:${profileId}:${id}`] : undefined;
+    return scoped ?? (profileId ? values[`${profileId}:${id}`] ?? values[id] : values[id]);
+  }
+
+  /** One display lookup for roster ids spanning skills, rules, and mechanics. */
+  displayName(id: string, locale: Locale, fallback?: unknown, profileId?: string, bandId?: string): string {
+    const names = this.displayValues(this.displayNames, id, profileId, bandId);
+    if (names?.[locale]) return names[locale];
+    if (names?.en) return names.en;
+    const alternate = Object.values(names ?? {}).find(Boolean);
+    if (alternate) return alternate;
+    return titleCaseDisplay(String(fallback ?? id).replace(/[._-]+/g, " "));
+  }
+
+  displayDescription(id: string, locale: Locale, profileId?: string, bandId?: string): string | undefined {
+    const effects = this.displayValues(this.displayEffects, id, profileId, bandId);
+    return effects?.[locale] ?? effects?.en ?? Object.values(effects ?? {}).find(Boolean);
   }
 
   // ------------------------------------------------------------------

@@ -58,6 +58,9 @@ export interface HirelingOfferRow {
   readonly eligible: boolean;
   /** Why not eligible: human-readable, actionable. */
   readonly ineligible_reason: string | null;
+  /** Stable presentation key for localized eligibility feedback. */
+  readonly ineligible_rule_id: string | null;
+  readonly ineligible_kind: "rejected" | "needs_variant" | "static" | null;
   /** Conditional hire: minimum D6 acceptance roll (desktop `roll_ge`), else null. */
   readonly roll_ge: number | null;
 }
@@ -214,6 +217,8 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
         rating,
         eligible,
         roll_ge: conditional?.roll_ge ?? null,
+        ineligible_rule_id: blocked?.rule_id ?? (!eligible ? "static" : null),
+        ineligible_kind: blocked ? (blocked.kind === "needs_variant" ? "needs_variant" : "rejected") : !eligible ? "static" : null,
         ineligible_reason: blocked
           ? blocked.reason
           : eligible

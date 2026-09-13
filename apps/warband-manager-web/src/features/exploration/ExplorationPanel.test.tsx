@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
 import type { CampaignDocument } from "../campaign/types";
@@ -20,11 +20,27 @@ describe("ExplorationPanel", () => {
     const resolved = structuredClone(base) as CampaignDocument;
     const post = resolved.campaign.post_battles[0] as unknown as { experience_applied: boolean; step_state: Record<string, unknown> };
     post.experience_applied = true;
-    post.step_state = { exploration: { resolved: true, dice_count: 2, total: 8, shards: 3 } };
+    post.step_state = { exploration: { resolved: true, dice: [4, 4], dice_count: 2, total: 8, shards: 3 } };
     render(<CampaignAppProvider service={service}><ExplorationPanel document={resolved} knowledge={knowledge} locale="en" /></CampaignAppProvider>);
     expect(screen.getByText("3 wyrdstone shards")).toBeInTheDocument();
     expect(screen.getByText("2 dice · total 8")).toBeInTheDocument();
-    expect(screen.getByRole("status")).toHaveTextContent("Exploration resolved");
+    expect(screen.getByRole("status")).toHaveTextContent("Exploration roll: 4, 4 → 8");
+  });
+
+  it("shows every die and highlights the combination that triggered the special event", () => {
+    const resolved = structuredClone(base) as CampaignDocument;
+    const post = resolved.campaign.post_battles[0] as unknown as { experience_applied: boolean; step_state: Record<string, unknown> };
+    post.experience_applied = true;
+    post.step_state = { exploration: { resolved: true, dice: [4, 4, 4, 2], dice_count: 4, total: 14, shards: 3, special: "Fletcher" } };
+    const localKnowledge = { list: () => [], queryKnowledge: () => ({ ok: false, reason: "not_found" }), queryMany: () => [], campaignSection: () => ({ exploration: { results: [{ dice_pattern: "4,4,4", outcome: "Fletcher", outcome_i18n: { es: "Flechero" }, description: "Roll for bows.", description_i18n: { es: "Tira para determinar qué arcos encuentras." } }] } }) } as never;
+    render(<CampaignAppProvider service={service}><ExplorationPanel document={resolved} knowledge={localKnowledge} locale="es" /></CampaignAppProvider>);
+
+    const dice = screen.getByRole("list", { name: "Resultados individuales de los dados" });
+    expect(dice).toHaveTextContent("D1");
+    expect(dice).toHaveTextContent("D4");
+    expect(within(dice).getAllByRole("listitem").map((row) => row.querySelector("strong")?.textContent)).toEqual(["4", "4", "4", "2"]);
+    expect(screen.getByText("Triple de 4")).toBeInTheDocument();
+    expect(screen.getByText("Flechero")).toHaveAttribute("data-tooltip", "Tira para determinar qué arcos encuentras.");
   });
 
   it("applies the initial roll directly without a Resolve exploration step", async () => {
@@ -43,7 +59,26 @@ describe("ExplorationPanel", () => {
 
     await user.click(screen.getByRole("button", {name:"Roll 1D6"}));
 
-    expect(run).toHaveBeenCalledWith("applyExploration", {dice:[expect.any(Number)]});
+    await waitFor(() => expect(run).toHaveBeenCalledWith("applyExploration", {dice:[expect.any(Number)]}));
     expect(screen.queryByRole("button", {name:"Resolve exploration"})).not.toBeInTheDocument();
+  });
+
+  it("shows the source and extra choose-one die granted by an Augur", () => {
+    const document=structuredClone(base) as CampaignDocument;
+    Object.assign(document.campaign, {
+      identity: { band_id: "sisters-of-sigmar" },
+      warriors: [{ id:"augur-1",name:"Augur",profile_id:"augur",profile_name:"Augur",kind:"hero",stats:{},equipment:[],skills:[],experience:0,cost:0 }],
+      battles: [{ number:1,result:"loss",out_of_action_ids:[],participants:[{id:"augur-1"}] }],
+    });
+    Object.assign(document.campaign.post_battles[0], { battle_number:1,experience_applied:true });
+    const localKnowledge={
+      list:(kind:string)=>kind==="profile"?[{id:"augur",rule_ids:["augur--blessed-sight"]}]:[],
+      queryKnowledge:()=>({ok:false,reason:"not_found"}), queryMany:()=>[],
+      rulesDocument:()=>[{id:"augur--blessed-sight",names:{en:"Blessed Sight",es:"Vista Bendita"}}],
+      campaignSection:()=>({exploration:{max_dice:6,dice_allocation:[{eligible_warrior:"hero",condition:"survived_battle",dice:1}]}}),
+    } as never;
+    render(<CampaignAppProvider service={service}><ExplorationPanel document={document} knowledge={localKnowledge} locale="es" /></CampaignAppProvider>);
+    expect(screen.getByText("Modificadores activos").parentElement).toHaveTextContent("Vista Bendita");
+    expect(screen.getByRole("button", { name: "Tirar 2D6" })).toBeInTheDocument();
   });
 });

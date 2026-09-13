@@ -58,6 +58,15 @@ describe("ArtefactKnowledgeReader.fromUrl", () => {
     expect(fetchFn).toHaveBeenNthCalledWith(2, "https://example.test/knowledge/rules-prose.json", { cache: "no-cache" });
   });
 
+  it("loads partitioned display text beside the main artefact", async () => {
+    const fetchFn = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ ...validArtefact, display_text_url: "display-text.json" })))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ display_names: { "skill.acrobat": { es: "Acróbata" } } })));
+    const reader = await ArtefactKnowledgeReader.fromUrl("https://example.test/knowledge/knowledge-web.json", fetchFn);
+    expect(fetchFn).toHaveBeenNthCalledWith(2, "https://example.test/knowledge/display-text.json", { cache: "no-cache" });
+    expect(reader.displayName("skill.acrobat", "es")).toBe("Acróbata");
+  });
+
   it("rejects HTTP failures with a typed error naming the url and status", async () => {
     await expect(
       ArtefactKnowledgeReader.fromUrl("/missing.json", fetchStatus(404)),

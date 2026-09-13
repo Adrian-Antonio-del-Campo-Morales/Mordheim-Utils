@@ -182,11 +182,12 @@ export function validateCampaignSemantics(campaign: Campaign): SemanticViolation
     errors.push({ message: "Multiple pending post-battles are not supported." });
   }
   for (const post of campaign.post_battles ?? []) {
-    const row = post as unknown as { active_step: number; completed_steps?: number[] };
+    const row = post as unknown as { active_step: number; completed_steps?: number[]; complete: boolean };
     if (
       !isInt(row.active_step) ||
       row.active_step < 0 ||
-      row.active_step >= 8 ||
+      row.active_step > 8 ||
+      (row.active_step === 8 && !row.complete) ||
       (row.completed_steps ?? []).some((step) => !isInt(step) || step < 0 || step >= 8)
     ) {
       errors.push({ message: "Invalid post-battle step." });

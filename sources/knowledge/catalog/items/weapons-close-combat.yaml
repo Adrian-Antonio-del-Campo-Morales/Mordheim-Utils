@@ -6,6 +6,16 @@ items:
   name: Axe
   name_i18n:
     es: Hacha
+  effect: >-
+    Range: Close Combat Strength: As user Cutting Edge : An axe has an extra save modifier of -1, so
+    a model with Strength 4 using an axe has a -2 save modifier when he hits an opponent in
+    hand-to-hand combat.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario Filo de corte: Un hacha tiene un
+      modificador de salvación adicional de -1, por lo que un modelo con Fuerza 4 que usa un hacha
+      tiene un modificador de salvación de -2 cuando golpea a un oponente en combate cuerpo a
+      cuerpo.
   source_refs:
   - &id020
     manual: mordheimer.net
@@ -352,6 +362,22 @@ items:
   name: Barbed Whip
   name_i18n:
     es: Látigo de Púas
+  effect: >-
+    Range: Close Combat Strength: As user Whipcrack : When the wielder charges they gain +1A for
+    that turn. This bonus attack is added after any other modifications. When the wielder is charged
+    they gain +1A that they may only use against the charger. This additional attack will 'strike
+    first'. If the wielder is simultaneously charged by two or more opponents they will still only
+    receive a total of +1A. If the wielder is using two whips at the same time then they get +1A for
+    the additional hand weapon, but only the first whip gets the whipcrack +1A. ✏️
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Whipcrack: Cuando el portador carga, obtiene +1A
+      para ese turno. Este ataque adicional se agrega después de cualquier otra modificación. Cuando
+      se carga al portador, obtiene +1A que solo puede usar contra el cargador. Este ataque
+      adicional "atacará primero". Si el portador es cargado simultáneamente por dos o más
+      oponentes, solo recibirá un total de +1A. Si el portador usa dos látigos al mismo tiempo,
+      obtiene +1A por el arma de mano adicional, pero solo el primer látigo recibe el chasquido +1A.
+      ✏️
   source_refs:
   - *id001
   combat_status: implemented
@@ -384,6 +410,16 @@ items:
   name: Beastlash
   name_i18n:
     es: Látigo de Señor de las Bestias
+  effect: >-
+    Range: Close Combat Strength: As user -1 Beastbane : The Beastmaster wielding a Beastlash causes
+    Fear in animals, any animal charged or wishing to charge a Beastmaster with one of these weapons
+    must first take a Fear test as mentioned in the psychology section of the Mordheim rules.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario -1 Beastbane: El Beastmaster que empuña
+      un Beastlash causa miedo en los animales, cualquier animal cargado o que desee cargar contra
+      un Beastmaster con una de estas armas primero debe realizar una prueba de miedo como se
+      menciona en la sección de psicología de las reglas de Mordheim.
   source_refs:
   - *id002
   combat_status: implemented
@@ -393,6 +429,15 @@ items:
   name: Belaying Pin
   name_i18n:
     es: Cabilla de Maniobra
+  effect: >-
+    Range: 6" Strength: As user -1 Awkward Thrown Weapon : Models using Belaying Pins do not suffer
+    any penalties for range, but still suffer a -1 to hit penalty if they use them after moving that
+    turn.
+  effect_i18n:
+    es: >-
+      Alcance: 6" Fuerza: Como usuario -1 Arma arrojadiza incómoda: Los modelos que usan pasadores
+      de seguridad no sufren ninguna penalización por alcance, pero aún sufren una penalización de
+      -1 al impacto si los usan después de moverse ese turno.
   source_refs:
   - *id003
   - *id004
@@ -416,6 +461,16 @@ items:
   name: Boat Hook
   name_i18n:
     es: Bichero
+  effect: >-
+    Range: Close Combat Strength: As user -1 Strike First : Boat Hooks are used in Close Combat.
+    They allow the user to Strike First in the first round of any close combat, no matter which
+    model charged, but require both hands to use.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario -1 Golpe primero: Los ganchos para botes
+      se usan en combate cuerpo a cuerpo. Permiten al usuario atacar primero en la primera ronda de
+      cualquier combate cuerpo a cuerpo, sin importar qué modelo cargue, pero requieren ambas manos
+      para usarlos.
   source_refs:
   - *id003
   - *id004
@@ -426,6 +481,16 @@ items:
   name: Broadsword
   name_i18n:
     es: Espada Ancha
+  effect: >-
+    Range: Close Combat Strength: As user +1 Difficult to use : A model with a Broadsword may not
+    use a second weapon or buckler in his other hand because it requires all his skill to wield it.
+    He may carry a shield or a kite shield as normal though.
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario +1 Difícil de usar: Un modelo con una espada
+      ancha no puede usar una segunda arma o escudo en su otra mano porque requiere toda su
+      habilidad para manejarlo. Sin embargo, puede llevar un escudo o un escudo de cometa como de
+      costumbre.
   source_refs:
   - &id028
     manual: mordheimer.net
@@ -439,6 +504,13 @@ items:
   name: Cat O Nine Tails
   name_i18n:
     es: Gato de Nueve Colas
+  effect: >-
+    Range: Close Combat Strength: As user Cannot be parried : Like the Steel Whips of the
+    Sisterhood, Cats cannot be parried by swords or bucklers.
+  effect_i18n:
+    es: >-
+      Alcance: combate cuerpo a cuerpo Fuerza: como usuario No se puede detener: al igual que los
+      látigos de acero de la Hermandad, los gatos no se pueden detener con espadas o escudos.
   source_refs:
   - *id003
   combat_status: implemented
@@ -448,6 +520,20 @@ items:
   name: Cathayan Longsword
   name_i18n:
     es: Espada Larga de Cathay
+  effect: >-
+    Range: Close Combat Strength: As user Parry : Swords offer an excellent balance of defence and
+    offence. A model armed with a sword may parry blows. When his opponent rolls to hit, the model
+    armed with a sword may roll a D6. If the score is greater than the highest to hit score of his
+    opponent, the model has parried the blow, and that attack is discarded. A model may not parry
+    attacks made with double or more its own Strength – they are simply too powerful to be stopped.
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Parar: Las espadas ofrecen un excelente
+      equilibrio entre defensa y ataque. Una miniatura armada con una espada puede parar golpes.
+      Cuando su oponente tira para impactar, la miniatura armada con una espada puede tirar 1D6. Si
+      la puntuación es mayor que la puntuación más alta para impactar de su oponente, el modelo ha
+      parado el golpe y ese ataque se descarta. Un modelo no puede parar ataques realizados con el
+      doble o más de su propia Fuerza; simplemente son demasiado poderosos para detenerlos.
   source_refs:
   - &id023
     manual: mordheimer.net
@@ -466,6 +552,13 @@ items:
   name: Censer
   name_i18n:
     es: Incensario
+  effect: >-
+    Range: Close Combat Strength: As user +2 Heavy : The +2 Strength bonus applies only to the first
+    turn of hand to hand combat.
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario +2 Pesado: La bonificación de +2 Fuerza se
+      aplica solo al primer turno de combate cuerpo a cuerpo.
   source_refs:
   - &id013
     manual: mordheimer.net
@@ -479,6 +572,17 @@ items:
   name: Chain Sticks
   name_i18n:
     es: Porras Encadenadas
+  effect: >-
+    Range: Close Combat Strength: As user Flurry : A set of chain sticks allows its wielder to
+    unleash a furious bludgeoning. A warrior armed with chain sticks gets +2 Attacks. This bonus
+    only applies in the first turn of each hand-to-hard combat. Using chain sticks otherwise counts
+    as having two hand weapons.
+  effect_i18n:
+    es: >-
+      Alcance: combate cuerpo a cuerpo Fuerza: como usuario Flurry: un conjunto de cadenas permite a
+      su portador desatar una furiosa contundencia. Un guerrero armado con palos de cadena obtiene
+      +2 Ataques. Esta bonificación sólo se aplica en el primer turno de cada combate cuerpo a
+      cuerpo. De lo contrario, usar palos de cadena cuenta como tener armas de dos manos.
   source_refs:
   - *id005
   combat_status: implemented
@@ -498,6 +602,14 @@ items:
   name: Claw of the Old Ones
   name_i18n:
     es: Garra de los Ancestrales
+  effect: >-
+    Range: Close Combat Strength: As user +1 No save : The blade of the Claw can literally cut
+    through anything. A warrior wounded by a Claw receives no armour save whatsoever.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario +1 Sin salvación: La hoja de la Garra
+      puede literalmente cortar cualquier cosa. Un guerrero herido por una Garra no recibe armadura
+      alguna.
   source_refs:
   - &id009
     manual: mordheimer.net
@@ -511,6 +623,12 @@ items:
   name: Cleaver
   name_i18n:
     es: Cuchilla
+  effect: >-
+    Range: Close Combat Strength: As user -1 Save : Target gets -1 to armour save
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario -1 Salvación: El objetivo obtiene -1
+      para salvar armadura
   source_refs:
   - &id098
     manual: mordheimer.net
@@ -538,6 +656,16 @@ items:
   name: Club
   name_i18n:
     es: Garrote
+  effect: >-
+    Range: Close Combat Strength: As user Concussion : Hammers and other bludgeoning weapons are
+    excellent to use for striking your enemy senseless. When using a hammer, club or mace, a roll of
+    2-4 is treated as stunned when rolling to see the extent of a model's injuries.
+  effect_i18n:
+    es: >-
+      Alcance: combate cuerpo a cuerpo Fuerza: como usuario Conmoción cerebral: los martillos y
+      otras armas contundentes son excelentes para golpear a tu enemigo hasta dejarlo sin sentido.
+      Cuando se usa un martillo, garrote o maza, una tirada de 2-4 se considera aturdida al rodar
+      para ver el alcance de las heridas del modelo.
   source_refs:
   - &id015
     manual: mordheimer.net
@@ -622,6 +750,16 @@ items:
   name: Dagger
   name_i18n:
     es: Daga
+  effect: >-
+    Range: Close Combat Strength: As user +1 Enemy armour save : Daggers are not the best weapons to
+    use for penetrating an enemy model's armour. An enemy wounded by a dagger gains a +1 bonus to
+    his armour save, and a 6+ armour save if he has none normally.
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario +1 Salvación por armadura enemiga: Las dagas no
+      son las mejores armas para penetrar la armadura de un modelo enemigo. Un enemigo herido por
+      una daga obtiene una bonificación de +1 a su salvación por armadura, y una salvación por
+      armadura de 6+ si normalmente no la tiene.
   source_refs:
   - *id015
   - *id016
@@ -780,6 +918,16 @@ items:
   name: Disease Dagger
   name_i18n:
     es: Daga de Enfermedad
+  effect: >-
+    Range: Close Combat Strength: As user +1 Enemy Armour Save : Daggers are not the best weapons to
+    use for penetrating an enemy model's armour. An enemy wounded by a dagger gains a +1 bonus to
+    his armour save, and a 6+ armour save if he has none normally.
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario +1 Armadura enemiga Salvación: Las dagas no son
+      las mejores armas para penetrar la armadura de un modelo enemigo. Un enemigo herido por una
+      daga obtiene una bonificación de +1 a su salvación por armadura, y una salvación por armadura
+      de 6+ si normalmente no la tiene.
   source_refs:
   - *id013
   combat_status: implemented
@@ -789,6 +937,18 @@ items:
   name: Dragon Sword
   name_i18n:
     es: Espada de Dragón
+  effect: >-
+    Range: Close Combat Strength: As user +1 Two-handed : A model armed with a Dragon Sword may not
+    use a shield, buckler or additional weapon in close combat. It gets an additional +1 armour save
+    bonus against ranged attacks if it carries a shield. In some older material, the Dragon Sword
+    was referred to as "Katana".
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario +1 A dos manos: Una miniatura armada con
+      una Espada Dragón no puede usar escudo, rodela o arma adicional en combate cuerpo a cuerpo.
+      Obtiene una bonificación adicional de salvación de armadura de +1 contra ataques a distancia
+      si lleva un escudo. En algún material más antiguo, la Espada del Dragón se denominaba
+      "Katana".
   source_refs:
   - *id023
   - *id005
@@ -800,6 +960,16 @@ items:
   name: Dwarf Axe
   name_i18n:
     es: Hacha Enana
+  effect: >-
+    Range: Close Combat Strength: As user Cutting Edge : Dwarf axes have an extra save modifier of
+    -1, so a model with Strength 4 using a Dwarf axe has a -2 save modifier when he hits an opponent
+    with the axe in close combat.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario Innovador: Las hachas enanas tienen un
+      modificador de salvación adicional de -1, por lo que un modelo con Fuerza 4 que usa un hacha
+      enana tiene un modificador de salvación de -2 cuando golpea a un oponente con el hacha en
+      combate cuerpo a cuerpo.
   source_refs:
   - *id041
   - *id043
@@ -811,6 +981,15 @@ items:
   name: Enchanted Skins
   name_i18n:
     es: Pieles Encantadas
+  effect: >-
+    To represent this, any model wearing Skins and Charms receives a 6+ special save versus any
+    wounds inflicted. In addition, the wearer of Skins and Charms is unaffected by enemy magic on a
+    roll of 5+.
+  effect_i18n:
+    es: >-
+      Para representar esto, cualquier modelo que use diseños y amuletos recibe una salvación
+      especial de 6+ contra cualquier herida infligida. Además, el portador de aspectos y amuletos
+      no se ve afectado por la magia enemiga con una tirada de 5+.
   source_refs:
   - *id015
   - *id016
@@ -822,6 +1001,14 @@ items:
   name: Fighting Claws
   name_i18n:
     es: Garras de Combate
+  effect: >-
+    Range: Close Combat Strength: As user Pair : Fighting Claws are traditionally used in pairs, one
+    in each hand. A warrior armed with Fighting Claws gets an additional attack.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario Pareja: Las garras de lucha se utilizan
+      tradicionalmente en parejas, una en cada mano. Un guerrero armado con Fighting Claws recibe un
+      ataque adicional.
   source_refs:
   - *id086
   combat_status: implemented
@@ -831,6 +1018,14 @@ items:
   name: Flail
   name_i18n:
     es: Mayal
+  effect: >-
+    Range: Close Combat Strength: As user +2 Heavy : A flail is extremely tiring to use and thus the
+    +2 Strength bonus applies only in the first turn of each hand-to-hand combat.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario +2 Pesado: Usar un mayal es
+      extremadamente agotador y, por lo tanto, el bono de Fuerza +2 se aplica solo en el primer
+      turno de cada combate cuerpo a cuerpo.
   source_refs:
   - *id087
   - *id028
@@ -860,6 +1055,16 @@ items:
   name: Great Axe
   name_i18n:
     es: Gran Hacha
+  effect: >-
+    Range: Close Combat Strength: As user +2 Two-handed : As a great axe requires two hands to use,
+    a model using a great axe may not use a shield, buckler or additional weapon in close combat. If
+    the model has a shield he still gets a +1 bonus to his armour save against shooting.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario +2 A dos manos: Como un hacha grande
+      requiere dos manos para usarse, un modelo que use un hacha grande no puede usar un escudo,
+      escudo o arma adicional en combate cuerpo a cuerpo. Si el modelo tiene un escudo, aún obtiene
+      una bonificación de +1 a su salvación de armadura contra disparos.
   source_refs:
   - *id001
   combat_status: implemented
@@ -931,6 +1136,16 @@ items:
   name: Halberd
   name_i18n:
     es: Alabarda
+  effect: >-
+    Range: Close Combat Strength: As user +1 Two-handed : A model armed with a halberd may not use a
+    shield, buckler or additional weapon in close combat. If the model has a shield he still gets a
+    +1 bonus to his armour save against shooting.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario +1 A dos manos: Una miniatura armada con
+      una alabarda no puede usar escudo, rodela o arma adicional en combate cuerpo a cuerpo. Si el
+      modelo tiene un escudo, aún obtiene una bonificación de +1 a su salvación de armadura contra
+      disparos.
   source_refs:
   - *id022
   - *id024
@@ -963,6 +1178,16 @@ items:
   name: Hammer
   name_i18n:
     es: Martillo
+  effect: >-
+    Range: Close Combat Strength: As user Concussion : Hammers and other bludgeoning weapons are
+    excellent to use for striking your enemy senseless. When using a hammer, club or mace, a roll of
+    2-4 is treated as stunned when rolling to see the extent of a model's injuries.
+  effect_i18n:
+    es: >-
+      Alcance: combate cuerpo a cuerpo Fuerza: como usuario Conmoción cerebral: los martillos y
+      otras armas contundentes son excelentes para golpear a tu enemigo hasta dejarlo sin sentido.
+      Cuando se usa un martillo, garrote o maza, una tirada de 2-4 se considera aturdida al rodar
+      para ver el alcance de las heridas del modelo.
   source_refs:
   - *id020
   - *id021
@@ -1018,6 +1243,12 @@ items:
   name: Iron Fist
   name_i18n:
     es: Puño de Hierro
+  effect: >-
+    Range: Close Combat Strength: As user Parry : A model with an iron fist may parry enemy blows.
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Parar: Un modelo con puño de hierro puede parar
+      los golpes enemigos.
   source_refs:
   - *id008
   combat_status: implemented
@@ -1027,6 +1258,12 @@ items:
   name: Katar
   name_i18n:
     es: Katar
+  effect: >-
+    Range: Close Combat Strength: As user -1 enemy armour save : Target gets -1 to armour save
+  effect_i18n:
+    es: >-
+      Alcance: Fuerza de combate cuerpo a cuerpo: Como usuario -1 salvación de armadura enemiga: El
+      objetivo obtiene -1 a la salvación de armadura
   source_refs:
   - *id085
   combat_status: implemented
@@ -1036,6 +1273,16 @@ items:
   name: Kitchen Knife
   name_i18n:
     es: Cuchillo de Cocina
+  effect: >-
+    Range: Close Combat Strength: As user +1 Enemy armour save : Kitchen knives are not the best
+    weapons to use for penetrating an enemy model's armour. An enemy wounded by a kitchen knife
+    gains a +1 bonus to his armour save, and a 6+ armour save if he has none normally. ✏️
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario +1 Salvación por armadura enemiga: Los cuchillos
+      de cocina no son las mejores armas para penetrar la armadura de un modelo enemigo. Un enemigo
+      herido por un cuchillo de cocina obtiene una bonificación de +1 a su salvación por armadura, y
+      una salvación por armadura de 6+ si normalmente no la tiene. ✏️
   source_refs:
   - *id098
   combat_status: implemented
@@ -1045,6 +1292,16 @@ items:
   name: Ladle
   name_i18n:
     es: Cuchara de Servir
+  effect: >-
+    Range: Close Combat Strength: As user No save except shields : A Master Chef knows exactly where
+    to aim his ladle, helmets and breast plates are of little use against a ladle whacked across the
+    hands. The only saving throws allowed are from shields or skills.
+  effect_i18n:
+    es: >-
+      Alcance: combate cuerpo a cuerpo Fuerza: como usuario No hay salvación excepto escudos: un
+      maestro chef sabe exactamente dónde apuntar su cucharón, los cascos y las pecheras son de poca
+      utilidad contra un cucharón golpeado en las manos. Los únicos tiros de salvación permitidos
+      son los de escudos o habilidades.
   source_refs:
   - *id098
   combat_status: implemented
@@ -1054,6 +1311,14 @@ items:
   name: Lance
   name_i18n:
     es: Lanza de Caballería
+  effect: >-
+    Range: Close Combat Strength: As user +2 when charging on horseback Cavalry weapon : A warrior
+    must own a warhorse to use a lance, as it can only be used whilst he is on horseback.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario +2 al cargar a caballo Arma de
+      caballería: Un guerrero debe poseer un caballo de guerra para usar una lanza, ya que solo
+      puede usarse mientras está a caballo.
   source_refs:
   - *id031
   - *id038
@@ -1075,6 +1340,16 @@ items:
   name: Mace
   name_i18n:
     es: Maza
+  effect: >-
+    Range: Close Combat Strength: As user Concussion : Hammers and other bludgeoning weapons are
+    excellent to use for striking your enemy senseless. When using a hammer, club or mace, a roll of
+    2-4 is treated as stunned when rolling to see the extent of a model's injuries.
+  effect_i18n:
+    es: >-
+      Alcance: combate cuerpo a cuerpo Fuerza: como usuario Conmoción cerebral: los martillos y
+      otras armas contundentes son excelentes para golpear a tu enemigo hasta dejarlo sin sentido.
+      Cuando se usa un martillo, garrote o maza, una tirada de 2-4 se considera aturdida al rodar
+      para ver el alcance de las heridas del modelo.
   source_refs:
   - *id087
   - *id020
@@ -1136,6 +1411,11 @@ items:
   name: Main Gauche
   name_i18n:
     es: Main Gauche
+  effect: >-
+    Range: Close Combat Strength: As user Parry : Can parry enemy blows
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Parry: Puede detener los golpes enemigos
   source_refs:
   - *id100
   combat_status: implemented
@@ -1145,6 +1425,19 @@ items:
   name: Man Catcher
   name_i18n:
     es: Capitulador
+  effect: >-
+    Range: Close Combat Strength: As user Capture : A model taken out of action by a Mancatcher
+    becomes captured. Do not roll for Serious Injuries. The catch is locked up in the Engine of
+    Chaos instead. If the warband does not include an Engine of Chaos, roll for Serious Injuries as
+    normal. Large models, such as Ogres, Trolls and Minotaurs, cannot be captured this way, and
+    neither can animals.
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Captura: Un modelo dejado fuera de combate por
+      un Mancatcher queda capturado. No tire por Lesiones Graves. En cambio, la captura está
+      encerrada en el Motor del Caos. Si la banda no incluye una Máquina del Caos, tira para Heridas
+      Graves como de costumbre. Los modelos grandes, como ogros, trolls y minotauros, no se pueden
+      capturar de esta manera, ni tampoco los animales.
   source_refs:
   - *id026
   combat_status: implemented
@@ -1154,6 +1447,21 @@ items:
   name: Misericordia
   name_i18n:
     es: Misericordia
+  effect: >-
+    Range: Close combat Strength: As user : Coup de Grace Coup de Grace: As the warriors of the
+    Cursed Cavalcade are experts at hitting the vital spots of their opponents, and the Misericordia
+    can find the smallest chink in even the best suit of armor. Often the wielders choose a spot
+    that causes indescribable pain but does not kill the target outright so he can be dragged before
+    the Throne of Worms. When attacking knocked down opponents, Misericordia bypasses all armor
+    saves.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario: Coup de Grace Coup de Grace: Como los
+      guerreros de la Cabalgata Maldita son expertos en golpear los puntos vitales de sus oponentes,
+      y la Misericordia puede encontrar la grieta más pequeña incluso en la mejor armadura. A
+      menudo, los portadores eligen un lugar que causa un dolor indescriptible pero que no mata al
+      objetivo directamente para poder arrastrarlo ante el Trono de Gusanos. Al atacar a oponentes
+      derribados, Misericordia pasa por alto todas las salvaciones de armadura.
   source_refs:
   - *id038
   - *id090
@@ -1164,6 +1472,14 @@ items:
   name: Morning Star
   name_i18n:
     es: Mangual
+  effect: >-
+    Range: Close Combat Strength: As user +1 Heavy : The morning star is extremely tiring to use, so
+    its +1 Strength bonus applies only in the first turn of each hand-to-hand combat.
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario +1 Pesado: La estrella de la mañana es
+      extremadamente agotadora de usar, por lo que su bonificación de Fuerza +1 se aplica solo en el
+      primer turno de cada combate cuerpo a cuerpo.
   source_refs:
   - *id022
   - *id028
@@ -1189,6 +1505,15 @@ items:
   name: Ogre Club
   name_i18n:
     es: Garrote de Ogro
+  effect: >-
+    Range: Close Combat Strength: As user Concussion : Ogre clubs are excellent to use for striking
+    enemies senseless. When using an Ogre club, a roll of 2-4 is treated as stunned when rolling for
+    Injuries.
+  effect_i18n:
+    es: >-
+      Alcance: combate cuerpo a cuerpo Fuerza: como usuario Conmoción cerebral: los garrotes de ogro
+      son excelentes para golpear a los enemigos hasta dejarlos sin sentido. Cuando se usa un
+      garrote de Ogro, una tirada de 2-4 se considera aturdida cuando se tira para Heridas.
   source_refs:
   - *id008
   - *id091
@@ -1199,6 +1524,16 @@ items:
   name: Pike
   name_i18n:
     es: Pica
+  effect: >-
+    Range: Close Combat Strength: As user Strike First : A warrior with a pike strikes first in the
+    first turn of a hand-to-hand combat. For that turn, he gains +1 Initiative representing the
+    pike's long shaft that allows him to attack even before the enemy reaches him.
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Golpe primero: un guerrero con una pica ataca
+      primero en el primer turno de un combate cuerpo a cuerpo. Durante ese turno, obtiene +1 de
+      iniciativa que representa el largo eje de la pica que le permite atacar incluso antes de que
+      el enemigo lo alcance.
   source_refs:
   - *id059
   - *id078
@@ -1209,6 +1544,14 @@ items:
   name: Quarter Staff
   name_i18n:
     es: Bastón
+  effect: >-
+    Range: Close Combat Strength: As user Balanced : A quarter staff is especially light and easy to
+    wield. A model armed with a fighting staff gets +1 Initiative in close combat.
+  effect_i18n:
+    es: >-
+      Alcance: combate cuerpo a cuerpo Fuerza: como usuario Equilibrado: un cuarto de bastón es
+      especialmente ligero y fácil de manejar. Una miniatura armada con un bastón de combate obtiene
+      +1 a la iniciativa en combate cuerpo a cuerpo.
   source_refs:
   - *id005
   combat_status: implemented
@@ -1218,6 +1561,16 @@ items:
   name: Rapier
   name_i18n:
     es: Estoque
+  effect: >-
+    Range: Close Combat Strength: As user Parry : Like all swords, you may use a rapier to parry in
+    hand to hand combat. When your opponent scores a hit you must roll a D6. If you can score
+    greater than the highest 'to hit' roll you have parried the blow and the attack is discarded.
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Parada: Como todas las espadas, puedes usar un
+      estoque para parar en combate cuerpo a cuerpo. Cuando tu oponente logra un golpe, debes tirar
+      un D6. Si puedes obtener una puntuación mayor que la tirada más alta para golpear, habrás
+      detenido el golpe y el ataque se descarta.
   source_refs:
   - *id100
   - *id097
@@ -1229,6 +1582,19 @@ items:
   name: Serpent Staff
   name_i18n:
     es: Bastón de la Serpiente
+  effect: >-
+    Range: Close Combat Strength: As user Parry : The staff is used with two hands and may be used
+    to Parry . However, the Liche Priest may forgo all his normal attacks and parries in a round to
+    use the power contained within the staff. A single word of command brings the serpent to life to
+    attack their enemy. The staff always attacks first in close combat and makes a single attack
+    with WS4 and S4.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario Parar: El bastón se usa con las dos
+      manos y puede usarse para parar. Sin embargo, el Liche Priest puede renunciar a todos sus
+      ataques y paradas normales en una ronda para usar el poder contenido en el bastón. Una sola
+      palabra de orden hace que la serpiente cobre vida para atacar a su enemigo. El bastón siempre
+      ataca primero en combate cuerpo a cuerpo y realiza un único ataque con WS4 y S4.
   source_refs:
   - *id081
   combat_status: implemented
@@ -1238,6 +1604,22 @@ items:
   name: Shortsword
   name_i18n:
     es: Espada Corta
+  effect: >-
+    Range: Close Combat Strength: As user Parry : Shortswords offer an excellent balance of defence
+    and offence. A model armed with a sword may parry blows. When his opponent rolls to hit, the
+    model armed with a sword may roll a D6. If the score is greater than the highest to hit score of
+    his opponent, the model has parried the blow, and that attack is discarded. A model may not
+    parry attacks made with double or more its own Strength – they are simply too powerful to be
+    stopped.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario Parar: Las espadas cortas ofrecen un
+      excelente equilibrio entre defensa y ataque. Una miniatura armada con una espada puede parar
+      golpes. Cuando su oponente tira para impactar, la miniatura armada con una espada puede tirar
+      1D6. Si la puntuación es mayor que la puntuación más alta para impactar de su oponente, el
+      modelo ha parado el golpe y ese ataque se descarta. Un modelo no puede parar ataques
+      realizados con el doble o más de su propia Fuerza; simplemente son demasiado poderosos para
+      detenerlos.
   source_refs:
   - *id029
   - *id030
@@ -1248,6 +1630,16 @@ items:
   name: Sigmarite Hammer
   name_i18n:
     es: Martillo Sigmarita
+  effect: >-
+    Range: Close Combat Strength: As user +1 Concussion : Warhammers are excellent at striking
+    people senseless. When using a warhammer in close combat a roll of 2-4 is treated as stunned
+    when rolling on the Injury chart.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario +1 Conmoción cerebral: Los Warhammers
+      son excelentes para golpear a las personas hasta dejarlas sin sentido. Cuando se utiliza un
+      martillo de guerra en combate cuerpo a cuerpo, una tirada de 2 a 4 se considera aturdida en la
+      tabla de Heridas.
   source_refs:
   - *id088
   combat_status: implemented
@@ -1257,6 +1649,13 @@ items:
   name: Spear
   name_i18n:
     es: Lanza
+  effect: >-
+    Range: Close Combat Strength: As user Strike first : A warrior with a spear 'strikes first' in
+    the first turn of hand-to-hand combat. ✏️
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Golpea primero: un guerrero con una lanza "ataca
+      primero" en el primer turno del combate cuerpo a cuerpo. ✏️
   source_refs:
   - *id015
   - *id016
@@ -1331,6 +1730,11 @@ items:
   name: Spiked Gauntlet
   name_i18n:
     es: Guantelete con Púas
+  effect: >-
+    Range: Close Combat Strength: As user Parry : Can parry enemy blows
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Parry: Puede detener los golpes enemigos
   source_refs:
   - *id071
   combat_status: implemented
@@ -1340,6 +1744,16 @@ items:
   name: Squig Prodder
   name_i18n:
     es: Pinche de Squig
+  effect: >-
+    To represent this, a Goblin with a Squig prodder can keep all Cave Squigs within 12" from going
+    wild, instead of the normal 6" (see the Minderz special rule under the Cave Squig entry). In
+    addition, a Squig prodder is treated exactly like a spear in hand-to-hand combat.
+  effect_i18n:
+    es: >-
+      Para representar esto, un Goblin con un pinchazo para Garrapatos puede evitar que todos los
+      Garrapatos de las cavernas en un radio de 12" se vuelvan locos, en lugar de los 6" normales
+      (consulte la regla especial de Minderz en la entrada de los Garrapatos de las cavernas).
+      Además, un pinchazo Squig se trata exactamente como una lanza en el combate cuerpo a cuerpo.
   source_refs:
   - *id062
   - *id063
@@ -1369,6 +1783,12 @@ items:
   name: Starblade
   name_i18n:
     es: Hoja Estelar
+  effect: >-
+    Range: Close Combat Strength: As user +1 Enemy armour save : Enemy gets +1 to armour save
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario +1 Salvación de armadura del enemigo: El enemigo
+      obtiene +1 a la salvación de armadura
   source_refs:
   - *id015
   combat_status: implemented
@@ -1378,6 +1798,11 @@ items:
   name: Starsword
   name_i18n:
     es: Espada Estelar
+  effect: >-
+    Range: Close Combat Strength: As user +1 Parry : Can parry enemy blows
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario +1 Parada: Puede parar golpes enemigos
   source_refs:
   - *id015
   combat_status: implemented
@@ -1387,6 +1812,16 @@ items:
   name: Steel Whip
   name_i18n:
     es: Látigo de Acero
+  effect: >-
+    Range: Close Combat Strength: As user Cannot be parried : The steel whip is a flexible weapon
+    and the Priestesses use it with great expertise. Attempts to parry its strikes are futile. A
+    model attacked by a steel whip may not make parries with swords or bucklers.
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario No se puede detener: El látigo de acero es un
+      arma flexible y las Sacerdotisas lo usan con gran experiencia. Los intentos de detener sus
+      ataques son inútiles. Una miniatura atacada por un látigo de acero no puede realizar paradas
+      con espadas o escudos.
   source_refs:
   - *id026
   - *id088
@@ -1407,6 +1842,13 @@ items:
   name: Sun Gauntlet
   name_i18n:
     es: Guantelete Solar
+  effect: >-
+    Range: 12" Strength: 4 Accurate : The Sun Gauntlet does not suffer the usual -1 modifier to hit
+    for long range.
+  effect_i18n:
+    es: >-
+      Alcance: 12" Fuerza: 4 Precisión: El Sun Gauntlet no sufre el modificador habitual de -1 para
+      golpear a larga distancia.
   source_refs:
   - *id009
   combat_status: implemented
@@ -1416,6 +1858,13 @@ items:
   name: Sunstaff
   name_i18n:
     es: Báculo Solar
+  effect: >-
+    Range: 24" Strength: 4 Accurate : The Sunstaff does not suffer the usual -1 modifier to hit for
+    long range.
+  effect_i18n:
+    es: >-
+      Alcance: 24" Fuerza: 4 Precisión: El Sunstaff no sufre el modificador habitual de -1 para
+      golpear a larga distancia.
   source_refs:
   - *id009
   combat_status: implemented
@@ -1436,6 +1885,20 @@ items:
   name: Sword
   name_i18n:
     es: Espada
+  effect: >-
+    Range: Close Combat Strength: As user Parry : Swords offer an excellent balance of defence and
+    offence. A model armed with a sword may parry blows. When his opponent rolls to hit, the model
+    armed with a sword may roll a D6. If the score is greater than the highest to hit score of his
+    opponent, the model has parried the blow, and that attack is discarded. A model may not parry
+    attacks made with double or more its own Strength – they are simply too powerful to be stopped.
+  effect_i18n:
+    es: >-
+      Alcance: Cuerpo a cuerpo Fuerza: Como usuario Parar: Las espadas ofrecen un excelente
+      equilibrio entre defensa y ataque. Una miniatura armada con una espada puede parar golpes.
+      Cuando su oponente tira para impactar, la miniatura armada con una espada puede tirar 1D6. Si
+      la puntuación es mayor que la puntuación más alta para impactar de su oponente, el modelo ha
+      parado el golpe y ese ataque se descarta. Un modelo no puede parar ataques realizados con el
+      doble o más de su propia Fuerza; simplemente son demasiado poderosos para detenerlos.
   source_refs:
   - *id015
   - *id016
@@ -1530,6 +1993,18 @@ items:
   name: Sword Gnoblar
   name_i18n:
     es: Gnoblar de la Espada
+  effect: >-
+    30 gold crowns Availability: Rare 10 (Ogres only) An Ogre with a Sword-Gnoblar gains one extra
+    Strength 2 attack in Close Combat, at the weapon skill of the owning model. This attack is made
+    at the same time as the owning Hero’s attacks and must be directed at a model the Ogre has
+    directed attacks toward. The opponent’s attention is on the Ogre!
+  effect_i18n:
+    es: >-
+      30 coronas de oro Disponibilidad: Raro 10 (solo ogros) Un ogro con un Gnoblar de espada
+      obtiene un ataque adicional de Fuerza 2 en combate cuerpo a cuerpo, con la habilidad de arma
+      del modelo propietario. Este ataque se realiza al mismo tiempo que los ataques del héroe
+      propietario y debe dirigirse a una miniatura hacia la que el Ogro haya dirigido sus ataques.
+      ¡La atención del oponente está en el Ogro!
   source_refs:
   - *id008
   combat_status: implemented
@@ -1558,6 +2033,11 @@ items:
   name: Tenderiser
   name_i18n:
     es: Ablandador
+  effect: >-
+    Range: Close Combat Strength: As user Stuns on 2-4 : Stuns on 2-4
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario Aturde en 2-4: Aturde en 2-4
   source_refs:
   - *id098
   combat_status: implemented
@@ -1577,6 +2057,14 @@ items:
   name: Weeping Blades
   name_i18n:
     es: Espadas Supurantes
+  effect: >-
+    Range: Close Combat Strength: As user Pair : Weeping Blades are traditionally used in pairs, one
+    in each hand. A warrior armed with Weeping Blades gets an additional attack.
+  effect_i18n:
+    es: >-
+      Alcance: Combate cuerpo a cuerpo Fuerza: Como usuario Pareja: Las espadas lloronas se utilizan
+      tradicionalmente en parejas, una en cada mano. Un guerrero armado con Weeping Blades recibe un
+      ataque adicional.
   source_refs:
   - *id086
   combat_status: implemented

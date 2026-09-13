@@ -10,6 +10,7 @@ interface CatalogueReader extends KnowledgeReader {
   campaignSection?(section: string): Readonly<Record<string, unknown>>;
   campaignRows?(section: string): readonly OpenPayload[];
   list?(kind: string): readonly Readonly<Record<string, unknown>>[];
+  rulesDocument?(stem: string): readonly Readonly<Record<string, unknown>>[];
 }
 type Result =
   | { ok: true; document: CampaignDocument; summary: ExplorationSummary }
@@ -23,6 +24,98 @@ export interface ExplorationSummary {
   readonly shards: number;
   readonly special: string | null;
 }
+export interface ExplorationModifierSource {
+  readonly id: string;
+  readonly label: string;
+  readonly label_es?: string;
+  readonly effect?: string;
+  readonly effect_es?: string;
+  readonly extra_dice: number;
+  readonly discards: number;
+  readonly rerolls: number;
+  readonly adjustments: number;
+  readonly total_bonus: number;
+  readonly shard_bonus: number;
+}
+export interface ExplorationModifiers {
+  readonly extra_dice: number;
+  readonly discards: number;
+  readonly rerolls: number;
+  readonly adjustments: number;
+  readonly total_bonus: number;
+  readonly shard_bonus: number;
+  readonly sources: readonly ExplorationModifierSource[];
+}
+
+type ModifierSpec = Pick<ExplorationModifierSource, "extra_dice" | "discards" | "rerolls" | "adjustments" | "total_bonus" | "shard_bonus">;
+const NO_MODIFIER: ModifierSpec = { extra_dice: 0, discards: 0, rerolls: 0, adjustments: 0, total_bonus: 0, shard_bonus: 0 };
+const EXPLORATION_RULE_MODIFIERS: Readonly<Record<string, Partial<ModifierSpec>>> = {
+  "augur--blessed-sight": { extra_dice: 1, discards: 1 },
+  "mountain-guide--ranger": { extra_dice: 1, discards: 1 },
+  "poachers--trailblazers": { rerolls: 1 },
+  "explorers--searcher": { adjustments: 1 },
+  "lahmian-vampire--local-knowledge": { rerolls: 1 },
+  "hireling.hired-sword.elf-ranger.rule.seeker": { adjustments: 1 },
+  "hireling.hired-sword.pathfinder.rule.knowledge-of-myths-and-legends": { rerolls: 1 },
+  "hireling.hired-sword.beggar.rule.scrounge": { extra_dice: 1 },
+  "hireling.hired-sword.goblin-lantern-bearer.rule.small-size": { total_bonus: 3 },
+  "skill.wyrdstone-hunter": { rerolls: 1 },
+  "band--home-ground": { extra_dice: 1 },
+  "band--at-home": { extra_dice: 1 },
+  "band--mordheim-natives": { adjustments: 1 },
+  "band--wanderers": { rerolls: 1 },
+  "band--excellent-miners": { shard_bonus: 1 },
+  "band--horned-hunter-special-skills-pathfinder": { extra_dice: 1 },
+  "band--chaos-dwarf-special-skills-resource-hunter": { adjustments: 1 },
+};
+
+export function explorationModifiers(document: CampaignDocument, reader: CatalogueReader): ExplorationModifiers {
+  const post = document.campaign.post_battles.find((row) => !row.complete);
+  const battle = post && document.campaign.battles.find((row) => row.number === post.battle_number);
+  const absent = new Set((battle?.absentees ?? []).map((row) => String(row["id"] ?? "")));
+  const participants = battle?.participants?.length ? new Set(battle.participants.map((row) => String(row["id"] ?? ""))) : null;
+  const casualties = new Map<string, number>();
+  for (const id of battle?.out_of_action_ids ?? []) casualties.set(id, (casualties.get(id) ?? 0) + 1);
+  const profiles = reader.list?.("profile") ?? [];
+  const bands = reader.list?.("band") ?? [];
+  const rules = [...(reader.rulesDocument?.("special-rules") ?? []), ...(reader.rulesDocument?.("profile-special-rules") ?? [])];
+  const active: string[] = [];
+  const band = bands.find((row) => String(row["id"] ?? row["band_id"] ?? "") === document.campaign.identity.band_id);
+  for (const id of (band?.["rule_ids"] ?? []) as unknown[]) active.push(String(id));
+  for (const warrior of document.campaign.warriors) {
+    const survivors = absent.has(warrior.id) || (participants && !participants.has(warrior.id)) ? 0 : Math.max(0, Number(warrior.quantity ?? 1) - (casualties.get(warrior.id) ?? 0));
+    if (!survivors) continue;
+    const profile = profiles.find((row) => String(row["id"] ?? row["profile_id"] ?? "") === String(warrior.profile_id ?? ""));
+    const warriorRules = new Set([...(profile?.["rule_ids"] ?? []) as unknown[], ...warrior.skills].map(String));
+    for (const id of warriorRules)
+      for (let index = 0; index < survivors; index += 1) active.push(String(id));
+  }
+  const sources: ExplorationModifierSource[] = [];
+  for (const id of active) {
+    const spec = EXPLORATION_RULE_MODIFIERS[id];
+    if (!spec) continue;
+    const row = rules.find((candidate) => String(candidate["id"] ?? "") === id);
+    if (row?.["kind"] === "warband_skill" && !document.campaign.warriors.some((warrior) => warrior.skills.map(String).includes(id))) continue;
+    const names = row?.["names"] as Record<string, unknown> | undefined;
+    const effects = row?.["effects"] as Record<string, unknown> | undefined;
+    sources.push({ id, label: String(names?.["en"] ?? row?.["name"] ?? id), ...(names?.["es"] ? { label_es: String(names["es"]) } : {}), ...(row?.["effect"] ? { effect: String(row["effect"]) } : {}), ...(effects?.["es"] ? { effect_es: String(effects["es"]) } : {}), ...NO_MODIFIER, ...spec });
+  }
+  const unique = [...sources.reduce((grouped, source) => {
+    const prior = grouped.get(source.id);
+    grouped.set(source.id, prior ? {
+      ...prior,
+      extra_dice: prior.extra_dice + source.extra_dice,
+      discards: prior.discards + source.discards,
+      rerolls: prior.rerolls + source.rerolls,
+      adjustments: prior.adjustments + source.adjustments,
+      total_bonus: prior.total_bonus + source.total_bonus,
+      shard_bonus: prior.shard_bonus + source.shard_bonus,
+    } : source);
+    return grouped;
+  }, new Map<string, ExplorationModifierSource>()).values()];
+  const sum = (key: keyof ModifierSpec) => unique.reduce((total, source) => total + source[key], 0);
+  return { extra_dice: sum("extra_dice"), discards: sum("discards"), rerolls: sum("rerolls"), adjustments: sum("adjustments"), total_bonus: sum("total_bonus"), shard_bonus: sum("shard_bonus"), sources: unique };
+}
 const HUMAN_WARBAND_GROUPS = new Set([
   "warband-group.human",
   "warband-group.chaos-human",
@@ -35,6 +128,9 @@ export function explorationDiscardRequired(
   return document.campaign.special_rules.some((row) =>
     /extra die.*discard|dado extra.*descarta/i.test(String(row["text"] ?? "")),
   );
+}
+export function explorationDiscardCount(document: CampaignDocument, reader: CatalogueReader): number {
+  return (explorationDiscardRequired(document) ? 1 : 0) + explorationModifiers(document, reader).discards;
 }
 
 function catalogue(reader: CatalogueReader) {
@@ -149,7 +245,8 @@ export function explorationDiceCount(
   return (
     Math.min(count, Number(exploration["max_dice"] ?? 6)) +
     Math.max(0, Number(scenario?.["extra_dice"] ?? 0)) +
-    (explorationDiscardRequired(document) ? 1 : 0)
+    (explorationDiscardRequired(document) ? 1 : 0) +
+    explorationModifiers(document, reader).extra_dice
   );
 }
 function matchingResult(
@@ -192,8 +289,8 @@ export function applyExploration(
   )
     return { ok: false, message: "Exploration has already been resolved." };
   const required = explorationDiceCount(document, reader),
-    discarded =
-      explorationDiscardRequired(document) && dice.length === required - 1;
+    discardCount = explorationDiscardCount(document, reader),
+    discarded = discardCount > 0 && dice.length === required - discardCount;
   if (
     (dice.length !== required && !discarded) ||
     dice.some((die) => !Number.isInteger(die) || die < 1 || die > 6)
@@ -203,7 +300,8 @@ export function applyExploration(
       message: `Exploration requires exactly ${required} valid D6 results.`,
     };
   const exploration = catalogue(reader);
-  const total = dice.reduce((sum, die) => sum + die, 0);
+  const modifiers = explorationModifiers(document, reader);
+  const total = dice.reduce((sum, die) => sum + die, 0) + modifiers.total_bonus;
   const cell = ((
     exploration["shards_chart"] as Readonly<Record<string, unknown>>
   )?.["cells"] ?? []) as readonly Readonly<Record<string, unknown>>[];
@@ -216,7 +314,7 @@ export function applyExploration(
       (bounds["max"] == null || total <= Number(bounds["max"]))
     );
   });
-  const shards = Number(shardRow?.["shards"] ?? 0);
+  const shards = Number(shardRow?.["shards"] ?? 0) + modifiers.shard_bonus;
   const special = matchingResult(exploration, dice);
   const followups = [...(post.pending_follow_ups ?? [])];
   if (special)
@@ -451,13 +549,19 @@ function processQueue(
         ? warriors
             .filter((row) => {
               if (row.kind !== "henchman") return false;
-              const profile = reader.queryKnowledge({
+              const scopedProfile = reader.list?.("profile").find((profile) =>
+                String(profile["id"] ?? profile["profile_id"] ?? "") === String(row.profile_id ?? "") &&
+                String(profile["band_id"] ?? "") === document.campaign.identity.band_id,
+              );
+              if (scopedProfile)
+                return Array.isArray(scopedProfile["equipment_access"]) && scopedProfile["equipment_access"].length > 0;
+              const fallback = reader.queryKnowledge({
                 id: { kind: "profile_id", value: String(row.profile_id ?? "") },
               });
               return (
-                profile.ok &&
-                Array.isArray(profile.record.data["equipment_access"]) &&
-                profile.record.data["equipment_access"].length > 0
+                fallback.ok &&
+                Array.isArray(fallback.record.data["equipment_access"]) &&
+                fallback.record.data["equipment_access"].length > 0
               );
             })
             .map((row) => ({
@@ -1256,6 +1360,17 @@ function processQueue(
         ([id]) => !removedWarriorIds.has(id),
       ),
     ),
+    ...(finished && current["result_id"]
+      ? {
+          step_state: {
+            ...(post.step_state ?? {}),
+            exploration: {
+              ...((post.step_state?.["exploration"] ?? {}) as OpenPayload),
+              special_effects: messages,
+            },
+          },
+        }
+      : {}),
     ...(finished
       ? {
           event_log: [

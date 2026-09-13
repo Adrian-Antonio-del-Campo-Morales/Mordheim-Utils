@@ -33,7 +33,11 @@ profiles:
           quantity:
             kind: fixed
             value: 2
-      - unresolved_source_equipment: Double-Handed Axe
+      - items:
+        - item_id: great_weapon
+          quantity:
+            kind: fixed
+            value: 1
   skill_access:
   - combat
   - strength
@@ -254,7 +258,11 @@ profiles:
         - axe
         - club
         repetition_allowed: true
-      - unresolved_source_equipment: Double-Handed Weapon
+      - items:
+        - item_id: great_weapon
+          quantity:
+            kind: fixed
+            value: 1
   skill_access:
   - combat
   - strength
@@ -263,9 +271,6 @@ profiles:
   - hireling.hired-sword.ogre-bodyguard.rule.fear
   - hireling.hired-sword.ogre-bodyguard.rule.large-target
   special_skill_rule_ids: []
-  unresolved_references:
-  - kind: equipment_mapping
-    source_name: Double-Handed Weapon
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
