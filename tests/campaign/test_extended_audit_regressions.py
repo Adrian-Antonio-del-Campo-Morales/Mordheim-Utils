@@ -76,9 +76,9 @@ def test_advances_are_earned_once_across_three_battles(draft, tmp_path):
     engine = record(draft)
     engine.apply_battle_experience()
     assert not engine.post.pending_advances  # recruitment XP is already included in profile
-    assert engine.add_xp(hero_id, 20)[0]
-    assert [r['threshold'] for r in engine.post.pending_advances] == [40]
-    assert engine.resolve_pending_advance(hero_id, 8, subroll=2, threshold=40)[0]
+    assert engine.add_xp(hero_id, 4)[0]
+    assert [r['threshold'] for r in engine.post.pending_advances] == [24]
+    assert engine.resolve_pending_advance(hero_id, 8, subroll=2, threshold=24)[0]
     engine.post.completed_steps = set(range(8))
     assert engine.commit()[0]
     draft.replace_state(load_campaign(save_campaign(tmp_path/'after1.mordheim', draft.state)))
@@ -88,12 +88,12 @@ def test_advances_are_earned_once_across_three_battles(draft, tmp_path):
     engine.post.completed_steps = set(range(8))
     assert engine.commit()[0]
     engine = record(draft)
-    assert engine.add_xp(hero_id, 25)[0]
-    assert [r['threshold'] for r in engine.post.pending_advances] == [65]
+    assert engine.add_xp(hero_id, 4)[0]
+    assert [r['threshold'] for r in engine.post.pending_advances] == [28]
 
 def test_unresolved_advance_prevents_final_commit(pending):
     engine = pending.post_battle_engine()
-    engine.sync_pending_advances()
+    engine.add_xp(engine.campaign.warriors[0].id, 1)
     engine.post.completed_steps = set(range(8))
     assert not engine.commit()[0]
 
@@ -107,6 +107,7 @@ def test_capture_does_not_leave_an_unresolvable_advance(pending, monkeypatch, re
     post.active_step = 0
     post.completed_steps.clear()
     hero = engine.campaign.warriors[0]
+    engine.add_xp(hero.id, 1)
     engine.campaign.battle(post.battle_number).out_of_action_ids = [hero.id]
     moment = PostBattleMoment.__new__(PostBattleMoment)
     moment.controller = pending

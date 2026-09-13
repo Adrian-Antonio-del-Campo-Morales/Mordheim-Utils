@@ -32,6 +32,20 @@ items:
   name: Buckler
   name_i18n:
     es: Rodela
+  effect: >-
+    Parry : A model equipped with a buckler may parry the first blow in each round of hand-to-hand
+    combat. When his opponent scores a hit, a model with a buckler may roll 1D6. If the score is
+    greater than the highest to hit score of his opponent, the model has parried the blow, and that
+    attack is discarded. A model may not parry attacks made with double or more its own Strength –
+    they are simply too powerful to be stopped.
+  effect_i18n:
+    es: >-
+      Parar: Una miniatura equipada con un escudo puede parar el primer golpe en cada ronda de
+      combate cuerpo a cuerpo. Cuando su oponente logra un impacto, una miniatura con un escudo
+      puede tirar 1D6. Si la puntuación es mayor que la puntuación más alta para impactar de su
+      oponente, el modelo ha parado el golpe y ese ataque se descarta. Un modelo no puede parar
+      ataques realizados con el doble o más de su propia Fuerza; simplemente son demasiado poderosos
+      para detenerlos.
   source_refs:
   - &id002
     manual: mordheimer.net
@@ -175,6 +189,13 @@ items:
   name: Cooking Pot Helmet
   name_i18n:
     es: Yelmo de Olla
+  effect: >-
+    Avoid Stun : A Master Chef equipped with a cooking pot helmet has a special save of 5+ against
+    being stunned. This save is never modified.
+  effect_i18n:
+    es: >-
+      Evita el aturdimiento: un Master Chef equipado con un casco de olla de cocina tiene una
+      salvación especial de 5+ contra el aturdimiento. Este guardado nunca se modifica.
   source_refs:
   - &id055
     manual: mordheimer.net
@@ -188,6 +209,15 @@ items:
   name: Helmet
   name_i18n:
     es: Yelmo
+  effect: >-
+    Avoid Stun : A model that is equipped with a helmet has a special 4+ save on a D6 against being
+    stunned. If the save is made, treat the stunned result as knocked down instead. This save is not
+    modified by the opponent's Strength.
+  effect_i18n:
+    es: >-
+      Evitar el aturdimiento: Un modelo que está equipado con un casco tiene una salvación especial
+      de 4+ en un D6 contra ser aturdido. Si se realiza la salvación, trate el resultado aturdido
+      como si fuera derribado. Esta salvación no se ve modificada por la Fuerza del oponente.
   source_refs:
   - *id002
   - *id003
@@ -480,6 +510,19 @@ items:
   name: Kite Shield
   name_i18n:
     es: Escudo de Cometa
+  effect: >-
+    Save : A model with a kite shield has a basic save of 5+ on a D6 while on foot, and 6+ while
+    mounted (or, if the model is already wearing armour, as +2 on foot, and +1 save while mounted).
+    This cannot bring a save over 1+. (Note: If your gaming group already uses house rules for
+    enhanced shields [ex. Ones that provide +2 AS in combat], remove Kite Shield from the equipment
+    list.)
+  effect_i18n:
+    es: >-
+      Salvación: Un modelo con un escudo de cometa tiene una salvación básica de 5+ en un D6
+      mientras está a pie, y 6+ mientras está montado (o, si el modelo ya lleva armadura, como +2 a
+      pie y +1 de salvación mientras está montado). Esto no puede generar una salvación superior a
+      1+. (Nota: si su grupo de juego ya usa reglas internas para escudos mejorados [por ejemplo,
+      aquellos que proporcionan +2 AS en combate], elimine Kite Shield de la lista de equipos).
   source_refs:
   - *id027
   combat_status: implemented
@@ -489,6 +532,18 @@ items:
   name: Sea Dragon Cloak
   name_i18n:
     es: Capa de Dragón Marino
+  effect: >-
+    It was never fully clarified whether the Sea Dragon Cloak may be combined with armour and
+    shields. Some argue it may not, as the cloak specifies a base armour save, others state that as
+    it is a Miscellaneous Equipment item, it should be possible to combine with a suit of armour, in
+    which case it improves the save by 2 in melee, and 3 versus ranged attacks.
+  effect_i18n:
+    es: >-
+      Nunca se aclaró del todo si la Capa del Dragón Marino se puede combinar con armaduras y
+      escudos. Algunos argumentan que puede que no, ya que la capa especifica una salvación de
+      armadura básica, otros afirman que, como es un elemento de equipo misceláneo, debería ser
+      posible combinarlo con una armadura, en cuyo caso mejora la salvación en 2 en cuerpo a cuerpo
+      y 3 contra ataques a distancia.
   source_refs:
   - *id015
   combat_status: implemented
@@ -498,6 +553,13 @@ items:
   name: Shield
   name_i18n:
     es: Escudo
+  effect: >-
+    Combined Save : As explained in the Armour section, shields combine with armour to give +1 to
+    the save.
+  effect_i18n:
+    es: >-
+      Salvación combinada: como se explica en la sección Armadura, los escudos se combinan con la
+      armadura para dar +1 a la salvación.
   source_refs:
   - *id007
   - manual: mordheimer.net

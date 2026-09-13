@@ -1,9 +1,60 @@
 import { resolveName, titleCaseDisplay, type ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import type { Warrior } from "./types";
 
 export { titleCaseDisplay };
 
-type Locale = "es" | "en";
-type DisplayKind = "band" | "profile" | "item" | "skill" | "rule" | "scenario" | "injury" | "hireling";
+export type Locale = "es" | "en";
+type DisplayKind = "band" | "profile" | "item" | "skill" | "rule" | "scenario" | "injury" | "hireling" | "lore";
+
+const unavailableLabels: Record<Locale, string> = {
+  es: "Información no disponible",
+  en: "Information unavailable",
+};
+
+const labelTranslations: Record<Locale, Record<string, string>> = {
+  es: {
+    hero: "Héroe", henchman: "Secuaces", hireling: "Espada de alquiler", warrior: "Guerrero",
+    combat: "Combate", shooting: "Disparo", academic: "Académicas", strength: "Fuerza", speed: "Velocidad", special: "Especiales",
+    movement: "Movimiento", weapon_skill: "Habilidad de Armas", ballistic_skill: "Habilidad de Proyectiles", strength_stat: "Fuerza", toughness: "Resistencia", wounds: "Heridas", initiative: "Iniciativa", attacks: "Ataques", leadership: "Liderazgo",
+    event: "Evento", exploration: "Exploración", scenario: "Escenario", roll: "Tirada", result: "Resultado",
+  },
+  en: {
+    hero: "Hero", henchman: "Henchman", hireling: "Hired Sword", warrior: "Warrior",
+    combat: "Combat", shooting: "Shooting", academic: "Academic", strength: "Strength", speed: "Speed", special: "Special",
+    movement: "Movement", weapon_skill: "Weapon Skill", ballistic_skill: "Ballistic Skill", toughness: "Toughness", wounds: "Wounds", initiative: "Initiative", attacks: "Attacks", leadership: "Leadership",
+    event: "Event", exploration: "Exploration", scenario: "Scenario", roll: "Roll", result: "Result",
+  },
+};
+
+/** Localizes stable enum/field labels without ever exposing their technical key. */
+export function localizedLabel(value: unknown, locale: Locale): string {
+  const raw = String(value ?? "").trim();
+  if (!raw) return unavailableLabels[locale];
+  const key = raw.toLocaleLowerCase().replace(/[ -]+/g, "_").replace(/[^a-z0-9_]/g, "");
+  if (raw.includes(".") && !labelTranslations[locale][key]) return unavailableLabels[locale];
+  return labelTranslations[locale][key] ?? titleCaseDisplay(raw.replace(/[._-]+/g, " "));
+}
+
+const ruleDocuments = ["special-rules", "profile-special-rules", "core-combat", "conditions", "resolution", "localized-labels"];
+
+export function knowledgeRows(knowledge: ArtefactKnowledgeReader | undefined, kind: DisplayKind): readonly Readonly<Record<string, unknown>>[] {
+  const listed = kind !== "rule" && typeof knowledge?.list === "function" ? knowledge.list(kind) : [];
+  if (kind !== "rule" && kind !== "skill") return listed;
+  const generalRules = typeof knowledge?.rulesDocument === "function"
+    ? ruleDocuments.flatMap((section) => knowledge.rulesDocument(section))
+    : [];
+  const hirelings = typeof knowledge?.campaignSection === "function" ? knowledge.campaignSection("hirelings") : undefined;
+  const hirelingRules = Array.isArray(hirelings?.rules) ? hirelings.rules as readonly Readonly<Record<string, unknown>>[] : [];
+  const rules = [...generalRules, ...hirelingRules];
+  return kind === "rule" ? rules : [...listed, ...rules];
+}
+
+export function matchesKnowledgeId(entry: Readonly<Record<string, unknown>>, id: string): boolean {
+  const stableId = String(entry.id ?? entry.item_id ?? entry.profile_id ?? "");
+  if (stableId.localeCompare(id, "en", { sensitivity: "accent" }) === 0) return true;
+  const names = entry.names as Readonly<Record<string, unknown>> | undefined;
+  return [entry.name, names?.en].some((name) => typeof name === "string" && name.localeCompare(id, "en", { sensitivity: "accent" }) === 0);
+}
 
 const translations: Record<Locale, Record<string, string>> = {
   es: {
@@ -43,28 +94,15 @@ export function readableValue(value: unknown, locale: Locale): string {
   return titleCaseDisplay(translated ?? raw);
 }
 
-export function knowledgeName(knowledge: ArtefactKnowledgeReader | undefined, kind: DisplayKind, id: unknown, locale: Locale, fallback?: unknown): string {
+export function knowledgeName(knowledge: ArtefactKnowledgeReader | undefined, kind: DisplayKind, id: unknown, locale: Locale, fallback?: unknown, profileId?: string, bandId?: string): string {
   const stableId = String(id ?? "");
-  const ruleDocuments = ["special-rules", "profile-special-rules", "core-combat", "conditions", "resolution", "localized-labels"];
-  const catalogue = kind === "rule"
-    ? ruleDocuments.flatMap((section) => knowledge?.rulesDocument(section) ?? [])
-    : knowledge?.list(kind) ?? [];
-  const matches = (entry: Readonly<Record<string, unknown>>) => {
-    if (String(entry.id ?? entry.item_id ?? entry.profile_id ?? "") === stableId) return true;
-    const names = entry.names as Readonly<Record<string, unknown>> | undefined;
-    return [entry.name, names?.en].some((name) => typeof name === "string" && name.localeCompare(stableId, "en", { sensitivity: "accent" }) === 0);
-  };
-  let row = catalogue.find(matches);
-  if (!row && kind === "skill") {
-    row = ruleDocuments
-      .flatMap((section) => knowledge?.rulesDocument(section) ?? [])
-      .find(matches);
-  }
+  const row = knowledgeRows(knowledge, kind).find((entry) => matchesKnowledgeId(entry, stableId));
   if (row) {
     if (kind === "injury" && typeof row.result === "string") return readableValue(row.result, locale);
     return resolveName(row, locale);
   }
-  return readableValue(fallback || stableId, locale);
+  if (typeof knowledge?.displayName === "function") return knowledge.displayName(stableId, locale, fallback ?? stableId, profileId, bandId);
+  return readableValue(String(fallback ?? stableId).replace(/[._-]+/g, " "), locale);
 }
 
 export function warriorName(knowledge: ArtefactKnowledgeReader | undefined, warrior: { readonly name: string; readonly profile_id?: string; readonly profile_name: string }, locale: Locale): string {
@@ -74,6 +112,18 @@ export function warriorName(knowledge: ArtefactKnowledgeReader | undefined, warr
   if (!automatic) return warrior.name;
   const group = automatic[1] ? (locale === "es" ? `Grupo de ${localized}` : `${localized} Group`) : localized;
   return `${group}${automatic[2] ?? ""}`;
+}
+
+/** Abilities stored on the warrior plus profile rules missing from older saves. */
+export function warriorAbilities(knowledge: ArtefactKnowledgeReader | undefined, warrior: Warrior): readonly string[] {
+  const stored = warrior.skills ?? [];
+  if (warrior.kind !== "hireling" || !warrior.profile_id) return stored;
+  const profile = knowledge?.list("hireling").find((row) => String(row.id) === warrior.profile_id);
+  const starting = Array.isArray(profile?.starting_skill_ids) ? profile.starting_skill_ids.map(String) : [];
+  const rules = Array.isArray(profile?.rule_ids)
+    ? profile.rule_ids.map(String).filter((id) => !id.endsWith(".rule.campaign-eligibility"))
+    : [];
+  return [...new Set([...stored, ...starting, ...rules])];
 }
 
 export function resourceAmount(resource: unknown, amount: unknown, locale: Locale): string {

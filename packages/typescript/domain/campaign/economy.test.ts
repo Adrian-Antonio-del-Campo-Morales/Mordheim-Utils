@@ -49,6 +49,17 @@ const knowledge: KnowledgeReader = {
     const ref = query.id;
     const id = ref.value;
     if (query.id.kind === "profile_id") {
+      if (id === "unarmoured") {
+        return {
+          ok: true,
+          record: {
+            kind: "profile", id: ref, names: { en: id },
+            data: { band_id: "skaven-clan-pestilens", equipment_forbids: ["armour"], equipment_access: [
+              { item_id: "light_armour", cost: 20 }, { item_id: "shield", cost: 5 }, { item_id: "buckler", cost: 5 },
+            ] },
+          },
+        };
+      }
       // Access row without a numeric cost (desktop `cost: None` → the
       // creation price is resolved manually via unit_price).
       return {
@@ -79,6 +90,7 @@ const knowledge: KnowledgeReader = {
       };
     }
     if (query.id.kind === "item_id") {
+      if (["light_armour", "shield", "buckler"].includes(id)) return { ok: true, record: { kind: "item", id: ref, names: { en: id }, data: { kind: id === "light_armour" ? "armour" : "shield-or-defence" } } };
       return { ok: true, record: { kind: "item", id: ref, names: { en: id }, data: { kind: "Equipment" } } };
     }
     if (query.id.kind === "scenario_id" && id === "skirmish") {
@@ -128,6 +140,15 @@ function committed(extra: Warrior[]): CampaignDocument {
 }
 
 describe("desktop test_economy_sequence_matrix.py → web draft economy parity", () => {
+  it("blocks armour, shields and bucklers for profiles that forbid armour", () => {
+    const doc = draft([hero("h1", "unarmoured")]);
+    for (const item_id of ["light_armour", "shield", "buckler"]) {
+      const result = buyDraftEquipment(doc, { warrior_id: "h1", item_id, unit_price: 1 }, knowledge);
+      expect(result.ok).toBe(false);
+      if (!result.ok) expect(result.message).toBe("This warrior cannot wear armour, shields or bucklers.");
+    }
+  });
+
   it("personal equipment refund matches the actual purchase price", () => {
     const prices = [26, 31] as const;
     const doc = draft([hero("h1", "sorcerer"), hero("h2", "sorcerer")]);

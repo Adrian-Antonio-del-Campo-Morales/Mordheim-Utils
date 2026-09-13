@@ -56,7 +56,7 @@ describe("desktop test_rules_catalogue.py → web RulesCatalogue", () => {
     const hungry = c.entry("special-rules", "shared-rule.always-hungry", "es");
     expect(hungry?.name).toBe("Siempre Hambriento");
     expect(c.entry("skills", "skill.acrobat", "es")?.effect).toContain("Iniciativa");
-    expect(c.entry("equipment", "sword", "es")?.effect).toContain("combate cuerpo a cuerpo");
+    expect(c.entry("equipment", "sword", "es")?.effect).toContain("Cuerpo a cuerpo");
     expect(c.entry("injuries", "campaign.serious-injuries.hero", "es")?.effect).toContain("11-15 — Muerto");
     expect(c.entry("injuries", "campaign.serious-injuries.hero", "es")?.name).toBe("Tabla de Heridas Graves de Héroes");
     expect(c.entry("injuries", "campaign.serious-injuries.henchman", "es")?.name).toBe("Tabla de Heridas Graves de Secuaces");

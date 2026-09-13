@@ -57,8 +57,8 @@ def test_advance_thresholds_rating_and_racial_maximums_come_from_the_kb():
     resolver = _resolver()
     # experience-and-advances.yaml "advance_thresholds" block.
     assert resolver.advance_thresholds("hero")
-    assert resolver.advance_thresholds("hero")[:4] == (20, 40, 65, 90)
-    assert resolver.advance_thresholds("henchman")[:4] == (8, 16, 25, 35)
+    assert resolver.advance_thresholds("hero") == (2, 4, 6, 8, 11, 14, 17, 20, 24, 28, 32, 36, 41, 46, 51, 57, 63, 69, 76, 83, 90)
+    assert resolver.advance_thresholds("henchman") == (2, 5, 9, 14)
     # warband-rating.yaml: 5 per model + 1 per XP.
     assert resolver.warband_rating(models=8, experience=85) == 125
     # catalog/rules/racial-maximums.yaml: caps keyed by race.

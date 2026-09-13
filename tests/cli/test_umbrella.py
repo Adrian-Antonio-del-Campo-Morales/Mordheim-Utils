@@ -18,6 +18,7 @@ COMMANDS = (
     "audit",
     "validate",
     "tests",
+    "run-ci",
     "combine-kb",
     "build-native",
     "doctor",
@@ -117,6 +118,59 @@ def test_tests_default_scope_is_all(cli, monkeypatch):
 def test_tests_rejects_unknown_scope(cli, capsys):
     assert cli.main(["tests", "--scope", "nope"]) == 2
     assert "unknown scope" in capsys.readouterr().err
+
+
+def test_run_ci_executes_the_ci_validation_gates(cli, monkeypatch):
+    calls = []
+
+    def fake_run_in(directory, *argv):
+        calls.append((directory, list(argv)))
+        return 0
+
+    staged = []
+    monkeypatch.setattr(cli, "_run_in", fake_run_in)
+    monkeypatch.setattr(cli, "_run_module", lambda *argv: calls.append((cli.REPO_ROOT, [sys.executable, "-m", *argv])) or 0)
+    monkeypatch.setattr(cli, "_run", lambda *argv: calls.append((cli.REPO_ROOT, list(argv))) or 0)
+    monkeypatch.setattr(cli, "_stage_knowledge_assets", lambda: staged.append(True))
+
+    assert cli.main(["run-ci"]) == 0
+    assert staged == [True]
+    assert [command for _, command in calls] == [
+        [sys.executable, str(cli.KNOWLEDGE_GENERATOR)],
+        [sys.executable, str(cli.KNOWLEDGE_GENERATOR), "--check"],
+        [sys.executable, "-m", "pytest", "tests/web", "tests/contracts", "tests/campaign",
+         "tests/architecture", "tests/knowledge", "-q"],
+        [sys.executable, str(cli.KNOWLEDGE_GENERATOR), "--check"],
+        ["npm", "run", "typecheck"],
+        ["npm", "test"],
+        ["npm", "run", "typecheck"],
+        ["npm", "run", "lint"],
+        ["npm", "test"],
+        ["npm", "run", "build"],
+        ["npx", "vitest", "run", "src/architecture/boundaries.test.ts"],
+    ]
+
+
+def test_run_ci_stops_after_the_first_failure(cli, monkeypatch):
+    monkeypatch.setattr(cli, "_run_in", lambda *_args: 1)
+    monkeypatch.setattr(cli, "_stage_knowledge_assets", lambda: pytest.fail("must not stage"))
+
+    assert cli.main(["run-ci"]) == 1
+
+
+def test_run_in_uses_the_resolved_windows_command(cli, monkeypatch):
+    calls = []
+    monkeypatch.setattr(cli.shutil, "which", lambda command, path: "C:/Program Files/nodejs/npm.cmd")
+    monkeypatch.setattr(cli.subprocess, "call", lambda argv, **kwargs: calls.append((argv, kwargs)) or 0)
+
+    assert cli._run_in(cli.TYPESCRIPT_PACKAGE, "npm", "run", "typecheck") == 0
+    assert calls[0][0] == ["C:/Program Files/nodejs/npm.cmd", "run", "typecheck"]
+
+
+@pytest.mark.parametrize("flag", ("-h", "--help"))
+def test_run_ci_help(cli, capsys, flag):
+    assert cli.main(["run-ci", flag]) == 0
+    assert "usage: python tools/mordheim-utils.py run-ci" in capsys.readouterr().out
 
 
 def test_test_scope_paths_are_non_empty_and_known(cli):

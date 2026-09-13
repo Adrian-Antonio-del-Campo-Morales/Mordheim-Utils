@@ -116,8 +116,11 @@ describe("applyInjuryOutcome", () => {
   it("applies missed games + condition + stat modifier and records history", () => {
     const result = applyInjuryOutcome(base(), {
       warrior_id: "w1",
+      battle_number: 1,
       result_id: "smashed_hand",
       result: "Smashed hand",
+      rolled_dice: [2, 3],
+      roll: 23,
       effects: [
         { kind: "miss_games", value: 2 },
         { kind: "add_condition", condition_id: "smashed_hand" },
@@ -133,7 +136,10 @@ describe("applyInjuryOutcome", () => {
     expect(warrior.condition_detail).toBe("smashed_hand");
     expect(warrior.stat_modifiers).toEqual({ WS: -1 });
     expect(warrior.injury_records).toHaveLength(1);
-    expect(warrior.injury_records?.[0]).toMatchObject({ result_id: "smashed_hand" });
+    expect(warrior.injury_records?.[0]).toMatchObject({ result_id: "smashed_hand", rolled_dice: [2, 3], roll: 23 });
+    expect(result.document.campaign.post_battles[0].step_state?.["injuries"]).toMatchObject({
+      "w1:1": { rolled_dice: [2, 3], roll: 23 },
+    });
   });
 
   it("does not mutate the input document", () => {

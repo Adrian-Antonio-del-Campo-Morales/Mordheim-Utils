@@ -196,6 +196,33 @@ describe("P3.2: serialization and round-trip", () => {
     );
   });
 
+  it("serializes the terminal step produced by finalizing a post-battle", () => {
+    const parsed = parseCampaignFileDetailed(fixtureText("pending-post-battle.json"));
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) return;
+    const campaign = structuredClone(parsed.campaign);
+    Object.assign(campaign.post_battles.at(-1)!, {
+      complete: true,
+      active_step: 8,
+      completed_steps: [0, 1, 2, 3, 4, 5, 6, 7],
+      review_open: true,
+    });
+
+    expect(port.serializeCampaign(campaign).ok).toBe(true);
+  });
+
+  it("rejects terminal step 8 while the post-battle is still pending", () => {
+    const parsed = parseCampaignFileDetailed(fixtureText("pending-post-battle.json"));
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) return;
+    const campaign = structuredClone(parsed.campaign);
+    Object.assign(campaign.post_battles.at(-1)!, { active_step: 8, complete: false });
+
+    const result = port.serializeCampaign(campaign);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.message).toContain("Invalid post-battle step");
+  });
+
   it("preserves open payloads verbatim across a round-trip", () => {
     const doc = fixtureJson("pending-post-battle.json");
     const campaigns = doc["campaign"] as Record<string, unknown>;

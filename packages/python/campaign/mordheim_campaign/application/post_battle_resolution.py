@@ -394,6 +394,16 @@ class PostBattleResolver:
 
     # ----------------------------------------------------------- advancement
 
+    def underdog_bonus(self, rating_difference: int) -> int:
+        """Experience bonus for a lower-rated warband, from the KB table."""
+        catalog = self.port.campaign_catalog()
+        document = catalog.catalogue("experience-and-advances.yaml")
+        for band in (document.get("underdog_bonus") or {}).get("bands") or ():
+            limits = (band.get("when") or {}).get("rating_difference") or {}
+            if int(limits.get("min") or 0) <= rating_difference <= _inf(limits.get("max")):
+                return int(band.get("amount") or 0)
+        return 0
+
     def advance_thresholds(self, kind: str) -> tuple[int, ...]:
         """XP ladder at which Advance rolls are earned, from the KB catalogue.
 

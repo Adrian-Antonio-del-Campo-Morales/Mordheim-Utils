@@ -13,53 +13,60 @@ from mordheim_campaign.domain.builders import make_example_state
 from tests.campaign.test_post_battle_engine import _pending
 
 
+def _pending_hero_advance():
+    engine, state, port = _pending()
+    engine.add_xp("matriarch", 1)  # 23 -> 24: next advance after initial XP.
+    return engine, state, port
+
+
 def test_threshold_crossing_seeds_pending_advances():
     engine, state, _ = _pending()
-    added = engine.sync_pending_advances()  # matriarch at 23 XP: the 20 rung
-    assert added == 1
+    added = engine.sync_pending_advances()
+    assert added == 0  # Initial/profile XP never grants retroactive advances.
+    engine.add_xp("matriarch", 1)  # 23 -> 24: next thick-bordered box.
     row = state.campaign.post_battles[-1].pending_advances[0]
     assert row["warrior_id"] == "matriarch"
-    assert row["table"] == "hero" and row["threshold"] == 20
+    assert row["table"] == "hero" and row["threshold"] == 24
     assert row["roll_total"] is None and not row["committed"]
     assert engine.sync_pending_advances() == 0  # idempotent
 
 
 def test_add_xp_crossing_a_threshold_earns_an_advance():
     engine, state, _ = _pending()
-    engine.add_xp("matriarch", 1)  # 23 -> 24: first sync inside add_xp seeds the 20 rung
+    engine.add_xp("matriarch", 1)  # 23 -> 24
     rows = state.campaign.post_battles[-1].pending_advances
-    assert [row["threshold"] for row in rows] == [20]
-    engine.add_xp("veriet", 10)  # 10 -> 20
+    assert [row["threshold"] for row in rows] == [24]
+    engine.add_xp("veriet", 1)  # 10 -> 11
     rows = state.campaign.post_battles[-1].pending_advances
     assert [row["warrior_id"] for row in rows] == ["matriarch", "veriet"]
-    assert rows[1]["threshold"] == 20
+    assert rows[1]["threshold"] == 11
 
 
 def test_henchman_group_thresholds_and_shared_advance_row():
     engine, state, _ = _pending()
-    engine.add_xp("novices", 4)  # 4 -> 8: first henchman rung
+    engine.add_xp("novices", 1)  # 4 -> 5: next henchman rung
     rows = state.campaign.post_battles[-1].pending_advances
     assert rows and rows[0]["warrior_id"] == "novices"
-    assert rows[0]["table"] == "henchman" and rows[0]["threshold"] == 8
+    assert rows[0]["table"] == "henchman" and rows[0]["threshold"] == 5
 
 
 def test_multiple_advances_for_one_warrior_are_resolved_by_threshold():
     engine, state, _ = _pending()
-    engine.add_xp("novices", 12)  # 4 -> 16: earns the 8 and 16 XP advances.
+    engine.add_xp("novices", 10)  # 4 -> 14: earns the 5, 9 and 14 XP advances.
 
-    ok_second, _ = engine.resolve_pending_advance("novices", 5, threshold=16)
-    ok_first, _ = engine.resolve_pending_advance("novices", 8, threshold=8)
+    ok_second, _ = engine.resolve_pending_advance("novices", 5, threshold=9)
+    ok_first, _ = engine.resolve_pending_advance("novices", 8, threshold=5)
 
     rows = [row for row in state.campaign.pending_post_battle.pending_advances if row["warrior_id"] == "novices"]
     assert ok_first and ok_second
-    assert [(row["threshold"], row["committed"]) for row in rows] == [(8, True), (16, True)]
+    assert [(row["threshold"], row["committed"]) for row in rows] == [(5, True), (9, True), (14, False)]
     novices = next(row for row in state.campaign.warriors if row.id == "novices")
     assert novices.stat_advances["A"] == 1
     assert novices.stat_advances["S"] == 1
 
 
 def test_roll_11_offers_skill_and_spell_for_the_wizard_matriarch():
-    engine, _state, _port = _pending()
+    engine, _state, _port = _pending_hero_advance()
     engine.sync_pending_advances()
     ok, _ = engine.resolve_pending_advance("matriarch", 11)
     assert ok
@@ -78,7 +85,7 @@ def test_non_wizard_heroes_lose_the_spell_option():
 
 
 def test_commit_skill_validates_the_warriors_kb_tables():
-    engine, state, _ = _pending()
+    engine, state, _ = _pending_hero_advance()
     engine.sync_pending_advances()
     engine.resolve_pending_advance("matriarch", 11)
     ok, message = engine.commit_pending_advance("matriarch", option_kind="choose_skill", skill_name="Combat Master")
@@ -90,7 +97,7 @@ def test_commit_skill_validates_the_warriors_kb_tables():
 
 
 def test_commit_spell_comes_from_the_wizards_lore():
-    engine, state, port = _pending()
+    engine, state, port = _pending_hero_advance()
     engine.sync_pending_advances()
     engine.resolve_pending_advance("matriarch", 11)
     lore = port.wizard_lore("sigmarite-matriarch", state.campaign.band_id)
@@ -107,7 +114,7 @@ def test_commit_spell_comes_from_the_wizards_lore():
 
 
 def test_duplicate_spell_persists_difficulty_modifier():
-    engine, state, port = _pending()
+    engine, state, port = _pending_hero_advance()
     engine.sync_pending_advances()
     engine.resolve_pending_advance("matriarch", 11)
     lore = port.wizard_lore("sigmarite-matriarch", state.campaign.band_id)
@@ -126,7 +133,7 @@ def test_duplicate_spell_persists_difficulty_modifier():
 
 
 def test_roll_8_needs_a_d6_subroll_and_commits_the_stat():
-    engine, state, _ = _pending()
+    engine, state, _ = _pending_hero_advance()
     engine.sync_pending_advances()
     outcome, _row = engine._pending_outcome("matriarch")  # roll_total None: outcome None
     assert outcome is None
@@ -137,7 +144,7 @@ def test_roll_8_needs_a_d6_subroll_and_commits_the_stat():
 
 
 def test_roll_9_subroll_determines_W_or_T():
-    engine, state, _ = _pending()
+    engine, state, _ = _pending_hero_advance()
     engine.sync_pending_advances()
     ok, message = engine.resolve_pending_advance("matriarch", 9, subroll=5)  # T for 4-6
     assert ok and "+1 T" in message
@@ -145,9 +152,9 @@ def test_roll_9_subroll_determines_W_or_T():
 
 def test_henchman_plus_one_cap_blocks_second_advance():
     engine, state, _ = _pending()
-    engine.add_xp("novices", 12)  # 4 -> 16: rungs 8 and 16
+    engine.add_xp("novices", 10)  # 4 -> 14: rungs 5, 9 and 14
     rows = state.campaign.post_battles[-1].pending_advances
-    assert [row["threshold"] for row in rows] == [8, 16]
+    assert [row["threshold"] for row in rows] == [5, 9, 14]
     # Roll 6 offers +1 BS / +1 WS (choose_one row).
     ok, _ = engine.resolve_pending_advance("novices", 6)
     assert ok
@@ -181,7 +188,7 @@ def test_henchman_deterministic_rows_commit_directly():
 
 
 def test_hero_subroll_rows_6_8_9():
-    engine, state, _ = _pending()
+    engine, state, _ = _pending_hero_advance()
     engine.sync_pending_advances()
     # Hero 6: D6 1-3 -> +1 S, 4-6 -> +1 A.
     ok, message = engine.resolve_pending_advance("matriarch", 6, subroll=2)
@@ -189,7 +196,7 @@ def test_hero_subroll_rows_6_8_9():
 
 
 def test_racial_maximum_blocks_further_increases():
-    engine, state, _ = _pending()
+    engine, state, _ = _pending_hero_advance()
     engine.sync_pending_advances()  # matriarch row (hero: no henchman cap)
     matriarch = next(w for w in state.campaign.warriors if w.id == "matriarch")
     matriarch.stats["T"] = 4  # human racial max for T; hero roll 9 subroll 4-6 = +1 T
@@ -201,7 +208,7 @@ def test_racial_maximum_blocks_further_increases():
     assert row["roll_history"] and "racial maximum" in row["roll_history"][0]
 
 def test_advancement_state_survives_save_load(tmp_path):
-    engine, state, _ = _pending()
+    engine, state, _ = _pending_hero_advance()
     engine.sync_pending_advances()
     engine.resolve_pending_advance("matriarch", 11)
     engine.commit_pending_advance("matriarch", option_kind="choose_skill", skill_name="Combat Master")
@@ -214,7 +221,7 @@ def test_advancement_state_survives_save_load(tmp_path):
 
 
 def test_stat_advances_survive_save_load(tmp_path):
-    engine, state, _ = _pending()
+    engine, state, _ = _pending_hero_advance()
     engine.sync_pending_advances()
     engine.resolve_pending_advance("matriarch", 8, subroll=2)
     before = dict(next(w for w in state.campaign.warriors if w.id == "matriarch").stats)
@@ -251,7 +258,7 @@ def test_forbid_skill_categories_contract_is_loadable_for_banned_profiles():
 
 
 def test_advance_commit_rejects_banned_category_even_when_access_granted(monkeypatch):
-    engine, state, port = _pending()
+    engine, state, port = _pending_hero_advance()
     matriarch = next(w for w in state.campaign.warriors if w.id == "matriarch")
     # Simulate a campaign grant that adds Strength to the tables: the ban
     # must still block it (it is decoupled from skill_access).

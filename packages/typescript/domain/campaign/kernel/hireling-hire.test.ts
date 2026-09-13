@@ -88,6 +88,52 @@ describe("hireHireling (desktop hire_hireling)", () => {
     expect(rifle?.equipped).toBe(1);
   });
 
+  it("requires and grants a hireling's selected starting equipment", () => {
+    const reader = makeReader({ equipment: { choices: [{ choose: 1, options: [{ choose_items: 2, from_item_ids: ["sword", "axe", "club"], repetition_allowed: true }, { items: [{ item_id: "great_weapon", quantity: { value: 1 } }] }] }] } });
+    const missing = hireHireling(makeDoc(), { profile_id: PROFILE }, reader);
+    expect(missing.ok).toBe(false);
+    const result = hireHireling(makeDoc(), { profile_id: PROFILE, chosen_item_ids: ["axe", "axe"] }, reader);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.state.campaign.warriors.find((warrior) => warrior.kind === "hireling")?.equipment).toEqual(expect.arrayContaining([expect.objectContaining({ item_id: "axe", quantity: 1 })]));
+  });
+
+  it("copies every starting skill and inherent profile rule onto the hired-sword card", () => {
+    const result = hireHireling(makeDoc(), { profile_id: PROFILE }, makeReader({
+      starting_skill_ids: ["skill.haggle"],
+      rule_ids: [
+        "hireling.hired-sword.undead-hunter.rule.hunter",
+        "hireling.hired-sword.undead-hunter.rule.campaign-eligibility",
+      ],
+    }));
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.state.campaign.warriors.find((w) => w.kind === "hireling")?.skills).toEqual([
+      "skill.haggle",
+      "hireling.hired-sword.undead-hunter.rule.hunter",
+    ]);
+  });
+
+  it("projects the Elf Ranger's abilities while keeping optional Elven skills unowned", () => {
+    const result = hireHireling(makeDoc(), { profile_id: PROFILE }, makeReader({
+      starting_skill_ids: [],
+      rule_ids: [
+        "hireling.hired-sword.elf-ranger.rule.seeker",
+        "hireling.hired-sword.elf-ranger.rule.excellent-sight",
+        "hireling.hired-sword.elf-ranger.rule.campaign-eligibility",
+      ],
+      special_skill_rule_ids: [
+        "hireling.hired-sword.elf-ranger.skill.fey",
+        "hireling.hired-sword.elf-ranger.skill.luck",
+      ],
+    }));
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.state.campaign.warriors.find((w) => w.kind === "hireling")?.skills).toEqual([
+      "hireling.hired-sword.elf-ranger.rule.seeker",
+      "hireling.hired-sword.elf-ranger.rule.excellent-sight",
+    ]);
+  });
+
   it("falls back to the rating base as cost when no fee is given", () => {
     const result = hireHireling(makeDoc(), { profile_id: PROFILE }, makeReader());
     expect(result.ok).toBe(true);

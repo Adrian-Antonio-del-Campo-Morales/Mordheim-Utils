@@ -21,7 +21,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import { applyExploration, continueExploration, explorationDiceCount } from "../../application/campaign/features/exploration/exploration-workflow";
+import { applyExploration, continueExploration, explorationDiceCount, explorationModifiers } from "../../application/campaign/features/exploration/exploration-workflow";
 import type { Campaign, CampaignDocument, KnowledgeReader, OpenPayload, Warrior } from "../../domain/campaign/kernel/usecases";
 import { CampaignFileV4Adapter, parseCampaignFileDetailed } from "../../adapters/campaign-file";
 
@@ -124,6 +124,31 @@ describe("desktop test_exploration_sequence_matrix.py → web exploration parity
     expect(explorationDiceCount(doc, knowledge)).toBe(2);
     battle.out_of_action_ids.push("marta");
     expect(explorationDiceCount(doc, knowledge)).toBe(1);
+  });
+
+  it("combines every active exploration rule and keeps selectable skills opt-in", () => {
+    const augur = { ...hero("augur"), profile_id: "augur", skills: ["augur--blessed-sight", "skill.wyrdstone-hunter"] } as Warrior;
+    const ranger = { ...hero("ranger"), kind: "hireling", profile_id: "elf-ranger" } as Warrior;
+    const doc = pendingPostBattle([augur, ranger]);
+    const catalogue = {
+      ...knowledge,
+      list(kind: string) {
+        if (kind === "band") return [{ id: "sisters-of-sigmar", rule_ids: ["band--horned-hunter-special-skills-pathfinder"] }];
+        if (kind === "profile") return [
+          { id: "augur", rule_ids: ["augur--blessed-sight"] },
+          { id: "elf-ranger", rule_ids: ["hireling.hired-sword.elf-ranger.rule.seeker"] },
+        ];
+        return [];
+      },
+      rulesDocument() { return [
+        { id: "augur--blessed-sight", names: { en: "Blessed Sight", es: "Vista Bendita" } },
+        { id: "hireling.hired-sword.elf-ranger.rule.seeker", names: { en: "Seeker", es: "Buscador" } },
+        { id: "band--horned-hunter-special-skills-pathfinder", kind: "warband_skill", names: { en: "Pathfinder" } },
+      ]; },
+    };
+    expect(explorationModifiers(doc, catalogue)).toMatchObject({ extra_dice: 1, discards: 1, rerolls: 1, adjustments: 1 });
+    expect(explorationDiceCount(doc, catalogue)).toBe(2);
+    expect(applyExploration(doc, catalogue, [4]).ok).toBe(true);
   });
 
   it("resolves a zero-dice exploration step, matching desktop", () => {
@@ -242,6 +267,30 @@ describe("desktop test_exploration_sequence_matrix.py → web exploration parity
     expect(stock!.owned).toBe(1);
     expect(stock!.stash).toBe(1);
     expect(stock!.equipped).toBe(0);
+  });
+
+  it("offers a human Henchman group whose profile id is shared by other bands", () => {
+    const marksmen = { id: "marksmen#1", name: "Marksmen", profile_name: "Marksmen", profile_id: "marksmen", kind: "henchman", stats: {}, equipment: [], skills: [], experience: 0, cost: 25, quantity: 1 } as Warrior;
+    const injected = pendingPostBattle([hero("captain"), marksmen]);
+    const post = injected.campaign.post_battles.find((row) => !row.complete)!;
+    (post as unknown as { pending_follow_ups: OpenPayload[] }).pending_follow_ups = [{ type: "exploration_followup", step: 2, queue: [{ type: "choose_henchman_group", allow_decline: true }], messages: [] }];
+    const scopedKnowledge = {
+      ...knowledge,
+      list(kind: string) {
+        if (kind === "warband_group") return [{ id: "warband-group.human", band_ids: ["sisters-of-sigmar"] }];
+        if (kind === "profile") return [{ id: "marksmen", band_id: "sisters-of-sigmar", type: "henchman", equipment_access: [{ item_id: "bow" }] }];
+        return [];
+      },
+      queryKnowledge(query: Parameters<KnowledgeReader["queryKnowledge"]>[0]) {
+        if (query.id.kind === "profile_id") return { ok: false as const, reason: "not_found" as const };
+        return knowledge.queryKnowledge(query);
+      },
+    };
+    const result = continueExploration(injected, scopedKnowledge, {});
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const pending = pendingFollowup(result.document)?.["pending"] as OpenPayload;
+    expect((pending["options"] as OpenPayload[]).map((row) => row["id"])).toContain("marksmen#1");
   });
 
   it("lost unique artefact roll requests a reroll", () => {

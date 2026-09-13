@@ -176,6 +176,16 @@ describe("P7.4 keyboard & announcement behaviour", () => {
     fireEvent.change(input, { target: { files: [file] } });
 
     const alert = await screen.findByRole("alert");
-    expect(alert).toHaveTextContent("Rejected import");
+    expect(alert).toHaveTextContent("No se pudo importar old.mordheim.");
+  });
+
+  it("announces why a disabled action cannot be performed", async () => {
+    render(<ProductApp />);
+    const save = screen.getAllByRole("button", { name: "Guardar" })[0];
+    expect(save).toBeDisabled();
+
+    fireEvent.pointerDown(save);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Abre o crea una campaña antes de guardarla.");
   });
 });

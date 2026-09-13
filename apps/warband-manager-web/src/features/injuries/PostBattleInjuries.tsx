@@ -9,6 +9,7 @@ import {
 } from "@app/campaign/features/injuries/injury-followup-workflow";
 import { knowledgeName, readableValue } from "../campaign/displayText";
 import { KnowledgeHint } from "../campaign/KnowledgeHint";
+import { NumberStepper } from "../common/NumberStepper";
 
 function inRange(spec: unknown, value: number): boolean {
   const text = String(spec ?? "");
@@ -17,6 +18,32 @@ function inRange(spec: unknown, value: number): boolean {
     Number.isFinite(a) && value >= a && value <= (Number.isFinite(b) ? b : a)
   );
 }
+
+function followUpLabel(follow: Record<string, unknown>, locale: "es" | "en"): string {
+  const phase = String(follow.resolution_phase ?? "");
+  const number = Number(follow.repeat_index ?? 0) + 1;
+  if (locale === "es") {
+    if (phase === "effect_roll") return "Duración o intensidad del efecto";
+    if (phase === "repeat_count") return "Cuántas heridas adicionales sufre";
+    if (phase === "repeat_result") return `Herida adicional ${number} · D66`;
+    if (phase === "subtable") return "Resultado secundario de la herida";
+    return "Tirada necesaria para completar la herida";
+  }
+  if (phase === "effect_roll") return "Effect duration or severity";
+  if (phase === "repeat_count") return "Number of additional injuries";
+  if (phase === "repeat_result") return `Additional injury ${number} · D66`;
+  if (phase === "subtable") return "Secondary injury result";
+  return "Roll required to complete the injury";
+}
+
+const injuryFollowUpTypes = new Set([
+  "injury_roll",
+  "injury_followup",
+  "eye_injury",
+  "prisoner",
+  "relationship",
+  "encounter",
+]);
 
 export function PostBattleInjuries({
   document,
@@ -64,6 +91,7 @@ export function PostBattleInjuries({
           lostPrisoner: "Perdido",
           follow: "Resolver seguimiento",
           resolved: "Sin acciones pendientes",
+          roll: "Tirada",
         }
       : {
           title: "Serious injuries",
@@ -86,6 +114,7 @@ export function PostBattleInjuries({
           lostPrisoner: "Lost",
           follow: "Resolve follow-up",
           resolved: "No pending actions",
+          roll: "Roll",
         };
   const seen = new Map<string, number>();
   const participants = new Map(
@@ -142,10 +171,11 @@ export function PostBattleInjuries({
               const record = storedRecord ?? resolved;
               const followUps = (post.pending_follow_ups ?? []).filter(
                 (row) =>
+                  injuryFollowUpTypes.has(String(row.type ?? "")) &&
                   row.warrior_id === warrior.id &&
                   Number(row.casualty_index ?? 1) === casualtyIndex,
               );
-              const hero = warrior.kind === "hero";
+              const usesHeroTable = warrior.kind !== "henchman";
               const resultId = String(record?.result_id ?? "");
               const injury = injuries.find(
                 (row) => String(row.id) === resultId,
@@ -178,7 +208,7 @@ export function PostBattleInjuries({
                         ) : null}
                         {warrior.condition_detail && (
                           <small>
-                            {readableValue(warrior.condition_detail, locale)}
+                            {knowledgeName(knowledge, "injury", warrior.condition_detail, locale, readableValue(warrior.condition_detail, locale))}
                           </small>
                         )}
                       </>
@@ -190,15 +220,15 @@ export function PostBattleInjuries({
                     {!record && !followUps.length && live ? (
                       <DiceResolver
                         key={`initial:${warrior.id}:${casualtyIndex}`}
-                        count={hero ? 2 : 1}
+                        count={usesHeroTable ? 2 : 1}
                         sides={6}
-                        label={hero ? t.hero : t.henchman}
+                        label={usesHeroTable ? t.hero : t.henchman}
                         locale={locale}
                         onResolve={(dice) => {
-                          const roll = hero ? dice[0] * 10 + dice[1] : dice[0];
+                          const roll = usesHeroTable ? dice[0] * 10 + dice[1] : dice[0];
                           const outcome = injuries.find(
                             (row) =>
-                              row.applies_to === warrior.kind &&
+                              row.applies_to === (usesHeroTable ? "hero" : "henchman") &&
                               inRange(row.roll, roll),
                           );
                           if (outcome)
@@ -208,6 +238,8 @@ export function PostBattleInjuries({
                               casualty_index: casualtyIndex,
                               result_id: String(outcome.id),
                               result: String(outcome.result),
+                              rolled_dice: dice,
+                              roll,
                               effects: injuryEffects(outcome),
                             });
                         }}
@@ -227,6 +259,7 @@ export function PostBattleInjuries({
                               <button
                                 className="primary"
                                 disabled={busy}
+                                data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : undefined}
                                 onClick={() =>
                                   void run("resolveSoldToPits", {
                                     follow_up_id: id,
@@ -257,6 +290,7 @@ export function PostBattleInjuries({
                               {t.chooseEye}:{" "}
                               <button
                                 disabled={busy}
+                                data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : undefined}
                                 onClick={() =>
                                   void run("resolveEyeInjury", {
                                     follow_up_id: id,
@@ -268,6 +302,7 @@ export function PostBattleInjuries({
                               </button>
                               <button
                                 disabled={busy}
+                                data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : undefined}
                                 onClick={() =>
                                   void run("resolveEyeInjury", {
                                     follow_up_id: id,
@@ -294,6 +329,7 @@ export function PostBattleInjuries({
                               />
                               <button
                                 disabled={busy || !(targets[id] ?? "").trim()}
+                                data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : !(targets[id] ?? "").trim() ? (locale === "es" ? "Introduce primero el objetivo del odio." : "Enter the hatred target first.") : undefined}
                                 onClick={() =>
                                   void run("resolveHatred", {
                                     follow_up_id: id,
@@ -308,23 +344,7 @@ export function PostBattleInjuries({
                         if (type === "prisoner")
                           return (
                             <span key={id}>
-                              <input
-                                aria-label={`${t.ransom} ${id}`}
-                                type="number"
-                                min="0"
-                                value={ransoms[id] ?? 0}
-                                onChange={(event) =>
-                                  setRansoms((current) => ({
-                                    ...current,
-                                    [id]: Math.max(
-                                      0,
-                                      Math.trunc(
-                                        event.target.valueAsNumber || 0,
-                                      ),
-                                    ),
-                                  }))
-                                }
-                              />
+                              <NumberStepper label={`${t.ransom} ${id}`} value={ransoms[id] ?? 0} onChange={(value) => setRansoms((current) => ({ ...current, [id]: value }))} />
                               {(
                                 [
                                   ["ransom", t.ransom],
@@ -335,6 +355,7 @@ export function PostBattleInjuries({
                                 <button
                                   key={resolution}
                                   disabled={busy}
+                                  data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : undefined}
                                   onClick={() =>
                                     void run("resolvePrisoner", {
                                       follow_up_id: id,
@@ -359,7 +380,7 @@ export function PostBattleInjuries({
                             locale={locale}
                             count={dice[0]}
                             sides={dice[1]}
-                            label={t.follow}
+                            label={followUpLabel(follow, locale)}
                             onResolve={(rolls) =>
                               void run("resolveInjuryTableFollowUp", {
                                 follow_up_id: id,
@@ -377,6 +398,7 @@ export function PostBattleInjuries({
                           <button
                             key={id}
                             disabled={busy}
+                            data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : undefined}
                             onClick={() =>
                               void run("resolveInjuryFollowUp", {
                                 follow_up_id: id,
@@ -394,7 +416,9 @@ export function PostBattleInjuries({
                         );
                       })
                     ) : (
-                      <span>{t.resolved}</span>
+                      <span>{Array.isArray(record?.rolled_dice) && record.rolled_dice.length > 0
+                        ? `${t.roll}: ${record.rolled_dice.join(", ")}${Number.isInteger(record.roll) && record.rolled_dice.length > 1 ? ` → ${record.roll}` : ""}`
+                        : t.resolved}</span>
                     )}
                   </td>
                 </tr>
