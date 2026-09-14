@@ -153,6 +153,16 @@ describe("P6.4 recording battles", () => {
     expect(awards).toEqual({ "hero-leader": 1 });
   });
 
+  it("reduces the Haunted Treasure chest award when multiple recipients carry it", () => {
+    const { document } = makeCommitted();
+    const hero = { ...document.campaign.warriors.find((warrior) => warrior.kind === "hero")!, id: "hero" };
+    const henchmen = { ...document.campaign.warriors.find((warrior) => warrior.kind === "henchman")!, id: "henchmen", quantity: 3 };
+    const row = { id: "chest", label: "Chest", amount: 2, amountWhenMultiple: 1, trigger: "manual", manual: true, selection: "multiple" as const };
+
+    expect(calculatedAwards([row], [hero, henchmen], "win", {}, { chest: { hero: 2 } })).toEqual({ hero: 2 });
+    expect(calculatedAwards([row], [hero, henchmen], "win", {}, { chest: { hero: 2, henchmen: 2 } })).toEqual({ hero: 1, henchmen: 1 });
+  });
+
   it("records a battle, snapshots numbers and opens the pending post-battle", () => {
     const { document, knowledge } = makeCommitted();
     const battle = makeBattleWorkflow(knowledge);

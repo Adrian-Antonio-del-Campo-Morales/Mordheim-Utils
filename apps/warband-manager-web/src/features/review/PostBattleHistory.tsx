@@ -1,5 +1,6 @@
 import type { CampaignDocument } from "../campaign/types";
 import { localizedLabel } from "../campaign/displayText";
+import { translate } from "../campaign/i18n-core";
 
 type Event = Readonly<Record<string, unknown>>;
 
@@ -19,7 +20,15 @@ export function PostBattleHistory({ document, battleNumber, locale }: { readonly
   const unassigned = events.filter((event) => !Number.isInteger(Number(event.step)) || Number(event.step) < 0 || Number(event.step) > 7);
   const completed = new Set(post.completed_steps);
   const signed = (value: number, suffix = "") => `${value > 0 ? "+" : ""}${value}${suffix}`;
-  const eventText = (event: Event) => String(event.description ?? event.message ?? localizedLabel(event.type ?? "event", locale));
+  const eventText = (event: Event) => {
+    const key = event.message_key;
+    if (key === "knowledge.unavailable" || key === "knowledge.description-unavailable" || key === "error.action-failed") {
+      return translate({ key, args: event.message_args as Readonly<Record<string, string | number>> | undefined }, locale);
+    }
+    const legacy = event.description ?? event.message;
+    if (typeof legacy === "string" && legacy) return locale === "es" ? translate({ key: "knowledge.english-fallback", args: { text: legacy } }, locale) : legacy;
+    return localizedLabel(event.type ?? "event", locale);
+  };
   return <section className="page post-battle-history" aria-label={`${t.title} #${battleNumber}`}>
     <header className="post-battle-hero"><div><span>{t.title} #{battleNumber}</span><h2>{t.complete}</h2><p>{t.summary}</p></div><strong>8/8</strong></header>
     <dl className="post-battle-scoreboard"><div><dt>{t.steps}</dt><dd>{post.completed_steps.length}/8</dd></div><div><dt>{t.gold}</dt><dd className={(post.gold_delta ?? 0) < 0 ? "negative" : ""}>{signed(post.gold_delta ?? 0, " gc")}</dd></div><div><dt>{t.wyrdstone}</dt><dd className={(post.wyrdstone_delta ?? 0) < 0 ? "negative" : ""}>{signed(post.wyrdstone_delta ?? 0)}</dd></div>{post.wyrdstone_sold !== undefined && <div><dt>{t.sold}</dt><dd>{post.wyrdstone_sold}</dd></div>}{post.veteran_pool !== undefined && <div><dt>{t.veterans}</dt><dd>{post.veteran_pool} EXP</dd></div>}</dl>

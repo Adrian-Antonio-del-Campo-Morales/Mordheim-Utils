@@ -12,7 +12,7 @@
  */
 import type { CampaignDocument, MomentSelection } from "../campaign/types";
 import { enumerateMoments, momentLabel } from "./moments";
-import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import { titleCaseDisplay, type ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { knowledgeName } from "../campaign/displayText";
 
 interface TimelinePanelProps {
@@ -41,7 +41,8 @@ export function TimelinePanel({ document, onSelect, locale = "en", knowledge }: 
           const state = kind === "state" ? campaign.states.find((row) => row.number === number) : undefined;
           const battle = kind === "battle" ? campaign.battles.find((row) => row.number === number) : undefined;
           const post = kind === "post" ? campaign.post_battles.find((row) => row.battle_number === number) : undefined;
-          const detail = state ? `${locale === "es" ? "Valoración" : "Rating"} ${state.rating} · ${state.models}/${state.max_models} ${locale === "es" ? "miniaturas" : "models"}` : battle ? `${knowledgeName(knowledge, "scenario", battle.scenario, locale, battle.scenario)} vs. ${battle.opponent}` : post && !post.complete ? `${locale === "es" ? "Paso" : "Step"} ${post.active_step + 1}/8` : kind === "new-battle" ? (locale === "es" ? "Registra los resultados para continuar" : "Record the results to continue") : "";
+          const scenarioName = battle ? knowledgeName(knowledge, "scenario", battle.scenario, locale, titleCaseDisplay(battle.scenario)) : undefined;
+          const detail = state ? `${locale === "es" ? "Valoración" : "Rating"} ${state.rating} · ${state.models}/${state.max_models} ${locale === "es" ? "miniaturas" : "models"}` : battle ? `${scenarioName} vs. ${battle.opponent}` : post && !post.complete ? `${locale === "es" ? "Paso" : "Step"} ${post.active_step + 1}/8` : kind === "new-battle" ? (locale === "es" ? "Registra los resultados para continuar" : "Record the results to continue") : "";
           return (
             <li key={moment} data-kind={kind}>
               <button
@@ -50,7 +51,7 @@ export function TimelinePanel({ document, onSelect, locale = "en", knowledge }: 
                 style={isCurrent ? { fontWeight: "bold" } : undefined}
                 onClick={() => onSelect(moment)}
               >
-                <span>{momentLabel(moment, campaign, locale, battle ? knowledgeName(knowledge, "scenario", battle.scenario, locale, battle.scenario) : undefined)}</span>{detail && <small>{detail}</small>}{kind === "new-battle" && <b className="timeline-action">{locale === "es" ? "AÑADIR BATALLA" : "ADD BATTLE"}</b>}
+                <span>{momentLabel(moment, campaign, locale, scenarioName)}</span>{detail && <small>{detail}</small>}{kind === "new-battle" && <b className="timeline-action">{locale === "es" ? "AÑADIR BATALLA" : "ADD BATTLE"}</b>}
               </button>
             </li>
           );

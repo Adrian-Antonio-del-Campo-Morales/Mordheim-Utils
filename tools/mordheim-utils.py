@@ -197,6 +197,21 @@ def run_ci_command(args: list[str]) -> int:
         return 1
     if _run_in(TYPESCRIPT_PACKAGE, "npm", "test"):
         return 1
+    # Keep the local gate aligned with the explicit CI contract.  The full
+    # `npm test` suite below still runs afterwards; this focused invocation
+    # makes localization and technical-identifier regressions fail early and
+    # uses the conservative Vitest worker/timeout settings required by the
+    # exhaustive KB coverage test.
+    if _run_in(
+        WEB_APP,
+        "npx", "vitest", "run", "--pool=forks", "--maxWorkers=1",
+        "--testTimeout=200000",
+        "src/features/campaign/knowledge-display-coverage.test.tsx",
+        "src/features/campaign/ui_i18n.test.ts",
+        "src/features/campaign/displayText.test.ts",
+        "src/features/campaign/KnowledgeHint.test.tsx",
+    ):
+        return 1
     for command in (("npm", "run", "typecheck"), ("npm", "run", "lint"),
                     ("npm", "test"), ("npm", "run", "build"),
                     ("npx", "vitest", "run", "src/architecture/boundaries.test.ts")):

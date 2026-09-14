@@ -29,6 +29,22 @@ import { validateArtefact } from "./artefact-types";
 
 export type { ArtefactValidation, KnowledgeArtefact } from "./artefact-types";
 
+/** A user-facing KB value, with its fallback status kept out of the text. */
+export type DisplayStatus = "translated" | "canonical-fallback" | "missing";
+export interface LocalizedText {
+  readonly text: string;
+  readonly sourceLocale: Locale | null;
+  readonly status: DisplayStatus;
+}
+
+/** Stable identity plus the context needed for duplicated band rules. */
+export interface DisplayRef {
+  readonly kind: "band" | "profile" | "item" | "skill" | "rule" | "scenario" | "injury" | "hireling" | "lore";
+  readonly id: string;
+  readonly profileId?: string;
+  readonly bandId?: string;
+}
+
 const ID_FIELD_BY_KIND: Readonly<Record<KnowledgeKind, string>> = {
   band: "id",
   profile: "id",
@@ -149,6 +165,24 @@ export function resolveName(
   return titleCaseDisplay(String(row.id ?? row.item_id ?? ""));
 }
 
+function localizedText(values: Readonly<Record<string, string>> | undefined, locale: Locale, fallback?: unknown): LocalizedText {
+  if (values?.[locale]) return { text: values[locale], sourceLocale: locale, status: "translated" };
+  if (values?.en) return { text: values.en, sourceLocale: "en", status: locale === "en" ? "translated" : "canonical-fallback" };
+  const alternate = Object.entries(values ?? {}).find(([, value]) => Boolean(value));
+  if (alternate) return { text: alternate[1], sourceLocale: alternate[0] as Locale, status: "canonical-fallback" };
+  const value = typeof fallback === "string" ? fallback.trim() : "";
+  // Stable ids are useful internally, never as visible recovery text.
+  if (value && !/^[a-z0-9]+(?:[._:-][a-z0-9]+)+$/i.test(value)) {
+    return { text: value, sourceLocale: "en", status: locale === "en" ? "translated" : "canonical-fallback" };
+  }
+  return { text: locale === "es" ? "Información no disponible" : "Information unavailable", sourceLocale: null, status: "missing" };
+}
+
+/** Like resolveName, but safe for UI: it never turns an id into visible text. */
+export function resolveNameText(row: ArtefactRow, locale: Locale, fallback?: unknown): LocalizedText {
+  return localizedText(rowNames(row), locale, fallback);
+}
+
 export class ArtefactKnowledgeReader implements KnowledgeReader {
   private readonly bands: Map<string, ArtefactRow>;
   private readonly profiles: Map<string, ArtefactRow>;
@@ -165,6 +199,9 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     this.bands = ArtefactKnowledgeReader.indexById(artefact.bands, "id");
     this.profiles = ArtefactKnowledgeReader.indexProfiles(artefact.profiles);
     this.items = ArtefactKnowledgeReader.indexById(artefact.items, "item_id");
+    for (const item of ArtefactKnowledgeReader.magicalArtefactItems(artefact.campaign ?? {})) {
+      this.items.set(String(item.item_id), item);
+    }
     this.skills = ArtefactKnowledgeReader.indexById(artefact.skills, "id");
     this.displayNames = artefact.display_names ?? {};
     this.displayEffects = artefact.display_effects ?? {};
@@ -271,6 +308,31 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
       if (typeof id === "string" && id) index.set(id, row);
     }
     return index;
+  }
+
+  /** Exploration artefacts become inventory items under their stable reward id. */
+  private static magicalArtefactItems(campaign: Readonly<Record<string, unknown>>): ArtefactRow[] {
+    const document = campaign["exploration-and-income"];
+    const table = document && typeof document === "object"
+      ? (document as ArtefactRow)["magical_artefacts"]
+      : undefined;
+    const results = table && typeof table === "object"
+      ? (table as ArtefactRow)["results"]
+      : undefined;
+    if (!Array.isArray(results)) return [];
+    return (results as ArtefactRow[]).flatMap((row) => {
+      const sourceId = typeof row.id === "string" ? row.id : "";
+      const result = typeof row.result === "string" ? row.result : "";
+      if (!sourceId.startsWith("campaign.magical-artefact.") || !result) return [];
+      const localized = row.result_i18n;
+      const names: Record<string, string> = { en: result };
+      if (localized && typeof localized === "object") {
+        for (const [locale, value] of Object.entries(localized as Record<string, unknown>)) {
+          if (typeof value === "string" && value) names[locale] = value;
+        }
+      }
+      return [{ ...row, item_id: `magical_artefact.${sourceId.slice("campaign.magical-artefact.".length)}`, names }];
+    });
   }
 
   /** Profiles are unique per (collection, band_id, id) — key by `collection/band/id`. */
@@ -457,9 +519,18 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     return titleCaseDisplay(String(fallback ?? id).replace(/[._-]+/g, " "));
   }
 
+  displayNameText(ref: DisplayRef, locale: Locale, fallback?: unknown): LocalizedText {
+    return localizedText(this.displayValues(this.displayNames, ref.id, ref.profileId, ref.bandId), locale, fallback);
+  }
+
   displayDescription(id: string, locale: Locale, profileId?: string, bandId?: string): string | undefined {
-    const effects = this.displayValues(this.displayEffects, id, profileId, bandId);
-    return effects?.[locale] ?? effects?.en ?? Object.values(effects ?? {}).find(Boolean);
+    const ref: DisplayRef = { kind: "rule", id, ...(profileId ? { profileId } : {}), ...(bandId ? { bandId } : {}) };
+    const value = this.displayDescriptionText(ref, locale);
+    return value.status === "missing" ? undefined : value.text;
+  }
+
+  displayDescriptionText(ref: DisplayRef, locale: Locale): LocalizedText {
+    return localizedText(this.displayValues(this.displayEffects, ref.id, ref.profileId, ref.bandId), locale);
   }
 
   // ------------------------------------------------------------------

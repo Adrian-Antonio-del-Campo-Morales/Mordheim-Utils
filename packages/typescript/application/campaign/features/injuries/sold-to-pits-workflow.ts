@@ -53,7 +53,7 @@ function close(
 export function resolveSoldToPits(
   document: CampaignDocument,
   reader: KnowledgeReader,
-  input: { follow_up_id: string; won: boolean; injury_roll?: number },
+  input: { follow_up_id: string; won: boolean; injury_roll?: number; dice?: readonly number[] },
 ): Result {
   const post = document.campaign.post_battles.find((item) => !item.complete),
     follow = post?.pending_follow_ups?.find(
@@ -92,7 +92,7 @@ export function resolveSoldToPits(
   const roll = Math.trunc(input.injury_roll ?? 0),
     tens = Math.trunc(roll / 10),
     ones = roll % 10;
-  if (tens < 1 || tens > 6 || ones < 1 || ones > 6)
+  if (tens < 1 || tens > 6 || ones < 1 || ones > 6 || input.dice && (input.dice.length !== 2 || input.dice[0] !== tens || input.dice[1] !== ones))
     return {
       ok: false,
       message: "A valid D66 result is required after losing in the pits.",
@@ -118,6 +118,8 @@ export function resolveSoldToPits(
       warrior_id: warrior.id,
       result_id: String(injury["id"]),
       result: String(injury["result"]),
+      ...(input.dice ? { rolled_dice: input.dice } : {}),
+      roll,
       effects: injuryEffects(injury),
     });
     if (!applied.ok) return { ok: false, message: applied.message };

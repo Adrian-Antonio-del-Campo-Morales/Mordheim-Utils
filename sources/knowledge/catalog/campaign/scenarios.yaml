@@ -1852,6 +1852,10 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     - effect: The warrior earns +2 Experience for carrying the chest off to safety; if more than one warrior carries the chest each can only gain +1 Experience, and if one or more of a Henchman group carry it the group only gains the Experience once
 
+      amount: 2
+      amount_when_multiple: 1
+      selection: multiple
+
       effect_i18n:
         es: >-
           El guerrero gana +2 de Experiencia por llevar el cofre a un lugar seguro; si más de un
@@ -3966,6 +3970,10 @@ scenarios:
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
     - effect: Any warrior earns +2 Experience for retrieving the chest to safety (+1 each if several warriors carry it; a Henchman group gains the bonus once)
+
+      amount: 2
+      amount_when_multiple: 1
+      selection: multiple
 
       effect_i18n:
         es: >-

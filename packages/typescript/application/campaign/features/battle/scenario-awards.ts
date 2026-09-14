@@ -7,6 +7,7 @@ export type ScenarioAward = Readonly<{
   trigger: string;
   manual: boolean;
   selection: "single" | "multiple" | "distributed";
+  amountWhenMultiple?: number;
   amountDice?: readonly [number, number];
 }>;
 
@@ -56,7 +57,8 @@ export function scenarioAwards(knowledge: CampaignKnowledge | undefined, scenari
     if (ref && !source) return [];
     const effect = localizedText(locale === "es" ? entry["effect_i18n"] : entry["effect"], locale, entry["effect"]);
     const dice = !source ? amountDice(entry["amount_dice"]) : undefined;
-    return [{ id: ref || `${scenarioId}:manual:${index}`, label: source ? String(source["id"] ?? ref).split(".").at(-1)?.replaceAll("-", " ") ?? ref : effect, amount: amount(source ?? entry, source ? undefined : entry["amount"]), trigger: String(source?.["trigger"] ?? "manual"), manual: !source, selection: source ? "single" : selection(entry), ...(dice ? { amountDice: dice } : {}) }];
+    const amountWhenMultiple=Number(entry["amount_when_multiple"]);
+    return [{ id: ref || `${scenarioId}:manual:${index}`, label: source ? String(source["id"] ?? ref).split(".").at(-1)?.replaceAll("-", " ") ?? ref : effect, amount: amount(source ?? entry, source ? undefined : entry["amount"]), trigger: String(source?.["trigger"] ?? "manual"), manual: !source, selection: source ? "single" : selection(entry), ...(Number.isFinite(amountWhenMultiple)?{amountWhenMultiple:Math.max(0,Math.trunc(amountWhenMultiple))}:{}), ...(dice ? { amountDice: dice } : {}) }];
   });
 }
 
@@ -66,7 +68,7 @@ export function calculatedAwards(rows: readonly ScenarioAward[], warriors: reado
   const leader = heroes.find((warrior) => [...warrior.skills, ...(warrior.special_rules ?? [])].some((rule) => /--leader(?:$|\.)|^shared-rule\.leader(?:-\d+)?$|^leader$/i.test(String(rule)))) ?? heroes[0];
   const add = (id: string, amount: number) => { totals[id] = (totals[id] ?? 0) + Math.max(0, Math.trunc(amount)); };
   for (const row of rows) {
-    if (row.manual) { for (const [id, amount] of Object.entries(manual[row.id] ?? {})) add(id, amount); continue; }
+    if (row.manual) { const selected=Object.entries(manual[row.id] ?? {}).filter(([, amount]) => amount > 0); for (const [id, amount] of selected) add(id, row.amountWhenMultiple !== undefined && selected.length > 1 ? row.amountWhenMultiple : amount); continue; }
     if (row.trigger === "survived_battle") warriors.forEach((warrior) => add(warrior.id, row.amount));
     if (row.trigger === "warband_won_battle" && result === "win" && leader) add(leader.id, row.amount);
     if (row.trigger === "enemy_put_out_of_action") warriors.filter((warrior) => warrior.kind === "hero").forEach((warrior) => add(warrior.id, row.amount * (enemyOoa[warrior.id] ?? 0)));

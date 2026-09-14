@@ -2,7 +2,8 @@ import { act, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { describe, expect, it, vi } from "vitest";
 
-import { OperationProgress, reportOperation, withOperationProgress } from "./OperationProgress";
+import { OperationProgress } from "./OperationProgress";
+import { reportOperation, withOperationProgress } from "./operationProgressEvents";
 
 describe("OperationProgress", () => {
   it("shows until every overlapping operation finishes", () => {

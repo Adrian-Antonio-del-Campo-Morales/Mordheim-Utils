@@ -7,7 +7,7 @@
 import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { BattlePanel } from "./BattlePanel";
 import type { CampaignDocument } from "@domain/campaign/index";
@@ -18,7 +18,7 @@ import { FakeKnowledgeReader } from "../campaign/fake-knowledge-reader";
 import { CampaignAppProvider } from "../campaign/useCampaignApp";
 import type { CampaignAppService } from "../campaign/types";
 
-afterEach(cleanup);
+afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
 function makeCommittedDocument(): CampaignDocument {
   const knowledge = new FakeKnowledgeReader();
@@ -85,6 +85,21 @@ describe("P6.4 BattlePanel", () => {
     await user.selectOptions(screen.getByLabelText("Scenario"), "enemy-award");
     await user.click(screen.getByRole("button", { name: `Enemies put out of action ${hero.name} +` }));
     expect(screen.getByLabelText(`Enemies put out of action ${hero.name}`)).toHaveTextContent("1");
+  });
+
+  it("shows the dice rolls and quantity for resolved scenario loot", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(Math, "random").mockReturnValue(0.5);
+    const knowledge = {
+      list: (kind: string) => kind === "scenario" ? [{ id: "haunted", names: { en: "Haunted Treasure" } }] : [],
+      campaignSection: (section: string) => section === "scenario-rewards" ? { scenarios: [{ scenario_id: "haunted", rewards: [{ contents: [{ id: "wyrdstone", label: "Wyrdstone", grant: { kind: "resource", resource: "wyrdstone_fragments" }, availability: { dice: { count: 1, sides: 6 }, target: 4 }, quantity_dice: { count: 1, sides: 3 } }] }] }] } : {},
+    };
+    renderBattle(makeCommittedDocument(), knowledge);
+    await user.selectOptions(screen.getByLabelText("Scenario"), "haunted");
+    await user.click(screen.getByRole("button", { name: "Roll 1D6" }));
+    await user.click(screen.getByRole("button", { name: "Roll 1D3" }));
+
+    expect(screen.getByText("Wyrdstone · Roll: 4 · Roll: 2 · Awarded: 2")).toBeInTheDocument();
   });
 
   it("does not allow a new battle while post-battle processing is pending", async () => {

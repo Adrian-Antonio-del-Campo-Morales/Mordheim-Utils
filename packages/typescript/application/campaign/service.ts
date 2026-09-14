@@ -332,7 +332,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const outOfAction = Array.isArray(input["out_of_action_ids"]) ? input["out_of_action_ids"].map(String) : [];
           if (outOfAction.some((id) => unavailable.has(id))) return error("rejected", "Warriors excluded by a pre-battle injury check cannot be taken out of action.");
           const participants = state.current.campaign.warriors.filter((warrior) => (warrior.games_to_miss ?? 0) === 0 && !unavailable.has(warrior.id)).map((warrior) => warrior.id);
-          const absentees = state.current.campaign.warriors.filter((warrior) => !participants.includes(warrior.id)).map((warrior) => ({ id: warrior.id, name: warrior.name, quantity: warrior.quantity ?? 1, reason: unavailable.has(warrior.id) ? "Old Battle Wound" : warrior.absence_reason ?? "Injury" }));
+          const absentees = state.current.campaign.warriors.filter((warrior) => !participants.includes(warrior.id)).map((warrior) => ({ id: warrior.id, name: warrior.name, quantity: warrior.quantity ?? 1, reason: unavailable.has(warrior.id) ? "Old Battle Wound" : warrior.absence_reason ?? "Injury", ...(warrior.games_to_miss && warrior.games_to_miss > 0 ? { remaining_before: warrior.games_to_miss } : {}) }));
           const result = useCases.recordBattle(state.current, { ...input, out_of_action_ids: outOfAction, participants, absentees } as never, knowledge);
           if (!result.ok) return applyResult(result);
           const number = result.state.campaign.battles.at(-1)?.number;

@@ -206,6 +206,24 @@ describe("desktop test_battle_creation.py → web recordBattle parity", () => {
     if (!result.ok) expect(result.reason).toBe("not_available");
   });
 
+  it("serves every missed battle when the next battle is recorded", () => {
+    const base = settled();
+    const withAbsences: CampaignDocument = {
+      campaign: {
+        ...base.campaign,
+        warriors: base.campaign.warriors.map((warrior) => warrior.id === "marta"
+          ? { ...warrior, games_to_miss: 1, absence_reason: "Deep Wound" }
+          : warrior.id === "novices" ? { ...warrior, games_to_miss: 2, absence_reason: "Captured" } : warrior),
+      },
+      view: base.view,
+    };
+    const result = recordBattle(withAbsences, recordInput(), knowledge);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.state.campaign.warriors.find((warrior) => warrior.id === "marta")).toMatchObject({ games_to_miss: 0, absence_reason: "" });
+    expect(result.state.campaign.warriors.find((warrior) => warrior.id === "novices")).toMatchObject({ games_to_miss: 1, absence_reason: "Captured" });
+  });
+
   it("readiness excludes unavailable warriors with their absence reason", () => {
     const base = settled();
     const withAbsence: CampaignDocument = {

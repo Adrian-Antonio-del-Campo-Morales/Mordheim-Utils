@@ -385,24 +385,25 @@ export class RulesCatalogue {
     row: Readonly<Record<string, unknown>>,
     locale: Locale,
   ): readonly string[] {
-    const label = (value: string) => {
+    const label = (value: string): string | null => {
       const canonical = titleCase(value);
-      if (locale !== "es") return canonical;
-      return ({
+      const translated = ({
         Speed: "Velocidad", Combat: "Combate", Shooting: "Disparo", Academic: "Académicas", Strength: "Fuerza", Special: "Especiales",
         "Close Combat Weapon": "Arma de combate cuerpo a cuerpo", "Ranged Weapon": "Arma a distancia", Armour: "Armadura",
         "Shield Or Defence": "Escudo o defensa", "Combat Equipment": "Equipo de combate", "Material Or Upgrade": "Material o mejora",
         Hero: "Héroe", Henchman: "Secuaz", Multiplayer: "Multijugador",
-      } as Readonly<Record<string, string>>)[canonical] ?? canonical;
+      } as Readonly<Record<string, string>>)[canonical];
+      if (!translated) return null;
+      return locale === "es" ? translated : canonical;
     };
     switch (categoryId) {
       case "skills": {
         const table = String(row.category ?? "").trim();
-        return table && table !== "None" ? [label(table)] : [];
+        return table && table !== "None" && label(table) ? [label(table)!] : [];
       }
       case "equipment": {
         const kind = String(row.kind ?? "").trim();
-        return kind ? [label(kind)] : [];
+        return kind && label(kind) ? [label(kind)!] : [];
       }
       case "spells": {
         const loreName = row._lore && typeof row._lore === "object"
@@ -410,21 +411,22 @@ export class RulesCatalogue {
           : titleCase(String(row.lore_id ?? ""));
         const difficulty = row.difficulty;
         return [difficulty !== undefined && difficulty !== null
-          ? `${loreName} · difficulty ${String(difficulty)}`
+          ? `${loreName} · ${locale === "es" ? "Dificultad" : "difficulty"} ${String(difficulty)}`
           : loreName];
       }
       case "scenarios": {
         const mode = String(row.player_mode ?? "").trim();
-        return mode ? [label(mode)] : [];
+        return mode && label(mode) ? [label(mode)!] : [];
       }
       case "injuries": {
         const applies = String(row.applies_to ?? "").trim();
-        return applies ? [label(applies)] : [];
+        return applies && label(applies) ? [label(applies)!] : [];
       }
       case "band-rules": {
         const bandId = String(row.band_id ?? "");
         const band = this.knowledge.list("band").find((item) => String(item.id) === bandId);
-        return band ? [resolveName(band, locale)] : bandId ? [bandId] : [];
+        // A broken reference is not player-facing metadata; never leak its id.
+        return band ? [resolveName(band, locale)] : [];
       }
       default:
         return [];

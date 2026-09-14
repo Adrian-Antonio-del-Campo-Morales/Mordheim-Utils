@@ -42,7 +42,7 @@ describe("PostBattleInjuries", () => {
       campaign: {
         warriors: [{ id: "hero-1", name: "Marta", profile_name: "Heroína", kind: "hero", stats: {}, equipment: [], skills: [], experience: 0, cost: 40, injury_records: [{ battle_number: 1, casualty_index: 1, result_id: "recovery", result: "Full recovery", rolled_dice: [4, 6], roll: 46 }] }],
         battles: [{ number: 1, out_of_action_ids: ["hero-1"], participants: [] }],
-        post_battles: [{ battle_number: 1, complete: false, pending_follow_ups: [], step_state: {} }],
+        post_battles: [{ battle_number: 1, complete: false, pending_follow_ups: [], step_state: { injuries: { "hero-1:1": { follow_up_rolls: [{ phase: "subtable", dice: [2, 5], roll: 25 }] } } } }],
       }, view: {},
     } as unknown as CampaignDocument;
     const service = { current: () => document, isDirty: () => false, subscribe: () => () => undefined, run: vi.fn() } as never;
@@ -50,6 +50,7 @@ describe("PostBattleInjuries", () => {
     render(<CampaignAppProvider service={service}><PostBattleInjuries document={document} knowledge={knowledge} locale="es" /></CampaignAppProvider>);
 
     expect(screen.getByText("Tirada: 4, 6 → 46")).toBeInTheDocument();
+    expect(screen.getByText("Resultado secundario de la herida: Tirada 2, 5 → 25")).toBeInTheDocument();
     expect(screen.queryByText("Sin acciones pendientes")).not.toBeInTheDocument();
   });
 

@@ -168,6 +168,7 @@ export function PostBattleInjuries({
                   Number(row.casualty_index ?? 1) === casualtyIndex,
               );
               const resolved = resolvedInjuries[`${warrior.id}:${casualtyIndex}`];
+              const followUpRolls = Array.isArray(resolved?.follow_up_rolls) ? resolved.follow_up_rolls as Record<string, unknown>[] : [];
               const record = storedRecord ?? resolved;
               const followUps = (post.pending_follow_ups ?? []).filter(
                 (row) =>
@@ -278,6 +279,7 @@ export function PostBattleInjuries({
                                   void run("resolveSoldToPits", {
                                     follow_up_id: id,
                                     won: false,
+                                    dice,
                                     injury_roll: dice[0] * 10 + dice[1],
                                   })
                                 }
@@ -384,6 +386,7 @@ export function PostBattleInjuries({
                             onResolve={(rolls) =>
                               void run("resolveInjuryTableFollowUp", {
                                 follow_up_id: id,
+                                dice: rolls,
                                 roll:
                                   dice[0] === 2 && dice[1] === 6
                                     ? rolls[0] * 10 + rolls[1]
@@ -416,9 +419,9 @@ export function PostBattleInjuries({
                         );
                       })
                     ) : (
-                      <span>{Array.isArray(record?.rolled_dice) && record.rolled_dice.length > 0
+                      <>{<span>{Array.isArray(record?.rolled_dice) && record.rolled_dice.length > 0
                         ? `${t.roll}: ${record.rolled_dice.join(", ")}${Number.isInteger(record.roll) && record.rolled_dice.length > 1 ? ` → ${record.roll}` : ""}`
-                        : t.resolved}</span>
+                        : t.resolved}</span>}{followUpRolls.map((entry,index)=>{const dice=Array.isArray(entry.dice)?entry.dice.map(Number):[];return <small key={index}>{followUpLabel({resolution_phase:entry.phase},locale)}: {t.roll} {dice.join(", ")}{Number.isInteger(entry.roll)&&dice.length>1?` → ${entry.roll}`:""}</small>})}</>
                     )}
                   </td>
                 </tr>

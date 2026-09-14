@@ -23,8 +23,6 @@ describe("shared campaign action errors", () => {
     ["Not enough gold: 35 gc needed.", "No hay suficientes CO: se necesitan 35."],
     ["Not enough wyrdstone shard(s): 3 needed, 1 available.", "No hay suficientes fragmentos de piedra bruja: se necesitan 3 y hay 1 disponibles."],
     ["Unknown warrior id: hero-7.", "No se encuentra el identificador de guerrero: hero-7."],
-    ["Profile \"captain\" is not available to this warband.", "El perfil «captain» no está disponible para esta banda."],
-    ["Groups of \"swordsman\" hold at most 5 models.", "Los grupos de «swordsman» pueden tener como máximo 5 miniaturas."],
     ["Only 2 unassigned copy/copies are available.", "Solo hay 2 copia(s) sin asignar disponible(s)."],
     ["Battle numbers must be unique.", "Los números de batalla deben ser únicos."],
     ["A future engine error.", "No se pudo completar la acción: A future engine error."],
@@ -32,17 +30,29 @@ describe("shared campaign action errors", () => {
     expect(localizeErrorMessage(message, "es")).toBe(expected);
   });
 
+  it.each([
+    ["Profile \"captain\" is not available to this warband.", "captain", "Capitán"],
+    ["Groups of \"swordsman\" hold at most 5 models.", "swordsman", "Espadachín"],
+    ["Roster limit for \"great-headhunter\" is 1 models.", "great-headhunter", "Gran Cazacabezas"],
+  ])("never exposes the known profile id in %s", (message, id, name) => {
+    const localized = localizeErrorMessage(message, "es", (candidate) => candidate === id ? name : candidate);
+    expect(localized).toContain(name);
+    expect(localized).not.toContain(id);
+  });
+
   it("shows a rejection raised by a nested action in the visible campaign notice", async () => {
     const service = {
       current: () => null,
       isDirty: () => false,
       subscribe: () => () => undefined,
-      run: vi.fn().mockResolvedValue({ ok: false, reason: "limit_reached", message: "Roster limit reached (1/1)." }),
+      run: vi.fn().mockResolvedValue({ ok: false, reason: "limit_reached", message: "Roster limit for \"great-headhunter\" is 1 models." }),
     } as never;
-    render(<CampaignAppProvider service={service} locale="es"><Notice /><Recruit /></CampaignAppProvider>);
+    render(<CampaignAppProvider service={service} locale="es" profileName={(id) => id === "great-headhunter" ? "Gran Cazacabezas" : id}><Notice /><Recruit /></CampaignAppProvider>);
 
     await userEvent.click(screen.getByRole("button", { name: "Reclutar" }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("Se ha alcanzado el límite de la lista (1/1).");
+    const notice = await screen.findByRole("alert");
+    expect(notice).toHaveTextContent("El límite de lista para «Gran Cazacabezas» es de 1 miniaturas.");
+    expect(notice).not.toHaveTextContent("great-headhunter");
   });
 });

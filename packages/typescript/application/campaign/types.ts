@@ -22,10 +22,19 @@ export type AppErrorReason =
   | "rejected"
   | "unknown";
 
+/** Presentation identity travels separately from the diagnostic English message. */
+export interface UiMessage {
+  readonly key: string;
+  readonly args?: Readonly<Record<string, string | number>>;
+}
+
 export interface AppError {
   readonly ok: false;
   readonly reason: AppErrorReason;
   readonly message: string;
+  /** New callers render this stable key; legacy callers may still use message. */
+  readonly message_key?: UiMessage["key"];
+  readonly message_args?: UiMessage["args"];
   /** Present when the failure came from the file port or a use case. */
   readonly detail?: Readonly<Record<string, unknown>>;
 }

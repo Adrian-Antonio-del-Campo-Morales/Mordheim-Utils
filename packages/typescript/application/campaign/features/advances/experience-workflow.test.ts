@@ -25,6 +25,10 @@ function henchman(id: string, name: string, experience: number): Warrior {
   return { id, name, profile_name: "Sister", kind: "henchman", profile_id: id, stats: { M: 4, WS: 3 }, equipment: [], skills: [], experience, cost: 45, quantity: 1 };
 }
 
+function hireling(id: string, name: string, experience: number): Warrior {
+  return { id, name, profile_name: "Hired Sword", kind: "hireling", profile_id: `hireling.${id}`, stats: { M: 4, WS: 3 }, equipment: [], skills: [], experience, cost: 45 };
+}
+
 function makePending(xpDelta: number, warriors: readonly Warrior[], absentees: readonly unknown[] = [], opponentRating?: number | null): CampaignDocument {
   const doc: unknown = {
     view: {},
@@ -86,6 +90,15 @@ describe("applyBattleExperience (desktop apply_battle_experience)", () => {
     const again = applyBattleExperience(result.document, knowledge);
     expect(again.ok).toBe(false);
     if (!again.ok) expect(again.reason).toBe("conflict");
+  });
+
+  it("uses Henchman XP thresholds but the Hero table for Hired Swords", () => {
+    const result = applyBattleExperience(makePending(1, [hireling("sword-1", "Ogre Bodyguard", 4)]), knowledge);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.document.campaign.post_battles[0].pending_advances).toEqual([
+      expect.objectContaining({ warrior_id: "sword-1", threshold: 5, table: "hero" }),
+    ]);
   });
 
   it("honours per-warrior scenario awards over the common delta", () => {

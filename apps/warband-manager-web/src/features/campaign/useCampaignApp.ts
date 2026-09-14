@@ -18,17 +18,29 @@ import type {
   MomentSelection,
 } from "./types";
 import { createDefaultDeps, createDefaultDepsAsync } from "./default-deps";
-import { withOperationProgress } from "../common/OperationProgress";
+import { withOperationProgress } from "../common/operationProgressEvents";
+import { isUiMessageKey, translate } from "./i18n-core";
 
-const CampaignServiceContext = createContext<{ service: CampaignAppService; locale: "es" | "en" } | null>(null);
+const CampaignServiceContext = createContext<{ service: CampaignAppService; locale: "es" | "en"; profileName?: (id: string) => string } | null>(null);
 const CAMPAIGN_ERROR_EVENT = "warband-manager:campaign-error";
 
 function publishCampaignError(message: string | null): void {
   window.dispatchEvent(new CustomEvent<string | null>(CAMPAIGN_ERROR_EVENT, { detail: message }));
 }
 
-export function CampaignAppProvider({ service, locale = "en", children }: { service: CampaignAppService; locale?: "es" | "en"; children: ReactNode }) {
-  return createElement(CampaignServiceContext.Provider, { value: { service, locale } }, children);
+/** Closes transient UI that would otherwise hide a campaign action error. */
+export function useCloseOnCampaignError(close: () => void): void {
+  useEffect(() => {
+    const onError = (event: Event) => {
+      if ((event as CustomEvent<string | null>).detail) close();
+    };
+    window.addEventListener(CAMPAIGN_ERROR_EVENT, onError);
+    return () => window.removeEventListener(CAMPAIGN_ERROR_EVENT, onError);
+  }, [close]);
+}
+
+export function CampaignAppProvider({ service, locale = "en", profileName, children }: { service: CampaignAppService; locale?: "es" | "en"; profileName?: (id: string) => string; children: ReactNode }) {
+  return createElement(CampaignServiceContext.Provider, { value: { service, locale, profileName } }, children);
 }
 
 export interface CampaignAppView {
@@ -64,7 +76,7 @@ async function readFileText(file: File): Promise<string> {
   });
 }
 
-export function localizeErrorMessage(message: string, locale: "es" | "en"): string {
+export function localizeErrorMessage(message: string, locale: "es" | "en", profileName: (id: string) => string = (id) => id): string {
   if (locale !== "es") return message;
   if (/^(Abre|Debes|El|Ella|Espera|Esta|Este|Introduce|La|Las|Los|No |Selecciona|Se |Ya )/.test(message)) return message;
   const exact: Record<string, string> = {
@@ -148,11 +160,11 @@ export function localizeErrorMessage(message: string, locale: "es" | "en"): stri
   match = message.match(/^Unknown (.+?): (.+)\.$/);
   if (match) return `No se encuentra ${match[1]}: ${match[2]}.`;
   match = message.match(/^Profile "(.+)" is not available to this warband\.$/);
-  if (match) return `El perfil «${match[1]}» no está disponible para esta banda.`;
+  if (match) return `El perfil «${profileName(match[1])}» no está disponible para esta banda.`;
   match = message.match(/^Groups of "(.+)" hold at most (\d+) models\.$/);
-  if (match) return `Los grupos de «${match[1]}» pueden tener como máximo ${match[2]} miniaturas.`;
+  if (match) return `Los grupos de «${profileName(match[1])}» pueden tener como máximo ${match[2]} miniaturas.`;
   match = message.match(/^Roster limit for "(.+)" is (\d+) models\.$/);
-  if (match) return `El límite de lista para «${match[1]}» es de ${match[2]} miniaturas.`;
+  if (match) return `El límite de lista para «${profileName(match[1])}» es de ${match[2]} miniaturas.`;
   match = message.match(/^Only (\d+) unassigned copy\/copies are available\.$/);
   if (match) return `Solo hay ${match[1]} copia(s) sin asignar disponible(s).`;
   match = message.match(/^Invalid (?:price|upgrade price): (.+)\.$/);
@@ -170,7 +182,10 @@ export function localizeErrorMessage(message: string, locale: "es" | "en"): stri
   return `No se pudo completar la acción: ${message}`;
 }
 
-function messageOf(err: AppError, locale: "es" | "en"): string {
+function messageOf(err: AppError, locale: "es" | "en", profileName?: (id: string) => string): string {
+  if (isUiMessageKey(err.message_key)) {
+    return translate({ key: err.message_key, args: err.message_args }, locale);
+  }
   const detail = err.detail as Record<string, unknown> | undefined;
   const fileReason = detail?.file_reason;
   if (fileReason === "retired_version") {
@@ -187,15 +202,16 @@ function messageOf(err: AppError, locale: "es" | "en"): string {
   }
   if (fileReason === "schema_violation") {
     const location = detail?.location ? ` (at ${String(detail.location)})` : "";
-    return locale === "es" ? `El archivo incumple el formato de campaña${detail?.location ? ` (en ${String(detail.location)})` : ""}: ${localizeErrorMessage(err.message, locale)}` : `This file violates the campaign format${location}: ${err.message}`;
+    return locale === "es" ? `El archivo incumple el formato de campaña${detail?.location ? ` (en ${String(detail.location)})` : ""}: ${localizeErrorMessage(err.message, locale, profileName)}` : `This file violates the campaign format${location}: ${err.message}`;
   }
-  return localizeErrorMessage(err.message, locale);
+  return localizeErrorMessage(err.message, locale, profileName);
 }
 
 export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
   const shared = useContext(CampaignServiceContext);
   service ??= shared?.service;
   const locale = shared?.locale ?? "en";
+  const profileName = shared?.profileName;
   // P5.2 acceptance: when no service is injected, start on the synchronous
   // fake-composed service (tests and first paint) and upgrade to the real
   // KB reader once the artefact fetch resolves. A load failure surfaces
@@ -259,12 +275,12 @@ export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
         setDirty(app.isDirty());
       } else if (!confirm && (result as AppError).reason === "already_loaded") {
         // Remember the file; the UI asks for confirmation and calls confirmReplace.
-        setError(localizeErrorMessage("Replace the currently loaded campaign? Unsaved changes will be lost.", locale));
+        setError(localizeErrorMessage("Replace the currently loaded campaign? Unsaved changes will be lost.", locale, profileName));
       } else {
-        setError(messageOf(result as AppError, locale));
+        setError(messageOf(result as AppError, locale, profileName));
       }
     },
-    [app, locale],
+    [app, locale, profileName],
   );
 
   const importFile = useCallback(
@@ -300,9 +316,9 @@ export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
       setDirty(app.isDirty());
       setError(null);
     } else {
-      setError(messageOf(result as AppError, locale));
+      setError(messageOf(result as AppError, locale, profileName));
     }
-  }, [app, locale]);
+  }, [app, locale, profileName]);
 
   const runAction = useCallback(
     async (action: string, input: Record<string, unknown>) => {
@@ -315,18 +331,18 @@ export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
           publishCampaignError(null);
           return true;
         }
-        const message = messageOf(result, locale);
+        const message = messageOf(result, locale, profileName);
         setError(message);
         publishCampaignError(message);
         return false;
       } catch (cause) {
-        const message = localizeErrorMessage(cause instanceof Error ? cause.message : String(cause), locale);
+        const message = localizeErrorMessage(cause instanceof Error ? cause.message : String(cause), locale, profileName);
         setError(message);
         publishCampaignError(message);
         return false;
       } });
     },
-    [app, locale],
+    [app, locale, profileName],
   );
 
   // P6.1: view selection only — refreshes the document snapshot in state;
@@ -339,10 +355,10 @@ export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
         setError(null);
         setDirty(app.isDirty());
       } else {
-        setError(messageOf(result, locale));
+        setError(messageOf(result, locale, profileName));
       }
     },
-    [app, locale],
+    [app, locale, profileName],
   );
 
   return {

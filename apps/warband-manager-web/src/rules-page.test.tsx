@@ -36,8 +36,12 @@ describe("RulesPage magic groups", () => {
     expect(screen.getByRole("button", { name: "Reglas de Banda" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Hechizos" }));
 
-    expect(within(screen.getByRole("region", { name: "Plegarias" })).getByRole("button", { name: "Bendición" })).toBeInTheDocument();
-    expect(within(screen.getByRole("region", { name: "Saber Mágico" })).getByRole("button", { name: "Fuego" })).toBeInTheDocument();
+    const prayers = screen.getByText("Plegarias", { selector: "summary" }).closest("details");
+    const magic = screen.getByText("Saber Mágico", { selector: "summary" }).closest("details");
+    expect(prayers).not.toHaveAttribute("open");
+    expect(magic).not.toHaveAttribute("open");
+    fireEvent.click(screen.getByText("Plegarias", { selector: "summary" }));
+    expect(within(prayers!).getByRole("button", { name: "Bendición" })).toBeInTheDocument();
 
     fireEvent.change(screen.getByRole("textbox", { name: "Buscar Reglas" }), { target: { value: "Plegarias" } });
     expect(screen.getByRole("button", { name: /Bendición/ })).toBeInTheDocument();

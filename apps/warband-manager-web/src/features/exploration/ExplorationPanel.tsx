@@ -106,6 +106,7 @@ export function ExplorationPanel({
           adjust: "Modifica un dado en 1",
           consequence: "Consecuencia",
           subsequentRolls: "Tiradas posteriores",
+          resolveFollowUp: "Resolver seguimiento de exploración",
         }
       : {
           title: "Exploration",
@@ -138,6 +139,7 @@ export function ExplorationPanel({
           adjust: "Modify one die by 1",
           consequence: "Consequence",
           subsequentRolls: "Subsequent rolls",
+          resolveFollowUp: "Resolve exploration follow-up",
         };
   const advances = (post.pending_advances ?? []).some(
     (row) => !row["committed"],
@@ -316,6 +318,9 @@ export function ExplorationPanel({
                     })
                   }
                 />
+              )}
+              {followup && !pending && Boolean(state?.["resolved"]) && (
+                <button type="button" onClick={() => void app.runAction("continueExploration", {})}>{t.resolveFollowUp}</button>
               )}
               {pending?.["kind"] === "choose_hero" && (
                 <label>
