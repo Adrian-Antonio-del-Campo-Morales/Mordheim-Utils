@@ -5,7 +5,7 @@
  * tests). Rejections surface via the seam's error, never thrown.
  */
 import { describe, expect, it, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { act, render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 
 import type { CampaignDocument } from "../campaign/types";
@@ -126,7 +126,7 @@ describe("InjuriesPanel", () => {
     const view = defaultView();
     harness({ ...view });
     render(<InjuriesPanel document={document} />);
-    fireEvent.click(screen.getByLabelText("Recover Sigrid"));
+    await act(async () => { fireEvent.click(screen.getByLabelText("Recover Sigrid")); });
     await vi.waitFor(() => {
       expect(view.runAction).toHaveBeenCalledWith("recoverWarrior", { warrior_id: "w1" });
     });
@@ -136,7 +136,7 @@ describe("InjuriesPanel", () => {
     const view = defaultView();
     harness({ ...view });
     render(<InjuriesPanel document={document} />);
-    fireEvent.click(screen.getByLabelText("Resolve injury roll injury:w1:mangled_leg"));
+    await act(async () => { fireEvent.click(screen.getByLabelText("Resolve injury roll injury:w1:mangled_leg")); });
     await vi.waitFor(() => {
       expect(view.runAction).toHaveBeenCalledWith(
         "resolveInjuryFollowUp",

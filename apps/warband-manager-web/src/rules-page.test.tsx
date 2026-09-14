@@ -59,4 +59,29 @@ describe("RulesPage magic groups", () => {
     expect(reiklanders).toHaveAttribute("open");
     expect(within(reiklanders!).getByRole("button", { name: "Jefe" })).toBeInTheDocument();
   });
+
+  it("returns to the same filtered result and restores mobile focus and scroll", async () => {
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: true })));
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+    const originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
+    HTMLElement.prototype.scrollIntoView = vi.fn();
+    try {
+      render(<ProductApp />);
+      await waitFor(() => expect(screen.getByRole("button", { name: "Reglas" })).toBeEnabled());
+      fireEvent.click(screen.getByRole("button", { name: "Reglas" }));
+      const search = screen.getByRole("textbox", { name: "Buscar Reglas" });
+      fireEvent.change(search, { target: { value: "Bendición" } });
+      const result = screen.getByRole("button", { name: /Bendición/ });
+      fireEvent.click(result);
+      expect(document.activeElement).toHaveClass("rule-detail");
+      fireEvent.click(screen.getByRole("button", { name: /Volver a resultados/ }));
+      expect(search).toHaveValue("Bendición");
+      expect(result).toHaveFocus();
+      expect(scrollTo).toHaveBeenCalledWith({ top: 0 });
+    } finally {
+      HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
+      scrollTo.mockRestore();
+      vi.unstubAllGlobals();
+    }
+  });
 });

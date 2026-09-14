@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -26,6 +26,22 @@ function loadReader() {
 }
 
 describe("KnowledgeHint", () => {
+  it("provides a native dismissible popover without submitting the surrounding form", () => {
+    const submit = vi.fn((event: React.FormEvent) => event.preventDefault());
+    render(<form onSubmit={submit}><KnowledgeHint knowledge={knowledge} kind="item" id="sword" locale="es">Espada</KnowledgeHint></form>);
+    const trigger = screen.getByRole("button", { name: "Espada" });
+    fireEvent.click(trigger);
+    expect(submit).not.toHaveBeenCalled();
+    const popover = document.getElementById(trigger.getAttribute("popovertarget")!);
+    expect(popover).toHaveAttribute("popover", "auto");
+    expect(popover).toHaveTextContent("Una hoja fina.");
+    const close = popover!.querySelector("button")!;
+    expect(close).toHaveAttribute("popovertarget", popover!.id);
+    expect(close).toHaveAttribute("popovertargetaction", "hide");
+    fireEvent.click(close);
+    expect(submit).not.toHaveBeenCalled();
+  });
+
   it("shows the localized description, the fallback, and no native title", () => {
     const { container } = render(<><KnowledgeHint knowledge={knowledge} kind="item" id="sword" locale="es">Espada</KnowledgeHint><KnowledgeHint knowledge={knowledge} kind="item" id="rope" locale="es">Cuerda</KnowledgeHint><KnowledgeHint kind="item" id="missing" locale="en">Missing</KnowledgeHint></>);
     expect(screen.getByText("Espada")).toHaveAttribute("data-tooltip", "Una hoja fina.");

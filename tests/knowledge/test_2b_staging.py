@@ -61,12 +61,21 @@ def test_active_collection_count_is_unchanged() -> None:
 
 
 def test_staging_uses_the_same_document_contract() -> None:
-    """Every modeled band package carries exactly the four canonical documents."""
+    """Band packages claimed as modeled or beyond carry the four canonical docs.
+
+    The manifest status is the source of truth: a directory may lag behind
+    while another worker is transcribing, and an in-progress package is not
+    an error until its manifest row claims 'modeled' or later.
+    """
+    rows = {str(row.get("id")): row for row in manifest_rows()}
     staging_dirs = STAGING / "bands" / "mordheim"
     if not staging_dirs.exists():
         return
     for band_dir in sorted(staging_dirs.iterdir()):
         if not band_dir.is_dir():
+            continue
+        status = (rows.get(band_dir.name) or {}).get("status")
+        if status not in {"modeled", "english-reviewed", "translated", "validated", "promotable"}:
             continue
         for document in BAND_DOCUMENTS:
             assert (band_dir / document).exists(), f"{band_dir.name}: missing {document}"
@@ -87,13 +96,19 @@ def test_manifest_rows_are_well_formed() -> None:
         if row.get("status") != "discovered":
             assert row.get("sha256"), f"{band_id}: no sha256 despite status {row.get('status')}"
         if row.get("blockers"):
-            assert row.get("status") == "discovered", (
-                f"{band_id}: status {row.get('status')} with open blockers"
+            assert row.get("status") not in {"validated", "promotable"}, (
+                f"{band_id}: status {row.get('status')} must be blocker-free"
             )
 
 
 def test_modeled_bands_have_consistent_references() -> None:
-    """Roster, rule and equipment references inside a modeled band resolve."""
+    """Roster, rule and equipment references inside a modeled band resolve.
+
+    Like the document-contract test, this only applies to bands whose
+    manifest row claims 'modeled' or beyond; in-progress packages are
+    skipped while the transcribing worker is still writing.
+    """
+    rows = {str(row.get("id")): row for row in manifest_rows()}
     staging_dirs = STAGING / "bands" / "mordheim"
     if not staging_dirs.exists():
         return
@@ -115,6 +130,9 @@ def test_modeled_bands_have_consistent_references() -> None:
 
     for band_dir in sorted(staging_dirs.iterdir()):
         if not band_dir.is_dir():
+            continue
+        status = (rows.get(band_dir.name) or {}).get("status")
+        if status not in {"modeled", "english-reviewed", "translated", "validated", "promotable"}:
             continue
         band = yaml.safe_load((band_dir / "band.yaml").read_text(encoding="utf-8")) or {}
         profiles_doc = yaml.safe_load((band_dir / "profiles.yaml").read_text(encoding="utf-8")) or {}

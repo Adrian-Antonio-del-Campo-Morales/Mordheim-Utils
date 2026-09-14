@@ -4,7 +4,7 @@
  * the pending post-battle; rejections surface in role=alert.
  */
 
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
 import { afterEach, describe, expect, it } from "vitest";
@@ -33,9 +33,20 @@ function makeCommittedDocument(): CampaignDocument {
   return committed.document;
 }
 
+const idleService = {
+  current: () => null,
+  isDirty: () => false,
+  subscribe: () => () => {},
+  run: async () => ({ ok: true }),
+} as unknown as CampaignAppService;
+
+function renderBattle(document: CampaignDocument, knowledge?: object) {
+  return render(<CampaignAppProvider service={idleService}><BattlePanel document={document} knowledge={knowledge as never} /></CampaignAppProvider>);
+}
+
 describe("P6.4 BattlePanel", () => {
-  it("renders the battle form with availability checkboxes", () => {
-    render(<BattlePanel document={makeCommittedDocument()} onDocument={() => undefined} />);
+  it("renders the battle form with availability checkboxes", async () => {
+    await act(async () => { renderBattle(makeCommittedDocument()); });
     expect(screen.getByLabelText(/scenario/i)).toBeTruthy();
     expect(screen.getByLabelText("Opponent", { exact: true })).toBeTruthy();
     expect(screen.getByText(/out of action/i)).toBeTruthy();
@@ -53,7 +64,7 @@ describe("P6.4 BattlePanel", () => {
       list: (kind: string) => kind === "scenario" ? [{ id: "hero-objective", names: { en: "Hero objective" } }] : [],
       campaignSection: (section: string) => section === "scenarios" ? { scenarios: [{ id: "hero-objective", progression: { experience: [{ effect: "Any warrior earns +1 Experience" }] } }] } : {},
     };
-    render(<BattlePanel document={document} knowledge={knowledge as never} />);
+    renderBattle(document, knowledge);
     await user.selectOptions(screen.getByLabelText("Scenario"), "hero-objective");
     const objectives = screen.getByRole("group", { name: "Scenario objectives" });
     expect(within(objectives).getByLabelText(hero.name)).toHaveAttribute("type", "checkbox");
@@ -70,7 +81,7 @@ describe("P6.4 BattlePanel", () => {
       list: (kind: string) => kind === "scenario" ? [{ id: "enemy-award", names: { en: "Enemy award" } }] : [],
       campaignSection: (section: string) => section === "scenarios" ? { scenarios: [{ id: "enemy-award", progression: { experience: [{ ref: "campaign.experience.award.per-enemy-out-of-action" }] } }] } : section === "experience-and-advances" ? { awards: [{ id: "campaign.experience.award.per-enemy-out-of-action", amount: 1, trigger: "enemy_put_out_of_action" }] } : {},
     };
-    render(<BattlePanel document={document} knowledge={knowledge as never} />);
+    renderBattle(document, knowledge);
     await user.selectOptions(screen.getByLabelText("Scenario"), "enemy-award");
     await user.click(screen.getByRole("button", { name: `Enemies put out of action ${hero.name} +` }));
     expect(screen.getByLabelText(`Enemies put out of action ${hero.name}`)).toHaveTextContent("1");
@@ -123,9 +134,6 @@ describe("P6.4 BattlePanel", () => {
   it("surfaces the pending-battle conflict in role=alert", async () => {
     const user = userEvent.setup();
     let current = makeCommittedDocument();
-    const onDocument = (document: CampaignDocument) => {
-      current = document;
-    };
     // Build a campaign whose post-battle is already pending: record once via
     // the workflow, then mount the panel and try to resolve with no steps.
     const knowledge = new FakeKnowledgeReader();
@@ -145,7 +153,7 @@ describe("P6.4 BattlePanel", () => {
     if (!recorded.ok) throw new Error("record should succeed");
     current = recorded.document;
 
-    render(<BattlePanel document={current} onDocument={onDocument} />);
+    await act(async () => { renderBattle(current); });
     // The panel shows the pending navigation instead of the form; the alert
     // surface appears only on error, so assert the pending state instead.
     expect(screen.getByText(/Post-battle #1/)).toBeTruthy();

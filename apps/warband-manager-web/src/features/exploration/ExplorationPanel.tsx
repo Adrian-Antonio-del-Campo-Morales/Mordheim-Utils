@@ -13,6 +13,7 @@ import { knowledgeName, localizedLabel, readableValue } from "../campaign/displa
 
 function visibleText(value: unknown, locale: "en" | "es", fallback: string): string {
   if (!value) return fallback;
+  if (typeof value === "object") return readableValue(value, locale);
   const text = String(value);
   const es: Record<string, string> = { "Choose a Henchman group": "Elige un grupo de Secuaces", "Choose equipment": "Elige equipo", "Choose warriors": "Elige guerreros", "Do not recruit the prisoner": "No reclutar al prisionero" };
   return locale === "es" ? es[text] ?? (text.includes(".") ? localizedLabel(text, locale) : readableValue(text, locale)) : (text.includes(".") ? localizedLabel(text, locale) : readableValue(text, locale));
@@ -104,6 +105,7 @@ export function ExplorationPanel({
           modifiers: "Modificadores activos",
           adjust: "Modifica un dado en 1",
           consequence: "Consecuencia",
+          subsequentRolls: "Tiradas posteriores",
         }
       : {
           title: "Exploration",
@@ -135,6 +137,7 @@ export function ExplorationPanel({
           modifiers: "Active modifiers",
           adjust: "Modify one die by 1",
           consequence: "Consequence",
+          subsequentRolls: "Subsequent rolls",
         };
   const advances = (post.pending_advances ?? []).some(
     (row) => !row["committed"],
@@ -160,6 +163,9 @@ export function ExplorationPanel({
     : [];
   const specialEffects = Array.isArray(state?.["special_effects"])
     ? (state["special_effects"] as unknown[]).filter((effect): effect is string => typeof effect === "string")
+    : [];
+  const followUpRolls = Array.isArray(state?.["follow_up_rolls"])
+    ? state["follow_up_rolls"] as OpenPayload[]
     : [];
   const apply = (dice: readonly number[]) => {
     void app.runAction("applyExploration", { dice });
@@ -212,7 +218,7 @@ export function ExplorationPanel({
             </td>
             <td data-label={t.action}>
               {state?.["resolved"] ? (
-                !followup && <span role="status">{resolvedDice.length ? `${t.roll}: ${resolvedDice.join(", ")} → ${state["total"]}` : t.resolved}</span>
+                !followup && <><span role="status">{resolvedDice.length ? `${t.roll}: ${resolvedDice.join(", ")} → ${state["total"]}` : t.resolved}</span>{followUpRolls.length > 0 && <section className="exploration-roll-history" aria-label={t.subsequentRolls}>{followUpRolls.map((row, index) => { const dice=Array.isArray(row["dice"]) ? (row["dice"] as unknown[]).map(Number) : []; return <div key={`${index}:${String(row["total"])}`}><strong>{visibleText(row["label"], locale, `${t.followUpRoll} ${index + 1}`)}</strong><span>{dice.length ? `${dice.join(", ")} → ` : ""}{String(row["total"] ?? "—")}</span></div>; })}</section>}</>
               ) : !post.experience_applied || advances ? (
                 <p role="status">{t.first}</p>
               ) : count === 0 ? (
@@ -306,6 +312,7 @@ export function ExplorationPanel({
                   onResolve={(dice) =>
                     void app.runAction("continueExploration", {
                       roll: dice.reduce((sum, item) => sum + item, 0),
+                      dice,
                     })
                   }
                 />

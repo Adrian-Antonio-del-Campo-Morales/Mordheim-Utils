@@ -1,9 +1,10 @@
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { adaptDistanceText } from "@app/rules/distance-display";
 import { knowledgeRows, matchesKnowledgeId } from "./displayText";
 
 export function KnowledgeHint({ knowledge, kind, id, profileId, bandId, locale, children }: { knowledge?: ArtefactKnowledgeReader; kind: "item" | "skill" | "rule" | "injury"; id: string; profileId?: string; bandId?: string; locale: "es" | "en"; children: ReactNode }) {
+  const hintId = useId();
   const matches = knowledgeRows(knowledge, kind).filter((entry) => matchesKnowledgeId(entry, id));
   const row = matches.find((entry) => {
     const appliesTo = entry.applies_to as Readonly<Record<string, unknown>> | undefined;
@@ -19,5 +20,5 @@ export function KnowledgeHint({ knowledge, kind, id, profileId, bandId, locale, 
   const tooltip = typeof description === "string"
     ? adaptDistanceText(description, locale, recordId)
     : fallback;
-  return <span className="knowledge-hint" tabIndex={0} data-tooltip={tooltip}>{children}</span>;
+  return <><button type="button" className="knowledge-hint" data-tooltip={tooltip} popoverTarget={hintId}>{children}</button><span id={hintId} popover="auto" className="knowledge-popover" role="dialog" aria-label={locale === "es" ? "Descripción" : "Description"}><button type="button" className="knowledge-popover-close" popoverTarget={hintId} popoverTargetAction="hide">{locale === "es" ? "Cerrar" : "Close"}</button><span className="knowledge-popover-text">{tooltip}</span></span></>;
 }

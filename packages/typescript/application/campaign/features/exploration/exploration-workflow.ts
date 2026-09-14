@@ -1345,6 +1345,7 @@ function processQueue(
             : row,
         )
   ).filter((row) => !removedWarriorIds.has(String(row["warrior_id"] ?? "")));
+  const rollHistory = Array.isArray(current["roll_history"]) ? current["roll_history"] as OpenPayload[] : [];
   const changedPost = {
     ...post,
     gold_delta: gold,
@@ -1359,13 +1360,14 @@ function processQueue(
         ([id]) => !removedWarriorIds.has(id),
       ),
     ),
-    ...(finished && current["result_id"]
+    ...((finished && current["result_id"]) || rollHistory.length
       ? {
           step_state: {
             ...(post.step_state ?? {}),
             exploration: {
               ...((post.step_state?.["exploration"] ?? {}) as OpenPayload),
-              special_effects: messages,
+              ...(rollHistory.length ? { follow_up_rolls: rollHistory } : {}),
+              ...(finished && current["result_id"] ? { special_effects: messages } : {}),
             },
           },
         }
@@ -1399,6 +1401,7 @@ export function continueExploration(
   reader: CatalogueReader,
   input: {
     roll?: number;
+    dice?: readonly number[];
     hero_id?: string;
     option_id?: string;
     warrior_ids?: readonly string[];
@@ -1476,17 +1479,19 @@ export function continueExploration(
     const count = Number(pending["dice_count"] ?? 1),
       sides = Number(pending["dice_sides"] ?? 6),
       roll = input.roll;
+    const dice = input.dice?.map(Number) ?? [];
     if (
       !Number.isInteger(roll) ||
       Number(roll) < count ||
-      Number(roll) > count * sides
+      Number(roll) > count * sides ||
+      (dice.length > 0 && (dice.length !== count || dice.some((die) => !Number.isInteger(die) || die < 1 || die > sides) || dice.reduce((sum, die) => sum + die, 0) !== roll))
     )
       return {
         ok: false,
         message: `Roll must be between ${count} and ${count * sides}.`,
       };
     const spec = (pending["spec"] ?? {}) as OpenPayload;
-    current = { ...current, last_roll: roll };
+    current = { ...current, last_roll: roll, roll_history: [...((current["roll_history"] ?? []) as OpenPayload[]), { label: pending["label"], dice, total: roll }] };
     if (pending["continuation"]) {
       queue.unshift(pending["continuation"] as OpenPayload);
       queue.unshift({

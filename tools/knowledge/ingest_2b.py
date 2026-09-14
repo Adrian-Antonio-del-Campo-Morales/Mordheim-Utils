@@ -10,8 +10,17 @@ Commands::
     python tools/knowledge/ingest_2b.py discover    # compare Broheim rows to the manifest
     python tools/knowledge/ingest_2b.py download    # fetch PDFs, compute SHA-256, log redirects
     python tools/knowledge/ingest_2b.py extract     # draft text extraction into the cache
+    python tools/knowledge/ingest_2b.py claim       # mark bands as owned (parallel coordination)
     python tools/knowledge/ingest_2b.py validate    # validate the staging tree
     python tools/knowledge/ingest_2b.py report      # progress by band and source
+
+Claims: transcription workers announce ownership with ``claim --owner NAME``
+so parallel threads never transcribe the same band. Bulk claims (``--source``)
+take only free ``text-extracted`` rows; explicit ``--ids`` may also claim
+``pdf-verified`` rows (e.g. for OCR work); ``modeled``-and-beyond rows are
+never claimable. ``--release`` frees your claims, ``--force`` takes over a
+foreign claim. Coordination is last-writer-wins at manifest granularity:
+check ``claim --list`` (or a ``--dry-run``) before committing.
 
 Manifest rows progress through::
 
@@ -34,6 +43,7 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
+from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
@@ -174,6 +184,8 @@ def match_manifest(rows: list[dict], observed: list[dict]) -> tuple[list[dict], 
                 "pdf_is_text": None,
                 "blockers": [],
                 "notes": [],
+                "owner": None,
+                "claimed_at": None,
             }
             updated.append(row)
             index[key] = row
@@ -300,13 +312,17 @@ def cmd_extract(args: argparse.Namespace) -> int:
             print(f"ERROR {row['id']}: extraction failed: {error}")
             failures += 1
             continue
-        printable = bool(text.strip()) and page_count > 0
-        if not printable:
-            printable = False
+        # A near-empty extraction on a multi-page document means the pages
+        # are scanned images: draft text is useless and OCR is required.
+        # (Page markers alone add ~20 chars per page.)
+        printable = page_count > 0 and len(text.strip()) >= 40 * page_count
         row["pdf_is_text"] = printable
         row["pdf_pages"] = page_count
         if not printable:
             row["blockers"] = sorted(set((row.get("blockers") or [])) | {"ocr-required"})
+            # A doubt reverts the row to its previous state: the draft text
+            # does not exist, so 'text-extracted' has not been reached.
+            row["status"] = "pdf-verified"
             print(f"OCR?  {row['id']}: no extractable text ({page_count} pages)")
         else:
             row["blockers"] = [b for b in (row.get("blockers") or []) if b != "ocr-required"]
@@ -317,6 +333,106 @@ def cmd_extract(args: argparse.Namespace) -> int:
             print(f"OK    {row['id']}: {page_count} pages -> {text_dir / (row['id'] + '.txt')}")
     save_manifest(rows)
     return 1 if failures else 0
+
+
+# --------------------------------------------------------------------------
+# claims (parallel-worker coordination)
+# --------------------------------------------------------------------------
+
+CLAIMABLE_BULK_STATUSES = {"text-extracted"}
+CLAIMABLE_EXPLICIT_STATUSES = {"pdf-verified", "text-extracted"}
+CLAIM_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+
+
+def claimable(row: dict, explicit: bool) -> bool:
+    """Whether a row may be claimed: past PDF text extraction, not yet modeled."""
+    status = row.get("status")
+    if status in CLAIMABLE_BULK_STATUSES:
+        return True
+    if explicit and status in CLAIMABLE_EXPLICIT_STATUSES:
+        return True
+    return False
+
+
+def cmd_claim(args: argparse.Namespace) -> int:
+    rows = load_manifest()
+    if not rows:
+        print("manifest is empty; run 'discover' first", file=sys.stderr)
+        return 1
+    now = datetime.now(timezone.utc).strftime(CLAIM_TIMESTAMP_FORMAT)
+
+    if args.list:
+        for row in sorted(rows, key=lambda r: str(r.get("id"))):
+            owner = row.get("owner")
+            if owner:
+                print(f"{row['id']:36s} {owner:20s} {str(row.get('claimed_at') or ''):21s} {row.get('status')}")
+        return 0
+
+    if args.release:
+        if args.owner is None:
+            print("--release requires --owner", file=sys.stderr)
+            return 2
+        released = 0
+        for row in rows:
+            if row.get("owner") != args.owner:
+                continue
+            if args.ids and str(row.get("id")) not in args.ids:
+                continue
+            row["owner"] = None
+            row["claimed_at"] = None
+            released += 1
+        if args.dry_run:
+            print(f"dry-run: would release {released} claim(s) of {args.owner}")
+            return 0
+        save_manifest(rows)
+        print(f"released {released} claim(s) of {args.owner}")
+        return 0
+
+    if not args.owner:
+        print("claim requires --owner (or --list / --release --owner)", file=sys.stderr)
+        return 2
+
+    selected: list[dict] = []
+    if args.ids:
+        wanted = set(args.ids)
+        known = {str(row.get("id")) for row in rows}
+        missing = wanted - known
+        if missing:
+            print(f"unknown band id(s): {', '.join(sorted(missing))}", file=sys.stderr)
+            return 1
+        selected = [row for row in rows if str(row.get("id")) in wanted]
+    elif args.source:
+        selected = [
+            row for row in rows
+            if str(row.get("source_code")) == args.source and claimable(row, explicit=False)
+        ]
+    else:
+        print("nothing to claim: pass --ids ... or --source CODE (or --list)", file=sys.stderr)
+        return 2
+
+    taken = conflicts = 0
+    for row in selected:
+        band_id = str(row.get("id"))
+        if not claimable(row, explicit=bool(args.ids)):
+            print(f"SKIP  {band_id}: status {row.get('status')!r} is not claimable")
+            continue
+        if row.get("owner") and row["owner"] != args.owner:
+            if not args.force:
+                print(f"SKIP  {band_id}: owned by {row['owner']} (use --force to take over)")
+                conflicts += 1
+                continue
+        row["owner"] = args.owner
+        row["claimed_at"] = now
+        taken += 1
+    if args.dry_run:
+        for row in selected:
+            if row.get("owner") == args.owner:
+                print(f"DRY   {row['id']}")
+        print(f"dry-run: {args.owner} would take {taken} claim(s); {conflicts} foreign conflict(s)")
+        return 0
+    save_manifest(rows)
+    print(f"{args.owner} now owns {taken} band(s); {conflicts} foreign conflict(s) skipped")
+    return 1 if (args.ids and not taken) else 0
 
 
 # --------------------------------------------------------------------------
@@ -341,8 +457,8 @@ def validate(rows: list[dict]) -> list[str]:
         if status not in STATUS_ORDER:
             problems.append(f"{band_id}: unknown status {status!r}")
         blockers = row.get("blockers") or []
-        if blockers and status in BLOCKING_STATUSES:
-            problems.append(f"{band_id}: status {status} with open blockers {blockers}")
+        if blockers and status in {"validated", "promotable"}:
+            problems.append(f"{band_id}: status {status} must be blocker-free (has {blockers})")
         if status == "discovered":
             continue
         if not row.get("sha256"):
@@ -487,6 +603,7 @@ def cmd_report(args: argparse.Namespace) -> int:
                     "source": row.get("source_code"),
                     "status": row.get("status"),
                     "pdf": bool(row.get("sha256")),
+                    "owner": row.get("owner"),
                     "blockers": row.get("blockers") or [],
                 }
                 for row in rows
@@ -499,7 +616,8 @@ def cmd_report(args: argparse.Namespace) -> int:
         for row in by_source[source]:
             pdf = "PDF" if row.get("sha256") else "-- "
             blockers = ",".join(row.get("blockers") or []) or "-"
-            print(f"  {str(row.get('id')):36s} {pdf:4s} {str(row.get('status')):16s} {blockers}")
+            owner = str(row.get("owner") or "-")
+            print(f"  {str(row.get('id')):36s} {pdf:4s} {str(row.get('status')):16s} {owner:16s} {blockers}")
     print(f"\ntotal: {len(rows)}")
     return 0
 
@@ -517,6 +635,14 @@ def main(argv: list[str] | None = None) -> int:
     download.add_argument("--refresh", action="store_true", help="re-download even if hashed")
     download.add_argument("--purge", action="store_true", help="empty the cache first")
     sub.add_parser("extract", help="draft text extraction into the cache")
+    claim = sub.add_parser("claim", help="coordinate parallel transcription workers")
+    claim.add_argument("--owner", help="worker name taking or releasing claims")
+    claim.add_argument("--ids", nargs="+", help="explicit band ids to claim")
+    claim.add_argument("--source", help="claim all claimable bands of one source code")
+    claim.add_argument("--list", action="store_true", help="show current claims")
+    claim.add_argument("--release", action="store_true", help="release claims (with --owner)")
+    claim.add_argument("--force", action="store_true", help="take over a foreign claim")
+    claim.add_argument("--dry-run", action="store_true")
     sub.add_parser("validate", help="validate the staging tree")
     report = sub.add_parser("report", help="progress by band and source")
     report.add_argument("--json", action="store_true")
@@ -527,6 +653,8 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_download(args)
     if args.command == "extract":
         return cmd_extract(args)
+    if args.command == "claim":
+        return cmd_claim(args)
     if args.command == "validate":
         return cmd_validate(args)
     if args.command == "report":

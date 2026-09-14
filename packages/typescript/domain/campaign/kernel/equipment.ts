@@ -177,6 +177,12 @@ export function assignEquipment(
       `${warrior.name} does not carry ${input.quantity} of "${item.id}" to return.`,
     );
   }
+  const remaining = warrior.equipment
+    .filter((entry) => entry.item_id === input.item_id)
+    .reduce((total, entry) => total + entry.quantity, 0) - input.quantity;
+  if (warrior.kind === "henchman" && remaining % (warrior.quantity ?? 1) !== 0) {
+    return rejected("limit_violated", `All members of ${warrior.name} must carry the same equipment.`);
+  }
   const inventory = moveInventory(document.campaign.inventory, input.item_id, input.quantity, "stash");
   if (inventory === null) {
     return rejected("limit_violated", `Not enough "${item.id}" equipped to return.`);

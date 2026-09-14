@@ -6,8 +6,9 @@ import "@testing-library/jest-dom/vitest";
 import { App } from "./App";
 
 describe("App shell (P3.1)", () => {
-  it("renders the empty shell without importing domain code", () => {
+  it("renders the empty shell without importing domain code", async () => {
     render(<App />);
+    await screen.findByRole("alert");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Campaña",
     );

@@ -56,8 +56,9 @@ describe("ProductApp session removal", () => {
     } as never);
   });
 
-  it("does not block closing the page when no campaign is loaded", () => {
+  it("does not block closing the page when no campaign is loaded", async () => {
     render(<ProductApp />);
+    await waitFor(() => expect(screen.getAllByRole("button", { name: "Nueva Campaña" })[0]).not.toBeDisabled());
 
     const beforeUnload = new Event("beforeunload", { cancelable: true });
     expect(window.dispatchEvent(beforeUnload)).toBe(true);
@@ -162,6 +163,7 @@ describe("ProductApp session removal", () => {
     fireEvent.click(screen.getByRole("button", { name: "Crear" }));
 
     expect(await screen.findByText("Campaign workspace")).toBeInTheDocument();
+    await waitFor(() => expect(window.dispatchEvent(new Event("beforeunload", { cancelable: true }))).toBe(false));
     const beforeUnload = new Event("beforeunload", { cancelable: true });
     expect(window.dispatchEvent(beforeUnload)).toBe(false);
 
