@@ -3,9 +3,9 @@ name: Deploy to GitHub Pages
 # Web application publication workflow.
 # Publishes ONLY the built `dist/` of the web app. It runs after CI is green
 # on the default branch — a contract, KB, test or build failure prevents
-# publishing. The Vite `GITHUB_PAGES` switch (set by P3.1) produces the
-# repository sub-path base; the app uses no history-based routing, so deep
-# links work under Pages. User campaign files never enter the artefact: the
+# publishing. The custom domain serves the app from `/`; the app uses no
+# history-based routing, so deep links work under Pages. User campaign files
+# never enter the artefact: the
 # image is built from a clean checkout and nothing under the user-data
 # directories is copied to `public/`.
 
@@ -71,9 +71,7 @@ jobs:
           cd packages/typescript && npm test
           cd ../../apps/warband-manager-web && npm test
 
-      - name: Build (repository sub-path, hash routing)
-        env:
-          GITHUB_PAGES: "1"
+      - name: Build (custom domain root)
         run: cd apps/warband-manager-web && npm run build
 
       - name: Guarantee no user campaign data is published
