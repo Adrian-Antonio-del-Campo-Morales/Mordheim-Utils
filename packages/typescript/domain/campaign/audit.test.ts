@@ -6,22 +6,22 @@
  *
  * Mapping:
  * - injury follow-up survival across reload → post-battle open-payload
- *   persistence (step_state travels verbatim through the v4 port);
+ *   persistence (step_state travels verbatim through the v5 port);
  * - commit rejects unresolved follow-ups → validateStructure + pending
  *   post-battle invariants;
- * - upgraded weapon round-trip (base_item_id) → v4 round-trip preserves it;
+ * - upgraded weapon round-trip (base_item_id) → v5 round-trip preserves it;
  * - custom names don't change equipment eligibility → identity is the
  *   stable profile_id, never the display name (KB contract §identity);
  * - historical warriors/inventory use the snapshot → TimelineState.roster /
  *   .inventory are immutable frozen snapshots (clone-on-commit).
  *
- * Purity: plain Node, real CampaignFileV4Adapter — no React, no DOM, no fs.
+ * Purity: plain Node, real CampaignFileV5Adapter — no React, no DOM, no fs.
  */
 
 import { describe, expect, it } from "vitest";
 
 import { validateStructure, cloneDocument } from "../../domain/campaign/kernel/document";
-import { CampaignFileV4Adapter } from "../../adapters/campaign-file/index";
+import { CampaignFileV5Adapter } from "../../adapters/campaign-file/index";
 import type { Campaign, CampaignDocument } from "../../domain/campaign/kernel/usecases";
 
 function makeCampaign(overrides: Partial<Campaign> = {}): Campaign {
@@ -58,10 +58,10 @@ function documentOf(campaign: Campaign): CampaignDocument {
   return { campaign, view: {} };
 }
 
-const files = new CampaignFileV4Adapter();
+const files = new CampaignFileV5Adapter();
 
 describe("desktop test_audit_regressions.py → web domain parity", () => {
-  it("injury follow-up state survives a v4 round-trip verbatim", () => {
+  it("injury follow-up state survives a v5 round-trip verbatim", () => {
     const campaign = makeCampaign({
       post_battles: [
         {
@@ -181,7 +181,7 @@ describe("desktop test_audit_regressions.py → web domain parity", () => {
     // Identity (profile_id) survives the display-name change untouched.
     expect(rename.warriors[0].profile_id).toBe("sister-superior");
     expect(rename.warriors[0].name).toBe("Vampire");
-    // And the v4 file carries both, verbatim.
+    // And the v5 file carries both, verbatim.
     const serialized = files.serializeCampaign(rename);
     if (!serialized.ok) throw new Error(serialized.message);
     const parsed = files.parseCampaignFile(serialized.text);
@@ -253,7 +253,7 @@ describe("desktop test_audit_regressions.py → web domain parity", () => {
 
   it("invalid selection fallbacks are view-state concerns (contract: view is reconstructible)", () => {
     // Desktop: state:99999 / post:bad etc. fall back to the current state.
-    // Web: the view section is reconstructible UI state (v4 contract) — the
+    // Web: the view section is reconstructible UI state (v5 contract) — the
     // reader ignores whatever it carries; campaign data is never selected
     // through it. Assert the contract boundary: view fields round-trip but
     // never affect campaign validation.

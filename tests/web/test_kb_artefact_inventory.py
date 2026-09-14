@@ -5,7 +5,7 @@ be built in parallel) that:
 
 1. every catalogue the Campaign Manager's ``KnowledgePort`` reads appears in
    the P4.1 inventory document;
-2. every ``band_id`` used by the v4 fixtures resolves against the KB bands the
+2. every ``band_id`` used by the v5 fixtures resolves against the KB bands the
    artefact would include;
 3. the explicitly excluded Combat Lab/simulation surfaces are documented as
    excluded in the inventory document.
@@ -20,7 +20,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 KB = ROOT / "sources" / "knowledge"
-CONTRACTS = ROOT / "contracts" / "campaign-file-v4"
+CONTRACTS = ROOT / "contracts" / "campaign-file-v5"
 
 #: (source path relative to the KB, reason the web Campaign Manager needs it).
 #: Derived from the public read surface of ``KnowledgePort``; adding a public

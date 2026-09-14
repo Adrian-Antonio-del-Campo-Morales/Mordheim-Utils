@@ -9,7 +9,7 @@
  * - **Choice orchestration**: applying a `stat:<KEY>` / `skill:<name>`
  *   choice through the service, with the rejection-as-value convention;
  * - **Export safety**: choices mutate only warrior rows (`stat_advances`,
- *   `skills`, `stats`), which the v4 contract snapshots verbatim — no
+ *   `skills`, `stats`), which the v5 contract snapshots verbatim — no
  *   payload rewriting here.
  *
  * The kernel remains the only document mutator. Purity: plain Node.

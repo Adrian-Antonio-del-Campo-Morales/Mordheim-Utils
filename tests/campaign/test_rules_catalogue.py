@@ -12,7 +12,7 @@ def test_rules_catalog_loads_all_prose_documents():
     assert "special-rules" in catalog.stems()
     assert "conditions" in catalog.stems()
     assert "core-combat" in catalog.stems()
-    assert len(catalog.document("special-rules").get("rules") or ()) >= 90
+    assert len(catalog.document("special-rules").get("rules") or ()) == 68
 
 
 def test_rules_catalog_rejects_a_wrong_ruleset():

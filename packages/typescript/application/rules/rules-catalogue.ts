@@ -32,6 +32,10 @@ export interface RuleEntry {
   readonly source_refs: readonly Readonly<Record<string, unknown>>[];
   /** Owning lore id for spell entries (used by cross-links). */
   readonly lore_id?: string;
+  /** Owning band for a local band rule. */
+  readonly band_id?: string;
+  /** Original rule id when the browsable id is scoped by band. */
+  readonly rule_id?: string;
 }
 
 /** A browsable category in display order. */
@@ -50,6 +54,7 @@ export interface ProfileLink {
 
 const CATEGORY_ORDER: readonly string[] = [
   "special-rules",
+  "band-rules",
   "conditions",
   "core-rules",
   "skills",
@@ -60,7 +65,8 @@ const CATEGORY_ORDER: readonly string[] = [
 ];
 
 const CATEGORY_LABELS: Readonly<Record<string, string>> = {
-  "special-rules": "Special Rules",
+  "special-rules": "Shared Rules",
+  "band-rules": "Warband Rules",
   conditions: "Conditions",
   "core-rules": "Core Rules",
   skills: "Skills",
@@ -200,11 +206,11 @@ export class RulesCatalogue {
   /**
    * Warband profiles that can take / carry this entry. Supported categories:
    * skills (table access or starting skill), equipment (permitted or starting
-   * equipment), special rules (band package rules) and spells (assigned wizard
+   * equipment), shared/local rules (band package rules) and spells (assigned wizard
    * lore). Categories without roster semantics yield no links.
    */
   profileLinks(categoryId: string, entry: RuleEntry, locale: Locale = "en"): ProfileLink[] {
-    if (categoryId !== "skills" && categoryId !== "equipment" && categoryId !== "special-rules" && categoryId !== "spells") {
+    if (categoryId !== "skills" && categoryId !== "equipment" && categoryId !== "special-rules" && categoryId !== "band-rules" && categoryId !== "spells") {
       return [];
     }
     const bands = new Map(
@@ -244,6 +250,8 @@ export class RulesCatalogue {
     switch (categoryId) {
       case "special-rules":
         return this.knowledge.rulesDocument("special-rules");
+      case "band-rules":
+        return this.knowledge.rulesDocument("profile-special-rules");
       case "conditions":
         return this.knowledge.rulesDocument("conditions");
       case "core-rules":
@@ -291,14 +299,18 @@ export class RulesCatalogue {
       : categoryId === "injuries"
         ? this.injuryTableText(row, locale)
         : localizedEffect(row, locale);
+    const ruleId = entryIdOf(row);
+    const bandId = categoryId === "band-rules" ? String(row.band_id ?? "") : "";
+    const name = resolveName(row as ArtefactRow, locale);
     return {
       category_id: categoryId,
-      entry_id: entryIdOf(row),
-      name: resolveName(row as ArtefactRow, locale),
+      entry_id: bandId ? `${bandId}:${ruleId}` : ruleId,
+      name,
       effect,
       tags,
       source_refs: sourceRefs(row),
       ...(categoryId === "spells" && row.lore_id !== undefined ? { lore_id: String(row.lore_id) } : {}),
+      ...(bandId ? { band_id: bandId, rule_id: ruleId } : {}),
     };
   }
 
@@ -409,6 +421,11 @@ export class RulesCatalogue {
         const applies = String(row.applies_to ?? "").trim();
         return applies ? [label(applies)] : [];
       }
+      case "band-rules": {
+        const bandId = String(row.band_id ?? "");
+        const band = this.knowledge.list("band").find((item) => String(item.id) === bandId);
+        return band ? [resolveName(band, locale)] : bandId ? [bandId] : [];
+      }
       default:
         return [];
     }
@@ -449,8 +466,10 @@ export class RulesCatalogue {
       if (permitted.includes(entryId)) return "permitted equipment";
       return null;
     }
-    if (categoryId === "special-rules") {
-      return Array.isArray(profile.rule_ids) && profile.rule_ids.map(String).includes(entryId)
+    if (categoryId === "special-rules" || categoryId === "band-rules") {
+      const ruleId = entry.rule_id ?? entryId;
+      if (entry.band_id && String(profile.band_id ?? "") !== entry.band_id) return null;
+      return Array.isArray(profile.rule_ids) && profile.rule_ids.map(String).includes(ruleId)
         ? "special rule"
         : null;
     }

@@ -174,7 +174,7 @@ function messageOf(err: AppError, locale: "es" | "en"): string {
   const detail = err.detail as Record<string, unknown> | undefined;
   const fileReason = detail?.file_reason;
   if (fileReason === "retired_version") {
-    return locale === "es" ? `Este archivo usa un formato antiguo (versión ${String(detail?.found_version)}). Solo se admiten archivos de versión 4; vuelve a guardarlo primero con el gestor de escritorio.` : `This file uses an old format (version ${String(detail?.found_version)}). Only format version 4 is supported — re-save it with the desktop manager first.`;
+    return locale === "es" ? `Este archivo usa un formato retirado (versión ${String(detail?.found_version)}). Solo se admite la versión 5 y no hay migración automática.` : `This file uses a retired format (version ${String(detail?.found_version)}). Only version 5 is supported and no automatic migration is available.`;
   }
   if (fileReason === "unsupported_version") {
     return locale === "es" ? `Este archivo usa la versión ${String(detail?.found_version)}, que es más reciente que la versión admitida por la aplicación (4).` : `This file uses format version ${String(detail?.found_version)}, which is newer than this application supports (4).`;

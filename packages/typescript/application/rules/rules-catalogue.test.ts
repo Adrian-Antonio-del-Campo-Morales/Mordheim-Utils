@@ -27,16 +27,19 @@ function catalogue(): RulesCatalogue {
 }
 
 describe("desktop test_rules_catalogue.py → web RulesCatalogue", () => {
-  it("loads the prose documents (special-rules ≥ 90, conditions non-empty)", () => {
+  it("keeps canonical shared rules separate from scoped warband rules", () => {
     const c = catalogue();
-    expect(c.entries("special-rules").length).toBeGreaterThanOrEqual(90);
+    expect(c.entries("special-rules")).toHaveLength(68);
+    expect(c.entries("special-rules").every((entry) => entry.entry_id.startsWith("shared-rule."))).toBe(true);
+    expect(c.entries("band-rules").length).toBeGreaterThan(900);
+    expect(new Set(c.entries("band-rules").map((entry) => entry.entry_id)).size).toBe(c.entries("band-rules").length);
     expect(c.entries("conditions").length).toBeGreaterThan(0);
   });
 
   it("categories expose only non-empty ones in display order", () => {
     const ids = catalogue().categories().map((category) => category.category_id);
     expect(ids[0]).toBe("special-rules");
-    for (const categoryId of ["conditions", "skills", "equipment", "spells", "scenarios", "injuries"]) {
+    for (const categoryId of ["band-rules", "conditions", "skills", "equipment", "spells", "scenarios", "injuries"]) {
       expect(ids).toContain(categoryId);
     }
   });

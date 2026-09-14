@@ -77,13 +77,13 @@ const fakeFiles: CampaignFilePort = {
           ok: false,
           reason: "invalid_json",
           message: "The file is not valid JSON.",
-          supported_versions: [4],
+          supported_versions: [5],
         } as const)
       : {
           ok: true,
           document: {
             marker: "MORDHEIM_CAMPAIGN_MANAGER" as const,
-            format_version: 4 as const,
+            format_version: 5 as const,
             saved_at: "2026-09-10T00:00:00Z",
             campaign: makeCampaign() as unknown as Record<string, unknown>,
           },

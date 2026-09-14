@@ -128,7 +128,7 @@ function makeFilePort(): CampaignFilePort {
         ok: true,
         document: {
           marker: "MORDHEIM_CAMPAIGN_MANAGER",
-          format_version: 4,
+          format_version: 5,
           saved_at: "2026-09-09T00:00:00Z",
           campaign: JSON.parse(text) as Record<string, unknown>,
         },

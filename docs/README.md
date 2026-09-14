@@ -9,7 +9,7 @@ This index separates stable project knowledge from generated output and historic
 - [Campaign Manager](reference/campaign-manager.md) — desktop/web capabilities and campaign lifecycle.
 - [Knowledge base](reference/knowledge-base.md) — canonical data, IDs, scope and validation.
 - [Verification](reference/verification.md) — deterministic tests, parity, coverage and release gates.
-- [Campaign-file v4 contract](../contracts/campaign-file-v4/README.md) — schema, fixtures and compatibility policy.
+- [Campaign-file v5 contract](../contracts/campaign-file-v5/README.md) — schema, fixtures and compatibility policy.
 
 ## Guides
 

@@ -2,7 +2,7 @@
  * Composition root for the browser campaign service.
  *
  * Production fetches the generated KB artefact once at startup and uses the
- * real v4 file adapter. The synchronous fake remains test-only fallback data
+ * real v5 file adapter. The synchronous fake remains test-only fallback data
  * while that fetch is pending or when the static asset cannot be loaded.
  */
 
@@ -10,7 +10,7 @@ import { createCampaignAppService } from "./types";
 import type { CampaignAppService } from "./types";
 import type { CampaignFilePort, KnowledgeReader } from "./types";
 
-import { CampaignFileV4Adapter } from "@adapters/campaign-file/index";
+import { CampaignFileV5Adapter } from "@adapters/campaign-file/index";
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { FakeKnowledgeReader } from "./fake-knowledge-reader";
 
@@ -18,7 +18,7 @@ import { FakeKnowledgeReader } from "./fake-knowledge-reader";
 export const KNOWLEDGE_ARTEFACT_URL = "knowledge/knowledge-web.json";
 
 function filePort(): CampaignFilePort {
-  return new CampaignFileV4Adapter();
+  return new CampaignFileV5Adapter();
 }
 
 export function createService(knowledge: KnowledgeReader): CampaignAppService {

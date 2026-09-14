@@ -6,7 +6,7 @@
  * Contracts honoured by every implementation:
  * - `queryKnowledge` returns canonical KB records keyed by stable ids; a
  *   missing id is an empty result or a typed error, never a name-based guess.
- * - file ports speak the `.mordheim` v4 contract; `saved_at` is the only
+ * - file ports speak the `.mordheim` v5 contract; `saved_at` is the only
  *   volatile field in semantic comparisons.
  * - No React, DOM, browser globals or filesystem inside these modules.
  */
@@ -128,10 +128,10 @@ export interface CampaignFileError {
   readonly supported_versions: readonly number[];
 }
 
-/** A parsed, validated `.mordheim` v4 document (raw contract shape). */
-export interface CampaignFileV4 {
+/** A parsed, validated `.mordheim` v5 document (raw contract shape). */
+export interface CampaignFileV5 {
   readonly marker: "MORDHEIM_CAMPAIGN_MANAGER";
-  readonly format_version: 4;
+  readonly format_version: 5;
   readonly saved_at: string;
   readonly campaign: Record<string, unknown>;
   readonly view?: Record<string, unknown>;
@@ -139,7 +139,7 @@ export interface CampaignFileV4 {
 
 export interface ParseOk {
   readonly ok: true;
-  readonly document: CampaignFileV4;
+  readonly document: CampaignFileV5;
 }
 
 export type ParseResult = ParseOk | CampaignFileError;
@@ -153,15 +153,15 @@ export type SerializeResult =
  * never JSON.parse on campaign text directly.
  */
 export interface CampaignFilePort {
-  /** Parse and validate campaign file text against the v4 contract. */
+  /** Parse and validate campaign file text against the v5 contract. */
   parseCampaignFile(text: string): ParseResult;
-  /** Serialize a campaign state into a valid v4 document text. */
+  /** Serialize a campaign state into a valid v5 document text. */
   serializeCampaign(campaign: Campaign): SerializeResult;
 }
 
 /** In-memory representation of a loaded file for the application layer. */
 export interface LoadedCampaignFile {
-  readonly document: CampaignFileV4;
+  readonly document: CampaignFileV5;
   readonly campaign: Campaign;
   readonly view: Record<string, unknown>;
 }

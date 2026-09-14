@@ -6,7 +6,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { CampaignFileV4Adapter } from "../../../../adapters/campaign-file/index";
+import { CampaignFileV5Adapter } from "../../../../adapters/campaign-file/index";
 import type { Campaign } from "../../../../domain/campaign/kernel/state";
 import type { KnowledgeReader as KnowledgeReaderPort } from "../../../../domain/campaign/kernel/ports";
 import { createCampaignAppService } from "../../service";
@@ -96,7 +96,7 @@ function campaign(): Campaign {
 
 function makeService(): CampaignAppService {
   return createCampaignAppService({
-    files: new CampaignFileV4Adapter(),
+    files: new CampaignFileV5Adapter(),
     knowledge: neutralKnowledge,
   });
 }
@@ -105,7 +105,7 @@ async function loadedService(): Promise<CampaignAppService> {
   const service = makeService();
   const raw = {
     marker: "MORDHEIM_CAMPAIGN_MANAGER",
-    format_version: 4,
+    format_version: 5,
     saved_at: "2026-09-09T12:00:00Z",
     campaign: campaign() as unknown as Record<string, unknown>,
     view: {},

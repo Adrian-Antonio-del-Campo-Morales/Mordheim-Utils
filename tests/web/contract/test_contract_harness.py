@@ -1,6 +1,6 @@
 """Campaign-file contract harness.
 
-Shared evidence for Python and TypeScript consumers of the `.mordheim` v4
+Shared evidence for Python and TypeScript consumers of the `.mordheim` v5
 contract and the generated knowledge artefact. This harness reads the
 contract sources directly and verifies the rejection, semantic-comparison and
 preserve-in-place payload policies so both implementations are tested against
@@ -20,8 +20,8 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[3]
-CONTRACT = ROOT / "contracts" / "campaign-file-v4"
-SCHEMA_PATH = CONTRACT / "campaign-file-v4.schema.json"
+CONTRACT = ROOT / "contracts" / "campaign-file-v5"
+SCHEMA_PATH = CONTRACT / "campaign-file-v5.schema.json"
 FIXTURES = sorted((CONTRACT / "fixtures").glob("*.json"))
 PYTHONPATH_ROOTS = (
     ROOT / "packages" / "python" / "combat-engine",
@@ -40,8 +40,8 @@ def _ensure_pythonpath() -> None:
         if str(package_root) not in sys.path:
             sys.path.insert(0, str(package_root))
 
-SUPPORTED_VERSION = 4
-RETIRED_VERSIONS = (1, 2, 3)
+SUPPORTED_VERSION = 5
+RETIRED_VERSIONS = (1, 2, 3, 4)
 
 
 def _fixture(name: str) -> dict:

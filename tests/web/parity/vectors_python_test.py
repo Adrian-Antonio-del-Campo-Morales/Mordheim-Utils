@@ -1,6 +1,6 @@
 """Python runner for the shared malformed-save parity vectors.
 
-Each vector = one JSON-pointer mutation on a schema-valid v4 fixture. Both
+Each vector = one JSON-pointer mutation on a schema-valid v5 fixture. Both
 toolchains apply the same mutation and must agree on the outcome
 (``reject`` = CampaignFileError / adapter error, ``accept`` = clean load).
 
@@ -21,7 +21,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[3]
 VECTORS = Path(__file__).resolve().parent / "vectors"
-FIXTURES = ROOT / "contracts" / "campaign-file-v4" / "fixtures"
+FIXTURES = ROOT / "contracts" / "campaign-file-v5" / "fixtures"
 
 sys.path.insert(0, str(ROOT / "packages" / "python" / "campaign"))
 sys.path.insert(0, str(ROOT / "packages" / "python" / "knowledge"))

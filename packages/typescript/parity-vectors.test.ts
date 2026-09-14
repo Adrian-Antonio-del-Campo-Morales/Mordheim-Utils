@@ -11,7 +11,7 @@ import { parseCampaignFileDetailed } from "./adapters/campaign-file/index";
 
 const ROOT = resolve(__dirname, "../..");
 const VECTORS_PATH = resolve(ROOT, "tests/web/parity/vectors/malformed_save.json");
-const FIXTURES = resolve(ROOT, "contracts/campaign-file-v4/fixtures");
+const FIXTURES = resolve(ROOT, "contracts/campaign-file-v5/fixtures");
 
 interface Mutation {
   op: string;

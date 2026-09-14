@@ -22,7 +22,7 @@ import { RecruitProfilePanel } from "../recruitment/RecruitProfilePanel";
 import { ManualSkillPanel } from "../advances/ManualSkillPanel";
 import { RareSearchPanel } from "../searches/RareSearchPanel";
 import type { CampaignDocument } from "./types";
-import { mercenaryVariantsForBand } from "@domain/campaign/hire-eligibility";
+import { warbandVariants } from "@domain/campaign/band-variants";
 import { knowledgeName, localizedLabel, readableValue, resourceAmount } from "./displayText";
 import { KnowledgeHint } from "./KnowledgeHint";
 import { adaptCharacteristicValue } from "@app/rules/distance-display";
@@ -96,11 +96,12 @@ export function CampaignSlice({ knowledge, locale = "en" }: { knowledge?: Artefa
   const currentState = selected === `state:${doc.campaign.current_state_number}`;
   const selectedState = doc.campaign.states.find((state) => state.number === battleNumber);
   const stateDocument = selectedState ? { ...doc, campaign: { ...doc.campaign, warriors: selectedState.roster ?? [], inventory: selectedState.inventory ?? [] } } : doc;
-  const variants = mercenaryVariantsForBand(doc.campaign.identity.band_id);
+  const variants = knowledge ? warbandVariants(knowledge, doc.campaign.identity.band_id) : [];
+  const selectedVariant = variants.find((variant) => variant.id === doc.campaign.identity.mercenary_variant);
   return <section aria-label={locale === "es" ? "Campaña" : "Campaign"}>
     {app.error && <output className="global-error" role="alert">{app.error} <button onClick={app.clearError}>{locale === "es" ? "Cerrar" : "Dismiss"}</button></output>}
     {app.dirty && <output className="dirty" role="status">{locale === "es" ? "Cambios sin exportar" : "Unsaved changes"}</output>}
-    {variants.length > 0 && <label className="variant-selector">{locale === "es" ? "VARIANTE DE MERCENARIOS" : "MERCENARY VARIANT"}<select value={doc.campaign.identity.mercenary_variant??""} onChange={(event)=>void app.runAction("setMercenaryVariant",{variant:event.target.value||null})}><option value="">{locale === "es" ? "Selecciona una variante…" : "Select a variant…"}</option>{[...variants].sort((a,b)=>a.localeCompare(b,locale)).map((variant)=><option key={variant} value={variant}>{variant}</option>)}</select></label>}
+    {variants.length > 0 && (selectedVariant ? <p className="variant-selector"><span>{locale === "es" ? "VARIANTE DE BANDA" : "WARBAND VARIANT"}</span><strong>{selectedVariant.names[locale]??selectedVariant.names.en??selectedVariant.id}</strong></p> : doc.campaign.configuration.is_draft ? <label className="variant-selector">{locale === "es" ? "VARIANTE DE BANDA" : "WARBAND VARIANT"}<select value="" onChange={(event)=>event.target.value&&void app.runAction("setMercenaryVariant",{variant:event.target.value})}><option value="">{locale === "es" ? "Selecciona una variante…" : "Select a variant…"}</option>{variants.map((variant)=><option key={variant.id} value={variant.id}>{variant.names[locale]??variant.names.en??variant.id}</option>)}</select></label> : <p className="variant-selector"><span>{locale === "es" ? "VARIANTE DE BANDA" : "WARBAND VARIANT"}</span><strong>{locale === "es" ? "No registrada" : "Not recorded"}</strong></p>)}
     <div className="campaign-layout">
       <TimelinePanel document={doc} onSelect={app.selectMoment} locale={locale} knowledge={knowledge} />
       <div className="moment-detail">

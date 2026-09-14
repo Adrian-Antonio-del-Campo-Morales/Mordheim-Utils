@@ -7,14 +7,14 @@
  * `advance_exploration_followup`) map onto the TS exploration workflow:
  * - dice-chain resolution with follow-up queues (`applyExploration`,
  *   `continueExploration`);
- * - every intermediate state survives a v4 file round-trip;
+ * - every intermediate state survives a v5 file round-trip;
  * - invalid recipients (missing hero / henchman / removed warrior) and
  *   out-of-range or non-integer rolls are rejected without mutation;
  * - rewards for a warband without heroes degrade to an explicit
  *   `choose_option` instead of an impossible hero choice;
  * - a lost unique artefact re-rolls; an exhausted artefact table finishes.
  *
- * Purity: plain Node, in-memory v4 round-trip — no React, no DOM, no
+ * Purity: plain Node, in-memory v5 round-trip — no React, no DOM, no
  * filesystem. Application-service undo coverage lives in
  * application/campaign/undo.test.ts (desktop `perform_undoable` parity).
  */
@@ -23,9 +23,9 @@ import { describe, expect, it } from "vitest";
 
 import { applyExploration, continueExploration, explorationDiceCount, explorationModifiers } from "../../application/campaign/features/exploration/exploration-workflow";
 import type { Campaign, CampaignDocument, KnowledgeReader, OpenPayload, Warrior } from "../../domain/campaign/kernel/usecases";
-import { CampaignFileV4Adapter, parseCampaignFileDetailed } from "../../adapters/campaign-file";
+import { CampaignFileV5Adapter, parseCampaignFileDetailed } from "../../adapters/campaign-file";
 
-const adapter = new CampaignFileV4Adapter();
+const adapter = new CampaignFileV5Adapter();
 
 function roundtrip(document: CampaignDocument): CampaignDocument {
   const serialized = adapter.serializeCampaign(document.campaign);
@@ -320,7 +320,7 @@ describe("desktop test_exploration_sequence_matrix.py → web exploration parity
     expect(pendingFollowup(resolved.document)).toBeNull();
   });
 
-  it("exploration chain survives a v4 round-trip mid-queue", () => {
+  it("exploration chain survives a v5 round-trip mid-queue", () => {
     const injected: CampaignDocument = structuredClone(pendingPostBattle([hero("marta"), hero("anna")]));
     const post = injected.campaign.post_battles.find((row) => !row.complete)!;
     (post as unknown as { pending_follow_ups: OpenPayload[] }).pending_follow_ups = [{

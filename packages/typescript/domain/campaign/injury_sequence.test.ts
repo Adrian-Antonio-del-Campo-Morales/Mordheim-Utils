@@ -2,10 +2,10 @@
  * Parity port of desktop `tests/campaign/test_injury_sequence_matrix.py`.
  * The desktop matrix combines every injury result with controller undo and
  * persistence. This portable layer pins the invariants that remain visible
- * in the v4 domain document.
+ * in the v5 domain document.
  */
 import { describe, expect, it } from "vitest";
-import { CampaignFileV4Adapter } from "../../adapters/campaign-file/index";
+import { CampaignFileV5Adapter } from "../../adapters/campaign-file/index";
 import { resolvePrisoner } from "../../application/campaign/features/injuries/injury-decisions-workflow";
 import { injuryEffects, resolveInjuryTableFollowUp } from "../../application/campaign/features/injuries/injury-followup-workflow";
 import { applyInjuryOutcome } from "../../application/campaign/features/injuries/injuries-workflow";
@@ -137,8 +137,8 @@ describe("desktop test_injury_sequence_matrix.py → injury invariants", () => {
     expect(changed.campaign.warriors).not.toContain(removed);
   });
 
-  it("preserves injury state through v4 serialize/parse", () => {
-    const adapter = new CampaignFileV4Adapter();
+  it("preserves injury state through v5 serialize/parse", () => {
+    const adapter = new CampaignFileV5Adapter();
     const original = fixture();
     const injured = {
       ...original,

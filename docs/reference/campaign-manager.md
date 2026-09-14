@@ -1,11 +1,13 @@
 # Campaign Manager
 
-The Campaign Manager is implemented as two adapters over the same campaign concepts:
+The Campaign Manager has two adapters over the same campaign concepts:
 
-- **Desktop:** Tkinter UI in `packages/python/campaign/mordheim_campaign/ui/`, composed by `apps/warband-manager-desktop/mordheim_desktop`.
-- **Web:** React/Vite UI in `apps/warband-manager-web/`, backed by the TypeScript packages in `packages/typescript/`.
+- **Web (recommended):** React/Vite UI in `apps/warband-manager-web/`, backed by the TypeScript packages in `packages/typescript/`. It is the active product and the target for new features.
+- **Desktop (deprecated):** Tkinter UI in `packages/python/campaign/mordheim_campaign/ui/`, composed by `apps/warband-manager-desktop/mordheim_desktop`. It remains available for compatibility and maintenance, but should not receive new product features.
 
-The desktop and web UIs are not pixel-identical. They share the campaign workflow, stable IDs and v4 file contract while respecting platform differences: desktop uses filesystem dialogs; web imports and downloads files and keeps campaigns in the browser session only.
+> **Deprecation policy (from 2026-09-14):** use the web application for new campaigns and feature development. The desktop application is not removed; it continues to read and write the current v5 format so existing users can move campaigns through `.mordheim` export/import. Removal would require a separate, explicitly announced decision.
+
+The desktop and web UIs are not pixel-identical. They share the campaign workflow, stable IDs and v5 file contract while respecting platform differences: desktop uses filesystem dialogs; web imports and downloads files and keeps campaigns in the browser session only.
 
 ## Timeline model
 
@@ -98,8 +100,8 @@ Both adapters expose a read-only rules browser with categories, search, effects,
 ### Files and exports
 
 - Desktop: open/save `.mordheim`, export Markdown summary and export a PDF warband sheet for the selected draft/state moment.
-- Web: import one or more `.mordheim` files, keep sessions in memory, download v4 JSON and export a PDF warband sheet. Reload/close loses unexported sessions after the browser warning.
-- Both reject v1–v3 and unsupported future formats. See [the v4 contract](../../contracts/campaign-file-v4/README.md).
+- Web: import one or more `.mordheim` files, keep sessions in memory, download v5 JSON and export a PDF warband sheet. Reload/close loses unexported sessions after the browser warning.
+- Both reject v1–v4 and unsupported future formats. See [the v5 contract](../../contracts/campaign-file-v5/README.md).
 
 ## Stable IDs and knowledge ownership
 
@@ -116,17 +118,24 @@ These are deliberate non-features of the current product, not undocumented bugs:
 - web campaigns are session-only and require explicit export;
 - the desktop campaign library is filesystem-oriented; the web library is session-oriented;
 - per-warrior skill editing outside the supported advance/manual-correction paths remains limited;
-- compatibility migration from v1–v3 campaign files is not provided.
+- compatibility migration from v1–v4 campaign files is not provided;
+- the deprecated desktop adapter receives compatibility and critical-fix maintenance only; new workflows and feature work target the web application.
 
 ## Run
+
+Start the web application for normal use:
+
+```powershell
+cd apps/warband-manager-web
+npm run dev
+```
+
+The deprecated desktop application remains available for compatibility:
 
 ```powershell
 mordheim-campaign-manager
 python -m mordheim_desktop
 python tools/mordheim-utils.py warband-manager
-
-cd apps/warband-manager-web
-npm run dev
 ```
 
 See [Architecture](architecture.md) for package boundaries and [Verification](verification.md) for the executable test strategy.

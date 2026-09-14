@@ -148,6 +148,10 @@ def _build_bands(ruleset: str) -> tuple[list[dict], dict[str, list[str]]]:
                 roster["members"] = members
             band["roster"] = roster
             entry = _row(band)
+            entry["variants"] = sorted(
+                (_row(variant, drop=("name_i18n", "effect_i18n")) for variant in band.get("variants") or ()),
+                key=_sort_key,
+            )
             entry["collection"] = str(collection)
             access: list[dict] = []
             for equipment_list in package.equipment_lists:
@@ -171,8 +175,7 @@ def _build_bands(ruleset: str) -> tuple[list[dict], dict[str, list[str]]]:
 
 _EXPERIENCE_FORBIDDEN_RULE_REFS = frozenset({
     "shared-rule.brainless", "shared-rule.dead", "shared-rule.never-gain-experience",
-    "shared-rule.experience", "shared-rule.animal", "shared-rule.animal-2",
-    "shared-rule.animals", "shared-rule.animals-2", "shared-rule.animals-3",
+    "shared-rule.experience", "shared-rule.animal",
 })
 
 
@@ -388,9 +391,8 @@ def _build_rules_prose(ruleset: str) -> dict:
         rows = document.get("rules") or document.get("conditions") or ()
         documents[stem] = sorted((_row(row) for row in rows), key=_sort_key)
     # A profile can grant a band-specific rule directly, rather than a shared
-    # ``rule_ref``. Publish those direct rules beside the shared special-rule
-    # catalogue so roster labels and tooltips resolve their localized prose.
-    special_rules = {str(row["id"]): row for row in documents.get("special-rules", ())}
+    # ``rule_ref``. Keep those rules in their own document: mixing them into
+    # the shared catalogue produces dozens of visually duplicated names.
     band_rules: list[dict] = []
     label_rules: list[dict] = []
     for collection in (row["id"] for row in load_collections() if ruleset in set(row.get("rulesets") or ())):
@@ -406,17 +408,6 @@ def _build_rules_prose(ruleset: str) -> dict:
                 if not identifier:
                     raise GenerationError(f"band special rule without id: {package.band['id']!r}")
                 band_rules.append(entry)
-    direct_counts: dict[str, int] = {}
-    for entry in band_rules:
-        identifier = str(entry["id"])
-        direct_counts[identifier] = direct_counts.get(identifier, 0) + 1
-    for entry in band_rules:
-        identifier = str(entry["id"])
-        # An unscoped tooltip cannot safely select between same-id prose from
-        # different bands. Keep only globally unique direct rules here.
-        if direct_counts[identifier] == 1 and identifier not in special_rules:
-            special_rules[identifier] = entry
-    documents["special-rules"] = sorted(special_rules.values(), key=_sort_key)
     # Tooltips rendered from a warrior card know the profile id, so they can
     # safely disambiguate direct rules whose ids are reused by several bands.
     documents["profile-special-rules"] = sorted(band_rules, key=_sort_key)

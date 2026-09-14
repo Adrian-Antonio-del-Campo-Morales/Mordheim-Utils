@@ -10,7 +10,7 @@
  * `_out_of_action_warriors` dialog filter itself is UI-side (web UI lane);
  * here the campaign-state half is covered: record → derive → persist.
  *
- * The `view` section is reconstructible UI state (v4 contract): the file
+ * The `view` section is reconstructible UI state (v5 contract): the file
  * round-trip comparison ignores it, exactly like the desktop's
  * `restored.campaign == state.campaign` comparison.
  */
@@ -21,7 +21,7 @@ import { recordBattle } from "./kernel/record-battle";
 import { cloneDocument } from "./kernel/document";
 import type { CampaignDocument } from "./kernel/usecases";
 import type { CampaignFilePort, KnowledgeReader } from "./kernel/ports";
-import { CampaignFileV4Adapter } from "../../adapters/campaign-file/index";
+import { CampaignFileV5Adapter } from "../../adapters/campaign-file/index";
 
 function makeDocument(): CampaignDocument {
   return {
@@ -74,7 +74,7 @@ const fakeKnowledge: KnowledgeReader = {
   queryMany: (queries) => queries.map((q) => fakeKnowledge.queryKnowledge(q)),
 };
 
-const files: CampaignFilePort = new CampaignFileV4Adapter();
+const files: CampaignFilePort = new CampaignFileV5Adapter();
 
 function record(document: CampaignDocument, out_of_action_ids: string[] | null) {
   return recordBattle(document, {
@@ -142,7 +142,7 @@ describe("desktop test_out_of_action_tracking.py → web recordBattle parity", (
   });
 
   it("recovery falls back to every warrior for legacy battles", () => {
-    // A legacy battle carries out_of_action_ids === null (v4 contract's
+    // A legacy battle carries out_of_action_ids === null (v5 contract's
     // "not recorded" distinction). Construct one directly: the reader must
     // treat null as "no prefilter", not as an empty checklist.
     const document = settledAndRecorded(["marta"]);
@@ -166,7 +166,7 @@ describe("desktop test_out_of_action_tracking.py → web recordBattle parity", (
     expect(battle.casualties).toBe(2);
   });
 
-  it("out of action ids survive save/load (v4 round-trip)", () => {
+  it("out of action ids survive save/load (v5 round-trip)", () => {
     const document = settledAndRecorded(["anna"]);
     const serialized = files.serializeCampaign(document.campaign);
     expect(serialized.ok).toBe(true);

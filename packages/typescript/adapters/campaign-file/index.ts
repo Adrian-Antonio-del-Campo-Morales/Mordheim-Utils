@@ -1,9 +1,9 @@
 /**
- * Campaign-file adapter: the real `.mordheim` v4 file
+ * Campaign-file adapter: the real `.mordheim` v5 file
  * adapter — reader, validator and writer of the neutral contract defined in
- * `contracts/campaign-file-v4/`.
+ * `contracts/campaign-file-v5/`.
  *
- * Source of truth: `contracts/campaign-file-v4/campaign-file-v4.schema.json`.
+ * Source of truth: `contracts/campaign-file-v5/campaign-file-v5.schema.json`.
  * The structural rules are NOT re-implemented by hand: the schema is embedded
  * verbatim (`./schema-json.ts`, generated from the contract file) and a small
  * generic draft 2020-12 validator walks it (`./schema-validator.ts`). Every
@@ -11,7 +11,7 @@
  * reader's error reporting.
  *
  * Contract honoured (from domain/campaign/kernel/ports.ts):
- * - envelope checks in order: invalid JSON -> bad marker -> retired v1-3
+ * - envelope checks in order: invalid JSON -> bad marker -> retired v1-4
  *   (naming found + supported) -> unsupported version -> schema violation;
  * - `saved_at` is the only volatile field (semantic comparisons ignore it —
  *   see the contract README's comparison rules);
@@ -23,7 +23,7 @@
 import type {
   CampaignFileError,
   CampaignFilePort,
-  CampaignFileV4,
+  CampaignFileV5,
   ParseResult,
   SerializeResult,
 } from "../../domain/campaign/kernel/ports";
@@ -32,13 +32,13 @@ import { SCHEMA_JSON } from "./schema-json";
 import { validateAgainstSchema } from "./schema-validator";
 
 const MARKER = "MORDHEIM_CAMPAIGN_MANAGER";
-const SUPPORTED_VERSIONS: readonly number[] = [4];
-const RETIRED_VERSIONS = [1, 2, 3];
+const SUPPORTED_VERSIONS: readonly number[] = [5];
+const RETIRED_VERSIONS = [1, 2, 3, 4];
 
 /** A successfully imported document plus its typed campaign projection. */
 export interface ParsedCampaignFile {
   readonly ok: true;
-  readonly document: CampaignFileV4;
+  readonly document: CampaignFileV5;
   readonly campaign: Campaign;
   /** Always an object (an absent view section reads as `{}`). */
   readonly view: Record<string, unknown>;
@@ -84,11 +84,11 @@ function parseEnvelope(text: string): ParseResult {
   if (RETIRED_VERSIONS.includes(version)) {
     return error(
       "retired_version",
-      `Format version ${version} is retired. Re-save the campaign in format version 4 with the desktop manager.`,
+      `Format version ${version} is retired. This application reads only format version 5; no automatic migration is available.`,
       { found_version: version },
     );
   }
-  if (version !== 4) {
+  if (version !== 5) {
     return error(
       "unsupported_version",
       `Format version ${version} is newer than this application supports. Update the application to open this file.`,
@@ -109,7 +109,7 @@ function parseEnvelope(text: string): ParseResult {
       { location: "campaign" },
     );
   }
-  return { ok: true, document: doc as unknown as CampaignFileV4 };
+  return { ok: true, document: doc as unknown as CampaignFileV5 };
 }
 
 /**
@@ -118,7 +118,7 @@ function parseEnvelope(text: string): ParseResult {
  */
 import { validateCampaignSemantics } from "./semantics";
 
-export class CampaignFileV4Adapter implements CampaignFilePort {
+export class CampaignFileV5Adapter implements CampaignFilePort {
   parseCampaignFile(text: string): ParseResult {
     const envelope = parseEnvelope(text);
     if (!envelope.ok) {
@@ -144,7 +144,7 @@ export class CampaignFileV4Adapter implements CampaignFilePort {
   serializeCampaign(campaign: Campaign): SerializeResult {
     const document: Record<string, unknown> = {
       marker: MARKER,
-      format_version: 4,
+      format_version: 5,
       saved_at: new Date().toISOString().replace(/\.\d+Z$/, "Z"),
       campaign: campaign as unknown as Record<string, unknown>,
     };
@@ -173,7 +173,7 @@ export class CampaignFileV4Adapter implements CampaignFilePort {
 export function parseCampaignFileDetailed(
   text: string,
 ): ParsedCampaignFile | CampaignFileError {
-  const result = new CampaignFileV4Adapter().parseCampaignFile(text);
+  const result = new CampaignFileV5Adapter().parseCampaignFile(text);
   if (!result.ok) {
     return result;
   }

@@ -1,8 +1,8 @@
 /** Portable parity translation of the persistence portions of test_persistence.py. */
 import { describe, expect, it } from "vitest";
-import { CampaignFileV4Adapter, parseCampaignFileDetailed } from "../../adapters/campaign-file";
+import { CampaignFileV5Adapter, parseCampaignFileDetailed } from "../../adapters/campaign-file";
 
-const adapter = new CampaignFileV4Adapter();
+const adapter = new CampaignFileV5Adapter();
 
 function campaignFromFixture(name: string) {
   // Keep the fixture source in the adapter tests; this file exercises the
@@ -31,7 +31,7 @@ describe("desktop persistence parity", () => {
 
   it("rejects corrupt JSON and retired formats through the application port", () => {
     expect(adapter.parseCampaignFile("{broken").ok).toBe(false);
-    for (const version of [1, 2, 3]) {
+    for (const version of [1, 2, 3, 4]) {
       const result = adapter.parseCampaignFile(JSON.stringify({
         marker: "MORDHEIM_CAMPAIGN_MANAGER", format_version: version,
         saved_at: "2026-09-10T00:00:00Z", campaign: {},

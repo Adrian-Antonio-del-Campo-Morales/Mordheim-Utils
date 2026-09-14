@@ -1,6 +1,6 @@
 /**
- * P3.2: the v4 contract schema (contracts/campaign-file-v4/
- * campaign-file-v4.schema.json), embedded verbatim so the TypeScript
+ * P3.2: the v5 contract schema (contracts/campaign-file-v5/
+ * campaign-file-v5.schema.json), embedded verbatim so the TypeScript
  * adapter validates against the same source of truth as the Python
  * reader without a runtime dependency or a build step.
  *
@@ -11,8 +11,8 @@
 
 export const SCHEMA_JSON: unknown = {
  "$schema": "https://json-schema.org/draft/2020-12/schema",
- "$id": "https://mordheim-utils.invalid/contracts/campaign-file-v4/campaign-file-v4.schema.json",
- "title": "Mordheim campaign file (format v4)",
+ "$id": "https://mordheim-utils.invalid/contracts/campaign-file-v5/campaign-file-v5.schema.json",
+ "title": "Mordheim campaign file (format v5)",
  "description": "Neutral representation of a Warband Manager / Campaign Manager campaign. Self-contained JSON: marker, version, UTC timestamp. The campaign section holds external campaign state; the view section holds reconstructible UI selection state. The Knowledge Base is never serialised: every catalogue reference travels as a stable KB id (band_id, profile_id, item_id) that the loading application resolves against its own KB.",
  "type": "object",
  "required": [
@@ -28,8 +28,8 @@ export const SCHEMA_JSON: unknown = {
    "description": "Document type marker. Files without it are rejected before version checks."
   },
   "format_version": {
-   "const": 4,
-   "description": "Exactly 4. Versions 1-3 are explicitly unsupported: the loading application rejects them with a clear message."
+   "const": 5,
+   "description": "Exactly 5. Versions 1-4 are explicitly retired and rejected without automatic migration."
   },
   "saved_at": {
    "$ref": "#/$defs/timestamp",
@@ -187,7 +187,7 @@ export const SCHEMA_JSON: unknown = {
      "type": "string"
     },
     "mercenary_variant": {
-     "description": "Variant chosen by variant-capable warbands (reikland / middenheim / marienburg / ostermark); null elsewhere or before selection.",
+     "description": "Legacy field name used for the selected warband-family variant; null for bands without variants or for legacy drafts awaiting selection.",
      "type": [
       "string",
       "null"

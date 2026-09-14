@@ -330,7 +330,7 @@ class CampaignVM:
     hero_limit: int = 5
     #: Draft-time minimum member counts per required KB profile id, seeded by
     #: the controller when a draft is created/replaced and persisted with the
-    #: campaign (the v4 writer carries it). Consumed by ``has_required_profiles``.
+    #: campaign (the v5 writer carries it). Consumed by ``has_required_profiles``.
     required_profiles: dict[str, int] = field(default_factory=dict)
     # KB identity of the warband: later use cases resolve rules by these
     # stable ids, never by the visible name.

@@ -7,8 +7,8 @@ Mordheim Utils is a Python/TypeScript monorepo for Mordheim campaign management 
 | Surface | Package / entry point | Purpose |
 | --- | --- | --- |
 | **Combat Lab** | `mordheim-combat-lab` or `python -m mordheim_combat_lab` | Tkinter simulator and CLI for compiled 1-vs-1 close-combat duels, analysis, parity, verification and benchmarks. |
-| **Campaign Manager — desktop** | `mordheim-campaign-manager` or `python -m mordheim_desktop` | Tkinter campaign timeline with draft construction, immutable states, battles, a canonical 10-step post-battle sequence presented through 8 UI actions, persistence and PDF export. |
-| **Campaign Manager — web** | `apps/warband-manager-web` | React/Vite browser application with the campaign workflow, rules browser, statistics, `.mordheim` import/export and PDF export. Campaigns remain in memory until exported. |
+| **Campaign Manager — desktop (deprecated)** | `mordheim-campaign-manager` or `python -m mordheim_desktop` | Compatibility and critical-fix maintenance only. Tkinter campaign timeline with persistence and PDF export; use the web app for new campaigns and features. |
+| **Campaign Manager — web (recommended)** | `apps/warband-manager-web` | Active React/Vite application with the campaign workflow, rules browser, statistics, `.mordheim` import/export and PDF export. Campaigns remain in memory until exported. |
 
 The active runtime scope of the duel engine is **one-against-one close combat**. Shooting, movement, psychology, mounts and magic are classified in the knowledge base but are not duel-engine features.
 
@@ -25,13 +25,13 @@ packages/python/campaign                    campaign domain, application and per
 apps/combat-lab                             Combat Lab application and CLI
 apps/warband-manager-desktop                desktop composition root
 apps/warband-manager-web                    React/Vite web shell
-contracts/campaign-file-v4                  versioned campaign-file contract
+contracts/campaign-file-v5                  versioned campaign-file contract
 tests                                     Python, TypeScript and web-contract tests
 docs                                      reference, guides and design decisions
 tools                                     launcher, generators, reports and packaging
 ```
 
-The modular combat engine is the correctness oracle. NumPy and native backends are candidates certified against it. The campaign applications consume the same canonical IDs and the v4 campaign-file contract; rules are never serialized into campaign files.
+The modular combat engine is the correctness oracle. NumPy and native backends are candidates certified against it. The campaign applications consume the same canonical IDs and the v5 campaign-file contract; rules are never serialized into campaign files.
 
 ## Requirements and installation
 
@@ -95,7 +95,7 @@ It is staged into `apps/warband-manager-web/public/knowledge/` by CI or `run-ci`
 - [Campaign Manager reference](docs/reference/campaign-manager.md)
 - [Knowledge-base reference](docs/reference/knowledge-base.md)
 - [Verification strategy](docs/reference/verification.md)
-- [Campaign-file v4 contract](contracts/campaign-file-v4/README.md)
+- [Campaign-file v5 contract](contracts/campaign-file-v5/README.md)
 - [Guides](docs/guides/)
 - [Permanent design rulings](docs/decisions/design-rulings.md)
 - [Current backlog](TODO.md)

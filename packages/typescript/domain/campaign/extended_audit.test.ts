@@ -7,16 +7,16 @@
  * Covers: draft identifier uniqueness, canonical-leader creation rule,
  * invalid view selection fallback, invalid format_version rejection,
  * duplicate warrior id rejection and atomic-save preservation — through the
- * real v4 campaign-file adapter (the web counterpart of the desktop
+ * real v5 campaign-file adapter (the web counterpart of the desktop
  * persistence layer).
  */
 
 import { describe, expect, it } from "vitest";
 
-import { CampaignFileV4Adapter } from "../../adapters/campaign-file";
+import { CampaignFileV5Adapter } from "../../adapters/campaign-file";
 import type { Campaign } from "./kernel/state";
 
-const files = new CampaignFileV4Adapter();
+const files = new CampaignFileV5Adapter();
 
 function makeCampaign(): Campaign {
   return {
@@ -121,7 +121,7 @@ describe("extended audit regressions (desktop test_extended_audit_regressions.py
 
   it("invalid selection falls back to the current state", () => {
     // Desktop: view.selected_moment garbage → restored.selected_moment is
-    // `state:<current>`. The v4 contract keeps `view` optional and the web
+    // `state:<current>`. The v5 contract keeps `view` optional and the web
     // application derives the selection — the adapter must accept the file
     // either way and never crash on the payload.
     for (const selection of ["state:99999", "state:bad", "post:99999", "post", "battle:x", "unknown:0"]) {
@@ -139,7 +139,7 @@ describe("extended audit regressions (desktop test_extended_audit_regressions.py
       const result = files.parseCampaignFile(JSON.stringify(payload));
       expect(result.ok, JSON.stringify(version)).toBe(false);
       if (!result.ok) {
-        // Integers other than 4 are retired/unsupported; non-integers are
+        // Integers other than 5 are retired/unsupported; non-integers are
         // schema violations.
         expect(["retired_version", "unsupported_version", "schema_violation"]).toContain(result.reason);
       }
@@ -158,8 +158,8 @@ describe("extended audit regressions (desktop test_extended_audit_regressions.py
     expect(reparsed.ok).toBe(true);
   });
 
-  it("v1–v3 files stay rejected (retired versions)", () => {
-    for (const version of [1, 2, 3]) {
+  it("v1–v4 files stay rejected (retired versions)", () => {
+    for (const version of [1, 2, 3, 4]) {
       const payload = JSON.parse(validText()) as Record<string, unknown>;
       payload.format_version = version;
       const result = files.parseCampaignFile(JSON.stringify(payload));

@@ -3,7 +3,7 @@
  * structural invariants of the campaign kernel.
  *
  * Every helper returns a new document; inputs are never mutated.
- * The invariants here mirror the Python domain layer (Phase 2) and the v4
+ * The invariants here mirror the Python domain layer (Phase 2) and the v5
  * contract README, so a document valid here survives the file round-trip.
  *
  * Purity: no React, no DOM, no filesystem, no KnowledgeReader dependency.

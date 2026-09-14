@@ -1,6 +1,6 @@
 /**
  * P3.2: minimal JSON Schema (draft 2020-12) validator covering exactly the
- * keyword subset the v4 contract schema uses — no third-party dependency in
+ * keyword subset the v5 contract schema uses — no third-party dependency in
  * the browser bundle. Errors carry the schema's JSON path, mirroring the
  * Python reader's reporting (e.g. `campaign.warriors[3].stats`).
  *
@@ -27,17 +27,17 @@ const ROOT = "#";
 
 function resolveRef(root: Schema, ref: string): Schema {
   if (!ref.startsWith(ROOT)) {
-    throw new Error(`Unsupported $ref in v4 schema: ${ref}`);
+    throw new Error(`Unsupported $ref in v5 schema: ${ref}`);
   }
   let node: unknown = root;
   for (const part of ref.slice(ROOT.length).split("/").filter(Boolean)) {
     if (typeof node !== "object" || node === null) {
-      throw new Error(`Unresolvable $ref in v4 schema: ${ref}`);
+      throw new Error(`Unresolvable $ref in v5 schema: ${ref}`);
     }
     node = (node as Schema)[part.replace(/~1/g, "/").replace(/~0/g, "~")];
   }
   if (typeof node !== "object" || node === null) {
-    throw new Error(`Unresolvable $ref in v4 schema: ${ref}`);
+    throw new Error(`Unresolvable $ref in v5 schema: ${ref}`);
   }
   return node as Schema;
 }
@@ -228,7 +228,7 @@ function validate(
  */
 export function validateAgainstSchema(schema: unknown, value: unknown): SchemaError[] {
   if (typeof schema !== "object" || schema === null) {
-    throw new Error("The v4 schema must be an object");
+    throw new Error("The v5 schema must be an object");
   }
   const errors: SchemaError[] = [];
   validate(schema as Schema, schema as Schema, value, "", errors);

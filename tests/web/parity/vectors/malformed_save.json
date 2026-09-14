@@ -4,7 +4,7 @@
  "source_family": "tests/campaign/test_malformed_save_matrix.py",
  "source_tests": 29,
  "rules": [
-  "base is always a schema-valid v4 document produced by the reference writer",
+  "base is always a schema-valid v5 document produced by the reference writer",
   "each vector mutates one location via RFC 6901 JSON pointer",
   "expected = reject (contract reader must fail) or accept (history-valid case)",
   "both toolchains apply the same mutation to the same base fixture and compare the outcome kind",

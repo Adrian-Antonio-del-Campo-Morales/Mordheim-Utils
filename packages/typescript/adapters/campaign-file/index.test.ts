@@ -2,7 +2,7 @@
  * Campaign-file acceptance tests: all four contract fixtures read and
  * validate; valid documents serialize; every error class has a test; the
  * semantic round-trip ignores only `saved_at`; open payloads survive
- * verbatim. Fixture text is loaded from `contracts/campaign-file-v4/` —
+ * verbatim. Fixture text is loaded from `contracts/campaign-file-v5/` —
  * never copied (the contract rule).
  */
 import { describe, expect, it } from "vitest";
@@ -10,7 +10,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import {
-  CampaignFileV4Adapter,
+  CampaignFileV5Adapter,
   parseCampaignFileDetailed,
 } from "./index";
 
@@ -23,17 +23,17 @@ function findRepoRoot(): string {
   let dir = process.cwd();
   for (let i = 0; i < 6; i++) {
     try {
-      readFileSync(join(dir, "contracts", "campaign-file-v4", "campaign-file-v4.schema.json"), "utf-8");
+      readFileSync(join(dir, "contracts", "campaign-file-v5", "campaign-file-v5.schema.json"), "utf-8");
       return dir;
     } catch {
       dir = join(dir, "..");
     }
   }
-  throw new Error("repo root with contracts/campaign-file-v4 not found from " + process.cwd());
+  throw new Error("repo root with contracts/campaign-file-v5 not found from " + process.cwd());
 }
 
 const REPO_ROOT = findRepoRoot();
-const FIXTURES = join(REPO_ROOT, "contracts", "campaign-file-v4", "fixtures");
+const FIXTURES = join(REPO_ROOT, "contracts", "campaign-file-v5", "fixtures");
 
 const FIXTURE_NAMES = [
   "draft.json",
@@ -56,7 +56,7 @@ describe("P3.2: fixtures parse and validate", () => {
       const result = parseCampaignFileDetailed(fixtureText(name));
       expect(result.ok).toBe(true);
       if (result.ok) {
-        expect(result.document.format_version).toBe(4);
+        expect(result.document.format_version).toBe(5);
         expect(typeof result.campaign.identity.band_id).toBe("string");
         expect(result.view).toBeTypeOf("object");
       }
@@ -77,7 +77,7 @@ describe("P3.2: fixtures parse and validate", () => {
 });
 
 describe("P3.2: rejection ladder", () => {
-  const port = new CampaignFileV4Adapter();
+  const port = new CampaignFileV5Adapter();
 
   it("rejects invalid JSON", () => {
     const result = port.parseCampaignFile("{not json");
@@ -106,8 +106,8 @@ describe("P3.2: rejection ladder", () => {
     }
   });
 
-  it("rejects v1 with found + supported versions", () => {
-    for (const version of [1, 2, 3]) {
+  it("rejects retired versions with found + supported versions", () => {
+    for (const version of [1, 2, 3, 4]) {
       const doc = fixtureJson("draft.json");
       doc["format_version"] = version;
       const result = port.parseCampaignFile(JSON.stringify(doc));
@@ -115,20 +115,20 @@ describe("P3.2: rejection ladder", () => {
       if (!result.ok) {
         expect(result.reason).toBe("retired_version");
         expect(result.found_version).toBe(version);
-        expect(result.supported_versions).toEqual([4]);
+        expect(result.supported_versions).toEqual([5]);
         expect(result.message).toContain(String(version));
       }
     }
   });
 
-  it("rejects versions newer than 4", () => {
+  it("rejects versions newer than 5", () => {
     const doc = fixtureJson("draft.json");
-    doc["format_version"] = 5;
+    doc["format_version"] = 6;
     const result = port.parseCampaignFile(JSON.stringify(doc));
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.reason).toBe("unsupported_version");
-      expect(result.found_version).toBe(5);
+      expect(result.found_version).toBe(6);
     }
   });
 
@@ -158,7 +158,7 @@ describe("P3.2: rejection ladder", () => {
 });
 
 describe("P3.2: serialization and round-trip", () => {
-  const port = new CampaignFileV4Adapter();
+  const port = new CampaignFileV5Adapter();
 
   it("round-trips every fixture with only saved_at differing", () => {
     for (const name of FIXTURE_NAMES) {
@@ -190,7 +190,7 @@ describe("P3.2: serialization and round-trip", () => {
     if (!serialized.ok) return;
     const doc = JSON.parse(serialized.text) as Record<string, unknown>;
     expect(doc["marker"]).toBe("MORDHEIM_CAMPAIGN_MANAGER");
-    expect(doc["format_version"]).toBe(4);
+    expect(doc["format_version"]).toBe(5);
     expect(doc["saved_at"]).toMatch(
       /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/,
     );
@@ -251,7 +251,7 @@ describe("P3.2: serialization and round-trip", () => {
 
   it("refuses to serialize a contract-violating campaign", () => {
     const broken = { identity: {} } as unknown as Parameters<
-      CampaignFileV4Adapter["serializeCampaign"]
+      CampaignFileV5Adapter["serializeCampaign"]
     >[0];
     const result = port.serializeCampaign(broken);
     expect(result.ok).toBe(false);

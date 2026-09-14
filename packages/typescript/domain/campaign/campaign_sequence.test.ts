@@ -7,7 +7,7 @@
  * the application workflow tests.
  */
 import { describe, expect, it } from "vitest";
-import { CampaignFileV4Adapter } from "../../adapters/campaign-file/index";
+import { CampaignFileV5Adapter } from "../../adapters/campaign-file/index";
 import type { CampaignDocument, InventoryItem, Warrior } from "./kernel/state";
 
 function fixture(): CampaignDocument {
@@ -86,8 +86,8 @@ describe("desktop test_campaign_sequence_matrix.py → campaign invariants", () 
     })).toThrow();
   });
 
-  it("preserves inventory and roster invariants through v4 serialize/parse", () => {
-    const adapter = new CampaignFileV4Adapter();
+  it("preserves inventory and roster invariants through v5 serialize/parse", () => {
+    const adapter = new CampaignFileV5Adapter();
     const original = fixture();
     const serialized = adapter.serializeCampaign(original.campaign);
     expect(serialized.ok).toBe(true);
