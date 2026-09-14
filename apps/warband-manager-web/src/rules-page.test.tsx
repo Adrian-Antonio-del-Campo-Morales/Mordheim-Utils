@@ -17,8 +17,14 @@ describe("RulesPage magic groups", () => {
         { id: "lore.prayers", name: "Prayers", name_i18n: { es: "Plegarias" }, spells: [{ id: "spell.prayers.blessing", name: "Blessing", name_i18n: { es: "Bendición" }, effect: "Bless." }] },
         { id: "lore.magic", name: "Magic Lore", name_i18n: { es: "Saber Mágico" }, spells: [{ id: "spell.magic.fire", name: "Fire", name_i18n: { es: "Fuego" }, effect: "Burn." }] },
       ] } : {},
-      list: () => [],
-      rulesDocument: () => [],
+      list: (kind: string) => kind === "band" ? [
+        { id: "reiklanders", name: "Reiklanders", name_i18n: { es: "Reiklandeses" } },
+        { id: "sisters", name: "Sisters", name_i18n: { es: "Hermanas de Sigmar" } },
+      ] : [],
+      rulesDocument: (document: string) => document === "profile-special-rules" ? [
+        { id: "captain--leader", band_id: "reiklanders", name: "Leader", name_i18n: { es: "Jefe" }, effect: "Leads." },
+        { id: "matriarch--leader", band_id: "sisters", name: "Leader", name_i18n: { es: "Jefe" }, effect: "Leads." },
+      ] : [],
     } as never);
   });
 
@@ -26,6 +32,8 @@ describe("RulesPage magic groups", () => {
     render(<ProductApp />);
     await waitFor(() => expect(screen.getByRole("button", { name: "Reglas" })).toBeEnabled());
     fireEvent.click(screen.getByRole("button", { name: "Reglas" }));
+    expect(screen.getByRole("button", { name: "Reglas Generales" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Reglas de Banda" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Hechizos" }));
 
     expect(within(screen.getByRole("region", { name: "Plegarias" })).getByRole("button", { name: "Bendición" })).toBeInTheDocument();
@@ -34,5 +42,21 @@ describe("RulesPage magic groups", () => {
     fireEvent.change(screen.getByRole("textbox", { name: "Buscar Reglas" }), { target: { value: "Plegarias" } });
     expect(screen.getByRole("button", { name: /Bendición/ })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Fuego/ })).not.toBeInTheDocument();
+  });
+
+  it("nests warband rules under their localized warband", async () => {
+    render(<ProductApp />);
+    await waitFor(() => expect(screen.getByRole("button", { name: "Reglas" })).toBeEnabled());
+    fireEvent.click(screen.getByRole("button", { name: "Reglas" }));
+    fireEvent.click(screen.getByRole("button", { name: "Reglas de Banda" }));
+
+    const reiklandersSummary = screen.getByText("Reiklandeses", { selector: "summary" });
+    const reiklanders = reiklandersSummary.closest("details");
+    const sisters = screen.getByText("Hermanas de Sigmar", { selector: "summary" }).closest("details");
+    expect(reiklanders).not.toHaveAttribute("open");
+    expect(sisters).not.toHaveAttribute("open");
+    fireEvent.click(reiklandersSummary);
+    expect(reiklanders).toHaveAttribute("open");
+    expect(within(reiklanders!).getByRole("button", { name: "Jefe" })).toBeInTheDocument();
   });
 });

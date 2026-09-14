@@ -1,7 +1,7 @@
 """Campaign persistence: JSON round-trip, robustness and Markdown export.
 
-The persistence layer reads and writes only the neutral v4 contract
-(``contracts/campaign-file-v4/``): schema-validated documents, explicit
+The persistence layer reads and writes only the neutral v5 contract
+(``contracts/campaign-file-v5/``): schema-validated documents, explicit
 rejection of retired versions and of documents the contract does not accept.
 """
 from dataclasses import asdict
@@ -17,7 +17,7 @@ from mordheim_campaign.domain.builders import make_draft_state, make_example_sta
 from mordheim_campaign.persistence import CampaignFileError, export_campaign_summary, load_campaign, save_campaign
 
 ROOT = Path(__file__).resolve().parents[2]
-FIXTURES = ROOT / "contracts" / "campaign-file-v4" / "fixtures"
+FIXTURES = ROOT / "contracts" / "campaign-file-v5" / "fixtures"
 
 
 def _canonical(state):
@@ -116,7 +116,7 @@ def test_missing_band_id_is_rejected(tmp_path):
 
     payload = {
         "marker": "MORDHEIM_CAMPAIGN_MANAGER",
-        "format_version": 4,
+        "format_version": 5,
         "saved_at": "2026-09-08T18:30:00+00:00",
         "campaign": {
             "identity": {"campaign_name": "No KB band", "warband_name": "X", "warband_type": "X", "band_id": ""},
@@ -132,9 +132,9 @@ def test_missing_band_id_is_rejected(tmp_path):
         load_campaign(path)
 
 
-@pytest.mark.parametrize("version", [1, 2, 3])
+@pytest.mark.parametrize("version", [1, 2, 3, 4])
 def test_retired_format_versions_are_rejected_explicitly(tmp_path, version):
-    """v1–v3 are retired: the loader must refuse them naming both versions."""
+    """v1–v4 are retired: the loader must refuse them naming both versions."""
     payload = {
         "marker": "MORDHEIM_CAMPAIGN_MANAGER",
         "format_version": version,
@@ -147,25 +147,25 @@ def test_retired_format_versions_are_rejected_explicitly(tmp_path, version):
     with pytest.raises(CampaignFileError) as excinfo:
         load_campaign(path)
     message = str(excinfo.value)
-    assert str(version) in message and "v4" in message
+    assert str(version) in message and "v5" in message
 
 
 def test_future_format_version_is_rejected(tmp_path):
     payload = {
         "marker": "MORDHEIM_CAMPAIGN_MANAGER",
-        "format_version": 5,
+        "format_version": 6,
         "saved_at": "2026-09-08T18:30:00+00:00",
         "campaign": {},
     }
-    path = tmp_path / "v5.mordheim"
+    path = tmp_path / "v6.mordheim"
     path.write_text(json.dumps(payload), encoding="utf-8")
     with pytest.raises(CampaignFileError) as excinfo:
         load_campaign(path)
-    assert "5" in str(excinfo.value)
+    assert "6" in str(excinfo.value)
 
 
 def test_schema_violations_are_rejected_with_location(tmp_path):
-    """A structurally invalid v4 document fails against the shared schema."""
+    """A structurally invalid v5 document fails against the shared schema."""
     port = KnowledgePort()
     state = make_draft_state(port, "sisters-of-sigmar")
     payload = json.loads(

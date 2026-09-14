@@ -14,7 +14,7 @@ apps/combat-lab/mordheim_combat_lab         Combat Lab UI, CLI and verification
 apps/warband-manager-desktop/mordheim_desktop desktop composition root
 apps/warband-manager-web                    React/Vite browser shell
 packages/typescript                         shared web domain, application and adapters
-contracts/campaign-file-v4                  neutral persistence contract and fixtures
+contracts/campaign-file-v5                  neutral persistence contract and fixtures
 tests                                      Python, TypeScript and web integration tests
 ```
 
@@ -81,7 +81,7 @@ The desktop application lives in `packages/python/campaign/mordheim_campaign/`, 
 
 ## Persistence boundary
 
-`.mordheim` files use format v4, defined by `contracts/campaign-file-v4/campaign-file-v4.schema.json`. Both Python and TypeScript readers/writers accept only v4, reject retired v1–v3 and future versions, and preserve open payload maps. Campaign files contain stable KB IDs and campaign state, never the rule catalogues themselves.
+`.mordheim` files use format v5, defined by `contracts/campaign-file-v5/campaign-file-v5.schema.json`. Both Python and TypeScript readers/writers accept only v5, reject retired v1–v4 and future versions, and preserve open payload maps. Campaign files contain stable KB IDs and campaign state, never the rule catalogues themselves.
 
 The desktop persistence module is `packages/python/campaign/mordheim_campaign/persistence/campaigns.py`. The web adapter is `packages/typescript/adapters/campaign-file/`. PDF export is implemented independently by the desktop persistence layer and the web export feature.
 

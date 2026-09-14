@@ -1,4 +1,4 @@
-"""Validate every v4 contract fixture against the shared JSON Schema.
+"""Validate every v5 contract fixture against the shared JSON Schema.
 
 Runs as part of the contract tests: the fixtures are the executable
 documentation of the format and must never drift from the schema.
@@ -12,8 +12,8 @@ import pytest
 from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[2]
-CONTRACT = ROOT / "contracts" / "campaign-file-v4"
-SCHEMA_PATH = CONTRACT / "campaign-file-v4.schema.json"
+CONTRACT = ROOT / "contracts" / "campaign-file-v5"
+SCHEMA_PATH = CONTRACT / "campaign-file-v5.schema.json"
 FIXTURES = sorted((CONTRACT / "fixtures").glob("*.json"))
 
 

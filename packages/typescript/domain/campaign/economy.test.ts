@@ -11,14 +11,14 @@
  *   in the warband;
  * - assignment carries the specific copy's recorded cost;
  * - heroes cannot be recruited as multi-member rows;
- * - every transition survives a v4 file round-trip.
+ * - every transition survives a v5 file round-trip.
  *
  * The fake KB mirrors the real artefact shape: `equipment_access` rows carry
  * `list_id` + optional cost — a costless access row means the creation price
  * is resolved at the table (`unit_price`), exactly like `rat_familiar_scroll`
  * in the published Clan Pestilens lists.
  *
- * Purity: plain Node, fake KnowledgeReader, in-memory v4 round-trip —
+ * Purity: plain Node, fake KnowledgeReader, in-memory v5 round-trip —
  * no React, no DOM, no filesystem.
  */
 
@@ -29,11 +29,11 @@ import { treasury } from "../../domain/campaign/kernel/document";
 import { commitInitialWarband } from "../../domain/campaign/kernel/commit-warband";
 import { recordBattle } from "../../domain/campaign/kernel/record-battle";
 import type { Campaign, CampaignDocument, KnowledgeReader, Warrior } from "../../domain/campaign/kernel/usecases";
-import { CampaignFileV4Adapter, parseCampaignFileDetailed } from "../../adapters/campaign-file";
+import { CampaignFileV5Adapter, parseCampaignFileDetailed } from "../../adapters/campaign-file";
 
-const adapter = new CampaignFileV4Adapter();
+const adapter = new CampaignFileV5Adapter();
 
-/** In-memory v4 round-trip (desktop `load_campaign(save_campaign(...))`). */
+/** In-memory v5 round-trip (desktop `load_campaign(save_campaign(...))`). */
 function roundtrip(document: CampaignDocument): CampaignDocument {
   const serialized = adapter.serializeCampaign(document.campaign);
   expect(serialized.ok).toBe(true);
@@ -170,7 +170,7 @@ describe("desktop test_economy_sequence_matrix.py → web draft economy parity",
     expect(treasury(removed.state.campaign)).toBe(500 - 60 - prices[1]);
   });
 
-  it("round-trips mixed-price purchases through v4 before refund", () => {
+  it("round-trips mixed-price purchases through v5 before refund", () => {
     const before = draft([hero("h1", "sorcerer")]);
     const bought = buyDraftEquipment(before, { warrior_id: "h1", item_id: "rat_familiar_scroll", unit_price: 26 }, knowledge);
     expect(bought.ok).toBe(true);

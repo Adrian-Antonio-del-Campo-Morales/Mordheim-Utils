@@ -55,6 +55,7 @@ main { max-width: 1440px; margin: 0 auto; padding: clamp(1rem, 3vw, 2.6rem); }
 .band-picker { max-height: 320px; overflow: auto; padding: .45rem; }
 .band-picker label { display: flex; align-items: center; gap: .65rem; padding: .55rem; border-bottom: 1px solid #3b3d33; }
 .band-picker input { width: auto; }
+.band-picker small { margin-left: auto; color: var(--muted); font-size: .72rem; text-transform: uppercase; }
 .global-error { display: block; padding: .8rem 1.25rem; background: #512626; color: #ffe3d6; }
 .empty-workspace { min-height: 65vh; display: grid; place-content: center; justify-items: start; gap: .8rem; }
 .empty-workspace h1 { margin: 0; font: 700 2.4rem Georgia, serif; }
@@ -69,6 +70,9 @@ main { max-width: 1440px; margin: 0 auto; padding: clamp(1rem, 3vw, 2.6rem); }
 .rule-list button { text-align: left; border: 0; border-bottom: 1px solid #34362e; }
 .rule-group { display: contents; }
 .rule-group h3 { margin: 0; padding: .65rem .8rem; color: var(--accent); background: #25271f; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
+.rule-group.collapsible { display: block; }
+.rule-group.collapsible summary { cursor: pointer; padding: .65rem .8rem; color: var(--accent); background: #25271f; font-size: .78rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.rule-group.collapsible button { width: 100%; }
 .rule-list button small { display: block; margin-top: .2rem; color: var(--muted); font-weight: 400; }
 .rule-detail { padding: 1.5rem; overflow: auto; }
 .rule-prose { white-space: pre-line; line-height: 1.55; }
@@ -80,6 +84,10 @@ main { max-width: 1440px; margin: 0 auto; padding: clamp(1rem, 3vw, 2.6rem); }
 .settings-card span { color: #989180; font-size: .72rem; }
 .settings-card strong { font-weight: 400; }
 .settings-card p { color: #989180; font-size: .8rem; }
+.settings-card .band-set-picker { margin: .7rem 0; padding: .8rem; }
+.settings-card .band-set-picker legend { color: #989180; font-size: .72rem; text-transform: uppercase; }
+.settings-card .band-set-picker label { display: flex; justify-content: flex-start; gap: .55rem; padding: .45rem 0; border: 0; }
+.settings-card .band-set-picker input { width: auto; }
 section[aria-label="Campaign"] { display: grid; gap: .8rem; }
 section[aria-label="Campaign"] > h1 { font: 700 2.5rem Georgia, serif; color: #d7b363; }
 table { width: 100%; border-collapse: collapse; }
@@ -177,7 +185,7 @@ button:disabled[data-disabled-tooltip], input:disabled[data-disabled-tooltip], s
 button:disabled[data-disabled-tooltip]::after, input:disabled[data-disabled-tooltip]::after, select:disabled[data-disabled-tooltip]::after { position: absolute; z-index: 30; left: 0; bottom: calc(100% + .45rem); display: none; width: max-content; max-width: min(420px, 70vw); padding: .65rem .75rem; border: 1px solid #806b42; background: #151711; color: #e5dfd0; box-shadow: 0 8px 28px #000c; content: attr(data-disabled-tooltip); font-size: .78rem; font-weight: 400; line-height: 1.45; text-align: left; white-space: normal; }
 button:disabled[data-disabled-tooltip]:hover::after, button:disabled[data-disabled-tooltip]:focus-visible::after, input:disabled[data-disabled-tooltip]:hover::after, select:disabled[data-disabled-tooltip]:hover::after { display: block; }
 .success-notice { display: block; margin: .5rem 0; padding: .65rem .8rem; border: 1px solid #687c4b; background: #20291b; color: #cfe3a9; }
-.variant-selector { width: max-content; max-width: 100%; margin: 0 0 .6rem auto; grid-template-columns: auto minmax(160px, 240px); align-items: center; font-size: .72rem; }
+.variant-selector { display: grid; width: max-content; max-width: 100%; margin: 0 0 .6rem auto; grid-template-columns: auto minmax(160px, 240px); align-items: center; gap: .7rem; font-size: .72rem; }
 .overview-columns { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; margin-top: .65rem; }
 .overview-columns article { padding: 1rem; border: 1px solid #44463a; background: #22241e; }
 .overview-columns span, .post-battle-sequence header span { color: #bd984a; font-size: .7rem; font-weight: 700; letter-spacing: .08em; }

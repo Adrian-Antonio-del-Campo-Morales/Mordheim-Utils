@@ -54,7 +54,7 @@ import { resolveSoldToPits } from "./features/injuries/sold-to-pits-workflow";
 import { resolveInjuryTableFollowUp } from "./features/injuries/injury-followup-workflow";
 import { resolveScenarioEncampment, resolveScenarioSpellReward } from "./features/exploration/scenario-followups-workflow";
 import { acknowledgeFollowUp, followUpNeedsResolution } from "./features/review/follow-up-acknowledgement-workflow";
-import { mercenaryVariantsForBand } from "../../domain/campaign/hire-eligibility";
+import { selectedWarbandVariant, warbandVariants } from "../../domain/campaign/band-variants";
 import { treasury } from "../../domain/campaign/kernel/document";
 
 const HISTORY_LIMIT = 50;
@@ -144,9 +144,22 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
     async createCampaign(input): Promise<AppResult> {
       if (state.current) return error("already_loaded", "A campaign is already loaded.");
       if (!input.campaign_name.trim() || !input.warband_name.trim()) return error("rejected", "Campaign and warband names are required.");
+      const variants = warbandVariants(deps.knowledge, input.band_id);
+      const variant = selectedWarbandVariant(deps.knowledge, input.band_id, input.variant);
+      if (variants.length && !variant) return error("rejected", "Choose a valid warband variant.");
+      if (!variants.length && input.variant) return error("rejected", "This warband has no variants.");
       const result = useCases.createDraft(input.band_id, deps.knowledge);
       if (!result.ok) return error("rejected", result.message, { reason: result.reason });
-      const document = { ...result.state, campaign: { ...result.state.campaign, warriors: [], inventory: [], identity: { ...result.state.campaign.identity, campaign_name: input.campaign_name.trim(), warband_name: input.warband_name.trim() } } };
+      const document = {
+        ...result.state,
+        campaign: {
+          ...result.state.campaign,
+          warriors: [],
+          inventory: [],
+          configuration: { ...result.state.campaign.configuration, ...(variant?.starting_gold ? { starting_gold: variant.starting_gold } : {}) },
+          identity: { ...result.state.campaign.identity, campaign_name: input.campaign_name.trim(), warband_name: input.warband_name.trim(), mercenary_variant: variant?.id ?? null },
+        },
+      };
       state.current = document;
       state.history = [];
       state.baseline = null;
@@ -244,9 +257,18 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           return applyResult({ ok: true, state: { ...state.current, campaign: { ...state.current.campaign, warriors: state.current.campaign.warriors.map((warrior) => warrior.id === id ? { ...warrior, name } : warrior) } } });
         }
         case "setMercenaryVariant": {
-          const variant=input["variant"]==null?null:String(input["variant"]).trim().toLowerCase(), allowed=mercenaryVariantsForBand(state.current.campaign.identity.band_id);
-          if(variant!==null&&!allowed.includes(variant))return error("rejected","Choose a valid Mercenary variant for this warband.");
-          return applyResult({ok:true,state:{...state.current,campaign:{...state.current.campaign,identity:{...state.current.campaign.identity,mercenary_variant:variant}}}});
+          if (!state.current.campaign.configuration.is_draft || state.current.campaign.identity.mercenary_variant) return error("rejected", "The warband variant is locked after selection.");
+          const variant = selectedWarbandVariant(deps.knowledge, state.current.campaign.identity.band_id, String(input["variant"] ?? ""));
+          if (!variant) return error("rejected", "Choose a valid warband variant.");
+          const band = deps.knowledge.queryKnowledge({ id: { kind: "band_id", value: state.current.campaign.identity.band_id } });
+          const roster = band.ok ? band.record.data["roster"] as Readonly<Record<string, unknown>> | undefined : undefined;
+          const baseGold = typeof roster?.["starting_gold"] === "number" ? roster["starting_gold"] : state.current.campaign.configuration.starting_gold;
+          const startingGold = state.current.campaign.configuration.starting_gold + (variant.starting_gold ?? baseGold) - baseGold;
+          const warriors = state.current.campaign.warriors.map((warrior) => {
+            const bonuses = warrior.profile_id ? variant.profile_bonuses?.[warrior.profile_id] ?? {} : {};
+            return { ...warrior, stats: Object.fromEntries(Object.entries(warrior.stats).map(([key, value]) => [key, value + (bonuses[key] ?? 0)])) };
+          });
+          return applyResult({ ok: true, state: { ...state.current, campaign: { ...state.current.campaign, warriors, configuration: { ...state.current.campaign.configuration, starting_gold: startingGold }, identity: { ...state.current.campaign.identity, mercenary_variant: variant.id } } } });
         }
         case "setManualSkill": {
           const result = setManualSkill(state.current, knowledge, input as never);

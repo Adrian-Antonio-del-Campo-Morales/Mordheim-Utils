@@ -315,8 +315,7 @@ class KnowledgePort:
             return False
         forbidden_refs = {
             "shared-rule.brainless", "shared-rule.dead", "shared-rule.never-gain-experience",
-            "shared-rule.experience", "shared-rule.animal", "shared-rule.animal-2",
-            "shared-rule.animals", "shared-rule.animals-2", "shared-rule.animals-3",
+            "shared-rule.experience", "shared-rule.animal",
         }
         return not any(
             profile_id in (rule.get("applies_to") or {}).get("profile_ids", ())

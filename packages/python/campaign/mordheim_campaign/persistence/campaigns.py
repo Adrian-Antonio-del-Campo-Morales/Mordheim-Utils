@@ -1,8 +1,8 @@
 """persistence.campaigns: campaign files of the Campaign Manager.
 
-The format is self-contained JSON with a marker and a version. v4 is the
+The format is self-contained JSON with a marker and a version. v5 is the
 neutral contract shared with the web application: it is documented with a JSON
-Schema and fixtures in ``contracts/campaign-file-v4/`` (see that README). The
+Schema and fixtures in ``contracts/campaign-file-v5/`` (see that README). The
 file saves the campaign state managed by the GUI —identity, configuration,
 resources, warriors, battles, states (each one with its roster/inventory
 snapshot), post-battle and inventory— together with the UI selection so the
@@ -12,9 +12,9 @@ again on load.
 
 Persisted values are external campaign state, never rules.
 
-Compatibility policy: only v4 is read and written. Documents with versions
-1–3 are rejected explicitly with a message that names both the found and the
-supported version. Loading validates the document against the v4 JSON Schema
+Compatibility policy: only v5 is read and written. Documents with versions
+1–4 are rejected explicitly with a message that names both the found and the
+supported version. Loading validates the document against the v5 JSON Schema
 before reconstructing the state, so a malformed file fails with a precise
 error instead of a deep constructor one.
 """
@@ -41,16 +41,16 @@ from mordheim_campaign.domain.models import (
 )
 
 CAMPAIGN_MARKER = "MORDHEIM_CAMPAIGN_MANAGER"
-FORMAT_VERSION = 4
-#: Versions the application used before the neutral v4 contract. Never read.
-RETIRED_FORMAT_VERSIONS = (1, 2, 3)
+FORMAT_VERSION = 5
+#: Versions the application used before the neutral v5 contract. Never read.
+RETIRED_FORMAT_VERSIONS = (1, 2, 3, 4)
 
 FILE_EXTENSION = ".mordheim"
 
 _CONTRACT_SCHEMA_PATH = next(
-    parent / "contracts" / "campaign-file-v4" / "campaign-file-v4.schema.json"
+    parent / "contracts" / "campaign-file-v5" / "campaign-file-v5.schema.json"
     for parent in Path(__file__).resolve().parents
-    if (parent / "contracts" / "campaign-file-v4" / "campaign-file-v4.schema.json").is_file()
+    if (parent / "contracts" / "campaign-file-v5" / "campaign-file-v5.schema.json").is_file()
 )
 
 
@@ -59,7 +59,7 @@ class CampaignFileError(ValueError):
 
 
 def _schema() -> dict:
-    """The v4 JSON Schema of the shared contract.
+    """The v5 JSON Schema of the shared contract.
 
     The contract lives in the repository; the schema is read from disk rather
     than duplicated in code so the contract stays the single source of truth.
@@ -67,23 +67,23 @@ def _schema() -> dict:
     try:
         return json.loads(_CONTRACT_SCHEMA_PATH.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise CampaignFileError(f"Cannot read the v4 campaign contract schema: {exc}") from exc
+        raise CampaignFileError(f"Cannot read the v5 campaign contract schema: {exc}") from exc
 
 
 def _validate_document(payload: dict) -> None:
-    """Validates the raw document against the v4 contract schema."""
+    """Validates the raw document against the v5 contract schema."""
     schema = _schema()
     try:
         Draft202012Validator.check_schema(schema)
     except SchemaError as exc:
-        raise CampaignFileError(f"Invalid v4 campaign contract schema: {exc}") from exc
+        raise CampaignFileError(f"Invalid v5 campaign contract schema: {exc}") from exc
     validator = Draft202012Validator(schema)
     errors = sorted(validator.iter_errors(payload), key=lambda error: list(error.absolute_path))
     if errors:
         first = errors[0]
         location = "/".join(str(part) for part in first.absolute_path) or "(document root)"
         raise CampaignFileError(
-            f"The campaign file does not satisfy the v4 contract at '{location}': {first.message}"
+            f"The campaign file does not satisfy the v5 contract at '{location}': {first.message}"
         )
 
 
@@ -109,12 +109,12 @@ def _asdict_plain(value):
 
 
 # --------------------------------------------------------------------------
-# v4 document composition
+# v5 document composition
 # --------------------------------------------------------------------------
 
 
 def _document(state: AppState, *, saved_at: str) -> dict:
-    """Builds the neutral v4 document from the application state."""
+    """Builds the neutral v5 document from the application state."""
     campaign = state.campaign
     return {
         "marker": CAMPAIGN_MARKER,
@@ -307,7 +307,7 @@ def _inventory_document(item: InventoryItemVM) -> dict:
 
 
 # --------------------------------------------------------------------------
-# v4 document parsing
+# v5 document parsing
 # --------------------------------------------------------------------------
 
 
@@ -512,7 +512,7 @@ def _strict_integer(value, label: str) -> int:
 
 
 def save_campaign(path, state: AppState) -> Path:
-    """Saves the whole campaign (including the active view) as a v4 document.
+    """Saves the whole campaign (including the active view) as a v5 document.
 
     The write is atomic (temp file + fsync + replace): a failed save must
     never truncate or corrupt the last valid file.
@@ -539,10 +539,10 @@ def save_campaign(path, state: AppState) -> Path:
 
 
 def load_campaign(path) -> AppState:
-    """Loads a v4 campaign document saved by :func:`save_campaign`.
+    """Loads a v5 campaign document saved by :func:`save_campaign`.
 
-    v1–v3 files are retired and rejected explicitly; the document must also
-    satisfy the shared v4 JSON Schema before the state is reconstructed.
+    v1–v4 files are retired and rejected explicitly; the document must also
+    satisfy the shared v5 JSON Schema before the state is reconstructed.
     """
     source = Path(path)
     try:
@@ -555,8 +555,8 @@ def load_campaign(path) -> AppState:
     if version in RETIRED_FORMAT_VERSIONS:
         raise CampaignFileError(
             f"Retired campaign format version {version} is no longer supported: "
-            f"this build reads only the neutral format v4. "
-            f"Open and re-export the campaign with an application of format v4 first."
+            f"this build reads only the neutral format v5. "
+            f"No automatic migration is available."
         )
     if version != FORMAT_VERSION:
         raise CampaignFileError(

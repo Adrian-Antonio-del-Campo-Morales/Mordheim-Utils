@@ -42,7 +42,7 @@ describe("ProductApp session removal", () => {
     markExported.mockClear();
     prepareExport.mockResolvedValue({ ok: false, message: "Export failed" });
     vi.mocked(loadKnowledge).mockResolvedValue({
-      list: () => [{ id: "mercenaries", names: { es: "Mercenarios" } }],
+      list: () => [{ id: "mercenaries", names: { es: "Mercenarios" }, collection: "mordheim", grade: "core" }],
     } as never);
     vi.mocked(createService).mockReturnValue({
       createCampaign: vi.fn().mockResolvedValue({ ok: true }),

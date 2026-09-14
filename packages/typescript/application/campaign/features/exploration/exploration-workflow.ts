@@ -5,6 +5,7 @@ import type {
 } from "../../../../domain/campaign/index";
 import { withCampaign } from "../../../../domain/campaign/kernel/document";
 import { hireHireling } from "../../../../domain/campaign/kernel/hirelings";
+import { activeBandRuleIds } from "../../../../domain/campaign/band-variants";
 
 interface CatalogueReader extends KnowledgeReader {
   campaignSection?(section: string): Readonly<Record<string, unknown>>;
@@ -77,11 +78,9 @@ export function explorationModifiers(document: CampaignDocument, reader: Catalog
   const casualties = new Map<string, number>();
   for (const id of battle?.out_of_action_ids ?? []) casualties.set(id, (casualties.get(id) ?? 0) + 1);
   const profiles = reader.list?.("profile") ?? [];
-  const bands = reader.list?.("band") ?? [];
   const rules = [...(reader.rulesDocument?.("special-rules") ?? []), ...(reader.rulesDocument?.("profile-special-rules") ?? [])];
   const active: string[] = [];
-  const band = bands.find((row) => String(row["id"] ?? row["band_id"] ?? "") === document.campaign.identity.band_id);
-  for (const id of (band?.["rule_ids"] ?? []) as unknown[]) active.push(String(id));
+  for (const id of activeBandRuleIds(reader, document)) active.push(id);
   for (const warrior of document.campaign.warriors) {
     const survivors = absent.has(warrior.id) || (participants && !participants.has(warrior.id)) ? 0 : Math.max(0, Number(warrior.quantity ?? 1) - (casualties.get(warrior.id) ?? 0));
     if (!survivors) continue;

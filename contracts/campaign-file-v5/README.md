@@ -1,21 +1,21 @@
-# `.mordheim` campaign file — format v4
+# `.mordheim` campaign file — format v5
 
 **Status:** current interoperability contract for the desktop and web
 applications.
-**Schema:** [`campaign-file-v4.schema.json`](./campaign-file-v4.schema.json)
+**Schema:** [`campaign-file-v5.schema.json`](./campaign-file-v5.schema.json)
 (JSON Schema draft 2020-12).
 **Fixtures:** [`fixtures/`](./fixtures/) — validated documents for tests and
 porting.
 
 ## Purpose
 
-`.mordheim` v4 is the **neutral representation of campaign state** shared by
+`.mordheim` v5 is the **neutral representation of campaign state** shared by
 the Python desktop application and the React/TypeScript web application. It is
 not a serialisation of Python dataclasses or React components: the structure is
 organised by responsibility (identity, configuration, resources, timeline
 entities) so both implementations read and write the same document.
 
-Applications write and read **only v4** and reject older versions with a clear
+Applications write and read **only v5** and reject older versions with a clear
 message.
 
 ## Document shape
@@ -23,7 +23,7 @@ message.
 ```json
 {
   "marker": "MORDHEIM_CAMPAIGN_MANAGER",
-  "format_version": 4,
+  "format_version": 5,
   "saved_at": "2026-09-08T18:30:00+00:00",
   "campaign": { "identity": {}, "configuration": {}, "resources": {}, "warriors": [], "battles": [], "states": [], "post_battles": [], "inventory": [], "special_rules": [], "unique_reward_ids": [], "manual_log": [] },
   "view": { "active_view": "campaign", "selected_moment": "state:7" }
@@ -35,7 +35,7 @@ message.
 | Field | Type | Policy |
 | --- | --- | --- |
 | `marker` | string, exactly `MORDHEIM_CAMPAIGN_MANAGER` | Required. Documents without it are rejected before any version check. |
-| `format_version` | integer, exactly `4` | Required. v1–v3 are rejected with a message naming the found and supported versions. |
+| `format_version` | integer, exactly `5` | Required. v1–v4 are retired and rejected with a message naming the found and supported versions. |
 | `saved_at` | ISO-8601 UTC timestamp | Required on write. **Volatile**: two saves of an unchanged campaign differ only here. Semantic comparison must ignore it. |
 | `campaign` | object | Required. The campaign state (below). |
 | `view` | object | Optional. Reconstructible UI selection state; a reader may ignore or reset any part of it. |
@@ -56,13 +56,12 @@ message.
   states, not here.
 - **`current_state_number`** — newest committed timeline state number (0 for
   a draft or a campaign without committed states). In v3 this lived inside
-  the flat campaign payload; in v4 it is a first-class field because it is
+  the flat campaign payload; since v4 it is a first-class field because it is
   genuine campaign state, not view selection.
 - **`warriors` / `battles` / `states` / `post_battles` / `inventory`** — the
   timeline entities. Array order is document order and is meaningful: states
   and battles are ordered by `number`. In v3 these were flat siblings of the
-  metadata; grouping them under typed sections is the main v4 structural
-  change.
+  metadata; v4 grouped them under typed sections and v5 retains that shape.
 - **`special_rules` / `unique_reward_ids` / `manual_log`** — campaign-level
   rules in effect, generated-unique-reward history and user corrections.
 
@@ -99,7 +98,7 @@ A reader must reject, with distinct, actionable messages:
 
 1. not a JSON object, or unreadable/invalid JSON;
 2. missing or wrong `marker` (not a Mordheim campaign file);
-3. `format_version` other than `4` — explicitly naming v1–v3 as unsupported;
+3. `format_version` other than `5` — explicitly naming v1–v4 as retired and unsupported;
 4. schema violations (missing required fields, wrong types, unknown
    top-level/section properties);
 5. a `campaign.identity.band_id` that its KB cannot resolve (reference

@@ -28,6 +28,7 @@ import type {
 } from "./usecases";
 import { rejected } from "./rejections";
 import { memberCount, uniqueWarriorName } from "./document";
+import { selectedWarbandVariant } from "../band-variants";
 
 /** Characteristic display keys, in KB order. */
 export const STAT_KEYS = ["M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"] as const;
@@ -440,7 +441,9 @@ export function composeDraft(
     const occurrence = (occurrences.get(rowInput.profile_id) ?? 0) + 1;
     occurrences.set(rowInput.profile_id, occurrence);
     const created = warriorFromProfile(profile, rowInput, itemName, occurrence);
-    const warrior = { ...created, name: uniqueWarriorName([...campaign.warriors, ...planned.map((row) => row.warrior)], created.name) };
+    const bonuses = selectedWarbandVariant(knowledge, campaign.identity.band_id, campaign.identity.mercenary_variant)?.profile_bonuses?.[rowInput.profile_id] ?? {};
+    const variantStats = Object.fromEntries(Object.entries(created.stats).map(([key, value]) => [key, value + (bonuses[key] ?? 0)]));
+    const warrior = { ...created, stats: variantStats, name: uniqueWarriorName([...campaign.warriors, ...planned.map((row) => row.warrior)], created.name) };
     // Fixed equipment comes from the profile; listed equipment is purchased.
     const fixedIds = warrior.equipment.map((entry) => entry.item_id);
     const purchased = rowInput.equipment

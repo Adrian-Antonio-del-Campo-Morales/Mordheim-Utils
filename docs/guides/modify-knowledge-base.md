@@ -34,3 +34,36 @@ Done when legal cases compile, illegal ones are rejected, and the affected
 evidence is reviewed or explicitly pending. See
 [Implement and verify rules](implement-and-verify-rules.md) for the evidence
 side.
+
+## Fusionar reglas equivalentes
+
+Una coincidencia de nombre o de redacción no basta para fusionar reglas. Antes
+de tocar los IDs, revisa por separado estos tres niveles:
+
+1. **Identidad editorial:** confirma que cada variante conserva exactamente el
+   mismo efecto, alcance, destinatario y excepciones. Las reglas que aplican un
+   efecto a otra categoría (por ejemplo, «todos los No muertos») no se fusionan
+   con las reglas que describen directamente a su portador.
+2. **Identidad mecánica:** compara todos los `runtime.effects[].binding`. Dos
+   reglas equivalentes deben compartir `kind`, `id` y `parameters`; el runtime
+   permanece en la regla local de cada banda y nunca se mueve al catálogo de
+   texto compartido.
+3. **Identidad persistida:** busca el ID en bandas, aplicaciones, artefactos,
+   campañas guardadas y pruebas. El procedimiento normal conserva los IDs y
+   comparte solo el binding. Eliminar IDs es una migración destructiva y exige
+   una nueva versión del formato persistido o aliases compatibles explícitos.
+
+Para una fusión destructiva autorizada:
+
+- elige un único `shared-rule.*` canónico y reemplaza todos los `rule_ref`;
+- conserva las reglas locales, `applies_to`, `grant`, alcance y bindings;
+- escribe texto compartido neutral, sin nombres de perfiles concretos;
+- actualiza consumidores que comparen IDs directamente y regenera los
+  artefactos derivados, sin editarlos a mano;
+- documenta qué IDs se retiran y qué versiones de campaña se aceptan;
+- prueba ausencia de IDs retirados, resolución de referencias, destinatarios,
+  bindings, reglas de campaña afectadas y lectura/escritura del formato;
+- ejecuta formato, `validate`, evidencia semántica y paridad antes de publicar.
+
+No fusiones si cambia el destinatario, existe una excepción contextual, los
+parámetros del binding difieren o la compatibilidad de datos no está decidida.

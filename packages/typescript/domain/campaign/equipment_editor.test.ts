@@ -9,7 +9,7 @@
  * - return rejects items not carried → typed `limit_violated`;
  * - assign rejects when the stash is empty → typed `limit_violated`;
  * - moves work without a pending post-battle → no post-battle coupling;
- * - moves survive save/load → real `CampaignFileV4Adapter` round-trip;
+ * - moves survive save/load → real `CampaignFileV5Adapter` round-trip;
  * - henchman groups carry equipment as a group → quantity carried in one go;
  * - display suffix (`×2`) is UI-only — not portable, documented delta;
  * - bought dagger stays separate from the free starting dagger → entries
@@ -25,7 +25,7 @@ import { describe, expect, it } from "vitest";
 
 import { assignEquipment } from "../../domain/campaign/kernel/equipment";
 import type { CampaignDocument } from "../../domain/campaign/kernel/usecases";
-import { CampaignFileV4Adapter } from "../../adapters/campaign-file/index";
+import { CampaignFileV5Adapter } from "../../adapters/campaign-file/index";
 
 function makeDocument(): CampaignDocument {
   return {
@@ -58,7 +58,7 @@ function makeDocument(): CampaignDocument {
   };
 }
 
-const files = new CampaignFileV4Adapter();
+const files = new CampaignFileV5Adapter();
 
 describe("desktop test_equipment_editor.py → web assignEquipment parity", () => {
   it("assign and return round-trip keeps the ledger consistent", () => {

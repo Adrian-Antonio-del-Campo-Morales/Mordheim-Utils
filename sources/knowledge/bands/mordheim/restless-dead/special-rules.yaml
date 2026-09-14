@@ -563,7 +563,7 @@ rules:
       binding: null
       reason: >-
         Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.fear-6
+  rule_ref: shared-rule.fear
 - id: zombies--may-not-run
   name: May Not Run
   source:
@@ -586,7 +586,7 @@ rules:
       binding: null
       reason: >-
         Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.may-not-run-3
+  rule_ref: shared-rule.may-not-run
 - id: zombies--immune-to-psychology
   name: Immune to Psychology
   source:
@@ -609,7 +609,7 @@ rules:
       binding: null
       reason: >-
         Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.immune-to-psychology-5
+  rule_ref: shared-rule.immune-to-psychology
 - id: zombies--immune-to-poison
   runtime:
     scope: 'YES'
@@ -634,7 +634,7 @@ rules:
   applies_to:
     profile_ids:
     - zombies
-  rule_ref: shared-rule.immune-to-poison-4
+  rule_ref: shared-rule.immune-to-poison
 - id: zombies--no-pain
   runtime:
     scope: 'YES'
@@ -657,7 +657,7 @@ rules:
   applies_to:
     profile_ids:
     - zombies
-  rule_ref: shared-rule.no-pain-3
+  rule_ref: shared-rule.no-pain
 - id: zombies--no-brain
   name: No Brain
   source:

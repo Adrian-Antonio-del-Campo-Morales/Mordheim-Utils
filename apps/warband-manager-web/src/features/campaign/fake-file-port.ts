@@ -1,7 +1,7 @@
 /**
  * Minimal deterministic file port used by isolated tests.
  *
- * Production composition uses the real v4 adapter; this implementation exists
+ * Production composition uses the real v5 adapter; this implementation exists
  * only to exercise UI error paths without filesystem or browser I/O.
  */
 import type { Campaign, CampaignFilePort, ParseResult, SerializeResult } from "./types";
@@ -18,7 +18,7 @@ export class FakeCampaignFilePort implements CampaignFilePort {
         ok: false,
         reason: "invalid_json",
         message: "The file is not valid JSON.",
-        supported_versions: [4],
+        supported_versions: [5],
       };
     }
     if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
@@ -26,7 +26,7 @@ export class FakeCampaignFilePort implements CampaignFilePort {
         ok: false,
         reason: "invalid_json",
         message: "The file's top level must be a JSON object.",
-        supported_versions: [4],
+        supported_versions: [5],
       };
     }
     const doc = parsed as Record<string, unknown>;
@@ -35,7 +35,7 @@ export class FakeCampaignFilePort implements CampaignFilePort {
         ok: false,
         reason: "bad_marker",
         message: "This file is not a Mordheim campaign file (wrong marker).",
-        supported_versions: [4],
+        supported_versions: [5],
       };
     }
     const version = doc["format_version"];
@@ -45,7 +45,7 @@ export class FakeCampaignFilePort implements CampaignFilePort {
         reason: "retired_version",
         message: `Format version ${version} is no longer supported.`,
         found_version: version,
-        supported_versions: [4],
+        supported_versions: [5],
       };
     }
     if (version !== 4) {
@@ -54,7 +54,7 @@ export class FakeCampaignFilePort implements CampaignFilePort {
         reason: "unsupported_version",
         message: `Format version ${String(version)} is not supported.`,
         found_version: typeof version === "number" ? version : undefined,
-        supported_versions: [4],
+        supported_versions: [5],
       };
     }
     if (typeof doc["campaign"] !== "object" || doc["campaign"] === null) {
@@ -63,7 +63,7 @@ export class FakeCampaignFilePort implements CampaignFilePort {
         reason: "schema_violation",
         message: "The document is missing the campaign section.",
         location: "campaign",
-        supported_versions: [4],
+        supported_versions: [5],
       };
     }
     return { ok: true, document: doc as never };
@@ -72,7 +72,7 @@ export class FakeCampaignFilePort implements CampaignFilePort {
   serializeCampaign(campaign: Campaign): SerializeResult {
     const document = {
       marker: MARKER,
-      format_version: 4,
+      format_version: 5,
       saved_at: new Date().toISOString().replace(/\.\d+Z$/, "Z"),
       campaign: campaign as unknown as Record<string, unknown>,
     };

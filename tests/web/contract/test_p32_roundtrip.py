@@ -3,7 +3,7 @@ documents the Python contract reader accepts.
 
 The TS round-trip test writes an artefact listing the fixtures it
 round-tripped and the files it emitted. This module validates each emitted
-file against the v4 schema via the desktop reader — the same acceptance the
+file against the v5 schema via the desktop reader — the same acceptance the
 plan demands for the Python↔web round-trip.
 """
 
@@ -50,7 +50,7 @@ def test_every_serialized_document_is_schema_valid() -> None:
 def test_serialized_documents_are_semantically_equal_to_fixtures() -> None:
     data = _artefact()
     for fixture, filename in sorted(data["serialized"].items()):
-        original = json.loads((REPO_ROOT / "contracts" / "campaign-file-v4" / "fixtures" / fixture).read_text(encoding="utf-8"))
+        original = json.loads((REPO_ROOT / "contracts" / "campaign-file-v5" / "fixtures" / fixture).read_text(encoding="utf-8"))
         reserialized = json.loads((ARTEFACT.parent / filename).read_text(encoding="utf-8"))
         original.pop("saved_at", None)
         reserialized.pop("saved_at", None)

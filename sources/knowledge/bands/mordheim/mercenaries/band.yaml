@@ -49,10 +49,37 @@ roster:
     group_size:
       minimum: 1
       maximum: 5
-rule_ids:
-- band--reikland-command-radius
-- band--reikland-marksman-training
-- band--middenheim-physical-prowess
-- band--marienburg-traders
-- band--marienburg-wealth
-- band--ostermark-stubborn-resolve
+rule_ids: []
+variants:
+- id: reikland
+  name: Reikland
+  name_i18n:
+    es: Reikland
+  rule_ids:
+  - band--reikland-command-radius
+  - band--reikland-marksman-training
+- id: middenheim
+  name: Middenheim
+  name_i18n:
+    es: Middenheim
+  rule_ids:
+  - band--middenheim-physical-prowess
+  profile_bonuses:
+    mercenary-captain:
+      S: 1
+    champions:
+      S: 1
+- id: marienburg
+  name: Marienburg
+  name_i18n:
+    es: Marienburgo
+  starting_gold: 600
+  rule_ids:
+  - band--marienburg-traders
+  - band--marienburg-wealth
+- id: ostermark
+  name: Ostermark
+  name_i18n:
+    es: Ostermark
+  rule_ids:
+  - band--ostermark-stubborn-resolve

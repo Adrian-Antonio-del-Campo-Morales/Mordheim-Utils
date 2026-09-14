@@ -12,7 +12,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { CampaignFileV4Adapter } from "../../adapters/campaign-file/index";
+import { CampaignFileV5Adapter } from "../../adapters/campaign-file/index";
 import type { Campaign, MomentSelection } from "../../domain/campaign/kernel/state";
 import type { KnowledgeReader } from "../../domain/campaign/kernel/ports";
 import { createCampaignAppService } from "./service";
@@ -144,7 +144,7 @@ function campaign(): Campaign {
 
 function makeService() {
   return createCampaignAppService({
-    files: new CampaignFileV4Adapter(),
+    files: new CampaignFileV5Adapter(),
     knowledge: neutralKnowledge,
   });
 }
@@ -154,10 +154,10 @@ async function importCampaign(selectedMoment: MomentSelection = "state:1") {
   // The view travels through the real port too: build the document text with
   // a view section, mirroring what the app does on export.
   const document = { campaign: campaign(), view: { selected_moment: selectedMoment } };
-  const files = new CampaignFileV4Adapter();
+  const files = new CampaignFileV5Adapter();
   const raw = {
     marker: "MORDHEIM_CAMPAIGN_MANAGER",
-    format_version: 4,
+    format_version: 5,
     saved_at: "2026-09-09T12:00:00Z",
     campaign: document.campaign as unknown as Record<string, unknown>,
     view: document.view as Record<string, unknown>,

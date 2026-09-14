@@ -16,19 +16,19 @@ import { describe, expect, it } from "vitest";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
-import { CampaignFileV4Adapter } from "./index";
+import { CampaignFileV5Adapter } from "./index";
 
 function findRepoRoot(): string {
   let dir = process.cwd();
   for (let i = 0; i < 6; i++) {
     try {
-      readFileSync(join(dir, "contracts", "campaign-file-v4", "campaign-file-v4.schema.json"), "utf-8");
+      readFileSync(join(dir, "contracts", "campaign-file-v5", "campaign-file-v5.schema.json"), "utf-8");
       return dir;
     } catch {
       dir = join(dir, "..");
     }
   }
-  throw new Error("repo root with contracts/campaign-file-v4 not found from " + process.cwd());
+  throw new Error("repo root with contracts/campaign-file-v5 not found from " + process.cwd());
 }
 
 const REPO_ROOT = findRepoRoot();
@@ -55,7 +55,7 @@ const NOISE_PATTERNS: readonly { test(value: string): boolean }[] = [
 ];
 
 describe("P7.2: TS adapter rejects every corrupt document with the manifest reason", () => {
-  const port = new CampaignFileV4Adapter();
+  const port = new CampaignFileV5Adapter();
 
   it("corpus is complete: every manifest entry has a file on disk", () => {
     expect(CORPUS_FILES.length).toBeGreaterThanOrEqual(20);
@@ -84,16 +84,16 @@ describe("P7.2: TS adapter rejects every corrupt document with the manifest reas
   }
 
   it("retired versions name the found and the supported versions", () => {
-    for (const version of [1, 2, 3]) {
+    for (const version of [1, 2, 3, 4]) {
       const result = port.parseCampaignFile(
         readFileSync(join(CORPUS, `retired-v${version}.mordheim`), "utf-8"),
       );
       expect(result.ok).toBe(false);
       if (!result.ok) {
         expect(result.found_version).toBe(version);
-        expect(result.supported_versions).toEqual([4]);
+        expect(result.supported_versions).toEqual([5]);
         expect(result.message).toContain(String(version));
-        expect(result.message).toContain("4");
+        expect(result.message).toContain("5");
       }
     }
   });

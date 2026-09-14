@@ -1,9 +1,9 @@
 schema_version: 2
 id: tileans
 canonical_family: tileans
-name: Tileans (Miragleans / Remasens / Trantios)
+name: Tileans
 name_i18n:
-  es: Tileanos (Miragleos / Remasenes / Trantinos)
+  es: Tileanos
 original_locale: en
 ruleset: mordheim
 categories:
@@ -51,11 +51,33 @@ roster:
       maximum: 5
 rule_ids:
 - band--human-maximum-characteristics
-- band--miraglean-crossbow-mastery
-- band--miraglean-marksman-accuracy
-- band--miraglean-hatred-skaven
-- band--miraglean-hired-sword-restriction
-- band--remasen-dark-elf-rout
-- band--remasen-officer-leadership
-- band--remasen-hired-sword-restriction
-- band--trantio-wealth
+variants:
+- id: tileans
+  name: Tileans
+  name_i18n:
+    es: Tileanos estándar
+  rule_ids: []
+- id: miragleans
+  name: Miragleans
+  name_i18n:
+    es: Miragleos
+  rule_ids:
+  - band--miraglean-crossbow-mastery
+  - band--miraglean-marksman-accuracy
+  - band--miraglean-hatred-skaven
+  - band--miraglean-hired-sword-restriction
+- id: remasens
+  name: Remasens
+  name_i18n:
+    es: Remasenes
+  rule_ids:
+  - band--remasen-dark-elf-rout
+  - band--remasen-officer-leadership
+  - band--remasen-hired-sword-restriction
+- id: trantios
+  name: Trantios
+  name_i18n:
+    es: Trantinos
+  starting_gold: 600
+  rule_ids:
+  - band--trantio-wealth

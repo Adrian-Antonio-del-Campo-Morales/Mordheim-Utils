@@ -16,7 +16,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import {
-  CampaignFileV4Adapter,
+  CampaignFileV5Adapter,
   parseCampaignFileDetailed,
 } from "./index";
 import { createDefaultUseCases } from "../../domain/campaign/kernel/default-usecases";
@@ -29,17 +29,17 @@ function findRepoRoot(): string {
   let dir = process.cwd();
   for (let i = 0; i < 6; i++) {
     try {
-      readFileSync(join(dir, "contracts", "campaign-file-v4", "campaign-file-v4.schema.json"), "utf-8");
+      readFileSync(join(dir, "contracts", "campaign-file-v5", "campaign-file-v5.schema.json"), "utf-8");
       return dir;
     } catch {
       dir = join(dir, "..");
     }
   }
-  throw new Error("repo root with contracts/campaign-file-v4 not found from " + process.cwd());
+  throw new Error("repo root with contracts/campaign-file-v5 not found from " + process.cwd());
 }
 
 const REPO_ROOT = findRepoRoot();
-const FIXTURES = join(REPO_ROOT, "contracts", "campaign-file-v4", "fixtures");
+const FIXTURES = join(REPO_ROOT, "contracts", "campaign-file-v5", "fixtures");
 const OUT_DIR = join(REPO_ROOT, "packages", "typescript", "adapters", "campaign-file");
 
 const FIXTURE_NAMES = [
@@ -148,7 +148,7 @@ function workflowDocuments(): Record<string, Record<string, unknown>> {
     "after-battle": recorded.document,
     "post-battle-progressed": progressed,
   }) as [string, CampaignDocument][]) {
-    const serialized = new CampaignFileV4Adapter().serializeCampaign(document.campaign);
+    const serialized = new CampaignFileV5Adapter().serializeCampaign(document.campaign);
     if (!serialized.ok) throw new Error(`workflow: serialize ${name} failed`);
     documents[name] = JSON.parse(serialized.text) as Record<string, unknown>;
   }
@@ -156,7 +156,7 @@ function workflowDocuments(): Record<string, Record<string, unknown>> {
 }
 
 describe("P7.1: fixture loop pinned (parse → serialize ×2)", () => {
-  const port = new CampaignFileV4Adapter();
+  const port = new CampaignFileV5Adapter();
 
   for (const name of FIXTURE_NAMES) {
     it(`full loop stays semantically stable for ${name}`, () => {

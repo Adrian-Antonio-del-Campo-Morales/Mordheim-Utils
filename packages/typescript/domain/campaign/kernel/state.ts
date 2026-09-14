@@ -1,7 +1,7 @@
 /**
  * Campaign state model: frozen public state model of the
- * campaign domain. Conceptually aligned with the `.mordheim` v4 contract
- * (contracts/campaign-file-v4) — the campaign/view split is deliberate:
+ * campaign domain. Conceptually aligned with the `.mordheim` v5 contract
+ * (contracts/campaign-file-v5) — the campaign/view split is deliberate:
  * persistent campaign state never mixes with reconstructible UI selection.
  *
  * Purity rules (enforced by tests/architecture tests): no React, no DOM, no
@@ -214,7 +214,7 @@ export interface SpecialRuleEffect {
   readonly [key: string]: unknown;
 }
 
-/** The persistent campaign state (what the v4 file's `campaign` section holds). */
+/** The persistent campaign state (what the v5 file's `campaign` section holds). */
 export interface Campaign {
   readonly identity: CampaignIdentity;
   readonly configuration: DraftConfiguration;

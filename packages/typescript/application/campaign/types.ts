@@ -52,7 +52,7 @@ export interface ExportPayload {
  * implementation; the UI only sees results and `dirty` state.
  */
 export interface CampaignAppService {
-  createCampaign(input: { readonly band_id: string; readonly campaign_name: string; readonly warband_name: string }): Promise<AppResult>;
+  createCampaign(input: { readonly band_id: string; readonly campaign_name: string; readonly warband_name: string; readonly variant?: string }): Promise<AppResult>;
   canUndo(): boolean;
   subscribe(listener: () => void): () => void;
   prepareExport(): Promise<AppResult & { payload?: ExportPayload }>;
@@ -60,7 +60,7 @@ export interface CampaignAppService {
   /** Import a campaign file; rejects unconfirmed replacement. */
   importCampaign(request: ImportRequest): Promise<AppResult>;
 
-  /** Export the current campaign as `.mordheim` v4 text. */
+  /** Export the current campaign as `.mordheim` v5 text. */
   exportCampaign(): Promise<AppResult & { payload?: ExportPayload }>;
 
   /** Run one domain use case by id (P6.x actions dispatch through here). */

@@ -1,10 +1,10 @@
-"""One-off generator for the v4 contract fixtures.
+"""One-off generator for the v5 contract fixtures.
 
-Produces the four committed fixtures of ``contracts/campaign-file-v4/fixtures/``
+Produces the four committed fixtures of ``contracts/campaign-file-v5/fixtures/``
 from real application state built by the reference writer, so the fixtures are
 guaranteed to validate against the schema. Run from the repository root:
 
-    python tools/make_v4_fixtures.py
+    python tools/make_v5_fixtures.py
 
 The output is deterministic except for ``saved_at``, which each fixture fixes
 to an illustrative instant.
@@ -21,7 +21,7 @@ from mordheim_campaign.domain.builders import make_draft_state, make_example_sta
 from mordheim_campaign.persistence.campaigns import _document
 
 ROOT = Path(__file__).resolve().parents[1]
-FIXTURES = ROOT / "contracts" / "campaign-file-v4" / "fixtures"
+FIXTURES = ROOT / "contracts" / "campaign-file-v5" / "fixtures"
 
 SAVED_AT = "2026-09-08T18:30:00+00:00"
 

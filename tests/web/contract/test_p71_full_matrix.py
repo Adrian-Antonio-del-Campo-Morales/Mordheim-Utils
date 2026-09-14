@@ -24,7 +24,7 @@ import pytest
 from mordheim_campaign.persistence.campaigns import load_campaign, save_campaign
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-FIXTURES = REPO_ROOT / "contracts" / "campaign-file-v4" / "fixtures"
+FIXTURES = REPO_ROOT / "contracts" / "campaign-file-v5" / "fixtures"
 ARTEFACT = REPO_ROOT / "packages" / "typescript" / "adapters" / "campaign-file" / "_ts-roundtrip-artefact.json"
 WORKFLOW_ARTEFACT = REPO_ROOT / "packages" / "typescript" / "adapters" / "campaign-file" / "_p71-workflow-documents.json"
 
@@ -41,7 +41,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-# Defaults the Python writer materializes for optional fields. The v4
+# Defaults the Python writer materializes for optional fields. The v5
 # contract treats an absent optional field as null-equivalent; the TS adapter
 # omits them while the Python writer always emits the full model. Cross-
 # implementation comparison therefore normalizes both sides to the same
@@ -182,7 +182,7 @@ def test_python_to_ts_to_python_loop(fixture: str, tmp_path: Path) -> None:
         (ARTEFACT.parent / serialized_name).read_text(encoding="utf-8")
     )
     assert ts_doc["marker"] == "MORDHEIM_CAMPAIGN_MANAGER"
-    assert ts_doc["format_version"] == 4
+    assert ts_doc["format_version"] == 5
 
     # Hop 2: TS serialize → Python load.
     reloaded = load_campaign(_python_write(ts_doc, tmp_path / "hop2"))

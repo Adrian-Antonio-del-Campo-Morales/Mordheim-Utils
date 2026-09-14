@@ -869,7 +869,7 @@ rules:
       binding: null
       reason: >-
         Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
-  rule_ref: shared-rule.may-not-run-3
+  rule_ref: shared-rule.may-not-run
 - id: zombie--fear
   name: Fear
   source:
@@ -891,7 +891,7 @@ rules:
       binding: null
       reason: >-
         Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.fear-6
+  rule_ref: shared-rule.fear
 - id: zombie--immune-to-psychology
   name: Immune to Psychology
   source:
@@ -913,7 +913,7 @@ rules:
       binding: null
       reason: >-
         Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.immune-to-psychology-5
+  rule_ref: shared-rule.immune-to-psychology
 - id: zombie--immune-to-poison
   runtime:
     scope: 'YES'
@@ -937,7 +937,7 @@ rules:
   applies_to:
     profile_ids:
     - zombie
-  rule_ref: shared-rule.immune-to-poison-4
+  rule_ref: shared-rule.immune-to-poison
 - id: zombie--no-pain
   runtime:
     scope: 'YES'
@@ -959,7 +959,7 @@ rules:
   applies_to:
     profile_ids:
     - zombie
-  rule_ref: shared-rule.no-pain-3
+  rule_ref: shared-rule.no-pain
 - id: zombie--brainless
   name: Brainless
   source:
@@ -1003,7 +1003,7 @@ rules:
       binding: null
       reason: >-
         Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.fear-4
+  rule_ref: shared-rule.fear
 - id: dire-wolf--charge
   name: Charge
   effect: A Dire Wolf has 2 Attacks instead of 1 during the turn in which it charges.
@@ -1073,7 +1073,7 @@ rules:
       binding: null
       reason: >-
         Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.fear-3
+  rule_ref: shared-rule.fear
 - id: dire-wolf--immune-to-psychology
   name: Immune to Psychology
   source:
@@ -1095,7 +1095,7 @@ rules:
       binding: null
       reason: >-
         Deferred subsystem: psychology or mounts.
-  rule_ref: shared-rule.immune-to-psychology-3
+  rule_ref: shared-rule.immune-to-psychology
 - id: dire-wolf--immune-to-poison
   runtime:
     scope: 'YES'
@@ -1119,7 +1119,7 @@ rules:
   applies_to:
     profile_ids:
     - dire-wolf
-  rule_ref: shared-rule.immune-to-poison-2
+  rule_ref: shared-rule.immune-to-poison
 - id: dire-wolf--undead-animal
   name: Undead Animal
   source:
@@ -1163,7 +1163,7 @@ rules:
   applies_to:
     profile_ids:
     - dire-wolf
-  rule_ref: shared-rule.no-pain-2
+  rule_ref: shared-rule.no-pain
 - id: vampire-bat--may-not-run
   name: May Not Run
   effect: Vampire Bats may not run, but may charge normally.

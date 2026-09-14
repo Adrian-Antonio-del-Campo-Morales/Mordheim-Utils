@@ -128,8 +128,8 @@ describe.skipIf(!hasArtefact)("shared KB parity vectors (TS mirror)", () => {
     expect(["special-rules", "conditions", "core-combat"].every((s) => s in prose)).toBe(true);
   });
 
-  it("rules: >= 90 special rules", () => {
-    expect(prose["special-rules"].length).toBeGreaterThanOrEqual(90);
+  it("rules: 68 canonical shared rules", () => {
+    expect(prose["special-rules"]).toHaveLength(68);
   });
 
   it("rules: prose stems include canonical documents and generated localization indexes", () => {

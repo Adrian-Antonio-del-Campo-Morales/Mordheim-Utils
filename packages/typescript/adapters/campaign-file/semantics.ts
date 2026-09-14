@@ -1,5 +1,5 @@
 /**
- * Semantic domain-reference validation for parsed v4 documents — the TS
+ * Semantic domain-reference validation for parsed v5 documents — the TS
  * mirror of the desktop loader hardening (`_validate_domain`)
  * lane). The JSON Schema alone cannot express cross-field invariants
  * (inventory conservation, unique ids, live-warrior references); both

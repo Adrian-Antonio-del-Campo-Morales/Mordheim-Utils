@@ -29,6 +29,7 @@ import type { AssignEquipmentInput } from "./equipment";
 import { applyAdvance, hireHireling } from "./hirelings";
 import { buyTradingItem, sellStashItem } from "./trading";
 import type { BuyTradingItemInput, SellStashItemInput } from "./trading";
+import { selectedWarbandVariant, warbandVariants } from "../band-variants";
 
 export type { BuyTradingItemInput, SellStashItemInput };
 
@@ -48,8 +49,13 @@ export function createDefaultUseCases(knowledge: KnowledgeReader = nullReader): 
     composeDraft: (document: CampaignDocument, input: DraftCompositionInput): UseCaseResult =>
       composeDraft(document, input, knowledge),
 
-    commitInitialWarband: (document: CampaignDocument, _reader: KnowledgeReader): UseCaseResult =>
-      commitInitialWarband(document),
+    commitInitialWarband: (document: CampaignDocument, reader: KnowledgeReader): UseCaseResult => {
+      const variants = warbandVariants(reader, document.campaign.identity.band_id);
+      if (variants.length && !selectedWarbandVariant(reader, document.campaign.identity.band_id, document.campaign.identity.mercenary_variant)) {
+        return rejected("invalid_input", "Choose a valid warband variant before committing the initial warband.");
+      }
+      return commitInitialWarband(document);
+    },
 
     selectMoment: (document: CampaignDocument, moment: MomentSelection): UseCaseResult => ({
       ok: true,

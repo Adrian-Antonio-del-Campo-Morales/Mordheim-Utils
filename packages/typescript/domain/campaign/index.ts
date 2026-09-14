@@ -6,3 +6,4 @@
 export * from "./kernel/state";
 export * from "./kernel/ports";
 export * from "./kernel/usecases";
+export * from "./band-variants";

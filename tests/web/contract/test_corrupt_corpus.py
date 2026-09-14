@@ -45,9 +45,9 @@ def test_every_corpus_file_is_rejected_with_stable_message(name: str) -> None:
 
 
 def test_retired_versions_name_found_and_supported() -> None:
-    for version in (1, 2, 3):
+    for version in (1, 2, 3, 4):
         with pytest.raises(CampaignFileError) as excinfo:
             load_campaign(CORPUS / f"retired-v{version}.mordheim")
         message = str(excinfo.value)
         assert str(version) in message
-        assert "v4" in message or "4" in message
+        assert "v5" in message

@@ -49,7 +49,7 @@ function makeCampaign(overrides: Partial<Campaign> = {}): Campaign {
 
 const okDocument = {
   marker: "MORDHEIM_CAMPAIGN_MANAGER" as const,
-  format_version: 4 as const,
+  format_version: 5 as const,
   saved_at: "2026-09-09T00:00:00Z",
   campaign: {} as Record<string, unknown>,
 };
@@ -61,7 +61,7 @@ const fakeFiles: CampaignFilePort = {
         ok: false,
         reason: "invalid_json",
         message: "The file is not valid JSON.",
-        supported_versions: [4],
+        supported_versions: [5],
       } as CampaignFileError;
     }
     if (text === "OLD") {
@@ -70,7 +70,7 @@ const fakeFiles: CampaignFilePort = {
         reason: "retired_version",
         message: "Format version 3 is no longer supported.",
         found_version: 3,
-        supported_versions: [4],
+        supported_versions: [5],
       } as CampaignFileError;
     }
     if (text === "BROKEN") {
@@ -79,14 +79,14 @@ const fakeFiles: CampaignFilePort = {
         reason: "schema_violation",
         message: "campaign.warriors must be an array.",
         location: "campaign.warriors",
-        supported_versions: [4],
+        supported_versions: [5],
       } as CampaignFileError;
     }
     return { ok: true, document: { ...okDocument, campaign: makeCampaign() as unknown as Record<string, unknown> } };
   },
   serializeCampaign: (): SerializeResult => ({
     ok: true,
-    text: '{"marker":"MORDHEIM_CAMPAIGN_MANAGER","format_version":4}',
+    text: '{"marker":"MORDHEIM_CAMPAIGN_MANAGER","format_version":5}',
   }),
 };
 
@@ -170,7 +170,7 @@ describe("P5.1 campaign application service", () => {
     const exported = await service.exportCampaign();
     expect(exported.ok).toBe(true);
     expect(exported.payload?.filename).toBe("Test_Band.mordheim");
-    expect(exported.payload?.text).toContain('"format_version":4');
+    expect(exported.payload?.text).toContain('"format_version":5');
   });
 
   it("marks a saved battle draft dirty while timeline navigation stays view-only", async () => {
@@ -200,7 +200,7 @@ describe("P5.1 campaign application service", () => {
     const deps = {
       files: {
         ...fakeFiles,
-        serializeCampaign: () => ({ ok: false as const, reason: "io_error" as const, message: "disk full", supported_versions: [4] }),
+        serializeCampaign: () => ({ ok: false as const, reason: "io_error" as const, message: "disk full", supported_versions: [5] }),
       },
       knowledge: fakeKnowledge,
     };
