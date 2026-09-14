@@ -1,8 +1,8 @@
 /**
- * P5.2 stand-in file port. Accepts a minimal valid-looking v4 document and
- * reports the same error shapes as the real P3.2 adapter, so the UI error
- * paths are already exercised. Replaced by the real adapter (P3.2) in
- * `default-deps.ts` — one line.
+ * Minimal deterministic file port used by isolated tests.
+ *
+ * Production composition uses the real v4 adapter; this implementation exists
+ * only to exercise UI error paths without filesystem or browser I/O.
  */
 import type { Campaign, CampaignFilePort, ParseResult, SerializeResult } from "./types";
 

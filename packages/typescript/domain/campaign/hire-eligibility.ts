@@ -1,5 +1,5 @@
 /**
- * Parity port of desktop `mordheim_campaign/application/hire_eligibility.py`
+ * Parity implementation of the desktop campaign hire-eligibility rules.
  * — the 18 roster-dependent `*.rule.campaign-eligibility` rules.
  *
  * Facts come only from the web KB artefact: `campaign.hirelings.traits`

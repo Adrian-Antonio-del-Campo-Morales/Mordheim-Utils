@@ -30,7 +30,7 @@ if errorlevel 1 goto :build_error
 
 echo.
 echo [2/3] Reading project version...
-for /f "delims=" %%V in ('%PYTHON_CMD% -c "import sys; sys.path.insert(0, 'src'); import mordheim_combat_lab; print(mordheim_combat_lab.__version__)"') do set "APP_VERSION=%%V"
+for /f "delims=" %%V in ('%PYTHON_CMD% -c "import mordheim_combat_lab; print(mordheim_combat_lab.__version__)"') do set "APP_VERSION=%%V"
 if not defined APP_VERSION goto :version_error
 echo Version: %APP_VERSION%
 

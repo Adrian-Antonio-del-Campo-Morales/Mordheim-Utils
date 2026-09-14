@@ -20,7 +20,13 @@ import argparse
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+PACKAGE_ROOTS = (
+    Path(__file__).resolve().parents[1] / "packages" / "python" / "combat-engine",
+    Path(__file__).resolve().parents[1] / "packages" / "python" / "roster-construction",
+    Path(__file__).resolve().parents[1] / "packages" / "python" / "core",
+)
+for package_root in reversed(PACKAGE_ROOTS):
+    sys.path.insert(0, str(package_root))
 
 from mordheim_combat_lab.verification import coverage_gate  # noqa: E402
 

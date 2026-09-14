@@ -1,10 +1,10 @@
 /**
- * TS mirror of the shared KB parity vectors (Agent 0, parity lane). Reads
+ * TS mirror of the shared KB parity vectors. Reads
  * the same vector files as tests/web/parity/vectors_kb_python_test.py and
  * asserts the same invariants against the same generated artefact, so the
  * Python builder and the TS reader cannot drift apart.
  *
- * Vectors with status "blocked" are parity gaps (T5 flow): counted, never
+ * Vectors with status "blocked" are parity gaps: counted, never
  * silently dropped.
  */
 import { readFileSync, existsSync } from "node:fs";

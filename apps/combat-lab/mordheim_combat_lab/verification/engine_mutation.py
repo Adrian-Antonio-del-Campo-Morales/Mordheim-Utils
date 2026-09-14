@@ -5,7 +5,7 @@ prove the specs detect them.  This harness mutates the *engine code* — the
 duplicated NumPy projections of canonical phase math — and proves the
 deterministic test corpus detects the defect class.
 
-A mutant is applied to a staged copy of ``src/`` (never to the live tree),
+A mutant is applied to a staged copy of ``packages/python/combat-engine/mordheim_combat`` (never to the live tree),
 the deterministic detector suites run against the staged tree in a child
 process, and the mutant is **killed** when at least one test fails.  A
 surviving mutant is a real gap: some reachable engine decision has no
@@ -52,7 +52,7 @@ _DETECTOR_SCRIPT = (
 class EngineMutant:
     """One single-token defect injected into the staged engine copy.
 
-    ``file`` is relative to ``src/mordheim_combat``; ``old`` must appear
+    ``file`` is relative to ``packages/python/combat-engine/mordheim_combat``; ``old`` must appear
     exactly once in the current file (enforced at application time so the
     catalogue fails loudly when the engine changes underneath it).
     """
@@ -143,9 +143,8 @@ def _stage_src(mutant: EngineMutant) -> tuple[Path, Path]:
     Only ``mordheim_combat`` is staged (a pure-Python shadow that wins on
     ``PYTHONPATH``); the knowledge/construction packages keep resolving from
     the real tree, so their project-root discovery and compiled fighters stay
-    untouched and type-aligned with the staged engine.  Returns
-    ``(stage_root, patched_file)`` where ``stage_root`` is the ``src``-like
-    directory to put first on ``PYTHONPATH``.
+    untouched and type-aligned with the staged engine.  Returns ``(stage_root, patched_file)`` where ``stage_root`` is the staged
+    package directory to put first on ``PYTHONPATH``.
     """
     staging = tempfile.mkdtemp(prefix="mordheim-mutant-")
     stage_root = Path(staging) / "src"

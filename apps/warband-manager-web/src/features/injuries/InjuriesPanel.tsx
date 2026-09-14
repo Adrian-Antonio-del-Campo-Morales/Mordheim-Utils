@@ -1,5 +1,5 @@
 /**
- * Web migration injuries surface: injuries & recovery UI.
+ * Injuries and recovery presentation.
  *
  * Renders the injuries read model (condition, missed games, pending rolls,
  * injury history per warrior) and dispatches through the campaign app

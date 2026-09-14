@@ -1,4 +1,4 @@
-"""Python runner for the shared malformed-save parity vectors (Agent 0).
+"""Python runner for the shared malformed-save parity vectors.
 
 Each vector = one JSON-pointer mutation on a schema-valid v4 fixture. Both
 toolchains apply the same mutation and must agree on the outcome

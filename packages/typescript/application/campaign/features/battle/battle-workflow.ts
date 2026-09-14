@@ -1,5 +1,5 @@
 /**
- * Web migration battle workflow: battle recording feature —
+ * Battle workflow: battle recording feature —
  * application-layer orchestration over the P3.5 kernel `recordBattle` and
  * `resolvePostBattleStep` use cases.
  *
@@ -95,7 +95,9 @@ export function createBattleWorkflow(deps: BattleWorkflowDeps) {
       return options;
     },
 
-    /** Who can fight the next battle (absences block; checks arrive with P6.5). */
+    /** Who can fight the next battle (absences block; availability checks are
+     * handled by the application workflow).
+     */
     readiness(document: CampaignDocument): AvailabilityRow[] {
       return document.campaign.warriors.map((warrior) => {
         const absent = (warrior.games_to_miss ?? 0) > 0;

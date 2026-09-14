@@ -21,7 +21,7 @@ class CampaignManagerApp(tk.Tk):
         set_ui_locale()
         configure_theme(self)
         self.configure(bg=COLORS["bg"])
-        self.title("Mordheim Campaign Manager — GUI Prototype")
+        self.title("Mordheim Campaign Manager")
         self.geometry("1560x900")
         self.minsize(1280, 760)
         self.controller = AppController()

@@ -1,5 +1,5 @@
 /**
- * Web migration public knowledge ports: frozen public knowledge and
+ * Public knowledge ports: frozen public knowledge and
  * file ports. These are the seams that let domain, application, UI and the
  * adapters (P3.2, P4.3) be developed and tested in parallel against fakes.
  *

@@ -1,5 +1,5 @@
 /**
- * P6.2 acceptance tests (plan §7): the draft workflow drives create →
+ * Draft workflow tests: the workflow drives create →
  * compose → commit through the real kernel use cases with an
  * artefact-shaped fake KnowledgeReader — plain Node, no React/DOM.
  * The final committed draft round-trips through a fake file port (export →

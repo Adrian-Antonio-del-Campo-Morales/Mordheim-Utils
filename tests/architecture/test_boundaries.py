@@ -7,13 +7,22 @@ import os
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SRC = ROOT / "src"
+PACKAGE_ROOTS = {
+    "mordheim_core": ROOT / "packages" / "python" / "core" / "mordheim_core",
+    "mordheim_knowledge": ROOT / "packages" / "python" / "knowledge" / "mordheim_knowledge",
+    "mordheim_construction": ROOT / "packages" / "python" / "roster-construction" / "mordheim_construction",
+    "mordheim_combat": ROOT / "packages" / "python" / "combat-engine" / "mordheim_combat",
+    "mordheim_combat_lab": ROOT / "apps" / "combat-lab" / "mordheim_combat_lab",
+    "mordheim_campaign": ROOT / "packages" / "python" / "campaign" / "mordheim_campaign",
+}
+PACKAGE_IMPORT_ROOTS = tuple(sorted({str(path.parent) for path in PACKAGE_ROOTS.values()}))
+
 SHARED_PACKAGES = ("mordheim_core", "mordheim_knowledge", "mordheim_construction", "mordheim_combat")
 RUNTIME_AREAS = ("application", "persistence", "ui")
 
 
 def imported_modules(package: str, area: str = "") -> set[str]:
-    base = SRC / package / area if area else SRC / package
+    base = PACKAGE_ROOTS[package] / area if area else PACKAGE_ROOTS[package]
     result = set()
     for path in base.rglob("*.py"):
         tree = ast.parse(path.read_text(encoding="utf-8"))
@@ -59,7 +68,7 @@ def test_importing_package_is_lazy_about_ui_and_verification():
     command = [sys.executable, "-c", "import sys,mordheim_combat_lab; "
                "assert 'tkinter' not in sys.modules; "
                "assert 'mordheim_combat_lab.verification.audit' not in sys.modules"]
-    environment = {**os.environ, "PYTHONPATH": str(SRC)}
+    environment = {**os.environ, "PYTHONPATH": os.pathsep.join(PACKAGE_IMPORT_ROOTS)}
     subprocess.run(command, cwd=ROOT, env=environment, check=True)
 
 
@@ -72,12 +81,12 @@ def test_campaign_application_and_persistence_have_no_tkinter_dependency():
 def test_campaign_domain_stays_pure():
     """The campaign domain imports no UI, no locale singletons, no filesystem.
 
-    Web migration Phase 2: the domain (models, builders, services) is the code
-    the web port reuses. It must not depend on Tkinter/``mordheim_ui``, on the
-    ``mordheim_knowledge``/``mordheim_ui`` i18n singletons, or on ``pathlib``.
-    KB access is injected (builders receive the KnowledgePort); the models
-    never import it.
-    """
+The domain (models, builders, services) is reused by the web port. It must
+not depend on Tkinter/``mordheim_ui``, on the
+``mordheim_knowledge``/``mordheim_ui`` i18n singletons, or on ``pathlib``.
+KB access is injected (builders receive the KnowledgePort); the models
+never import it.
+"""
     imports = imported_modules("mordheim_campaign", "domain")
     forbidden = ("tkinter", "mordheim_ui", "pathlib", "mordheim_knowledge")
     assert not any(module.startswith(forbidden) for module in imports), imports
@@ -85,7 +94,7 @@ def test_campaign_domain_stays_pure():
 
 def test_campaign_domain_does_not_import_the_application_layer():
     """Domain modules depend on the application only for typing (TYPE_CHECKING)."""
-    for path in (SRC / "mordheim_campaign" / "domain").rglob("*.py"):
+    for path in (PACKAGE_ROOTS["mordheim_campaign"] / "domain").rglob("*.py"):
         tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(tree):
             if isinstance(node, ast.ImportFrom) and node.module and node.module.startswith(

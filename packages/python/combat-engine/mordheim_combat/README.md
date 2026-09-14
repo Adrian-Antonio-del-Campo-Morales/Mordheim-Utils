@@ -1,8 +1,8 @@
 # Combat
 
 Phases, modular and vectorized engines. Consumes compiled fighters and never
-loads YAML. See [Architecture](../../../docs/reference/architecture.md) and
-[Verification](../../../docs/reference/verification.md).
+loads YAML. See [Architecture](../../../../docs/reference/architecture.md) and
+[Verification](../../../../docs/reference/verification.md).
 
 ## Parity between engines
 
@@ -11,8 +11,8 @@ the UI is certified separately with `python -m mordheim_combat_lab parity`:
 every field, tag and complex sequence of the oracle must have a vectorized
 consumer and evidence.
 
-The former `Poisonous` and secondary-weapon Initiative divergences are covered
-by explicit regressions. A rule may keep running while its parity is pending,
+Poisonous and secondary-weapon Initiative divergences are covered by explicit
+regressions. A rule may keep running while its parity is pending,
 but it cannot enter a new or optimized execution path until it is certified.
 
 The KB and the modular engine are the protected oracle. A divergence detected
@@ -34,4 +34,4 @@ rows and in `parity --statistical`, where it shares the modular-oracle sample
 with NumPy and must pass the same six-sigma gate.
 
 Full options and status meanings:
-[Develop and release](../../../docs/guides/develop-and-release.md).
+[Develop and release](../../../../docs/guides/develop-and-release.md).

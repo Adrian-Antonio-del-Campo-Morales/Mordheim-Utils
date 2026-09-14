@@ -4,7 +4,7 @@
  * the KB adapter or JSON directly.
  *
  * The service keeps everything in memory: no browser storage of any kind
- * (permanent exclusion, plan §2.4).
+ * (permanent exclusion): campaigns stay in memory and are exported explicitly.
  */
 
 import type {

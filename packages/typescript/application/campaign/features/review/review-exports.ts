@@ -1,10 +1,10 @@
 /**
- * Web migration review and export features: final review & auxiliary
+ * Campaign review and export features: final review & auxiliary
  * exports — the read models the pre-export review panel renders and the
  * plain-text auxiliary exports (roster summary, campaign ledger) the user
  * can download beside the main `.mordheim` file.
  *
- * Rule discipline (plan §P6.8 acceptance): exporters are **pure projections
+ * Rule discipline: exporters are **pure projections
  * of the current document** — they never mutate it, never call use cases,
  * never derive new campaign facts. The no-rules guarantee is asserted in
  * `review-exports.test.ts` (byte-stable output, document deep-equal after

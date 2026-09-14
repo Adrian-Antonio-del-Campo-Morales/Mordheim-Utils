@@ -1,9 +1,9 @@
 /**
- * P3.5 acceptance tests (plan §5): kernel use cases run in plain Node with a
- * fake KnowledgeReader built from the same record shapes the P4.2 artefact
- * emits (verified against `build/generated/knowledge-web/knowledge-web.json`).
+ * Campaign kernel acceptance tests: use cases run in plain Node with a
+ * fake KnowledgeReader built from the same record shapes the generated
+ * knowledge artefact emits.
  *
- * The behaviour ported here mirrors the Python domain tests in
+ * The behaviour mirrors the Python domain tests in
  * `tests/campaign/` (draft legality, State #0 commit, battle recording).
  */
 

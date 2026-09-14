@@ -10,8 +10,7 @@ as a package command and there is no parser to duplicate::
 
 Delegated commands keep their own parsers (Combat Lab CLI, pytest,
 ``combine_kb_yaml.py``), so their help text and behaviour never drift.
-Running from a source checkout is enough: child processes get ``src/`` on
-their ``PYTHONPATH``.
+Running from a source checkout is enough: child processes get the configured package roots on their `PYTHONPATH`.
 """
 
 from __future__ import annotations
@@ -26,11 +25,22 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SRC = REPO_ROOT / "src"
+PACKAGE_ROOTS = (
+    REPO_ROOT / "packages" / "python" / "combat-engine",
+    REPO_ROOT / "packages" / "python" / "roster-construction",
+    REPO_ROOT / "packages" / "python" / "core",
+    REPO_ROOT / "packages" / "python" / "knowledge",
+    REPO_ROOT / "packages" / "python" / "adapters" / "desktop-ui",
+    REPO_ROOT / "packages" / "python" / "campaign",
+    REPO_ROOT / "apps" / "combat-lab",
+    REPO_ROOT / "apps" / "warband-manager-desktop",
+)
 
 # Make the in-process commands (doctor) work from a fresh checkout too.
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
+for package_root in reversed(PACKAGE_ROOTS):
+    if str(package_root) not in sys.path:
+        sys.path.insert(0, str(package_root))
+
 
 #: Map of ``tests --scope`` names to the pytest paths they select.
 SCOPE_PATHS = {
@@ -92,7 +102,10 @@ WEB_APP = REPO_ROOT / "apps" / "warband-manager-web"
 def _environment() -> dict:
     env = dict(os.environ)
     existing = env.get("PYTHONPATH")
-    env["PYTHONPATH"] = str(SRC) + (os.pathsep + existing if existing else "")
+    env["PYTHONPATH"] = os.pathsep.join(
+        [*(str(path) for path in PACKAGE_ROOTS), *( [existing] if existing else [])]
+    )
+
     return env
 
 
@@ -237,7 +250,7 @@ def doctor_command() -> int:
         print(f"knowledge root: unavailable ({error})")
     for label, module in (
         ("Combat Lab", "mordheim_combat_lab.ui.app"),
-        ("Campaign Manager", "mordheim_campaign.app"),
+        ("Campaign Manager", "mordheim_desktop.app"),
     ):
         if importlib.util.find_spec(module) is None:
             print(f"{label}: import failed (module not found)")

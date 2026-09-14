@@ -1,5 +1,5 @@
 /**
- * Web migration timeline moment helpers — kept separate from the component so
+ * Campaign timeline moment helpers — kept separate from the component so
  * the timeline remains a pure projection of the campaign document.
  */
 import type { CampaignDocument, MomentSelection } from "../campaign/types";

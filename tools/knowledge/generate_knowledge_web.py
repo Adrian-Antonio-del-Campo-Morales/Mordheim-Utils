@@ -1,18 +1,9 @@
-"""knowledge-web generator: canonical KB YAML -> web JSON artefact (P4.2).
+"""Generate the deterministic browser knowledge artefact from canonical YAML.
 
-Produces the deterministic JSON artefact the web Warband Manager loads
-(``build/generated/knowledge-web/knowledge-web.json``) from the single
-canonical source ``sources/knowledge/`` — the same read surface the desktop
-``KnowledgePort`` uses.
-
-Rules (from the parallel plan, task P4.2):
-
-- reads only ``sources/knowledge`` through ``mordheim_knowledge`` loaders;
-- validates structure, unique ids and references **before** writing; a
-  validation failure raises and the build must stop;
-- output is deterministic: sorted by id, no timestamps, stable key order;
-- the artefact is never edited by hand and is not versioned (gitignored);
-- Combat Lab / simulation surfaces are excluded (see the inventory doc).
+The generator reads only ``sources/knowledge`` through the sanctioned loaders,
+validates structure and references before writing, sorts records and never
+includes timestamps. Outputs are generated files, not documentation or release
+source; they are ignored and must not be hand-edited.
 """
 from __future__ import annotations
 
@@ -23,7 +14,16 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 ROOT = REPO_ROOT  # artefact output root: <repo>/build/generated/knowledge-web/
-sys.path.insert(0, str(REPO_ROOT / "src"))
+PACKAGE_ROOTS = (
+    REPO_ROOT / "packages" / "python" / "combat-engine",
+    REPO_ROOT / "packages" / "python" / "roster-construction",
+    REPO_ROOT / "packages" / "python" / "core",
+    REPO_ROOT / "packages" / "python" / "knowledge",
+    REPO_ROOT / "packages" / "python" / "adapters" / "desktop-ui",
+    REPO_ROOT / "packages" / "python" / "campaign",
+)
+for package_root in reversed(PACKAGE_ROOTS):
+    sys.path.insert(0, str(package_root))
 
 from mordheim_knowledge.campaign import (  # noqa: E402
     load_campaign_catalog,
@@ -49,15 +49,14 @@ OUTPUT_RELATIVE = Path("build") / "generated" / "knowledge-web" / "knowledge-web
 RULES_PROSE_FILENAME = "rules-prose.json"
 DISPLAY_TEXT_FILENAME = "display-text.json"
 
-#: Item kinds the web Campaign Manager consumes (inventory doc decision).
+#: Item kinds consumed by the browser Campaign Manager.
 INCLUDED_ITEM_KINDS = frozenset({
     "armour", "close-combat-weapon", "combat-equipment",
     "material-or-upgrade", "ranged-weapon", "shield-or-defence",
     "trollheim-equipment",
 })
 
-#: Campaign catalogues the web Campaign Manager consumes, keyed by the name
-#: stem used by ``CampaignCatalog.catalogue`` (inventory doc table).
+#: Catalogue stems used by ``CampaignCatalog.catalogue``.
 CAMPAIGN_CATALOGUE_STEMS = (
     "trading-post", "scenarios", "serious-injuries",
     "experience-and-advances", "exploration-and-income", "magic",
@@ -381,9 +380,7 @@ def _build_weapon_hands(ruleset: str) -> dict[str, int]:
 
 
 def _build_rules_prose(ruleset: str) -> dict:
-    """Browsable rules prose catalogue (RULES browser parity, Agent 0 gap
-    `artefact-lacks-prose-catalogue`): every ruleset-tagged document of
-    ``catalog/rules`` with per-locale names and effects."""
+    """Browsable rules prose catalogue for the browser rules view."""
     catalog = load_rules_catalog(ruleset)
     documents: dict[str, list[dict]] = {}
     for stem in catalog.stems():

@@ -1,9 +1,9 @@
-"""Web migration malformed-corpus gate: the corrupt corpus driven
+"""Malformed-corpus gate: the corrupt corpus driven
 through the desktop Python reader. Every corpus file must be rejected with a
 ``CampaignFileError`` whose message contains the manifest's stable substring —
 the same manifest the TS adapter harness asserts against.
 
-Error-quality rules asserted here (plan §P7.2): messages are actionable,
+Error-quality rules asserted here: messages are actionable,
 non-empty, and never leak internal traces (no repo paths of the *running*
 checkout beyond the file's own name, no "Traceback", no source snippets).
 """

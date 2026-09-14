@@ -44,7 +44,8 @@ DEFAULT_SUITES = (
 )
 
 #: Areas of the engine tracked by the gate, keyed by the sub-path under
-#: ``src/mordheim_combat`` (or the file name for root-level modules).
+#: ``packages/python/combat-engine/mordheim_combat`` (or the file name for
+#: root-level modules).
 AREA_PATHS = {
     "modular": ("modular",),
     "vectorized": ("vectorized",),

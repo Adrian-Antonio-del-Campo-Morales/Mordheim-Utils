@@ -11,7 +11,7 @@ list amount is only authoritative when it is a confirmed exception expressed
 as ``price_override`` with its source.
 
 This tool runs that comparison for *every* warband of *every* collection and
-classifies each row so a reviewer can decide, per the migration TODO:
+classifies each row so a reviewer can decide, according to the review queue:
 
 1. ``no-market``        — no Trading Post row exists for the item (or the TP
                           row is ``not sold``): the warband list is the only
@@ -51,7 +51,7 @@ performed after source verification (see the HOWTO).
 
 Usage
 -----
-    python tools/kb/price-collation.py [--outdir outputs/knowledge] [--collection mordheim]
+    python tools/kb/price-collation.py [--outdir outputs/knowledge]
 """
 from __future__ import annotations
 

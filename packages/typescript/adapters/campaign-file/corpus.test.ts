@@ -1,16 +1,16 @@
 /**
- * Web migration malformed-corpus matrix: the corrupt corpus driven
+ * Malformed-corpus matrix: the corrupt corpus driven
  * through the real TS file adapter. Every corpus file must be rejected with
  * the exact stable reason recorded in the manifest — the same manifest the
  * Python harness asserts against, so both implementations stay in lockstep.
  *
- * Error-quality rules asserted here (plan §P7.2):
+ * Error-quality rules asserted here:
  * - messages are actionable, non-empty and never contain stack-trace noise
  *   (no "at ", no "Error:", no "node:internal", no file paths of this repo);
  * - schema violations carry a location.
  *
  * The corpus lives in `tests/web/contract/corpus/` — one violation per file,
- * never copied into packages or apps (plan §P3.3 rule 5 extended).
+ * never copied into packages or apps.
  */
 import { describe, expect, it } from "vitest";
 import { readFileSync, readdirSync } from "node:fs";
@@ -72,7 +72,7 @@ describe("P7.2: TS adapter rejects every corrupt document with the manifest reas
       if (result.ok) return;
       const expected = manifest.expected[name];
       expect(result.reason, name).toBe(expected.ts_reason);
-      // Error-quality rules (plan §P7.2): actionable, no internal traces.
+      // Error-quality rules: actionable, no internal traces.
       expect(result.message.length, name).toBeGreaterThan(10);
       for (const noise of NOISE_PATTERNS) {
         expect(noise.test(result.message), `${name}: message leaks internals: ${result.message}`).toBe(false);

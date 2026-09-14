@@ -3,7 +3,7 @@
  * document helpers — driven from the shapes the `pending-post-battle.json`
  * contract fixture and the desktop post-battle engine produce.
  *
- * Asserted behaviour (plan §P6.5):
+ * Asserted behaviour:
  * - read model: injured/absent/pending-roll rows and the restriction flag;
  * - applying an outcome updates the warrior immutably (no input mutation);
  * - absence (`games_to_miss`) lifts only through recovery;

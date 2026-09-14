@@ -1,5 +1,5 @@
 /**
- * Web migration public campaign use cases: frozen public use-case surface.
+ * Public campaign use cases: frozen public use-case surface.
  * Operations return explicit results — rejected operations are values, not
  * thrown exceptions — so the application layer (P5.1) presents them without
  * try/catch discipline, and parallel feature blocks (P6.x) share one calling

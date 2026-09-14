@@ -556,7 +556,7 @@ def load_campaign(path) -> AppState:
         raise CampaignFileError(
             f"Retired campaign format version {version} is no longer supported: "
             f"this build reads only the neutral format v4. "
-            f"Open and re-export the campaign with an application of format v3 or earlier first."
+            f"Open and re-export the campaign with an application of format v4 first."
         )
     if version != FORMAT_VERSION:
         raise CampaignFileError(

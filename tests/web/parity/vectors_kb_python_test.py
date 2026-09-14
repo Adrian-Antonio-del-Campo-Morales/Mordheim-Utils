@@ -1,4 +1,4 @@
-"""Python runner for the shared KB parity vectors (Agent 0, parity lane).
+"""Python runner for the shared KB parity vectors.
 
 Each vector asserts one invariant of the generated web KB artefact. The TS
 mirror (``packages/typescript/parity-kb-vectors.test.ts``) consumes the same

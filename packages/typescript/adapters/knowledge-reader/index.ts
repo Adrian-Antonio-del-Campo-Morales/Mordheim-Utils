@@ -1,6 +1,5 @@
 /**
- * Web migration KnowledgeReader adapter over the
- * generated KB web artefact (tools/knowledge/generate_knowledge_web.py ->
+ * KnowledgeReader adapter over the generated KB web artefact (tools/knowledge/generate_knowledge_web.py ->
  * build/generated/knowledge-web/knowledge-web.json).
  *
  * Contract honoured (from domain/campaign/kernel/ports.ts):

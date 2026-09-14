@@ -5,11 +5,11 @@
  *  1. the UI never loads YAML directly (knowledge arrives as the generated
  *     JSON artefact — the P4.x bundling decision);
  *  2. campaigns never touch browser storage (no localStorage / IndexedDB /
- *     sessionStorage anywhere — plan §2.4: everything in memory);
+ *     sessionStorage anywhere — campaigns stay in memory);
  *  3. the file adapter holds no business rules (no mordheim_campaign import,
  *     no rule keywords in campaign-file adapter sources);
  *  4. the built bundle excludes Combat Lab, NumPy, Cython and Tkinter
- *     (plan §2.4 permanent exclusions). Skips when `dist/` is absent so
+ *     (permanent product boundary). Skips when `dist/` is absent so
  *     test-only runs (`vitest`, no build) still pass; CI can enforce it as
  *     a post-build step (filename is stable for that purpose).
  *
@@ -75,7 +75,7 @@ describe("P7.3 architecture: UI and adapter boundaries", () => {
     expect(violations).toEqual([]);
   });
 
-  it("no source uses browser storage for campaigns (plan §2.4)", () => {
+  it("no source uses browser storage for campaigns (in-memory session policy)", () => {
     const files = [
       ...walk(SRC, [".ts", ".tsx"]),
       ...walk(join(ROOT, "packages", "typescript", "domain"), [".ts"]),

@@ -1,6 +1,5 @@
 /**
- * Web migration equipment surface: equipment, stash and
- * assignments UI.
+ * Campaign equipment, stash and reassignment presentation.
  *
  * Renders the inventory read model (equipped/stash split per row) and the
  * per-warrior equipment entries; assign/withdraw actions dispatch through

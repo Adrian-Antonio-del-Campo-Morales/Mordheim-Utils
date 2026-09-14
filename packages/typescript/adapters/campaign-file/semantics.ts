@@ -1,6 +1,6 @@
 /**
  * Semantic domain-reference validation for parsed v4 documents — the TS
- * mirror of the desktop loader hardening (`_validate_domain`, Agent 0 parity
+ * mirror of the desktop loader hardening (`_validate_domain`)
  * lane). The JSON Schema alone cannot express cross-field invariants
  * (inventory conservation, unique ids, live-warrior references); both
  * toolchains must enforce them identically so the shared parity vectors in

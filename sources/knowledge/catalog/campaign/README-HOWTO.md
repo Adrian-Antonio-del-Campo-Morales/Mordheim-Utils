@@ -112,8 +112,11 @@ values directly.
 
 ## Minimum reading contract to implement
 
-Before connecting a campaign screen, add loaders to `knowledge.loader` with
-this responsibility:
+Before connecting a new campaign screen, use the existing loaders in
+`mordheim_knowledge.campaign` and expose the needed read model through
+`KnowledgePort`; do not add a parallel raw-YAML reader.
+
+For reference, the loader contract is:
 
 ```text
 load_campaign_catalog("serious-injuries", ruleset)
@@ -131,7 +134,7 @@ The runtime loaders are implemented in `mordheim_knowledge/campaign.py`:
 uniqueness and that the references (`item_id`, `profile_id`, `band_id`,
 `condition_id`, `skill_id`, `lore`, `warband-group.*`) exist. The Campaign
 Manager consumes them through its `KnowledgePort`
-(`mordheim_campaign/application/knowledge_port.py`), which also exposes the
+(`packages/python/campaign/mordheim_campaign/application/knowledge_port.py`), which also exposes the
 warband-market price rule (`price_override`) for the Trading Post offers of
 its post-battle screens, without the GUI touching YAML. Its persistence
 (`.mordheim`) references the canonical IDs without duplicating rules.

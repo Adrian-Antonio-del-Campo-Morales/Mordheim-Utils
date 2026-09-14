@@ -1,13 +1,9 @@
 /**
- * P6.7: hooks the hirelings/trading workflow into the app.
+ * Hook the hireling/trading workflow to the listing-capable knowledge reader.
  *
- * The workflow needs a listing-capable knowledge source plus the use cases.
- * `useCampaignApp()` hides the service internals by design, so this hook
- * rebuilds the workflow from `createDefaultDeps()` — the same composition
- * root the shell uses — and keeps it stable for the component's lifetime.
- * When the real P4.3 adapter lands in `default-deps.ts`, this hook picks it
- * up with no further change (the adapter implements the same listings
- * surface).
+ * The hook accepts the production reader structurally and uses deterministic
+ * empty/fake listings only when an isolated component test does not provide
+ * one.
  */
 import { useMemo } from "react";
 

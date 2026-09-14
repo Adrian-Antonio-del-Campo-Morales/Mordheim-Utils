@@ -14,7 +14,7 @@ semantic scenarios live in `tests/specs/`, so that the runtime does not depend
 on its own tests.
 
 Full layout, classification contract, path of a rule, YAML formatting policy
-and golden rules: [the KB guide](../../../docs/reference/knowledge-base.md).
+and golden rules: [the KB guide](../../docs/reference/knowledge-base.md).
 Directory-level detail: [`registry/README.md`](registry/README.md),
 [`catalog/hirelings/README.md`](catalog/hirelings/README.md) and
 [`catalog/campaign/README.md`](catalog/campaign/README.md) (+ its HOWTO and

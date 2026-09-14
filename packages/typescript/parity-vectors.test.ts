@@ -1,6 +1,5 @@
 /**
- * TS mirror of the shared malformed-save parity vectors (Agent 0, parity
- * lane). Applies the same JSON-pointer mutations to the same base fixture
+ * TS mirror of the shared malformed-save parity vectors. Applies the same JSON-pointer mutations to the same base fixture
  * as tests/web/parity/vectors_python_test.py and expects the adapter to
  * agree with each vector's `expected` outcome.
  */

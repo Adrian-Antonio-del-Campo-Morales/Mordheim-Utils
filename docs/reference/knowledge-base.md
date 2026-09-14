@@ -29,7 +29,7 @@ sources/knowledge/
 ├── registry/                     collections, rulesets, sources, aliases,
 │                                 warband groups, runtime classification schema
 ├── bands/                        per-warband editorial data, by collection
-│   ├── mordheim/                 ~48 warband directories
+│   ├── mordheim/                 one directory per Mordheim warband
 │   └── trollheim/                Trollheim/Chaos Streets/Lustria/Khemri warbands
 ├── catalog/                      cross-band shared data
 │   ├── items/                    canonical item records (weapons, armour, …)
@@ -61,7 +61,7 @@ tests in `tests/knowledge/test_campaign_loaders.py`).
 ### Runtime classification (`runtime-schema.yaml`)
 
 Every classified special rule carries a `runtime` block. The block is
-validated against this schema — see `src/mordheim_knowledge/loader.py`
+validated against this schema — see `packages/python/knowledge/mordheim_knowledge/loader.py`
 (`validate_rule_runtime`).
 
 | Field | Meaning | Values |
@@ -218,9 +218,8 @@ So the layers of the same weapon are: item record (`items/`, snake_case id)
   mutations and hired swords. These documents are **published data for the
   campaign runtime**; their README covers data ownership, the price-collation
   policy and the loader contract, and its HOWTO explains how to query the
-  catalogue from application code. Campaign entries use namespaced kebab ids
-  (`campaign.<family>.<detail>`) and reference items by canonical `item_id`
-  without copying them.
+  catalogue from application code. Campaign entries reference canonical
+  `item_id` values without copying item records.
 
 ## Locale policy
 
@@ -439,10 +438,12 @@ For items the same path holds with the extra indirection step: band
   reviewed against the written sources. The engine's output is never used to
   generate expected values.
 - **Campaign catalogue ≠ runtime.** `catalog/campaign/` is published data for
-  the campaign runtime; do not load it as duel-rule implementation. The open
-  migration (documented in its README): collate every `cost` in
-  `equipment-access.yaml` against the Trading Post and convert real
-  exceptions to explicit `price_override` entries.
+  the campaign runtime; do not load it as duel-rule implementation. The
+  application consumes it through the validated loaders and `KnowledgePort`.
+  The remaining catalogue work is the price-collation review and the deferred
+  scope listed in [TODO](../../TODO.md): collate every `cost` in
+  `equipment-access.yaml` against the Trading Post and convert real exceptions
+  to explicit `price_override` entries.
 
 ## Validation loop
 

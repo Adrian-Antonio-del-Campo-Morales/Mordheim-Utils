@@ -1,7 +1,6 @@
 /**
- * Web migration hirelings workflow: hirelings, exploration, searches
- * and trading — the application feature block.
- *
+ * Hireling, exploration, search and trading workflows in the application
+ * feature layer. *
  * Scope, mirroring the desktop surfaces this block ports:
  * - **Hireling offers**: the catalogue's hired swords / dramatis personae,
  *   each with hiring fee, upkeep and static eligibility

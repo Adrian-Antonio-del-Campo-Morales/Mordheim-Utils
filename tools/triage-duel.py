@@ -40,7 +40,13 @@ from time import perf_counter
 
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+PACKAGE_ROOTS = (
+    Path(__file__).resolve().parents[1] / "packages" / "python" / "combat-engine",
+    Path(__file__).resolve().parents[1] / "packages" / "python" / "roster-construction",
+    Path(__file__).resolve().parents[1] / "packages" / "python" / "core",
+)
+for package_root in reversed(PACKAGE_ROOTS):
+    sys.path.insert(0, str(package_root))
 
 from mordheim_combat.modular.parallel import run_oracle_sample  # noqa: E402
 from mordheim_combat.vectorized import simulate_duel as simulate_numpy  # noqa: E402
