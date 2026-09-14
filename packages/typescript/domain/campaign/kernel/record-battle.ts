@@ -252,8 +252,22 @@ export function recordBattle(
     return remaining > 0 ? [{ ...rule, expires_after_battles: remaining }] : [];
   });
 
+  // An absence is served by recording the battle it prevented the warrior
+  // from joining.  This mirrors the desktop battle service: navigating the
+  // post-battle sequence must not change the counter, and temporary
+  // pre-battle checks do not consume it.
+  const warriors = campaign.warriors.map((warrior) => {
+    const remaining = warrior.games_to_miss ?? 0;
+    if (remaining <= 0) return warrior;
+    const next = remaining - 1;
+    return next > 0
+      ? { ...warrior, games_to_miss: next }
+      : { ...warrior, games_to_miss: 0, absence_reason: "" };
+  });
+
   const nextCampaign: Campaign = {
     ...campaign,
+    warriors,
     battles: [...campaign.battles, battle],
     post_battles: [...campaign.post_battles, postBattle],
     special_rules: specialRules,

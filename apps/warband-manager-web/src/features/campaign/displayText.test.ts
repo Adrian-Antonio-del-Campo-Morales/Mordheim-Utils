@@ -45,8 +45,9 @@ describe("localized UI labels", () => {
   });
 
   it("uses a readable fallback when a knowledge record is unavailable", () => {
-    expect(knowledgeName(undefined, "item", "missing.item", "es")).toBe("Missing Item");
-    expect(knowledgeName(undefined, "skill", "missing.skill", "en")).toBe("Missing Skill");
+    expect(knowledgeName(undefined, "item", "missing.item", "es")).toBe("Información no disponible");
+    expect(knowledgeName(undefined, "skill", "missing.skill", "en")).toBe("Information unavailable");
+    expect(knowledgeName(undefined, "item", "missing.item", "es", "Missing Item")).toBe("EN · traducción pendiente: Missing Item");
   });
 
   it("keeps canonical labels for normal records before falling back to the shared index", () => {

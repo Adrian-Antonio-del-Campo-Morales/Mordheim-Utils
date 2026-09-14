@@ -5,9 +5,11 @@ import type { CampaignDocument } from "../campaign/types";
 import { ManualCorrectionsPanel } from "../economy/ManualCorrectionsPanel";
 import { HirelingsPanel } from "../hirelings/HirelingsPanel";
 import { EquipmentPanel } from "./EquipmentPanel";
+import { useCloseOnCampaignError } from "../campaign/useCampaignApp";
 
 export function PostBattleInventory({ document, knowledge, locale = "en" }: { readonly document: CampaignDocument; readonly knowledge?: ArtefactKnowledgeReader; readonly locale?: "es" | "en" }) {
   const [dialog, setDialog] = useState<"trade" | "manual" | null>(null);
+  useCloseOnCampaignError(() => setDialog(null));
   const unavailable = locale === "es" ? "No se han cargado los datos de conocimiento necesarios." : "The required knowledge data is not loaded.";
 
   return <section className="draft-inventory" aria-label={locale === "es" ? "Inventario" : "Inventory"}>

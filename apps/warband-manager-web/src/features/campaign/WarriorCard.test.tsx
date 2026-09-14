@@ -41,4 +41,11 @@ describe("WarriorCard canonical ability labels", () => {
     expect(screen.getAllByText("Vista Bendecida")).toHaveLength(1);
     expect(screen.queryByText(/skill\.blessed-sight/i)).not.toBeInTheDocument();
   });
+
+  it("shows an active absence and the battles remaining on the roster", () => {
+    const warrior = { id: "sigrid", name: "Sigrid", profile_name: "Sister", kind: "hero", stats: {}, equipment: [], skills: [], experience: 0, cost: 40, games_to_miss: 2, absence_reason: "Herida profunda" } as Warrior;
+    render(<WarriorCard warrior={warrior} locale="es" />);
+    expect(screen.getByText("AUSENCIA")).toBeInTheDocument();
+    expect(screen.getByText("Herida profunda · se pierde 2 batalla(s) más")).toBeInTheDocument();
+  });
 });

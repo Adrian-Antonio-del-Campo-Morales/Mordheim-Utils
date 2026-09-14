@@ -91,7 +91,7 @@ function seededAdvances(
   knowledge: CampaignKnowledgeReader,
 ): readonly OpenPayload[] {
   if (!canGainExperience(warrior, knowledge)) return [];
-  const advanceThresholds = thresholds(knowledge, warrior.kind === "hireling" ? "hero" : warrior.kind);
+  const advanceThresholds = thresholds(knowledge, warrior.kind === "hireling" ? "henchman" : warrior.kind);
   const existing = new Set(postRows
     .filter((row) => String(row["warrior_id"] ?? "") === warrior.id)
     .map((row) => Number(row["threshold"])));
@@ -100,7 +100,7 @@ function seededAdvances(
     .map((threshold) => ({
       warrior_id: warrior.id,
       warrior_name: warrior.name,
-      table: warrior.kind,
+      table: warrior.kind === "hireling" ? "hero" : warrior.kind,
       threshold,
       roll_total: null,
       subroll: null,

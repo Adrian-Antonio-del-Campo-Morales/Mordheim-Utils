@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { ArtefactKnowledgeReader, resolveName } from "@adapters/knowledge-reader/index";
 import { effectiveMaximumModels, memberCount, treasury as draftTreasury } from "@domain/campaign/kernel/document";
-import { useCampaignApp } from "../campaign/useCampaignApp";
+import { useCampaignApp, useCloseOnCampaignError } from "../campaign/useCampaignApp";
 import { knowledgeName, localizedLabel, warriorAbilities, warriorName } from "../campaign/displayText";
 import type { CampaignDocument } from "../campaign/types";
 import { HirelingsPanel } from "../hirelings/HirelingsPanel";
@@ -29,6 +29,7 @@ export function ExperienceTrack({ experience, kind, locale }: { experience: numb
 export function DraftWorkspace({ document, knowledge, locale }: { document: CampaignDocument; knowledge: ArtefactKnowledgeReader; locale: "es" | "en" }) {
   const app = useCampaignApp();
   const [tab, setTab] = useState<"hero" | "henchman" | "hireling" | "inventory">("hero"); const [profileId, setProfileId] = useState(""); const [quantity, setQuantity] = useState(1); const [name, setName] = useState(""); const [showAdd, setShowAdd] = useState(false); const [renameId, setRenameId] = useState<string | null>(null); const [renameValue, setRenameValue] = useState(""); const [skillsId, setSkillsId] = useState<string | null>(null); const [skillId, setSkillId] = useState(""); const [skillReason, setSkillReason] = useState(""); const [skillSearch, setSkillSearch] = useState(""); const [inventoryDialog, setInventoryDialog] = useState<"trade" | "manual" | null>(null); const [stashChoice, setStashChoice] = useState(""); const [stashQuantity, setStashQuantity] = useState(1);
+  useCloseOnCampaignError(() => { setShowAdd(false); setRenameId(null); setSkillsId(null); setInventoryDialog(null); });
   const profiles = useMemo(() => knowledge.list("profile").filter((row) => row.band_id === document.campaign.identity.band_id), [knowledge, document.campaign.identity.band_id]);
   const profileNames = useMemo(() => new Map(profiles.map((row) => [String(row.id), resolveName(row, locale)])), [profiles, locale]);
   const items = useMemo(() => new Map(knowledge.list("item").map((row) => [String(row.item_id), row])), [knowledge]);

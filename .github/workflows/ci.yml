@@ -86,6 +86,18 @@ jobs:
       - name: Typecheck and test the packages
         run: cd packages/typescript && npm run typecheck && npm test
 
+      # This is intentionally separate from the complete web suite below:
+      # it makes the bilingual KB presentation contract visible in CI and
+      # prevents a regression from being hidden among unrelated test output.
+      - name: Verify localized KB text, accessible tooltips and hidden technical IDs
+        run: |
+          cd apps/warband-manager-web
+          npx vitest run --pool=forks --maxWorkers=1 --testTimeout=200000 \
+            src/features/campaign/knowledge-display-coverage.test.tsx \
+            src/features/campaign/ui_i18n.test.ts \
+            src/features/campaign/displayText.test.ts \
+            src/features/campaign/KnowledgeHint.test.tsx
+
       - name: Typecheck, lint, test and build the web app
         run: |
           cd apps/warband-manager-web

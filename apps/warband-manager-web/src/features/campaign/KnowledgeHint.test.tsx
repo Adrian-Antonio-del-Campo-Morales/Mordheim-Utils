@@ -80,6 +80,13 @@ describe("KnowledgeHint", () => {
     expect(screen.getByText("Capa Élfica")).toHaveAttribute("data-tooltip", expect.stringContaining("-1"));
   });
 
+  it("localizes and explains magical artefacts stored as inventory items", () => {
+    const reader = loadReader();
+    const id = "magical_artefact.executioners-hood";
+    render(<KnowledgeHint knowledge={reader} kind="item" id={id} locale="es">{knowledgeName(reader, "item", id, "es", "Executioner's Hood")}</KnowledgeHint>);
+    expect(screen.getByText("Capucha del Verdugo")).toHaveAttribute("data-tooltip", expect.stringContaining("siempre frenético"));
+  });
+
   it("resolves legacy rule names with the profile-specific Spanish description", () => {
     const reader = loadReader();
     render(<KnowledgeHint knowledge={reader} kind="rule" id="dwarf-troll-slayers--no-armour" profileId="dwarf-troll-slayers" locale="es">Sin Armadura</KnowledgeHint>);

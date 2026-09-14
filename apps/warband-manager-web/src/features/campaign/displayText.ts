@@ -1,15 +1,23 @@
-import { resolveName, titleCaseDisplay, type ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import { resolveNameText, titleCaseDisplay, type ArtefactKnowledgeReader, type DisplayRef, type LocalizedText } from "@adapters/knowledge-reader/index";
 import type { Warrior } from "./types";
+import { translate, type Locale } from "./i18n-core";
 
 export { titleCaseDisplay };
 
-export type Locale = "es" | "en";
+export type { Locale } from "./i18n";
 type DisplayKind = "band" | "profile" | "item" | "skill" | "rule" | "scenario" | "injury" | "hireling" | "lore";
 
 const unavailableLabels: Record<Locale, string> = {
-  es: "Información no disponible",
-  en: "Information unavailable",
+  es: translate({ key: "knowledge.unavailable" }, "es"),
+  en: translate({ key: "knowledge.unavailable" }, "en"),
 };
+
+export type { DisplayRef, LocalizedText };
+
+/** Marks the exceptional English fallback without leaking a technical id. */
+export function displayText(text: LocalizedText, locale: Locale): string {
+  return text.status === "canonical-fallback" ? translate({ key: "knowledge.english-fallback", args: { text: text.text } }, locale) : text.text;
+}
 
 const labelTranslations: Record<Locale, Record<string, string>> = {
   es: {
@@ -36,24 +44,80 @@ export function localizedLabel(value: unknown, locale: Locale): string {
 }
 
 const ruleDocuments = ["special-rules", "profile-special-rules", "core-combat", "conditions", "resolution", "localized-labels"];
+const rowsCache = new WeakMap<ArtefactKnowledgeReader, Map<DisplayKind, readonly Readonly<Record<string, unknown>>[]>>();
+const rowIndexCache = new WeakMap<ArtefactKnowledgeReader, Map<DisplayKind, ReadonlyMap<string, readonly Readonly<Record<string, unknown>>[]>>>();
 
 export function knowledgeRows(knowledge: ArtefactKnowledgeReader | undefined, kind: DisplayKind): readonly Readonly<Record<string, unknown>>[] {
+  const cached = knowledge ? rowsCache.get(knowledge)?.get(kind) : undefined;
+  if (cached) return cached;
   const listed = kind !== "rule" && typeof knowledge?.list === "function" ? knowledge.list(kind) : [];
-  if (kind !== "rule" && kind !== "skill") return listed;
+  if (kind !== "rule" && kind !== "skill") {
+    if (knowledge) {
+      const values = rowsCache.get(knowledge) ?? new Map();
+      values.set(kind, listed);
+      rowsCache.set(knowledge, values);
+    }
+    return listed;
+  }
   const generalRules = typeof knowledge?.rulesDocument === "function"
     ? ruleDocuments.flatMap((section) => knowledge.rulesDocument(section))
     : [];
   const hirelings = typeof knowledge?.campaignSection === "function" ? knowledge.campaignSection("hirelings") : undefined;
   const hirelingRules = Array.isArray(hirelings?.rules) ? hirelings.rules as readonly Readonly<Record<string, unknown>>[] : [];
   const rules = [...generalRules, ...hirelingRules];
-  return kind === "rule" ? rules : [...listed, ...rules];
+  const result = kind === "rule" ? rules : [...listed, ...rules];
+  if (knowledge) {
+    const values = rowsCache.get(knowledge) ?? new Map();
+    values.set(kind, result);
+    rowsCache.set(knowledge, values);
+  }
+  return result;
 }
 
 export function matchesKnowledgeId(entry: Readonly<Record<string, unknown>>, id: string): boolean {
-  const stableId = String(entry.id ?? entry.item_id ?? entry.profile_id ?? "");
-  if (stableId.localeCompare(id, "en", { sensitivity: "accent" }) === 0) return true;
+  const stableIds = [entry.id, entry.item_id, entry.profile_id]
+    .filter((value): value is string => typeof value === "string");
+  if (stableIds.some((stableId) => stableId.localeCompare(id, "en", { sensitivity: "accent" }) === 0)) return true;
   const names = entry.names as Readonly<Record<string, unknown>> | undefined;
   return [entry.name, names?.en].some((name) => typeof name === "string" && name.localeCompare(id, "en", { sensitivity: "accent" }) === 0);
+}
+
+function matchingRows(knowledge: ArtefactKnowledgeReader | undefined, kind: DisplayKind, id: string, profileId?: string, bandId?: string): readonly Readonly<Record<string, unknown>>[] {
+  if (!knowledge) return [];
+  let byKind = rowIndexCache.get(knowledge);
+  let index = byKind?.get(kind);
+  if (!index) {
+    const values = new Map<string, Readonly<Record<string, unknown>>[]>();
+    for (const row of knowledgeRows(knowledge, kind)) {
+      for (const value of [row.id, row.item_id, row.profile_id]) {
+        if (typeof value === "string") values.set(value, [...(values.get(value) ?? []), row]);
+      }
+    }
+    index = values;
+    byKind ??= new Map();
+    byKind.set(kind, index);
+    rowIndexCache.set(knowledge, byKind);
+  }
+  // Injury ids identify a result inside a table, not the table itself.
+  // Index those nested rows before falling back to a generic catalogue entry.
+  const injuryTables = typeof knowledge.campaignSection === "function"
+    ? knowledge.campaignSection("serious-injuries").tables as readonly Readonly<Record<string, unknown>>[] | undefined
+    : undefined;
+  const injuryRows = kind === "injury"
+    ? (injuryTables ?? [])
+      .flatMap((table) => Array.isArray(table.results) ? table.results as readonly Readonly<Record<string, unknown>>[] : [])
+      .filter((entry) => matchesKnowledgeId(entry, id))
+    : [];
+  const candidates = injuryRows.length ? injuryRows : index.get(id) ?? knowledgeRows(knowledge, kind).filter((entry) => matchesKnowledgeId(entry, id));
+  if (!profileId && !bandId) return candidates;
+  return [...candidates].sort((left, right) => {
+    const score = (row: Readonly<Record<string, unknown>>) => {
+      const applies = row.applies_to as Readonly<Record<string, unknown>> | undefined;
+      const profiles = Array.isArray(applies?.profile_ids) ? applies.profile_ids.map(String) : [];
+      return (profileId && profiles.includes(profileId) ? 2 : 0) + (bandId && row.band_id === bandId ? 1 : 0);
+    };
+    return score(right) - score(left);
+  });
 }
 
 const translations: Record<Locale, Record<string, string>> = {
@@ -94,15 +158,39 @@ export function readableValue(value: unknown, locale: Locale): string {
   return titleCaseDisplay(translated ?? raw);
 }
 
-export function knowledgeName(knowledge: ArtefactKnowledgeReader | undefined, kind: DisplayKind, id: unknown, locale: Locale, fallback?: unknown, profileId?: string, bandId?: string): string {
+export function knowledgeText(knowledge: ArtefactKnowledgeReader | undefined, kind: DisplayKind, id: unknown, locale: Locale, fallback?: unknown, profileId?: string, bandId?: string): LocalizedText {
   const stableId = String(id ?? "");
-  const row = knowledgeRows(knowledge, kind).find((entry) => matchesKnowledgeId(entry, stableId));
+  const row = matchingRows(knowledge, kind, stableId, profileId, bandId)[0];
   if (row) {
-    if (kind === "injury" && typeof row.result === "string") return readableValue(row.result, locale);
-    return resolveName(row, locale);
+    if (kind === "injury" && typeof row.result === "string") return { text: readableValue(row.result, locale), sourceLocale: locale, status: "translated" };
+    return resolveNameText(row, locale, fallback);
   }
-  if (typeof knowledge?.displayName === "function") return knowledge.displayName(stableId, locale, fallback ?? stableId, profileId, bandId);
-  return readableValue(String(fallback ?? stableId).replace(/[._-]+/g, " "), locale);
+  if (typeof knowledge?.displayNameText === "function") return knowledge.displayNameText({ kind, id: stableId, profileId, bandId }, locale, fallback);
+  const safeFallback = typeof fallback === "string" && fallback !== stableId && !/^[a-z0-9]+(?:[._:-][a-z0-9]+)+$/i.test(fallback)
+    ? fallback : undefined;
+  return safeFallback
+    ? { text: safeFallback, sourceLocale: "en", status: locale === "en" ? "translated" : "canonical-fallback" }
+    : { text: unavailableLabels[locale], sourceLocale: null, status: "missing" };
+}
+
+export function knowledgeName(knowledge: ArtefactKnowledgeReader | undefined, kind: DisplayKind, id: unknown, locale: Locale, fallback?: unknown, profileId?: string, bandId?: string): string {
+  return displayText(knowledgeText(knowledge, kind, id, locale, fallback, profileId, bandId), locale);
+}
+
+export function knowledgeDescription(knowledge: ArtefactKnowledgeReader | undefined, ref: DisplayRef, locale: Locale): LocalizedText {
+  const indexed = typeof knowledge?.displayDescriptionText === "function" ? knowledge.displayDescriptionText(ref, locale) : undefined;
+  const row = matchingRows(knowledge, ref.kind as DisplayKind, ref.id, ref.profileId, ref.bandId)[0];
+  if (row) {
+    const effects = row.effects as Readonly<Record<string, unknown>> | undefined;
+    const translated = [row.effect_i18n, row.description_i18n, row.text_i18n, row.note_i18n]
+      .find((value): value is Readonly<Record<string, unknown>> => Boolean(value) && typeof value === "object");
+    const requested = effects?.[locale] ?? translated?.[locale];
+    if (typeof requested === "string" && requested.trim()) return { text: requested, sourceLocale: locale, status: "translated" };
+    const canonical = effects?.en ?? row.effect ?? row.description ?? row.text ?? row.note;
+    if (typeof canonical === "string" && canonical.trim()) return { text: canonical, sourceLocale: "en", status: locale === "en" ? "translated" : "canonical-fallback" };
+  }
+  if (indexed && indexed.status !== "missing") return indexed;
+  return { text: translate({ key: "knowledge.description-unavailable" }, locale), sourceLocale: null, status: "missing" };
 }
 
 export function warriorName(knowledge: ArtefactKnowledgeReader | undefined, warrior: { readonly name: string; readonly profile_id?: string; readonly profile_name: string }, locale: Locale): string {

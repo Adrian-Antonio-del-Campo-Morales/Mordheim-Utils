@@ -23,4 +23,14 @@ describe("DiceResolver", () => {
     expect(screen.getByRole("button", { name: "Tirar 1D6" })).toBeInTheDocument();
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
+
+  it("does not submit its enclosing form when resolving dice", async () => {
+    const user = userEvent.setup();
+    const submit = vi.fn();
+    render(<form onSubmit={(event) => { event.preventDefault(); submit(); }}><DiceResolver count={1} sides={6} label="Recompensa" locale="es" onResolve={vi.fn()} /></form>);
+
+    await user.click(screen.getByRole("button", { name: "Tirar 1D6" }));
+
+    expect(submit).not.toHaveBeenCalled();
+  });
 });
