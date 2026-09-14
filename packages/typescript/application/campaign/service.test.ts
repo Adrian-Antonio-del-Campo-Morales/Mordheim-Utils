@@ -213,6 +213,20 @@ describe("P5.1 campaign application service", () => {
     expect(service.current()?.view.selected_moment).toBe("battle:1");
   });
 
+  it("ignores a queued battle-draft autosave after opening the battle summary", async () => {
+    const scenarioKnowledge: KnowledgeReader = { queryKnowledge: (query) => query.id.kind === "scenario_id" && query.id.value === "skirmish" ? { ok: true, record: { kind: "scenario", id: query.id, names: { en: "Skirmish" }, data: {} } } : { ok: false, reason: "not_found" }, queryMany: () => [] };
+    const service = await serviceWithCampaign(makeCampaign({
+      states: [{ number: 0, date: "2026-09-14", gold: 500, wyrdstone: 0, rating: 0, models: 0, max_models: 15, heroes: 0, henchmen: 0, experience: 0 }],
+    }), scenarioKnowledge);
+    expect((await service.run("recordBattle", { scenario: "skirmish", opponent: "Cultists", result: "win", gold_delta: 0, wyrdstone: 0, xp_delta: 0, out_of_action_ids: [] })).ok).toBe(true);
+
+    const lateAutosave = await service.run("saveBattleDraft", { draft: { opponent: "too late" } });
+
+    expect(lateAutosave.ok).toBe(true);
+    expect(service.current()?.view.selected_moment).toBe("battle:1");
+    expect(service.current()?.view.pending_battle_draft).toBeUndefined();
+  });
+
   it("opens the completed post-battle summary after confirming the next state", async () => {
     const service = await serviceWithCampaign(makeCampaign({
       current_state_number: 1,

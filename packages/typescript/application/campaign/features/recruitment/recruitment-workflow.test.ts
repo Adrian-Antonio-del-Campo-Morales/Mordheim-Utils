@@ -64,7 +64,7 @@ function reader(): KnowledgeReader & {
         record: {
           kind: "profile",
           id: { kind: "profile_id", value: "matriarch" },
-          names: { en: "Matriarch" },
+          names: { en: "Matriarch", es: "Matriarca" },
           data: {
             type: "hero", cost: 65, experience: 10,
             characteristics: { M: 4, WS: 4, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 8 },
@@ -207,6 +207,14 @@ describe("recruitBandProfile (desktop recruit_band_profile)", () => {
     const result = recruitBandProfile(makePending(), reader(), { profile_id: "matriarch", quantity: 2 });
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.message).toContain("individually");
+  });
+
+  it("uses the requested locale for an automatic Hero name", () => {
+    const pending=makePending();
+    const document={...pending,campaign:{...pending.campaign,warriors:pending.campaign.warriors.filter((warrior)=>warrior.profile_id!=="matriarch")}};
+    const result = recruitBandProfile(document, reader(), { profile_id: "matriarch", locale: "es" });
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.document.campaign.warriors.at(-1)?.name).toBe("Matriarca");
   });
 
   it("rejects recruitment over the roster limit", () => {

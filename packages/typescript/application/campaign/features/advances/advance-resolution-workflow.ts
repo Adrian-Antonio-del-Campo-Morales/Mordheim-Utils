@@ -140,10 +140,11 @@ export function promoteHenchman(document: CampaignDocument, input:{warrior_id:st
   const groupEquipment=warrior.equipment.map((item)=>item.per_model?{...item,quantity:item.quantity-item.quantity/quantity}:item).filter((item)=>item.quantity>0);
   const heroId=nextWarriorId(document,warrior.profile_id??warrior.id); const hero: Warrior={...warrior,id:heroId,name:String(input.member_name??"").trim()||`${warrior.profile_name} Champion`,kind:"hero",quantity:1,equipment:heroEquipment,skills:[],skill_access:[],...(warrior.previous_experience !== undefined ? { previous_experience: warrior.previous_experience } : {}),stat_advances:{...(warrior.stat_advances??{})}};
   const remaining=quantity-1; const warriors=remaining>0
-    ? document.campaign.warriors.map((item)=>item.id===warrior.id?{...item,quantity:remaining,equipment:groupEquipment,name:item.name.endsWith(" group")?item.name:`${item.profile_name} group`}:item).concat(hero)
+    ? document.campaign.warriors.map((item)=>item.id===warrior.id?{...item,quantity:remaining,equipment:groupEquipment}:item).concat(hero)
     : document.campaign.warriors.filter((item)=>item.id!==warrior.id).concat(hero);
   let pending=(post.pending_advances??[]).filter((item)=>remaining>0||item!==row);
   if(remaining>0) pending=pending.map((item)=>item===row?{...item,roll_total:null,subroll:null,advance_options:[],promotion_offer:false,reroll_exclude_promotion:true,roll_history:[...((item["roll_history"] as string[]|undefined)??[]),"Rolled 10-12: one member became a Hero; remaining group rerolls."]}:item);
+  else pending=pending.map((item)=>item["warrior_id"]===warrior.id?{...item,warrior_id:hero.id,warrior_name:hero.name,table:"hero"}:item);
   pending=[...pending,{warrior_id:hero.id,warrior_name:hero.name,table:"hero",threshold:null,roll_total:null,subroll:null,committed:false,applied_label:"",promotion_immediate:true,promotion_setup_pending:true,promotion_tables:[]}];
   return {ok:true,document:update(document,post.battle_number,pending,warriors)};
 }

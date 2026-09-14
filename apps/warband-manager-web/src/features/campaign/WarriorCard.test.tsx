@@ -7,6 +7,16 @@ import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { WarriorCard } from "./WarriorCard";
 
 describe("WarriorCard hireling abilities", () => {
+  it("resolves a Hired Sword subtitle from the hireling catalogue", () => {
+    const profileId = "hireling.hired-sword.ogre-bodyguard";
+    const warrior = { id: `${profileId}#1`, name: "Ogro Guardaespaldas", profile_name: "Ogre Bodyguard", profile_id: profileId, kind: "hireling", stats: {}, equipment: [], skills: [], experience: 0, cost: 80 } as Warrior;
+    const knowledge = { list: (kind: string) => kind === "hireling" ? [{ id: profileId, names: { en: "Ogre Bodyguard", es: "Ogro Guardaespaldas" } }] : [], rulesDocument: () => [], campaignSection: () => ({ rules: [] }) } as never;
+
+    render(<WarriorCard warrior={warrior} knowledge={knowledge} locale="es" />);
+    expect(screen.getAllByText("Ogro Guardaespaldas")).toHaveLength(2);
+    expect(screen.queryByText(/traducción pendiente/i)).not.toBeInTheDocument();
+  });
+
   it("shows localized inherent rules for a hireling loaded from an older campaign", () => {
     const profileId = "hireling.hired-sword.elf-ranger";
     const ruleId = `${profileId}.rule.seeker`;

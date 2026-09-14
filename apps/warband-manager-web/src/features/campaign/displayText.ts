@@ -23,8 +23,9 @@ const labelTranslations: Record<Locale, Record<string, string>> = {
   es: {
     hero: "Héroe", henchman: "Secuaces", hireling: "Espada de alquiler", warrior: "Guerrero",
     combat: "Combate", shooting: "Disparo", academic: "Académicas", strength: "Fuerza", speed: "Velocidad", special: "Especiales",
-    movement: "Movimiento", weapon_skill: "Habilidad de Armas", ballistic_skill: "Habilidad de Proyectiles", strength_stat: "Fuerza", toughness: "Resistencia", wounds: "Heridas", initiative: "Iniciativa", attacks: "Ataques", leadership: "Liderazgo",
+    movement: "Movimiento", weapon_skill: "Habilidad de Armas", ballistic_skill: "Habilidad de Proyectiles", strength_stat: "Fuerza", toughness: "Resistencia", wounds: "Heridas", initiative: "Iniciativa", attacks: "Ataques", leadership: "Liderazgo", ws: "HA", bs: "HP", s: "F", t: "R", w: "H", i: "I", a: "A", ld: "L", m: "M",
     event: "Evento", exploration: "Exploración", scenario: "Escenario", roll: "Tirada", result: "Resultado",
+    experience: "Experiencia", sell_wyrdstone: "Venta de piedra bruja", veteran_pool: "Reserva de veteranos", hireling_upkeep: "Mantenimiento de Espada de alquiler",
   },
   en: {
     hero: "Hero", henchman: "Henchman", hireling: "Hired Sword", warrior: "Warrior",
@@ -193,13 +194,10 @@ export function knowledgeDescription(knowledge: ArtefactKnowledgeReader | undefi
   return { text: translate({ key: "knowledge.description-unavailable" }, locale), sourceLocale: null, status: "missing" };
 }
 
-export function warriorName(knowledge: ArtefactKnowledgeReader | undefined, warrior: { readonly name: string; readonly profile_id?: string; readonly profile_name: string }, locale: Locale): string {
-  const localized = knowledgeName(knowledge, "profile", warrior.profile_id, locale, warrior.profile_name);
-  const escaped = warrior.profile_name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const automatic = new RegExp(`^${escaped}( Group)?( [IVXLCDM]+)?$`, "i").exec(warrior.name);
-  if (!automatic) return warrior.name;
-  const group = automatic[1] ? (locale === "es" ? `Grupo de ${localized}` : `${localized} Group`) : localized;
-  return `${group}${automatic[2] ?? ""}`;
+export function warriorName(_knowledge: ArtefactKnowledgeReader | undefined, warrior: { readonly name: string; readonly profile_id?: string; readonly profile_name: string }, _locale?: Locale): string {
+  void _knowledge;
+  void _locale;
+  return warrior.name;
 }
 
 /** Abilities stored on the warrior plus profile rules missing from older saves. */

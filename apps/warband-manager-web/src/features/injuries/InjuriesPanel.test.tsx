@@ -136,7 +136,7 @@ describe("InjuriesPanel", () => {
     const view = defaultView();
     harness({ ...view });
     render(<InjuriesPanel document={document} />);
-    await act(async () => { fireEvent.click(screen.getByLabelText("Resolve injury roll injury:w1:mangled_leg")); });
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Resolve Sigrid" })); });
     await vi.waitFor(() => {
       expect(view.runAction).toHaveBeenCalledWith(
         "resolveInjuryFollowUp",

@@ -43,6 +43,8 @@ const STAT_KEYS = ["M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"] as const;
  */
 export interface HireHirelingInput {
   readonly profile_id: IdString;
+  /** Language used for the persisted automatic name. */
+  readonly locale?: "es" | "en";
   /** Item ids selected from the profile's mandatory starting-equipment choice. */
   readonly chosen_item_ids?: readonly IdString[];
   /**
@@ -215,7 +217,7 @@ export function hireHireling(
     : 0;
   const hireling: Warrior = {
     id: `${input.profile_id}#1`,
-    name: result.record.names["en"] ?? input.profile_id,
+    name: result.record.names[input.locale ?? "en"] ?? result.record.names["en"] ?? input.profile_id,
     profile_name: result.record.names["en"] ?? input.profile_id,
     kind: "hireling",
     stats,

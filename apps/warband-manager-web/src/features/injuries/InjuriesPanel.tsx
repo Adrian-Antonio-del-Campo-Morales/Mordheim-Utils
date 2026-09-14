@@ -19,6 +19,7 @@ import { injuryFollowUpDice } from "@app/campaign/features/injuries/injury-follo
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { DiceResolver } from "../dice/DiceResolver";
 import { knowledgeName, readableValue } from "../campaign/displayText";
+import { KnowledgeHint } from "../campaign/KnowledgeHint";
 
 interface InjuriesPanelProps {
   readonly document: CampaignDocument;
@@ -74,9 +75,7 @@ export function InjuriesPanel({ document, knowledge, locale = "en" }: InjuriesPa
             <tr key={row.warrior_id} data-restricted={row.restricted || undefined}>
               <td data-label={t.warrior}>{row.name}</td>
               <td data-label={t.condition}>
-                {row.condition
-                  ? `${readableValue(row.condition, locale)}${row.condition_detail ? ` (${knowledgeName(knowledge, "injury", row.condition_detail, locale, row.condition_detail)})` : ""}`
-                  : "—"}
+                {row.condition ? <>{readableValue(row.condition, locale)}{row.condition_detail ? <> ({knowledge ? <KnowledgeHint knowledge={knowledge} kind="injury" id={row.condition_detail} locale={locale}>{knowledgeName(knowledge, "injury", row.condition_detail, locale, row.condition_detail)}</KnowledgeHint> : knowledgeName(knowledge, "injury", row.condition_detail, locale, row.condition_detail)})</> : ""}</> : "—"}
               </td>
               <td data-label={t.missingGames}>{row.games_to_miss > 0 ? `${row.games_to_miss} (${readableValue(row.absence_reason ?? (locale === "es" ? "Lesión" : "Injury"), locale)})` : "0"}</td>
               <td data-label={t.recovery}>
@@ -107,14 +106,14 @@ export function InjuriesPanel({ document, knowledge, locale = "en" }: InjuriesPa
                           type="button"
                           disabled={busy}
                           data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : undefined}
-                          aria-label={`Resolve injury roll ${id}`}
+                          aria-label={`${t.resolve} ${row.name}`}
                           onClick={() =>
                             run("resolveInjuryFollowUp", {
                               follow_up_id: id,
                               outcome: {
                                 warrior_id: row.warrior_id,
                                 result_id: (followUp as { result_id?: unknown }).result_id ?? "",
-                                result: "Resolved",
+                                result: t.resolve,
                                 effects: [],
                               },
                             })

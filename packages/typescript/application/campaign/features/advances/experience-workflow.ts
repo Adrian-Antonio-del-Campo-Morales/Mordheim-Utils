@@ -148,8 +148,10 @@ export function applyBattleExperience(
     event_log: [...(row.event_log ?? []), {
       step: 2,
       type: "experience",
-      description: "Battle experience applied.",
     }],
   } : row);
-  return { ok: true, document: withCampaign(document, { ...document.campaign, warriors, post_battles: postBattles }) };
+  const battles = document.campaign.battles.map((row) => row.number === battle.number
+    ? { ...row, advances: existingRows.length + newRows.length }
+    : row);
+  return { ok: true, document: withCampaign(document, { ...document.campaign, warriors, battles, post_battles: postBattles }) };
 }

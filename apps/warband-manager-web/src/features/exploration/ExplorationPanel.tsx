@@ -16,6 +16,8 @@ function visibleText(value: unknown, locale: "en" | "es", fallback: string): str
   if (typeof value === "object") return readableValue(value, locale);
   const text = String(value);
   const es: Record<string, string> = { "Choose a Henchman group": "Elige un grupo de Secuaces", "Choose equipment": "Elige equipo", "Choose warriors": "Elige guerreros", "Do not recruit the prisoner": "No reclutar al prisionero" };
+  const resourceReward = /^(gold_crowns|wyrdstone_fragments) reward$/i.exec(text)?.[1];
+  if (resourceReward) return locale === "es" ? `Recompensa de ${readableValue(resourceReward, locale)}` : `${readableValue(resourceReward, locale)} Reward`;
   return locale === "es" ? es[text] ?? (text.includes(".") ? localizedLabel(text, locale) : readableValue(text, locale)) : (text.includes(".") ? localizedLabel(text, locale) : readableValue(text, locale));
 }
 
