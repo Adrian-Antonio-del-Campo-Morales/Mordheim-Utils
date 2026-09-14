@@ -27,6 +27,7 @@ import type {
   UseCaseResult,
 } from "../../domain/campaign/index";
 import { createDefaultUseCases } from "../../domain/campaign/kernel/default-usecases";
+import { uniqueWarriorName } from "../../domain/campaign/kernel/document";
 import { buyDraftEquipment, buyDraftStashItem, removeDraftEquipment, removeDraftStashItem } from "../../domain/campaign/kernel/equipment";
 import type { CampaignUseCases } from "../../domain/campaign/index";
 import {
@@ -239,6 +240,11 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
       const selected = state.current.view.selected_moment;
       const pending = state.current.campaign.post_battles.find((post) => !post.complete);
       const editable = !selected || selected === "draft:0" || selected.startsWith("new-battle:") || selected === `state:${state.current.campaign.current_state_number}` || (pending && selected === `post:${pending.battle_number}`);
+      // The battle form persists its fields asynchronously.  A final queued
+      // autosave can arrive just after `recordBattle` switches to the
+      // immutable battle summary; it must neither revive the draft nor show
+      // a misleading read-only error to the player.
+      if (action === "saveBattleDraft" && !editable) return { ok: true, document: state.current };
       if (action !== "undo" && action !== "renameCampaign" && action !== "renameWarband" && !editable) return error("rejected", "Historical moments are read-only.");
       switch (action) {
         case "renameCampaign":
@@ -290,11 +296,16 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const result = useCases.composeDraft(state.current, input as never);
           if (!result.ok) return applyResult(result);
           const name = String(input["name"] ?? "").trim();
-          if (!name) return applyResult(result);
           const previousIds = new Set(state.current.campaign.warriors.map((warrior) => warrior.id));
           const added = result.state.campaign.warriors.find((warrior) => !previousIds.has(warrior.id));
           if (!added) return applyResult(result);
-          return applyResult({ ok: true, state: { ...result.state, campaign: { ...result.state.campaign, warriors: result.state.campaign.warriors.map((warrior) => warrior.id === added.id ? { ...warrior, name } : warrior) } } });
+          const locale=input["locale"] === "es" ? "es" : "en";
+          const localized=knowledge.queryKnowledge({id:{kind:"profile_id",value:added.profile_id??""}});
+          const profileName=localized.ok ? localized.record.names[locale]??localized.record.names.en : added.name;
+          const automaticName=added.kind === "henchman" ? (locale === "es" ? `Grupo de ${profileName}` : `${profileName} Group`) : profileName;
+          const warriorName=uniqueWarriorName(state.current.campaign.warriors,name||automaticName);
+          if (warriorName===added.name) return applyResult(result);
+          return applyResult({ ok: true, state: { ...result.state, campaign: { ...result.state.campaign, warriors: result.state.campaign.warriors.map((warrior) => warrior.id === added.id ? { ...warrior, name:warriorName } : warrior) } } });
         }
         case "removeDraftRow": {
           const result = draftWorkflow.removeRow(state.current, String(input["warrior_id"] ?? ""));

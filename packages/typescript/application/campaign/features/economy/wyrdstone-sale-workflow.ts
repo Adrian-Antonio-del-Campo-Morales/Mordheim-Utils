@@ -22,6 +22,6 @@ export function sellWyrdstone(document:CampaignDocument,reader:CatalogueReader,q
   if((post.pending_follow_ups??[]).some((row)=>row["type"]==="exploration_followup"))return{ok:false,message:"Complete the exploration special result before selling wyrdstone."};
   if(!Number.isInteger(quantity)||quantity<0)return{ok:false,message:"Wyrdstone quantity must be a non-negative whole number."}; const quote=quoteWyrdstoneSale(document,reader,quantity);
   if(quantity>quote.available)return{ok:false,message:`Only ${quote.available} shard(s) are available.`};
-  const changed={...post,wyrdstone_sold:(post.wyrdstone_sold??0)+quantity,gold_delta:(post.gold_delta??0)+quote.profit,sale_resolved:true,event_log:[...(post.event_log??[]),{step:4,type:"sell_wyrdstone",description:`Sold ${quantity} shard(s) for ${quote.profit} gc.`,quantity}]};
+  const changed={...post,wyrdstone_sold:(post.wyrdstone_sold??0)+quantity,gold_delta:(post.gold_delta??0)+quote.profit,sale_resolved:true,event_log:[...(post.event_log??[]),{step:4,type:"sell_wyrdstone",quantity,gold:quote.profit}]};
   return{ok:true,quote,document:withCampaign(document,{...document.campaign,post_battles:document.campaign.post_battles.map((row)=>row===post?changed:row)})};
 }

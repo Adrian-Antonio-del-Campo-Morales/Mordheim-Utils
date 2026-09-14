@@ -9,9 +9,10 @@
  * Tests that exercise the upgrade explicitly stub a responding artefact via
  * `vi.stubGlobal("fetch", …)` / `unstubAllGlobals()`.
  */
-import { afterEach, vi } from "vitest";
+import { afterEach, expect, vi } from "vitest";
 
 afterEach(() => {
+  expect(document.body.textContent, "La interfaz no debe mostrar identificadores técnicos").not.toMatch(/\b[a-z][a-z0-9]*(?:_[a-z0-9]+)+\b/i);
   vi.unstubAllGlobals();
 });
 

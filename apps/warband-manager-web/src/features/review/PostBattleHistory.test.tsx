@@ -23,4 +23,15 @@ describe("PostBattleHistory", () => {
     render(<PostBattleHistory document={quiet} battleNumber={2} locale="en" />);
     expect(screen.getByText("The sequence ended with no additional events recorded.")).toBeInTheDocument();
   });
+
+  it("renders structured events in Spanish without an English-fallback badge", () => {
+    const structured = { campaign: { warriors: [{ id: "ogre", name: "Ogro Guardaespaldas" }], post_battles: [{ ...document.campaign.post_battles[0], event_log: [
+      { step: 1, type: "experience" }, { step: 2, type: "exploration", shards: 1 }, { step: 3, type: "sell_wyrdstone", quantity: 0, gold: 0 }, { step: 4, type: "veteran_pool", pool: 4 }, { step: 7, type: "hireling_upkeep", warrior_id: "ogre", pay: true, costs: [["gold_crowns", 30]] },
+    ] }] } } as unknown as CampaignDocument;
+    render(<PostBattleHistory document={structured} battleNumber={2} locale="es" />);
+    expect(screen.getByText("Se aplicó la experiencia de batalla.")).toBeInTheDocument();
+    expect(screen.getByText("Se encontraron 1 fragmento(s) de piedra bruja.")).toBeInTheDocument();
+    expect(screen.getByText("Mantenimiento de Ogro Guardaespaldas pagado: 30 Coronas de Oro.")).toBeInTheDocument();
+    expect(screen.queryByText(/traducción pendiente/i)).not.toBeInTheDocument();
+  });
 });

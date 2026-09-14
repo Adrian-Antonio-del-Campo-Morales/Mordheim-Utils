@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { Warrior } from "./types";
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
-import { warriorAbilities, knowledgeName, localizedLabel } from "./displayText";
+import { warriorAbilities, knowledgeName, localizedLabel, warriorName } from "./displayText";
 
 describe("warriorAbilities", () => {
   it("restores every inherent hireling ability in older campaign files", () => {
@@ -38,6 +38,12 @@ describe("warriorAbilities", () => {
 });
 
 describe("localized UI labels", () => {
+  it("shows the persisted warrior name without translating it", () => {
+    const warrior={name:"Sigmarite Matriarch",profile_name:"Sigmarite Matriarch",profile_id:"matriarch"};
+    const knowledge=ArtefactKnowledgeReader.from({schema_version:1,ruleset:"mordheim",bands:[],profiles:[{id:"matriarch",names:{en:"Sigmarite Matriarch",es:"Matriarca Sigmarita"}}],items:[],skills:[]});
+    expect(warriorName(knowledge,warrior,"es")).toBe("Sigmarite Matriarch");
+  });
+
   it("translates stat and domain keys without exposing technical identifiers", () => {
     expect(localizedLabel("weapon_skill", "es")).toBe("Habilidad de Armas");
     expect(localizedLabel("gold_crowns", "es")).not.toBe("gold_crowns");

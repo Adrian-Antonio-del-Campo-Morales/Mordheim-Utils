@@ -1,5 +1,5 @@
 import type { CampaignDocument } from "../campaign/types";
-import { localizedLabel } from "../campaign/displayText";
+import { localizedLabel, resourceAmount } from "../campaign/displayText";
 import { translate } from "../campaign/i18n-core";
 
 type Event = Readonly<Record<string, unknown>>;
@@ -26,7 +26,15 @@ export function PostBattleHistory({ document, battleNumber, locale }: { readonly
       return translate({ key, args: event.message_args as Readonly<Record<string, string | number>> | undefined }, locale);
     }
     const legacy = event.description ?? event.message;
-    if (typeof legacy === "string" && legacy) return locale === "es" ? translate({ key: "knowledge.english-fallback", args: { text: legacy } }, locale) : legacy;
+    if (locale === "en" && typeof legacy === "string" && legacy) return legacy;
+    const number = (key: string) => typeof event[key] === "number" ? event[key] : undefined;
+    const warrior = typeof event.warrior_id === "string" ? document.campaign.warriors.find((row) => row.id === event.warrior_id)?.name : undefined;
+    if (event.type === "experience") return locale === "es" ? "Se aplicó la experiencia de batalla." : "Battle experience applied.";
+    if (event.type === "exploration") { const shards=number("shards") ?? Number(String(legacy ?? "").match(/(\d+) wyrdstone shard/)?.[1]); return Number.isFinite(shards) ? (locale === "es" ? `Se encontraron ${shards} fragmento(s) de piedra bruja.` : `${shards} wyrdstone shard(s) found.`) : localizedLabel(event.type, locale); }
+    if (event.type === "sell_wyrdstone") { const quantity=number("quantity") ?? Number(String(legacy ?? "").match(/Sold (\d+) shard/)?.[1]), gold=number("gold") ?? Number(String(legacy ?? "").match(/for (\d+) gc/)?.[1]); return Number.isFinite(quantity) && Number.isFinite(gold) ? (locale === "es" ? `Se vendieron ${quantity} fragmento(s) por ${gold} co.` : `Sold ${quantity} shard(s) for ${gold} gc.`) : localizedLabel(event.type, locale); }
+    if (event.type === "veteran_pool") { const pool=number("pool"); return Number.isFinite(pool) ? (locale === "es" ? `La reserva de experiencia veterana quedó en ${pool} EXP.` : `Veteran experience pool set to ${pool} XP.`) : localizedLabel(event.type, locale); }
+    if (event.type === "hireling_upkeep") { const costs=Array.isArray(event.costs) ? event.costs.filter((row): row is [unknown, unknown] => Array.isArray(row) && row.length===2).map(([resource,amount])=>resourceAmount(resource,amount,locale)).join(" + ") : ""; const paid=event.pay; return paid === true ? (locale === "es" ? `Mantenimiento de ${warrior ?? "Espada de alquiler"} pagado: ${costs}.` : `${warrior ?? "Hired Sword"}'s upkeep paid: ${costs}.`) : paid === false ? (locale === "es" ? `${warrior ?? "La Espada de alquiler"} se marcha al no pagar su mantenimiento.` : `${warrior ?? "Hired Sword"} leaves because upkeep was not paid.`) : typeof legacy === "string" ? legacy : localizedLabel(event.type, locale); }
+    if (typeof legacy === "string" && legacy) return legacy;
     return localizedLabel(event.type ?? "event", locale);
   };
   return <section className="page post-battle-history" aria-label={`${t.title} #${battleNumber}`}>

@@ -345,7 +345,7 @@ export function applyExploration(
       {
         step: 3,
         type: "exploration",
-        description: `${shards} wyrdstone shard(s) found.`,
+        shards,
       },
       ...(special
         ? [
@@ -844,7 +844,7 @@ function processQueue(
             messages,
             pending: {
               kind: "roll",
-              label: `${resource} reward`,
+              label: resource === "gold_crowns" ? { en: "Gold Crowns Reward", es: "Recompensa de Coronas de Oro" } : resource === "wyrdstone_fragments" ? { en: "Wyrdstone Fragments Reward", es: "Recompensa de Fragmentos de Piedra Bruja" } : `${resource} reward`,
               dice_count: Number(dice["count"] ?? 1),
               dice_sides: Number(dice["sides"] ?? 6),
               resource,

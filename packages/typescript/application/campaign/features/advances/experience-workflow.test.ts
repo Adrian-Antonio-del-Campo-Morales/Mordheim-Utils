@@ -85,6 +85,7 @@ describe("applyBattleExperience (desktop apply_battle_experience)", () => {
     // Henchman 5+4=9 crosses the 9-XP henchman threshold → an advance is seeded.
     const advances = result.document.campaign.post_battles[0].pending_advances!;
     expect(advances.some((row) => row["warrior_id"] === "hench-1" && row["threshold"] === 9)).toBe(true);
+    expect(result.document.campaign.battles[0].advances).toBe(3);
     expect(result.document.campaign.post_battles[0].experience_applied).toBe(true);
     // Applying a second time is a typed conflict.
     const again = applyBattleExperience(result.document, knowledge);

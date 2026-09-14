@@ -108,7 +108,7 @@ export function ReviewPanel({ document, locale = "en", knowledge, onReturnToStep
       </button>{" "}
       <button
         type="button"
-        aria-label={`Download campaign ledger for ${summary.warband_name}`}
+        aria-label={`${locale === "es" ? "Descargar historial de campaña de" : "Download campaign ledger for"} ${summary.warband_name}`}
         onClick={() => downloadText(`${baseName}-ledger.txt`, ledgerText(document))}
       >
         {t.downloadLedger}

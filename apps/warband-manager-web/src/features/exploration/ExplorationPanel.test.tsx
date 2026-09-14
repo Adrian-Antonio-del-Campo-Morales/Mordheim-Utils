@@ -38,6 +38,16 @@ describe("ExplorationPanel", () => {
     expect(history).toHaveTextContent("Tabla de Artefactos6 → 6");
   });
 
+  it("rejects technical identifiers in the next roll or decision column", () => {
+    const resolved = structuredClone(base) as CampaignDocument;
+    const post = resolved.campaign.post_battles[0] as unknown as { experience_applied: boolean; pending_follow_ups: unknown[]; step_state: Record<string, unknown> };
+    post.experience_applied = true;
+    post.step_state = { exploration: { resolved: true, dice: [4], dice_count: 1, total: 4, shards: 1 } };
+    post.pending_follow_ups = [{ type: "exploration_followup", messages: [], pending: { kind: "roll", label: "gold_crowns reward", dice_count: 1, dice_sides: 6 } }];
+    render(<CampaignAppProvider service={service}><ExplorationPanel document={resolved} knowledge={knowledge} locale="es" /></CampaignAppProvider>);
+    expect(screen.getByText("Recompensa de Coronas de Oro")).toBeInTheDocument();
+  });
+
   it("shows every die and highlights the combination that triggered the special event", () => {
     const resolved = structuredClone(base) as CampaignDocument;
     const post = resolved.campaign.post_battles[0] as unknown as { experience_applied: boolean; step_state: Record<string, unknown> };

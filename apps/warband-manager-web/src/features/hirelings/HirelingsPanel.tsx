@@ -123,7 +123,7 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
     if (!offer || !offer.eligible) return;
     setBusy(true);
     setNotice("");
-    const hired = await app.runAction("hireHireling", { profile_id: profileId, fee: resolvedFee ?? offer.fee, fee_resources: offer.fee_resources, upkeep_resources: offer.upkeep_resources, chosen_item_ids: chosenEquipment[profileId] });
+    const hired = await app.runAction("hireHireling", { profile_id: profileId, fee: resolvedFee ?? offer.fee, fee_resources: offer.fee_resources, upkeep_resources: offer.upkeep_resources, chosen_item_ids: chosenEquipment[profileId], locale });
     if (hired) setNotice(`${t.hiredOk}: ${displayName(offer.profile_id, offer.name)}.`);
     setBusy(false);
   };

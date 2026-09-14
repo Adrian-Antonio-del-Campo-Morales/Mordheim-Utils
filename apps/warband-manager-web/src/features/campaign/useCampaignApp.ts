@@ -322,7 +322,7 @@ export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
 
   const runAction = useCallback(
     async (action: string, input: Record<string, unknown>) => {
-      return withOperationProgress(async () => { try {
+      const run = async () => { try {
         const result = await app.run(action, input);
         if (result.ok) {
           setDocument(result.document);
@@ -340,7 +340,12 @@ export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
         setError(message);
         publishCampaignError(message);
         return false;
-      } });
+      } };
+      if (action === "saveBattleDraft") {
+        await new Promise<void>((resolve) => setTimeout(resolve, 0));
+        return run();
+      }
+      return withOperationProgress(run);
     },
     [app, locale, profileName],
   );
