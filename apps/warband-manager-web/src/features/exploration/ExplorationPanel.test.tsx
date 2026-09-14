@@ -27,6 +27,17 @@ describe("ExplorationPanel", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Exploration roll: 4, 4 → 8");
   });
 
+  it("shows every subsequent exploration roll beneath the main result", () => {
+    const resolved = structuredClone(base) as CampaignDocument;
+    const post = resolved.campaign.post_battles[0] as unknown as { experience_applied: boolean; step_state: Record<string, unknown> };
+    post.experience_applied = true;
+    post.step_state = { exploration: { resolved: true, dice: [5, 4, 5, 2, 1, 5], dice_count: 6, total: 22, shards: 4, follow_up_rolls: [{ label: { es: "Cantidad de coronas" }, dice: [4, 3], total: 7 }, { label: { es: "Tabla de artefactos" }, dice: [6], total: 6 }] } };
+    render(<CampaignAppProvider service={service}><ExplorationPanel document={resolved} knowledge={knowledge} locale="es" /></CampaignAppProvider>);
+    const history = screen.getByRole("region", { name: "Tiradas posteriores" });
+    expect(history).toHaveTextContent("Cantidad de Coronas4, 3 → 7");
+    expect(history).toHaveTextContent("Tabla de Artefactos6 → 6");
+  });
+
   it("shows every die and highlights the combination that triggered the special event", () => {
     const resolved = structuredClone(base) as CampaignDocument;
     const post = resolved.campaign.post_battles[0] as unknown as { experience_applied: boolean; step_state: Record<string, unknown> };

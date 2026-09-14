@@ -1,7 +1,9 @@
-import { render, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import "@testing-library/jest-dom/vitest";
 import { CampaignAppProvider } from "../campaign/useCampaignApp";
 import { PostBattleExperience } from "./PostBattleExperience";
+import { AdvancesPanel } from "./AdvancesPanel";
 import type { CampaignDocument } from "../campaign/types";
 
 describe("PostBattleExperience", () => {
@@ -34,5 +36,26 @@ describe("PostBattleExperience", () => {
     render(<CampaignAppProvider service={service}><PostBattleExperience document={document} knowledge={{} as never} locale="es" /></CampaignAppProvider>);
 
     await waitFor(() => expect(run).toHaveBeenCalledWith("applyBattleExperience", {}));
+  });
+
+  it("shows and locks processing feedback while an advance roll is resolving", async () => {
+    let finish!: (value: { ok: boolean; document: CampaignDocument }) => void;
+    const pending = new Promise<{ ok: boolean; document: CampaignDocument }>((resolve) => { finish = resolve; });
+    const document = { campaign: {
+      identity: { band_id: "test" }, warriors: [{ id: "hero", name: "Sigrid", kind: "hero", profile_name: "Captain", stats: {}, equipment: [], skills: [], experience: 2 }],
+      post_battles: [{ battle_number: 1, complete: false, pending_advances: [{ warrior_id: "hero", table: "hero", threshold: 2, roll_total: null, committed: false }] }],
+    }, view: {} } as unknown as CampaignDocument;
+    const run = vi.fn(() => pending);
+    const service = { current: () => document, isDirty: () => false, subscribe: () => () => undefined, run } as never;
+    const knowledge = { list: () => [], queryKnowledge: () => ({ ok: false }), campaignSection: () => ({}) } as never;
+    render(<CampaignAppProvider service={service}><AdvancesPanel document={document} knowledge={knowledge} locale="es" /></CampaignAppProvider>);
+
+    const roll = screen.getByRole("button", { name: "Tirar 2D6" });
+    fireEvent.click(roll);
+    expect(screen.getByText(/Procesando la tirada/)).toHaveAttribute("role", "status");
+    expect(roll).toBeDisabled();
+    await waitFor(() => expect(run).toHaveBeenCalledWith("resolveAdvanceRoll", expect.objectContaining({ warrior_id: "hero" })));
+    finish({ ok: true, document });
+    await waitFor(() => expect(screen.queryByText(/Procesando la tirada/)).not.toBeInTheDocument());
   });
 });

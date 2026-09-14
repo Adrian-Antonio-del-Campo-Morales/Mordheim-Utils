@@ -125,7 +125,7 @@ def test_rules_prose_documents_present() -> None:
 
 
 def test_rules_special_rules_count() -> None:
-    assert len(PROSE["special-rules"]) == 68
+    assert sum(row["id"].startswith("shared-rule.") for row in PROSE["special-rules"]) == 68
 
 
 def test_rules_categories_ordered() -> None:

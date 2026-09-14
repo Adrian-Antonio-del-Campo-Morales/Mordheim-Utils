@@ -8,6 +8,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 
 import type { CampaignDocument } from "../campaign/types";
+import { CampaignAppProvider } from "../campaign/useCampaignApp";
 import { ReviewPanel } from "./ReviewPanel";
 
 const document = {
@@ -85,13 +86,18 @@ const document = {
   view: {},
 } as unknown as CampaignDocument;
 
+const idleService = { current: () => null, isDirty: () => false, subscribe: () => () => {}, run: async () => ({ ok: true }) } as never;
+function renderReview(props: React.ComponentProps<typeof ReviewPanel>) {
+  return render(<CampaignAppProvider service={idleService}><ReviewPanel {...props} /></CampaignAppProvider>);
+}
+
 describe("ReviewPanel", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
   it("renders the pre-export summary with treasury and roll-ups", () => {
-    render(<ReviewPanel document={document} />);
+    renderReview({ document });
     expect(screen.getByRole("heading", { name: "Review before export" })).toBeInTheDocument();
     expect(screen.getByText(/Ledger Band \(Witch Hunters\)/)).toBeInTheDocument();
     expect(screen.getByText(/240 gc, 2 shard/)).toBeInTheDocument();
@@ -101,7 +107,7 @@ describe("ReviewPanel", () => {
   it("does not report the closing confirmation as unfinished work", () => {
     const pending = structuredClone(document) as CampaignDocument;
     (pending.campaign as unknown as { post_battles: unknown[] }).post_battles = [{ complete: false, pending_follow_ups: [] }];
-    render(<ReviewPanel document={pending} />);
+    renderReview({ document: pending });
     expect(screen.getByRole("status")).toHaveTextContent("Nothing pending — safe to save.");
     expect(screen.getByRole("button", { name: /Confirm next state/ })).toBeInTheDocument();
   });
@@ -114,7 +120,7 @@ describe("ReviewPanel", () => {
       acknowledgements: {},
     }];
     const onReturnToStep = vi.fn();
-    render(<ReviewPanel document={pending} locale="es" onReturnToStep={onReturnToStep} />);
+    renderReview({ document: pending, locale: "es", onReturnToStep });
 
     expect(screen.getByRole("status")).toHaveTextContent("1 seguimiento(s) sin resolver");
     expect(screen.queryByText(/tirada\(s\) de heridas/)).not.toBeInTheDocument();
@@ -127,13 +133,13 @@ describe("ReviewPanel", () => {
   it("surfaces pending work through the status seam", () => {
     const pending = structuredClone(document) as CampaignDocument;
     (pending.campaign.warriors[0] as { games_to_miss?: number }).games_to_miss = 2;
-    render(<ReviewPanel document={pending} />);
+    renderReview({ document: pending });
     const status = screen.getByRole("status");
     expect(status).toHaveTextContent(/Pending: 1 warrior\(s\) absent/);
   });
 
   it("reports a clean campaign as safe to save", () => {
-    render(<ReviewPanel document={document} />);
+    renderReview({ document });
     expect(screen.getByRole("status")).toHaveTextContent("Nothing pending — safe to save.");
   });
 
@@ -152,7 +158,7 @@ describe("ReviewPanel", () => {
       return el;
     }) as typeof window.document.createElement);
 
-    render(<ReviewPanel document={document} />);
+    renderReview({ document });
     fireEvent.click(screen.getByLabelText("Download roster summary for Ledger Band"));
     fireEvent.click(screen.getByLabelText("Download campaign ledger for Ledger Band"));
 

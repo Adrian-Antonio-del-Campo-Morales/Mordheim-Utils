@@ -129,7 +129,7 @@ describe.skipIf(!hasArtefact)("shared KB parity vectors (TS mirror)", () => {
   });
 
   it("rules: 68 canonical shared rules", () => {
-    expect(prose["special-rules"]).toHaveLength(68);
+    expect(prose["special-rules"].filter((row: any) => row.id.startsWith("shared-rule."))).toHaveLength(68);
   });
 
   it("rules: prose stems include canonical documents and generated localization indexes", () => {

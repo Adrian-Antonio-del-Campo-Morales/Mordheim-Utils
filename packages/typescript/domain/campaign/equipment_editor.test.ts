@@ -126,18 +126,22 @@ describe("desktop test_equipment_editor.py → web assignEquipment parity", () =
   });
 
   it("henchman group carries equipment as a group", () => {
-    const document = makeDocument();
-    const assign = assignEquipment(document, { warrior_id: "group", item_id: "herbs", quantity: 2, direction: "equip" });
+    const base = makeDocument();
+    const document = { ...base, campaign: { ...base.campaign, inventory: base.campaign.inventory.map((item) => item.id === "herbs" ? { ...item, owned: 3, stash: 3 } : item) } };
+    const assign = assignEquipment(document, { warrior_id: "group", item_id: "herbs", quantity: 3, direction: "equip" });
     expect(assign.ok).toBe(true);
     if (!assign.ok) return;
     const group = assign.state.campaign.warriors.find((w) => w.id === "group")!;
-    expect(group.equipment.find((e) => e.item_id === "herbs")?.quantity).toBe(2);
+    expect(group.equipment.find((e) => e.item_id === "herbs")?.quantity).toBe(3);
     const item = assign.state.campaign.inventory.find((i) => i.id === "herbs")!;
     expect(item.stash).toBe(0);
-    const back = assignEquipment(assign.state, { warrior_id: "group", item_id: "herbs", quantity: 2, direction: "stash" });
+    const partial = assignEquipment(assign.state, { warrior_id: "group", item_id: "herbs", quantity: 1, direction: "stash" });
+    expect(partial.ok).toBe(false);
+    if (!partial.ok) expect(partial.reason).toBe("limit_violated");
+    const back = assignEquipment(assign.state, { warrior_id: "group", item_id: "herbs", quantity: 3, direction: "stash" });
     expect(back.ok).toBe(true);
     if (!back.ok) return;
-    expect(back.state.campaign.inventory.find((i) => i.id === "herbs")?.stash).toBe(2);
+    expect(back.state.campaign.inventory.find((i) => i.id === "herbs")?.stash).toBe(3);
   });
 
   it("bought dagger stays separate from a non-transferable starting dagger", () => {

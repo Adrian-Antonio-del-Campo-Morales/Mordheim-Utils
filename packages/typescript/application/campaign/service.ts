@@ -335,7 +335,8 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const absentees = state.current.campaign.warriors.filter((warrior) => !participants.includes(warrior.id)).map((warrior) => ({ id: warrior.id, name: warrior.name, quantity: warrior.quantity ?? 1, reason: unavailable.has(warrior.id) ? "Old Battle Wound" : warrior.absence_reason ?? "Injury" }));
           const result = useCases.recordBattle(state.current, { ...input, out_of_action_ids: outOfAction, participants, absentees } as never, knowledge);
           if (!result.ok) return applyResult(result);
-          const view = { ...result.state.view };
+          const number = result.state.campaign.battles.at(-1)?.number;
+          const view = { ...result.state.view, ...(number === undefined ? {} : { selected_moment: `battle:${number}` as const }) };
           delete view.pending_battle_draft;
           return applyResult({ ok: true, state: { ...result.state, view } });
         }
@@ -432,10 +433,10 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           return applyResult({ ok: true, state: result.document });
         }
         case "finalizePostBattle": {
+          const battleNumber = state.current.campaign.post_battles.find((row) => !row.complete)?.battle_number;
           const result = finalizePostBattle(state.current);
           if (!result.ok) return error("rejected", result.message);
-          const number = result.document.campaign.current_state_number;
-          return applyResult({ ok: true, state: { ...result.document, view: { ...result.document.view, selected_moment: `state:${number}` } } });
+          return applyResult({ ok: true, state: { ...result.document, view: { ...result.document.view, selected_moment: `post:${battleNumber}` } } });
         }
         case "assignRareSearch": { const result=assignRareSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
         case "assignDramatisSearch": { const result=assignDramatisSearch(state.current,knowledge,input as never);if(!result.ok)return error("rejected",result.message);return applyResult({ok:true,state:result.document}); }
@@ -461,8 +462,8 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
               if(weapon&&access.length&&!allowed&&!trained) return error("rejected", "This weapon is outside the warrior's equipment access.");
             }
           }
-          const carriedEntries=warrior.equipment.filter((row)=>row.item_id===itemId&&row.acquisition!=="fixed"), carried=carriedEntries.reduce((total,row)=>total+row.quantity,0), carriedPerModel=carriedEntries.some((row)=>row.per_model);
-          const quantity=warrior.kind!=="henchman"?Number(input["quantity"]):direction==="equip"?Math.max(0,(warrior.quantity??1)-carried%(warrior.quantity??1)):carriedPerModel?Math.min(warrior.quantity??1,carried):1;
+          const carriedEntries=warrior.equipment.filter((row)=>row.item_id===itemId&&row.acquisition!=="fixed"), carried=carriedEntries.reduce((total,row)=>total+row.quantity,0);
+          const quantity=warrior.kind!=="henchman"?Number(input["quantity"]):direction==="equip"?Math.max(0,(warrior.quantity??1)-carried%(warrior.quantity??1)):Math.min(warrior.quantity??1,carried);
           if(!Number.isInteger(quantity)||quantity<=0)return error("rejected", "This group has no transferable copies of that item.");
           if(direction==="equip"){const violation=equipmentViolation(state.current,knowledge,warriorId,itemId,quantity);if(violation)return error("rejected",violation);}
           const result=useCases.assignEquipment(state.current, { warrior_id:warriorId,item_id:itemId,quantity,direction });

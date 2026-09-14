@@ -84,6 +84,18 @@ const pendingOf = (doc: CampaignDocument): OpenPayload | null =>
   (doc.campaign.post_battles[0].pending_follow_ups?.[0] as OpenPayload | undefined)?.["pending"] as OpenPayload ?? null;
 
 describe("continueExploration — Returning a Favour", () => {
+  it("preserves each follow-up roll for the exploration summary", () => {
+    const doc = makeDoc();
+    const post = doc.campaign.post_battles[0];
+    (post as unknown as { step_state: Record<string, unknown> }).step_state = { exploration: { resolved: true, dice: [5, 4], total: 9 } };
+    (post.pending_follow_ups![0] as OpenPayload)["queue"] = [];
+    (post.pending_follow_ups![0] as OpenPayload)["pending"] = { kind: "roll", label: { es: "Cantidad de coronas" }, dice_count: 2, dice_sides: 6, spec: { type: "resource_roll", recipient: "warband", resource: "gold_crowns", multiplier: 1 } };
+    const result = continueExploration(doc, reader, { roll: 7, dice: [4, 3] });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect((result.document.campaign.post_battles[0].step_state?.["exploration"] as OpenPayload)["follow_up_rolls"]).toEqual([{ label: { es: "Cantidad de coronas" }, dice: [4, 3], total: 7 }]);
+  });
+
   it("offers the eligible Hired Sword and hires it for free with the special rule", () => {
     const staged = continueExploration(makeDoc(), reader, {});
     expect(staged.ok).toBe(true);

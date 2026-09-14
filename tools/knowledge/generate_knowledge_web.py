@@ -391,8 +391,9 @@ def _build_rules_prose(ruleset: str) -> dict:
         rows = document.get("rules") or document.get("conditions") or ()
         documents[stem] = sorted((_row(row) for row in rows), key=_sort_key)
     # A profile can grant a band-specific rule directly, rather than a shared
-    # ``rule_ref``. Keep those rules in their own document: mixing them into
-    # the shared catalogue produces dozens of visually duplicated names.
+    # ``rule_ref``. Keep every direct rule scoped by band, while publishing
+    # globally unique ids with the shared catalogue for legacy lookups.
+    special_rules = {str(row["id"]): row for row in documents.get("special-rules", ())}
     band_rules: list[dict] = []
     label_rules: list[dict] = []
     for collection in (row["id"] for row in load_collections() if ruleset in set(row.get("rulesets") or ())):
@@ -408,6 +409,15 @@ def _build_rules_prose(ruleset: str) -> dict:
                 if not identifier:
                     raise GenerationError(f"band special rule without id: {package.band['id']!r}")
                 band_rules.append(entry)
+    direct_counts: dict[str, int] = {}
+    for entry in band_rules:
+        identifier = str(entry["id"])
+        direct_counts[identifier] = direct_counts.get(identifier, 0) + 1
+    for entry in band_rules:
+        identifier = str(entry["id"])
+        if direct_counts[identifier] == 1 and identifier not in special_rules:
+            special_rules[identifier] = entry
+    documents["special-rules"] = sorted(special_rules.values(), key=_sort_key)
     # Tooltips rendered from a warrior card know the profile id, so they can
     # safely disambiguate direct rules whose ids are reused by several bands.
     documents["profile-special-rules"] = sorted(band_rules, key=_sort_key)

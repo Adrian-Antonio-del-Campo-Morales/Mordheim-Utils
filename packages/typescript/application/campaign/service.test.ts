@@ -100,6 +100,13 @@ function makeService(): { service: CampaignAppService; deps: CampaignAppDeps } {
   return { service: createCampaignAppService(deps), deps };
 }
 
+async function serviceWithCampaign(campaign: Campaign, knowledge: KnowledgeReader = fakeKnowledge): Promise<CampaignAppService> {
+  const files: CampaignFilePort = { ...fakeFiles, parseCampaignFile: () => ({ ok: true, document: { ...okDocument, campaign: campaign as unknown as Record<string, unknown> } }) };
+  const service = createCampaignAppService({ files, knowledge });
+  await service.importCampaign({ text: "fixture" });
+  return service;
+}
+
 describe("P5.1 campaign application service", () => {
   it("imports a valid file, exposes the document and starts clean", async () => {
     const { service } = makeService();
@@ -194,6 +201,28 @@ describe("P5.1 campaign application service", () => {
     const rejected = await service.run("recordBattle", { scenario: "", opponent: "" });
     expect(rejected.ok).toBe(false);
     expect(service.current()?.view.pending_battle_draft?.["opponent"]).toBe("Previously entered");
+  });
+
+  it("opens the recorded battle summary after adding a battle", async () => {
+    const scenarioKnowledge: KnowledgeReader = { queryKnowledge: (query) => query.id.kind === "scenario_id" && query.id.value === "skirmish" ? { ok: true, record: { kind: "scenario", id: query.id, names: { en: "Skirmish" }, data: {} } } : { ok: false, reason: "not_found" }, queryMany: () => [] };
+    const service = await serviceWithCampaign(makeCampaign({
+      states: [{ number: 0, date: "2026-09-14", gold: 500, wyrdstone: 0, rating: 0, models: 0, max_models: 15, heroes: 0, henchmen: 0, experience: 0 }],
+    }), scenarioKnowledge);
+    const result = await service.run("recordBattle", { scenario: "skirmish", opponent: "Cultists", result: "win", gold_delta: 0, wyrdstone: 0, xp_delta: 0, out_of_action_ids: [] });
+    expect(result.ok).toBe(true);
+    expect(service.current()?.view.selected_moment).toBe("battle:1");
+  });
+
+  it("opens the completed post-battle summary after confirming the next state", async () => {
+    const service = await serviceWithCampaign(makeCampaign({
+      current_state_number: 1,
+      states: [{ number: 1, date: "2026-09-14", gold: 500, wyrdstone: 0, rating: 0, models: 0, max_models: 15, heroes: 0, henchmen: 0, experience: 0 }],
+      battles: [{ number: 1, date: "2026-09-14", scenario: "skirmish", opponent: "Cultists", result: "win", gold_delta: 0, wyrdstone: 0, xp_delta: 0, casualties: 0, advances: 0, rating_before: 0, rating_after: 0, models_before: 0, models_after: 0, out_of_action_ids: [] }],
+      post_battles: [{ battle_number: 1, complete: false, active_step: 7, completed_steps: [0,1,2,3,4,5,6], review_open: true, experience_applied: true, pending_advances: [], pending_follow_ups: [], step_state: { exploration: { resolved: true }, veterans: { resolved: true } }, sale_resolved: true, equipment_obligations: [] }],
+    }));
+    const result = await service.run("finalizePostBattle", {});
+    expect(result.ok).toBe(true);
+    expect(service.current()?.view.selected_moment).toBe("post:1");
   });
 
   it("keeps the document dirty after a failed export validation", async () => {
