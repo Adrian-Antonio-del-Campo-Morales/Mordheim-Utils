@@ -9,11 +9,8 @@ the duel engine. Each file is an independent editorial source:
   rule they modify;
 - it references existing canonical data, without duplicating profiles,
   composition, prices, rarities, equipment or special rules;
-- it leaves unconfirmed rules as `status: draft`, instead of inventing data.
-
-The exceptions are kept in `bands/<collection>/<band>/special-rules.yaml`.
-When the campaign runtime is implemented, the `effect_id` identifiers will be
-the linking points for its handlers and for warband persistence.
+- it leaves unconfirmed rules as `status: draft`, instead of inventing data;
+- its published catalogues are consumed at runtime through `mordheim_knowledge` and `KnowledgePort`, while the accumulated campaign state remains in the applications.
 
 The order of `post-battle-sequence.yaml` is normative; the other documents
 describe the data that each step resolves.
@@ -115,7 +112,7 @@ ingestion in the main block of each file.
 | File | Content | State |
 |---|---|---|
 | `post-battle-sequence.yaml` | The 10 post-battle steps in normative order | published |
-| `trading-post.yaml` | 338 entries: base price/variable cost, availability (77 common, 183 rare, 78 not sold) and restrictions | published |
+| `trading-post.yaml` | 338 entries: base price/variable cost, availability (76 common, 184 rare, 78 not sold) and restrictions | published |
 | `serious-injuries.yaml` | D66 hero (20 results) and D6 mercenary (2) tables with typed effects | published |
 | `experience-and-advances.yaml` | 3 XP awards, underdog bonus, 2 advancement tables and the `advance_thresholds` ladder | published |
 | `exploration-and-income.yaml` | Dice allocation, exploration result table, wyrdstone selling and magic artefacts | published |
@@ -153,8 +150,9 @@ read path lives in `mordheim_knowledge/campaign.py` — `load_campaign_catalog`,
 whose load-time validation (schema_version, per-document id uniqueness and
 reference resolution) is covered by `tests/knowledge/test_campaign_loaders.py`.
 The Campaign Manager consumes them through its `KnowledgePort`
-(`mordheim_campaign/application/knowledge_port.py`) without the GUI touching
+(`packages/python/campaign/mordheim_campaign/application/knowledge_port.py`) without the GUI touching
 YAML; its post-battle screens and engines are the current consumers (see
 [the Campaign Manager reference](../../../../docs/reference/campaign-manager.md)).
-The remaining runtime work is application-side (rule resolution, price
-collation review), not KB data.
+The catalogue loaders and Campaign Manager consumers are implemented; the
+remaining work tracked in [TODO](../../../../TODO.md) is editorial review and
+explicitly deferred scope, not a missing loader path.

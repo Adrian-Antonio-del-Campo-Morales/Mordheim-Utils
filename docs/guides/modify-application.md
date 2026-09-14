@@ -1,9 +1,10 @@
 # Modify an application
 
 Applies to Combat Lab (`mordheim_combat_lab`) and the Campaign Manager
-(`mordheim_campaign`). Prerequisites: [Architecture](../reference/architecture.md)
-(package responsibilities, layer rules) and, for campaign work,
-[the Campaign Manager reference](../reference/campaign-manager.md).
+(`mordheim_campaign`, composed by `mordheim_desktop`). Prerequisites:
+[Architecture](../reference/architecture.md) (package responsibilities, layer
+rules) and, for campaign work, [the Campaign Manager
+reference](../reference/campaign-manager.md).
 
 ## Procedure
 
@@ -12,8 +13,8 @@ Applies to Combat Lab (`mordheim_combat_lab`) and the Campaign Manager
    analysis.
 3. Return explicit types and accept cancellation/progress for long jobs.
 4. Keep the thread, `after` and presentation in `ui/`.
-5. Version persisted changes without breaking the reading of existing
-   workbooks / `.mordheim` files.
+5. Keep persisted formats compatible with their documented contract; add a
+   fixture when a `.mordheim` or Combat Lab workbook change is intentional.
 
 Done when it is tested without a window and the persisted round-trips still
 pass.

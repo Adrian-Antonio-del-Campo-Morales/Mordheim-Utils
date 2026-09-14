@@ -1,10 +1,9 @@
 """web.p7_5.kb-artefact-performance: the KB artefact stays web-deliverable.
 
-Web migration KB performance gate: measure the compressed size of the
+Knowledge artefact performance gate: measure the compressed size of the
 generated knowledge artefact and fail if it exceeds the agreed delivery
 budget. Also verifies the canonical search index can be built from the
-artefact in-process quickly enough for page load (indexing cost, P7.5's
-"coste de indexación").
+artefact in-process quickly enough for page load (indexing cost).
 
 Skips cleanly when the artefact has not been generated yet
 (``build/generated/knowledge-web/knowledge-web.json``) so CI can run the

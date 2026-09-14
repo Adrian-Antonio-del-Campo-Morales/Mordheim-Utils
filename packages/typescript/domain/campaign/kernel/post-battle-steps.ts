@@ -3,8 +3,9 @@
  * `domain/timeline_service` step rules, narrowed to what the frozen port
  * surface expresses (`resolvePostBattleStep`).
  *
- * The eight-step *rule engine* (loot rolls, injuries, advances) is P6.5/P6.6;
- * this module owns the navigation discipline: steps resolve in order, the
+ * The browser exposes eight user actions for the canonical post-battle flow;
+ * the knowledge base remains the normative source for the underlying ten
+ * steps. This module owns navigation discipline: steps resolve in order, the
  * active step only moves forward, and the sequence completes with review.
  *
  * Purity: no React, no DOM, no filesystem.
@@ -14,7 +15,7 @@ import type { Campaign, CampaignDocument, OpenPayloadInput, UseCaseResult } from
 import { rejected } from "./rejections";
 import { pendingPostBattle, withCampaign } from "./document";
 
-/** Number of steps in the canonical post-battle sequence. */
+/** Number of user-facing actions in the post-battle navigator. */
 export const POST_BATTLE_STEP_COUNT = 8;
 
 /**

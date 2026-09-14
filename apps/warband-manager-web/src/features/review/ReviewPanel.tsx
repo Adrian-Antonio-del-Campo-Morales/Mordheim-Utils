@@ -1,18 +1,10 @@
 /**
- * Web migration review surface: final review & auxiliary
- * exports UI.
+ * Final review and auxiliary exports for a campaign.
  *
- * Renders the review read model (identity, treasury, roster roll-up,
- * pending work) so the user checks the full state before saving, and
- * offers the auxiliary text exports (roster summary, campaign ledger) as
- * downloads — the main `.mordheim` save stays in the slice.
- *
- * Exporters are pure projections (no rules in exporters, plan §P6.8): the
- * panel only reads the document and triggers Blob downloads; rejections
- * cannot occur because nothing here calls use cases.
- *
- * Pure view over the CampaignAppView seam; read models live in the
- * application feature so this file only exports components (react-refresh).
+ * Renders the review read model before saving and offers text downloads. The
+ * main `.mordheim` export remains owned by the campaign slice.
+ * Exporters are pure projections: this component only reads the document and
+ * triggers downloads.
  */
 import { reviewSummary, ledgerText, rosterSummaryText } from "@app/campaign/features/review/review-exports";
 import { followUpNeedsResolution } from "@app/campaign/features/review/follow-up-acknowledgement-workflow";

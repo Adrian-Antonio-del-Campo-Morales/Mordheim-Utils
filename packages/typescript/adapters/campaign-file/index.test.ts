@@ -1,9 +1,9 @@
 /**
- * P3.2 acceptance tests (plan §P3.2): all four contract fixtures read and
+ * Campaign-file acceptance tests: all four contract fixtures read and
  * validate; valid documents serialize; every error class has a test; the
  * semantic round-trip ignores only `saved_at`; open payloads survive
  * verbatim. Fixture text is loaded from `contracts/campaign-file-v4/` —
- * never copied (plan §P3.3 rule 5).
+ * never copied (the contract rule).
  */
 import { describe, expect, it } from "vitest";
 import { readFileSync, writeFileSync } from "node:fs";

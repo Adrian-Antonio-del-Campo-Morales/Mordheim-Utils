@@ -1,5 +1,5 @@
 /**
- * Parity port of desktop `mordheim_campaign/application/post_battle_resolution.py`
+ * Parity implementation of the desktop campaign post-battle resolution rules.
  * — the KB-backed post-battle resolver (serious injuries, exploration,
  * rarity searches). Every expectation is pinned to the web KB artefact
  * (`campaign.serious-injuries`, `campaign.exploration-and-income`,

@@ -1,5 +1,5 @@
 /**
- * Web migration timeline surface: timeline navigation UI.
+ * Campaign timeline navigation UI.
  *
  * Enumerates the document's moments (draft, committed states, battles,
  * pending post-battles) in timeline order, highlights the selected moment,

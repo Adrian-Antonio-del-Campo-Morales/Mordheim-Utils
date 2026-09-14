@@ -1,5 +1,5 @@
 /**
- * Web migration timeline application tests: timeline & state selection at
+ * Campaign timeline application tests: timeline & state selection at
  * the service level — the rules the UI builds on:
  * - moments enumerate from the document (draft, every committed state,
  *   every battle, every pending post-battle) in timeline order;
@@ -219,7 +219,7 @@ describe("P6.1: selection never mutates the campaign", () => {
   });
 });
 
-describe("P6.1: export & reimport preserves the timeline (plan acceptance)", () => {
+describe("P6.1: export & reimport preserves the timeline (acceptance)", () => {
   it("states and battles survive verbatim; selected moment survives in view", async () => {
     // Import carries the view section through the real port; the selected
     // moment must come back on reimport (reconstructible view state).
@@ -240,7 +240,7 @@ describe("P6.1: export & reimport preserves the timeline (plan acceptance)", () 
     const doc = second.current();
     expect(doc).not.toBeNull();
     if (!doc) return;
-    // Timeline entities survive verbatim (plan acceptance).
+    // Timeline entities survive verbatim (acceptance).
     expect(doc.campaign.states).toEqual(campaign().states);
     expect(doc.campaign.battles).toEqual(campaign().battles);
     expect(doc.campaign.post_battles).toEqual(campaign().post_battles);

@@ -1,5 +1,5 @@
 /**
- * Web migration interoperability matrix: the TS side of the full
+ * Campaign-file interoperability matrix: the TypeScript side of the full
  * bidirectional round-trip matrix.
  *
  * Two duties:

@@ -1,20 +1,20 @@
-"""Web migration contract harness: contract test harness.
+"""Campaign-file contract harness.
 
 Shared evidence for Python and TypeScript consumers of the `.mordheim` v4
-contract and the KB web artefact. This harness reads the contract sources
-directly and verifies the *policies* every reader must implement (the 5
-rejection cases of the contract README, the semantic-comparison rule, the
-preserve-in-place payload policy) so Python and TypeScript are tested
-against the same scenarios, not just their own unit tests.
+contract and the generated knowledge artefact. This harness reads the
+contract sources directly and verifies the rejection, semantic-comparison and
+preserve-in-place payload policies so both implementations are tested against
+the same scenarios.
 
-The TypeScript mirror of these cases lives in
-`packages/typescript/adapters/campaign-file/` (P3.2, the other agent) — both
-sides must stay green on the same document set.
+The TypeScript mirror lives in
+`packages/typescript/adapters/campaign-file/`; both sides must stay green on
+the same document set.
 """
 from __future__ import annotations
 
 import copy
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -23,6 +23,22 @@ ROOT = Path(__file__).resolve().parents[3]
 CONTRACT = ROOT / "contracts" / "campaign-file-v4"
 SCHEMA_PATH = CONTRACT / "campaign-file-v4.schema.json"
 FIXTURES = sorted((CONTRACT / "fixtures").glob("*.json"))
+PYTHONPATH_ROOTS = (
+    ROOT / "packages" / "python" / "combat-engine",
+    ROOT / "packages" / "python" / "roster-construction",
+    ROOT / "packages" / "python" / "core",
+    ROOT / "packages" / "python" / "knowledge",
+    ROOT / "packages" / "python" / "adapters" / "desktop-ui",
+    ROOT / "packages" / "python" / "campaign",
+    ROOT / "apps" / "combat-lab",
+    ROOT / "apps" / "warband-manager-desktop",
+)
+
+
+def _ensure_pythonpath() -> None:
+    for package_root in reversed(PYTHONPATH_ROOTS):
+        if str(package_root) not in sys.path:
+            sys.path.insert(0, str(package_root))
 
 SUPPORTED_VERSION = 4
 RETIRED_VERSIONS = (1, 2, 3)
@@ -36,7 +52,7 @@ def _python_load(document: dict, tmp_path: Path):
     """Load a document through the Python reference reader."""
     import sys
 
-    sys.path.insert(0, str(ROOT / "src"))
+    _ensure_pythonpath()
     from mordheim_campaign.persistence import load_campaign
 
     path = tmp_path / "probe.mordheim"
@@ -75,7 +91,7 @@ def test_harness_invalid_json_is_rejected(tmp_path):
     path.write_text("{not json", encoding="utf-8")
     import sys
 
-    sys.path.insert(0, str(ROOT / "src"))
+    _ensure_pythonpath()
     from mordheim_campaign.persistence import load_campaign
 
     with pytest.raises(Exception):
@@ -99,7 +115,7 @@ def test_harness_unresolvable_band_id_is_a_reference_concern(tmp_path):
     KnowledgePort contract the desktop uses for the same purpose."""
     import sys
 
-    sys.path.insert(0, str(ROOT / "src"))
+    _ensure_pythonpath()
     from mordheim_campaign.application.knowledge_port import KnowledgePort, KnowledgePortError
 
     port = KnowledgePort()
@@ -121,7 +137,7 @@ def test_harness_saved_at_is_the_only_semantic_difference(tmp_path, fixture_path
     freezes this policy for both implementations."""
     import sys
 
-    sys.path.insert(0, str(ROOT / "src"))
+    _ensure_pythonpath()
     from mordheim_campaign.persistence import load_campaign, save_campaign
 
     document = json.loads(fixture_path.read_text(encoding="utf-8"))
@@ -148,7 +164,7 @@ def test_harness_open_payloads_survive_a_python_round_trip(tmp_path):
     `step_state`, `participants` etc. must not be dropped or rewritten."""
     import sys
 
-    sys.path.insert(0, str(ROOT / "src"))
+    _ensure_pythonpath()
     from mordheim_campaign.persistence import load_campaign, save_campaign
 
     document = _fixture("pending-post-battle.json")

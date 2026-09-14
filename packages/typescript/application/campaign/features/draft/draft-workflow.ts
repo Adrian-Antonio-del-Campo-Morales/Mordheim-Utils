@@ -1,5 +1,5 @@
 /**
- * Web migration draft workflow: draft & initial composition
+ * Draft workflow: draft & initial composition
  * feature — application-layer orchestration over the P3.5 kernel use cases.
  *
  * Owns the *workflow* of building a warband draft:

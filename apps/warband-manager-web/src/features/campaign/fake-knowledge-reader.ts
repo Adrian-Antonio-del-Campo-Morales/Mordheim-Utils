@@ -1,8 +1,7 @@
 /**
- * P5.2 stand-in knowledge reader, extended by P6.2 with an artefact-shaped
- * Sisters of Sigmar band (roster members, profiles, items) so the draft
- * workflow composes against the same record shapes the real P4.2 artefact
- * emits. Replaced by P4.3's real adapter in `default-deps.ts`.
+ * Small deterministic knowledge reader used only by unit tests and degraded
+ * first-paint fallback. Its rows mirror the public artefact shape so workflows
+ * can be exercised without network access.
  */
 import type { KnowledgeQuery, KnowledgeReader, KnowledgeResult } from "./types";
 

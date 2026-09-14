@@ -1,11 +1,11 @@
 /**
- * Web migration campaign application service: application service implementing
+ * Campaign application service: application service implementing
  * the frozen `CampaignAppService` interface (P3.4). Orchestrates the file
  * port (P3.2), the knowledge reader (P4.3) and the domain use cases
  * (P3.5/P6.x) — the UI never touches JSON, ports or domain internals.
  *
  * Rules honoured here:
- * - everything in memory: no browser storage, no filesystem (plan §2.4);
+ * - everything in memory: no browser storage or implicit filesystem persistence;
  * - history/undo is separated from rule logic: the service keeps a plain
  *   undo stack of documents and restores them verbatim;
  * - file-port and use-case failures become `AppError` values with stable

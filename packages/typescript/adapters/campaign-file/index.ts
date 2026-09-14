@@ -1,5 +1,5 @@
 /**
- * Web migration campaign-file adapter: the real `.mordheim` v4 file
+ * Campaign-file adapter: the real `.mordheim` v4 file
  * adapter — reader, validator and writer of the neutral contract defined in
  * `contracts/campaign-file-v4/`.
  *
@@ -84,7 +84,7 @@ function parseEnvelope(text: string): ParseResult {
   if (RETIRED_VERSIONS.includes(version)) {
     return error(
       "retired_version",
-      `Format version ${version} is retired. Re-save the campaign with the desktop manager (version 4 or later).`,
+      `Format version ${version} is retired. Re-save the campaign in format version 4 with the desktop manager.`,
       { found_version: version },
     );
   }

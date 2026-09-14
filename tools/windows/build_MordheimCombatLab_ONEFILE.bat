@@ -44,7 +44,7 @@ if errorlevel 1 (
 
 echo.
 echo [4/4] Building single EXE...
-%PYTHON_CMD% -m PyInstaller --noconfirm --clean --onefile --windowed --name MordheimCombatLab --paths src --add-data "sources\knowledge;sources\knowledge" src\mordheim_combat_lab\__main__.py
+%PYTHON_CMD% -m PyInstaller --noconfirm --clean --onefile --windowed --name MordheimCombatLab --paths packages\python\combat-engine --paths packages\python\roster-construction --paths packages\python\core --paths packages\python\knowledge --paths packages\python\adapters\desktop-ui --paths packages\python\campaign --paths apps\combat-lab --paths apps\warband-manager-desktop --add-data "sources\knowledge;sources\knowledge" apps\combat-lab\mordheim_combat_lab\__main__.py
 if errorlevel 1 goto :build_error
 
 echo.

@@ -1,8 +1,11 @@
 # Campaign Manager
 
-The Campaign Manager (`mordheim_campaign`) explores a **campaign-timeline-first**
-desktop interface for Mordheim. The campaign is the product: immutable warband
-states are connected by Battles and Post-Battle transitions.
+The Campaign Manager is implemented as two adapters over the same campaign concepts:
+
+- **Desktop:** Tkinter UI in `packages/python/campaign/mordheim_campaign/ui/`, composed by `apps/warband-manager-desktop/mordheim_desktop`.
+- **Web:** React/Vite UI in `apps/warband-manager-web/`, backed by the TypeScript packages in `packages/typescript/`.
+
+The desktop and web UIs are not pixel-identical. They share the campaign workflow, stable IDs and v4 file contract while respecting platform differences: desktop uses filesystem dialogs; web imports and downloads files and keeps campaigns in the browser session only.
 
 ## Timeline model
 
@@ -20,193 +23,110 @@ State #1
 ...
 ```
 
-`InitialWarbandDraftMoment` is the only editable moment. Once the campaign
-begins, each commit appends an immutable `StateVM`; `BattleVM` nodes record
-real table facts; each battle opens a pending `PostBattleVM` that resolves
-into the next state.
+`InitialWarbandDraftMoment` is the editable construction stage. Committing it creates an immutable `WarbandStateVM`. A `BattleVM` records facts from the table and opens a pending `PostBattleVM`. Completing the post-battle sequence commits the next immutable state.
 
 ## Layer rule
 
 ```text
-KB YAML → mordheim_knowledge.loader → application.knowledge_port → AppController → ui
-                                                                    ↕ persistence
+sources/knowledge/*.yaml
+        ↓
+mordheim_knowledge / generated knowledge-web.json
+        ↓
+application and domain services
+        ↓
+Tkinter or React UI
+        ↕
+versioned campaign persistence
 ```
 
-`ui` never imports the KB loaders or YAML. `application` and `persistence`
-never import Tkinter. Campaign files reference stable KB IDs only
-(`band_id`, `profile_id`, `item_id`); the rules never leave the KB.
+UIs never read YAML or decide rules. Campaign files store state and stable KB IDs (`band_id`, `profile_id`, `item_id`, `rule_id`); they do not serialize rule definitions.
 
-- `application/knowledge_port.py` — KB read model (bands, profiles, items,
-  skills, hirelings, campaign catalogues, warband groups, scenario options).
-- `application/controller.py` — UI-facing actions; draft editing; battle
-  recording; equipment moves.
-- `application/state.py` — view models (`CampaignVM`, `StateVM`, `BattleVM`,
-  `PostBattleVM`, `WarriorVM`) and the canonical builders.
-- `application/hire_eligibility.py` — the 18 roster-dependent
-  `*.rule.campaign-eligibility` rules keyed by canonical rule id over a small
-  hire context (band groups, member and employed Hired Sword profile ids,
-  optional Mercenary variant), returning explicit
-  `allowed/rejected/conditional/needs_variant` decisions. The hireling facts
-  the rules reason about come from the KB trait registry
-  (`catalog/hirelings/traits.yaml` → `KnowledgePort.hireling_traits()`), not
-  from curated sets in the application.
-- `application/post_battle_resolution.py` — serious injuries (hero D66 and
-  henchman D6 charts with subtables), exploration dice and the rare-item
-  2D6 rarity test, read from the validated catalogues.
-- `application/post_battle_catalogue.py` — Trading Post common/rare offers
-  with warband-level restrictions and the confirmed `price_override`
-  exceptions; hiring offers with fee/upkeep labels; per-action KB provenance.
-- `application/post_battle_engine.py` — the write side: applies resolved
-  outcomes (roster, XP, treasury, shards, hires, stash, advances) and commits
-  the next immutable State. Working totals live on the persisted
-  `PostBattleVM`, so a mid-sequence save/load resumes exactly where the
-  player was.
-- `persistence/campaigns.py` — `.mordheim` JSON save/load (marker + format
-  version) and Markdown export.
-- `ui/` — dialogs, components, panels and the timeline `views/moments/`.
+## Implemented capabilities
 
-Construction UI principle: **the card shows the result; Edit reveals the
-controls that modify it.** Editing controls do not live permanently on roster
-cards.
+### Draft construction
 
-## Post-battle sequence
+- Select any canonical warband from the `mordheim` or `trollheim` collections.
+- Build the initial roster with required profiles, model minimum/maximum, hero limit and treasury validation.
+- Add, remove, rename and resize henchman groups.
+- Buy creation equipment, buy stash items and apply supported weapon upgrades.
+- Hire eligible Hired Swords and choose a Mercenary variant where the selected warband supports it.
+- Assign, return and transfer equipment while maintaining owned/equipped/stash quantities.
+- Apply auditable manual corrections for resources, known items and skills where the adapter exposes the action.
 
-Post-Battle starts after the Battle timeline node. Eight sequential player
-actions in four balanced chapters:
+### Campaign timeline and battles
 
-```text
-RECOVERY                 EXPLORATION & INCOME        SEARCHES                    WARBAND
-01 Injuries              03 Exploration             05 Veterans                 07 Recruitment
-02 Experience            04 Sell Wyrdstone          06 Rare Items & Dramatis    08 Equipment
-```
+- Navigate draft, committed states, recorded battles and pending post-battles.
+- Record scenario, opponent, result, XP, casualties, Out-of-Action members, optional opponent rating and notes.
+- Resolve pre-battle availability checks such as Old Battle Wound.
+- Preserve participant snapshots, rating/model counters and scenario progression rewards.
+- Keep historical states read-only and export the selected timeline moment.
 
-Rare Items and Dramatis Personae searches are combined into one action while
-preserving their internal order. `Experience` also contains advancement rolls
-triggered by the newly allocated XP. Warband rating is derived automatically,
-so it appears in **Final Review** rather than as a button. Any action that
-requires dice starts unresolved and asks the player to choose **Roll in app**
-or **Enter manually** before a result is revealed. `DiceResolutionCard`
-supports contextual result actions (e.g. **Buy**, **Hire**) that stay hidden
-until the roll resolves successfully.
+### Canonical post-battle sequence and UI presentation
 
-## Feature status
+The knowledge base defines the normative **10-step** sequence. The desktop UI groups those rules into **8 user actions**: rare-item and Dramatis Personae searches share one action, and warband-rating update is derived automatically and shown in final review. The web follows the same application workflow and contract; it must not be read as changing the canonical rule order.
 
-**KB-backed warbands and campaign files.** The warband picker lists every
-canonical warband (collections `mordheim`/`trollheim`, ruleset `mordheim`)
-with model range and starting gold; band selection derives a draft roster from
-the KB (required members, legal minimum starter, canonical profiles,roster limits). Header file actions save/load `.mordheim` files and export a Markdown summary plus a **PDF warband sheet** of the moment selected in the timeline.
+The canonical order is:
 
-**PDF warband export.** `Export PDF` renders the warband at the selected timeline moment (`persistence/warband_pdf.py`, `fpdf2`): campaign/warband identity, the state's aggregates, the full roster with statlines, equipment, skills and advances, the battles recorded up to that moment and the inventory ledger. Every committed state deep-copies its roster and inventory at commit time (`WarbandStateVM.roster`/`inventory`), so any past State #N exports exactly as it was; the draft exports the live roster. The campaign file format is v3 (old files are rejected, no migration), and display labels follow `MORDHEIM_LOCALE` through the shared i18n reader.
+1. Serious Injuries
+2. Allocate Experience
+3. Roll on the Exploration Chart
+4. Sell Wyrdstone
+5. Check Available Veterans
+6. Make Rarity Rolls and Buy Rare Items
+7. Look for Dramatis Personae
+8. Hire Recruits and Buy Common Items
+9. Reallocate Equipment
+10. Update Warband Rating
 
-**Hiring.** Offers merge static eligibility (fee, upkeep, availability) with
-the 18 dynamic rules. Variant-capable warbands pick their Mercenary variant
-(Reikland/Middenheim/Marienburg/Ostermark) in the Campaign header; it
-persists in the `.mordheim` file and re-evaluates every variant-dependent
-offer. Employed Hired Swords are tracked by the roster (`hireling.*` profile
-ids), so mutual-exclusion rules fire (hiring a Highwayman makes the
-Roadwarden offer ineligible, and vice versa). Conditional offers surface the
-acceptance roll; rejected offers are not shown.
+The UI's eight actions are:
 
-**Battle recording.** The timeline's ＋ RECORD BATTLE node opens a dialog fed
-by the KB scenario catalogue (1v1 first): opponent, result (Victory/Defeat/
-Draw), XP granted, Out of Action checklist (the casualties count is derived
-from it) and optional opponent rating. `AppController.record_battle`
-validates the scenario, ignores unknown warrior ids in the submitted lists
-(the post-battle filter skips them too) and refuses only known warriors that
-cannot receive results, snapshots `rating_before`/`models_before`, appends
-the `BattleVM` plus its pending `PostBattleVM`, and is refused while a
-post-battle is pending or the warband is still a draft. Recording is
-unblocked once COMMIT STATE runs. The participants tab lists the real roster
-with current conditions. Recovery (step 1) offers injury cards only for the
-warriors recorded Out of Action; battles recorded with none marked offer
-every warrior.
+1. Injuries
+2. Experience and advancement rolls
+3. Exploration
+4. Sell Wyrdstone
+5. Veterans
+6. Rare Items and Dramatis Personae searches
+7. Recruitment
+8. Equipment and final derived rating
 
-**Scenario progression is applied at battle recording.**
-`application/scenario_rewards.py` builds the award plan from the scenario's
-`progression:` block and the canonical awards of
-`experience-and-advances.yaml`; the dialog computes per-warrior XP totals
-(`xp_awards`) from the battle facts and records prose-only rewards as manual
-entries. `controller._apply_recorded_scenario_loot` applies the structured
-additional rewards to the pending post-battle: gold crowns, wyrdstone
-fragments, exploration-die modifiers, items and special results. The
-material reward rules themselves live in the published
-`catalog/campaign/scenario-rewards.yaml` catalogue, validated by
-`mordheim_knowledge` and consumed through the `KnowledgePort`.
+The flow supports app dice or manual results, persisted intermediate data, pending follow-ups, contextual Buy/Hire actions, XP advancement tables, injuries, recruitment, resources, stash/equipment changes and final review before committing the next state. The desktop sequence is composed by `PostBattleSequence`; resolution and mutations belong to `PostBattleResolver`, `PostBattleCatalogue` and `PostBattleEngine`, not to widgets.
 
-**Undo is application-wide and undoable actions carry real labels.**
-`AppController.perform_undoable` retains the previous state snapshot for the
-latest twenty actions and names each entry with the caller's description or
-the action's own result message; the shell Undo button (and Ctrl+Z) shows a
-translated `Undo: <label>`, closes any modal editor before restoring the
-snapshot, and the post-battle sequence, skill/spell commits, advance rolls,
-henchman promotions, recruitment and the mercenary-variant switch all flow
-through it.
+### Rules and reporting
 
-**Locale switching goes through the application layer.** The Settings view
-never imports `mordheim_knowledge` (the layer rule forbids it):
-`AppController.set_locale` switches both the UI string reader
-(`mordheim_ui.i18n`) and the KB display-name reader
-(`mordheim_knowledge.i18n`) and notifies the shell to rebuild.
+Both adapters expose a read-only rules browser with categories, search, effects, sources and profile links. The web app also exposes campaign statistics. These views read the generated knowledge artefact or the application KnowledgePort and do not mutate campaign state.
 
-**Post-battle mutations.** Injuries mutate the roster, XP and
-purchases/trades move the projected treasury and stash, exploration and the
-once-per-sequence wyrdstone sale move the shard hoard, and **COMMIT STATE**
-appends the next immutable state with rating derived from the final roster.
-Every action prints its KB provenance.
+### Files and exports
 
-**Advances are fully live.** The Experience step seeds a pending advance per
-crossed XP threshold (KB ladder `advance_thresholds` in
-`experience-and-advances.yaml`), resolves the 2D6 roll (with D6 sub-rolls for
-the choice rows) against the KB advancement tables, and commits the pick:
-characteristic increases respect the KB racial maximums
-(`catalog/rules/racial-maximums.yaml`, race from the warband-group registry)
-and the henchman +1-over-starting cap; skills are chosen from the warrior's
-KB skill tables; spells from the wizard's lore (`SkillChoiceDialog`, with the
-duplicate-spell "lower difficulty" message). Blocked advances stay
-uncommitted for a reroll. All persisted mid-sequence (resumable).
+- Desktop: open/save `.mordheim`, export Markdown summary and export a PDF warband sheet for the selected draft/state moment.
+- Web: import one or more `.mordheim` files, keep sessions in memory, download v4 JSON and export a PDF warband sheet. Reload/close loses unexported sessions after the browser warning.
+- Both reject v1–v3 and unsupported future formats. See [the v4 contract](../../contracts/campaign-file-v4/README.md).
 
-**The Lad's Got Talent is applied** (henchman row 10–12): one member splits
-off as a Hero keeping type, experience and characteristic increases, picks 2
-skills from the warband's hero tables via the promotion-mode skill dialog;
-the remaining group stays a henchman row and its advance resets for a reroll
-(the promotion itself is excluded); the pending promotion bypasses the static
-hero limit (`on_maximum_heroes`) for exactly one earned advance — once the
-hero exists it counts against the limit normally.
+## Stable IDs and knowledge ownership
 
-**Equipment is editable per warrior.** The state moment's EQUIPMENT action
-(and the inventory's BY WARRIOR MANAGE buttons) open `EquipmentEditorDialog`:
-roster blocks with RETURN, a stash column with ASSIGN. Moves
-(`move_stash_to_warrior` / `return_warrior_to_stash`) are legal at any
-campaign moment (tabletop reallocation), keep the inventory ledger
-(owned/equipped/stash) consistent, and buying/selling stays inside the
-post-battle sequence.
+Warband/profile/item/rule names shown in the UI are display values. Eligibility, restrictions, prices, advancement tables and scenario rewards are resolved from the canonical KB through the application layer. The web consumes `knowledge-web.json`, generated by `tools/knowledge/generate_knowledge_web.py`; it does not bundle YAML.
 
-**Searches and Equipment are actionable end to end**: successful Rare Item
-searches reveal a contextual **Buy** action and successful Dramatis searches
-a contextual **Hire** action only after the dice resolve; **Equipment** is
-split into a purchase workspace (treasury always visible) and an inventory
-notebook whose Stash view shows every owned item with holders, unassigned
-quantity and Assign/Sell actions; the wyrdstone sale uses the KB pricing
-table (fragments × warband size) and is one-shot per sequence.
+The campaign catalogue is published data consumed by the campaign runtime. It is not duel-engine implementation. See [Knowledge base](knowledge-base.md) and the catalogue HOWTO for ownership rules.
 
-## Still open
+## Known scope boundaries
 
-- Per-warrior skill editing outside advances.
-- Out-of-sequence purchases and resource corrections (would reuse the same
-  stored IDs).
-- Campaign library ("Manage Campaigns…" header entry), inventory ADD ITEM and
-  MANAGE RESOURCES toolbar actions.
+These are deliberate non-features of the current product, not undocumented bugs:
+
+- the duel engine models 1-vs-1 close combat, not a full tabletop battle;
+- the Campaign Manager records scenario facts but does not simulate terrain, deployment or complete on-table scenario mechanics;
+- web campaigns are session-only and require explicit export;
+- the desktop campaign library is filesystem-oriented; the web library is session-oriented;
+- per-warrior skill editing outside the supported advance/manual-correction paths remains limited;
+- compatibility migration from v1–v3 campaign files is not provided.
 
 ## Run
 
-```bash
-python -m mordheim_campaign
-# equivalent entries:
+```powershell
 mordheim-campaign-manager
+python -m mordheim_desktop
 python tools/mordheim-utils.py warband-manager
+
+cd apps/warband-manager-web
+npm run dev
 ```
 
-Python 3.10+ and Tkinter are sufficient.
-
-See [Architecture](architecture.md) for the package map and
-[the KB guide](knowledge-base.md) for the catalogues it reads.
+See [Architecture](architecture.md) for package boundaries and [Verification](verification.md) for the executable test strategy.

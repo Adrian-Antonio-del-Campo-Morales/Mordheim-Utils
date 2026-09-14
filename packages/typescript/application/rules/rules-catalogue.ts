@@ -1,6 +1,6 @@
 /**
  * Application-level RulesCatalogue — the web counterpart of the desktop
- * `mordheim_campaign/application/rules_catalogue.py` (parity source:
+ * The browser read model mirrors the desktop campaign rules catalogue.
  * `adapters/knowledge-reader/rules_catalogue_parity.test.ts`; coverage:
  * `rules-catalogue.test.ts`).
  *

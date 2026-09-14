@@ -1,7 +1,7 @@
 # `.mordheim` campaign file — format v4
 
-**Status:** contract approved (web migration Phase 1). One format for the
-desktop application and the web application.
+**Status:** current interoperability contract for the desktop and web
+applications.
 **Schema:** [`campaign-file-v4.schema.json`](./campaign-file-v4.schema.json)
 (JSON Schema draft 2020-12).
 **Fixtures:** [`fixtures/`](./fixtures/) — validated documents for tests and
@@ -15,8 +15,8 @@ not a serialisation of Python dataclasses or React components: the structure is
 organised by responsibility (identity, configuration, resources, timeline
 entities) so both implementations read and write the same document.
 
-Design rule from the migration plan: no compatibility with v1–v3. Applications
-write and read **only v4** and reject older versions with a clear message.
+Applications write and read **only v4** and reject older versions with a clear
+message.
 
 ## Document shape
 
@@ -128,7 +128,6 @@ selection; a loader is free to normalise invalid selections.
 ## Ownership
 
 The schema and fixtures are the single source of truth for the format. The
-Python reader/writer (`src/mordheim_campaign/persistence/campaigns.py`) and,
-later, the TypeScript `campaign-file` adapter must implement this contract;
+Python reader/writer (`packages/python/campaign/mordheim_campaign/persistence/campaigns.py`) and the TypeScript `campaign-file` adapter must implement this contract;
 neither side may introduce format extensions without updating the schema and
 fixtures first.

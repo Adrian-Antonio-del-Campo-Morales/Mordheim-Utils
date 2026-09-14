@@ -1,8 +1,9 @@
 # `catalog/hirelings/` — Hired Swords and Dramatis Personae
 
 Canonical identity of the hirelings a campaign can hire: `hired-swords/` and
-`dramatis-personae/` catalogues (102 profiles; 72 Hired Swords, 30 Dramatis
-Personae, 4 of them deliberately out of scope). The campaign-side contract —
+`dramatis-personae/` catalogues (102 profiles; 26 Dramatis Personae are in the
+published hiring catalogue and 4 additional Dramatis Personae are deliberately
+out of scope). The campaign-side contract —
 hiring fee, upkeep, availability/search procedure and static hiring
 eligibility — lives in `catalog/campaign/hired-swords-and-dramatis.yaml`; the
 reusable band sets its eligibility references live in
@@ -39,7 +40,7 @@ warrior himself.
 - Campaign-resolved rolls, choices and rewards remain outside the KB.
 - Current-roster and selected-warband-variant eligibility checks live as
   hireling rules (`*.rule.campaign-eligibility`) and are evaluated by the
-  application (`mordheim_campaign/application/hire_eligibility.py`), never
+  application (`packages/python/campaign/mordheim_campaign/application/hire_eligibility.py`), never
   inferred from static warband groups.
 - The race/alignment/nature facts those rules reason about are declared once,
   in `traits.yaml` (this catalogue's trait registry: elf, dwarf, human, undead,

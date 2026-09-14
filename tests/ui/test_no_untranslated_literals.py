@@ -14,12 +14,10 @@ from pathlib import Path
 
 import pytest
 
-SRC = Path(__file__).resolve().parents[2] / "src"
-
-#: UI packages whose visible strings must be translated.
+PYTHON_ROOT = Path(__file__).resolve().parents[2] / "packages" / "python"
 UI_PACKAGES = (
-    SRC / "mordheim_campaign" / "ui",
-    SRC / "mordheim_combat_lab" / "ui",
+    PYTHON_ROOT / "campaign" / "mordheim_campaign" / "ui",
+    Path(__file__).resolve().parents[2] / "apps" / "combat-lab" / "mordheim_combat_lab" / "ui",
 )
 
 #: Parameter names that render their string on screen.

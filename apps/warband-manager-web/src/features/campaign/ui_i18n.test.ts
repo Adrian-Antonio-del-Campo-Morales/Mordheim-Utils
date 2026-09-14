@@ -1,5 +1,5 @@
 /**
- * Web Test Migration — UI parity block 3 (REPO REWORK 2).
+ * UI locale coverage for the browser campaign shell.
  *
  * Desktop source: `tests/ui/test_ui_i18n.py` (7 rows, Tkinter STRINGS
  * catalogue). The web i18n seam is different by design — display names
@@ -15,8 +15,8 @@
  *  - every band name translates in Spanish (web equivalent of
  *    test_every_catalogue_key_translates_in_spanish).
  *
- * Ownership: REPO REWORK 2. Reader: REPO REWORK 333333's adapter, tested
- * through its public API only.
+ * Ownership: browser campaign shell. Reader: generated knowledge artefact,
+ * tested through its public API only.
  */
 
 import { describe, expect, it, vi, beforeAll, afterEach } from "vitest";

@@ -19,7 +19,8 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+PACKAGE_ROOT = Path(__file__).resolve().parents[1] / "packages" / "python" / "combat-engine"
+sys.path.insert(0, str(PACKAGE_ROOT))
 
 from mordheim_combat_lab.verification import engine_mutation  # noqa: E402
 

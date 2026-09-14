@@ -3,8 +3,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 // React + Vite shell.
-// The GITHUB_PAGES switch lets CI (task P8.1, sole owner of workflows) publish
-// under the repository sub-path without touching this file again.
+// The GITHUB_PAGES switch makes CI publish under the repository sub-path.
 export default defineConfig(() => ({
   base: process.env.GITHUB_PAGES ? "/Mordheim-Utils/" : "/",
   plugins: [react()],

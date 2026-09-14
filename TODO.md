@@ -138,7 +138,7 @@ items have no engine option), but it is not documented per record.
 ## 7. Translation (prepared; band pass complete)
 
 - [ ] Translate the remaining UI keys — 216 of the 623 `tr()` keys used in
-      `mordheim_campaign/ui` lack `es` (see `src/mordheim_ui/i18n.py`);
+      campaign UI lack `es` (see `packages/python/adapters/desktop-ui/mordheim_ui/i18n.py`);
       ~204 more are defined there but no longer used by any widget (cleanup).
 - [x] Band `name_i18n.es` / `effect_i18n.es` translation complete: 81/81
       warbands at 100% (`python tools/band_translation_status.py`).

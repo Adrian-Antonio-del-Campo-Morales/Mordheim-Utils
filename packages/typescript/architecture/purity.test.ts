@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 /**
- * P3.4 guardrail (plan §2.4 permanent exclusions + §13 DoD): the domain and
+ * Architecture guardrail: the domain and
  * application layers must stay free of UI, browser and storage dependencies.
  * Verified by scanning every source file's import statements.
  *

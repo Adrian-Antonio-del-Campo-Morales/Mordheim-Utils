@@ -3,8 +3,8 @@
 Every applicable desktop test gets one
 row with a web disposition (M/A/U/I/S/X), a web target, an owner and — for
 exclusions — a documented reason. Rows are enumerated programmatically via
-``pytest --collect-only`` so the manifest can never drift from the real
-desktop net (1172+ cases), then classified by per-file family rules.
+``pytest --collect-only`` so the manifest can never drift from the current
+desktop campaign and UI test net, then classified by per-file family rules.
 
 Determinism: output is byte-stable (sorted rows, no timestamps) so the
 Python/TS gates can verify regeneration identity.
@@ -44,28 +44,28 @@ FAMILY_RULES: dict[str, tuple[str, str, str]] = {
     "test_exploration_sequence_matrix.py": ("M", "domain-sequence", "333333"),
     "test_extended_audit_regressions.py": ("M", "domain-regression", "333333"),
     "test_third_audit_regressions.py": ("M", "domain-regression", "333333"),
-    "test_gui_interaction_regressions.py": ("U", "desktop-ui", "REPO REWORK 2"),
+    "test_gui_interaction_regressions.py": ("U", "desktop-ui", "desktop-web-parity"),
     "test_hire_eligibility.py": ("M", "domain-rule", "333333"),
     "test_injury_sequence_matrix.py": ("M", "domain-sequence", "333333"),
-    "test_knowledge_port.py": ("S", "shared-kb", "Agent 0"),
-    "test_malformed_save_matrix.py": ("S", "shared-contract", "Agent 0"),
+    "test_knowledge_port.py": ("S", "shared-kb", "shared-parity"),
+    "test_malformed_save_matrix.py": ("S", "shared-contract", "shared-parity"),
     "test_out_of_action_tracking.py": ("M", "domain-rule", "333333"),
-    "test_persistence.py": ("I", "interop-roundtrip", "Agent 0"),
+    "test_persistence.py": ("I", "interop-roundtrip", "shared-parity"),
     "test_post_battle_advancements.py": ("M", "domain-sequence", "333333"),
     "test_post_battle_engine.py": ("M", "domain-sequence", "333333"),
     "test_post_battle_resolution.py": ("M", "domain-sequence", "333333"),
-    "test_rules_catalogue.py": ("S", "shared-kb", "Agent 0"),
+    "test_rules_catalogue.py": ("S", "shared-kb", "shared-parity"),
     "test_undo.py": ("M", "domain-sequence", "333333"),
     "test_variable_prices_and_restrictions.py": ("M", "domain-rule", "333333"),
     "test_warband_pdf.py": ("X", "desktop-pdf", "nobody"),
 }
 
 PDF_REASON = (
-    "PDF export has no web equivalent (plan §Alcance exclusion); web review/"
+    "PDF export has no desktop/web one-to-one parity requirement; web review/"
     "export semantics are covered by the U/A rows of the review flow"
 )
 
-# These desktop interactions have no one-to-one browser equivalent yet.  They
+# These desktop interactions have no one-to-one browser equivalent yet. They
 # remain traceable, but cannot honestly be marked implemented by a React test.
 UI_PARTIAL_FOLLOW_UP = (
     "Port each applicable browser interaction to a real React seam, or record "
@@ -150,10 +150,9 @@ IMPLEMENTED_UI_TESTS[(
     "test_invalid_preview_keeps_last_battle_draft",
 )] = "packages/typescript/application/campaign/service.test.ts"
 
-# tests/ui files are all desktop Tkinter UI behaviour → U, except the
-# Combat Lab / Tkinter-only files with no web equivalent (correction
-# requested by REPO REWORK 2 in the coordination log, per plan §Alcance).
-UI_DISPOSITION = ("U", "desktop-ui", "REPO REWORK 2")
+# tests/ui files are desktop Tkinter UI behaviour → U, except the
+# Combat Lab / Tkinter-only files with no web equivalent.
+UI_DISPOSITION = ("U", "desktop-ui", "desktop-web-parity")
 UI_EXCLUSIONS: dict[str, tuple[str, str, str]] = {
     name: ("X", "combat-lab-or-tkinter-only", "nobody")
     for name in (
@@ -168,7 +167,7 @@ UI_EXCLUSIONS: dict[str, tuple[str, str, str]] = {
         "test_no_untranslated_literals.py",  # Tkinter STRINGS scan
     )
 }
-UI_EXCLUSION_REASON = "Combat Lab / Tkinter-only, no web equivalent (plan §Alcance exclusion)"
+UI_EXCLUSION_REASON = "Combat Lab / Tkinter-only, no web equivalent"
 
 INDIVIDUAL_EXCLUSIONS: dict[tuple[str, str], str] = {
     (
@@ -186,7 +185,7 @@ INDIVIDUAL_EXCLUSIONS: dict[tuple[str, str], str] = {
     (
         "tests/campaign/test_gui_interaction_regressions.py",
         "test_renaming_active_save_updates_next_save",
-    ): "The web keeps in-memory sessions and has no persistent file path to rename (plan §Operational decisions).",
+    ): "The web keeps in-memory sessions and has no persistent file path to rename.",
 }
 
 # Consolidated/renamed targets that cannot be derived from the desktop filename.

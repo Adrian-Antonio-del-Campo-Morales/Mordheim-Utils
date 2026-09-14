@@ -3,7 +3,7 @@
  * trading orchestration — plain Node, real kernel use cases, an
  * artefact-shaped fake listings source (no React/DOM/filesystem).
  *
- * Coverage (plan §P6.7): eligibility resolution (allow/forbid groups +
+ * Coverage: eligibility resolution (allow/forbid groups +
  * bands, expression → conditional), hiring fee economics on the created
  * warrior, exploration dice projection with the max-dice cap, trading buy
  * (treasury guard) and sell (stash conservation + manual-log booking).

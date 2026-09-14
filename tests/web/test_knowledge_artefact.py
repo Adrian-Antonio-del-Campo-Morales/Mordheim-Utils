@@ -18,7 +18,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 TOOLS = ROOT / "tools" / "knowledge"
 sys.path.insert(0, str(TOOLS))
-sys.path.insert(0, str(ROOT / "src"))
+PACKAGE_ROOTS = (
+    ROOT / "packages" / "python" / "combat-engine",
+    ROOT / "packages" / "python" / "roster-construction",
+    ROOT / "packages" / "python" / "core",
+    ROOT / "packages" / "python" / "knowledge",
+    ROOT / "packages" / "python" / "campaign",
+)
+for package_root in reversed(PACKAGE_ROOTS):
+    sys.path.insert(0, str(package_root))
 
 import generate_knowledge_web as generator  # noqa: E402
 

@@ -1,5 +1,5 @@
 /**
- * Web migration hirelings, exploration and trading: hirelings, exploration & trading —
+ * Campaign hirelings, exploration and trading: the application-facing
  * kernel pieces the feature block needs beyond the P3.5 base.
  *
  * Trading rule (ported from the desktop `Controller.buy_draft_stash_item`,

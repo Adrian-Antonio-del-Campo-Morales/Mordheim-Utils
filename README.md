@@ -1,138 +1,114 @@
 # Mordheim Utils
 
-Monorepo with Mordheim utilities: a **knowledge-base-driven duel engine** and a
-**campaign manager**, built on shared packages and a single canonical KB. The
-two applications are distributed separately and share the domain, rule loading,
-legal construction and the interface layer.
+Mordheim Utils is a Python/TypeScript monorepo for Mordheim campaign management and close-combat simulation. It has two user-facing applications, a shared knowledge base, and a versioned campaign-file contract.
 
-## Applications
+## What is implemented
 
-| App | Package | Entry point | Description |
-| --- | --- | --- | --- |
-| Combat Lab | `mordheim_combat_lab` | `mordheim-combat-lab` | 1-vs-1 duel simulator with the modular engine (oracle) and the vectorized engine (analysis), semantic verification, parity and benchmarking. |
-| Campaign Manager | `mordheim_campaign` | `mordheim-campaign-manager` | *Campaign-timeline-first* GUI: immutable warband states, battles and the post-battle sequence. Warbands, profiles and equipment come from the canonical KB through `KnowledgePort`; campaigns are saved/loaded as `.mordheim` files. |
+| Surface | Package / entry point | Purpose |
+| --- | --- | --- |
+| **Combat Lab** | `mordheim-combat-lab` or `python -m mordheim_combat_lab` | Tkinter simulator and CLI for compiled 1-vs-1 close-combat duels, analysis, parity, verification and benchmarks. |
+| **Campaign Manager — desktop** | `mordheim-campaign-manager` or `python -m mordheim_desktop` | Tkinter campaign timeline with draft construction, immutable states, battles, a canonical 10-step post-battle sequence presented through 8 UI actions, persistence and PDF export. |
+| **Campaign Manager — web** | `apps/warband-manager-web` | React/Vite browser application with the campaign workflow, rules browser, statistics, `.mordheim` import/export and PDF export. Campaigns remain in memory until exported. |
 
-## Shared packages
+The active runtime scope of the duel engine is **one-against-one close combat**. Shooting, movement, psychology, mounts and magic are classified in the knowledge base but are not duel-engine features.
+
+## Repository layout
 
 ```text
-mordheim_core          pure types, injectable dice, effect composition
-mordheim_knowledge     KB loading and validation (sources/knowledge), resource paths
-mordheim_construction  profile compilation and equipment/choice legality
-mordheim_combat        phases, modular engine (oracle), vectorized engine, native backend
-mordheim_ui            shared Tkinter theme and generic widgets
+sources/knowledge/                         canonical YAML knowledge base
+packages/python/core/mordheim_core          pure domain types and dice
+packages/python/knowledge/mordheim_knowledge KB loaders, validation and paths
+packages/python/roster-construction         legal profile/equipment compilation
+packages/python/combat-engine               phases, modular, NumPy and native engines
+packages/python/adapters/desktop-ui         shared Tkinter theme and widgets
+packages/python/campaign                    campaign domain, application and persistence
+apps/combat-lab                             Combat Lab application and CLI
+apps/warband-manager-desktop                desktop composition root
+apps/warband-manager-web                    React/Vite web shell
+contracts/campaign-file-v4                  versioned campaign-file contract
+tests                                     Python, TypeScript and web-contract tests
+docs                                      reference, guides and design decisions
+tools                                     launcher, generators, reports and packaging
 ```
 
-The knowledge base lives once in `sources/knowledge/`. The verification
-corpus — the structural contract and the semantic scenarios — is test material
-and lives in `tests/specs/`.
+The modular combat engine is the correctness oracle. NumPy and native backends are candidates certified against it. The campaign applications consume the same canonical IDs and the v4 campaign-file contract; rules are never serialized into campaign files.
 
-## Getting started
+## Requirements and installation
 
-Requires Python 3.10 or later.
+- Python 3.10+ with Tkinter for the desktop applications.
+- Node.js 20+ for the TypeScript packages and web application.
 
 ```powershell
 python -m pip install -e ".[dev]"
-python tools/mordheim-utils.py --help        # overview of every command
-python tools/mordheim-utils.py doctor        # environment, engines and KB location
+cd packages/typescript
+npm ci
+cd ../../apps/warband-manager-web
+npm ci
 ```
 
-### Central command line
+The Python package uses the source layout declared in `pyproject.toml`; editable installation is the supported way to make all packages importable.
 
-`tools/mordheim-utils.py` is the single launcher for both applications and
-every utility — a plain script, nothing to install. A delegated command keeps
-its own parser, so `... benchmark --help` shows the exact detailed arguments
-of the real command:
+## Central launcher
+
+`tools/mordheim-utils.py` is a source-checkout launcher. It delegates to the real application parsers, pytest, the knowledge generator or the native build instead of maintaining duplicate option definitions.
 
 ```powershell
-python tools/mordheim-utils.py combat-lab                  # open the Combat Lab application
-python tools/mordheim-utils.py warband-manager             # open the Campaign Manager application
-python tools/mordheim-utils.py verify                      # run the semantic specifications
+python tools/mordheim-utils.py --help
+python tools/mordheim-utils.py doctor
+python tools/mordheim-utils.py combat-lab
+python tools/mordheim-utils.py warband-manager
+python tools/mordheim-utils.py validate
+python tools/mordheim-utils.py verify
 python tools/mordheim-utils.py parity --require-complete
-python tools/mordheim-utils.py tests --scope deterministic # per-change engine gate
+python tools/mordheim-utils.py tests --scope deterministic
+python tools/mordheim-utils.py run-ci
 ```
 
-Commands: `combat-lab`, `warband-manager`, `benchmark`, `parity`,
-`test-report`, `verify`, `audit`, `validate`, `coverage-gate`, `tests` (with
-`--scope` filters and arbitrary pytest flags forwarded), `combine-kb`,
-`build-native` and `doctor`. Each one just runs the matching module or script,
-so the underlying entry points remain callable directly and nothing drifts.
+Available command groups are graphical applications, combat benchmarks/parity, knowledge-base verification, testing/CI, KB generation and native-backend building. Use `<command> --help` for delegated options. Bash and zsh completions live in `tools/completions/`.
 
-Tab completion (bash/zsh): `source tools/completions/mordheim-utils.bash`
-(also `.zsh`) — completion is read live from the real argparse parsers.
+## Validation and development loop
 
-### Applications
+Fast checks for a change:
 
 ```powershell
-python -m mordheim_combat_lab          # Combat Lab
-python -m mordheim_desktop             # Campaign Manager
+python tools/mordheim-utils.py validate
+python tools/mordheim-utils.py tests --scope deterministic
+cd packages/typescript && npm run typecheck && npm test
+cd ../../apps/warband-manager-web && npm run typecheck && npm run lint && npm test
 ```
 
-### Validation and verification (Combat Lab side)
+Release-oriented checks are described in [Develop and release](docs/guides/develop-and-release.md). The expensive parity/deep, coverage and mutation commands are intentional point-in-time gates, not the default edit loop.
+
+The web knowledge artefact is generated, never hand-edited:
 
 ```powershell
-python tools/mordheim-utils.py validate                  # KB structure and connections
-python tools/mordheim-utils.py verify                    # semantic specifications
-python tools/mordheim-utils.py parity --require-complete # vectorized/native certification
-python tools/mordheim-utils.py audit                     # per-rule status CSV in outputs/audit/
-python tools/mordheim-utils.py test-report               # Excel-ready CSVs in outputs/test-report/
-python tools/mordheim-utils.py benchmark -n 100000
-python -m pytest -q                                      # everything
+python tools/knowledge/generate_knowledge_web.py
+python tools/knowledge/generate_knowledge_web.py --check
 ```
 
-`validate` checks structure and connections (including the contract of
-`tests/specs/structural/phase-verification.yaml`). `verify` runs independent
-semantic evidence; `verify --require-complete` is the strict gate. The
-executable reports, not figures copied into docs, are the source of current
-status. How the verification layers fit together:
-[Verification](docs/reference/verification.md).
-
-> **Warning — long-running certification.** The `--deep`/`--truncations`
-> parity tiers, the full `test-report`, `coverage-gate` and
-> `tools/mutate-engine.py` take minutes to hours by design. They are point
-> runs — after large modifications or before a release — not the per-change
-> loop. Trimmed versions for small checks are listed in
-> [Verification](docs/reference/verification.md).
+It is staged into `apps/warband-manager-web/public/knowledge/` by CI or `run-ci`; generated build output is ignored.
 
 ## Documentation
 
-| Document | Content |
-| --- | --- |
-| [docs/README.md](docs/README.md) | Documentation index. |
-| [Architecture](docs/reference/architecture.md) | Packages, layers, engines, central CLI. |
-| [Knowledge base](docs/reference/knowledge-base.md) | `sources/knowledge/` layout and golden rules. |
-| [Verification](docs/reference/verification.md) | Layered testing strategy, interaction matrix, runtime budgets. |
-| [Campaign Manager](docs/reference/campaign-manager.md) | Campaign application reference. |
-| [Guides](docs/guides/) | Frequent tasks (KB changes, rules, applications, release). |
-| [TODO](TODO.md) | Actionable backlog. |
+- [Documentation index](docs/README.md)
+- [Architecture and package boundaries](docs/reference/architecture.md)
+- [Campaign Manager reference](docs/reference/campaign-manager.md)
+- [Knowledge-base reference](docs/reference/knowledge-base.md)
+- [Verification strategy](docs/reference/verification.md)
+- [Campaign-file v4 contract](contracts/campaign-file-v4/README.md)
+- [Guides](docs/guides/)
+- [Permanent design rulings](docs/decisions/design-rulings.md)
+- [Current backlog](TODO.md)
 
-## Repository map
+Generated reports belong under ignored `outputs/`; they are regenerated from code and are not documentation or release assets. Screenshots, temporary campaign files and local build products are not part of the repository.
 
-```text
-sources/knowledge/        single canonical KB consumed by the runtime
-src/
-  mordheim_core/          shared domain (no YAML, no UI, no engines)
-  mordheim_knowledge/     KB loaders + validators + resource paths
-  mordheim_construction/  CompiledFighter and legality
-  mordheim_combat/        phases, modular engine, vectorized engine, native backend
-  mordheim_ui/            shared Tk theme and widgets
-  mordheim_combat_lab/    app 1: cli, ui, application, persistence, verification
-  mordheim_campaign/      app 2: application, persistence, ui
-tests/
-  specs/                  structural contract + semantic scenarios (verification corpus)
-  architecture/           boundaries between packages and executables
-docs/                     reference / guides / decisions
-tools/
-  mordheim-utils.py       central launcher: both apps and every utility (no install)
-  kb/                     KB helper scripts (combine_kb_yaml.py, price-collation.py)
-  windows/                Windows packaging scripts
-```
+## Windows packaging
 
-## Windows distribution
+The supported build scripts are:
 
 ```powershell
 tools\windows\build_MordheimCombatLab_ONEFILE.bat
 tools\windows\build_MordheimCampaignManager.bat
 ```
 
-Each build produces a standalone EXE that bundles the application and the
-shared KB (`sources/knowledge/`); neither bundles `tests/`.
+They build the current package layout and bundle `sources/knowledge/`. They are Windows-only packaging helpers; CI publishes the web application separately through GitHub Pages.

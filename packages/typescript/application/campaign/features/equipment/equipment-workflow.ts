@@ -1,5 +1,5 @@
 /**
- * Web migration equipment workflow: equipment, stash and
+ * Equipment workflow: equipment, stash and
  * assignments — the application feature block over the kernel's
  * `assignEquipment` use case.
  *

@@ -1,6 +1,5 @@
 /**
- * Web migration hirelings surface: hirelings, exploration and
- * trading UI.
+ * Hireling, exploration and trading presentation.
  *
  * Shows the hireable offers (hired swords / dramatis personae) with their
  * resolved eligibility verdict, fee, upkeep and rating contribution; a

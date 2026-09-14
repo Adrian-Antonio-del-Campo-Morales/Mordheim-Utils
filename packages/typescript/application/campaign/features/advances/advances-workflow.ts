@@ -1,5 +1,5 @@
 /**
- * Web migration advances workflow: experience & advances — the
+ * Experience and advances workflow: the
  * application feature block over the kernel's `applyAdvance` use case.
  *
  * What this adds beyond the kernel:

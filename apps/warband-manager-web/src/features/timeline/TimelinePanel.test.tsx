@@ -1,5 +1,5 @@
 /**
- * P6.1 acceptance tests (plan §P6.1) at the component level: the timeline
+ * Campaign timeline component tests at the UI level: the timeline
  * panel enumerates the document's moments, navigates through selectMoment
  * without dirtying the document, and shows the current vs selected moment.
  * The service beneath is the real application service with the real file

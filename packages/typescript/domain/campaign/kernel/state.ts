@@ -1,5 +1,5 @@
 /**
- * Web migration campaign state model: frozen public state model of the
+ * Campaign state model: frozen public state model of the
  * campaign domain. Conceptually aligned with the `.mordheim` v4 contract
  * (contracts/campaign-file-v4) — the campaign/view split is deliberate:
  * persistent campaign state never mixes with reconstructible UI selection.

@@ -17,11 +17,11 @@ curated trait sets. The only remaining application-side facts are the
 warband-side heuristics (band groups from ``registry/warband-groups.yaml``
 and profile keywords for band members), which the KB does not declare.
 
-Decisions depend on facts the prototype campaign may not track yet (the
-Mercenary variant, currently-employed Hired Swords). The module never
-silently guesses: when a rule needs a fact the context does not provide it
-returns an explicit ``needs_variant``/``unknown`` decision with the reason,
-and callers decide how to present it.
+Decisions depend on facts that a calling context may omit (the Mercenary
+variant or currently-employed Hired Swords). The module never silently guesses:
+when a rule needs a fact the context does not provide it returns an explicit
+``needs_variant``/``unknown`` decision with the reason, and callers decide how
+to present it.
 
 The roster context is intentionally small: the warband identity (whose
 race/alignment groups come from ``registry/warband-groups.yaml``), the band

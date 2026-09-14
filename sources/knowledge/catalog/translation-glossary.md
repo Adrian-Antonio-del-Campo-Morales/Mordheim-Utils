@@ -5,7 +5,7 @@ base (`name_i18n.es` / `effect_i18n.es`). Built from the reviewed pilot band
 (`bands/mordheim/bretonnian-knights`) and extended band by band. Every band
 translation must reuse these terms so equivalent rules across bands receive
 the **same Spanish name**. Locale policy and the sanctioned i18n readers:
-[the KB guide](../../docs/reference/knowledge-base.md).
+[the KB guide](../../../docs/reference/knowledge-base.md).
 
 Rules of engagement:
 

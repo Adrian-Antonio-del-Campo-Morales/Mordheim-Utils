@@ -1,11 +1,10 @@
 /**
- * P6.2: React wiring of the draft workflow.
+ * React wiring for the isolated draft workflow component.
  *
- * The draft document is *created* by the workflow (not loaded from a file),
- * so the hook holds it in state until the shell stores it via `onDocument`
- * (the P5.2 hook owns service state for file-backed campaigns). Compose and
- * commit mutate the held document through the workflow; `commit` additionally
- * hands the committed document to the shell so the campaign slice takes over.
+ * The draft document is created by the workflow and held in local state until
+ * commit hands it to the caller. The production shell uses the generated KB
+ * artefact and the service-backed `DraftWorkspace`; this hook remains useful
+ * for focused component tests.
  */
 
 import { useCallback, useMemo, useState } from "react";
@@ -19,9 +18,8 @@ import type { CampaignDocument } from "@domain/campaign/index";
 import { FakeKnowledgeReader } from "../campaign/fake-knowledge-reader";
 
 /**
- * Band candidates for the warband picker (mordheim collection). The workflow
- * filters to ids the KB actually resolves, so unknown candidates never reach
- * the UI. P8.1 replaces this list with the generated band index.
+ * This hook is retained for isolated draft-component tests; the production
+ * shell uses the generated artefact and the service-backed DraftWorkspace.
  */
 const BAND_CANDIDATES = [
   "sisters-of-sigmar",

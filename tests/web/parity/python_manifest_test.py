@@ -1,4 +1,4 @@
-"""Gates for the desktop→web test traceability manifest (Agent 0, parity lane).
+"""Gates for the desktop→web test traceability manifest.
 
 Enforces the test traceability invariants:
 

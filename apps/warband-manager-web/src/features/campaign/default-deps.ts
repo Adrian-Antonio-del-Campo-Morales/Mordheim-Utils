@@ -1,19 +1,9 @@
 /**
- * P5.2 composition: builds the real application service with injected ports.
+ * Composition root for the browser campaign service.
  *
- * Both ports are now **real**: the P3.2 v4 file adapter and the P4.3 KB
- * adapter. The artefact is a static asset under
- * `public/knowledge/knowledge-web.json` (staged by CI before the build,
- * gitignored in the repo) fetched once at startup.
- *
- * Two constructors:
- * - `createDefaultDepsAsync()` — the production path; fetches and validates
- *   the artefact, surfacing typed `KnowledgeReaderError`s to the caller so
- *   the shell can render a KB loading/failure state.
- * - `createDefaultDeps()` — synchronous fallback that keeps the
- *   artefact-shaped fake. Used by tests and by components that render
- *   before the async swap resolves; it implements the same listings surface
- *   so feature workflows behave identically.
+ * Production fetches the generated KB artefact once at startup and uses the
+ * real v4 file adapter. The synchronous fake remains test-only fallback data
+ * while that fetch is pending or when the static asset cannot be loaded.
  */
 
 import { createCampaignAppService } from "./types";

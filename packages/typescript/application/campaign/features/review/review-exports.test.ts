@@ -1,5 +1,5 @@
 /**
- * P6.8 acceptance tests (plan §P6.8): the review read model and auxiliary
+ * Campaign review tests: the review read model and auxiliary
  * exporters. Core rule — **no rules in exporters**: exports are pure
  * projections (byte-stable for equal documents, never mutate the input,
  * never call use cases). The review summary reports pending work that

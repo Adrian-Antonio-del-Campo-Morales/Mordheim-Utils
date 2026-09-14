@@ -1,21 +1,17 @@
-"""Web migration interoperability gate: the full bidirectional
+"""Campaign-file interoperability gate: the full bidirectional
 round-trip matrix across every producer/consumer pair.
 
 Three producers exist today: the Python writer (`save_campaign`), the TS
-P3.2 adapter (`serializeCampaign`) and the P6.x kernel workflows (which
-generate campaign documents end to end). Three consumers: the Python reader
-(`load_campaign`), the TS adapter (`parseCampaignFile`) and the TS kernel.
+campaign-file adapter and the campaign kernel workflows. Three consumers:
+the Python reader (`load_campaign`), the TS adapter and the TS kernel.
 
-The matrix proven here, per fixture:
+The matrix proves, per fixture, that Python and TypeScript representations
+preserve the same campaign semantics across write, parse, serialize and reload
+hops. Workflow-generated documents are also loaded through the Python reader
+and survive another Python save/load cycle.
 
-1. Python write → TS parse → TS serialize → Python load, semantic equality
-   at every hop (only `saved_at`/`view` volatile).
-2. TS workflow-generated documents (draft → commit → battle → post-battle
-   steps, exported via the P3.2 adapter) load through the Python reader and
-   survive one more Python save/load generation.
-
-Skips cleanly when the TS cross-check artefacts are absent (TS suite not run
-in this checkout).
+The checks skip cleanly when TypeScript cross-check files are absent because
+the TypeScript suite has not run in the current checkout.
 """
 
 from __future__ import annotations

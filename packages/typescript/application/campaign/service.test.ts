@@ -1,5 +1,5 @@
 /**
- * P5.1 acceptance test (plan §5): the application service runs
+ * Campaign application service tests: the service runs
  * import → edit → export using fakes, in plain Node — no React, no browser
  * APIs. Also covers the confirm-replace guard, dirty tracking, undo and
  * error translation from file-port / use-case failures.

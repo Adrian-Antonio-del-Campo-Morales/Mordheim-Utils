@@ -1,6 +1,6 @@
 /**
- * TS-side gate for the desktop→web test traceability manifest (Agent 0,
- * parity lane). The Python gate (tests/web/parity/python_manifest_test.py)
+ * TS-side gate for the desktop→web test traceability manifest.
+ * The Python gate (tests/web/parity/python_manifest_test.py)
  * owns regeneration identity (it can rerun pytest); this mirror verifies
  * structural invariants so both toolchains consume the same contract.
  */

@@ -6,7 +6,7 @@ Web port of the Mordheim Campaign Manager — React + Vite + TypeScript.
 
 | Command | Purpose |
 | --- | --- |
-| `npm install` | install dependencies (Node 20+) |
+| `npm ci` | install the locked dependencies (Node 20+) |
 | `npm run dev` | Vite dev server |
 | `npm test` | run unit tests once (Vitest, jsdom) |
 | `npm run test:watch` | Vitest in watch mode |

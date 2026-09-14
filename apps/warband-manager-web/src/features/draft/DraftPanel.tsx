@@ -1,5 +1,5 @@
 /**
- * P6.2 (plan §7): draft & initial composition UI. Shown beside/instead of the
+ * Draft and initial composition UI. Shown beside/instead of the
  * campaign slice when the user starts a new warband: warband selection,
  * roster composition with live limits, and the commit gate to State #0.
  *

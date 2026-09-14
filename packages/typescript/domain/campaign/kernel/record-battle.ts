@@ -3,9 +3,9 @@
  * `domain/battle_service.record_battle` core (validation, snapshot numbers,
  * battle node, pending post-battle with hireling-upkeep follow-ups).
  *
- * Deliberately narrower than the desktop path: scenario loot application and
- * pre-battle availability arrive with P6.4/P6.5. Everything the port surface
- * (`RecordBattleInput`) expresses is implemented here.
+ * Records the battle facts and applies the supported scenario rewards before
+ * opening the pending post-battle sequence. The application service adds the
+ * pre-battle availability checks and keeps all state transitions pure.
  *
  * Purity: no React, no DOM, no filesystem. Dates use ISO (locale-volatile
  * display formatting belongs to the UI).

@@ -1,9 +1,9 @@
 /**
- * Web migration injuries workflow: injuries & recovery feature —
- * application-layer rules over the immutable document helpers of the P3.5
- * kernel (`withCampaign`, `pendingPostBattle`). The frozen use-case port has
- * no injury operation, so the transformations here are pure document maps —
- * they never mutate the input and results are values, never exceptions.
+ * Injuries and recovery workflow: the application-layer rules over the
+ * immutable document helpers of the campaign kernel (`withCampaign`,
+ * `pendingPostBattle`). The frozen use-case port has no injury operation, so
+ * the transformations here are pure document maps — they never mutate the
+ * input and results are values, never exceptions.
  *
  * Owns the *workflow* of the injury rules (ported from the desktop
  * `application/post_battle_engine.py`):

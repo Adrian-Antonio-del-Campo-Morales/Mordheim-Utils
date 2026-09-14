@@ -7,7 +7,7 @@ description: >-
 overrides:
 # Triage 2026-09-03 (outputs/audit/interaction-triage.csv): the ten body-armour × body-armour pairs
 # share the armour.target concept but can never co-occur in legal construction. FighterBuild carries
-# a single armour_id slot (src/mordheim_core/models.py); armour.no-armour is the empty default ("No
+# a single armour_id slot (packages/python/core/mordheim_core/models.py); armour.no-armour is the empty default ("No
 # body armour is equipped. Other saves may still apply." - catalog/mechanics/close-combat.yaml); two
 # body armours can never be granted to one fighter and opposing fighters' armour saves resolve
 # disjointly (each incoming attack is saved only against its own target). Recorded as illegal
@@ -21,7 +21,7 @@ overrides:
   risk_reasons:
   - same_slot:body-armour
   evidence:
-  - 'construction: single armour_id per FighterBuild (src/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
+  - 'construction: single armour_id per FighterBuild (packages/python/core/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
 - bindings:
   - '{"id": "armour.gromril-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "armour.ithilmar-armour", "kind": "mechanic", "parameters": {}}'
@@ -31,7 +31,7 @@ overrides:
   risk_reasons:
   - same_slot:body-armour
   evidence:
-  - 'construction: single armour_id per FighterBuild (src/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
+  - 'construction: single armour_id per FighterBuild (packages/python/core/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
 - bindings:
   - '{"id": "armour.gromril-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
@@ -41,7 +41,7 @@ overrides:
   risk_reasons:
   - same_slot:body-armour
   evidence:
-  - 'construction: single armour_id per FighterBuild (src/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
+  - 'construction: single armour_id per FighterBuild (packages/python/core/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
 - bindings:
   - '{"id": "armour.gromril-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
@@ -51,7 +51,7 @@ overrides:
   risk_reasons:
   - same_slot:body-armour
   evidence:
-  - 'construction: single armour_id per FighterBuild (src/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
+  - 'construction: single armour_id per FighterBuild (packages/python/core/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
 - bindings:
   - '{"id": "armour.heavy-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "armour.ithilmar-armour", "kind": "mechanic", "parameters": {}}'
@@ -61,7 +61,7 @@ overrides:
   risk_reasons:
   - same_slot:body-armour
   evidence:
-  - 'construction: single armour_id per FighterBuild (src/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
+  - 'construction: single armour_id per FighterBuild (packages/python/core/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
 - bindings:
   - '{"id": "armour.heavy-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
@@ -71,7 +71,7 @@ overrides:
   risk_reasons:
   - same_slot:body-armour
   evidence:
-  - 'construction: single armour_id per FighterBuild (src/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
+  - 'construction: single armour_id per FighterBuild (packages/python/core/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
 - bindings:
   - '{"id": "armour.heavy-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
@@ -81,7 +81,7 @@ overrides:
   risk_reasons:
   - same_slot:body-armour
   evidence:
-  - 'construction: single armour_id per FighterBuild (src/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
+  - 'construction: single armour_id per FighterBuild (packages/python/core/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
 - bindings:
   - '{"id": "armour.ithilmar-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
@@ -91,7 +91,7 @@ overrides:
   risk_reasons:
   - same_slot:body-armour
   evidence:
-  - 'construction: single armour_id per FighterBuild (src/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
+  - 'construction: single armour_id per FighterBuild (packages/python/core/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
 - bindings:
   - '{"id": "armour.ithilmar-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
@@ -101,7 +101,7 @@ overrides:
   risk_reasons:
   - same_slot:body-armour
   evidence:
-  - 'construction: single armour_id per FighterBuild (src/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
+  - 'construction: single armour_id per FighterBuild (packages/python/core/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
 - bindings:
   - '{"id": "armour.light-armour", "kind": "mechanic", "parameters": {}}'
   - '{"id": "armour.no-armour", "kind": "mechanic", "parameters": {}}'
@@ -111,4 +111,4 @@ overrides:
   risk_reasons:
   - same_slot:body-armour
   evidence:
-  - 'construction: single armour_id per FighterBuild (src/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
+  - 'construction: single armour_id per FighterBuild (packages/python/core/mordheim_core/models.py); catalog/mechanics/close-combat.yaml armour family'
